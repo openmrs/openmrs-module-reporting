@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.2//EN" "../lib-common/config-1.2.dtd">
+
+<module configVersion="1.2">
+	
+	<!-- Base Module Properties -->
+	
+	<id>reporting</id>
+	<name>Core Reporting</name>
+	<version>1.6.0.1</version>
+	<package>org.openmrs.module.@MODULE_ID@</package>
+	<author>Michael Seaton</author>
+	<description>Core reporting API and services</description>
+	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>	
+	<require_version>1.5.0.7475</require_version>
+	
+	<extension>
+		<point>org.openmrs.gutter.tools</point>
+		<class>org.openmrs.module.reporting.extension.html.ReportingHeader</class>
+	</extension>
+	
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+
+</module>
+
