@@ -13,23 +13,16 @@
  */
 package org.openmrs.module.dataset;
 
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import junit.framework.Assert;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
-import org.openmrs.api.DataSetService;
 import org.openmrs.api.context.Context;
-import org.openmrs.logic.LogicCriteria;
-import org.openmrs.logic.result.Result;
-import org.openmrs.logic.util.LogicCriteriaBuilder;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -37,14 +30,14 @@ import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
 /**
  * 
  */
 @SkipBaseSetup
-public class EncounterDataSetEvaluatorTest extends BaseContextSensitiveTest {
+public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	/** Logger */
 	private static Log log = LogFactory.getLog(EncounterDataSetEvaluatorTest.class);
@@ -63,42 +56,55 @@ public class EncounterDataSetEvaluatorTest extends BaseContextSensitiveTest {
 	@Before
 	public void runBeforeEachTest() throws Exception {
 		initializeInMemoryDatabase();
-		//executeDataSet("org/openmrs/include/standardTestDatabase.xml");
-		executeDataSet("org/openmrs/api/include/EncounterServiceTest-initialData.xml");
+		
+		//executeDataSet("initialInMemoryTestDataSet.xml");
+		executeDataSet("org/openmrs/include/standardTestDataset.xml");
+		//executeDataSet("org/openmrs/api/include/EncounterServiceTest-initialData.xml");
 		authenticate();
 		
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldEvaluateDataExportDataSet() throws Exception {
 		EvaluationContext evalContext = new EvaluationContext();
-		CohortDefinition cohortDefinition = 
-			Context.getService(CohortDefinitionService.class).getAllPatientsCohortDefinition();
+
 		
-		DataSetDefinition dataSetDefinition = 
-			new EncounterDataSetDefinition();
+		//CohortDefinition cohortDefinition = 
+		//	Context.getService(CohortDefinitionService.class).getAllPatientsCohortDefinition();
+		//Cohort baseCohort = 
+		//	Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evalContext);		
+		//evalContext.setBaseCohort(baseCohort);
 		
-		// 
-		Cohort baseCohort = 
-			Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evalContext);
-		
-		evalContext.setBaseCohort(baseCohort);
-		
+		DataSetDefinition dataSetDefinition = new EncounterDataSetDefinition();
 		DataSet dataSet = 
 			Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
 	
+		StringBuilder datasetBuilder = new StringBuilder();
+		datasetBuilder.append("\n");
+		int columnCount = 0;
 		for (DataSetColumn column : dataSet.getDataSetDefinition().getColumns()) { 
-			log.info("Column: " + column.getKey() + " " + column.getDataType());			
+			datasetBuilder.append(column.getKey());
+			if (columnCount++ <= dataSet.getDataSetDefinition().getColumns().size())
+				datasetBuilder.append(",");
 		}
+		datasetBuilder.append("\n");
 
-		for (Object row : dataSet) { 
-			HashMap<DataSetColumn, Object> columnSet = (HashMap<DataSetColumn, Object>) row;			
-			for (DataSetColumn column : columnSet.keySet()) { 
-				Object value = columnSet.get(column);
-				log.info(column.getColumnName() + " = " + value);
+		
+		for (Object rowSet : dataSet) { 
+			columnCount = 0;
+			Map<DataSetColumn, Object> columnSet = (Map<DataSetColumn, Object>) rowSet;			
+
+			for (DataSetColumn column : dataSet.getDataSetDefinition().getColumns()) {
+				datasetBuilder.append(column.getColumnName() + "=" + columnSet.get(column));
+				if (columnCount++ <= dataSet.getDataSetDefinition().getColumns().size()) {
+					datasetBuilder.append(",");
+				}
 			}			
+			datasetBuilder.append("\n");
 		}
+		log.info(datasetBuilder);
 		
 	}
 	

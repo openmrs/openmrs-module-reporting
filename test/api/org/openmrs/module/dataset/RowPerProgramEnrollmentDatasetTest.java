@@ -28,14 +28,14 @@ import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportSchema;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.dataset.definition.ProgramDataSetDefinition;
-import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsUtil;
 import org.simpleframework.xml.Serializer;
 
 /**
  * TODO: create a test database and test against that
  */
-public class RowPerProgramEnrollmentDatasetTest extends BaseContextSensitiveTest {
+public class RowPerProgramEnrollmentDatasetTest extends BaseModuleContextSensitiveTest {
 	
 	/**
 	 * TODO: fix this so it uses asserts instead of printing to stdout

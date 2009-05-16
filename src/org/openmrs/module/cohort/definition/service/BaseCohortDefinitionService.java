@@ -18,7 +18,9 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -122,12 +124,11 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 	}
 
 	/**
-	 * 
+	 * @return	a cohort definition that represents all patients
 	 */
 	public CohortDefinition getAllPatientsCohortDefinition()
 			throws APIException {
-
-		throw new APIException("No cohort found for all patients");
+		return new PatientCharacteristicCohortDefinition();
 	}
 
 }

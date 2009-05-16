@@ -31,11 +31,12 @@ import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
  * Test class that tries to run a portion of the
  */
-public class EncounterDataSetTest extends BaseContextSensitiveTest {
+public class EncounterDataSetTest extends BaseModuleContextSensitiveTest {
 	
 	private static Log log = LogFactory.getLog(EncounterDataSetTest.class);
 	

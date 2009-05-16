@@ -20,7 +20,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
+import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.PatientDataSet;
@@ -32,13 +34,13 @@ import org.openmrs.module.evaluation.EvaluationContext;
 /**
  *
  */
+@Handler(supports={PatientDataSetDefinition.class})
 public class PatientDataSetEvaluator implements DataSetEvaluator {
 
 	/**
 	 * Logger 
 	 */
 	protected Log log = LogFactory.getLog(this.getClass());
-
 
 	/**
 	 * Public constructor
@@ -60,19 +62,28 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * 
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
 		
 		PatientDataSetDefinition definition = (PatientDataSetDefinition) dataSetDefinition;
 
-		Cohort cohort = context.getBaseCohort();
-		if (cohort == null)
-			Context.getService(CohortDefinitionService.class).getAllPatientsCohortDefinition();
+		Cohort cohort = evalContext.getBaseCohort();
+		if (cohort == null) {
+			// TODO No longer exists as utility method?
+			CohortDefinition cohortDefinition = 
+				Context.getService(CohortDefinitionService.class).getAllPatientsCohortDefinition();
+			
+			cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evalContext);
+			//cohort = Context.getPatientSetService().getAllPatients();
+		}			
+			
+		log.info("Cohort: " + cohort);
 		
 		
-		List<Patient> patients = new ArrayList<Patient>();
-		// TODO Need to convert cohort to patients
+		List<Patient> patients = 
+			(cohort != null) ? Context.getPatientSetService().getPatients(cohort.getMemberIds()) 
+					: new ArrayList<Patient>();
 
-		return new PatientDataSet(definition, context, patients);
+		return new PatientDataSet(definition, evalContext, patients);
 
 	}
 

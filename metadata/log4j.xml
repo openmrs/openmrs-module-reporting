@@ -11,8 +11,12 @@
 	</appender>
 
 	<logger name="org.openmrs.module">
-		<level value="ERROR" />
+		<level value="INFO" />
 	</logger>
+	
+	<logger name="org.hibernate.tool.hbm2ddl">
+		<level value="FATAL"/>
+	</logger>	
 	
 	<root>
 		<level value="ERROR"/>

@@ -19,7 +19,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
+import org.jfree.util.Log;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
@@ -72,6 +74,7 @@ public class EncounterDataSet implements DataSet<Object> {
 		 * @see java.util.Iterator#next()
 		 */
 		public Map<DataSetColumn, Object> next() {
+			
 			Map<DataSetColumn, Object> vals = new HashMap<DataSetColumn, Object>();
 			//Locale locale = Context.getLocale();
 			

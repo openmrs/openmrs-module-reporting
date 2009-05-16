@@ -37,6 +37,11 @@ import org.simpleframework.xml.Root;
  */
 @Root(strict = false)
 public interface DataSetDefinition extends OpenmrsMetadata, Parameterizable {
+		
+	/**
+	 * @return	the number of columns 
+	 */
+	public Integer getColumnCount();
 	
 	/**
 	 * Gets a list of dataset columns.

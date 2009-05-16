@@ -55,14 +55,27 @@ public abstract class BaseDataSetDefinition extends BaseParameterizable implemen
 	}
 	
 	
+	/**
+	 * 
+	 */
 	public List<Class> getColumnDatatypes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	public List<String> getColumnKeys() {
 		// TODO Auto-generated method stub
 		return null;
 	}	
+	
+	/**
+	 * 
+	 */
+	public Integer getColumnCount() { 
+		return this.getColumns().size();
+	}
 	
 }

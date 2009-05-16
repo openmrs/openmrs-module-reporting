@@ -66,8 +66,8 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 		
 		Map<Integer, Encounter> encounterMap = Context.getPatientSetService().getEncounters(cohort);
 		List<Encounter> encounters = new Vector<Encounter>(encounterMap.values());
-		return new EncounterDataSet(definition, context, encounters);		
 		
+		return new EncounterDataSet(definition, context, encounters);		
 	}
 
 }

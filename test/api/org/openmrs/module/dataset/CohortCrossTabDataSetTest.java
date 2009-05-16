@@ -30,12 +30,13 @@ import org.openmrs.module.report.ReportSchema;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
 /**
  *
  */
-public class CohortCrossTabDataSetTest extends BaseContextSensitiveTest {
+public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 	
 	/**
 	 * TODO Add javadoc What the heck is this for?

@@ -29,13 +29,14 @@ import org.openmrs.module.dataset.definition.persister.DataSetDefinitionPersiste
 import org.openmrs.reporting.ReportObjectService;
 import org.openmrs.reporting.export.DataExportReportObject;
 import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
 /**
  * 
  */
 @SkipBaseSetup
-public class DataExportDataSetPersisterTest extends BaseContextSensitiveTest {
+public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTest {
 	
 	/** Logger */
 	private static Log log = LogFactory.getLog(DataExportDataSetPersisterTest.class);

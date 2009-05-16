@@ -34,6 +34,7 @@ import org.openmrs.module.report.ReportSchema;
 import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 import org.openmrs.util.OpenmrsUtil;
 import org.simpleframework.xml.Serializer;
@@ -41,7 +42,7 @@ import org.simpleframework.xml.Serializer;
 /**
  *
  */
-public class RowPerObsDatasetTest extends BaseContextSensitiveTest {
+public class RowPerObsDatasetTest extends BaseModuleContextSensitiveTest {
 	
 	private Log log = LogFactory.getLog(getClass());
 	
@@ -71,7 +72,7 @@ public class RowPerObsDatasetTest extends BaseContextSensitiveTest {
 		
 		Cohort kidsCohort = 
 			Context.getService(CohortDefinitionService.class).evaluate(kids, evalContext);
-		System.out.println("Kids cohort = " + kidsCohort == null ? " null " : kidsCohort.getMemberIds());
+		log.info("Kids cohort = " + kidsCohort == null ? " null " : kidsCohort.getMemberIds());
 		evalContext.setBaseCohort(kidsCohort);
 		
 		ObsDataSetDefinition definition = new ObsDataSetDefinition();

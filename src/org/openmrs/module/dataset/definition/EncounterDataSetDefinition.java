@@ -37,13 +37,13 @@ public class EncounterDataSetDefinition extends BaseDataSetDefinition {
     private static final long serialVersionUID = -8381653953345505724L;
 	
     // Constants 
-	public static final String ENCOUNTER_ID = "encounter_id";
-	public static final String ENCOUNTER_TYPE = "encounter_type";
-	public static final String FORM = "form";
-	public static final String LOCATION = "location";
-	public static final String PERSON = "person";
-	public static final String GENDER = "gender";
-	public static final String AGE = "age";
+	public static final String ENCOUNTER_ID		= "encounter_id";
+	public static final String ENCOUNTER_TYPE 	= "encounter_type";
+	public static final String FORM 			= "form";
+	public static final String LOCATION 		= "location";
+	public static final String PERSON 			= "person";
+	public static final String GENDER 			= "gender";
+	public static final String AGE 				= "age";
 	
 	// Attributes 
 	private Date toDate;
@@ -59,23 +59,11 @@ public class EncounterDataSetDefinition extends BaseDataSetDefinition {
 	}
 		
 	private static String [] columnKeys = { 		
-		ENCOUNTER_ID,
-		ENCOUNTER_TYPE,
-		FORM,
-		LOCATION,
-		PERSON,
-		GENDER,
-		AGE	
+		ENCOUNTER_ID, ENCOUNTER_TYPE, FORM, LOCATION, PERSON, GENDER, AGE	
 	};
 		
 	private static Class [] columnDatatypes = { 
-		Integer.class,
-		String.class,
-		String.class,
-		String.class,
-		String.class,
-		String.class,
-		Integer.class
+		Integer.class, String.class, String.class, String.class, String.class, String.class, Integer.class
 	};
 		
 		

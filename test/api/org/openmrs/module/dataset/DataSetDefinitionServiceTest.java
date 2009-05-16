@@ -25,11 +25,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
  * Test class that tries to run a portion of the
  */
-public class DataSetDefinitionServiceTest extends BaseContextSensitiveTest {
+public class DataSetDefinitionServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private static Log log = LogFactory.getLog(DataSetDefinitionServiceTest.class);
 	

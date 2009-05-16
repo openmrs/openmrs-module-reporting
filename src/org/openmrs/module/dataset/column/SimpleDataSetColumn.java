@@ -149,4 +149,11 @@ public class SimpleDataSetColumn implements DataSetColumn {
 		hash = 31 * hash + (key == null ? 0 : key.hashCode());
 		return hash;
     }
+
+    /**
+     * 
+     */
+	public int compareTo(DataSetColumn other) {		
+		return this.columnName.compareTo(other.getColumnName());		
+	}
 }
