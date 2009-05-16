@@ -36,6 +36,12 @@ public interface CohortDefinitionPersister {
 	public CohortDefinition getCohortDefinition(Integer id);
 	
 	/**
+	 * @param id
+	 * @return the cohort definition with the given uuid among those managed by this persister
+	 */
+	public CohortDefinition getCohortDefinitionByUuid(String uuid);
+	
+	/**
 	 * @param name
 	 * @return the cohort definition with the given name among those managed by this persister
 	 */

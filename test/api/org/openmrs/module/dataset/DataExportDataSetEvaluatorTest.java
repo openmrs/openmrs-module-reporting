@@ -20,8 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
@@ -70,8 +68,6 @@ public class DataExportDataSetEvaluatorTest extends BaseModuleContextSensitiveTe
 	@Test
 	public void shouldEvaluateDataExportDataSet() throws Exception {
 		EvaluationContext evalContext = new EvaluationContext();
-		CohortDefinition cohortDefinition = 
-			Context.getService(CohortDefinitionService.class).getAllPatientsCohortDefinition();
 		
 		DataSetDefinition dataSetDefinition = 
 			Context.getService(DataSetDefinitionService.class).getDataSetDefinition(new Integer(45));

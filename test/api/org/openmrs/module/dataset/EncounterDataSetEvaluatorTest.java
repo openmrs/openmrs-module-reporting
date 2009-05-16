@@ -13,18 +13,13 @@
  */
 package org.openmrs.module.dataset;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
@@ -69,13 +64,6 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 	@Test
 	public void shouldEvaluateDataExportDataSet() throws Exception {
 		EvaluationContext evalContext = new EvaluationContext();
-
-		
-		//CohortDefinition cohortDefinition = 
-		//	Context.getService(CohortDefinitionService.class).getAllPatientsCohortDefinition();
-		//Cohort baseCohort = 
-		//	Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evalContext);		
-		//evalContext.setBaseCohort(baseCohort);
 		
 		DataSetDefinition dataSetDefinition = new EncounterDataSetDefinition();
 		DataSet dataSet = 

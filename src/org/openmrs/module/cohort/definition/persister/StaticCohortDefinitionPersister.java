@@ -42,14 +42,21 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     //****************
 
 	/**
-     * @see org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister#getCohortDefinition(java.lang.Integer)
+     * @see CohortDefinitionPersister#getCohortDefinition(java.lang.Integer)
      */
     public CohortDefinition getCohortDefinition(Integer id) {
     	return new StaticCohortDefinition(Context.getCohortService().getCohort(id));
     }
     
 	/**
-     * @see org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister#getAllCohortDefinitions(boolean)
+     * @see CohortDefinitionPersister#getCohortDefinitionByUuid(java.lang.String)
+     */
+    public CohortDefinition getCohortDefinitionByUuid(String uuid) {
+    	return new StaticCohortDefinition(Context.getCohortService().getCohortByUuid(uuid));
+    }
+    
+	/**
+     * @see CohortDefinitionPersister#getAllCohortDefinitions(boolean)
      */
     public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired) {
 		List<CohortDefinition> ret = new Vector<CohortDefinition>();
@@ -60,7 +67,7 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     }
 
 	/**
-     * @see org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister#getCohortDefinitionByName(java.lang.String)
+     * @see CohortDefinitionPersister#getCohortDefinitionByName(java.lang.String)
      */
     public CohortDefinition getCohortDefinitionByName(String name) {
     	Cohort c = Context.getCohortService().getCohort(name);
@@ -71,7 +78,7 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     }
     
 	/**
-     * @see org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister#saveCohortDefinition(org.openmrs.module.cohort.definition.CohortDefinition)
+     * @see CohortDefinitionPersister#saveCohortDefinition(CohortDefinition)
      */
     public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {
     	if (cohortDefinition != null) {
@@ -88,7 +95,7 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     }
 
 	/**
-     * @see org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister#purgeCohortDefinition(org.openmrs.module.cohort.definition.CohortDefinition)
+     * @see CohortDefinitionPersister#purgeCohortDefinition(CohortDefinition)
      */
     public void purgeCohortDefinition(CohortDefinition cohortDefinition) {
     	if (cohortDefinition instanceof StaticCohortDefinition) {

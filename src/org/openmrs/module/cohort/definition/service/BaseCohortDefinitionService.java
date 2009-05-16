@@ -18,9 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -112,23 +110,45 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 		return c;
 	}
 
+	/** 
+	 * @see CohortDefinitionService#getCohortDefinition(Class, Integer)
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends CohortDefinition> T getCohortDefinition(Class<T> type, Integer id) throws APIException {
+		return (T) getPersister(type).getCohortDefinition(id);
+	}
+
+	/** 
+	 * @see CohortDefinitionService#getCohortDefinitionByUuid(String)
+	 */
+	public CohortDefinition getCohortDefinitionByUuid(String uuid) throws APIException {
+		for (CohortDefinitionPersister p : HandlerUtil.getHandlersForType(CohortDefinitionPersister.class, null)) {
+			CohortDefinition cd = p.getCohortDefinitionByUuid(uuid);
+			if (cd != null) {
+				return cd;
+			}
+		}
+		return null;
+	}
+
 	/**
-	 * 
+	 * @see CohortDefinitionService#saveCohortDefinition(CohortDefinition)
 	 */
 	public CohortDefinition saveCohortDefinition(CohortDefinition definition) throws APIException {
-		CohortDefinitionPersister persister = HandlerUtil.getPreferredHandler(CohortDefinitionPersister.class, definition.getClass());
-		if (persister == null) {
-			throw new APIException("No CohortDefinitionPersister found for (" + definition.getClass() + ") " + definition.getName());
-		}
-		return persister.saveCohortDefinition(definition);
+		return getPersister(definition.getClass()).saveCohortDefinition(definition);
 	}
 
 	/**
-	 * @return	a cohort definition that represents all patients
+	 * Returns the CohortDefinitionPersister for the passed CohortDefinition
+	 * @param definition
+	 * @return the CohortDefinitionPersister for the passed CohortDefinition
+	 * @throws APIException if no matching persister is found
 	 */
-	public CohortDefinition getAllPatientsCohortDefinition()
-			throws APIException {
-		return new PatientCharacteristicCohortDefinition();
+	protected CohortDefinitionPersister getPersister(Class<? extends CohortDefinition> definition) {
+		CohortDefinitionPersister persister = HandlerUtil.getPreferredHandler(CohortDefinitionPersister.class, definition);
+		if (persister == null) {
+			throw new APIException("No CohortDefinitionPersister found for <" + definition + ">");
+		}
+		return persister;
 	}
-
 }

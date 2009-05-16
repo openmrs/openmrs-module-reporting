@@ -21,7 +21,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
-import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
@@ -41,7 +40,7 @@ import org.openmrs.module.evaluation.EvaluationContext;
 @Handler(supports={EncounterDataSetDefinition.class})
 public class EncounterDataSetEvaluator implements DataSetEvaluator {
 
-	private Log log = LogFactory.getLog(this.getClass());
+	protected Log log = LogFactory.getLog(this.getClass());
 
 	/**
 	 * Public constructor

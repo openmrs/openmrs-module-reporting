@@ -32,12 +32,15 @@ public interface CohortDefinitionService extends OpenmrsService {
 	
 	@Transactional(readOnly = true)
 	public Cohort evaluate(CohortDefinition definition, EvaluationContext evalContext) throws APIException;
+	
+	@Transactional(readOnly = true)
+	public <T extends CohortDefinition> T getCohortDefinition(Class<T> type, Integer id) throws APIException;
+	
+	@Transactional(readOnly = true)
+	public CohortDefinition getCohortDefinitionByUuid(String uuid) throws APIException;
 
 	@Transactional
 	public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) throws APIException;
-
-	@Transactional(readOnly = true)
-	public CohortDefinition getAllPatientsCohortDefinition() throws APIException;
 	
 }
 

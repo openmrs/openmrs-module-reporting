@@ -46,6 +46,13 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
     public CohortDefinition getCohortDefinition(Integer id) {
     	return dao.getObject(CohortDefinition.class, id);
     }
+    
+	/**
+     * @see CohortDefinitionPersister#getCohortDefinitionByUuid(java.lang.String)
+     */
+    public CohortDefinition getCohortDefinitionByUuid(String uuid) {
+    	return dao.getObjectByUuid(CohortDefinition.class, uuid);
+    }
 
 	/**
      * @see CohortDefinitionPersister#getAllCohortDefinitions(boolean)

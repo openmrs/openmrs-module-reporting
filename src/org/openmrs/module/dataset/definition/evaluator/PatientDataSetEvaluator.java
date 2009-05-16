@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.dataset.definition.evaluator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -22,17 +21,18 @@ import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.PatientDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
- *
+ * The logic that evaluates a {@link PatientDataSetDefinition} 
+ * and produces an {@link PatientDataSet}
+ * 
+ * @see PatientDataSetDefinition
+ * @see PatientDataSet
  */
 @Handler(supports={PatientDataSetDefinition.class})
 public class PatientDataSetEvaluator implements DataSetEvaluator {
@@ -47,49 +47,21 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 	 */
 	public PatientDataSetEvaluator() { }
 	
-	
 	/**
-     * @see org.openmrs.module.dataset.evaluator.DataSetEvaluator#canEvaluate(org.openmrs.module.dataset.definition.DataSetDefinition)
-     */
-	public boolean canEvaluate(Class<? extends DataSetDefinition> dataSetDefinition) {
-		
-		log.info("DataSetDefinition: " + dataSetDefinition.getClass());
-
-		
-		return (dataSetDefinition.isAssignableFrom(EncounterDataSetDefinition.class));
-	}    
-	
-	/**
-	 * 
+	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
+	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		PatientDataSetDefinition definition = (PatientDataSetDefinition) dataSetDefinition;
 
-		Cohort cohort = evalContext.getBaseCohort();
+		Cohort cohort = context.getBaseCohort();
 		if (cohort == null) {
-			// TODO No longer exists as utility method?
-			CohortDefinition cohortDefinition = 
-				Context.getService(CohortDefinitionService.class).getAllPatientsCohortDefinition();
-			
-			cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evalContext);
-			//cohort = Context.getPatientSetService().getAllPatients();
-		}			
-			
-		log.info("Cohort: " + cohort);
+			cohort = Context.getPatientSetService().getAllPatients();
+		}
+					
+		log.debug("Cohort: " + cohort);
 		
-		
-		List<Patient> patients = 
-			(cohort != null) ? Context.getPatientSetService().getPatients(cohort.getMemberIds()) 
-					: new ArrayList<Patient>();
-
-		return new PatientDataSet(definition, evalContext, patients);
-
+		List<Patient> patients = Context.getPatientSetService().getPatients(cohort.getMemberIds());
+		return new PatientDataSet(definition, context, patients);
 	}
-
-
-
-    		
-	
-	
 }
