@@ -111,7 +111,7 @@ public class SimpleDataSetDefinitionPersister implements DataSetDefinitionPersis
      * @see DataSetDefinitionPersister#getDataSetDefinitionByName(java.lang.String)
      */
     public DataSetDefinition getDataSetDefinitionByName(String name) {
-    	List<DataSetDefinition> defs = dao.getAllObjectsByName(DataSetDefinition.class, name);
+    	List<DataSetDefinition> defs = dao.getAllObjectsByName(DataSetDefinition.class, name, true); // TODO FIX
     	if (defs != null && !defs.isEmpty()) {
     		if (defs.size() > 1) {
     			throw new APIException("More than one DataSetDefinition is saved with name <" + name + ">");

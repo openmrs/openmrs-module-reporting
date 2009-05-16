@@ -16,7 +16,6 @@ package org.openmrs.module.cohort.definition.persister;
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.APIException;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 
@@ -41,14 +40,14 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
     //****************
     
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinition(java.lang.Integer)
+     * @see CohortDefinitionPersister#getCohortDefinition(Integer)
      */
     public CohortDefinition getCohortDefinition(Integer id) {
     	return dao.getObject(CohortDefinition.class, id);
     }
     
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinitionByUuid(java.lang.String)
+     * @see CohortDefinitionPersister#getCohortDefinitionByUuid(String)
      */
     public CohortDefinition getCohortDefinitionByUuid(String uuid) {
     	return dao.getObjectByUuid(CohortDefinition.class, uuid);
@@ -62,28 +61,21 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
     }
 
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinitionByName(java.lang.String)
+     * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)
      */
-    public CohortDefinition getCohortDefinitionByName(String name) {
-    	List<CohortDefinition> defs = dao.getAllObjectsByName(CohortDefinition.class, name);
-    	if (defs != null && !defs.isEmpty()) {
-    		if (defs.size() > 1) {
-    			throw new APIException("More than one CohortDefinition is saved with name <" + name + ">");
-    		}
-    		return defs.get(0);
-    	}
-    	return null;
+    public List<CohortDefinition> getCohortDefinitionByName(String name, boolean exactMatchOnly) {
+    	return dao.getAllObjectsByName(CohortDefinition.class, name, exactMatchOnly);
     }
     
 	/**
-     * @see CohortDefinitionPersister#saveCohortDefinition(org.openmrs.module.cohort.definition.CohortDefinition)
+     * @see CohortDefinitionPersister#saveCohortDefinition(CohortDefinition)
      */
     public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {
     	return dao.saveObject(cohortDefinition);
     }
 
 	/**
-     * @see CohortDefinitionPersister#purgeCohortDefinition(org.openmrs.module.cohort.definition.CohortDefinition)
+     * @see CohortDefinitionPersister#purgeCohortDefinition(CohortDefinition)
      */
     public void purgeCohortDefinition(CohortDefinition cohortDefinition) {
     	dao.purgeObject(cohortDefinition.getId());

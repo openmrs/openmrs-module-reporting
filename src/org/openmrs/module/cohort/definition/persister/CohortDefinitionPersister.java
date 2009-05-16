@@ -15,7 +15,9 @@ package org.openmrs.module.cohort.definition.persister;
 
 import java.util.List;
 
+import org.openmrs.api.APIException;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This interface exposes the functionality required to access the Data Access
@@ -36,16 +38,21 @@ public interface CohortDefinitionPersister {
 	public CohortDefinition getCohortDefinition(Integer id);
 	
 	/**
-	 * @param id
+	 * @param uuid
 	 * @return the cohort definition with the given uuid among those managed by this persister
 	 */
 	public CohortDefinition getCohortDefinitionByUuid(String uuid);
 	
 	/**
-	 * @param name
-	 * @return the cohort definition with the given name among those managed by this persister
+	 * Returns a List of {@link CohortDefinition} whose name contains the passed name.
+	 * An empty list will be returned if there are none found. Search is case insensitive.
+	 * @param name The search string
+	 * @param exactMatchOnly if true will only return exact matches
+	 * @throws APIException
+	 * @return a List<CohortDefinition> objects whose name contains the passed name
 	 */
-	public CohortDefinition getCohortDefinitionByName(String name);
+	@Transactional(readOnly = true)
+	public List<CohortDefinition> getCohortDefinitionByName(String name, boolean exactMatchOnly) throws APIException;
 	
 	/**
 	 * Persists a CohortDefinition, either as a save or update.

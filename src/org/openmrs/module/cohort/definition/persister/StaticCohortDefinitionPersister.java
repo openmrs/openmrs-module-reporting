@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.cohort.definition.persister;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -25,8 +26,8 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.StaticCohortDefinition;
 
 /**
- * This class provides access to {@link org.openmrs.module.cohort} objects that are saved in the cohort
- * table, but exposes them as {@link CohortDefinition}
+ * This class provides access to persisted {@link Cohort}s, 
+ * and exposes them as a {@link CohortDefinition}
  */
 @Handler(supports={StaticCohortDefinition.class}, order=100)
 public class StaticCohortDefinitionPersister implements CohortDefinitionPersister {
@@ -67,14 +68,21 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     }
 
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinitionByName(java.lang.String)
+     * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)
      */
-    public CohortDefinition getCohortDefinitionByName(String name) {
-    	Cohort c = Context.getCohortService().getCohort(name);
-    	if (c != null) {
-    		return new StaticCohortDefinition(c);
+    public List<CohortDefinition> getCohortDefinitionByName(String name, boolean exactMatchOnly) {
+    	List<Cohort> cohorts = new ArrayList<Cohort>();
+    	if (exactMatchOnly) {
+    		cohorts.add(Context.getCohortService().getCohort(name));
     	}
-    	return null;
+    	else {
+    		cohorts.addAll(Context.getCohortService().getCohorts(name));
+    	}
+    	List<CohortDefinition> ret = new ArrayList<CohortDefinition>();
+    	for (Cohort c : cohorts) {
+    		ret.add(new StaticCohortDefinition(c));
+    	}
+    	return ret;
     }
     
 	/**

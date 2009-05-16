@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.cohort.definition.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -38,6 +41,77 @@ import org.springframework.transaction.annotation.Transactional;
 public class BaseCohortDefinitionService extends BaseOpenmrsService implements CohortDefinitionService {
 	
 	private static Log log = LogFactory.getLog(BaseCohortDefinitionService.class);
+	
+	/**
+	 * Returns the CohortDefinitionPersister for the passed CohortDefinition
+	 * @param definition
+	 * @return the CohortDefinitionPersister for the passed CohortDefinition
+	 * @throws APIException if no matching persister is found
+	 */
+	protected CohortDefinitionPersister getPersister(Class<? extends CohortDefinition> definition) {
+		CohortDefinitionPersister persister = HandlerUtil.getPreferredHandler(CohortDefinitionPersister.class, definition);
+		if (persister == null) {
+			throw new APIException("No CohortDefinitionPersister found for <" + definition + ">");
+		}
+		return persister;
+	}
+
+	/** 
+	 * @see CohortDefinitionService#getCohortDefinition(Class, Integer)
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends CohortDefinition> T getCohortDefinition(Class<T> type, Integer id) throws APIException {
+		return (T) getPersister(type).getCohortDefinition(id);
+	}
+
+	/** 
+	 * @see CohortDefinitionService#getCohortDefinitionByUuid(String)
+	 */
+	public CohortDefinition getCohortDefinitionByUuid(String uuid) throws APIException {
+		for (CohortDefinitionPersister p : HandlerUtil.getHandlersForType(CohortDefinitionPersister.class, null)) {
+			CohortDefinition cd = p.getCohortDefinitionByUuid(uuid);
+			if (cd != null) {
+				return cd;
+			}
+		}
+		return null;
+	}
+
+	/** 
+	 * @see CohortDefinitionService#getAllCohortDefinitions(boolean)
+	 */
+	public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired) {
+		List<CohortDefinition> ret = new ArrayList<CohortDefinition>();
+		for (CohortDefinitionPersister p : HandlerUtil.getHandlersForType(CohortDefinitionPersister.class, null)) {
+			ret.addAll(p.getAllCohortDefinitions(includeRetired));
+		}
+		return ret;
+	}
+
+	/** 
+	 * @see CohortDefinitionService#getCohortDefinitionByName(String, boolean)
+	 */
+	public List<CohortDefinition> getCohortDefinitionByName(String name, boolean exactMatchOnly) {
+		List<CohortDefinition> ret = new ArrayList<CohortDefinition>();
+		for (CohortDefinitionPersister p : HandlerUtil.getHandlersForType(CohortDefinitionPersister.class, null)) {
+			ret.addAll(p.getCohortDefinitionByName(name, exactMatchOnly));
+		}
+		return ret;
+	}
+
+	/**
+	 * @see CohortDefinitionService#saveCohortDefinition(CohortDefinition)
+	 */
+	public CohortDefinition saveCohortDefinition(CohortDefinition definition) throws APIException {
+		return getPersister(definition.getClass()).saveCohortDefinition(definition);
+	}
+
+	/** 
+	 * @see CohortDefinitionService#purgeCohortDefinition(CohortDefinition)
+	 */
+	public void purgeCohortDefinition(CohortDefinition definition) {
+		getPersister(definition.getClass()).purgeCohortDefinition(definition);
+	}
 	
 	/**
 	 * Convenience method which accepts a Mapped<CohortDefinition>, and an initial EvaluationContext to evaluate
@@ -108,47 +182,5 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 		}
 		
 		return c;
-	}
-
-	/** 
-	 * @see CohortDefinitionService#getCohortDefinition(Class, Integer)
-	 */
-	@SuppressWarnings("unchecked")
-	public <T extends CohortDefinition> T getCohortDefinition(Class<T> type, Integer id) throws APIException {
-		return (T) getPersister(type).getCohortDefinition(id);
-	}
-
-	/** 
-	 * @see CohortDefinitionService#getCohortDefinitionByUuid(String)
-	 */
-	public CohortDefinition getCohortDefinitionByUuid(String uuid) throws APIException {
-		for (CohortDefinitionPersister p : HandlerUtil.getHandlersForType(CohortDefinitionPersister.class, null)) {
-			CohortDefinition cd = p.getCohortDefinitionByUuid(uuid);
-			if (cd != null) {
-				return cd;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * @see CohortDefinitionService#saveCohortDefinition(CohortDefinition)
-	 */
-	public CohortDefinition saveCohortDefinition(CohortDefinition definition) throws APIException {
-		return getPersister(definition.getClass()).saveCohortDefinition(definition);
-	}
-
-	/**
-	 * Returns the CohortDefinitionPersister for the passed CohortDefinition
-	 * @param definition
-	 * @return the CohortDefinitionPersister for the passed CohortDefinition
-	 * @throws APIException if no matching persister is found
-	 */
-	protected CohortDefinitionPersister getPersister(Class<? extends CohortDefinition> definition) {
-		CohortDefinitionPersister persister = HandlerUtil.getPreferredHandler(CohortDefinitionPersister.class, definition);
-		if (persister == null) {
-			throw new APIException("No CohortDefinitionPersister found for <" + definition + ">");
-		}
-		return persister;
 	}
 }
