@@ -13,13 +13,11 @@
  */
 package org.openmrs.module.dataset.definition.persister;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.Vector;
 
-//import org.openmrs.annotation.Handler;
-import org.jfree.util.Log;
-import org.openmrs.api.APIException;
+import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
@@ -28,157 +26,101 @@ import org.openmrs.reporting.ReportObjectService;
 import org.openmrs.reporting.export.DataExportReportObject;
 
 /**
- * This class returns DataSetDefinitions that have been Serialized to the database
- * This class is annotated as a Handler that supports all DataSetDefinition classes
- * Specifying no order on this indicates that this is the default means of Persisting 
- * a DataSetDefinition.  To override this behavior, any additional DataSetDefinitionPersister
- * should specify the order field on the Handler annotation.
+ * Class which manages persistence of a DataExportDataSetDefinition using legacy tables
  */
-//@Handler(supports={DataExportDataSetDefinition.class})
+@Handler(supports={DataExportDataSetDefinition.class}, order=100)
 public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPersister {
 		
-	
-	// ================================================================ Constructors ==
-	
 	/**
 	 * Public constructor
 	 */
 	public DataExportDataSetDefinitionPersister() { }
-	
-	
-	
-	
-	// ============================================================ Instance Methods ==
     
 	/**
-     * @see org.openmrs.module.dataset.persister.DataSetDefinitionPersister#canPersist(java.lang.Class)
+     * @see DataSetDefinitionPersister#getDataSetDefinition(Integer)
      */
-    public Boolean canPersist(Class<? extends DataSetDefinition> clazz) {
-    	return (clazz.isAssignableFrom(DataExportDataSetDefinition.class));
+    public DataSetDefinition getDataSetDefinition(Integer id) {
+    	ReportObjectService ros = Context.getService(ReportObjectService.class);
+    	DataExportReportObject dataExport = (DataExportReportObject) ros.getReportObject(id);
+    	return (dataExport != null) ? new DataExportDataSetDefinition(dataExport) : null;
     }
+    
+	/** 
+	 * @see DataSetDefinitionPersister#getDataSetDefinitionByUuid(String)
+	 */
+	public DataSetDefinition getDataSetDefinitionByUuid(String uuid) {	
+		// As a temporary hack, infer uuid from Class + id for saved DataSetDefinitions
+    	for(DataSetDefinition dsd : getAllDataSetDefinitions(false)) {
+    		String inferredUuid = dsd.getClass() + ":" + dsd.getId();
+    		if (inferredUuid.equalsIgnoreCase(uuid)) {
+    			return dsd;
+    		}
+    	}
+    	return null;
+	}
 
-    
-    
-    
-	/**
-     * @see org.openmrs.module.dataset.persister.DataSetDefinitionPersister#getAllDataSetDefinitions()
-     */
-    public List<DataSetDefinition> getAllDataSetDefinitions() {
-    	return getAllDataSetDefinitions(false);
-    }
-	
 	/**
      * @see DataSetDefinitionPersister#getAllDataSetDefinitions(boolean)
      */
-    public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {    	
-    	return getDataSetDefinitions();	
-    }
-
-    /**
-     * Get all report definitions from the database.
-     * 
-     * TODO Should we cache the data exports so we're not always getting them from the database?
-     * 
-     * @return
-     */
-    public List<DataSetDefinition> getDataSetDefinitions() { 
-	    List <DataSetDefinition> dataSetDefinitions = new Vector<DataSetDefinition>();
+    public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {
 	    
-	    // Get all data exports in the system
-    	List<AbstractReportObject> dataExports = 
-	    	Context.getService(ReportObjectService.class).getReportObjectsByType("Data Export");
+    	// Get all data exports in the system
+	    ReportObjectService ros = Context.getService(ReportObjectService.class);
+	    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");
     	
 	    // Iterate through the report definitions and wrap each with a BIRT report
+    	List <DataSetDefinition> dataSetDefinitions = new Vector<DataSetDefinition>();
     	for (AbstractReportObject obj : dataExports) { 
     		DataExportReportObject dataExport = (DataExportReportObject) obj;
-    		
-    		DataExportDataSetDefinition dataExportDefinition = 
-    			new DataExportDataSetDefinition(dataExport);
-    		    		
-    		dataSetDefinitions.add(dataExportDefinition);    		
+    		dataSetDefinitions.add(new DataExportDataSetDefinition(dataExport));    		
     	}    	
     	return dataSetDefinitions;
-    } 
-	    
+    }     
     
 	/**
-     * @see org.openmrs.module.dataset.persister.DataSetDefinitionPersister#getDataSetDefinition(java.util.UUID)
+     * @see DataSetDefinitionPersister#getDataSetDefinitions(String, boolean)
      */
-    public DataSetDefinition getDataSetDefinition(UUID uuid) {
-    	throw new APIException("Data exports cannot be located by UUID");
-    }
-    
-    
-	/**
-     * @see DataSetDefinitionPersister#getDataSetDefinition(java.lang.Integer)
-     */
-    public DataSetDefinition getDataSetDefinition(Integer id) {    	
-    	DataExportReportObject dataExport =
-    		(DataExportReportObject) Context.getService(ReportObjectService.class).getReportObject(id);
-
-    	return (dataExport != null) ? 
-    			new DataExportDataSetDefinition(dataExport) : null;
-    }
-    
-	/**
-     * @see DataSetDefinitionPersister#getDataSetDefinitionByName(java.lang.String)
-     */
-    public DataSetDefinition getDataSetDefinitionByName(String name) {
-    	DataSetDefinition definition = null;
-
-    	// TODO How should we handle the case where we have multiple data sets with the same name    	
-    	for(DataSetDefinition temp : getAllDataSetDefinitions()) {  
-    		Log.info("Name: " + name + " Temp: " + temp.getName());
-    		if (temp.getName().equalsIgnoreCase(name)) { 
-    			definition = temp;
-    			break;
+    public List<DataSetDefinition> getDataSetDefinitions(String name, boolean exactMatchOnly) {
+    	List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();	
+    	for(DataSetDefinition dsd : getAllDataSetDefinitions(false)) {
+    		if (dsd.getName() != null) {
+    			if (exactMatchOnly) {
+    				if (dsd.getName().equalsIgnoreCase(name)) {
+    					ret.add(dsd);
+    				}
+    			}
+    			else {
+    				if (dsd.getName().toUpperCase().contains(name.toUpperCase())) {
+    					ret.add(dsd);
+    				}
+    			}
     		}
     	}
-    	return definition;
+    	return ret;
     }
     
 	/**
-     * @see DataSetDefinitionPersister#saveDataSetDefinition(org.openmrs.dataset.definition.DataSetDefinition)
+     * @see DataSetDefinitionPersister#saveDataSetDefinition(DataSetDefinition)
      */
     public DataSetDefinition saveDataSetDefinition(DataSetDefinition dataSetDefinition) {
-    	
-    	// TODO Remove this because it should not be necessary
-    	if (!(dataSetDefinition instanceof DataExportDataSetDefinition)) { 
-    		throw new APIException("Cannot save dataset definition of type: " + dataSetDefinition.getClass());
-    	}
-    	
-    	// Cast the dataset definition 
-    	DataExportDataSetDefinition dataExportDefinition = 
-    		(DataExportDataSetDefinition) dataSetDefinition;
+
+    	DataExportDataSetDefinition dsd = (DataExportDataSetDefinition) dataSetDefinition;
     	
     	// Save the data export to the database 
     	DataExportReportObject dataExport = 
     		(DataExportReportObject) Context.getService(ReportObjectService.class).saveReportObject(
-    			dataExportDefinition.getDataExportReportObject());
+    				dsd.getDataExportReportObject());
     	
-		dataExportDefinition.setDataExportReportObject(dataExport);
+    	dsd.setDataExportReportObject(dataExport);
 		
-		return dataExportDefinition;
+		return dsd;
     }
 
 	/**
-     * @see DataSetDefinitionPersister#purgeDataSetDefinition(org.openmrs.dataset.definition.DataSetDefinition)
+     * @see DataSetDefinitionPersister#purgeDataSetDefinition(DataSetDefinition)
      */
     public void purgeDataSetDefinition(DataSetDefinition dataSetDefinition) {
-    	
-    	// TODO Remove this because it should not be necessary
-    	if (!(dataSetDefinition instanceof DataExportDataSetDefinition)) { 
-    		throw new APIException("Cannot purge dataset definition of type: " + dataSetDefinition.getClass());
-    	}
-    	
-    	// Cast the dataset definition
-    	DataExportDataSetDefinition dataExportDefinition = 
-    		(DataExportDataSetDefinition) dataSetDefinition;
-    	
-    	// Remove the data export from the system
-    	Context.getService(ReportObjectService.class).purgeReportObject(
-    		dataExportDefinition.getDataExportReportObject());    	
+    	DataExportDataSetDefinition dsd = (DataExportDataSetDefinition) dataSetDefinition;
+    	Context.getService(ReportObjectService.class).purgeReportObject(dsd.getDataExportReportObject());    	
     }
-
-
 }

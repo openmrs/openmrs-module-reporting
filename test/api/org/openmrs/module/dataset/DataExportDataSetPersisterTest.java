@@ -28,7 +28,6 @@ import org.openmrs.module.dataset.definition.persister.DataExportDataSetDefiniti
 import org.openmrs.module.dataset.definition.persister.DataSetDefinitionPersister;
 import org.openmrs.reporting.ReportObjectService;
 import org.openmrs.reporting.export.DataExportReportObject;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -84,7 +83,7 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 	@Test
 	public void shouldGetAllDataSetDefinitions() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		List<DataSetDefinition> list = persister.getAllDataSetDefinitions();
+		List<DataSetDefinition> list = persister.getAllDataSetDefinitions(false);
 		Assert.assertEquals("Should return all dataset definitions", 25, list.size()); 		
 	}
 	
@@ -117,22 +116,15 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 	@Test
 	public void shouldReturnNullIfNameDoesNotMatch() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		DataSetDefinition def = persister.getDataSetDefinitionByName("Dataset definition that does not exist");
-		Assert.assertNull("Should return null if name does not match", def); 		
+		List<DataSetDefinition> def = persister.getDataSetDefinitions("Dataset definition that does not exist", true);
+		Assert.assertEquals(0, def.size()); 		
 	}
 	
 	@Test
 	public void shouldReturnDataSetDefinitionIfNameMatches() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		DataSetDefinition def = persister.getDataSetDefinitionByName("HIV Program Data");
-		Assert.assertNotNull("Should return dataset definition if name matches", def); 		
-	}
-	
-	@Test
-	public void shouldReturnFirstDataSetDefinitionIfNameMatchesMultiple() throws Exception { 
-		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		DataSetDefinition def = persister.getDataSetDefinitionByName("HIV Program Data");
-		Assert.assertEquals("Should return first dataset definition if name matches multiple", def.getId(), new Integer(45)); 		
+		List<DataSetDefinition> def = persister.getDataSetDefinitions("HIV Program Data", true);
+		Assert.assertEquals(1, def.size()); 		
 	}
 
 	@Test
@@ -145,7 +137,7 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 		DataSetDefinition datasetDefinition = new DataExportDataSetDefinition(dataExport);		
 		datasetDefinition = persister.saveDataSetDefinition(datasetDefinition);
 		DataSetDefinition def = 
-			persister.getDataSetDefinitionByName("My Data Set Definition");
+			persister.getDataSetDefinition(45);
 		log.info("newly created dataset definition: " + def.getId());
 		Assert.assertNotNull("Should create new dataset definition", def.getId()); 	
 	}

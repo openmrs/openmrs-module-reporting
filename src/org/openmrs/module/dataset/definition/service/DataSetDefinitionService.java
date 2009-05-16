@@ -14,7 +14,6 @@
 package org.openmrs.module.dataset.definition.service;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
@@ -29,70 +28,76 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface DataSetDefinitionService extends OpenmrsService {
+	
+	/**
+	 * @param type the Class<DataSetDefinition> to retrieve
+	 * @param id the id to retrieve for the given type
+	 * @return the DataSetDefinition that matches the given type and id
+	 */
+	@Transactional(readOnly = true)
+	public <T extends DataSetDefinition> T getDataSetDefinition(Class<T> type, Integer id) throws APIException;
+	
+	/**
+	 * @param uuid
+	 * @return the DataSetDefinition with the given uuid
+	 */
+	@Transactional(readOnly = true)
+	public DataSetDefinition getDataSetDefinitionByUuid(String uuid) throws APIException;
+	
+	/**
+	 * @param includeRetired - if true, include retired {@link DataSetDefinition} in the returned list
+	 * @return All {@link DataSetDefinition} whose persistence is managed by this persister
+	 */
+	@Transactional(readOnly = true)
+	public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired);
+	
+	/**
+	 * Returns a List of {@link DataSetDefinition} whose name contains the passed name.
+	 * An empty list will be returned if there are none found. Search is case insensitive.
+	 * @param name The search string
+	 * @param exactMatchOnly if true will only return exact matches
+	 * @throws APIException
+	 * @return a List<DataSetDefinition> objects whose name contains the passed name
+	 */
+	@Transactional(readOnly = true)
+    public List<DataSetDefinition> getDataSetDefinitions(String name, boolean exactMatchOnly);
+
+	/**
+	 * Persists a DataSetDefinition, either as a save or update.
+	 * @param DataSetDefinition
+	 * @return the DataSetDefinition that was passed in
+	 */
+	@Transactional
+	public DataSetDefinition saveDataSetDefinition(DataSetDefinition dataSetDefinition) throws APIException;
+	
+	/**
+	 * Deletes a DataSetDefinition from the database.
+	 * @param DataSetDefinition the DataSetDefinition to purge
+	 */
+	@Transactional
+	public void purgeDataSetDefinition(DataSetDefinition dataSetDefinition);
 
 	/**
 	 * Evaluate a DataSetDefinition to get turn it into a DataSet
 	 * 
 	 * @param definition
 	 * @param inputCohort Input cohort optionally specified by the user.
-	 * @param evalContext EvaluationContext containing parameter values, etc
+	 * @param context EvaluationContext containing parameter values, etc
 	 * @return a DataSet matching the parameters
 	 * @throws APIException
 	 */
 	@SuppressWarnings("unchecked")
-	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext evalContext) throws APIException;
+	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws APIException;
 	
 	/**
 	 * Evaluate a Mapped<DataSetDefinition> to get turn it into a DataSet
 	 * 
 	 * @param definition
 	 * @param inputCohort Input cohort optionally specified by the user.
-	 * @param evalContext EvaluationContext containing parameter values, etc
+	 * @param context EvaluationContext containing parameter values, etc
 	 * @return a DataSet matching the parameters
 	 * @throws APIException
 	 */
 	@SuppressWarnings("unchecked")
-	public DataSet evaluate(DataSetDefinition definition, EvaluationContext evalContext) throws APIException;
-	
-	/**
-     * 
-     */
-    public List<DataSetDefinition> getAllDataSetDefinitions() throws APIException;
-
-	/**
-     * 
-     */
-    public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) throws APIException;    
-
-    /**
-     * 
-     */
-    public List<DataSetDefinition> getDatasetDefinitionsByName(String name) throws APIException;
-
-	/**
-     * 
-     */
-    public DataSetDefinition getDataSetDefinitionsByExample(DataSetDefinition definition) throws APIException;    
-    
-	/**
-     * 
-     */
-    public DataSetDefinition getDataSetDefinition(UUID uuid) throws APIException;
-    
-    /**
-     * TODO Need to deprecate this method since we might have two 
-     * dataset definitions with the same ID.
-     */
-    public DataSetDefinition getDataSetDefinition(Integer id) throws APIException;
-
-    /**
-	 * 
-     */
-    public void purgeDataSetDefinition(DataSetDefinition definition) throws APIException;
-    
-    /**
-	 * 
-     */
-    public DataSetDefinition saveDatasetDefinition(DataSetDefinition datasetDefinition);    
+	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws APIException;
 }
-

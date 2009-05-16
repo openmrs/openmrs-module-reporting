@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -60,7 +59,7 @@ public class DataSetDefinitionServiceTest extends BaseModuleContextSensitiveTest
 	@Test
 	public void shouldGetAllDataSetDefinitions() throws Exception { 
 		List<DataSetDefinition> definitions = 
-			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions();
+			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false);
 		
 		for (DataSetDefinition definition : definitions) { 
 			log.info("Data set definition: " + definition.getName());

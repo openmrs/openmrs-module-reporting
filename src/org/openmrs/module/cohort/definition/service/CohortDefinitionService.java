@@ -60,7 +60,7 @@ public interface CohortDefinitionService extends OpenmrsService {
 	 * @return a List<CohortDefinition> objects whose name contains the passed name
 	 */
 	@Transactional(readOnly = true)
-    public List<CohortDefinition> getCohortDefinitionByName(String name, boolean exactMatchOnly);
+    public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly);
 
 	/**
 	 * Persists a CohortDefinition, either as a save or update.

@@ -26,12 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CohortDefinitionPersister {
 	
 	/**
-	 * @param includeRetired - if true, include retired CohortDefinitions in the returned list
-	 * @return All cohort definitions whose persistence is managed by this persister
-	 */
-	public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired);
-	
-	/**
 	 * @param id
 	 * @return the cohort definition with the given id among those managed by this persister
 	 */
@@ -44,6 +38,12 @@ public interface CohortDefinitionPersister {
 	public CohortDefinition getCohortDefinitionByUuid(String uuid);
 	
 	/**
+	 * @param includeRetired - if true, include retired CohortDefinitions in the returned list
+	 * @return All cohort definitions whose persistence is managed by this persister
+	 */
+	public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired);
+	
+	/**
 	 * Returns a List of {@link CohortDefinition} whose name contains the passed name.
 	 * An empty list will be returned if there are none found. Search is case insensitive.
 	 * @param name The search string
@@ -52,7 +52,7 @@ public interface CohortDefinitionPersister {
 	 * @return a List<CohortDefinition> objects whose name contains the passed name
 	 */
 	@Transactional(readOnly = true)
-	public List<CohortDefinition> getCohortDefinitionByName(String name, boolean exactMatchOnly) throws APIException;
+	public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) throws APIException;
 	
 	/**
 	 * Persists a CohortDefinition, either as a save or update.

@@ -21,10 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
+import org.openmrs.module.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -68,17 +67,14 @@ public class DataExportDataSetEvaluatorTest extends BaseModuleContextSensitiveTe
 	@Test
 	public void shouldEvaluateDataExportDataSet() throws Exception {
 		EvaluationContext evalContext = new EvaluationContext();
+		DataSetDefinitionService dsds = Context.getService(DataSetDefinitionService.class);
 		
-		DataSetDefinition dataSetDefinition = 
-			Context.getService(DataSetDefinitionService.class).getDataSetDefinition(new Integer(45));
+		DataExportDataSetDefinition dataSetDefinition = dsds.getDataSetDefinition(DataExportDataSetDefinition.class, new Integer(45));
 		
-		DataSet dataSet = 
-			Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
+		DataSet<?> dataSet = dsds.evaluate(dataSetDefinition, evalContext);
 	
 		for (DataSetColumn column : dataSet.getDataSetDefinition().getColumns()) { 
-
-			log.info("column: " + column.getKey() + " " + column.getDataType());
-			
+			log.info("column: " + column.getKey() + " " + column.getDataType());		
 		}
 		Assert.fail("Need to add test conditions");
 	}

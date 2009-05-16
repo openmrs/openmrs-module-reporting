@@ -70,7 +70,7 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
 	/**
      * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)
      */
-    public List<CohortDefinition> getCohortDefinitionByName(String name, boolean exactMatchOnly) {
+    public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) {
     	List<Cohort> cohorts = new ArrayList<Cohort>();
     	if (exactMatchOnly) {
     		cohorts.add(Context.getCohortService().getCohort(name));

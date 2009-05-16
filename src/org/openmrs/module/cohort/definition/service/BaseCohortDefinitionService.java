@@ -91,10 +91,10 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 	/** 
 	 * @see CohortDefinitionService#getCohortDefinitionByName(String, boolean)
 	 */
-	public List<CohortDefinition> getCohortDefinitionByName(String name, boolean exactMatchOnly) {
+	public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) {
 		List<CohortDefinition> ret = new ArrayList<CohortDefinition>();
 		for (CohortDefinitionPersister p : HandlerUtil.getHandlersForType(CohortDefinitionPersister.class, null)) {
-			ret.addAll(p.getCohortDefinitionByName(name, exactMatchOnly));
+			ret.addAll(p.getCohortDefinitions(name, exactMatchOnly));
 		}
 		return ret;
 	}

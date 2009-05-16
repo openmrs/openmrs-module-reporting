@@ -14,99 +14,77 @@
 package org.openmrs.module.dataset.definition.persister;
 
 import java.util.List;
-import java.util.UUID;
 
+import org.openmrs.api.APIException;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 
 /**
  * This interface exposes the functionality required to access the Data Access
- * functionality for a particular set of CohortDefinition implementations
+ * functionality for a particular set of DataSetDefinition implementations
  */
 public interface DataSetDefinitionPersister {
-		
-	/**
-	 * Returns true if this persister can handle the given class, false 
-	 * if the persister cannot handle it.
-	 * 
-	 * TODO Should be part of the "handler" class.
-	 * 
-	 * @param clazz		the class to be handled
-	 * @return	true if the class can be handled, false otherwise
-	 * 
-	 * @should handle registered class
-	 * @should not handle unregistered class
-	 */
-	public Boolean canPersist(Class<? extends DataSetDefinition> clazz);
 	
 	/**
-	 * @return All dataset definitions whose persistence is managed by this persister
+	 * Gets the {@link DataSetDefinition} that matches the given id
 	 * 
-	 * @should get all dataset definitions not including retired
-	 */
-	public List<DataSetDefinition> getAllDataSetDefinitions();
-
-	/**
-	 * @param includeRetired - if true, include retired CohortDefinitions in the returned list
-	 * @return All dataset definitions whose persistence is managed by this persister
-	 * 
-	 * @should get all dataset definitions including retired
-	 * @should get all dataset definitions not including retired
-	 */
-	public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired);
-	
-	/**
-	 * Gets the dataset definition that matches the given identifier.
-	 * 
-	 * @param id	the identifier to match
-	 * @return the dataset definition with the given id among those managed by this persister
+	 * @param id the id to match
+	 * @return the {@link DataSetDefinition} with the given id among those managed by this persister
 	 * 
 	 * @should return null when does not exist
-	 * @should return dataset definition when exists
+	 * @should return DataSetDefinition when exists
 	 */
 	public DataSetDefinition getDataSetDefinition(Integer id);
 	
 	/**
-	 * Gets the dataset definition that matches the given unique identifier.
+	 * Gets the {@link DataSetDefinition} that matches the given uuid
 	 * 
-	 * @param uuid	the identifier to match
-	 * @return the dataset definition with the given id among those managed by this persister
+	 * @param uuid	the uuid to match
+	 * @return the {@link DataSetDefinition} with the given uuid among those managed by this persister
 	 * 
 	 * @should return null when does not exist
-	 * @should return dataset definition when exists
+	 * @should return {@link DataSetDefinition} when exists
 	 */
-	public DataSetDefinition getDataSetDefinition(UUID uuid);
-		
+	public DataSetDefinition getDataSetDefinitionByUuid(String uuid);
 	
 	/**
-	 * Gets the dataset definition that matches the given name.
+	 * @param includeRetired - if true, include retired {@link DataSetDefinition} in the returned List
+	 * @return All {@link DataSetDefinition} whose persistence is managed by this persister
 	 * 
-	 * @param name	the name to match
-	 * @return the dataset definition with the given name among those managed by this persister
-	 * 
-	 * @should return null when name does not match
-	 * @should return dataset definition when name matches
-	 * @should return first dataset definition when name matches multiple
+	 * @should get all {@link DataSetDefinition} including retired
+	 * @should get all {@link DataSetDefinition} not including retired
 	 */
-	public DataSetDefinition getDataSetDefinitionByName(String name);
+	public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired);
 	
 	/**
-	 * Saves the given dataset definition to the system.
+	 * Returns a List of {@link DataSetDefinition} whose name contains the passed name.
+	 * An empty list will be returned if there are none found. Search is case insensitive.
 	 * 
-	 * @param datasetDefinition	the dataset definition to save
-	 * @return the dataset definition that was 
+	 * @param name The search string
+	 * @param exactMatchOnly if true will only return exact matches
 	 * 
-	 * @should create new dataset definition
-	 * @should update existing dataset definition
+	 * @throws APIException
+	 * @return a List<DataSetDefinition> objects whose name contains the passed name
+	 */
+	public List<DataSetDefinition> getDataSetDefinitions(String name, boolean exactMatchOnly);
+	
+	/**
+	 * Saves the given {@link DataSetDefinition} to the system.
+	 * 
+	 * @param datasetDefinition	the {@link DataSetDefinition} to save
+	 * @return the {@link DataSetDefinition} that was 
+	 * 
+	 * @should create new {@link DataSetDefinition}
+	 * @should update existing {@link DataSetDefinition}
 	 * @should set identifier after save
 	 */
 	public DataSetDefinition saveDataSetDefinition(DataSetDefinition datasetDefinition);
 	
 	/**
-	 * Deletes a dataset definition from the system.
+	 * Deletes a {@link DataSetDefinition} from the system.
 	 * 
-	 * @param datasetDefinition	the dataset definition to purge
+	 * @param datasetDefinition	the {@link DataSetDefinition} to purge
 	 * 
-	 * @should remove dataset definition
+	 * @should remove the DataSetDefinition
 	 */
 	public void purgeDataSetDefinition(DataSetDefinition dataSetDefinition);
 }

@@ -63,7 +63,7 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
 	/**
      * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)
      */
-    public List<CohortDefinition> getCohortDefinitionByName(String name, boolean exactMatchOnly) {
+    public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) {
     	return dao.getAllObjectsByName(CohortDefinition.class, name, exactMatchOnly);
     }
     
