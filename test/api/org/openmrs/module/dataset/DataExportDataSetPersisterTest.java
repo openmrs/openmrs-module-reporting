@@ -48,7 +48,7 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 	@Before
 	public void runBeforeEachTest() throws Exception {
 		initializeInMemoryDatabase();
-		executeDataSet("org/openmrs/report/include/ReportTests-reportObjects.xml");
+		executeDataSet("org/openmrs/module/dataset/include/ReportTests-reportObjects.xml");
 		authenticate();
 	}
 	
