@@ -1,7 +1,11 @@
 package org.openmrs.module.dataset.definition.evaluator;
 
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
+import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openmrs.api.context.Context;
@@ -50,6 +54,12 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
         
         TsvReportRenderer renderer = new TsvReportRenderer();
         renderer.render(temp, null, System.out);
+
+        int numRows = 0;
+        for (Object row : result) {
+            ++numRows;
+        }
+        Assert.assertTrue("Wrong number of rown", numRows == 3);
     }
 
     // needs to have an even number of arguments
