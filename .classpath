@@ -12,7 +12,6 @@
 	<classpathentry kind="lib" path="lib-common/cglib-2.1_3.jar"/>
 	<classpathentry kind="lib" path="lib-common/commons-collections-3.2.jar"/>
 	<classpathentry kind="lib" path="lib-common/commons-lang-2.4.jar"/>
-	<classpathentry kind="lib" path="lib-common/dbunit-2.2.jar"/>
 	<classpathentry kind="lib" path="lib-common/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib-common/ehcache-1.2.4.jar"/>
 	<classpathentry kind="lib" path="lib-common/hibernate325-mod.jar"/>
@@ -44,5 +43,7 @@
 	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.0.7802-dev.jar"/>
 	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.0.7802-dev.jar"/>
 	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.0.7802-dev.jar"/>
+	<classpathentry kind="lib" path="lib-common/dbunit-2.4.4.jar"/>
+	<classpathentry kind="lib" path="lib-common/hsqldb-1.8.0.10.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
