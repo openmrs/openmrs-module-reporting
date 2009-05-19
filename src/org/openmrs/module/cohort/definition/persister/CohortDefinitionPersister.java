@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This interface exposes the functionality required to access the Data Access
@@ -51,7 +50,6 @@ public interface CohortDefinitionPersister {
 	 * @throws APIException
 	 * @return a List<CohortDefinition> objects whose name contains the passed name
 	 */
-	@Transactional(readOnly = true)
 	public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) throws APIException;
 	
 	/**

@@ -5,6 +5,15 @@
 
 <beans>
 
+	<bean parent="serializedObjectDAO">
+		<property name="supportedTypes">
+			<list>
+				<value>org.openmrs.module.cohort.definition.CohortDefinition</value>
+				<value>org.openmrs.module.dataset.definition.DataSetDefinition</value>
+			</list>
+		</property>
+	</bean>	
+
 	<bean id="serializedCohortDefinitionPersister" class="org.openmrs.module.cohort.definition.persister.SerializedCohortDefinitionPersister">
 		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
 	</bean>

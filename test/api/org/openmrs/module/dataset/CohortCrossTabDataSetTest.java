@@ -15,21 +15,23 @@ package org.openmrs.module.dataset;
 
 import java.util.Date;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.cohort.definition.util.CohortExpressionParser;
 import org.openmrs.module.dataset.definition.CohortCrossTabDataSetDefinition;
 import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
+import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportSchema;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -37,6 +39,13 @@ import org.openmrs.test.SkipBaseSetup;
  *
  */
 public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
+	
+	@Before
+	public void register() {
+		SerializedObjectDAO dao = Context.getRegisteredComponents(SerializedObjectDAO.class).iterator().next();
+		dao.registerSupportedType(CohortDefinition.class);
+		dao.registerSupportedType(DataSetDefinition.class);
+	}
 	
 	/**
 	 * TODO Add javadoc What the heck is this for?
@@ -79,8 +88,7 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 		femaleDef.setGender("F");
 		cohortDefinitionService.saveCohortDefinition(femaleDef);
 		
-		Parameter effDateParam = 
-			new Parameter("effectiveDate", "Effective Date", Date.class, null, false);
+		Parameter effDateParam = new Parameter("effectiveDate", "Effective Date", Date.class, null, false);
 		
 		PatientCharacteristicCohortDefinition adultOnDate = new PatientCharacteristicCohortDefinition();
 		adultOnDate.setName("AdultOnDate");
@@ -109,8 +117,6 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 		def.setRowCohortDataSetDefinition(ageDef, null);
 		def.setColumnCohortDataSetDefinition(genderDef, null);
 		schema.addDataSetDefinition(def, (String)null);
-		
-
 		
 		EvaluationContext evalContext = new EvaluationContext();
 		evalContext.addParameterValue(dateParam.getName(), new Date());
