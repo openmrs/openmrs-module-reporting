@@ -1,7 +1,5 @@
 package org.openmrs.module.dataset.definition.evaluator;
 
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +32,7 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
         SimpleDataSet left = new SimpleDataSet();
         left.addRow(makeRowHelper("patient_id", 1, "name", "Alice"));
         left.addRow(makeRowHelper("patient_id", 2, "name", "Bob"));
-        left.addRow(makeRowHelper("patient_id", 2, "name", "Charles"));
+        left.addRow(makeRowHelper("patient_id", 3, "name", "Charles"));
         DataSetDefinition leftDef = new DataSetWrappingDataSetDefinition(left);
         
         SimpleDataSet right = new SimpleDataSet();
@@ -45,7 +43,14 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
         DataSetDefinition rightDef = new DataSetWrappingDataSetDefinition(right);
         
         JoinDataSetDefinition join = new JoinDataSetDefinition(leftDef, "patient.", "patient_id", rightDef, "encounter.", "patient_id");
-        DataSet result = Context.getService(DataSetDefinitionService.class).evaluate(join, new EvaluationContext());
+        DataSet<?> result = Context.getService(DataSetDefinitionService.class).evaluate(join, new EvaluationContext());
+        Map<DataSetColumn, Object> row1 = (Map<DataSetColumn, Object>) result.iterator().next();
+        for (Map.Entry<DataSetColumn, Object> e : row1.entrySet()) {
+            if (e.getKey().getKey().equals("patient.name"))
+                Assert.assertEquals(e.getValue(), "Alice");
+            else if (e.getKey().getKey().equals("encounter.encounter_type"))
+                Assert.assertEquals(e.getValue(), "Registration");
+        }
         
         ReportData temp = new ReportData();
         Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
@@ -59,7 +64,7 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
         for (Object row : result) {
             ++numRows;
         }
-        Assert.assertTrue("Wrong number of rown", numRows == 3);
+        Assert.assertTrue("Wrong number of rown", numRows == 4);
     }
 
     // needs to have an even number of arguments

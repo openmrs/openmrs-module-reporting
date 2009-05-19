@@ -34,9 +34,10 @@ public class JoinDataSetDefinitionEvaluator implements DataSetEvaluator {
         // first we evaluate the dataset on the right side of the join, 
         // and we build an index from the join column to all rows with that value
         DataSet<?> right = Context.getService(DataSetDefinitionService.class).evaluate(dsd.getRight(), evalContext);
+        DataSetColumn rightJoinColumn = findColumnDefinition(dsd.getRight(), dsd.getJoinColumnOnRight());
         Map<Object, List<Map<DataSetColumn, ?>>> index = new HashMap<Object, List<Map<DataSetColumn, ?>>>();
         for (Map<DataSetColumn, ?> row : right) {
-            Object joinValue = row.get(dsd.getJoinColumnOnRight());
+            Object joinValue = row.get(rightJoinColumn);
             if (joinValue != null) {
                 List<Map<DataSetColumn, ?>> holder = index.get(joinValue);
                 if (holder == null) {
@@ -50,24 +51,44 @@ public class JoinDataSetDefinitionEvaluator implements DataSetEvaluator {
         // next we evaluate the dataset on the left side of the join, and iterate over it, 
         // joining against the other dataset using the index we just created
         DataSet<?> left = Context.getService(DataSetDefinitionService.class).evaluate(dsd.getLeft(), evalContext);
+        DataSetColumn leftJoinColumn = findColumnDefinition(dsd.getLeft(), dsd.getJoinColumnOnLeft());
         for (Map<DataSetColumn, ?> row : left) {
-            Object joinValue = row.get(dsd.getJoinColumnOnRight());
+            Object joinValue = row.get(leftJoinColumn);
             if (joinValue == null)
                 continue;
             List<Map<DataSetColumn, ?>> rowsInOtherDataset = index.get(joinValue);
-            for (Map<DataSetColumn, ?> otherRow : rowsInOtherDataset) {
-                Map<DataSetColumn, Object> outputRow = new HashMap<DataSetColumn, Object>();
-                for (Map.Entry<DataSetColumn, ?> inLeft : row.entrySet()) {
-                    outputRow.put(prefixDataSetColumn(dsd.getPrefixForLeft(), inLeft.getKey()), inLeft.getValue());
+            if (rowsInOtherDataset != null) {
+                for (Map<DataSetColumn, ?> otherRow : rowsInOtherDataset) {
+                    Map<DataSetColumn, Object> outputRow = new HashMap<DataSetColumn, Object>();
+                    for (Map.Entry<DataSetColumn, ?> inLeft : row.entrySet()) {
+                        outputRow.put(prefixDataSetColumn(dsd.getPrefixForLeft(), inLeft.getKey()), inLeft.getValue());
+                    }
+                    for (Map.Entry<DataSetColumn, ?> inRight : otherRow.entrySet()) {
+                        outputRow.put(prefixDataSetColumn(dsd.getPrefixForRight(), inRight.getKey()), inRight.getValue());
+                    }
+                    ret.addRow(outputRow);
                 }
-                for (Map.Entry<DataSetColumn, ?> inRight : otherRow.entrySet()) {
-                    outputRow.put(prefixDataSetColumn(dsd.getPrefixForLeft(), inRight.getKey()), inRight.getValue());
-                }
-                ret.addRow(outputRow);
             }
         }
         
         return ret;
+    }
+
+    /**
+     * Helper method that inspects a dataSetDefinition, and finds the first DataSetColumn
+     * that has the given key. 
+     * 
+     * @param dataSet
+     * @param columnKey
+     * @return
+     */
+    private DataSetColumn findColumnDefinition(DataSetDefinition definition, String columnKey) {
+        for (DataSetColumn test : definition.getColumns()) {
+            if (test.getKey().equals(columnKey)) {
+                return test;
+            }
+        }
+        return null;
     }
 
     private DataSetColumn prefixDataSetColumn(String prefixForLeft, DataSetColumn c) {
