@@ -30,6 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CohortDefinitionService extends OpenmrsService {
 	
 	/**
+	 * @return a List of all CohortDefinition classes that are available for evaluation
+	 */
+	public List<Class<? extends CohortDefinition>> getCohortDefinitionTypes();
+	
+	/**
 	 * @param type the Class<CohortDefinition> to retrieve
 	 * @param id the id to retrieve for the given type
 	 * @return the CohortDefinition that matches the given type and id

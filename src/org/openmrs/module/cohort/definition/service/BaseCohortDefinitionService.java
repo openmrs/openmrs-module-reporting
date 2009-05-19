@@ -19,6 +19,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -54,6 +55,26 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 			throw new APIException("No CohortDefinitionPersister found for <" + definition + ">");
 		}
 		return persister;
+	}
+
+	/** 
+	 * @see CohortDefinitionService#getCohortDefinitionTypes()
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Class<? extends CohortDefinition>> getCohortDefinitionTypes() {
+		List<Class<? extends CohortDefinition>> ret = new ArrayList<Class<? extends CohortDefinition>>();
+		for (CohortDefinitionEvaluator e : HandlerUtil.getHandlersForType(CohortDefinitionEvaluator.class, null)) {
+			Handler handlerAnnotation = e.getClass().getAnnotation(Handler.class);
+			if (handlerAnnotation != null) {
+				Class<?>[] types = handlerAnnotation.supports();
+				if (types != null) {
+					for (Class<?> type : types) {
+						ret.add((Class<? extends CohortDefinition>) type);
+					}
+				}
+			}
+		}
+		return ret;
 	}
 
 	/** 

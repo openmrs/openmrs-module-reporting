@@ -44,6 +44,6 @@
 	<classpathentry kind="lib" path="lib-common/hsqldb-1.8.0.10.jar"/>
 	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.0.7888-dev.jar"/>
 	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.0.7888-dev.jar"/>
-	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.0.7888-dev.jar"/>
+	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.0.7888-dev.jar" sourcepath="/openmrs-trunk/src/web"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
