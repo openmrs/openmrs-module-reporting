@@ -33,9 +33,7 @@ import org.openmrs.module.dataset.column.SimpleDataSetColumn;
  * @see EncounterDataSet
  */
 public class EncounterDataSetDefinition extends BaseDataSetDefinition {
-	
-    private static final long serialVersionUID = -8381653953345505724L;
-	
+		
     // Constants 
 	public static final String ENCOUNTER_ID		= "encounter_id";
 	public static final String ENCOUNTER_TYPE 	= "encounter_type";

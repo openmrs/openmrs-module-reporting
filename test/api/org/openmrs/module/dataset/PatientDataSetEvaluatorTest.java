@@ -31,6 +31,10 @@ import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.report.ReportData;
+import org.openmrs.module.report.renderer.CsvReportRenderer;
+import org.openmrs.module.report.renderer.TsvReportRenderer;
+import org.openmrs.reporting.ReportObjectWrapper;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -48,7 +52,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	 */
 	@Override
     public Boolean useInMemoryDatabase() { 
-		return false; 
+		return true; 
 	}	
 	
 	/**
@@ -59,8 +63,8 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@Before
 	public void runBeforeEachTest() throws Exception {
 		if (useInMemoryDatabase()) { 
-			initializeInMemoryDatabase();		
-			executeDataSet("org/openmrs/include/standardTestDataset.xml");
+			initializeInMemoryDatabase();
+			executeDataSet("org/openmrs/module/dataset/include/LabEncounterDataSetTest.xml");
 		}
 		authenticate();
 		
@@ -69,44 +73,19 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void shouldEvaluateDataExportDataSet() throws Exception {
+	public void shouldEvaluatePatientDataSet() throws Exception {
 		EvaluationContext evalContext = new EvaluationContext();
-
-		
-		//CohortDefinition cohortDefinition = 
-		//	Context.getService(CohortDefinitionService.class).getAllPatientsCohortDefinition();
-		//Cohort baseCohort = 
-		//	Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evalContext);		
-		//evalContext.setBaseCohort(baseCohort);
 		
 		DataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
 		DataSet dataSet = 
 			Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
-	
-		StringBuilder datasetBuilder = new StringBuilder();
-		datasetBuilder.append("\n");
-		int columnCount = 0;
-		for (DataSetColumn column : dataSet.getDataSetDefinition().getColumns()) { 
-			datasetBuilder.append(column.getKey());
-			if (columnCount++ <= dataSet.getDataSetDefinition().getColumns().size())
-				datasetBuilder.append(",");
-		}
-		datasetBuilder.append("\n");
 
-		
-		for (Object rowSet : dataSet) { 
-			columnCount = 0;
-			Map<DataSetColumn, Object> columnSet = (Map<DataSetColumn, Object>) rowSet;			
-
-			for (DataSetColumn column : dataSet.getDataSetDefinition().getColumns()) {
-				datasetBuilder.append(column.getColumnName() + "=" + columnSet.get(column));
-				if (columnCount++ <= dataSet.getDataSetDefinition().getColumns().size()) {
-					datasetBuilder.append(",");
-				}
-			}			
-			datasetBuilder.append("\n");
-		}
-		log.info(datasetBuilder);
+        ReportData reportData = new ReportData();
+        Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
+        dataSets.put("patient", dataSet);
+        reportData.setDataSets(dataSets);
+        
+        new CsvReportRenderer().render(reportData, null, System.out);
 		
 	}
 	

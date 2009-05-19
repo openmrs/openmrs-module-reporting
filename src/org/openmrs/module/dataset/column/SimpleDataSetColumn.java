@@ -133,7 +133,7 @@ public class SimpleDataSetColumn implements DataSetColumn {
     public boolean equals(Object obj) {
    		if (obj instanceof DataSetColumn) {
    			DataSetColumn col = (DataSetColumn) obj;
-			if (StringUtils.equals(key, col.getKey())) {
+			if (StringUtils.equals(this.getKey(), col.getKey())) {
 				return true;
 			}
 		}
@@ -146,7 +146,7 @@ public class SimpleDataSetColumn implements DataSetColumn {
     @Override
     public int hashCode() {
 		int hash = 7;
-		hash = 31 * hash + (key == null ? 0 : key.hashCode());
+		hash = 31 * hash + (this.getKey() == null ? 0 : this.getKey().hashCode());
 		return hash;
     }
 
@@ -154,6 +154,6 @@ public class SimpleDataSetColumn implements DataSetColumn {
      * 
      */
 	public int compareTo(DataSetColumn other) {		
-		return this.columnName.compareTo(other.getColumnName());		
+		return this.getColumnName().compareTo(other.getColumnName());		
 	}
 }

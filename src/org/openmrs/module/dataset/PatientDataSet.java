@@ -20,9 +20,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.PatientState;
+import org.openmrs.PersonAttributeType;
+import org.openmrs.Program;
+import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -37,6 +44,9 @@ import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
  * @see EncounterDataSetDefinition
  */
 public class PatientDataSet implements DataSet<Object> {
+	
+	
+	protected Log log = LogFactory.getLog(this.getClass());
 	
 	private PatientDataSetDefinition definition;	
 	private EvaluationContext evaluationContext;	
@@ -86,6 +96,8 @@ public class PatientDataSet implements DataSet<Object> {
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), patient.getPersonName());
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER), patient.getGender());	
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.AGE), patient.getAge());			
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.HEALTH_CENTER), getCurrentHealthCenter(patient));			
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.TREATMENT_GROUP), getCurrentTreatmentGroup(patient));			
 			
 			return vals;
 		}
@@ -157,5 +169,66 @@ public class PatientDataSet implements DataSet<Object> {
 	public void setEvaluationContext(EvaluationContext evaluationContext) {
 		this.evaluationContext = evaluationContext;
 	}
+	
+	
+	
+	/**
+	 * TODO Refactor this -- we don't want logic like this in generic datasets.
+	 */
+	public String getCurrentTreatmentGroup(Patient patient) { 
+		try { 
+			
+			Program program = 
+				Context.getProgramWorkflowService().getProgramByName("HIV PROGRAM");
+			
+			List<PatientProgram> patientPrograms = 
+				Context.getProgramWorkflowService().getPatientPrograms(
+					patient, program, null, null, null, null, false);
+
+			// 9 = TREATMENT GROUP
+			ProgramWorkflow workflow = 
+				Context.getProgramWorkflowService().getWorkflow(9);
+			
+			if (!patientPrograms.isEmpty()) {
+				PatientState currentState = patientPrograms.get(0).getCurrentState(workflow);
+				return currentState.getState().getName();
+			}
+			else { 
+				return "None";
+			}
+			
+		} 
+		catch (Exception e) { 
+			log.info("Unable to retrieve patient's current treatment group: " + e.getMessage());
+		}
+		
+		return "Unknown";
+		
+	}
+	
+	/**
+	 * TODO Refactor this -- we don't want logic like this in generic datasets.
+	 * 
+	 */
+	public String getCurrentHealthCenter(Patient patient) { 
+		try { 
+			
+			// Health Center
+			PersonAttributeType attributeType = 
+				Context.getPersonService().getPersonAttributeType(7);
+			
+			Integer locationId = 
+				Integer.parseInt(patient.getAttribute(attributeType).getValue());
+			
+			return Context.getLocationService().getLocation(locationId).getName();
+			
+		} 
+		catch (Exception e) { 
+			log.info("Unable to retrieve patient's current health center: "  + e.getMessage());
+		}
+		
+		return "Unknown";
+		
+	}	
 	
 }

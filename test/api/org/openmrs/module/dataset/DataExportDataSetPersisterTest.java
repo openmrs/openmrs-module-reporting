@@ -116,14 +116,16 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 	@Test
 	public void shouldReturnNullIfNameDoesNotMatch() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		List<DataSetDefinition> def = persister.getDataSetDefinitions("Dataset definition that does not exist", true);
+		List<DataSetDefinition> def = 
+			persister.getDataSetDefinitions("Dataset definition that does not exist", true);
 		Assert.assertEquals(0, def.size()); 		
 	}
 	
 	@Test
 	public void shouldReturnDataSetDefinitionIfNameMatches() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		List<DataSetDefinition> def = persister.getDataSetDefinitions("HIV Program Data", true);
+		List<DataSetDefinition> def = 
+			persister.getDataSetDefinitions("HIV Program Data", true);
 		Assert.assertEquals(1, def.size()); 		
 	}
 

@@ -14,56 +14,63 @@
 package org.openmrs.module.dataset.definition.evaluator;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
-import org.openmrs.Patient;
+import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.PatientDataSet;
+import org.openmrs.module.dataset.LabEncounterDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.dataset.definition.LabEncounterDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
- * The logic that evaluates a {@link PatientDataSetDefinition} 
- * and produces an {@link PatientDataSet}
+ * The logic that evaluates a {@link LabOrderDataSetDefinition} 
+ * and produces an {@link LabOrderDataSet}
  * 
- * @see PatientDataSetDefinition
- * @see PatientDataSet
+ * @see LabOrderDataSetDefinition
+ * @see LabOrderDataSet
  */
-@Handler(supports={PatientDataSetDefinition.class})
-public class PatientDataSetEvaluator implements DataSetEvaluator {
+@Handler(supports={LabEncounterDataSetDefinition.class})
+public class LabEncounterDataSetEvaluator implements DataSetEvaluator {
 
-	/**
-	 * Logger 
-	 */
 	protected Log log = LogFactory.getLog(this.getClass());
 
 	/**
 	 * Public constructor
 	 */
-	public PatientDataSetEvaluator() { }
+	public LabEncounterDataSetEvaluator() { }	
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
 	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
-		PatientDataSetDefinition definition = (PatientDataSetDefinition) dataSetDefinition;
-
-		Cohort cohort = context.getBaseCohort();
-
-		// By default, get all patients
-		if (cohort == null) {
-			cohort = Context.getPatientSetService().getAllPatients();
+		if (context == null) {
+			context = new EvaluationContext();
 		}
-					
-		List<Patient> patients = 
-			Context.getPatientSetService().getPatients(cohort.getMemberIds());
-				
-		return new PatientDataSet(definition, context, patients);
+		
+		LabEncounterDataSetDefinition definition = 
+			(LabEncounterDataSetDefinition) dataSetDefinition;
+		
+		Cohort cohort = context.getBaseCohort();
+		
+		//List<Patient> patients = 
+		//	Context.getPatientSetService().getPatients(cohort.getMemberIds());		
+		//List<Order> orders = 
+		//	Context.getOrderService().getOrders(null, patients, null, null, null, null, null);
+		
+		Map<Integer, Encounter> encounterMap = 
+			Context.getPatientSetService().getEncounters(cohort);
+		
+		List<Encounter> encounters = new Vector<Encounter>(encounterMap.values());
+		
+		return new LabEncounterDataSet(definition, context, encounters);		
 	}
+
 }
