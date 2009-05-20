@@ -30,30 +30,28 @@ public class ManageCohortDefinitionController {
     
     @RequestMapping("/module/reporting/editCohortDefinition")
     public String editCohortDefinition(
-            @RequestParam("uuid") String uuid,
-            @RequestParam("type") Class<? extends CohortDefinition> type,
+    		@RequestParam(required=false, value="uuid") String uuid,
+            @RequestParam(required=false, value="type") Class<? extends CohortDefinition> type,
             @RequestParam(required=false, value="returnUrl") String returnUrl,
     		ModelMap model
     ) {
     	CohortDefinition cd = null;
-    	System.out.println("In controller");
     	if (StringUtils.hasText(uuid)) {
-    		System.out.println("UUID = " + uuid);
 	    	CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
 	    	cds.getCohortDefinitionByUuid(uuid);
     	}
-    	else {
-    		System.out.println("Type = " + type);
-    		try {
+    	else if (type != null) {
+     		try {
     			cd = type.newInstance();
     		}
     		catch (Exception e) {
-    			System.out.println("Exception: " + e);
     			throw new IllegalArgumentException("Unable to instantiate a CohortDefinition of type: " + type);
     		}
     	}
-    	System.out.println("Adding def: " + cd);
-    	model.addAttribute(cd);
+    	else {
+    		throw new IllegalArgumentException("You must supply either a uuid or a type");
+    	}
+     	model.addAttribute("cohortDefinition", cd);
         return "/module/reporting/editCohortDefinition";
     }
 }

@@ -6,15 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.evaluation.parameter.Parameterizable;
 
 /**
  * A utility class for working with Parameters and related classes.
  */
 public class ParameterUtil {
+	
+	private static Log log = LogFactory.getLog(ParameterUtil.class);
 	
 	/**
 	 * Utility method which takes in a Parameterizable instance 
@@ -43,6 +45,7 @@ public class ParameterUtil {
     	List<Parameter> ret = new ArrayList<Parameter>();
     	
     	if (classToCheck != null) {
+    		log.debug("In class: " + classToCheck.getName());
     		
     		// Iterate across all of the declared fields in the passed class
 	    	for (Field f : classToCheck.getDeclaredFields()) {
@@ -79,13 +82,15 @@ public class ParameterUtil {
     				// Construct a new Parameter and add it to the return list
     				Parameter p = new Parameter(name, label, f.getType(), defaultVal, ann.required());
     				ret.add(p);
-    				
-    				// If this class extends another class, then inspect all inherited field values as well
-    		    	Class superclass = classToCheck.getSuperclass();
-    		    	if (superclass != null) {
-    		    		ret.addAll(getAnnotatedParameters(superclass, classInstance));
-    		    	}
+    				log.debug("Adding parameter: " + p);
     			}
+	    	}
+	    	
+			// If this class extends another class, then inspect all inherited field values as well
+	    	Class superclass = classToCheck.getSuperclass();
+	    	if (superclass != null) {
+	    		log.debug("Checking superclass: " + superclass);
+	    		ret.addAll(getAnnotatedParameters(superclass, classInstance));
 	    	}
     	}
     	return ret;

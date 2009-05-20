@@ -7,7 +7,13 @@ CohortDefinitions<br/>
 	</c:forEach>
 </ul>
 <hr/>
-Types<br/>
-<c:forEach items="${types}" var="type">
-	${type}<br/>
-</c:forEach>
+<form method="post" action="editCohortDefinition.form">
+	New:
+	<select name="type">
+		<option value="">&nbsp;</option>
+		<c:forEach items="${types}" var="type">
+			<option value="${type.name}">${type.name}</option>
+		</c:forEach>
+	</select>
+	<input type="submit" value="Create"/>
+</form>

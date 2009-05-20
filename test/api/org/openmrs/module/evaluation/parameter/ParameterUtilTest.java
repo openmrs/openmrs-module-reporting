@@ -11,35 +11,43 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.evaluation;
+package org.openmrs.module.evaluation.parameter;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.PatientSetService.BooleanOperator;
 import org.openmrs.module.cohort.definition.CompoundCohortDefinition;
-import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.cohort.definition.DrugOrderCohortDefinition;
 
 /**
- * Contains a variety of Parameter-related tests
+ * Tests the ParameterUtil methods
  */
-public class ParameterTest {
+public class ParameterUtilTest {
 	
 	/**
-	 * Tests that fields annotated as {@link Parameterized} are added as Parameters to a 
-	 * Parameterizable instance
+	 * Tests that fields annotated as {@link Param} are added as Parameters
 	 */
 	@Test
-	public void shouldHaveAllParameterizedFieldsAsParameters() throws Exception {		
+	public void shouldHaveAllAnnotatedFieldsAsParameters() throws Exception {		
 		CompoundCohortDefinition def = new CompoundCohortDefinition();
-		System.out.println(def.getAvailableParameters());
 		Assert.assertEquals(2, def.getAvailableParameters().size());
 		for (Parameter p : def.getAvailableParameters()) {
 			if (p.getName().equals("operator")) {
-				Assert.assertEquals(BooleanOperator.OR, p.getDefaultValue());
+				Assert.assertEquals(BooleanOperator.AND, p.getDefaultValue());
 			}
 			else if (p.getName().equals("definitions")) {
 				Assert.assertTrue(p.isRequired());
 			}
 		}
+	}
+	
+	/**
+	 * Tests that fields annotated as {@link Param} are added as Parameters from superclasses
+	 */
+	@Test
+	public void shouldHaveAllInheritedAnnotatedFieldsAsParameters() throws Exception {		
+		DrugOrderCohortDefinition def = new DrugOrderCohortDefinition();
+		System.out.println(def.getAvailableParameters());
+		Assert.assertEquals(9, def.getAvailableParameters().size());
 	}
 }

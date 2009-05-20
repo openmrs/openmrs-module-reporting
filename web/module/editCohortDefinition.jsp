@@ -3,9 +3,12 @@
 <h4>Create / Edit Cohort Definition</h4>
 <hr/>
 
-${cohortDefinition.id}
-${cohortDefinition.name}
-${cohortDefinition.description}
-<c:forEach items="${cohortDefinition.availableParameters}" var="p">
-	${p.name} ${p.defaultValue} (${p.clazz})
-</c:forEach>
+Id: ${cohortDefinition.id}<br/>
+Name: ${cohortDefinition.name}<br/>
+Description: ${cohortDefinition.description}<br/>
+Available Parameters:<br/>
+<ul>
+	<c:forEach items="${cohortDefinition.availableParameters}" var="p">
+		<li>${p.name} ${p.defaultValue} (${p.clazz})</li>
+	</c:forEach>
+</ul>
