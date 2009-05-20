@@ -78,6 +78,53 @@
 			<filterset refid="variables.to.replace" />
 		</copy>
 		
+		<delete>
+			<fileset dir="build">
+	    		<include name="config14x.xml"/>
+			</fileset>
+		</delete>
+		
+		<!-- Copy module web data -->
+		<copy todir="build/web/module/">
+			<fileset dir="web/module/" includes="**/*" excludes="resources/**/*" />
+			<filterset refid="variables.to.replace" />
+		</copy>
+		
+		<!-- Copy the /web/resources folder separately so that image files are not corrupted --> 
+		<copy todir="build/web/module/">
+			<fileset dir="web/module/" includes="resources/**/*" />
+		</copy>
+		
+		<!-- Copy lib folder -->
+		<!-- (lib should only contain this module's required -->
+		<!-- libraries that OpenMRS doesn't contain already) -->
+		<copy todir="build/lib" failonerror="false">
+			<fileset dir="lib" includes="**/*" />
+		</copy>
+		
+		<!-- Create distributable jar file -->
+		<jar destfile="dist/${module.id}-${module.version}.omod">
+			<fileset dir="build" includes="**/*" />
+		</jar>
+	</target>
+	
+	<target name="package-module-14x" depends="compile-module" description="Packages module into jar file">
+		<mkdir dir="dist" />
+		
+		<!-- Copy module metadata -->
+		<copy todir="build/">
+			<fileset dir="metadata/" includes="**/*" />
+			<filterset refid="variables.to.replace" />
+		</copy>
+		
+		<delete>
+			<fileset dir="build">
+	    		<include name="config.xml"/>
+			</fileset>
+		</delete>
+
+		<rename dest="build/config.xml" src="build/config14x.xml"/>
+		
 		<!-- Copy module web data -->
 		<copy todir="build/web/module/">
 			<fileset dir="web/module/" includes="**/*" excludes="resources/**/*" />
@@ -106,13 +153,6 @@
 		<property environment="env"/>
 		<copy todir="/usr/emr/java/apache-tomcat-6.0.16/webapps/openmrs/WEB-INF/view/module/${module.id}">
 			<fileset dir="web/module" includes="**/*" />
-		</copy>
-	</target>
-	
-	<target name="deploy-module" depends="package-module">
-		<property environment="env"/>
-		<copy todir="/home/mseaton/.OpenMRS/modules">
-			<fileset dir="dist" includes="*.omod" />
 		</copy>
 	</target>
 	
