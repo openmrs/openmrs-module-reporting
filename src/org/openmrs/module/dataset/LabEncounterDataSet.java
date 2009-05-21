@@ -14,6 +14,9 @@
 package org.openmrs.module.dataset;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -170,23 +173,31 @@ public class LabEncounterDataSet implements DataSet<Object> {
 	 * currently returns the first observation found.  I'm assuming that the Dao 
 	 * orders by date, but need to test this out.  
 	 * 
-	 * TODO Cells values = last obs for that patient & date of that concept
 	 * TODO Needs to be refactored and moved to a more appropriate place (maybe the evaluator).
-
+	 * TODO Need to implement a more elegant solution for returning the most recent observation
+	 * 
 	 * @param encounter	
 	 * @param concept	the concept to find 
 	 * @return	the first observation with the given concept
 	 */
 	public Obs findObsByConcept(Encounter encounter, Concept concept) {
+		Obs obs = null;
 		log.info("Encounter " + encounter.getEncounterId() + " " + encounter.getObs());
-		for (Obs obs : encounter.getObs()) { 
+		for (Obs current : encounter.getObs()) { 
 			// TODO This only works when comparing conceptId, not concepts
-			if (obs.getConcept().getConceptId().equals(concept.getConceptId())) { 
-				return obs;
+			if (current.getConcept().getConceptId().equals(concept.getConceptId())) { 	
+				// Just making sure this is the most recent observation
+				//   if obs is null then we know temp is the first in the list
+				//   otherwise which check which observation came first (based on obsdatetime) 
+				if (obs == null || obs.getObsDatetime().compareTo(current.getObsDatetime()) < 0) { 
+					obs = current;
+				}
 			}
 		}
-		return new Obs();
-	}
-	
+		return obs != null ? obs : new Obs();
+
+	}	
 		
 }
+
+
