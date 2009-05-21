@@ -2,6 +2,7 @@ package org.openmrs.module.dataset.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.SimpleDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetWrappingDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -18,6 +19,11 @@ public class DataSetWrappingDataSetEvaluator implements DataSetEvaluator {
 	 */
     public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
         DataSetWrappingDataSetDefinition def = (DataSetWrappingDataSetDefinition) dataSetDefinition;
-        return def.getData();
+        DataSet<?> data = def.getData();
+        if (data instanceof SimpleDataSet) {
+            ((SimpleDataSet) data).setDataSetDefinition(def);
+            ((SimpleDataSet) data).setEvaluationContext(evalContext);
+        }
+        return data;
     }
 }
