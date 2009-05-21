@@ -46,14 +46,22 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
      * @see CohortDefinitionPersister#getCohortDefinition(java.lang.Integer)
      */
     public CohortDefinition getCohortDefinition(Integer id) {
-    	return new StaticCohortDefinition(Context.getCohortService().getCohort(id));
+    	Cohort c = Context.getCohortService().getCohort(id);
+    	if (c != null) {
+    		return new StaticCohortDefinition(c);
+    	}
+    	return null;
     }
     
 	/**
      * @see CohortDefinitionPersister#getCohortDefinitionByUuid(java.lang.String)
      */
     public CohortDefinition getCohortDefinitionByUuid(String uuid) {
-    	return new StaticCohortDefinition(Context.getCohortService().getCohortByUuid(uuid));
+    	Cohort c = Context.getCohortService().getCohortByUuid(uuid);
+    	if (c != null) {
+    		return new StaticCohortDefinition(c);
+    	}
+    	return null;
     }
     
 	/**

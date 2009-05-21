@@ -29,6 +29,23 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
 @Handler(supports={CohortDefinition.class})
 public class SerializedCohortDefinitionPersister implements CohortDefinitionPersister {
 
+	private static SerializedCohortDefinitionPersister instance = null;
+	
+    //****************
+    // Constructor
+    //****************
+	private SerializedCohortDefinitionPersister() { }
+	
+    //****************
+    // Factory Methods
+    //****************
+	public static SerializedCohortDefinitionPersister getInstance() {
+		if (instance == null) {
+			instance = new SerializedCohortDefinitionPersister();
+		}
+		return instance;
+	}
+	
     //****************
     // Properties
     //****************

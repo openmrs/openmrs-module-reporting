@@ -3,11 +3,13 @@
 CohortDefinitions<br/>
 <ul>
 	<c:forEach items="${cohortDefinitions}" var="cd">
-		<li>${cd.name}</li>
+		<li>
+			<a href="editCohortDefinition.form?uuid=${cd.uuid}&type=${cd.class.name}">${cd.name}</a>
+		</li>
 	</c:forEach>
 </ul>
 <hr/>
-<form method="post" action="editCohortDefinition.form">
+<form method="get" action="editCohortDefinition.form">
 	New:
 	<select name="type">
 		<option value="">&nbsp;</option>
