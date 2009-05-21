@@ -60,7 +60,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		if (cohort == null) {
 			cohort = Context.getPatientSetService().getAllPatients();
 		}
-					
+		log.info("cohort: " + cohort.size());
 		List<Patient> patients = 
 			Context.getPatientSetService().getPatients(cohort.getMemberIds());
 				

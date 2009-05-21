@@ -38,7 +38,7 @@ public class ConceptDataSetColumn implements DataSetColumn {
      */
     public String getKey() {
     	return concept.getName() != null ?
-    			concept.getName().getName() :
+    			concept.getName().getName() + "_" + concept.getConceptId() :
     				"" + concept.getConceptId();
     }
 	
@@ -47,7 +47,7 @@ public class ConceptDataSetColumn implements DataSetColumn {
 	 */
 	public String getColumnName() {
     	return concept.getName() != null ?
-    			concept.getName().getName() :
+    			concept.getName().getName() + "_" + concept.getConceptId() :
     				"" + concept.getConceptId();
 	}
 
@@ -109,7 +109,7 @@ public class ConceptDataSetColumn implements DataSetColumn {
     }
 
     /**
-     * 
+     * Compares columns by their name.  
      */
 	public int compareTo(DataSetColumn other) {		
 		return this.getColumnName().compareTo(other.getColumnName());		

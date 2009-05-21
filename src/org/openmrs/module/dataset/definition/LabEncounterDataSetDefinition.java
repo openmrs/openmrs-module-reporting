@@ -44,8 +44,8 @@ public class LabEncounterDataSetDefinition extends BaseDataSetDefinition {
 	
 	
     // Constants 
-	public static final String ENCOUNTER_ID		= "encounter_id";
 	public static final String PATIENT_ID		= "patient_id";
+	public static final String ENCOUNTER_ID		= "encounter_id";
 	public static final String LAB_ORDER_ID 	= "lab_order_id";
 	public static final String LAB_ORDER_DATE 	= "lab_order_date";
 	public static final String LAB_RESULT_ID 	= "lab_result_id";
@@ -67,9 +67,9 @@ public class LabEncounterDataSetDefinition extends BaseDataSetDefinition {
 	
 		
 	private static String [] defaultColumnKeys = { 		
-		ENCOUNTER_ID, 
 		PATIENT_ID, 
-		LAB_ORDER_ID,
+		ENCOUNTER_ID, 
+		//LAB_ORDER_ID,
 		LAB_ORDER_DATE,
 		
 	};
@@ -77,7 +77,7 @@ public class LabEncounterDataSetDefinition extends BaseDataSetDefinition {
 	private static Class [] defaultColumnDatatypes = { 
 		Integer.class, 
 		Integer.class, 
-		Integer.class, 
+		//Integer.class, 
 		Date.class, 
 	};
 		

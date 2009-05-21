@@ -65,6 +65,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		if (useInMemoryDatabase()) { 
 			initializeInMemoryDatabase();
 			executeDataSet("org/openmrs/module/dataset/include/LabEncounterDataSetTest.xml");
+			//executeDataSet("org/openmrs/module/dataset/include/LabEncounterDataSet-concepts.xml");
 		}
 		authenticate();
 		

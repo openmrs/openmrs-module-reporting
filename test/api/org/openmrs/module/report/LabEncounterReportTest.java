@@ -48,7 +48,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  */
 public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
 	
-	private static Log log = LogFactory.getLog(LabEncounterReportTest.class);
+	private Log log = LogFactory.getLog(getClass());
 	
 	
 	/**

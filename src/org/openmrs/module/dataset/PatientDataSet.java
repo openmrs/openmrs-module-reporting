@@ -92,12 +92,18 @@ public class PatientDataSet implements DataSet<Object> {
 			
 			// Build the dataset row
 			// TODO I'm not in love with the this approach, but we'll refactor later if we need to
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_ID), patient.getPatientId());
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), patient.getPersonName());
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER), patient.getGender());	
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.AGE), patient.getAge());			
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.HEALTH_CENTER), getCurrentHealthCenter(patient));			
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.TREATMENT_GROUP), getCurrentTreatmentGroup(patient));			
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_ID), 
+					patient.getPatientId());
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), 
+					patient.getPersonName());
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER), 
+					patient.getGender());	
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.AGE), 
+					patient.getAge());			
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.HEALTH_CENTER), 
+					getCurrentHealthCenter(patient));			
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.TREATMENT_GROUP), 
+					getCurrentTreatmentGroup(patient));			
 			
 			return vals;
 		}
@@ -173,11 +179,16 @@ public class PatientDataSet implements DataSet<Object> {
 	
 	
 	/**
+	 * Gets the current treatment group for the given patient.
+	 * 
 	 * TODO Refactor this -- we don't want logic like this in generic datasets.
 	 */
 	public String getCurrentTreatmentGroup(Patient patient) { 
+
+		String treatmentGroup = "NONE";
+		
 		try { 
-			
+
 			Program program = 
 				Context.getProgramWorkflowService().getProgramByName("HIV PROGRAM");
 			
@@ -185,28 +196,37 @@ public class PatientDataSet implements DataSet<Object> {
 				Context.getProgramWorkflowService().getPatientPrograms(
 					patient, program, null, null, null, null, false);
 
-			// 9 = TREATMENT GROUP
 			ProgramWorkflow workflow = 
-				Context.getProgramWorkflowService().getWorkflow(9);
+				program.getWorkflowByName("ANTIRETROVIRAL TREATMENT GROUP");
 			
 			if (!patientPrograms.isEmpty()) {
-				PatientState currentState = patientPrograms.get(0).getCurrentState(workflow);
-				return currentState.getState().getName();
+				
+				PatientState currentState = 
+					patientPrograms.get(0).getCurrentState(workflow);
+				
+				// Assumes that a concept and name are associated with the state
+				if (currentState != null && currentState.getActive()) {
+					treatmentGroup = "ACTIVE: ";
+					treatmentGroup += currentState.getState().getConcept().getName().getName();
+				} else {
+					treatmentGroup = "INACTIVE";
+				}
+				
+			} else { 
+				treatmentGroup = "NOT ENROLLED";
 			}
-			else { 
-				return "None";
-			}
-			
 		} 
 		catch (Exception e) { 
-			log.info("Unable to retrieve patient's current treatment group: " + e.getMessage());
+			log.info("Unable to retrieve current treatment group " + patient.getPatientId() + ": " + e.getCause() + " : " + e.getMessage() + " ");
 		}
 		
-		return "Unknown";
+		return treatmentGroup;
 		
 	}
 	
 	/**
+	 * Gets the current health center for the given patient.
+	 * 
 	 * TODO Refactor this -- we don't want logic like this in generic datasets.
 	 * 
 	 */
@@ -224,7 +244,7 @@ public class PatientDataSet implements DataSet<Object> {
 			
 		} 
 		catch (Exception e) { 
-			log.info("Unable to retrieve patient's current health center: "  + e.getMessage());
+			log.info("Unable to retrieve current health center for patient " + patient.getPatientId() + ":"  + e.getMessage());
 		}
 		
 		return "Unknown";

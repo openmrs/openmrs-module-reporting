@@ -66,20 +66,33 @@ public class CreateInitialDataSet extends BaseModuleContextSensitiveTest {
 		QueryDataSet initialDataSet = new QueryDataSet(connection);
 	
 		final String PATIENTS = "20447, 20807, 14943";
-		final String CONCEPTS = "21, 300, 657, 678, 679, 729, 730, 825, 851, 1015, 1016, 1017, 1018, 1019, 1021, 3646, 3059, 3060, 5497";
-		final String ENCOUNTERS = "20447, 20807, 14943";
+		final String ENCOUNTERS = "";
 		final String ORDER_TYPES = "4";
 		final String USERS = "8, 16461, 18804";
-				
+		//final String CONCEPTS = "21, 300, 657, 678, 679, 729, 730, 825, 851, 1015, 1016, 1017, 1018, 1019, 1021, 3646, 3059, 3060, 5497";
+
+		// These are concepts for the programs, workflows, and states
+		//final String CONCEPTS = "843, 1067, 1107, 1377, 1432, 1482, 1483, 1484, 1485, 1490, 1565, 1567, 1568, 1574, 1577, 1579, 1585, 1587, 1648, 1708, 1710, 1713, 1714, 1742, 1743, 1744, 1746, 1845, 1846, 1951, 2001, 2458, 2842, 3490, 3499, 3500, 3501, 3502, 3503, 3504, 3505, 3506, 3507, 3508, 3568, 3591, 3594, 3626, 3627, 3643, 3644";		
+		final String CONCEPTS = "2453";
+		
+		//initialDataSet.addTable("concept", "SELECT distinct concept.* FROM concept, program_workflow_state where program_workflow_state.concept_id = concept.concept_id;");
+		//initialDataSet.addTable("concept_answer", "SELECT distinct concept_answer.* FROM concept_answer, program_workflow_state where program_workflow_state.concept_id = concept_answer.concept_id;");
+		//initialDataSet.addTable("concept_name", "SELECT distinct concept_name.* FROM concept_name, program_workflow_state where program_workflow_state.concept_id = concept_name.concept_id;");
+
+		
+		initialDataSet.addTable("concept", "SELECT * FROM concept");
+		initialDataSet.addTable("concept_name", "SELECT * FROM concept_name");
+		
+		/*
 		// Static data
 		initialDataSet.addTable("concept", "SELECT * FROM concept where concept_id in (" + CONCEPTS + ");");
 		initialDataSet.addTable("concept_answer", "SELECT * FROM concept_answer where concept_id in (" + CONCEPTS + ");");
-		initialDataSet.addTable("concept_class", "SELECT * FROM concept_class");
-		initialDataSet.addTable("concept_datatype", "SELECT * FROM concept_datatype");
 		initialDataSet.addTable("concept_name", "SELECT * FROM concept_name where concept_id in (" + CONCEPTS + ");");
 		initialDataSet.addTable("concept_numeric", "SELECT * FROM concept_numeric where concept_id in (" + CONCEPTS + ");");
-		initialDataSet.addTable("concept_set", "SELECT * FROM concept_set where concept_set in (" + CONCEPTS + ");");
 		initialDataSet.addTable("concept_synonym", "SELECT * FROM concept_synonym where concept_id in (" + CONCEPTS + ");");
+		initialDataSet.addTable("concept_class", "SELECT * FROM concept_class");
+		initialDataSet.addTable("concept_datatype", "SELECT * FROM concept_datatype");
+		initialDataSet.addTable("concept_set", "SELECT * FROM concept_set where concept_set in (" + CONCEPTS + ");");
 		initialDataSet.addTable("drug", "SELECT * FROM drug");
 		//initialDataSet.addTable("drug_order", "SELECT * FROM drug_order");
 		//initialDataSet.addTable("encounter", "SELECT * FROM encounter");
@@ -109,8 +122,10 @@ public class CreateInitialDataSet extends BaseModuleContextSensitiveTest {
 		initialDataSet.addTable("role_role", "SELECT * FROM role_role");
 		initialDataSet.addTable("user_role", "SELECT * FROM user_role");
 		//initialDataSet.addTable("users", "SELECT * FROM users");
+		*/
 		
 		// Actual data
+		/*
 		initialDataSet.addTable("orders", "select * FROM orders where order_type_id in (" + ORDER_TYPES + ");");
 		initialDataSet.addTable("encounter", "select * FROM encounter where encounter_id in (" + ENCOUNTERS + ");");		
 		initialDataSet.addTable("patient", "select * FROM patient where patient_id in (" + PATIENTS + ");");
@@ -123,9 +138,9 @@ public class CreateInitialDataSet extends BaseModuleContextSensitiveTest {
 		initialDataSet.addTable("patient_state", "SELECT patient_state.* FROM patient_state, patient_program where patient_state.patient_program_id = patient_program.patient_program_id and patient_program.patient_id in (" + PATIENTS + ");");
 		initialDataSet.addTable("obs", "select * FROM obs where encounter_id in (" + ENCOUNTERS + ");");
 		initialDataSet.addTable("users", "SELECT * FROM users where user_id in (" + USERS + ");");
-		
+		*/
 
-		FlatXmlDataSet.write(initialDataSet, new FileOutputStream("test/api/org/openmrs/module/report/include/LabOrderDataSetTest.xml"));
+		FlatXmlDataSet.write(initialDataSet, new FileOutputStream("test/api/org/openmrs/module/dataset/include/test.xml"));
 		
 		// full database export
 		//IDataSet fullDataSet = connection.createDataSet();

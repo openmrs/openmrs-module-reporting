@@ -1,5 +1,494 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
+  <concept concept_id="2453" retired="false" datatype_id="4" class_id="11" is_set="false" creator="7" date_created="2007-06-25 16:44:09.0" version="" changed_by="7" date_changed="2007-06-25 16:44:09.0"/>
+  <concept_name concept_id="2453" name="GROUP 39" locale="en" creator="7" date_created="2007-06-25 16:44:09.0" concept_name_id="2637" voided="false"/>
+
+  <concept concept_id="843" retired="false" datatype_id="4" class_id="5" is_set="false" creator="2" date_created="2004-05-04 00:00:00.0" version="" changed_by="7" date_changed="2006-10-30 15:38:37.0"/>
+  <concept concept_id="1067" retired="false" datatype_id="4" class_id="11" is_set="false" creator="15878" date_created="2005-01-06 00:00:00.0" version="" date_changed="2009-02-05 15:56:14.0"/>
+  <concept concept_id="1107" retired="false" datatype_id="4" class_id="11" is_set="false" creator="2" date_created="2005-01-12 00:00:00.0" version="" changed_by="1" date_changed="2006-06-07 17:26:58.0"/>
+  <concept concept_id="1377" retired="false" datatype_id="3" class_id="7" is_set="false" creator="6" date_created="2006-06-14 19:10:48.0" version="" changed_by="2053" date_changed="2007-08-14 16:36:31.0"/>
+  <concept concept_id="1432" retired="false" datatype_id="4" class_id="11" is_set="false" creator="9" date_created="2006-07-25 09:27:21.0" version="" changed_by="9" date_changed="2006-07-25 09:27:21.0"/>
+  <concept concept_id="1482" retired="false" datatype_id="4" class_id="16" is_set="false" creator="6" date_created="2006-08-16 02:05:34.0" version="" changed_by="6" date_changed="2006-09-27 20:33:54.0"/>
+  <concept concept_id="1483" retired="false" datatype_id="4" class_id="18" is_set="false" creator="6" date_created="2006-09-27 20:55:43.0" version="1.0" changed_by="1128" date_changed="2006-12-18 12:28:12.0"/>
+  <concept concept_id="1484" retired="false" datatype_id="4" class_id="17" is_set="false" creator="6" date_created="2006-08-16 02:07:11.0" version="" changed_by="6" date_changed="2006-08-16 02:07:11.0"/>
+  <concept concept_id="1485" retired="false" datatype_id="4" class_id="18" is_set="false" creator="12" date_created="2006-09-26 17:12:16.0" version="" changed_by="7" date_changed="2006-10-27 15:00:50.0"/>
+  <concept concept_id="1487" retired="true" datatype_id="4" class_id="18" is_set="false" creator="6" date_created="2006-08-16 17:16:29.0" version="" changed_by="7" date_changed="2006-12-06 20:16:20.0"/>
+  <concept concept_id="1488" retired="true" datatype_id="4" class_id="18" is_set="false" creator="6" date_created="2006-08-16 17:20:08.0" version="" changed_by="1128" date_changed="2006-12-18 12:52:36.0"/>
+  <concept concept_id="1489" retired="true" datatype_id="4" class_id="18" is_set="false" creator="6" date_created="2006-08-16 17:20:37.0" version="" changed_by="7" date_changed="2006-12-18 11:28:35.0"/>
+  <concept concept_id="1490" retired="false" datatype_id="4" class_id="18" is_set="false" creator="6" date_created="2006-08-16 17:21:24.0" version="" changed_by="12" date_changed="2006-09-26 16:46:27.0"/>
+  <concept concept_id="1565" retired="false" datatype_id="4" class_id="5" is_set="false" creator="15878" date_created="2006-08-31 15:59:01.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="1567" retired="false" datatype_id="4" class_id="5" is_set="false" creator="15878" date_created="2006-08-31 16:01:55.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="1568" retired="false" datatype_id="2" class_id="7" is_set="false" creator="9" date_created="2006-08-31 17:05:20.0" version="" changed_by="2053" date_changed="2007-09-26 09:21:34.0"/>
+  <concept concept_id="1574" retired="false" datatype_id="4" class_id="18" is_set="false" creator="5" date_created="2006-08-31 23:12:50.0" version="1.0" changed_by="1128" date_changed="2006-12-18 12:23:33.0"/>
+  <concept concept_id="1577" retired="false" datatype_id="4" class_id="18" is_set="false" creator="5" date_created="2006-08-31 23:20:09.0" version="" changed_by="7" date_changed="2007-10-31 08:57:19.0"/>
+  <concept concept_id="1579" retired="false" datatype_id="4" class_id="18" is_set="false" creator="5" date_created="2006-08-31 23:22:59.0" version="" changed_by="5" date_changed="2006-08-31 23:23:07.0"/>
+  <concept concept_id="1585" retired="false" datatype_id="4" class_id="5" is_set="false" creator="9" date_created="2006-09-01 10:11:24.0" version="" changed_by="7" date_changed="2006-11-21 20:30:47.0"/>
+  <concept concept_id="1587" retired="false" datatype_id="4" class_id="5" is_set="false" creator="9" date_created="2006-09-01 10:14:23.0" version="" changed_by="9" date_changed="2006-09-01 10:14:23.0"/>
+  <concept concept_id="1648" retired="false" datatype_id="4" class_id="11" is_set="false" creator="7" date_created="2006-09-18 09:00:46.0" version="" changed_by="7" date_changed="2006-11-22 20:38:27.0"/>
+  <concept concept_id="1708" retired="false" datatype_id="4" class_id="18" is_set="false" creator="12" date_created="2006-09-26 17:14:07.0" version="" changed_by="6" date_changed="2006-09-27 20:42:11.0"/>
+  <concept concept_id="1710" retired="false" datatype_id="4" class_id="18" is_set="false" creator="12" date_created="2006-09-26 17:41:47.0" version="" changed_by="6" date_changed="2006-09-27 20:46:24.0"/>
+  <concept concept_id="1713" retired="false" datatype_id="4" class_id="18" is_set="false" creator="6" date_created="2006-09-27 21:15:54.0" version="" changed_by="6" date_changed="2006-09-27 21:16:26.0"/>
+  <concept concept_id="1714" retired="false" datatype_id="4" class_id="18" is_set="false" creator="6" date_created="2006-09-27 22:02:57.0" version="" changed_by="6" date_changed="2006-09-27 22:02:57.0"/>
+  <concept concept_id="1742" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2006-10-27 11:39:50.0" version="" changed_by="7" date_changed="2006-12-18 11:21:26.0"/>
+  <concept concept_id="1743" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2006-10-27 11:41:10.0" version="" changed_by="7" date_changed="2006-12-18 11:53:02.0"/>
+  <concept concept_id="1744" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15878" date_created="2006-10-27 10:42:00.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="1746" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2006-10-27 11:43:56.0" version="" changed_by="7" date_changed="2006-12-06 19:00:52.0"/>
+  <concept concept_id="1845" retired="false" datatype_id="4" class_id="16" is_set="false" creator="15878" date_created="2007-03-12 20:44:57.0" version="" date_changed="2009-02-24 09:30:24.0"/>
+  <concept concept_id="1846" retired="false" datatype_id="4" class_id="17" is_set="false" creator="1128" date_created="2007-03-12 21:47:37.0" version="" changed_by="1128" date_changed="2007-03-12 21:47:37.0"/>
+  <concept concept_id="1847" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-03-12 21:54:46.0" version="" changed_by="1128" date_changed="2007-03-12 21:54:46.0"/>
+  <concept concept_id="1848" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-03-12 21:55:47.0" version="" changed_by="1128" date_changed="2007-03-12 21:55:47.0"/>
+  <concept concept_id="1849" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-03-12 21:58:43.0" version="" changed_by="1128" date_changed="2007-03-12 21:58:43.0"/>
+  <concept concept_id="1850" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-03-28 10:38:08.0" version="" changed_by="1128" date_changed="2007-03-28 10:38:08.0"/>
+  <concept concept_id="1851" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-03-28 11:18:48.0" version="" changed_by="1128" date_changed="2007-03-28 11:18:48.0"/>
+  <concept concept_id="1852" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-03-28 11:20:24.0" version="" changed_by="1128" date_changed="2007-03-28 11:20:24.0"/>
+  <concept concept_id="1897" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-04-30 22:07:54.0" version="" changed_by="2053" date_changed="2007-04-30 22:07:54.0"/>
+  <concept concept_id="1898" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-04-30 22:08:28.0" version="" changed_by="2053" date_changed="2007-04-30 22:08:28.0"/>
+  <concept concept_id="1899" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-04-30 22:08:59.0" version="" changed_by="2053" date_changed="2007-04-30 22:08:59.0"/>
+  <concept concept_id="1900" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-04-30 22:12:13.0" version="" changed_by="2053" date_changed="2007-04-30 22:13:15.0"/>
+  <concept concept_id="1901" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-04-30 22:14:07.0" version="" changed_by="2053" date_changed="2007-04-30 22:14:07.0"/>
+  <concept concept_id="1902" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-04-30 22:15:06.0" version="" changed_by="2053" date_changed="2007-04-30 22:15:06.0"/>
+  <concept concept_id="1903" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-04-30 22:16:01.0" version="" changed_by="2053" date_changed="2007-04-30 22:16:01.0"/>
+  <concept concept_id="1904" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-04-30 22:16:44.0" version="" changed_by="2053" date_changed="2007-04-30 22:16:44.0"/>
+  <concept concept_id="1935" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-05-01 13:25:28.0" version="" changed_by="2053" date_changed="2007-05-01 13:25:28.0"/>
+  <concept concept_id="1936" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-05-01 13:26:31.0" version="" changed_by="2053" date_changed="2007-05-01 13:26:31.0"/>
+  <concept concept_id="1937" retired="false" datatype_id="4" class_id="18" is_set="false" creator="2053" date_created="2007-05-01 13:27:20.0" version="" changed_by="2053" date_changed="2007-05-01 13:28:17.0"/>
+  <concept concept_id="1938" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:28:05.0" version="" changed_by="1128" date_changed="2007-05-03 09:28:05.0"/>
+  <concept concept_id="1939" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:28:08.0" version="" changed_by="1128" date_changed="2007-05-03 09:28:08.0"/>
+  <concept concept_id="1940" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:28:13.0" version="" changed_by="1128" date_changed="2007-05-03 09:28:13.0"/>
+  <concept concept_id="1941" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:28:16.0" version="" changed_by="1128" date_changed="2007-05-03 09:28:16.0"/>
+  <concept concept_id="1942" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:28:29.0" version="" changed_by="1128" date_changed="2007-05-03 09:28:29.0"/>
+  <concept concept_id="1943" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:28:35.0" version="" changed_by="1128" date_changed="2007-05-03 09:28:35.0"/>
+  <concept concept_id="1944" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:39:26.0" version="" changed_by="1128" date_changed="2007-05-03 09:39:26.0"/>
+  <concept concept_id="1945" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:29:05.0" version="" changed_by="1128" date_changed="2007-05-03 09:29:05.0"/>
+  <concept concept_id="1946" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:42:01.0" version="" changed_by="1128" date_changed="2007-05-03 09:42:01.0"/>
+  <concept concept_id="1947" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:30:01.0" version="" changed_by="1128" date_changed="2007-05-03 09:30:01.0"/>
+  <concept concept_id="1948" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:30:03.0" version="" changed_by="1128" date_changed="2007-05-03 09:30:03.0"/>
+  <concept concept_id="1949" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:42:03.0" version="" changed_by="1128" date_changed="2007-05-03 09:42:03.0"/>
+  <concept concept_id="1950" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 10:00:01.0" version="" changed_by="1128" date_changed="2007-05-03 10:00:01.0"/>
+  <concept concept_id="1951" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:36.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:36.0"/>
+  <concept concept_id="1952" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:39.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:39.0"/>
+  <concept concept_id="1953" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:41.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:41.0"/>
+  <concept concept_id="1954" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:43.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:43.0"/>
+  <concept concept_id="1955" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:45.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:45.0"/>
+  <concept concept_id="1956" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:47.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:47.0"/>
+  <concept concept_id="1957" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:49.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:49.0"/>
+  <concept concept_id="1958" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:50.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:50.0"/>
+  <concept concept_id="1959" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:52.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:52.0"/>
+  <concept concept_id="1960" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:54.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:54.0"/>
+  <concept concept_id="1961" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:57.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:57.0"/>
+  <concept concept_id="1962" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:35:59.0" version="" changed_by="1128" date_changed="2007-05-03 09:35:59.0"/>
+  <concept concept_id="1963" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:04.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:04.0"/>
+  <concept concept_id="1964" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:06.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:06.0"/>
+  <concept concept_id="1965" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:09.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:09.0"/>
+  <concept concept_id="1966" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:11.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:11.0"/>
+  <concept concept_id="1967" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:12.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:12.0"/>
+  <concept concept_id="1968" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:17.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:17.0"/>
+  <concept concept_id="1969" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:19.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:19.0"/>
+  <concept concept_id="1970" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:21.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:21.0"/>
+  <concept concept_id="1971" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:23.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:23.0"/>
+  <concept concept_id="1972" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:25.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:25.0"/>
+  <concept concept_id="1973" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:27.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:27.0"/>
+  <concept concept_id="1974" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:29.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:29.0"/>
+  <concept concept_id="1975" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:32.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:32.0"/>
+  <concept concept_id="1976" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:35.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:35.0"/>
+  <concept concept_id="1977" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:39.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:39.0"/>
+  <concept concept_id="1978" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:42.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:42.0"/>
+  <concept concept_id="1979" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:45.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:45.0"/>
+  <concept concept_id="1980" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:47.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:47.0"/>
+  <concept concept_id="1981" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:50.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:50.0"/>
+  <concept concept_id="1982" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:54.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:54.0"/>
+  <concept concept_id="1983" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:36:56.0" version="" changed_by="1128" date_changed="2007-05-03 09:36:56.0"/>
+  <concept concept_id="1984" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:01.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:01.0"/>
+  <concept concept_id="1985" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:03.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:03.0"/>
+  <concept concept_id="1986" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:06.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:06.0"/>
+  <concept concept_id="1987" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:08.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:08.0"/>
+  <concept concept_id="1988" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:13.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:13.0"/>
+  <concept concept_id="1989" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:15.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:15.0"/>
+  <concept concept_id="1990" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:17.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:17.0"/>
+  <concept concept_id="1991" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:24.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:24.0"/>
+  <concept concept_id="1992" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:27.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:27.0"/>
+  <concept concept_id="1993" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:39.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:39.0"/>
+  <concept concept_id="1994" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:37:51.0" version="" changed_by="1128" date_changed="2007-05-03 09:37:51.0"/>
+  <concept concept_id="1995" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:38:00.0" version="" changed_by="1128" date_changed="2007-05-03 09:38:00.0"/>
+  <concept concept_id="1996" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:38:04.0" version="" changed_by="1128" date_changed="2007-05-03 09:38:04.0"/>
+  <concept concept_id="1997" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:38:13.0" version="" changed_by="1128" date_changed="2007-05-03 09:38:13.0"/>
+  <concept concept_id="1998" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:38:17.0" version="" changed_by="1128" date_changed="2007-05-03 09:38:17.0"/>
+  <concept concept_id="1999" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:38:19.0" version="" changed_by="1128" date_changed="2007-05-03 09:38:19.0"/>
+  <concept concept_id="2000" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:38:26.0" version="" changed_by="1128" date_changed="2007-05-03 09:38:26.0"/>
+  <concept concept_id="2001" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 09:38:56.0" version="" changed_by="1128" date_changed="2007-05-03 09:38:56.0"/>
+  <concept concept_id="2007" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1128" date_created="2007-05-03 11:22:33.0" version="" changed_by="1128" date_changed="2007-05-03 11:22:33.0"/>
+  <concept concept_id="2458" retired="false" datatype_id="4" class_id="11" is_set="false" creator="7" date_created="2007-06-26 11:26:16.0" version="" changed_by="7" date_changed="2007-06-26 11:26:16.0"/>
+  <concept concept_id="2513" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-07-30 09:40:56.0" version="" changed_by="7" date_changed="2007-07-30 09:40:56.0"/>
+  <concept concept_id="2682" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-09-24 09:30:32.0" version="" changed_by="7" date_changed="2007-09-24 09:32:44.0"/>
+  <concept concept_id="2683" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-09-24 09:34:19.0" version="" changed_by="7" date_changed="2007-09-24 09:36:28.0"/>
+  <concept concept_id="2684" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-09-24 09:36:52.0" version="" changed_by="7" date_changed="2007-09-24 09:37:07.0"/>
+  <concept concept_id="2745" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:27:46.0" version="" changed_by="7" date_changed="2007-10-30 08:27:46.0"/>
+  <concept concept_id="2746" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:28:06.0" version="" changed_by="7" date_changed="2007-10-30 08:28:06.0"/>
+  <concept concept_id="2747" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:28:27.0" version="" changed_by="7" date_changed="2007-10-30 08:28:27.0"/>
+  <concept concept_id="2748" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:28:48.0" version="" changed_by="7" date_changed="2007-10-30 08:28:48.0"/>
+  <concept concept_id="2749" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:29:07.0" version="" changed_by="7" date_changed="2007-10-30 08:29:07.0"/>
+  <concept concept_id="2750" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:29:28.0" version="" changed_by="7" date_changed="2007-10-30 08:29:28.0"/>
+  <concept concept_id="2751" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:32:55.0" version="" changed_by="7" date_changed="2007-10-30 08:32:55.0"/>
+  <concept concept_id="2752" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:33:28.0" version="" changed_by="7" date_changed="2007-10-30 08:33:28.0"/>
+  <concept concept_id="2753" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:36:09.0" version="" changed_by="7" date_changed="2007-10-30 08:36:09.0"/>
+  <concept concept_id="2754" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:36:31.0" version="" changed_by="7" date_changed="2007-10-30 08:36:31.0"/>
+  <concept concept_id="2755" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:42:45.0" version="" changed_by="7" date_changed="2007-10-30 08:42:45.0"/>
+  <concept concept_id="2756" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:43:06.0" version="" changed_by="7" date_changed="2007-10-30 08:43:06.0"/>
+  <concept concept_id="2757" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:43:34.0" version="" changed_by="7" date_changed="2007-10-30 08:43:34.0"/>
+  <concept concept_id="2758" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:43:53.0" version="" changed_by="7" date_changed="2007-10-30 08:43:53.0"/>
+  <concept concept_id="2759" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:44:14.0" version="" changed_by="7" date_changed="2007-10-30 08:48:10.0"/>
+  <concept concept_id="2760" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:48:28.0" version="" changed_by="7" date_changed="2007-10-30 08:48:28.0"/>
+  <concept concept_id="2761" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:48:50.0" version="" changed_by="7" date_changed="2007-10-30 08:48:50.0"/>
+  <concept concept_id="2762" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:49:15.0" version="" changed_by="7" date_changed="2007-10-30 08:49:15.0"/>
+  <concept concept_id="2763" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:49:31.0" version="" changed_by="7" date_changed="2007-10-30 08:49:31.0"/>
+  <concept concept_id="2764" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:49:48.0" version="" changed_by="7" date_changed="2007-10-30 08:49:48.0"/>
+  <concept concept_id="2765" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:50:05.0" version="" changed_by="7" date_changed="2007-10-30 08:50:05.0"/>
+  <concept concept_id="2766" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:56:13.0" version="" changed_by="7" date_changed="2007-10-30 08:56:13.0"/>
+  <concept concept_id="2767" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:56:31.0" version="" changed_by="7" date_changed="2007-10-30 08:56:31.0"/>
+  <concept concept_id="2768" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:56:50.0" version="" changed_by="7" date_changed="2007-10-30 08:56:50.0"/>
+  <concept concept_id="2769" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:57:13.0" version="" changed_by="7" date_changed="2007-10-30 08:57:13.0"/>
+  <concept concept_id="2770" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:57:32.0" version="" changed_by="7" date_changed="2007-10-30 08:57:32.0"/>
+  <concept concept_id="2771" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:59:31.0" version="" changed_by="7" date_changed="2007-10-30 08:59:31.0"/>
+  <concept concept_id="2772" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 08:59:49.0" version="" changed_by="7" date_changed="2007-10-30 08:59:49.0"/>
+  <concept concept_id="2773" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 09:00:09.0" version="" changed_by="7" date_changed="2007-10-30 09:00:09.0"/>
+  <concept concept_id="2774" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 09:00:28.0" version="" changed_by="7" date_changed="2007-10-30 09:00:28.0"/>
+  <concept concept_id="2775" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 09:00:46.0" version="" changed_by="7" date_changed="2007-10-30 09:00:46.0"/>
+  <concept concept_id="2776" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 09:01:06.0" version="" changed_by="7" date_changed="2007-10-30 09:01:06.0"/>
+  <concept concept_id="2777" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 09:13:05.0" version="" changed_by="7" date_changed="2007-10-30 09:13:05.0"/>
+  <concept concept_id="2778" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 09:13:23.0" version="" changed_by="7" date_changed="2007-10-30 09:13:23.0"/>
+  <concept concept_id="2779" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 09:14:01.0" version="" changed_by="7" date_changed="2007-10-30 09:14:01.0"/>
+  <concept concept_id="2780" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 09:14:25.0" version="" changed_by="7" date_changed="2007-10-30 09:14:25.0"/>
+  <concept concept_id="2781" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:13:17.0" version="" changed_by="7" date_changed="2007-10-30 11:13:17.0"/>
+  <concept concept_id="2782" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:13:46.0" version="" changed_by="7" date_changed="2007-10-30 11:13:46.0"/>
+  <concept concept_id="2783" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:14:07.0" version="" changed_by="7" date_changed="2007-10-30 11:14:07.0"/>
+  <concept concept_id="2784" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:14:27.0" version="" changed_by="7" date_changed="2007-10-30 11:14:27.0"/>
+  <concept concept_id="2785" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:14:43.0" version="" changed_by="7" date_changed="2007-10-30 11:14:43.0"/>
+  <concept concept_id="2786" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:14:58.0" version="" changed_by="7" date_changed="2007-10-30 11:14:58.0"/>
+  <concept concept_id="2787" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:15:16.0" version="" changed_by="7" date_changed="2007-10-30 11:15:16.0"/>
+  <concept concept_id="2788" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:15:31.0" version="" changed_by="7" date_changed="2007-10-30 11:15:31.0"/>
+  <concept concept_id="2789" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:15:47.0" version="" changed_by="7" date_changed="2007-10-30 11:15:47.0"/>
+  <concept concept_id="2790" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:16:03.0" version="" changed_by="7" date_changed="2007-10-30 11:16:03.0"/>
+  <concept concept_id="2791" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:16:20.0" version="" changed_by="7" date_changed="2007-10-30 11:16:20.0"/>
+  <concept concept_id="2792" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:16:35.0" version="" changed_by="7" date_changed="2007-10-30 11:16:35.0"/>
+  <concept concept_id="2793" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:16:58.0" version="" changed_by="7" date_changed="2007-10-30 11:16:58.0"/>
+  <concept concept_id="2794" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:17:16.0" version="" changed_by="7" date_changed="2007-10-30 11:17:16.0"/>
+  <concept concept_id="2795" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:17:35.0" version="" changed_by="7" date_changed="2007-10-30 11:17:35.0"/>
+  <concept concept_id="2796" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:17:56.0" version="" changed_by="7" date_changed="2007-10-30 11:17:56.0"/>
+  <concept concept_id="2797" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:18:11.0" version="" changed_by="7" date_changed="2007-10-30 11:18:11.0"/>
+  <concept concept_id="2798" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:18:30.0" version="" changed_by="7" date_changed="2007-10-30 11:18:30.0"/>
+  <concept concept_id="2799" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:18:49.0" version="" changed_by="7" date_changed="2007-10-30 11:18:49.0"/>
+  <concept concept_id="2800" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:19:03.0" version="" changed_by="7" date_changed="2007-10-30 11:19:03.0"/>
+  <concept concept_id="2801" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:19:19.0" version="" changed_by="7" date_changed="2007-10-30 11:19:19.0"/>
+  <concept concept_id="2802" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:19:35.0" version="" changed_by="7" date_changed="2007-10-30 11:19:35.0"/>
+  <concept concept_id="2803" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:19:54.0" version="" changed_by="7" date_changed="2007-10-30 11:19:54.0"/>
+  <concept concept_id="2804" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:20:09.0" version="" changed_by="7" date_changed="2007-10-30 11:20:09.0"/>
+  <concept concept_id="2805" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:20:27.0" version="" changed_by="7" date_changed="2007-10-30 11:20:27.0"/>
+  <concept concept_id="2806" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:20:46.0" version="" changed_by="7" date_changed="2007-10-30 11:20:46.0"/>
+  <concept concept_id="2807" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:21:34.0" version="" changed_by="7" date_changed="2007-10-30 11:21:34.0"/>
+  <concept concept_id="2808" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:21:52.0" version="" changed_by="7" date_changed="2007-10-30 11:21:52.0"/>
+  <concept concept_id="2809" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:22:17.0" version="" changed_by="7" date_changed="2007-10-30 11:22:17.0"/>
+  <concept concept_id="2810" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:22:38.0" version="" changed_by="7" date_changed="2007-10-30 11:22:38.0"/>
+  <concept concept_id="2811" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:22:54.0" version="" changed_by="7" date_changed="2007-10-30 11:22:54.0"/>
+  <concept concept_id="2812" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:23:10.0" version="" changed_by="7" date_changed="2007-10-30 11:23:10.0"/>
+  <concept concept_id="2813" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:23:31.0" version="" changed_by="7" date_changed="2007-10-30 11:23:31.0"/>
+  <concept concept_id="2814" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:23:50.0" version="" changed_by="7" date_changed="2007-10-30 11:23:50.0"/>
+  <concept concept_id="2815" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:24:10.0" version="" changed_by="7" date_changed="2007-10-30 11:24:10.0"/>
+  <concept concept_id="2816" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:24:24.0" version="" changed_by="7" date_changed="2007-10-30 11:24:24.0"/>
+  <concept concept_id="2817" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:24:39.0" version="" changed_by="7" date_changed="2007-10-30 11:24:39.0"/>
+  <concept concept_id="2818" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:24:54.0" version="" changed_by="7" date_changed="2007-10-30 11:24:54.0"/>
+  <concept concept_id="2819" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:25:09.0" version="" changed_by="7" date_changed="2007-10-30 11:25:09.0"/>
+  <concept concept_id="2820" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:25:23.0" version="" changed_by="7" date_changed="2007-10-30 11:25:23.0"/>
+  <concept concept_id="2821" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:25:40.0" version="" changed_by="7" date_changed="2007-10-30 11:25:40.0"/>
+  <concept concept_id="2822" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:25:54.0" version="" changed_by="7" date_changed="2007-10-30 11:25:54.0"/>
+  <concept concept_id="2823" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:26:10.0" version="" changed_by="7" date_changed="2007-10-30 11:26:10.0"/>
+  <concept concept_id="2824" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:26:44.0" version="" changed_by="7" date_changed="2007-10-30 11:26:44.0"/>
+  <concept concept_id="2825" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:27:05.0" version="" changed_by="7" date_changed="2007-10-30 11:27:05.0"/>
+  <concept concept_id="2826" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:27:28.0" version="" changed_by="7" date_changed="2007-10-30 11:27:28.0"/>
+  <concept concept_id="2827" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:27:51.0" version="" changed_by="7" date_changed="2007-10-30 11:27:51.0"/>
+  <concept concept_id="2828" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:28:08.0" version="" changed_by="7" date_changed="2007-10-30 11:28:08.0"/>
+  <concept concept_id="2829" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:28:29.0" version="" changed_by="7" date_changed="2007-10-30 11:28:29.0"/>
+  <concept concept_id="2830" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:28:51.0" version="" changed_by="7" date_changed="2007-10-30 11:28:51.0"/>
+  <concept concept_id="2831" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:29:10.0" version="" changed_by="7" date_changed="2007-10-30 11:29:10.0"/>
+  <concept concept_id="2832" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2007-10-30 11:29:31.0" version="" changed_by="7" date_changed="2007-10-30 11:29:31.0"/>
+  <concept concept_id="2842" retired="false" datatype_id="4" class_id="16" is_set="false" creator="5" date_created="2007-11-03 09:05:45.0" version="" changed_by="5" date_changed="2007-11-03 09:05:45.0"/>
+  <concept concept_id="2882" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-01-17 14:44:26.0" version=""/>
+  <concept concept_id="2883" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-01-17 14:44:45.0" version=""/>
+  <concept concept_id="2884" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-01-17 14:45:06.0" version=""/>
+  <concept concept_id="2885" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-01-17 14:48:01.0" version=""/>
+  <concept concept_id="2886" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-01-17 14:48:23.0" version=""/>
+  <concept concept_id="2887" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-01-17 14:48:47.0" version=""/>
+  <concept concept_id="2895" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-23 11:43:59.0" version=""/>
+  <concept concept_id="2896" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:34:23.0" version=""/>
+  <concept concept_id="2897" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:35:20.0" version=""/>
+  <concept concept_id="2898" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:35:45.0" version=""/>
+  <concept concept_id="2899" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:36:06.0" version=""/>
+  <concept concept_id="2900" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:36:33.0" version=""/>
+  <concept concept_id="2901" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:40:10.0" version=""/>
+  <concept concept_id="2902" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:40:34.0" version=""/>
+  <concept concept_id="2903" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:41:19.0" version=""/>
+  <concept concept_id="2904" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:41:43.0" version=""/>
+  <concept concept_id="2905" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:42:19.0" version=""/>
+  <concept concept_id="2906" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:42:53.0" version=""/>
+  <concept concept_id="2907" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:43:22.0" version=""/>
+  <concept concept_id="2908" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:44:31.0" version=""/>
+  <concept concept_id="2909" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:45:24.0" version=""/>
+  <concept concept_id="2910" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:45:51.0" version=""/>
+  <concept concept_id="2911" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:46:32.0" version=""/>
+  <concept concept_id="2912" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:47:13.0" version=""/>
+  <concept concept_id="2913" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:47:51.0" version=""/>
+  <concept concept_id="2914" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:49:00.0" version=""/>
+  <concept concept_id="2915" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:49:45.0" version=""/>
+  <concept concept_id="2916" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:51:25.0" version=""/>
+  <concept concept_id="2917" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:52:14.0" version=""/>
+  <concept concept_id="2918" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:52:55.0" version=""/>
+  <concept concept_id="2919" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:53:14.0" version=""/>
+  <concept concept_id="2920" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:53:34.0" version=""/>
+  <concept concept_id="2921" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-01-29 10:54:03.0" version=""/>
+  <concept concept_id="3070" retired="false" datatype_id="4" class_id="17" is_set="false" creator="6" date_created="2008-05-18 15:57:39.0" version=""/>
+  <concept concept_id="3145" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:46:52.0" version=""/>
+  <concept concept_id="3146" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:47:45.0" version="" changed_by="15877" date_changed="2008-07-14 12:10:43.0"/>
+  <concept concept_id="3147" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:47:59.0" version="" changed_by="15877" date_changed="2008-07-14 12:10:57.0"/>
+  <concept concept_id="3148" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:48:12.0" version="" changed_by="15877" date_changed="2008-07-14 12:11:06.0"/>
+  <concept concept_id="3149" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:48:27.0" version="" changed_by="15877" date_changed="2008-07-14 12:11:22.0"/>
+  <concept concept_id="3150" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:48:50.0" version="" changed_by="15877" date_changed="2008-07-14 12:11:32.0"/>
+  <concept concept_id="3151" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:49:05.0" version="" changed_by="15877" date_changed="2008-07-14 12:11:44.0"/>
+  <concept concept_id="3152" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:50:22.0" version="" changed_by="15877" date_changed="2008-07-14 12:11:53.0"/>
+  <concept concept_id="3153" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:51:00.0" version="" changed_by="15877" date_changed="2008-07-14 12:12:02.0"/>
+  <concept concept_id="3154" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:51:17.0" version="" changed_by="15877" date_changed="2008-07-14 12:12:11.0"/>
+  <concept concept_id="3155" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:51:46.0" version="" changed_by="15877" date_changed="2008-07-14 12:12:24.0"/>
+  <concept concept_id="3156" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:53:42.0" version="" changed_by="15877" date_changed="2008-07-14 12:12:43.0"/>
+  <concept concept_id="3157" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:54:01.0" version="" changed_by="15877" date_changed="2008-07-14 12:13:18.0"/>
+  <concept concept_id="3158" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:54:26.0" version="" changed_by="15877" date_changed="2008-07-14 12:13:28.0"/>
+  <concept concept_id="3159" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:54:48.0" version="" changed_by="15877" date_changed="2008-07-14 12:13:37.0"/>
+  <concept concept_id="3160" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:55:31.0" version="" changed_by="15877" date_changed="2008-07-14 12:13:50.0"/>
+  <concept concept_id="3161" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:56:15.0" version="" changed_by="15877" date_changed="2008-07-14 12:13:59.0"/>
+  <concept concept_id="3162" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:56:42.0" version="" changed_by="15877" date_changed="2008-07-14 12:14:12.0"/>
+  <concept concept_id="3163" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:56:56.0" version="" changed_by="15877" date_changed="2008-07-14 12:14:22.0"/>
+  <concept concept_id="3164" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:57:41.0" version="" changed_by="15877" date_changed="2008-07-14 12:14:35.0"/>
+  <concept concept_id="3165" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:59:31.0" version="" changed_by="15877" date_changed="2008-07-14 12:14:45.0"/>
+  <concept concept_id="3166" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 11:59:52.0" version="" changed_by="15877" date_changed="2008-07-14 12:14:55.0"/>
+  <concept concept_id="3167" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 12:00:17.0" version="" changed_by="15877" date_changed="2008-07-14 12:15:06.0"/>
+  <concept concept_id="3168" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 12:00:38.0" version="" changed_by="15877" date_changed="2008-07-14 12:15:15.0"/>
+  <concept concept_id="3169" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 12:00:59.0" version="" changed_by="15877" date_changed="2008-07-14 12:15:24.0"/>
+  <concept concept_id="3170" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 12:01:37.0" version="" changed_by="15877" date_changed="2008-07-14 12:15:36.0"/>
+  <concept concept_id="3171" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 12:03:44.0" version="" changed_by="15877" date_changed="2008-07-14 12:15:55.0"/>
+  <concept concept_id="3172" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 12:04:01.0" version="" changed_by="15877" date_changed="2008-07-14 12:16:04.0"/>
+  <concept concept_id="3173" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-06-13 12:04:19.0" version="" changed_by="15877" date_changed="2008-07-14 12:16:14.0"/>
+  <concept concept_id="3490" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-07-17 10:36:51.0" version=""/>
+  <concept concept_id="3499" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15878" date_created="2008-07-28 13:37:52.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="3500" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15878" date_created="2008-07-28 13:38:30.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="3501" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15878" date_created="2008-07-28 13:39:48.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="3502" retired="false" datatype_id="4" class_id="17" is_set="false" creator="15878" date_created="2008-07-28 13:40:42.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="3503" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15878" date_created="2008-07-28 13:41:40.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="3504" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15878" date_created="2008-07-28 13:42:23.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="3505" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15878" date_created="2008-07-28 13:42:56.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="3506" retired="false" datatype_id="4" class_id="17" is_set="false" creator="15878" date_created="2008-07-28 13:44:11.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="3507" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15878" date_created="2008-07-28 13:45:30.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="3508" retired="false" datatype_id="4" class_id="17" is_set="false" creator="15878" date_created="2008-07-28 13:47:00.0" version="" date_changed="2009-02-10 14:39:59.0"/>
+  <concept concept_id="3568" retired="false" datatype_id="4" class_id="16" is_set="false" creator="15877" date_created="2008-08-18 11:19:08.0" version=""/>
+  <concept concept_id="3537" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-08-06 08:53:55.0" version=""/>
+  <concept concept_id="3538" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-08-06 08:54:29.0" version=""/>
+  <concept concept_id="3539" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-08-06 08:54:55.0" version=""/>
+  <concept concept_id="3540" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-08-06 08:55:17.0" version="" changed_by="7" date_changed="2008-08-06 08:55:50.0"/>
+  <concept concept_id="3541" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-08-06 08:55:41.0" version=""/>
+  <concept concept_id="3542" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-08-06 08:56:40.0" version=""/>
+  <concept concept_id="3543" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-08-06 08:57:01.0" version=""/>
+  <concept concept_id="3544" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-08-06 08:57:24.0" version=""/>
+  <concept concept_id="3545" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-08-06 08:57:50.0" version=""/>
+  <concept concept_id="3546" retired="false" datatype_id="4" class_id="18" is_set="false" creator="7" date_created="2008-08-06 08:58:11.0" version=""/>
+  <concept concept_id="3591" retired="false" datatype_id="4" class_id="16" is_set="false" creator="15877" date_created="2008-09-16 11:48:13.0" version=""/>
+  <concept concept_id="3594" retired="false" datatype_id="4" class_id="16" is_set="false" creator="15877" date_created="2008-09-16 11:51:43.0" version=""/>
+  <concept concept_id="3626" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-09-17 15:26:05.0" version=""/>
+  <concept concept_id="3627" retired="false" datatype_id="2" class_id="17" is_set="false" creator="15877" date_created="2008-09-17 15:31:03.0" version=""/>
+  <concept concept_id="3643" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-09-23 10:33:27.0" version=""/>
+  <concept concept_id="3644" retired="false" datatype_id="4" class_id="18" is_set="false" creator="15877" date_created="2008-09-23 10:33:57.0" version=""/>
+  <concept_answer concept_answer_id="1147" concept_id="1568" answer_concept="1067" creator="9" date_created="2006-09-01 10:22:17.0"/>
+  <concept_answer concept_answer_id="1525" concept_id="1568" answer_concept="1743" creator="7" date_created="2006-12-18 13:05:36.0"/>
+  <concept_answer concept_answer_id="1526" concept_id="1568" answer_concept="1742" creator="7" date_created="2006-12-18 13:05:36.0"/>
+  <concept_answer concept_answer_id="1539" concept_id="1568" answer_concept="1746" creator="7" date_created="2006-12-18 13:12:40.0"/>
+  <concept_answer concept_answer_id="1540" concept_id="1568" answer_concept="1714" creator="7" date_created="2006-12-18 13:14:06.0"/>
+  <concept_answer concept_answer_id="1541" concept_id="1568" answer_concept="843" creator="7" date_created="2006-12-18 13:14:06.0"/>
+  <concept_answer concept_answer_id="3054" concept_id="1568" answer_concept="1432" creator="7" date_created="2007-06-26 11:28:48.0"/>
+  <concept_answer concept_answer_id="3055" concept_id="1568" answer_concept="2458" creator="7" date_created="2007-06-26 11:28:48.0"/>
+  <concept_answer concept_answer_id="3455" concept_id="1568" answer_concept="1744" creator="2053" date_created="2007-09-26 09:21:34.0"/>
+  <concept_answer concept_answer_id="5117" concept_id="3627" answer_concept="1744" creator="15877" date_created="2008-09-17 15:31:03.0"/>
+  <concept_answer concept_answer_id="5118" concept_id="3627" answer_concept="1490" creator="15877" date_created="2008-09-17 15:31:03.0"/>
+  <concept_answer concept_answer_id="5119" concept_id="3627" answer_concept="3626" creator="15877" date_created="2008-09-17 15:31:03.0"/>
+  <concept_answer concept_answer_id="5120" concept_id="3627" answer_concept="1743" creator="15877" date_created="2008-09-17 15:31:03.0"/>
+  <concept_answer concept_answer_id="5121" concept_id="3627" answer_concept="1742" creator="15877" date_created="2008-09-17 15:31:03.0"/>
+  <concept_answer concept_answer_id="5122" concept_id="3627" answer_concept="1577" creator="15877" date_created="2008-09-17 15:31:03.0"/>
+  <concept_name concept_id="843" name="REGIMEN FAILURE" locale="en" creator="2" date_created="2004-05-04 00:00:00.0" concept_name_id="862" voided="false"/>
+  <concept_name concept_id="843" name="TREATMENT FAILURE" locale="en" creator="7" date_created="2006-10-30 15:38:37.0" concept_name_id="7814" voided="false"/>
+  <concept_name concept_id="1067" name="UNKNOWN" locale="en" creator="2" date_created="2005-01-06 00:00:00.0" concept_name_id="1104" voided="false"/>
+  <concept_name concept_id="1067" name="DO NOT KNOW" locale="en" creator="7" date_created="2006-11-21 20:32:16.0" concept_name_id="6791" voided="false"/>
+  <concept_name concept_id="1067" name="DON&apos;T KNOW" locale="en" creator="7" date_created="2006-11-21 20:32:16.0" concept_name_id="6799" voided="false"/>
+  <concept_name concept_id="1067" name="inconnu" locale="fr" creator="15878" date_created="2009-02-25 01:37:43.0" concept_name_id="8068" voided="false"/>
+  <concept_name concept_id="1107" name="NONE" locale="en" creator="2" date_created="2005-01-12 00:00:00.0" concept_name_id="1144" voided="false"/>
+  <concept_name concept_id="1107" name="AUCUN" locale="fr" creator="5" date_created="2006-06-07 17:26:58.0" concept_name_id="1145" voided="false"/>
+  <concept_name concept_id="1107" name="AUCUN" locale="en" creator="1" date_created="2006-06-06 22:53:55.0" concept_name_id="6494" voided="false"/>
+  <concept_name concept_id="1377" name="ANTIRETROVIRAL TREATMENT GROUP" locale="en" creator="6" date_created="2006-06-14 19:10:48.0" concept_name_id="1472" voided="false"/>
+  <concept_name concept_id="1377" name="ARV GROUP" locale="en" creator="6" date_created="2006-06-14 19:10:48.0" concept_name_id="5554" voided="false"/>
+  <concept_name concept_id="1377" name="ARV GROUP" locale="en" creator="2053" date_created="2007-08-14 16:36:31.0" concept_name_id="6471" voided="false"/>
+  <concept_name concept_id="1377" name="HIV GROUP" locale="en" creator="6" date_created="2006-06-14 19:11:09.0" concept_name_id="7034" voided="false"/>
+  <concept_name concept_id="1377" name="TREATMENT GROUP HIV" locale="en" creator="7" date_created="2006-07-13 10:00:30.0" concept_name_id="7815" voided="false"/>
+  <concept_name concept_id="1432" name="CURRENTLY IN TREATMENT" locale="en" creator="9" date_created="2006-07-25 09:27:21.0" concept_name_id="1550" voided="false"/>
+  <concept_name concept_id="1482" name="HIV PROGRAM" locale="en" creator="6" date_created="2006-08-16 02:05:34.0" concept_name_id="1606" voided="false"/>
+  <concept_name concept_id="1482" name="HIV PROGRAM" locale="en" creator="6" date_created="2006-08-16 02:05:34.0" concept_name_id="5585" voided="false"/>
+  <concept_name concept_id="1483" name="TREATMENT STOPPED - PATIENT REFUSED" locale="en" creator="6" date_created="2006-09-27 20:55:43.0" concept_name_id="1607" voided="false"/>
+  <concept_name concept_id="1483" name="ARRET DU TRAITEMENT - REFUS DE TRAITEMENT PAR LE PATIENT" locale="fr" creator="6" date_created="2006-09-27 20:56:22.0" concept_name_id="1608" voided="false"/>
+  <concept_name concept_id="1484" name="TREATMENT STATUS" locale="en" creator="6" date_created="2006-08-16 02:07:11.0" concept_name_id="1609" voided="false"/>
+  <concept_name concept_id="1484" name="TX STATUS" locale="en" creator="6" date_created="2006-08-16 02:07:11.0" concept_name_id="5586" voided="false"/>
+  <concept_name concept_id="1485" name="FOLLOWING - NEED EDUCATION AND ACCOMPAGNATEUR" locale="en" creator="12" date_created="2006-09-26 17:12:16.0" concept_name_id="1610" voided="false"/>
+  <concept_name concept_id="1485" name="ÉDUCATION N&apos;EST PAS TERMINÉ" locale="fr" creator="12" date_created="2006-09-26 17:12:16.0" concept_name_id="1611" voided="false"/>
+  <concept_name concept_id="1485" name="FOLLOWING - EDUCATION NOT COMPLETE" locale="en" creator="7" date_created="2006-10-27 15:00:50.0" concept_name_id="6924" voided="false"/>
+  <concept_name concept_id="1490" name="FOLLOWING" locale="en" creator="6" date_created="2006-08-16 17:21:24.0" concept_name_id="1617" voided="false"/>
+  <concept_name concept_id="1490" name="FOLLOWING" locale="en" creator="6" date_created="2006-08-16 17:21:24.0" concept_name_id="5590" voided="false"/>
+  <concept_name concept_id="1565" name="DIED - TB " locale="en" creator="9" date_created="2006-08-31 16:59:01.0" concept_name_id="1697" voided="false"/>
+  <concept_name concept_id="1565" name="DIED - TB CATEGORY I" locale="en" creator="9" date_created="2006-09-01 10:17:21.0" concept_name_id="6772" voided="false"/>
+  <concept_name concept_id="1565" name="DIED - TB CATEGORY II" locale="en" creator="9" date_created="2006-09-01 10:17:21.0" concept_name_id="6773" voided="false"/>
+  <concept_name concept_id="1565" name="DIED - TB CATEGORY III" locale="en" creator="9" date_created="2006-09-01 10:17:21.0" concept_name_id="6774" voided="false"/>
+  <concept_name concept_id="1565" name="DIED - TB CATEGORY IV" locale="en" creator="9" date_created="2006-09-01 10:17:21.0" concept_name_id="6775" voided="false"/>
+  <concept_name concept_id="1565" name="DÉCÈS - TB CATÉGORIE IV" locale="fr" creator="15878" date_created="2009-02-25 10:50:51.0" concept_name_id="8321" voided="false"/>
+  <concept_name concept_id="1565" name="DÉCÈS" locale="fr" creator="15878" date_created="2009-02-25 10:50:51.0" concept_name_id="8322" voided="false"/>
+  <concept_name concept_id="1567" name="DEFAULTED - TB " locale="en" creator="9" date_created="2006-08-31 17:01:55.0" concept_name_id="1699" voided="false"/>
+  <concept_name concept_id="1567" name="ABANDONED - TB" locale="en" creator="9" date_created="2006-09-01 10:18:55.0" concept_name_id="6351" voided="false"/>
+  <concept_name concept_id="1567" name="DEFAULTED - TB CATEGORY I" locale="en" creator="9" date_created="2006-09-01 10:18:55.0" concept_name_id="6742" voided="false"/>
+  <concept_name concept_id="1567" name="DEFAULTED - TB CATEGORY II" locale="en" creator="9" date_created="2006-09-01 10:18:55.0" concept_name_id="6743" voided="false"/>
+  <concept_name concept_id="1567" name="DEFAULTED - TB CATEGORY III" locale="en" creator="9" date_created="2006-09-01 10:18:55.0" concept_name_id="6744" voided="false"/>
+  <concept_name concept_id="1567" name="DEFAULTED - TB CATEGORY IV" locale="en" creator="9" date_created="2006-09-01 10:18:55.0" concept_name_id="6745" voided="false"/>
+  <concept_name concept_id="1567" name="INTERRUPTION OU ABANDON - TB CATÉGORIE IV" locale="fr" creator="15878" date_created="2009-02-25 10:36:46.0" concept_name_id="8285" voided="false"/>
+  <concept_name concept_id="1567" name="INTERRUPTION OU ABANDON" locale="fr" creator="15878" date_created="2009-02-25 10:36:46.0" concept_name_id="8286" voided="false"/>
+  <concept_name concept_id="1568" name="TUBERCULOSIS TREATMENT STATUS" locale="en" creator="9" date_created="2006-08-31 17:05:20.0" concept_name_id="1700" voided="false"/>
+  <concept_name concept_id="1568" name="TB TREATMENT OUTCOME" locale="en" creator="7" date_created="2007-06-26 11:28:48.0" concept_name_id="7751" voided="false"/>
+  <concept_name concept_id="1574" name="TREATMENT NEVER STARTED - PATIENT REFUSED" locale="en" creator="5" date_created="2006-08-31 23:12:50.0" concept_name_id="1709" voided="false"/>
+  <concept_name concept_id="1574" name="REFUS DU TRAITEMENT PAR LE PATIENT" locale="fr" creator="5" date_created="2006-08-31 23:13:00.0" concept_name_id="1710" voided="false"/>
+  <concept_name concept_id="1577" name="ON ANTIRETROVIRALS" locale="en" creator="5" date_created="2006-08-31 23:20:09.0" concept_name_id="1713" voided="false"/>
+  <concept_name concept_id="1577" name="ACTIF, SOUS ARVS" locale="fr" creator="5" date_created="2006-08-31 23:22:01.0" concept_name_id="1714" voided="false"/>
+  <concept_name concept_id="1577" name="ON ANTIRETROVIRAL THERAPY" locale="en" creator="7" date_created="2007-10-31 08:57:19.0" concept_name_id="7334" voided="false"/>
+  <concept_name concept_id="1577" name="ON TREATMENT" locale="en" creator="7" date_created="2006-10-27 14:40:24.0" concept_name_id="7337" voided="false"/>
+  <concept_name concept_id="1579" name="TREATMENT STOPPED" locale="en" creator="5" date_created="2006-08-31 23:22:59.0" concept_name_id="1717" voided="false"/>
+  <concept_name concept_id="1579" name="ARRÊT DU TRAITEMENT " locale="fr" creator="5" date_created="2006-08-31 23:23:07.0" concept_name_id="1718" voided="false"/>
+  <concept_name concept_id="1585" name="CURED - TB " locale="en" creator="9" date_created="2006-09-01 10:11:24.0" concept_name_id="1726" voided="false"/>
+  <concept_name concept_id="1585" name="CURED - TB CATEGORY I" locale="en" creator="9" date_created="2006-09-01 10:13:27.0" concept_name_id="6711" voided="false"/>
+  <concept_name concept_id="1585" name="CURED - TB CATEGORY II" locale="en" creator="9" date_created="2006-09-01 10:13:27.0" concept_name_id="6712" voided="false"/>
+  <concept_name concept_id="1585" name="CURED - TB CATEGORY III" locale="en" creator="9" date_created="2006-09-01 10:13:27.0" concept_name_id="6713" voided="false"/>
+  <concept_name concept_id="1585" name="RECOVERED" locale="en" creator="7" date_created="2006-11-21 20:30:47.0" concept_name_id="7544" voided="false"/>
+  <concept_name concept_id="1587" name="FAILED - TB" locale="en" creator="9" date_created="2006-09-01 10:14:23.0" concept_name_id="1728" voided="false"/>
+  <concept_name concept_id="1587" name="FAILED - TB CATEGORY I" locale="en" creator="9" date_created="2006-09-01 10:14:23.0" concept_name_id="6888" voided="false"/>
+  <concept_name concept_id="1587" name="FAILED - TB CATEGORY II" locale="en" creator="9" date_created="2006-09-01 10:14:23.0" concept_name_id="6889" voided="false"/>
+  <concept_name concept_id="1587" name="FAILED - TB CATEGORY III" locale="en" creator="9" date_created="2006-09-01 10:14:23.0" concept_name_id="6890" voided="false"/>
+  <concept_name concept_id="1648" name="TUBERCULOSIS PROGRAM" locale="en" creator="7" date_created="2006-09-18 09:00:46.0" concept_name_id="1796" voided="false"/>
+  <concept_name concept_id="1648" name="TB PROGRAM" locale="en" creator="7" date_created="2006-11-22 20:36:46.0" concept_name_id="7744" voided="false"/>
+  <concept_name concept_id="1708" name="FOLLOWING - WAITING FOR LAB TESTS" locale="en" creator="12" date_created="2006-09-26 18:04:22.0" concept_name_id="1857" voided="false"/>
+  <concept_name concept_id="1708" name="PARACLINIQUE ATTENDUE POUR DÉCIDER" locale="fr" creator="12" date_created="2006-09-26 17:14:07.0" concept_name_id="1858" voided="false"/>
+  <concept_name concept_id="1710" name="FOLLOWING - TREATMENT NOT NEEDED" locale="en" creator="12" date_created="2006-09-26 17:41:47.0" concept_name_id="1860" voided="false"/>
+  <concept_name concept_id="1710" name="STATUT CLINIQUE INDIQUE QU&apos;IL N&apos;EST PAS NÉCESSAIRE" locale="fr" creator="12" date_created="2006-09-26 17:41:47.0" concept_name_id="1861" voided="false"/>
+  <concept_name concept_id="1713" name="TREATMENT STOPPED - SIDE EFFECTS" locale="en" creator="6" date_created="2006-09-27 21:15:54.0" concept_name_id="1865" voided="false"/>
+  <concept_name concept_id="1713" name="ARRET DU TRAITEMENT - EFFETS SECONDAIRES" locale="fr" creator="6" date_created="2006-09-27 21:16:26.0" concept_name_id="1866" voided="false"/>
+  <concept_name concept_id="1714" name="TREATMENT COMPLETE" locale="en" creator="6" date_created="2006-09-27 22:02:57.0" concept_name_id="1867" voided="false"/>
+  <concept_name concept_id="1714" name="TRAITEMENT COMPLETE" locale="fr" creator="6" date_created="2006-09-27 22:02:57.0" concept_name_id="1868" voided="false"/>
+  <concept_name concept_id="1742" name="PATIENT DIED" locale="en" creator="7" date_created="2006-10-27 11:39:50.0" concept_name_id="1902" voided="false"/>
+  <concept_name concept_id="1742" name="DIED" locale="en" creator="7" date_created="2006-12-18 11:21:26.0" concept_name_id="6771" voided="false"/>
+  <concept_name concept_id="1743" name="PATIENT DEFAULTED" locale="en" creator="7" date_created="2006-10-27 11:41:10.0" concept_name_id="1903" voided="false"/>
+  <concept_name concept_id="1743" name="ABANDONED" locale="en" creator="7" date_created="2006-12-18 11:30:16.0" concept_name_id="6350" voided="false"/>
+  <concept_name concept_id="1743" name="ABANDONED TREATMENT" locale="en" creator="7" date_created="2006-12-18 11:30:16.0" concept_name_id="6353" voided="false"/>
+  <concept_name concept_id="1743" name="DEFAULTED" locale="en" creator="7" date_created="2006-12-18 11:30:16.0" concept_name_id="6741" voided="false"/>
+  <concept_name concept_id="1743" name="PATIENT ABANDONED" locale="en" creator="7" date_created="2006-12-18 11:34:49.0" concept_name_id="7386" voided="false"/>
+  <concept_name concept_id="1744" name="PATIENT TRANSFERRED OUT" locale="en" creator="7" date_created="2006-10-27 11:42:00.0" concept_name_id="1904" voided="false"/>
+  <concept_name concept_id="1744" name="TRANSFERT" locale="fr" creator="15878" date_created="2009-02-25 10:30:43.0" concept_name_id="8263" voided="false"/>
+  <concept_name concept_id="1744" name="TRANSFERT DANS UNE AUTRE CATÉGORIE." locale="fr" creator="15878" date_created="2009-02-25 10:30:43.0" concept_name_id="8264" voided="false"/>
+  <concept_name concept_id="1746" name="PATIENT CURED" locale="en" creator="7" date_created="2006-10-27 11:43:56.0" concept_name_id="1906" voided="false"/>
+  <concept_name concept_id="1845" name="NUTRITION PROGRAM" locale="en" creator="1128" date_created="2007-03-12 21:44:57.0" concept_name_id="2011" voided="false"/>
+  <concept_name concept_id="1845" name="FOOD PROGRAM" locale="en" creator="6" date_created="2008-03-27 15:30:06.0" concept_name_id="6926" voided="false"/>
+  <concept_name concept_id="1846" name="ASSISTANCE STATUS" locale="en" creator="1128" date_created="2007-03-12 21:47:37.0" concept_name_id="2012" voided="false"/>
+  <concept_name concept_id="1846" name="ASSISTANCE STATUS" locale="en" creator="1128" date_created="2007-03-12 21:47:37.0" concept_name_id="5667" voided="false"/>
+  <concept_name concept_id="1951" name="GROUP FOLLOWING" locale="en" creator="1128" date_created="2007-05-03 09:35:36.0" concept_name_id="2118" voided="false"/>
+  <concept_name concept_id="1952" name="GROUP PEDI 3" locale="en" creator="1128" date_created="2007-05-03 09:35:39.0" concept_name_id="2119" voided="false"/>
+  <concept_name concept_id="1953" name="GROUP 17" locale="en" creator="1128" date_created="2007-05-03 09:35:41.0" concept_name_id="2120" voided="false"/>
+  <concept_name concept_id="2001" name="GROUP FOLLOWING NEGATIVE" locale="en" creator="1128" date_created="2007-05-03 09:38:56.0" concept_name_id="2168" voided="false"/>
+  <concept_name concept_id="2458" name="SYMPTOMATIC BUT NOT IN TREATMENT" locale="en" creator="7" date_created="2007-06-26 11:26:16.0" concept_name_id="2642" voided="false"/>
+  <concept_name concept_id="2748" name="FOLLOWING D" locale="en" creator="7" date_created="2007-10-30 08:28:48.0" concept_name_id="2966" voided="false"/>
+  <concept_name concept_id="2842" name="MDR-TB PROGRAM" locale="en" creator="5" date_created="2007-11-03 09:05:45.0" concept_name_id="3060" voided="false"/>
+  <concept_name concept_id="2882" name="GROUP 45" locale="en" creator="7" date_created="2008-01-17 14:44:26.0" concept_name_id="3102" voided="false"/>
+  <concept_name concept_id="2883" name="GROUP 46" locale="en" creator="7" date_created="2008-01-17 14:44:45.0" concept_name_id="3103" voided="false"/>
+  <concept_name concept_id="2884" name="GROUP 47" locale="en" creator="7" date_created="2008-01-17 14:45:06.0" concept_name_id="3104" voided="false"/>
+  <concept_name concept_id="2885" name="GROUP 48" locale="en" creator="7" date_created="2008-01-17 14:48:01.0" concept_name_id="3105" voided="false"/>
+  <concept_name concept_id="2886" name="GROUP 49" locale="en" creator="7" date_created="2008-01-17 14:48:23.0" concept_name_id="3106" voided="false"/>
+  <concept_name concept_id="2887" name="GROUP 50" locale="en" creator="7" date_created="2008-01-17 14:48:47.0" concept_name_id="3107" voided="false"/>
+  <concept_name concept_id="2896" name="FOLLOWING AA" locale="en" creator="15877" date_created="2008-01-29 10:34:23.0" concept_name_id="3116" voided="false"/>
+  <concept_name concept_id="2897" name="FOLLOWING BB" locale="en" creator="15877" date_created="2008-01-29 10:35:20.0" concept_name_id="3117" voided="false"/>
+  <concept_name concept_id="2898" name="FOLLOWING CC" locale="en" creator="15877" date_created="2008-01-29 10:35:45.0" concept_name_id="3118" voided="false"/>
+  <concept_name concept_id="2899" name="FOLLOWING DD" locale="en" creator="15877" date_created="2008-01-29 10:36:06.0" concept_name_id="3119" voided="false"/>
+  <concept_name concept_id="2900" name="FOLLOWING EE" locale="en" creator="15877" date_created="2008-01-29 10:36:33.0" concept_name_id="3120" voided="false"/>
+  <concept_name concept_id="2901" name="FOLLOWING FF" locale="en" creator="15877" date_created="2008-01-29 10:40:10.0" concept_name_id="3121" voided="false"/>
+  <concept_name concept_id="2902" name="FOLLOWING GG" locale="en" creator="15877" date_created="2008-01-29 10:40:34.0" concept_name_id="3122" voided="false"/>
+  <concept_name concept_id="2903" name="FOLLOWING HH" locale="en" creator="15877" date_created="2008-01-29 10:41:19.0" concept_name_id="3123" voided="false"/>
+  <concept_name concept_id="2904" name="FOLLOWING II" locale="en" creator="15877" date_created="2008-01-29 10:41:43.0" concept_name_id="3124" voided="false"/>
+  <concept_name concept_id="2905" name="FOLLOWING JJ" locale="en" creator="15877" date_created="2008-01-29 10:42:19.0" concept_name_id="3125" voided="false"/>
+  <concept_name concept_id="2906" name="FOLLOWING KK" locale="en" creator="15877" date_created="2008-01-29 10:42:53.0" concept_name_id="3126" voided="false"/>
+  <concept_name concept_id="2907" name="FOLLOWING LL" locale="en" creator="15877" date_created="2008-01-29 10:43:22.0" concept_name_id="3127" voided="false"/>
+  <concept_name concept_id="2908" name="FOLLOWING MM" locale="en" creator="15877" date_created="2008-01-29 10:44:31.0" concept_name_id="3128" voided="false"/>
+  <concept_name concept_id="2909" name="FOLLOWING NN" locale="en" creator="15877" date_created="2008-01-29 10:45:24.0" concept_name_id="3129" voided="false"/>
+  <concept_name concept_id="2910" name="FOLLOWING OO" locale="en" creator="15877" date_created="2008-01-29 10:45:51.0" concept_name_id="3130" voided="false"/>
+  <concept_name concept_id="2911" name="FOLLOWING PP" locale="en" creator="15877" date_created="2008-01-29 10:46:32.0" concept_name_id="3131" voided="false"/>
+  <concept_name concept_id="2912" name="FOLLOWING QQ" locale="en" creator="15877" date_created="2008-01-29 10:47:13.0" concept_name_id="3132" voided="false"/>
+  <concept_name concept_id="2913" name="FOLLOWING RR" locale="en" creator="15877" date_created="2008-01-29 10:47:51.0" concept_name_id="3133" voided="false"/>
+  <concept_name concept_id="2914" name="FOLLOWING SS" locale="en" creator="15877" date_created="2008-01-29 10:49:00.0" concept_name_id="3134" voided="false"/>
+  <concept_name concept_id="2915" name="FOLLOWING TT" locale="en" creator="15877" date_created="2008-01-29 10:49:45.0" concept_name_id="3135" voided="false"/>
+  <concept_name concept_id="2916" name="FOLLOWING UU" locale="en" creator="15877" date_created="2008-01-29 10:51:25.0" concept_name_id="3136" voided="false"/>
+  <concept_name concept_id="2917" name="FOLLOWING VV" locale="en" creator="15877" date_created="2008-01-29 10:52:14.0" concept_name_id="3137" voided="false"/>
+  <concept_name concept_id="2918" name="FOLLOWING WW" locale="en" creator="15877" date_created="2008-01-29 10:52:55.0" concept_name_id="3138" voided="false"/>
+  <concept_name concept_id="2919" name="FOLLOWING XX" locale="en" creator="15877" date_created="2008-01-29 10:53:14.0" concept_name_id="3139" voided="false"/>
+  <concept_name concept_id="2920" name="FOLLOWING YY" locale="en" creator="15877" date_created="2008-01-29 10:53:34.0" concept_name_id="3140" voided="false"/>
+  <concept_name concept_id="2921" name="FOLLOWING ZZ" locale="en" creator="15877" date_created="2008-01-29 10:54:03.0" concept_name_id="3141" voided="false"/>
+ 
+  <concept_name concept_id="3070" name="TREATMENT GROUP" locale="en" creator="6" date_created="2008-05-18 15:57:39.0" concept_name_id="3290" voided="false"/>
+  <concept_name concept_id="3070" name="TX GROUP" locale="en" creator="6" date_created="2008-05-18 15:57:39.0" concept_name_id="6151" voided="false"/>
+  <concept_name concept_id="3490" name="PATIENT HIV NEGATIVE" locale="en" creator="7" date_created="2008-07-17 10:36:51.0" concept_name_id="4842" voided="false"/>
+  <concept_name concept_id="3499" name="WAITING FOR TREATMENT" locale="en" creator="15878" date_created="2008-07-28 14:37:52.0" concept_name_id="4851" voided="false"/>
+  <concept_name concept_id="3499" name="EN ATTENTE DE TRAITEMENT" locale="fr" creator="15878" date_created="2009-02-25 10:35:27.0" concept_name_id="8283" voided="false"/>
+  <concept_name concept_id="3499" name="EN ATTENTE DE TRAITEMENT" locale="fr" creator="15878" date_created="2009-02-25 10:35:27.0" concept_name_id="8284" voided="false"/>
+  <concept_name concept_id="3500" name="SUSPENDED" locale="en" creator="15878" date_created="2008-07-28 14:38:30.0" concept_name_id="4852" voided="false"/>
+  <concept_name concept_id="3500" name="SUSPENDU" locale="fr" creator="15878" date_created="2009-02-25 10:34:40.0" concept_name_id="8281" voided="false"/>
+  <concept_name concept_id="3500" name="SUSPENDU" locale="fr" creator="15878" date_created="2009-02-25 10:34:40.0" concept_name_id="8282" voided="false"/>
+  <concept_name concept_id="3501" name="ON TREATMENT" locale="en" creator="15878" date_created="2008-07-28 14:39:48.0" concept_name_id="4853" voided="false"/>
+  <concept_name concept_id="3501" name="SOUS TRAITEMENT" locale="fr" creator="15878" date_created="2009-02-25 10:34:23.0" concept_name_id="8279" voided="false"/>
+  <concept_name concept_id="3501" name="SOUS TRAITEMENT" locale="fr" creator="15878" date_created="2009-02-25 10:34:23.0" concept_name_id="8280" voided="false"/>
+  <concept_name concept_id="3502" name="MULTI-DRUG RESISTANT TUBERCULOSIS PATIENT STATUS" locale="en" creator="15878" date_created="2008-07-28 14:40:42.0" concept_name_id="4854" voided="false"/>
+  <concept_name concept_id="3502" name="L&apos;ÉTAT DU PATIENT ATTEINTES DE TB-MR" locale="fr" creator="15878" date_created="2009-02-25 10:34:04.0" concept_name_id="8277" voided="false"/>
+  <concept_name concept_id="3502" name="" locale="fr" creator="15878" date_created="2009-02-25 10:34:04.0" concept_name_id="8278" voided="false"/>
+  <concept_name concept_id="3503" name="RECONVERTED" locale="en" creator="15878" date_created="2008-07-28 14:41:40.0" concept_name_id="4855" voided="false"/>
+  <concept_name concept_id="3503" name="RECONVERTIS" locale="fr" creator="15878" date_created="2009-02-25 10:33:44.0" concept_name_id="8275" voided="false"/>
+  <concept_name concept_id="3503" name="RECONVERTIS" locale="fr" creator="15878" date_created="2009-02-25 10:33:44.0" concept_name_id="8276" voided="false"/>
+  <concept_name concept_id="3504" name="CONVERTED" locale="en" creator="15878" date_created="2008-07-28 14:42:23.0" concept_name_id="4856" voided="false"/>
+  <concept_name concept_id="3504" name="CONVERTI" locale="fr" creator="15878" date_created="2009-02-25 11:22:10.0" concept_name_id="8359" voided="false"/>
+  <concept_name concept_id="3504" name="CONVERTI" locale="fr" creator="15878" date_created="2009-02-25 11:22:10.0" concept_name_id="8360" voided="false"/>
+  <concept_name concept_id="3505" name="NOT CONVERTED" locale="en" creator="15878" date_created="2008-07-28 14:42:56.0" concept_name_id="4857" voided="false"/>
+  <concept_name concept_id="3505" name="PAS CONVERTI" locale="fr" creator="15878" date_created="2009-02-25 10:32:58.0" concept_name_id="8271" voided="false"/>
+  <concept_name concept_id="3505" name="PAS CONVERTI" locale="fr" creator="15878" date_created="2009-02-25 10:32:58.0" concept_name_id="8272" voided="false"/>
+  <concept_name concept_id="3506" name="MULTI-DRUG RESISTANT TUBERCULOSIS CULTURE STATUS" locale="en" creator="15878" date_created="2008-07-28 14:44:11.0" concept_name_id="4858" voided="false"/>
+  <concept_name concept_id="3506" name="TB CULTURE STATUS" locale="en" creator="15878" date_created="2008-07-28 14:44:11.0" concept_name_id="6263" voided="false"/>
+  <concept_name concept_id="3506" name="" locale="fr" creator="15878" date_created="2009-02-25 10:32:21.0" concept_name_id="8269" voided="false"/>
+  <concept_name concept_id="3506" name="ÉTAT DE LA CULTURE DE LA TUBERCULOSE MULTI-RÉSISTANTES" locale="fr" creator="15878" date_created="2009-02-25 10:32:21.0" concept_name_id="8270" voided="false"/>
+  <concept_name concept_id="3507" name="STILL ON TREATMENT" locale="en" creator="15878" date_created="2008-07-28 14:45:30.0" concept_name_id="4859" voided="false"/>
+  <concept_name concept_id="3507" name="ENCORE SOUS TRAITEMENT" locale="fr" creator="15878" date_created="2009-02-25 10:31:48.0" concept_name_id="8267" voided="false"/>
+  <concept_name concept_id="3507" name="ENCORE SOUS TRAITEMENT" locale="fr" creator="15878" date_created="2009-02-25 10:31:48.0" concept_name_id="8268" voided="false"/>
+  <concept_name concept_id="3508" name="MULTI-DRUG RESISTANT TUBERCULOSIS TREATMENT OUTCOME" locale="en" creator="15878" date_created="2008-07-28 14:47:00.0" concept_name_id="4860" voided="false"/>
+  <concept_name concept_id="3508" name="RÉSULTATS DU TRAITEMENT DE LA TUBERCULOSE MULTI-RÉSISTANTE" locale="fr" creator="15878" date_created="2009-02-25 10:30:18.0" concept_name_id="8261" voided="false"/>
+  <concept_name concept_id="3508" name="RÉSULTATS" locale="fr" creator="15878" date_created="2009-02-25 10:30:18.0" concept_name_id="8262" voided="false"/>
+  <concept_name concept_id="3568" name="VILLAGE HEALTH WORKER PROGRAM" locale="en" creator="15877" date_created="2008-08-18 11:19:08.0" concept_name_id="4921" voided="false"/>
+  <concept_name concept_id="3568" name="VHW PROGRAM" locale="en" creator="15877" date_created="2008-08-18 11:19:08.0" concept_name_id="6274" voided="false"/>
+  <concept_name concept_id="3591" name="KAPOSIS SARCOMA PROGRAM" locale="en" creator="15877" date_created="2008-09-16 11:48:13.0" concept_name_id="4946" voided="false"/>
+  <concept_name concept_id="3591" name="KS PROGRAM" locale="en" creator="15877" date_created="2008-09-16 11:48:13.0" concept_name_id="6282" voided="false"/>
+  <concept_name concept_id="3594" name="EARLY INFANT DIAGNOSIS PROGRAM" locale="en" creator="15877" date_created="2008-09-16 11:51:43.0" concept_name_id="4949" voided="false"/>
+  <concept_name concept_id="3626" name="DISCHARGED" locale="en" creator="15877" date_created="2008-09-17 15:26:05.0" concept_name_id="4981" voided="false"/>
+  <concept_name concept_id="3627" name="PATIENT STATUS" locale="en" creator="15877" date_created="2008-09-17 15:31:03.0" concept_name_id="4982" voided="false"/>
+  <concept_name concept_id="3643" name="FOLLOWING UNINFECTED" locale="en" creator="15877" date_created="2008-09-23 10:33:27.0" concept_name_id="4998" voided="false"/>
+  <concept_name concept_id="3644" name="FOLLOWING EXPOSED" locale="en" creator="15877" date_created="2008-09-23 10:33:57.0" concept_name_id="4999" voided="false"/>
+
+
+
+
   <concept concept_id="21" retired="false" datatype_id="1" class_id="1" is_set="false" creator="2" date_created="2004-01-01 00:00:00.0" version="" changed_by="2" date_changed="2005-02-16 00:44:07.0" uuid="3ccc7158-26fe-102b-80cb-0017a47871b2"/>
   <concept concept_id="300" retired="false" datatype_id="2" class_id="1" is_set="false" creator="2" date_created="2004-01-01 00:00:00.0" version="" changed_by="2" date_changed="2005-02-16 17:59:57.0" uuid="3ccf4090-26fe-102b-80cb-0017a47871b2"/>
   <concept concept_id="657" retired="false" datatype_id="4" class_id="8" is_set="true" creator="2" date_created="2004-01-01 00:00:00.0" version="" uuid="3cd27c1a-26fe-102b-80cb-0017a47871b2"/>
@@ -15,9 +504,15 @@
   <concept concept_id="1018" retired="false" datatype_id="1" class_id="1" is_set="false" creator="2" date_created="2004-12-02 00:00:00.0" version="" changed_by="2" date_changed="2005-06-29 14:42:08.0" uuid="3cd69f48-26fe-102b-80cb-0017a47871b2"/>
   <concept concept_id="1019" retired="false" datatype_id="4" class_id="8" is_set="true" creator="2" date_created="2004-12-02 00:00:00.0" version="" changed_by="2" date_changed="2005-12-07 17:11:24.0" uuid="3cd6a0e2-26fe-102b-80cb-0017a47871b2"/>
   <concept concept_id="1021" retired="false" datatype_id="1" class_id="1" is_set="false" creator="2" date_created="2004-12-02 00:00:00.0" version="" uuid="3cd6a402-26fe-102b-80cb-0017a47871b2"/>
+  <concept concept_id="1377" retired="false" datatype_id="4" class_id="17" is_set="false" creator="2" date_created="2004-12-02 00:00:00.0" version="" uuid="3ca7a413-26fe-120b-81cb-0017a47871b2"/>
+  <concept concept_id="1482" retired="false" datatype_id="4" class_id="16" is_set="false" creator="2" date_created="2004-12-02 00:00:00.0" version="" uuid="3ca7a423-26fe-120b-80cb-0017a47871b2"/>
+  <concept concept_id="1484" retired="false" datatype_id="4" class_id="17" is_set="false" creator="2" date_created="2004-12-02 00:00:00.0" version="" uuid="3ca7a453-26fe-120b-82cb-0017a47871b2"/>
+
+
   <concept concept_id="3059" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1128" date_created="2008-04-19 04:24:15.0" version="" uuid="43119902-673c-4ee1-82c8-349477440760"/>
   <concept concept_id="3060" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1128" date_created="2008-04-19 04:25:15.0" version="" uuid="4d3e3651-c58b-4d9c-929b-5d966acf953c"/>
-  <concept concept_id="5497" retired="false" datatype_id="1" class_id="1" is_set="false" creator="2" date_created="2004-08-12 00:00:00.0" version="" uuid="3ceda710-26fe-102b-80cb-0017a47871b2"/>
+  <concept concept_id="5089" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="c607c80f-1ea9-4da3-bb88-6276ce8868dd"/>
+  <concept concept_id="5497" retired="false" datatype_id="1" class_id="1" is_set="false" creator="2" date_created="2004-08-12 00:00:00.0" version="" uuid="3ceda710-26fe-102b-80cb-0017a47871b2"/> 
   <concept_answer concept_answer_id="19" concept_id="300" answer_concept="690" creator="2" date_created="2005-02-16 17:56:08.0" uuid="3d38f792-26fe-102b-80cb-0017a47871b2"/>
   <concept_answer concept_answer_id="20" concept_id="300" answer_concept="692" creator="2" date_created="2005-02-16 17:56:08.0" uuid="3d38f8c8-26fe-102b-80cb-0017a47871b2"/>
   <concept_answer concept_answer_id="21" concept_id="300" answer_concept="694" creator="2" date_created="2005-02-16 17:56:08.0" uuid="3d38f9ea-26fe-102b-80cb-0017a47871b2"/>
@@ -89,7 +584,6 @@
   <concept_name concept_name_id="197" concept_id="729" name="BLOOD PLATELET" locale="en" creator="2" date_created="2004-12-02 00:00:00.0" uuid="3fc5c6e8-26fe-102b-80cb-0017a47871b2" voided="false"/>
   <concept_name concept_name_id="932" concept_id="729" name="PLTS" locale="en" creator="4" date_created="2004-10-20 00:00:00.0" uuid="3fce8684-26fe-102b-80cb-0017a47871b2" voided="false"/>
   <concept_name concept_name_id="1207" concept_id="729" name="THROMBOCYTE" locale="en" creator="2" date_created="2004-12-02 00:00:00.0" uuid="3fd17c04-26fe-102b-80cb-0017a47871b2" voided="false"/>
-  <concept_name concept_name_id="234" concept_id="730" name="CD4 PERCENT" locale="en" creator="2" date_created="2005-02-23 18:14:05.0" uuid="3fc5fdf2-26fe-102b-80cb-0017a47871b2" voided="false"/>
   <concept_name concept_name_id="628" concept_id="825" name="HSM" locale="en" creator="2" date_created="2005-02-18 14:19:03.0" uuid="3fcaeb46-26fe-102b-80cb-0017a47871b2" voided="false"/>
   <concept_name concept_name_id="756" concept_id="851" name="MCV" locale="en" creator="2" date_created="2004-12-02 00:00:00.0" uuid="3fcc66e2-26fe-102b-80cb-0017a47871b2" voided="false"/>
   <concept_name concept_name_id="315" concept_id="1015" name="CRIT" locale="en" creator="2" date_created="2004-12-02 00:00:00.0" uuid="3fc7209c-26fe-102b-80cb-0017a47871b2" voided="false"/>
@@ -107,7 +601,14 @@
   <concept_name concept_name_id="740" concept_id="1021" name="LYMPH CELLS" locale="en" creator="2" date_created="2004-12-02 00:00:00.0" uuid="3fcc19a8-26fe-102b-80cb-0017a47871b2" voided="false"/>
   <concept_name concept_name_id="743" concept_id="1021" name="LYMPHS" locale="en" creator="2" date_created="2004-12-02 00:00:00.0" uuid="3fcc247a-26fe-102b-80cb-0017a47871b2" voided="false"/>
   <concept_name concept_name_id="1461" concept_id="3060" name="PGRANULOCYTE" locale="en" creator="1128" date_created="2008-04-23 21:00:43.0" uuid="5aa31cb2-b429-4b3d-8bdf-3d496ec1411d" voided="false"/>
+  <concept_name concept_name_id="232" concept_id="5089" name="WEIGHT" locale="en" creator="2" date_created="2004-12-02 00:00:00.0" uuid="1fc2fc80-26fe-102b-80cb-0017a47871b2" voided="false"/> 
   <concept_name concept_name_id="233" concept_id="5497" name="CD4" locale="en" creator="2" date_created="2004-12-02 00:00:00.0" uuid="3fc5fc80-26fe-102b-80cb-0017a47871b2" voided="false"/> 
+  <concept_name concept_name_id="234" concept_id="730" name="CD4 PERCENT" locale="en" creator="2" date_created="2005-02-23 18:14:05.0" uuid="3fc5fdf2-26fe-102b-80cb-0017a47871b2" voided="false"/>
+  <concept_name concept_name_id="235" concept_id="1482" name="HIV PROGRAM" locale="en" creator="2" date_created="2004-12-02 00:00:00.0" uuid="3fc5fc85-26fe-902b-80cb-0017a47871b2" voided="false"/> 
+  <concept_name concept_name_id="236" concept_id="1377" name="ANTIRETROVIRAL TREATMENT GROUP" locale="en" creator="2" date_created="2004-12-02 00:00:00.0" uuid="3fc5fc82-26fe-902b-81cb-0017a47871b2" voided="false"/> 
+
+
+
   <concept_numeric concept_id="21" units="" precise="true"/>
   <concept_numeric concept_id="678" units="mm3" precise="true"/>
   <concept_numeric concept_id="679" units="" precise="false"/>
@@ -122,6 +623,7 @@
   <concept_numeric concept_id="1021" units="%" precise="false"/>
   <concept_numeric concept_id="3059" units="" precise="false"/>
   <concept_numeric concept_id="3060" units="" precise="false"/>
+  <concept_numeric concept_id="5089" units="kg" precise="false"/>
   <concept_numeric concept_id="5497" units="cells/mm3" precise="false"/>
   <concept_set concept_set_id="2" concept_id="21" concept_set="1019" sort_weight="1.0" creator="2" date_created="2005-12-15 13:26:49.0" uuid="3f27c330-26fe-102b-80cb-0017a47871b2"/>
   <concept_set concept_set_id="65" concept_id="678" concept_set="1019" sort_weight="8.0" creator="2" date_created="2005-12-15 13:26:49.0" uuid="3f2855ca-26fe-102b-80cb-0017a47871b2"/>
@@ -368,12 +870,12 @@
   <program program_id="9" concept_id="2708" creator="15971" date_created="2007-10-04 14:29:35.0" retired="false" uuid="cf7c1560-2700-102b-80cb-0017a47871b2" name="ORACTA STUDY" description="ORACTA STUDY"/>
   <program program_id="10" concept_id="2685" creator="15887" date_created="2007-10-29 22:29:37.0" changed_by="6" date_changed="2008-05-18 18:15:19.0" retired="false" uuid="cf7c16e6-2700-102b-80cb-0017a47871b2" name="HIV PEDIATRIC PROGRAM" description="HIV PEDIATRIC PROGRAM"/>
   <program_workflow program_workflow_id="3" program_id="3" concept_id="1484" creator="6" date_created="2006-09-27 20:34:45.0" retired="false" uuid="cf8f2664-2700-102b-80cb-0017a47871b2"/>
+  <program_workflow program_workflow_id="9" program_id="3" concept_id="3070" creator="1128" date_created="2007-05-03 09:35:38.0" retired="false" uuid="cf8f2fa6-2700-102b-80cb-0017a47871b2"/>
   <program_workflow program_workflow_id="4" program_id="4" concept_id="1484" creator="6" date_created="2006-09-27 20:35:03.0" retired="false" uuid="cf8f2934-2700-102b-80cb-0017a47871b2"/>
+  <program_workflow program_workflow_id="10" program_id="4" concept_id="1378" creator="1128" date_created="2007-05-03 10:05:42.0" retired="false" uuid="cf8f3140-2700-102b-80cb-0017a47871b2"/>
   <program_workflow program_workflow_id="5" program_id="5" concept_id="1846" creator="1128" date_created="2007-03-12 21:48:00.0" retired="false" uuid="cf8f2ad8-2700-102b-80cb-0017a47871b2"/>
   <program_workflow program_workflow_id="6" program_id="6" concept_id="1484" creator="1128" date_created="2007-03-28 10:11:39.0" retired="false" uuid="cf8f2c72-2700-102b-80cb-0017a47871b2"/>
   <program_workflow program_workflow_id="7" program_id="6" concept_id="5272" creator="1128" date_created="2007-03-28 11:03:03.0" retired="false" uuid="cf8f2e16-2700-102b-80cb-0017a47871b2"/>
-  <program_workflow program_workflow_id="9" program_id="3" concept_id="3070" creator="1128" date_created="2007-05-03 09:35:38.0" retired="false" uuid="cf8f2fa6-2700-102b-80cb-0017a47871b2"/>
-  <program_workflow program_workflow_id="10" program_id="4" concept_id="1378" creator="1128" date_created="2007-05-03 10:05:42.0" retired="false" uuid="cf8f3140-2700-102b-80cb-0017a47871b2"/>
   <program_workflow program_workflow_id="19" program_id="10" concept_id="1484" creator="15887" date_created="2007-10-29 22:31:52.0" retired="false" uuid="cf8f32da-2700-102b-80cb-0017a47871b2"/>
   <program_workflow program_workflow_id="20" program_id="10" concept_id="3070" creator="6" date_created="2008-05-18 18:15:19.0" retired="false" uuid="25bce7b8-bddf-440a-b939-a9cc11f03a27"/>
   <program_workflow_state program_workflow_state_id="5" program_workflow_id="3" concept_id="1490" initial="true" terminal="false" creator="6" date_created="2006-09-27 21:20:39.0" retired="false" uuid="cfa241f4-2700-102b-80cb-0017a47871b2"/>
@@ -801,6 +1303,7 @@
   <orders order_id="13031" order_type_id="4" concept_id="9" orderer="8" encounter_id="86653" start_date="2009-02-14 00:00:00.0" discontinued="false" creator="8" date_created="2009-02-15 20:40:50.0" voided="false" patient_id="13731" accession_number="354"/>
   <orders order_id="13032" order_type_id="4" concept_id="9" orderer="8" encounter_id="86654" start_date="2009-02-14 00:00:00.0" discontinued="false" creator="8" date_created="2009-02-15 20:41:30.0" voided="false" patient_id="13731" accession_number="423"/>
   <orders order_id="13033" order_type_id="4" concept_id="1019" orderer="8" encounter_id="86655" start_date="2009-02-14 00:00:00.0" discontinued="false" creator="8" date_created="2009-02-15 20:45:50.0" voided="false" patient_id="13731" accession_number="566"/>
+  <encounter encounter_id="20808" encounter_type="2" patient_id="7" provider_id="1130" location_id="26" form_id="28" encounter_datetime="2006-12-07 00:00:00.0" creator="1959" date_created="2006-12-07 16:09:18.0" voided="false" uuid="4a903934-26fe-102b-80cb-0017a47871b2"/>
   <encounter encounter_id="14943" encounter_type="2" patient_id="14493" provider_id="1" location_id="26" form_id="1" encounter_datetime="2006-05-30 00:00:00.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="49c5cc24-26fe-102b-80cb-0017a47871b2"/>
   <encounter encounter_id="20807" encounter_type="2" patient_id="20447" provider_id="1130" location_id="26" form_id="28" encounter_datetime="2006-12-07 00:00:00.0" creator="1959" date_created="2006-12-07 16:09:18.0" voided="false" uuid="4a903234-26fe-102b-80cb-0017a47871b2"/>
   <patient patient_id="14943" creator="1959" date_created="2006-11-24 10:50:16.0" changed_by="18313" date_changed="2008-05-27 12:20:33.0" voided="false" void_reason=""/>
@@ -814,6 +1317,15 @@
   <person_address person_address_id="87" person_id="14943" preferred="true" address1="NKONDO I" city_village="RWINKWAVU" state_province="EST" creator="1959" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="KAYONZA" neighborhood_cell="NKONDO" uuid="c7c8cf52-2700-102b-80cb-0017a47871b2"/>
   <person_address person_address_id="7624" person_id="20447" preferred="true" address1="" city_village="Rwinkwavu" state_province="EST" creator="18804" date_created="2008-08-06 17:05:36.0" voided="false" void_reason="" county_district="Kayonza" neighborhood_cell="" uuid="fb683259-cc5b-47aa-88c8-433a77252798"/>
   <person_attribute person_attribute_id="1570" person_id="2" value="26" person_attribute_type_id="7" creator="1" date_created="2007-05-03 09:20:37.0" voided="false" uuid="ca9b8bac-2700-102b-80cb-0017a47871b2"/>
+
+  <person_attribute person_attribute_id="1571" person_id="7" value="" person_attribute_type_id="2" creator="1" date_created="2007-05-03 09:20:37.0" voided="false" uuid="ca9a9bac-2700-102b-80cb-0017a47871b2"/>
+  <person_attribute person_attribute_id="1572" person_id="7" value="" person_attribute_type_id="3" creator="1" date_created="2007-05-03 09:20:39.0" voided="false" uuid="cabcda39-2700-102b-80cb-0017a47871b2"/>
+  <person_attribute person_attribute_id="1573" person_id="7" value="" person_attribute_type_id="4" creator="1" date_created="2007-05-03 09:20:40.0" voided="false" uuid="caca0408-2700-102b-80cb-0017a47871b2"/>
+  <person_attribute person_attribute_id="1574" person_id="7" value="" person_attribute_type_id="6" creator="1" date_created="2007-05-03 09:20:41.0" voided="false" uuid="caf35e70-2700-102b-80cb-0017a47871b2"/>
+  <person_attribute person_attribute_id="1575" person_id="7" value="26" person_attribute_type_id="7" creator="1" date_created="2007-05-03 09:20:43.0" voided="false" uuid="cb3593f8-2700-102b-80cb-0017a47871b2"/>
+  <person_attribute person_attribute_id="1576" person_id="7" value="" person_attribute_type_id="5" creator="1959" date_created="2007-05-04 11:18:21.0" voided="false" uuid="cb49bf38-2700-102b-80cb-0017a47871b2"/>
+  <person_attribute person_attribute_id="1577" person_id="7" value="" person_attribute_type_id="1" creator="1959" date_created="2007-05-04 11:18:21.0" voided="false" uuid="cb59c05a-2700-102b-80cb-0017a47871b2"/>
+
   <person_attribute person_attribute_id="1570" person_id="14943" value="" person_attribute_type_id="2" creator="1" date_created="2007-05-03 09:20:37.0" voided="false" uuid="ca9b8bac-2700-102b-80cb-0017a47871b2"/>
   <person_attribute person_attribute_id="4910" person_id="14943" value="" person_attribute_type_id="3" creator="1" date_created="2007-05-03 09:20:39.0" voided="false" uuid="cabcda32-2700-102b-80cb-0017a47871b2"/>
   <person_attribute person_attribute_id="6989" person_id="14943" value="" person_attribute_type_id="4" creator="1" date_created="2007-05-03 09:20:40.0" voided="false" uuid="caca0158-2700-102b-80cb-0017a47871b2"/>
@@ -830,12 +1342,24 @@
   <person_attribute person_attribute_id="43963" person_id="20447" value="" person_attribute_type_id="6" creator="18804" date_created="2008-08-06 17:05:57.0" voided="false" uuid="dbbb8552-c5b7-453f-8a46-a7cc04c633cf"/>
   <person_attribute person_attribute_id="43975" person_id="20447" value="27" person_attribute_type_id="7" creator="18804" date_created="2008-08-07 11:43:14.0" voided="true" voided_by="16367" void_reason="New value: 33" uuid="5751ade1-184e-4023-bc18-f268140fa078"/>
   <person_attribute person_attribute_id="45518" person_id="20447" value="33" person_attribute_type_id="7" creator="16367" date_created="2008-08-29 15:30:50.0" voided="false" uuid="e113807e-0c20-4691-b1e4-d6fa4781ff01"/>
+
+  <patient_program patient_program_id="3092" patient_id="7" program_id="3" date_enrolled="2006-09-01 00:00:00.0" creator="1959" date_created="2006-11-24 10:50:38.0" voided="false" uuid="c1d8a39e-2700-102b-80cb-0017a47871b2"/>
+  <patient_program patient_program_id="7741" patient_id="7" program_id="9" creator="19431" date_created="2008-06-12 13:43:42.0" voided="false" uuid="97b2984a-8f20-4ff0-a7f7-45518693a09d"/>
+
   <patient_program patient_program_id="3091" patient_id="14943" program_id="3" date_enrolled="2006-09-01 00:00:00.0" creator="1959" date_created="2006-11-24 10:50:38.0" voided="false" uuid="c1d8a28e-2700-102b-80cb-0017a47871b2"/>
   <patient_program patient_program_id="7740" patient_id="14943" program_id="9" creator="19431" date_created="2008-06-12 13:43:42.0" voided="false" uuid="97b2f84a-8f20-4ff0-a7f7-45518693a09d"/>
+
   <patient_program patient_program_id="8663" patient_id="20447" program_id="3" date_enrolled="2006-03-05 00:00:00.0" date_completed="2008-08-04 00:00:00.0" creator="18804" date_created="2008-08-06 18:34:34.0" voided="false" uuid="773fa223-1ff8-4b32-95cf-bf56f2660793"/>
   <patient_program patient_program_id="8664" patient_id="20447" program_id="6" date_enrolled="2007-03-05 00:00:00.0" date_completed="2007-08-08 00:00:00.0" creator="18804" date_created="2008-08-06 18:48:24.0" voided="false" uuid="371da8cb-ae5d-45c2-a78e-46e65cbdf904"/>
   <patient_program patient_program_id="8665" patient_id="20447" program_id="6" date_enrolled="2008-07-03 00:00:00.0" date_completed="2008-08-04 00:00:00.0" creator="18804" date_created="2008-08-06 18:51:32.0" voided="false" uuid="2dd91ed9-d1ab-4c1b-a980-c1e66ec37430"/>
   <patient_program patient_program_id="8666" patient_id="20447" program_id="4" date_enrolled="2006-03-05 00:00:00.0" creator="18804" date_created="2008-08-06 18:52:33.0" voided="false" uuid="1945f6a0-2d6b-44b3-bb55-5f5105cef4d7"/>
+
+  <patient_state patient_state_id="3146" patient_program_id="3092" state="5" start_date="2006-09-01" creator="1959" date_created="2006-11-24 10:51:30.0" voided="true" void_reason="" uuid="c44f4324-2700-102b-80cb-0017a47871b2"/>
+  <patient_state patient_state_id="4106" patient_program_id="3092" state="247" start_date="2006-01-09" creator="1128" date_created="2007-05-03 09:38:46.0" voided="true" void_reason="" uuid="c466105a-2700-102b-80cb-0017a47871b2"/>
+  <patient_state patient_state_id="13589" patient_program_id="3092" state="343" start_date="2006-09-01" creator="17018" date_created="2007-11-21 11:53:18.0" voided="true" void_reason="" uuid="c4c39552-2700-102b-80cb-0017a47871b2"/>
+  <patient_state patient_state_id="17928" patient_program_id="3092" state="368" start_date="2006-09-01" creator="2084" date_created="2008-02-28 11:04:23.0" voided="false" uuid="9048ec14-0190-42be-8a74-428c65427fe2"/>
+  <patient_state patient_state_id="17985" patient_program_id="3092" state="10" start_date="2008-02-29" creator="1959" date_created="2008-03-03 10:01:08.0" voided="false" uuid="82b29a43-45db-49cc-9708-f55e0436b16c"/>
+  
   <patient_state patient_state_id="3146" patient_program_id="3091" state="5" start_date="2006-09-01" creator="1959" date_created="2006-11-24 10:51:30.0" voided="true" void_reason="" uuid="c44f9324-2700-102b-80cb-0017a47871b2"/>
   <patient_state patient_state_id="4106" patient_program_id="3091" state="247" start_date="2006-01-09" creator="1128" date_created="2007-05-03 09:38:46.0" voided="true" void_reason="" uuid="c456105a-2700-102b-80cb-0017a47871b2"/>
   <patient_state patient_state_id="13589" patient_program_id="3091" state="343" start_date="2006-09-01" creator="17018" date_created="2007-11-21 11:53:18.0" voided="true" void_reason="" uuid="c4c08552-2700-102b-80cb-0017a47871b2"/>
@@ -855,8 +1379,31 @@
   <patient_state patient_state_id="22891" patient_program_id="8666" state="17" start_date="2006-03-05" end_date="2008-08-04" creator="18804" date_created="2008-08-06 18:53:43.0" voided="false" uuid="69b21fcc-964d-4847-8ac5-e288c00895b3"/>
   <patient_state patient_state_id="22892" patient_program_id="8666" state="304" start_date="2006-03-05" creator="18804" date_created="2008-08-06 18:54:02.0" voided="false" uuid="8966a551-7946-4335-b1f0-3c03e5a87216"/>
   <patient_state patient_state_id="22900" patient_program_id="8666" state="19" start_date="2008-08-04" creator="18804" date_created="2008-08-07 12:34:11.0" voided="false" uuid="45cfba4b-aefe-4487-a6f2-7fca270a7c06"/>
-  <obs obs_id="19515" person_id="14943" concept_id="5497" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="403.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="83f10eac-2700-102b-80cb-0017a47871b2"/>
-  <obs obs_id="35113" person_id="20447" concept_id="5089" encounter_id="20807" obs_datetime="2006-12-07 00:00:00.0" location_id="26" value_numeric="60.0" creator="1959" date_created="2006-12-07 16:09:18.0" voided="false" uuid="85476788-2700-102b-80cb-0017a47871b2"/>
+  
+  <obs obs_id="19514" person_id="14943" concept_id="5089" encounter_id="14943" obs_datetime="2006-12-07 00:00:00.0" location_id="26" value_numeric="60.0" creator="1959" date_created="2006-12-07 16:09:18.0" voided="false" uuid="85476472-2700-102b-80cb-0017a47871b2"/>
+  <obs obs_id="19515" person_id="14943" concept_id="5497" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="482.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="83f28eac-2700-112b-80cb-0017a47871b2"/>
+  <obs obs_id="19516" person_id="14943" concept_id="21" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="40.5" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="24f03eac-2700-122b-80cb-0017a47871b2"/>
+  <obs obs_id="19517" person_id="14943" concept_id="678" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="14.5" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="83f28eac-2700-132b-80cb-0017a47871b2"/>
+  <obs obs_id="19518" person_id="14943" concept_id="679" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="35.6" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="83f25eac-2700-142b-80cb-0017a47871b2"/>
+  <obs obs_id="19519" person_id="14943" concept_id="729" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="2.4" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="83f38eac-2700-152b-80cb-0017a47871b2"/>
+  <obs obs_id="19520" person_id="14943" concept_id="851" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="1.4" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="83f58eac-2700-162b-80cb-0017a47871b2"/>
+  <obs obs_id="19521" person_id="14943" concept_id="1015" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="58.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="83f49eac-2700-172b-80cb-0017a47871b2"/>
+  <obs obs_id="19521" person_id="14943" concept_id="1016" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="1.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="43f27eac-2700-182b-80cb-0017a47871b2"/>
+  <obs obs_id="19521" person_id="14943" concept_id="1017" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="42.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="85f18eac-2700-192b-80cb-0017a47871b2"/>
+  <obs obs_id="19521" person_id="14943" concept_id="1018" encounter_id="14943" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="266.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="27f11eac-2700-202b-80cb-0017a47871b2"/>
+																				
+  <obs obs_id="35113" person_id="20447" concept_id="5089" encounter_id="20807" obs_datetime="2006-12-07 00:00:00.0" location_id="26" value_numeric="60.0" creator="1959" date_created="2006-12-07 16:09:18.0" voided="false" uuid="234248789-2700-212b-80cb-0017a47871b2"/>
+  <obs obs_id="35114" person_id="20447" concept_id="5497" encounter_id="20807" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="403.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="83f02eac-2700-222b-80cb-0017a47871b2"/>
+  <obs obs_id="35115" person_id="20447" concept_id="21" encounter_id="20807" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="43.1" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="83f03eac-2700-232b-80cb-0017a47871b2"/>
+  <obs obs_id="35116" person_id="20447" concept_id="678" encounter_id="20807" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="14.7" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="35f04eac-2700-242b-80cb-0017a47871b2"/>
+  <obs obs_id="35117" person_id="20447" concept_id="679" encounter_id="20807" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="34.1" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="73f05eac-2700-252b-80cb-0017a47871b2"/>
+  <obs obs_id="35118" person_id="20447" concept_id="729" encounter_id="20807" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="4.1" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="92f06eac-2700-262b-80cb-0017a47871b2"/>
+  <obs obs_id="35119" person_id="20447" concept_id="851" encounter_id="20807" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="3.1" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="69f07eac-2700-272b-80cb-0017a47871b2"/>
+  <obs obs_id="35120" person_id="20447" concept_id="1015" encounter_id="20807" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="76.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="58f08eac-2700-282b-80cb-0017a47871b2"/>
+  <obs obs_id="35121" person_id="20447" concept_id="1016" encounter_id="20807" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="1.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="58f09eac-2700-292b-80cb-0017a47871b2"/>
+  <obs obs_id="35122" person_id="20447" concept_id="1017" encounter_id="20807" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="24.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="42f10eac-2700-302b-80cb-0017a47871b2"/>
+  <obs obs_id="35123" person_id="20447" concept_id="1018" encounter_id="20807" obs_datetime="2006-05-30 00:00:00.0" location_id="26" value_numeric="196.0" creator="1138" date_created="2006-09-08 00:00:00.0" voided="false" uuid="24f11eac-2700-312b-80cb-0017a47871b2"/>
+  
   <users user_id="8" system_id="8-3" username="jmiranda" password="654419c2907644bc77ee2787be474fa236a543" salt="67559d893cf2a66c5bb807364d4bf13818928ac" secret_question="moo" secret_answer="moo" creator="1" date_created="2006-06-25 19:16:54.0" changed_by="6" date_changed="2006-10-05 13:07:03.0" voided="false" void_reason="" />
   <users user_id="16461" system_id="1121-3" username="cwilliam" password="3939c35ca279b4df680eaf453f7e1ae45176f96" salt="bb15696c7e04a7554e51eaa27fdb435695faf" secret_question="moo" secret_answer="moo" creator="15887" date_created="2007-09-05 08:57:40.0" changed_by="15887" date_changed="2007-09-05 00:00:00.0" voided="false" void_reason="" />
   <users user_id="18804" system_id="2295-4" username="cheryl.amoroso" password="3743b55524a6f72a99dae3cd1228f3cd9587d110" salt="5e24725d28663c42a16a6d4978c2a845ee26" creator="18803" date_created="2008-04-29 15:43:38.0" changed_by="18804" date_changed="2008-06-25 11:53:44.0" voided="false" void_reason="" />

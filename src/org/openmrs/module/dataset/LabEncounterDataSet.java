@@ -21,7 +21,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.jfree.util.Log;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -41,6 +42,8 @@ import org.openmrs.module.dataset.definition.LabEncounterDataSetDefinition;
  */
 public class LabEncounterDataSet implements DataSet<Object> {
 	
+	private Log log = LogFactory.getLog(getClass());
+		
 	private LabEncounterDataSetDefinition definition;
 	
 	private EvaluationContext evaluationContext;
@@ -86,20 +89,14 @@ public class LabEncounterDataSet implements DataSet<Object> {
 			// TODO We need a way to sync these up
 			Encounter encounter = iter.next();
 				
-			
-			
 			// Build the dataset row
-			vals.put(new SimpleDataSetColumn(
-					EncounterDataSetDefinition.ENCOUNTER_ID), 
+			vals.put(new SimpleDataSetColumn(EncounterDataSetDefinition.ENCOUNTER_ID), 
 					encounter.getEncounterId());
-			vals.put(new SimpleDataSetColumn(
-					LabEncounterDataSetDefinition.PATIENT_ID),
+			vals.put(new SimpleDataSetColumn(LabEncounterDataSetDefinition.PATIENT_ID),
 					encounter.getPatientId());
-			vals.put(new SimpleDataSetColumn(
-					LabEncounterDataSetDefinition.LAB_ORDER_ID), 
+			vals.put(new SimpleDataSetColumn(LabEncounterDataSetDefinition.LAB_ORDER_ID), 
 					"not implemented yet");
-			vals.put(new SimpleDataSetColumn(
-					LabEncounterDataSetDefinition.LAB_ORDER_DATE), 
+			vals.put(new SimpleDataSetColumn(LabEncounterDataSetDefinition.LAB_ORDER_DATE), 
 					encounter.getEncounterDatetime());
 
 			for (DataSetColumn column : definition.getColumns()) { 
@@ -107,7 +104,7 @@ public class LabEncounterDataSet implements DataSet<Object> {
 					ConceptDataSetColumn conceptColumn = 
 						(ConceptDataSetColumn) column;
 										
-					// Quick hack to get this working
+					// FIXME Quick hack to get this working
 					Obs value = 
 						findObsByConcept(encounter, 
 								((ConceptDataSetColumn) column).getConcept() );
@@ -167,10 +164,24 @@ public class LabEncounterDataSet implements DataSet<Object> {
 	public EvaluationContext getEvaluationContext() {
 		return evaluationContext;
 	}
-	
+
+	/**
+	 * Convenience method used to get a desired observation by concept. This method
+	 * currently returns the first observation found.  I'm assuming that the Dao 
+	 * orders by date, but need to test this out.  
+	 * 
+	 * TODO Cells values = last obs for that patient & date of that concept
+	 * TODO Needs to be refactored and moved to a more appropriate place (maybe the evaluator).
+
+	 * @param encounter	
+	 * @param concept	the concept to find 
+	 * @return	the first observation with the given concept
+	 */
 	public Obs findObsByConcept(Encounter encounter, Concept concept) {
+		log.info("Encounter " + encounter.getEncounterId() + " " + encounter.getObs());
 		for (Obs obs : encounter.getObs()) { 
-			if (obs.getConcept().equals(concept)) { 
+			// TODO This only works when comparing conceptId, not concepts
+			if (obs.getConcept().getConceptId().equals(concept.getConceptId())) { 
 				return obs;
 			}
 		}

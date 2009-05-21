@@ -123,7 +123,7 @@ public class SimpleDataSetColumn implements DataSetColumn {
      */
     @Override
     public String toString() {
-    	return key;
+    	return getKey();
     }
 
 	/**

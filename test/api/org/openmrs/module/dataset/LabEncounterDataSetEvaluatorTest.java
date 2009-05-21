@@ -13,44 +13,30 @@
  */
 package org.openmrs.module.dataset;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Cohort;
-import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.logic.LogicCriteria;
-import org.openmrs.logic.result.Result;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
-import org.openmrs.module.dataset.definition.JoinDataSetDefinition;
 import org.openmrs.module.dataset.definition.LabEncounterDataSetDefinition;
-import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
-import org.openmrs.module.report.renderer.TsvReportRenderer;
-import org.openmrs.module.report.service.ReportService;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 
 /**
  * Test class that tries to run a portion of the
  */
 public class LabEncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
-	private static Log log = LogFactory.getLog(LabEncounterDataSetEvaluatorTest.class);
+	private Log log = LogFactory.getLog(getClass());
 	
 	
 	/**
@@ -76,6 +62,7 @@ public class LabEncounterDataSetEvaluatorTest extends BaseModuleContextSensitive
 	 * @throws Exception
 	 */
 	@Test
+	@SkipBaseSetup
 	public void shouldGenerateLabOrderDataSet() throws Exception {			
 		
 		EvaluationContext evalContext = new EvaluationContext();
