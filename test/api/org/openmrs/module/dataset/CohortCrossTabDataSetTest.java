@@ -41,15 +41,12 @@ import org.openmrs.test.SkipBaseSetup;
 public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
-	/*
-	FIXME Revert this change
 	public void register() {
 		SerializedObjectDAO dao = 
 			Context.getRegisteredComponents(SerializedObjectDAO.class).iterator().next();
 		dao.registerSupportedType(CohortDefinition.class);
 		dao.registerSupportedType(DataSetDefinition.class);
 	}
-	*/
 	
 	/**
 	 * TODO Add javadoc What the heck is this for?
