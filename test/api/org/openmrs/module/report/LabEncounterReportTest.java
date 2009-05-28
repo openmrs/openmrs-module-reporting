@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicCriteria;
 import org.openmrs.logic.result.Result;
@@ -56,7 +57,7 @@ public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Override
     public Boolean useInMemoryDatabase() {
-	    return true;
+	    return false;
 	}
 
 	@Before
@@ -77,12 +78,48 @@ public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void shouldGenerateLabResultsReportTest() throws Exception {			
 		
-		EvaluationContext evalContext = new EvaluationContext();
+		EvaluationContext sharedContext = new EvaluationContext();
+		Cohort baseCohort = new Cohort();
 
-		ReportService service = Context.getService(ReportService.class);
+		// Add all patients
+		// baseCohort = Context.getPatientSetService().getAllPatients();		
 
-		ReportSchema reportSchema = new ReportSchema();		
-		EvaluationContext context = new EvaluationContext();
+		// Add Malawi patients
+		//baseCohort.addMember(35201);
+		//baseCohort.addMember(35203);
+		//baseCohort.addMember(35205);
+		//baseCohort.addMember(35207);
+		//baseCohort.addMember(35209);
+
+		// Add Rwanda patients
+		baseCohort.addMember(20447);
+		baseCohort.addMember(15559);
+		baseCohort.addMember(18429);
+		baseCohort.addMember(13984);
+		baseCohort.addMember(14552);
+		baseCohort.addMember(14952);
+		baseCohort.addMember(12591);
+		baseCohort.addMember(13059);
+		baseCohort.addMember(15447);
+		
+		sharedContext.setBaseCohort(baseCohort);
+		
+		// Date parameters
+		Date startDate = Context.getDateFormat().parse("04/01/2009");
+		Date endDate = Context.getDateFormat().parse("04/30/2009");
+		
+
+		// Set parameters for report
+		Map<String,Object> parameterValues = new HashMap<String,Object>();
+
+		// Location parameters (Rwinkwavu)
+		Location location = Context.getLocationService().getLocation(new Integer(26));
+		parameterValues.put("location", location);
+		
+		// Date parameters
+		parameterValues.put("startDate", startDate);
+		parameterValues.put("endDate", endDate);
+		sharedContext.setParameterValues(parameterValues);
 		
 		// Create, evaluate, and render the patient dataset
 		PatientDataSetDefinition patientDataSetDefinition = 
@@ -91,13 +128,16 @@ public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
 			Context.getService(
 					DataSetDefinitionService.class).evaluate(
 							patientDataSetDefinition, 
-							evalContext);
+							sharedContext);
 
-        ReportData patientReportData = new ReportData();
-        Map<String, DataSet> patientDataSets = new HashMap<String, DataSet>();
-        patientDataSets.put("patient", patientDataSet);
-        patientReportData.setDataSets(patientDataSets);        
-        new CsvReportRenderer().render(patientReportData, null, System.out);		
+        //ReportData patientReportData = new ReportData();
+        //Map<String, DataSet> patientDataSets = new HashMap<String, DataSet>();
+        //patientDataSets.put("patient", patientDataSet);
+        //patientReportData.setDataSets(patientDataSets);        
+        //new CsvReportRenderer().render(patientReportData, null, System.out);		
+		
+		EvaluationContext encounterDatasetContext = new EvaluationContext();
+		encounterDatasetContext.setBaseCohort(baseCohort);		
 		
 		// Create, evaluate, and render the lab dataset
 		Integer [] labTests = { 5497, 5089, 1019 };
@@ -105,13 +145,14 @@ public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
 			new LabEncounterDataSetDefinition(Arrays.asList(labTests));				
 		DataSet<Object> labDataSet = 
 			Context.getService(
-				DataSetDefinitionService.class).evaluate(labDataSetDefinition, evalContext);		
-        ReportData labReportData = new ReportData();
-        Map<String, DataSet> labDataSets = new HashMap<String, DataSet>();
-        labDataSets.put("encounter", labDataSet);
-        labReportData.setDataSets(labDataSets);        
-        new CsvReportRenderer().render(labReportData, null, System.out);		
+				DataSetDefinitionService.class).evaluate(
+						labDataSetDefinition, sharedContext);	
 		
+        //ReportData labReportData = new ReportData();
+        //Map<String, DataSet> labDataSets = new HashMap<String, DataSet>();
+        //labDataSets.put("encounter", labDataSet);
+        //labReportData.setDataSets(labDataSets);        
+        //new CsvReportRenderer().render(labReportData, null, System.out);			
 		
 		// Create, evaluate, and render the joined dataset 
         JoinDataSetDefinition joinDataSetDefinition = 
@@ -125,7 +166,7 @@ public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
         DataSet joinDataSet = 
         	Context.getService(DataSetDefinitionService.class).evaluate(
         			joinDataSetDefinition, 
-        			new EvaluationContext());
+        			sharedContext);
         
         ReportData reportData = new ReportData();
         Map<String, DataSet> dataSets = new HashMap<String, DataSet>();

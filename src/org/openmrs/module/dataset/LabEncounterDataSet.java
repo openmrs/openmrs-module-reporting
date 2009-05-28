@@ -26,6 +26,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -113,11 +114,8 @@ public class LabEncounterDataSet implements DataSet<Object> {
 								((ConceptDataSetColumn) column).getConcept() );
 					
 					vals.put(column, value.getValueAsString(Context.getLocale()));
-				}
-				
-			}
-
-			
+				}				
+			}			
 			return vals;
 		}
 		
@@ -182,7 +180,7 @@ public class LabEncounterDataSet implements DataSet<Object> {
 	 */
 	public Obs findObsByConcept(Encounter encounter, Concept concept) {
 		Obs obs = null;
-		log.info("Encounter " + encounter.getEncounterId() + " " + encounter.getObs());
+		//log.info("Finding obs by encounter " + encounter.getEncounterId() + " and concept " + concept.getId() );
 		for (Obs current : encounter.getObs()) { 
 			// TODO This only works when comparing conceptId, not concepts
 			if (current.getConcept().getConceptId().equals(concept.getConceptId())) { 	
@@ -197,6 +195,23 @@ public class LabEncounterDataSet implements DataSet<Object> {
 		return obs != null ? obs : new Obs();
 
 	}	
+	
+	
+	/**
+	 * Returns the cohort of patients that are included in this dataset.
+	 * 
+	 * @return	the cohort of patients included in dataset.
+	 */
+	public Cohort getCohort() { 
+		Cohort cohort = new Cohort();
+		if (encounters != null) { 
+			for(Encounter encounter : encounters) { 			
+				cohort.addMember(encounter.getPatientId());			
+			}
+		}
+		return cohort;
+		
+	}
 		
 }
 

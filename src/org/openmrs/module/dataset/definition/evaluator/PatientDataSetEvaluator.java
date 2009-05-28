@@ -20,7 +20,9 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.PatientDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
@@ -57,10 +59,10 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		Cohort cohort = context.getBaseCohort();
 
 		// By default, get all patients
-		if (cohort == null) {
-			cohort = Context.getPatientSetService().getAllPatients();
+		if (cohort == null) {			
+			throw new APIException("Cohort cannot be empty");
 		}
-		log.info("cohort: " + cohort.size());
+		
 		List<Patient> patients = 
 			Context.getPatientSetService().getPatients(cohort.getMemberIds());
 				

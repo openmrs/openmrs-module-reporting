@@ -42,9 +42,10 @@
 	<classpathentry kind="lib" path="/openmrs-trunk/lib/mysql-connector-java/mysql-connector-java-5.1.7-bin.jar"/>
 	<classpathentry kind="lib" path="lib-common/dbunit-2.4.4.jar"/>
 	<classpathentry kind="lib" path="lib-common/hsqldb-1.8.0.10.jar"/>
-	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.0.7962-dev.jar"/>
-	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.0.7962-dev.jar"/>
-	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.0.7962-dev.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.2-FINAL-20081019.jar"/>
+	<classpathentry kind="lib" path="lib-common/openmrs-api-1.4.2.01.7983.jar"/>
+	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.4.2.01.7983.jar"/>
+	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.4.2.01.7983.jar"/>
+	<classpathentry kind="lib" path="lib-common/backports14x-1.0.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

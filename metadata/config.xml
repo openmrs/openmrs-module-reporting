@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.2//EN" "../lib-common/config-1.2.dtd">
+<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN" "../lib-common/config-1.0.dtd">
 
-<module configVersion="1.2">
+<module configVersion="1.0">
 	
 	<!-- Base Module Properties -->
 	
 	<id>reporting</id>
-	<name>Core Reporting</name>
-	<version>1.6.0.1</version>
+	<name>Reporting</name>
+	<version>1.0</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
-	<author>Michael Seaton</author>
+	<author>Partners In Health</author>
 	<description>Core reporting API and services</description>
-	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>	
-	<require_version>1.5.0.7475</require_version>
+	<activator>@MODULE_PACKAGE@.ReportingActivator</activator>	
+	<require_version>1.4.2.01.7706</require_version><!-- 1.5.0.7475 -->
 	
 	<messages>
 		<lang>en</lang>

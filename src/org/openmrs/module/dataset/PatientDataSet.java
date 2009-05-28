@@ -94,6 +94,8 @@ public class PatientDataSet implements DataSet<Object> {
 			// TODO I'm not in love with the this approach, but we'll refactor later if we need to
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_ID), 
 					patient.getPatientId());
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.IMB_ID),
+					patient.getPatientIdentifier("IMB ID"));			
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), 
 					patient.getPersonName());
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER), 
@@ -188,7 +190,7 @@ public class PatientDataSet implements DataSet<Object> {
 		String treatmentGroup = "NONE";
 		
 		try { 
-
+			// TODO Needs to be pulled out into global property
 			Program program = 
 				Context.getProgramWorkflowService().getProgramByName("HIV PROGRAM");
 			
@@ -196,8 +198,9 @@ public class PatientDataSet implements DataSet<Object> {
 				Context.getProgramWorkflowService().getPatientPrograms(
 					patient, program, null, null, null, null, false);
 
+			// TODO Needs to be pulled out into global property
 			ProgramWorkflow workflow = 
-				program.getWorkflowByName("ANTIRETROVIRAL TREATMENT GROUP");
+				program.getWorkflowByName("TREATMENT GROUP");
 			
 			if (!patientPrograms.isEmpty()) {
 				
@@ -207,6 +210,7 @@ public class PatientDataSet implements DataSet<Object> {
 				// Assumes that a concept and name are associated with the state
 				if (currentState != null && currentState.getActive()) {
 					treatmentGroup = "ACTIVE: ";
+					//treatmentGroup += workflow.getConcept().getName().getName() + " => ";
 					treatmentGroup += currentState.getState().getConcept().getName().getName();
 				} else {
 					treatmentGroup = "INACTIVE";

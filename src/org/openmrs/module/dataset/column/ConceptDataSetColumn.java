@@ -38,7 +38,7 @@ public class ConceptDataSetColumn implements DataSetColumn {
      */
     public String getKey() {
     	return concept.getName() != null ?
-    			concept.getName().getName() + "_" + concept.getConceptId() :
+    			concept.getName().getShortestName() :
     				"" + concept.getConceptId();
     }
 	
@@ -47,7 +47,7 @@ public class ConceptDataSetColumn implements DataSetColumn {
 	 */
 	public String getColumnName() {
     	return concept.getName() != null ?
-    			concept.getName().getName() + "_" + concept.getConceptId() :
+    			concept.getName().getShortestName() :
     				"" + concept.getConceptId();
 	}
 

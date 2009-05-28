@@ -44,7 +44,7 @@ public class LabEncounterDataSetEvaluatorTest extends BaseModuleContextSensitive
 	 */
 	@Override
     public Boolean useInMemoryDatabase() {
-	    return true;
+	    return false;
 	}
 
 	@Before

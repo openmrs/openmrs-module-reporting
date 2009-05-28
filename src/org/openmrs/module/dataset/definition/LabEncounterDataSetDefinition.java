@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.ConceptSet;
 import org.openmrs.Obs;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -98,32 +99,37 @@ public class LabEncounterDataSetDefinition extends BaseDataSetDefinition {
     	for(Integer conceptId : labTests) { 
     		try { 
     			Concept concept = Context.getConceptService().getConcept(conceptId);
-    			// TODO Need to convert concept data type to data type
-    			
-    			if (concept.isSet()) {
+    			// TODO Need to convert concept data type to data type    			
+    			if (concept.isSet()) {    	
     				
+    				List<ConceptSet> conceptSets = 
+    					Context.getConceptService().getConceptSetsByConcept(concept);
+    				
+    				
+    				for (ConceptSet childConcept : conceptSets) {     					
+    	    			DataSetColumn column = 
+    	    				new ConceptDataSetColumn(childConcept.getConcept());    	    			
+    	    			columns.add(column);    	    			
+    				} 
+    				
+    				/*
     				for (ConceptSet childConcept : concept.getConceptSets()) {     					
     	    			DataSetColumn column = 
-    	    				new ConceptDataSetColumn(childConcept.getConcept());
-    	    			
-    	    			columns.add(column);
-    	    			
-    				}
-    				
+    	    				new ConceptDataSetColumn(childConcept.getConcept());    	    			
+    	    			columns.add(column);    	    			
+    				} 
+    				*/ 				
     			} 
     			else { 
 	    			DataSetColumn column = 
-	    				new ConceptDataSetColumn(concept);
-	    			   			
+	    				new ConceptDataSetColumn(concept);	    			   			
 	    			columns.add(column);
     			}
     		} catch (Exception e) { 
-    			log.error("Could not find concept: " + conceptId);
+    			log.error("Error occurred while looking up concept / concept set by ID " + conceptId, e);
+    			throw new APIException("Invalid concept ID " + conceptId + " : " + e.getMessage(), e);
     		}
-    	}
-    	
+    	}    	
     	return columns;
-
-	}
-	
+	}	
 }
