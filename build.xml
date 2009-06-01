@@ -36,6 +36,7 @@
 			</fileset>
 			<fileset dir="lib-common">
 				<include name="**/*.jar"/>
+				<exclude name="*openmrs*1.4*.jar"/>
 			</fileset>
 		</path>
 
