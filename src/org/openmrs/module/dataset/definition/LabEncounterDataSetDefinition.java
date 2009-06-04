@@ -53,17 +53,17 @@ public class LabEncounterDataSetDefinition extends BaseDataSetDefinition {
 	public static final String LAB_RESULT_DATE 	= "lab_result_date";
 	
 	// Lab sets to include 
-	private Collection<Integer> labTests;
+	private Collection<Integer> concepts;
 	
 	/**
 	 * Constructor
 	 */
 	public LabEncounterDataSetDefinition() {
-		labTests = new Vector<Integer>();
+		concepts = new Vector<Integer>();
 	}
 	
-	public LabEncounterDataSetDefinition(List<Integer> labTests) { 
-		this.labTests = labTests;
+	public LabEncounterDataSetDefinition(List<Integer> concepts) { 
+		this.concepts = concepts;
 	}
 	
 		
@@ -96,7 +96,7 @@ public class LabEncounterDataSetDefinition extends BaseDataSetDefinition {
     			new SimpleDataSetColumn(defaultColumnKeys[i], defaultColumnDatatypes[i]);
     		columns.add(column);
     	}
-    	for(Integer conceptId : labTests) { 
+    	for(Integer conceptId : concepts) { 
     		try { 
     			Concept concept = Context.getConceptService().getConcept(conceptId);
     			// TODO Need to convert concept data type to data type    			
@@ -121,9 +121,8 @@ public class LabEncounterDataSetDefinition extends BaseDataSetDefinition {
     				*/ 				
     			} 
     			else { 
-	    			DataSetColumn column = 
-	    				new ConceptDataSetColumn(concept);	    			   			
-	    			columns.add(column);
+    				
+	    			columns.add(new ConceptDataSetColumn(concept));
     			}
     		} catch (Exception e) { 
     			log.error("Error occurred while looking up concept / concept set by ID " + conceptId, e);

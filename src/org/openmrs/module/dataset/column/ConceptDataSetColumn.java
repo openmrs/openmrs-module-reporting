@@ -16,6 +16,7 @@ package org.openmrs.module.dataset.column;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.util.Log;
 import org.openmrs.Concept;
+import org.openmrs.api.context.Context;
 
 /**
  * Simple Implementation of a DataSetColumn
@@ -35,20 +36,30 @@ public class ConceptDataSetColumn implements DataSetColumn {
 	
     /**
      * @return the key
+	 * TODO Test when short name does not exist for a given concept
+	 * TODO Figure out the best way to get the short name for a concept
      */
     public String getKey() {
-    	return concept.getName() != null ?
-    			concept.getName().getShortestName() :
-    				"" + concept.getConceptId();
+    	return concept.getName() != null ? 
+    			concept.getName().getName() : 
+    				"" + concept.getConceptId();    
     }
 	
 	/**
+	 * Gets the preferred name in the current locale (or 
 	 * @return the columnName
+	 * TODO Test when short name does not exist for a given concept
+	 * TODO Figure out the best way to get the short name for a concept
 	 */
-	public String getColumnName() {
-    	return concept.getName() != null ?
+	public String getColumnName() {	    
+    	return concept.getName() != null ? 
+    			concept.getName().getName() : 
+    				"" + concept.getConceptId();
+		/*
+		return concept.getName() != null ?
     			concept.getName().getShortestName() :
     				"" + concept.getConceptId();
+    	*/
 	}
 
 	/**

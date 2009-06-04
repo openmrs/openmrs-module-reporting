@@ -95,9 +95,9 @@ public class PatientDataSet implements DataSet<Object> {
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_ID), 
 					patient.getPatientId());
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.IMB_ID),
-					patient.getPatientIdentifier("IMB ID"));			
+					patient.getPatientIdentifier("IMB ID").getIdentifier());			
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), 
-					patient.getPersonName());
+					patient.getPersonName().getFamilyName() + " " + patient.getPersonName().getGivenName());
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER), 
 					patient.getGender());	
 			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.AGE), 

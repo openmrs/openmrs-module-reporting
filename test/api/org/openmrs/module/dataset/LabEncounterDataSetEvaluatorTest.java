@@ -13,8 +13,11 @@
  */
 package org.openmrs.module.dataset;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -28,6 +31,7 @@ import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
+import org.openmrs.module.report.renderer.XlsReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -69,10 +73,10 @@ public class LabEncounterDataSetEvaluatorTest extends BaseModuleContextSensitive
 		
 		DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);		
 		
-		Integer [] labTestIds = { 5497, 5089, 1019 };
+		Integer [] conceptIds = { 657, 6167, 6168 };
 		
 		LabEncounterDataSetDefinition definition = 
-			new LabEncounterDataSetDefinition(Arrays.asList(labTestIds));
+			new LabEncounterDataSetDefinition(Arrays.asList(conceptIds));
 		
 		DataSet<Object> dataSet = service.evaluate(definition, evalContext);
 
@@ -80,10 +84,8 @@ public class LabEncounterDataSetEvaluatorTest extends BaseModuleContextSensitive
 		Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
 		dataSets.put("labDataSet", dataSet);
 		reportData.setDataSets(dataSets);
-		
-		new CsvReportRenderer().render(reportData, null, System.out);
-					
-	
-		
+
+		// Write to standard output
+		new CsvReportRenderer().render(reportData, null, System.out);		
 	}
 }

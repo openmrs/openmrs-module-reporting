@@ -93,7 +93,7 @@ public class EncounterDataSet implements DataSet<Object> {
 			vals.put(new SimpleDataSetColumn(EncounterDataSetDefinition.LOCATION), 
 				encounter.getLocation().getName());
 			vals.put(new SimpleDataSetColumn(EncounterDataSetDefinition.PERSON), 
-				encounter.getPatient().getPersonName());
+				encounter.getPatient().getPatientId());
 			vals.put(new SimpleDataSetColumn(EncounterDataSetDefinition.GENDER), 
 				encounter.getPatient().getGender());	
 			vals.put(new SimpleDataSetColumn(EncounterDataSetDefinition.AGE), 

@@ -28,7 +28,6 @@ public class XlsReportRendererTest {
      * @see {@link XlsReportRenderer#render(ReportData,String,OutputStream)}
      */
     @Test
-    @Ignore
     @Verifies(value = "should render ReportData to an xls file", method = "render(ReportData,String,OutputStream)")
     public void render_shouldRenderReportDataToAnXlsFile() throws Exception {
         DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");

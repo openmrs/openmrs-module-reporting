@@ -129,9 +129,11 @@ public class LabEncounterDataSetEvaluator implements DataSetEvaluator {
 			// If encounter date is after the given end date
 			if (endDate == null ||  encounterDate.after(endDate)) { 
 				continue;
-			}
-			
-			log.debug("Adding lab order: " + order);
+			}			
+			// Should filter encounters that do not have any observations
+			if (encounter.getObs().isEmpty()) { 
+				continue;
+			}			
 			encountersMap.put(encounter.getDateCreated(), encounter);
 		}
 		

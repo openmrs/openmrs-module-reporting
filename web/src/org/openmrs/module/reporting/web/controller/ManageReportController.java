@@ -1,6 +1,8 @@
 package org.openmrs.module.reporting.web.controller;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,6 +32,7 @@ import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
+import org.openmrs.module.report.renderer.XlsReportRenderer;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -68,6 +71,8 @@ public class ManageReportController {
     
     @InitBinder
     public void initBinder(WebDataBinder binder) { 
+    	// TODO Switch this to the Context.getDateFormat()
+    	//SimpleDateFormat dateFormat = Context.getDateFormat();
     	SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy"); 
     	dateFormat.setLenient(false); 
     	binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false)); 
@@ -78,7 +83,8 @@ public class ManageReportController {
     		@RequestParam(required=false, value="locationId") Integer locationId,
     		@RequestParam(required=false, value="startDate") Date startDate,
     		@RequestParam(required=false, value="endDate") Date endDate,
-    		@RequestParam(required=false, value="labSets") String labSets,  
+    		@RequestParam(required=false, value="conceptIds") String conceptIds,  
+    		@RequestParam(required=false, value="renderType") String renderType,      		
     		HttpServletResponse response) {
 
     	try { 
@@ -109,12 +115,13 @@ public class ManageReportController {
     		//encounterDatasetContext.setBaseCohort(baseCohort);		
     		
     		// Create, evaluate, and render the lab dataset (5497, 5089, 1019)
-    		Integer [] labTests = { 5497, 5089, 1019 };
-    		
+    		// TODO Need to make this a global property or user-entered values
+    		Integer [] LAB_CONCEPT_IDS = { 657, 856, 6167, 6168 };
+
     		// List<Integer> labTests = splitIdentifiers(labTests);
     		
     		LabEncounterDataSetDefinition ledsDefinition = 
-    			new LabEncounterDataSetDefinition(Arrays.asList(labTests));				
+    			new LabEncounterDataSetDefinition(Arrays.asList(LAB_CONCEPT_IDS));				
     		    		
     		 
     		LabEncounterDataSet labDataSet = (LabEncounterDataSet) 
@@ -176,14 +183,21 @@ public class ManageReportController {
             dataSets.put("joinDataSet", joinedDataSet);
             reportData.setDataSets(dataSets);
 
-
-			// Set headers and content type of report file
-			response.setContentType("text/csv");
-			response.setHeader("Content-Disposition", "attachment; filename=\"labreport.csv\"");
+            log.info("Render type: " + renderType);
             
-            new CsvReportRenderer().render(reportData, null, response.getOutputStream());
-            
-            
+            if ("XLS".equalsIgnoreCase(renderType)) { 
+            	log.info("Rendering as xls");
+				response.setContentType("application/vnd.ms-excel");
+				response.setHeader("Content-Disposition", "attachment; filename=\"labreport.xls\"");            
+				new XlsReportRenderer().render(reportData, null, response.getOutputStream());
+            }
+            else {
+            	log.info("Rendering as csv");
+				// Set headers and content type of report file
+				response.setContentType("text/csv");
+				response.setHeader("Content-Disposition", "attachment; filename=\"labreport.csv\"");            
+	            new CsvReportRenderer().render(reportData, null, response.getOutputStream());
+            }
     	} catch (IOException e) { 
     		e.printStackTrace();
     	}
