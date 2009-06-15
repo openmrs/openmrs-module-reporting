@@ -5,7 +5,7 @@
 <!-- ** @author Michael Seaton                              ** -->
 <!-- ** @version 1.0                                        ** -->
 <!-- ********************************************************* -->
-<project name="Reporting" default="package-module">
+<project name="Reporting" default="package-module-14x">
 		
 	<!-- *********************************************************** -->
 	<!-- **                     TARGETS                           ** -->
@@ -152,10 +152,12 @@
 		
 		<!-- Create distributable jar file -->
 		<jar destfile="dist/${module.id}-${module.version}.omod">
-			<fileset dir="build" includes="**/*">
-				<exclude name="test/**/*" />				
-			</fileset>
-			
+			<fileset dir="build">
+				<include name="**/*" />
+				<exclude name="**/*Test*.class" />
+				<exclude name="**/CreateInitialDataSet.class" />
+				<exclude name="**/test/**/*" />
+			</fileset>			
 		</jar>
 	</target>
 	

@@ -14,6 +14,7 @@
 package org.openmrs.module.indicator;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.openmrs.logic.LogicCriteria;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -40,6 +41,27 @@ public class CohortIndicator extends BaseIndicator {
      */
     public CohortIndicator() {
     	super();
+    }
+
+    
+    /**
+     * Public constructor with arguments.
+     * @param name
+     * @param description
+     * @param cohortDefinition
+     * @param logicCriteria
+     * @param aggregator
+     */
+    public CohortIndicator(String name, String description, Mapped<? extends CohortDefinition> cohortDefinition, LogicCriteria logicCriteria, Class<? extends Aggregator> aggregator) { 
+    	super();
+    	this.setName(name);
+    	this.setDescription(description);
+    	this.cohortDefinition = cohortDefinition;
+    	this.logicCriteria = logicCriteria;
+    	this.aggregator = aggregator;
+
+    	// TODO Need to remove this once we get a serialization working
+    	this.setUuid(UUID.randomUUID().toString());
     }
 	
     //***** Property Access *****

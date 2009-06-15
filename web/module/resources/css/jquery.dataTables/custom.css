@@ -1,0 +1,77 @@
+.div-column-nav {
+	position: static;
+	width: 28%;
+	cursor: pointer;
+	float: left;
+	list-style: none;
+	margin: 3px;
+	list-style: none;
+}
+
+.div-popup {
+	font: 62.5% "Trebuchet MS", sans-serif;
+	margin: 50px;
+}
+
+.combobox-column {
+	font-size: 12px;
+	text-align: center;
+}
+
+
+.body {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 75%;
+}
+
+.dataset-title {
+	margin-bottom: 30px;
+}
+
+.option-bar {
+	color: #000000;
+	border-top-style: solid;
+	border-top-color: #8FABC7;
+	border-top-width: thin;
+	border-bottom-style: solid;
+	border-bottom-color: #8FABC7;
+	border-bottom-width: thin;
+	position: static;
+	width: 100%;
+	text-align: center;
+}
+
+.option-bar #show {
+	width: 140px;
+}
+
+.option-bar #display-option {
+	padding-left: 5%;
+}
+
+.option-bar #save-option {
+	padding-left: 5%;
+}
+
+.option-bar #export-option {
+	padding-left: 5%;
+}
+
+.option-bar #order-option {
+	padding-left: 5%;
+}
+
+.pagination {
+	text-align: center;
+}
+
+#col-header {
+	background-color: #8FABC7;
+	font-weight: bold;
+}
+
+#table-rowband {
+	background-color: #D3D3D3;
+	color: white;
+	margin-top: 100px;
+}

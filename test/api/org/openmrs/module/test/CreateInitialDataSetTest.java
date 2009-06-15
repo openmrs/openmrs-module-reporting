@@ -32,10 +32,10 @@ import org.openmrs.test.SkipBaseSetup;
  * {@link BaseContextSensitiveTest#INITIAL_DATA_SET_XML_FILENAME} file is overwritten by values in
  * the database defined by the runtime properties
  */
-public class CreateInitialDataSet extends BaseModuleContextSensitiveTest {
+public class CreateInitialDataSetTest extends BaseModuleContextSensitiveTest {
 	
 	
-	private static Log log = LogFactory.getLog(CreateInitialDataSet.class);
+	private static Log log = LogFactory.getLog(CreateInitialDataSetTest.class);
 
 	
 	/**

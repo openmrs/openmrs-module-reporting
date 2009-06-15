@@ -1,5 +1,10 @@
 package org.openmrs.module.reporting.web.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
@@ -12,18 +17,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ManageDatasetDefinitionController {
 
+	protected Log log = LogFactory.getLog(this.getClass());
+	
     @RequestMapping("/module/reporting/manageDatasets")
     public String managerDatasetDefinitions(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
-    		ModelMap model
-    ) {
+    		ModelMap model) {
     	DataSetDefinitionService service = 
     		Context.getService(DataSetDefinitionService.class);
     	boolean retired = includeRetired != null && includeRetired.booleanValue();
-    	model.addAttribute("datasetDefinitions", 
-    			service.getAllDataSetDefinitions(includeRetired));
     	
-        return "/module/reporting/manageDatasets";
+    	log.info("Service: " + service);
+    	
+    	List<DataSetDefinition> datasetDefinitions = new ArrayList<DataSetDefinition>();
+    	
+    	try { 
+    		datasetDefinitions =     		
+        		service.getAllDataSetDefinitions(retired);
+    	} catch (Exception e) { 
+    		log.error("Could not fetch dataset definitions", e);
+    	}
+    	
+    	model.addAttribute("datasetDefinitions", datasetDefinitions);
+    	
+        return "/module/reporting/datasets/datasetManager";
     }
     
     @RequestMapping("/module/reporting/editDataset")

@@ -13,6 +13,10 @@
  */
 package org.openmrs.module.indicator.service;
 
+import java.util.List;
+
+import org.openmrs.api.APIException;
+import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.Indicator;
@@ -24,7 +28,13 @@ import org.springframework.transaction.annotation.Transactional;
  * Indicators and Dimensions.<br/>
  */
 @Transactional
-public interface IndicatorService {
+public interface IndicatorService extends OpenmrsService {
+	
+	public Indicator saveIndicator(Indicator indicator) throws APIException;	
+	public void purgeIndicator(String uuid) throws APIException;
+	public Indicator getIndicatorByUuid(String uuid) throws APIException;
+	public List<Indicator> getAllIndicators(boolean includeRetired);
+	public List<Indicator> getIndicators(String name, boolean exactMatchOnly);
 	
 	/**
 	 * Returns an IndicatorResult for the given Indicator and EvaluationContext
