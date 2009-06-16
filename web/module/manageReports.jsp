@@ -31,8 +31,8 @@
 			<label for="outputType">Renderer:</label>
 		</td>
 		<td>
-			<input type="radio" name="renderType" value="CSV" checked> CSV
-			<input type="radio" name="renderType" value="XLS"> XLS
+			<input type="radio" name="renderType" value="XLS" checked> XLS
+			<input type="radio" name="renderType" value="CSV"> CSV
 		</td>
 	</tr>
 	<tr style="padding-top: 10px">

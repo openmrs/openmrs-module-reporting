@@ -209,15 +209,21 @@ public class PatientDataSet implements DataSet<Object> {
 				
 				// Assumes that a concept and name are associated with the state
 				if (currentState != null && currentState.getActive()) {
-					treatmentGroup = "ACTIVE: ";
-					//treatmentGroup += workflow.getConcept().getName().getName() + " => ";
-					treatmentGroup += currentState.getState().getConcept().getName().getName();
+					treatmentGroup = ""; // active
+					treatmentGroup = currentState.getState().getConcept().getName().getName();
+
+					// Hack to remove unwanted words
+					treatmentGroup = treatmentGroup.replace("FOLLOWING", "");
+					treatmentGroup = treatmentGroup.replace("GROUP", "");
+					treatmentGroup = treatmentGroup.trim();
+					
+					
 				} else {
-					treatmentGroup = "INACTIVE";
+					treatmentGroup = ""; // inactive
 				}
 				
 			} else { 
-				treatmentGroup = "NOT ENROLLED";
+				treatmentGroup = "";	// not enrolled
 			}
 		} 
 		catch (Exception e) { 
