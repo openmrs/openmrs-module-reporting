@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openmrs.Concept;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -47,10 +48,27 @@ public class ObsDataSetDefinition extends BaseDataSetDefinition {
 	private Date fromDate;
 	
 	private Date toDate;
-	
+
+	/**
+	 * Default constructor
+	 */
 	public ObsDataSetDefinition() {
 		questions = new HashSet<Concept>();
 	}
+	
+	/**
+	 * Public constructor
+	 * 
+	 * @param name
+	 * @param description
+	 * @param questions
+	 */
+	public ObsDataSetDefinition(String name, String description, Set<Concept> questions) { 
+		this.setName(name);
+		this.setDescription(description);
+		this.setQuestions(questions);
+	}
+	
 	
 	private static Class[] columnDatatypes = {
 		Integer.class, // patientId
@@ -103,7 +121,7 @@ public class ObsDataSetDefinition extends BaseDataSetDefinition {
     	return columns;
 
 	}
-	
+   
 	/**
 	 * @see org.openmrs.module.evaluation.parameter.Parameterizable#getParameters()
 	 */

@@ -25,6 +25,11 @@ public class MeanAggregator implements Aggregator {
 	
 	public MeanAggregator() {}
 	
+	public String getName() { 
+		return "MEAN";
+	}
+	
+	
 	public Number compute(Collection<Number> values) {
 		if (values == null) {
 			throw new RuntimeException("Unable to compute a mean value of a null collection");

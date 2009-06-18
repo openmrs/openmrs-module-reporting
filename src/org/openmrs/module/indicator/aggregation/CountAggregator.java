@@ -23,6 +23,10 @@ public class CountAggregator implements Aggregator {
 	
 	public CountAggregator() {}
 	
+	public String getName() { 
+		return "COUNT";
+	}
+	
 	public Number compute(Collection<Number> values) {
 		if (values != null) {
 			return values.size();

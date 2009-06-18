@@ -78,6 +78,7 @@ public class BaseDataSetDefinitionService extends BaseOpenmrsService implements 
 	public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {
 		List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
 		for (DataSetDefinitionPersister persister : HandlerUtil.getHandlersForType(DataSetDefinitionPersister.class, null)) {
+			log.info("Persister: " + persister.getClass().getName());			
 			if (persister != null) { 
 				ret.addAll(persister.getAllDataSetDefinitions(includeRetired));
 			}

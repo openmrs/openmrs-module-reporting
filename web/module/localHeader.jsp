@@ -6,19 +6,24 @@
 		<li class="first">
 			<a href="index.htm" style="text-decoration:none;"><spring:message code="@MODULE_ID@.title" /></a>
 		</li>
-		<openmrs:extensionPoint pointId="org.openmrs.module.@MODULE_ID@.localHeader" type="html">
-				<c:forEach items="${extension.links}" var="link">
-					<li <c:if test="${fn:endsWith(pageContext.request.requestURI, link.key)}">class="active"</c:if> >
-						<a href="${pageContext.request.contextPath}/${link.key}"><spring:message code="${link.value}"/></a>
-					</li>
-				</c:forEach>
-		</openmrs:extensionPoint>
-		<openmrs:extensionPoint pointId="org.openmrs.admin.list" type="html">
-				<c:forEach items="${extension.links}" var="link">
-					<li <c:if test="${fn:endsWith(pageContext.request.requestURI, link.key)}">class="active"</c:if> >
-						<a href="${pageContext.request.contextPath}/${link.key}"><spring:message code="${link.value}"/></a>
-					</li>
-				</c:forEach>
-		</openmrs:extensionPoint>
+		<li class="">
+			<a href="${pageContext.request.contextPath}/module/reporting/manageCohortDefinitions.list">Manage Cohorts</a>
+		</li>	
+		<li class="">
+			<a href="${pageContext.request.contextPath}/module/reporting/manageDatasets.list">Manage Datasets</a>
+		</li>
+		<li class="">
+			<a href="${pageContext.request.contextPath}/module/reporting/manageIndicators.list">Manage Indicators</a>
+		</li>	
+		<li class="last">
+			<a href="${pageContext.request.contextPath}/module/reporting/manageReports.list">Manage Reports</a>
+		</li>
 	</ul>
 </div>
+		
+				
+				
+		
+	</ul>
+</div>
+

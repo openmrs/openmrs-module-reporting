@@ -15,8 +15,10 @@ package org.openmrs.module.dataset.definition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.openmrs.Concept;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
 
@@ -43,7 +45,21 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	 * Constructor
 	 */
 	public PatientDataSetDefinition() {
+		super();
 	}
+	
+	/**
+	 * Public constructor
+	 * 
+	 * @param name
+	 * @param description
+	 * @param questions
+	 */
+	public PatientDataSetDefinition(String name, String description) { 
+		this.setName(name);
+		this.setDescription(description);
+	}			
+	
 		
 	private static String [] columnKeys = { 		
 		PATIENT_ID, IMB_ID, NAME, AGE, GENDER, HEALTH_CENTER, TREATMENT_GROUP

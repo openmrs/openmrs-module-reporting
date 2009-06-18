@@ -26,6 +26,11 @@ public class MedianAggregator implements Aggregator {
 	
 	public MedianAggregator() {}
 	
+	public String getName() { 
+		return "MEDIAN";
+	}
+	
+	
 	public Number compute(Collection<Number> values) {
 		if (values == null) {
 			throw new RuntimeException("Unable to compute a median value of a null collection");

@@ -19,7 +19,7 @@ import java.util.Collection;
  * Enumeration of all available aggregations
  */
 public interface Aggregator  {
-	
+	public String getName();
 	public Number compute(Collection<Number> input);
 	
 }

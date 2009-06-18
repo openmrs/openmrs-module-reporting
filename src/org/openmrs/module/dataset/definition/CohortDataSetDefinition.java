@@ -54,6 +54,22 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 		strategies = new LinkedHashMap<String, Mapped<CohortDefinition>>();
 		//descriptions = new LinkedHashMap<String, String>();
 	}
+	
+	/**
+	 * Public constructor
+	 * 
+	 * @param name
+	 * @param description
+	 * @param questions
+	 */
+	public CohortDataSetDefinition(String name, String description) { 
+		this();
+		this.setName(name);
+		this.setDescription(description);
+	}	
+	
+	
+	
 
 	/**
 	 * Add the given cohort as a "column" to this definition with the given key. The name is also

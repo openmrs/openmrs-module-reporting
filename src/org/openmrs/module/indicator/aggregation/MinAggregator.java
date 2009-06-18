@@ -26,6 +26,11 @@ public class MinAggregator implements Aggregator {
 	
 	public MinAggregator() {}
 	
+	public String getName() { 
+		return "MIN";
+	}
+
+	
 	public Number compute(Collection<Number> values) {
 		if (values == null || values.isEmpty()) {
 			throw new RuntimeException("Unable to compute a mean value of a null or empty collection");

@@ -26,6 +26,10 @@ public class MaxAggregator implements Aggregator {
 	
 	public MaxAggregator() {}
 	
+	public String getName() { 
+		return "MAX";
+	}
+	
 	public Number compute(Collection<Number> values) {
 		if (values == null || values.isEmpty()) {
 			throw new RuntimeException("Unable to compute a mean value of a null or empty collection");

@@ -1,8 +1,12 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ include file="../localHeader.jsp"%>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Report Manager</title>
 
-<!--  CSS -->
+<!--  CSS  -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/page.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/table.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/custom.css" rel="stylesheet"/>
@@ -16,7 +20,7 @@
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-	$('#indicator-table').dataTable( {
+	$('#report-schema-table').dataTable( {
 		"bPaginate": true,
 		"bLengthChange": true,
 		"bFilter": true,
@@ -24,57 +28,58 @@ $(document).ready(function() {
 		"bInfo": true,
 		"bAutoWidth": true
 	} );			
+
+	$("#report-schema-table").css("width","100%");
+	
 } );
-
 </script>
+</head>
 
+<body>
 <div id="page">
 	<div id="container">
-		<h1>Indicator Manager</h1>
+		<h1>Manage Reports</h1>
 		
-		<table id="indicator-table" class="display" >
+		<strong>Generate:</strong>
+		<a href="getSimpleLabReport.form">Simple Lab Report</a> |
+		<a href="getSimpleCohortReport.form">Sample Cohort Report</a> |
+		<a href="getSimpleIndicatorReport.form">Sample Indicator Report</a> |
+		
+		
+		<h2>All Report Schemas</h2>
+		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
-					<th>Indicator</th>
-					<th>Aggregator</th>
+					<th>Name</th>
 					<th>Description</th>
-					<th>Cohort / Logic Rule</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${indicators}" var="indicator" varStatus="status">
+				<c:forEach items="${reportSchemas}" var="reportSchema" varStatus="status">
 					<tr>
-						<td><a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}">${indicator.name}</a></td>
+						<td><a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}">${reportSchema.name}</a></td>
+						<td>${reportSchema.description}</td>
 						<td>
-							${indicator.aggregator.simpleName}<br/>						
-						</td>
-						<td>${indicator.description}</td>
-						<td>
-							<!-- one of the two of these should be populated
-								TODO Add logic to test if they are null
-							 -->
-							${indicator.cohortDefinition.parameterizable.name}<br/>
-							${indicator.logicCriteria}
-						</td>
-						<td>
-							<a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}&action=preview">preview</a> | 
-							<a href="${pageContext.request.contextPath}/module/reporting/editIindicator.form?uuid=${indicator.uuid}&action=delete">delete</a>
+							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}&action=preview">preview</a>
+							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}&action=delete">delete</a>
 						</td>
 					</tr>
 				</c:forEach>	
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan="4" align="center" height="50">
-						<a class="button" href="${pageContext.request.contextPath}/module/reporting/editIndicator.form">Add Indicator</button>
+					<td colspan="6" align="left">
+						<button onclick="${pageContext.request.contextPath}/module/reporting/editReportSchema.form">Add</button>
 					</td>			
 				</tr>	
 			</tfoot>
 		</table>
+	
 	</div>
 </div>
 
 
-
+</body>
+</html>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

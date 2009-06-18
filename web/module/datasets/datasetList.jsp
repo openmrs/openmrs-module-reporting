@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="View Orders" otherwise="/login.htm" redirect="/module/datasetbuilder/index.htm" />
-<%@ include file="localHeader.jsp"%>
+<%@ include file="../localHeader.jsp"%>
 
 <openmrs:htmlInclude file="/scripts/calendar/calendar.js" />
 

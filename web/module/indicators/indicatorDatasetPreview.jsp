@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="View Orders" otherwise="/login.htm"
 	redirect="/module/datasetbuilder/Create-Patient-Dataset.htm" />
-<%@ include file="localHeader.jsp"%>
+<%@ include file="../localHeader.jsp"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">

@@ -25,6 +25,10 @@ public class DistinctAggregator implements Aggregator {
 	
 	public DistinctAggregator() {}
 	
+	public String getName() { 
+		return "DISTINCT";
+	}	
+	
 	public Number compute(Collection<Number> values) {
 		if (values != null) {
 			Set<Number> valueSet = new HashSet<Number>(values);

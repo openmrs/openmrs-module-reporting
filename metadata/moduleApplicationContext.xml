@@ -11,6 +11,7 @@
            http://www.springframework.org/schema/util
            http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
+	<!-- Serialized Data Access Object -->
 	<bean parent="serializedObjectDAO">
 		<property name="supportedTypes">
 			<list merge="true">
@@ -20,10 +21,18 @@
 		</property>
 	</bean>	
 
+	<!--  Serialized Data Set Definition Persister -->
+	<bean id="simpleDataSetDefinitionPersister" 
+			class="org.openmrs.module.dataset.definition.persister.SimpleDataSetDefinitionPersister">
+		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
+	</bean>
+
+	<!--  Serialized Cohort Definition Persister -->
 	<bean id="serializedCohortDefinitionPersister" class="org.openmrs.module.cohort.definition.persister.SerializedCohortDefinitionPersister">
 		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
 	</bean>
 	
+	<!--  Mock Report Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list merge="true">
@@ -31,7 +40,7 @@
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.report.service.BaseReportService">
+						<bean class="org.openmrs.module.report.service.MockReportService">
 						</bean>
 					</property>
 					<property name="preInterceptors">
@@ -45,6 +54,7 @@
 		</property>
 	</bean>
 	
+	<!-- Base Cohort Definition Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
@@ -66,6 +76,7 @@
 		</property>
 	</bean>
 
+	<!--  Base Dataset Definition Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
@@ -87,6 +98,7 @@
 		</property>
 	</bean>
 
+	<!-- Mock Indicator Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
@@ -94,7 +106,7 @@
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.indicator.service.BaseIndicatorService">
+						<bean class="org.openmrs.module.indicator.service.MockIndicatorService">
 						</bean>
 					</property>
 					<property name="preInterceptors">

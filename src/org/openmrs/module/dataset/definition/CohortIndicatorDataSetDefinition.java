@@ -13,12 +13,15 @@
  */
 package org.openmrs.module.dataset.definition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.openmrs.Concept;
 import org.openmrs.api.APIException;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
@@ -47,6 +50,27 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 		indicators = new LinkedHashMap<String, Mapped<CohortIndicator>>();
 		columnSpecifications = new LinkedHashMap<DataSetColumn, ColumnDefinition>();
 	}
+	
+	/**
+	 * Public constructor
+	 * 
+	 * @param name
+	 * @param description
+	 * @param questions
+	 */
+	public CohortIndicatorDataSetDefinition(
+			String name, 
+			String description, 
+			DimensionSet<CohortDimension> dimensions, 
+			Map<String, Mapped<CohortIndicator>> indicators, 
+			Map<DataSetColumn, ColumnDefinition> columnSpecs) { 
+		this.setName(name);
+		this.setDescription(description);
+		this.dimensions = dimensions;
+		this.indicators = indicators;
+		this.columnSpecifications = columnSpecs;
+	}	
+	
 
 	/**
      * @see DataSetDefinition#getColumns()
@@ -232,7 +256,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * Defines a Definition of a defined indicator and list of dimensions
 	 */
-	public class ColumnDefinition {
+	public class ColumnDefinition implements Serializable {
 		
 		// Properties
 		private String indicatorKey;

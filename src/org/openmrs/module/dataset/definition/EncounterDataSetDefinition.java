@@ -55,6 +55,24 @@ public class EncounterDataSetDefinition extends BaseDataSetDefinition {
 	public EncounterDataSetDefinition() {
 		questions = new HashSet<Concept>();		
 	}
+	
+	/**
+	 * Public constructor
+	 * 
+	 * @param name
+	 * @param description
+	 * @param questions
+	 */
+	public EncounterDataSetDefinition(String name, String description, Date toDate, Date fromDate, CohortDefinition filter, Collection<Concept> questions) { 
+		this.setName(name);
+		this.setDescription(description);
+		
+		this.toDate = toDate;
+		this.fromDate = fromDate;
+		this.filter = filter;
+		this.questions = questions;
+	}		
+	
 		
 	private static String [] columnKeys = { 		
 		ENCOUNTER_ID, ENCOUNTER_TYPE, FORM, LOCATION, PERSON, GENDER, AGE	

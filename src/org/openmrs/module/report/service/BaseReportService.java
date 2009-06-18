@@ -58,6 +58,13 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	}
 
 	/**
+	 * @see ReportService#getReportSchemaByUuid(String)
+	 */
+	public ReportSchema getReportSchemaByUuid(String uuid) throws APIException {
+		return serializedObjectDAO.getObjectByUuid(ReportSchema.class, uuid);
+	}
+	
+	/**
 	 * @see ReportService#getReportSchemas()
 	 */
 	public List<ReportSchema> getReportSchemas() throws APIException {

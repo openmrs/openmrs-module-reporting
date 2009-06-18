@@ -6,20 +6,23 @@ h1 a {
 	min-height:0;
 	height:40px;
 }
+
+/*
 * html h1 a {/* IE6 png Support */
 	background-image: none;
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="/images/wflogo.png", sizingMethod="crop");
-}
+}*/
 
 /* Backgrounds */
 body{
 	background-image:none;
 	background-color:#FFFFFF;
 }
+/*
 h1{
 	background-image:none;
 	background-color:#DEDEDE;
-}
+}*/
 #container, body.embed{
 	background-color:#FFFFFF;
 }

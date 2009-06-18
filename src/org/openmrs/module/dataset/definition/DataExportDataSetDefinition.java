@@ -38,7 +38,15 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	
 	/* Data export object */
 	private DataExportReportObject dataExport;
-		
+
+	
+	/**
+	 * Default public constructor 
+	 */
+	public DataExportDataSetDefinition() { 
+		super();
+	}
+	
 	/**
 	 *  Public constructor
 	 * 
@@ -63,6 +71,27 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 		return columns;
 	}
 
+    /**
+	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getId()
+     */
+    public Integer getId() { 
+    	return this.dataExport.getReportObjectId();  	
+    }    
+    
+    /**
+	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getName()
+     */
+    public String getName() { 
+    	return this.dataExport.getName();    	
+    }
+
+    /**
+	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getDescription()
+     */
+    public String getDescription() { 
+    	return this.dataExport.getDescription();    	
+    }
+    
 	/**
 	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getColumnDatatypes()
 	 */

@@ -37,15 +37,29 @@ public class ProgramDataSetDefinition extends BaseDataSetDefinition {
 	
     private static final long serialVersionUID = -1408727201579935500L;
 
-	private String name;
-	
 	private Collection<Program> programs;
 	
 	private CohortDefinition filter;
-	
+
+	/**
+	 * Default constructor
+	 */
 	public ProgramDataSetDefinition() {
 		programs = new HashSet<Program>();
 	}
+
+	/**
+	 * Full-arg constructor
+	 */
+	public ProgramDataSetDefinition(String name, String description, Collection<Program> programs, CohortDefinition filter) {
+		this.setName(name);
+		this.setDescription(description);
+		this.programs = programs;
+		this.filter = filter;
+		
+	}
+	
+	
 	
 	public List<Class> getColumnDatatypes() {
 		// TODO Auto-generated method stub
@@ -69,20 +83,6 @@ public class ProgramDataSetDefinition extends BaseDataSetDefinition {
 		ret.add(new SimpleDataSetColumn("completionDate", Date.class));
 		ret.add(new SimpleDataSetColumn("patientProgramId", Integer.class));
 		return ret;
-	}
-
-	/**
-	 * @see org.openmrs.module.datasetDefinition#getName()
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * @see org.openmrs.module.datasetDefinition#setName(java.lang.String)
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	/**

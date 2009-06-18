@@ -53,6 +53,13 @@ public interface ReportService extends OpenmrsService {
 	public List<ReportSchema> getReportSchemas() throws APIException;
 	
 	/**
+	 * @param uuid
+	 * @return the ReportSchema with the given uuid
+	 */
+	@Transactional(readOnly = true)
+	public ReportSchema getReportSchemaByUuid(String uuid) throws APIException;	
+	
+	/**
 	 * Get the {@link ReportSchema} with the given id
 	 * 
 	 * @param reportSchemaId The Integer ReportSchema id

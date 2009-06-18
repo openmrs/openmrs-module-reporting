@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ManageCohortDefinitionController {
 
-    @RequestMapping("/module/reporting/cohortDefinitions")
+    @RequestMapping("/module/reporting/manageCohortDefinitions")
     public String viewCohortDefinitions(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model
@@ -25,7 +25,7 @@ public class ManageCohortDefinitionController {
     	// Add all available CohortDefinitions
     	model.addAttribute("types", cds.getCohortDefinitionTypes());
     	
-        return "/module/reporting/cohortDefinitions";
+        return "/module/reporting/cohorts/cohortDefinitionManager";
     }
     
     @RequestMapping("/module/reporting/editCohortDefinition")
@@ -37,7 +37,7 @@ public class ManageCohortDefinitionController {
     ) {
     	CohortDefinition cd = getCohortDefinition(uuid, type);
      	model.addAttribute("cohortDefinition", cd);
-        return "/module/reporting/editCohortDefinition";
+        return "/module/reporting/cohorts/cohortDefinitionEditor";
     }
     
     @RequestMapping("/module/reporting/saveCohortDefinition")
@@ -54,7 +54,7 @@ public class ManageCohortDefinitionController {
     	
     	cd = Context.getService(CohortDefinitionService.class).saveCohortDefinition(cd);
     	
-        return "redirect:/module/reporting/editCohortDefinition.form?uuid="+cd.getUuid();
+        return "redirect:/module/reporting/cohorts/manageCohortDefinition.list";
     }
     
     /**

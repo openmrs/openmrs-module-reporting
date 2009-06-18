@@ -37,6 +37,20 @@ public abstract class BaseDataSetDefinition extends BaseParameterizable implemen
     public BaseDataSetDefinition() {
     	super();
     }
+
+	/**
+	 * Public constructor
+	 * 
+	 * @param name
+	 * @param description
+	 * @param questions
+	 */
+	public BaseDataSetDefinition(String name, String description) { 
+		this();
+		this.setName(name);
+		this.setDescription(description);
+	}	    
+    
     
     //***** PROPERTY ACCESS *****
     

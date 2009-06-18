@@ -16,7 +16,7 @@
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-	$('#indicator-table').dataTable( {
+	$('#cohort-definition-table').dataTable( {
 		"bPaginate": true,
 		"bLengthChange": true,
 		"bFilter": true,
@@ -28,51 +28,42 @@ $(document).ready(function() {
 
 </script>
 
+
 <div id="page">
-	<div id="container">
-		<h1>Indicator Manager</h1>
-		
-		<table id="indicator-table" class="display" >
-			<thead>
-				<tr>
-					<th>Indicator</th>
-					<th>Aggregator</th>
-					<th>Description</th>
-					<th>Cohort / Logic Rule</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${indicators}" var="indicator" varStatus="status">
-					<tr>
-						<td><a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}">${indicator.name}</a></td>
-						<td>
-							${indicator.aggregator.simpleName}<br/>						
-						</td>
-						<td>${indicator.description}</td>
-						<td>
-							<!-- one of the two of these should be populated
-								TODO Add logic to test if they are null
-							 -->
-							${indicator.cohortDefinition.parameterizable.name}<br/>
-							${indicator.logicCriteria}
-						</td>
-						<td>
-							<a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}&action=preview">preview</a> | 
-							<a href="${pageContext.request.contextPath}/module/reporting/editIindicator.form?uuid=${indicator.uuid}&action=delete">delete</a>
-						</td>
-					</tr>
-				</c:forEach>	
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="4" align="center" height="50">
-						<a class="button" href="${pageContext.request.contextPath}/module/reporting/editIndicator.form">Add Indicator</button>
-					</td>			
-				</tr>	
-			</tfoot>
-		</table>
-	</div>
+<div id="container">
+
+<h1>Cohort Manager</h1>
+
+<table id="cohort-definition-table" class="display" >
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Preview</th>
+			<th>Delete</th>
+		</tr>
+	</thead>
+	<tbody>
+		<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
+			<tr>
+				<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">${cohortDefinition.name}</a></td>
+				<td>${cohortDefinition.description}</td>
+				<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&action=preview">preview</a></td>
+				<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&action=delete">delete</a></td>
+			</tr>
+		</c:forEach>	
+	</tbody>
+	<tfoot>
+		<tr>
+			<th colspan="4" align="center">
+				<button onclick="location.href='${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form'">Add Indicator</button>
+			</th>			
+		</tr>	
+	</tfoot>
+</table>
+
+</div>
+
 </div>
 
 

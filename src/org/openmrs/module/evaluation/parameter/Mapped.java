@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.evaluation.parameter;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ import java.util.Map;
  * includes a Mapping of Parameter Name to Expressions in order to
  * to Parameters in an enclosing class.
  */
-public class Mapped<T extends Parameterizable>  {
+public class Mapped<T extends Parameterizable> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -79,7 +80,9 @@ public class Mapped<T extends Parameterizable>  {
 				String[] split = mappingsAsString.split(",");
 				for (int i=0; i<split.length; i++) {
 					String[] keyVal = split[i].split("=");
-					parameterMappings.put(keyVal[0], keyVal[1]);
+					if (keyVal.length > 1) { // sanity check
+						parameterMappings.put(keyVal[0], keyVal[1]);
+					}
 				}
 			}
 			catch (Exception e) {

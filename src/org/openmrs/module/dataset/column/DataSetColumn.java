@@ -13,11 +13,13 @@
  */
 package org.openmrs.module.dataset.column;
 
+import java.io.Serializable;
+
 /**
  * A DataSetColumn is a generic way to store the information that
  * makes up a column in a DataSet.
  */
-public interface DataSetColumn extends Comparable<DataSetColumn> {
+public interface DataSetColumn extends Comparable<DataSetColumn>, Serializable {
 	
     /**
      * @return the key

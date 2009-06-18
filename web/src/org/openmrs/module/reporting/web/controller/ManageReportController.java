@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,17 +23,24 @@ import org.openmrs.Cohort;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.LabEncounterDataSet;
+import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
+import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.JoinDataSetDefinition;
 import org.openmrs.module.dataset.definition.LabEncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.evaluation.parameter.Mapped;
+import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.report.ReportData;
+import org.openmrs.module.report.ReportSchema;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.renderer.XlsReportRenderer;
+import org.openmrs.module.report.service.ReportService;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -46,29 +54,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ManageReportController {
 
-	Log log = LogFactory.getLog(this.getClass());
+	private Log log = LogFactory.getLog(this.getClass());
+	private DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 	
-    @RequestMapping("/module/reporting/manageReports")
-    public String manageReports(
-    		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
-    		ModelMap model
-    ) {
-    	
-    	log.info("Manage reports");
-
-    	List<Location> locations = 
-    		Context.getLocationService().getAllLocations(false);
-    	
-    	List<CohortDefinition> cohortDefinitions = 
-    		Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false);
-    	
-    	model.addAttribute("cohortDefinitions", cohortDefinitions);
-    	model.addAttribute("locations", locations);
-    	
-        return "/module/reporting/manageReports";
-    }
-    
-    
     @InitBinder
     public void initBinder(WebDataBinder binder) { 
     	// TODO Switch this to the Context.getDateFormat()
@@ -78,8 +66,108 @@ public class ManageReportController {
     	binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false)); 
     }    
 
-    @RequestMapping("/module/reporting/generateReport")
-    public void generateReport(
+	
+    @RequestMapping("/module/reporting/manageReports")
+    public String manageReports(
+    		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
+    		ModelMap model) {
+    	
+    	List<ReportSchema> reportSchemas = 
+    		Context.getService(ReportService.class).getReportSchemas();
+
+    	model.addAttribute("reportSchemas", reportSchemas);
+    	
+        return "/module/reporting/reports/reportManager";
+    }
+    
+    @RequestMapping("/module/reporting/editReportSchema")
+    public String editReportSchema(
+    		@RequestParam(required=false, value="uuid") String uuid,
+    		ModelMap model) {
+		ReportService reportService = 
+			Context.getService(ReportService.class);
+    	
+    	List<ReportSchema> reportSchemas = reportService.getReportSchemas();
+    	
+    	ReportSchema reportSchema = reportService.getReportSchemaByUuid(uuid);
+    	
+    	model.addAttribute("reportSchema", reportSchema);    	
+    	model.addAttribute("reportSchemas", reportSchemas);
+    	
+        return "/module/reporting/reports/reportEditor";
+    }    
+    
+    
+    /**
+     * Get the lab encounter report 
+     * 
+     * @param model		the model 
+     * @return	a string representing the lab 
+     */
+    @RequestMapping("/module/reporting/getSimpleLabReport")
+    public String getSimpleLabReport(ModelMap model) {
+    	
+    	List<Location> locations = Context.getLocationService().getAllLocations(false);
+    	
+    	List<CohortDefinition> cohortDefinitions = 
+    		Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false);
+    	
+    	model.addAttribute("cohortDefinitions", cohortDefinitions);
+    	model.addAttribute("locations", locations);
+    	
+        return "/module/reporting/reports/simpleLabReportForm";
+    }
+    
+    /**
+     * Get a simple cohort report form.
+     * 
+     * @param model		the model 
+     * @return	jsp used to render this report form
+     */
+    @RequestMapping("/module/reporting/getSimpleCohortReport")
+    public String getSimpleCohortReport(ModelMap model) {
+    	
+		ReportService reportService = (ReportService) Context.getService(ReportService.class);
+
+		// Will add the first report		    	
+    	model.addAttribute("reportSchema", reportService.getReportSchemas().get(0));
+
+    	
+    	return "/module/reporting/reports/simpleCohortReportForm";
+    }    
+    
+    /**
+     * Get a simple indicator report.
+     * 
+     * @param model		the model 
+     * @return	jsp used to render this report form
+     */
+    @RequestMapping("/module/reporting/getSimpleIndicatorReport")
+    public String getSimpleIndicatorReport(ModelMap model) {
+    	
+		ReportService reportService = (ReportService) Context.getService(ReportService.class);
+
+		// Will add the first report		    	
+    	model.addAttribute("reportSchema", reportService.getReportSchemas().get(1));
+
+    	
+    	return "/module/reporting/reports/simpleIndicatorReportForm";
+    }    
+    
+    
+    
+    
+    /**
+     * Generate the lab report 
+     * @param locationId
+     * @param startDate
+     * @param endDate
+     * @param conceptIds
+     * @param renderType
+     * @param response
+     */
+    @RequestMapping("/module/reporting/generateSimpleLabReport")
+    public void generateLabReport(
     		@RequestParam(required=false, value="locationId") Integer locationId,
     		@RequestParam(required=false, value="startDate") Date startDate,
     		@RequestParam(required=false, value="endDate") Date endDate,
@@ -170,8 +258,11 @@ public class ManageReportController {
             		ledsDefinition, "encounter.", "patient_id");
 
             // TODO Need to pass a Mapped<DataSetDefinition>
-    		//reportSchema.addDataSetDefinition(joinDataSetDefinition);
+            //reportSchema.addDataSetDefinition(joinDataSetDefinition);
 
+            
+            
+            
             DataSet joinedDataSet = 
             	Context.getService(DataSetDefinitionService.class).evaluate(
             			jdsDefinition, sharedContext);
@@ -182,39 +273,85 @@ public class ManageReportController {
             Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
             dataSets.put("joinDataSet", joinedDataSet);
             reportData.setDataSets(dataSets);
-
-            log.info("Render type: " + renderType);
             
             if ("XLS".equalsIgnoreCase(renderType)) { 
             	log.info("Rendering as xls");
 				response.setContentType("application/vnd.ms-excel");
-				response.setHeader("Content-Disposition", "attachment; filename=\"labreport.xls\"");            
+				response.setHeader("Content-Disposition", "attachment; filename=\"laboratory-report.xls\"");            
 				new XlsReportRenderer().render(reportData, null, response.getOutputStream());
             }
             else {
             	log.info("Rendering as csv");
 				// Set headers and content type of report file
 				response.setContentType("text/csv");
-				response.setHeader("Content-Disposition", "attachment; filename=\"labreport.csv\"");            
+				response.setHeader("Content-Disposition", "attachment; filename=\"laboratory-report.csv\"");            
 	            new CsvReportRenderer().render(reportData, null, response.getOutputStream());
             }
     	} catch (IOException e) { 
     		e.printStackTrace();
     	}
-        //return "/module/reporting/generateReport";
     }    
 
+    
     /**
-     * Convenience method return a list of integers given a comma-delimited string of values.
-     * @param paramValue
-     * @return	a list of integers
+     * 
+     * @param response
+     * @throws Exception
      */
-    public List<Integer> splitIdentifiers(String paramValue) { 
-    	List<Integer> identifiers = new ArrayList<Integer>();
-    	for (String identifier : paramValue.split(",")) { 
-    		identifiers.add(Integer.parseInt(identifier));
-    	}    	
-    	return identifiers;
+    @RequestMapping("/module/reporting/generateSimpleCohortReport")
+    public void generateSimpleCohortReport(HttpServletResponse response) throws Exception { 		
+		ReportService rs = (ReportService) Context.getService(ReportService.class);
+
+		// Will return the first instance of a report
+		ReportSchema reportSchema = rs.getReportSchema(1);
+		
+		EvaluationContext ec = new EvaluationContext();
+		ec.addParameterValue("report.startDate", ymd.parse("1980-01-01"));
+		ec.addParameterValue("report.endDate", ymd.parse("2008-01-01"));
+		
+		ReportData reportData = rs.evaluate(reportSchema, ec);
+
+		CsvReportRenderer renderer = new CsvReportRenderer();
+		response.setContentType("text/csv");
+		response.setHeader("Content-Disposition", "attachment; filename=\"cohort-report.csv\"");  
+		renderer.render(reportData, null, response.getOutputStream());    	
     }
     
+    
+    /**
+     * 
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping("/module/reporting/generateSimpleIndicatorReport")
+    public void generateSimpleIndicatorReport(HttpServletResponse response) throws Exception { 
+    	
+		EvaluationContext context = new EvaluationContext();
+		CsvReportRenderer renderer = new CsvReportRenderer();
+		
+		ReportService rs = (ReportService) Context.getService(ReportService.class);
+		ReportSchema reportSchema = rs.getReportSchema(2);
+		
+		context = new EvaluationContext();
+		context.addParameterValue("report.location", Context.getLocationService().getLocation(26));
+		context.addParameterValue("report.reportDate", ymd.parse("2007-01-01"));
+
+		//context.addParameterValue("report.location", Context.getLocationService().getLocation(29));
+		//context.addParameterValue("report.reportDate", ymd.parse("2007-01-01"));
+		//context.addParameterValue("report.location", Context.getLocationService().getLocation(26));
+		//context.addParameterValue("report.reportDate", ymd.parse("2008-01-01"));
+		//context.addParameterValue("report.location", Context.getLocationService().getLocation(29));
+		//context.addParameterValue("report.reportDate", ymd.parse("2008-01-01"));
+		
+		ReportData reportData = Context.getService(ReportService.class).evaluate(reportSchema, context);
+
+		
+		
+		response.setContentType("text/csv");
+		response.setHeader("Content-Disposition", "attachment; filename=\"indicator-report.csv\"");  
+		renderer.render(reportData, null, response.getOutputStream());		
+    	
+    	
+    }
+        
 }

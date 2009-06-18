@@ -8,14 +8,14 @@ $LastChangedDate: 2009-04-02 22:53:06 -0700 (Thu, 02 Apr 2009) $
 
 - - - - - - - - - - - - - - - - - - - - - */
 
-body{
+/*body{
 	background:#eee;
-	margin:7px 0 15px 0;
+	margin:0px 0 0px 0;
 	text-align:left;
 	width:100%;
 	font-size:small;
 	font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
-}
+}*/
 
 #container{
 	text-align:left;
@@ -41,6 +41,7 @@ form.wufoo{
 
 /* ----- LOGO ----- */
 
+/*
 h1{
 	margin:0;
 	padding:0;
@@ -49,24 +50,33 @@ h1{
 	text-indent:-9000px;
 	text-decoration:none;
 }
+*/
+/*
 h1 a{
 	min-height:40px;
 	height:40px;
 	display:block;
-	background:url(/images/wflogo.png) no-repeat left top;
+	/*background:url(/images/wflogo.png) no-repeat left top;*/
 	overflow:hidden;
-}
+}*/
+
+/*
 * html h1 a{
 	_background-image: none;
 	_filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="/images/wflogo.png", sizingMethod="crop");
-}
+}*/
+
+/*
 img, a img{
 	border:none;
 	-ms-interpolation-mode: bicubic;
 }
+
 * html #top, * html #bottom{ 
 	_behavior: url(/images/iepngfix.htc);
 }
+*/
+
 
 .hide{
 	display:none !important;

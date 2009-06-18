@@ -20,6 +20,7 @@ import org.openmrs.module.evaluation.parameter.Param;
 /**
  *  Simple CohortDefinition to restrict to a Static Cohort
  */
+
 public class StaticCohortDefinition extends BaseCohortDefinition {
 
     private static final long serialVersionUID = 1L;
