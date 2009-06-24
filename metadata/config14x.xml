@@ -7,7 +7,7 @@
 	
 	<id>reporting</id>
 	<name>Reporting</name>
-	<version>0.1.1</version>
+	<version>0.1.2</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>Core reporting API and services</description>

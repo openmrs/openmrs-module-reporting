@@ -111,24 +111,24 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		CsvReportRenderer renderer = new CsvReportRenderer();
 		ReportData data = null;
 		
-		context.addParameterValue("report.location", Context.getLocationService().getLocation(26));
+		context.addParameterValue("report.location", Context.getLocationService().getLocation(1));
 		context.addParameterValue("report.reportDate", ymd.parse("2007-01-01"));
 		data = Context.getService(ReportService.class).evaluate(rs, context);
 		renderer.render(data, null, System.out);
 		
-		context.addParameterValue("report.location", Context.getLocationService().getLocation(26));
+		context.addParameterValue("report.location", Context.getLocationService().getLocation(1));
 		context.addParameterValue("report.reportDate", ymd.parse("2008-01-01"));
 		data = Context.getService(ReportService.class).evaluate(rs, context);
 		renderer.render(data, null, System.out);
 		
 		context = new EvaluationContext();
-		context.addParameterValue("report.location", Context.getLocationService().getLocation(29));
+		context.addParameterValue("report.location", Context.getLocationService().getLocation(1));
 		context.addParameterValue("report.reportDate", ymd.parse("2007-01-01"));
 		data = Context.getService(ReportService.class).evaluate(rs, context);
 		renderer.render(data, null, System.out);
 		
 		context = new EvaluationContext();
-		context.addParameterValue("report.location", Context.getLocationService().getLocation(29));
+		context.addParameterValue("report.location", Context.getLocationService().getLocation(1));
 		context.addParameterValue("report.reportDate", ymd.parse("2008-01-01"));
 		data = Context.getService(ReportService.class).evaluate(rs, context);
 		renderer.render(data, null, System.out);

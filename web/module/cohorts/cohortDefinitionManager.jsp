@@ -30,9 +30,22 @@ $(document).ready(function() {
 
 
 <div id="page">
-<div id="container">
+	<div id="container">
+
 
 <h1>Cohort Manager</h1>
+
+<form method="get" action="editCohortDefinition.form">
+	<strong>Create a new cohort definition</strong>
+	<select name="type">
+		<option value="">&nbsp;</option>
+		<c:forEach items="${types}" var="type">
+			<option value="${type.name}">${type.simpleName}</option>
+		</c:forEach>
+	</select>
+	<input type="submit" value="Create"/>
+</form>
+
 
 <table id="cohort-definition-table" class="display" >
 	<thead>

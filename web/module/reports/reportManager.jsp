@@ -41,9 +41,9 @@ $(document).ready(function() {
 		<h1>Manage Reports</h1>
 		
 		<strong>Generate:</strong>
-		<a href="getSimpleLabReport.form">Simple Lab Report</a> |
-		<a href="getSimpleCohortReport.form">Sample Cohort Report</a> |
-		<a href="getSimpleIndicatorReport.form">Sample Indicator Report</a> |
+		<a href="renderLabReport.form">Simple Lab Report</a> |
+		<a href="renderCohortReport.form">Sample Cohort Report</a> |
+		<a href="renderIndicatorReport.form">Sample Indicator Report</a> |
 		
 		
 		<h2>All Report Schemas</h2>

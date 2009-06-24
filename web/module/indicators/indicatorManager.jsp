@@ -66,9 +66,9 @@ $(document).ready(function() {
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan="4" align="center" height="50">
-						<a class="button" href="${pageContext.request.contextPath}/module/reporting/editIndicator.form">Add Indicator</button>
-					</td>			
+					<th colspan="5" align="center" height="50">
+						<a class="button" href="${pageContext.request.contextPath}/module/reporting/editIndicator.form">Add Indicator</a>
+					</th>			
 				</tr>	
 			</tfoot>
 		</table>

@@ -20,25 +20,64 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Drug;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
  *
  */
-public class CohortDefinitionTest extends BaseContextSensitiveTest {
+public class CohortDefinitionTest extends BaseModuleContextSensitiveTest {
 	
+	private Log log = LogFactory.getLog(this.getClass());
 	DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+	
+	/**
+	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()
+	 */
+	@Override
+    public Boolean useInMemoryDatabase() {
+	    return false;
+	}	
+	
+	@Test
+	public void shouldSaveCohortDefinition() throws Exception { 
+		log.info("Is session open: " + Context.isSessionOpen());
+
+		authenticate();
+		
+		CohortDefinitionService service = 
+			Context.getService(CohortDefinitionService.class);
+		
+		List<CohortDefinition> cohortDefinitions = service.getAllCohortDefinitions(false);
+		log.info("cohort definitions: " + cohortDefinitions.size() );
+		
+		PatientCharacteristicCohortDefinition cohortDefinition = 
+			PatientCharacteristicCohortDefinition.class.newInstance();
+			// new PatientCharacteristicCohortDefinition();
+		
+		service.saveCohortDefinition(cohortDefinition);
+		
+		log.info("cohort definitions: " + cohortDefinitions.size() );
+		
+		cohortDefinitions = service.getAllCohortDefinitions(false);
+		log.info("Is session open: " + Context.isSessionOpen());
+
+	}
+	
 	
 	@Test
 	public void should_acceptAnnotatedParameters() throws Exception {

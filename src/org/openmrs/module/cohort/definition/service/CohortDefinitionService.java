@@ -49,6 +49,19 @@ public interface CohortDefinitionService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	public CohortDefinition getCohortDefinitionByUuid(String uuid) throws APIException;
 	
+	
+    /**
+     * Helper method which checks that either uuid or type is passed, and returns either the
+     * saved CohortDefinition with the passed uuid, or a new instance of the CohortDefinition
+     * represented by the passed type.  Throws an IllegalArgumentException if any of this is invalid.
+     * 
+     * @param uuid	
+     * @param type
+     * @return the CohortDefinition with the given uuid and type
+     */
+	@Transactional(readOnly = true)
+	public CohortDefinition getCohortDefinition(String uuid, Class<? extends CohortDefinition> type);
+	
 	/**
 	 * @param includeRetired - if true, include retired {@link CohortDefinition} in the returned list
 	 * @return All {@link CohortDefinition} whose persistence is managed by this persister

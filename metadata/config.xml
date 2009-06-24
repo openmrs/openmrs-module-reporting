@@ -4,16 +4,26 @@
 <module configVersion="1.0">
 	
 	<!-- Base Module Properties -->
-	
 	<id>reporting</id>
 	<name>Reporting</name>
-	<version>0.1.1</version>
+	<version>0.1.2</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>Core reporting API and services</description>
 	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>	
-	<require_version>1.4.2.01.7706</require_version><!-- 1.5.0.7475 -->
+	<require_version>1.5.0.7475</require_version>
 	
+	<!-- Extensions -->
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>@MODULE_PACKAGE@.extension.html.AdminListExt</class>
+	</extension>
+	<extension>
+		<point>org.openmrs.gutter.tools</point>
+		<class>@MODULE_PACKAGE@.extension.html.GutterListExt</class>
+	</extension>			
+	
+	<!--  Message Properties -->
 	<messages>
 		<lang>en</lang>
 		<file>messages.properties</file>

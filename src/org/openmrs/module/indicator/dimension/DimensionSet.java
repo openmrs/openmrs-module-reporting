@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.indicator.dimension;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,10 +26,8 @@ import org.openmrs.module.indicator.util.IndicatorUtil;
 /**
  * Represents a collection of Dimensions
  */
-public class DimensionSet<T extends Dimension>  {
+public class DimensionSet<T extends Dimension> implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    
 	//****** PROPERTIES ******
 
     private Map<String, Mapped<T>> dimensions = new LinkedHashMap<String, Mapped<T>>();

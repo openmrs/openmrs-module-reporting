@@ -15,26 +15,18 @@ package org.openmrs.module.dataset;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
-import org.openmrs.module.report.renderer.TsvReportRenderer;
-import org.openmrs.reporting.ReportObjectWrapper;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -45,7 +37,7 @@ import org.openmrs.test.SkipBaseSetup;
 public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	/** Logger */
-	private static Log log = LogFactory.getLog(EncounterDataSetEvaluatorTest.class);
+	private static Log log = LogFactory.getLog(PatientDataSetEvaluatorTest.class);
 	
 	/**
 	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()

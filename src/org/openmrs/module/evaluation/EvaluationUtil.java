@@ -78,6 +78,8 @@ public class EvaluationUtil {
 	public static Object evaluateExpression(String expression, Map<String, Object> parameterValues, 
 											Class<?> clazz) throws ParameterException {
 		
+		log.info("evaluateExpression(): " + expression + " " + parameterValues);
+		
 		if (expression == null) {
 			log.warn("evaluateExpression returning null.");
 			return null;
@@ -160,6 +162,8 @@ public class EvaluationUtil {
 	public static Object evaluateParameterExpression(String expression, Map<String, Object> parameterValues,
 													 Class<?> clazz) throws ParameterException {
 		
+		log.info("evaluateParameterExpression(): " + expression + " " + parameterValues);
+
 		log.debug("Starting expression: " + expression);
 		String[] paramAndFormat = expression.split(FORMAT_SEPARATOR, 2);
 		Object paramValueToFormat = null;
@@ -173,8 +177,10 @@ public class EvaluationUtil {
 				String parameterName = matcher.group(1);
 				Object paramVal = parameterValues.get(parameterName);
 				
-				if (paramVal == null || !(paramVal instanceof Date)) {
-					throw new ParameterException("Unable to find matching parameter for: " + parameterName);
+				if (paramVal == null) {
+					throw new ParameterException("Unable to find matching parameter value (" + paramVal + ") for parameter " + parameterName);
+				} else if (!(paramVal instanceof Date)) { 
+					throw new ParameterException("Invalid class for parameter value " + paramVal + ", expected: " + Date.class + ", actual: " + paramVal.getClass().getName());
 				}
 	
 				int num = ("-".equals(matcher.group(2)) ? -1 : 1) * Integer.parseInt(matcher.group(3));
@@ -199,7 +205,7 @@ public class EvaluationUtil {
 		if (paramValueToFormat == null) {
 			paramValueToFormat = parameterValues.get(paramAndFormat[0]);
 			if (paramValueToFormat == null) {
-				throw new ParameterException("Unable to find matching parameter for expression: " + paramAndFormat[0]);
+				throw new ParameterException("Unable to find matching parameter value (" + paramValueToFormat + ") for expression " + paramAndFormat[0]);				
 			}
 			log.debug("Evaluated to: " + paramValueToFormat);
 		}

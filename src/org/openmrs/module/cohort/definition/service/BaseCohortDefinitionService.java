@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -34,6 +35,7 @@ import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.ParameterUtil;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  *  Base Implementation of the CohortDefinitionService API
@@ -97,6 +99,30 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 		}
 		return null;
 	}
+	
+
+	/**
+	 * 
+	 */
+    public CohortDefinition getCohortDefinition(String uuid, Class<? extends CohortDefinition> type) {
+    	CohortDefinition cd = null;
+    	if (StringUtils.hasText(uuid)) {
+	    	CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
+	    	cd = cds.getCohortDefinitionByUuid(uuid);
+    	}
+    	else if (type != null) {
+     		try {
+    			cd = type.newInstance();
+    		}
+    		catch (Exception e) {
+    			throw new IllegalArgumentException("Unable to instantiate a CohortDefinition of type: " + type);
+    		}
+    	}
+    	else {
+    		throw new IllegalArgumentException("You must supply either a uuid or a type");
+    	}
+    	return cd;
+    }	
 
 	/** 
 	 * @see CohortDefinitionService#getAllCohortDefinitions(boolean)
