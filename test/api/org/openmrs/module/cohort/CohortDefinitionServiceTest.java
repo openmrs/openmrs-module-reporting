@@ -47,7 +47,7 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 		}
 		
 		if (persister == null) { 
-			//persister = (CohortDefinitionPersister) applicationContext.getBean("serialzedCohortDefinitionPersister");			
+			persister = (CohortDefinitionPersister) applicationContext.getBean("serializedCohortDefinitionPersister");																							
 		}
 	}
 	
@@ -62,6 +62,14 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 		Assert.assertTrue(savedCohortDefinition.getId()!=null);
 	}
 
+	@Test
+	public void shouldSaveCohortDefinitionUsingPersister() throws Exception { 		
+		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
+		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();		
+		cohortDefinition.setName("Testing");
+		CohortDefinition savedCohortDefinition = persister.saveCohortDefinition(cohortDefinition);		
+		Assert.assertTrue(savedCohortDefinition.getId()!=null);
+	}
 	
 	@Test
 	public void shouldSaveCohortDefinitionUsingDao() throws Exception { 		
