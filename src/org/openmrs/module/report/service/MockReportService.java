@@ -209,13 +209,13 @@ public class MockReportService extends BaseReportService implements ReportServic
 		// Add a very basic cohort report to the report schemas
 		PatientCharacteristicCohortDefinition childOnDate = new PatientCharacteristicCohortDefinition();
 		childOnDate.setMaxAge(14);
-		childOnDate.addParameter(new Parameter("effectiveDate", "Age As of Date", Date.class, null, false));		
+		childOnDate.addParameter(new Parameter("effectiveDate", "Age As of Date", Date.class, null, false, false));		
 
 		CohortDataSetDefinition dsd = new CohortDataSetDefinition();
 		dsd.setName("# Children (As Of Date) Dataset");
 		dsd.setName("This is a cohort dataset definition used to calculate the number of patients who are children on a specific date");
-		dsd.addParameter(new Parameter("d1", "Start Date", Date.class, null, true));
-		dsd.addParameter(new Parameter("d2", "End Date", Date.class, null, true));
+		dsd.addParameter(new Parameter("d1", "Start Date", Date.class, null, true, false));
+		dsd.addParameter(new Parameter("d2", "End Date", Date.class, null, true, false));
 		dsd.addStrategy("Children at Start", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d1}"));
 		dsd.addStrategy("Children at End", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d2}"));		
 
@@ -225,8 +225,8 @@ public class MockReportService extends BaseReportService implements ReportServic
 		reportSchema.setUuid(UUID.randomUUID().toString());
 		reportSchema.setName("Simple Cohort Report");
 		reportSchema.setDescription("This is a simple report with parameters and a cohort dataset definition");
-		reportSchema.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true));
-		reportSchema.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true));
+		reportSchema.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true, false));
+		reportSchema.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true, false));
 		reportSchema.addDataSetDefinition(new Mapped<DataSetDefinition>(dsd, "d1=${report.startDate},d2=${report.endDate}"));
 	
 		return reportSchema;	
@@ -244,15 +244,15 @@ public class MockReportService extends BaseReportService implements ReportServic
 		reportSchema.setUuid(UUID.randomUUID().toString());
 		reportSchema.setName("Simple Indicator Report");
 		reportSchema.setDescription("This is a simple indicator report with a cohort indicator dataset definition");
-		reportSchema.addParameter(new Parameter("report.location", "Report Location", Location.class, null, true));
-		reportSchema.addParameter(new Parameter("report.reportDate", "Report Date", Date.class, null, true));
+		reportSchema.addParameter(new Parameter("report.location", "Report Location", Location.class, null, true, false));
+		reportSchema.addParameter(new Parameter("report.reportDate", "Report Date", Date.class, null, true, false));
 		
 		
 		// Add dataset definition
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("Number of patients enrolled at a location by gender and age");
-		dsd.addParameter(new Parameter("location", "Location", Location.class, null, true));
-		dsd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class, null, true));
+		dsd.addParameter(new Parameter("location", "Location", Location.class, null, true, false));
+		dsd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class, null, true, false));
 		reportSchema.addDataSetDefinition(dsd, "location=${report.location},effectiveDate=${report.reportDate}");
 		
 		// Add cohort definition
@@ -264,8 +264,8 @@ public class MockReportService extends BaseReportService implements ReportServic
 		indicator.setName("Number of patients at a particular site");
 		indicator.setAggregator(CountAggregator.class);
 		indicator.setCohortDefinition(atSite, "location=${indicator.location}");
-		indicator.addParameter(new Parameter("indicator.location", "Location", Location.class, null, true));
-		indicator.addParameter(new Parameter("indicator.effDate", "Date", Date.class, null, true));
+		indicator.addParameter(new Parameter("indicator.location", "Location", Location.class, null, true, false));
+		indicator.addParameter(new Parameter("indicator.effDate", "Date", Date.class, null, true, false));
 		indicator.setLogicCriteria(null);
 		dsd.addIndicator("patientsAtSite", indicator, "indicator.location=${location},indicator.effDate=${effectiveDate}");
 		
@@ -282,7 +282,7 @@ public class MockReportService extends BaseReportService implements ReportServic
 
 		// Age dimension
 		CohortDefinitionDimension ageDimension = new CohortDefinitionDimension();
-		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class, null, true));		
+		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class, null, true, false));		
 
 		// Age (child) cohort definition
 		PatientCharacteristicCohortDefinition adult = new PatientCharacteristicCohortDefinition();

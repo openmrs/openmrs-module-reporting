@@ -16,20 +16,25 @@ package org.openmrs.module.evaluation.parameter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.FactoryUtils;
+import org.apache.commons.collections.list.LazyList;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.BaseOpenmrsMetadata;
 
 /**
  * Provides a Base implementation of the Parameterizable interface
  */
+@SuppressWarnings("unchecked")
 public abstract class BaseParameterizable extends BaseOpenmrsMetadata implements Parameterizable {
 
-	
+	private static Log log = LogFactory.getLog(BaseParameterizable.class);
 	private static final long serialVersionUID = 1L;
 	
 	//***********************
 	// PROPERTIES
 	//***********************
-	
+
 	private List<Parameter> parameters = new ArrayList<Parameter>();
 	
 	//***********************
@@ -82,6 +87,12 @@ public abstract class BaseParameterizable extends BaseOpenmrsMetadata implements
 	 * @return the parameters
 	 */
 	public List<Parameter> getParameters() {
+		if (parameters == null) { 
+			parameters = new ArrayList<Parameter>();
+		}
 		return parameters;
 	}
+	
+
+	
 }

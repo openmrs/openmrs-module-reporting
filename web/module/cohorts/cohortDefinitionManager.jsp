@@ -33,49 +33,55 @@ $(document).ready(function() {
 	<div id="container">
 
 
-<h1>Cohort Manager</h1>
+		<h1>Cohort Manager</h1>
+		
+		<form method="get" action="editCohortDefinition.form">
+			<strong>Create a new cohort definition</strong>
+			<select name="type">
+				<option value="">&nbsp;</option>
+				<c:forEach items="${types}" var="type">
+					<option value="${type.name}">${type.simpleName}</option>
+				</c:forEach>
+			</select>
+			<input type="submit" value="Create"/>
+		</form>
+		
+		
+		<table id="cohort-definition-table" class="display" >
+			<thead>
+				<tr>
+					<th>Edit</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Description</th>
+					<th>Preview</th>
+					<th>Delete</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
+					<tr>
+						<td><a href="${pageContext.request.contextPath}/module/reporting/cohortDefinition.form?uuid=${cohortDefinition.uuid}&className=${cohortDefinition.class.name}">edit (beta)</a></td>
+						<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">${cohortDefinition.name}</a></td>
+						<td>${cohortDefinition.class.simpleName}</td>
+						<td>${cohortDefinition.description}</td>
+						<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&action=preview">preview</a></td>
+						<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&action=delete">delete</a></td>
+					</tr>
+				</c:forEach>	
+			</tbody>
+			<tfoot>
+<!-- 
+				<tr>
+					<th colspan="4" align="center">
+						<button onclick="location.href='${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form'">Add Cohort Definition</button>
+					</th>			
+				</tr>	
+ -->				
+			</tfoot>
+		</table>
 
-<form method="get" action="editCohortDefinition.form">
-	<strong>Create a new cohort definition</strong>
-	<select name="type">
-		<option value="">&nbsp;</option>
-		<c:forEach items="${types}" var="type">
-			<option value="${type.name}">${type.simpleName}</option>
-		</c:forEach>
-	</select>
-	<input type="submit" value="Create"/>
-</form>
-
-
-<table id="cohort-definition-table" class="display" >
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-			<th>Preview</th>
-			<th>Delete</th>
-		</tr>
-	</thead>
-	<tbody>
-		<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
-			<tr>
-				<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">${cohortDefinition.name}</a></td>
-				<td>${cohortDefinition.description}</td>
-				<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&action=preview">preview</a></td>
-				<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&action=delete">delete</a></td>
-			</tr>
-		</c:forEach>	
-	</tbody>
-	<tfoot>
-		<tr>
-			<th colspan="4" align="center">
-				<button onclick="location.href='${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form'">Add Indicator</button>
-			</th>			
-		</tr>	
-	</tfoot>
-</table>
-
-</div>
+	</div>
 
 </div>
 

@@ -39,8 +39,8 @@ public class Parameter implements Serializable {
     public static void validateValueForClass(Object value, Class<?> clazz) throws ParameterException {
 		if (value != null &&  clazz != null) {
 			if (!clazz.isAssignableFrom(value.getClass())) {
-				throw new ParameterException("The class " + value.getClass() + " of " + value + 
-											 " is incompatible " + "with the clazz of " + clazz);
+				throw new ParameterException("The class '" + value.getClass() + "' of value '" + value + 
+											 "' is incompatible with the expected class '" + clazz + "'");
 			}
 		}
     }
@@ -69,13 +69,19 @@ public class Parameter implements Serializable {
 	 * The default value given to this parameter.
 	 */
 	private Object defaultValue;
+
+	/**
+	 * Indicates whether this Parameter should be provided as user input.
+	 * By default, this is true
+	 */
+	private Boolean allowUserInput = true;	
 	
 	/**
 	 * Indicates whether this Parameter must be provided a value either
 	 * as a defaultValue or from user input.
 	 * By default, this is true
 	 */
-	private boolean required = true;
+	private Boolean required = true;
 	
 	//***********************
 	// CONSTRUCTORS
@@ -95,13 +101,14 @@ public class Parameter implements Serializable {
 	 * @param defaultValue The value to fill in if nothing provided by the user
 	 * @param required The flag indicating whether a value is required for this parameter
 	 */
-	public Parameter(String name, String label, Class<?> clazz, Object defaultValue, boolean required) {
+	public Parameter(String name, String label, Class<?> clazz, Object defaultValue, Boolean required, Boolean allowUserInput) {
 		super();
 		setName(name);
 		setLabel(label);
 		setClazz(clazz);
 		setDefaultValue(defaultValue);
 		setRequired(required);
+		setAllowUserInput(allowUserInput);
 	}
 	
 	//***********************
@@ -116,7 +123,7 @@ public class Parameter implements Serializable {
     	StringBuilder sb = new StringBuilder();
     	sb.append("Parameter<name="+name+",label="+label);
     	sb.append(",clazz="+ (clazz == null ? "null" : clazz.getName()));
-    	sb.append(",defaultValue="+defaultValue+",required=" + required+">");
+    	sb.append(",defaultValue="+defaultValue+",allowUserInput=" + allowUserInput + ",required=" + required+">");
     	return sb.toString();
     }
     
@@ -205,14 +212,46 @@ public class Parameter implements Serializable {
 	/**
 	 * @return the required
 	 */
-	public boolean isRequired() {
+	public Boolean getRequired() {
 		return required;
 	}
 
 	/**
 	 * @param required the required to set
 	 */
-	public void setRequired(boolean required) {
+	public void setRequired(Boolean required) {
 		this.required = required;
 	}
+
+	/**
+	 * @return the required
+	 */
+	public Boolean isRequired() {
+		return required;
+	}
+
+	/**
+	 * @return the required
+	 */
+	public Boolean getAllowUserInput() {
+		return allowUserInput;
+	}
+
+	/**
+	 * @param required the required to set
+	 */
+	public void setAllowUserInput(Boolean allowUserInput) {
+		this.allowUserInput = allowUserInput;
+	}
+
+	/**
+	 * @return the required
+	 */
+	public Boolean isAllowUserInput() {
+		return allowUserInput;
+	}
+
+
+	
+	
 }

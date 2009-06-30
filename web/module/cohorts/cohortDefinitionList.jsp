@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ include file="../localHeader.jsp"%>
-
 <!-- Form -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
@@ -58,11 +58,33 @@ $(document).ready(function() {
 
 </script>
 
+<style type="text/css">
+.errors { 
+	margin-left:200px; 
+	margin-top:20px; 
+	margin-bottom:20px;	
+	font-family:Verdana,Arial,sans-serif; 
+	font-size:12px;
+}
+</style>
+
+
 <div id="page">
 
-<div id="container">
+	<div id="container">
 
-	<h1>Cohort Definition Editor</h1>
+		<div class="errors"> 
+			<spring:hasBindErrors name="helper">  
+				<font color="red"> 
+					<h3><u>Please correct the following errors</u></h3>   
+					<c:forEach items="${errors.allErrors}" var="error">
+						<spring:message code="${error.code}" text="${error.defaultMessage}"/><br/>  
+					</c:forEach>  
+				</font>  
+			</spring:hasBindErrors>
+		</div>
+	
+		<h1>Cohort Definition Editor</h1>
 
 		<div id="cohort-definition-tabs" class="ui-tabs-hide">			
 			<ul>
@@ -71,13 +93,15 @@ $(document).ready(function() {
 		</div>		
 	
 		<div id="cohort-definition-tabs-details">
-			<form method="post" action="saveCohortDefinition.form">
 			
+			<form:form commandName="cohortDefinition" method="POST">
+			<!-- <form method="post" action="saveCohortDefinition.form"> -->			
 				<ul>				
 					<li>
 						<label class="desc" for="id">ID</label>				
 						<div>
-							<input type="hidden" name="uuid" value="${cohortDefinition.uuid}" />
+							<form:hidden path="uuid" id="uuid" />							
+							<!-- <input type="hidden" name="uuid" value="${cohortDefinition.uuid}" />  -->
 							<c:choose>
 								<c:when test="${!empty cohortDefinition.uuid}">${cohortDefinition.uuid}</c:when>
 								<c:otherwise>
@@ -93,13 +117,16 @@ $(document).ready(function() {
 						<label class="desc" for="type">Type</label>			
 						<div>
 							${cohortDefinition.class.name}
-							<input type="hidden" name="type" value="${cohortDefinition.class.name}" tabindex="1" />
+							<!-- <input type="hidden" name="type" value="${cohortDefinition.class.name}" tabindex="1" />  -->
+							<form:hidden path="class.name" />							
 						</div>
 					</li>
 					
 					<li>
 						<label class="desc" for="name">Name</label>			
 						<div>
+							<form:input path="name" />							
+							<!--  
 							<input type="text" 
 									class="field text medium" 
 									id="name" 
@@ -107,16 +134,22 @@ $(document).ready(function() {
 									value="${cohortDefinition.name}"
 									size="50" 
 									tabindex="2"/>
+							-->
 						</div>
 					</li>
 					<li>
 						<label class="desc" for="description">Description</label>			
 						<div>
-							<textarea id="description" 
-									class="field text short" cols="80" tabindex="3"
-									name="description">${cohortDefinition.description}</textarea>			
+							<form:textarea path="description"/> 
+							<!--  	
+								<textarea id="description" 
+										class="field text short" cols="80" tabindex="3"
+										name="description">${cohortDefinition.description}</textarea>			
+							-->
 						</div>
 					</li>
+	
+	
 					<li>
 						<label class="desc" for="parameter">Parameters</label>			
 						
@@ -125,14 +158,13 @@ $(document).ready(function() {
 								<thead>
 									<tr>
 										<th align="left">Name</th>
-										<th align="left">Old Default Value</th>
-										<th align="left">New Default Value</th>
+										<th align="left">Default Value</th>
 										<th align="left">Param?</th>
 										<th align="left">Required?</th>
 									</tr>	
 								</thead>
 								<tbody>			
-									<c:forEach items="${cohortDefinition.parameters}" var="p" varStatus="varStatus">
+									<c:forEach items="${cohortDefinition.availableParameters}" var="p" varStatus="varStatus">
 										<tr>
 											<td>${p.name}</td>
 											<td>${p.defaultValue}</td>
@@ -156,14 +188,15 @@ $(document).ready(function() {
 							</table>
 						</div>
 					</li>
+
 					<li>					
 						<div align="center">				
-							<input id="saveForm" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-							<input id="saveForm" class="btTxt submit" type="submit" value="Cancel" tabindex="8"/>				
+							<input id="save" name="save" class="btTxt submit" type="submit" value="Save" tabindex="7" />
+							<input id="cancel" name="cancel" class="btTxt submit" type="submit" value="Cancel" tabindex="8"/>				
 						</div>					
 					</li>
 				</ul>				
-			</form>
+			</form:form>
 		</div>
 	</div>	
 </div>

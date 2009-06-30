@@ -19,9 +19,11 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -44,6 +46,23 @@ import org.springframework.util.StringUtils;
 public class BaseCohortDefinitionService extends BaseOpenmrsService implements CohortDefinitionService {
 	
 	private static Log log = LogFactory.getLog(BaseCohortDefinitionService.class);
+	
+	private SerializedObjectDAO dao = null;
+	
+    /**
+     * @return the dao
+     */
+    public SerializedObjectDAO getDao() {
+    	return dao;
+    }
+
+    /**
+     * @param dao the dao to set
+     */
+    public void setDao(SerializedObjectDAO dao) {
+    	this.dao = dao;
+    }	
+	
 	
 	/**
 	 * Returns the CohortDefinitionPersister for the passed CohortDefinition
@@ -149,7 +168,11 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 	/**
 	 * @see CohortDefinitionService#saveCohortDefinition(CohortDefinition)
 	 */
-	public CohortDefinition saveCohortDefinition(CohortDefinition definition) throws APIException {
+	@Transactional
+	public CohortDefinition saveCohortDefinition(CohortDefinition definition) throws APIException {		
+		log.info("Saving cohort definition: " + definition + " of type " + definition.getClass());
+		
+		//return dao.saveObject(definition);
 		return getPersister(definition.getClass()).saveCohortDefinition(definition);
 	}
 

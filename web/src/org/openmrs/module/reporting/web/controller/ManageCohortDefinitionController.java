@@ -59,7 +59,7 @@ public class ManageCohortDefinitionController {
      	model.addAttribute("cohortDefinition", cd);
      	
      	
-        return "/module/reporting/cohorts/editCohortDefinition";
+        return "/module/reporting/cohorts/cohortDefinitionEditor";
     }
     
     @RequestMapping("/module/reporting/saveCohortDefinition")
@@ -72,18 +72,14 @@ public class ManageCohortDefinitionController {
     ) {
     	
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	CohortDefinition cd = service.getCohortDefinition(uuid, type);
-    	cd.setName(name);
-    	cd.setDescription(description);
+    	CohortDefinition cohortDefinition = service.getCohortDefinition(uuid, type);
+    	cohortDefinition.setName(name);
+    	cohortDefinition.setDescription(description);
+    	//cohortDefinition.addParameter(parameter);
     	
-		log.info("Is session open: " + Context.isSessionOpen());
-    	
-    	cd = Context.getService(CohortDefinitionService.class).saveCohortDefinition(cd);
+    	Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);
 
-		log.info("Is session open: " + Context.isSessionOpen());
-
-
-        return "redirect:/module/reporting/cohorts/manageCohortDefinition.list";
+        return "redirect:/module/reporting/manageCohortDefinitions.list";
     }
     
 

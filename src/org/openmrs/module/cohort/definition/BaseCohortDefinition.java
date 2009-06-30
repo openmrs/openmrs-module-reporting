@@ -13,9 +13,12 @@
  */
 package org.openmrs.module.cohort.definition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.evaluation.caching.AnnotatedParameterCachingStrategy;
 import org.openmrs.module.evaluation.caching.Caching;
 import org.openmrs.module.evaluation.parameter.BaseParameterizable;
@@ -31,12 +34,17 @@ import org.openmrs.module.evaluation.parameter.Parameterizable;
 @Caching(strategy=AnnotatedParameterCachingStrategy.class)
 public abstract class BaseCohortDefinition extends BaseParameterizable implements CohortDefinition {
 	
+	private static Log log = LogFactory.getLog(BaseCohortDefinition.class);
     private static final long serialVersionUID = 1920394873L;
     
     //***** PROPERTIES *****
 
     private Integer id;
-
+	private List<Parameter> boundParameters = new ArrayList<Parameter>(); 
+	//LazyList.decorate(new ArrayList(), FactoryUtils.instantiateFactory(Parameter.class));
+	
+    
+    
     //***** CONSTRUCTORS *****
     
     /**
@@ -48,18 +56,47 @@ public abstract class BaseCohortDefinition extends BaseParameterizable implement
     
     //***** INSTANCE METHODS *****
     
+    
     /**
-	 * @see CohortDefinition#getAvailableParameters()
+     * @see CohortDefinition#setParameters()
+     */
+    public void setParameters(List<Parameter> parameters) { 
+    	log.info("Setting available parameters: " + parameters);
+    	super.setParameters(parameters);
+    }
+    
+    /**
+	 * @see CohortDefinition#getParameters()
 	 */
-	public List<Parameter> getAvailableParameters() {
+	public List<Parameter> getParameters() {
+    	log.info("Getting available parameters: " + super.getParameters());
 		return ParameterUtil.getAnnotatedParameters(this);
+	}
+	
+	/**
+     * @see CohortDefinition#setParameters()
+     */
+    public void setBoundParameters(List<Parameter> boundParameters) { 
+    	log.info("Setting bound parameters: ");
+    	this.boundParameters = boundParameters;
+    }
+    
+    /**
+	 * @see CohortDefinition#getParameters()
+	 */
+	public List<Parameter> getBoundParameters() {
+		log.info("Getting bound parameters: ");
+		if (boundParameters.isEmpty()) { 
+			setBoundParameters(ParameterUtil.getAnnotatedParameters(this));
+		}
+		return boundParameters;
 	}
 	
 	/**
 	 * @see CohortDefinition#enableParameter(String, Object, boolean)
 	 */
 	public void enableParameter(String name, Object defaultValue, boolean required) {
-		for (Parameter p : getAvailableParameters()) {
+		for (Parameter p : getParameters()) {
 			if (StringUtils.equals(name, p.getName())) {
 				p.setDefaultValue(defaultValue);
 				p.setRequired(required);
@@ -75,7 +112,7 @@ public abstract class BaseCohortDefinition extends BaseParameterizable implement
 	 */
 	@Override
 	public void addParameter(Parameter p) throws ParameterException {
-		if (!getAvailableParameters().contains(p)) {
+		if (!getParameters().contains(p)) {
 			throw new ParameterException("Unable to find available parameter <" + p.getName() + ">");
 		}
 		super.addParameter(p);
@@ -96,4 +133,5 @@ public abstract class BaseCohortDefinition extends BaseParameterizable implement
     public void setId(Integer id) {
     	this.id = id;
     }
+    
 }

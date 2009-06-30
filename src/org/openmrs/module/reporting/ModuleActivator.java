@@ -29,7 +29,7 @@ public class ModuleActivator implements Activator {
 	 * @see org.openmrs.module.Activator#startup()
 	 */
 	public void startup() {
-		log.info("Starting @MODULE_ID@ Module");
+		log.info("Starting the Reporting Module ...");
 		
 	}
 	
@@ -37,7 +37,7 @@ public class ModuleActivator implements Activator {
 	 *  @see org.openmrs.module.Activator#shutdown()
 	 */
 	public void shutdown() {
-		log.info("Shutting down @MODULE_ID@ Module");
+		log.info("Shutting down the Reporting Module ...");
 	}
 	
 }

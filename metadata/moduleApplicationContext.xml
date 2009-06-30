@@ -11,26 +11,30 @@
            http://www.springframework.org/schema/util
            http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
-	<!-- Serialized Data Access Object -->
-	<bean parent="serializedObjectDAO">
+	<!-- Serialized Data Access Object 	-->
+	<bean id="serializedObjectDAO" class="org.openmrs.api.db.hibernate.HibernateSerializedObjectDAO" factory-method="getInstance">
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
 		<property name="supportedTypes">
-			<list merge="true">
+			<list>
 				<value>org.openmrs.module.cohort.definition.CohortDefinition</value>
 				<value>org.openmrs.module.dataset.definition.DataSetDefinition</value>
 			</list>
 		</property>
 	</bean>	
 
-	<!--  Serialized Data Set Definition Persister -->
+
+	<!--  Serialized Data Set Definition Persister 
 	<bean id="simpleDataSetDefinitionPersister" 
 			class="org.openmrs.module.dataset.definition.persister.SimpleDataSetDefinitionPersister">
 		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
 	</bean>
+	-->
 
 	<!--  Serialized Cohort Definition Persister -->
 	<bean id="serializedCohortDefinitionPersister" class="org.openmrs.module.cohort.definition.persister.SerializedCohortDefinitionPersister">
 		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
 	</bean>
+
 	
 	<!--  Mock Report Service -->
 	<bean parent="serviceContext">
@@ -40,8 +44,7 @@
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.report.service.MockReportService">
-						</bean>
+						<bean class="org.openmrs.module.report.service.MockReportService"></bean>
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors" />
@@ -63,6 +66,7 @@
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
 						<bean class="org.openmrs.module.cohort.definition.service.BaseCohortDefinitionService">
+							<property name="dao"><ref bean="serializedObjectDAO"/></property>
 						</bean>
 					</property>
 					<property name="preInterceptors">
@@ -85,6 +89,7 @@
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
 						<bean class="org.openmrs.module.dataset.definition.service.BaseDataSetDefinitionService">
+							<property name="dao"><ref bean="serializedObjectDAO"/></property>
 						</bean>
 					</property>
 					<property name="preInterceptors">

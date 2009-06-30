@@ -10,10 +10,27 @@
 		</layout>
 	</appender>
 
+	<logger name="org.dbunit">
+		<level value="ERROR" />
+	</logger>
+	<logger name="org.apache">
+		<level value="INFO" />
+	</logger>	
+	<logger name="org.hibernate">
+		<level value="INFO" />
+	</logger>
+	<logger name="net.sf.ehcache">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.openmrs">
+		<level value="INFO" />
+	</logger>
 	<logger name="org.openmrs.module">
 		<level value="INFO" />
 	</logger>
-	
 	<logger name="org.hibernate.tool.hbm2ddl">
 		<level value="FATAL"/>
 	</logger>	

@@ -79,10 +79,10 @@ public class PatientCharacteristicCohortDefinition extends BaseCohortDefinition 
 			} else {
 				ret.append("Female");
 			}
-			ret.append(" patients ");
+			ret.append(" patients");
 		}
 		else {
-			ret.append("Patients ");
+			ret.append("Patients");
 		}
 
 		if (minBirthdate != null) {
@@ -104,7 +104,7 @@ public class PatientCharacteristicCohortDefinition extends BaseCohortDefinition 
 			}
 		} else {
 			if (maxAge != null) {
-				ret.append(" up to " + maxAge + " years old");
+				ret.append("| up to " + maxAge + " years old");
 			}
 		}
 		if (effectiveDate != null) {

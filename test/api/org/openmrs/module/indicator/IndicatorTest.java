@@ -56,17 +56,17 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 		
 		ReportSchema rs = new ReportSchema();
-		rs.addParameter(new Parameter("report.location", "Report Location", Location.class, null, true));
-		rs.addParameter(new Parameter("report.reportDate", "Report Date", Date.class, null, true));
+		rs.addParameter(new Parameter("report.location", "Report Location", Location.class, null, true, false));
+		rs.addParameter(new Parameter("report.reportDate", "Report Date", Date.class, null, true, false));
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.addParameter(new Parameter("location", "Location", Location.class, null, true));
-		dsd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class, null, true));
+		dsd.addParameter(new Parameter("location", "Location", Location.class, null, true, false));
+		dsd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class, null, true, false));
 		rs.addDataSetDefinition(dsd, "location=${report.location},effectiveDate=${report.reportDate}");
 		
 		CohortIndicator indicator = new CohortIndicator();
-		indicator.addParameter(new Parameter("indicator.location", "Location", Location.class, null, true));
-		indicator.addParameter(new Parameter("indicator.effDate", "Date", Date.class, null, true));
+		indicator.addParameter(new Parameter("indicator.location", "Location", Location.class, null, true, false));
+		indicator.addParameter(new Parameter("indicator.effDate", "Date", Date.class, null, true, false));
 		LocationCohortDefinition atSite = new LocationCohortDefinition();
 		atSite.enableParameter("location", null, true);
 		indicator.setCohortDefinition(atSite, "location=${indicator.location}");
@@ -88,7 +88,7 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		dsd.addDimension("gender", genderDimension, null);
 		
 		CohortDefinitionDimension ageDimension = new CohortDefinitionDimension();
-		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class, null, true));
+		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class, null, true, false));
 
 		PatientCharacteristicCohortDefinition adult = new PatientCharacteristicCohortDefinition();
 		adult.setMinAge(15);

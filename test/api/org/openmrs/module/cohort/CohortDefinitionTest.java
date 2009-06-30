@@ -26,6 +26,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Drug;
+import org.openmrs.User;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -55,8 +56,6 @@ public class CohortDefinitionTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void shouldSaveCohortDefinition() throws Exception { 
-		log.info("Is session open: " + Context.isSessionOpen());
-
 		authenticate();
 		
 		CohortDefinitionService service = 
@@ -67,22 +66,28 @@ public class CohortDefinitionTest extends BaseModuleContextSensitiveTest {
 		
 		PatientCharacteristicCohortDefinition cohortDefinition = 
 			PatientCharacteristicCohortDefinition.class.newInstance();
-			// new PatientCharacteristicCohortDefinition();
+			//new PatientCharacteristicCohortDefinition();
+		//Context.refreshAuthenticatedUser();
 		
-		service.saveCohortDefinition(cohortDefinition);
+		cohortDefinition.setName("Testing");
+		//Context.refreshAuthenticatedUser();
+		//definition.setCreator(Context.getAuthenticatedUser());
+		//definition.setChangedBy(Context.getAuthenticatedUser());		
+		User user = Context.getUserService().getUserByUsername("admin");
+		log.info("User properties: " + user.getUserProperties());
+		cohortDefinition.setCreator(null);
+		cohortDefinition.setChangedBy(null);
+		service.saveCohortDefinition(cohortDefinition);		
+		cohortDefinitions = service.getAllCohortDefinitions(false);
 		
 		log.info("cohort definitions: " + cohortDefinitions.size() );
-		
-		cohortDefinitions = service.getAllCohortDefinitions(false);
-		log.info("Is session open: " + Context.isSessionOpen());
-
 	}
 	
 	
 	@Test
 	public void should_acceptAnnotatedParameters() throws Exception {
 		PatientCharacteristicCohortDefinition def = new PatientCharacteristicCohortDefinition();
-		System.out.println(def.getAvailableParameters());
+		System.out.println(def.getParameters());
 	}
 	
 	@Test
@@ -95,8 +100,8 @@ public class CohortDefinitionTest extends BaseModuleContextSensitiveTest {
 		Drug inh = Context.getConceptService().getDrug("INH 300mg");
 		DrugOrderCohortDefinition filter = new DrugOrderCohortDefinition();
 		filter.setAnyOrAll(PatientSetService.GroupMethod.ANY);
-		Parameter sinceParam = new Parameter("sinceDate", "Since", Date.class, null, false);
-		Parameter untilParam = new Parameter("untilDate", "Until", Date.class, null, false);
+		Parameter sinceParam = new Parameter("sinceDate", "Since", Date.class, null, false, false);
+		Parameter untilParam = new Parameter("untilDate", "Until", Date.class, null, false, false);
 		filter.addParameter(sinceParam);
 		filter.addParameter(untilParam);
 		List<Drug> drugList = new ArrayList<Drug>();

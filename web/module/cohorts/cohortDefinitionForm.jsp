@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ include file="../localHeader.jsp"%>
-
 <!-- Form -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
@@ -54,15 +54,55 @@ $(document).ready(function() {
 		"bInfo": false,
 		"bAutoWidth": false
 	} );			
+
+
+	$('#cancel-button').click(function(event){
+		// To prevent the submit
+		event.preventDefault();
+
+		// Redirect to the listing page
+		window.location.href='<c:url value="/module/reporting/manageCohortDefinitions.list"/>';
+	});
+
+
+	$('#save-button').click(function(event){
+		// To prevent the submit
+		//event.preventDefault();
+	});	
+	
 } );
 
 </script>
 
+<style type="text/css">
+.errors { 
+	margin-left:200px; 
+	margin-top:20px; 
+	margin-bottom:20px;	
+	font-family:Verdana,Arial,sans-serif; 
+	font-size:12px;
+}
+</style>
+
+
 <div id="page">
 
-<div id="container">
+	<div id="container">
 
-	<h1>Cohort Definition Editor</h1>
+		<div class="errors"> 
+			<spring:hasBindErrors name="cohortDefinition">  
+				<font color="red"> 
+					<h3><u>Please correct the following errors</u></h3>   
+					<ul class="none">
+						<c:forEach items="${errors.allErrors}" var="error">
+							<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
+						</c:forEach> 
+					</ul> 
+				</font>  
+			</spring:hasBindErrors>
+		</div>
+	
+		<h1>Cohort Definition Editor</h1>
 
 		<div id="cohort-definition-tabs" class="ui-tabs-hide">			
 			<ul>
@@ -71,13 +111,13 @@ $(document).ready(function() {
 		</div>		
 	
 		<div id="cohort-definition-tabs-details">
-			<form method="post" action="saveCohortDefinition.form">
 			
+			<form:form id="saveForm" commandName="cohortDefinition" method="POST">
+			<!-- <form method="post" action="saveCohortDefinition.form"> -->			
 				<ul>				
 					<li>
-						<label class="desc" for="id">ID</label>				
-						<div>
-							<input type="hidden" name="uuid" value="${cohortDefinition.uuid}" />
+						<label class="desc" for="uuid">ID</label>				
+						<div>							
 							<c:choose>
 								<c:when test="${!empty cohortDefinition.uuid}">${cohortDefinition.uuid}</c:when>
 								<c:otherwise>
@@ -92,31 +132,46 @@ $(document).ready(function() {
 					<li>
 						<label class="desc" for="type">Type</label>			
 						<div>
-							${cohortDefinition.class.name}
-							<input type="hidden" name="type" value="${cohortDefinition.class.name}" tabindex="1" />
+							${cohortDefinition.class.simpleName}
+							<!-- <input type="hidden" name="type" value="${cohortDefinition.class.name}" tabindex="1" />  -->
+							<form:hidden path="class.name" />							
+							
 						</div>
 					</li>
-					
+					<li>
+						<label class="desc" for="name">Returns</label>			
+						<div>
+							${cohortDefinition}					
+						</div>
+					</li>
 					<li>
 						<label class="desc" for="name">Name</label>			
 						<div>
+							<form:input path="name" tabindex="1"/>							
+							<!--  
 							<input type="text" 
 									class="field text medium" 
 									id="name" 
 									name="name"
 									value="${cohortDefinition.name}"
 									size="50" 
-									tabindex="2"/>
+									/>
+							-->
 						</div>
 					</li>
 					<li>
 						<label class="desc" for="description">Description</label>			
 						<div>
-							<textarea id="description" 
-									class="field text short" cols="80" tabindex="3"
-									name="description">${cohortDefinition.description}</textarea>			
+							<form:textarea path="description" tabindex="2"/> 
+							<!--  	
+								<textarea id="description" 
+										class="field text short" cols="80" tabindex="3"
+										name="description">${cohortDefinition.description}</textarea>			
+							-->
 						</div>
 					</li>
+	
+	
 					<li>
 						<label class="desc" for="parameter">Parameters</label>			
 						
@@ -124,46 +179,70 @@ $(document).ready(function() {
 							<table id="cohort-definition-parameter-table" class="display">
 								<thead>
 									<tr>
+										<th align="left">User Specified</th>
 										<th align="left">Name</th>
 										<th align="left">Old Default Value</th>
 										<th align="left">New Default Value</th>
-										<th align="left">Param?</th>
 										<th align="left">Required?</th>
 									</tr>	
 								</thead>
+		<tbody>			
+			<c:forEach items="${cohortDefinition.boundParameters}" var="p" varStatus="varStatus">
+				<tr>
+					<td>
+						<form:checkbox path="boundParameters[${varStatus.index}].allowUserInput" tabindex="${(varStatus.index*5)+2}" />
+					</td>
+					<td>${p.name}</td>
+					<td>${p.defaultValue}</td>
+					<td>					
+						<form:input path="${p.name}" tabindex="${(varStatus.index*5)+1}"/>
+					</td>
+					<td>
+						<form:checkbox path="boundParameters[${varStatus.index}].required" tabindex="${(varStatus.index*5)+2}" />
+					</td>
+				</tr>
+			</c:forEach>
+		</tbody>
+		
+								
+<%-- 			
 								<tbody>			
 									<c:forEach items="${cohortDefinition.parameters}" var="p" varStatus="varStatus">
 										<tr>
 											<td>${p.name}</td>
 											<td>${p.defaultValue}</td>
-											<td><openmrs:fieldGen type="${p.clazz}" formFieldName="parameter.${p.name}.defaultValue" val="${p.defaultValue}" parameters="" /></td>
-											<td><input type="checkbox" name="parameter.${p.name}.allowAtEvaluation" /></td>
+											<td><openmrs:fieldGen type="${p.clazz}" formFieldName="parameters[${varStatus.index}].defaultValue" val="${p.defaultValue}" parameters="" /></td>
+											<td><input type="checkbox" name="parameters[${varStatus.index}].allowAtEvaluation" /></td>
 											<td>
 												<c:choose>
 													<c:when test="${p.required}">
-														<input type="hidden" name="parameter.${p.name}.required" value="true" tabindex="${varStatus.index+3}"/>[x]
+														<input type="hidden" name="parameters[${varStatus.index}].required" value="true" tabindex="${varStatus.index+3}"/>
+														<input type="checkbox" name="parameters[${varStatus.index}].required" value="true" disabled/>
 													</c:when>
 													<c:otherwise>
-														<input type="checkbox" name="parameter.${p.name}.required" tabindex="${varStatus.index+3}"/></td>
+														<input type="checkbox" name="parameters[${varStatus.index}].required" tabindex="${varStatus.index+3}"/></td>
 													</c:otherwise>
 												</c:choose>
 											</td>
 										</tr>
 									</c:forEach>
 								</tbody>
+--%>								
 								<tfoot>
 								</tfoot>								
 							</table>
 						</div>
 					</li>
+
 					<li>					
 						<div align="center">				
-							<input id="saveForm" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-							<input id="saveForm" class="btTxt submit" type="submit" value="Cancel" tabindex="8"/>				
+							<input id="save-button" name="save" type="submit" class="button" value="Save" tabindex="100" />
+							<input id="evaluate-button" name="evaluate" type="submit" class="button" value="Evaluate" tabindex="101" />
+							<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
 						</div>					
 					</li>
 				</ul>				
-			</form>
+			</form:form>
 		</div>
 	</div>	
 </div>

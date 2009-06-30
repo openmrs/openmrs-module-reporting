@@ -80,9 +80,9 @@ public class ParameterUtil {
     				}
     				
     				// Construct a new Parameter and add it to the return list
-    				Parameter p = new Parameter(name, label, f.getType(), defaultVal, ann.required());
-    				ret.add(p);
+    				Parameter p = new Parameter(name, label, f.getType(), defaultVal, ann.required(), false);
     				log.debug("Adding parameter: " + p);
+    				ret.add(p);
     			}
 	    	}
 	    	

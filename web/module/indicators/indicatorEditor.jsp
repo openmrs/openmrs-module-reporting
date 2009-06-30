@@ -177,7 +177,7 @@ var cohortDefinitions = [
 				id: ${cohortDefinition.id}, 
 				name: "${cohortDefinition.name}", 
 				description: "(<i>${cohortDefinition.class.simpleName}</i>)",
-				parameters: "${cohortDefinition.availableParameters}"
+				parameters: "${cohortDefinition.parameters}"
 			}
 			<c:if test="${!varStatus.last}">,</c:if>
 		</c:forEach>	            	

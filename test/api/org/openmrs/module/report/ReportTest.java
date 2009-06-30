@@ -52,17 +52,17 @@ public class ReportTest extends BaseModuleContextSensitiveTest {
 		
 		PatientCharacteristicCohortDefinition childOnDate = new PatientCharacteristicCohortDefinition();
 		childOnDate.setMaxAge(14);
-		childOnDate.addParameter(new Parameter("effectiveDate", "Age As of Date", Date.class, null, false));
+		childOnDate.addParameter(new Parameter("effectiveDate", "Age As of Date", Date.class, null, false, false));
 		
 		CohortDataSetDefinition dsd = new CohortDataSetDefinition();
-		dsd.addParameter(new Parameter("d1", "Start Date", Date.class, null, true));
-		dsd.addParameter(new Parameter("d2", "End Date", Date.class, null, true));
+		dsd.addParameter(new Parameter("d1", "Start Date", Date.class, null, true, false));
+		dsd.addParameter(new Parameter("d2", "End Date", Date.class, null, true, false));
 		dsd.addStrategy("Children at Start", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d1}"));
 		dsd.addStrategy("Children at End", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d2}"));
 		
 		ReportSchema report = new ReportSchema();
-		report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true));
-		report.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true));
+		report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true, false));
+		report.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true, false));
 		report.addDataSetDefinition(new Mapped<DataSetDefinition>(dsd, "d1=${report.startDate},d2=${report.endDate}"));
 		
 		EvaluationContext ec = new EvaluationContext();

@@ -66,7 +66,7 @@ public class ReportSchemaXmlTest extends BaseContextSensitiveTest {
 		enrolledFilter.setName("EnrolledOnDate");
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByName("HIV PROGRAM");
 		enrolledFilter.setProgram(hivProgram);
-		enrolledFilter.addParameter(new Parameter("untilDate","untilDate",Date.class,null,false));
+		enrolledFilter.addParameter(new Parameter("untilDate","untilDate",Date.class,null,false, false));
 		Context.getService(CohortDefinitionService.class).saveCohortDefinition(enrolledFilter);
 
 	}

@@ -49,9 +49,9 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 	public ReportSchema setupReport() {
 		
 		ReportSchema rs = new ReportSchema();
-		rs.addParameter(new Parameter("report.location", "Report Facility", Location.class, null, true));
-		rs.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true));
-		rs.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true));
+		rs.addParameter(new Parameter("report.location", "Report Facility", Location.class, null, true, false));
+		rs.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true, false));
+		rs.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true, false));
 		
 		LocationCohortDefinition initialCohort = new LocationCohortDefinition();
 		initialCohort.setCalculationMethod(PatientLocationMethod.PATIENT_HEALTH_CENTER);
@@ -64,8 +64,8 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 	public CohortIndicatorDataSetDefinition setupDataSetDefinition(ReportSchema rs) {
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.addParameter(new Parameter("dataSet.startDate", "DataSet Start Date", Date.class, null, true));
-		dsd.addParameter(new Parameter("dataSet.endDate", "DataSet End Date", Date.class, null, true));
+		dsd.addParameter(new Parameter("dataSet.startDate", "DataSet Start Date", Date.class, null, true, false));
+		dsd.addParameter(new Parameter("dataSet.endDate", "DataSet End Date", Date.class, null, true, false));
 		
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("dataSet.startDate", "${report.startDate}");
@@ -95,7 +95,7 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		
 		//****** AGE *******
 		CohortDefinitionDimension ageDimension = new CohortDefinitionDimension();
-		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class, null, true));
+		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class, null, true, false));
 
 		PatientCharacteristicCohortDefinition adult = new PatientCharacteristicCohortDefinition();
 		adult.setMinAge(15);
@@ -113,8 +113,8 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 	public CohortIndicator setupIndicator(String key, CohortIndicatorDataSetDefinition dsd) {
 		
 		CohortIndicator indicator = new CohortIndicator();
-		indicator.addParameter(new Parameter("indicator.startDate", "Indicator Start Date", Date.class, null, true));
-		indicator.addParameter(new Parameter("indicator.endDate", "Indicator End Date", Date.class, null, true));
+		indicator.addParameter(new Parameter("indicator.startDate", "Indicator Start Date", Date.class, null, true, false));
+		indicator.addParameter(new Parameter("indicator.endDate", "Indicator End Date", Date.class, null, true, false));
 		indicator.setLogicCriteria(null);
 		indicator.setAggregator(CountAggregator.class);
 		

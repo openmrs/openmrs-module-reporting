@@ -15,7 +15,10 @@ package org.openmrs.module.cohort.definition.persister;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 
@@ -26,10 +29,13 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
  * a CohortDefinition.  To override this behavior, any additional CohortDefinitionPersister
  * should specify the order field on the Handler annotation.
  */
-@Handler(supports={CohortDefinition.class})
+@Handler(supports={CohortDefinition.class}, order=50)
 public class SerializedCohortDefinitionPersister implements CohortDefinitionPersister {
 
-	private static SerializedCohortDefinitionPersister instance = null;
+	
+	private static Log log = LogFactory.getLog(SerializedCohortDefinitionPersister.class);
+	
+	//private static SerializedCohortDefinitionPersister instance = null;
 	
     //****************
     // Constructor
@@ -39,12 +45,14 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
     //****************
     // Factory Methods
     //****************
+	/*
 	public static SerializedCohortDefinitionPersister getInstance() {
 		if (instance == null) {
 			instance = new SerializedCohortDefinitionPersister();
 		}
 		return instance;
 	}
+	*/
 	
     //****************
     // Properties

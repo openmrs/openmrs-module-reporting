@@ -19,6 +19,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
+import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
@@ -36,7 +37,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class BaseDataSetDefinitionService extends BaseOpenmrsService implements DataSetDefinitionService {
 
 	protected Log log = LogFactory.getLog(this.getClass());
+		
+	private SerializedObjectDAO dao = null;
 	
+    /**
+     * @return the dao
+     */
+    public SerializedObjectDAO getDao() {
+    	return dao;
+    }
+
+    /**
+     * @param dao the dao to set
+     */
+    public void setDao(SerializedObjectDAO dao) {
+    	this.dao = dao;
+    }	
+    
 	/**
 	 * Returns the DataSetDefinitionPersister for the passed DataSetDefinition
 	 * @param definition
