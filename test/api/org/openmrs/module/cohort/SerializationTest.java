@@ -30,40 +30,21 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 /**
  * Testing the cohort definition persister.  
  */
-public class CohortDefinitionPersisterTest extends BaseModuleContextSensitiveTest {
+public class SerializationTest extends BaseModuleContextSensitiveTest {
 
 	// Logger
 	private Log log = LogFactory.getLog(this.getClass());
 	
-	private SerializedObjectDAO dao = null;
-	
-	
-	
 	@Before
 	public void runBeforeTest() throws Exception { 
 		authenticate();		
-		if (dao == null) {
-			dao = (SerializedObjectDAO) applicationContext.getBean("serializedObjectDAO");
-			dao.registerSupportedType(CohortDefinition.class);
-		}
 	}
+	
 	
 	@Test
-	public void shouldSaveCohortDefinition() throws Exception { 		
-		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();		
-		cohortDefinition.setName("Testing");
-		//cohortDefinition.setCreator(Context.getAuthenticatedUser());
-		//cohortDefinition.setChangedBy(Context.getAuthenticatedUser());
-		
-		
-		CohortDefinition savedCohortDefinition = service.saveCohortDefinition(cohortDefinition);		
-		//Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);
-		//dao.saveObject(cohortDefinition);
-		Assert.assertTrue(savedCohortDefinition.getId()!=null);
+	public void shouldSaveAuthenticatedUser() throws Exception { 		
+		User admin = Context.getAuthenticatedUser();
+		Context.getSerializationService().serialize(admin, XStreamSerializer.class);		
 	}
-	
-
-
 
 }
