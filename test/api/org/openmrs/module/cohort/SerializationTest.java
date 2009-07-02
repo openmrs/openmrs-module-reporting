@@ -13,17 +13,15 @@
  */
 package org.openmrs.module.cohort;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.PersonAddress;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.db.SerializedObjectDAO;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.serialization.xstream.XStreamSerializer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -40,6 +38,13 @@ public class SerializationTest extends BaseModuleContextSensitiveTest {
 		authenticate();		
 	}
 	
+	@Test
+	public void shouldSavePersonAddress() throws Exception{
+		PersonAddress pa = Context.getPersonService().getPersonAddressByUuid("0908e42c-ff9b-4f0c-be5c-4a517e3feb34");
+		assertTrue("pa's creator should be a cglib proxy, but it won't throw LazyInitializationException while it be serialized", pa.getCreator().getClass().getName().indexOf("EnhancerByCGLIB") != -1);
+		//you can see the stack trace, LazyInitializationException is throwed while pa.creator.userProperties is serialized, not pa.creator
+		Context.getSerializationService().serialize(pa, XStreamSerializer.class);
+	}
 	
 	@Test
 	public void shouldSaveAuthenticatedUser() throws Exception { 		
