@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -51,7 +52,28 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 		}
 	}
 	
-	
+	/**
+	 * To run this method successfully, please firstly modify a place in "User.hbm.xml" as follow:
+	 * 
+	 * <map name="userProperties" table="user_property" lazy="false"
+	 *		...
+	 * </map>
+	 * 
+	 * We should let User#userProterties to be eager fetched.
+	 * 
+	 * Note: After we modified "User.hbm.xml", then should re-run "pacage-api" target in "build.xml" of trunk 1.5 and let reporting use the new openmrs-api-xxx.jar
+	 * 
+	 */
+	@Test
+	public void shouldSaveCohortDefinitionUsingServiceNoWithAuthenticatedUser(){
+		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
+		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();		
+		cohortDefinition.setName("Testing");
+		User admin = Context.getUserService().getUser(1);
+		cohortDefinition.setCreator(admin);
+		CohortDefinition savedCohortDefinition = service.saveCohortDefinition(cohortDefinition);		
+		Assert.assertTrue(savedCohortDefinition.getId()!=null);
+	}
 	
 	@Test
 	public void shouldSaveCohortDefinitionUsingService() throws Exception { 		
