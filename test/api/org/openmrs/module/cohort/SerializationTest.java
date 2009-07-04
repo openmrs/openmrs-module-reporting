@@ -13,13 +13,17 @@
  */
 package org.openmrs.module.cohort;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.PersonAddress;
+import org.openmrs.PersonName;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.serialization.xstream.XStreamSerializer;
@@ -36,6 +40,25 @@ public class SerializationTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void runBeforeTest() throws Exception { 
 		authenticate();		
+	}
+	
+	@Test
+	public void shouldReturnSameClassName(){
+		User admin = Context.getAuthenticatedUser();
+		Set<PersonName> set = admin.getNames();
+		/*
+		 * You can see the "standardTestDataSet.xml" file, admin's personName only have one record
+		 * and that recode's person_name_id is "9348".
+		 * 
+		 * Besides, both "person_id" and "creator" of that record are equal.
+		 */
+		for(PersonName pn : set){
+			String classNameOfCreator = pn.getCreator().getClass().getName();
+			String classNameOfPerson = pn.getPerson().getClass().getName();
+			System.out.println(classNameOfCreator);
+			System.out.println(classNameOfPerson);
+			assertEquals(classNameOfCreator, classNameOfPerson);
+		}
 	}
 	
 	@Test
