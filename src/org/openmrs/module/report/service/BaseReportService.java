@@ -35,9 +35,26 @@ import org.openmrs.util.HandlerUtil;
  */
 public class BaseReportService extends BaseOpenmrsService implements ReportService {
 
+	// Logger
 	private transient Log log = LogFactory.getLog(this.getClass());
+
+	// Data access object
 	private SerializedObjectDAO serializedObjectDAO;
-		
+
+	/**
+	 * @return serializedObjectDAO
+	 */
+	public SerializedObjectDAO getDao() {
+		return serializedObjectDAO;
+	}
+	
+	/**
+	 * @param serializedObjectDAO
+	 */
+	public void setDao(SerializedObjectDAO serializedObjectDAO) {
+		this.serializedObjectDAO = serializedObjectDAO;
+	}	
+	
 	/**
 	 * Default constructor
 	 */
@@ -190,17 +207,4 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 
 	//************* Property Access *************
 
-	/**
-	 * @return serializedObjectDAO
-	 */
-	public SerializedObjectDAO getSerializedObjectDAO() {
-		return serializedObjectDAO;
-	}
-	
-	/**
-	 * @param serializedObjectDAO
-	 */
-	public void setSerializedObjectDAO(SerializedObjectDAO serializedObjectDAO) {
-		this.serializedObjectDAO = serializedObjectDAO;
-	}
 }

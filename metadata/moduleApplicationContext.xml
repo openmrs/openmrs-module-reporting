@@ -16,28 +16,28 @@
 		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
 		<property name="supportedTypes">
 			<list>
+				<value>org.openmrs.module.report.ReportSchema</value>
+				<value>org.openmrs.module.indicator.Indicator</value>
 				<value>org.openmrs.module.cohort.definition.CohortDefinition</value>
 				<value>org.openmrs.module.dataset.definition.DataSetDefinition</value>
-				<value>org.openmrs.module.report.ReportSchema</value>
 			</list>
 		</property>
 	</bean>	
 
 
-	<!--  Serialized Data Set Definition Persister 
-	<bean id="simpleDataSetDefinitionPersister" 
-			class="org.openmrs.module.dataset.definition.persister.SimpleDataSetDefinitionPersister">
-		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
-	</bean>
-	-->
-
-	<!--  Serialized Cohort Definition Persister -->
+	<!-- Initialize report persistence handlers -->
 	<bean id="serializedCohortDefinitionPersister" class="org.openmrs.module.cohort.definition.persister.SerializedCohortDefinitionPersister">
 		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
 	</bean>
-
+	<bean id="serializedDataSetDefinitionPersister" class="org.openmrs.module.dataset.definition.persister.SerializedDataSetDefinitionPersister">
+		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
+	</bean>	
+	<bean id="serializedIndicatorPersister" class="org.openmrs.module.indicator.persister.SerializedIndicatorPersister">
+		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
+	</bean>
 	
-	<!--  Mock Report Service -->
+	
+	<!--  Base Report Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list merge="true">
@@ -46,11 +46,8 @@
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
 						<bean class="org.openmrs.module.report.service.BaseReportService">
-							<property name="dao"><ref bean="serializedObjectDAO"/></property>	
+							<property name="dao"><ref bean="serializedObjectDAO"/></property>			
 						</bean>
-						<!-- 
-						<bean class="org.openmrs.module.report.service.MockReportService"></bean>
-					 	-->
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors" />
@@ -71,9 +68,7 @@
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.cohort.definition.service.BaseCohortDefinitionService">
-							<property name="dao"><ref bean="serializedObjectDAO"/></property>
-						</bean>
+						<bean class="org.openmrs.module.cohort.definition.service.BaseCohortDefinitionService"></bean>
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors" />
@@ -94,9 +89,7 @@
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.dataset.definition.service.BaseDataSetDefinitionService">
-							<property name="dao"><ref bean="serializedObjectDAO"/></property>
-						</bean>
+						<bean class="org.openmrs.module.dataset.definition.service.BaseDataSetDefinitionService"></bean>
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors" />
@@ -109,7 +102,8 @@
 		</property>
 	</bean>
 
-	<!-- Mock Indicator Service -->
+
+	<!-- Base Indicator Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list merge="true">
@@ -117,8 +111,7 @@
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.indicator.service.MockIndicatorService">
-						</bean>
+						<bean class="org.openmrs.module.indicator.service.BaseIndicatorService"></bean>
 					</property>
 					<property name="preInterceptors">
 						<list>
