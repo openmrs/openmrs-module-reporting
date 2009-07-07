@@ -16,16 +16,28 @@ package org.openmrs.module.serialization;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.Set;
+
+import javax.servlet.http.HttpSession;
+
+import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
+import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.service.ReportService;
 import org.openmrs.serialization.xstream.XStreamSerializer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -34,14 +46,12 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  */
 public class SerializationTest extends BaseModuleContextSensitiveTest {
 
+	// Locally holds the user information (like the httpsession)
+	private UserContext userContext;
+	
 	// Logger
 	private Log log = LogFactory.getLog(this.getClass());
-	
-	@Before
-	public void runBeforeTest() throws Exception { 
-		authenticate();		
-	}
-	
+		
 	@Test
 	public void shouldReturnSameClassName(){
 		User admin = Context.getAuthenticatedUser();
@@ -75,4 +85,89 @@ public class SerializationTest extends BaseModuleContextSensitiveTest {
 		Context.getSerializationService().serialize(admin, XStreamSerializer.class);		
 	}
 
+	
+	@Test
+	public void shouldSaveCohortDefinition() throws Exception { 
+		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();
+		cohortDefinition.setName("Test 1");
+		CohortDefinition saved = Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);
+	}
+	
+	
+	@Test
+	public void shouldSaveCohortDefinitionInAnotherHibernateSession() throws Exception { 		
+
+		UserContext userContext = null;
+		
+		// Authenticate in one request
+		Context.openSession();
+		Context.authenticate("admin", "test");
+		userContext = Context.getUserContext();
+		Context.closeSession();
+				
+		// Save a new cohort definition in another transaction using a cached user context
+		Context.openSession();
+		Context.setUserContext(userContext);		
+		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();
+		cohortDefinition.setName("Test 1");
+		CohortDefinition saved = Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);		
+		log.info("Creator: " + saved.getCreator());
+		Assert.assertEquals("Cohort definition creator should be the same as authenticated user", saved.getCreator(), Context.getAuthenticatedUser());
+		Assert.assertNotNull("Cohort definition creator should not be null", saved.getCreator());
+		Assert.assertEquals("Cohort definition creator should be the 'admin' user", Context.getAuthenticatedUser().getUsername(), "admin");
+		Context.closeSession();
+	}
+	
+
+	/**
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void shouldSaveReportSchema() throws Exception { 		
+		ReportSchema reportSchema = new ReportSchema();
+		reportSchema.setName("Test 1");
+		ReportSchema saved = Context.getService(ReportService.class).saveReportSchema(reportSchema);
+		Assert.assertNotNull(saved);
+		
+	}
+	
+	
+	/*
+	//@Before
+	public void beforeTransaction() throws Exception { 
+	
+		authenticate();
+	
+		// if there isn't a userContext on the session yet, create one
+		// and set it onto the session
+		if (userContext == null) {
+			userContext = new UserContext();
+		}
+		
+		// Should only have to be called once
+		if (!userContext.isAuthenticated()) {
+			try { 
+				authenticate();
+			} catch (Exception e) { 
+				log.error("Unable to authenticate user", e);
+			}
+		}
+		
+		// Add the user context to the current thread 
+		Context.setUserContext(userContext);
+		Thread.currentThread().setContextClassLoader(OpenmrsClassLoader.getInstance());
+	}
+
+	//@After 
+	public void afterTransaction() { 		
+		Context.clearUserContext();		
+	}
+	*/
+	
+	
+
+
+	
+	
 }
