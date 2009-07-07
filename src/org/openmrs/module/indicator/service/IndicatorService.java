@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface IndicatorService extends OpenmrsService {
 	
 	public Indicator saveIndicator(Indicator indicator) throws APIException;	
-	public void purgeIndicator(String uuid) throws APIException;
+	public void purgeIndicator(Indicator indicator) throws APIException;
 	public Indicator getIndicatorByUuid(String uuid) throws APIException;
 	public List<Indicator> getAllIndicators(boolean includeRetired);
 	public List<Indicator> getIndicators(String name, boolean exactMatchOnly);

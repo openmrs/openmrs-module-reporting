@@ -27,7 +27,7 @@ import org.openmrs.module.dataset.definition.DataSetDefinition;
  * should specify the order field on the Handler annotation.
  */
 @Handler(supports={DataSetDefinition.class})
-public class SimpleDataSetDefinitionPersister implements DataSetDefinitionPersister {
+public class SerializedDataSetDefinitionPersister implements DataSetDefinitionPersister {
 
     //****************
     // Properties

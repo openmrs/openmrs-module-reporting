@@ -40,39 +40,58 @@ $(document).ready(function() {
 	<div id="container">
 		<h1>Manage Reports</h1>
 		
-		<strong>Generate:</strong>
-		<a href="renderLabReport.form">Simple Lab Report</a> |
+		<strong>Render:</strong>
+		<a href="renderLabReport.form">Simple Laborator Report</a> |
 		<a href="renderCohortReport.form">Sample Cohort Report</a> |
-		<a href="renderIndicatorReport.form">Sample Indicator Report</a> |
-		
-		
-		<h2>All Report Schemas</h2>
+		<a href="renderIndicatorReport.form">Sample Indicator Report</a> 
+		<br/>
+		<strong>Create:</strong>
+		<a href="cohortReport.form">Create an Cohort Report</a> |
+		<a href="indicatorReport.form">Create an Indicator Report</a> 
+				
 		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
+					<th width="10px">Edit</th>
 					<th>Name</th>
 					<th>Description</th>
-					<th>Actions</th>
+					<th width="10px">Preview</th>
+					<th width="10px">Delete</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${reportSchemas}" var="reportSchema" varStatus="status">
 					<tr>
-						<td><a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}">${reportSchema.name}</a></td>
-						<td>${reportSchema.description}</td>
+						<td>
+							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportSchema.uuid}">edit</a>
+						</td>
+						<td>
+							${reportSchema.name}
+							<!-- Disabling link until the generic report schema form is complete -->
+							<!-- 
+							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}">${reportSchema.name}</a>
+							-->
+						</td>
+						<td>
+							${reportSchema.description}
+						</td>
 						<td>
 							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}&action=preview">preview</a>
+						</td>
+						<td>
 							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}&action=delete">delete</a>
 						</td>
 					</tr>
 				</c:forEach>	
 			</tbody>
 			<tfoot>
+			<!--  
 				<tr>
 					<td colspan="6" align="left">
 						<button onclick="${pageContext.request.contextPath}/module/reporting/editReportSchema.form">Add</button>
 					</td>			
-				</tr>	
+				</tr>
+			-->
 			</tfoot>
 		</table>
 	

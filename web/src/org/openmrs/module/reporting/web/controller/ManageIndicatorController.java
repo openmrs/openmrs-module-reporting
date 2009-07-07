@@ -179,7 +179,7 @@ public class ManageIndicatorController {
     		Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
     	
     	if (indicator != null) { 
-    		Context.getService(IndicatorService.class).purgeIndicator(indicator.getUuid());
+    		Context.getService(IndicatorService.class).purgeIndicator(indicator);
     	}     	
     	
         return "redirect:/module/reporting/manageIndicators.list";

@@ -47,7 +47,7 @@ import org.simpleframework.xml.load.Persister;
 /**
  *
  */
-public class PepfarReportFromXml extends BaseContextSensitiveTest {
+public class PepfarReportFromXmlTest extends BaseContextSensitiveTest {
 	
 	Log log = LogFactory.getLog(getClass());
 	

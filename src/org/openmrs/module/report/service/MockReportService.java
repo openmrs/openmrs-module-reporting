@@ -208,16 +208,17 @@ public class MockReportService extends BaseReportService implements ReportServic
 	public ReportSchema getCohortReportSchema() { 
 		// Add a very basic cohort report to the report schemas
 		PatientCharacteristicCohortDefinition childOnDate = new PatientCharacteristicCohortDefinition();
+		childOnDate.setName("Child On Date Cohort Definition");
 		childOnDate.setMaxAge(14);
 		childOnDate.addParameter(new Parameter("effectiveDate", "Age As of Date", Date.class, null, false, false));		
 
 		CohortDataSetDefinition dsd = new CohortDataSetDefinition();
 		dsd.setName("# Children (As Of Date) Dataset");
 		dsd.setName("This is a cohort dataset definition used to calculate the number of patients who are children on a specific date");
-		dsd.addParameter(new Parameter("d1", "Start Date", Date.class, null, true, false));
-		dsd.addParameter(new Parameter("d2", "End Date", Date.class, null, true, false));
-		dsd.addStrategy("Children at Start", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d1}"));
-		dsd.addStrategy("Children at End", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d2}"));		
+		dsd.addParameter(new Parameter("cd.startDate", "Start Date", Date.class, null, true, false));
+		dsd.addParameter(new Parameter("cd.endDate", "End Date", Date.class, null, true, false));
+		dsd.addStrategy("Children at Start", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${cd.startDate}"));
+		dsd.addStrategy("Children at End", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${cd.endDate}"));		
 
 		// Create the report schema
 		ReportSchema reportSchema = new ReportSchema();
@@ -227,7 +228,7 @@ public class MockReportService extends BaseReportService implements ReportServic
 		reportSchema.setDescription("This is a simple report with parameters and a cohort dataset definition");
 		reportSchema.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true, false));
 		reportSchema.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true, false));
-		reportSchema.addDataSetDefinition(new Mapped<DataSetDefinition>(dsd, "d1=${report.startDate},d2=${report.endDate}"));
+		reportSchema.addDataSetDefinition(new Mapped<DataSetDefinition>(dsd, "cd.startDate=${report.startDate},cd.endDate=${report.endDate}"));
 	
 		return reportSchema;	
 	}

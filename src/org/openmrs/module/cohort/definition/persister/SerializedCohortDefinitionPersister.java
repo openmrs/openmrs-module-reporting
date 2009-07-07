@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
@@ -60,6 +61,22 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
 	
 	private SerializedObjectDAO dao = null;
 
+	
+    /**
+     * @return the dao
+     */
+    public SerializedObjectDAO getDao() {
+    	return dao;
+    }
+
+    /**
+     * @param dao the dao to set
+     */
+    public void setDao(SerializedObjectDAO dao) {
+    	this.dao = dao;
+    }
+	
+	
     //****************
     // Instance methods
     //****************
@@ -95,7 +112,7 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
 	/**
      * @see CohortDefinitionPersister#saveCohortDefinition(CohortDefinition)
      */
-    public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {
+    public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {    	
     	return dao.saveObject(cohortDefinition);
     }
 
@@ -106,21 +123,4 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
     	dao.purgeObject(cohortDefinition.getId());
     }
 
-    //****************
-    // Property access
-    //****************
-	
-    /**
-     * @return the dao
-     */
-    public SerializedObjectDAO getDao() {
-    	return dao;
-    }
-
-    /**
-     * @param dao the dao to set
-     */
-    public void setDao(SerializedObjectDAO dao) {
-    	this.dao = dao;
-    }
 }

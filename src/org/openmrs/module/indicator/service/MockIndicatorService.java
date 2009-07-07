@@ -17,18 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.jfree.util.Log;
 import org.openmrs.api.APIException;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.persister.DataSetDefinitionPersister;
-import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.IndicatorResult;
 import org.openmrs.module.indicator.evaluator.IndicatorEvaluator;
-import org.openmrs.module.indicator.service.dao.IndicatorDAO;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,10 +62,10 @@ public class MockIndicatorService implements IndicatorService {
 	/**
 	 * @see IndicatorService#saveIndicator(String)
 	 */
-	public void purgeIndicator(String uuid) throws APIException { 		
-		for (Indicator indicator : indicators) { 
-			if (indicator.getUuid().equals(uuid)) { 			
-				indicators.remove(indicator);				
+	public void purgeIndicator(Indicator indicator) throws APIException { 		
+		for (Indicator temp : indicators) { 
+			if (temp.getUuid().equals(indicator.getUuid())) { 			
+				indicators.remove(temp);				
 			}
 		}						
 	}

@@ -17,18 +17,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.jfree.util.Log;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.persister.DataSetDefinitionPersister;
-import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.IndicatorResult;
 import org.openmrs.module.indicator.evaluator.IndicatorEvaluator;
-import org.openmrs.module.indicator.service.dao.IndicatorDAO;
+import org.openmrs.module.indicator.persister.IndicatorPersister;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,63 +39,49 @@ import org.springframework.transaction.annotation.Transactional;
 public class BaseIndicatorService implements IndicatorService {
 	
 	//***** PROPERTIES *****
-	private IndicatorDAO indicatorDAO;
 
-	// Temporary storage device until we can persist indicators using serialization or the indicator DAO
-	private List<Indicator> indicators = new ArrayList<Indicator>();
-	
+	private static Log log = LogFactory.getLog(BaseIndicatorService.class);
 	
 	/**
 	 * Public constructor
 	 */
-	public BaseIndicatorService() { 
-    	// Hard code a few indicators
-    	CohortIndicator indicator1 = new CohortIndicator("DQI1", "# of patients enrolled in the HIV Program", null, null, null);
-    	CohortIndicator indicator2 = new CohortIndicator("DQI2", "# of patients enrolled at the start of this month", null, null, null);
-    	CohortIndicator indicator3 = new CohortIndicator("DQI3", "# of male adult patients", null, null, null);
-    	CohortIndicator indicator4 = new CohortIndicator("DQI4", "# of patients with low cd4 count", null, null, null);
+	public BaseIndicatorService() { }
+	
+	//***** CALLBACKS *****
 
-    	if (indicators == null) { 
-    		indicators = new ArrayList<Indicator>();
-    	}
-    	indicators.add(indicator1);		
-		indicators.add(indicator2);
-		indicators.add(indicator3);
-		indicators.add(indicator4);		
-	}
+	public void onShutdown() { }
+
+	public void onStartup() { }
 	
 	
 	//***** SERVICE METHODS *****
 
+	protected IndicatorPersister getPersister(Class<? extends Indicator> definition) {
+		IndicatorPersister persister = HandlerUtil.getPreferredHandler(IndicatorPersister.class, definition);
+		if (persister == null) {
+			throw new APIException("No IndicatorPersister found for <" + definition + ">");
+		}
+		return persister;
+	}	
+	
 	/**
 	 * @see IndicatorService#saveIndicator(Indicator)
 	 */
 	public Indicator saveIndicator(Indicator indicator) throws APIException { 		
-		if (indicator.getUuid() == null) { 			
-			indicator.setUuid(UUID.randomUUID().toString());
-			indicators.add(indicator);		
-		}
-		return indicator;
+		return getPersister(indicator.getClass()).saveIndicator(indicator);
 	}
 	
 	/**
 	 * @see IndicatorService#saveIndicator(String)
 	 */
-	public void purgeIndicator(String uuid) throws APIException { 		
-		for (Indicator indicator : indicators) { 
-			if (indicator.getUuid().equals(uuid)) { 			
-				indicators.remove(indicator);				
-			}
-		}						
+	public void purgeIndicator(Indicator indicator) throws APIException { 		
+		getPersister(indicator.getClass()).saveIndicator(indicator);
 	}
 	
 	/** 
 	 * @see IndicatorService#getIndicatorUuid(String)
 	 */
-	public Indicator getIndicatorByUuid(String uuid) throws APIException {
-
-		
-		/*
+	public Indicator getIndicatorByUuid(String uuid) throws APIException {		
 		for (IndicatorPersister persister : HandlerUtil.getHandlersForType(IndicatorPersister.class, null)) {
 			Indicator indicator = persister.getIndicatorByUuid(uuid);
 			if (indicator != null) {
@@ -103,30 +89,19 @@ public class BaseIndicatorService implements IndicatorService {
 			}
 		}
 		return null;		
-		*/
-
-		for (Indicator indicator : indicators) { 
-			if (indicator.getUuid().equals(uuid))
-				return indicator;			
-		}				
-		return null;
 	}
 
 	/** 
 	 * @see IndicatorService#getAllIndicators(boolean)
 	 */
 	public List<Indicator> getAllIndicators(boolean includeRetired) {
-		Log.info("Get all indicators");
-		
-		Log.info("Size: " + indicators.size());
-		
-		/*
+
 		List<Indicator> indicators = new ArrayList<Indicator>();
-		for (DataSetDefinitionPersister persister : HandlerUtil.getHandlersForType(IndicatorPersister.class, null)) {
+		for (IndicatorPersister persister : HandlerUtil.getHandlersForType(IndicatorPersister.class, null)) {
 			if (persister != null) { 
-				indicators.addAll(persister.getAllDataSetDefinitions(includeRetired));
+				indicators.addAll(persister.getAllIndicators(includeRetired));
 			}
-		}*/
+		}
 		return indicators;
 	}
 
@@ -134,31 +109,11 @@ public class BaseIndicatorService implements IndicatorService {
 	 * @see IndicatorService#getIndicatorByName(String, boolean)
 	 */
 	public List<Indicator> getIndicators(String name, boolean exactMatchOnly) {
-		/*
 		List<Indicator> indicators = new ArrayList<Indicator>();
 		for (IndicatorPersister persister : HandlerUtil.getHandlersForType(IndicatorPersister.class, null)) {
 			indicators.addAll(persister.getIndicators(name, exactMatchOnly));
 		}
 		return indicators;
-
-		*/
-
-		// TODO Temporary solution until serialization is introduced
-		List<Indicator> indicatorList = new ArrayList<Indicator>();
-		for (Indicator indicator : indicators) { 
-			if (exactMatchOnly) { 
-				if (indicator.getName().equals(name))
-					indicatorList.add(indicator);
-				
-			}
-			else { 
-				// A best guess search 
-				if (indicator.getName().contains(name)) { 
-					indicatorList.add(indicator);
-				}
-			}
-		}
-		return indicatorList;
 	}	
 	
 	
@@ -178,51 +133,5 @@ public class BaseIndicatorService implements IndicatorService {
 		return evaluate(indicator.getParameterizable(), childContext);
 	}
 
-	//***** PROPERTY ACCESS *****
-
-	/**
-     * @return the indicatorDAO
-     */
-    public IndicatorDAO getIndicatorDAO() {
-    	return indicatorDAO;
-    }
-	
-    /**
-     * @param indicatorDAO the indicatorDAO to set
-     */
-    public void setIndicatorDAO(IndicatorDAO indicatorDAO) {
-    	this.indicatorDAO = indicatorDAO;
-    }
-
     
-    /**
-     * TODO persist indicators to temporary storage
-     */
-	public void onShutdown() {
-		Log.info("Checking to see if onShutdown() gets called");
-		indicators = null;
-	}
-
-	/**
-	 * TODO fetch indicators from temporary storage
-	 */
-	public void onStartup() {		
-		// this method is never called
-
-		
-		// Hard code a few indicators
-    	CohortIndicator indicator1 = new CohortIndicator("DQI1", "# of patients enrolled in the HIV Program", null, null, null);
-    	CohortIndicator indicator2 = new CohortIndicator("DQI2", "# of patients enrolled at the start of this month", null, null, null);
-    	CohortIndicator indicator3 = new CohortIndicator("DQI3", "# of male adult patients", null, null, null);
-    	CohortIndicator indicator4 = new CohortIndicator("DQI4", "# of patients with low cd4 count", null, null, null);
-
-    	if (indicators == null) { 
-    		indicators = new ArrayList<Indicator>();
-    	}
-    	indicators.add(indicator1);		
-		indicators.add(indicator2);
-		indicators.add(indicator3);
-		indicators.add(indicator4);		
-
-	}
 }

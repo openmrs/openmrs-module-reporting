@@ -18,6 +18,7 @@
 			<list>
 				<value>org.openmrs.module.cohort.definition.CohortDefinition</value>
 				<value>org.openmrs.module.dataset.definition.DataSetDefinition</value>
+				<value>org.openmrs.module.report.ReportSchema</value>
 			</list>
 		</property>
 	</bean>	
@@ -44,7 +45,12 @@
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
+						<bean class="org.openmrs.module.report.service.BaseReportService">
+							<property name="dao"><ref bean="serializedObjectDAO"/></property>	
+						</bean>
+						<!-- 
 						<bean class="org.openmrs.module.report.service.MockReportService"></bean>
+					 	-->
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors" />
@@ -60,7 +66,7 @@
 	<!-- Base Cohort Definition Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
-			<list>
+			<list merge="true">
 				<value>org.openmrs.module.cohort.definition.service.CohortDefinitionService</value> 
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
@@ -83,7 +89,7 @@
 	<!--  Base Dataset Definition Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
-			<list>
+			<list merge="true">
 				<value>org.openmrs.module.dataset.definition.service.DataSetDefinitionService</value> 
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
@@ -106,7 +112,7 @@
 	<!-- Mock Indicator Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
-			<list>
+			<list merge="true">
 				<value>org.openmrs.module.indicator.service.IndicatorService</value> 
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
