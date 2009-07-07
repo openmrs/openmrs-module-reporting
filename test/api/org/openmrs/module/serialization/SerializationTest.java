@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.cohort;
+package org.openmrs.module.serialization;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
