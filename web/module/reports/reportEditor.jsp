@@ -32,6 +32,12 @@
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
+
+
+	$('#report-tabs').tabs();
+	$('#report-tabs').show();
+
+	
 	$('#report-dataset-table').dataTable( {
 		"bPaginate": false,
 		"bLengthChange": false,
@@ -50,8 +56,6 @@ $(document).ready(function() {
 		"bAutoWidth": false
 	} );
 
-	$('#report-tabs').tabs();
-	$('#report-tabs').show();
 	
 } );
 </script>

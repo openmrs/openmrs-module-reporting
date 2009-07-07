@@ -32,6 +32,7 @@ $(document).ready(function() {
 	<div id="container">
 		<h1>Indicator Manager</h1>
 		
+		<br/>
 		<table id="indicator-table" class="display" >
 			<thead>
 				<tr>

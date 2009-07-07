@@ -114,10 +114,7 @@
 						<bean class="org.openmrs.module.indicator.service.BaseIndicatorService"></bean>
 					</property>
 					<property name="preInterceptors">
-						<list>
-							<ref bean="authorizationInterceptor"/>
-							<ref bean="loggingInterceptor"/>
-						</list>
+						<ref bean="serviceInterceptors" />
 					</property>
 					<property name="transactionAttributeSource">
 						<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>

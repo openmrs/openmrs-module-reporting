@@ -32,9 +32,11 @@ $(document).ready(function() {
 <div id="page">
 	<div id="container">
 
-
+	
 		<h1>Cohort Manager</h1>
 		
+		
+			
 		<form method="get" action="editCohortDefinition.form">
 			<strong>Create a new cohort definition</strong>
 			<select name="type">
@@ -47,6 +49,7 @@ $(document).ready(function() {
 		</form>
 		
 		
+		<br/>
 		<table id="cohort-definition-table" class="display" >
 			<thead>
 				<tr>

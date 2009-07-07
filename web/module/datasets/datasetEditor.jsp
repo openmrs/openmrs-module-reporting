@@ -7,27 +7,34 @@
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/wufoo/wufoo.js"></script>
 
+<!-- JQuery Engine -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.js"></script>
+
 <!-- JQuery DataTables -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/page.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/table.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/custom.css" rel="stylesheet"/>
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.dataTables/jquery.dataTables.js"></script>
 
+<!-- JQuery UI -->
+<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.ui-1.6/ui.all.css" rel="stylesheet"/>
+<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.ui-1.6/jquery-ui-1.6.custom.min.js"></script>
+
 <!-- JQuery Autocomplete -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.autocomplete/jquery.autocomplete.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.js"></script>
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/thickbox-compressed.js'></script>
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.bgiframe.min.js'></script>
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.ajaxQueue.js'></script>
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.autocomplete.js'></script>
 
-<!-- JQuery UI -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.ui-1.6/ui.all.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.ui-1.6/jquery-ui-1.6.custom.min.js"></script>
 
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
+
+	$('#dataset-tabs').tabs();
+	$('#dataset-tabs').show();
+	
 	$('#dataset-column-table').dataTable( {
 		"bPaginate": false,
 		"bLengthChange": false,
@@ -38,8 +45,13 @@ $(document).ready(function() {
 		//"sDom": '<"top"i>rt<"bottom"flp<"clear">'
 	} );
 
-	$('#dataset-tabs').tabs();
-	$('#dataset-tabs').show();
+	$('#cancel-button').click(function(event){
+		// To prevent the submit
+		event.preventDefault();
+
+		// Redirect to the listing page
+		window.location.href='<c:url value="/module/reporting/manageDatasets.list"/>';
+	});
 
 	
 } );
@@ -54,12 +66,12 @@ $(document).ready(function() {
 	
 		<div id="dataset-tabs" class="ui-tabs-hide">			
 			<ul>
-                <li><a href="#dataset-tabs-details"><span>Details</span></a></li>
-                <li><a href="#dataset-tabs-columns"><span>Columns</span></a></li>
+                <li><a href="#dataset-basic-tab"><span>Basic</span></a></li>
+                <li><a href="#dataset-columns-tab"><span>Columns</span></a></li>
             </ul>
 		</div>
 		
-		<div id="dataset-tabs-details">
+		<div id="dataset-basic-tab">
 	
 			<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
 				method="post" action="${pageContext.request.contextPath}/module/reporting/saveDataset.form">
@@ -88,15 +100,15 @@ $(document).ready(function() {
 								rows="10" cols="20" tabindex="2">${dataSetDefinition.description}</textarea>				
 						</li>
 						<li class="buttons">
-							<input id="saveForm" class="btTxt submit" type="submit" value="Save" tabindex="3" />
-							<input id="saveForm" class="btTxt submit" type="submit" value="Cancel" tabindex="4"/>
+							<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="3" />
+							<input id="cancel-button" class="btTxt submit" type="submit" value="Cancel" tabindex="4"/>
 						</li>
 					</ul>
 				</div>
 			</form>
 		</div>
 		
-		<div id="dataset-tabs-columns">	
+		<div id="dataset-columns-tab">	
 			<div id="datasetColumns" style="overflow: auto;">
 				<h1>Dataset Columns</h1>
 				<table id="dataset-column-table" class="display">
@@ -117,6 +129,7 @@ $(document).ready(function() {
 						</c:forEach>
 					</tbody>
 					<tfoot>
+						<tr></tr>
 					</tfoot>
 				</table>
 			</div>

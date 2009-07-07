@@ -106,11 +106,12 @@ $(document).ready(function() {
 
 		<div id="cohort-definition-tabs" class="ui-tabs-hide">			
 			<ul>
-                <li><a href="#cohort-definition-tabs-details"><span>Details</span></a></li>
+                <li><a href="#cohort-definition-basic-tab"><span>Basic</span></a></li>
+                <li><a href="#cohort-definition-preview-tab"><span>Preview</span></a></li>
             </ul>
 		</div>		
 	
-		<div id="cohort-definition-tabs-details">
+		<div id="cohort-definition-basic-tab">
 			
 			<form:form id="saveForm" commandName="cohortDefinition" method="POST">
 			<!-- <form method="post" action="saveCohortDefinition.form"> -->			
@@ -237,13 +238,31 @@ $(document).ready(function() {
 					<li>					
 						<div align="center">				
 							<input id="save-button" name="save" type="submit" class="button" value="Save" tabindex="100" />
-							<input id="evaluate-button" name="evaluate" type="submit" class="button" value="Evaluate" tabindex="101" />
 							<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
 						</div>					
 					</li>
 				</ul>				
 			</form:form>
 		</div>
+		<div id="cohort-definition-preview-tab">
+			<form:form id="saveForm" commandName="cohortDefinition" method="POST">
+			<!-- <form method="post" action="saveCohortDefinition.form"> -->			
+				<ul>				
+					<li>
+						<p>
+							<i>Cohort definition evaluation has not been implemented yet</i>
+						</p>
+					</li>
+					<li>					
+						<div align="center">				
+							<input id="evaluate-button" disabled name="evaluate" type="submit" class="button" value="Evaluate" tabindex="101" />
+							<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
+						</div>					
+					</li>
+				</ul>
+			</form:form>
+		</div>
+		
 	</div>	
 </div>
 	

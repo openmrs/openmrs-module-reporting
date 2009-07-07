@@ -54,6 +54,15 @@ $(document).ready(function() {
 		"bInfo": false,
 		"bAutoWidth": false
 	} );			
+
+	$('#cancel-button').click(function(event){
+		// To prevent the submit
+		event.preventDefault();
+
+		// Redirect to the listing page
+		window.location.href='<c:url value="/module/reporting/manageReportSchemas.list"/>';
+	});
+	
 } );
 
 </script>
@@ -66,11 +75,11 @@ $(document).ready(function() {
 
 		<div id="cohort-definition-tabs" class="ui-tabs-hide">			
 			<ul>
-                <li><a href="#cohort-definition-tabs-details"><span>Details</span></a></li>
+                <li><a href="#cohort-definition-basic-tab"><span>Basic</span></a></li>
             </ul>
 		</div>		
 	
-		<div id="cohort-definition-tabs-details">
+		<div id="cohort-definition-basic-tab">
 			<form method="post" action="saveCohortDefinition.form">
 			
 				<ul>				
@@ -117,6 +126,9 @@ $(document).ready(function() {
 									name="description">${cohortDefinition.description}</textarea>			
 						</div>
 					</li>
+
+
+<%--
 					<li>
 						<label class="desc" for="parameter">Parameters</label>			
 						
@@ -156,6 +168,8 @@ $(document).ready(function() {
 							</table>
 						</div>
 					</li>
+					
+--%>					
 					<li>					
 						<div align="center">				
 							<input id="saveForm" class="btTxt submit" type="submit" value="Save" tabindex="7" />

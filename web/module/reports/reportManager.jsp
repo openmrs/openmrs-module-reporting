@@ -39,16 +39,13 @@ $(document).ready(function() {
 <div id="page">
 	<div id="container">
 		<h1>Manage Reports</h1>
-		
-		<strong>Render:</strong>
-		<a href="renderLabReport.form">Simple Laborator Report</a> |
-		<a href="renderCohortReport.form">Sample Cohort Report</a> |
-		<a href="renderIndicatorReport.form">Sample Indicator Report</a> 
-		<br/>
-		<strong>Create:</strong>
-		<a href="cohortReport.form">Create an Cohort Report</a> |
-		<a href="indicatorReport.form">Create an Indicator Report</a> 
-				
+		<div>		
+			<strong>Render:</strong>
+			<a href="renderLabReport.form">Simple Laboratory Report</a> |
+			<a href="renderCohortReport.form">Sample Cohort Report</a> |
+			<a href="renderIndicatorReport.form">Sample Indicator Report</a> 
+		</div>
+		<br/> <br/>				
 		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
@@ -85,13 +82,11 @@ $(document).ready(function() {
 				</c:forEach>	
 			</tbody>
 			<tfoot>
-			<!--  
 				<tr>
-					<td colspan="6" align="left">
-						<button onclick="${pageContext.request.contextPath}/module/reporting/editReportSchema.form">Add</button>
-					</td>			
-				</tr>
-			-->
+					<th colspan="5" align="center" height="50">
+						<a class="button" href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Add Indicator Report</a>
+					</th>			
+				</tr>	
 			</tfoot>
 		</table>
 	

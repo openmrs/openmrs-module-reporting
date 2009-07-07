@@ -2,6 +2,8 @@
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ include file="../localHeader.jsp"%>
+
+
 <!-- Form -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
@@ -167,7 +169,6 @@ $(document).ready(function() {
 					<li>					
 						<div align="center">				
 							<input id="save-button" name="save" type="submit" class="button" value="Save" tabindex="100" />
-							<input id="evaluate-button" name="evaluate" type="submit" class="button" value="Evaluate" tabindex="101" />
 							<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
 						</div>					
 					</li>
@@ -187,7 +188,7 @@ $(document).ready(function() {
 								<p>
 									<input type="checkbox" name="indicatorUuid" value="${indicator.uuid}"/>					
 									<strong>${indicator.name}</strong> ${indicator.description} <i>(${indicator.uuid})</i>	<br/>
-									${indicator.cohortDefinition.name} ${indicator.cohortDefinition.parameters}
+									${indicator.cohortDefinition.parameterizable.name} ${indicator.cohortDefinition.parameterizable.parameters}
 																	
 								<!-- Hide the parameter mapping behind a modal dialog window -->
 								<!-- 
@@ -211,10 +212,46 @@ $(document).ready(function() {
 		</div>
 		
 
-		<div id="report-schema-preview-tab">			
-			<form:form id="saveForm" commandName="reportSchema" method="POST">
+		<div id="report-schema-preview-tab">
 				
-			</form:form>
+			<c:choose>
+			
+				<c:when test="${!empty reportSchema.uuid}">
+					<form:form id="saveForm" commandName="reportSchema" method="POST">
+						<form:hidden path="uuid" />	
+						<ul>				
+							<li>
+								<div>
+									<i>Allows a user to evaluate a report.  (Not implemented yet).</i>
+								</div>
+							</li>				
+							<li>
+								<label class="desc" for="uuid">ID</label>				
+								<div>
+									${reportSchema.uuid}
+								</div>
+							</li>				
+							<li>
+								<label class="desc" for="name">Name</label>			
+								<div>
+									${reportSchema.name} (<i>${reportSchema.class.simpleName}</i>)
+								</div>
+							</li>
+							<li>			
+								<div align="center">				
+									<input id="evaluate-button" name="evaluate" type="submit" class="button" value="Evaluate" tabindex="101" disabled />
+									<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
+								</div>					
+							</li>
+						</ul>				
+						
+					</form:form>
+				</c:when>
+				<c:otherwise>
+					Please create your report first.
+				</c:otherwise>
+				
+			</c:choose>
 		</div>
 			
 		
