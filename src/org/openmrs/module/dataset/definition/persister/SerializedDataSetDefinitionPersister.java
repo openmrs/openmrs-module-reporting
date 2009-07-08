@@ -26,7 +26,7 @@ import org.openmrs.module.dataset.definition.DataSetDefinition;
  * a DataSetDefinition.  To override this behavior, any additional DataSetDefinitionPersister
  * should specify the order field on the Handler annotation.
  */
-@Handler(supports={DataSetDefinition.class})
+@Handler(supports={DataSetDefinition.class}, order=10)
 public class SerializedDataSetDefinitionPersister implements DataSetDefinitionPersister {
 
     //****************

@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -48,7 +49,7 @@ public class DataSetDefinitionServiceTest extends BaseModuleContextSensitiveTest
 	public void runBeforeEachTest() throws Exception {
 		initializeInMemoryDatabase();
 		//executeDataSet("org/openmrs/include/standardTestDatabase.xml");
-		executeDataSet("org/openmrs/report/include/ReportTests-reportObjects.xml");
+		//executeDataSet("org/openmrs/dataset/include/ReportTests-reportObjects.xml");
 		//executeDataSet("org/openmrs/logic/include/LogicTests-patients.xml");		
 		authenticate();
 	}
@@ -60,13 +61,54 @@ public class DataSetDefinitionServiceTest extends BaseModuleContextSensitiveTest
 	public void shouldGetAllDataSetDefinitions() throws Exception { 
 		List<DataSetDefinition> definitions = 
 			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false);
-		
-		for (DataSetDefinition definition : definitions) { 
-			log.info("Data set definition: " + definition.getName());
+				
+		log.info("size: " + definitions.size());
 	}
+
+	@Test
+	public void shouldSaveDataSetDefinition() throws Exception { 
+
+		DataSetDefinition newDataset = new CohortIndicatorDataSetDefinition();
+		newDataset.setName("Test Dataset #1");
+		newDataset.setDescription("Just a simple dataset with no columns");
+		
+		// Save the new dataset 
+		DataSetDefinition savedDataset = 
+			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(newDataset);
+		
+		// Retrieve the newly saved dataset from the database
+		DataSetDefinition foundDataset = 
+			Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(savedDataset.getUuid());
+
+		Assert.assertNotNull("Should have a UUID ", savedDataset.getUuid());
+		Assert.assertNotNull("Should find the saved dataset definition by UUID " + savedDataset.getUuid(), foundDataset);
+	}	
 	
+	
+	
+	@Test
+	public void shouldSaveAndResaveDataSetDefinition() throws Exception { 
+
+		DataSetDefinition newDataset = new CohortIndicatorDataSetDefinition();
+		newDataset.setName("Test Dataset #1");
+		newDataset.setDescription("Just a simple dataset with no columns");
 		
-	}
+		// Save the new dataset 
+		DataSetDefinition savedDataset = 
+			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(newDataset);
+		
+		// Retrieve the newly saved dataset from the database
+		DataSetDefinition foundDataset = 
+			Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(savedDataset.getUuid());
+		
+		// Resave the retrieved dataset
+		DataSetDefinition resavedDataset = 
+			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(foundDataset);
+		
+		Assert.assertNotNull("Should not be null", resavedDataset);		
+	}	
+	
+	
 	
 	@Test
 	public void shouldEvaluateDataExportDataSet() throws Exception { 
@@ -87,7 +129,7 @@ public class DataSetDefinitionServiceTest extends BaseModuleContextSensitiveTest
 	@Test
 	public void shouldAddDataExportDataSetColumn() throws Exception { 
 		Assert.fail("Test needs to be implemented");
-		}
+	}
 		
 	
 }

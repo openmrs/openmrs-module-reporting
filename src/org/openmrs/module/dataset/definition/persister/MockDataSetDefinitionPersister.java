@@ -31,7 +31,7 @@ import org.openmrs.module.dataset.definition.ProgramDataSetDefinition;
 /**
  * This class returns DataSetDefinitions that are persisted in memory.
  */
-@Handler(supports={DataSetDefinition.class})
+@Handler(supports={DataSetDefinition.class},order=1000)
 public class MockDataSetDefinitionPersister implements DataSetDefinitionPersister {
 
 	// Keep track of the primary keys handed out

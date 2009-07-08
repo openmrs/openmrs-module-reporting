@@ -1,5 +1,4 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ include file="../localHeader.jsp"%>
 
 <!--  CSS -->
@@ -14,7 +13,6 @@
 <!-- Autocomplete -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.js"></script>
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/thickbox-compressed.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/localdata.js'></script>
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.bgiframe.min.js'></script>
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.ajaxQueue.js'></script>
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.autocomplete.js'></script>
@@ -36,6 +34,7 @@ $(document).ready(function() {
 		"bAutoWidth": true
 		//"sDom": '<"top"i>rt<"bottom"flp<"clear">'
 	} );
+
 } );
 </script>
 
@@ -44,7 +43,6 @@ $(document).ready(function() {
 	<div id="container">
 	
 		<div id="datasetPreview" >
-			<h1>Dataset Viewer</h1>
 
 			
 			<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
@@ -63,42 +61,26 @@ $(document).ready(function() {
 					</li>
 					<li>
 						<label class="desc">Cohort Definition</label>
-						<span>			
-							<c:choose>
-								<c:when test="${cohortDefinition != null}">	
-									${cohortDefinition.name} (<i>${cohortDefinition.class.simpleName}</i>)
-								</c:when>
-								<c:otherwise>
-									<c:choose>
-										<c:when test="${cohort != null}">	
-											${cohort.name} (<i>StaticCohortDefinition</i>)
-										</c:when>
-										<c:otherwise>
-											&lt; choose one below &gt;								
-										</c:otherwise>
-									</c:choose>									
-								</c:otherwise>
-							</c:choose>
-						</span>
-					</li>
-					<li>
-						<hr/>
-					</li>										
-					<li>
-						<label class="desc">Choose a Cohort Definition</label>
 						<div>
-							<span><i>please use 'Random Cohort' for now -- other cohort definitions will be supported soon</i></span>
-							<select name="cohortName">
+							${cohortDefinition.name} (<i>${cohortDefinition.class.simpleName}</i>)
+						</div>
+					</li>
+						<div>						
+							<span><i>Please select 'Random Cohort' for now -- others will be supported soon</i></span>
+							<select id="cohort-select" name="cohortName" size="3">
 								<option value="">Random Cohort</option>						
 								<c:forEach items="${cohortDefinitions}" var="cohortDefinition">
 									<option value="${cohortDefinition.uuid}">${cohortDefinition.name} <i>(${cohortDefinition.class.simpleName})</i></option>
 								</c:forEach>								
 							</select>
+							
 							<input type="submit" name="action" value="Preview"/>
 						</div>
 					</li>
 				</ul>				
 			</form>	
+			
+			<h1>Dataset Viewer</h1>
 			
 			<div id="datasetPreviewTable" style="overflow:auto;">
 				<table id="dataset-preview-table" class="display">
@@ -155,8 +137,9 @@ $(document).ready(function() {
 										}
 									}
 							%>
-							
-								<td>...</td>
+								<c:if test="${dataSetDefinition.columnCount > 7}">
+									<td>...</td>
+								</c:if>
 							</tr>
 							<%									
 								}

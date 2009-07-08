@@ -22,7 +22,14 @@ $(document).ready(function() {
 		"bFilter": true,
 		"bSort": true,
 		"bInfo": true,
-		"bAutoWidth": true
+		"bAutoWidth": true,
+		"aoColumns": [{ "bSortable": false },
+		      		  { "bSortable": false },
+		              { "bSortable": true },
+		              { "bSortable": false },
+		              { "bSortable": false },
+		              { "bSortable": false },
+		              { "bSortable": false }]
 	} );			
 } );
 
@@ -40,9 +47,13 @@ $(document).ready(function() {
 <table id="dataset-table" class="display" >
 	<thead>
 		<tr>
-			<th width="3%">Delete</th>
+			<th align="center" width="1%"><img src='<c:url value="/images/trash.gif"/>' border="0"/></th>
+			<th align="center" width="1%"><img src='<c:url value="/images/edit.gif"/>' border="0"/></th>
 			<th>Name</th>
-			<th>Actions</th>
+			<th align="center" width="1%"></th>
+			<th align="center" width="1%"></th>
+			<th align="center" width="1%"></th>
+			<th align="center" width="1%"></th>
 		</tr>
 	</thead>
 	
@@ -50,7 +61,12 @@ $(document).ready(function() {
 		<c:forEach items="${datasetDefinitions}" var="dataset" varStatus="status">
 			<tr>
 				<td align="center">
-					<input type="checkbox" name="deleteDataset" value="${dataset.uuid}"/>
+					<input type="checkbox" name="selectedUuid" value="${dataset.uuid}"/>
+				</td>
+				<td align="center">
+					<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&id=${dataset.id}&className=${dataset.class.name}&action=edit">				
+						<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+					</a>
 				</td>
 				<td>
 					<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&id=${dataset.id}&className=${dataset.class.name}&action=edit">				
@@ -74,21 +90,27 @@ $(document).ready(function() {
 					<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&action=export&type=csv">xls</a>
 				</td>
 -->				
-				<td width="22%" align="center">
+				<td align="center">
 					<a href="${pageContext.request.contextPath}/module/reporting/showDatasetPreview.form?uuid=${dataset.uuid}&id=${dataset.id}&className=${dataset.class.name}">					
 						<img src="${pageContext.request.contextPath}/images/play.gif" alt="preview dataset" border="0"/>
 					</a> &nbsp;&nbsp;
-					<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&action=edit">
-						<img src="${pageContext.request.contextPath}/images/edit.gif" alt="edit dataset" border="0"/>
-					</a> &nbsp;&nbsp;
+				</td>
+				<td align="center">				
+					<img src="${pageContext.request.contextPath}/images/copy.gif" alt="duplicate dataset" border="0"/>					
 					<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&action=duplicate">
-						<img src="${pageContext.request.contextPath}/images/file.gif" alt="duplicate dataset" border="0"/>					
+						<!--  copy the above image here when feature has been implemented -->
 					</a> &nbsp;&nbsp;
+				</td>
+				<td align="center">				
+					<img src="${pageContext.request.contextPath}/images/trash.gif" alt="delete dataset" border="0"/>					
 					<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&action=delete">
-						<img src="${pageContext.request.contextPath}/images/trash.gif" alt="delete dataset" border="0"/>					
+						<!--  copy the above image here when feature has been implemented -->
 					</a> &nbsp;&nbsp;
+				</td>
+				<td align="center">				
+					<img src="${pageContext.request.contextPath}/images/save.gif" alt="export dataset" border="0"/>
 					<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&action=export">
-						<img src="${pageContext.request.contextPath}/images/save.gif" alt="export dataset" border="0"/>
+						<!--  copy the above image here when feature has been implemented -->
 					</a>
 				</td>
 			</tr>
@@ -96,13 +118,12 @@ $(document).ready(function() {
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="4" align="center">
-				<button name="button1" disabled>Add Dataset</button>
+			<th colspan="8" align="center" height="50">
+				<a class="button" href="${pageContext.request.contextPath}/module/reporting/indicatorDataset.form">Add Indicator Dataset</a>
 				<button name="button1" disabled>Remove Selected</button>
 				<button name="button1" disabled>Generate Selected</button>			
-			</td>
-		</tr>
-	
+			</th>			
+		</tr>	
 	</tfoot>
 </table>
 
