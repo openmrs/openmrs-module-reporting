@@ -104,6 +104,9 @@ $(document).ready(function() {
 	
 		<h1>Cohort Definition Editor</h1>
 
+		<br/>
+
+
 		<div id="cohort-definition-tabs" class="ui-tabs-hide">			
 			<ul>
                 <li><a href="#cohort-definition-basic-tab"><span>Basic</span></a></li>

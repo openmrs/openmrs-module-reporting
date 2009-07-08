@@ -164,6 +164,15 @@ $(document).ready(function() {
 	//	function() { $(this).addClass('ui-state-hover'); }, 
 	//	function() { $(this).removeClass('ui-state-hover'); }
 	//);	
+	
+	$('#cancel-button').click(function(event){
+		// To prevent the submit
+		event.preventDefault();
+
+		// Redirect to the listing page
+		window.location.href='<c:url value="/module/reporting/manageIndicators.list"/>';
+	});	
+	
 });
 
 
@@ -190,6 +199,9 @@ var cohortDefinitions = [
 	<div id="container">
 	
 	
+		<h1>Indicator Editor</h1>
+	
+		<br/>
 	
 		<div id="indicator-tabs" class="ui-tabs-hide">			
 			<ul>
@@ -205,9 +217,6 @@ var cohortDefinitions = [
 			
 				<input type="hidden" id="uuid" name="uuid" value="${indicator.uuid}"/>
 			
-				<div class="info">
-					<h2>Indicator Editor</h2>
-				</div>
 				
 				<div>
 					<ul>		
@@ -264,7 +273,7 @@ var cohortDefinitions = [
 						</li>
 						<li class="buttons">
 							<input id="saveForm" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-							<input id="saveForm" class="btTxt submit" type="submit" value="Cancel" tabindex="8"/>
+							<input id="cancel-button" class="btTxt submit" type="submit" value="Cancel" tabindex="8"/>
 						</li>
 					</ul>
 				</div>
@@ -274,9 +283,7 @@ var cohortDefinitions = [
 		
 		<div id="indicator-tabs-datasets">
 			<div id="indicatorDatasetTable">
-				<div class="info">
-					<h2>Indicator Datasets</h2>
-				</div>
+
 				<table id="indicator-dataset-table" class="display">
 					<thead>
 						<tr>

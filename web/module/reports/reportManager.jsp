@@ -49,18 +49,20 @@ $(document).ready(function() {
 		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
-					<th width="10px">Edit</th>
+					<th width="5px"></th>
 					<th>Name</th>
 					<th>Description</th>
-					<th width="10px">Preview</th>
-					<th width="10px">Delete</th>
+					<th width="5px"></th>
+					<th width="5px"></th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${reportSchemas}" var="reportSchema" varStatus="status">
 					<tr>
-						<td>
-							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportSchema.uuid}">edit</a>
+						<td align="center">
+							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportSchema.uuid}">
+								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+							</a>
 						</td>
 						<td>
 							${reportSchema.name}
@@ -72,11 +74,22 @@ $(document).ready(function() {
 						<td>
 							${reportSchema.description}
 						</td>
-						<td>
-							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}&action=preview">preview</a>
+						<td align="center">
+							<img src='<c:url value="/images/play.gif"/>' border="0"/>
+						<!-- not supported yet -->
+						<!-- 
+							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}&action=preview">
+								
+							</a>
+ 						-->
 						</td>
-						<td>
-							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}&action=delete">delete</a>
+						<td align="center">
+							<img src='<c:url value="/images/trash.gif"/>' border="0"/>							
+						<!-- not supported yet -->
+						<!-- 
+							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}&action=delete">
+							</a>
+ 						-->
 						</td>
 					</tr>
 				</c:forEach>	

@@ -46,7 +46,7 @@
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/jakarta-taglibs/taglibs-request-1.1.jar"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/jakarta-taglibs/taglibs-response-1.1.jar"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/jakarta-taglibs/taglibs-standard-1.1.jar"/>
-	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.0.8924-beta2.jar"/>
+	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.0.8924-beta2.jar" sourcepath="/openmrs-1.5.x"/>
 	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.0.8924-beta2.jar"/>
 	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.0.8924-beta2.jar"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/hibernate/hibernate325-mod.jar" sourcepath="/openmrs-source/hibernate-3.2.5ga-lite.zip"/>

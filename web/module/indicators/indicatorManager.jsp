@@ -36,6 +36,7 @@ $(document).ready(function() {
 		<table id="indicator-table" class="display" >
 			<thead>
 				<tr>
+					<th width="1%">Edit</th>
 					<th>Indicator</th>
 					<th>Aggregator</th>
 					<th>Description</th>
@@ -46,11 +47,20 @@ $(document).ready(function() {
 			<tbody>
 				<c:forEach items="${indicators}" var="indicator" varStatus="status">
 					<tr>
-						<td><a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}">${indicator.name}</a></td>
+						<td align="center">
+							<c:url value="/images/edit.gif" var="editIcon"/>
+							<a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}">
+								<img src="${editIcon}" border="0"/></a>
+						</td>
+						<td>
+							${indicator.name}
+						</td>					
 						<td>
 							${indicator.aggregator.simpleName}<br/>						
 						</td>
-						<td>${indicator.description}</td>
+						<td>
+							${indicator.description}
+						</td>
 						<td>
 							<!-- one of the two of these should be populated
 								TODO Add logic to test if they are null
@@ -59,15 +69,19 @@ $(document).ready(function() {
 							${indicator.logicCriteria}
 						</td>
 						<td>
+						
+							<!-- not implemented yet -->
+							<!--  
 							<a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}&action=preview">preview</a> | 
 							<a href="${pageContext.request.contextPath}/module/reporting/editIindicator.form?uuid=${indicator.uuid}&action=delete">delete</a>
+							-->
 						</td>
 					</tr>
 				</c:forEach>	
 			</tbody>
 			<tfoot>
 				<tr>
-					<th colspan="5" align="center" height="50">
+					<th colspan="6" align="center" height="50">
 						<a class="button" href="${pageContext.request.contextPath}/module/reporting/editIndicator.form">Add Indicator</a>
 					</th>			
 				</tr>	
