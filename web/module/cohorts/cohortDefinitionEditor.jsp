@@ -2,13 +2,11 @@
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ include file="../localHeader.jsp"%>
 
-<!-- Form -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/wufoo/wufoo.js"></script>
-
 <!-- JQuery Engine -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.js"></script>
+<script type="text/javascript">
+	var $j = jQuery.noConflict();
+</script>
 
 <!-- JQuery Data Tables -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/page.css" rel="stylesheet"/>
@@ -19,34 +17,18 @@
 <!-- JQuery UI -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.ui-1.6/ui.all.css" rel="stylesheet"/>
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.ui-1.6/jquery-ui-1.6.custom.min.js"></script>
-<!-- 
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.ui/jquery-ui-1.7.1.custom.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.ui/jquery-ui-1.7.1.custom.min.js"></script>
- -->
- 
-<!-- JQuery Autocomplete -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.autocomplete/jquery.autocomplete.css" rel="stylesheet"/>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.bgiframe.min.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.ajaxQueue.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.autocomplete.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/thickbox-compressed.js'></script>
-
-
-
 
 <script type="text/javascript" charset="utf-8">
-$(document).ready(function() {
-
+$j(document).ready(function() {
 
 	// ======  Tabs: Cohort Definition Tabs  ================================================
 
-	$('#cohort-definition-tabs').tabs();
-	$('#cohort-definition-tabs').show();
-
+	$j('#cohort-definition-tabs').tabs();
+	$j('#cohort-definition-tabs').show();
 
 	// ======  DataTable: Cohort Definition Parameter  ======================================
 	
-	$('#cohort-definition-parameter-table').dataTable( {
+	$j('#cohort-definition-parameter-table').dataTable( {
 		"bPaginate": false,
 		"bLengthChange": false,
 		"bFilter": false,
@@ -55,7 +37,7 @@ $(document).ready(function() {
 		"bAutoWidth": false
 	} );			
 
-	$('#cancel-button').click(function(event){
+	$j('#cancel-button').click(function(event){
 		// To prevent the submit
 		event.preventDefault();
 
@@ -66,6 +48,12 @@ $(document).ready(function() {
 } );
 
 </script>
+
+<style>
+	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
+	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
+	label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
+</style>
 
 <div id="page">
 
@@ -127,8 +115,6 @@ $(document).ready(function() {
 						</div>
 					</li>
 
-
-<%--
 					<li>
 						<label class="desc" for="parameter">Parameters</label>			
 						
@@ -143,8 +129,8 @@ $(document).ready(function() {
 										<th align="left">Required?</th>
 									</tr>	
 								</thead>
-								<tbody>			
-									<c:forEach items="${cohortDefinition.parameters}" var="p" varStatus="varStatus">
+								<tbody>
+									<c:forEach items="${cohortDefinition.availableParameters}" var="p" varStatus="varStatus">
 										<tr>
 											<td>${p.name}</td>
 											<td>${p.defaultValue}</td>
@@ -168,8 +154,7 @@ $(document).ready(function() {
 							</table>
 						</div>
 					</li>
-					
---%>					
+						
 					<li>					
 						<div align="center">				
 							<input id="saveForm" class="btTxt submit" type="submit" value="Save" tabindex="7" />
@@ -181,4 +166,3 @@ $(document).ready(function() {
 		</div>
 	</div>	
 </div>
-	
