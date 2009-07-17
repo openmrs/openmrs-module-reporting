@@ -32,25 +32,12 @@ public class Parameter implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-    /**
-     * Validation method that validates whether the defaultValue is compatible with the class
-     * @throws ParameterException
-     */
-    public static void validateValueForClass(Object value, Class<?> clazz) throws ParameterException {
-		if (value != null &&  clazz != null) {
-			if (!clazz.isAssignableFrom(value.getClass())) {
-				throw new ParameterException("The class '" + value.getClass() + "' of value '" + value + 
-											 "' is incompatible with the expected class '" + clazz + "'");
-			}
-		}
-    }
-	
 	//***********************
 	// PROPERTIES
 	//***********************
 	
 	/**
-	 * The name by which this Parameter can be uniquely retrieve 
+	 * The name by which this Parameter can be uniquely retrieved
 	 * in the Context within which it is being used.
 	 */
 	private String name;
@@ -69,6 +56,12 @@ public class Parameter implements Serializable {
 	 * The default value given to this parameter.
 	 */
 	private Object defaultValue;
+	
+	/**
+	 * Indicates whether this Parameter can contain multiple values
+	 * By default, this is false
+	 */
+	private Boolean allowMultiple = false;	
 
 	/**
 	 * Indicates whether this Parameter should be provided as user input.
@@ -102,10 +95,26 @@ public class Parameter implements Serializable {
 	 * @param required The flag indicating whether a value is required for this parameter
 	 */
 	public Parameter(String name, String label, Class<?> clazz, Object defaultValue, Boolean required, Boolean allowUserInput) {
+		this(name, label, clazz, false, defaultValue, required, allowUserInput);
+	}
+	
+	/**
+	 * Initialize this Parameter with the given values
+	 * 
+	 * @param name The defined descriptive name
+	 * @param label The label to display to the user if value is needed
+	 * @param clazz The data type of this parameter
+	 * @param allowMultiple Indicates whether this parameter can have multiple values in a Collection
+	 * @param defaultValue The value to fill in if nothing provided by the user
+	 * @param required The flag indicating whether a value is required for this parameter
+	 */
+	public Parameter(String name, String label, Class<?> clazz, Boolean allowMultiple, 
+					 Object defaultValue, Boolean required, Boolean allowUserInput) {
 		super();
 		setName(name);
 		setLabel(label);
 		setClazz(clazz);
+		setAllowMultiple(allowMultiple);
 		setDefaultValue(defaultValue);
 		setRequired(required);
 		setAllowUserInput(allowUserInput);
@@ -122,7 +131,7 @@ public class Parameter implements Serializable {
     public String toString() {
     	StringBuilder sb = new StringBuilder();
     	sb.append("Parameter<name="+name+",label="+label);
-    	sb.append(",clazz="+ (clazz == null ? "null" : clazz.getName()));
+    	sb.append(",clazz="+ (clazz == null ? "null" : clazz.getName()) + ",multiple="+allowMultiple);
     	sb.append(",defaultValue="+defaultValue+",allowUserInput=" + allowUserInput + ",required=" + required+">");
     	return sb.toString();
     }
@@ -190,7 +199,6 @@ public class Parameter implements Serializable {
 	 * @param clazz the clazz to set
 	 */
 	public void setClazz(Class<?> clazz) {
-		validateValueForClass(defaultValue, this.clazz);
 		this.clazz = clazz;
 	}
 
@@ -205,7 +213,6 @@ public class Parameter implements Serializable {
 	 * @param defaultValue the defaultValue to set
 	 */
 	public void setDefaultValue(Object defaultValue) {
-		validateValueForClass(defaultValue, this.clazz);
 		this.defaultValue = defaultValue;
 	}
 
@@ -222,7 +229,7 @@ public class Parameter implements Serializable {
 	public void setRequired(Boolean required) {
 		this.required = required;
 	}
-
+	
 	/**
 	 * @return the required
 	 */
@@ -231,27 +238,44 @@ public class Parameter implements Serializable {
 	}
 
 	/**
-	 * @return the required
+	 * @return the allowMultiple
+	 */
+	public Boolean getAllowMultiple() {
+		return allowMultiple;
+	}
+
+	/**
+	 * @param allowMultiple the allowMultiple to set
+	 */
+	public void setAllowMultiple(Boolean allowMultiple) {
+		this.allowMultiple = allowMultiple;
+	}
+	
+	/**
+	 * @return the allowMultiple
+	 */
+	public Boolean isAllowMultiple() {
+		return getAllowMultiple();
+	}
+
+	/**
+	 * @return the allowUserInput
 	 */
 	public Boolean getAllowUserInput() {
 		return allowUserInput;
 	}
 
 	/**
-	 * @param required the required to set
+	 * @param required the allowUserInput to set
 	 */
 	public void setAllowUserInput(Boolean allowUserInput) {
 		this.allowUserInput = allowUserInput;
 	}
 
 	/**
-	 * @return the required
+	 * @return the allowUserInput
 	 */
 	public Boolean isAllowUserInput() {
 		return allowUserInput;
-	}
-
-
-	
-	
+	}	
 }

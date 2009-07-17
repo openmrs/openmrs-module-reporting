@@ -44,10 +44,4 @@ public interface Parameterizable extends Serializable {
 	 */
 	public void addParameter(Parameter parameter);
 
-	/**
-	 * @return list of parameters with values bound by the user
-	 */
-	//public List<Parameter> getBoundParameters();
-
-
 }

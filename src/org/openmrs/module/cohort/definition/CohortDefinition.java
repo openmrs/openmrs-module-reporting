@@ -38,14 +38,7 @@ public interface CohortDefinition extends OpenmrsMetadata, Parameterizable  {
      * 
      * @return - All available Parameters that one might add to this CohortDefinition
      */
-	public List<Parameter> getParameters();
-	
-	/**
-	 * Sets the parameters for the cohort definition.
-	 * 
-	 * @param parameters
-	 */
-	public void setParameters(List<Parameter> parameters);
+	public List<Parameter> getAvailableParameters();
 	
     /**
      * Retrieves the Parameter with the given name from the list of available parameter on this
@@ -53,16 +46,4 @@ public interface CohortDefinition extends OpenmrsMetadata, Parameterizable  {
      */
 	public void enableParameter(String name, Object defaultValue, boolean required);
 	
-	
-	/**
-	 * @param boundParameeters	the list of parameters with values bound by the user
-	 */
-	public void setBoundParameters(List<Parameter> boundParameters);	
-
-	/**
-	 * @return list of parameters with values bound by the user
-	 */
-	public List<Parameter> getBoundParameters();
-
-
 }

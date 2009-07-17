@@ -3,23 +3,17 @@ package org.openmrs.module.reporting.web.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -28,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 @Controller
@@ -70,8 +62,8 @@ public class CohortDefinitionFormController {
 		log.info("Setting UUID " + cohortDefinition.getUuid());
 		log.info("Setting name " + cohortDefinition.getName());
 		
-		log.info("Setting parameters " + cohortDefinition.getParameters());
-		log.info("Setting bound parameters " + cohortDefinition.getBoundParameters());
+		log.info("Setting parameters " + cohortDefinition.getAvailableParameters());
+		log.info("Setting bound parameters " + cohortDefinition.getParameters());
 		
 		if (cohortDefinition instanceof PatientCharacteristicCohortDefinition) { 
 			PatientCharacteristicCohortDefinition pccd = 

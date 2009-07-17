@@ -30,8 +30,8 @@ public class ParameterUtilTest {
 	@Test
 	public void shouldHaveAllAnnotatedFieldsAsParameters() throws Exception {		
 		CompoundCohortDefinition def = new CompoundCohortDefinition();
-		Assert.assertEquals(2, def.getParameters().size());
-		for (Parameter p : def.getParameters()) {
+		Assert.assertEquals(2, def.getAvailableParameters().size());
+		for (Parameter p : def.getAvailableParameters()) {
 			if (p.getName().equals("operator")) {
 				Assert.assertEquals(BooleanOperator.AND, p.getDefaultValue());
 			}
@@ -47,7 +47,7 @@ public class ParameterUtilTest {
 	@Test
 	public void shouldHaveAllInheritedAnnotatedFieldsAsParameters() throws Exception {		
 		DrugOrderCohortDefinition def = new DrugOrderCohortDefinition();
-		System.out.println(def.getParameters());
-		Assert.assertEquals(9, def.getParameters().size());
+		System.out.println(def.getAvailableParameters());
+		Assert.assertEquals(9, def.getAvailableParameters().size());
 	}
 }

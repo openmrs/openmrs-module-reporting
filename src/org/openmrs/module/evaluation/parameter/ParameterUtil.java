@@ -2,7 +2,10 @@ package org.openmrs.module.evaluation.parameter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -79,8 +82,12 @@ public class ParameterUtil {
 	    				}
     				}
     				
+    				Class<?> collectionType = getGenericTypeOfCollection(f);
+    				Boolean isCollection = collectionType != null;
+    				Class<?> paramType = (isCollection ? collectionType : f.getType());
+    				
     				// Construct a new Parameter and add it to the return list
-    				Parameter p = new Parameter(name, label, f.getType(), defaultVal, ann.required(), false);
+    				Parameter p = new Parameter(name, label, paramType, isCollection, defaultVal, ann.required(), false);
     				log.debug("Adding parameter: " + p);
     				ret.add(p);
     			}
@@ -174,4 +181,37 @@ public class ParameterUtil {
     		}
     	}
    	}
+    
+    /**
+     * For the passed field, if it is a Collection, it will return the class which represents the generic type of this
+     * Collection.  If it is not a Collection, it will return null.  If the type is not a class, it will return null.
+     * If it contains more than one Generic Type, it will return the first type found.
+     */
+    public static Class<?> getGenericTypeOfCollection(Field f) {
+    	if (f != null && Collection.class.isAssignableFrom(f.getType())) {
+    		try {
+				ParameterizedType pt = (ParameterizedType) f.getGenericType();
+				Type[] typeArgs = pt.getActualTypeArguments();
+				return (Class<?>)typeArgs[0];
+			}
+			catch (Exception e) {
+				log.debug("Unable to retrieve generic type of field: " + f, e);
+				// Do nothing
+			}
+		}
+    	return null;
+    }
+    
+    /**
+     * Validation method that validates whether the parameter value is compatible with the class
+     * @throws ParameterException
+     */
+    public static void validateParameterValue(Parameter p) throws ParameterException {
+		if (p.getDefaultValue() != null &&  p.getClazz() != null) {
+			if (!p.getClazz().isAssignableFrom(p.getDefaultValue().getClass())) {
+				throw new ParameterException("The class '" + p.getDefaultValue().getClass() + "' of value '" + p.getDefaultValue() + 
+											 "' is incompatible with the expected class '" + p.getClazz() + "'");
+			}
+		}
+    }
 }
