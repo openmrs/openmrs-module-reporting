@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Beans to add to the current Web Application context definition -->
+	<!-- Beans to add to the current Web Application context definition -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns:util="http://www.springframework.org/schema/util"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd
            http://www.springframework.org/schema/util
            http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
-	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
 	<context:component-scan base-package="org.openmrs.module.reporting.web.controller" />
+
+	<bean id="exceptionResolver"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+           <props>
+                <prop key="org.openmrs.api.db.DAOException">module/reporting/common/dataAccessFailure</prop>
+                <prop key="org.openmrs.api.APIException">module/reporting/common/apiFailure</prop>
+                <prop key="java.lang.Exception">module/reporting/common/generalFailure</prop>
+         	</props>
+        </property>				
+		<property name="defaultErrorView" value="generalFailure" />
+	</bean>
+
+
 </beans>
