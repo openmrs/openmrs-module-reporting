@@ -14,6 +14,7 @@
 package org.openmrs.module.evaluation.parameter;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -51,23 +52,16 @@ public class Parameter implements Serializable {
 	 * The datatype of this parameter
 	 */
 	private Class<?> clazz;
+	
+	/**
+	 * If this parameter can have multiple values specified, this is the underlying Collection type
+	 */
+	private Class<? extends Collection<?>> collectionType;
 
 	/**
 	 * The default value given to this parameter.
 	 */
 	private Object defaultValue;
-	
-	/**
-	 * Indicates whether this Parameter can contain multiple values
-	 * By default, this is false
-	 */
-	private Boolean allowMultiple = false;	
-
-	/**
-	 * Indicates whether this Parameter should be provided as user input.
-	 * By default, this is true
-	 */
-	private Boolean allowUserInput = true;	
 	
 	/**
 	 * Indicates whether this Parameter must be provided a value either
@@ -91,11 +85,19 @@ public class Parameter implements Serializable {
 	 * @param name The defined descriptive name
 	 * @param label The label to display to the user if value is needed
 	 * @param clazz The data type of this parameter
+	 * @param collectionType Indicates whether this parameter can have multiple values in a Collection
 	 * @param defaultValue The value to fill in if nothing provided by the user
 	 * @param required The flag indicating whether a value is required for this parameter
 	 */
-	public Parameter(String name, String label, Class<?> clazz, Object defaultValue, Boolean required, Boolean allowUserInput) {
-		this(name, label, clazz, false, defaultValue, required, allowUserInput);
+	public Parameter(String name, String label, Class<?> clazz, Class<? extends Collection<?>> collectionType, 
+					 Object defaultValue, Boolean required) {
+		super();
+		setName(name);
+		setLabel(label);
+		setClazz(clazz);
+		setCollectionType(collectionType);
+		setDefaultValue(defaultValue);
+		setRequired(required);
 	}
 	
 	/**
@@ -108,16 +110,8 @@ public class Parameter implements Serializable {
 	 * @param defaultValue The value to fill in if nothing provided by the user
 	 * @param required The flag indicating whether a value is required for this parameter
 	 */
-	public Parameter(String name, String label, Class<?> clazz, Boolean allowMultiple, 
-					 Object defaultValue, Boolean required, Boolean allowUserInput) {
-		super();
-		setName(name);
-		setLabel(label);
-		setClazz(clazz);
-		setAllowMultiple(allowMultiple);
-		setDefaultValue(defaultValue);
-		setRequired(required);
-		setAllowUserInput(allowUserInput);
+	public Parameter(String name, String label, Class<?> clazz, Object defaultValue, Boolean required) {
+		this(name, label, clazz, null, defaultValue, required);
 	}
 	
 	//***********************
@@ -131,8 +125,14 @@ public class Parameter implements Serializable {
     public String toString() {
     	StringBuilder sb = new StringBuilder();
     	sb.append("Parameter<name="+name+",label="+label);
-    	sb.append(",clazz="+ (clazz == null ? "null" : clazz.getName()) + ",multiple="+allowMultiple);
-    	sb.append(",defaultValue="+defaultValue+",allowUserInput=" + allowUserInput + ",required=" + required+">");
+    	if (collectionType != null) {
+    		sb.append(collectionType+"<");
+    	}
+    	sb.append(",clazz="+ (clazz == null ? "null" : clazz.getName()));
+    	if (collectionType != null) {
+    		sb.append(">");
+    	}
+    	sb.append(",defaultValue="+defaultValue+",required=" + required+">");
     	return sb.toString();
     }
     
@@ -201,6 +201,21 @@ public class Parameter implements Serializable {
 	public void setClazz(Class<?> clazz) {
 		this.clazz = clazz;
 	}
+	
+
+	/**
+	 * @return the collectionType
+	 */
+	public Class<? extends Collection<?>> getCollectionType() {
+		return collectionType;
+	}
+
+	/**
+	 * @param collectionType the collectionType to set
+	 */
+	public void setCollectionType(Class<? extends Collection<?>> collectionType) {
+		this.collectionType = collectionType;
+	}
 
 	/**
 	 * @return the defaultValue
@@ -236,46 +251,4 @@ public class Parameter implements Serializable {
 	public Boolean isRequired() {
 		return required;
 	}
-
-	/**
-	 * @return the allowMultiple
-	 */
-	public Boolean getAllowMultiple() {
-		return allowMultiple;
-	}
-
-	/**
-	 * @param allowMultiple the allowMultiple to set
-	 */
-	public void setAllowMultiple(Boolean allowMultiple) {
-		this.allowMultiple = allowMultiple;
-	}
-	
-	/**
-	 * @return the allowMultiple
-	 */
-	public Boolean isAllowMultiple() {
-		return getAllowMultiple();
-	}
-
-	/**
-	 * @return the allowUserInput
-	 */
-	public Boolean getAllowUserInput() {
-		return allowUserInput;
-	}
-
-	/**
-	 * @param required the allowUserInput to set
-	 */
-	public void setAllowUserInput(Boolean allowUserInput) {
-		this.allowUserInput = allowUserInput;
-	}
-
-	/**
-	 * @return the allowUserInput
-	 */
-	public Boolean isAllowUserInput() {
-		return allowUserInput;
-	}	
 }

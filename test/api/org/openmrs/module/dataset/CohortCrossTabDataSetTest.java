@@ -76,7 +76,7 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 		schema.setName("Test Report for Table");
 		schema.setDescription("A test description");
 		
-		Parameter dateParam = new Parameter("report.startDate", "Date of report", Date.class, new Date(), false, false);
+		Parameter dateParam = new Parameter("report.startDate", "Date of report", Date.class, new Date(), false);
 		schema.addParameter(dateParam);
 		
 		PatientCharacteristicCohortDefinition maleDef = new PatientCharacteristicCohortDefinition();

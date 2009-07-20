@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ include file="../localHeader.jsp"%>
+<%@ taglib prefix="rptTag" tagdir="/WEB-INF/tags/module/reporting" %>
 
 <!-- JQuery Engine -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.js"></script>
@@ -8,23 +9,18 @@
 	var $j = jQuery.noConflict();
 </script>
 
+<!-- JQuery UI -->
+<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.ui-1.6/ui.all.css" rel="stylesheet"/>
+<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.ui-1.6/jquery-ui-1.6.custom.min.js"></script>
+
 <!-- JQuery Data Tables -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/page.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/table.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/custom.css" rel="stylesheet"/>
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.dataTables/jquery.dataTables.js"></script>
 
-<!-- JQuery UI -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.ui-1.6/ui.all.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.ui-1.6/jquery-ui-1.6.custom.min.js"></script>
-
 <script type="text/javascript" charset="utf-8">
 $j(document).ready(function() {
-
-	// ======  Tabs: Cohort Definition Tabs  ================================================
-
-	$j('#cohort-definition-tabs').tabs();
-	$j('#cohort-definition-tabs').show();
 
 	// ======  DataTable: Cohort Definition Parameter  ======================================
 	
@@ -35,7 +31,7 @@ $j(document).ready(function() {
 		"bSort": false,
 		"bInfo": false,
 		"bAutoWidth": false
-	} );			
+	} );
 
 	$j('#cancel-button').click(function(event){
 		// To prevent the submit
@@ -69,12 +65,12 @@ $j(document).ready(function() {
 	
 		<div id="cohort-definition-basic-tab">
 			<form method="post" action="saveCohortDefinition.form">
-			
+				<input type="hidden" name="uuid" value="${cohortDefinition.uuid}"/>
+				<input type="hidden" name="type" value="${cohortDefinition.class.name}"/>
 				<ul>				
 					<li>
 						<label class="desc" for="id">ID</label>				
 						<div>
-							<input type="hidden" name="uuid" value="${cohortDefinition.uuid}" />
 							<c:choose>
 								<c:when test="${!empty cohortDefinition.uuid}">${cohortDefinition.uuid}</c:when>
 								<c:otherwise>
@@ -87,73 +83,65 @@ $j(document).ready(function() {
 						</div>
 					</li>				
 					<li>
-						<label class="desc" for="type">Type</label>			
-						<div>
-							${cohortDefinition.class.name}
-							<input type="hidden" name="type" value="${cohortDefinition.class.name}" tabindex="1" />
-						</div>
+						<label class="desc" for="type">Type</label>
+						<div>${cohortDefinition.class.name}</div>
 					</li>
 					
 					<li>
 						<label class="desc" for="name">Name</label>			
 						<div>
-							<input type="text" 
-									class="field text medium" 
-									id="name" 
-									name="name"
-									value="${cohortDefinition.name}"
-									size="50" 
-									tabindex="2"/>
+							<input 	type="text" class="field text medium" id="name"  tabindex="2"
+									name="name" value="${cohortDefinition.name}" size="50"/>
 						</div>
 					</li>
 					<li>
 						<label class="desc" for="description">Description</label>			
 						<div>
-							<textarea id="description" 
-									class="field text short" cols="80" tabindex="3"
-									name="description">${cohortDefinition.description}</textarea>			
+							<textarea 	id="description" class="field text short" cols="80" tabindex="3"
+										name="description">${cohortDefinition.description}</textarea>			
 						</div>
 					</li>
 
 					<li>
-						<label class="desc" for="parameter">Adding Parameters</label>			
+						<label class="desc">Configuration</label>			
 						
 						<div>
 							<table id="cohort-definition-parameter-table" class="display">
 								<thead>
 									<tr>
-										<th width="1%" align="left">Add?</th>
 										<th align="left">Name</th>
-										<th align="left">Default Value</th>
-										<th width="1%" align="left">User Input?</th>
-										<th width="1%" align="left">Req'd?</th>
+										<th align="left">Fixed Value</th>
+										<th align="left">- OR -</th>
+										<th align="left">Runtime Parameter</th>
 									</tr>	
 								</thead>
 								<tbody>
-									<c:forEach items="${cohortDefinition.availableParameters}" var="parameter" varStatus="varStatus">
-										<tr>
-											<td>
-												<input type="checkbox" name="parameter.${parameter.name}.include"/>
+									<c:forEach items="${cohortDefinition.availableParameters}" var="p" varStatus="varStatus">
+										<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
+											<td valign="top">
+												${p.name}
+												<c:if test="${p.required}">
+													<span style="color:red;">*</span>
+												</c:if>
 											</td>
-											<td>
-												${parameter.name}
-											</td>
-											<td>
-												<openmrs:fieldGen type="${parameter.clazz}" formFieldName="parameter.${parameter.name}.defaultValue" val="${parameter.defaultValue}" parameters="" />
-											</td>
-											<td>
-												<input type="checkbox" name="parameter.${parameter.name}.allowUserInput" />
-											</td>
-											<td>
+											<td valign="top">
 												<c:choose>
-													<c:when test="${p.required}">
-														<input type="hidden" name="parameter.${parameter.name}.required" value="true" />[x]
+													<c:when test="${p.collectionType != null}">
+														<rptTag:collectionField type="${p.clazz}" 
+																				formFieldName="parameter.${p.name}.defaultValue" 
+																				initialValues="${p.defaultValue}" 
+																				parameters="optionHeader=[blank]" />
 													</c:when>
 													<c:otherwise>
-														<input type="checkbox" name="parameter.${parameter.name}.required"/></td>
+														<openmrs:fieldGen 	type="${p.clazz}" 
+																			formFieldName="parameter.${p.name}.defaultValue" 
+																			val="${p.defaultValue}" 
+																			parameters="" />
 													</c:otherwise>
 												</c:choose>
 											</td>
+											<td>&nbsp;</td>
+											<td valign="top"><input type="checkbox" name="parameter.${p.name}.allowAtEvaluation" /></td>
 										</tr>
 									</c:forEach>
 								</tbody>

@@ -72,7 +72,7 @@ public class PatientSearchTest extends BaseContextSensitiveTest {
 		obsService.saveObs(secondObs, "Creating obs");
 		
 		Map<Parameter, Object> globalParamValues = new HashMap<Parameter, Object>();
-		Parameter p = new Parameter("withinLastDays", "How many days?", Integer.class, 30, false, false);
+		Parameter p = new Parameter("withinLastDays", "How many days?", Integer.class, 30, false);
 		globalParamValues.put(p, 60);
 		
 		

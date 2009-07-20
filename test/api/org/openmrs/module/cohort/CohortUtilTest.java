@@ -64,7 +64,7 @@ public class CohortUtilTest extends BaseContextSensitiveTest {
 		// Create a search called "EnrolledOnDate" with one parameter called untilDate
 		ProgramStateCohortDefinition enrolledOnDateFilter = new ProgramStateCohortDefinition();
 		enrolledOnDateFilter.setName("EnrolledOnDate");
-		enrolledOnDateFilter.addParameter(new Parameter("untilDate", "Enrolled up until", Date.class, new Date(), false, false));
+		enrolledOnDateFilter.addParameter(new Parameter("untilDate", "Enrolled up until", Date.class, new Date(), false));
 		Context.getService(CohortDefinitionService.class).saveCohortDefinition(enrolledOnDateFilter);
 		
 		List<Object> list = CohortExpressionParser.parseIntoTokens("[Male] and [EnrolledOnDate|untilDate=${report.startDate}]");

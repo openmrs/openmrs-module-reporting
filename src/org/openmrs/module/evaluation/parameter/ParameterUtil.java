@@ -6,13 +6,16 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * A utility class for working with Parameters and related classes.
@@ -56,9 +59,7 @@ public class ParameterUtil {
     			
     			// If it is annotated to accept parameters, then retrieve values for Parameter
     			if (ann != null) {
-    				
-    				// If a name attribute is included, use it, otherwise use the field name
-    				String name = (StringUtils.isEmpty(ann.name()) ? f.getName() : ann.name());
+    				String name = f.getName();
     				
     				// For a label, the precedence is: labelCode, labelText, name, field name
     				String label = name;
@@ -69,8 +70,18 @@ public class ParameterUtil {
     					label = ann.labelText();
     				}
     				
+    				Class<?> paramType = f.getType();
+    				Class<? extends Collection<?>> collectionType = null;
+    			   	if (Collection.class.isAssignableFrom(f.getType())) {
+    			   		Class<?> genericType = getGenericTypeOfCollection(f);
+    			   		paramType = genericType;
+    			   		collectionType = (Class<? extends Collection<?>>)f.getType();
+    			   	}
+    				
     				// Populate the default value of the parameter to the value in the passed instance
     				Object defaultVal = null;
+    				boolean required = ann.required();
+    				
     				if (classInstance != null) {
 	    				try {
 	    					String getterMethodName = "get" + f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
@@ -80,14 +91,16 @@ public class ParameterUtil {
 	    				catch (Exception e) {
 	    					throw new APIException("Error accessing fields in object: " + e);
 	    				}
+	    				
+	    				Parameter p = classInstance.getParameter(name);
+	    				if (p != null) {
+	    					defaultVal = p.getDefaultValue();
+	    					required = required || p.isRequired();
+	    				}
     				}
-    				
-    				Class<?> collectionType = getGenericTypeOfCollection(f);
-    				Boolean isCollection = collectionType != null;
-    				Class<?> paramType = (isCollection ? collectionType : f.getType());
-    				
+
     				// Construct a new Parameter and add it to the return list
-    				Parameter p = new Parameter(name, label, paramType, isCollection, defaultVal, ann.required(), false);
+    				Parameter p = new Parameter(name, label, paramType, collectionType, defaultVal, required);
     				log.debug("Adding parameter: " + p);
     				ret.add(p);
     			}
@@ -172,12 +185,13 @@ public class ParameterUtil {
 		if (objectToUpdate != null && p != null) {
 			try {
 				String baseName = p.getName().substring(0, 1).toUpperCase() + p.getName().substring(1);
-				Method setterMethod = objectToUpdate.getClass().getMethod("set"+baseName, p.getClazz());
+				Class<?> clazz = p.getCollectionType() != null ? p.getCollectionType() : p.getClazz();
+				Method setterMethod = objectToUpdate.getClass().getMethod("set"+baseName, clazz);
 				setterMethod.invoke(objectToUpdate, value);
     		}
 			catch (Exception e) {
     			throw new APIException("Error setting trying to set annotated parameter <" + p.getName() + "> on class " + 
-    									objectToUpdate.getClass() + " with value <" + value + "> of class " + value.getClass());
+    									objectToUpdate.getClass() + " with value <" + value + ">");
     		}
     	}
    	}
@@ -203,6 +217,20 @@ public class ParameterUtil {
     }
     
     /**
+     * Utility method that takes a Collection class and returns a default implementation
+     * @param <T>
+     * @param clazz
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Collection> T getNewCollection(Class<T> clazz) {
+    	if (Set.class.isAssignableFrom(clazz)) {
+    		return (T)new HashSet();
+    	}
+    	return (T)new ArrayList();
+    }
+    
+    /**
      * Validation method that validates whether the parameter value is compatible with the class
      * @throws ParameterException
      */
@@ -213,5 +241,17 @@ public class ParameterUtil {
 											 "' is incompatible with the expected class '" + p.getClazz() + "'");
 			}
 		}
+    }
+    
+    /**
+     * Utility method which takes in a String representation of an Object and returns the Object
+     * @param s - The string representation
+     * @param clazz - The clazz to return
+     * @return - An object of that class
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T convertStringToObject(String s, Class<? extends T> clazz) {
+    	Object parsedObj = OpenmrsUtil.parse(s, clazz);
+    	return (T)parsedObj;
     }
 }
