@@ -53,23 +53,49 @@ $(document).ready(function() {
 		<table id="cohort-definition-table" class="display" >
 			<thead>
 				<tr>
-					<th>Edit</th>
 					<th>Name</th>
 					<th>Type</th>
 					<th>Description</th>
-					<th>Preview</th>
-					<th>Delete</th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
 					<tr>
-						<td><a href="${pageContext.request.contextPath}/module/reporting/cohortDefinition.form?uuid=${cohortDefinition.uuid}&className=${cohortDefinition.class.name}">edit (beta)</a></td>
-						<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">${cohortDefinition.name}</a></td>
-						<td>${cohortDefinition.class.simpleName}</td>
-						<td>${cohortDefinition.description}</td>
-						<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&action=preview">preview</a></td>
-						<td><a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&action=delete">delete</a></td>
+						<td>
+							${cohortDefinition.name}
+						</td>
+						<td>
+							${cohortDefinition.class.simpleName}
+						</td>
+						<td>
+							${cohortDefinition.description}
+						</td>
+						<!-- old edit link -->
+						<!-- 
+						<td align="center">
+							<a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">
+								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
+							</a>
+						</td>					
+						-->
+						<td align="center">
+							<a href="${pageContext.request.contextPath}/module/reporting/cohortDefinition.form?uuid=${cohortDefinition.uuid}&className=${cohortDefinition.class.name}">
+								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
+							</a>
+						</td>
+						<td align="center">
+							<a href="${pageContext.request.contextPath}/module/reporting/evaluateCohortDefinition.form?uuid=${cohortDefinition.uuid}">
+								<img src="<c:url value='/images/play.gif'/>" border="0"/>
+							</a>
+						</td>
+						<td align="center">
+							<a href="${pageContext.request.contextPath}/module/reporting/purgeCohortDefinition.form?uuid=${cohortDefinition.uuid}">
+								<img src="<c:url value='/images/trash.gif'/>" border="0"/>
+							</a>
+						</td>
 					</tr>
 				</c:forEach>	
 			</tbody>

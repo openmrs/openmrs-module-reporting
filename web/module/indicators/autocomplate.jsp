@@ -8,7 +8,6 @@
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.ajaxQueue.js'></script>
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/thickbox-compressed.js'></script>
 <script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.autocomplete.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/localdata.js'></script>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.autocomplete/main.css" />
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.autocomplete/jquery.autocomplete.css" />
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.autocomplete/thickbox.css" />

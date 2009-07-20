@@ -36,9 +36,9 @@ $(document).ready(function() {
 		<table id="indicator-table" class="display" >
 			<thead>
 				<tr>
-					<th width="1%">Edit</th>
-					<th>Indicator</th>
+					<th width="1%"></th>
 					<th>Aggregator</th>
+					<th>Indicator</th>
 					<th>Description</th>
 					<th>Cohort / Logic Rule</th>
 					<th>Actions</th>
@@ -48,16 +48,16 @@ $(document).ready(function() {
 				<c:forEach items="${indicators}" var="indicator" varStatus="status">
 					<tr>
 						<td align="center">
-							<c:url value="/images/edit.gif" var="editIcon"/>
+							
 							<a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}">
-								<img src="${editIcon}" border="0"/></a>
+								<img src="<c:url value='/images/edit.gif'/>" border="0"/></a>
+						</td>
+						<td>
+							${indicator.aggregator.simpleName}<br/>						
 						</td>
 						<td>
 							${indicator.name}
 						</td>					
-						<td>
-							${indicator.aggregator.simpleName}<br/>						
-						</td>
 						<td>
 							${indicator.description}
 						</td>

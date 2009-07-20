@@ -1,14 +1,6 @@
 package org.openmrs.module.reporting.web.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -53,18 +45,34 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ManageReportController {
 
 	private Log log = LogFactory.getLog(this.getClass());
-	private DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 	
+	/**
+	 * Constructor
+	 */
+	public ManageReportController() { }
+	
+	/**
+	 * Registers custom editors for fields of the command class.
+	 * 
+	 * @param binder
+	 */
     @InitBinder
     public void initBinder(WebDataBinder binder) { 
     	// TODO Switch this to the Context.getDateFormat()
     	//SimpleDateFormat dateFormat = Context.getDateFormat();
     	//SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy"); 
     	//dateFormat.setLenient(false); 
-    	binder.registerCustomEditor(Date.class, new CustomDateEditor(ymd, false)); 
+    	binder.registerCustomEditor(Date.class, new CustomDateEditor(Context.getDateFormat(), false)); 
     }    
 
 	
+    /**
+     * Manage reports.
+     * 
+     * @param includeRetired
+     * @param model
+     * @return
+     */
     @RequestMapping("/module/reporting/manageReports")
     public String manageReports(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
@@ -78,6 +86,13 @@ public class ManageReportController {
         return "/module/reporting/reports/reportManager";
     }
     
+    /**
+     * Edit a report schema.
+     * 
+     * @param uuid
+     * @param model
+     * @return
+     */
     @RequestMapping("/module/reporting/editReportSchema")
     public String editReportSchema(
     		@RequestParam(required=false, value="uuid") String uuid,
@@ -138,8 +153,8 @@ public class ManageReportController {
 			}
 
 			// Set the default parameter
-			evalContext.addParameterValue("report.startDate", ymd.parse("1980-01-01"));
-			evalContext.addParameterValue("report.endDate", ymd.parse("2008-01-01"));
+			evalContext.addParameterValue("report.startDate", Context.getDateFormat().parse("1980-01-01"));
+			evalContext.addParameterValue("report.endDate", Context.getDateFormat().parse("2008-01-01"));
 			
 			ReportData reportData = reportService.evaluate(reportSchema, evalContext);
 	
@@ -175,10 +190,10 @@ public class ManageReportController {
     
     
     // ================================================================================
-    //		The following are specific report user stories that will be refactor
-    //		to work with any types of reports.  For now, we just experimenting to 
-    // 		see what type of reports we need to be able to generate and how to 
-    // 		accomplish that.
+    //	The following are specific report user stories that will be refactor
+    //	to work with any types of reports.  For now, we just experimenting to 
+    // 	see what type of reports we need to be able to generate and how to 
+    // 	accomplish that.
     // ================================================================================
     
     /**
@@ -228,8 +243,8 @@ public class ManageReportController {
 			ReportSchema reportSchema = reportService.getReportSchema(1);
 
 			EvaluationContext ec = new EvaluationContext();
-			ec.addParameterValue("report.startDate", ymd.parse("1980-01-01"));
-			ec.addParameterValue("report.endDate", ymd.parse("2008-01-01"));
+			ec.addParameterValue("report.startDate", Context.getDateFormat().parse("1980-01-01"));
+			ec.addParameterValue("report.endDate", Context.getDateFormat().parse("2008-01-01"));
 			
 			ReportData reportData = reportService.evaluate(reportSchema, ec);
 	
@@ -272,14 +287,14 @@ public class ManageReportController {
 			
 			context = new EvaluationContext();
 			context.addParameterValue("report.location", Context.getLocationService().getLocation(26));
-			context.addParameterValue("report.reportDate", ymd.parse("2007-01-01"));
+			context.addParameterValue("report.reportDate", Context.getDateFormat().parse("2007-01-01"));
 	
 			//context.addParameterValue("report.location", Context.getLocationService().getLocation(29));
-			//context.addParameterValue("report.reportDate", ymd.parse("2007-01-01"));
+			//context.addParameterValue("report.reportDate", Context.getDateFormat().parse("2007-01-01"));
 			//context.addParameterValue("report.location", Context.getLocationService().getLocation(26));
-			//context.addParameterValue("report.reportDate", ymd.parse("2008-01-01"));
+			//context.addParameterValue("report.reportDate", Context.getDateFormat().parse("2008-01-01"));
 			//context.addParameterValue("report.location", Context.getLocationService().getLocation(29));
-			//context.addParameterValue("report.reportDate", ymd.parse("2008-01-01"));
+			//context.addParameterValue("report.reportDate", Context.getDateFormat().parse("2008-01-01"));
 			
 			ReportData reportData = Context.getService(ReportService.class).evaluate(reportSchema, context);
 			response.setContentType("text/csv");
@@ -295,6 +310,26 @@ public class ManageReportController {
 		
     }
     
+
+    /**
+     * Shows the report form for the lab report.
+     * 
+     * @param model
+     * @return
+     */
+    @RequestMapping("/module/reporting/showLabReport")
+    public String showLabReportForm(ModelMap model) {     	
+    	// Show user the form 
+    	List<Location> locations = Context.getLocationService().getAllLocations(false);
+    	
+    	List<CohortDefinition> cohortDefinitions = 
+    		Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false);
+    	
+    	model.addAttribute("cohortDefinitions", cohortDefinitions);
+    	model.addAttribute("locations", locations);
+    	
+        return "/module/reporting/reports/labReportViewer";
+    }
     
     /**
      * Render the lab report.
@@ -308,7 +343,7 @@ public class ManageReportController {
      * @param response
      */
     @RequestMapping("/module/reporting/renderLabReport")
-    public String renderLabReport(
+    public void renderLabReport(
     		@RequestParam(required=false, value="action") String action,
     		@RequestParam(required=false, value="locationId") Integer locationId,
     		@RequestParam(required=false, value="startDate") Date startDate,
@@ -320,21 +355,10 @@ public class ManageReportController {
 
     	try { 
     		
-    		// Show user the form 
-    		if (action == null || !action.equals("render")) { 
-	        	List<Location> locations = Context.getLocationService().getAllLocations(false);
-	        	
-	        	List<CohortDefinition> cohortDefinitions = 
-	        		Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false);
-	        	
-	        	model.addAttribute("cohortDefinitions", cohortDefinitions);
-	        	model.addAttribute("locations", locations);
-	        	
-	            return "/module/reporting/reports/labReportViewer";
-    		}    		
-    		
+    		// The base cohort 
     		Cohort baseCohort = new Cohort();
-    	
+    	    		
+    		// The selected location
     		Location location = 
     			Context.getLocationService().getLocation(locationId);
 
@@ -449,7 +473,7 @@ public class ManageReportController {
     	}
     	
     	// TODO Refactor controller -- this should never happen, not should it be necessary
-    	return "redirect:/module/reporting/manageReports.list";
+    	//return "redirect:/module/reporting/manageReports.list";
     } 
         
 }

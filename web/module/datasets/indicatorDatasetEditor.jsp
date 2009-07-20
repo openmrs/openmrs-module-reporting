@@ -177,12 +177,13 @@ $(document).ready(function() {
 		</div>
 
 		<div id="indicator-dataset-advanced-tab">			
-			<h2>Available Indicators</h2>
-			<form:form id="saveForm" commandName="datasetDefinition" method="POST">
-					<li>
-						<label class="desc" for="description">Description</label>			
 
-						<input type="hidden" name="action" value="addIndicators"/>
+			<h2>Parameters</h2>
+			<form:form id="saveForm" commandName="datasetDefinition" method="POST">
+				<ul>
+					<li>
+						<label class="desc" for="description">Description</label>
+						<input type="hidden" name="action" value="addParameters"/>
 						<form:hidden path="uuid"/>
 							<c:forEach var="indicator" items="${indicators}">					
 								<p>
@@ -207,7 +208,41 @@ $(document).ready(function() {
 							<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
 						</div>					
 					</li>
-					
+				</ul>
+			</form:form>
+
+
+
+			<h2>Available Indicators</h2>
+			<form:form id="saveForm" commandName="datasetDefinition" method="POST">
+				<ul>
+					<li>
+						<label class="desc" for="description">Description</label>			
+
+						<input type="hidden" name="action" value="addIndicators"/>
+						<form:hidden path="uuid"/>
+							<c:forEach var="indicator" items="${indicators}">					
+								<p>
+									<input type="checkbox" name="indicatorUuid" value="${indicator.uuid}"/>					
+									<strong>${indicator.name}</strong> ${indicator.description} <i>(${indicator.uuid})</i>	<br/>
+									${indicator.cohortDefinition.parameterizable.name} ${indicator.cohortDefinition.parameterizable.parameters}
+																	
+								<!-- Hide the parameter mapping behind a modal dialog window -->
+								<br/><strong>Parameter Mapping</strong>
+								<c:if test="${empty indicator.cohortDefinition.parameterizable.parameters}"><i>There are no parameters for this indicator</c:if>
+								<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}">
+									${parameter.label}	(${parameter.name})				
+								</c:forEach>
+								<br/>								
+							</c:forEach>
+					</li>
+					<li>					
+						<div align="center">				
+							<input id="save-button" name="save" type="submit" class="button" value="Save" tabindex="100" />
+							<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
+						</div>					
+					</li>
+				</ul>
 			</form:form>
 		</div>
 		

@@ -116,33 +116,41 @@ $j(document).ready(function() {
 					</li>
 
 					<li>
-						<label class="desc" for="parameter">Parameters</label>			
+						<label class="desc" for="parameter">Adding Parameters</label>			
 						
 						<div>
 							<table id="cohort-definition-parameter-table" class="display">
 								<thead>
 									<tr>
+										<th width="1%" align="left">Add?</th>
 										<th align="left">Name</th>
-										<th align="left">Old Default Value</th>
-										<th align="left">New Default Value</th>
-										<th align="left">Param?</th>
-										<th align="left">Required?</th>
+										<th align="left">Default Value</th>
+										<th width="1%" align="left">User Input?</th>
+										<th width="1%" align="left">Req'd?</th>
 									</tr>	
 								</thead>
 								<tbody>
-									<c:forEach items="${cohortDefinition.availableParameters}" var="p" varStatus="varStatus">
+									<c:forEach items="${cohortDefinition.availableParameters}" var="parameter" varStatus="varStatus">
 										<tr>
-											<td>${p.name}</td>
-											<td>${p.defaultValue}</td>
-											<td><openmrs:fieldGen type="${p.clazz}" formFieldName="parameter.${p.name}.defaultValue" val="${p.defaultValue}" parameters="" /></td>
-											<td><input type="checkbox" name="parameter.${p.name}.allowAtEvaluation" /></td>
+											<td>
+												<input type="checkbox" name="parameter.${parameter.name}.include"/>
+											</td>
+											<td>
+												${parameter.name}
+											</td>
+											<td>
+												<openmrs:fieldGen type="${parameter.clazz}" formFieldName="parameter.${parameter.name}.defaultValue" val="${parameter.defaultValue}" parameters="" />
+											</td>
+											<td>
+												<input type="checkbox" name="parameter.${parameter.name}.allowUserInput" />
+											</td>
 											<td>
 												<c:choose>
 													<c:when test="${p.required}">
-														<input type="hidden" name="parameter.${p.name}.required" value="true" tabindex="${varStatus.index+3}"/>[x]
+														<input type="hidden" name="parameter.${parameter.name}.required" value="true" />[x]
 													</c:when>
 													<c:otherwise>
-														<input type="checkbox" name="parameter.${p.name}.required" tabindex="${varStatus.index+3}"/></td>
+														<input type="checkbox" name="parameter.${parameter.name}.required"/></td>
 													</c:otherwise>
 												</c:choose>
 											</td>

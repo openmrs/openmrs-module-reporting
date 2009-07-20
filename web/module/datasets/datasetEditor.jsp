@@ -68,6 +68,7 @@ $(document).ready(function() {
 			<ul>
                 <li><a href="#dataset-basic-tab"><span>Basic</span></a></li>
                 <li><a href="#dataset-columns-tab"><span>Columns</span></a></li>
+                <li><a href="#dataset-download-tab"><span>Download</span></a></li>
             </ul>
 		</div>
 		
@@ -138,12 +139,111 @@ $(document).ready(function() {
 				<button name="button1" disabled>Remove Selected</button>
 				<button name="button1" onclick="location.href='${pageContext.request.contextPath}/module/reporting/showDatasetPreview.form?uuid=${dataSetDefinition.uuid}&id=${dataSetDefinition.id}&className=${dataSetDefinition.class.name}'">Preview Data</button>	
 			</div>
-
 		</div>
 
+		<div id="dataset-download-tab">	
+			<div id=datasetDownload style="overflow: auto;">
+				<h1>Dataset Download</h1>
 
+				<div id="datasetPreviewTable" style="overflow:auto;">
+					<table id="dataset-preview-table" class="display">
+						<thead>
+							<tr>
+								<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="varStatus">				
+									<c:if test="${varStatus.index < 7}">
+										<th>
+											${column.columnName}
+										</th>
+									</c:if>
+								</c:forEach>
+								<c:if test="${dataSetDefinition.columnCount > 7}">
+									<th>
+										Showing 7 out of ${dataSetDefinition.columnCount} columns
+										<a href="">show more...</a>
+									</th>
+								</c:if>						
+							</tr>
+						</thead>
+						<tbody>						
+							<c:if test="${!empty dataSet}">
+	
+								<%-- 
+								
+								
+									TODO Integrate the simple html renderer so we can get rid of these scriptlets 
+									
+									
+								--%>
+	
+								<% 
+			
+									org.openmrs.module.dataset.DataSet dataSetTemp = 
+										(org.openmrs.module.dataset.DataSet) request.getAttribute("dataSet");
+			
+									java.util.List<org.openmrs.module.dataset.column.DataSetColumn> columns = 
+										dataSetTemp.getDataSetDefinition().getColumns();
+			
+								
+									for(Object object : dataSetTemp) { 							
+										java.util.Map dataSetRow = (java.util.Map) object;
+								%>
+								<tr>
+								<% 
+										int columnCount = 0;
+										for(org.openmrs.module.dataset.column.DataSetColumn column : columns) { 
+											if(columnCount++<7) { 
+								%>					
+									<td>
+										<%= dataSetRow.get(column) %>
+									</td>
+								<% 			
+											}
+										}
+								%>
+									<c:if test="${dataSetDefinition.columnCount > 7}">
+										<td>...</td>
+									</c:if>
+								</tr>
+								<%									
+									}
+								%>		
+							</c:if>	
+												
+						</tbody>
+						<tfoot>
+							<tr>			
+								<td colspan="${dataSetDefinition.columnCount}" align="center">
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+				<div>		
+				
+					<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
+						method="post" action="${pageContext.request.contextPath}/module/reporting/downloadDataset.form">
+	
+						<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
+						<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
+						<input type="hidden" id="className" name="className" value="${dataSetDefinition.class.name}"/>
+		
+		
+						<div align="center"">						
+							<input class="button" type="submit" name="action" value="Download"/>						
+
+							
+						</div>
+					</form>							
+				
+				
+					
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
+		
+
 
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

@@ -43,6 +43,12 @@ public class CohortDefinitionFormController {
     }    
 	
 	
+    /**
+     * Shows the form.  This method is called after the formBackingObject()
+     * method below.
+     * 
+     * @return	the form model and view
+     */
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView showForm() {
 		log.info("Inside show() method");
@@ -51,6 +57,14 @@ public class CohortDefinitionFormController {
 				"/module/reporting/cohorts/cohortDefinitionForm");
 	}	
 
+	
+	/**
+	 * Processes the form when a user submits.  
+	 * 
+	 * @param cohortDefinition
+	 * @param bindingResult
+	 * @return
+	 */
 	@ModelAttribute("cohortDefinition")
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView processForm(
@@ -88,7 +102,13 @@ public class CohortDefinitionFormController {
 
 	}
 	
-	
+	/**
+	 * Populates the form backing object for the 
+	 * 
+	 * @param uuid
+	 * @param className
+	 * @return
+	 */
 	@ModelAttribute("cohortDefinition")
 	public CohortDefinition formBackingObject(
 			@RequestParam(value = "uuid", required=false) String uuid,

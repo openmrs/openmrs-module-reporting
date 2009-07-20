@@ -28,7 +28,7 @@ import org.openmrs.reporting.export.DataExportReportObject;
 /**
  * Class which manages persistence of a DataExportDataSetDefinition using legacy tables
  */
-@Handler(supports={DataExportDataSetDefinition.class}, order=100)
+@Handler(supports={DataExportDataSetDefinition.class}, order=50)
 public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPersister {
 		
 	/**

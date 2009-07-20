@@ -60,66 +60,6 @@ public class PatientDataSet implements DataSet<Object> {
 	}
 	
 	/**
-	 * This is wrapped around (List<Obs>).iterator() This implementation is NOT thread-safe, so do
-	 * not access the wrapped iterator.
-	 */
-	class HelperIterator implements Iterator<Map<DataSetColumn, Object>> {
-		
-		private Iterator<Patient> iter;
-		
-		public HelperIterator(Iterator<Patient> iter) {
-			this.iter = iter;
-		}
-		
-		/**
-		 * @see java.util.Iterator#hasNext()
-		 */
-		public boolean hasNext() {
-			return iter.hasNext();
-		}
-		
-		/**
-		 * @see java.util.Iterator#next()
-		 */
-		public Map<DataSetColumn, Object> next() {
-			Map<DataSetColumn, Object> vals = new HashMap<DataSetColumn, Object>();
-			//Locale locale = Context.getLocale();
-			
-			// Add default values for the encounter dataset
-			// TODO These need to be added as columns to the dataset definition
-			// TODO We need a way to sync these up
-			Patient patient = iter.next();
-			
-			// Build the dataset row
-			// TODO I'm not in love with the this approach, but we'll refactor later if we need to
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_ID), 
-					patient.getPatientId());
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.IMB_ID),
-					patient.getPatientIdentifier("IMB ID").getIdentifier());			
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), 
-					patient.getPersonName().getFamilyName() + " " + patient.getPersonName().getGivenName());
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER), 
-					patient.getGender());	
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.AGE), 
-					patient.getAge());			
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.HEALTH_CENTER), 
-					getCurrentHealthCenter(patient));			
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.TREATMENT_GROUP), 
-					getCurrentTreatmentGroup(patient));			
-			
-			return vals;
-		}
-		
-		/**
-		 * @see java.util.Iterator#remove()
-		 */
-		public void remove() {
-			iter.remove();
-		}
-		
-	}
-	
-	/**
 	 * @see org.openmrs.module.dataset.api.DataSet#iterator()
 	 */
 	public Iterator<Map<DataSetColumn, Object>> iterator() {
@@ -259,6 +199,65 @@ public class PatientDataSet implements DataSet<Object> {
 		
 		return "Unknown";
 		
-	}	
+	}		
+	
+	
+	
+	/**
+	 * This is wrapped around (List<Obs>).iterator() This implementation is NOT thread-safe, so do
+	 * not access the wrapped iterator.
+	 */
+	class HelperIterator implements Iterator<Map<DataSetColumn, Object>> {
+		
+		private Iterator<Patient> iter;
+		
+		public HelperIterator(Iterator<Patient> iter) {
+			this.iter = iter;
+		}
+		
+		/**
+		 * @see java.util.Iterator#hasNext()
+		 */
+		public boolean hasNext() {
+			return iter.hasNext();
+		}
+		
+		/**
+		 * @see java.util.Iterator#next()
+		 */
+		public Map<DataSetColumn, Object> next() {
+			Map<DataSetColumn, Object> vals = new HashMap<DataSetColumn, Object>();
+			//Locale locale = Context.getLocale();
+			
+			// Add default values for the encounter dataset
+			// TODO These need to be added as columns to the dataset definition
+			// TODO We need a way to sync these up
+			Patient patient = iter.next();
+			
+			if (patient == null)
+				throw new DataSetException("Data set column is invalid");
+			
+			// Build the dataset row
+			// TODO I'm not in love with the this approach, but we'll refactor later if we need to
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_ID), patient.getPatientId());
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.IMB_ID), patient.getPatientIdentifier("IMB ID").getIdentifier());			
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), patient.getPersonName().getFamilyName() + " " + patient.getPersonName().getGivenName());
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER),	patient.getGender());	
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.AGE), patient.getAge());			
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.HEALTH_CENTER), getCurrentHealthCenter(patient));			
+			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.TREATMENT_GROUP),	getCurrentTreatmentGroup(patient));						
+			return vals;
+		}
+		
+		/**
+		 * @see java.util.Iterator#remove()
+		 */
+		public void remove() {
+			iter.remove();
+		}
+		
+	}
+	
+
 	
 }

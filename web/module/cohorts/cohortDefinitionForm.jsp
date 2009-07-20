@@ -151,27 +151,13 @@ $(document).ready(function() {
 					<li>
 						<label class="desc" for="name">Name</label>			
 						<div>
-							<form:input path="name" tabindex="1"/>							
-							<!--  
-							<input type="text" 
-									class="field text medium" 
-									id="name" 
-									name="name"
-									value="${cohortDefinition.name}"
-									size="50" 
-									/>
-							-->
+							<form:input path="name" tabindex="1" cssClass="field text medium"/>														
 						</div>
 					</li>
 					<li>
 						<label class="desc" for="description">Description</label>			
 						<div>
-							<form:textarea path="description" tabindex="2"/> 
-							<!--  	
-								<textarea id="description" 
-										class="field text short" cols="80" tabindex="3"
-										name="description">${cohortDefinition.description}</textarea>			
-							-->
+							<form:textarea path="description" tabindex="2" cols="70" cssClass="field text long"/> 
 						</div>
 					</li>
 	
@@ -183,30 +169,30 @@ $(document).ready(function() {
 							<table id="cohort-definition-parameter-table" class="display">
 								<thead>
 									<tr>
-										<th align="left">User Specified</th>
 										<th align="left">Name</th>
 										<th align="left">Old Default Value</th>
 										<th align="left">New Default Value</th>
-										<th align="left">Required?</th>
+										<th width="1%" align="center">Required?</th>
+										<th width="1%" align="center">User<br/>Specified</th>
 									</tr>	
 								</thead>
-		<tbody>			
-			<c:forEach items="${cohortDefinition.boundParameters}" var="p" varStatus="varStatus">
-				<tr>
-					<td>
-						<form:checkbox path="boundParameters[${varStatus.index}].allowUserInput" tabindex="${(varStatus.index*5)+2}" />
-					</td>
-					<td>${p.name}</td>
-					<td>${p.defaultValue}</td>
-					<td>					
-						<form:input path="${p.name}" tabindex="${(varStatus.index*5)+1}"/>
-					</td>
-					<td>
-						<form:checkbox path="boundParameters[${varStatus.index}].required" tabindex="${(varStatus.index*5)+2}" />
-					</td>
-				</tr>
-			</c:forEach>
-		</tbody>
+								<tbody>			
+									<c:forEach items="${cohortDefinition.parameters}" var="p" varStatus="varStatus">
+										<tr>
+											<td>${p.name}</td>
+											<td>${p.defaultValue}</td>
+											<td>					
+												<form:input path="${p.name}" tabindex="${(varStatus.index*5)+1}"/>
+											</td>
+											<td>
+												<form:checkbox path="parameters[${varStatus.index}].required" tabindex="${(varStatus.index*5)+2}" />
+											</td>
+											<td>
+												<form:checkbox path="parameters[${varStatus.index}].allowUserInput" tabindex="${(varStatus.index*5)+2}" />
+											</td>
+										</tr>
+									</c:forEach>
+								</tbody>
 		
 								
 <%-- 			

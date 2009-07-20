@@ -44,6 +44,7 @@ $(document).ready(function() {
 	
 	// ======  DataTable: Indicator Dataset ===============================================
 
+	/*
 	$('#indicator-dataset-table').dataTable( {
 		"bPaginate": false,
 		"bLengthChange": false,
@@ -51,9 +52,33 @@ $(document).ready(function() {
 		"bSort": false,
 		"bInfo": false,
 		"bAutoWidth": false
-		//"sDom": '<"top"i>rt<"bottom"flp<"clear">'
+	} );
+	*/
+
+	// ======  DataTable: Indicator Parameters ===============================================
+	
+	$('#indicator-parameter-table').dataTable( {
+		"bPaginate": false,
+		"bLengthChange": false,
+		"bFilter": false,
+		"bSort": false,
+		"bInfo": false,
+		"bAutoWidth": false
+	} );
+	
+	// ======  DataTable: Indicator Parameter Mapping ===============================================
+
+	$('#indicator-parameter-mapping-table').dataTable( {
+		"bPaginate": false,
+		"bLengthChange": false,
+		"bFilter": false,
+		"bSort": false,
+		"bInfo": false,
+		"bAutoWidth": false
 	} );
 
+	
+	
 	// ======  Autocomplete: Cohort Definition ===============================================
 
 	function formatItem(row) {
@@ -86,8 +111,6 @@ $(document).ready(function() {
 	$("#cohortDefinitionName").bind('focus', function() {
 		this.select();
 	}); 
-
-
 	
 	$("#cohortDefinitionSpan").click(function() {
 		//this.hide();
@@ -97,7 +120,15 @@ $(document).ready(function() {
 				
 	}); 
 
-	
+	// Set the UUID after a cohort definition has been selected
+	$("#cohortDefinitionName").result(function(event, data, formatted) {
+		$("#cohortDefinitionUuid").val(data.name);
+		$("#cohortDefinitionSpan").html(data.name + " " + data.description);
+		$("#cohortDefinitionSpan").show();
+		$("#cohortDefinitionName").hide();
+		
+	});
+
 	/*
 	// Clear the cohort definition fields on re-focus (save values for 'onblur' event)
 	$("#cohortDefinitionName").bind('focus', function() {
@@ -117,54 +148,12 @@ $(document).ready(function() {
 			event.preventDefault();	
 		}
 	}); 
-	*/
-	
-	// Set the UUID after a cohort definition has been selected
-	$("#cohortDefinitionName").result(function(event, data, formatted) {
-		$("#cohortDefinitionUuid").val(data.name);
-		$("#cohortDefinitionSpan").html(data.name + " " + data.description);
-		$("#cohortDefinitionSpan").show();
-		$("#cohortDefinitionName").hide();
-		
-	});
+	*/	
 
-	
 
+	// ======  Button: Cancel Button ========================================
 	
-	// ======  Modal Dialog: Logic Criteria Query ========================================
-	
-	// Define the dialog window to edit the logic query
-	//$('#logic-criteria-dialog-content').load("${pageContext.request.contextPath}/module/reporting/logicQuery.form",{});}
-
-	// Define logic criteria dialog box 
-	$('#logic-criteria-dialog').dialog({
-		bgiframe: true,			
-		autoOpen: false,
-		width: 600,
-		modal: true,
-		buttons: {
-			"Cancel": function() { $(this).dialog("close"); }, 
-			"Save": function() { $(this).dialog("close"); } 
-		}
-	});
-
-	$('logic-criteria-popup').hide();
-        
-	//$('#logic-criteria-dialog').dialog('open');		
-
-	// Add content to Logic Criteria dialog
-	//$('#dialog-content').tabs();  
-    //$('#logic-criteria-dialog-content').remove();
-    //$('#logic-criteria-dialog').append(
-    //        '<div id="dialog-content"><ul><li><a href="editCohortDefinition.form?uuid=&type=org.openmrs.module.cohort.definition.StaticCohortDefinition">1000 patient cohort</a></li><li><a href="editCohortDefinition.form?uuid=&type=org.openmrs.module.cohort.definition.StaticCohortDefinition">1000 pt eligible Oct 08</a></li><li><a href="editCohortDefinition.form?uuid=&type=org.openmrs.module.cohort.definition.StaticCohortDefinition">1000pt eligible, no abstraction</a></li></ul></div>'
-    //);
-    
-    //hover states on the static widgets
-	//$('#logic-criteria-dialog-link, ul#icons li').hover(
-	//	function() { $(this).addClass('ui-state-hover'); }, 
-	//	function() { $(this).removeClass('ui-state-hover'); }
-	//);	
-	
+	// Cancel button
 	$('#cancel-button').click(function(event){
 		// To prevent the submit
 		event.preventDefault();
@@ -184,16 +173,19 @@ var cohortDefinitions = [
 		<c:forEach var="cohortDefinition" items="${cohortDefinitions}" varStatus="varStatus">
 			{ 	
 				id: ${cohortDefinition.id}, 
-				name: "${cohortDefinition.name}", 
-				description: "(<i>${cohortDefinition.class.simpleName}</i>)",
-				parameters: "${cohortDefinition.parameters}"
+				name: "${cohortDefinition}", 
+				description: "(<i>${cohortDefinition.class.simpleName}</i>)"
 			}
 			<c:if test="${!varStatus.last}">,</c:if>
 		</c:forEach>	            	
 	];
 </script>
 
-
+<style>
+.indicator-parameter-table { 
+	width: 100%;
+}
+</style>
 
 <div id="page">
 	<div id="container">
@@ -205,19 +197,15 @@ var cohortDefinitions = [
 	
 		<div id="indicator-tabs" class="ui-tabs-hide">			
 			<ul>
-                <li><a href="#indicator-tabs-details"><span>Details</span></a></li>
-                <li><a href="#indicator-tabs-datasets"><span>Data Sets</span></a></li>
+                <li><a href="#indicator-basic-tab"><span>Basic</span></a></li>
+                <li><a href="#indicator-advanced-tab"><span>Advanced</span></a></li>
             </ul>
 		</div>
 		
 	
-		<div id="indicator-tabs-details">
-			<form id="form65" name="form65" class="wufoo topLabel" autocomplete="off"
-				method="post" action="${pageContext.request.contextPath}/module/reporting/saveIndicator.form">
-			
-				<input type="hidden" id="uuid" name="uuid" value="${indicator.uuid}"/>
-			
-				
+		<div id="indicator-basic-tab">
+			<form method="post" action="${pageContext.request.contextPath}/module/reporting/saveIndicator.form">			
+				<input type="hidden" id="uuid" name="uuid" value="${indicator.uuid}"/>				
 				<div>
 					<ul>		
 						<li>
@@ -226,15 +214,28 @@ var cohortDefinitions = [
 								<input id="name" name="name" type="text" class="field text large" 
 									value="${indicator.name}" size="20" tabindex="1" />
 							</div>
-						</li>					
+						</li>		
 						<li>		
 							<label class="desc" for="description">Description</label>
 							<div>
 								<textarea id="description" name="description" 
-									class="field textarea small" rows="10" cols="20"
+									class="field textarea small" rows="3" cols="20"
 									tabindex="2">${indicator.description}</textarea>				
 							</div>					
 						</li>
+						<li>
+							<label class="desc" for="aggregator">Aggregation Method</label>
+							<div>
+								<c:set var="aggregators" value="CountAggregator,DistinctAggregator,MaxAggregator,MeanAggregator,MedianAggregator,MinAggregator,SumAggregator" />
+								<select id="aggregator" name="aggregator" class="field select medium" tabindex="6" > 
+									<c:forEach var="aggregator" items="${aggregators}" varStatus="status">
+										<option value="${aggregator}" <c:if test="${aggregator == indicator.aggregator.simpleName}">selected</c:if>>${aggregator}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</li>
+
+
 						<li>
 							<label class="desc" for="cohortDefinitionName">Cohort Definition</label>
 							<div>
@@ -259,20 +260,40 @@ var cohortDefinitions = [
 									tabindex="5"></textarea>
 							</div>					
 						</li>
-						
 						<li>
-							<label class="desc" for="aggregator">Aggregation Method</label>
+							<label class="desc" for="parameters">Parameters</label>
 							<div>
-								<c:set var="aggregators" value="CountAggregator,DistinctAggregator,MaxAggregator,MeanAggregator,MedianAggregator,MinAggregator,SumAggregator" />
-								<select id="aggregator" name="aggregator" class="field select medium" tabindex="6" > 
-									<c:forEach var="aggregator" items="${aggregators}" varStatus="status">
-										<option value="${aggregator}" <c:if test="${aggregator == indicator.aggregator.simpleName}">selected</c:if>>${aggregator}</option>
-									</c:forEach>
-								</select>
+								<table id="indicator-parameter-table" class="display">
+									<thead>
+										<tr>
+											<th width="1px">Prompt</th>
+											<th width="1px">Required</th>
+											<th>Label</th>
+											<th>Name</th>
+										</tr>
+									</thead>
+									<tbody>										
+										<c:forEach var="parameter" items="${indicator.parameters}">
+											<tr>
+												<td>yes</td>
+												<td>yes</td>
+												<td>${parameter.label}</td> 
+												<td>${parameter.name}</td>													
+											</tr>
+										</c:forEach>
+									</tbody>
+									<tfoot>
+										<tr>
+											<th colspan="4" align="center">
+												<a href="<c:url value='/module/reporting/indicatorParameter.form?uuid=${indicator.uuid}'/>">add parameter</a>
+											</th>
+										</tr>									
+									</tfoot>
+								</table>						
 							</div>
 						</li>
 						<li class="buttons">
-							<input id="saveForm" class="btTxt submit" type="submit" value="Save" tabindex="7" />
+							<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
 							<input id="cancel-button" class="btTxt submit" type="submit" value="Cancel" tabindex="8"/>
 						</li>
 					</ul>
@@ -281,53 +302,75 @@ var cohortDefinitions = [
 		</div>
 		
 		
-		<div id="indicator-tabs-datasets">
-			<div id="indicatorDatasetTable">
+		<div id="indicator-advanced-tab">
 
-				<table id="indicator-dataset-table" class="display">
-					<thead>
-						<tr>
-							<th>Key</th>
-							<th>Data Set</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-					<tfoot>
-						<tr>			
-							<td colspan="2" align="center">
-								<button name="button1" disabled>Add Mapping</button>
-							</td>
-						</tr>
-					</tfoot>
-				</table>
+			<form method="post" action="${pageContext.request.contextPath}/module/reporting/saveIndicator.form">			
+				<input type="hidden" id="uuid" name="uuid" value="${indicator.uuid}"/>
+
+				<h2>Map the parameters of the indicator to those in the cohort definition: </h2>
+
+
+				<ul>
+					<li>
+						<div>
+							<table id="indicator-parameter-mapping-table" class="display">
+								<thead>
+									<tr>
+										<th>parameters to map</th>
+										<th>inherit from cohort definition</th>
+										<th>choose from indicator</th>
+									</tr>
+								</thead>
+								<tbody>										
+									<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}" varStatus="varstatus">
+										<tr>
+											<td>
+												<strong>${parameter.name}</strong>
+											</td>
+											<td>							
+												<input type="radio" name="source_${parameter.name}" "value="inherit"/>
+												${parameter.name}
+											</td>
+											<td>
+												<input type="radio" name="source_${parameter.name}" value="choose"/>
+												<select>
+													<option></option>
+													<c:if test="${empty indicator.parameters}">
+														<option>(add more parameters)</option>
+													</c:if>
+													<c:forEach var="mappedParameter" items="${indicator.parameters}">										
+														<option>${mappedParameter.name}</option>
+													</c:forEach>
+												</select>							
+												<a href="<c:url value='/module/reporting/indicatorParameter.form?uuid=${indicator.uuid}'/>">
+													<img src="<c:url value='/images/add.gif'/>" border='0'/>
+												</a>
+											</td>									
 			
-			</div>
+										</tr>
+									</c:forEach>
+								</tbody>
+								<tfoot>			
+								</tfoot>
+							</table>
+						</div>
+					</li>
+					<li class="buttons">
+						<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
+						<input id="cancel-button" class="btTxt submit" type="submit" value="Cancel" tabindex="8"/>
+					</li>
+				</ul>
+
+			</form>
+			
+		
+
+
+
+	
 		</div>
 	</div><!--#container-->
 </div><!-- #page -->
-
-
-<div class="logic-criteria-popup">
-	<div id="logic-criteria-dialog" title="Edit Logic Criteria Query">
-		<div id="logic-criteria-dialog-content">
-			<form>
-				<ul>
-					<li id="foli308" class="">
-						<label class="desc" id="title308" for="Field308">Logic Criteria</label>
-						<div>
-							<textarea id="logicCriteria" 
-								name="logicCriteria" 
-								class="field textarea small" 
-								rows="50" cols="20"
-								tabindex="5"></textarea>
-						</div>
-					</li>
-				</ul>	
-			</form>
-		</div>
-	</div>
-</div>
 
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>
