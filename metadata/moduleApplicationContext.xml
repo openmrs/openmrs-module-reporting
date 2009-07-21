@@ -12,8 +12,7 @@
            http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
 	<!-- Serialized Data Access Object 	-->
-	<bean id="serializedObjectDAO" class="org.openmrs.api.db.hibernate.HibernateSerializedObjectDAO" factory-method="getInstance">
-		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
+	<bean parent="serializedObjectDAO">
 		<property name="supportedTypes">
 			<list>
 				<value>org.openmrs.module.report.ReportSchema</value>

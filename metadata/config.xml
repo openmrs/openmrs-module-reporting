@@ -12,6 +12,10 @@
 	<description>Core reporting API and services</description>
 	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>	
 	<require_version>1.5.0.7475</require_version>
+
+	<require_modules>
+	   	<require_module>org.openmrs.module.serialization.xstream</require_module>
+	</require_modules>
 	
 	<!-- Extensions -->
 	<extension>
@@ -21,7 +25,7 @@
 	<extension>
 		<point>org.openmrs.gutter.tools</point>
 		<class>@MODULE_PACKAGE@.extension.html.GutterListExt</class>
-	</extension>			
+	</extension>
 	
 	<!--  Message Properties -->
 	<messages>
