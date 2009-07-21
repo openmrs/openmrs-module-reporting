@@ -117,10 +117,17 @@ $j(document).ready(function() {
 								</thead>
 								<tbody>
 									<c:forEach items="${cohortDefinition.availableParameters}" var="p" varStatus="varStatus">
+										<c:set var="isParam" value="f" />
+										<c:forEach items="${cohortDefinition.parameters}" var="cdparam">
+											<c:if test="${p.name == cdparam.name}">
+												<c:set var="isParam" value="t" />
+											</c:if>
+										</c:forEach>
+
 										<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
 											<td valign="top">
 												${p.name}
-												<c:if test="${p.required}">
+												<c:if test="${p.required && isParam == 'f'}">
 													<span style="color:red;">*</span>
 												</c:if>
 											</td>
@@ -141,7 +148,10 @@ $j(document).ready(function() {
 												</c:choose>
 											</td>
 											<td>&nbsp;</td>
-											<td valign="top"><input type="checkbox" name="parameter.${p.name}.allowAtEvaluation" /></td>
+											<td valign="top">
+												<input 	type="checkbox" name="parameter.${p.name}.allowAtEvaluation" value="t"
+														<c:if test="${isParam == 't'}">checked="true"</c:if>/>
+											</td>
 										</tr>
 									</c:forEach>
 								</tbody>
