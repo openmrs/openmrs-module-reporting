@@ -73,16 +73,8 @@ $(document).ready(function() {
 						<td>
 							${cohortDefinition.description}
 						</td>
-						<!-- old edit link -->
-						<!-- 
 						<td align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">
-								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
-							</a>
-						</td>					
-						-->
-						<td align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/cohortDefinition.form?uuid=${cohortDefinition.uuid}&className=${cohortDefinition.class.name}">
 								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
 							</a>
 						</td>
