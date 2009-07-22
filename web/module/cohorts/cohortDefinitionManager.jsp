@@ -13,30 +13,32 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.dataTables/jquery.dataTables.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.autocomplete.js"></script>
 
-
 <script type="text/javascript" charset="utf-8">
-$(document).ready(function() {
-	$('#cohort-definition-table').dataTable( {
-		"bPaginate": true,
-		"bLengthChange": true,
-		"bFilter": true,
-		"bSort": true,
-		"bInfo": true,
-		"bAutoWidth": true
-	} );			
-} );
+	$(document).ready(function() {
+		$('#cohort-definition-table').dataTable( {
+			"bPaginate": true,
+			"bLengthChange": true,
+			"bFilter": true,
+			"bSort": true,
+			"bInfo": true,
+			"bAutoWidth": true
+		} );	
+	} );
+	
+	function deleteCohortDefinition(name, uuid) {
+		if (confirm("Are you sure you want to delete " + name + "?")) {
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/purgeCohortDefinition.form?uuid='+uuid;
+		}
+	}
 
 </script>
 
-
 <div id="page">
-	<div id="container">
 
+	<div id="container">
 	
 		<h1>Cohort Manager</h1>
-		
-		
-			
+
 		<form method="get" action="editCohortDefinition.form">
 			<strong>Create a new cohort definition</strong>
 			<select name="type">
@@ -47,7 +49,6 @@ $(document).ready(function() {
 			</select>
 			<input type="submit" value="Create"/>
 		</form>
-		
 		
 		<br/>
 		<table id="cohort-definition-table" class="display" >
@@ -64,15 +65,9 @@ $(document).ready(function() {
 			<tbody>
 				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
 					<tr>
-						<td>
-							${cohortDefinition.name}
-						</td>
-						<td>
-							${cohortDefinition.class.simpleName}
-						</td>
-						<td>
-							${cohortDefinition.description}
-						</td>
+						<td>${cohortDefinition.name}</td>
+						<td>${cohortDefinition.class.simpleName}</td>
+						<td>${cohortDefinition.description}</td>
 						<td align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">
 								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
@@ -84,28 +79,16 @@ $(document).ready(function() {
 							</a>
 						</td>
 						<td align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/purgeCohortDefinition.form?uuid=${cohortDefinition.uuid}">
+							<a href="javascript:deleteCohortDefinition('${cohortDefinition.name}','${cohortDefinition.uuid}');">
 								<img src="<c:url value='/images/trash.gif'/>" border="0"/>
 							</a>
 						</td>
 					</tr>
 				</c:forEach>	
 			</tbody>
-			<tfoot>
-<!-- 
-				<tr>
-					<th colspan="4" align="center">
-						<button onclick="location.href='${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form'">Add Cohort Definition</button>
-					</th>			
-				</tr>	
- -->				
-			</tfoot>
+			<tfoot></tfoot>
 		</table>
-
 	</div>
-
 </div>
-
-
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>
