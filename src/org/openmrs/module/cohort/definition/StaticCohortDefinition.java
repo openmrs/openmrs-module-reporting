@@ -71,6 +71,22 @@ public class StaticCohortDefinition extends BaseCohortDefinition {
     	cohort.setCohortId(id);
     }
 
+	/** 
+	 * @see BaseOpenmrsObject#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return cohort.getUuid();
+	}
+
+	/** 
+	 * @see BaseOpenmrsObject#setUuid(String)
+	 */
+	@Override
+	public void setUuid(String uuid) {
+		cohort.setUuid(uuid);
+	}
+
 	/**
      * @see BaseOpenmrsMetadata#getName()
      */

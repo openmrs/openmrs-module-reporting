@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.cohort.definition.persister;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,13 +21,11 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.annotation.Handler;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 
 /**
  * This class returns CohortDefinitions that are persisted in memory.
  */
-@Handler(supports={CohortDefinition.class}, order=100)
 public class MockCohortDefinitionPersister implements CohortDefinitionPersister {
 
 	private Log log = LogFactory.getLog(this.getClass());
@@ -103,8 +100,5 @@ public class MockCohortDefinitionPersister implements CohortDefinitionPersister 
     	indexById.remove(cohortDefinition.getId());
     	indexByUuid.remove(cohortDefinition.getUuid());
     	cohortDefinitions.remove(cohortDefinition);    	
-    }
-
-    
-    
+    }   
 }

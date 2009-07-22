@@ -83,14 +83,10 @@ public class ManageCohortDefinitionController {
      * @return
      */
     @RequestMapping("/module/reporting/purgeCohortDefinition")
-    public String purgeCohortDefinition(
-    		@RequestParam(required=false, value="uuid") String uuid) {
-    	
+    public String purgeCohortDefinition(@RequestParam(required=false, value="uuid") String uuid) {
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	CohortDefinition cohortDefinition = service.getCohortDefinition(uuid, null);
-     	
-    	service.purgeCohortDefinition(cohortDefinition);
-    	     	
+    	CohortDefinition cohortDefinition = service.getCohortDefinitionByUuid(uuid);
+    	service.purgeCohortDefinition(cohortDefinition);	
         return "redirect:/module/reporting/manageCohortDefinitions.list";
     }    
 

@@ -17,9 +17,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.User;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 
@@ -30,30 +28,15 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
  * a CohortDefinition.  To override this behavior, any additional CohortDefinitionPersister
  * should specify the order field on the Handler annotation.
  */
-@Handler(supports={CohortDefinition.class}, order=50)
+@Handler(supports={CohortDefinition.class})
 public class SerializedCohortDefinitionPersister implements CohortDefinitionPersister {
-
 	
-	private static Log log = LogFactory.getLog(SerializedCohortDefinitionPersister.class);
-	
-	//private static SerializedCohortDefinitionPersister instance = null;
+	protected static Log log = LogFactory.getLog(SerializedCohortDefinitionPersister.class);
 	
     //****************
     // Constructor
     //****************
 	private SerializedCohortDefinitionPersister() { }
-	
-    //****************
-    // Factory Methods
-    //****************
-	/*
-	public static SerializedCohortDefinitionPersister getInstance() {
-		if (instance == null) {
-			instance = new SerializedCohortDefinitionPersister();
-		}
-		return instance;
-	}
-	*/
 	
     //****************
     // Properties
@@ -122,5 +105,4 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
     public void purgeCohortDefinition(CohortDefinition cohortDefinition) {
     	dao.purgeObject(cohortDefinition.getId());
     }
-
 }
