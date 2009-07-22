@@ -135,14 +135,13 @@ public class ManageCohortDefinitionController {
     public String saveCohortDefinition(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends CohortDefinition> type,
-            @RequestParam("name") String name,
+            @RequestParam(required=true) String name,
             @RequestParam("description") String description,
             HttpServletRequest request,
     		ModelMap model
     ) {
     	
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	
     	
     	// Locate or create cohort definition
     	CohortDefinition cohortDefinition = service.getCohortDefinition(uuid, type);

@@ -164,7 +164,7 @@ $j(document).ready(function() {
 					<li>					
 						<div align="center">				
 							<input id="saveForm" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-							<input id="saveForm" class="btTxt submit" type="submit" value="Cancel" tabindex="8"/>				
+							<input id="cancelForm" class="btTxt submit" type="button" value="Cancel" tabindex="8" onclick="javascript:document.location.href='manageCohortDefinitions.list';"/>				
 						</div>					
 					</li>
 				</ul>				
