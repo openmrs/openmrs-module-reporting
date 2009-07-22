@@ -34,11 +34,7 @@ $j(document).ready(function() {
 	} );
 
 	$j('#cancel-button').click(function(event){
-		// To prevent the submit
-		event.preventDefault();
-
-		// Redirect to the listing page
-		window.location.href='<c:url value="/module/reporting/manageReportSchemas.list"/>';
+		window.location.href='<c:url value="/module/reporting/manageCohortDefinitions.list"/>';
 	});
 	
 } );
@@ -164,7 +160,7 @@ $j(document).ready(function() {
 					<li>					
 						<div align="center">				
 							<input id="saveForm" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-							<input id="cancelForm" class="btTxt submit" type="button" value="Cancel" tabindex="8" onclick="javascript:document.location.href='manageCohortDefinitions.list';"/>				
+							<input id="cancel-button" class="btTxt submit" type="button" value="Cancel" tabindex="8"/>				
 						</div>					
 					</li>
 				</ul>				
