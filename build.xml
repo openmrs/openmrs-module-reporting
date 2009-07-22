@@ -7,6 +7,30 @@
 <!-- ** @version 1.0                                        ** -->
 <!-- ********************************************************* -->
 <project name="Reporting" default="package-module">
+	
+	<!-- *********************************************************** -->
+	<!-- **                 BUILD PROPERTIES                      ** -->
+	<!-- *********************************************************** -->
+	<property environment="env"/>
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="lib-common/ant-contrib-1.0b2.jar"/>
+	
+	<available file="${env.OPENMRS_BUILD_PROPERTIES_FILE}" property="env.file.exists"/>
+	<available file="${user.home}/Application Data/OpenMRS/OPENMRS-build.properties" property="appdata.file.exists"/>
+	<available file="${user.home}/.OpenMRS/OPENMRS-build.properties" property="unix.file.exists"/>
+	<if>
+		<equals arg1="${env.file.exists}" arg2="true" />
+		<then><property file="${env.OPENMRS_BUILD_PROPERTIES_FILE}"/></then>
+		<elseif>
+			<equals arg1="${appdata.file.exists}" arg2="true" />
+			<then><property file="${user.home}/Application Data/OpenMRS/OPENMRS-build.properties"/></then>
+		</elseif>
+		<elseif>
+			<equals arg1="${unix.file.exists}" arg2="true" />
+			<then><property file="${user.home}/.OpenMRS/OPENMRS-build.properties"/></then>
+		</elseif>
+		<else><echo message="WARNING: No build properties found"/></else>
+	</if>
 		
 	<!-- *********************************************************** -->
 	<!-- **                     TARGETS                           ** -->
@@ -163,8 +187,7 @@
 	</target>
 	
 	<target name="deploy-web" depends="package-module">
-		<property environment="env"/>
-		<copy todir="${env.CATALINA_HOME}/webapps/openmrs/WEB-INF/view/module/${module.id}">
+		<copy todir="${tomcat.home}/webapps/openmrs/WEB-INF/view/module/${module.id}">
 			<fileset dir="web/module" includes="**/*" />
 		</copy>
 	</target>
