@@ -56,7 +56,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 		
 		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
 		Cohort c = cds.evaluate(cid.getCohortDefinition(), context);
-		
+		log.info("Evaluated Cohort: " + c.getSize());
 		// Ensure we are filtering on the base cohort
 		if (context.getBaseCohort() != null) {
 			c = Cohort.intersect(c, context.getBaseCohort());

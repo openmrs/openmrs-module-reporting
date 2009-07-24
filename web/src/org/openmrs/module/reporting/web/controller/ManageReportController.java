@@ -141,7 +141,6 @@ public class ManageReportController {
     	// If the user has submitted the form, we render it as a CSV
     	if (action != null && action.equals("render")) { 
 			
-			
 			EvaluationContext evalContext = new EvaluationContext();
 			for (Parameter param : reportSchema.getParameters() ) { 
 				log.info("Setting parameter " + param.getName() + " of class " + param.getClazz() + " = " + request.getParameter(param.getName()) );
@@ -186,6 +185,57 @@ public class ManageReportController {
     }    
     
     
+    @RequestMapping("/module/reporting/evaluateReport")	
+	public void evaluateReport(
+			HttpServletResponse response,
+			@RequestParam(required=false, value="uuid") String uuid) {
+
+    	log.info("Evaluating report schema with uuid " + uuid);
+		ReportService service = Context.getService(ReportService.class);		
+		ReportSchema reportSchema = service.getReportSchemaByUuid(uuid);
+		
+		
+		if (reportSchema != null) { 						
+			log.info("Report schema " + reportSchema);
+			ReportData reportData = 
+				service.evaluate(reportSchema, new EvaluationContext());
+
+			
+			log.info("Report datasets: " + reportData.getDataSets());
+			try { 
+				response.setContentType("text/csv");
+				response.setHeader("Content-Disposition", "attachment; filename=\"report.csv\"");				
+				new CsvReportRenderer().render(reportData, null, response.getOutputStream());
+			} 
+			catch (IOException e) { 
+				log.error("Could not render report", e);
+				throw new APIException("Could not render report " + uuid + " using CSV renderer", e);
+			}
+			
+		}
+		else { 
+			throw new APIException("Report schema " + uuid + " could not be located");
+		}
+		
+	}	    
+    
+    /**
+     * Purges a report schema.
+     * 
+     * @param uuid
+     * @return
+     */
+    @RequestMapping("/module/reporting/purgeReport")
+    public String purgeCohortDefinition(@RequestParam(required=false, value="uuid") String uuid) {
+
+    	ReportService reportService = 
+    		Context.getService(ReportService.class);
+    	
+    	reportService.
+    		deleteReportSchema(reportService.getReportSchemaByUuid(uuid));	
+    	
+    	return "redirect:/module/reporting/manageReports.list";
+    }        
     
     
     

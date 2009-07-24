@@ -42,7 +42,7 @@ public class ManageIndicatorController {
     		ModelMap model) {
     	 	
     	List<Indicator> indicators = 
-    		Context.getService(IndicatorService.class).getAllIndicators(true);
+    		Context.getService(IndicatorService.class).getAllIndicators(false);
 
     	model.addAttribute("indicators", indicators);
     	
@@ -99,17 +99,26 @@ public class ManageIndicatorController {
         return "/module/reporting/indicators/indicatorEditor";
     }
     
+    /**
+     * 
+     * @param uuid
+     * @param name
+     * @param description
+     * @param cohortDefinitionName
+     * @param logicQuery
+     * @param aggregator
+     * @param model
+     * @return
+     */
     @RequestMapping("/module/reporting/saveIndicator")
     public String saveIndicator(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam("name") String name,
             @RequestParam("description") String description,
             @RequestParam("cohortDefinition.name") String cohortDefinitionName,
-            @RequestParam("logicQuery") String logicQuery,
-            @RequestParam("aggregator") String aggregator,
-            
-    		ModelMap model
-    ) {
+            @RequestParam("cohortDefinition.uuid") String cohortDefinitionUuid,
+            @RequestParam("aggregator") String aggregator,            
+    		ModelMap model) {
     	CohortIndicator indicator = (CohortIndicator)
     		Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
     	
@@ -123,16 +132,28 @@ public class ManageIndicatorController {
     	indicator.setDescription(description);
     	
     	
+    	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
     	// Find the selected cohort definition by name
     	// TODO Should be a lookup by UUID
-    	List<CohortDefinition> cohortDefinitions = 
-    		Context.getService(CohortDefinitionService.class).getCohortDefinitions(cohortDefinitionName, true);
+
+    	log.info("Looking up cohort definition with uuid " + cohortDefinitionUuid);
+    	CohortDefinition cohortDefinition = service.getCohortDefinitionByUuid(cohortDefinitionUuid);
     	
-    	// Require cohort definition or logic criteria 
-    	if (cohortDefinitions == null || cohortDefinitions.isEmpty()) { 
-    		throw new APIException("Cohort Definition is required");
-    	}    	
-    	indicator.setCohortDefinition(cohortDefinitions.get(0), "");
+    	// If we don't find the cohort definition by UUID, then we look it up by name
+    	if (cohortDefinition == null) { 
+	    	List<CohortDefinition> cohortDefinitions = 
+	    		service.getCohortDefinitions(cohortDefinitionName, true);
+    	
+	    	// Require cohort definition or logic criteria 
+	    	if (cohortDefinitions == null || cohortDefinitions.isEmpty()) { 
+	    		throw new APIException("Cohort Definition is required");
+	    	}    	
+    	
+	    	cohortDefinition = cohortDefinitions.get(0);
+    	}
+    	log.info("Setting cohort definition: " + cohortDefinition);
+    	
+    	indicator.setCohortDefinition(cohortDefinition, "");
     	
     	//indicator.setParameters(parameters);
     	//indicator.setLogicCriteria(logicCriteria);
@@ -170,15 +191,23 @@ public class ManageIndicatorController {
     }
     
     
-    
+    /**
+     * 
+     * @param uuid
+     * @return
+     */
     @RequestMapping("/module/reporting/purgeIndicator")
     public String saveIndicator(
     		@RequestParam(required=false, value="uuid") String uuid) {
+    	
+    	log.info("Looking up indicator by uuid " + uuid);
 
     	Indicator indicator =
     		Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
     	
-    	if (indicator != null) { 
+    	log.info("Indicator: " + indicator);
+    	if (indicator != null) {     		
+    		log.info("Purging indicator: " + indicator);
     		Context.getService(IndicatorService.class).purgeIndicator(indicator);
     	}     	
     	

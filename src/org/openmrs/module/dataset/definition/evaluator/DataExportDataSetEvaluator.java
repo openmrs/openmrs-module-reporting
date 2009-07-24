@@ -116,13 +116,15 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
 				String [] cells = rows[i].split("\\t");
 				for (int j=0; j<cells.length; j++) { 	
 					
-					log.error("column: " + columns[j] + " " + cells[j]);
+					log.error("column=" + columns[j] + " value=" + cells[j]);
 					dataSetRow.put(columns[j], cells[j]);
 				}
 				
 				dataSetRows.add(dataSetRow);	
 			}
 			dataset.setData(dataSetRows);
+			
+			log.info("Dataset: " + dataset);
 		} 
 		catch (IOException e) { 
 			log.error("Exception " + e.getMessage());

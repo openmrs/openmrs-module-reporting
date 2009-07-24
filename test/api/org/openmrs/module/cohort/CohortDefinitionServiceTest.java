@@ -22,7 +22,7 @@ import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -67,7 +67,7 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void shouldSaveCohortDefinitionUsingServiceNoWithAuthenticatedUser(){
 		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();		
+		GenderCohortDefinition cohortDefinition = new GenderCohortDefinition();		
 		cohortDefinition.setName("Testing");
 		User admin = Context.getUserService().getUser(1);
 		cohortDefinition.setCreator(admin);
@@ -78,7 +78,7 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void shouldSaveCohortDefinitionUsingService() throws Exception { 		
 		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();		
+		GenderCohortDefinition cohortDefinition = new GenderCohortDefinition();		
 		cohortDefinition.setName("Testing");
 		CohortDefinition savedCohortDefinition = service.saveCohortDefinition(cohortDefinition);		
 		Assert.assertTrue(savedCohortDefinition.getId()!=null);
@@ -87,7 +87,7 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void shouldSaveCohortDefinitionUsingPersister() throws Exception { 		
 		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();		
+		GenderCohortDefinition cohortDefinition = new GenderCohortDefinition();		
 		cohortDefinition.setName("Testing");
 		CohortDefinition savedCohortDefinition = persister.saveCohortDefinition(cohortDefinition);		
 		Assert.assertTrue(savedCohortDefinition.getId()!=null);
@@ -96,7 +96,7 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void shouldSaveCohortDefinitionUsingDao() throws Exception { 		
 		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();		
+		GenderCohortDefinition cohortDefinition = new GenderCohortDefinition();		
 		cohortDefinition.setName("Testing");
 		CohortDefinition savedCohortDefinition = dao.saveObject(cohortDefinition);
 		Assert.assertTrue(savedCohortDefinition.getId()!=null);

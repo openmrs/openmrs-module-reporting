@@ -26,7 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -51,13 +52,13 @@ public class ReportSchemaXmlTest extends BaseContextSensitiveTest {
 		
 		authenticate();
 		
-		PatientCharacteristicCohortDefinition maleDef = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition maleDef = new GenderCohortDefinition();
 		maleDef.setName("Male");
 		maleDef.setGender("M");
 		Context.getService(CohortDefinitionService.class).saveCohortDefinition(maleDef);
 		
 		
-		PatientCharacteristicCohortDefinition adult = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition adult = new AgeCohortDefinition();
 		adult.setName("Adult");
 		adult.setMinAge(15);
 		Context.getService(CohortDefinitionService.class).saveCohortDefinition(adult);

@@ -6,21 +6,9 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>Report Manager</title>
 
-<!--  CSS  -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/page.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/table.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/custom.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.autocomplete/jquery.autocomplete.css" rel="stylesheet" />
-
-<!--  Javascript -->
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.dataTables/jquery-1.3.1.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.dataTables/jquery.dataTables.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.autocomplete.js"></script>
-
-
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-	$('#report-schema-table').dataTable( {
+	$("#report-schema-table").dataTable( {
 		"bPaginate": true,
 		"bLengthChange": true,
 		"bFilter": true,
@@ -39,19 +27,22 @@ $(document).ready(function() {
 <div id="page">
 	<div id="container">
 		<h1>Manage Reports</h1>
-		<div>		
-			<strong>Render:</strong>
-			<a href="renderLabReport.form">Simple Laboratory Report</a> |
-			<a href="renderCohortReport.form">Sample Cohort Report</a> |
-			<a href="renderIndicatorReport.form">Sample Indicator Report</a> 
+		<div id="inline-list">	
+			<p>	
+				<ul>
+					<li class="first"><a href="showLabReport.form">Run Rwanda Reports</a></li>
+					<li class="last"><a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Add Indicator Report</a></li>
+				</ul>
+			</p>			
 		</div>
-		<br/> <br/>				
+
 		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
-					<th width="5px"></th>
 					<th>Name</th>
 					<th>Description</th>
+					<th>Created</th>
+					<th width="5px"></th>
 					<th width="5px"></th>
 					<th width="5px"></th>
 				</tr>
@@ -59,11 +50,6 @@ $(document).ready(function() {
 			<tbody>
 				<c:forEach items="${reportSchemas}" var="reportSchema" varStatus="status">
 					<tr>
-						<td align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportSchema.uuid}">
-								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
-							</a>
-						</td>
 						<td>
 							${reportSchema.name}
 							<!-- Disabling link until the generic report schema form is complete -->
@@ -74,32 +60,38 @@ $(document).ready(function() {
 						<td>
 							${reportSchema.description}
 						</td>
-						<td align="center">
-							<img src='<c:url value="/images/play.gif"/>' border="0"/>
-						<!-- not supported yet -->
-						<!-- 
-							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}&action=preview">
-								
-							</a>
- 						-->
+						<td>
+							${reportSchema.dateCreated}
 						</td>
 						<td align="center">
-							<img src='<c:url value="/images/trash.gif"/>' border="0"/>							
+							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportSchema.uuid}">
+								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+							</a>
+						</td>
+						<td align="center">
+							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportSchema.uuid}">
+								<img src='<c:url value="/images/play.gif"/>' border="0"/>
+							</a>
+						</td>
+						<td align="center">
+							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportSchema.uuid}">
+								<img src='<c:url value="/images/trash.gif"/>' border="0"/>							
+							</a>
 						<!-- not supported yet -->
 						<!-- 
-							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}&action=delete">
-							</a>
  						-->
 						</td>
 					</tr>
 				</c:forEach>	
 			</tbody>
 			<tfoot>
+			<!--  
 				<tr>
 					<th colspan="5" align="center" height="50">
 						<a class="button" href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Add Indicator Report</a>
 					</th>			
-				</tr>	
+				</tr>
+			-->	
 			</tfoot>
 		</table>
 	
@@ -107,6 +99,4 @@ $(document).ready(function() {
 </div>
 
 
-</body>
-</html>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

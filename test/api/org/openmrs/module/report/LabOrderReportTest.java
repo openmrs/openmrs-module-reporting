@@ -36,7 +36,6 @@ import org.openmrs.api.OrderService.ORDER_STATUS;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicCriteria;
 import org.openmrs.logic.result.Result;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
@@ -67,6 +66,10 @@ public class LabOrderReportTest extends BaseModuleContextSensitiveTest {
 	    return false;
 	}
 
+	/**
+	 * Execute this before each test case.
+	 * @throws Exception
+	 */
 	@Before
 	public void runBeforeEachTest() throws Exception {
 		if (useInMemoryDatabase()) { 
@@ -78,7 +81,7 @@ public class LabOrderReportTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * Auto generated method comment
+	 * Should evaluate encounter dataset for the given dates
 	 * 
 	 * @throws Exception
 	 */
@@ -88,7 +91,7 @@ public class LabOrderReportTest extends BaseModuleContextSensitiveTest {
 		// FIXME This should be done within the HQL
 		Date startDate = Context.getDateFormat().parse("04/01/2009");
 		Date endDate = Context.getDateFormat().parse("04/30/2009");
-		Location location = Context.getLocationService().getAllLocations().get(4);
+		Location location = Context.getLocationService().getAllLocations().get(0);
 			
 			
 		Map<String,Object> parameterValues = new HashMap<String,Object>();

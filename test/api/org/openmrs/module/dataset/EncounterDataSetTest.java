@@ -24,7 +24,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicCriteria;
 import org.openmrs.logic.result.Result;
 import org.openmrs.logic.util.LogicCriteriaBuilder;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
@@ -69,7 +69,7 @@ public class EncounterDataSetTest extends BaseModuleContextSensitiveTest {
 		
 		
 		EvaluationContext evalContext = new EvaluationContext();
-		PatientCharacteristicCohortDefinition kids = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition kids = new AgeCohortDefinition();
 		kids.setName("Cohort");
 		kids.setMaxAge(10);
 		

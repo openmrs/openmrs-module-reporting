@@ -6,7 +6,7 @@
 <!-- ** @author Justin Miranda                              ** -->
 <!-- ** @version 1.0                                        ** -->
 <!-- ********************************************************* -->
-<project name="Reporting" default="package-module">
+<project name="Reporting Core Module" default="package-module">
 	
 	<!-- *********************************************************** -->
 	<!-- **                 BUILD PROPERTIES                      ** -->
@@ -134,7 +134,6 @@
 				<include name="**/*" />
 				<exclude name="**/*Test*.class" />
 				<exclude name="**/CreateInitialDataSet.class" />
-				<exclude name="**/test/**/*" />
 			</fileset>
 				
 		</jar>

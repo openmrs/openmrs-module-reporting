@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.cohort.definition.util.CohortExpressionParser;
 import org.openmrs.module.dataset.definition.CohortCrossTabDataSetDefinition;
@@ -79,25 +80,25 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 		Parameter dateParam = new Parameter("report.startDate", "Date of report", Date.class, new Date(), false);
 		schema.addParameter(dateParam);
 		
-		PatientCharacteristicCohortDefinition maleDef = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition maleDef = new GenderCohortDefinition();
 		maleDef.setName("Male");
 		maleDef.setGender("M");
 		cohortDefinitionService.saveCohortDefinition(maleDef);
 		
-		PatientCharacteristicCohortDefinition femaleDef = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition femaleDef = new GenderCohortDefinition();
 		femaleDef.setName("Female");
 		femaleDef.setGender("F");
 		cohortDefinitionService.saveCohortDefinition(femaleDef);
 		
 		Parameter effDateParam = new Parameter("effectiveDate", "Effective Date", Date.class, null, false, false);
 		
-		PatientCharacteristicCohortDefinition adultOnDate = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition adultOnDate = new AgeCohortDefinition();
 		adultOnDate.setName("AdultOnDate");
 		adultOnDate.setMinAge(15);
 		adultOnDate.addParameter(effDateParam);
 		cohortDefinitionService.saveCohortDefinition(adultOnDate);
 		
-		PatientCharacteristicCohortDefinition childOnDate = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition childOnDate = new AgeCohortDefinition();
 		childOnDate.setName("ChildOnDate");
 		childOnDate.setMaxAge(14);
 		childOnDate.addParameter(effDateParam);

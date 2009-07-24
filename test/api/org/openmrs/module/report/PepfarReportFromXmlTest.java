@@ -30,8 +30,9 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.cohort.definition.util.CohortExpressionParser;
@@ -173,22 +174,22 @@ public class PepfarReportFromXmlTest extends BaseContextSensitiveTest {
 		
 		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
 		
-		PatientCharacteristicCohortDefinition maleFilter = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition maleFilter = new GenderCohortDefinition();
 		maleFilter.setName("Male");
 		maleFilter.setGender("M");
 		cds.saveCohortDefinition(maleFilter);
 		
-		PatientCharacteristicCohortDefinition femaleFilter = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition femaleFilter = new GenderCohortDefinition();
 		femaleFilter.setName("Female");
 		femaleFilter.setGender("F");
 		cds.saveCohortDefinition(femaleFilter);
 
-		PatientCharacteristicCohortDefinition adultOnDate = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition adultOnDate = new AgeCohortDefinition();
 		adultOnDate.setName("Adult");
 		adultOnDate.setMinAge(15);
 		cds.saveCohortDefinition(adultOnDate);
 		
-		PatientCharacteristicCohortDefinition childOnDate = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition childOnDate = new AgeCohortDefinition();
 		childOnDate.setName("Child");
 		childOnDate.setMaxAge(14);
 		cds.saveCohortDefinition(childOnDate);

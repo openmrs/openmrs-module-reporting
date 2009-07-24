@@ -10,7 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -50,11 +49,10 @@ public class CohortDefinitionFormController {
      * @return	the form model and view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView showForm() {
+	public ModelAndView setupForm() {
 		log.info("Inside show() method");
 
-		return new ModelAndView(
-				"/module/reporting/cohorts/cohortDefinitionForm");
+		return new ModelAndView("/module/reporting/cohorts/cohortDefinitionForm");
 	}	
 
 	
@@ -64,38 +62,14 @@ public class CohortDefinitionFormController {
 	 * @param cohortDefinition
 	 * @param bindingResult
 	 * @return
-	 */
-	@ModelAttribute("cohortDefinition")
+	 */	
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView processForm(
-			CohortDefinition cohortDefinition, 
+			@ModelAttribute("cohortDefinition") CohortDefinition cohortDefinition, 
 			BindingResult bindingResult) {
-		log.info("Inside submit() method");
-		
-		log.info("Setting ID " + cohortDefinition.getId());
-		log.info("Setting UUID " + cohortDefinition.getUuid());
-		log.info("Setting name " + cohortDefinition.getName());
-		
-		log.info("Setting parameters " + cohortDefinition.getAvailableParameters());
-		log.info("Setting bound parameters " + cohortDefinition.getParameters());
-		
-		if (cohortDefinition instanceof PatientCharacteristicCohortDefinition) { 
-			PatientCharacteristicCohortDefinition pccd = 
-				(PatientCharacteristicCohortDefinition) cohortDefinition;
-			log.info("getGender: " + pccd.getGender() );
-			log.info("getEffectiveDate: " + pccd.getEffectiveDate() );
-			log.info("getAliveOnly: " + pccd.getAliveOnly() );
-			log.info("getDeadOnly: " + pccd.getDeadOnly() );
-			log.info("getMaxAge: " + pccd.getMaxAge());
-			log.info("getMinAge: " + pccd.getMinAge() );
-			log.info("getMaxBirthdate: " + pccd.getMaxBirthdate() );
-			log.info("getMinBirthdate: " + pccd.getMinBirthdate() );
-		}
-			
+					
 		if (bindingResult.hasErrors()) {
-			log.info("# errors: " + bindingResult.getErrorCount());
-			log.info("errors: " + bindingResult.getAllErrors());
-			return showForm();
+			return setupForm();
 		}
 		Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);
 		return new ModelAndView("redirect:/module/reporting/manageCohortDefinitions.list");
@@ -112,8 +86,7 @@ public class CohortDefinitionFormController {
 	@ModelAttribute("cohortDefinition")
 	public CohortDefinition formBackingObject(
 			@RequestParam(value = "uuid", required=false) String uuid,
-			@RequestParam(value = "className", required=false) String className
-	) {
+			@RequestParam(value = "className", required=false) String className) {
 		log.info("Inside formBackingObject(String, String) method with ");
 		log.info("UUID=" + uuid + ", className=" + className);
 		
@@ -121,7 +94,6 @@ public class CohortDefinitionFormController {
 		CohortDefinition cohortDefinition = service.getCohortDefinitionByUuid(uuid);
 		
 		if (cohortDefinition == null) { 		
-			log.info("Could not find cohort definition ... creating new one");
 			try { 
 				cohortDefinition = (CohortDefinition) Class.forName(className).newInstance();
 				cohortDefinition.setName("New " + className);
@@ -129,51 +101,12 @@ public class CohortDefinitionFormController {
 			catch (Exception e) { 
 				log.error("Could not instantiate cohort definition of class " + className );
 			}
-		} else { 
+		} 
+		else { 
 			log.info("Found cohort definition with uuid " + cohortDefinition.getUuid());			
 		}
-
-		
-		
 		return cohortDefinition;
 	}
-
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private boolean isCancelButton(HttpServletRequest request) {		
-		log.info("isCancelButton() method");
-		if (WebUtils.hasSubmitParameter(request, "cancel")) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 */
-	protected boolean suppressValidation(HttpServletRequest request) {
-		log.info("suppressValidation() method");
-		return isCancelButton(request);
-	}	
-	
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 */
-	protected boolean suppressBinding(HttpServletRequest request) {
-		log.info("suppressBinding() method");
-		if("cancel".equals(request.getParameter("dispatch"))){
-			return true;
-		} else {
-			return false;
-		}
-	}	
 	
 	
 	

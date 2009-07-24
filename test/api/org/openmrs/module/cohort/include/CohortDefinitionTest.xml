@@ -25,7 +25,7 @@
   <order_type order_type_id="1" name="Drug Order" description="Prescriptions" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"/>
   <orders order_id="1" order_type_id="1" concept_id="1" orderer="1" start_date="2005-01-01 00:00:00.0" auto_expire_date="2005-12-31 00:00:00.0" discontinued="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" patient_id="2"/>
   <patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
-  <patient_identifier patient_id="2" identifier="1234" identifier_type="1" preferred="1" location_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
+  <patient_identifier patient_identifier_id="1" patient_id="2" identifier="1234" identifier_type="1" preferred="1" location_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
   <patient_identifier_type patient_identifier_type_id="1" name="Test Identifier Type" description="Test description" check_digit="false" creator="1" date_created="2005-01-01 00:00:00.0" required="false" retired="false"/>
   <person person_id="2" gender="M" birthdate="2000-01-01" dead="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
   <person_name person_name_id="2" preferred="true" person_id="2" given_name="John" middle_name=" " family_name="Doe" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>

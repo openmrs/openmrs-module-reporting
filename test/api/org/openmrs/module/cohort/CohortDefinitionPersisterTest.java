@@ -18,13 +18,11 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.serialization.xstream.XStreamSerializer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -49,17 +47,15 @@ public class CohortDefinitionPersisterTest extends BaseModuleContextSensitiveTes
 	}
 	
 	@Test
-	public void shouldSaveCohortDefinition() throws Exception { 		
+	public void shouldSaveMinimalCohortDefinition() throws Exception { 		
 		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();		
-		cohortDefinition.setName("Testing");
-		//cohortDefinition.setCreator(Context.getAuthenticatedUser());
-		//cohortDefinition.setChangedBy(Context.getAuthenticatedUser());
-		
-		
+		AgeCohortDefinition cohortDefinition = new AgeCohortDefinition();		
+		cohortDefinition.setName("Testing");		
+
+		// Save cohort definition
 		CohortDefinition savedCohortDefinition = service.saveCohortDefinition(cohortDefinition);		
-		//Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);
-		//dao.saveObject(cohortDefinition);
+
+		// Make sure there's an ID
 		Assert.assertTrue(savedCohortDefinition.getId()!=null);
 	}
 	

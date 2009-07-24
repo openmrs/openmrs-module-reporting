@@ -28,6 +28,7 @@ import org.openmrs.module.dataset.definition.persister.DataSetDefinitionPersiste
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.util.HandlerUtil;
+import org.simpleframework.xml.load.Persister;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -72,8 +73,10 @@ public class BaseDataSetDefinitionService extends BaseOpenmrsService implements 
 	 * @see DataSetDefinitionService#getDataSetDefinition(Class, Integer)
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DataSetDefinition> T getDataSetDefinition(Class<T> type, Integer id) throws APIException {
-		return (T) getPersister(type).getDataSetDefinition(id);
+	public <T extends DataSetDefinition> T getDataSetDefinition(Class<T> type, Integer id) throws APIException {		
+		DataSetDefinitionPersister persister = getPersister(type);
+		log.info("Persister: " + persister.getClass().getName());
+		return (T) persister.getDataSetDefinition(id);
 	}
 
 	/** 

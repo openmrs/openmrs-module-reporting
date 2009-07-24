@@ -21,8 +21,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -50,7 +50,7 @@ public class ReportTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testReport() throws Exception {
 		
-		PatientCharacteristicCohortDefinition childOnDate = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition childOnDate = new AgeCohortDefinition();
 		childOnDate.setMaxAge(14);
 		childOnDate.addParameter(new Parameter("effectiveDate", "Age As of Date", Date.class, null, false, false));
 		

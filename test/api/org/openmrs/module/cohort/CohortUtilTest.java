@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.BaseCohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.cohort.definition.util.CohortExpressionParser;
@@ -56,7 +56,7 @@ public class CohortUtilTest extends BaseContextSensitiveTest {
 		// sets up the database
 
 		// Create a search called "Male" 
-		PatientCharacteristicCohortDefinition maleFilter = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition maleFilter = new GenderCohortDefinition();
 		maleFilter.setName("Male");
 		maleFilter.setGender("M");
 		Context.getService(CohortDefinitionService.class).saveCohortDefinition(maleFilter);
@@ -71,8 +71,8 @@ public class CohortUtilTest extends BaseContextSensitiveTest {
 
 		{
 			BaseCohortDefinition test = (BaseCohortDefinition) list.get(0);
-			Assert.assertTrue(test instanceof PatientCharacteristicCohortDefinition);
-			Assert.assertEquals(((PatientCharacteristicCohortDefinition) test).getGender(), "M");
+			Assert.assertTrue(test instanceof GenderCohortDefinition);
+			Assert.assertEquals(((GenderCohortDefinition) test).getGender(), "M");
 		}
 		assertEquals(list.get(1), PatientSetService.BooleanOperator.AND);
 		{

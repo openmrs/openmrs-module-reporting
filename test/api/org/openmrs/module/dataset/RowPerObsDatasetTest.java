@@ -25,7 +25,7 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.definition.ObsDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -59,7 +59,7 @@ public class RowPerObsDatasetTest extends BaseModuleContextSensitiveTest {
 		authenticate();
 		
 		EvaluationContext evalContext = new EvaluationContext();
-		PatientCharacteristicCohortDefinition kids = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition kids = new AgeCohortDefinition();
 		
 		Calendar today = new GregorianCalendar();
 		

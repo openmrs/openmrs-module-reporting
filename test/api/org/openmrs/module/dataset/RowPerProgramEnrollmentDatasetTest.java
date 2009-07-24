@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.ReportData;
@@ -49,7 +49,7 @@ public class RowPerProgramEnrollmentDatasetTest extends BaseModuleContextSensiti
 		authenticate();
 		
 		EvaluationContext evalContext = new EvaluationContext();
-		PatientCharacteristicCohortDefinition kids = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition kids = new AgeCohortDefinition();
 		kids.setMaxAge(3);
 		Cohort kidsCohort = 
 			Context.getService(CohortDefinitionService.class).evaluate(kids, evalContext);

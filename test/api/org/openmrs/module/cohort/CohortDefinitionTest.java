@@ -31,7 +31,7 @@ import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.DrugOrderCohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -51,7 +51,7 @@ public class CohortDefinitionTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Override
     public Boolean useInMemoryDatabase() {
-	    return false;
+	    return true;
 	}	
 	
 	@Test
@@ -64,15 +64,12 @@ public class CohortDefinitionTest extends BaseModuleContextSensitiveTest {
 		List<CohortDefinition> cohortDefinitions = service.getAllCohortDefinitions(false);
 		log.info("cohort definitions: " + cohortDefinitions.size() );
 		
-		PatientCharacteristicCohortDefinition cohortDefinition = 
-			PatientCharacteristicCohortDefinition.class.newInstance();
-			//new PatientCharacteristicCohortDefinition();
-		//Context.refreshAuthenticatedUser();
+		GenderCohortDefinition cohortDefinition = 
+			GenderCohortDefinition.class.newInstance();
+
 		
 		cohortDefinition.setName("Testing");
-		//Context.refreshAuthenticatedUser();
-		//definition.setCreator(Context.getAuthenticatedUser());
-		//definition.setChangedBy(Context.getAuthenticatedUser());		
+
 		User user = Context.getUserService().getUserByUsername("admin");
 		log.info("User properties: " + user.getUserProperties());
 		cohortDefinition.setCreator(null);
@@ -86,7 +83,7 @@ public class CohortDefinitionTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void should_acceptAnnotatedParameters() throws Exception {
-		PatientCharacteristicCohortDefinition def = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition def = new GenderCohortDefinition();
 		System.out.println(def.getParameters());
 	}
 	

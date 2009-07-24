@@ -7,46 +7,20 @@
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/wufoo/wufoo.js"></script>
 
-<!-- JQuery Engine -->
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.js"></script>
-
-<!-- JQuery Data Tables -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/page.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/table.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/custom.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.dataTables/jquery.dataTables.js"></script>
-
-<!-- JQuery UI -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.ui-1.6/ui.all.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.ui-1.6/jquery-ui-1.6.custom.min.js"></script>
-<!-- 
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.ui/jquery-ui-1.7.1.custom.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.ui/jquery-ui-1.7.1.custom.min.js"></script>
- -->
- 
-<!-- JQuery Autocomplete -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.autocomplete/jquery.autocomplete.css" rel="stylesheet"/>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.bgiframe.min.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.ajaxQueue.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.autocomplete.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/thickbox-compressed.js'></script>
-
-
-
-
 <script type="text/javascript" charset="utf-8">
-$(document).ready(function() {
+var $j = jQuery.noConflict();
+$j(document).ready(function() {
 
 
 	// ======  Tabs: Cohort Definition Tabs  ================================================
 
-	$('#cohort-definition-tabs').tabs();
-	$('#cohort-definition-tabs').show();
+	$j('#cohort-definition-tabs').tabs();
+	$j('#cohort-definition-tabs').show();
 
 
 	// ======  DataTable: Cohort Definition Parameter  ======================================
 	
-	$('#cohort-definition-parameter-table').dataTable( {
+	$j('#cohort-definition-parameter-table').dataTable( {
 		"bPaginate": false,
 		"bLengthChange": false,
 		"bFilter": false,
@@ -56,7 +30,7 @@ $(document).ready(function() {
 	} );			
 
 
-	$('#cancel-button').click(function(event){
+	$j('#cancel-button').click(function(event){
 		// To prevent the submit
 		event.preventDefault();
 
@@ -65,7 +39,7 @@ $(document).ready(function() {
 	});
 
 
-	$('#save-button').click(function(event){
+	$j('#save-button').click(function(event){
 		// To prevent the submit
 		//event.preventDefault();
 	});	

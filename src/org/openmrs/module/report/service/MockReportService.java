@@ -29,9 +29,10 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.LocationCohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.cohort.definition.util.CohortFilter;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
@@ -207,7 +208,7 @@ public class MockReportService extends BaseReportService implements ReportServic
 	 */
 	public ReportSchema getCohortReportSchema() { 
 		// Add a very basic cohort report to the report schemas
-		PatientCharacteristicCohortDefinition childOnDate = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition childOnDate = new AgeCohortDefinition();
 		childOnDate.setName("Child On Date Cohort Definition");
 		childOnDate.setMaxAge(14);
 		childOnDate.addParameter(new Parameter("effectiveDate", "Age As of Date", Date.class, null, false, false));		
@@ -272,11 +273,11 @@ public class MockReportService extends BaseReportService implements ReportServic
 		
 		// Defining dimensions
 		CohortDefinitionDimension genderDimension = new CohortDefinitionDimension();		
-		PatientCharacteristicCohortDefinition males = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition males = new GenderCohortDefinition();
 		males.setGender("M");		
 
 		// Cohort definition
-		PatientCharacteristicCohortDefinition females = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition females = new GenderCohortDefinition();
 		females.setGender("F");
 		genderDimension.addCohortDefinition("male", males, null);
 		genderDimension.addCohortDefinition("female", females, null);		
@@ -286,13 +287,13 @@ public class MockReportService extends BaseReportService implements ReportServic
 		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class, null, true, false));		
 
 		// Age (child) cohort definition
-		PatientCharacteristicCohortDefinition adult = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition adult = new AgeCohortDefinition();
 		adult.setMinAge(15);
 		adult.enableParameter("effectiveDate", null, true);
 		ageDimension.addCohortDefinition("adult", adult, "effectiveDate=${ageDate}");		
 
 		// Age (adult) cohort definition
-		PatientCharacteristicCohortDefinition child = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition child = new AgeCohortDefinition();
 		child.setMaxAge(14);
 		child.enableParameter("effectiveDate", null, true);
 		ageDimension.addCohortDefinition("child", child, "effectiveDate=${ageDate}");

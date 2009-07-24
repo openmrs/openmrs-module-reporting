@@ -25,16 +25,14 @@ import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.report.ReportSchema;
 import org.openmrs.module.report.service.ReportService;
@@ -45,9 +43,6 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  * Testing the cohort definition persister.  
  */
 public class SerializationTest extends BaseModuleContextSensitiveTest {
-
-	// Locally holds the user information (like the httpsession)
-	private UserContext userContext;
 	
 	// Logger
 	private Log log = LogFactory.getLog(this.getClass());
@@ -88,7 +83,7 @@ public class SerializationTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void shouldSaveCohortDefinition() throws Exception { 
-		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition cohortDefinition = new AgeCohortDefinition();
 		cohortDefinition.setName("Test 1");
 		CohortDefinition saved = Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);
 	}
@@ -108,7 +103,7 @@ public class SerializationTest extends BaseModuleContextSensitiveTest {
 		// Save a new cohort definition in another transaction using a cached user context
 		Context.openSession();
 		Context.setUserContext(userContext);		
-		PatientCharacteristicCohortDefinition cohortDefinition = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition cohortDefinition = new AgeCohortDefinition();
 		cohortDefinition.setName("Test 1");
 		CohortDefinition saved = Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);		
 		log.info("Creator: " + saved.getCreator());

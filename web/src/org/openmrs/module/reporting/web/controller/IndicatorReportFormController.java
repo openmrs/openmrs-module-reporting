@@ -1,26 +1,32 @@
 package org.openmrs.module.reporting.web.controller;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
+import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.service.IndicatorService;
+import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -51,7 +57,7 @@ public class IndicatorReportFormController {
     	//binder.registerCustomEditor(Boolean.class, new CustomBooleanEditor("true", "false", true)); 
     	binder.registerCustomEditor(Date.class, new CustomDateEditor(ymd, true)); 
     }    
-	
+    
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView showForm() {
@@ -75,6 +81,7 @@ public class IndicatorReportFormController {
 	}	
 	
 	
+	@SuppressWarnings("unused")
 	@ModelAttribute("reportSchema")
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView processForm(
@@ -83,15 +90,8 @@ public class IndicatorReportFormController {
 			BindingResult bindingResult) {
 		log.info("Inside submit() method");
 		
-		log.info("Setting ID " + reportSchema.getId());
-		log.info("Setting UUID " + reportSchema.getUuid());
-		log.info("Setting name " + reportSchema.getName());
-		
-		log.info("Setting parameters " + reportSchema.getParameters());
 			
 		if (bindingResult.hasErrors()) {
-			log.info("# errors: " + bindingResult.getErrorCount());
-			log.info("errors: " + bindingResult.getAllErrors());
 			return showForm();
 		}
 		
@@ -99,50 +99,51 @@ public class IndicatorReportFormController {
 
 		// Add indicators to a report schema
 		if ("addIndicators".equalsIgnoreCase(action)) { 
-			CohortIndicatorDataSetDefinition dataSetDefinition = 
-				new CohortIndicatorDataSetDefinition();
+						
+			// We just create a new dataset definition each time
+			CohortIndicatorDataSetDefinition datasetDefinition = new CohortIndicatorDataSetDefinition();
 			
 			// Dataset should be created implicitly (without the user knowing)
-			dataSetDefinition.setName(reportSchema.getName() + " Cohort Indicator Dataset");
+			datasetDefinition.setName(reportSchema.getName() + " Dataset");
 
-			String [] selectedUuids = request.getParameterValues("selectedUuid");
-			if (selectedUuids!=null) { 				
-				for (String uuid : selectedUuids) { 
+			String [] selectedIndicatorUuids = request.getParameterValues("indicatorUuid");
+			log.info("Indicators to add: " + selectedIndicatorUuids);
+			if (selectedIndicatorUuids!=null) { 				
+				for (String uuid : selectedIndicatorUuids) { 
 					
 					// FIXME Assumes cohort indicators
 					CohortIndicator indicator = (CohortIndicator)
 						Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
-					if (indicator != null) { 
 					
-						//CohortDefinition cohortDefinition = 
-						//	indicator.getCohortDefinition().getParameterizable();
-						//cohortDefinition.getParameters();
+					log.info("Found indicator" + indicator);					
+					if (indicator != null) { 
+						// FIXME: Adding indicator to dataset requires mapping from indicator to cohort definition					
+						//CohortDefinition cohortDefinition = indicator.getCohortDefinition().getParameterizable();
+						//cohortDefinition.getParameters();						
+						// (like "indicator.location=${dataset.location},indicator.date=${dataset.date}")
+						datasetDefinition.addIndicator(indicator.getName(), indicator, "");
+						datasetDefinition.addColumnSpecification("A.", "# Adult Patients", Number.class, indicator.getName(), null);						
 						
-						// FIXME 
-						String mapping = 
-							"indicator.location=${dataset.location},indicator.date=${dataset.date}";
-						dataSetDefinition.addIndicator(indicator.getName(), indicator, mapping);
-										
 					}										
 				}
 			}
 
 			// Dataset needs to know what parameters it needs
-			dataSetDefinition.addParameter(new Parameter("dataset.location", "Location Parameter", Location.class, null, true, false));
-			dataSetDefinition.addParameter(new Parameter("dataset.date", "Date Parameter", Date.class, null, true, false));
+			//dataSetDefinition.addParameter(new Parameter("dataset.location", "Location Parameter", Location.class, null, true, false));
+			//dataSetDefinition.addParameter(new Parameter("dataset.date", "Date Parameter", Date.class, null, true, false));
 			
 
-			
+			log.info("Add dataset definition: " + datasetDefinition);
 			// Remove all existing dataset definitions
-			reportSchema.getDataSetDefinitions().clear();
-			reportSchema.addDataSetDefinition(dataSetDefinition, "location=${report.location},effectiveDate=${report.reportDate}");
+			// FIXME: Adding dataset to report requires mapping
+			// (like "location=${report.location},effectiveDate=${report.reportDate}")
+			reportSchema.getDataSetDefinitions().clear();			
+			reportSchema.addDataSetDefinition(datasetDefinition, "");
 			
 			
 		}
-		// Otherwise this is a simple save operation
-		else { 
-			Context.getService(ReportService.class).saveReportSchema(reportSchema);
-		}
+		Context.getService(ReportService.class).saveReportSchema(reportSchema);
+
 		return new ModelAndView("redirect:/module/reporting/manageReports.list");
 	}
 	
@@ -166,7 +167,6 @@ public class IndicatorReportFormController {
 		
 		return reportSchema;
 	}
-
 
 	
 	

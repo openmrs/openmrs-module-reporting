@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
+import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.caching.AnnotatedParameterCachingStrategy;
 import org.openmrs.test.BaseContextSensitiveTest;
@@ -38,10 +38,10 @@ public class CachingCohortDefinitionTest extends BaseContextSensitiveTest {
 		
 		EvaluationContext ec = new EvaluationContext();
 		
-		PatientCharacteristicCohortDefinition maleFilter = 
-			new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition maleFilter = 
+			new GenderCohortDefinition();
 		maleFilter.setGender("M");
-		PatientCharacteristicCohortDefinition femaleFilter = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition femaleFilter = new GenderCohortDefinition();
 		femaleFilter.setGender("F");
 		AnnotatedParameterCachingStrategy strategy = new AnnotatedParameterCachingStrategy();
 		String maleKey = strategy.getCacheKey(maleFilter);

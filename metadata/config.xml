@@ -6,7 +6,7 @@
 	<!-- Base Module Properties -->
 	<id>reporting</id>
 	<name>Reporting</name>
-	<version>0.1.2</version>
+	<version>0.2.0</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>Core reporting API and services</description>
@@ -16,7 +16,7 @@
 	<require_modules>
 	   	<require_module>org.openmrs.module.serialization.xstream</require_module>
 	</require_modules>
-	
+
 	<!-- Extensions -->
 	<extension>
 		<point>org.openmrs.admin.list</point>

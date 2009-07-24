@@ -2,18 +2,6 @@
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ include file="../localHeader.jsp"%>
 
-<!--  CSS -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/page.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/table.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/custom.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.autocomplete/jquery.autocomplete.css" rel="stylesheet" />
-
-<!--  Javascript -->
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.dataTables/jquery-1.3.1.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.dataTables/jquery.dataTables.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.autocomplete.js"></script>
-
-
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 	$('#indicator-table').dataTable( {
@@ -31,27 +19,30 @@ $(document).ready(function() {
 <div id="page">
 	<div id="container">
 		<h1>Indicator Manager</h1>
-		
-		<br/>
+
+		<div id="inline-list">
+			<p>
+				<ul>
+					<li class="first"><a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form">Add Indicator</a></li>
+					<li class="last">more to come...</li>
+				</ul>
+			</p>
+		</div>	
+
 		<table id="indicator-table" class="display" >
 			<thead>
 				<tr>
-					<th width="1%"></th>
 					<th>Aggregator</th>
 					<th>Indicator</th>
-					<th>Description</th>
-					<th>Cohort / Logic Rule</th>
-					<th>Actions</th>
+					<th>Cohort Definition</th>
+					<th>Created</th>
+					<th width="1%"></th>
+					<th width="1%"></th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${indicators}" var="indicator" varStatus="status">
 					<tr>
-						<td align="center">
-							
-							<a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}">
-								<img src="<c:url value='/images/edit.gif'/>" border="0"/></a>
-						</td>
 						<td>
 							${indicator.aggregator.simpleName}<br/>						
 						</td>
@@ -59,32 +50,32 @@ $(document).ready(function() {
 							${indicator.name}
 						</td>					
 						<td>
-							${indicator.description}
-						</td>
-						<td>
-							<!-- one of the two of these should be populated
-								TODO Add logic to test if they are null
-							 -->
 							${indicator.cohortDefinition.parameterizable.name}<br/>
-							${indicator.logicCriteria}
 						</td>
 						<td>
-						
-							<!-- not implemented yet -->
-							<!--  
-							<a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}&action=preview">preview</a> | 
-							<a href="${pageContext.request.contextPath}/module/reporting/editIindicator.form?uuid=${indicator.uuid}&action=delete">delete</a>
-							-->
+							${indicator.dateCreated}<br/>
+						</td>
+						<td align="center">							
+							<a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}">
+								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
+							</a>
+						</td>
+						<td align="center">							
+							<a href="${pageContext.request.contextPath}/module/reporting/purgeIndicator.form?uuid=${indicator.uuid}">
+								<img src="<c:url value='/images/trash.gif'/>" border="0"/>
+							</a>
 						</td>
 					</tr>
 				</c:forEach>	
 			</tbody>
 			<tfoot>
+				<!--  
 				<tr>
 					<th colspan="6" align="center" height="50">
-						<a class="button" href="${pageContext.request.contextPath}/module/reporting/editIndicator.form">Add Indicator</a>
+						
 					</th>			
-				</tr>	
+				</tr>
+				-->	
 			</tfoot>
 		</table>
 	</div>

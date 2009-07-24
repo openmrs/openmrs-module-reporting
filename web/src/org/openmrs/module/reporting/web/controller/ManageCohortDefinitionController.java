@@ -71,55 +71,6 @@ public class ManageCohortDefinitionController {
         return "/module/reporting/cohorts/cohortDefinitionEditor";
     }
     
-    
-    
-    /**
-     * Purges a cohort definitions
-     * 
-     * @param uuid
-     * @param type
-     * @param returnUrl
-     * @param model
-     * @return
-     */
-    @RequestMapping("/module/reporting/purgeCohortDefinition")
-    public String purgeCohortDefinition(@RequestParam(required=false, value="uuid") String uuid) {
-    	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	CohortDefinition cohortDefinition = service.getCohortDefinitionByUuid(uuid);
-    	service.purgeCohortDefinition(cohortDefinition);	
-        return "redirect:/module/reporting/manageCohortDefinitions.list";
-    }    
-
-    /**
-     * Evaluates a cohort definition given a uuid.
-     * 
-     * @param uuid
-     * @param type
-     * @param returnUrl
-     * @param model
-     * @return
-     */
-    @RequestMapping("/module/reporting/evaluateCohortDefinition")
-    public String evaluateCohortDefinition(
-    		@RequestParam(required=false, value="uuid") String uuid,
-            @RequestParam(required=false, value="type") Class<? extends CohortDefinition> type,
-    		ModelMap model) {
-    	
-    	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	CohortDefinition cohortDefinition = service.getCohortDefinition(uuid, type);
-     	
-    	// Evaluate the cohort definition
-    	EvaluationContext context = new EvaluationContext();
-    	Cohort cohort = service.evaluate(cohortDefinition, context);
-    	
-    	// create the model and view to return
-     	model.addAttribute("cohort", cohort);
-     	model.addAttribute("cohortDefinition", cohortDefinition);
-     	
-        return "/module/reporting/cohortDefinitionEvaluator";
-    }    
-
-    
     /**
      * Saves a cohort definition.
      * 
@@ -135,14 +86,14 @@ public class ManageCohortDefinitionController {
     public String saveCohortDefinition(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends CohortDefinition> type,
-            @RequestParam(required=true) String name,
-            @RequestParam("description") String description,
+            @RequestParam(required=true, value="name") String name,
+            @RequestParam(required=false, value="description") String description,
             HttpServletRequest request,
     		ModelMap model
     ) {
     	
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	
+    	    	
     	// Locate or create cohort definition
     	CohortDefinition cohortDefinition = service.getCohortDefinition(uuid, type);
     	cohortDefinition.setName(name);
@@ -187,6 +138,54 @@ public class ManageCohortDefinitionController {
 
         return "redirect:/module/reporting/manageCohortDefinitions.list";
     }
+
+    
+    /**
+     * Evaluates a cohort definition given a uuid.
+     * 
+     * @param uuid
+     * @param type
+     * @param returnUrl
+     * @param model
+     * @return
+     */
+    @RequestMapping("/module/reporting/evaluateCohortDefinition")
+    public String evaluateCohortDefinition(
+    		@RequestParam(required=false, value="uuid") String uuid,
+            @RequestParam(required=false, value="type") Class<? extends CohortDefinition> type,
+    		ModelMap model) {
+    	
+    	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
+    	CohortDefinition cohortDefinition = service.getCohortDefinition(uuid, type);
+     	
+    	// Evaluate the cohort definition
+    	EvaluationContext context = new EvaluationContext();
+    	Cohort cohort = service.evaluate(cohortDefinition, context);
+    	
+    	// create the model and view to return
+     	model.addAttribute("cohort", cohort);
+     	model.addAttribute("cohortDefinition", cohortDefinition);
+     	
+        return "/module/reporting/cohortDefinitionEvaluator";
+    }    
+    
+    
+    /**
+     * Purges the cohort definition represented by the given uuid.
+     * 
+     * @param uuid
+     * 		a universally unique identifier used to identify the cohort definition.
+     * @return	
+     * 		the name or URL that represents the view
+     */
+    @RequestMapping("/module/reporting/purgeCohortDefinition")
+    public String purgeCohortDefinition(@RequestParam(required=false, value="uuid") String uuid) {
+    	CohortDefinitionService service = 
+    		Context.getService(CohortDefinitionService.class);
+    	CohortDefinition cohortDefinition = service.getCohortDefinitionByUuid(uuid);
+    	service.purgeCohortDefinition(cohortDefinition);	
+        return "redirect:/module/reporting/manageCohortDefinitions.list";
+    }    
     
 
 }

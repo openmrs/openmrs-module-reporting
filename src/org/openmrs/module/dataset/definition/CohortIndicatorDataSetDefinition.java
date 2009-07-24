@@ -48,7 +48,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 		super();
 		dimensions = new DimensionSet<CohortDimension>();
 		indicators = new LinkedHashMap<String, Mapped<CohortIndicator>>();
-		columnSpecifications = new LinkedHashMap<DataSetColumn, ColumnDefinition>();
+		columnSpecifications = new LinkedHashMap<DataSetColumn, ColumnDefinition>();	
 	}
 	
 	/**

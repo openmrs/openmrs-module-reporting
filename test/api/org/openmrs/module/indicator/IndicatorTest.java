@@ -21,8 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.LocationCohortDefinition;
-import org.openmrs.module.cohort.definition.PatientCharacteristicCohortDefinition;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -77,11 +78,11 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		// Dimensions
 		CohortDefinitionDimension genderDimension = new CohortDefinitionDimension();
 		
-		PatientCharacteristicCohortDefinition males = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition males = new GenderCohortDefinition();
 		males.setGender("M");
 		genderDimension.addCohortDefinition("male", males, null);
 		
-		PatientCharacteristicCohortDefinition females = new PatientCharacteristicCohortDefinition();
+		GenderCohortDefinition females = new GenderCohortDefinition();
 		females.setGender("F");
 		genderDimension.addCohortDefinition("female", females, null);
 		
@@ -90,12 +91,12 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		CohortDefinitionDimension ageDimension = new CohortDefinitionDimension();
 		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class, null, true, false));
 
-		PatientCharacteristicCohortDefinition adult = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition adult = new AgeCohortDefinition();
 		adult.setMinAge(15);
 		adult.enableParameter("effectiveDate", null, true);
 		ageDimension.addCohortDefinition("adult", adult, "effectiveDate=${ageDate}");
 		
-		PatientCharacteristicCohortDefinition child = new PatientCharacteristicCohortDefinition();
+		AgeCohortDefinition child = new AgeCohortDefinition();
 		child.setMaxAge(14);
 		child.enableParameter("effectiveDate", null, true);
 		ageDimension.addCohortDefinition("child", child, "effectiveDate=${ageDate}");
