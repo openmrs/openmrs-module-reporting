@@ -1,10 +1,11 @@
 package org.openmrs.module.reporting.web.widget.html;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.jsp.PageContext;
+import org.apache.commons.lang.ObjectUtils;
 
 /**
  * This represents a select list widget
@@ -12,27 +13,26 @@ import javax.servlet.jsp.PageContext;
 public class SelectWidget extends CodedWidget {
 
 	/** 
-	 * @see BaseWidget#configureAttributes()
+	 * @see BaseWidget#configure()
 	 */
 	@Override
-	public void configureAttributes() {
-	}
+	public void configure() { }
 	
 	/** 
-	 * @see Widget#render(PageContext)
+	 * @see Widget#render(Writer)
 	 */
-	public void render(PageContext pageContext) throws IOException {
-		HtmlUtil.renderOpenTag(pageContext, "select", getAttributes());
+	public void render(Writer w) throws IOException {
+		HtmlUtil.renderOpenTag(w, "select", getAttributes());
 		for (Option option : getOptions()) {
 			List<Attribute> atts = new ArrayList<Attribute>();
 			atts.add(new Attribute("value", option.getCode()));
-			if (option.getCode().equalsIgnoreCase(getDefaultValueString())) {
+			if (ObjectUtils.equals(option.getValue(), getDefaultValue())) {
 				atts.add(new Attribute("selected", "true"));
 			}
-			HtmlUtil.renderOpenTag(pageContext, "option", atts);
-			pageContext.getOut().write(option.getLabel());
-			HtmlUtil.renderCloseTag(pageContext, "option");
+			HtmlUtil.renderOpenTag(w, "option", atts);
+			w.write(option.getLabel());
+			HtmlUtil.renderCloseTag(w, "option");
 		}
-		HtmlUtil.renderCloseTag(pageContext, "select");
+		HtmlUtil.renderCloseTag(w, "select");
 	}
 }

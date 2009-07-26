@@ -51,7 +51,7 @@ public class WidgetHandler {
 			widget.setId(tag.getId());
 			widget.setName(tag.getName());
 			widget.setDefaultValue(tag.getDefaultValue());
-			widget.configureAttributes(tag.getAttributeMap());
+			widget.configure(tag.getAttributeMap());
 			return widget;
 		}
 		catch (Exception e) {

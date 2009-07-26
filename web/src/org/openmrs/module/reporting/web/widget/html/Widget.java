@@ -17,10 +17,9 @@ public interface Widget {
     public void render(PageContext pageContext) throws IOException;
     
 	/**
-	 * This is the main method which should be implemented
-	 * to configure the attributes on the Widget
+	 * This is the main method which should be implemented to configure the Widget
 	 */
-    public void configureAttributes(Map<String, String> userAttributes);
+    public void configure(Map<String, String> userAttributes);
 	
 	/**
 	 * @param the id of the widget

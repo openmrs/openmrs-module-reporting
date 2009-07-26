@@ -13,7 +13,7 @@
            http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
-	<context:component-scan base-package="org.openmrs.module.reporting.web.controller" />
+	<context:component-scan base-package="org.openmrs.module.reporting.web" />
 
 	<bean id="exceptionResolver"
 		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">

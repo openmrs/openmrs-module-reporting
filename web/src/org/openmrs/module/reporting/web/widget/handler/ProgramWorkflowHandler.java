@@ -13,7 +13,8 @@
  */
 package org.openmrs.module.reporting.web.widget.handler;
 
-import org.openmrs.EncounterType;
+import org.openmrs.Program;
+import org.openmrs.ProgramWorkflow;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.web.widget.WidgetTag;
@@ -23,16 +24,19 @@ import org.openmrs.module.reporting.web.widget.html.Option;
 /**
  * FieldGenHandler for Enumerated Types
  */
-@Handler(supports={EncounterType.class}, order=50)
-public class EncounterTypeHandler extends CodedHandler {
+@Handler(supports={ProgramWorkflow.class}, order=50)
+public class ProgramWorkflowHandler extends CodedHandler {
 	
 	/** 
 	 * @see CodedHandler#populateOptions(WidgetTag, CodedWidget)
 	 */
 	@Override
 	public void populateOptions(WidgetTag tag, CodedWidget widget) {
-		for (EncounterType t : Context.getEncounterService().getAllEncounterTypes()) {
-			widget.addOption(new Option(t.getUuid(), t.getName(), null, t));
+		for (Program p : Context.getProgramWorkflowService().getAllPrograms()) {
+			for (ProgramWorkflow w : p.getAllWorkflows()) {
+				String disp = p.getName() + "-" + (w.getName() == null ? w.getConcept().getDisplayString() : w.getName());
+				widget.addOption(new Option(w.getUuid(), disp, null, w));
+			}
 		}
 	}
 }

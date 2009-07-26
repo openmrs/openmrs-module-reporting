@@ -10,11 +10,11 @@ import java.util.List;
 public class CheckboxWidget extends CodedWidget {
 
 	/** 
-	 * @see BaseWidget#configureAttributes()
+	 * @see BaseWidget#configure()
 	 */
 	@Override
-	public void configureAttributes() {
-		setAttribute("type", "checkbox");
+	public void configure() {
+		setAttribute("type", "checkbox", false);
 	}
 	
 	/**

@@ -36,10 +36,10 @@ public class NumberHandler extends WidgetHandler {
 		Class<?> clazz = ReflectionUtil.getFieldType(tag.getField());
 		
 		if (clazz == Integer.class || clazz == Long.class) {
-			w.addAttribute("size", "8");
+			w.configureAttribute("size", "8");
 		}
 		if (clazz == Double.class || clazz == Float.class) {
-			w.addAttribute("size", "12");
+			w.configureAttribute("size", "12");
 		}
 		
 		// TODO: Add validation

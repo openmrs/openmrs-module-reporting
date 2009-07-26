@@ -32,7 +32,7 @@ public class LocationHandler extends CodedHandler {
 	@Override
 	public void populateOptions(WidgetTag tag, CodedWidget widget) {
 		for (Location l : Context.getLocationService().getAllLocations()) {
-			widget.addOption(new Option(l.getLocationId().toString(), l.getName(), null, l));
+			widget.addOption(new Option(l.getUuid(), l.getName(), null, l));
 		}
 	}
 }

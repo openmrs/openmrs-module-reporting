@@ -13,35 +13,26 @@
  */
 package org.openmrs.module.reporting.web.widget.handler;
 
-import java.io.IOException;
-
+import org.openmrs.PersonAttributeType;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.web.widget.WidgetTag;
-import org.openmrs.module.reporting.web.widget.html.TextWidget;
-import org.openmrs.module.util.ReflectionUtil;
+import org.openmrs.module.reporting.web.widget.html.CodedWidget;
+import org.openmrs.module.reporting.web.widget.html.Option;
 
 /**
- * FieldGenHandler for String Types
+ * FieldGenHandler for Enumerated Types
  */
-@Handler(supports={String.class, Character.class}, order=50)
-public class StringHandler extends WidgetHandler {
+@Handler(supports={PersonAttributeType.class}, order=50)
+public class PersonAttributeTypeHandler extends CodedHandler {
 	
 	/** 
-	 * @see WidgetHandler#handle(WidgetTag)
+	 * @see CodedHandler#populateOptions(WidgetTag, CodedWidget)
 	 */
 	@Override
-	public void handle(WidgetTag tag) throws IOException {
-		
-		TextWidget w = WidgetHandler.getWidgetInstance(tag, TextWidget.class);
-		Class<?> clazz = ReflectionUtil.getFieldType(tag.getField());
-		
-		if (clazz == Character.class) {
-			w.configureAttribute("size", "2");
-			w.configureAttribute("maxLength", "1");
+	public void populateOptions(WidgetTag tag, CodedWidget widget) {
+		for (PersonAttributeType t : Context.getPersonService().getAllPersonAttributeTypes()) {
+			widget.addOption(new Option(t.getUuid(), t.getName(), null, t));
 		}
-		else {
-			w.configureAttribute("size", "20");
-		}
-		w.render(tag.getPageContext());
 	}
 }

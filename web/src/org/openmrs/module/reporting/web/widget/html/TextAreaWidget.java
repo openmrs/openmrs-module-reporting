@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.web.widget.html;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import javax.servlet.jsp.PageContext;
 
@@ -10,20 +11,20 @@ import javax.servlet.jsp.PageContext;
 public class TextAreaWidget extends BaseWidget {
     
 	/** 
-	 * @see BaseWidget#configureAttributes()
+	 * @see BaseWidget#configure()
 	 */
 	@Override
-	public void configureAttributes() {
-    	addAttribute("cols", "20");
-    	addAttribute("rows", "2");
+	public void configure() {
+    	setAttribute("cols", "20", true);
+    	setAttribute("rows", "2", true);
 	}
 	
 	/** 
 	 * @see Widget#render(PageContext)
 	 */
-	public void render(PageContext pageContext) throws IOException {
-		HtmlUtil.renderOpenTag(pageContext, "textarea", getAttributes());
-		pageContext.getOut().write(getDefaultValueString());
-		HtmlUtil.renderCloseTag(pageContext, "textarea");
+	public void render(Writer w) throws IOException {
+		HtmlUtil.renderOpenTag(w, "textarea", getAttributes());
+		w.write(getDefaultValue() == null ? "" : getDefaultValue().toString());
+		HtmlUtil.renderCloseTag(w, "textarea");
 	}
 }

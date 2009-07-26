@@ -1,10 +1,9 @@
 package org.openmrs.module.reporting.web.widget.html;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -41,8 +40,8 @@ public abstract class CodedWidget extends BaseWidget {
 	 */
 	public void addOption(Option option) {
 		String prefix = StringUtils.isEmpty(option.getCode()) ? "empty" : option.getCode();
-		String labelCode = getAttribute(prefix + "Code");
-		String labelText = getAttribute(prefix + "Label");
+		String labelCode = getAttributeValue(prefix + "Code");
+		String labelText = getAttributeValue(prefix + "Label");
 		if (labelCode != null || labelText != null) {
 			option.setLabelCode(labelCode);
 			option.setLabelText(labelText);
@@ -65,9 +64,9 @@ public abstract class CodedWidget extends BaseWidget {
 	}
 	
 	/** 
-	 * @see Widget#render(PageContext)
+	 * @see Widget#render(Writer)
 	 */
-	public void render(PageContext pageContext) throws IOException {
+	public void render(Writer w) throws IOException {
 		int num = getOptions().size();
 		for (int i=0; i<num; i++) {
 			Option option = getOptions().get(i);
@@ -83,10 +82,10 @@ public abstract class CodedWidget extends BaseWidget {
 			if (isSelected(option)) {
 				atts.add(new Attribute("checked", "true"));
 			}
-			HtmlUtil.renderSimpleTag(pageContext, "input", atts);
-			pageContext.getOut().write("&nbsp;"+option.getLabel());
+			HtmlUtil.renderSimpleTag(w, "input", atts);
+			w.write("&nbsp;"+option.getLabel());
 			if ((i+1) < num) {
-				pageContext.getOut().write(getSeparator() == null ? "&nbsp;" : getSeparator());
+				w.write(getSeparator() == null ? "&nbsp;" : getSeparator());
 			}
 		}
 	}

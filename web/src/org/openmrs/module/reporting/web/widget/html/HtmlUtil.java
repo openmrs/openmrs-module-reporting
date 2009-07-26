@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.web.widget.html;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -86,10 +87,10 @@ public class HtmlUtil  {
 	 * @param attributes
 	 * @throws IOException
 	 */
-	public static void renderSimpleTag(PageContext context, String tagName, Collection<Attribute> attributes) throws IOException {
-		context.getOut().write("<"+tagName);
-		renderTagAttributes(context, tagName, attributes);
-		context.getOut().write("/>");
+	public static void renderSimpleTag(Writer w, String tagName, Collection<Attribute> attributes) throws IOException {
+		w.write("<"+tagName);
+		renderTagAttributes(w, tagName, attributes);
+		w.write("/>");
 	}
 
 	/**
@@ -98,10 +99,10 @@ public class HtmlUtil  {
 	 * @param attributes
 	 * @throws IOException
 	 */
-	public static void renderOpenTag(PageContext context, String tagName, Collection<Attribute> attributes) throws IOException {
-		context.getOut().write("<"+tagName);
-		renderTagAttributes(context, tagName, attributes);
-		context.getOut().write(">");
+	public static void renderOpenTag(Writer w, String tagName, Collection<Attribute> attributes) throws IOException {
+		w.write("<"+tagName);
+		renderTagAttributes(w, tagName, attributes);
+		w.write(">");
 	}
 	
 	/**
@@ -110,8 +111,8 @@ public class HtmlUtil  {
 	 * @param attributes
 	 * @throws IOException
 	 */
-	public static void renderCloseTag(PageContext context, String tagName) throws IOException {
-		context.getOut().write("</"+tagName+">");
+	public static void renderCloseTag(Writer w, String tagName) throws IOException {
+		w.write("</"+tagName+">");
 	}
 	
 	/**
@@ -120,12 +121,12 @@ public class HtmlUtil  {
 	 * @param attributes
 	 * @throws IOException
 	 */
-	public static void renderTagAttributes(PageContext context, String tagName, Collection<Attribute> attributes) throws IOException {
+	public static void renderTagAttributes(Writer w, String tagName, Collection<Attribute> attributes) throws IOException {
 		if (attributes != null) {
 			for (Attribute a : attributes) {
 				if (isValidTagAttribute(tagName, a.getName())) {
 					if (StringUtils.isNotEmpty(a.getValue())) {
-						context.getOut().write(" " + a.getName() + "=\"" + a.getValue() + "\"");
+						w.write(" " + a.getName() + "=\"" + a.getValue() + "\"");
 					}
 				}
 			}
