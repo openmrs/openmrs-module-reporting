@@ -117,24 +117,6 @@ public class WidgetTag extends TagSupport {
 	}
 
 	/**
-	 * @see Object#clone()
-	 */
-	public WidgetTag clone() {
-		WidgetTag tag = new WidgetTag();
-		tag.setPageContext(getPageContext());
-		tag.setParent(getParent());
-		tag.setId(getId());
-		tag.setName(getName());
-		tag.setObject(getObject());
-		tag.setProperty(getProperty());
-		tag.setClazz(getClazz());
-		tag.setDefaultValue(getDefaultValue());
-		tag.setFormat(getFormat());
-		tag.setAttributes(tag.getAttributes());
-		return tag;
-	}
-
-	/**
 	 * Resets the properties of the tag
 	 */
 	protected void resetValues() {

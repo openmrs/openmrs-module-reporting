@@ -57,7 +57,7 @@ public abstract class BaseWidget implements Widget {
 	/**
 	 * Renders the Widget to the passed Writer
 	 */
-	public abstract void render(Writer w) throws IOException;
+	protected abstract void render(Writer w) throws IOException;
 
 	//******** PROPERTY ACCESS ************
 
