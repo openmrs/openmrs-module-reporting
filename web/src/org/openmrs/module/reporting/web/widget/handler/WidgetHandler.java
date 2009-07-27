@@ -38,7 +38,7 @@ public class WidgetHandler {
 	 * @param tag
 	 */
 	public void handle(WidgetTag tag) throws IOException {
-		String output = "Cannot handle type [" + tag.getField().getType() + "]. Please add a module to handle this type.";
+		String output = "Cannot handle type [" + tag.getType() + "]. Please add a module to handle this type.";
 		tag.getPageContext().getOut().write(output);
 	}
 	

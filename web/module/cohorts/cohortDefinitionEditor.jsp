@@ -2,7 +2,7 @@
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ include file="../localHeader.jsp"%>
 <%@ taglib prefix="rptTag" tagdir="/WEB-INF/tags/module/reporting" %>
-
+<%@ taglib prefix="rpt" uri="/WEB-INF/view/module/reporting/resources/reporting.tld" %>
 
 <script type="text/javascript" charset="utf-8">
 //var $j = jQuery.noConflict();
@@ -118,20 +118,7 @@ $(document).ready(function() {
 													</c:if>
 												</td>
 												<td valign="top">
-													<c:choose>
-														<c:when test="${p.collectionType != null}">
-															<rptTag:collectionField type="${p.clazz}" 
-																					formFieldName="parameter.${p.name}.defaultValue" 
-																					initialValues="${p.defaultValue}" 
-																					parameters="optionHeader=[blank]" />
-														</c:when>
-														<c:otherwise>
-															<openmrs:fieldGen 	type="${p.clazz}" 
-																				formFieldName="parameter.${p.name}.defaultValue" 
-																				val="${p.defaultValue}" 
-																				parameters="" />
-														</c:otherwise>
-													</c:choose>
+													<rpt:widget id="${p.name}" name="${p.name}" object="${cohortDefinition}" property="${p.name}"/>
 												</td>
 												<td>&nbsp;</td>
 												<td valign="top">

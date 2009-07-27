@@ -2,6 +2,9 @@ package org.openmrs.module.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +56,26 @@ public class ReflectionUtil {
 		Class<?> wrapper = getWrapperMap().get(type.getName());
 		return (wrapper != null ? wrapper : type);
 	}
+	
+    /**
+     * For the passed field, if it is a Collection, it will return the class which represents the generic type of this
+     * Collection.  If it is not a Collection, it will return null.  If the type is not a class, it will return null.
+     * If it contains more than one Generic Type, it will return the first type found.
+     */
+    public static Class<?> getGenericTypeOfCollection(Field f) {
+    	if (f != null && Collection.class.isAssignableFrom(f.getType())) {
+    		try {
+				ParameterizedType pt = (ParameterizedType) f.getGenericType();
+				Type[] typeArgs = pt.getActualTypeArguments();
+				return (Class<?>)typeArgs[0];
+			}
+			catch (Exception e) {
+				log.debug("Unable to retrieve generic type of field: " + f, e);
+				// Do nothing
+			}
+		}
+    	return null;
+    }
 	
 	@SuppressWarnings("unchecked")
 	public static <T extends Object> T getPropertyValue(T object, String property) {

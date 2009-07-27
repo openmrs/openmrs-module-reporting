@@ -26,13 +26,24 @@
 		</attribute>
 		<attribute>
 			<name>object</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.Object</type>
 		</attribute>
 		<attribute>
 			<name>property</name>
-			<required>true</required>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>clazz</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Class</type>
+		</attribute>
+		<attribute>
+			<name>defaultValue</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>

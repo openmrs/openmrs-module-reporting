@@ -44,7 +44,7 @@ public abstract class BaseWidget implements Widget {
 	/** 
 	 * @see Widget#render(PageContext)
 	 */
-	public final void render(PageContext pageContext) throws IOException {
+	public void render(PageContext pageContext) throws IOException {
 		HtmlUtil.renderResourceFiles(pageContext, resources);
 		render(pageContext.getOut());
 	}

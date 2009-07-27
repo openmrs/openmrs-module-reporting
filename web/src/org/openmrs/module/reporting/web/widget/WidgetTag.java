@@ -43,6 +43,8 @@ public class WidgetTag extends TagSupport {
 	private String name;  // This represents the name of the input field
 	private Object object; // This represents the object whose property we are editing
 	private String property; // This represents the name of the property/field to edit on the object
+	private Class<?> clazz; // The represents the clazz to edit. It is an alternative to object/property
+	private Object defaultValue; // This represents a default value for the field
 	private String format; // This represents an optional means for rendering a widget
 	private String attributes; // Pipe-separated list of attributes to provide flexible control of Widgets as needed
 	
@@ -67,22 +69,29 @@ public class WidgetTag extends TagSupport {
 		return pageContext;
 	}
 	
-	/** 
-	 * Gets the matching field on the passed Object
-	 */
-	public Field getField() {
-		Field f = ReflectionUtil.getField(object.getClass(), property);
-		if (f != null) {
-			return f;
-		}
-		throw new IllegalArgumentException("Property <" + property + "> is invalid for object <" + object + ">");
-	}
-	
 	/**
-	 * Gets the default value of the property on the passed Object
+	 * Returns the defined type for this tag
+	 * @return
 	 */
-	public Object getDefaultValue() {
-		return ReflectionUtil.getPropertyValue(object, property);
+	public Class<?> getType() {
+		Class<?> type = null;
+		if (getObject() != null && getProperty() != null) {
+			Field f = ReflectionUtil.getField(object.getClass(), property);
+			type = ReflectionUtil.getFieldType(f);
+			if (type == null) {
+				throw new IllegalArgumentException("Property <" + property + "> is invalid for object <" + object + ">");
+			}
+			if (getClazz() != null && getClazz() != type) {
+				throw new IllegalArgumentException("The specified clazz is not compatible with the specified property.");
+			}
+		}
+		else if (getClazz() != null) {
+			type = getClazz();
+		}
+		else {
+			throw new IllegalArgumentException("You must specify an object/property or clazz attribute.");
+		}
+		return type;
 	}
 	
 	/**
@@ -90,20 +99,41 @@ public class WidgetTag extends TagSupport {
 	 */
 	@Override
 	public int doStartTag() throws JspException {
-		WidgetHandler h = HandlerUtil.getPreferredHandler(WidgetHandler.class, ReflectionUtil.getFieldType(getField()));
+		
+		// This tag allows you to specify either an object/property combination or a clazz type
+		Class<?> type = getType();
+		WidgetHandler h = HandlerUtil.getPreferredHandler(WidgetHandler.class, type);
 		if (h == null) {
-			throw new JspException("No Handler found for: " + getField().getType());
+			throw new JspException("No Handler found for: " + type);
 		}
 		try {
 			h.handle(this);
 		}
 		catch (Exception e) {
-			throw new JspException("Error handling Widget: " + getField().getType(), e);
+			throw new JspException("Error handling Widget: " + type, e);
 		}
 		resetValues();
 		return SKIP_BODY;
 	}
-	
+
+	/**
+	 * @see Object#clone()
+	 */
+	public WidgetTag clone() {
+		WidgetTag tag = new WidgetTag();
+		tag.setPageContext(getPageContext());
+		tag.setParent(getParent());
+		tag.setId(getId());
+		tag.setName(getName());
+		tag.setObject(getObject());
+		tag.setProperty(getProperty());
+		tag.setClazz(getClazz());
+		tag.setDefaultValue(getDefaultValue());
+		tag.setFormat(getFormat());
+		tag.setAttributes(tag.getAttributes());
+		return tag;
+	}
+
 	/**
 	 * Resets the properties of the tag
 	 */
@@ -112,6 +142,8 @@ public class WidgetTag extends TagSupport {
 		setName(null);
 		setObject(null);
 		setProperty(null);
+		setClazz(null);
+		setDefaultValue(null);
 		setFormat(null);
 		setAttributes(null);
 	}
@@ -175,6 +207,38 @@ public class WidgetTag extends TagSupport {
 	 */
 	public void setProperty(String property) {
 		this.property = property;
+	}
+	/**
+	 * @return the clazz
+	 */
+	public Class<?> getClazz() {
+		return clazz;
+	}
+	/**
+	 * @param clazz the clazz to set
+	 */
+	public void setClazz(Class<?> clazz) {
+		this.clazz = clazz;
+	}
+	/**
+	 * If the widget is configured with an object and a property, and the
+	 * property value is not null, this returns it.  Otherwise, it returns 
+	 * the defaultValue property.
+	 */
+	public Object getDefaultValue() {
+		if (object != null && property != null) {
+			Object val = ReflectionUtil.getPropertyValue(object, property);
+			if (val != null) {
+				return val;
+			}
+		}
+		return defaultValue;
+	}
+	/**
+	 * @param defaultValue the defaultValue to set
+	 */
+	public void setDefaultValue(Object defaultValue) {
+		this.defaultValue = defaultValue;
 	}
 	/**
 	 * @return the format

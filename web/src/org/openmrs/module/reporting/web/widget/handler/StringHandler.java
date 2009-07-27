@@ -18,7 +18,6 @@ import java.io.IOException;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.web.widget.WidgetTag;
 import org.openmrs.module.reporting.web.widget.html.TextWidget;
-import org.openmrs.module.util.ReflectionUtil;
 
 /**
  * FieldGenHandler for String Types
@@ -33,9 +32,8 @@ public class StringHandler extends WidgetHandler {
 	public void handle(WidgetTag tag) throws IOException {
 		
 		TextWidget w = WidgetHandler.getWidgetInstance(tag, TextWidget.class);
-		Class<?> clazz = ReflectionUtil.getFieldType(tag.getField());
 		
-		if (clazz == Character.class) {
+		if (tag.getType() == Character.class) {
 			w.configureAttribute("size", "2");
 			w.configureAttribute("maxLength", "1");
 		}

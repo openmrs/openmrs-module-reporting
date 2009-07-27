@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.cohort.definition;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
@@ -55,6 +57,7 @@ public class SampleCohortDefinition extends BaseCohortDefinition {
     @Param private Form testForm = getRandomType(Context.getFormService().getAllForms());
     @Param private OrderType testOrderType = getRandomType(Context.getOrderService().getAllOrderTypes());
     @Param private PersonAttributeType testPersonAttributeType = getRandomType(Context.getPersonService().getAllPersonAttributeTypes());
+    @Param private List<Location> locations = Arrays.asList(getRandomType(Context.getLocationService().getAllLocations()));
     
     /**
      * Utility method
@@ -351,5 +354,19 @@ public class SampleCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setTestPersonAttributeType(PersonAttributeType testPersonAttributeType) {
 		this.testPersonAttributeType = testPersonAttributeType;
+	}
+
+	/**
+	 * @return the locations
+	 */
+	public List<Location> getLocations() {
+		return locations;
+	}
+
+	/**
+	 * @param locations the locations to set
+	 */
+	public void setLocations(List<Location> locations) {
+		this.locations = locations;
 	}
 }

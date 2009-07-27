@@ -29,7 +29,7 @@ public class EnumHandler extends CodedHandler {
 	 */
 	@Override
 	public void populateOptions(WidgetTag tag, CodedWidget widget) {
-		Object[] enums = tag.getField().getType().getEnumConstants();
+		Object[] enums = tag.getType().getEnumConstants();
 		if (enums != null) {
 			for (Object o : enums) {
 				widget.addOption(new Option(o.toString(), o.toString(), null, o));
