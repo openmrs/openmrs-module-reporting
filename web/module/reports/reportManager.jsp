@@ -30,7 +30,6 @@ $(document).ready(function() {
 		<div id="inline-list">	
 			<p>	
 				<ul>
-					<li class="first"><a href="showLabReport.form">Run Rwanda Reports</a></li>
 					<li class="last"><a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Add Indicator Report</a></li>
 				</ul>
 			</p>			

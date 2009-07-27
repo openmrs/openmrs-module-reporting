@@ -72,70 +72,69 @@ $(document).ready(function() {
                 <li><a href="#sample-indicator-report-tab"><span>Sample Indicator Report</span></a></li>
                  -->
             </ul>
-		</div>		
 	
-		<div id="sample-lab-report-tab">		
-
-			<div align="left">
+			<div id="sample-lab-report-tab">		
+	
+				<div align="left">
+					
+					<form method="post" action="${pageContext.request.contextPath}/module/reporting/renderLabReport.form">		
+						<input type="hidden" id="uuid" name="uuid" value="0123456789"/>									
+						<input type="hidden" name="action" value="render"/>
+						<div>
+								<label class="desc" for="renderType">Download as:</label>
+								<span>
+									<input type="radio" name="renderType" value="XLS" checked tabindex="1"> XLS
+									<input type="radio" name="renderType" value="CSV" tabindex="2"> CSV
+								</span>
+						</div>
+						<div>
+								<label class="desc" for="locationId">Location</label>
+								<span>
+									<select name="locationId"  tabindex="5">
+										<option value="0">All Locations</option>									
+										<c:forEach var="location" items="${locations}">
+											<option value="${location.locationId}">${location.name}</option>
+										</c:forEach>
+									</select>		
+								</span>
+						</div>
+						<div>
+								<label class="desc" for="startDate">Start Date</label>
+								<span>
+									<openmrs:fieldGen type="java.util.Date" formFieldName="startDate" val="" parameters=""/>
+								</span>
+						</div>
+						<div>
+								<label class="desc" for="endDate">End Date</label>
+								<span>
+									<openmrs:fieldGen type="java.util.Date" formFieldName="endDate" val="" parameters=""/>							
+								</span>
+						</div>
+						<div class="buttons">
+							<span>
+								<input id="save-button" class="btTxt submit" type="submit" value="Download" tabindex="6" />
+								<button id="cancel-button" name="cancel" class="button">Cancel</button>
+							</span>
+						</div>
+	
+					</form>
+				</div>
+			</div>
+			<div id="more">		
+				<i>More reports to come ...</i>		
+			</div>
+	        <!-- 
+				<div id="sample-cohort-report-tab">		
+					<i>the sample cohort report is not supported yet</i>		
+				</div>
 				
-				<form method="post" action="${pageContext.request.contextPath}/module/reporting/renderLabReport.form">		
-					<input type="hidden" id="uuid" name="uuid" value="0123456789"/>									
-					<input type="hidden" name="action" value="render"/>
-					<div>
-							<label class="desc" for="renderType">Download as:</label>
-							<span>
-								<input type="radio" name="renderType" value="XLS" checked tabindex="1"> XLS
-								<input type="radio" name="renderType" value="CSV" tabindex="2"> CSV
-							</span>
-					</div>
-					<div>
-							<label class="desc" for="locationId">Location</label>
-							<span>
-								<select name="locationId"  tabindex="5">
-									<option value="0">All Locations</option>									
-									<c:forEach var="location" items="${locations}">
-										<option value="${location.locationId}">${location.name}</option>
-									</c:forEach>
-								</select>		
-							</span>
-					</div>
-					<div>
-							<label class="desc" for="startDate">Start Date</label>
-							<span>
-								<openmrs:fieldGen type="java.util.Date" formFieldName="startDate" val="" parameters=""/>
-							</span>
-					</div>
-					<div>
-							<label class="desc" for="endDate">End Date</label>
-							<span>
-								<openmrs:fieldGen type="java.util.Date" formFieldName="endDate" val="" parameters=""/>							
-							</span>
-					</div>
-					<div class="buttons">
-						<span>
-							<input id="save-button" class="btTxt submit" type="submit" value="Download" tabindex="6" />
-							<input id="cancel-button" class="btTxt submit" type="submit" value="Cancel" tabindex="7"/>
-						</span>
-					</div>
-
-				</form>
-			</div>
-		</div>
-		<div id="more">		
-			<i>More reports to come ...</i>		
-		</div>
-        <!-- 
-			<div id="sample-cohort-report-tab">		
-				<i>the sample cohort report is not supported yet</i>		
-			</div>
+				
+				<div id="sample-indicator-report-tab">		
+					<i>the sample indicator report is not supported yet</i>		
+				</div>
+			-->		
 			
-			
-			<div id="sample-indicator-report-tab">		
-				<i>the sample indicator report is not supported yet</i>		
-			</div>
-		-->		
-		
-		
+		</div>
 	</div>
 </div>
 
