@@ -27,6 +27,10 @@ public class HtmlUtil  {
 	public static List<String> OPTION_ATTRIBUTES = Arrays.asList(
 		"disabled","label","value","selected"
 	);
+	
+	public static List<String> OPTGROUP_ATTRIBUTES = Arrays.asList(
+		"disabled","label"
+	);
 
 	public static List<String> SELECT_ATTRIBUTES = Arrays.asList(
 		"disabled","multiple","name","size"
@@ -54,6 +58,7 @@ public class HtmlUtil  {
 		}
 		if ("input".equals(tagName)) { return INPUT_ATTRIBUTES.contains(att); }
 		if ("option".equals(tagName)) { return OPTION_ATTRIBUTES.contains(att); }
+		if ("optgroup".equals(tagName)) { return OPTGROUP_ATTRIBUTES.contains(att); }
 		if ("select".equals(tagName)) { return SELECT_ATTRIBUTES.contains(att); }
 		if ("textarea".equals(tagName)) { return TEXTAREA_ATTRIBUTES.contains(att); }
 		return false;

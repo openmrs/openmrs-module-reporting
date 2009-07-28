@@ -20,6 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.CodedWidget;
 import org.openmrs.module.reporting.web.widget.html.Option;
+import org.openmrs.module.reporting.web.widget.html.OptionGroup;
 
 /**
  * FieldGenHandler for Enumerated Types
@@ -34,8 +35,9 @@ public class ProgramWorkflowHandler extends CodedHandler {
 	public void populateOptions(WidgetConfig config, CodedWidget widget) {
 		for (Program p : Context.getProgramWorkflowService().getAllPrograms()) {
 			for (ProgramWorkflow w : p.getAllWorkflows()) {
-				String disp = p.getName() + "-" + (w.getName() == null ? w.getConcept().getDisplayString() : w.getName());
-				widget.addOption(new Option(w.getUuid(), disp, null, w), config);
+				OptionGroup group = new OptionGroup(p.getName(), null);
+				String optionName = (w.getName() == null ? w.getConcept().getDisplayString() : w.getName());
+				widget.addOption(new Option(w.getUuid(), optionName, null, w, group), config);
 			}
 		}
 	}

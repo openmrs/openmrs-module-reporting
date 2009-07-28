@@ -1,45 +1,38 @@
 package org.openmrs.module.reporting.web.widget.html;
 
-import org.openmrs.api.context.Context;
-
 /**
  * Represents a Coded Option
  */
-public class Option {
+public class Option extends Label {
 	
 	//****** Properties ******
 	private String code;
-	private String labelText;
-	private String labelCode;
 	private Object value;
+	private OptionGroup group;
 
 	/**
 	 * Default Constructor
 	 */
-    public Option() { }
+    public Option() { 
+    	super();
+    }
+    
+    /**
+     * Full Constructor with null group
+     */
+    public Option(String code, String labelText, String labelCode, Object value) {
+    	this(code, labelText, labelCode, value, null);
+    }   
     
     /**
      * Full Constructor
      */
-    public Option(String code, String labelText, String labelCode, Object value) {
+    public Option(String code, String labelText, String labelCode, Object value, OptionGroup group) {
+    	super(labelText, labelCode);
     	this.code = code;
-    	this.labelText = labelText;
-    	this.labelCode = labelCode;
     	this.value = value;
-    }   
-
-    //***** Instance Methods *****
-    
-	/**
-	 * Return the display label, based on the configuration of labelCode and labelText
-	 * @return the display label
-	 */
-	public String getLabel() {
-		if (getLabelCode() != null) {
-			return Context.getMessageSourceService().getMessage(getLabelCode());
-		}
-		return (getLabelText() == null ? "" : getLabelText());
-	}
+    	this.group = group;
+    }
 	
 	//***** Property Access *****
 	
@@ -58,34 +51,6 @@ public class Option {
 	}
 
 	/**
-	 * @return the labelText
-	 */
-	public String getLabelText() {
-		return labelText;
-	}
-
-	/**
-	 * @param labelText the labelText to set
-	 */
-	public void setLabelText(String labelText) {
-		this.labelText = labelText;
-	}
-
-	/**
-	 * @return the labelCode
-	 */
-	public String getLabelCode() {
-		return labelCode;
-	}
-
-	/**
-	 * @param labelCode the labelCode to set
-	 */
-	public void setLabelCode(String labelCode) {
-		this.labelCode = labelCode;
-	}
-
-	/**
 	 * @return the value
 	 */
 	public Object getValue() {
@@ -97,5 +62,19 @@ public class Option {
 	 */
 	public void setValue(Object value) {
 		this.value = value;
+	}
+
+	/**
+	 * @return the group
+	 */
+	public OptionGroup getGroup() {
+		return group;
+	}
+
+	/**
+	 * @param group the group to set
+	 */
+	public void setGroup(OptionGroup group) {
+		this.group = group;
 	}
 }

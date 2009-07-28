@@ -62,7 +62,7 @@ public class SampleCohortDefinition extends BaseCohortDefinition {
     @Param private Cohort cohortType = random(Context.getCohortService().getAllCohorts());
     @Param private CohortDefinition cohortDefinitionType = random(Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));
     
-    @Param private List<Location> locations = randomList(Context.getLocationService().getAllLocations());
+    @Param private List<Location> testList = randomList(Context.getLocationService().getAllLocations());
     
     /**
      * Utility method
@@ -377,17 +377,17 @@ public class SampleCohortDefinition extends BaseCohortDefinition {
 	}
 
 	/**
-	 * @return the locations
+	 * @return the testList
 	 */
-	public List<Location> getLocations() {
-		return locations;
+	public List<Location> getTestList() {
+		return testList;
 	}
 
 	/**
-	 * @param locations the locations to set
+	 * @param testList the testList to set
 	 */
-	public void setLocations(List<Location> locations) {
-		this.locations = locations;
+	public void setTestList(List<Location> testList) {
+		this.testList = testList;
 	}
 
 	/**
