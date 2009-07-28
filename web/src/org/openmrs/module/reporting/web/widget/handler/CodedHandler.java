@@ -15,10 +15,11 @@ package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
 
-import org.openmrs.module.reporting.web.widget.WidgetTag;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.CodedWidget;
 import org.openmrs.module.reporting.web.widget.html.Option;
 import org.openmrs.module.reporting.web.widget.html.SelectWidget;
+import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 
 /**
  * FieldGenHandler for Coded Types
@@ -31,25 +32,25 @@ public abstract class CodedHandler extends WidgetHandler {
 	protected Class<? extends CodedWidget> getDefaultWidget() {
 		return SelectWidget.class;
 	}
-
+	
 	/** 
-	 * @see WidgetHandler#handle(WidgetTag)
+	 * @see WidgetHandler#handle(WidgetConfig)
 	 */
 	@Override
-	public void handle(WidgetTag tag) throws IOException {
-		CodedWidget w = WidgetHandler.getCodedWidget(tag, getDefaultWidget());
-		if ("true".equals(tag.getAttribute("showEmptyOption", ((w instanceof SelectWidget) ? "true" : "")))) {
-			String emptyCode = tag.getAttribute("emptyCode", null);
-			String emptyLabel = tag.getAttribute("emptyLabel", "");
-			w.addOption(new Option("", emptyLabel, emptyCode, null));
+	public void handle(WidgetConfig config) throws IOException {
+		CodedWidget w = WidgetFactory.getInstance(getDefaultWidget(), config);
+		String showEmptyAtt = config.getAttributeValue("showEmptyOption");
+		if ("true".equals(showEmptyAtt) || (showEmptyAtt == null && w instanceof SelectWidget)) {
+			String emptyCode = config.getAttributeValue("emptyCode", null);
+			String emptyLabel = config.getAttributeValue("emptyLabel", "");
+			w.addOption(new Option("", emptyLabel, emptyCode, null), config);
 		}
-		populateOptions(tag, w);
-		w.render(tag.getPageContext());
+		populateOptions(config, w);
+		w.render(config);
 	}
-	
+
 	/**
 	 * Subclasses should define the Coded Options here
-	 * @return
 	 */
-	public abstract void populateOptions(WidgetTag tag, CodedWidget widget);
+	public abstract void populateOptions(WidgetConfig config, CodedWidget widget);
 }

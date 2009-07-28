@@ -5,16 +5,73 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 
 /**
  * This represents a single widget on a form.
  */
-public abstract class CodedWidget extends BaseWidget {
+public abstract class CodedWidget implements Widget {
 	
 	//******* PROPERTIES *************
 	private List<Option> options;
 	private String separator = "&nbsp;";
+	
+	//******* INSTANCE METHODS *************
+	
+	/** 
+	 * @see Widget#render(WidgetConfig)
+	 */
+	public void render(WidgetConfig config) throws IOException {
+		Writer w = config.getPageContext().getOut();
+		int num = getOptions().size();
+		for (int i=0; i<num; i++) {
+			Option option = getOptions().get(i);
+			List<Attribute> atts = config.cloneAttributes();
+			if (num > 1) {
+				for (Attribute att : atts) {
+					if (att.getName().equalsIgnoreCase("id") && att.getValue() != null) {
+						att.setFixedValue(att.getValue() + "_" + i);
+					}
+				}
+			}
+			config.setConfiguredAttribute("value", option.getCode());
+			if (isSelected(option, config.getDefaultValue())) {
+				config.setConfiguredAttribute("checked", "true");
+			}
+
+			HtmlUtil.renderSimpleTag(w, "input", atts);
+			w.write("&nbsp;"+option.getLabel());
+			if ((i+1) < num) {
+				w.write(getSeparator() == null ? "&nbsp;" : getSeparator());
+			}
+		}
+	}
+	
+	/**
+	 * Returns true if the passed Option is selected for the given value
+	 * @param option - the Option to check
+	 * @param value - the value to check against
+	 */
+	public boolean isSelected(Option option, Object value) {
+		return ObjectUtils.equals(option.getValue(), value);
+	}
+	
+	/**
+	 * Adds and configures the passed Option as needed with information in WidgetConfig
+	 * @param config the WidgetConfig
+	 */
+	public void addOption(Option option, WidgetConfig config) {
+		String prefix = StringUtils.isEmpty(option.getCode()) ? "empty" : option.getCode();
+		String labelCode = config.getAttributeValue(prefix + "Code");
+		String labelText = config.getAttributeValue(prefix + "Label");
+		if (labelCode != null || labelText != null) {
+			option.setLabelCode(labelCode);
+			option.setLabelText(labelText);
+		}
+		getOptions().add(option);
+	}
 	
 	//****** PROPERTY ACCESS *********
 	
@@ -34,21 +91,7 @@ public abstract class CodedWidget extends BaseWidget {
 	public void setOptions(List<Option> options) {
 		this.options = options;
 	}
-	
-	/**
-	 * Add an option to the list
-	 */
-	public void addOption(Option option) {
-		String prefix = StringUtils.isEmpty(option.getCode()) ? "empty" : option.getCode();
-		String labelCode = getAttributeValue(prefix + "Code");
-		String labelText = getAttributeValue(prefix + "Label");
-		if (labelCode != null || labelText != null) {
-			option.setLabelCode(labelCode);
-			option.setLabelText(labelText);
-		}
-		getOptions().add(option);
-	}
-	
+
 	/**
 	 * @return the separator
 	 */
@@ -61,44 +104,5 @@ public abstract class CodedWidget extends BaseWidget {
 	 */
 	public void setSeparator(String separator) {
 		this.separator = separator;
-	}
-	
-	/** 
-	 * @see Widget#render(Writer)
-	 */
-	public void render(Writer w) throws IOException {
-		int num = getOptions().size();
-		for (int i=0; i<num; i++) {
-			Option option = getOptions().get(i);
-			List<Attribute> atts = cloneAttributes();
-			if (num > 1) {
-				for (Attribute att : atts) {
-					if (att.getName().equalsIgnoreCase("id") && att.getValue() != null) {
-						att.setValue(att.getValue() + "_" + i);
-					}
-				}
-			}
-			atts.add(new Attribute("value", option.getCode()));
-			if (isSelected(option)) {
-				atts.add(new Attribute("checked", "true"));
-			}
-			HtmlUtil.renderSimpleTag(w, "input", atts);
-			w.write("&nbsp;"+option.getLabel());
-			if ((i+1) < num) {
-				w.write(getSeparator() == null ? "&nbsp;" : getSeparator());
-			}
-		}
-	}
-	
-	/**
-	 * Returns true if the given option is selected
-	 * @param option the Option to check
-	 * @return true if the given option is selected
-	 */
-	public boolean isSelected(Option option) {
-		if (option.getValue() == null) {
-			return getDefaultValue() == null;
-		}
-		return option.getValue().equals(getDefaultValue());
 	}
 }

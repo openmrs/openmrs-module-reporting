@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,16 +57,14 @@ public class ReflectionUtil {
 	}
 	
     /**
-     * For the passed field, if it is a Collection, it will return the class which represents the generic type of this
-     * Collection.  If it is not a Collection, it will return null.  If the type is not a class, it will return null.
-     * If it contains more than one Generic Type, it will return the first type found.
+     * For the passed field, it will attempt to return an array of generic class types
+     * If any problem is encountered, it will return null.
      */
-    public static Class<?> getGenericTypeOfCollection(Field f) {
-    	if (f != null && Collection.class.isAssignableFrom(f.getType())) {
+    public static Type[] getGenericTypes(Field f) {
+    	if (f != null) {
     		try {
 				ParameterizedType pt = (ParameterizedType) f.getGenericType();
-				Type[] typeArgs = pt.getActualTypeArguments();
-				return (Class<?>)typeArgs[0];
+ 				return (Type[])pt.getActualTypeArguments();
 			}
 			catch (Exception e) {
 				log.debug("Unable to retrieve generic type of field: " + f, e);

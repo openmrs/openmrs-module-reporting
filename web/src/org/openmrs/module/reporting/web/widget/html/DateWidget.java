@@ -1,21 +1,27 @@
 package org.openmrs.module.reporting.web.widget.html;
 
+import java.io.IOException;
 import java.util.Date;
-import org.openmrs.api.context.Context;
 
-public class DateWidget extends TextWidget {
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
+
+public class DateWidget implements Widget {
 
 	/** 
-	 * @see TextWidget#configureAttributes()
+	 * @see Widget#render(WidgetConfig)
 	 */
-	@Override
-	public void configure() {
-		addResource("/scripts/calendar/calendar.js");
-    	setAttribute("size", "10", false);
-    	setAttribute("onClick", "showCalendar(this);", false);
-		Object v = getDefaultValue();
+	public void render(WidgetConfig config) throws IOException {
+		HtmlUtil.renderResource(config.getPageContext(), "/scripts/calendar/calendar.js");
+		
+		config.setFixedAttribute("size", "10");
+		config.setFixedAttribute("onClick", "showCalendar(this);");
+		
+		Object v = config.getDefaultValue();
 		if (v != null && v instanceof Date) {
-			setAttribute("value", Context.getDateFormat().format((Date) v), false);
+			config.setDefaultValue(Context.getDateFormat().format((Date) v));
 		}
+		TextWidget widget = WidgetFactory.getInstance(TextWidget.class, config);
+		widget.render(config);
 	}
 }

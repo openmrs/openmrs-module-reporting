@@ -17,8 +17,9 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.web.widget.WidgetTag;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.DateWidget;
+import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 
 /**
  * FieldGenHandler for String Types
@@ -27,11 +28,11 @@ import org.openmrs.module.reporting.web.widget.html.DateWidget;
 public class DateHandler extends WidgetHandler {
 	
 	/** 
-	 * @see WidgetHandler#handle(WidgetTag)
+	 * @see WidgetHandler#handle(WidgetConfig)
 	 */
 	@Override
-	public void handle(WidgetTag tag) throws IOException {		
-		DateWidget w = WidgetHandler.getWidgetInstance(tag, DateWidget.class);
-		w.render(tag.getPageContext());
+	public void handle(WidgetConfig config) throws IOException {	
+		DateWidget w = WidgetFactory.getInstance(DateWidget.class, config);
+		w.render(config);
 	}
 }

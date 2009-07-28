@@ -14,7 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.web.widget.WidgetTag;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.CodedWidget;
 import org.openmrs.module.reporting.web.widget.html.Option;
 import org.openmrs.module.reporting.web.widget.html.RadioWidget;
@@ -24,14 +24,14 @@ import org.openmrs.module.reporting.web.widget.html.RadioWidget;
  */
 @Handler(supports={Boolean.class}, order=50)
 public class BooleanHandler extends CodedHandler {
-
+	
 	/** 
-	 * @see CodedHandler#populateOptions(WidgetTag, CodedWidget)
+	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
 	 */
 	@Override
-	public void populateOptions(WidgetTag tag, CodedWidget widget) {
-		widget.addOption(new Option("t", null, "general.true", Boolean.TRUE));
-		widget.addOption(new Option("f", null, "general.false", Boolean.FALSE));
+	public void populateOptions(WidgetConfig config, CodedWidget widget) {
+		widget.addOption(new Option("t", null, "general.true", Boolean.TRUE), config);
+		widget.addOption(new Option("f", null, "general.false", Boolean.FALSE), config);
 	}
 
 	/**

@@ -16,8 +16,9 @@ package org.openmrs.module.reporting.web.widget.handler;
 import java.io.IOException;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.web.widget.WidgetTag;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.TextWidget;
+import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 
 /**
  * FieldGenHandler for Number Types
@@ -26,22 +27,22 @@ import org.openmrs.module.reporting.web.widget.html.TextWidget;
 public class NumberHandler extends WidgetHandler {
 	
 	/** 
-	 * @see WidgetHandler#handle(WidgetTag)
+	 * @see WidgetHandler#handle(WidgetConfig)
 	 */
 	@Override
-	public void handle(WidgetTag tag) throws IOException {
+	public void handle(WidgetConfig config) throws IOException {
 		
-		TextWidget w = WidgetHandler.getWidgetInstance(tag, TextWidget.class);
-		Class<?> clazz = tag.getType();
+		TextWidget w = WidgetFactory.getInstance(TextWidget.class, config);
+		Class<?> clazz = config.getType();
 		
 		if (clazz == Integer.class || clazz == Long.class) {
-			w.configureAttribute("size", "8");
+			config.setConfiguredAttribute("size", "8");
 		}
 		if (clazz == Double.class || clazz == Float.class) {
-			w.configureAttribute("size", "12");
+			config.setConfiguredAttribute("size", "12");
 		}
 		
 		// TODO: Add validation
-		w.render(tag.getPageContext());
+		w.render(config);
 	}
 }

@@ -14,31 +14,25 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Collection;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.web.widget.WidgetTag;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.RepeatingWidget;
-import org.openmrs.module.util.ReflectionUtil;
+import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 
 /**
  * FieldGenHandler for String Types
  */
 @Handler(supports={Collection.class}, order=50)
-public class CollectionHandler extends WidgetHandler {	
+public class CollectionHandler extends WidgetHandler {
 	
 	/** 
-	 * @see WidgetHandler#handle(WidgetTag)
+	 * @see WidgetHandler#handle(WidgetConfig)
 	 */
 	@Override
-	public void handle(WidgetTag tag) throws IOException {
-		if (tag.getObject() == null || tag.getProperty() == null) {
-			throw new IllegalArgumentException("Collection Handling requires object/property.");
-		}
-		RepeatingWidget widget = WidgetHandler.getWidgetInstance(tag, RepeatingWidget.class);
-		Field f = ReflectionUtil.getField(tag.getObject().getClass(), tag.getProperty());
-		widget.setRepeatingType(ReflectionUtil.getGenericTypeOfCollection(f));
-		widget.render(tag.getPageContext());
+	public void handle(WidgetConfig config) throws IOException {
+		RepeatingWidget widget = WidgetFactory.getInstance(RepeatingWidget.class, config);
+		widget.render(config);
 	}
 }

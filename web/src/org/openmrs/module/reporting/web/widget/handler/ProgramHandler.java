@@ -16,7 +16,7 @@ package org.openmrs.module.reporting.web.widget.handler;
 import org.openmrs.Program;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.web.widget.WidgetTag;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.CodedWidget;
 import org.openmrs.module.reporting.web.widget.html.Option;
 
@@ -27,12 +27,12 @@ import org.openmrs.module.reporting.web.widget.html.Option;
 public class ProgramHandler extends CodedHandler {
 	
 	/** 
-	 * @see CodedHandler#populateOptions(WidgetTag, CodedWidget)
+	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
 	 */
 	@Override
-	public void populateOptions(WidgetTag tag, CodedWidget widget) {
+	public void populateOptions(WidgetConfig config, CodedWidget widget) {
 		for (Program p : Context.getProgramWorkflowService().getAllPrograms()) {
-			widget.addOption(new Option(p.getUuid(), p.getName(), null, p));
+			widget.addOption(new Option(p.getUuid(), p.getName(), null, p), config);
 		}
 	}
 }

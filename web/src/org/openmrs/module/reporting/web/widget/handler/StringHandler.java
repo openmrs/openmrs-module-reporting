@@ -16,8 +16,9 @@ package org.openmrs.module.reporting.web.widget.handler;
 import java.io.IOException;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.web.widget.WidgetTag;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.TextWidget;
+import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 
 /**
  * FieldGenHandler for String Types
@@ -26,20 +27,20 @@ import org.openmrs.module.reporting.web.widget.html.TextWidget;
 public class StringHandler extends WidgetHandler {
 	
 	/** 
-	 * @see WidgetHandler#handle(WidgetTag)
+	 * @see WidgetHandler#handle(WidgetConfig)
 	 */
 	@Override
-	public void handle(WidgetTag tag) throws IOException {
+	public void handle(WidgetConfig config) throws IOException {
 		
-		TextWidget w = WidgetHandler.getWidgetInstance(tag, TextWidget.class);
+		TextWidget w = WidgetFactory.getInstance(TextWidget.class, config);
 		
-		if (tag.getType() == Character.class) {
-			w.configureAttribute("size", "2");
-			w.configureAttribute("maxLength", "1");
+		if (config.getType() == Character.class) {
+			config.setConfiguredAttribute("size", "2");
+			config.setConfiguredAttribute("maxLength", "1");
 		}
 		else {
-			w.configureAttribute("size", "20");
+			config.setConfiguredAttribute("size", "20");
 		}
-		w.render(tag.getPageContext());
+		w.render(config);
 	}
 }

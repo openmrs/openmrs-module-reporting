@@ -16,7 +16,7 @@ package org.openmrs.module.reporting.web.widget.handler;
 import org.openmrs.Drug;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.web.widget.WidgetTag;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.CodedWidget;
 import org.openmrs.module.reporting.web.widget.html.Option;
 
@@ -27,12 +27,12 @@ import org.openmrs.module.reporting.web.widget.html.Option;
 public class DrugHandler extends CodedHandler {
 	
 	/** 
-	 * @see CodedHandler#populateOptions(WidgetTag, CodedWidget)
+	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
 	 */
 	@Override
-	public void populateOptions(WidgetTag tag, CodedWidget widget) {
+	public void populateOptions(WidgetConfig config, CodedWidget widget) {
 		for (Drug d : Context.getConceptService().getAllDrugs()) {
-			widget.addOption(new Option(d.getUuid(), d.getName(), null, d));
+			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
 		}
 	}
 }

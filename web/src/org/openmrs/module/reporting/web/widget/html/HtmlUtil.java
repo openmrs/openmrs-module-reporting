@@ -60,6 +60,24 @@ public class HtmlUtil  {
 	}
 	
 	/**
+	 * Render the specified resource as an HtmlInclude in the page
+	 * @param pageContext
+	 * @param resources
+	 * @throws IOException
+	 */
+	public static void renderResource(PageContext pageContext, String resource) throws IOException {
+		HtmlIncludeTag hit = new HtmlIncludeTag();
+		hit.setPageContext(pageContext);
+		hit.setFile(resource);
+		try {
+			hit.doStartTag();
+		}
+		catch (Exception e) {
+			throw new IllegalArgumentException("Unable to include resource: " + resource, e);
+		}
+	}
+	
+	/**
 	 * Render each specified resource as an HtmlInclude in the page
 	 * @param pageContext
 	 * @param resources
@@ -68,15 +86,7 @@ public class HtmlUtil  {
 	public static void renderResourceFiles(PageContext pageContext, List<String> resources) throws IOException {
 		if (resources != null) {
 			for (String s : resources) {
-				HtmlIncludeTag hit = new HtmlIncludeTag();
-				hit.setPageContext(pageContext);
-				hit.setFile(s);
-				try {
-					hit.doStartTag();
-				}
-				catch (Exception e) {
-					throw new IllegalArgumentException("Unable to include resource: " + s, e);
-				}
+				renderResource(pageContext, s);
 			}
 		}
 	}

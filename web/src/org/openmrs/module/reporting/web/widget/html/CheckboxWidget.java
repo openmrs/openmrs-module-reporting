@@ -1,40 +1,44 @@
 package org.openmrs.module.reporting.web.widget.html;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.ObjectUtils;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
+
 /**
- * This represents one or more Radio Buttons
+ * This represents one or more Check-boxes
  */
 public class CheckboxWidget extends CodedWidget {
 
 	/** 
-	 * @see BaseWidget#configure()
+	 * @see CodedWidget#render(WidgetConfig)
 	 */
 	@Override
-	public void configure() {
-		setAttribute("type", "checkbox", false);
+	public void render(WidgetConfig config) throws IOException {
+		config.setFixedAttribute("type", "checkbox");
+		super.render(config);
 	}
 	
 	/**
-	 * @see CodedWidget#isSelected(Option)
+	 * @see CodedWidget#isSelected(Option, Object)
 	 */
 	@Override
-	public boolean isSelected(Option option) {
-		Object v = getDefaultValue();
-		if (option.getValue() == null) {
-			return v == null;
+	public boolean isSelected(Option option, Object value) {
+		if (ObjectUtils.equals(option.getValue(), value)) {
+			return true;
 		}
-		if (v instanceof Collection) {
-			return ((Collection<?>) v).contains(option.getValue());
+		else if (value instanceof Collection) {
+			return ((Collection<?>) value).contains(option.getValue());
 		}
-		if (v instanceof Object[]) {
-			List<Object> l = Arrays.asList((Object[]) v);
+		else if (value instanceof Object[]) {
+			List<Object> l = Arrays.asList((Object[]) value);
 			if (l != null) {
 				return l.contains(option.getValue());
 			}
 		}
-		return option.getValue().equals(getDefaultValue());
+		return false;
 	}
 }

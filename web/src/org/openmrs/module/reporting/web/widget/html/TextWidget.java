@@ -3,23 +3,19 @@ package org.openmrs.module.reporting.web.widget.html;
 import java.io.IOException;
 import java.io.Writer;
 
-public class TextWidget extends BaseWidget {
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
+
+public class TextWidget implements Widget {
 
 	/** 
-	 * @see BaseWidget#configure()
+	 * @see Widget#render(WidgetConfig)
 	 */
-	@Override
-	public void configure() {
-		String textValue = getDefaultValue() == null ? "" : getDefaultValue().toString();
-    	setAttribute("type","text", false);
-    	setAttribute("value", textValue, false);
-    	setAttribute("size", "20", true);
-	}
-
-	/** 
-	 * @see Widget#render(Writer)
-	 */
-	public void render(Writer w) throws IOException {
-		HtmlUtil.renderSimpleTag(w, "input", getAttributes());
+	public void render(WidgetConfig config) throws IOException {
+		Writer w = config.getPageContext().getOut();
+		String textValue = config.getDefaultValue() == null ? "" : config.getDefaultValue().toString();
+		config.setFixedAttribute("type", "text");
+		config.setDefaultAttribute("value", textValue);
+		config.setDefaultAttribute("size", "20");
+		HtmlUtil.renderSimpleTag(w, "input", config.getAttributes());
 	}
 }

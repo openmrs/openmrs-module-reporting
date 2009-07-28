@@ -2,109 +2,77 @@ package org.openmrs.module.reporting.web.widget.html;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
+import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
+import org.openmrs.util.HandlerUtil;
 
-import org.openmrs.module.reporting.web.widget.WidgetTag;
-
-public class RepeatingWidget extends BaseWidget {
-	
-	//***** PROPERTIES *****
-	
-	private Class<?> repeatingType;
-	
-	//***** INSTANCE METHODS *****
-
-	/** 
-	 * @see BaseWidget#configure()
-	 */
-	@Override
-	public void configure() {
-		addResource("/scripts/jquery/jquery-1.2.6.min.js");
-		addResource("/moduleResources/reporting/scripts/reporting.js");
-	}
+public class RepeatingWidget implements Widget {
 	
 	/** 
-	 * @see BaseWidget#render(Writer)
+	 * @see Widget#render(WidgetConfig)
 	 */
-	@Override
-	public void render(Writer w) throws IOException { }
-	
-	/** 
-	 * @see Widget#render(PageContext)
-	 */
-	public void render(PageContext pageContext) throws IOException {
-		Writer w = pageContext.getOut();
+	public void render(WidgetConfig config) throws IOException {
 		
-		HtmlUtil.renderResourceFiles(pageContext, getResources());
-		HtmlUtil.renderOpenTag(w, "div", "id="+getId()+"MultiFieldDiv");
-		if (getDefaultValue() != null) {
-			if (getDefaultValue() instanceof Collection) {
-				for (Object o : (Collection<?>)getDefaultValue()) {
-					renderWidget(pageContext, getRepeatingType(), o, false);
-				}
+		HtmlUtil.renderResource(config.getPageContext(), "/scripts/jquery/jquery-1.2.6.min.js");
+		HtmlUtil.renderResource(config.getPageContext(), "/moduleResources/reporting/scripts/reporting.js");
+		Writer w = config.getPageContext().getOut();
+		String id = config.getId();
+		
+		Class<?> type = null;
+		if (config.getGenericTypes() != null && config.getGenericTypes().length == 1) {
+			try {
+				type = (Class<?>) config.getGenericTypes()[0];
+			}
+			catch (Exception e) {
+				// Do Nothing 
 			}
 		}
-		renderWidget(pageContext, getRepeatingType(), null, true);
-		HtmlUtil.renderSimpleTag(w, "input", "type=button|value=+|size=1|onclick=cloneAndInsertBefore('"+getId()+"Template', this);");
-		HtmlUtil.renderCloseTag(w, "div");
-	}
-
-	/**
-	 * Utility method which renders a new repeating section
-	 * @param parent
-	 * @param clazz
-	 * @param defaultValue
-	 */
-	protected void renderWidget(PageContext context, Class<?> clazz, Object defaultValue, boolean isTemplate) throws IOException {
-		Writer w = context.getOut();
+		if (type == null) {
+			throw new IllegalArgumentException("Invalid CollectionHandler configuration: " + config);
+		}
 		
-		String addAtts = (isTemplate ? "|id="+getId()+"Template|style=display:none;" : "");
-		HtmlUtil.renderOpenTag(w, "span", "class=multiFieldInput" + addAtts);
-
-		WidgetTag t = new WidgetTag();
-		t.setPageContext(context);
-		t.setId(getId());
-		t.setName(getName());
-		t.setClazz(clazz);
-		t.setDefaultValue(defaultValue);
-		StringBuilder attributeString = new StringBuilder();
-		for (Iterator<Attribute> i = getAttributes().iterator(); i.hasNext();) {
-			Attribute a = i.next();
-			attributeString.append(a.getName()+"="+a.getValue()+(i.hasNext() ? "|" : ""));
-		}
-		t.setAttributes(attributeString.toString());
-		try {
-			t.doStartTag();
-			t.doAfterBody();
-			t.doEndTag();
-			t.release();
-		}
-		catch (JspException e) {
-			throw new RuntimeException("Error rendering tag", e);
+		// Ensure that we have an appropriate Handler
+		WidgetHandler handler = HandlerUtil.getPreferredHandler(WidgetHandler.class, type);
+		if (handler == null) {
+			throw new RuntimeException("No Preferred Handler found for: " + type);
 		}
 
-		HtmlUtil.renderSimpleTag(w, "input", "type=button|value=X|size=1|onclick=removeParentWithClass(this,'multiFieldInput');");
-		HtmlUtil.renderSimpleTag(w, "br", "");
-		HtmlUtil.renderCloseTag(w, "span");
-	}
-	
-	//***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the repeatingType
-	 */
-	public Class<?> getRepeatingType() {
-		return repeatingType;
-	}
-
-	/**
-	 * @param repeatingType the repeatingType to set
-	 */
-	public void setRepeatingType(Class<?> repeatingType) {
-		this.repeatingType = repeatingType;
+		HtmlUtil.renderOpenTag(w, "div", "id="+id+"MultiFieldDiv");
+		if (config.getDefaultValue() != null) {
+			if (config.getDefaultValue() instanceof Collection) {
+				List<?> valuesToRender = new ArrayList<Object>((Collection<?>)config.getDefaultValue());
+				for (int i=0; i<=valuesToRender.size(); i++) {
+					Object o = (i == valuesToRender.size() ? null : valuesToRender.get(i));
+					WidgetConfig c = config.clone();
+					if (config.getId() != null) {
+						c.setId(config.getId() + "_" + i);
+					}
+					c.setGenericTypes(null);
+					c.setDefaultValue(o);
+					
+					Set<Attribute> atts = new HashSet<Attribute>();
+					atts.add(new Attribute("class", "multiFieldInput", null, null));
+					if (o == null) {
+						atts.add(new Attribute("id", config.getId()+"Template", null, null));
+						atts.add(new Attribute("style", "display:none;", null, null));
+					}
+					
+					HtmlUtil.renderOpenTag(w, "span", atts);
+					handler.handle(c);
+					HtmlUtil.renderSimpleTag(w, "input", "type=button|value=X|size=1|onclick=removeParentWithClass(this,'multiFieldInput');");
+					HtmlUtil.renderSimpleTag(w, "br", "");
+					HtmlUtil.renderCloseTag(w, "span");
+				}
+					
+				HtmlUtil.renderSimpleTag(w, "input", "type=button|value=+|size=1|onclick=cloneAndInsertBefore('"+id+"Template', this);");
+				HtmlUtil.renderCloseTag(w, "div");
+			}
+		}
 	}
 }

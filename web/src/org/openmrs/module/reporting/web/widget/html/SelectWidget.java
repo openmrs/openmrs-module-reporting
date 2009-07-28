@@ -6,28 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 
 /**
  * This represents a select list widget
  */
 public class SelectWidget extends CodedWidget {
-
-	/** 
-	 * @see BaseWidget#configure()
-	 */
-	@Override
-	public void configure() { }
 	
 	/** 
-	 * @see Widget#render(Writer)
+	 * @see CodedWidget#render(WidgetConfig)
 	 */
-	public void render(Writer w) throws IOException {
-		HtmlUtil.renderOpenTag(w, "select", getAttributes());
+	@Override
+	public void render(WidgetConfig config) throws IOException {
+		Writer w = config.getPageContext().getOut();
+		HtmlUtil.renderOpenTag(w, "select", config.getAttributes());
 		for (Option option : getOptions()) {
 			List<Attribute> atts = new ArrayList<Attribute>();
-			atts.add(new Attribute("value", option.getCode()));
-			if (ObjectUtils.equals(option.getValue(), getDefaultValue())) {
-				atts.add(new Attribute("selected", "true"));
+			atts.add(new Attribute("value", option.getCode(), null, null));
+			if (ObjectUtils.equals(option.getValue(), config.getDefaultValue())) {
+				atts.add(new Attribute("selected", "true", null, null));
 			}
 			HtmlUtil.renderOpenTag(w, "option", atts);
 			w.write(option.getLabel());

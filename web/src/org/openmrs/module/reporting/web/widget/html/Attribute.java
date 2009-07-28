@@ -7,33 +7,27 @@ public class Attribute {
 	
 	//****** Properties ******
 	private String name;
-	private String value;
-	private boolean configurable = true;
-
+	private String fixedValue;
+	private String configuredValue;
+	private String defaultValue;
+	
 	/**
 	 * Default Constructor
 	 */
     public Attribute() { }
     
     /**
-     * Name and value constructor to initialize a configurable attribute
-     * @param name
-     * @param value
-     */
-    public Attribute(String name, String value) {
-    	this(name, value, true);
-    }   
-    
-    /**
      * Full constructor
      * @param name
-     * @param value
-     * @param configurable
+     * @param fixedValue
+     * @param configuredValue
+     * @param defaultValue
      */
-    public Attribute(String name, String value, boolean configurable) {
+    public Attribute(String name, String fixedValue, String configuredValue, String defaultValue) {
     	this.name = name;
-    	this.value = value;
-    	this.configurable = configurable;
+    	this.fixedValue = fixedValue;
+    	this.configuredValue = configuredValue;
+    	this.defaultValue = defaultValue;
     }
 
     //***** Instance Methods *****
@@ -67,7 +61,16 @@ public class Attribute {
 	 */
 	@Override
 	public String toString() {
-		return " " + name + "=\"" + (value == null ? "" : value) + "\"";
+		return " " + name + "=\"" + getValue() == null ? "" : getValue() + "\"";
+	}
+	
+	/**
+	 * @return first not-null of fixedValue, configuredValue, defaultValue
+	 */
+	public String getValue() {
+		if (fixedValue != null) { return fixedValue; }
+		if (configuredValue != null) { return configuredValue; }
+		return defaultValue;
 	}
 	
 	//***** Property Access *****
@@ -87,30 +90,44 @@ public class Attribute {
 	}
 
 	/**
-	 * @return the value
+	 * @return the fixedValue
 	 */
-	public String getValue() {
-		return value;
+	public String getFixedValue() {
+		return fixedValue;
 	}
 
 	/**
-	 * @param value the value to set
+	 * @param fixedValue the fixedValue to set
 	 */
-	public void setValue(String value) {
-		this.value = value;
+	public void setFixedValue(String fixedValue) {
+		this.fixedValue = fixedValue;
 	}
-	
+
 	/**
-	 * @return the configurable
+	 * @return the configuredValue
 	 */
-	public boolean isConfigurable() {
-		return configurable;
+	public String getConfiguredValue() {
+		return configuredValue;
 	}
-	
+
 	/**
-	 * @param configurable the configurable to set
+	 * @param configuredValue the configuredValue to set
 	 */
-	public void setConfigurable(boolean configurable) {
-		this.configurable = configurable;
+	public void setConfiguredValue(String configuredValue) {
+		this.configuredValue = configuredValue;
+	}
+
+	/**
+	 * @return the defaultValue
+	 */
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+
+	/**
+	 * @param defaultValue the defaultValue to set
+	 */
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
 	}
 }

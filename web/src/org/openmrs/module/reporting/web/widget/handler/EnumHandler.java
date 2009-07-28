@@ -14,7 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.web.widget.WidgetTag;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.CodedWidget;
 import org.openmrs.module.reporting.web.widget.html.Option;
 
@@ -23,17 +23,17 @@ import org.openmrs.module.reporting.web.widget.html.Option;
  */
 @Handler(supports={Enum.class}, order=50)
 public class EnumHandler extends CodedHandler {
-	
+
 	/** 
-	 * @see CodedHandler#populateOptions(WidgetTag, CodedWidget)
+	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
 	 */
 	@Override
-	public void populateOptions(WidgetTag tag, CodedWidget widget) {
-		Object[] enums = tag.getType().getEnumConstants();
+	public void populateOptions(WidgetConfig config, CodedWidget widget) {
+		Object[] enums = config.getType().getEnumConstants();
 		if (enums != null) {
 			for (Object o : enums) {
-				widget.addOption(new Option(o.toString(), o.toString(), null, o));
+				widget.addOption(new Option(o.toString(), o.toString(), null, o), config);
 			}
-		}	
+		}
 	}
 }

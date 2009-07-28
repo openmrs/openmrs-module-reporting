@@ -3,28 +3,22 @@ package org.openmrs.module.reporting.web.widget.html;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.servlet.jsp.PageContext;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 
 /**
  * This represents a single text area widget.
  */
-public class TextAreaWidget extends BaseWidget {
-    
+public class TextAreaWidget implements Widget {
+
 	/** 
-	 * @see BaseWidget#configure()
+	 * @see Widget#render(WidgetConfig)
 	 */
-	@Override
-	public void configure() {
-    	setAttribute("cols", "20", true);
-    	setAttribute("rows", "2", true);
-	}
-	
-	/** 
-	 * @see Widget#render(PageContext)
-	 */
-	public void render(Writer w) throws IOException {
-		HtmlUtil.renderOpenTag(w, "textarea", getAttributes());
-		w.write(getDefaultValue() == null ? "" : getDefaultValue().toString());
+	public void render(WidgetConfig config) throws IOException {
+		Writer w = config.getPageContext().getOut();
+		config.setDefaultAttribute("cols", "20");
+		config.setDefaultAttribute("rows", "2");
+		HtmlUtil.renderOpenTag(w, "input", config.getAttributes());
+		w.write(config.getDefaultValue() == null ? "" : config.getDefaultValue().toString());
 		HtmlUtil.renderCloseTag(w, "textarea");
 	}
 }

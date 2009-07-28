@@ -18,12 +18,7 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.web.widget.WidgetTag;
-import org.openmrs.module.reporting.web.widget.html.CheckboxWidget;
-import org.openmrs.module.reporting.web.widget.html.CodedWidget;
-import org.openmrs.module.reporting.web.widget.html.RadioWidget;
-import org.openmrs.module.reporting.web.widget.html.SelectWidget;
-import org.openmrs.module.reporting.web.widget.html.Widget;
+import org.openmrs.module.reporting.web.widget.WidgetConfig;
 
 /**
  * Base WidgetHandler class.
@@ -37,41 +32,8 @@ public class WidgetHandler {
 	 * This is the main method that should be overridden by subclasses to render the appropriate Widget
 	 * @param tag
 	 */
-	public void handle(WidgetTag tag) throws IOException {
-		String output = "Cannot handle type [" + tag.getType() + "]. Please add a module to handle this type.";
-		tag.getPageContext().getOut().write(output);
-	}
-	
-	/**
-	 * Factory method for instantiating a new Widget instance
-	 */
-	public static <T extends Widget> T getWidgetInstance(WidgetTag tag, Class<? extends T> clazz) {
-		try {
-			T widget = clazz.newInstance();
-			widget.setId(tag.getId());
-			widget.setName(tag.getName());
-			widget.setDefaultValue(tag.getDefaultValue());
-			widget.configure(tag.getAttributeMap());
-			return widget;
-		}
-		catch (Exception e) {
-			throw new IllegalArgumentException("Unable to get instance of Widget class: " + clazz, e);
-		}
-	}
-	
-	/**
-	 * Utility method to retrieve a CodedWidget based on the given format string
-	 */
-	public static CodedWidget getCodedWidget(WidgetTag tag, Class<? extends CodedWidget> defaultType) {
-		if ("radio".equals(tag.getFormat())) {
-			defaultType = RadioWidget.class;
-		}
-		else if ("checkbox".equals(tag.getFormat())) {
-			defaultType = CheckboxWidget.class;
-		}
-		else if ("select".equals(tag.getFormat()) || defaultType == null) {
-			defaultType = SelectWidget.class;
-		}
-		return getWidgetInstance(tag, defaultType);
+	public void handle(WidgetConfig config) throws IOException {
+		String output = "Cannot handle type [" + config.getType() + "]. Please add a module to handle this type.";
+		config.getPageContext().getOut().write(output);
 	}
 }
