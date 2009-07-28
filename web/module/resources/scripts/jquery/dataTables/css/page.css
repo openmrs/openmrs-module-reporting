@@ -3,7 +3,7 @@
  * General page setup
  */
 #page {
-	font: 100%/1.45em "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+	font: 75% "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 	margin: 0;
 	padding: 0;
 	color: #333;
@@ -12,7 +12,7 @@
 
 
 #page #container {
-	width: 75%; /* 800px */
+	width: 100%; /* 800px */
 	margin: 0px auto;
 	padding: 0;
 }
