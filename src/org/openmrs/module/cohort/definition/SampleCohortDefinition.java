@@ -93,7 +93,10 @@ public class SampleCohortDefinition extends BaseCohortDefinition {
     	}
     	List<T> ret = new ArrayList<T>();
     	for (int i=0; i<num; i++) {
-    		ret.add(random(items));
+    		T item = random(items);
+    		if (item != null) {
+    			ret.add(item);
+    		}
     	}
     	return ret;
     }
