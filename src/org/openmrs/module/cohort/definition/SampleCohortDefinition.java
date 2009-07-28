@@ -13,16 +13,17 @@
  */
 package org.openmrs.module.cohort.definition;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.openmrs.Cohort;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
-import org.openmrs.OpenmrsMetadata;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.OrderType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
@@ -30,6 +31,7 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.PatientSetService.PatientLocationMethod;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.parameter.Param;
 
 public class SampleCohortDefinition extends BaseCohortDefinition {
@@ -48,22 +50,25 @@ public class SampleCohortDefinition extends BaseCohortDefinition {
     @Param private Date testDate = new Date();
     @Param private Boolean testBoolean = Boolean.TRUE;
 
-    @Param private Location testLocation = getRandomType(Context.getLocationService().getAllLocations());
-    @Param private EncounterType testEncounterType = getRandomType(Context.getEncounterService().getAllEncounterTypes());
-    @Param private Program testProgram = getRandomType(Context.getProgramWorkflowService().getAllPrograms());
-    @Param private ProgramWorkflow testProgramWorkflow = getRandomType(testProgram == null ? null : testProgram.getAllWorkflows());
-    @Param private ProgramWorkflowState testProgramWorkflowState = getRandomType(testProgramWorkflow == null ? null : testProgramWorkflow.getStates());
-    @Param private Drug testDrug = getRandomType(Context.getConceptService().getAllDrugs());
-    @Param private Form testForm = getRandomType(Context.getFormService().getAllForms());
-    @Param private OrderType testOrderType = getRandomType(Context.getOrderService().getAllOrderTypes());
-    @Param private PersonAttributeType testPersonAttributeType = getRandomType(Context.getPersonService().getAllPersonAttributeTypes());
-    @Param private List<Location> locations = Arrays.asList(getRandomType(Context.getLocationService().getAllLocations()));
+    @Param private Location testLocation = random(Context.getLocationService().getAllLocations());
+    @Param private EncounterType testEncounterType = random(Context.getEncounterService().getAllEncounterTypes());
+    @Param private Program testProgram = random(Context.getProgramWorkflowService().getAllPrograms());
+    @Param private ProgramWorkflow testProgramWorkflow = random(testProgram == null ? null : testProgram.getAllWorkflows());
+    @Param private ProgramWorkflowState testProgramWorkflowState = random(testProgramWorkflow == null ? null : testProgramWorkflow.getStates());
+    @Param private Drug testDrug = random(Context.getConceptService().getAllDrugs());
+    @Param private Form testForm = random(Context.getFormService().getAllForms());
+    @Param private OrderType testOrderType = random(Context.getOrderService().getAllOrderTypes());
+    @Param private PersonAttributeType testPersonAttributeType = random(Context.getPersonService().getAllPersonAttributeTypes());
+    @Param private Cohort cohortType = random(Context.getCohortService().getAllCohorts());
+    @Param private CohortDefinition cohortDefinitionType = random(Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));
+    
+    @Param private List<Location> locations = randomList(Context.getLocationService().getAllLocations());
     
     /**
      * Utility method
      * @param <T>
      */
-    protected <T extends OpenmrsMetadata> T getRandomType(Collection<T> items) {
+    protected <T extends OpenmrsObject> T random(Collection<T> items) {
     	if (items == null) {
     		return null;
     	}
@@ -79,6 +84,18 @@ public class SampleCohortDefinition extends BaseCohortDefinition {
     		}
     	}
     	return null;
+    }
+    
+    protected <T extends OpenmrsObject> List<T> randomList(Collection<T> items) {
+    	int num = (int)Math.round(Math.random()*3);
+    	if (num == 0) {
+    		return null;
+    	}
+    	List<T> ret = new ArrayList<T>();
+    	for (int i=0; i<num; i++) {
+    		ret.add(random(items));
+    	}
+    	return ret;
     }
 	
 	//***** CONSTRUCTORS *****
@@ -368,5 +385,33 @@ public class SampleCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setLocations(List<Location> locations) {
 		this.locations = locations;
+	}
+
+	/**
+	 * @return the cohortType
+	 */
+	public Cohort getCohortType() {
+		return cohortType;
+	}
+
+	/**
+	 * @param cohortType the cohortType to set
+	 */
+	public void setCohortType(Cohort cohortType) {
+		this.cohortType = cohortType;
+	}
+
+	/**
+	 * @return the cohortDefinitionType
+	 */
+	public CohortDefinition getCohortDefinitionType() {
+		return cohortDefinitionType;
+	}
+
+	/**
+	 * @param cohortDefinitionType the cohortDefinitionType to set
+	 */
+	public void setCohortDefinitionType(CohortDefinition cohortDefinitionType) {
+		this.cohortDefinitionType = cohortDefinitionType;
 	}
 }
