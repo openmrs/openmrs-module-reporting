@@ -38,8 +38,11 @@ public class LocationCohortDefinitionEvaluator implements CohortDefinitionEvalua
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	LocationCohortDefinition lcd = (LocationCohortDefinition) cohortDefinition;
-    	Location location = lcd.getLocation();
-    	PatientLocationMethod method = lcd.getCalculationMethod();
-    	return Context.getPatientSetService().getPatientsHavingLocation(location, method);
+    	Cohort c = new Cohort();
+    	for (Location l : lcd.getLocation()) {
+        	PatientLocationMethod method = lcd.getCalculationMethod();
+        	c = Cohort.union(c, Context.getPatientSetService().getPatientsHavingLocation(l, method));
+    	}
+    	return c;
     }
 }

@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.cohort.definition;
 
+import java.util.List;
+
 import org.openmrs.Location;
 import org.openmrs.api.PatientSetService.PatientLocationMethod;
 import org.openmrs.module.evaluation.parameter.Param;
@@ -27,7 +29,7 @@ public class LocationCohortDefinition extends BaseCohortDefinition {
 	//***** PROPERTIES *****
 	
 	@Param(required=true)
-	private Location location;
+	private List<Location> locations;
 	
 	@Param(required=true)
 	private PatientLocationMethod calculationMethod = PatientLocationMethod.PATIENT_HEALTH_CENTER;
@@ -44,17 +46,17 @@ public class LocationCohortDefinition extends BaseCohortDefinition {
 	//***** PROPERTY ACCESS *****
 	
     /**
-     * @return the location
+     * @return the locations
      */
-    public Location getLocation() {
-    	return location;
+    public List<Location> getLocation() {
+    	return locations;
     }
 	
     /**
-     * @param location the location to set
+     * @param locations the locations to set
      */
-    public void setLocation(Location location) {
-    	this.location = location;
+    public void setLocation(List<Location> locations) {
+    	this.locations = locations;
     }
 
     /**
