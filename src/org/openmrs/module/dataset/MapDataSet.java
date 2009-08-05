@@ -44,6 +44,14 @@ public class MapDataSet<T> implements DataSet<T> {
 	}
 
 	/**
+	 * Convenience method for JSTL method.  
+	 * TODO This will be removed once we get a decent solution for the dataset iterator solution.  
+	 */
+	public Iterator<Map<DataSetColumn, T>> getIterator() {
+		return iterator();
+	}
+	
+	/**
      * Adds a Data Element to this DataSet
      * @param key - The column key to add this element to
      * @param dataElement - The data to add

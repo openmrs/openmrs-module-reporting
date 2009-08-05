@@ -28,7 +28,7 @@ $(document).ready(function() {
 
 	
 		<h1>Cohort Manager</h1>
-		<form method="get" action="editCohortDefinition.form">
+		<form method="get" action="editCohortDefinition.form" style="display:inline">
 			<strong>Create a new cohort definition</strong>
 			<select name="type">
 				<option value="">&nbsp;</option>
@@ -51,11 +51,11 @@ $(document).ready(function() {
 		<table id="cohort-definition-table" class="display" >
 			<thead>
 				<tr>
+					<th align="center" width="1%"></th>
 					<th>Name</th>
 					<th>Type</th>
 					<th>Description</th>
 					<th>Created</th>
-					<th align="center" width="1%"></th>
 					<th align="center" width="1%"></th>
 					<th align="center" width="1%"></th>
 				</tr>
@@ -63,6 +63,11 @@ $(document).ready(function() {
 			<tbody>
 				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
 					<tr>
+						<td align="center">
+							<a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">
+								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
+							</a>
+						</td>
 						<td>
 							${cohortDefinition.name}
 						</td>
@@ -78,11 +83,6 @@ $(document).ready(function() {
 								${cohortDefinition.createdDate}
 							</c:if>
 						</td>						
-						<td align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">
-								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
-							</a>
-						</td>
 						<td align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateCohortDefinition.form?uuid=${cohortDefinition.uuid}">
 								<img src="<c:url value='/images/play.gif'/>" border="0"/>

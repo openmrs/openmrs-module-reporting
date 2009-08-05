@@ -113,7 +113,7 @@ $(document).ready(function() {
 						<div class="buttons">
 							<span>
 								<input id="save-button" class="btTxt submit" type="submit" value="Download" tabindex="6" />
-								<button id="cancel-button" name="cancel" class="button">Cancel</button>
+								<button id="cancel-button" name="cancel">Cancel</button>
 							</span>
 						</div>
 	

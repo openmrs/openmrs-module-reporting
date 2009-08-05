@@ -25,7 +25,7 @@ public class AdminListExt extends AdministrationSectionExt {
 	public Map<String, String> getLinks() {
 		// Using linked hash map to keep order of links
 		Map<String, String> map = new LinkedHashMap<String, String>();
-		map.put("module/reporting/index.htm", "reporting.reportDashboard.title");
+		map.put("module/reporting/manageDashboard.form", "reporting.reportDashboard.title");
 		map.put("module/reporting/showLabReport.form", "reporting.rwandaReports.title");
 		
 		return map;

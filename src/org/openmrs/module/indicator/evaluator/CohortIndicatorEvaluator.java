@@ -56,7 +56,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 		
 		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
 		Cohort c = cds.evaluate(cid.getCohortDefinition(), context);
-		log.info("Evaluated Cohort: " + c.getSize());
+		
 		// Ensure we are filtering on the base cohort
 		if (context.getBaseCohort() != null) {
 			c = Cohort.intersect(c, context.getBaseCohort());
@@ -74,9 +74,12 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
     			throw new APIException("Error evaluating logic criteria", e);
     		}
     	}
+    	// Or copy the evaluated cohort into the indicator
     	else {
-    		for (Integer memberId : c.getMemberIds()) {
-    			ind.addCohortValue(memberId, 1);
+    		if (c != null) { 
+	    		for (Integer memberId : c.getMemberIds()) {
+	    			ind.addCohortValue(memberId, 1);
+	    		}
     		}
     	}
 		return ind;

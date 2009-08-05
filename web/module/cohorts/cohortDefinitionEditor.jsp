@@ -24,8 +24,9 @@ $(document).ready(function() {
 		"bAutoWidth": false
 	} );
 
+	// Redirect to listing page
 	$('#cancel-button').click(function(event){
-		window.location.href='<c:url value="/module/reporting/manageReportSchemas.list"/>';
+		window.location.href='<c:url value="/module/reporting/manageCohortDefinition.list"/>';
 	});
 	
 } );
@@ -92,13 +93,13 @@ $(document).ready(function() {
 							<label class="desc">Configuration</label>			
 							
 							<div>
-								<table id="cohort-definition-parameter-table" class="display">
+								<table id="cohort-definition-parameter-table" class="display" width="50%">
 									<thead>
 										<tr>
-											<th align="left">Name</th>
-											<th align="left">Fixed Value</th>
-											<th align="left">- OR -</th>
-											<th align="left">Runtime Parameter</th>
+											<th align="left" width="5%">Name</th>
+											<th align="center" width="10%">Fixed Value</th>
+											<th align="center" width="5%">- OR -</th>
+											<th align="center" width="10%">Runtime Parameter</th>
 										</tr>	
 									</thead>
 									<tbody>
@@ -111,17 +112,17 @@ $(document).ready(function() {
 											</c:forEach>
 	
 											<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
-												<td valign="top">
+												<td valign="top" width="5%">
 													${p.name}
 													<c:if test="${p.required && isParam == 'f'}">
 														<span style="color:red;">*</span>
 													</c:if>
 												</td>
-												<td valign="top">
+												<td valign="top" align="center">
 													<rpt:widget id="${p.name}" name="${p.name}" object="${cohortDefinition}" property="${p.name}"/>
 												</td>
 												<td>&nbsp;</td>
-												<td valign="top">
+												<td valign="top" align="center">
 													<input 	type="checkbox" name="parameter.${p.name}.allowAtEvaluation" value="t"
 															<c:if test="${isParam == 't'}">checked="true"</c:if>/>
 												</td>
@@ -136,8 +137,8 @@ $(document).ready(function() {
 							
 						<li>					
 							<div align="center">				
-								<input id="saveForm" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-								<input id="cancel-button" class="btTxt submit" type="button" value="Cancel" tabindex="8"/>				
+								<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
+								<button id="cancel-button" name="cancel">Cancel</button>
 							</div>					
 						</li>
 					</ul>				

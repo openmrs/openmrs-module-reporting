@@ -18,8 +18,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.Cohort;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.BaseCohortDefinition;
@@ -35,6 +38,9 @@ import org.openmrs.test.Verifies;
  * Tests methods in the {@link CohortUtil} class.
  */
 public class CohortUtilTest extends BaseContextSensitiveTest {
+
+	protected Log log = LogFactory.getLog(this.getClass());
+	
 	
 	/**
 	 * @see {@link CohortUtil#parse(String)}
@@ -80,6 +86,25 @@ public class CohortUtilTest extends BaseContextSensitiveTest {
 			Assert.assertTrue(test instanceof ProgramStateCohortDefinition);
 			Assert.assertEquals(1, test.getParameters().size());
 		}
+	}
+	
+	/**
+	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()
+	 */
+	@Override
+    public Boolean useInMemoryDatabase() {
+	    return false;
+	}		
+	
+	
+	@Test
+	public void testCohort() throws Exception { 		
+		
+		authenticate();
+		
+		Cohort cohort = 
+			Context.getPatientSetService().getAllPatients();		
+		log.info("Testing: " + cohort.getSize());
 	}
 	
 }

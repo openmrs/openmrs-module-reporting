@@ -18,9 +18,14 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
+import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.evaluator.DataSetEvaluator;
@@ -30,6 +35,7 @@ import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.util.HandlerUtil;
 import org.simpleframework.xml.load.Persister;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  * Default implementation of the DataSetDefinitionService.
@@ -54,6 +60,26 @@ public class BaseDataSetDefinitionService extends BaseOpenmrsService implements 
     public void setDao(SerializedObjectDAO dao) {
     	this.dao = dao;
     }	
+
+    
+    /**
+     * 
+     */
+    public List<Class<? extends DataSetDefinition>> getDataSetDefinitionTypes() { 
+		List<Class<? extends DataSetDefinition>> ret = new ArrayList<Class<? extends DataSetDefinition>>();
+		for (DataSetEvaluator e : HandlerUtil.getHandlersForType(DataSetEvaluator.class, null)) {
+			Handler handlerAnnotation = e.getClass().getAnnotation(Handler.class);
+			if (handlerAnnotation != null) {
+				Class<?>[] types = handlerAnnotation.supports();
+				if (types != null) {
+					for (Class<?> type : types) {
+						ret.add((Class<? extends DataSetDefinition>) type);
+					}
+				}
+			}
+		}
+		return ret;
+	}    
     
 	/**
 	 * Returns the DataSetDefinitionPersister for the passed DataSetDefinition
@@ -84,14 +110,38 @@ public class BaseDataSetDefinitionService extends BaseOpenmrsService implements 
 	 */
 	public DataSetDefinition getDataSetDefinitionByUuid(String uuid) throws APIException {
 		for (DataSetDefinitionPersister p : HandlerUtil.getHandlersForType(DataSetDefinitionPersister.class, null)) {
-			DataSetDefinition cd = p.getDataSetDefinitionByUuid(uuid);
-			if (cd != null) {
-				return cd;
+			DataSetDefinition datasetDefinition = p.getDataSetDefinitionByUuid(uuid);
+			if (datasetDefinition != null) {
+				return datasetDefinition;
 			}
 		}
 		return null;
 	}
 
+	/**
+	 * @see DataSetDefinitionService#getDataSetDefinition(String, Class<? extends DataSetDefinition>)
+	 */
+    public DataSetDefinition getDataSetDefinition(String uuid, Class<? extends DataSetDefinition> type) {
+    	DataSetDefinition datasetDefinition = null;
+    	if (StringUtils.hasText(uuid)) {
+    		DataSetDefinitionService cds = Context.getService(DataSetDefinitionService.class);
+    		datasetDefinition = cds.getDataSetDefinitionByUuid(uuid);
+    	}
+    	else if (type != null) {
+     		try {
+     			datasetDefinition = type.newInstance();
+    		}
+    		catch (Exception e) {
+    			throw new IllegalArgumentException("Unable to instantiate a DataSetDefinition of type: " + type);
+    		}
+    	}
+    	else {
+    		throw new IllegalArgumentException("You must supply either a uuid or a type");
+    	}
+    	return datasetDefinition;
+    }		
+	
+	
 	/** 
 	 * @see DataSetDefinitionService#getAllDataSetDefinitions(boolean)
 	 */

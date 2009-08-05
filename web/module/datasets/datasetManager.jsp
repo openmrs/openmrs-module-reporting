@@ -20,6 +20,9 @@ $(document).ready(function() {
 		              { "bSortable": false },
 		              { "bSortable": false }]
 	} );			
+
+	$('#dataset-table').on
+
 } );
 
 </script>
@@ -34,8 +37,22 @@ $(document).ready(function() {
 		<div id="inline-list">	
 			<p>	
 				<ul>
-					<li class="first"><a href="<c:url value='/module/reporting/indicatorDataset.form'/>">Create Indicator Dataset</a></li>
-					<li class="last">more ...</li>
+					<li class="first">
+						<form method="get" action="newDataset.form" style="display:inline">					
+							<strong>Create a New Dataset:</strong>
+							<select name="type">
+								<option value="">&nbsp;</option>
+								<c:forEach items="${types}" var="type">
+									<option value="${type.name}">${type.simpleName}</option>
+								</c:forEach>
+							</select>
+							<input type="submit" value="Create"/>					
+						</form>		
+					</li>
+					
+					<li class="last">
+						<a href="<c:url value='/module/reporting/indicatorDataset.form'/>">Create Indicator Dataset</a>
+					</li>
 				</ul>
 			</p>			
 		</div>
@@ -45,37 +62,30 @@ $(document).ready(function() {
 			<thead>
 				<tr>
 					<th align="center" width="1%"><img src='<c:url value="/images/trash.gif"/>' border="0"/></th>
-					<th>Name</th>
-					<th>Type</th>
-					<th>Created</th>
-					<th align="center" width="1%"><img src='<c:url value="/images/edit.gif"/>' border="0"/></th>
-					<th align="center" width="1%"><img src='<c:url value="/images/play.gif"/>' border="0"/></th>
-					<th align="center" width="1%"><img src='<c:url value="/images/copy.gif"/>' border="0"/></th>
-					<th align="center" width="1%"><img src='<c:url value="/images/trash.gif"/>' border="0"/></th>
-					<th align="center" width="1%"><img src='<c:url value="/images/save.gif"/>' border="0"/></th>
+					<th width="10%">Type</th>
+					<th width="84%">Name</th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
 				</tr>
 			</thead>
 			
 			<tbody>
 				<c:forEach items="${datasetDefinitions}" var="dataset" varStatus="status">
 					<tr>
-						<td align="center">
+						<td  width="1%" align="center">
 							<input type="checkbox" name="selectedUuid" value="${dataset.uuid}"/>
 						</td>
-						<td>
+						<td width="10%">
+							${dataset.class.simpleName}
+						</td>
+						<td width="84%">
 							<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&id=${dataset.id}&className=${dataset.class.name}&action=edit">				
 								${dataset.name}
 							</a>
 						</td>
-						<td>
-							${dataset.class.simpleName}
-						</td>
-						<td>
-							<!-- TODO This should be fixed!  All dataset definitions should have metadata -->
-							<c:if test="${!dataset.class.simpleName eq 'DataExportDataSetDefinition'}">
-								${dataset.createdDate}
-							</c:if>
-						</td>						
 		<!-- 
 						<td>
 							<c:choose>
@@ -86,17 +96,17 @@ $(document).ready(function() {
 							</c:choose>				
 						</td>
 		 -->				
-						<td align="center">
+						<td align="center" width="1%">
 							<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&id=${dataset.id}&className=${dataset.class.name}&action=edit">				
 								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
 							</a>
 						</td>
-						<td align="center">
+						<td align="center" width="1%">
 							<a href="${pageContext.request.contextPath}/module/reporting/showDatasetPreview.form?uuid=${dataset.uuid}&id=${dataset.id}&className=${dataset.class.name}">					
 								<img src="${pageContext.request.contextPath}/images/play.gif" alt="preview" border="0"/>
 							</a> 
 						</td>
-						<td align="center">				
+						<td align="center" width="1%">				
 							<img src="${pageContext.request.contextPath}/images/copy.gif" alt="duplicate" border="0"/>					
 							<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&action=duplicate">
 								<!--  copy the above image here when feature has been implemented -->

@@ -98,6 +98,14 @@ public class ObsDataSet implements DataSet<Object> {
 	public Iterator<Map<DataSetColumn, Object>> iterator() {
 		return new HelperIterator(data.iterator());
 	}
+
+	/**
+	 * Convenience method for JSTL method.  
+	 * TODO This will be removed once we get a decent solution for the dataset iterator solution.  
+	 */
+	public Iterator<Map<DataSetColumn, Object>> getIterator() {
+		return iterator();
+	}	
 	
 	/**
 	 * @return the data

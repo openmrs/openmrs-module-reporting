@@ -33,13 +33,13 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	private static final long serialVersionUID = 6405583324151111487L;
 
 	// Constants 
-	public static final String PATIENT_ID = "patient_id";
-	public static final String IMB_ID = "imb_id";
-	public static final String NAME = "name";
-	public static final String AGE = "age";
-	public static final String GENDER = "gender";
-	public static final String HEALTH_CENTER = "health_center";
-	public static final String TREATMENT_GROUP = "treatment_group";
+	public static final String PATIENT_ID = "PATIENT_ID";
+	public static final String IMB_ID = "IMB_ID";
+	public static final String NAME = "NAME";
+	public static final String AGE = "AGE";
+	public static final String GENDER = "GENDER";
+	public static final String HEALTH_CENTER = "HEALTH_CENTER";
+	public static final String TREATMENT_GROUP = "TREATMENT_GROUP";
 	
 	/**
 	 * Constructor

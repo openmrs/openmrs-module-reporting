@@ -60,4 +60,7 @@ public interface DataSet<T extends Object> extends Iterable<Map<DataSetColumn, T
 	 */
 	public Iterator<Map<DataSetColumn, T>> iterator();
 	
+	
+	public Iterator<Map<DataSetColumn, T>> getIterator();
+	
 }

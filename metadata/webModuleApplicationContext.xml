@@ -15,7 +15,8 @@
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
 	<context:component-scan base-package="org.openmrs.module.reporting.web" />
 
-	<bean id="exceptionResolver"
+<!--  
+ 	<bean id="exceptionResolver"
 		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
 		<property name="exceptionMappings">
            <props>
@@ -26,6 +27,6 @@
         </property>				
 		<property name="defaultErrorView" value="generalFailure" />
 	</bean>
-
+-->
 
 </beans>

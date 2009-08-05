@@ -31,14 +31,14 @@ $(document).ready(function() {
 	} );			
 
 
+	// Redirect to the listing page
 	$('#cancel-button').click(function(event){
-		// Redirect to the listing page
 		window.location.href='<c:url value="/module/reporting/manageDatasetDefinitions.list"/>';
 	});
 
-
+	// Call client side validation method
 	$('#save-button').click(function(event){
-		// call a client side validation method
+		// no-op
 	});	
 	
 } );
@@ -139,8 +139,8 @@ $(document).ready(function() {
 						</li>
 						<li>					
 							<div align="center">				
-								<input id="save-button" name="save" type="submit" class="button" value="Save" />
-								<button id="cancel-button" name="cancel" type="submit" class="button">Cancel</button>
+								<input id="save-button" name="save" type="submit" value="Save" />
+								<button id="cancel-button" name="cancel" >Cancel</button>
 							</div>					
 						</li>
 					</ul>				
@@ -175,8 +175,8 @@ $(document).ready(function() {
 						</li>
 						<li>					
 							<div align="center">				
-								<input id="save-button" name="save" type="submit" class="button" value="Save" tabindex="100" />
-								<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
+								<input id="save-button" name="save" type="submit" value="Save" />
+								<button id="cancel-button" name="cancel">Cancel</button>
 							</div>					
 						</li>
 					</ul>
@@ -209,8 +209,8 @@ $(document).ready(function() {
 						</li>
 						<li>					
 							<div align="center">				
-								<input id="save-button" name="save" type="submit" class="button" value="Save" tabindex="100" />
-								<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
+								<input id="save-button" name="save" type="submit" value="Save" tabindex="100" />
+								<button id="cancel-button" name="cancel">Cancel</button>
 							</div>					
 						</li>
 					</ul>
@@ -245,8 +245,8 @@ $(document).ready(function() {
 								</li>
 								<li>			
 									<div align="center">				
-										<input id="evaluate-button" name="evaluate" type="submit" class="button" value="Evaluate" tabindex="101" disabled />
-										<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
+										<input id="evaluate-button" name="evaluate" type="submit" value="Evaluate" tabindex="101" disabled />
+										<button id="cancel-button" name="cancel">Cancel</button>
 									</div>					
 								</li>
 							</ul>				

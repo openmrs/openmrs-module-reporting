@@ -200,8 +200,8 @@ $j(document).ready(function() {
 
 					<li>					
 						<div align="center">				
-							<input id="save-button" name="save" type="submit" class="button" value="Save" tabindex="100" />
-							<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
+							<input id="save-button" name="save" type="submit" value="Save" />
+							<button id="cancel-button" name="cancel">Cancel</button>
 						</div>					
 					</li>
 				</ul>				
@@ -218,8 +218,8 @@ $j(document).ready(function() {
 					</li>
 					<li>					
 						<div align="center">				
-							<input id="evaluate-button" disabled name="evaluate" type="submit" class="button" value="Evaluate" tabindex="101" />
-							<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
+							<input id="evaluate-button" disabled name="evaluate" type="submit" value="Evaluate" tabindex="101" />
+							<button id="cancel-button" name="cancel">Cancel</button>
 						</div>					
 					</li>
 				</ul>

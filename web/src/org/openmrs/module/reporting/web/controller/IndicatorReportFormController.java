@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -27,6 +28,8 @@ import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportSchema;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
+import org.openmrs.module.report.renderer.ReportRenderer;
+import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -80,6 +83,61 @@ public class IndicatorReportFormController {
 		model.addAttribute("indicators", indicators);
 	}	
 	
+	@RequestMapping("/module/reporting/evaluateReport")		
+	public void evaluateReport( 
+   		@RequestParam(required=false, value="uuid") String uuid,
+		@RequestParam(required=false, value="renderAs") String renderType,
+		HttpServletRequest request,
+		HttpServletResponse response,
+		ModelMap model) throws Exception {
+		
+			
+		ReportService reportService = (ReportService) Context.getService(ReportService.class);
+
+		ReportSchema reportSchema = reportService.getReportSchemaByUuid(uuid);				
+	
+		if (reportSchema == null)
+			throw new APIException("Unable to locate report schema with UUID " + uuid);
+	
+		EvaluationContext evalContext = new EvaluationContext();
+		evalContext.setBaseCohort(Context.getPatientSetService().getAllPatients());
+		for (Parameter param : reportSchema.getParameters() ) { 
+			log.info("Setting parameter " + param.getName() + " of class " + param.getClazz() + " = " + request.getParameter(param.getName()) );
+			String paramValue = request.getParameter(param.getName());
+			// TODO Need to convert from string to object
+			// TODO Parameter needs a data type property
+			// We don't have enough information at this point
+			evalContext.addParameterValue(param.getName(), paramValue);
+		}
+
+		// Evaluate the report
+		ReportData reportData = reportService.evaluate(reportSchema, evalContext);
+	
+		// Render the report
+		ReportRenderer renderer = null;
+		if ("csv".equalsIgnoreCase(renderType)) { 
+			renderer = new CsvReportRenderer();
+			response.setContentType("text/csv");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + reportSchema.getName() + ".csv\"");  
+		} 
+		else if ("tsv".equalsIgnoreCase(renderType)) { 
+			renderer = new TsvReportRenderer();
+			response.setContentType("text/csv");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + reportSchema.getName() + ".tsv\"");  
+		} 
+		else if ("xls".equalsIgnoreCase(renderType)) { 
+			renderer = new TsvReportRenderer();
+			response.setContentType("application/vnd.ms-excel");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + reportSchema.getName() + ".xls\"");  
+		} 
+		else { 
+			throw new APIException("Unknown rendering type");
+		}
+		renderer.render(reportData, null, response.getOutputStream()); 
+
+		model.addAttribute("reportSchema", reportSchema);
+	}
+	
 	
 	@SuppressWarnings("unused")
 	@ModelAttribute("reportSchema")
@@ -108,7 +166,7 @@ public class IndicatorReportFormController {
 
 			String [] selectedIndicatorUuids = request.getParameterValues("indicatorUuid");
 			log.info("Indicators to add: " + selectedIndicatorUuids);
-			if (selectedIndicatorUuids!=null) { 				
+			if (selectedIndicatorUuids!=null) { 
 				for (String uuid : selectedIndicatorUuids) { 
 					
 					// FIXME Assumes cohort indicators
@@ -118,20 +176,21 @@ public class IndicatorReportFormController {
 					log.info("Found indicator" + indicator);					
 					if (indicator != null) { 
 						// FIXME: Adding indicator to dataset requires mapping from indicator to cohort definition					
-						//CohortDefinition cohortDefinition = indicator.getCohortDefinition().getParameterizable();
-						//cohortDefinition.getParameters();						
-						// (like "indicator.location=${dataset.location},indicator.date=${dataset.date}")
+
 						datasetDefinition.addIndicator(indicator.getName(), indicator, "");
-						datasetDefinition.addColumnSpecification("A.", "# Adult Patients", Number.class, indicator.getName(), null);						
-						
+						datasetDefinition.addColumnSpecification(indicator.getName(), 
+								indicator.getDescription(), Number.class, indicator.getName(), null);						
+												
+						// Default behavior
+						// Add all parameters to the indicator
+						for (Parameter parameter : indicator.getCohortDefinition().getParameterizable().getParameters()) {
+							indicator.addParameter(parameter);							
+							datasetDefinition.addParameter(parameter);	
+							reportSchema.addParameter(parameter);
+						}						
 					}										
 				}
 			}
-
-			// Dataset needs to know what parameters it needs
-			//dataSetDefinition.addParameter(new Parameter("dataset.location", "Location Parameter", Location.class, null, true, false));
-			//dataSetDefinition.addParameter(new Parameter("dataset.date", "Date Parameter", Date.class, null, true, false));
-			
 
 			log.info("Add dataset definition: " + datasetDefinition);
 			// Remove all existing dataset definitions
@@ -139,9 +198,9 @@ public class IndicatorReportFormController {
 			// (like "location=${report.location},effectiveDate=${report.reportDate}")
 			reportSchema.getDataSetDefinitions().clear();			
 			reportSchema.addDataSetDefinition(datasetDefinition, "");
-			
-			
 		}
+		
+		
 		Context.getService(ReportService.class).saveReportSchema(reportSchema);
 
 		return new ModelAndView("redirect:/module/reporting/manageReports.list");

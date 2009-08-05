@@ -57,15 +57,7 @@ public class PatientDataSet implements DataSet<Object> {
 		this.definition = definition;
 		this.evaluationContext = context;
 		this.patients = patients;
-	}
-	
-	/**
-	 * @see org.openmrs.module.dataset.api.DataSet#iterator()
-	 */
-	public Iterator<Map<DataSetColumn, Object>> iterator() {
-		return new HelperIterator(patients.iterator());
-	}
-	
+	}	
 	
 	/**
 	 * 
@@ -201,6 +193,21 @@ public class PatientDataSet implements DataSet<Object> {
 		
 	}		
 	
+	/**
+	 * @see org.openmrs.module.dataset.api.DataSet#iterator()
+	 */
+	public Iterator<Map<DataSetColumn, Object>> iterator() {
+		return new HelperIterator(patients.iterator());
+	}
+	
+	/**
+	 * Convenience method for JSTL method.  
+	 * TODO This will be removed once we get a decent solution for the dataset iterator solution.  
+	 */
+	public Iterator<Map<DataSetColumn, Object>> getIterator() {
+		return iterator();
+	}
+	
 	
 	
 	/**
@@ -226,7 +233,7 @@ public class PatientDataSet implements DataSet<Object> {
 		 * @see java.util.Iterator#next()
 		 */
 		public Map<DataSetColumn, Object> next() {
-			Map<DataSetColumn, Object> vals = new HashMap<DataSetColumn, Object>();
+			Map<DataSetColumn, Object> row = new HashMap<DataSetColumn, Object>();
 			//Locale locale = Context.getLocale();
 			
 			// Add default values for the encounter dataset
@@ -237,16 +244,25 @@ public class PatientDataSet implements DataSet<Object> {
 			if (patient == null)
 				throw new DataSetException("Data set column is invalid");
 			
-			// Build the dataset row
+			log.info("Patient: " + patient.getPatientId());
+			
+			// Build a row in the dataset
 			// TODO I'm not in love with the this approach, but we'll refactor later if we need to
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_ID), patient.getPatientId());
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.IMB_ID), patient.getPatientIdentifier("IMB ID").getIdentifier());			
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), patient.getPersonName().getFamilyName() + " " + patient.getPersonName().getGivenName());
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER),	patient.getGender());	
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.AGE), patient.getAge());			
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.HEALTH_CENTER), getCurrentHealthCenter(patient));			
-			vals.put(new SimpleDataSetColumn(PatientDataSetDefinition.TREATMENT_GROUP),	getCurrentTreatmentGroup(patient));						
-			return vals;
+			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_ID), 
+					patient.getPatientId());
+			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.IMB_ID), 
+					patient.getPatientIdentifier("IMB ID").getIdentifier());			
+			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), 
+					patient.getPersonName().getFamilyName() + " " + patient.getPersonName().getGivenName());
+			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER),	
+					patient.getGender());	
+			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.AGE), 
+					patient.getAge());			
+			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.HEALTH_CENTER), 
+					getCurrentHealthCenter(patient));			
+			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.TREATMENT_GROUP),	
+					getCurrentTreatmentGroup(patient));						
+			return row;
 		}
 		
 		/**

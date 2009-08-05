@@ -22,11 +22,8 @@ $j(document).ready(function() {
 		"bAutoWidth": false
 	} );			
 
+	// Redirect to the listing page
 	$j('#cancel-button').click(function(event){
-		// To prevent the submit
-		event.preventDefault();
-
-		// Redirect to the listing page
 		window.location.href='<c:url value="/module/reporting/manageReportSchemas.list"/>';
 	});
 	

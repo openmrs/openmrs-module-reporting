@@ -13,14 +13,20 @@
  */
 package org.openmrs.module.dataset.definition.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
+import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
+import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -29,6 +35,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface DataSetDefinitionService extends OpenmrsService {
 	
+	
+	/** 
+	 * 
+	 */
+	@Transactional(readOnly = true)
+	public List<Class<? extends DataSetDefinition>> getDataSetDefinitionTypes();
+
 	/**
 	 * @param type the Class<DataSetDefinition> to retrieve
 	 * @param id the id to retrieve for the given type
@@ -36,6 +49,18 @@ public interface DataSetDefinitionService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	public <T extends DataSetDefinition> T getDataSetDefinition(Class<T> type, Integer id) throws APIException;
+	
+    /**
+     * Helper method which checks that either uuid or type is passed, and returns either the
+     * saved DataSetDefinition with the passed uuid, or a new instance of the DataSetDefinition
+     * represented by the passed type.  Throws an IllegalArgumentException if any of this is invalid.
+     * 
+     * @param uuid	
+     * @param type
+     * @return the DataSetDefinition with the given uuid or type
+     */
+	@Transactional(readOnly = true)
+	public DataSetDefinition getDataSetDefinition(String uuid, Class<? extends DataSetDefinition> type);	
 	
 	/**
 	 * @param uuid

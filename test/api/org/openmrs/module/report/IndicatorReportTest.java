@@ -97,9 +97,6 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 				"Test Indicator", 
 				null);
 
-
-		
-		
 		ReportSchema report = new ReportSchema();
 		//report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true, false));
 		//report.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true, false));

@@ -65,7 +65,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		
 		List<Patient> patients = 
 			Context.getPatientSetService().getPatients(cohort.getMemberIds());
-				
+		
 		return new PatientDataSet(definition, context, patients);
 	}
 }

@@ -28,8 +28,10 @@
 <div style="margin: 10px;">
 
 	<h2><spring:message code="reporting.general.error.title"/></h2>
-	We have failed you.  We're sorry.<br/>
 	
+	<p>
+		We have failed you.  We're sorry.
+	</p>
 		
 
 
@@ -126,6 +128,8 @@
 	}
 %>
 	
+</div>
+
 
 
 

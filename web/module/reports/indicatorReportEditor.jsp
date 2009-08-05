@@ -9,10 +9,6 @@
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/wufoo/wufoo.js"></script>
 
-
-
-
-
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 
@@ -34,18 +30,14 @@ $(document).ready(function() {
 		"bAutoWidth": false
 	} );			
 
-
+	// Redirect to the listing page
 	$('#cancel-button').click(function(event){
-		// To prevent the submit
-		event.preventDefault();
-
-		// Redirect to the listing page
 		window.location.href='<c:url value="/module/reporting/manageReports.list"/>';
 	});
 
-
+	// Call client side validation method
 	$('#save-button').click(function(event){
-		// call a client side validation method
+		// no-op
 	});	
 	
 } );
@@ -125,29 +117,10 @@ $(document).ready(function() {
 								<form:textarea path="description" tabindex="2" cssClass="field text medium" cols="80"/> 						
 							</div>
 						</li>
-						<li>
-							<label class="desc" for="description">Indicator Datasets</label>			
-							<div>
-								<!-- FIXME Should only need to look at the first dataset definition -->
-								<ul>
-									<c:forEach var="mappedDataset" items="${reportSchema.dataSetDefinitions}">
-										<li>${mappedDataset.parameterizable.name}
-											<ul>
-												<c:forEach var="mappedIndicator" items="${mappedDataset.parameterizable.indicators}">
-													<li>${mappedIndicator}</li>
-												</c:forEach>
-											</ul>
-										</li>
-									</c:forEach>
-								</ul>
-								<p>NOTE: Let's make Mapped and Parameterizable more difficult to work with</p>
-								
-							</div>
-						</li>						
 						<li>					
 							<div align="center">				
-								<input id="save-button" name="save" type="submit" class="button" value="Save" />
-								<button id="cancel-button" name="cancel" class="button" >Cancel</button>
+								<input id="save-button" name="save" type="submit" value="Save" />
+								<button id="cancel-button" name="cancel">Cancel</button>
 							</div>					
 						</li>
 					</ul>				
@@ -155,75 +128,123 @@ $(document).ready(function() {
 			</div>
 	
 			<div id="report-schema-advanced-tab">			
-				<h2>Available Indicators</h2>
-				<form:form id="saveForm" commandName="reportSchema" method="POST">
+				<h2>${reportSchema.name}</h2>
+				<p>
+					Design your report by adding new indicators below.
+				</p>
+				
+				<form:form id="saveForm" commandName="reportSchema" method="POST">						
+					<ul>
 						<li>
-							<label class="desc" for="description">Description</label>			
-	
-							<input type="hidden" name="action" value="addIndicators"/>
-								<c:forEach var="indicator" items="${indicators}">					
-									<p>
-										<input type="checkbox" name="indicatorUuid" value="${indicator.uuid}"/>					
-										<strong>${indicator.name}</strong> ${indicator.description} 	
-										<i>[cohort definition='${indicator.cohortDefinition.parameterizable.name}', 
-											parameters='${indicator.cohortDefinition.parameterizable.parameters}']</i>
-																		
-									<!-- Hide the parameter mapping behind a modal dialog window -->
-									<!-- 
-									<br/><strong>Parameter Mapping</strong>
-									<c:if test="${empty indicator.parameters}"><i>There are no parameters for this indicator</c:if>
-									<c:forEach var="parameter" items="${indicator.parameters}">
-										${parameter.label}	(${parameter.name})				
+							<label class="desc" for="description">Selected indicators</label>	
+							<div>
+								<ul>
+									<c:forEach var="mappedDataset" items="${reportSchema.dataSetDefinitions}">
+										<c:forEach var="mappedIndicator" items="${mappedDataset.parameterizable.indicators}">
+											<li>
+												<strong>${mappedIndicator.value.parameterizable.name}</strong>
+												${mappedIndicator.value.parameterizable.description}
+											</li>
+										</c:forEach>
 									</c:forEach>
-									 -->
-									<br/>								
+								</ul>
+							</div>
+						</li>							
+						<li>
+							<label class="desc" for="description">Available indicators</label>			
+							<input type="hidden" name="action" value="addIndicators"/>
+							<c:forEach var="indicator" items="${indicators}">					
+								<p>
+									<input type="checkbox" name="indicatorUuid" value="${indicator.uuid}"/>					
+									<strong>${indicator.name}</strong> ${indicator.description}
+									<%--   
+									<i>[cohort definition='${indicator.cohortDefinition.parameterizable.name}', 
+										parameters='${indicator.cohortDefinition.parameterizable.parameters}']</i>
+									--%>					
+								<!-- Hide the parameter mapping behind a modal dialog window -->
+								<!-- 
+								<br/><strong>Parameter Mapping</strong>
+								<c:if test="${empty indicator.parameters}"><i>There are no parameters for this indicator</c:if>
+								<c:forEach var="parameter" items="${indicator.parameters}">
+									${parameter.label}	(${parameter.name})				
 								</c:forEach>
+								 -->
+							</c:forEach>
 						</li>
+ 						
 						<li>					
 							<div align="center">				
-								<input id="save-button" name="save" type="submit" class="button" value="Save" tabindex="100" />
-								<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
+								<input id="save-button" name="save" type="submit" value="Save" />
+								<button id="cancel-button" name="cancel">Cancel</button>
 							</div>					
 						</li>
-						
+					</ul>
 				</form:form>
 			</div>
 			
 	
 			<div id="report-schema-preview-tab">
-					
-				<c:choose>
-				
+
+				<c:choose>				
 					<c:when test="${!empty reportSchema.uuid}">
-						<form:form id="saveForm" commandName="reportSchema" method="POST">
-							<form:hidden path="uuid" />	
+						<h2>${reportSchema.name}</h2>					
+						<form action="${pageContext.request.contextPath}/module/reporting/evaluateReport.form" method="POST">
+							<input type="hidden" name="uuid" value="${reportSchema.uuid}"/>
+							<input type="hidden" name="action" value="evaluate"/>
 							<ul>				
 								<li>
-									<div>
-										<i>Allows a user to evaluate a report.  (Not implemented yet).</i>
-									</div>
-								</li>				
+									<label class="desc" for="renderAs">Render as</label>	
+
+									<input type="radio" name="renderAs" value="CSV" checked> CSV
+									<input type="radio" name="renderAs" value="TSV"> TSV
+									<input type="radio" name="renderAs" value="XLS"> XLS
+
+								</li>
+														
+<%-- 														
 								<li>
-									<label class="desc" for="uuid">ID</label>				
+									<label class="desc" for="description">Selected indicators</label>	
 									<div>
-										${reportSchema.uuid}
-									</div>
-								</li>				
-								<li>
-									<label class="desc" for="name">Name</label>			
-									<div>
-										${reportSchema.name} (<i>${reportSchema.class.simpleName}</i>)
+										<ul>
+											<c:forEach var="mappedDataset" items="${reportSchema.dataSetDefinitions}">
+												<c:forEach var="mappedIndicator" items="${mappedDataset.parameterizable.indicators}">
+													<li>
+														<strong>${mappedIndicator.value.parameterizable.name}</strong>
+														${mappedIndicator.value.parameterizable.description}
+													</li>
+												</c:forEach>
+											</c:forEach>
+										</ul>
 									</div>
 								</li>
+--%>								
+								
+								<li>
+									<label class="desc" for="description">Parameters</label>	
+									<div>
+										<ul>
+											<c:forEach var="parameter" items="${reportSchema.parameters}">
+												<li>
+													<label class="desc" for="${parameter.name}">${parameter.label}</label>
+													<span>
+														<input type="${parameter.name}" />
+													</span>
+												</li>
+											</c:forEach>
+										</ul>
+									</div>
+								</li>							
+										
+										
 								<li>			
 									<div align="center">				
-										<input id="evaluate-button" name="evaluate" type="submit" class="button" value="Evaluate" tabindex="101" disabled />
-										<input id="cancel-button" name="cancel" type="submit" class="button" value="Cancel" tabindex="102"/>
+										<input id="evaluate-button" name="evaluate" type="submit" value="Evaluate"/>
+										<button id="cancel-button" name="cancel">Cancel</button>
 									</div>					
 								</li>
 							</ul>				
 							
-						</form:form>
+						</form>
 					</c:when>
 					<c:otherwise>
 						Please create your report first.

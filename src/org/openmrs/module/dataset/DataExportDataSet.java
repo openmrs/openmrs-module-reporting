@@ -62,6 +62,15 @@ public class DataExportDataSet implements DataSet<Object> {
 	}
 	
 	/**
+	 * Convenience method for JSTL method.  
+	 * TODO This will be removed once we get a decent solution for the dataset iterator solution.  
+	 */
+	public Iterator<Map<DataSetColumn, Object>> getIterator() {
+		return iterator();
+	}
+	
+	
+	/**
 	 * This is wrapped around (List<Map<String, Object>).iterator() 
 	 * This implementation is NOT thread-safe, so do not access the wrapped iterator.
 	 */

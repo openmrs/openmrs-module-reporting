@@ -5,8 +5,9 @@
 <!-- Form -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
+<!-- 
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/wufoo/wufoo.js"></script>
-
+ -->
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
@@ -16,6 +17,26 @@ $(document).ready(function() {
 
 	$('#indicator-tabs').tabs();
 	//$('#indicator-tabs').show();
+
+	
+	// ======  Dialog: Add Parameter =======================================================
+	
+	$("#indicator-parameter-dialog").dialog({
+		bgiframe: true,			
+		autoOpen: false,
+		title:"Add Parameter",
+		modal:true,
+		draggable:false,
+		width:"50%"
+	});
+
+	$("#close-button").click(function(){
+		$("#indicator-parameter-dialog").dialog('close');
+	});
+	
+	$("#add-parameter-button").click(function(event){ 
+		$("#indicator-parameter-dialog").dialog('open');
+	});
 
 	
 	// ======  DataTable: Indicator Dataset ===============================================
@@ -64,10 +85,6 @@ $(document).ready(function() {
 		return row[0].replace(/(<.+?>)/gi, '');
 	}
 
-	if ($("#cohortDefinitionName").val() != '') { 
-		$("#cohortDefinitionName").hide();
-	}	
-	
 	// Set the cohort definition field to be an autocomplete field
 	$("#cohortDefinitionName").autocomplete(cohortDefinitions, {
 		minChars: 0,
@@ -83,11 +100,17 @@ $(document).ready(function() {
 			function(row) {return row.name;}
 	});
 
+	// Hide the field if it's populated
+	if ($("#cohortDefinitionName").val() != '') { 
+		$("#cohortDefinitionName").hide();
+	}
+	
 	// Highlight the field whenever the user enters it
 	$("#cohortDefinitionName").bind('focus', function() {
 		this.select();
 	}); 
 	
+	// Show the field and hide the name 
 	$("#cohortDefinitionSpan").click(function() {
 		//this.hide();
 		$("#cohortDefinitionSpan").hide();
@@ -129,9 +152,8 @@ $(document).ready(function() {
 
 	// ======  Button: Cancel Button ========================================
 	
-	// Cancel button
+	// Redirect to the listing page
 	$('#cancel-button').click(function(event){
-		// Redirect to the listing page
 		window.location.href='<c:url value="/module/reporting/manageIndicators.list"/>';
 	});	
 	
@@ -198,32 +220,73 @@ var cohortDefinitions = [
 								</div>					
 							</li>
 							<li>
-								<label class="desc" for="aggregator">Aggregation Method</label>
+								<label class="desc" for="indicator">Define your indicator</label>
 								<div>
-									<c:set var="aggregators" value="CountAggregator,DistinctAggregator,MaxAggregator,MeanAggregator,MedianAggregator,MinAggregator,SumAggregator" />
-									<select id="aggregator" name="aggregator" class="field select medium" tabindex="6" > 
+								
+									<label class="inline" for="cohortDefinition">Choose a cohort definition</label>
+									<span id="cohortDefinitionSpan">
+										${indicator.cohortDefinition.parameterizable.name}
+									</span>
+									
+									<input id="cohortDefinitionName" name="cohortDefinition.name" type="text" class="field text large" tabindex="3"
+											value="${indicator.cohortDefinition.parameterizable.name}"/>
+									
+									<input id="cohortDefinitionUuid" name="cohortDefinition.uuid" type="hidden"  tabindex="4" 
+											value="${indicator.cohortDefinition.parameterizable.uuid}"/>							
+								</div>									
+								<div>
+									<label class="inline" for="cohortDefinition">How do you want to aggregate this cohort?</label>
+									<c:set var="aggregatorLabels" value="Count,Distinct,Max,Mean,Median,Min,Sum" />
+									<c:set var="aggregators" value="CountAggregator,DistinctAggregator,MaxAggregator,MeanAggregator,MedianAggregator,MinAggregator,SumAggregator" />									
+									<select id="aggregator" name="aggregator" class="field select"> 
 										<c:forEach var="aggregator" items="${aggregators}" varStatus="status">
 											<option value="${aggregator}" <c:if test="${aggregator == indicator.aggregator.simpleName}">selected</c:if>>${aggregator}</option>
 										</c:forEach>
 									</select>
 								</div>
-							</li>
-	
-	
-							<li>
-								<label class="desc" for="cohortDefinitionName">Cohort Definition</label>
 								<div>
-									<span id="cohortDefinitionSpan">
-										${indicator.cohortDefinition.parameterizable.name}
-									</span>
-									<input id="cohortDefinitionName" 
-											name="cohortDefinition.name" type="text" class="field text large" tabindex="3"
-											value="${indicator.cohortDefinition.parameterizable.name}"/>
-									<input id="cohortDefinitionUuid"
-											name="cohortDefinition.uuid" type="hidden"  tabindex="4" 
-											value="${indicator.cohortDefinition.parameterizable.uuid}"/>							
-								</div>		
+								
+									<label class="inline" for="cohortDefinition">Map parameters</label>
+									<table id="indicator-parameter-mapping-table">
+										<thead>
+											<tr>
+												<th></th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>										
+											<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}" varStatus="varstatus">
+												<tr>
+													<td>
+														<strong>${parameter.name}</strong>
+													</td>
+													<td>							
+														<input type="radio" name="source_${parameter.name}" "value="inherit"/>
+														map <strong>${parameter.name}</strong> to default <strong>indicator.${parameter.name}</strong> parameter
+														<br/>
+														<input type="radio" name="source_${parameter.name}" value="choose"/>
+														<select>
+															<c:if test="${empty indicator.parameters}">
+																<option>(map to an existing parameter)</option>
+															</c:if>
+															<c:forEach var="mappedParameter" items="${indicator.parameters}">										
+																<option>${mappedParameter.name}</option>
+															</c:forEach>
+														</select>
+														<img id="add-parameter-button" src="<c:url value='/images/add.gif'/>" border='0'/>
+													</td>									
+					
+												</tr>
+											</c:forEach>
+										</tbody>
+										<tfoot>			
+										</tfoot>
+									</table>
+								</div>
+								
+								
 							</li>
+
 
 <!-- 
 							<li>
@@ -258,11 +321,12 @@ var cohortDefinitions = [
 									</table>						
 								</div>
 							</li>
- -->							
+ -->
+
 							
 							<li class="buttons">
 								<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-								<input id="cancel-button" class="btTxt submit" type="submit" value="Cancel" tabindex="8"/>
+								<button id="cancel-button" name="cancel">Cancel</button>
 							</li>
 						</ul>
 					</div>
@@ -279,53 +343,11 @@ var cohortDefinitions = [
 	
 	
 					<ul>
-						<li>
-							<div>
-								<table id="indicator-parameter-mapping-table" class="display">
-									<thead>
-										<tr>
-											<th>parameters to map</th>
-											<th>inherit from cohort definition</th>
-											<th>choose from indicator</th>
-										</tr>
-									</thead>
-									<tbody>										
-										<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}" varStatus="varstatus">
-											<tr>
-												<td>
-													<strong>${parameter.name}</strong>
-												</td>
-												<td>							
-													<input type="radio" name="source_${parameter.name}" "value="inherit"/>
-													${parameter.name}
-												</td>
-												<td>
-													<input type="radio" name="source_${parameter.name}" value="choose"/>
-													<select>
-														<option></option>
-														<c:if test="${empty indicator.parameters}">
-															<option>(add more parameters)</option>
-														</c:if>
-														<c:forEach var="mappedParameter" items="${indicator.parameters}">										
-															<option>${mappedParameter.name}</option>
-														</c:forEach>
-													</select>							
-													<a href="<c:url value='/module/reporting/indicatorParameter.form?uuid=${indicator.uuid}'/>">
-														<img src="<c:url value='/images/add.gif'/>" border='0'/>
-													</a>
-												</td>									
-				
-											</tr>
-										</c:forEach>
-									</tbody>
-									<tfoot>			
-									</tfoot>
-								</table>
-							</div>
-						</li>
+
 						<li class="buttons">
 							<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-							<input id="cancel-button" class="btTxt submit" type="submit" value="Cancel" tabindex="8"/>
+							<button id="cancel-button" name="cancel">Cancel</button>
+							<a href="<c:url value="/module/reporting/manageIndicators.list"/>">Go back</a>
 						</li>
 					</ul>	
 				</form>
@@ -334,6 +356,11 @@ var cohortDefinitions = [
 		</div><!--  #tabs -->
 	</div><!--#container-->
 </div><!-- #page -->
+
+
+<div id="indicator-parameter-dialog" title="Add Parameter">
+
+</div>
 
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

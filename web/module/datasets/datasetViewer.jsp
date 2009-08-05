@@ -182,7 +182,7 @@ $(document).ready(function() {
 		
 		
 						<div align="center"">						
-							<input class="button" type="submit" name="action" value="Download"/>							
+							<input type="submit" name="action" value="Download"/>							
 						</div>
 					</form>							
 

@@ -17,7 +17,7 @@ $(document).ready(function() {
 		"bAutoWidth": true
 	} );			
 
-	$("#report-schema-table").css("width","100%");
+	//$("#report-schema-table").css("width","100%");
 	
 } );
 </script>
@@ -30,7 +30,9 @@ $(document).ready(function() {
 		<div id="inline-list">	
 			<p>	
 				<ul>
-					<li class="last"><a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Add Indicator Report</a></li>
+					<li class="last">Create a new report:</li>
+					<li class="first"><a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Indicator Report</a></li>
+					<li class="last"><a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Some other report</a></li>
 				</ul>
 			</p>			
 		</div>
@@ -38,47 +40,46 @@ $(document).ready(function() {
 		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Created</th>
-					<th width="5px"></th>
-					<th width="5px"></th>
-					<th width="5px"></th>
+					<th width="1%"></th>
+					<th width="20%">Name</th>
+					<th width="30%">Description</th>
+					<th width="10%">Created</th>
+					<th width="1%"></th>
+					<th width="1%"></th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${reportSchemas}" var="reportSchema" varStatus="status">
 					<tr>
-						<td>
-							${reportSchema.name}
+						<td width="1%" align="center">
+							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportSchema.uuid}">
+								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+							</a>
+						</td>
+						<td width="20%">
+							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportSchema.uuid}">
+								${reportSchema.name}
+							</a>
 							<!-- Disabling link until the generic report schema form is complete -->
 							<!-- 
 							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}">${reportSchema.name}</a>
 							-->
 						</td>
-						<td>
+						<td width="30%">
 							${reportSchema.description}
 						</td>
-						<td>
-							${reportSchema.dateCreated}
+						<td width="10%">
+							Created by ${reportSchema.creator.username} on ${reportSchema.dateCreated}
 						</td>
-						<td align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportSchema.uuid}">
-								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
-							</a>
-						</td>
-						<td align="center">
+						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportSchema.uuid}">
 								<img src='<c:url value="/images/play.gif"/>' border="0"/>
 							</a>
 						</td>
-						<td align="center">
+						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportSchema.uuid}">
 								<img src='<c:url value="/images/trash.gif"/>' border="0"/>							
 							</a>
-						<!-- not supported yet -->
-						<!-- 
- 						-->
 						</td>
 					</tr>
 				</c:forEach>	
@@ -87,7 +88,7 @@ $(document).ready(function() {
 			<!--  
 				<tr>
 					<th colspan="5" align="center" height="50">
-						<a class="button" href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Add Indicator Report</a>
+						<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Add Indicator Report</a>
 					</th>			
 				</tr>
 			-->	

@@ -31,8 +31,8 @@ public class CohortIndicator extends BaseIndicator {
     //***** PROPERTIES *****
 
     private Mapped<? extends CohortDefinition> cohortDefinition;
-    private LogicCriteria logicCriteria;
     private Class<? extends Aggregator> aggregator;
+    private LogicCriteria logicCriteria;
 
     //***** CONSTRUCTORS *****
     
