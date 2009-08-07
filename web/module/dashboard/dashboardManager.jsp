@@ -45,6 +45,16 @@ $(function() {
 	});
 
 
+	var api = new jGCharts.Api(); 
+	$('<img>') 
+	.attr('src', api.make({
+			data : [[153, 60, 52], [113, 70, 60], [120, 80, 40], [120, 80, 40]],  
+			type : 'p'//default bvg 
+	})) 
+	.appendTo("#barChart");
+	
+
+
 });
 </script>
 
@@ -59,13 +69,56 @@ $(function() {
 </style>
  -->
 
-<div id="page">
+<div id="page" style="display:block;">
 	<div id="container">
 	
 		<h1>Reporting Dashboard</h1>
 	
 	
 		<div id="portal">
+
+
+			<div class="column">	
+				<div class="portlet">
+					<div class="portlet-header">Program Enrollment Search</div>
+					<div class="portlet-content">							
+						<form method="post" action="">					
+							<ul>				
+								<li>
+									<label class="desc" for="programId">Show patients that are enrolled in program(s) </label>
+									<div style="overflow: auto; height: 80px">			
+										<c:forEach var="program" items='${programs}'>
+											<input type="checkbox" name="programId" value="${program.programId}"/>${program.name} <br/>
+										</c:forEach>
+									</div>
+								</li>				
+								<li>
+									<label class="desc" for="programId">newly enrolled on/after </label>
+									<div>			
+										<openmrs:fieldGen type="java.util.Date" formFieldName="startDate" val="" parameters=""/>
+									</div>
+								</li>	
+								<li>
+									<label class="desc" for="programId">and on/before </label>
+									<div>			
+										<openmrs:fieldGen type="java.util.Date" formFieldName="endDate" val="" parameters=""/>
+									</div>
+								</li>													
+								<li>
+									<div>			
+										<input type="submit" value="Search"/>
+									</div>
+								</li>									
+																				
+							</ul>			
+						</form>
+					
+					
+					</div><!-- portlet-content -->
+				</div><!-- portlet -->
+			</div><!-- column -->
+
+
 		
 			<div class="column">	
 	
@@ -75,21 +128,47 @@ $(function() {
 					<div class="portlet-content">
 					
 						<span>
-							Display a cohort of patients broken down across age and gender dimensions.
+							There are <strong><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard?cohort=all">${all.size}</a></strong> patients in the EMR.
 						</span>
 						
 						<div align="center">
 							<form method="post" action="">					
 								<ul>				
 									<li>
-										<div>						
-											<select>
-												<option value="">Choose a group of patients</option>
-											</select>
-											<input type="submit" value="Update"/>
-										</div>
+										<div id="barChart"></div>
+										<span><em>This is just a sample graph -- there's no data behind it yet</em></span>
 									</li>
 									<li>
+										
+									
+										<table id="cohort-breakdown-table" class="display">
+											<thead>
+												<tr>
+													<th>Category</th>
+													<th># of Patients</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Male</td>
+													<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=males">${males.size}</a></td>
+												</tr>
+												<tr>
+													<td>Female</td>
+													<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=females">${females.size}</a></td>
+												</tr>
+												<tr>
+													<td>Adult</td>
+													<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=adults">${adults.size}</a></td>
+												</tr>
+												<tr>
+													<td>Child</td>
+													<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=children">${children.size}</a></td>
+												</tr>
+											</tbody>
+										</table>																						
+									
+										<!-- 
 										<table id="cohort-breakdown-table" class="display">
 											<thead>
 												<tr>
@@ -102,26 +181,27 @@ $(function() {
 											<tbody>
 												<tr>
 													<td>Male</td>					
-													<td>102</td>					
-													<td>932</td>					
-													<td>1034</td>					
+													<td></td>					
+													<td></td>					
+													<td>${males.size}</td>					
 												</tr>
 												<tr>
 													<td>Female</td>					
-													<td>231</td>					
-													<td>1048</td>					
-													<td>1279</td>					
+													<td></td>					
+													<td></td>					
+													<td>${females.size}</td>					
 												</tr>
 											</tbody>
 											<tfoot>
 												<tr>
 													<th>Total</th>					
-													<th>333</th>					
-													<th>1980</th>					
-													<th>2313</th>					
+													<th>${children.size}</th>					
+													<th>${adults.size}</th>					
+													<th>${all.size}</th>					
 												</tr>											
 											</tfoot>
 										</table>
+										 -->
 									</li>
 								</ul>
 							</form>
@@ -129,55 +209,9 @@ $(function() {
 					</div>
 				</div>							
 		
-				<!--  Data Set Viewer -->		
-				<div class="portlet">
-					<div class="portlet-header">Data Set Viewer</div>
-					<div class="portlet-content">			
-						<span>
-							Download a data snapshot for an existing dataset and cohort.
-						</span>
-						
-						<div align="center">
-							
-							<form method="post" action="module/reporting/downloadDataset.form">					
-								<ul>				
-									<li>
-										<div>						
-											<select name='cohortUuid' disabled>
-												<option value="">All patients</option>
-											</select>
-										</div>
-									</li>														
-									<li>
-										<div>						
-											<select>
-												<option value="">Choose a dataset</option>
-												<c:forEach var='datasetDefinition' items='datasetDefinitions'>
-													<option value="${datasetDefinition.uuid}">${datasetDefinition.name}</option>
-												</c:forEach>												
-											</select>
-										</div>
-									</li>							
-									<li>
-										<div>						
-											<input type="radio" name="renderType" value="XLS" checked>XLS 
-											<input type="radio" name="renderType" value="CSV">CSV 
-											<input type="radio" name="renderType" value="TSV">TSV 
-										</div>
-									</li>							
-									<li>
-										<div>						
-											<input type="submit" value="Download"/>
-										</div>
-									</li>
-								</ul>			
-							</form>							
-						</div>
-					</div><!-- portlet-content -->
-				</div><!-- portlet -->
 
 
-
+<%--  
 				<div class="portlet">
 					<div class="portlet-header">Simple Logic Query</div>
 					<div class="portlet-content">			
@@ -206,127 +240,115 @@ $(function() {
 						</div>
 					</div><!-- portlet-content -->
 				</div><!-- portlet -->
-
-				
+--%>				
 			</div><!-- column -->
 			
-		
+			
 			<div class="column">	
+
+
+				<!--  Data Set Viewer -->		
 				<div class="portlet">
-					<div class="portlet-header">Program Enrollment</div>
-					<div class="portlet-content">							
-
-
-
-<div id="accordion">
-	<h3><a href="#">New Enrollments</a></h3>
-	<div>
-		<form method="post" action="">					
-			<ul>				
-				<li>
-					<label class="desc" for="programId">Show patients that are newly enrolled in program(s) </label>
-					<div style="overflow: auto; height: 80px">			
-						<c:forEach var="program" items='${programs}'>
-							<input type="checkbox" name="programId"/>${program.name} <br/>
-						</c:forEach>
-					</div>
-				</li>														
-				
-<!--  				
-				<li>
-					<label class="desc" for="stateId">and currently has a</label>
-					<c:forEach var="program" items='${programs}'>
-						<c:forEach var="workflow" items='${program.allWorkflows}'>
-							<strong>${workflow.concept.name}</strong> of <br/>
-							<div style="overflow: auto; height: 60px">			
-								<c:forEach var="state" items='${workflow.states}'>
-									<input type="checkbox" name="stateId"/>${state.concept.name}<br/>
-								</c:forEach>
-							</div>
-						</c:forEach>
-					</c:forEach>
-				</li>
--->				
-				<li>
-					<label class="desc" for="programId">on/before </label>
-					<div>			
-						<openmrs:fieldGen type="java.util.Date" formFieldName="startDate" val="" parameters=""/>
-					</div>
-				</li>													
-				<li>
-					<label class="desc" for="programId">and on/after </label>
-					<div>			
-						<openmrs:fieldGen type="java.util.Date" formFieldName="endDate" val="" parameters=""/>
-					</div>
-				</li>													
-				<li>
-					<div align="center">			
-						<input type="submit" value="View Patients"/>
-					</div>
-				</li>													
-			</ul>
-		</form>
-	</div>
-									
-
-	<h3><a href="#">Section 2</a></h3>
-	<div>
-		<p>
-		Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
-		purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
-		velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
-		suscipit faucibus urna.
-		</p>
-	</div>
-	<h3><a href="#">Section 3</a></h3>
-	<div>
-		<p>
-		Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
-		Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
-		ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
-		lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
-		</p>
-		<ul>
-			<li>List item one</li>
-			<li>List item two</li>
-			<li>List item three</li>
-		</ul>
-	</div>
-	<h3><a href="#">Section 4</a></h3>
-	<div>
-		<p>
-		Cras dictum. Pellentesque habitant morbi tristique senectus et netus
-		et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
-		faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
-		mauris vel est.
-		</p>
-		<p>
-		Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
-		Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-		inceptos himenaeos.
-		</p>
-	</div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-	
+					<div class="portlet-header">Data Set Viewer</div>
+					<div class="portlet-content">			
+						<span>
+							Download a data snapshot for an existing dataset and cohort.
+						</span>
+						
+						<div align="center">
+							
+							<form method="post" action="${pageContext.request.contextPath}/module/reporting/downloadDataset.form">					
+								<ul>				
+									<li>
+										<div>						
+											<select name='cohortUuid' disabled>
+												<option value="">All patients</option>
+											</select>
+										</div>
+									</li>														
+									<li>
+										<div>
+											<select class="field select medium" id='uuid' name='uuid'>
+												<option value="">Choose a dataset</option>
+												<c:forEach var='datasetDefinition' items='${datasetDefinitions}'>
+													<option value="${datasetDefinition.uuid}">${datasetDefinition.name}</option>
+												</c:forEach>												
+											</select>
+										</div>
+									</li>							
+									<li>
+										<div>						
+											<input type="radio" name="renderType" value="XLS" checked>XLS 
+											<input type="radio" name="renderType" value="CSV">CSV 
+											<input type="radio" name="renderType" value="TSV">TSV 
+										</div>
+									</li>							
+									<li>
+										<div>						
+											<input type="submit" value="Download"/>
+										</div>
+									</li>
+								</ul>			
+							</form>							
+						</div>
 					</div><!-- portlet-content -->
 				</div><!-- portlet -->
+			
+				<div class="portlet">
+					<div class="portlet-header">Lab Report Viewer</div>
+					<div class="portlet-content">			
+						<span>
+							Download the lab result report for a given period and location.
+						</span>
+			
+						<div align="left" style="padding: 10px; margin-left:100px">					
+							<form method="post" action="${pageContext.request.contextPath}/module/reporting/renderLabReport.form">		
+								<input type="hidden" id="uuid" name="uuid" value="0123456789"/>									
+								<input type="hidden" name="action" value="render"/>
+								<div>
+										<label class="desc" for="renderType">Download as:</label>
+										<span>
+											<input type="radio" name="renderType" value="XLS" checked tabindex="1"> XLS
+											<input type="radio" name="renderType" value="CSV" tabindex="2"> CSV
+										</span>
+								</div>
+								<div>
+										<label class="desc" for="locationId">Location</label>
+										<span>
+											<select name="locationId"  tabindex="5">
+												<option value="0">All Locations</option>									
+												<c:forEach var="location" items="${locations}">
+													<option value="${location.locationId}">${location.name}</option>
+												</c:forEach>
+											</select>		
+										</span>
+								</div>
+								<div>
+										<label class="desc" for="startDate">Start Date</label>
+										<span>
+											<openmrs:fieldGen type="java.util.Date" formFieldName="startDate" val="" parameters=""/>
+										</span>
+								</div>
+								<div>
+										<label class="desc" for="endDate">End Date</label>
+										<span>
+											<openmrs:fieldGen type="java.util.Date" formFieldName="endDate" val="" parameters=""/>							
+										</span>
+								</div>
+								<div class="buttons">
+									<span>
+										<input id="save-button" class="btTxt submit" type="submit" value="Download" tabindex="6" />										
+									</span>
+								</div>
+			
+							</form>
+						</div>			
+					</div><!-- portlet-content -->
+				</div><!-- portlet -->
+			
+			
+			
 			</div><!-- column -->
-			
-			
-			<div class="column">	
-			
-			</div>
 		
 		</div><!-- portal -->
 	</div><!-- container -->

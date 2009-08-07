@@ -134,6 +134,7 @@
 				<include name="**/*" />
 				<exclude name="**/*Test*.class" />
 				<exclude name="**/CreateInitialDataSet.class" />
+				<exclude name="**/test/**/*" />				
 			</fileset>
 				
 		</jar>

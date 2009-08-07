@@ -39,7 +39,7 @@ public class AgeCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
     	AgeCohortDefinition acd = (AgeCohortDefinition) cohortDefinition;
 
 		PatientSetService pss = Context.getPatientSetService();
-		return pss.getPatientsByCharacteristics(null, null, null, acd.getMinAge(), acd.getMinAge(), 
+		return pss.getPatientsByCharacteristics(null, null, null, acd.getMinAge(), acd.getMaxAge(), 
 				null, null, acd.getEffectiveDate());
     }
 }
