@@ -1,4 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <%@ include file="../localHeader.jsp"%>
 
 <style type="text/css">
@@ -13,6 +15,11 @@
 </style>
 <script type="text/javascript">
 $(function() {
+	$('#cohort-breakdown-tabs').tabs();
+	$('#cohort-breakdown-tabs').show();	
+
+
+
 	$(".column").sortable({
 		connectWith: '.column'
 	});
@@ -31,7 +38,16 @@ $(function() {
 
 	$(".column").disableSelection();
 
-	$('#cohort-breakdown-table').dataTable( {
+	$('#gender-breakdown-table').dataTable( {
+		"bPaginate": false,
+		"bLengthChange": false,
+		"bFilter": false,
+		"bSort": false,
+		"bInfo": false,
+		"bAutoWidth": false
+	} );
+
+	$('#age-breakdown-table').dataTable( {
 		"bPaginate": false,
 		"bLengthChange": false,
 		"bFilter": false,
@@ -40,23 +56,57 @@ $(function() {
 		"bAutoWidth": false
 	} );
 	
-	$(function() {
-		$("#accordion").accordion();
-	});
+	$('#program-breakdown-table').dataTable( {
+		"bPaginate": false,
+		"bLengthChange": false,
+		"bFilter": false,
+		"bSort": false,
+		"bInfo": false,
+		"bAutoWidth": false
+	} );
+
+	
+	$("#accordion").accordion();
 
 
 	var api = new jGCharts.Api(); 
-	$('<img>') 
-	.attr('src', api.make({
-			data : [[153, 60, 52], [113, 70, 60], [120, 80, 40], [120, 80, 40]],  
+	$('<img>').attr('src', api.make({
+			data : [[${females.size}],[${males.size}]],  
+			axis_labels : ['Females','Males'], 
 			type : 'p'//default bvg 
 	})) 
-	.appendTo("#barChart");
+	.appendTo("#genderBarChart");
+	
+	var api = new jGCharts.Api(); 
+	$('<img>').attr('src', api.make({
+			data : [[${adults.size}], [${children.size}]],  
+			axis_labels : ['Adults','Children'], 
+			type : 'p'//default bvg 
+	})) 
+	.appendTo("#ageBarChart");
+
+	var api = new jGCharts.Api(); 
+	$('<img>').attr('src', api.make({
+			data : [	
+				<c:forEach var="entry" items="${programCohortMap}" varStatus="varstatus">
+					[${entry.value.size}]<c:if test="${!varstatus.last}">,</c:if>				                                    				
+				</c:forEach>
+			],  
+			axis_labels : [	
+			   	<c:forEach var="entry" items="${programCohortMap}" varStatus="varstatus">
+					'${entry.key.name}'<c:if test="${!varstatus.last}">,</c:if>	
+				</c:forEach>
+			],				
+			size : '350x225',
+			type : 'p'//default bvg 
+	})) 
+	.appendTo("#programBarChart");
 	
 
-
+	
 });
 </script>
+
 
 <!-- Form -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
@@ -86,20 +136,20 @@ $(function() {
 							<ul>				
 								<li>
 									<label class="desc" for="programId">Show patients that are enrolled in program(s) </label>
-									<div style="overflow: auto; height: 80px">			
+									<div>			
 										<c:forEach var="program" items='${programs}'>
 											<input type="checkbox" name="programId" value="${program.programId}"/>${program.name} <br/>
 										</c:forEach>
 									</div>
 								</li>				
 								<li>
-									<label class="desc" for="programId">newly enrolled on/after </label>
+									<label class="desc" for="programId">enrolled on or after </label>
 									<div>			
 										<openmrs:fieldGen type="java.util.Date" formFieldName="startDate" val="" parameters=""/>
 									</div>
 								</li>	
 								<li>
-									<label class="desc" for="programId">and on/before </label>
+									<label class="desc" for="programId">enrolled on or before </label>
 									<div>			
 										<openmrs:fieldGen type="java.util.Date" formFieldName="endDate" val="" parameters=""/>
 									</div>
@@ -130,119 +180,135 @@ $(function() {
 						<span>
 							There are <strong><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard?cohort=all">${all.size}</a></strong> patients in the EMR.
 						</span>
+					
+						<div id="cohort-breakdown-tabs" class="ui-tabs-hide">			
+							<ul>
+				                <li><a href="#cohort-gender-breakdown-tab"><span>Gender</span></a></li>
+				                <li><a href="#cohort-age-breakdown-tab"><span>Age</span></a></li>
+				                <li><a href="#cohort-program-breakdown-tab"><span>Program</span></a></li>
+				            </ul>
 						
-						<div align="center">
-							<form method="post" action="">					
-								<ul>				
-									<li>
-										<div id="barChart"></div>
-										<span><em>This is just a sample graph -- there's no data behind it yet</em></span>
-									</li>
-									<li>
-										
-									
-										<table id="cohort-breakdown-table" class="display">
-											<thead>
-												<tr>
-													<th>Category</th>
-													<th># of Patients</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>Male</td>
-													<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=males">${males.size}</a></td>
-												</tr>
-												<tr>
-													<td>Female</td>
-													<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=females">${females.size}</a></td>
-												</tr>
-												<tr>
-													<td>Adult</td>
-													<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=adults">${adults.size}</a></td>
-												</tr>
-												<tr>
-													<td>Child</td>
-													<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=children">${children.size}</a></td>
-												</tr>
-											</tbody>
-										</table>																						
-									
-										<!-- 
-										<table id="cohort-breakdown-table" class="display">
-											<thead>
-												<tr>
-													<th></th>
-													<th>Child</th>
-													<th>Adult</th>						
-													<th>Total</th>						
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>Male</td>					
-													<td></td>					
-													<td></td>					
-													<td>${males.size}</td>					
-												</tr>
-												<tr>
-													<td>Female</td>					
-													<td></td>					
-													<td></td>					
-													<td>${females.size}</td>					
-												</tr>
-											</tbody>
-											<tfoot>
-												<tr>
-													<th>Total</th>					
-													<th>${children.size}</th>					
-													<th>${adults.size}</th>					
-													<th>${all.size}</th>					
-												</tr>											
-											</tfoot>
-										</table>
-										 -->
-									</li>
-								</ul>
-							</form>
-						</div>
-					</div>
-				</div>							
-		
-
-
-<%--  
-				<div class="portlet">
-					<div class="portlet-header">Simple Logic Query</div>
-					<div class="portlet-content">			
-						<span>
-							Execute a custom logic query.
-						</span>
-						
-						<div>
+							<div id="cohort-gender-breakdown-tab">						
+								<div align="center">
+									<div id="genderBarChart"></div>
+									<span><em>Gender breakdown</em></span>
+									<table id="gender-breakdown-table" class="display">
+										<thead>
+											<tr>
+												<th width="80%">Gender</th>
+												<th>#</th>
+												<th>%</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>Male</td>
+												<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=males">${males.size}</a></td>
+												<td>
+													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${males.size / all.size}"/>													
+												</td>
+											</tr>
+											<tr>
+												<td>Female</td>
+												<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=females">${females.size}</a></td>
+												<td>
+													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${females.size / all.size}"/>													
+												</td>
+											</tr>
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>Total</th>													
+												<th>${males.size + females.size}</th>
+												<th>
+													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${(males.size + females.size) / all.size}"/>													
+												</th>
+											</tr>
+										</tfoot>
+									</table>	
+								</div>
+							</div>
 							
-							<form method="post" action="">					
-								<ul>				
-									<li>
-									
-										<label class="desc" for="query">Query</label>
-										<div>																
-											<textarea name="query" class="field textarea small"></textarea>
-										</div>
-									</li>														
-									<li>
-										<div>						
-											<input type="submit" value="Execute"/>
-										</div>
-									</li>
-								</ul>			
-							</form>							
-						</div>
-					</div><!-- portlet-content -->
-				</div><!-- portlet -->
---%>				
+							<div id="cohort-age-breakdown-tab">		
+							
+								<div align="center">				
+									<div id="ageBarChart"></div>
+									<span><em>Age breakdown</em></span>
+	
+									<table id="age-breakdown-table" class="display">
+										<thead>
+											<tr>
+												<th width="80%">Age</th>
+												<th>#</th>
+												<th>%</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>Adult</td>
+												<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=adults">${adults.size}</a></td>
+												<td>
+													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${adults.size / all.size}"/>													
+												</td>
+											</tr>
+											<tr>
+												<td>Child</td>
+												<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=children">${children.size}</a></td>
+												<td>
+													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${children.size / all.size}"/>
+												</td>
+											</tr>	
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>Total</th>										
+												<th>${children.size + adults.size}</th>
+												<th>
+													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${(children.size + adults.size) / all.size}"/>
+												</th>
+											</tr>
+										</tfoot>
+												
+									</table>	
+								</div>	
+							</div>
+							
+							
+							<div id="cohort-program-breakdown-tab">	
+								<div align="center">	
+									<div id="programBarChart"></div>
+									<span><em>Program breakdown</em></span>
+									<table id="program-breakdown-table" class="display">
+										<thead>
+											<tr>
+												<th width="80%">Program</th>
+												<th>#</th>
+												<th>%</th>
+											</tr>
+										</thead>
+										<tbody>																							
+											<c:forEach var="entry" items="${programCohortMap}">
+												<tr>
+													<td>${entry.key.name}</td>
+													<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=${entry.key.name}">${entry.value.size}</a></td>
+													<td>
+														<fmt:formatNumber type="percent" maxFractionDigits="2" value="${entry.value.size / all.size}"/>
+													</td>														
+												</tr>
+											</c:forEach>
+										</tbody>
+										
+										<tfoot>
+										
+										</tfoot>
+									</table>																						
+								</div>										
+							</div><!-- cohort-program-breakdown-tab -->
+						</div><!-- cohort-breakdown-tab -->
+					</div>
+				</div>
 			</div><!-- column -->
-			
+		</div>
 			
 			<div class="column">	
 
@@ -352,11 +418,13 @@ $(function() {
 		
 		</div><!-- portal -->
 	</div><!-- container -->
+	
+	
+	<div class="clear"></div>
+	
+	
 </div><!-- page -->
 
-</div>
-</div>
 
-</div>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

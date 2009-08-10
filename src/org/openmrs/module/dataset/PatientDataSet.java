@@ -19,15 +19,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Encounter;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
+import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
+import org.openmrs.PersonName;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.context.Context;
@@ -51,8 +57,31 @@ public class PatientDataSet implements DataSet<Object> {
 	private PatientDataSetDefinition definition;	
 	private EvaluationContext evaluationContext;	
 	private List<Patient> patients;
+
+
+	// Constants
+	final private static String PATIENT_IDENTIFIER = "IMB ID";
+	final private static String HIV_PROGRAM = "HIV PROGRAM";
+	final private static String HIV_TREATMENT_GROUP = "TREATMENT GROUP"; // ANTIRETROVIRAL TREATMENT GROUP
+	final private static String HIV_TREATMENT_STATUS = "TREATMENT STATUS"; // ANTIRETROVIRAL TREATMENT STATUS	
+	final private static String HEALTH_CENTER = "Health Center";
+	final private static String WORDS_TO_REMOVE = "FOLLOWING,GROUP";
+	
+	// Static data
+	private PatientIdentifierType patientIdentifierType = null;
+	private Program hivProgram = null;
+	private Map<Patient, List<PatientProgram>> patientProgramMap = null;
+	private ProgramWorkflow hivTreatmentGroup = null;
+	private PersonAttributeType healthCenterAttributeType = null; 
+	private List<Location> locations = null;
 	
 	
+	/**
+	 * Constructor 
+	 * @param definition
+	 * @param context
+	 * @param patients
+	 */
 	public PatientDataSet(PatientDataSetDefinition definition, EvaluationContext context, List<Patient> patients) { 
 		this.definition = definition;
 		this.evaluationContext = context;
@@ -121,20 +150,15 @@ public class PatientDataSet implements DataSet<Object> {
 
 		String treatmentGroup = "NONE";
 		
-		try { 
-			// TODO Needs to be pulled out into global property
-			Program program = 
-				Context.getProgramWorkflowService().getProgramByName("HIV PROGRAM");
+		try { 			
 			
-			List<PatientProgram> patientPrograms = 
-				Context.getProgramWorkflowService().getPatientPrograms(
-					patient, program, null, null, null, null, false);
-
-			// TODO Needs to be pulled out into global property
-			ProgramWorkflow workflow = 
-				program.getWorkflowByName("TREATMENT GROUP");
+			Program program = getHivProgram();
 			
-			if (!patientPrograms.isEmpty()) {
+			List<PatientProgram> patientPrograms = getPatientPrograms(program, patient);
+			
+			ProgramWorkflow workflow = getHivTreatmentGroup();
+			
+			if (patientPrograms!=null && !patientPrograms.isEmpty()) {
 				
 				PatientState currentState = 
 					patientPrograms.get(0).getCurrentState(workflow);
@@ -144,9 +168,10 @@ public class PatientDataSet implements DataSet<Object> {
 					treatmentGroup = ""; // active
 					treatmentGroup = currentState.getState().getConcept().getName().getName();
 
-					// Hack to remove unwanted words
-					treatmentGroup = treatmentGroup.replace("FOLLOWING", "");
-					treatmentGroup = treatmentGroup.replace("GROUP", "");
+					// Remove unwanted words
+					for (String word : WORDS_TO_REMOVE.split(",")) { 
+						treatmentGroup = treatmentGroup.replace(word, "");
+					}					
 					treatmentGroup = treatmentGroup.trim();
 					
 					
@@ -155,11 +180,11 @@ public class PatientDataSet implements DataSet<Object> {
 				}
 				
 			} else { 
-				treatmentGroup = "";	// not enrolled
+				treatmentGroup = ""; // not enrolled
 			}
 		} 
 		catch (Exception e) { 
-			log.info("Unable to retrieve current treatment group " + patient.getPatientId() + ": " + e.getCause() + " : " + e.getMessage() + " ");
+			log.error("Unable to retrieve current treatment group for patient " + patient.getPatientId(), e);
 		}
 		
 		return treatmentGroup;
@@ -176,22 +201,190 @@ public class PatientDataSet implements DataSet<Object> {
 		try { 
 			
 			// Health Center
-			PersonAttributeType attributeType = 
-				Context.getPersonService().getPersonAttributeType(7);
+			PersonAttributeType attributeType = getHealthCenterAttributeType(); 
 			
-			Integer locationId = 
-				Integer.parseInt(patient.getAttribute(attributeType).getValue());
+			log.info("Person attribute type: " + attributeType);
+			PersonAttribute personAttribute = patient.getAttribute(attributeType);
+			log.info("Person attribute: " + personAttribute);
 			
-			return Context.getLocationService().getLocation(locationId).getName();
-			
+			if (personAttribute != null) {
+				log.info("before: " + personAttribute.getValue());
+				Integer locationId = 
+					Integer.parseInt(personAttribute.getValue());
+				log.info("after: " + locationId);
+				return "Health Center: " + getLocation(locationId);
+			}			
 		} 
 		catch (Exception e) { 
-			log.info("Unable to retrieve current health center for patient " + patient.getPatientId() + ":"  + e.getMessage());
+			log.error("Unable to retrieve current health center for patient " + patient.getPatientId(), e);
 		}
 		
-		return "Unknown";
+		return "No Health Center";
 		
 	}		
+
+	
+	/**
+	 * 
+	 * @param patient
+	 * @return
+	 */
+	public List<PatientProgram> getPatientPrograms(Program program, Patient patient) { 
+		// Initialize the list of patient programs 
+		if (patientProgramMap == null || patientProgramMap.isEmpty()) { 
+
+			patientProgramMap = new HashMap<Patient, List<PatientProgram>>();
+
+			
+			log.info("hiv program: " + program);
+			List<PatientProgram> patientPrograms = 
+				Context.getProgramWorkflowService().getPatientPrograms(
+					null, program, null, null, null, null, false);				
+			
+			log.info("Patient programs: " + patientPrograms.size());
+			
+			for (PatientProgram patientProgram : patientPrograms) { 
+				List<PatientProgram> patientProgramList = 
+					patientProgramMap.get(patientProgram.getPatient());
+				
+				if (patientProgramList == null) 
+					patientProgramList = new Vector<PatientProgram>();
+				
+				patientProgramList.add(patientProgram);
+				patientProgramMap.put(patientProgram.getPatient(), patientProgramList);				
+			}		
+		}
+		
+		return patientProgramMap.get(patient);
+	
+	}	
+	
+	/**
+	 * Gets a patient identifier for the given patient and indentifierType.
+	 * 
+	 * @param patient
+	 * 		the given patient
+	 * @param identifierType
+	 * 		the desired identifier type 
+	 * @return
+	 * 		a patient identifier for the given patient and indentifierType.
+	 */
+	public String getPatientIdentifier(Patient patient, String identifierType) { 
+		PatientIdentifierType patientIdentifierType = getPatientIdentifierType(identifierType);
+		
+		if (patientIdentifierType == null) { 
+			return "No identifier type with name " + identifierType;
+		}
+		
+		PatientIdentifier identifier = 
+			patient.getPatientIdentifier(patientIdentifierType);
+		
+		if (identifier == null) 
+			return "No " + identifierType + " identifier";
+		else 
+			return identifier.getIdentifier();	
+	}
+	
+	
+	/**
+	 * 
+	 * @param patient
+	 * @param format
+	 * @return
+	 */
+	public String getPatientName(Patient patient) { 
+		
+		PersonName personName = patient.getPersonName();
+		if (personName == null) { 
+			return "No name";
+		}
+		return patient.getPersonName().getFamilyName() + " " + patient.getPersonName().getGivenName();		
+		
+		
+	}
+	
+	
+	private PatientIdentifierType getPatientIdentifierType(String identifierType) { 
+
+		if (patientIdentifierType == null) {
+			patientIdentifierType = Context.getPatientService().getPatientIdentifierTypeByName(identifierType);		
+		}
+		return patientIdentifierType;
+	}
+	
+	
+	/**
+	 * Get HIV Program
+	 * @return	
+	 * 		a program
+	 */
+	private Program getHivProgram() { 
+		if (hivProgram == null) {  
+			// TODO Needs to be pulled out into global property
+			hivProgram =
+				Context.getProgramWorkflowService().getProgramByName(HIV_PROGRAM);
+		}
+		log.info("Returning " + hivProgram);
+		return hivProgram;
+	}	
+	
+	/**
+	 * Get HIV Treatment Group
+	 * @return
+	 * 		a program workflow
+	 */
+	private ProgramWorkflow getHivTreatmentGroup() { 
+		// TODO Needs to be pulled out into global property
+		if (hivTreatmentGroup == null) { 
+			hivTreatmentGroup = getHivProgram().getWorkflowByName(HIV_TREATMENT_GROUP);
+		}
+		log.info("Returning " + hivTreatmentGroup);
+		return hivTreatmentGroup;
+	}
+	
+	
+	/**
+	 * Get health center attribute type
+	 * @return
+	 * 		a person attribute type
+	 */
+	private PersonAttributeType getHealthCenterAttributeType() { 
+		// Health Center
+		if (healthCenterAttributeType == null) { 
+			healthCenterAttributeType = Context.getPersonService().getPersonAttributeTypeByName(HEALTH_CENTER);
+		}				
+		log.info("Returning " + healthCenterAttributeType + " " + healthCenterAttributeType.getPersonAttributeTypeId());
+		return healthCenterAttributeType;
+		
+	}
+	
+	
+	/**
+	 * Get a location by location id.
+	 * 
+	 * @param locationId
+	 * 		the primary key of the location
+	 * @return
+	 * 		the location that matches the given location id
+	 */
+	public Location getLocation(Integer locationId) { 
+		if (locations == null) { 
+			locations = Context.getLocationService().getAllLocations();		
+		}
+		
+		for (Location location : locations) { 
+			if (location.getLocationId().equals(locationId))
+				return location;
+		}
+		return new Location();
+		
+	}
+	
+	
+	
+	// ==============================================================================================
+	
+	
 	
 	/**
 	 * @see org.openmrs.module.dataset.api.DataSet#iterator()
@@ -207,8 +400,6 @@ public class PatientDataSet implements DataSet<Object> {
 	public Iterator<Map<DataSetColumn, Object>> getIterator() {
 		return iterator();
 	}
-	
-	
 	
 	/**
 	 * This is wrapped around (List<Obs>).iterator() This implementation is NOT thread-safe, so do
@@ -235,7 +426,7 @@ public class PatientDataSet implements DataSet<Object> {
 		public Map<DataSetColumn, Object> next() {
 			Map<DataSetColumn, Object> row = new HashMap<DataSetColumn, Object>();
 			//Locale locale = Context.getLocale();
-			
+			long starttime = System.currentTimeMillis();
 			// Add default values for the encounter dataset
 			// TODO These need to be added as columns to the dataset definition
 			// TODO We need a way to sync these up
@@ -250,10 +441,10 @@ public class PatientDataSet implements DataSet<Object> {
 			// TODO I'm not in love with the this approach, but we'll refactor later if we need to
 			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_ID), 
 					patient.getPatientId());
-			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.IMB_ID), 
-					patient.getPatientIdentifier("IMB ID").getIdentifier());			
+			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_IDENTIFIER), 
+					getPatientIdentifier(patient, PATIENT_IDENTIFIER));			
 			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), 
-					patient.getPersonName().getFamilyName() + " " + patient.getPersonName().getGivenName());
+					getPatientName(patient));
 			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER),	
 					patient.getGender());	
 			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.AGE), 

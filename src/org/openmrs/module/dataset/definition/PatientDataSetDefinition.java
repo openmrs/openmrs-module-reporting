@@ -34,7 +34,7 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 
 	// Constants 
 	public static final String PATIENT_ID = "patient_id";
-	public static final String IMB_ID = "imb_id";
+	public static final String PATIENT_IDENTIFIER = "identifier";
 	public static final String NAME = "name";
 	public static final String AGE = "age";
 	public static final String GENDER = "gender";
@@ -62,7 +62,7 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	
 		
 	private static String [] columnKeys = { 		
-		PATIENT_ID, IMB_ID, NAME, AGE, GENDER, HEALTH_CENTER, TREATMENT_GROUP
+		PATIENT_ID, PATIENT_IDENTIFIER, NAME, AGE, GENDER, HEALTH_CENTER, TREATMENT_GROUP
 	};
 		
 	private static Class [] columnDatatypes = { 

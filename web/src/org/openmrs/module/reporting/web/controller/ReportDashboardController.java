@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Location;
+import org.openmrs.Program;
 import org.openmrs.api.APIException;
 import org.openmrs.api.PatientSetService.BooleanOperator;
 import org.openmrs.api.context.Context;
@@ -21,6 +22,7 @@ import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.CompoundCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.LabEncounterDataSet;
@@ -72,32 +74,51 @@ public class ReportDashboardController {
 
     
     @RequestMapping("/module/reporting/viewDemographicData")
-    public void viewDemographicData(ModelMap model) {     
-
-    	// not implemented yet
-    	
+    public void showDemographicData(ModelMap model) {     
+    	// not implemented yet    	
     }
 
+    
+    @RequestMapping("/module/reporting/showProgramEnrollementData")
+    public void showProgramEnrollmentData(
+    		@RequestParam(required=false, value="cohort") String cohort,
+    		
+    		
+    		ModelMap model) {     
+
+    	
+    	
+    	// not implemented yet
+    	
+    }    
+    
+    
     @RequestMapping("/module/reporting/manageCohortDashboard")
     public String manageCohortDashboard(
     		@RequestParam(required=false, value="cohort") String cohort,
     		ModelMap model) { 
     	
+		model.addAttribute("selected", cohort);
     	EvaluationContext evaluationContext = new EvaluationContext();
     	if ("males".equalsIgnoreCase(cohort)) { 
-    		model.addAttribute("cohort", getMaleCohort(evaluationContext));    		
+    		model.addAttribute("cohort", getGenderCohort(evaluationContext, "M"));    		
     	}
     	else if ("females".equalsIgnoreCase(cohort)) { 
-    		model.addAttribute("cohort", getFemaleCohort(evaluationContext));    		
+    		model.addAttribute("cohort", getGenderCohort(evaluationContext, "F"));    		
     	}
     	else if ("adults".equalsIgnoreCase(cohort)) { 
-    		model.addAttribute("cohort", getAdultCohort(evaluationContext));    		
+    		model.addAttribute("cohort", getAgeCohort(evaluationContext, 15, 150, new Date()));    		
     	}
     	else if ("children".equalsIgnoreCase(cohort)) { 
-    		model.addAttribute("cohort", getChildCohort(evaluationContext));    		
+    		model.addAttribute("cohort", getAgeCohort(evaluationContext, 0, 14, new Date()));    		
     	}
     	else { 
-    		model.addAttribute("cohort", Context.getPatientSetService().getAllPatients());    		
+    		
+    		Program program = Context.getProgramWorkflowService().getProgramByName(cohort);
+    		if (program != null) 
+    			model.addAttribute("cohort", getProgramStateCohort(evaluationContext, program));
+    		else 
+    			model.addAttribute("cohort", Context.getPatientSetService().getAllPatients());    		
     	}
     	
     	
@@ -133,7 +154,9 @@ public class ReportDashboardController {
     			Context.getService(ReportService.class).getReportRenderers());
     	
     	// Get all static data
-    	model.addAttribute("programs", Context.getProgramWorkflowService().getAllPrograms());
+    	List<Program> programs = Context.getProgramWorkflowService().getAllPrograms();
+    	
+    	model.addAttribute("programs", programs);
     	model.addAttribute("encounterTypes", Context.getEncounterService().getAllEncounterTypes());
     	model.addAttribute("identifierTypes", Context.getPatientService().getAllPatientIdentifierTypes());
     	model.addAttribute("attributeTypes", Context.getPersonService().getAllPersonAttributeTypes());
@@ -149,49 +172,69 @@ public class ReportDashboardController {
 
     	EvaluationContext evaluationContext = new EvaluationContext();
     	
-		model.addAttribute("males", getMaleCohort(evaluationContext));
-		model.addAttribute("females", getFemaleCohort(evaluationContext));    	
-		model.addAttribute("adults", getAdultCohort(evaluationContext));
-		model.addAttribute("children", getChildCohort(evaluationContext));				
+    	// These should be defined explicitly and configured via global properties
+		model.addAttribute("males", getGenderCohort(evaluationContext, "M"));
+		model.addAttribute("females", getGenderCohort(evaluationContext, "F"));    	
+		model.addAttribute("adults", getAgeCohort(evaluationContext, 15, 150, new Date()));
+		model.addAttribute("children", getAgeCohort(evaluationContext, 0, 14, new Date()));				
 		model.addAttribute("all", Context.getPatientSetService().getAllPatients());
 
+		Map<Program, Cohort> programCohortMap = new HashMap<Program, Cohort>();
+		for (Program program : programs) {
+			Cohort cohort = getProgramStateCohort(evaluationContext, program);
+			log.info("Program: " + program.getName() + " " + cohort.getSize());
+			programCohortMap.put(program, cohort);
+		}
+		model.addAttribute("programCohortMap", programCohortMap);
 		
 		return "/module/reporting/dashboard/dashboardManager";
     }    
     
+
+    /**
+     * Get program cohort.
+     * 
+     * @param evaluationContext
+     * @param program
+     * @return
+     */
+    public Cohort getProgramStateCohort(EvaluationContext evaluationContext, Program program) { 
+    	ProgramStateCohortDefinition programStateCohortDefinition = new ProgramStateCohortDefinition();    	
+    	programStateCohortDefinition.setProgram(program);
+    	programStateCohortDefinition.setStateList(null);
+    	return Context.getService(CohortDefinitionService.class).evaluate(programStateCohortDefinition, evaluationContext);     	
+    }
     
     
-    public Cohort getMaleCohort(EvaluationContext evaluationContext) {     	
-    	// Male filter
+    /**
+     * Get program cohort.
+     * 
+     * @param evaluationContext
+     * @param program
+     * @return
+     */
+    public Cohort getGenderCohort(EvaluationContext evaluationContext, String gender) {     	
 		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
-		genderCohortDefinition.setGender("M");
+		genderCohortDefinition.setGender(gender);
 		return Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, evaluationContext);    	
     
     }
 
-    public Cohort getFemaleCohort(EvaluationContext evaluationContext) {     	
-    	// Female filter
-		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
-		genderCohortDefinition.setGender("F");
-		return Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, evaluationContext);    	
-    
-    }
-    
-    public Cohort getAdultCohort(EvaluationContext evaluationContext) {     	
-    	// Adult filter
-    	AgeCohortDefinition adultCohortDefinition = new AgeCohortDefinition();
-    	adultCohortDefinition.setMinAge(15);
-    	adultCohortDefinition.setMaxAge(150);
-    	adultCohortDefinition.setEffectiveDate(new Date());		
-    	return Context.getService(CohortDefinitionService.class).evaluate(adultCohortDefinition, evaluationContext);    
-    }
-    
-    public Cohort getChildCohort(EvaluationContext evaluationContext) {     	    
-		AgeCohortDefinition childCohortDefinition = new AgeCohortDefinition();
-		childCohortDefinition.setMinAge(0);
-		childCohortDefinition.setMaxAge(15);
-		childCohortDefinition.setEffectiveDate(new Date());		
-		return Context.getService(CohortDefinitionService.class).evaluate(childCohortDefinition, evaluationContext);
+    /**
+     * Get an adult cohort 
+     * 
+     * @param evaluationContext
+     * @param minAge
+     * @param maxAge
+     * @param effectiveDate
+     * @return
+     */
+    public Cohort getAgeCohort(EvaluationContext evaluationContext, Integer minAge, Integer maxAge, Date effectiveDate) {     	
+    	AgeCohortDefinition ageCohortDefinition = new AgeCohortDefinition();
+    	ageCohortDefinition.setMinAge(minAge);
+    	ageCohortDefinition.setMaxAge(maxAge);
+    	ageCohortDefinition.setEffectiveDate(effectiveDate);		
+    	return Context.getService(CohortDefinitionService.class).evaluate(ageCohortDefinition, evaluationContext);    
     }
     
     

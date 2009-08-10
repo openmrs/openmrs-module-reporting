@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -62,11 +63,7 @@ public class ProgramStateCohortDefinition extends DateRangeCohortDefinition {
 		ret.append("Patients in program ");
 		
 		if (program != null) {
-			if (program.getConcept() == null)
-				ret.append(program.getName());
-			else {
-				ret.append(program.getConcept().getPreferredName(Context.getLocale()).getName() + " ");
-			}
+			ret.append(program.getName());		
 		}
 		
 		if (stateList != null && stateList.size() > 0) {

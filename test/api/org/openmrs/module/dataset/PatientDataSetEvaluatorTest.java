@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.dataset;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +46,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	 */
 	@Override
     public Boolean useInMemoryDatabase() { 
-		return true; 
+		return false; 
 	}	
 	
 	/**
@@ -67,18 +69,23 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldEvaluatePatientDataSet() throws Exception {
-		EvaluationContext evalContext = new EvaluationContext();
-		
-		DataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
-		DataSet dataSet = 
-			Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
 
+		EvaluationContext evalContext = new EvaluationContext();
+		evalContext.setBaseCohort(Context.getPatientSetService().getAllPatients());
+		
+		// Evaluate dataset
+		DataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
+		DataSet dataSet = Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
+
+		// Build report
         ReportData reportData = new ReportData();
         Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
         dataSets.put("patient", dataSet);
         reportData.setDataSets(dataSets);
         
-        new CsvReportRenderer().render(reportData, null, System.out);
+        // Render report
+        FileOutputStream fileOutputStream = new FileOutputStream(new File("/home/jmiranda/Workspace/module-reporting-core/patient.csv"));        
+        new CsvReportRenderer().render(reportData, null, fileOutputStream);
 		
 	}
 	
