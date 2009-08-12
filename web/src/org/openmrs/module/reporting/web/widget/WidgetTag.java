@@ -117,7 +117,7 @@ public class WidgetTag extends TagSupport {
 		
 		// Run the Handler with this Configuration 
 		try {
-			handler.handle(config);
+			handler.render(config);
 		}
 		catch (Exception e) {
 			throw new JspException("Error handling Widget: " + type, e);

@@ -11,15 +11,16 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.evaluation.caching;
+package org.openmrs.module.cohort.definition.configuration;
 
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.evaluation.parameter.Parameterizable;
-import org.openmrs.module.evaluation.parameter.ParameterUtil;
+import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
+import org.openmrs.module.evaluation.caching.Caching;
+import org.openmrs.module.evaluation.caching.CachingStrategy;
 
 /**
  * Represents a strategy for caching a particular object
@@ -29,23 +30,23 @@ import org.openmrs.module.evaluation.parameter.ParameterUtil;
  * 
  * @see Caching
  */
-public class AnnotatedParameterCachingStrategy implements CachingStrategy  {
+public class ConfigurationPropertyCachingStrategy implements CachingStrategy  {
 	
 	/**
 	 * Implementation that creates a cache key out of the 
 	 * instance class name and a sorted Map of field name -> value
-	 * for all fields annotated as {@link Param}
-	 * @see org.openmrs.report.context.CachingStrategy#getCacheKey(java.lang.Object)
+	 * for all fields annotated as {@link ConfigurationProperty}
+	 * @see CachingStrategy#getCacheKey(java.lang.Object)
 	 */
 	public String getCacheKey(Object o) {
-		if (o == null || !(o instanceof Parameterizable)) {
-			throw new IllegalArgumentException("AnnotatedParameterCachingStrategy is only supported for Parameterizable classes");
+		if (o == null || !(o instanceof CohortDefinition)) {
+			throw new IllegalArgumentException("Unable to getCacheKey for object that is null or not a CohortDefinition");
 		}
-		List<Parameter> parameters = ParameterUtil.getAnnotatedParameters((Parameterizable) o);
+		List<Property> props = CohortDefinitionUtil.getConfigurationProperties((CohortDefinition)o);
 		Map<String, Object> m = new TreeMap<String, Object>();
-		for (Parameter p : parameters) {
-			if (p.getDefaultValue() != null) {
-				m.put(p.getName(), p.getDefaultValue());
+		for (Property p : props) {
+			if (p.getValue() != null) {
+				m.put(p.getField().getName(), p.getValue());
 			}
 		}
 		return o.getClass().getName() + m.toString();

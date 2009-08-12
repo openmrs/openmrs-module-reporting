@@ -19,7 +19,7 @@ import org.openmrs.Concept;
 import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.parameter.Param;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 
 public class ObsCohortDefinition extends DateRangeCohortDefinition {
 	
@@ -27,16 +27,16 @@ public class ObsCohortDefinition extends DateRangeCohortDefinition {
 	
 	//***** PROPERTIES *****
 	
-	@Param(required=true)
+	@ConfigurationProperty(required=true)
 	private Concept question;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private Modifier modifier;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private TimeModifier timeModifier;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private Object value;
 
 	//***** CONSTRUCTORS *****

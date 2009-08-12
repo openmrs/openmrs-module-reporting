@@ -88,43 +88,42 @@ $(document).ready(function() {
 											name="description">${cohortDefinition.description}</textarea>			
 							</div>
 						</li>
-	
+						
 						<li>
-							<label class="desc">Configuration</label>			
+							<label class="desc">Fixed Properties</label>			
 							
 							<div>
-								<table id="cohort-definition-parameter-table" class="display" width="50%">
+								<table id="cohort-definition-property-table" class="display">
 									<thead>
 										<tr>
-											<th align="left" width="5%">Name</th>
-											<th align="center" width="10%">Fixed Value</th>
-											<th align="center" width="5%">- OR -</th>
-											<th align="center" width="10%">Runtime Parameter</th>
+											<th align="left">Name</th>
+											<th align="left">Dynamic</th>
+											<th align="left">-or-</th>
+											<th align="left" width="100%">Fixed Value</th>
 										</tr>	
 									</thead>
 									<tbody>
-										<c:forEach items="${cohortDefinition.availableParameters}" var="p" varStatus="varStatus">
+										<c:forEach items="${cohortDefinition.configurationProperties}" var="p" varStatus="varStatus">
+										
 											<c:set var="isParam" value="f" />
 											<c:forEach items="${cohortDefinition.parameters}" var="cdparam">
-												<c:if test="${p.name == cdparam.name}">
+												<c:if test="${p.field.name == cdparam.name}">
 													<c:set var="isParam" value="t" />
 												</c:if>
 											</c:forEach>
 	
 											<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
-												<td valign="top" width="5%">
-													${p.name}
-													<c:if test="${p.required && isParam == 'f'}">
-														<span style="color:red;">*</span>
-													</c:if>
+												<td valign="top" nowrap="true">
+													${p.field.name}
+													<c:if test="${p.required}"><span style="color:red;">*</span></c:if>
 												</td>
-												<td valign="top" align="center">
-													<rpt:widget id="${p.name}" name="${p.name}" object="${cohortDefinition}" property="${p.name}"/>
+												<td valign="top">
+													<input 	type="checkbox" name="parameter.${p.field.name}.allowAtEvaluation" value="t"
+															<c:if test="${isParam == 't'}">checked="true"</c:if>/>
 												</td>
 												<td>&nbsp;</td>
-												<td valign="top" align="center">
-													<input 	type="checkbox" name="parameter.${p.name}.allowAtEvaluation" value="t"
-															<c:if test="${isParam == 't'}">checked="true"</c:if>/>
+												<td valign="top">
+													<rpt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
 												</td>
 											</tr>
 										</c:forEach>
@@ -134,7 +133,7 @@ $(document).ready(function() {
 								</table>
 							</div>
 						</li>
-							
+
 						<li>					
 							<div align="center">				
 								<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />

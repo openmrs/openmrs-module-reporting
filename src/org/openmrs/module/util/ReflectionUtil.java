@@ -4,12 +4,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
 
 /**
  * A utility class for common reflection methods
@@ -48,6 +50,15 @@ public class ReflectionUtil {
 	}
 	
 	/**
+	 * Returns true if the passed field is a Collection
+	 * @param f the field to check
+	 * @return true if the passed field is a Collection
+	 */
+	public static boolean isCollection(Field f) {
+		return Collection.class.isAssignableFrom(f.getType());
+	}
+	
+	/**
 	 * Returns the underlying type of the passed field
 	 */
 	public static Class<?> getFieldType(Field field) {
@@ -74,15 +85,45 @@ public class ReflectionUtil {
     	return null;
     }
 	
-	@SuppressWarnings("unchecked")
-	public static <T extends Object> T getPropertyValue(T object, String property) {
+    /**
+     * Returns the property value with the given property name on the given object
+     * @param object
+     * @param property
+     * @return the property value with the given property name on the given object
+     */
+	public static Object getPropertyValue(Object object, String property) {
 		try {
 			String methodName = "get"+StringUtils.capitalize(property);
 			Method m = object.getClass().getMethod(methodName, (Class[]) null);
-			return (T)m.invoke(object, new Object[] {});
+			return m.invoke(object, new Object[] {});
 		}
 		catch (Exception e) {
 			throw new IllegalArgumentException("Unable to access property " + property + " on " + object, e);
 		}
 	}
+	
+	/**
+	 * Utility method which sets the value of a Field in an Object with the given value
+	 */
+    public static void setPropertyValue(Object objectToUpdate, String propertyName, Object value) {
+    	Field f = getField(objectToUpdate.getClass(), propertyName);
+    	setPropertyValue(objectToUpdate, f, value);
+   	}
+	
+	/**
+	 * Utility method which sets the value of a Field in an Object with the given value
+	 */
+    public static void setPropertyValue(Object objectToUpdate, Field f, Object value) {
+		if (objectToUpdate != null && f != null) {
+			try {
+				String baseName = f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
+				Method setterMethod = objectToUpdate.getClass().getMethod("set"+baseName, f.getType());
+				setterMethod.invoke(objectToUpdate, value);
+    		}
+			catch (Exception e) {
+    			throw new APIException("Error setting trying to set field <" + f + "> on object " + 
+    									objectToUpdate + " with value <" + value + ">");
+    		}
+    	}
+   	}
 }

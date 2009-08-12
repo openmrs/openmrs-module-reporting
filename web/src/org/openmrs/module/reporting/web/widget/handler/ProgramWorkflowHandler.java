@@ -41,4 +41,12 @@ public class ProgramWorkflowHandler extends CodedHandler {
 			}
 		}
 	}
+	
+	/** 
+	 * @see WidgetHandler#parse(String, Class<?>)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		return Context.getProgramWorkflowService().getWorkflowByUuid(input);
+	}
 }

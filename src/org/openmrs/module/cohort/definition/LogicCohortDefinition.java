@@ -14,7 +14,7 @@
 package org.openmrs.module.cohort.definition;
 
 import org.openmrs.logic.LogicCriteria;
-import org.openmrs.module.evaluation.parameter.Param;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 
 /**
  * Filter Implementation using Logic
@@ -25,7 +25,7 @@ public class LogicCohortDefinition extends BaseCohortDefinition {
 	
 	//***** PROPERTIES *****
 	
-	@Param(required=true)
+	@ConfigurationProperty(required=true)
 	private LogicCriteria criteria;
 
 	//***** CONSTRUCTORS *****

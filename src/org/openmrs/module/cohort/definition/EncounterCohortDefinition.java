@@ -19,7 +19,7 @@ import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
-import org.openmrs.module.evaluation.parameter.Param;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 
 public class EncounterCohortDefinition extends DateRangeCohortDefinition {
 	
@@ -27,19 +27,19 @@ public class EncounterCohortDefinition extends DateRangeCohortDefinition {
 	
 	//***** PROPERTIES *****
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private List<EncounterType> encounterTypeList;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private Form form;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private Integer atLeastCount;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private Integer atMostCount;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private Location location;
 
 	//***** CONSTRUCTORS *****

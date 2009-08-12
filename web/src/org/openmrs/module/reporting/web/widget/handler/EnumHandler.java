@@ -29,11 +29,30 @@ public class EnumHandler extends CodedHandler {
 	 */
 	@Override
 	public void populateOptions(WidgetConfig config, CodedWidget widget) {
-		Object[] enums = config.getType().getEnumConstants();
+		Class<?> c = config.getType();
+		Object[] enums = c.getEnumConstants();
 		if (enums != null) {
 			for (Object o : enums) {
 				widget.addOption(new Option(o.toString(), o.toString(), null, o), config);
 			}
 		}
+	}
+	
+	/** 
+	 * @see WidgetHandler#parse(String, Class<?>)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		if (input != null) {
+			Object[] enums = clazz.getEnumConstants();
+			if (enums != null) {
+				for (Object o : enums) {
+					if (input.equals(o.toString())) {
+						return o;
+					}
+				}
+			}
+		}
+		return null;
 	}
 }

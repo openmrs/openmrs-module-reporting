@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.report;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -31,7 +27,6 @@ import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.report.service.ReportService;
 import org.openmrs.test.BaseContextSensitiveTest;
 
 /**
@@ -67,7 +62,7 @@ public class ReportSchemaXmlTest extends BaseContextSensitiveTest {
 		enrolledFilter.setName("EnrolledOnDate");
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByName("HIV PROGRAM");
 		enrolledFilter.setProgram(hivProgram);
-		enrolledFilter.addParameter(new Parameter("untilDate","untilDate",Date.class,null,false, false));
+		enrolledFilter.addParameter(new Parameter("untilDate","untilDate",Date.class));
 		Context.getService(CohortDefinitionService.class).saveCohortDefinition(enrolledFilter);
 
 	}

@@ -13,11 +13,15 @@
  */
 package org.openmrs.module.evaluation.parameter;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.PatientSetService.BooleanOperator;
 import org.openmrs.module.cohort.definition.CompoundCohortDefinition;
 import org.openmrs.module.cohort.definition.DrugOrderCohortDefinition;
+import org.openmrs.module.cohort.definition.configuration.Property;
+import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
 
 /**
  * Tests the ParameterUtil methods
@@ -25,29 +29,30 @@ import org.openmrs.module.cohort.definition.DrugOrderCohortDefinition;
 public class ParameterUtilTest {
 	
 	/**
-	 * Tests that fields annotated as {@link Param} are added as Parameters
+	 * Tests that fields annotated as {@link EvalProperty} are added as Parameters
 	 */
 	@Test
 	public void shouldHaveAllAnnotatedFieldsAsParameters() throws Exception {		
 		CompoundCohortDefinition def = new CompoundCohortDefinition();
-		Assert.assertEquals(2, def.getAvailableParameters().size());
-		for (Parameter p : def.getAvailableParameters()) {
-			if (p.getName().equals("operator")) {
-				Assert.assertEquals(BooleanOperator.AND, p.getDefaultValue());
+		List<Property> props = CohortDefinitionUtil.getConfigurationProperties(def);
+		Assert.assertEquals(2, props.size());
+		for (Property p : props) {
+			if (p.getField().getName().equals("operator")) {
+				Assert.assertEquals(BooleanOperator.AND, p.getValue());
 			}
-			else if (p.getName().equals("definitions")) {
-				Assert.assertTrue(p.isRequired());
+			else if (p.getField().getName().equals("definitions")) {
+				Assert.assertTrue(p.getRequired());
 			}
 		}
 	}
 	
 	/**
-	 * Tests that fields annotated as {@link Param} are added as Parameters from superclasses
+	 * Tests that fields annotated as {@link EvalProperty} are added as Parameters from superclasses
 	 */
 	@Test
 	public void shouldHaveAllInheritedAnnotatedFieldsAsParameters() throws Exception {		
 		DrugOrderCohortDefinition def = new DrugOrderCohortDefinition();
-		System.out.println(def.getAvailableParameters());
-		Assert.assertEquals(9, def.getAvailableParameters().size());
+		System.out.println(CohortDefinitionUtil.getConfigurationProperties(def));
+		Assert.assertEquals(9, CohortDefinitionUtil.getConfigurationProperties(def).size());
 	}
 }

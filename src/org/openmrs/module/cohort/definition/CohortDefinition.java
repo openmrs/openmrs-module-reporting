@@ -16,7 +16,7 @@ package org.openmrs.module.cohort.definition;
 import java.util.List;
 
 import org.openmrs.OpenmrsMetadata;
-import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.cohort.definition.configuration.Property;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 
 /**
@@ -25,25 +25,11 @@ import org.openmrs.module.evaluation.parameter.Parameterizable;
  */
 public interface CohortDefinition extends OpenmrsMetadata, Parameterizable  {
 	
-    /**
-     * Returns a List of all Parameters that can be configured on this CohortDefinition.
-     * Only some of these parameters will be configured on an instance.
-     * For example:<br/>
-     * PatientCharacteristicCohortDefinition might return Parameters for
-     * gender, ageMin, ageMax, isDead, birthdateMin, birthdateMax
-     * when you call this method.
-     * <br/>
-     * Then, when creating and persisting a specific instance of this filter to 
-     * represent Males, you would call <code>configureParameter("gender", "M", true)</code>
-     * 
-     * @return - All available Parameters that one might add to this CohortDefinition
+	/**
+     * Returns a List of all Properties that can be configured on this CohortDefinition.
+     * Only some of these will be configured on an instance.
+     * @return - All available Properties that one might configure on this CohortDefinition
      */
-	public List<Parameter> getAvailableParameters();
-	
-    /**
-     * Retrieves the Parameter with the given name from the list of available parameter on this
-     * CohortDefinition, and adds it as a Parameter on the instance with the given values
-     */
-	public void enableParameter(String name, Object defaultValue, boolean required);
+	public List<Property> getConfigurationProperties();
 	
 }

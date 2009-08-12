@@ -35,4 +35,12 @@ public class OrderTypeHandler extends CodedHandler {
 			widget.addOption(new Option(t.getUuid(), t.getName(), null, t), config);
 		}
 	}
+	
+	/** 
+	 * @see WidgetHandler#parse(String, Class<?>)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		return Context.getOrderService().getOrderTypeByUuid(input);
+	}
 }

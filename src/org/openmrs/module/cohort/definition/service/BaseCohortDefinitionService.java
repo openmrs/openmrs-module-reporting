@@ -27,13 +27,14 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister;
+import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.caching.Caching;
 import org.openmrs.module.evaluation.caching.CachingStrategy;
 import org.openmrs.module.evaluation.caching.NoCachingStrategy;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.evaluation.parameter.ParameterUtil;
+import org.openmrs.module.util.ReflectionUtil;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -213,13 +214,13 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 		}
 
 		// Clone CohortDefinition and set all properties from the Parameters in the EvaluationContext
-		CohortDefinition clonedDefinition = ParameterUtil.cloneParameterizable(definition);
+		CohortDefinition clonedDefinition = CohortDefinitionUtil.clone(definition);
 		for (Parameter p : clonedDefinition.getParameters()) {
 			Object value = p.getDefaultValue();
 			if (evalContext != null && evalContext.containsParameter(p.getName())) {
 				value = evalContext.getParameterValue(p.getName());
 			}
-			ParameterUtil.setAnnotatedFieldFromParameter(clonedDefinition, p, value);
+			ReflectionUtil.setPropertyValue(clonedDefinition, p.getName(), value);
 		}
 		
 		// Retrieve from cache if possible, otherwise evaluate

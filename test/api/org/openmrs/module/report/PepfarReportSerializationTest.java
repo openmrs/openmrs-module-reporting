@@ -72,9 +72,9 @@ public class PepfarReportSerializationTest extends BaseContextSensitiveTest {
 		pepfarReportSchema.addDataSetDefinition(cohortDataSetDef, (String)null);
 		
 		// add the parameters of the report
-		Parameter startDateParam = new Parameter("report.startDate", "When does the report period start?", Date.class, null,false, false);
-		Parameter endDateParam = new Parameter("report.endDate", "When does the report period end?", Date.class, null,false, false);
-		Parameter locationParam = new Parameter("report.location", "For which clinic is this report?", Location.class, null,false, false);
+		Parameter startDateParam = new Parameter("report.startDate", "When does the report period start?", Date.class);
+		Parameter endDateParam = new Parameter("report.endDate", "When does the report period end?", Date.class);
+		Parameter locationParam = new Parameter("report.location", "For which clinic is this report?", Location.class);
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(startDateParam);
 		parameters.add(endDateParam);

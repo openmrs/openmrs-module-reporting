@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.cohort.definition;
 
-import org.openmrs.module.evaluation.parameter.Param;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 
 public class InverseCohortDefinition extends BaseCohortDefinition {
 	
@@ -21,7 +21,7 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
     
 	//***** PROPERTIES *****
 	
-	@Param(required=true)
+	@ConfigurationProperty(required=true)
     private CohortDefinition baseDefinition;
 	
 	//***** CONSTRUCTORS *****

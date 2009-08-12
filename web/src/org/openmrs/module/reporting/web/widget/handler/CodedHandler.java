@@ -34,10 +34,10 @@ public abstract class CodedHandler extends WidgetHandler {
 	}
 	
 	/** 
-	 * @see WidgetHandler#handle(WidgetConfig)
+	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void handle(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config) throws IOException {
 		CodedWidget w = WidgetFactory.getInstance(getDefaultWidget(), config);
 		String showEmptyAtt = config.getAttributeValue("showEmptyOption");
 		if ("true".equals(showEmptyAtt) || (showEmptyAtt == null && w instanceof SelectWidget)) {

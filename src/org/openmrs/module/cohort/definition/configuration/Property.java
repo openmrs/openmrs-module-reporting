@@ -1,0 +1,155 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+package org.openmrs.module.cohort.definition.configuration;
+
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import org.openmrs.module.evaluation.EvaluationContext;
+
+/**
+ * Represents a value that may be used to configure a CohortDefinition instance.
+ * Typically such a property will be constructed through introspection of
+ * objects that contain the {@link Property} annotation.
+ * 
+ * @see Property
+ * @see EvaluationContext
+ */
+public class Property implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+	
+	//***********************
+	// PROPERTIES
+	//***********************
+	
+	/**
+	 * The actual property field that this configuration relates to.
+	 */
+	private Field field;
+
+	/**
+	 * The configured value for this property
+	 */
+	private Object value;
+	
+	/**
+	 * If true, indicates that this property is required
+	 */
+	private Boolean required = false;
+	
+	//***********************
+	// CONSTRUCTORS
+	//***********************
+	
+	/**
+	 * Default constructor
+	 */
+	public Property() { }
+	
+	/**
+	 * Full constructor for this ConfigurationProperty
+	 * @param field The field
+	 * @param value The configured value for this property
+	 * @param required The flag indicating whether a value is required
+	 */
+	public Property(Field field, Object value, Boolean required) {
+		super();
+		setField(field);
+		setValue(value);
+		setRequired(required);
+	}
+	
+	//***********************
+	// INSTANCE METHODS
+	//***********************
+	
+	/**
+     * @see Object#toString()
+     */
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("ConfigurationProperty<field="+field);
+     	sb.append(",value="+(value == null ? "" : value.toString())+",required=" + required+">");
+    	return sb.toString();
+    }
+    
+	/**
+	 * @see Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof Property) {
+			Property p = (Property) obj;
+			if (this.getField() != null) {
+				return (this.getField().equals(p.getField()));
+			}
+		}
+		return this == obj;
+	}
+
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (field == null ? 0 : 31 * field.hashCode());
+	}
+	
+	//***********************
+	// PROPERTY ACCESS
+	//***********************
+
+	/**
+	 * @return the field
+	 */
+	public Field getField() {
+		return field;
+	}
+
+	/**
+	 * @param field the field to set
+	 */
+	public void setField(Field field) {
+		this.field = field;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public Object getValue() {
+		return value;
+	}
+
+	/**
+	 * @param value the value to set
+	 */
+	public void setValue(Object value) {
+		this.value = value;
+	}
+
+	/**
+	 * @return the required
+	 */
+	public Boolean getRequired() {
+		return required;
+	}
+
+	/**
+	 * @param required the required to set
+	 */
+	public void setRequired(Boolean required) {
+		this.required = required;
+	}
+}

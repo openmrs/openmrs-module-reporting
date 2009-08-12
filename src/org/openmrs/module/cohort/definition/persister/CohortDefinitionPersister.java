@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This interface exposes the functionality required to access the Data Access

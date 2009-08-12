@@ -23,26 +23,33 @@ import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 /**
  * FieldGenHandler for Number Types
  */
-@Handler(supports={Number.class}, order=50)
-public class NumberHandler extends WidgetHandler {
+@Handler(supports={Double.class, Float.class}, order=50)
+public class DoubleHandler extends WidgetHandler {
 	
 	/** 
-	 * @see WidgetHandler#handle(WidgetConfig)
+	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void handle(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config) throws IOException {
 		
 		TextWidget w = WidgetFactory.getInstance(TextWidget.class, config);
-		Class<?> clazz = config.getType();
-		
-		if (clazz == Integer.class || clazz == Long.class) {
-			config.setConfiguredAttribute("size", "8");
-		}
-		if (clazz == Double.class || clazz == Float.class) {
-			config.setConfiguredAttribute("size", "12");
-		}
+		config.setConfiguredAttribute("size", "12");
 		
 		// TODO: Add validation
 		w.render(config);
+	}
+	
+	/** 
+	 * @see WidgetHandler#parse(String, Class<?>)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		if (input != null) {
+			if (clazz == Float.class) {
+				return Float.valueOf(input);
+			}
+			return Double.valueOf(input);
+		}
+		return null;
 	}
 }

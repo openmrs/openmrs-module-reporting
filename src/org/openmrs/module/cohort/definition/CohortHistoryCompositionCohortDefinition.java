@@ -2,8 +2,8 @@ package org.openmrs.module.cohort.definition;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.cohort.definition.history.CohortDefinitionHistory;
-import org.openmrs.module.evaluation.parameter.Param;
 
 public class CohortHistoryCompositionCohortDefinition extends BaseCohortDefinition {
 	
@@ -13,10 +13,10 @@ public class CohortHistoryCompositionCohortDefinition extends BaseCohortDefiniti
 	
 	//***** PROPERTIES *****
 	
-	@Param(required=true)
+	@ConfigurationProperty(required=true)
 	private CohortDefinitionHistory history;
 	
-	@Param(required=true)
+	@ConfigurationProperty(required=true)
 	private String compositionString;
 	
 	//***** CONSTRUCTORS *****

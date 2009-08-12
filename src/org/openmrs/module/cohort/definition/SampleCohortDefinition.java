@@ -31,38 +31,38 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.PatientSetService.PatientLocationMethod;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.evaluation.parameter.Param;
 
 public class SampleCohortDefinition extends BaseCohortDefinition {
 
     private static final long serialVersionUID = 1L;
     
 	//***** PROPERTIES *****
-    @Param private Integer testInteger = 10;
-    @Param private int testInt = 5;
-    @Param private Long testLong = 20L;
-    @Param private Double testDouble = 10.5;
-    @Param private Float testFloat = 20.5F;
-    @Param private String testString = "Test String";
-    @Param private Character testCharacter = 'M';
-    @Param private PatientLocationMethod testEnum = PatientLocationMethod.LATEST_ENCOUNTER;
-    @Param private Date testDate = new Date();
-    @Param private Boolean testBoolean = Boolean.TRUE;
+    @ConfigurationProperty private Integer testInteger = 10;
+    @ConfigurationProperty private int testInt = 5;
+    @ConfigurationProperty private Long testLong = 20L;
+    @ConfigurationProperty private Double testDouble = 10.5;
+    @ConfigurationProperty private Float testFloat = 20.5F;
+    @ConfigurationProperty private String testString = "Test String";
+    @ConfigurationProperty private Character testCharacter = 'M';
+    @ConfigurationProperty private PatientLocationMethod testEnum = PatientLocationMethod.LATEST_ENCOUNTER;
+    @ConfigurationProperty private Date testDate = new Date();
+    @ConfigurationProperty private Boolean testBoolean = Boolean.TRUE;
 
-    @Param private Location testLocation = random(Context.getLocationService().getAllLocations());
-    @Param private EncounterType testEncounterType = random(Context.getEncounterService().getAllEncounterTypes());
-    @Param private Program testProgram = random(Context.getProgramWorkflowService().getAllPrograms());
-    @Param private ProgramWorkflow testProgramWorkflow = random(testProgram == null ? null : testProgram.getAllWorkflows());
-    @Param private ProgramWorkflowState testProgramWorkflowState = random(testProgramWorkflow == null ? null : testProgramWorkflow.getStates());
-    @Param private Drug testDrug = random(Context.getConceptService().getAllDrugs());
-    @Param private Form testForm = random(Context.getFormService().getAllForms());
-    @Param private OrderType testOrderType = random(Context.getOrderService().getAllOrderTypes());
-    @Param private PersonAttributeType testPersonAttributeType = random(Context.getPersonService().getAllPersonAttributeTypes());
-    @Param private Cohort cohortType = random(Context.getCohortService().getAllCohorts());
-    @Param private CohortDefinition cohortDefinitionType = random(Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));
+    @ConfigurationProperty private Location testLocation = random(Context.getLocationService().getAllLocations());
+    @ConfigurationProperty private EncounterType testEncounterType = random(Context.getEncounterService().getAllEncounterTypes());
+    @ConfigurationProperty private Program testProgram = random(Context.getProgramWorkflowService().getAllPrograms());
+    @ConfigurationProperty private ProgramWorkflow testProgramWorkflow = random(testProgram == null ? null : testProgram.getAllWorkflows());
+    @ConfigurationProperty private ProgramWorkflowState testProgramWorkflowState = random(testProgramWorkflow == null ? null : testProgramWorkflow.getStates());
+    @ConfigurationProperty private Drug testDrug = random(Context.getConceptService().getAllDrugs());
+    @ConfigurationProperty private Form testForm = random(Context.getFormService().getAllForms());
+    @ConfigurationProperty private OrderType testOrderType = random(Context.getOrderService().getAllOrderTypes());
+    @ConfigurationProperty private PersonAttributeType testPersonAttributeType = random(Context.getPersonService().getAllPersonAttributeTypes());
+    @ConfigurationProperty private Cohort cohortType = random(Context.getCohortService().getAllCohorts());
+    @ConfigurationProperty private CohortDefinition cohortDefinitionType = random(Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));
     
-    @Param private List<Location> testList = randomList(Context.getLocationService().getAllLocations());
+    @ConfigurationProperty private List<Location> testList = randomList(Context.getLocationService().getAllLocations());
     
     /**
      * Utility method

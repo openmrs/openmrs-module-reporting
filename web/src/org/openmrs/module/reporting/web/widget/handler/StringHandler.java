@@ -27,10 +27,10 @@ import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 public class StringHandler extends WidgetHandler {
 	
 	/** 
-	 * @see WidgetHandler#handle(WidgetConfig)
+	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void handle(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config) throws IOException {
 		
 		TextWidget w = WidgetFactory.getInstance(TextWidget.class, config);
 		
@@ -42,5 +42,13 @@ public class StringHandler extends WidgetHandler {
 			config.setConfiguredAttribute("size", "20");
 		}
 		w.render(config);
+	}
+
+	/** 
+	 * @see WidgetHandler#parse(String, Class<?>)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		return input;
 	}
 }

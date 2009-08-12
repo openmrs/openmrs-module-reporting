@@ -13,33 +13,30 @@
  */
 package org.openmrs.module.reporting.web.widget.handler;
 
+import java.io.IOException;
+
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
-import org.openmrs.module.reporting.web.widget.html.CodedWidget;
-import org.openmrs.module.reporting.web.widget.html.Option;
-import org.openmrs.module.reporting.web.widget.html.RadioWidget;
+import org.openmrs.module.reporting.web.widget.html.TextWidget;
+import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 
 /**
- * FieldGenHandler for Boolean Types
+ * FieldGenHandler for Number Types
  */
-@Handler(supports={Boolean.class}, order=50)
-public class BooleanHandler extends CodedHandler {
+@Handler(supports={Integer.class, Long.class}, order=50)
+public class IntegerHandler extends WidgetHandler {
 	
 	/** 
-	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
+	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void populateOptions(WidgetConfig config, CodedWidget widget) {
-		widget.addOption(new Option("t", null, "general.true", Boolean.TRUE), config);
-		widget.addOption(new Option("f", null, "general.false", Boolean.FALSE), config);
-	}
-
-	/**
-	 * @see CodedHandler#getDefaultWidget()
-	 */
-	@Override
-	protected Class<? extends CodedWidget> getDefaultWidget() {
-		return RadioWidget.class;
+	public void render(WidgetConfig config) throws IOException {
+		
+		TextWidget w = WidgetFactory.getInstance(TextWidget.class, config);
+		config.setConfiguredAttribute("size", "8");
+		
+		// TODO: Add validation
+		w.render(config);
 	}
 	
 	/** 
@@ -47,11 +44,11 @@ public class BooleanHandler extends CodedHandler {
 	 */
 	@Override
 	public Object parse(String input, Class<?> clazz) {
-		if ("t".equals(input)) {
-			return Boolean.TRUE;
-		}
-		if ("f".equals(input)) {
-			return Boolean.FALSE;
+		if (input != null) {
+			if (clazz == Long.class) {
+				return Long.valueOf(input);
+			}
+			return Integer.valueOf(input);
 		}
 		return null;
 	}

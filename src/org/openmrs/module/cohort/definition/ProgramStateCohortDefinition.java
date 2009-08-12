@@ -20,12 +20,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.parameter.Param;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -37,10 +36,10 @@ public class ProgramStateCohortDefinition extends DateRangeCohortDefinition {
     
 	//***** PROPERTIES *****
 	
-	@Param(required=true)
+	@ConfigurationProperty(required=true)
 	private Program program;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private List<ProgramWorkflowState> stateList;
 
 	//***** CONSTRUCTORS *****

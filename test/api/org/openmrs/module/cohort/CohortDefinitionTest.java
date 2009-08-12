@@ -13,11 +13,11 @@
  */
 package org.openmrs.module.cohort;
 
-import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -35,7 +35,6 @@ import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -97,8 +96,8 @@ public class CohortDefinitionTest extends BaseModuleContextSensitiveTest {
 		Drug inh = Context.getConceptService().getDrug("INH 300mg");
 		DrugOrderCohortDefinition filter = new DrugOrderCohortDefinition();
 		filter.setAnyOrAll(PatientSetService.GroupMethod.ANY);
-		Parameter sinceParam = new Parameter("sinceDate", "Since", Date.class, null, false, false);
-		Parameter untilParam = new Parameter("untilDate", "Until", Date.class, null, false, false);
+		Parameter sinceParam = new Parameter("sinceDate", "Since", Date.class);
+		Parameter untilParam = new Parameter("untilDate", "Until", Date.class);
 		filter.addParameter(sinceParam);
 		filter.addParameter(untilParam);
 		List<Drug> drugList = new ArrayList<Drug>();

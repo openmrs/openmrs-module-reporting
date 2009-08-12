@@ -19,8 +19,8 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.evaluation.EvaluationContext;
-import org.openmrs.module.evaluation.parameter.Param;
 import org.openmrs.util.OpenmrsUtil;
 
 public abstract class DateRangeCohortDefinition extends BaseCohortDefinition {
@@ -30,22 +30,22 @@ public abstract class DateRangeCohortDefinition extends BaseCohortDefinition {
 	
 	//***** PROPERTIES *****
 	
-	@Param
+	@ConfigurationProperty
 	private Integer withinLastDays;
 	
-	@Param
+	@ConfigurationProperty
 	private Integer withinLastMonths;
 	
-	@Param
+	@ConfigurationProperty
 	private Integer untilDaysAgo;
 	
-	@Param
+	@ConfigurationProperty
 	private Integer untilMonthsAgo;
 	
-	@Param
+	@ConfigurationProperty
 	private Date sinceDate;
 	
-	@Param
+	@ConfigurationProperty
 	private Date untilDate;
 	
 	//***** CONSTRUCTORS *****

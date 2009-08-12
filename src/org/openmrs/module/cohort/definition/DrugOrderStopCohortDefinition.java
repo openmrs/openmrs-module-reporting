@@ -20,7 +20,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.parameter.Param;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 
 /**
  * Filter based on Stopped Drug Orders
@@ -31,16 +31,16 @@ public class DrugOrderStopCohortDefinition extends DateRangeCohortDefinition {
     
     //***** PROPERTIES *****
     
-    @Param(required=false)
+    @ConfigurationProperty(required=false)
     private List<Drug> drugList;
     
-    @Param(required=false)
+    @ConfigurationProperty(required=false)
     private List<Concept> genericDrugList;
     
-    @Param(required=false)
+    @ConfigurationProperty(required=false)
     private Boolean discontinued;
     
-    @Param(required=false)
+    @ConfigurationProperty(required=false)
     private List<Concept> discontinuedReasonList;
     
     //***** CONSTRUCTORS *****

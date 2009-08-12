@@ -77,7 +77,7 @@ public class RepeatingWidget implements Widget {
 			}
 			
 			HtmlUtil.renderOpenTag(w, "span", atts);
-			handler.handle(c);
+			handler.render(c);
 			HtmlUtil.renderSimpleTag(w, "input", "type=button|value=X|size=1|onclick=removeParentWithClass(this,'multiFieldInput');");
 			HtmlUtil.renderSimpleTag(w, "br", "");
 			HtmlUtil.renderCloseTag(w, "span");

@@ -17,23 +17,25 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
 
 /**
  * Base WidgetHandler class.
  */
-@Handler(supports={Object.class})
-public class WidgetHandler {
+public abstract class WidgetHandler {
 	
 	protected static final Log log = LogFactory.getLog(WidgetHandler.class);
 	
 	/**
 	 * This is the main method that should be overridden by subclasses to render the appropriate Widget
-	 * @param tag
+	 * @param config
 	 */
-	public void handle(WidgetConfig config) throws IOException {
-		String output = "Cannot handle type [" + config.getType() + "]. Please add a module to handle this type.";
-		config.getPageContext().getOut().write(output);
-	}
+	public abstract void render(WidgetConfig config) throws IOException;
+	
+	/**
+	 * This is the main method that should be overridden by subclasses to parse an input string to an object
+	 * @param input
+	 * @param clazz
+	 */
+	public abstract Object parse(String input, Class<?> clazz);
 }

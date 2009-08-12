@@ -35,4 +35,12 @@ public class LocationHandler extends CodedHandler {
 			widget.addOption(new Option(l.getUuid(), l.getName(), null, l), config);
 		}
 	}
+	
+	/** 
+	 * @see WidgetHandler#parse(String, Class<?>)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		return Context.getLocationService().getLocationByUuid(input);
+	}
 }

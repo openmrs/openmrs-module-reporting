@@ -16,13 +16,10 @@ import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
-import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.service.IndicatorService;
-import org.openmrs.module.report.ReportSchema;
-import org.openmrs.module.report.service.ReportService;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -122,8 +119,8 @@ public class IndicatorDatasetFormController {
 			}
 
 			// Dataset needs to know what parameters it needs
-			dataSetDefinition.addParameter(new Parameter("dataset.location", "Location Parameter", Location.class, null, true, false));
-			dataSetDefinition.addParameter(new Parameter("dataset.date", "Date Parameter", Date.class, null, true, false));			
+			dataSetDefinition.addParameter(new Parameter("dataset.location", "Location Parameter", Location.class));
+			dataSetDefinition.addParameter(new Parameter("dataset.date", "Date Parameter", Date.class));			
 			
 		}
 		

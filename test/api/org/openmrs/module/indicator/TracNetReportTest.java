@@ -50,13 +50,13 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 	public ReportSchema setupReport() {
 		
 		ReportSchema rs = new ReportSchema();
-		rs.addParameter(new Parameter("report.location", "Report Facility", Location.class, null, true, false));
-		rs.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true, false));
-		rs.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true, false));
+		rs.addParameter(new Parameter("report.location", "Report Facility", Location.class));
+		rs.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class));
+		rs.addParameter(new Parameter("report.endDate", "Report End Date", Date.class));
 		
 		LocationCohortDefinition initialCohort = new LocationCohortDefinition();
 		initialCohort.setCalculationMethod(PatientLocationMethod.PATIENT_HEALTH_CENTER);
-		initialCohort.enableParameter("location", null, true);
+		initialCohort.addParameter(new Parameter("location", "location", Location.class));
 		rs.setBaseCohortDefinition(initialCohort, "location=${report.location}");
 
 		return rs;
@@ -65,8 +65,8 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 	public CohortIndicatorDataSetDefinition setupDataSetDefinition(ReportSchema rs) {
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.addParameter(new Parameter("dataSet.startDate", "DataSet Start Date", Date.class, null, true, false));
-		dsd.addParameter(new Parameter("dataSet.endDate", "DataSet End Date", Date.class, null, true, false));
+		dsd.addParameter(new Parameter("dataSet.startDate", "DataSet Start Date", Date.class));
+		dsd.addParameter(new Parameter("dataSet.endDate", "DataSet End Date", Date.class));
 		
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("dataSet.startDate", "${report.startDate}");
@@ -96,16 +96,16 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		
 		//****** AGE *******
 		CohortDefinitionDimension ageDimension = new CohortDefinitionDimension();
-		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class, null, true, false));
+		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class));
 
 		AgeCohortDefinition adult = new AgeCohortDefinition();
 		adult.setMinAge(15);
-		adult.enableParameter("effectiveDate", null, true);
+		adult.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 		ageDimension.addCohortDefinition("adult", adult, "effectiveDate=${ageDate}");
 		
 		AgeCohortDefinition child = new AgeCohortDefinition();
 		child.setMaxAge(14);
-		child.enableParameter("effectiveDate", null, true);
+		child.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 		ageDimension.addCohortDefinition("child", child, "effectiveDate=${ageDate}");
 		
 		dsd.addDimension("age", ageDimension, "ageDate=${dataSet.startDate}");
@@ -114,8 +114,8 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 	public CohortIndicator setupIndicator(String key, CohortIndicatorDataSetDefinition dsd) {
 		
 		CohortIndicator indicator = new CohortIndicator();
-		indicator.addParameter(new Parameter("indicator.startDate", "Indicator Start Date", Date.class, null, true, false));
-		indicator.addParameter(new Parameter("indicator.endDate", "Indicator End Date", Date.class, null, true, false));
+		indicator.addParameter(new Parameter("indicator.startDate", "Indicator Start Date", Date.class));
+		indicator.addParameter(new Parameter("indicator.endDate", "Indicator End Date", Date.class));
 		indicator.setLogicCriteria(null);
 		indicator.setAggregator(CountAggregator.class);
 		
@@ -135,8 +135,8 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		DrugOrderCohortDefinition cd = new DrugOrderCohortDefinition();
 		cd.addDrugSet(Context.getConceptService().getConceptByName("ANTIRETROVIRAL DRUGS"));
 		cd.setAnyOrAll(GroupMethod.ANY);
-		cd.enableParameter("sinceDate", null, true);
-		cd.enableParameter("untilDate", null, true);
+		cd.addParameter(new Parameter("sinceDate", "sinceDate", Date.class));
+		cd.addParameter(new Parameter("untilDate", "untilDate", Date.class));
 		i.setCohortDefinition(cd, "sinceDate=${indicator.endDate},untilDate=${indicator.endDate}");
 	}
 	

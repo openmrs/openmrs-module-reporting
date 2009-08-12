@@ -35,4 +35,12 @@ public class FormHandler extends CodedHandler {
 			widget.addOption(new Option(f.getUuid(), f.getName(), null, f), config);
 		}
 	}
+	
+	/** 
+	 * @see WidgetHandler#parse(String, Class<?>)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		return Context.getFormService().getFormByUuid(input);
+	}
 }

@@ -15,7 +15,7 @@ package org.openmrs.module.cohort.definition;
 
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.Cohort;
-import org.openmrs.module.evaluation.parameter.Param;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 
 /**
  *  Simple CohortDefinition to restrict to a Static Cohort
@@ -29,7 +29,7 @@ public class StaticCohortDefinition extends BaseCohortDefinition {
     // Properties
     //****************
 
-    @Param(required=true)
+    @ConfigurationProperty(required=true)
     private Cohort cohort;
 	
     //****************

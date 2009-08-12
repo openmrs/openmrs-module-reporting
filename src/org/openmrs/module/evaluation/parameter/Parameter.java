@@ -63,13 +63,6 @@ public class Parameter implements Serializable {
 	 */
 	private Object defaultValue;
 	
-	/**
-	 * Indicates whether this Parameter must be provided a value either
-	 * as a defaultValue or from user input.
-	 * By default, this is true
-	 */
-	private Boolean required = true;
-	
 	//***********************
 	// CONSTRUCTORS
 	//***********************
@@ -81,23 +74,20 @@ public class Parameter implements Serializable {
 	
 	/**
 	 * Initialize this Parameter with the given values
-	 * 
 	 * @param name The defined descriptive name
 	 * @param label The label to display to the user if value is needed
 	 * @param clazz The data type of this parameter
 	 * @param collectionType Indicates whether this parameter can have multiple values in a Collection
 	 * @param defaultValue The value to fill in if nothing provided by the user
-	 * @param required The flag indicating whether a value is required for this parameter
 	 */
-	public Parameter(String name, String label, Class<?> clazz, Class<? extends Collection<?>> collectionType, 
-					 Object defaultValue, Boolean required) {
+	public Parameter(String name, String label, Class<?> clazz, 
+					 Class<? extends Collection<?>> collectionType, Object defaultValue) {
 		super();
 		setName(name);
 		setLabel(label);
 		setClazz(clazz);
 		setCollectionType(collectionType);
 		setDefaultValue(defaultValue);
-		setRequired(required);
 	}
 	
 	/**
@@ -106,12 +96,9 @@ public class Parameter implements Serializable {
 	 * @param name The defined descriptive name
 	 * @param label The label to display to the user if value is needed
 	 * @param clazz The data type of this parameter
-	 * @param allowMultiple Indicates whether this parameter can have multiple values in a Collection
-	 * @param defaultValue The value to fill in if nothing provided by the user
-	 * @param required The flag indicating whether a value is required for this parameter
 	 */
-	public Parameter(String name, String label, Class<?> clazz, Object defaultValue, Boolean required) {
-		this(name, label, clazz, null, defaultValue, required);
+	public Parameter(String name, String label, Class<?> clazz) {
+		this(name, label, clazz, null, null);
 	}
 	
 	//***********************
@@ -132,7 +119,7 @@ public class Parameter implements Serializable {
     	if (collectionType != null) {
     		sb.append(">");
     	}
-    	sb.append(",defaultValue="+defaultValue+",required=" + required+">");
+    	sb.append(",defaultValue="+defaultValue+">");
     	return sb.toString();
     }
     
@@ -229,26 +216,5 @@ public class Parameter implements Serializable {
 	 */
 	public void setDefaultValue(Object defaultValue) {
 		this.defaultValue = defaultValue;
-	}
-
-	/**
-	 * @return the required
-	 */
-	public Boolean getRequired() {
-		return required;
-	}
-
-	/**
-	 * @param required the required to set
-	 */
-	public void setRequired(Boolean required) {
-		this.required = required;
-	}
-	
-	/**
-	 * @return the required
-	 */
-	public Boolean isRequired() {
-		return required;
 	}
 }

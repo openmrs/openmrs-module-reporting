@@ -1,6 +1,9 @@
 package org.openmrs.module.reporting.web.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,10 +12,14 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.configuration.Property;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.evaluation.parameter.ParameterUtil;
+import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
+import org.openmrs.module.util.ReflectionUtil;
+import org.openmrs.util.HandlerUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -66,8 +73,7 @@ public class ManageCohortDefinitionController {
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
     	CohortDefinition cd = service.getCohortDefinition(uuid, type);
      	model.addAttribute("cohortDefinition", cd);
-     	
-     	
+	
         return "/module/reporting/cohorts/cohortDefinitionEditor";
     }
     
@@ -100,19 +106,28 @@ public class ManageCohortDefinitionController {
     	cohortDefinition.setDescription(description);
     	cohortDefinition.getParameters().clear();
     	
-    	for (Parameter p : cohortDefinition.getAvailableParameters()) {
-    		
-    		String valParamName = "parameter." + p.getName() + ".defaultValue";
-    		boolean isParameter = "t".equals(request.getParameter("parameter."+p.getName()+".allowAtEvaluation"));
+    	for (Property p : CohortDefinitionUtil.getConfigurationProperties(cohortDefinition)) {
+    		String fieldName = p.getField().getName();
+    		String prefix = "parameter." + fieldName;
+    		String valParamName =  prefix + ".value";
+    		boolean isParameter = "t".equals(request.getParameter(prefix+".allowAtEvaluation"));
     		Object valToSet = null;
     		
-			if (p.getCollectionType() != null) {
+    		Class<? extends Collection<?>> collectionType = null;
+    		Class<?> fieldType = p.getField().getType();
+    		
+			if (ReflectionUtil.isCollection(p.getField())) {
+				
+				collectionType = (Class<? extends Collection<?>>)p.getField().getType();
+				fieldType = (Class<?>)ReflectionUtil.getGenericTypes(p.getField())[0];
 				String[] paramVals = request.getParameterValues(valParamName);
+				
 				if (paramVals != null) {
-					Collection defaultValue = ParameterUtil.getNewCollection(p.getCollectionType());
+					Collection defaultValue = Set.class.isAssignableFrom(collectionType) ? new HashSet() : new ArrayList();
 					for (String val : paramVals) {
 						if (StringUtils.hasText(val)) {
-							defaultValue.add(ParameterUtil.convertStringToObject(val, p.getClazz()));
+							WidgetHandler h = HandlerUtil.getPreferredHandler(WidgetHandler.class, fieldType);
+							defaultValue.add(h.parse(val, fieldType));
 						}
 					}
 					valToSet = defaultValue;
@@ -121,15 +136,18 @@ public class ManageCohortDefinitionController {
 			else {
 				String paramVal = request.getParameter(valParamName);
 				if (StringUtils.hasText(paramVal)) {
-					valToSet = ParameterUtil.convertStringToObject(paramVal, p.getClazz());
+					WidgetHandler h = HandlerUtil.getPreferredHandler(WidgetHandler.class, fieldType);
+					valToSet = h.parse(paramVal, fieldType);
 				}
 			}
 			
 			if (isParameter) {
-				cohortDefinition.enableParameter(p.getName(), valToSet, true);
+				ReflectionUtil.setPropertyValue(cohortDefinition, p.getField(), null);
+				Parameter param = new Parameter(fieldName, fieldName, fieldType, collectionType, valToSet);
+				cohortDefinition.addParameter(param);
 			}
 			else {
-				ParameterUtil.setAnnotatedFieldFromParameter(cohortDefinition, p, valToSet);
+				ReflectionUtil.setPropertyValue(cohortDefinition, p.getField(), valToSet);
 			}
     	}
     	

@@ -14,7 +14,7 @@
 package org.openmrs.module.cohort.definition;
 
 import org.openmrs.PersonAttributeType;
-import org.openmrs.module.evaluation.parameter.Param;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 
 public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
 	
@@ -22,10 +22,10 @@ public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
     
 	//***** PROPERTIES *****
 	
-	@Param(required=true)
+	@ConfigurationProperty(required=true)
 	private PersonAttributeType attribute;
 	
-	@Param(required=true)
+	@ConfigurationProperty(required=true)
 	private String value;
 	
 	//***** CONSTRUCTORS *****

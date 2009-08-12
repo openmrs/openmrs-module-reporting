@@ -20,8 +20,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.PatientSetService.BooleanOperator;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.evaluation.parameter.Mapped;
-import org.openmrs.module.evaluation.parameter.Param;
 
 /**
  * CohortDefinition that is the composition of a single BooleanOperator
@@ -34,10 +34,10 @@ public class CompoundCohortDefinition extends BaseCohortDefinition {
 	
 	//***** PROPERTIES *****
 	
-	@Param(required=true)
+	@ConfigurationProperty(required=true)
 	private BooleanOperator operator = BooleanOperator.AND;
 	
-	@Param(required=true)
+	@ConfigurationProperty(required=true)
 	private List<Mapped<CohortDefinition>> definitions = new ArrayList<Mapped<CohortDefinition>>();
 	
 	//***** CONSTRUCTORS *****

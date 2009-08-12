@@ -14,12 +14,15 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.DateWidget;
 import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * FieldGenHandler for String Types
@@ -28,11 +31,27 @@ import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 public class DateHandler extends WidgetHandler {
 	
 	/** 
-	 * @see WidgetHandler#handle(WidgetConfig)
+	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void handle(WidgetConfig config) throws IOException {	
+	public void render(WidgetConfig config) throws IOException {	
 		DateWidget w = WidgetFactory.getInstance(DateWidget.class, config);
 		w.render(config);
+	}
+	
+	/** 
+	 * @see WidgetHandler#parse(String, Class<?>)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		if (StringUtils.hasText(input)) {
+			try {
+				return Context.getDateFormat().parse(input);
+			}
+			catch (ParseException e) {
+				throw new IllegalArgumentException("Unable to parse input <" + input + "> to a Date");
+			}
+		}
+		return null;
 	}
 }

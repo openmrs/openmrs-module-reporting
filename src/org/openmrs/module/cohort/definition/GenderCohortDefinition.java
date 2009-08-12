@@ -13,11 +13,7 @@
  */
 package org.openmrs.module.cohort.definition;
 
-import java.text.DateFormat;
-import java.util.Date;
-
-import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.parameter.Param;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 
 public class GenderCohortDefinition extends BaseCohortDefinition {
 
@@ -25,7 +21,7 @@ public class GenderCohortDefinition extends BaseCohortDefinition {
     
 	//***** PROPERTIES *****
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private String gender;
 	
 

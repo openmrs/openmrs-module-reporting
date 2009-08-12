@@ -28,11 +28,19 @@ import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 public class CollectionHandler extends WidgetHandler {
 	
 	/** 
-	 * @see WidgetHandler#handle(WidgetConfig)
+	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void handle(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config) throws IOException {
 		RepeatingWidget widget = WidgetFactory.getInstance(RepeatingWidget.class, config);
 		widget.render(config);
+	}
+	
+	/** 
+	 * @see WidgetHandler#parse(String)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		throw new IllegalArgumentException("Not supported");
 	}
 }

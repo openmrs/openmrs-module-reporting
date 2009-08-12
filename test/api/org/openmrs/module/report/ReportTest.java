@@ -19,7 +19,6 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -52,17 +51,17 @@ public class ReportTest extends BaseModuleContextSensitiveTest {
 		
 		AgeCohortDefinition childOnDate = new AgeCohortDefinition();
 		childOnDate.setMaxAge(14);
-		childOnDate.addParameter(new Parameter("effectiveDate", "Age As of Date", Date.class, null, false, false));
+		childOnDate.addParameter(new Parameter("effectiveDate", "Age As of Date", Date.class));
 		
 		CohortDataSetDefinition dsd = new CohortDataSetDefinition();
-		dsd.addParameter(new Parameter("d1", "Start Date", Date.class, null, true, false));
-		dsd.addParameter(new Parameter("d2", "End Date", Date.class, null, true, false));
+		dsd.addParameter(new Parameter("d1", "Start Date", Date.class));
+		dsd.addParameter(new Parameter("d2", "End Date", Date.class));
 		dsd.addStrategy("Children at Start", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d1}"));
 		dsd.addStrategy("Children at End", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d2}"));
 		
 		ReportSchema report = new ReportSchema();
-		report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true, false));
-		report.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true, false));
+		report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class));
+		report.addParameter(new Parameter("report.endDate", "Report End Date", Date.class));
 		report.addDataSetDefinition(new Mapped<DataSetDefinition>(dsd, "d1=${report.startDate},d2=${report.endDate}"));
 		
 		EvaluationContext ec = new EvaluationContext();

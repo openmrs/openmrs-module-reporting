@@ -16,6 +16,7 @@ package org.openmrs.module.evaluation.parameter;
 import java.io.Serializable;
 import java.util.List;
 
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
@@ -24,7 +25,7 @@ import org.openmrs.module.evaluation.EvaluationContext;
  * 
  * @see Parameter
  * @see EvaluationContext
- * @see Param
+ * @see ConfigurationProperty
  */
 public interface Parameterizable extends Serializable {
 	

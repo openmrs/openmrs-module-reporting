@@ -46,4 +46,12 @@ public class ProgramWorkflowStateHandler extends CodedHandler {
 			}
 		}
 	}
+	
+	/** 
+	 * @see WidgetHandler#parse(String, Class<?>)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		return Context.getProgramWorkflowService().getStateByUuid(input);
+	}
 }

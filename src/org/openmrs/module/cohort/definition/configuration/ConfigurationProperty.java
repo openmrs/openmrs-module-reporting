@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.evaluation.caching;
+package org.openmrs.module.cohort.definition.configuration;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,19 +21,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used to provide a generalized mechanism for providing information about how to 
- * Cache a particular instance of a class.  By default, the Caching Strategy associated with
- * this annotation is to Not cache the class
+ * Annotation used to mark a particular field on an Object as one that
+ * affects how it is evaluated.
  */
-@Target( { ElementType.TYPE })
+@Target( { ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface Caching {
+public @interface ConfigurationProperty {
 	
 	/**
-	 * Provides a means for specifying a class that provides a specific caching implementation
-	 * relevant to the class which is annotated.
+	 * If set to true, it indicates that this field must be
+	 * populated prior to Evaluation of the object
 	 */
-	public Class<? extends CachingStrategy> strategy() default NoCachingStrategy.class;
+	public boolean required() default false;
 }

@@ -16,19 +16,19 @@ package org.openmrs.module.cohort.definition;
 import java.util.Date;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.parameter.Param;
+import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 
 public class AgeCohortDefinition extends BaseCohortDefinition {
 
     private static final long serialVersionUID = 1L;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private Integer minAge;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private Integer maxAge;
 	
-	@Param(required=false)
+	@ConfigurationProperty(required=false)
 	private Date effectiveDate = new Date();
 	
 	//***** CONSTRUCTORS *****

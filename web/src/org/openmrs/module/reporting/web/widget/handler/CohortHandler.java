@@ -35,4 +35,12 @@ public class CohortHandler extends CodedHandler {
 			widget.addOption(new Option(c.getUuid(), c.getName(), null, c), config);
 		}
 	}
+	
+	/** 
+	 * @see WidgetHandler#parse(String, Class<?>)
+	 */
+	@Override
+	public Object parse(String input, Class<?> clazz) {
+		return Context.getCohortService().getCohortByUuid(input);
+	}
 }
