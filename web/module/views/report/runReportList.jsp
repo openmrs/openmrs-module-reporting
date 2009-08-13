@@ -27,7 +27,7 @@
 		<c:forEach var="report" items="${reports}" varStatus="status">
 			<tr valign="baseline" class="<c:choose><c:when test="${status.index % 2 == 0}">evenRow</c:when><c:otherwise>oddRow</c:otherwise></c:choose>">
 				<td>
-					<a href="runReport.form?reportId=${report.reportSchemaId}">${report.name}</a></div>
+					<a href="runReport.form?reportId=${report.reportDefinitionId}">${report.name}</a></div>
 				</td>
 				<td style="padding-left: 3em">
 					<small><i>${report.description}</i></small>

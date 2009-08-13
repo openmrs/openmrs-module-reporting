@@ -25,7 +25,7 @@ import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.dataset.definition.ProgramDataSetDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -63,7 +63,7 @@ public class RowPerProgramEnrollmentDatasetTest extends BaseModuleContextSensiti
 		programs.add(Context.getProgramWorkflowService().getProgram(1));
 		definition.setPrograms(programs);
 		
-		ReportSchema rs = new ReportSchema();
+		ReportDefinition rs = new ReportDefinition();
 		rs.setName("Testing row-per-obs");
 		rs.setDescription("Tesing RowPerObsDataSet*");
 		rs.addDataSetDefinition(definition, (String)null);
@@ -74,7 +74,7 @@ public class RowPerProgramEnrollmentDatasetTest extends BaseModuleContextSensiti
 		serializer.write(rs, writer);
 		//System.out.println("xml =\n" + writer.toString());
 		
-		rs = (ReportSchema) serializer.read(ReportSchema.class, writer.toString());
+		rs = (ReportDefinition) serializer.read(ReportDefinition.class, writer.toString());
 		//System.out.println("deserialized as name=" + rs.getName());
 		//System.out.println("deserialized with " + rs.getDataSetDefinitions().size() + " data set definitions");
 		

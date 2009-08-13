@@ -26,7 +26,7 @@ import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.aggregation.CountAggregator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -36,7 +36,7 @@ public class MockReportService extends BaseReportService implements ReportServic
 
 	private transient Log log = LogFactory.getLog(this.getClass());
 	
-	private List<ReportSchema> reportSchemas = new ArrayList<ReportSchema>();
+	private List<ReportDefinition> reportDefinitions = new ArrayList<ReportDefinition>();
 	
 	/**
 	 * Default constructor
@@ -46,50 +46,50 @@ public class MockReportService extends BaseReportService implements ReportServic
 	}
 
 	/**
-	 * @see ReportService#saveReportSchema(ReportSchema)
+	 * @see ReportService#saveReportDefinition(ReportDefinition)
 	 */
-	public ReportSchema saveReportSchema(ReportSchema reportSchema) throws APIException {		
+	public ReportDefinition saveReportDefinition(ReportDefinition reportDefinition) throws APIException {		
 		// Just assumes it's new
-		reportSchemas.add(reportSchema);
-		serializeReportSchemas();		
-		return reportSchema;
+		reportDefinitions.add(reportDefinition);
+		serializeReportDefinitions();		
+		return reportDefinition;
 	}
 	
 	/**
-	 * @see ReportService#getReportSchema(Integer)
+	 * @see ReportService#getReportDefinition(Integer)
 	 */
-	public ReportSchema getReportSchema(Integer reportSchemaId) throws APIException {
-		for (ReportSchema reportSchema : reportSchemas) { 
-			if (reportSchema.getId().equals(reportSchemaId)) { 
-				return reportSchema;				
+	public ReportDefinition getReportDefinition(Integer reportDefinitionId) throws APIException {
+		for (ReportDefinition reportDefinition : reportDefinitions) { 
+			if (reportDefinition.getId().equals(reportDefinitionId)) { 
+				return reportDefinition;				
 			}
 		}
-		return new ReportSchema();
+		return new ReportDefinition();
 	}
 
 	/**
-	 * @see ReportService#getReportSchemaByUuid(String)
+	 * @see ReportService#getReportDefinitionByUuid(String)
 	 */
-	public ReportSchema getReportSchemaByUuid(String uuid) throws APIException {
-		for (ReportSchema reportSchema : reportSchemas) { 
-			if (reportSchema.getUuid().equals(uuid)) { 
-				return reportSchema;
+	public ReportDefinition getReportDefinitionByUuid(String uuid) throws APIException {
+		for (ReportDefinition reportDefinition : reportDefinitions) { 
+			if (reportDefinition.getUuid().equals(uuid)) { 
+				return reportDefinition;
 			}
 		}
-		return new ReportSchema();
+		return new ReportDefinition();
 	}
 	
 	/**
-	 * @see ReportService#getReportSchemas()
+	 * @see ReportService#getReportDefinitions()
 	 */
-	public List<ReportSchema> getReportSchemas() throws APIException {
-		return reportSchemas;
+	public List<ReportDefinition> getReportDefinitions() throws APIException {
+		return reportDefinitions;
 	}
 	
 	/**
-	 * @see ReportService#deleteReportSchema(ReportSchema)
+	 * @see ReportService#deleteReportDefinition(ReportDefinition)
 	 */
-	public void deleteReportSchema(ReportSchema reportSchema) {
+	public void deleteReportDefinition(ReportDefinition reportDefinition) {
 		throw new APIException("not implemented yet");
 	}	
 	
@@ -99,15 +99,15 @@ public class MockReportService extends BaseReportService implements ReportServic
 	 * @throws Exception
 	 */
 	public void initializeService() { 		
-		reportSchemas.add(this.getCohortReportSchema());
-		reportSchemas.add(this.getIndicatorReportSchema());
-		this.serializeReportSchemas();
+		reportDefinitions.add(this.getCohortReportDefinition());
+		reportDefinitions.add(this.getIndicatorReportDefinition());
+		this.serializeReportDefinitions();
 	}
 
 	
 	
 	
-	public void deserializeReportSchemas() { 
+	public void deserializeReportDefinitions() { 
 		try { 			
 			File directory = 
 				OpenmrsUtil.getDirectoryInApplicationDataDirectory("reports/schemas");
@@ -120,7 +120,7 @@ public class MockReportService extends BaseReportService implements ReportServic
 				if (filename.endsWith(".ser")) {
 					contents = OpenmrsUtil.getFileAsString(new File(directory, filename));
 					log.info("Xml report schema: " + contents);
-					reportSchemas.add( deserializeReportSchema(new File(directory, filename)) );
+					reportDefinitions.add( deserializeReportDefinition(new File(directory, filename)) );
 				}
 				
 			}
@@ -129,14 +129,14 @@ public class MockReportService extends BaseReportService implements ReportServic
 		}		
 	}
 
-	public void serializeReportSchemas() { 		
+	public void serializeReportDefinitions() { 		
 		try { 
 			
 			File directory = 
 				OpenmrsUtil.getDirectoryInApplicationDataDirectory("reports/schemas");			
 			
-			for (ReportSchema schema : reportSchemas) { 
-				serializeReportSchema(directory, schema);
+			for (ReportDefinition schema : reportDefinitions) { 
+				serializeReportDefinition(directory, schema);
 			}			
 		} catch (Exception e) { 
 			log.error("Unable to serialize report schemas to the filesystem", e);
@@ -144,13 +144,13 @@ public class MockReportService extends BaseReportService implements ReportServic
 	}
 	
 	
-	public void serializeReportSchema(File directory, ReportSchema reportSchemaObj) throws Exception { 		
+	public void serializeReportDefinition(File directory, ReportDefinition reportDefinitionObj) throws Exception { 		
 		ObjectOutputStream oos = null;
 		try { 
-			File dest = new File(directory, reportSchemaObj.getName() + ".ser");			
+			File dest = new File(directory, reportDefinitionObj.getName() + ".ser");			
 			FileOutputStream fos = new FileOutputStream(dest);
 			oos = new ObjectOutputStream(fos);
-			oos.writeObject(reportSchemaObj);
+			oos.writeObject(reportDefinitionObj);
 		} catch (Exception e) { 
 			log.error("Error serializing report schema", e);			
 		} finally { 
@@ -159,18 +159,18 @@ public class MockReportService extends BaseReportService implements ReportServic
 		}
 	}
 	
-	public ReportSchema deserializeReportSchema(File reportSchemaFile) throws Exception { 
+	public ReportDefinition deserializeReportDefinition(File reportDefinitionFile) throws Exception { 
 		ObjectInputStream ois = null;
 		try { 
-			FileInputStream fis = new FileInputStream(reportSchemaFile);
+			FileInputStream fis = new FileInputStream(reportDefinitionFile);
 			ois = new ObjectInputStream(fis);
-			return (ReportSchema)ois.readObject();
+			return (ReportDefinition)ois.readObject();
 		} catch (Exception e) { 
 			log.error("Error deserializing report schema", e);			
 		} finally { 
 			ois.close();
 		}
-		return new ReportSchema();
+		return new ReportDefinition();
 	}
 
 	
@@ -178,7 +178,7 @@ public class MockReportService extends BaseReportService implements ReportServic
 	 * Gets a simple cohort report schema.
 	 * @return
 	 */
-	public ReportSchema getCohortReportSchema() { 
+	public ReportDefinition getCohortReportDefinition() { 
 		// Add a very basic cohort report to the report schemas
 		AgeCohortDefinition childOnDate = new AgeCohortDefinition();
 		childOnDate.setName("Child On Date Cohort Definition");
@@ -194,16 +194,16 @@ public class MockReportService extends BaseReportService implements ReportServic
 		dsd.addStrategy("Children at End", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${cd.endDate}"));		
 
 		// Create the report schema
-		ReportSchema reportSchema = new ReportSchema();
-		reportSchema.setId(1);
-		reportSchema.setUuid(UUID.randomUUID().toString());
-		reportSchema.setName("Simple Cohort Report");
-		reportSchema.setDescription("This is a simple report with parameters and a cohort dataset definition");
-		reportSchema.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, null));
-		reportSchema.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, null));
-		reportSchema.addDataSetDefinition(new Mapped<DataSetDefinition>(dsd, "cd.startDate=${report.startDate},cd.endDate=${report.endDate}"));
+		ReportDefinition reportDefinition = new ReportDefinition();
+		reportDefinition.setId(1);
+		reportDefinition.setUuid(UUID.randomUUID().toString());
+		reportDefinition.setName("Simple Cohort Report");
+		reportDefinition.setDescription("This is a simple report with parameters and a cohort dataset definition");
+		reportDefinition.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, null));
+		reportDefinition.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, null));
+		reportDefinition.addDataSetDefinition(new Mapped<DataSetDefinition>(dsd, "cd.startDate=${report.startDate},cd.endDate=${report.endDate}"));
 	
-		return reportSchema;	
+		return reportDefinition;	
 	}
 	
 	/**
@@ -211,15 +211,16 @@ public class MockReportService extends BaseReportService implements ReportServic
 	 * 
 	 * @return	a simple indicator report schema
 	 */
-	public ReportSchema getIndicatorReportSchema() { 
+	public ReportDefinition getIndicatorReportDefinition() { 
 				
-		ReportSchema reportSchema = new ReportSchema();
-		reportSchema.setId(2);
-		reportSchema.setUuid(UUID.randomUUID().toString());
-		reportSchema.setName("Simple Indicator Report");
-		reportSchema.setDescription("This is a simple indicator report with a cohort indicator dataset definition");
-		reportSchema.addParameter(new Parameter("report.location", "Report Location", Location.class));
-		reportSchema.addParameter(new Parameter("report.reportDate", "Report Date", Date.class));
+		ReportDefinition reportDefinition = new ReportDefinition();
+		reportDefinition.setId(2);
+		reportDefinition.setUuid(UUID.randomUUID().toString());
+		reportDefinition.setName("Simple Indicator Report");
+		reportDefinition.setDescription("This is a simple indicator report with a cohort indicator dataset definition");
+		reportDefinition.addParameter(new Parameter("report.location", "Report Location", Location.class));
+		reportDefinition.addParameter(new Parameter("report.reportDate", "Report Date", Date.class));
+
 		
 		
 		// Add dataset definition
@@ -227,7 +228,7 @@ public class MockReportService extends BaseReportService implements ReportServic
 		dsd.setName("Number of patients enrolled at a location by gender and age");
 		dsd.addParameter(new Parameter("location", "Location", Location.class));
 		dsd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-		reportSchema.addDataSetDefinition(dsd, "location=${report.location},effectiveDate=${report.reportDate}");
+		reportDefinition.addDataSetDefinition(dsd, "location=${report.location},effectiveDate=${report.reportDate}");
 		
 		// Add cohort definition
 		LocationCohortDefinition atSite = new LocationCohortDefinition();
@@ -280,7 +281,7 @@ public class MockReportService extends BaseReportService implements ReportServic
 		dsd.addColumnSpecification("2.A", "Female Adult", Object.class, "patientsAtSite", "gender=female,age=adult");
 		dsd.addColumnSpecification("2.B", "Female Child", Object.class, "patientsAtSite", "gender=female,age=child");
 				
-		return reportSchema;
+		return reportDefinition;
 		
 	}
 	

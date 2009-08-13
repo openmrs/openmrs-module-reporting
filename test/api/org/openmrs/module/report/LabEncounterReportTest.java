@@ -160,7 +160,7 @@ public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
         			labDataSetDefinition, "encounter.", "patient_id");
 
         // TODO Need to pass a Mapped<DataSetDefinition>
-		//reportSchema.addDataSetDefinition(joinDataSetDefinition);
+		//reportDefinition.addDataSetDefinition(joinDataSetDefinition);
 
         DataSet joinDataSet = 
         	Context.getService(DataSetDefinitionService.class).evaluate(
@@ -175,7 +175,7 @@ public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
         new CsvReportRenderer().render(reportData, null, System.out);
 		
 		
-		//service.evaluate(reportSchema, context);
+		//service.evaluate(reportDefinition, context);
 		
 		
 	}

@@ -168,7 +168,7 @@
 
 	$j(document).ready(function(){
 		$j("#SaveDetailsButton").click( function() {
-			DWRReportService.getReportSchema('${reportSchema.reportSchemaId}', 
+			DWRReportService.getReportDefinition('${reportDefinition.reportDefinitionId}', 
 					{ 	callback:function(rptSchema) {
 							alert('Found'+rptSchema.name);
 						},
@@ -182,11 +182,11 @@
 
 </script>
 <h2>
-	<c:if test="${empty reportSchema.reportSchemaId}"><spring:message code="Report.new" /></c:if>
-	<c:if test="${!empty reportSchema.reportSchemaId}"><spring:message code="Report.edit" />: ${reportSchema.name}</c:if>
+	<c:if test="${empty reportDefinition.reportDefinitionId}"><spring:message code="Report.new" /></c:if>
+	<c:if test="${!empty reportDefinition.reportDefinitionId}"><spring:message code="Report.edit" />: ${reportDefinition.name}</c:if>
 </h2>
 
-<spring:hasBindErrors name="reportSchema">
+<spring:hasBindErrors name="reportDefinition">
 	<spring:message code="fix.error"/>
 </spring:hasBindErrors>
 <br/>
@@ -195,7 +195,7 @@
 <div id="reportTabs">
 	<ul>
 		<li><a href="#reportDetailsTab"><span style="color:white;"><spring:message code="Report.details" /></span></a></li>
-		<c:if test="${!empty reportSchema.reportSchemaId}">
+		<c:if test="${!empty reportDefinition.reportDefinitionId}">
 			<li><a href="#reportParametersTab"><span style="color:white;"><spring:message code="Report.parameters" /></span></a></li>
 			<li><a href="#reportDataTab"><span style="color:white;"><spring:message code="Report.data" /></span></a></li>
 			<openmrs:extensionPoint pointId="org.openmrs.report.cohortReportFormTab" type="html">
@@ -212,32 +212,32 @@
 
 	<div id="reportDetailsTab">
 		<span style="color:blue;">
-			<c:if test="${empty reportSchema.reportSchemaId}"><spring:message code="Report.cohortReport.help.newDetails" /></c:if>
-			<c:if test="${!empty reportSchema.reportSchemaId}"><spring:message code="Report.cohortReport.help.existingDetails" /></c:if>
+			<c:if test="${empty reportDefinition.reportDefinitionId}"><spring:message code="Report.cohortReport.help.newDetails" /></c:if>
+			<c:if test="${!empty reportDefinition.reportDefinitionId}"><spring:message code="Report.cohortReport.help.existingDetails" /></c:if>
 		</span><br/><br/>
 		<table>
 			<tr>
 				<th><spring:message code="Report.id" /></th>
 				<td>
 					<c:choose>
-						<c:when test="${empty reportSchema.reportSchemaId}">(<spring:message code="Report.new" />)</c:when>
-						<c:otherwise>${reportSchema.reportSchemaId}</c:otherwise>
+						<c:when test="${empty reportDefinition.reportDefinitionId}">(<spring:message code="Report.new" />)</c:when>
+						<c:otherwise>${reportDefinition.reportDefinitionId}</c:otherwise>
 					</c:choose>
 				</td>
 			</tr>
 			<tr>
 				<th><spring:message code="Report.name" /></th>
-				<td><input type="text" size="40" name="reportName" value="${reportSchema.name}"/></td>
+				<td><input type="text" size="40" name="reportName" value="${reportDefinition.name}"/></td>
 			</tr>
 			<tr valign="top">
 				<th><spring:message code="Report.description" /></th>
-				<td><textarea rows="3" cols="60" name="reportDescription">${reportSchema.description}</textarea></td>
+				<td><textarea rows="3" cols="60" name="reportDescription">${reportDefinition.description}</textarea></td>
 			</tr>
 		</table>
 		<br/>
 		<input type="button" id="SaveDetailsButton" name="SaveDetailsButton" value="<spring:message code="general.save"/>"/>
 	</div>
-	<c:if test="${!empty reportSchema.reportSchemaId}">
+	<c:if test="${!empty reportDefinition.reportDefinitionId}">
 		<div id="reportParametersTab">
 			<span style="color:blue;"><spring:message code="Report.cohortReport.help.parameters" /></span><br/><br/>
 			<table id="parametersTable">
@@ -246,7 +246,7 @@
 					<th><spring:message code="Report.parameter.label" /></th>
 					<th><spring:message code="Report.parameter.type" /></th>
 				</tr>
-				<c:forEach var="parameter" items="${reportSchema.reportParameters}">
+				<c:forEach var="parameter" items="${reportDefinition.reportParameters}">
 					<tr>
 						<td><input type="text" name="parameterName" value="${parameter.name}"/></td>
 						<td><input type="text" size="40" name="parameterLabel" value="${parameter.label}"/></td>
@@ -277,9 +277,9 @@
 					<td valign="top">
 						<table>
 							<tr><th><spring:message code="Report.data"/></th>
-							<c:forEach var="dsd" items="${reportSchema.dataSetDefinitions}">
-								<tr><td class="sectionLink" id="sectionLinkDataSetDefinition${reportSchema.reportSchemaId}-${dsd}">
-									<a href="javascript:highlightLinkAndShowSection('DataSetDefinition${reportSchema.reportSchemaId}-${dsd}');">
+							<c:forEach var="dsd" items="${reportDefinition.dataSetDefinitions}">
+								<tr><td class="sectionLink" id="sectionLinkDataSetDefinition${reportDefinition.reportDefinitionId}-${dsd}">
+									<a href="javascript:highlightLinkAndShowSection('DataSetDefinition${reportDefinition.reportDefinitionId}-${dsd}');">
 										TBD
 									</a>
 								</td></tr>
@@ -295,7 +295,7 @@
 			</table>
 		</div>
 	</c:if>
-	<c:if test="${!empty reportSchema.reportSchemaId}">	
+	<c:if test="${!empty reportDefinition.reportDefinitionId}">	
 		<openmrs:extensionPoint pointId="org.openmrs.report.cohortReportFormTab" type="html">
 			<openmrs:hasPrivilege privilege="${extension.requiredPrivilege}">
 				<div id="reportExtensionTab${extension.tabId}">
@@ -304,7 +304,7 @@
 							portletId is null: '${extension.extensionId}'
 						</c:when>
 						<c:otherwise>
-							<openmrs:portlet url="${extension.portletUrl}" id="${extension.tabId}" moduleId="${extension.moduleId}" parameters="reportSchemaId=${reportSchema.reportSchemaId}" />
+							<openmrs:portlet url="${extension.portletUrl}" id="${extension.tabId}" moduleId="${extension.moduleId}" parameters="reportDefinitionId=${reportDefinition.reportDefinitionId}" />
 						</c:otherwise>
 					</c:choose>
 				</div>

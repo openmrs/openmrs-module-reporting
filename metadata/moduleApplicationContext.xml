@@ -15,10 +15,10 @@
 	<bean parent="serializedObjectDAO">
 		<property name="supportedTypes">
 			<list>
-				<value>org.openmrs.module.report.ReportSchema</value>
 				<value>org.openmrs.module.indicator.Indicator</value>
 				<value>org.openmrs.module.cohort.definition.CohortDefinition</value>
 				<value>org.openmrs.module.dataset.definition.DataSetDefinition</value>
+				<value>org.openmrs.module.report.ReportDefinition</value>
 			</list>
 		</property>
 	</bean>	

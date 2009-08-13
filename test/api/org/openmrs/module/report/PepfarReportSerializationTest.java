@@ -50,7 +50,7 @@ public class PepfarReportSerializationTest extends BaseContextSensitiveTest {
 	 */
 	@Before
 	public void runBeforeEachTest() throws Exception {
-		executeDataSet("org/openmrs/report/include/ReportSchemaXmlTest-initialData.xml");
+		executeDataSet("org/openmrs/report/include/ReportDefinitionXmlTest-initialData.xml");
 	}
 	
 	/**
@@ -62,14 +62,14 @@ public class PepfarReportSerializationTest extends BaseContextSensitiveTest {
 	public void shouldPepfarStaticCohortSerialization() throws Exception {
 		
 		// the report schema object to serialize
-		ReportSchema pepfarReportSchema = new ReportSchema();
+		ReportDefinition pepfarReportDefinition = new ReportDefinition();
 		
 		// create the columns of the report
 		CohortDataSetDefinition cohortDataSetDef = new CohortDataSetDefinition();
 		cohortDataSetDef.setName("Sheet1");		
 		cohortDataSetDef.addStrategy("1.a", new StaticCohortDefinition(new Cohort()), null);
 		
-		pepfarReportSchema.addDataSetDefinition(cohortDataSetDef, (String)null);
+		pepfarReportDefinition.addDataSetDefinition(cohortDataSetDef, (String)null);
 		
 		// add the parameters of the report
 		Parameter startDateParam = new Parameter("report.startDate", "When does the report period start?", Date.class);
@@ -81,27 +81,27 @@ public class PepfarReportSerializationTest extends BaseContextSensitiveTest {
 		parameters.add(locationParam);
 		
 		
-		pepfarReportSchema.setParameters(parameters);
+		pepfarReportDefinition.setParameters(parameters);
 		
 		// add the rows (cohort) to the report
 		Cohort inputStaticCohort = new Cohort(1);
 		inputStaticCohort.addMember(1001);
 		inputStaticCohort.addMember(1002);
 		inputStaticCohort.addMember(1003);
-		pepfarReportSchema.setBaseCohortDefinition(new StaticCohortDefinition(inputStaticCohort), null);
+		pepfarReportDefinition.setBaseCohortDefinition(new StaticCohortDefinition(inputStaticCohort), null);
 		
 		// finally, fill in the details of the report
-		pepfarReportSchema.setId(123);
-		pepfarReportSchema.setName("PEPFAR report");
-		pepfarReportSchema.setDescription("The PEPFAR description is(n't) here.");
+		pepfarReportDefinition.setId(123);
+		pepfarReportDefinition.setName("PEPFAR report");
+		pepfarReportDefinition.setDescription("The PEPFAR description is(n't) here.");
 		
 		// do the serialization
 		Serializer serializer = OpenmrsUtil.getSerializer();
 		StringWriter writer = new StringWriter();
 		
-		serializer.write(pepfarReportSchema, writer);
+		serializer.write(pepfarReportDefinition, writer);
 		
-		String correctOutput = "<reportSchema id=\"1\" reportSchemaId=\"123\">\n"
+		String correctOutput = "<reportDefinition id=\"1\" reportDefinitionId=\"123\">\n"
 		        + "   <filter class=\"org.openmrs.cohort.StaticCohortDefinition\" id=\"2\">\n"
 		        + "      <cohort id=\"3\" voided=\"false\" cohortId=\"1\">\n"
 		        + "         <memberIds class=\"java.util.HashSet\" id=\"4\">\n"
@@ -120,17 +120,17 @@ public class PepfarReportSerializationTest extends BaseContextSensitiveTest {
 		        + "   </parameters>\n"
 		        + "   <description id=\"18\"><![CDATA[The PEPFAR description is(n't) here.]]></description>\n"
 		        + "   <dataSets class=\"java.util.ArrayList\" id=\"19\"/>\n"
-		        + "   <name id=\"20\"><![CDATA[PEPFAR report]]></name>\n" + "</reportSchema>";
+		        + "   <name id=\"20\"><![CDATA[PEPFAR report]]></name>\n" + "</reportDefinition>";
 		
 		String xmlOutput = writer.toString();
-		XMLAssert.assertXpathEvaluatesTo("org.openmrs.cohort.StaticCohortDefinition", "//reportSchema/filter/@class",
+		XMLAssert.assertXpathEvaluatesTo("org.openmrs.cohort.StaticCohortDefinition", "//reportDefinition/filter/@class",
 		    xmlOutput);
 		
 		// TODO how to just test to see if 1001, 1002, and 1003 all exist as values in memberIds/integer?
-		XMLAssert.assertXpathEvaluatesTo("1001", "//reportSchema/filter/cohort/memberIds/integer", xmlOutput);
+		XMLAssert.assertXpathEvaluatesTo("1001", "//reportDefinition/filter/cohort/memberIds/integer", xmlOutput);
 		
 		// check some simple deserialized value
-		ReportSchema deserializedSchema = serializer.read(ReportSchema.class, correctOutput);
+		ReportDefinition deserializedSchema = serializer.read(ReportDefinition.class, correctOutput);
 		assertTrue("The # of params shouldn't be: " + deserializedSchema.getParameters().size(), 
 				deserializedSchema.getParameters().size() == 3);
 		assertTrue("The name shouldn't be: " + deserializedSchema.getName(), deserializedSchema.getName().equals(
@@ -138,7 +138,7 @@ public class PepfarReportSerializationTest extends BaseContextSensitiveTest {
 		
 		
 		// FIXME		
-		Assert.fail("Unable to get CohortDefinition from ReportSchema");
+		Assert.fail("Unable to get CohortDefinition from ReportDefinition");
 		
 		//CohortDefinition filterDef = deserializedSchema.getBaseCohortDefinition();
 		CohortDefinition filterDef = null;

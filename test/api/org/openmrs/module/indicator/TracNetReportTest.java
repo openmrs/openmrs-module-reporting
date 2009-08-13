@@ -35,7 +35,7 @@ import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.aggregation.CountAggregator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -47,9 +47,9 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 	
 	private static final DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 	
-	public ReportSchema setupReport() {
+	public ReportDefinition setupReport() {
 		
-		ReportSchema rs = new ReportSchema();
+		ReportDefinition rs = new ReportDefinition();
 		rs.addParameter(new Parameter("report.location", "Report Facility", Location.class));
 		rs.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class));
 		rs.addParameter(new Parameter("report.endDate", "Report End Date", Date.class));
@@ -62,7 +62,7 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		return rs;
 	}
 	
-	public CohortIndicatorDataSetDefinition setupDataSetDefinition(ReportSchema rs) {
+	public CohortIndicatorDataSetDefinition setupDataSetDefinition(ReportDefinition rs) {
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.addParameter(new Parameter("dataSet.startDate", "DataSet Start Date", Date.class));
@@ -143,7 +143,7 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void test() throws Exception {
 		
-		ReportSchema rs = setupReport();
+		ReportDefinition rs = setupReport();
 		CohortIndicatorDataSetDefinition dsd = setupDataSetDefinition(rs);
 
 		dsd.addColumnSpecification("4.", "Nombre total de patients pediatriques (moins de 15 ans) qui sont actuellement sous ARV", 

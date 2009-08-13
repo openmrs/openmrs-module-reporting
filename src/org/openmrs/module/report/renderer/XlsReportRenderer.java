@@ -17,7 +17,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 
 /**
  * Report renderer that produces an Excel pre-2007 workbook with one sheet per dataset in the report.
@@ -26,9 +26,9 @@ import org.openmrs.module.report.ReportSchema;
 public class XlsReportRenderer implements ReportRenderer {
 
     /**
-     * @see org.openmrs.module.report.renderer.ReportRenderer#getFilename(org.openmrs.module.report.ReportSchema, java.lang.String)
+     * @see org.openmrs.module.report.renderer.ReportRenderer#getFilename(org.openmrs.module.report.ReportDefinition, java.lang.String)
      */
-    public String getFilename(ReportSchema schema, String argument) {
+    public String getFilename(ReportDefinition schema, String argument) {
         return schema.getName() + ".xls";
     }
 
@@ -40,16 +40,16 @@ public class XlsReportRenderer implements ReportRenderer {
     }
 
     /**
-     * @see org.openmrs.module.report.renderer.ReportRenderer#getRenderedContentType(org.openmrs.module.report.ReportSchema, java.lang.String)
+     * @see org.openmrs.module.report.renderer.ReportRenderer#getRenderedContentType(org.openmrs.module.report.ReportDefinition, java.lang.String)
      */
-    public String getRenderedContentType(ReportSchema schema, String argument) {
+    public String getRenderedContentType(ReportDefinition schema, String argument) {
         return "application/vnd.ms-excel";
     }
 
     /**
-     * @see org.openmrs.module.report.renderer.ReportRenderer#getRenderingModes(org.openmrs.module.report.ReportSchema)
+     * @see org.openmrs.module.report.renderer.ReportRenderer#getRenderingModes(org.openmrs.module.report.ReportDefinition)
      */
-    public Collection<RenderingMode> getRenderingModes(ReportSchema schema) {
+    public Collection<RenderingMode> getRenderingModes(ReportDefinition schema) {
         // Don't return *quite* the lowest priority, so that this appears above CSV and TSV.
         return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MIN_VALUE + 1));
     }

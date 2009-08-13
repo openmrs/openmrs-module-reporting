@@ -10,8 +10,8 @@
 		</li>
 	</openmrs:hasPrivilege>
 	<openmrs:hasPrivilege privilege="Manage Reports">
-		<li <c:if test='<%= request.getRequestURI().contains("reportSchemaXml") %>'>class="active"</c:if>>
-			<a href="${pageContext.request.contextPath}/admin/reports/reportSchemaXml.list">
+		<li <c:if test='<%= request.getRequestURI().contains("reportDefinitionXml") %>'>class="active"</c:if>>
+			<a href="${pageContext.request.contextPath}/admin/reports/reportDefinitionXml.list">
 				<spring:message code="Report.manage.title"/>
 			</a>
 		</li>

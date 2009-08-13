@@ -27,13 +27,13 @@ import org.openmrs.module.report.service.ReportService;
 
 /**
  * This class represents the metadata that describes a particular report that can be evaluated.
- * A {@link ReportSchema} will typically be evaluated upon a base {@link Cohort} in the context
+ * A {@link ReportDefinition} will typically be evaluated upon a base {@link Cohort} in the context
  * of an {@link EvaluationContext}.  Evaluating a report generally means evaluating all of the
  * {@link DataSetDefinition}s it contains, resulting in a {@link ReportData}.
  * 
- * @see {@link ReportService#evaluate(ReportSchema, Cohort, EvaluationContext)}
+ * @see {@link ReportService#evaluate(ReportDefinition, Cohort, EvaluationContext)}
  */
-public class ReportSchema extends BaseParameterizable {
+public class ReportDefinition extends BaseParameterizable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -49,7 +49,7 @@ public class ReportSchema extends BaseParameterizable {
 	// CONSTRUCTORS
 	//***********************
 	
-	public ReportSchema() { }
+	public ReportDefinition() { }
 	
 	//***********************
 	// INSTANCE METHODS

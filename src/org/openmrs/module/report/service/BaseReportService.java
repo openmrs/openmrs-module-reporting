@@ -25,7 +25,7 @@ import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.util.HandlerUtil;
@@ -61,38 +61,38 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	public BaseReportService() { }
 
 	/**
-	 * @see ReportService#saveReportSchema(ReportSchema)
+	 * @see ReportService#saveReportDefinition(ReportDefinition)
 	 */
-	public ReportSchema saveReportSchema(ReportSchema reportSchema) throws APIException {
-		return serializedObjectDAO.saveObject(reportSchema);
+	public ReportDefinition saveReportDefinition(ReportDefinition reportDefinition) throws APIException {
+		return serializedObjectDAO.saveObject(reportDefinition);
 	}
 	
 	/**
-	 * @see ReportService#getReportSchema(Integer)
+	 * @see ReportService#getReportDefinition(Integer)
 	 */
-	public ReportSchema getReportSchema(Integer reportSchemaId) throws APIException {
-		return serializedObjectDAO.getObject(ReportSchema.class, reportSchemaId);
+	public ReportDefinition getReportDefinition(Integer reportDefinitionId) throws APIException {
+		return serializedObjectDAO.getObject(ReportDefinition.class, reportDefinitionId);
 	}
 
 	/**
-	 * @see ReportService#getReportSchemaByUuid(String)
+	 * @see ReportService#getReportDefinitionByUuid(String)
 	 */
-	public ReportSchema getReportSchemaByUuid(String uuid) throws APIException {
-		return serializedObjectDAO.getObjectByUuid(ReportSchema.class, uuid);
+	public ReportDefinition getReportDefinitionByUuid(String uuid) throws APIException {
+		return serializedObjectDAO.getObjectByUuid(ReportDefinition.class, uuid);
 	}
 	
 	/**
-	 * @see ReportService#getReportSchemas()
+	 * @see ReportService#getReportDefinitions()
 	 */
-	public List<ReportSchema> getReportSchemas() throws APIException {
-		return serializedObjectDAO.getAllObjects(ReportSchema.class);
+	public List<ReportDefinition> getReportDefinitions() throws APIException {
+		return serializedObjectDAO.getAllObjects(ReportDefinition.class);
 	}
 	
 	/**
-	 * @see ReportService#deleteReportSchema(ReportSchema)
+	 * @see ReportService#deleteReportDefinition(ReportDefinition)
 	 */
-	public void deleteReportSchema(ReportSchema reportSchema) {
-		serializedObjectDAO.purgeObject(reportSchema.getId());
+	public void deleteReportDefinition(ReportDefinition reportDefinition) {
+		serializedObjectDAO.purgeObject(reportDefinition.getId());
 	}
 
 	/**
@@ -103,24 +103,24 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	}
 
 	/**
-	 * @see ReportService#evaluate(ReportSchema, Cohort, EvaluationContext)
+	 * @see ReportService#evaluate(ReportDefinition, Cohort, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
-	public ReportData evaluate(ReportSchema reportSchema, EvaluationContext evalContext) {
+	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext evalContext) {
 		
-		log.debug("Evaluating report: " + reportSchema + "(" + evalContext.getParameterValues() + ")");
+		log.debug("Evaluating report: " + reportDefinition + "(" + evalContext.getParameterValues() + ")");
 		
 		ReportData ret = new ReportData();
 		Map<String, DataSet> data = new HashMap<String, DataSet>();
 		ret.setDataSets(data);
-		ret.setReportSchema(reportSchema);
+		ret.setReportDefinition(reportDefinition);
 		ret.setEvaluationContext(evalContext);
 		
-		Cohort baseCohort = CohortFilter.filter(evalContext, reportSchema.getBaseCohortDefinition());
+		Cohort baseCohort = CohortFilter.filter(evalContext, reportDefinition.getBaseCohortDefinition());
 		
 		DataSetDefinitionService dss = Context.getService(DataSetDefinitionService.class);
-		if (reportSchema.getDataSetDefinitions() != null) {
-			for (Mapped<? extends DataSetDefinition> pd : reportSchema.getDataSetDefinitions()) {
+		if (reportDefinition.getDataSetDefinitions() != null) {
+			for (Mapped<? extends DataSetDefinition> pd : reportDefinition.getDataSetDefinitions()) {
 				EvaluationContext childEc = EvaluationContext.cloneForChild(evalContext, pd);
 				childEc.setBaseCohort(baseCohort);
 				data.put(pd.getParameterizable().getName(), dss.evaluate(pd.getParameterizable(), childEc));
@@ -131,9 +131,9 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
-	 * @see ReportService#getRenderingModes(ReportSchema)
+	 * @see ReportService#getRenderingModes(ReportDefinition)
 	 */
-	public List<RenderingMode> getRenderingModes(ReportSchema schema) {
+	public List<RenderingMode> getRenderingModes(ReportDefinition schema) {
 		List<RenderingMode> ret = new Vector<RenderingMode>();
 		for (ReportRenderer r : getReportRenderers()) {
 			Collection<RenderingMode> modes = r.getRenderingModes(schema);

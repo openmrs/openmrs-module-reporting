@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.report.renderer.RenderingException;
@@ -33,7 +33,7 @@ import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
 
 /**
- * A Default Renderer Implementation that aims to support all ReportSchemas
+ * A Default Renderer Implementation that aims to support all ReportDefinitions
  */
 public class SimpleHtmlReportRenderer implements ReportRenderer {
 	
@@ -45,30 +45,30 @@ public class SimpleHtmlReportRenderer implements ReportRenderer {
     }
 
 	/**
-     * @see org.openmrs.report.ReportRenderer#getRenderedContentType(org.openmrs.report.ReportSchema, java.lang.String)
+     * @see org.openmrs.report.ReportRenderer#getRenderedContentType(org.openmrs.report.ReportDefinition, java.lang.String)
      */
-    public String getRenderedContentType(ReportSchema schema, String argument) {
+    public String getRenderedContentType(ReportDefinition schema, String argument) {
     	return "text/html";
     }
 
 	/**
-	 * @see org.openmrs.report.ReportRenderer#getLinkUrl(org.openmrs.report.ReportSchema)
+	 * @see org.openmrs.report.ReportRenderer#getLinkUrl(org.openmrs.report.ReportDefinition)
 	 */
-	public String getLinkUrl(ReportSchema schema) {
+	public String getLinkUrl(ReportDefinition schema) {
 		return null;
 	}
 	
 	/**
-	 * @see org.openmrs.report.ReportRenderer#getFilename(org.openmrs.report.ReportSchema)
+	 * @see org.openmrs.report.ReportRenderer#getFilename(org.openmrs.report.ReportDefinition)
 	 */
-	public String getFilename(ReportSchema schema, String argument) {
+	public String getFilename(ReportDefinition schema, String argument) {
 		return schema.getName() + ".html";
 	}
 	
 	/**
-	 * @see org.openmrs.report.ReportRenderer#getRenderingModes(org.openmrs.report.ReportSchema)
+	 * @see org.openmrs.report.ReportRenderer#getRenderingModes(org.openmrs.report.ReportDefinition)
 	 */
-	public Collection<RenderingMode> getRenderingModes(ReportSchema schema) {
+	public Collection<RenderingMode> getRenderingModes(ReportDefinition schema) {
 		return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MIN_VALUE));
 	}
 	

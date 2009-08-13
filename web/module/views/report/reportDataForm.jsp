@@ -6,8 +6,8 @@
 
 <%@ include file="localHeader.jsp" %>
 
-<h2>${reportData.reportSchema.name} </h2>
-<i>${reportData.reportSchema.description }</i>
+<h2>${reportData.reportDefinition.name} </h2>
+<i>${reportData.reportDefinition.description }</i>
 
 <br/>
 <br/>
@@ -15,7 +15,7 @@
 <b><spring:message code="Report.parameters"/></b>
 <small>
 	<table>
-	    <c:forEach var="parameter" items="${reportData.reportSchema.reportParameters}" varStatus="varStatus">
+	    <c:forEach var="parameter" items="${reportData.reportDefinition.reportParameters}" varStatus="varStatus">
 	    <tr>
 	        <td>
 	            ${parameter.label}

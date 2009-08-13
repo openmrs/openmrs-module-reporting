@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests the small class ReportSchemaXml without database accesses
+ * Tests the small class ReportDefinitionXml without database accesses
  */
 public class ReportSchemaXmlTestNonContext {
 	
@@ -31,7 +31,7 @@ public class ReportSchemaXmlTestNonContext {
 	@Test
 	public void shouldUpdateFromAttributes() throws Exception {
 		StringBuilder xml = new StringBuilder();
-		xml.append("<reportSchema id=\"1\">\n");
+		xml.append("<reportDefinition id=\"1\">\n");
 		xml.append("    <name>PEPFAR report</name>\n");
 		xml.append("	<description>\n");
 		xml.append("		Sample monthly PEPFAR report, modeled after the lesotho one\n");
@@ -62,27 +62,27 @@ public class ReportSchemaXmlTestNonContext {
 		xml.append("			</strategies>\n");
 		xml.append("		</dataSetDefinition>\n");
 		xml.append("	</dataSets>\n");
-		xml.append("</reportSchema>\n");
+		xml.append("</reportDefinition>\n");
 		
 		
 		// FIXME 
 		// TODO These tests should be in separate methods
-		Assert.fail("ReportSchemaXml has been removed and does not have a suitable replacement");
+		Assert.fail("ReportDefinitionXml has been removed and does not have a suitable replacement");
 
 		// create and check the report schema object
-		//ReportSchemaXml reportSchemaXml = new ReportSchemaXml();
-		//reportSchemaXml.setXml(xml.toString());
-		//reportSchemaXml.setReportSchemaId(1);		
-		//reportSchemaXml.updateXmlFromAttributes();
+		//ReportDefinitionXml reportDefinitionXml = new ReportDefinitionXml();
+		//reportDefinitionXml.setXml(xml.toString());
+		//reportDefinitionXml.setReportDefinitionId(1);		
+		//reportDefinitionXml.updateXmlFromAttributes();
 		
 		String newXml = "";
 		
-		//String newXml = reportSchemaXml.getXml();
-		assertTrue("The id in the xml should be set from the reportSchemaXml object", newXml.contains(" reportSchemaId=\"1\" "));
+		//String newXml = reportDefinitionXml.getXml();
+		assertTrue("The id in the xml should be set from the reportDefinitionXml object", newXml.contains(" reportDefinitionId=\"1\" "));
 		
-		// now test with reportSchemaId already set
+		// now test with reportDefinitionId already set
 		xml = new StringBuilder();
-		xml.append("<reportSchema id=\"1\" reportSchemaId=\"123\">\n");
+		xml.append("<reportDefinition id=\"1\" reportDefinitionId=\"123\">\n");
 		xml.append("    <name>PEPFAR report</name>\n");
 		xml.append("	<description>\n");
 		xml.append("		Sample monthly PEPFAR report, modeled after the lesotho one\n");
@@ -114,24 +114,24 @@ public class ReportSchemaXmlTestNonContext {
 		xml.append("			</strategies>\n");
 		xml.append("		</dataSetDefinition>\n");
 		xml.append("	</dataSets>\n");
-		xml.append("</reportSchema>\n");
+		xml.append("</reportDefinition>\n");
 		
 		
 		// FIXME 
 		// TODO These tests should be in separate methods
-		Assert.fail("ReportSchemaXml has been removed and does not have a suitable replacement");
+		Assert.fail("ReportDefinitionXml has been removed and does not have a suitable replacement");
 		
 		// create and check the report schema object
-		//reportSchemaXml = new ReportSchemaXml();
-		//reportSchemaXml.setXml(xml.toString());
-		//reportSchemaXml.setReportSchemaId(12);
-		//reportSchemaXml.updateXmlFromAttributes();
-		//newXml = reportSchemaXml.getXml();
-		assertTrue("The id in the xml should be set from the reportSchemaXml object", newXml
-		        .contains(" reportSchemaId=\"12\">"));
+		//reportDefinitionXml = new ReportDefinitionXml();
+		//reportDefinitionXml.setXml(xml.toString());
+		//reportDefinitionXml.setReportDefinitionId(12);
+		//reportDefinitionXml.updateXmlFromAttributes();
+		//newXml = reportDefinitionXml.getXml();
+		assertTrue("The id in the xml should be set from the reportDefinitionXml object", newXml
+		        .contains(" reportDefinitionId=\"12\">"));
 		
 		xml = new StringBuilder();
-		xml.append("<reportSchema id=\"1\" reportSchemaId=\'1\'>\n");
+		xml.append("<reportDefinition id=\"1\" reportDefinitionId=\'1\'>\n");
 		xml.append("    <name>PEPFAR report</name>\n");
 		xml.append("	<description>\n");
 		xml.append("		Sample monthly PEPFAR report, modeled after the lesotho one\n");
@@ -163,25 +163,25 @@ public class ReportSchemaXmlTestNonContext {
 		xml.append("			</strategies>\n");
 		xml.append("		</dataSetDefinition>\n");
 		xml.append("	</dataSets>\n");
-		xml.append("</reportSchema>\n");
+		xml.append("</reportDefinition>\n");
 		
 		
 		
 		// FIXME 
 		// TODO These tests should be in separate methods
-		Assert.fail("ReportSchemaXml has been removed and does not have a suitable replacement");
+		Assert.fail("ReportDefinitionXml has been removed and does not have a suitable replacement");
 		
 		// create and check the report schema object
-		//reportSchemaXml = new ReportSchemaXml();
-		//reportSchemaXml.setXml(xml.toString());
-		//reportSchemaXml.setReportSchemaId(1234);		
-		//reportSchemaXml.updateXmlFromAttributes();		
-		//newXml = reportSchemaXml.getXml();
-		assertTrue("The id in the xml should be set from the reportSchemaXml object", newXml
-		        .contains(" reportSchemaId=\"1234\">"));
+		//reportDefinitionXml = new ReportDefinitionXml();
+		//reportDefinitionXml.setXml(xml.toString());
+		//reportDefinitionXml.setReportDefinitionId(1234);		
+		//reportDefinitionXml.updateXmlFromAttributes();		
+		//newXml = reportDefinitionXml.getXml();
+		assertTrue("The id in the xml should be set from the reportDefinitionXml object", newXml
+		        .contains(" reportDefinitionId=\"1234\">"));
 		
 		xml = new StringBuilder();
-		xml.append("<reportSchema reportSchemaId=\'1\' id=\"1\">\n");
+		xml.append("<reportDefinition reportDefinitionId=\'1\' id=\"1\">\n");
 		xml.append("    <name>PEPFAR report</name>\n");
 		xml.append("	<description>\n");
 		xml.append("		Sample monthly PEPFAR report, modeled after the lesotho one\n");
@@ -213,22 +213,22 @@ public class ReportSchemaXmlTestNonContext {
 		xml.append("			</strategies>\n");
 		xml.append("		</dataSetDefinition>\n");
 		xml.append("	</dataSets>\n");
-		xml.append("</reportSchema>\n");
+		xml.append("</reportDefinition>\n");
 		
 		
 		
 		// FIXME 
 		// TODO These tests should be in separate methods
-		Assert.fail("ReportSchemaXml has been removed and does not have a suitable replacement");
+		Assert.fail("ReportDefinitionXml has been removed and does not have a suitable replacement");
 
 		// create and check the report schema object
-		//reportSchemaXml = new ReportSchemaXml();
-		//reportSchemaXml.setXml(xml.toString());
-		//reportSchemaXml.setReportSchemaId(1234);		
-		//reportSchemaXml.updateXmlFromAttributes();		
-		//newXml = reportSchemaXml.getXml();
-		assertTrue("The id in the xml should be set from the reportSchemaXml object", newXml
-		        .contains(" reportSchemaId=\"1234\" "));
+		//reportDefinitionXml = new ReportDefinitionXml();
+		//reportDefinitionXml.setXml(xml.toString());
+		//reportDefinitionXml.setReportDefinitionId(1234);		
+		//reportDefinitionXml.updateXmlFromAttributes();		
+		//newXml = reportDefinitionXml.getXml();
+		assertTrue("The id in the xml should be set from the reportDefinitionXml object", newXml
+		        .contains(" reportDefinitionId=\"1234\" "));
 	}
 	
 }

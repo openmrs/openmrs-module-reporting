@@ -37,12 +37,12 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	public void shouldSaveReportSchema() throws Exception { 		
+	public void shouldSaveReportDefinition() throws Exception { 		
 		ReportService service = Context.getService(ReportService.class);
-		ReportSchema reportSchema = new ReportSchema();		
-		reportSchema.setName("Testing");
-		ReportSchema savedReportSchema = service.saveReportSchema(reportSchema);		
-		Assert.assertTrue(savedReportSchema.getId()!=null);
+		ReportDefinition reportDefinition = new ReportDefinition();		
+		reportDefinition.setName("Testing");
+		ReportDefinition savedReportDefinition = service.saveReportDefinition(reportDefinition);		
+		Assert.assertTrue(savedReportDefinition.getId()!=null);
 	}
 	
 

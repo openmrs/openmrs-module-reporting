@@ -24,7 +24,7 @@ $j(document).ready(function() {
 
 	// Redirect to the listing page
 	$j('#cancel-button').click(function(event){
-		window.location.href='<c:url value="/module/reporting/manageReportSchemas.list"/>';
+		window.location.href='<c:url value="/module/reporting/manageReportDefinitions.list"/>';
 	});
 	
 } );

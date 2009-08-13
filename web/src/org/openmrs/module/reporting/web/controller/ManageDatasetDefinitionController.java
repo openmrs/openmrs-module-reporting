@@ -24,7 +24,7 @@ import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
 import org.springframework.stereotype.Controller;
@@ -372,9 +372,9 @@ public class ManageDatasetDefinitionController {
            	//DataSet dataSet = service.evaluate(dataSetDefinition, context);
 
 	    	// Evaluate dataset report
-	    	ReportSchema reportSchema = new ReportSchema();
-	    	reportSchema.addDataSetDefinition(dataSetDefinition, "");
-	    	ReportData reportData = Context.getService(ReportService.class).evaluate(reportSchema, context);
+	    	ReportDefinition reportDefinition = new ReportDefinition();
+	    	reportDefinition.addDataSetDefinition(dataSetDefinition, "");
+	    	ReportData reportData = Context.getService(ReportService.class).evaluate(reportDefinition, context);
 	    		    	
 	    	// We usually render, but for now we're just going to return it
 			response.setContentType("text/csv");

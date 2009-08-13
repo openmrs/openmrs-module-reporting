@@ -30,7 +30,7 @@ import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -73,7 +73,7 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("org/openmrs/report/include/ReportTests-patients.xml");
 		authenticate();
 		
-		ReportSchema schema = new ReportSchema();
+		ReportDefinition schema = new ReportDefinition();
 		schema.setName("Test Report for Table");
 		schema.setDescription("A test description");
 		

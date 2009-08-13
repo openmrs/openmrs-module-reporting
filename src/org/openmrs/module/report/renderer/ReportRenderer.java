@@ -19,10 +19,10 @@ import java.io.Writer;
 import java.util.Collection;
 
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 
 /**
- * Takes a ReportSchema and renders it.
+ * Takes a ReportDefinition and renders it.
  */
 public interface ReportRenderer {
 	
@@ -34,26 +34,26 @@ public interface ReportRenderer {
 	/**
 	 * Returns the ReportDesigns in which this report schema could be rendered.
 	 * 
-	 * @param schema - The {@link ReportSchema} to check
-	 * @return a <code>Collection<ReportDesign></code> of all modes in which the given ReportSchema can be rendered
+	 * @param schema - The {@link ReportDefinition} to check
+	 * @return a <code>Collection<ReportDesign></code> of all modes in which the given ReportDefinition can be rendered
 	 */
-	public Collection<RenderingMode> getRenderingModes(ReportSchema schema);
+	public Collection<RenderingMode> getRenderingModes(ReportDefinition schema);
 	
 	/**
 	 * The content-type that will be rendered
 	 * 
-	 * @param schema The ReportSchema to render
+	 * @param schema The ReportDefinition to render
 	 * @param argument Argument from the RenderingMode that the user selected
 	 * @return the <code>String</code> representation of the rendered content type
 	 */
-	public String getRenderedContentType(ReportSchema schema, String argument);
+	public String getRenderedContentType(ReportDefinition schema, String argument);
 	
 	/**
 	 * @param schema
 	 * @param argument Argument from the RenderingMode that the user selected
 	 * @return Suggested filename to save the rendered report as.
 	 */
-	public String getFilename(ReportSchema schema, String argument);
+	public String getFilename(ReportDefinition schema, String argument);
 	
 	/**
 	 * Render the report's data to a stream

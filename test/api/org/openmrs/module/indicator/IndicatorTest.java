@@ -30,7 +30,7 @@ import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.aggregation.CountAggregator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -56,7 +56,7 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		
 		DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 		
-		ReportSchema rs = new ReportSchema();
+		ReportDefinition rs = new ReportDefinition();
 		rs.addParameter(new Parameter("report.location", "Report Location", Location.class));
 		rs.addParameter(new Parameter("report.reportDate", "Report Date", Date.class));
 		

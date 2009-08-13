@@ -21,7 +21,7 @@ import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
  * A Parameter represents a value that may be used to configure an Object at runtime.
- * Examples of classes where Parameters are used are ReportSchema, CohortDefinition, and DataSetDefinition
+ * Examples of classes where Parameters are used are ReportDefinition, CohortDefinition, and DataSetDefinition
  * If an object is parameterizable, it is able to accept a parameter like this. 
  * Examples of a parameter would be "What start date do you want to use?"
  * Typically Parameter Values are retrieved in the context of an {@link EvaluationContext}

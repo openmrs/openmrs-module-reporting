@@ -39,26 +39,26 @@
 						<li>
 							<label class="desc" for="name">ID</label>
 							<span>
-								${reportSchema.uuid}
+								${reportDefinition.uuid}
 							</span>
 						</li>
 						<li>
 							<label class="desc" for="name">Name</label>
 							<span>
-								${reportSchema.name}
+								${reportDefinition.name}
 							</span>
 						</li>
 						<li>
 							<label class="desc" for="name">Description</label>
 							<span>
-								${reportSchema.description}
+								${reportDefinition.description}
 							</span>
 						</li>
 					</ul>
 					
 					<h2>Report Parameters</h2>
 					<ul>
-						<c:forEach var="parameter" items="${reportSchema.parameters}" varStatus="varStatus">
+						<c:forEach var="parameter" items="${reportDefinition.parameters}" varStatus="varStatus">
 							<li>
 									<label class="desc" for="${parameter.name}">${parameter.label}</label>
 									<span>

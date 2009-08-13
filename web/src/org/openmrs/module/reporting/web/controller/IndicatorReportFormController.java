@@ -26,7 +26,7 @@ import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.module.report.renderer.TsvReportRenderer;
@@ -94,14 +94,14 @@ public class IndicatorReportFormController {
 			
 		ReportService reportService = (ReportService) Context.getService(ReportService.class);
 
-		ReportSchema reportSchema = reportService.getReportSchemaByUuid(uuid);				
+		ReportDefinition reportDefinition = reportService.getReportDefinitionByUuid(uuid);				
 	
-		if (reportSchema == null)
+		if (reportDefinition == null)
 			throw new APIException("Unable to locate report schema with UUID " + uuid);
 	
 		EvaluationContext evalContext = new EvaluationContext();
 		evalContext.setBaseCohort(Context.getPatientSetService().getAllPatients());
-		for (Parameter param : reportSchema.getParameters() ) { 
+		for (Parameter param : reportDefinition.getParameters() ) { 
 			log.info("Setting parameter " + param.getName() + " of class " + param.getClazz() + " = " + request.getParameter(param.getName()) );
 			String paramValue = request.getParameter(param.getName());
 			// TODO Need to convert from string to object
@@ -111,40 +111,40 @@ public class IndicatorReportFormController {
 		}
 
 		// Evaluate the report
-		ReportData reportData = reportService.evaluate(reportSchema, evalContext);
+		ReportData reportData = reportService.evaluate(reportDefinition, evalContext);
 	
 		// Render the report
 		ReportRenderer renderer = null;
 		if ("csv".equalsIgnoreCase(renderType)) { 
 			renderer = new CsvReportRenderer();
 			response.setContentType("text/csv");
-			response.setHeader("Content-Disposition", "attachment; filename=\"" + reportSchema.getName() + ".csv\"");  
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + reportDefinition.getName() + ".csv\"");  
 		} 
 		else if ("tsv".equalsIgnoreCase(renderType)) { 
 			renderer = new TsvReportRenderer();
 			response.setContentType("text/csv");
-			response.setHeader("Content-Disposition", "attachment; filename=\"" + reportSchema.getName() + ".tsv\"");  
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + reportDefinition.getName() + ".tsv\"");  
 		} 
 		else if ("xls".equalsIgnoreCase(renderType)) { 
 			renderer = new TsvReportRenderer();
 			response.setContentType("application/vnd.ms-excel");
-			response.setHeader("Content-Disposition", "attachment; filename=\"" + reportSchema.getName() + ".xls\"");  
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + reportDefinition.getName() + ".xls\"");  
 		} 
 		else { 
 			throw new APIException("Unknown rendering type");
 		}
 		renderer.render(reportData, null, response.getOutputStream()); 
 
-		model.addAttribute("reportSchema", reportSchema);
+		model.addAttribute("reportDefinition", reportDefinition);
 	}
 	
 	
 	@SuppressWarnings("unused")
-	@ModelAttribute("reportSchema")
+	@ModelAttribute("reportDefinition")
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView processForm(
 			HttpServletRequest request,
-			ReportSchema reportSchema, 
+			ReportDefinition reportDefinition, 
 			BindingResult bindingResult) {
 		log.info("Inside submit() method");
 		
@@ -162,7 +162,7 @@ public class IndicatorReportFormController {
 			CohortIndicatorDataSetDefinition datasetDefinition = new CohortIndicatorDataSetDefinition();
 			
 			// Dataset should be created implicitly (without the user knowing)
-			datasetDefinition.setName(reportSchema.getName() + " Dataset");
+			datasetDefinition.setName(reportDefinition.getName() + " Dataset");
 
 			String [] selectedIndicatorUuids = request.getParameterValues("indicatorUuid");
 			log.info("Indicators to add: " + selectedIndicatorUuids);
@@ -186,7 +186,7 @@ public class IndicatorReportFormController {
 						for (Parameter parameter : indicator.getCohortDefinition().getParameterizable().getParameters()) {
 							indicator.addParameter(parameter);							
 							datasetDefinition.addParameter(parameter);	
-							reportSchema.addParameter(parameter);
+							reportDefinition.addParameter(parameter);
 						}						
 					}										
 				}
@@ -196,19 +196,19 @@ public class IndicatorReportFormController {
 			// Remove all existing dataset definitions
 			// FIXME: Adding dataset to report requires mapping
 			// (like "location=${report.location},effectiveDate=${report.reportDate}")
-			reportSchema.getDataSetDefinitions().clear();			
-			reportSchema.addDataSetDefinition(datasetDefinition, "");
+			reportDefinition.getDataSetDefinitions().clear();			
+			reportDefinition.addDataSetDefinition(datasetDefinition, "");
 		}
 		
 		
-		Context.getService(ReportService.class).saveReportSchema(reportSchema);
+		Context.getService(ReportService.class).saveReportDefinition(reportDefinition);
 
 		return new ModelAndView("redirect:/module/reporting/manageReports.list");
 	}
 	
 	
-	@ModelAttribute("reportSchema")
-	public ReportSchema formBackingObject(
+	@ModelAttribute("reportDefinition")
+	public ReportDefinition formBackingObject(
 			@RequestParam(value = "uuid", required=false) String uuid,
 			@RequestParam(value = "className", required=false) String className
 	) {
@@ -216,15 +216,15 @@ public class IndicatorReportFormController {
 		log.info("UUID=" + uuid + ", className=" + className);
 		
 		ReportService service = Context.getService(ReportService.class);		
-		ReportSchema reportSchema = service.getReportSchemaByUuid(uuid);
+		ReportDefinition reportDefinition = service.getReportDefinitionByUuid(uuid);
 		
-		if (reportSchema == null) { 		
-			reportSchema = new ReportSchema();
+		if (reportDefinition == null) { 		
+			reportDefinition = new ReportDefinition();
 		} else { 
-			log.info("Found reportSchema with uuid " + reportSchema.getUuid());			
+			log.info("Found reportDefinition with uuid " + reportDefinition.getUuid());			
 		}		
 		
-		return reportSchema;
+		return reportDefinition;
 	}
 
 	

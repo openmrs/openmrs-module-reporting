@@ -124,9 +124,9 @@ public class PepfarReportTest extends BaseContextSensitiveTest {
 		parameters.add(startDateParam);
 		parameters.add(endDateParam);
 		
-		log.info("Creating the ReportSchema");
-		ReportSchema schema = new ReportSchema();
-		schema.setReportSchemaId(123);
+		log.info("Creating the ReportDefinition");
+		ReportDefinition schema = new ReportDefinition();
+		schema.setReportDefinitionId(123);
 		schema.setName("Pepfar Report");
 		schema.setDescription("desc");
 		schema.setDataSetDefinitions(dataSets);

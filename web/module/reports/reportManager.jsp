@@ -49,35 +49,35 @@ $(document).ready(function() {
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${reportSchemas}" var="reportSchema" varStatus="status">
+				<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
 					<tr>
 						<td width="1%" align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportSchema.uuid}">
+							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportDefinition.uuid}">
 								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
 							</a>
 						</td>
 						<td width="20%">
-							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportSchema.uuid}">
-								${reportSchema.name}
+							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportDefinition.uuid}">
+								${reportDefinition.name}
 							</a>
 							<!-- Disabling link until the generic report schema form is complete -->
 							<!-- 
-							<a href="${pageContext.request.contextPath}/module/reporting/editReportSchema.form?uuid=${reportSchema.uuid}">${reportSchema.name}</a>
+							<a href="${pageContext.request.contextPath}/module/reporting/editReportDefinition.form?uuid=${reportDefinition.uuid}">${reportDefinition.name}</a>
 							-->
 						</td>
 						<td width="30%">
-							${reportSchema.description}
+							${reportDefinition.description}
 						</td>
 						<td width="10%">
-							Created by ${reportSchema.creator.username} on ${reportSchema.dateCreated}
+							Created by ${reportDefinition.creator.username} on ${reportDefinition.dateCreated}
 						</td>
 						<td width="1%" align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportSchema.uuid}">
+							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportDefinition.uuid}">
 								<img src='<c:url value="/images/play.gif"/>' border="0"/>
 							</a>
 						</td>
 						<td width="1%" align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportSchema.uuid}">
+							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportDefinition.uuid}">
 								<img src='<c:url value="/images/trash.gif"/>' border="0"/>							
 							</a>
 						</td>

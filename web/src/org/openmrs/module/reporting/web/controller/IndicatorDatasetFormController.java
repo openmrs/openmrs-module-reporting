@@ -147,7 +147,7 @@ public class IndicatorDatasetFormController {
 		if (dataSetDefinition == null) { 		
 			dataSetDefinition = new CohortIndicatorDataSetDefinition();
 		} else { 
-			log.info("Found reportSchema with uuid " + dataSetDefinition.getUuid());			
+			log.info("Found reportDefinition with uuid " + dataSetDefinition.getUuid());			
 		}		
 		
 		return dataSetDefinition;

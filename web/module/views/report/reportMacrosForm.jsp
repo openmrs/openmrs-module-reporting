@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 
-<openmrs:require privilege="Run Reports" otherwise="/login.htm" redirect="/admin/reports/reportSchemaXml.form" />
+<openmrs:require privilege="Run Reports" otherwise="/login.htm" redirect="/admin/reports/reportDefinitionXml.form" />
 
 <%@ include file="localHeader.jsp" %>
 
@@ -25,5 +25,5 @@
     &nbsp;&nbsp;&nbsp;&nbsp;
 	<input type="submit" name='action' value='<spring:message code="general.save"/>' />
 	&nbsp;&nbsp;&nbsp;&nbsp;
-	<input type="button" value='<spring:message code="general.cancel"/>' onClick="window.location = 'reportSchemaXml.list';"/>
+	<input type="button" value='<spring:message code="general.cancel"/>' onClick="window.location = 'reportDefinitionXml.list';"/>
 </form>

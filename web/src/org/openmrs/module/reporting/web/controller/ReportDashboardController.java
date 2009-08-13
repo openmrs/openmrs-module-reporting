@@ -37,7 +37,7 @@ import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.module.report.renderer.SimpleHtmlReportRenderer;
@@ -149,7 +149,7 @@ public class ReportDashboardController {
     	model.addAttribute("indicators", 
     			Context.getService(IndicatorService.class).getAllIndicators(false));
     	model.addAttribute("reportDefinitions", 
-    			Context.getService(ReportService.class).getReportSchemas());
+    			Context.getService(ReportService.class).getReportDefinitions());
     	model.addAttribute("reportRenderers", 
     			Context.getService(ReportService.class).getReportRenderers());
     	

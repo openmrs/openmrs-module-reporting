@@ -30,7 +30,7 @@ import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.definition.ObsDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.test.BaseContextSensitiveTest;
@@ -81,7 +81,7 @@ public class RowPerObsDatasetTest extends BaseModuleContextSensitiveTest {
 		//definition.setFilter(kids);
 		definition.getQuestions().add(Context.getConceptService().getConcept(5089));
 		
-		ReportSchema rs = new ReportSchema();
+		ReportDefinition rs = new ReportDefinition();
 		rs.setName("Testing row-per-obs");
 		rs.setDescription("Tesing RowPerObsDataSet*");
 		rs.addDataSetDefinition(definition, (String)null);
@@ -90,9 +90,9 @@ public class RowPerObsDatasetTest extends BaseModuleContextSensitiveTest {
 		StringWriter writer = new StringWriter();
 		serializer.write(rs, writer);
 		String xmlOutput = writer.toString();
-		XMLAssert.assertXpathEvaluatesTo("5089", "//reportSchema/dataSets/dataSetDefinition/questions/concept/@conceptId", xmlOutput);
+		XMLAssert.assertXpathEvaluatesTo("5089", "//reportDefinition/dataSets/dataSetDefinition/questions/concept/@conceptId", xmlOutput);
 		
-		rs = (ReportSchema) serializer.read(ReportSchema.class, xmlOutput);
+		rs = (ReportDefinition) serializer.read(ReportDefinition.class, xmlOutput);
 		assertEquals("Testing row-per-obs", rs.getName());
 		assertEquals(1, rs.getDataSetDefinitions().size());
 		

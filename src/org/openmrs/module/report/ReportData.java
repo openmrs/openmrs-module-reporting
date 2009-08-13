@@ -19,11 +19,11 @@ import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
- * Report Data obtained from evaluating a ReportSchema with a given EvaluationContext.
+ * Report Data obtained from evaluating a ReportDefinition with a given EvaluationContext.
  */
 public class ReportData {
 	
-	private ReportSchema reportSchema;
+	private ReportDefinition reportDefinition;
 	
 	private EvaluationContext evaluationContext;
 	
@@ -59,12 +59,12 @@ public class ReportData {
 		this.evaluationContext = evaluationContext;
 	}
 	
-	public ReportSchema getReportSchema() {
-		return reportSchema;
+	public ReportDefinition getReportDefinition() {
+		return reportDefinition;
 	}
 	
-	public void setReportSchema(ReportSchema reportSchema) {
-		this.reportSchema = reportSchema;
+	public void setReportDefinition(ReportDefinition reportDefinition) {
+		this.reportDefinition = reportDefinition;
 	}
 	
 }

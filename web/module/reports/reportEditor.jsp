@@ -80,13 +80,13 @@ $(document).ready(function() {
 				<h2>Report Details</h2>
 			</div>		
 			<form id="form65" name="form65" class="wufoo topLabel" autocomplete="off"
-				method="post" action="${pageContext.request.contextPath}/module/reporting/saveReportSchema.form">	
-				<input type="hidden" id="uuid" name="uuid" value="${reportSchema.uuid}"/>
+				method="post" action="${pageContext.request.contextPath}/module/reporting/saveReportDefinition.form">	
+				<input type="hidden" id="uuid" name="uuid" value="${reportDefinition.uuid}"/>
 							
 				<ul>		
 					<li id="uuid" class="myown">
 						<label class="desc" id="nameLabel" for="uuid">ID</label>
-						<div><i>${reportSchema.uuid}</i></div>
+						<div><i>${reportDefinition.uuid}</i></div>
 					</li>
 					<li id="name" class="myown">
 						<label class="desc" id="nameLabel" for="name">Name</label>
@@ -95,7 +95,7 @@ $(document).ready(function() {
 								name="name" 
 								type="text" 
 								class="field text large" 
-								value="${reportSchema.name}" 
+								value="${reportDefinition.name}" 
 								size="20" tabindex="1" />
 						</div>
 					</li>
@@ -107,7 +107,7 @@ $(document).ready(function() {
 								name="description" 
 								class="field textarea small" 
 								rows="10" cols="20"
-								tabindex="2">${reportSchema.description}</textarea>				
+								tabindex="2">${reportDefinition.description}</textarea>				
 						</div>
 					</li>
 					<li class="buttons">
@@ -137,7 +137,7 @@ $(document).ready(function() {
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="mapped" items="${reportSchema.dataSetDefinitions}" varStatus="varStatus">
+					<c:forEach var="mapped" items="${reportDefinition.dataSetDefinitions}" varStatus="varStatus">
 						<tr>
 							<td>${mapped.parameterizable.name}</td>
 							<td>${mapped.parameterizable.description}</td>
@@ -163,7 +163,7 @@ $(document).ready(function() {
 										</a> &nbsp;&nbsp;
 									</c:when>
 									<c:otherwise>
-										<a href="${pageContext.request.contextPath}/module/reporting/saveDataSet.form?report.uuid=${reportSchema.uuid}&dataSet.name=${mapped.parameterizable.name}&action=save">
+										<a href="${pageContext.request.contextPath}/module/reporting/saveDataSet.form?report.uuid=${reportDefinition.uuid}&dataSet.name=${mapped.parameterizable.name}&action=save">
 											<img src="${pageContext.request.contextPath}/images/save.gif" alt="save dataset definition" border="0"/>
 										</a>
 									</c:otherwise>
@@ -200,7 +200,7 @@ $(document).ready(function() {
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="parameter" items="${reportSchema.parameters}" varStatus="status">
+					<c:forEach var="parameter" items="${reportDefinition.parameters}" varStatus="status">
 						<tr>
 							<td>${parameter.name}</td>
 							<td>${parameter.label}</td>

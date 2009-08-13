@@ -14,7 +14,7 @@
 package org.openmrs.module.report.renderer;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 
 /**
  * Implementation of a ReportRenderer that renders ReportData to a TSV file
@@ -82,9 +82,9 @@ public class TsvReportRenderer extends DelimitedTextReportRenderer {
 	}
 	
 	/**
-	 * @see org.openmrs.report.ReportRenderer#getRenderedContentType(ReportSchema, String)
+	 * @see org.openmrs.report.ReportRenderer#getRenderedContentType(ReportDefinition, String)
 	 */
-	public String getRenderedContentType(ReportSchema model, String argument) {
+	public String getRenderedContentType(ReportDefinition model, String argument) {
 		return "text/tsv";
 	}
 }

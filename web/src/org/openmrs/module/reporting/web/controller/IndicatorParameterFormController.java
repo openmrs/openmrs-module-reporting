@@ -20,7 +20,7 @@ import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.service.IndicatorService;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.web.model.IndicatorParameterBean;
 import org.springframework.beans.propertyeditors.ClassEditor;

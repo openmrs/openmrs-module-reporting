@@ -27,7 +27,7 @@ import org.openmrs.Cohort;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 
 /**
  * ReportRenderer that renders to a delimited text file
@@ -65,16 +65,16 @@ public abstract class DelimitedTextReportRenderer implements ReportRenderer {
 	public abstract String escape(String text);
 	
 	/**
-	 * @see ReportRenderer#getFilename(ReportSchema, String)
+	 * @see ReportRenderer#getFilename(ReportDefinition, String)
 	 */
-	public String getFilename(ReportSchema schema, String argument) {
+	public String getFilename(ReportDefinition schema, String argument) {
 		return schema.getName() + "." + getFilenameExtension();
 	}
 	
 	/**
-	 * @see ReportRenderer#getRenderingModes(ReportSchema)
+	 * @see ReportRenderer#getRenderingModes(ReportDefinition)
 	 */
-	public Collection<RenderingMode> getRenderingModes(ReportSchema schema) {
+	public Collection<RenderingMode> getRenderingModes(ReportDefinition schema) {
 		if (schema.getDataSetDefinitions() == null || schema.getDataSetDefinitions().size() != 1) {
 			return null;
 		}
@@ -87,8 +87,7 @@ public abstract class DelimitedTextReportRenderer implements ReportRenderer {
 	 * @see .ReportRenderer#render(ReportData, String, OutputStream)
 	 */
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
-		PrintWriter pw = new PrintWriter(out);
-		render(results, argument, pw);
+		render(results, argument, new PrintWriter(out));
 	}
 	
 	/**

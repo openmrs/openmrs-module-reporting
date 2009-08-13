@@ -60,7 +60,7 @@ $(document).ready(function() {
 	<div id="container">
 
 		<div class="errors"> 
-			<spring:hasBindErrors name="reportSchema">  
+			<spring:hasBindErrors name="reportDefinition">  
 				<font color="red"> 
 					<h3><u>Please correct the following errors</u></h3>   
 					<ul class="none">
@@ -82,16 +82,16 @@ $(document).ready(function() {
             </ul>
 		
 			<div id="report-schema-basic-tab">			
-				<form:form id="saveForm" commandName="reportSchema" method="POST">
+				<form:form id="saveForm" commandName="reportDefinition" method="POST">
 					<ul>				
 						<li>
 							<label class="desc" for="uuid">ID</label>				
 							<div>							
 								<c:choose>
-									<c:when test="${!empty reportSchema.uuid}">${reportSchema.uuid}</c:when>
+									<c:when test="${!empty reportDefinition.uuid}">${reportDefinition.uuid}</c:when>
 									<c:otherwise>
 										<c:choose>
-											<c:when test="${!empty reportSchema.id}">${reportSchema.id}</c:when>
+											<c:when test="${!empty reportDefinition.id}">${reportDefinition.id}</c:when>
 											<c:otherwise>(new)</c:otherwise>
 										</c:choose>
 									</c:otherwise>
@@ -101,7 +101,7 @@ $(document).ready(function() {
 						<li>
 							<label class="desc" for="type">Type</label>			
 							<div>
-								${reportSchema.class.simpleName}
+								${reportDefinition.class.simpleName}
 								<form:hidden path="class.name" />								
 							</div>
 						</li>
@@ -128,18 +128,18 @@ $(document).ready(function() {
 			</div>
 	
 			<div id="report-schema-advanced-tab">			
-				<h2>${reportSchema.name}</h2>
+				<h2>${reportDefinition.name}</h2>
 				<p>
 					Design your report by adding new indicators below.
 				</p>
 				
-				<form:form id="saveForm" commandName="reportSchema" method="POST">						
+				<form:form id="saveForm" commandName="reportDefinition" method="POST">						
 					<ul>
 						<li>
 							<label class="desc" for="description">Selected indicators</label>	
 							<div>
 								<ul>
-									<c:forEach var="mappedDataset" items="${reportSchema.dataSetDefinitions}">
+									<c:forEach var="mappedDataset" items="${reportDefinition.dataSetDefinitions}">
 										<c:forEach var="mappedIndicator" items="${mappedDataset.parameterizable.indicators}">
 											<li>
 												<strong>${mappedIndicator.value.parameterizable.name}</strong>
@@ -186,10 +186,10 @@ $(document).ready(function() {
 			<div id="report-schema-preview-tab">
 
 				<c:choose>				
-					<c:when test="${!empty reportSchema.uuid}">
-						<h2>${reportSchema.name}</h2>					
+					<c:when test="${!empty reportDefinition.uuid}">
+						<h2>${reportDefinition.name}</h2>					
 						<form action="${pageContext.request.contextPath}/module/reporting/evaluateReport.form" method="POST">
-							<input type="hidden" name="uuid" value="${reportSchema.uuid}"/>
+							<input type="hidden" name="uuid" value="${reportDefinition.uuid}"/>
 							<input type="hidden" name="action" value="evaluate"/>
 							<ul>				
 								<li>
@@ -206,7 +206,7 @@ $(document).ready(function() {
 									<label class="desc" for="description">Selected indicators</label>	
 									<div>
 										<ul>
-											<c:forEach var="mappedDataset" items="${reportSchema.dataSetDefinitions}">
+											<c:forEach var="mappedDataset" items="${reportDefinition.dataSetDefinitions}">
 												<c:forEach var="mappedIndicator" items="${mappedDataset.parameterizable.indicators}">
 													<li>
 														<strong>${mappedIndicator.value.parameterizable.name}</strong>
@@ -223,7 +223,7 @@ $(document).ready(function() {
 									<label class="desc" for="description">Parameters</label>	
 									<div>
 										<ul>
-											<c:forEach var="parameter" items="${reportSchema.parameters}">
+											<c:forEach var="parameter" items="${reportDefinition.parameters}">
 												<li>
 													<label class="desc" for="${parameter.name}">${parameter.label}</label>
 													<span>

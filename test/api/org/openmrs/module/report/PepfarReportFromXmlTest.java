@@ -72,7 +72,7 @@ public class PepfarReportFromXmlTest extends BaseContextSensitiveTest {
 		executeDataSet("org/openmrs/report/include/PepfarReportTest.xml");
 		
 		StringBuilder xml = new StringBuilder();
-		xml.append("<reportSchema id=\"1\">\n");
+		xml.append("<reportDefinition id=\"1\">\n");
 		xml.append("    <name>PEPFAR report</name>\n");
 		xml.append("	<description>\n");
 		xml.append("		Sample monthly PEPFAR report, modelled after the lesotho one\n");
@@ -104,7 +104,7 @@ public class PepfarReportFromXmlTest extends BaseContextSensitiveTest {
 		xml.append("			</strategies>\n");
 		xml.append("		</dataSetDefinition>\n");
 		xml.append("	</dataSets>\n");
-		xml.append("</reportSchema>\n");
+		xml.append("</reportDefinition>\n");
 		//System.out.println("xml\n" + xml);
 		
 		// Try to get HIV PROGRAM, or else, just the first program
@@ -117,7 +117,7 @@ public class PepfarReportFromXmlTest extends BaseContextSensitiveTest {
 		setupPatientSearches();
 		
 		Serializer serializer = new Persister(new OpenmrsCycleStrategy());
-		ReportSchema schema = serializer.read(ReportSchema.class, xml.toString());
+		ReportDefinition schema = serializer.read(ReportDefinition.class, xml.toString());
 		
 		log.info("Creating EvaluationContext");
 		EvaluationContext evalContext = new EvaluationContext();

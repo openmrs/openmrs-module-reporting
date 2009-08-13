@@ -34,7 +34,7 @@ import org.openmrs.api.context.UserContext;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.report.ReportSchema;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.serialization.xstream.XStreamSerializer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -119,10 +119,10 @@ public class SerializationTest extends BaseModuleContextSensitiveTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void shouldSaveReportSchema() throws Exception { 		
-		ReportSchema reportSchema = new ReportSchema();
-		reportSchema.setName("Test 1");
-		ReportSchema saved = Context.getService(ReportService.class).saveReportSchema(reportSchema);
+	public void shouldSaveReportDefinition() throws Exception { 		
+		ReportDefinition reportDefinition = new ReportDefinition();
+		reportDefinition.setName("Test 1");
+		ReportDefinition saved = Context.getService(ReportService.class).saveReportDefinition(reportDefinition);
 		Assert.assertNotNull(saved);
 		
 	}

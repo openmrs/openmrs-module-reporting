@@ -7,10 +7,10 @@
 
 <h2>
 	<a href="reportData.form">
-		${reportData.reportSchema.name}
+		${reportData.reportDefinition.name}
 	</a>
 </h2>
-<i>${reportData.reportSchema.description }</i>
+<i>${reportData.reportDefinition.description }</i>
 
 <br/><br/>
 
