@@ -24,6 +24,7 @@ $(document).ready(function() {
 			<p>
 				<ul>
 					<li class="first"><a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form">Add Indicator</a></li>
+					<li><a href="${pageContext.request.contextPath}/module/reporting/newIndicator.form">Add Cohort Indicator</a></li>
 					<li class="last">more to come...</li>
 				</ul>
 			</p>

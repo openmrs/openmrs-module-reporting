@@ -15,6 +15,21 @@
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
 	<context:component-scan base-package="org.openmrs.module.reporting.web" />
 
+
+	<!-- Set up URL mappings for new URLs -->
+    <bean id="reportingUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    	<property name="mappings">
+            <props>
+				<prop key="module/reporting/newIndicator.form">indicatorFormController</prop>
+			</props>
+		</property>
+	</bean>	
+	
+	<bean id="indicatorFormValidator" class="org.openmrs.module.reporting.web.validator.IndicatorFormValidator"/>
+	<bean id="indicatorFormController" class="org.openmrs.module.reporting.web.controller.IndicatorFormController">
+		<property name="validator" ref="indicatorFormValidator"/>
+	</bean>
+
 <!--  
  	<bean id="exceptionResolver"
 		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
