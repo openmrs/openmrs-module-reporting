@@ -35,7 +35,7 @@ public class ReportManager {
     	// Get list of existing reports
     	boolean includeRet = (includeRetired == Boolean.TRUE);
     	List<ReportDefinition> reportDefinitions = Context.getService(ReportService.class).getReportDefinitions(includeRet);
-    	model.addAttribute("ReportDefinitions", reportDefinitions);
+    	model.addAttribute("reportDefinitions", reportDefinitions);
     	
     	// Get possible new reports to create
     	Map<Class<? extends ReportDefinition>, String> types = new HashMap<Class<? extends ReportDefinition>, String>();
