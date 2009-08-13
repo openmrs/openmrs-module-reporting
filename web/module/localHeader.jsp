@@ -19,6 +19,8 @@
 <openmrs:htmlInclude file='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery/autocomplete/thickbox-compressed.js'/>
 <openmrs:htmlInclude file='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery/jgcharts/jgcharts.js'/>
 
+<openmrs:htmlInclude file='${pageContext.request.contextPath}/moduleResources/reporting/scripts/reporting.js'/>
+
 <div style="border-bottom: 1px solid black;">
 	<ul id="menu">
 		<li class="first">
@@ -34,7 +36,7 @@
 			<a href="${pageContext.request.contextPath}/module/reporting/manageIndicators.list">Manage Indicators</a>
 		</li>	
 		<li class="last">
-			<a href="${pageContext.request.contextPath}/module/reporting/manageReports.list">Manage Reports</a>
+			<a href="${pageContext.request.contextPath}/module/reporting/reports/reportManager.list">Manage Reports</a>
 		</li>
 	</ul>
 </div>

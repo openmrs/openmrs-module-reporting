@@ -29,6 +29,7 @@ import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.util.HandlerUtil;
+import org.springframework.util.StringUtils;
 
 /**
  * Base Implementation of the ReportService API
@@ -82,10 +83,39 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
+	 * @see ReportService#getReportDefinition(String, Class)
+	 */
+    public ReportDefinition getReportDefinition(String uuid, Class<? extends ReportDefinition> type) {
+    	ReportDefinition r = null;
+    	if (StringUtils.hasText(uuid)) {
+        	r = Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
+    	}
+    	else if (type != null) {
+     		try {
+    			r = type.newInstance();
+    		}
+    		catch (Exception e) {
+    			throw new IllegalArgumentException("Unable to instantiate a ReportDefinition of type: " + type);
+    		}
+    	}
+    	else {
+    		throw new IllegalArgumentException("You must supply either a uuid or a type");
+    	}
+    	return r;
+    }
+	
+	/**
 	 * @see ReportService#getReportDefinitions()
 	 */
 	public List<ReportDefinition> getReportDefinitions() throws APIException {
-		return serializedObjectDAO.getAllObjects(ReportDefinition.class);
+		return getReportDefinitions(false);
+	}
+	
+	/**
+	 * @see ReportService#getReportDefinitions(boolean)
+	 */
+	public List<ReportDefinition> getReportDefinitions(boolean includeRetired) throws APIException {
+		return serializedObjectDAO.getAllObjects(ReportDefinition.class, includeRetired);
 	}
 	
 	/**
@@ -204,7 +234,5 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 		}
 		return input;
 	}
-
-	//************* Property Access *************
 
 }

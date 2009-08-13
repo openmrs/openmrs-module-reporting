@@ -30,7 +30,7 @@ import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
- * Base Implementation of the ReportService API
+ * Mock Implementation of the ReportService API
  */
 public class MockReportService extends BaseReportService implements ReportService {
 
@@ -83,7 +83,22 @@ public class MockReportService extends BaseReportService implements ReportServic
 	 * @see ReportService#getReportDefinitions()
 	 */
 	public List<ReportDefinition> getReportDefinitions() throws APIException {
-		return reportDefinitions;
+		return getReportDefinitions(false);
+	}
+	
+	/**
+	 * @see ReportService#getReportDefinitions(boolean)
+	 */
+	public List<ReportDefinition> getReportDefinitions(boolean includeRetired) throws APIException {
+		List<ReportDefinition> ret = new ArrayList<ReportDefinition>();
+		if (reportDefinitions != null) {
+			for (ReportDefinition r : reportDefinitions) {
+				if (includeRetired || !r.isRetired()) {
+					ret.add(r);
+				}
+			}
+		}
+		return ret;
 	}
 	
 	/**

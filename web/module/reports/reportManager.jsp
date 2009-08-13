@@ -1,41 +1,34 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
+<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportManager.form" />
 <%@ include file="../localHeader.jsp"%>
-<html>
-<head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Report Manager</title>
 
 <script type="text/javascript" charset="utf-8">
-$(document).ready(function() {
-	$("#report-schema-table").dataTable( {
-		"bPaginate": true,
-		"bLengthChange": true,
-		"bFilter": true,
-		"bSort": true,
-		"bInfo": true,
-		"bAutoWidth": true
-	} );			
-
-	//$("#report-schema-table").css("width","100%");
-	
-} );
+	$(document).ready(function() {
+		$("#report-schema-table").dataTable( {
+			"bPaginate": true,
+			"bLengthChange": true,
+			"bFilter": true,
+			"bSort": true,
+			"bInfo": true,
+			"bAutoWidth": true
+		} );
+	} );
 </script>
-</head>
 
-<body>
 <div id="page">
 	<div id="container">
-		<h1>Manage Reports</h1>
-		<div id="inline-list">	
-			<p>	
-				<ul>
-					<li class="last">Create a new report:</li>
-					<li class="first"><a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Indicator Report</a></li>
-					<li class="last"><a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Some other report</a></li>
-				</ul>
-			</p>			
-		</div>
+		<h1>Report Manager</h1>
+		
+		<form method="get" action="reportEditor.form" style="display:inline">
+			<strong>Create a new report:</strong>
+			<select name="type">
+				<option value="">&nbsp;</option>
+				<c:forEach items="${types}" var="type">
+					<option value="${type.key.name}">${type.value}</option>
+				</c:forEach>
+			</select>
+			<input type="submit" value="Create"/>
+		</form>
 
 		<table id="report-schema-table" class="display" >
 			<thead>
@@ -52,18 +45,14 @@ $(document).ready(function() {
 				<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
 					<tr>
 						<td width="1%" align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportDefinition.uuid}">
+							<a href="${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}">
 								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
 							</a>
 						</td>
 						<td width="20%">
-							<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form?uuid=${reportDefinition.uuid}">
+							<a href="${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}">
 								${reportDefinition.name}
 							</a>
-							<!-- Disabling link until the generic report schema form is complete -->
-							<!-- 
-							<a href="${pageContext.request.contextPath}/module/reporting/editReportDefinition.form?uuid=${reportDefinition.uuid}">${reportDefinition.name}</a>
-							-->
 						</td>
 						<td width="30%">
 							${reportDefinition.description}
@@ -85,18 +74,10 @@ $(document).ready(function() {
 				</c:forEach>	
 			</tbody>
 			<tfoot>
-			<!--  
-				<tr>
-					<th colspan="5" align="center" height="50">
-						<a href="${pageContext.request.contextPath}/module/reporting/indicatorReport.form">Add Indicator Report</a>
-					</th>			
-				</tr>
-			-->	
 			</tfoot>
 		</table>
 	
 	</div>
 </div>
-
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

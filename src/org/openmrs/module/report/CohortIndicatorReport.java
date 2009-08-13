@@ -24,6 +24,8 @@ import org.openmrs.module.indicator.CohortIndicator;
  */
 public class CohortIndicatorReport implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private String name;
 	private String description;
 	private CohortIndicatorDataSetDefinition dataSetDefinition;

@@ -119,9 +119,8 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 		return null;
 	}
 	
-
 	/**
-	 * 
+	 * Returns either a saved CohortDefinition with the passed uuid, or a new CohortDefinition of the passed type
 	 */
     public CohortDefinition getCohortDefinition(String uuid, Class<? extends CohortDefinition> type) {
     	CohortDefinition cd = null;

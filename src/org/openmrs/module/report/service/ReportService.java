@@ -27,7 +27,7 @@ import org.openmrs.module.report.renderer.ReportRenderer;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 
+ * ReportService API
  */
 @Transactional
 public interface ReportService extends OpenmrsService {
@@ -53,11 +53,26 @@ public interface ReportService extends OpenmrsService {
 	public List<ReportDefinition> getReportDefinitions() throws APIException;
 	
 	/**
+	 * Return a list of {@link ReportDefinition}s, optionally including those that are retired
+	 * @param includeRetired if true, indicates that retired {@link ReportDefinition}s should also be included
+	 * @return a List<ReportDefinition> object containing all of the {@link ReportDefinition}s
+	 * @throws APIException
+	 */
+	@Transactional(readOnly = true)
+	public List<ReportDefinition> getReportDefinitions(boolean includeRetired) throws APIException;
+	
+	/**
 	 * @param uuid
 	 * @return the ReportDefinition with the given uuid
 	 */
 	@Transactional(readOnly = true)
-	public ReportDefinition getReportDefinitionByUuid(String uuid) throws APIException;	
+	public ReportDefinition getReportDefinitionByUuid(String uuid) throws APIException;
+	
+	/**
+	 * Returns either a saved ReportDefinition with the passed uuid, or a new ReportDefinition of the passed type
+	 */
+	@Transactional(readOnly = true)
+    public ReportDefinition getReportDefinition(String uuid, Class<? extends ReportDefinition> type);
 	
 	/**
 	 * Get the {@link ReportDefinition} with the given id
