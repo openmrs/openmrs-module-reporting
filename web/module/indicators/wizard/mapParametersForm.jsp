@@ -1,6 +1,8 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ include file="../../localHeader.jsp"%>
+<%@ taglib prefix="rptTag" tagdir="/WEB-INF/tags/module/reporting" %>
+<%@ taglib prefix="rpt" uri="/WEB-INF/view/module/reporting/resources/reporting.tld" %>
 
 <!-- Form -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
@@ -71,18 +73,18 @@ $(document).ready(function() {
 													<td width="1%" valign="top" align="center">
 														${parameter.name}
 													</td>
-													<td valign="top" align="center" width="5%">&lt;- should map to -&gt;</td>
-													<td width="5%" valign="top">							
+													<td valign="top" align="center" width="5%" nowrap="true">&lt;- should map to -&gt;</td>
+													<td width="5%" valign="top">
 														<input type="radio" name="source_${parameter.name}" value="default"/>													 
-														<input type="text" value="${parameter.defaultValue}"/>
+														<input type="text" name="value_${parameter.name}" value="${parameter.defaultValue}"/>
 													</td>
 													<td width="10%" valign="top">
 														<input type="radio" name="source_${parameter.name}" value="inherit"/>
-														<input type="text" value="${parameter.name}"/>
+														<input type="text" name="value_${parameter.name}" value="${parameter.name}"/>
 													</td>
 													<td width="10%" valign="top">
 														<input disabled type="radio" name="source_${parameter.name}" value="existing"/>														
-														<select disabled>
+														<select name="value_${parameter.name}" disabled>
 															<c:if test="${empty indicator.parameters}">
 																<option>(choose parameter)</option>
 															</c:if>
@@ -93,15 +95,6 @@ $(document).ready(function() {
 													</td>					
 												</tr>
 											</c:forEach>
-											<tr>
-												<td></td>
-												<td></td>
-												<td></td>
-												<td></td>
-												<td>
-													
-												</td>
-											</tr>
 										</tbody>
 										<tfoot>			
 										</tfoot>

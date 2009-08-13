@@ -87,8 +87,5 @@ public class IndicatorForm {
 	public void setCohortDefinitionUuid(String cohortDefinitionUuid) {
 		this.cohortDefinitionUuid = cohortDefinitionUuid;
 	}
-	
-	
-	
 
 }

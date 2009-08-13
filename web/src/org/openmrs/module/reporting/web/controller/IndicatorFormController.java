@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.web.controller;
 
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import org.openmrs.api.CohortService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.reporting.web.model.IndicatorForm;
@@ -75,23 +77,41 @@ public class IndicatorFormController extends AbstractWizardFormController {
 		log.info("onBindAndValidate(): " + page);
 		
 		// Step 2 - select a cohort definition
-		IndicatorForm indicatorForm = (IndicatorForm) command;		
-		String selectedUuid = indicatorForm.getCohortDefinitionUuid();		
-		if (indicatorForm.getCohortDefinition()==null && selectedUuid!=null) { 
-			CohortDefinition cohortDefinition = 
-				Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(selectedUuid);			
-			indicatorForm.setCohortDefinition(cohortDefinition);
+		if (page == 1) { 
+			
+			// Set the selected cohort definition on the form object			
+			// FIXME This should have been done using spring:bind but 
+			// I didn't want to write a CohortDefinitionEditor
+			IndicatorForm indicatorForm = (IndicatorForm) command;		
+			String selectedUuid = indicatorForm.getCohortDefinitionUuid();		
+			if (indicatorForm.getCohortDefinition()==null && selectedUuid!=null) { 
+				CohortDefinition cohortDefinition = 
+					Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(selectedUuid);			
+				indicatorForm.setCohortDefinition(cohortDefinition);
+			}
+			
+			// Also add some default parameters to the indicator (might be used in the next step).
+			// TODO Not sure if this goes here or in an earlier step
+			CohortIndicator indicator = indicatorForm.getCohortIndicator();
+			indicator.addParameter(new Parameter("startDate", "Start Date", Date.class, null, false));
+			indicator.addParameter(new Parameter("endDate", "End Date", Date.class, null, false));
+			indicator.addParameter(new Parameter("location", "Location", Location.class, null, false));
+						
 		}
-		
-		
-		// Step 3 - map parameters
-		/*
-		CohortDefinition selectedCohortDefinition = indicatorForm.getCohortDefinition();
-		for (Parameter parameter : selectedCohortDefinition.getParameters()) { 
-			String value = indicatorForm.getParameters().get(parameter.getName());
-			if (value )
+		// Step 3 - map parameters		
+		else if (page == 2) { 
+						
+			IndicatorForm indicatorForm = (IndicatorForm) command;	
+			Map<String, String> parameterMapping = new HashMap<String,String>();
+			// Iterate over the cohort definitions parameters and create a parameter mapping
+			// By default we map the cohort definition parameters directly to the 
+			for (Parameter parameter : indicatorForm.getCohortDefinition().getParameters()) { 								
+				parameterMapping.put(parameter.getName(), "${" + parameter.getName() + "}");				
+			}	
+			// Add the cohort definition to the indicator with mapped parameters
+			indicatorForm.getCohortIndicator().setCohortDefinition(
+					indicatorForm.getCohortDefinition(), parameterMapping);
 		}
-		*/
 		
 		
 	}
@@ -110,28 +130,11 @@ public class IndicatorFormController extends AbstractWizardFormController {
 		return model;
 	}
 
-	/*
-	protected int getTargetPage(HttpServletRequest request, Object command, Errors errors, int currentPage) {
-		log.info("getTargetPage(): " + currentPage);
-
-		IndicatorForm indicatorForm = (IndicatorForm) command;
-
-		// FIXME This should be done for us, but if we need to add 
-		if (currentPage == 0) {		
-			return 1;
-		} 
-		else if (currentPage == 1) {
-			return 2;
-		}
-		else if (currentPage == 2) {
-			return 3;
-		}
-		return 0;		
-	}*/
 
 	protected void validatePage(Object command, Errors errors, int page) {
-		log.info("onBindAndValidate(): " + page);
+		log.info("validatePage(): " + page);
 
+		// TODO When validators have been written, we can uncomment the following code
 		//IndicatorForm indicatorForm = (IndicatorForm) command;
 		//IndicatorFormValidator indicatorFormValidator = (IndicatorFormValidator) getValidator();
 		//errors.setNestedPath("indicatorForm");
@@ -143,8 +146,6 @@ public class IndicatorFormController extends AbstractWizardFormController {
 				// FIXME	Invalid property 'indicatorForm' of bean class [org.openmrs.module.reporting.web.model.IndicatorForm]: 
 				// 			Bean property 'indicatorForm' is not readable or has an invalid getter method: 
 				//			Does the return type of the getter match the parameter type of the setter?
-
-
 				//indicatorFormValidator.validateIndicatorForm(indicatorForm, errors);
 				break;
 			case 2: 
@@ -160,7 +161,10 @@ public class IndicatorFormController extends AbstractWizardFormController {
 		
 		IndicatorForm indicatorForm = (IndicatorForm) command;
 		CohortIndicator cohortIndicator = indicatorForm.getCohortIndicator();
+		
+		// TODO At this point, the cohortIndicator should have everything it needs
 		//Context.getService(IndicatorService.class).saveIndicator(cohortIndicator);
+
 		Map<String,Object> model = new HashMap<String,Object>();
 		model.put("cohortIndicator", cohortIndicator);
 		model.put("message", "Thank you, your indicator has been created.");
