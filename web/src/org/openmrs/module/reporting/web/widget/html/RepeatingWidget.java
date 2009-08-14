@@ -2,6 +2,8 @@ package org.openmrs.module.reporting.web.widget.html;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,9 +29,19 @@ public class RepeatingWidget implements Widget {
 		String id = config.getId();
 		
 		Class<?> type = null;
+		Type[] genericTypes = null;
 		if (config.getGenericTypes() != null && config.getGenericTypes().length == 1) {
 			try {
-				type = (Class<?>) config.getGenericTypes()[0];
+				Type firstGenericType = config.getGenericTypes()[0];
+				if (firstGenericType instanceof Class) {
+					type = (Class<?>) firstGenericType;
+				}
+				else if (firstGenericType instanceof ParameterizedType) {
+					ParameterizedType pt = (ParameterizedType) firstGenericType;
+					Type rawType = pt.getRawType();
+					type = (Class<?>) rawType;
+					genericTypes = pt.getActualTypeArguments();
+				}
 			}
 			catch (Exception e) {
 				// Do Nothing 
@@ -66,7 +78,8 @@ public class RepeatingWidget implements Widget {
 			if (config.getId() != null) {
 				c.setId(config.getId() + "_" + i);
 			}
-			c.setGenericTypes(null);
+			c.setType(type);
+			c.setGenericTypes(genericTypes);
 			c.setDefaultValue(o);
 			
 			Set<Attribute> atts = new HashSet<Attribute>();
