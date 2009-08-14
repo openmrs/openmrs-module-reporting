@@ -22,6 +22,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
 import org.openmrs.module.util.ReflectionUtil;
 import org.openmrs.util.HandlerUtil;
@@ -42,7 +43,7 @@ public class WidgetTag extends TagSupport {
 	private String name;  // This represents the name of the input field
 	private Object object; // This represents the object whose property we are editing
 	private String property; // This represents the name of the property/field to edit on the object
-	private Class<?> clazz; // The represents the clazz to edit. It is an alternative to object/property
+	private String type; // The represents the type to edit. It is an alternative to object/property
 	private Object defaultValue; // This represents a default value for the field
 	private String format; // This represents an optional means for rendering a widget
 	private String attributes; // Pipe-separated list of attributes to provide flexible control of Widgets as needed
@@ -65,33 +66,38 @@ public class WidgetTag extends TagSupport {
 	public int doStartTag() throws JspException {
 		
 		// Retrieve the type, depending on either an object/property combination or a clazz type
-		Class<?> type = null;
+		Class<?> fieldType = null;
 		Type[] genericTypes = null;
 		Object propertyValue = null;
 		
 		if (getObject() != null && getProperty() != null) {
 			
 			Field f = ReflectionUtil.getField(getObject().getClass(), getProperty());
-			type = ReflectionUtil.getFieldType(f);
+			fieldType = ReflectionUtil.getFieldType(f);
 			genericTypes = ReflectionUtil.getGenericTypes(f);
 			propertyValue = ReflectionUtil.getPropertyValue(object, property);
 			
-			if (type == null) {
+			if (fieldType == null) {
 				throw new IllegalArgumentException("Property <" + property + "> is invalid for object <" + object + ">");
 			}
-			if (getClazz() != null && getClazz() != type) {
-				throw new IllegalArgumentException("The specified clazz is not compatible with the specified property.");
+			if (getType() != null && getType() != fieldType.getName()) {
+				throw new IllegalArgumentException("The specified type is not compatible with the specified property.");
 			}
 		}
-		else if (getClazz() != null) {
-			type = getClazz();
+		else if (getType() != null) {
+			try {
+				fieldType = Context.loadClass(getType());
+			}
+			catch (Exception e) {
+				throw new IllegalArgumentException("The type <" + getType() + "> is not a valid type.", e);
+			}
 		}
 		else {
-			throw new IllegalArgumentException("You must specify an object/property or clazz attribute.");
+			throw new IllegalArgumentException("You must specify an object/property or type attribute.");
 		}
 		
 		// Ensure that we have an appropriate Handler
-		WidgetHandler handler = HandlerUtil.getPreferredHandler(WidgetHandler.class, type);
+		WidgetHandler handler = HandlerUtil.getPreferredHandler(WidgetHandler.class, fieldType);
 		if (handler == null) {
 			throw new JspException("No Preferred Handler found for: " + type);
 		}
@@ -101,7 +107,7 @@ public class WidgetTag extends TagSupport {
 		config.setPageContext(pageContext);
 		config.setId(getId());
 		config.setName(getName());
-		config.setType(type);
+		config.setType(fieldType);
 		config.setGenericTypes(genericTypes);
 		config.setFormat(getFormat());
 		config.setDefaultValue(propertyValue != null ? propertyValue : getDefaultValue());
@@ -135,7 +141,7 @@ public class WidgetTag extends TagSupport {
 		setName(null);
 		setObject(null);
 		setProperty(null);
-		setClazz(null);
+		setType(null);
 		setDefaultValue(null);
 		setFormat(null);
 		setAttributes(null);
@@ -200,17 +206,17 @@ public class WidgetTag extends TagSupport {
 	}
 
 	/**
-	 * @return the clazz
+	 * @return the type
 	 */
-	public Class<?> getClazz() {
-		return clazz;
+	public String getType() {
+		return type;
 	}
 
 	/**
-	 * @param clazz the clazz to set
+	 * @param type the type to set
 	 */
-	public void setClazz(Class<?> clazz) {
-		this.clazz = clazz;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	/**

@@ -169,9 +169,7 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 	 */
 	@Transactional
 	public CohortDefinition saveCohortDefinition(CohortDefinition definition) throws APIException {		
-		log.info("Saving cohort definition: " + definition + " of type " + definition.getClass());
-		
-		//return dao.saveObject(definition);
+		log.debug("Saving cohort definition: " + definition + " of type " + definition.getClass());
 		return getPersister(definition.getClass()).saveCohortDefinition(definition);
 	}
 

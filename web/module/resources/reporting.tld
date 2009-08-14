@@ -36,10 +36,9 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>clazz</name>
+			<name>type</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<type>java.lang.Class</type>
 		</attribute>
 		<attribute>
 			<name>defaultValue</name>
