@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -114,8 +115,17 @@ public class LabOrderReportTest extends BaseModuleContextSensitiveTest {
         ReportData labReportData = new ReportData();
         Map<String, DataSet> labDataSets = new HashMap<String, DataSet>();
         labDataSets.put("encounter", labDataSet);
-        labReportData.setDataSets(labDataSets);        
-        new CsvReportRenderer().render(labReportData, null, System.out);			
+        labReportData.setDataSets(labDataSets);       
+        
+        List<String> displayColumns = new LinkedList<String>();
+        List<String> ledsColumns = labDataSetDefinition.getColumnKeys();
+        ledsColumns.remove(LabEncounterDataSetDefinition.ENCOUNTER_ID);
+        ledsColumns.remove(LabEncounterDataSetDefinition.PATIENT_ID);
+        displayColumns.addAll(ledsColumns);        
+        
+        CsvReportRenderer renderer = new CsvReportRenderer();
+        renderer.setDisplayColumns(displayColumns);
+        renderer.render(labReportData, null, System.out);			
 		
 	}
 }

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.List;
 
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
@@ -54,6 +55,18 @@ public interface ReportRenderer {
 	 * @return Suggested filename to save the rendered report as.
 	 */
 	public String getFilename(ReportDefinition schema, String argument);
+	
+	
+	/**
+	 * @return	the columns that have been specified for display
+	 */
+	public List<String> getDisplayColumns();
+	
+	/**
+	 * Setting the columns that should be displayed when rendered.
+	 * @param displayColumns
+	 */
+	public void setDisplayColumns(List<String> displayColumns);
 	
 	/**
 	 * Render the report's data to a stream

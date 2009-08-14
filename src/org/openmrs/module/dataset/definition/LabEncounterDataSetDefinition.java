@@ -82,8 +82,6 @@ public class LabEncounterDataSetDefinition extends BaseDataSetDefinition {
 		Date.class, 
 	};
 		
-		
-
 	
 	/**
      * @see org.openmrs.module.dataset.definition.DataSetDefinition#getColumns()

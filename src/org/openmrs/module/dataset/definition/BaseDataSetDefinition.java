@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.dataset.definition;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.evaluation.parameter.BaseParameterizable;
 
 /**
@@ -68,28 +70,38 @@ public abstract class BaseDataSetDefinition extends BaseParameterizable implemen
 		this.id = id;
 	}
 	
-	
-	/**
-	 * 
-	 */
-	public List<Class> getColumnDatatypes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * 
-	 */
-	public List<String> getColumnKeys() {
-		// TODO Auto-generated method stub
-		return null;
-	}	
-	
 	/**
 	 * 
 	 */
 	public Integer getColumnCount() { 
 		return this.getColumns().size();
 	}
+	
+	/**
+	 * Get column data types 
+	 * TODO Should be shared by all classes.
+	 */
+	public List<Class> getColumnDatatypes() {
+		List<Class> dataTypes = new ArrayList<Class>();
+		for (DataSetColumn column : getColumns()) { 
+			dataTypes.add(column.getClass());
+		}
+		return dataTypes;
+	}
+
+	/**
+	 * Get column keys
+	 * TODO Should be shared by all classes.
+	 */
+	public List<String> getColumnKeys() {
+		List<String> columnKeys = new ArrayList<String>();
+		for (DataSetColumn column : getColumns()) { 
+			columnKeys.add(column.getKey());
+		}
+		return columnKeys;
+	}			
+
+	
+	
 	
 }

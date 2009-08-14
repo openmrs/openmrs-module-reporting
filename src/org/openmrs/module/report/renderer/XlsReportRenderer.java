@@ -23,7 +23,7 @@ import org.openmrs.module.report.ReportDefinition;
  * Report renderer that produces an Excel pre-2007 workbook with one sheet per dataset in the report.
  */
 @Handler
-public class XlsReportRenderer implements ReportRenderer {
+public class XlsReportRenderer extends AbstractReportRenderer {
 
     /**
      * @see org.openmrs.module.report.renderer.ReportRenderer#getFilename(org.openmrs.module.report.ReportDefinition, java.lang.String)
@@ -66,19 +66,26 @@ public class XlsReportRenderer implements ReportRenderer {
             HSSFSheet sheet = wb.createSheet(ExcelSheetHelper.fixSheetName(e.getKey()));
             ExcelSheetHelper helper = new ExcelSheetHelper(sheet);
             List<DataSetColumn> columnList = dataset.getDataSetDefinition().getColumns();
+            
+            // Display top header
             for (DataSetColumn column : columnList) {
-                helper.addCell(column.getColumnName(), styleHelper.getStyle("bold,border=bottom"));
+            	if (isDisplayColumn(column.getKey()))
+            		helper.addCell(column.getColumnName(), styleHelper.getStyle("bold,border=bottom"));
             }
             for (Iterator<Map<DataSetColumn, Object>> i = dataset.iterator(); i.hasNext(); ) {
                 helper.nextRow();
                 Map<DataSetColumn, Object> row = i.next();
                 for (DataSetColumn column : columnList) {
-                    Object cellValue = row.get(column);
-                    HSSFCellStyle style = null;
-                    if (cellValue instanceof Date) {
-                        style = styleHelper.getStyle("date");
-                    }
-                    helper.addCell(cellValue, style);
+
+                	// If the column is meant for display, we display it
+                	if (isDisplayColumn(column.getKey())) { 
+	                	Object cellValue = row.get(column);
+	                    HSSFCellStyle style = null;
+	                    if (cellValue instanceof Date) {
+	                        style = styleHelper.getStyle("date");
+	                    }
+	                    helper.addCell(cellValue, style);
+                	}
                 }
             }
         }

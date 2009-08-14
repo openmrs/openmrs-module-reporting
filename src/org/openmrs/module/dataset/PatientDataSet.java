@@ -208,11 +208,11 @@ public class PatientDataSet implements DataSet<Object> {
 			log.info("Person attribute: " + personAttribute);
 			
 			if (personAttribute != null) {
-				log.info("before: " + personAttribute.getValue());
 				Integer locationId = 
 					Integer.parseInt(personAttribute.getValue());
-				log.info("after: " + locationId);
-				return "Health Center: " + getLocation(locationId);
+				Location location = getLocation(locationId);
+				if (location != null) 
+					return location.getName();
 			}			
 		} 
 		catch (Exception e) { 
@@ -443,8 +443,10 @@ public class PatientDataSet implements DataSet<Object> {
 					patient.getPatientId());
 			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.PATIENT_IDENTIFIER), 
 					getPatientIdentifier(patient, PATIENT_IDENTIFIER));			
-			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.NAME), 
-					getPatientName(patient));
+			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.GIVEN_NAME), 
+					patient.getGivenName());
+			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.FAMILY_NAME), 
+					patient.getFamilyName());
 			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.GENDER),	
 					patient.getGender());	
 			row.put(new SimpleDataSetColumn(PatientDataSetDefinition.AGE), 

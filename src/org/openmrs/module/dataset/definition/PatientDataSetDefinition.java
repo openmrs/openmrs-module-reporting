@@ -31,11 +31,12 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 
 	// Serial version UID
 	private static final long serialVersionUID = 6405583324151111487L;
-
+	
 	// Constants 
 	public static final String PATIENT_ID = "patient_id";
 	public static final String PATIENT_IDENTIFIER = "identifier";
-	public static final String NAME = "name";
+	public static final String FAMILY_NAME = "family_name";
+	public static final String GIVEN_NAME = "given_name";
 	public static final String AGE = "age";
 	public static final String GENDER = "gender";
 	public static final String HEALTH_CENTER = "health_center";
@@ -62,11 +63,11 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	
 		
 	private static String [] columnKeys = { 		
-		PATIENT_ID, PATIENT_IDENTIFIER, NAME, AGE, GENDER, HEALTH_CENTER, TREATMENT_GROUP
+		PATIENT_ID, PATIENT_IDENTIFIER, GIVEN_NAME, FAMILY_NAME, AGE, GENDER, HEALTH_CENTER, TREATMENT_GROUP
 	};
 		
 	private static Class [] columnDatatypes = { 
-		Integer.class, String.class, String.class, Integer.class, String.class, String.class, String.class
+		Integer.class, String.class, String.class, String.class, Integer.class, String.class, String.class, String.class
 	};
 		
 		

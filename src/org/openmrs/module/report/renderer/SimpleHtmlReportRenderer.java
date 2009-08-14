@@ -35,8 +35,9 @@ import org.openmrs.module.report.renderer.ReportRenderer;
 /**
  * A Default Renderer Implementation that aims to support all ReportDefinitions
  */
-public class SimpleHtmlReportRenderer implements ReportRenderer {
+public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 	
+		
 	/**
      * @see org.openmrs.report.ReportRenderer#getLabel()
      */

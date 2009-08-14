@@ -40,9 +40,11 @@ public class ConceptDataSetColumn implements DataSetColumn {
 	 * TODO Figure out the best way to get the short name for a concept
      */
     public String getKey() {
-    	return concept.getName() != null ? 
-    			concept.getName().getName() : 
-    				"" + concept.getConceptId();    
+    	return (concept.getName() != null) ? 
+    				(concept.getName().getShortName()!=null) ?
+    						concept.getName().getShortName() :
+    							concept.getName().getName() : 
+    								"" + concept.getConceptId();    
     }
 	
 	/**
@@ -52,14 +54,11 @@ public class ConceptDataSetColumn implements DataSetColumn {
 	 * TODO Figure out the best way to get the short name for a concept
 	 */
 	public String getColumnName() {	    
-    	return concept.getName() != null ? 
-    			concept.getName().getName() : 
-    				"" + concept.getConceptId();
-		/*
-		return concept.getName() != null ?
-    			concept.getName().getShortestName() :
-    				"" + concept.getConceptId();
-    	*/
+    	return (concept.getName() != null) ? 
+				(concept.getName().getShortName()!=null) ?
+						concept.getName().getShortName() :
+							concept.getName().getName() : 
+								"" + concept.getConceptId();    
 	}
 
 	/**

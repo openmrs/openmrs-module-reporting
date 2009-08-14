@@ -32,7 +32,7 @@ import org.openmrs.module.report.ReportDefinition;
 /**
  * ReportRenderer that renders to a delimited text file
  */
-public abstract class DelimitedTextReportRenderer implements ReportRenderer {
+public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer {
 	
 	/**
 	 * @return the filename extension for the particular type of delimited file
@@ -102,9 +102,11 @@ public abstract class DelimitedTextReportRenderer implements ReportRenderer {
 		// header row
 		writer.write(getBeforeRowDelimiter());
 		for (DataSetColumn column : columns) {
-			writer.write(getBeforeColumnDelimiter());
-			writer.write(escape(column.getKey()));
-			writer.write(getAfterColumnDelimiter());
+			if (isDisplayColumn(column.getKey())) { 
+				writer.write(getBeforeColumnDelimiter());
+				writer.write(escape(column.getKey()));
+				writer.write(getAfterColumnDelimiter());
+			}
 		}
 		writer.write(getAfterRowDelimiter());
 		
@@ -113,16 +115,20 @@ public abstract class DelimitedTextReportRenderer implements ReportRenderer {
 			writer.write(getBeforeRowDelimiter());
 			Map<DataSetColumn, Object> map = i.next();
 			for (DataSetColumn column : columns) {
-				Object colValue = map.get(column);
-				writer.write(getBeforeColumnDelimiter());
-				if (colValue != null)
-					if (colValue instanceof Cohort) {
-						writer.write(escape(Integer.toString(((Cohort) colValue).size())));
-					} 
-					else {
-						writer.write(escape(colValue.toString()));
+			
+				if (isDisplayColumn(column.getKey())) { 
+					Object colValue = map.get(column);
+					writer.write(getBeforeColumnDelimiter());
+					if (colValue != null) { 
+						if (colValue instanceof Cohort) {
+							writer.write(escape(Integer.toString(((Cohort) colValue).size())));
+						} 
+						else {
+							writer.write(escape(colValue.toString()));
+						}
 					}
-				writer.write(getAfterColumnDelimiter());
+					writer.write(getAfterColumnDelimiter());
+				}
 			}
 			writer.write(getAfterRowDelimiter());
 		}
