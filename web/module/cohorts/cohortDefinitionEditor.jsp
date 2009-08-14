@@ -48,7 +48,9 @@ $(document).ready(function() {
 		<div id="cohort-definition-tabs" >			
 			<ul>
                 <li><a href="#cohort-definition-basic-tab"><span>Basic</span></a></li>
+                <li><a href="#cohort-definition-advanced-tab"><span>Advanced</span></a></li>
             </ul>
+
 	
 			<div id="cohort-definition-basic-tab">
 				<form method="post" action="saveCohortDefinition.form">
@@ -133,7 +135,6 @@ $(document).ready(function() {
 								</table>
 							</div>
 						</li>
-
 						<li>					
 							<div align="center">				
 								<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
@@ -143,6 +144,61 @@ $(document).ready(function() {
 					</ul>				
 				</form>
 			</div>
+			
+			
+			<div id="cohort-definition-advanced-tab">
+				<form method="post" action="<c:url value='/module/reporting/parameter.form'/>">
+					<fieldset>
+						<ul>
+							<li>
+								<label class="desc">Parameters</label>			
+								<a href="<c:url value='/module/reporting/parameter.form'/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&redirectUrl=/module/reporting/manageCohortDefinitions.list">Add new parameter</a>	
+								
+								<div>
+									<table id="cohort-definition-parameter-table" class="display">
+										<thead>
+											<tr>
+												<th align="left">Edit</th>
+												<th align="left">Name</th>
+												<th align="left">Label</th>
+												<th align="left">Type</th>
+												<th align="left">Collection Type</th>
+												<th align="left">Default Value</th>
+											</tr>	
+										</thead>
+										<tbody>
+											<c:forEach items="${cohortDefinition.parameters}" var="parameter" varStatus="varStatus">
+												<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
+													<td valign="top" nowrap="true">
+														<a href="<c:url value='/module/reporting/parameter.form'/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&parameterName=${parameter.name}&redirectUrl=/module/reporting/manageCohortDefinitions.list">Edit</a>
+													</td>
+													<td valign="top" nowrap="true">
+														${parameter.name}
+													</td>
+													<td valign="top">
+														${parameter.label}
+													</td>
+													<td valign="top">
+														${parameter.clazz}																									
+													</td>
+													<td valign="top">
+														${parameter.collectionType}
+													</td>
+													<td valign="top">
+														${parameter.defaultValue}
+													</td>
+												</tr>	
+											</c:forEach>
+										</tbody>
+									</table>
+								</div>
+							</li>
+						</ul>
+					</fieldset>
+				</form>
+			</div>
+			
+			
 		</div>
 	</div>	
 

@@ -56,7 +56,18 @@ public abstract class BaseParameterizable extends BaseOpenmrsMetadata implements
 		if (parameters == null) {
 			parameters = new ArrayList<Parameter>();
 		}
+		// Check for and remove duplicates
+		Parameter existingParameter = getParameter(parameter.getName());
+		if (existingParameter!=null)
+			removeParameter(existingParameter);
 		parameters.add(parameter);
+	}
+	
+	/**
+	 * @see Parameterizable#removeParameter(Parameter)
+	 */
+	public void removeParameter(Parameter parameter) { 
+		parameters.remove(parameter);
 	}
 	
 	/**
@@ -64,7 +75,7 @@ public abstract class BaseParameterizable extends BaseOpenmrsMetadata implements
 	 */
 	public Parameter getParameter(String name) {
 		if (parameters != null) {
-			for (Parameter p : parameters) {
+			for (Parameter p : parameters) {				
 				if (p.getName().equalsIgnoreCase(name)) {
 					return p;
 				}
