@@ -4,14 +4,22 @@
 <%@ taglib prefix="rptTag" tagdir="/WEB-INF/tags/module/reporting" %>
 <%@ taglib prefix="rpt" uri="/WEB-INF/view/module/reporting/resources/reporting.tld" %>
 
+
+<c:set var="redirectUrl" value='/module/reporting/manageCohortDefinitions.list' />								
+<!-- TODO Redirects with parameters don't work yet because we can't encode the URL -->
+<%-- <c:url var="redirectUrl" value='/module/reporting/editCohortDefinition.form?uuid=${param.uuid}&type=${param.type}'/> --%>
+<c:url var="addParameterUrl" value='/module/reporting/parameter.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&redirectUrl=${redirectUrl}'/>
+
+
+
+
 <script type="text/javascript" charset="utf-8">
-//var $j = jQuery.noConflict();
+//var $ = jQuery.noConflict();
 $(document).ready(function() {
 
 	// ======  Tabs: Cohort Definition  ======================================
 
 	$('#cohort-definition-tabs').tabs();
-
 	
 	// ======  DataTable: Cohort Definition Parameter  ======================================
 	
@@ -28,8 +36,49 @@ $(document).ready(function() {
 	$('#cancel-button').click(function(event){
 		window.location.href='<c:url value="/module/reporting/manageCohortDefinition.list"/>';
 	});
+
+	$('#add-parameter-button').click(function(){
+
+		$("#parameter-form-dialog").html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog("open");
+		$("#modalIframeId").attr("src","${addParameterUrl}");
+
+		$('#parameter-form-dialog').dialog({height: 600,
+            width: 800,
+            position: 'top',
+            title: 'Parameter Form',
+    		modal:true,
+    		buttons: {
+				'Cancel': function() {
+					$(this).dialog('close');
+				},
+				'Save': function() {
+
+					$(this).dialog('close');
+					window.location.reload(false);
+					
+				}
+			}
+    	});   
+	});
+
+
+
+	
 	
 } );
+
+
+
+$('#saveParameterForm').submit(function(){ 
+    $.each(params, function(i,param){
+        
+    });
+
+    return true;
+});
+
+
+
 
 </script>
 
@@ -48,7 +97,6 @@ $(document).ready(function() {
 		<div id="cohort-definition-tabs" >			
 			<ul>
                 <li><a href="#cohort-definition-basic-tab"><span>Basic</span></a></li>
-                <li><a href="#cohort-definition-advanced-tab"><span>Advanced</span></a></li>
             </ul>
 
 	
@@ -135,29 +183,17 @@ $(document).ready(function() {
 								</table>
 							</div>
 						</li>
-						<li>					
-							<div align="center">				
-								<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-								<button id="cancel-button" name="cancel">Cancel</button>
-							</div>					
-						</li>
-					</ul>				
-				</form>
-			</div>
-			
-			
-			<div id="cohort-definition-advanced-tab">
-				<form method="post" action="<c:url value='/module/reporting/parameter.form'/>">
-					<fieldset>
-						<ul>
 							<li>
-								<label class="desc">Parameters</label>			
-								<a href="<c:url value='/module/reporting/parameter.form'/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&redirectUrl=/module/reporting/manageCohortDefinitions.list">Add new parameter</a>	
+								<label class="desc">Parameters</label>	
+
+								<a href="${addParameterUrl}">Add Parameter</a> <i>(normal link)</i><br/>
+								<a href="#" id="add-parameter-button">Add Parameter</a> <i>(should open in a dialog box -- not working yet!)</i>
 								
 								<div>
 									<table id="cohort-definition-parameter-table" class="display">
 										<thead>
 											<tr>
+												<th align="left">Delete</th>
 												<th align="left">Edit</th>
 												<th align="left">Name</th>
 												<th align="left">Label</th>
@@ -168,9 +204,14 @@ $(document).ready(function() {
 										</thead>
 										<tbody>
 											<c:forEach items="${cohortDefinition.parameters}" var="parameter" varStatus="varStatus">
+												<c:url var="editParameterUrl" value='/module/reporting/parameter.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>																
+												<c:url var="deleteParameterUrl" value='/module/reporting/deleteParameter.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>
 												<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
 													<td valign="top" nowrap="true">
-														<a href="<c:url value='/module/reporting/parameter.form'/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&parameterName=${parameter.name}&redirectUrl=/module/reporting/manageCohortDefinitions.list">Edit</a>
+														<a href="${editParameterUrl}">Edit</a>
+													</td>
+													<td valign="top" nowrap="true">
+														<a href="${deleteParameterUrl}">Delete</a>
 													</td>
 													<td valign="top" nowrap="true">
 														${parameter.name}
@@ -193,12 +234,24 @@ $(document).ready(function() {
 									</table>
 								</div>
 							</li>
-						</ul>
-					</fieldset>
+
+						<li>					
+							<div align="center">				
+								<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
+								<button id="cancel-button" name="cancel">Cancel</button>
+							</div>					
+						</li>
+					</ul>				
 				</form>
 			</div>
-			
-			
 		</div>
 	</div>	
+</div>
+
+
+<div id="parameter-form-dialog">
+	<div id="parameter-form-dialog-content">
+
+    </div>
+</div>
 

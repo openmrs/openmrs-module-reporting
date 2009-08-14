@@ -27,6 +27,8 @@ import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
 import org.openmrs.module.reporting.web.widget.html.Option;
+import org.openmrs.module.reporting.web.util.ParameterUtil;
+import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -74,12 +76,11 @@ public class ParameterFormController {
 		ModelAndView model = 
 			new ModelAndView("/module/reporting/parameters/parameterForm");
 		
-		model.addObject("supportedTypes", getSupportedTypes());
-		model.addObject("supportedCollectionTypes", getSupportedCollectionTypes());
+		model.addObject("supportedTypes", ParameterUtil.getSupportedTypes());
+		model.addObject("supportedCollectionTypes", ParameterUtil.getSupportedCollectionTypes());
 		
 		return model; 
 	}	
-
 	
 	/**
 	 * Processes the form when a user submits.  
@@ -92,6 +93,8 @@ public class ParameterFormController {
 	public ModelAndView processForm(
 			@RequestParam(value = "uuid", required=false) String uuid,
 			@RequestParam(value = "type", required=false) Class<Parameterizable> type,
+			@RequestParam(value = "action", required=false) String action,
+			@RequestParam(value = "originalName", required=false) String originalName,
 			@RequestParam(value = "redirectUrl", required=false) String redirectUrl,
 			@ModelAttribute("parameter") Parameter parameter, 
 			BindingResult bindingResult) {
@@ -100,13 +103,34 @@ public class ParameterFormController {
 			return setupForm();
 		}
 
-		Parameterizable parameterizable = getParameterizable(uuid, type);		
+		log.info("Action: " + action);
+		
+		Parameterizable parameterizable = 
+			ParameterizableUtil.getParameterizable(uuid, type);		
 		if (parameterizable != null) { 
-			parameterizable.addParameter(parameter);
-			saveParameterizable(parameterizable);		
-		}		
+		
+			if (action != null) { 
+				if (action.equalsIgnoreCase("delete")) { 
+					parameterizable.removeParameter(parameter);
+				} 
+				else if (action.equalsIgnoreCase("save")) {
+					
+					// If the name changes, we're essentially adding a new parameter. 
+					// There's no way to identify the parameter other than 
+					// through the name.  Therefore we need to pass in the original 
+					// name in order to remove the parameter whose name was changed.
+					if (originalName != null && !originalName.equals(parameter.getName())) { 						
+						parameterizable.removeParameter(originalName);
+					}
+					parameterizable.addParameter(parameter);
+				}
+				else { 
+					
+				}
+				ParameterizableUtil.saveParameterizable(parameterizable);		
+			}
+		}
 		return new ModelAndView("redirect:" + redirectUrl);
-
 	}
 	
 	/**
@@ -124,7 +148,7 @@ public class ParameterFormController {
 			@RequestParam(value = "parameterName", required=false) String parameterName) {
 		
 		// Get parameter if it already exists
-		Parameterizable parameterizable = getParameterizable(uuid, type);	
+		Parameterizable parameterizable = ParameterizableUtil.getParameterizable(uuid, type);	
 		Parameter parameter = (parameterName != null) ?		 
 			parameterizable.getParameter(parameterName) : null;
 		
@@ -135,92 +159,5 @@ public class ParameterFormController {
 
 		return parameter;
 	}
-
-	/**
-	 * Retrieves a parameterizable with the given uuid and parameterizable class.
-	 * 
-	 * @param uuid
-	 * @return
-	 */
-	public Parameterizable getParameterizable(String uuid, Class<Parameterizable> parameterizableClass) { 
-		
-		if (DataSetDefinition.class.isAssignableFrom(parameterizableClass)) {
-			return Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(uuid);			
-		} 
-		else if (CohortDefinition.class.isAssignableFrom(parameterizableClass)) {
-			return Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(uuid);
-		}
-		else if (ReportDefinition.class.isAssignableFrom(parameterizableClass)) {
-			return Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);						
-		}
-		else if (Indicator.class.isAssignableFrom(parameterizableClass)) {
-			return Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);	
-		}
-		else { 
-			throw new APIException("Unable to save parameterizable type " + parameterizableClass);
-		}
-		
-	}
-
-
-	/**
-	 * Saves the given parameterizable.
-	 * 
-	 * @param parameterizable
-	 * @return
-	 */
-	public Parameterizable saveParameterizable(Parameterizable parameterizable) { 
-
-		if (DataSetDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(DataSetDefinitionService.class).saveDataSetDefinition((DataSetDefinition)parameterizable);			
-		} 
-		else if (CohortDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(CohortDefinitionService.class).saveCohortDefinition((CohortDefinition)parameterizable);
-		}
-		else if (ReportDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(ReportService.class).saveReportDefinition((ReportDefinition)parameterizable);						
-		}
-		else if (Indicator.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(IndicatorService.class).saveIndicator((Indicator)parameterizable);	
-		}
-		else { 
-			throw new APIException("Unable to save parameterizable type " + parameterizable.getClass());
-		}
-		//return parameterizable;
-	}
-
-	
-	/** 
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Option> getSupportedCollectionTypes() {
-		List<Option> collectionTypes = new ArrayList<Option>();
-		collectionTypes.add(new Option(null, List.class.getSimpleName(), null, List.class.getName()));						
-		collectionTypes.add(new Option(null, Set.class.getSimpleName(), null, Set.class.getName()));	
-		return collectionTypes;
-	}
-	
-	
-	/** 
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Option> getSupportedTypes() {
-		List<Option> ret = new ArrayList<Option>();
-		for (WidgetHandler e : HandlerUtil.getHandlersForType(WidgetHandler.class, null)) {
-			Handler handlerAnnotation = e.getClass().getAnnotation(Handler.class);
-			if (handlerAnnotation != null) {
-				Class<?>[] types = handlerAnnotation.supports();
-				if (types != null) {
-					for (Class<?> type : types) {						
-						ret.add(new Option(null, type.getSimpleName(), null, type.getName()));						
-					}
-				}
-			}
-		}
-		return ret;
-	}
-	
 	
 }

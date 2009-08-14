@@ -66,9 +66,18 @@ public abstract class BaseParameterizable extends BaseOpenmrsMetadata implements
 	/**
 	 * @see Parameterizable#removeParameter(Parameter)
 	 */
-	public void removeParameter(Parameter parameter) { 
+	public void removeParameter(Parameter parameter) {
 		parameters.remove(parameter);
 	}
+	
+	/**
+	 * @see Parameterizable#removeParameter(Parameter)
+	 */
+	public void removeParameter(String parameterName) {
+		Parameter parameter = getParameter(parameterName);
+		if (parameter != null)
+			parameters.remove(parameter);
+	}	
 	
 	/**
 	 * @see Parameterizable#getParameter(String)

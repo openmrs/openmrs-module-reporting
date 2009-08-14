@@ -46,10 +46,17 @@ public interface Parameterizable extends Serializable {
 	public void addParameter(Parameter parameter);
 
 	/**
-	 * This method take a Parameter as input and removes it from its list of Parameters
-	 * @param parameter - The {@link Parameter} to add
+	 * This method take a Parameter as input and removes it from its list of Parameter.
+	 * @param parameter 
+	 * 		the {@link Parameter} to remove
 	 */
 	public void removeParameter(Parameter parameter);
 	
+	/**
+	 * This method take a Parameter as input and removes it from its list of Parameters.
+	 * @param parameterName 
+	 * 		the name of the {@link Parameter} to remove
+	 */
+	public void removeParameter(String parameterName);
 	
 }
