@@ -26,6 +26,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
 import org.openmrs.module.util.ReflectionUtil;
 import org.openmrs.util.HandlerUtil;
+import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -64,6 +65,9 @@ public class WidgetTag extends TagSupport {
 	 */
 	@Override
 	public int doStartTag() throws JspException {
+		
+		// TODO: Figure out why this is necessary.
+		Thread.currentThread().setContextClassLoader(OpenmrsClassLoader.getInstance());
 		
 		// Retrieve the type, depending on either an object/property combination or a clazz type
 		Class<?> fieldType = null;
