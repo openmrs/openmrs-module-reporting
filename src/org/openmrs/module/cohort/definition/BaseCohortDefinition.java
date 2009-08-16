@@ -52,6 +52,33 @@ public abstract class BaseCohortDefinition extends BaseParameterizable implement
 		return CohortDefinitionUtil.getConfigurationProperties(this);
 	}
 	
+	/** @see Object#equals(Object) */
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof CohortDefinition) {
+			CohortDefinition p = (CohortDefinition) obj;
+			if (this.getUuid() != null) {
+				return (this.getUuid().equals(p.getUuid()));
+			}
+		}
+		return this == obj;
+	}
+	
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (getUuid() == null ? 0 : 31 * getUuid().hashCode());
+	}
+	
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getName();
+	}
+	
     //***** Property Access *****
 	
     /**
