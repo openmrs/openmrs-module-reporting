@@ -1,34 +1,39 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportManager.list" />
 <%@ include file="../localHeader.jsp"%>
+<openmrs:htmlInclude file="/dwr/interface/DWRCohortDefinitionService.js" />
+<openmrs:htmlInclude file="/dwr/util.js" />
+<openmrs:htmlInclude file="/scripts/easyAjax.js" />
+<openmrs:htmlInclude file='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery/jquery-1.3.2.min.js"'/>
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
-	
-		$('#report-tabs').tabs();
-	
-		$('#report-dataset-table').dataTable( {
-			"bPaginate": false,
-			"bLengthChange": false,
-			"bFilter": false,
-			"bSort": false,
-			"bInfo": false,
-			"bAutoWidth": false
-		} );
-	
-		$('#report-parameter-table').dataTable( {
-			"bPaginate": false,
-			"bLengthChange": false,
-			"bFilter": false,
-			"bSort": false,
-			"bInfo": false,
-			"bAutoWidth": false
-		} );
 
 		// Redirect to listing page
 		$('#cancel-button').click(function(event){
 			window.location.href='<c:url value="/module/reporting/report/reportManager.list"/>';
 		});
+
+		$('#editBaseCohortDefinitionLink').click(function(){
+
+			$("#editBaseCohortDefinitionDialog").html('<iframe id="editBaseCohortDefinitionFrame" src="chooseParameterizable.form?parentType=org.openmrs.module.report.ReportDefinition&&parentUuid=${report.uuid}&childType=org.openmrs.module.cohort.definition.CohortDefinition&childUuid=${report.baseCohortDefinition.parameterizable.uuid}" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog("open");
+			$('#editBaseCohortDefinitionDialog').dialog({
+				height: 400,
+	            width: 600,
+	            position: 'top',
+	            title: 'Base Cohort Definition',
+	    		modal:true,
+	    		buttons: {
+					'Cancel': function() {
+						$(this).dialog('close');
+					},
+					'Save': function() {
+						$(this).dialog('close');
+					}
+				}
+	    	});   
+		});
+			
 	} );
 </script>
 
@@ -40,7 +45,7 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Report Editor</h1>
+		<h1>Report Editor</h1>	
 		
 		<div id="report-basic-tab">
 		
@@ -50,7 +55,7 @@
 				<ul>				
 
 					<li>
-						<label class="desc" for="name">Name</label>			
+						<label class="desc" for="name">Name ${report.baseCohortDefinition.parameterizable}</label>			
 						<div>
 							<input 	type="text" class="field text medium" id="name"  tabindex="2"
 									name="name" value="${report.name}" size="50"/>
@@ -59,18 +64,52 @@
 					<li>
 						<label class="desc" for="description">Description</label>			
 						<div>
-							<textarea 	id="description" class="field text short" cols="80" tabindex="3"
+							<textarea 	id="description" class="field text short" cols="50" tabindex="3"
 										name="description">${report.description}</textarea>			
 						</div>
 					</li>
 					<li>					
-						<div align="center">				
+						<div align="left">				
 							<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
 							<button id="cancel-button" name="cancel">Cancel</button>
 						</div>					
 					</li>
-				</ul>				
-			</form>		
+					<li>
+						<label class="desc" for="description">
+							Base Cohort Definition
+							&nbsp;&nbsp;
+							<a href="#" id="editBaseCohortDefinitionLink">Edit</a>
+						</label>
+						<table style="border:1px solid black; font-size:small; width:375px;">
+							<tr><th colspan="3" align="left">
+								<c:choose>
+									<c:when test="${report.baseCohortDefinition != null}">
+										${report.baseCohortDefinition.parameterizable.name}
+									</c:when>
+									<c:otherwise>
+										All Patients
+									</c:otherwise>
+								</c:choose>
+							</th></tr>
+							<c:forEach items="${report.baseCohortDefinition.parameterizable.parameters}" var="p">
+								<tr>
+									<td align="right">${p.name}</td>
+									<td align="left">--&gt;</td>
+									<td align="left" width="100%">
+										<c:choose>
+											<c:when test="${report.baseCohortDefinition.parameterMappings[p.name] == null}">
+												<span style="color:red; font-style:italic;">Undefined</span>
+											</c:when>
+											<c:otherwise>${report.baseCohortDefinition.parameterMappings[p.name]}</c:otherwise>
+										</c:choose>
+									</td>
+								</tr>
+							</c:forEach>
+						</table>
+						<div id="editBaseCohortDefinitionDialog"></div>
+					</li>
+				</ul>
+			</form>
 		
 		</div>
 	</div>
