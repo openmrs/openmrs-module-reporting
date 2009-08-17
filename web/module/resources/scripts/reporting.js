@@ -79,9 +79,14 @@ function removeParentWithClass(element, parentClass) {
 	$(parent).remove(); 
 }
 
-function cloneAndInsertBefore(idToClone, elementToAddBefore) {
+function getClone(idToClone) {
 	var template = $("#"+idToClone);
-	var newRow = $(template).clone(true);
-	$(newRow).show();
+	var c = $(template).clone(true);
+	$(c).show();
+	return c;
+}
+
+function cloneAndInsertBefore(idToClone, elementToAddBefore) {
+	var newRow = getClone(idToClone);
 	$(newRow).insertBefore(elementToAddBefore);
 }

@@ -21,7 +21,7 @@ public class ParameterizableUtil {
 	 * @param uuid
 	 * @return
 	 */
-	public static Parameterizable getParameterizable(String uuid, Class<Parameterizable> parameterizableClass) { 
+	public static Parameterizable getParameterizable(String uuid, Class<? extends Parameterizable> parameterizableClass) { 
 		
 		if (DataSetDefinition.class.isAssignableFrom(parameterizableClass)) {
 			return Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(uuid);			
