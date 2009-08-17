@@ -9,7 +9,8 @@
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>Core reporting API and services</description>
-	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>	
+	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>
+	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL>	
 	<require_version>1.4.0.20.9108</require_version><!-- 1.5.0.7475 -->
 
 	<require_modules>
