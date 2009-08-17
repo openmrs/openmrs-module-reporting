@@ -90,3 +90,29 @@ function cloneAndInsertBefore(idToClone, elementToAddBefore) {
 	var newRow = getClone(idToClone);
 	$(newRow).insertBefore(elementToAddBefore);
 }
+
+////// Support for a single modal dialog for all reporting pages //////////////////
+
+var dialogCurrentlyShown = null;
+var reportingDialogSuccessCallback = null;
+
+function showReportingDialog(opts) {
+	reportingDialogSuccessCallback = opts.successCallback;
+	$('#reportingDialog')
+		.dialog('option', 'title', opts.title)
+		.dialog('option', 'height', $(window).height() - 50)
+		.dialog('open');
+	dialogCurrentlyShown = $('#reportingDialog');
+	$("#reportingDialog > iframe").attr("src", opts.url);
+}
+
+function closeReportingDialog(doCallback) {
+	if (dialogCurrentlyShown && dialogCurrentlyShown.length > 0) {
+		dialogCurrentlyShown.dialog('close');
+		if (doCallback && reportingDialogSuccessCallback) {
+			reportingDialogSuccessCallback.call();
+		}
+	} else if (window.parent) {
+		window.parent.closeReportingDialog(doCallback);
+	}
+}
