@@ -79,7 +79,7 @@ public class MappedEditor {
      * Saves mapped parameters
      */
     @RequestMapping("/module/reporting/reports/saveMappedParameters")
-    public ModelMap saveMappedParameters(ModelMap model, HttpServletRequest request,
+    public String saveMappedParameters(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="parentType") Class<? extends Parameterizable> parentType,
     		@RequestParam(required=true, value="parentUuid") String parentUuid,
             @RequestParam(required=true, value="childType") Class<? extends Parameterizable> childType,
@@ -113,6 +113,6 @@ public class MappedEditor {
     	rptDef.setBaseCohortDefinition(new Mapped<CohortDefinition>(cohortDef, params));
     	Context.getService(ReportService.class).saveReportDefinition(rptDef);
     	
-    	return model;
+    	return "redirect:/module/reporting/closeWindow.htm";
     }
 }

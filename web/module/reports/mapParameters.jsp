@@ -14,13 +14,16 @@
 			}
 		});
 
+		$('#mapParametersForm').ajaxForm(function() {
+			closeReportingDialog(true);
+		});
+
 		$('#mapParametersFormCancelButton').click(function(event){
 			closeReportingDialog(false);
 		});
 
 		$('#mapParametersFormSubmitButton').click(function(event){
 			$('#mapParametersForm').submit();
-			closeReportingDialog(true);
 		});
 
 	});
