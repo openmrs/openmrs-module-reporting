@@ -1,12 +1,10 @@
-<%@ include file="/WEB-INF/template/include.jsp"%>
+<%@ include file="/WEB-INF/view/module/reporting/localHeader.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportManager.list" />
-<%@ include file="../localHeader.jsp"%>
-<openmrs:htmlInclude file="/dwr/interface/DWRCohortDefinitionService.js" />
-<openmrs:htmlInclude file="/dwr/util.js" />
-<openmrs:htmlInclude file="/scripts/easyAjax.js" />
-<openmrs:htmlInclude file='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery/jquery-1.3.2.min.js"'/>
 
 <script type="text/javascript" charset="utf-8">
+
+	var openDialog;
+
 	$(document).ready(function() {
 
 		// Redirect to listing page
@@ -15,22 +13,14 @@
 		});
 
 		$('#editBaseCohortDefinitionLink').click(function(){
-
-			$("#editBaseCohortDefinitionDialog").html('<iframe id="editBaseCohortDefinitionFrame" src="chooseParameterizable.form?parentType=org.openmrs.module.report.ReportDefinition&&parentUuid=${report.uuid}&childType=org.openmrs.module.cohort.definition.CohortDefinition&childUuid=${report.baseCohortDefinition.parameterizable.uuid}" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog("open");
-			$('#editBaseCohortDefinitionDialog').dialog({
-				height: 400,
-	            width: 600,
+			
+			$("#editBaseCohortDefinitionDialog").html('<iframe id="editBaseCohortDefinitionFrame" src="mapParameters.form?parentType=org.openmrs.module.report.ReportDefinition&&parentUuid=${report.uuid}&childType=org.openmrs.module.cohort.definition.CohortDefinition&childUuid=${report.baseCohortDefinition.parameterizable.uuid}" width="100%" height="100%" frameborder="0" marginWidth="0" marginHeight="0" scrolling="auto" />').dialog("open");
+			openDialog = $('#editBaseCohortDefinitionDialog').dialog({
+				height: 500,
+	            width: 800,
 	            position: 'top',
 	            title: 'Base Cohort Definition',
-	    		modal:true,
-	    		buttons: {
-					'Cancel': function() {
-						$(this).dialog('close');
-					},
-					'Save': function() {
-						$(this).dialog('close');
-					}
-				}
+	    		modal:true
 	    	});   
 		});
 			
