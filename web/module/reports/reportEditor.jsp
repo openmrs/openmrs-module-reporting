@@ -15,7 +15,7 @@
 			showReportingDialog({
 				title: 'Base Cohort Definition',
 				url: 'mapParameters.form?parentType=org.openmrs.module.report.ReportDefinition&&parentUuid=${report.uuid}&childType=org.openmrs.module.cohort.definition.CohortDefinition&childUuid=${report.baseCohortDefinition.parameterizable.uuid}',
-				successCallback: function() { }
+				successCallback: function() { window.location.reload(true); }
 			});
 		});
 

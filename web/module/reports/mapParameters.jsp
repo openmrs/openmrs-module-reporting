@@ -41,7 +41,7 @@ ${childType.simpleName}: <rpt:widget id="parameterizableSelector" name="paramete
 						${p.name} = 
 					</td>
 					<td valign="top">
-						<select id="${p.name}_linkedParameter" name="${p.name}_linkedParameter">
+						<select id="linkedParameter_${p.name}" name="linkedParameter_${p.name}">
 							<option value="">Set Fixed Value: </option>
 							<c:forEach var="parentParam" items="${parentValue.parameters}">
 								<c:if test="${parentParam.clazz.name == p.clazz.name}">								
@@ -49,7 +49,7 @@ ${childType.simpleName}: <rpt:widget id="parameterizableSelector" name="paramete
 								</c:if>
 							</c:forEach>
 						</select>
-						<rpt:widget id="${p.name}_value" name="${p.name}_value" type="${p.clazz.name}" defaultValue="${p.defaultValue}" attributes="style=vertical-align:top;"/>
+						<rpt:widget id="fixedValue_${p.name}" name="fixedValue_${p.name}" type="${p.clazz.name}" defaultValue="${p.defaultValue}" attributes="style=vertical-align:top;"/>
 					</td>
 				</tr>
 			</c:forEach>
