@@ -1,9 +1,8 @@
 <%@ include file="/WEB-INF/view/module/reporting/localHeader.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportManager.list" />
+<%@ include file="/WEB-INF/view/module/reporting/dialogSupport.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
-
-	var openDialog;
 
 	$(document).ready(function() {
 
@@ -12,18 +11,14 @@
 			window.location.href='<c:url value="/module/reporting/report/reportManager.list"/>';
 		});
 
-		$('#editBaseCohortDefinitionLink').click(function(){
-			
-			$("#editBaseCohortDefinitionDialog").html('<iframe id="editBaseCohortDefinitionFrame" src="mapParameters.form?parentType=org.openmrs.module.report.ReportDefinition&&parentUuid=${report.uuid}&childType=org.openmrs.module.cohort.definition.CohortDefinition&childUuid=${report.baseCohortDefinition.parameterizable.uuid}" width="100%" height="100%" frameborder="0" marginWidth="0" marginHeight="0" scrolling="auto" />').dialog("open");
-			openDialog = $('#editBaseCohortDefinitionDialog').dialog({
-				height: 500,
-	            width: 800,
-	            position: 'top',
-	            title: 'Base Cohort Definition',
-	    		modal:true
-	    	});   
+		$('#editBaseCohortDefinitionLink').click(function(event){
+			showReportingDialog({
+				title: 'Base Cohort Definition',
+				url: 'mapParameters.form?parentType=org.openmrs.module.report.ReportDefinition&&parentUuid=${report.uuid}&childType=org.openmrs.module.cohort.definition.CohortDefinition&childUuid=${report.baseCohortDefinition.parameterizable.uuid}',
+				successCallback: function() { }
+			});
 		});
-			
+
 	} );
 </script>
 
@@ -96,7 +91,6 @@
 								</tr>
 							</c:forEach>
 						</table>
-						<div id="editBaseCohortDefinitionDialog"></div>
 					</li>
 				</ul>
 			</form>
