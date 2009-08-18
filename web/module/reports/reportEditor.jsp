@@ -14,7 +14,7 @@
 		$('#editBaseCohortDefinitionLink').click(function(event){
 			showReportingDialog({
 				title: 'Base Cohort Definition',
-				url: 'mapParameters.form?parentType=org.openmrs.module.report.ReportDefinition&&parentUuid=${report.uuid}&childType=org.openmrs.module.cohort.definition.CohortDefinition&childUuid=${report.baseCohortDefinition.parameterizable.uuid}',
+				url: 'mapParameters.form?parentType=org.openmrs.module.report.ReportDefinition&parentUuid=${report.uuid}&mappedProperty=baseCohortDefinition',
 				successCallback: function() { window.location.reload(true); }
 			});
 		});
@@ -40,7 +40,7 @@
 				<ul>				
 
 					<li>
-						<label class="desc" for="name">Name ${report.baseCohortDefinition.parameterizable}</label>			
+						<label class="desc" for="name">Name</label>			
 						<div>
 							<input 	type="text" class="field text medium" id="name"  tabindex="2"
 									name="name" value="${report.name}" size="50"/>

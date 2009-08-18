@@ -41,11 +41,23 @@ public class EvaluationUtil {
 	
 	/**
 	 * Returns true if the passed String is an expression that is capable of being evaluated
-	 * @param s - the String to check
-	 * @return - true if the passed String is an expression that is capable of being evaluated
+	 * @param s the String to check
+	 * @return true if the passed String is an expression that is capable of being evaluated
 	 */
 	public static boolean isExpression(String s) {
 		return s != null && s.startsWith(EXPRESSION_START) && s.endsWith(EXPRESSION_END);
+	}
+	
+	/**
+	 * Returns the passed String, removing the expression start and end delimiters
+	 * @param s the original string
+	 * @return the passed String, removing the expression start and end delimiters
+	 */
+	public static String stripExpression(String s) {
+		if (isExpression(s)) {
+			s = s.substring(EXPRESSION_START.length(), s.length()-EXPRESSION_END.length());
+		}
+		return s;
 	}
 		
 	/**
