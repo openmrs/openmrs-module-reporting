@@ -1,6 +1,5 @@
 <%@ include file="/WEB-INF/view/module/reporting/localHeader.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportManager.list" />
-<%@ include file="/WEB-INF/view/module/reporting/dialogSupport.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
 

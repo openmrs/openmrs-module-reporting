@@ -1,5 +1,6 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
+<%@ include file="/WEB-INF/view/module/reporting/dialogSupport.jsp" %>
 
 <div style="border-bottom: 1px solid black;">
 	<ul id="menu">
@@ -20,4 +21,3 @@
 		</li>
 	</ul>
 </div>
-
