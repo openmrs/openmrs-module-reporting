@@ -15,9 +15,6 @@
 				successCallback: function() { window.location.reload(true); }
 			});
 		});
-		if ('${object.uuid}' == '') {
-			$('#${id}EditLink').trigger('click');
-		}
 	} );
 </script>
 
