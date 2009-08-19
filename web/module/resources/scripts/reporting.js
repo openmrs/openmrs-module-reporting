@@ -109,10 +109,12 @@ function showReportingDialog(opts) {
 function closeReportingDialog(doCallback) {
 	if (dialogCurrentlyShown && dialogCurrentlyShown.length > 0) {
 		dialogCurrentlyShown.dialog('close');
-		if (doCallback && reportingDialogSuccessCallback) {
-			reportingDialogSuccessCallback.call();
+		var callMe = reportingDialogSuccessCallback;
+		reportingDialogSuccessCallback = null;
+		if (doCallback && callMe) {
+			callMe.call();
 		}
-	} else if (window.parent) {
+	} else if (window.parent && window.parent != window) {
 		window.parent.closeReportingDialog(doCallback);
 	}
 }
