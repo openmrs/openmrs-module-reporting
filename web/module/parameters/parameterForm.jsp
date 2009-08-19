@@ -19,13 +19,13 @@ $(document).ready(function() {
 		window.location.href='<c:url value="/module/reporting/manageCohortDefinitions.list"/>';
 	});*/
 
-	$('#cancel-button').click(function(event){
+	$('#cancel-parameter-button').click(function(event){
 		closeReportingDialog(false);
 	});
 
-	$('#save-button').click(function(event){
-		var form = $('#saveParameterForm');
-		form.submit();
+	$('#save-parameter-button').click(function(event){
+		$('#saveParameterForm').submit();
+		
 	});
 
 	
@@ -115,8 +115,8 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 								<!-- and now for the buttons, if the page is opened in a dialog
 										then there will likely be jquery buttons doing the work -->
 								<%-- <c:if test="${empty param.dialog}"> --%>
-									<input id="save-button" type="button" class="ui-button ui-state-default ui-corner-all" name="action" value="Save" />
-									<input id="cancel-button" type="button" class="ui-button ui-state-default ui-corner-all" name="action" value="Cancel"/>								
+									<input id="save-parameter-button" type="submit" name="action" value="Save" />
+									<input id="cancel-parameter-button" type="button" name="action" value="Cancel"/>								
 								<%-- </c:if> --%>
 							</div>					
 						</li>

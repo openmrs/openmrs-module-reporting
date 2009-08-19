@@ -42,8 +42,7 @@ $(document).ready(function() {
 			title: 'Add Parameter', 
 			url: '<c:url value="/module/reporting/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&redirectUrl=${redirectUrl}"/>',
 			successCallback: function() { 
-				$('#testTarget').html('Yes it does.'); 
-				alert("success");
+				window.location.reload(true);
 			} 
 		});
 		
@@ -166,7 +165,7 @@ $(document).ready(function() {
 	// ======  Button: Cancel Button ========================================
 	
 	// Redirect to the listing page
-	$('#cancel-button').click(function(event){
+	$('#cancel-indicator-button').click(function(event){
 		window.location.href='<c:url value="/module/reporting/manageIndicators.list"/>';
 	});	
 	
@@ -323,8 +322,7 @@ var cohortDefinitions = [
 								<c:url var="addParameterUrl" value='/module/reporting/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&redirectUrl=${redirectUrl}'/>
 	
 
-								<input type="button" id="add-parameter-button" value="Add Parameter"/>	
-								<span id="testTarget">Does it work?</span>
+								
 
 								<!--  
 								<a href="${addParameterUrl}">Add Parameter</a><br/>
@@ -374,18 +372,20 @@ var cohortDefinitions = [
 										</tbody>
 									</table>
 								</div>
+								<span id="testTarget">Does it work?</span>
 							</li>
 
 
 
 							
 							<li class="buttons">
-								<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-								<button id="cancel-button" name="cancel">Cancel</button>
+								<input id="save-indicator-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
+								<input type="button" id="add-parameter-button" value="Add Parameter"/>	
+								<input id="cancel-indicator-button" type="button" name="cancel" value="Cancel">
 							</li>
 						</ul>
 					</div>
-				</form>
+				</form>								
 			</div>
 			
 			

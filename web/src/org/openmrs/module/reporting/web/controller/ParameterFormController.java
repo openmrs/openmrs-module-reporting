@@ -130,7 +130,8 @@ public class ParameterFormController {
 				ParameterizableUtil.saveParameterizable(parameterizable);		
 			}
 		}
-		return new ModelAndView("redirect:" + redirectUrl);
+		return new ModelAndView("/module/reporting/parameters/parameterSuccess");
+		//return new ModelAndView("redirect:" + redirectUrl);
 	}
 	
 	/**
