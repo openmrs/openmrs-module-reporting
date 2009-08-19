@@ -7,7 +7,7 @@
 		$('#parameterizableSelector').change(function(event){
 			var currVal = $(this).val();
 			if (currVal != '') {
-				document.location.href='mapParameters.form?parentType=${parentType.name}&parentUuid=${parent.uuid}&mappedProperty=${mappedProperty}&collectionKey=${collectionKey}&childUuid='+currVal;
+				document.location.href='mappedPropertyEditor.form?parentType=${parentType.name}&parentUuid=${parent.uuid}&mappedProperty=${mappedProperty}&collectionKey=${collectionKey}&childUuid='+currVal;
 			}
 			else {
 				$("#mapParameterSection").html('');
@@ -25,10 +25,6 @@
 			});
 			$('#typeSelector_${p.name}').trigger('change');
 		</c:forEach>
-
-		$('#mapParametersForm').ajaxForm(function() {
-			closeReportingDialog(true);
-		});
 
 		$('#mapParametersFormCancelButton').click(function(event){
 			closeReportingDialog(false);

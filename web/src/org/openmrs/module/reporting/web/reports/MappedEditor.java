@@ -38,7 +38,7 @@ public class MappedEditor {
     /**
      * Retrieves either an existing or new Mapped property to edit
      */
-    @RequestMapping("/module/reporting/reports/mapParameters")
+    @RequestMapping("/module/reporting/reports/mappedPropertyEditor")
     @SuppressWarnings("unchecked")
     public ModelMap mapParameters(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="parentType") Class<? extends Parameterizable> parentType,

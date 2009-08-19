@@ -13,7 +13,7 @@
 		$('#editBaseCohortDefinitionLink').click(function(event){
 			showReportingDialog({
 				title: 'Base Cohort Definition',
-				url: 'mapParameters.form?parentType=org.openmrs.module.report.ReportDefinition&parentUuid=${report.uuid}&mappedProperty=baseCohortDefinition',
+				url: 'mappedPropertyEditor.form?parentType=org.openmrs.module.report.ReportDefinition&parentUuid=${report.uuid}&mappedProperty=baseCohortDefinition',
 				successCallback: function() { window.location.reload(true); }
 			});
 		});
@@ -58,13 +58,16 @@
 							<button id="cancel-button" name="cancel">Cancel</button>
 						</div>					
 					</li>
-					<li>
-						<label class="desc" for="description">
-							Base Cohort Definition
-							&nbsp;&nbsp;
-							<a href="#" id="editBaseCohortDefinitionLink">Edit</a>
-						</label>
-						<table style="border:1px solid black; font-size:small; width:375px;">
+					</ul>
+				</form>
+				<div style="width:375px;">
+					<b class="boxHeader" style="font-weight:bold; text-align:right;">
+						<span style="float:left;">Base Cohort Definition</span>
+						<a style="color:lightyellow;" href="#" id="editBaseCohortDefinitionLink">Edit</a>
+					</b>
+					<div class="box">
+
+						<table>
 							<tr><th colspan="3" align="left">
 								<c:choose>
 									<c:when test="${report.baseCohortDefinition != null}">
@@ -90,10 +93,15 @@
 								</tr>
 							</c:forEach>
 						</table>
-					</li>
-				</ul>
-			</form>
-		
+					</div>
+				</div>
+				<br/>
+				<hr/>
+				
+			<rptTag:mappedField id="baseCohortDefNew" label="Base Cohort Definition" parentType="${report.class.name}" 
+								parentObj="${report}" mappedProperty="baseCohortDefinition" 
+								defaultValue="${report.baseCohortDefinition}" nullValueLabel="All Patients" width="375"/>
+				
 		</div>
 	</div>
 </div>
