@@ -14,7 +14,7 @@
 		$('#${id}EditLink').click(function(event){
 			showReportingDialog({
 				title: '${label}',
-				url: 'mapParameters.form?parentType=${parentType}&parentUuid=${parentObj.uuid}&mappedProperty=${mappedProperty}',
+				url: 'mappedPropertyEditor.form?parentType=${parentType}&parentUuid=${parentObj.uuid}&mappedProperty=${mappedProperty}',
 				successCallback: function() { window.location.reload(true); }
 			});
 		});
@@ -22,7 +22,7 @@
 </script>
 
 <div <c:if test="${width != null}">style="width:${width};"</c:if>">
-	<b class="boxHeader" style="font-weight:bold; text-align:right; vertical-align:top;">
+	<b class="boxHeader" style="font-weight:bold; text-align:right;">
 		<span style="float:left;">${label}</span>
 		<a style="color:lightyellow;" href="#" id="${id}EditLink">Edit</a>
 	</b>
