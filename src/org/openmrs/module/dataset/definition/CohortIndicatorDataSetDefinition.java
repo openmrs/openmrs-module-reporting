@@ -19,9 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.openmrs.Concept;
 import org.openmrs.api.APIException;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
@@ -196,6 +194,19 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
     	DataSetColumn column = new SimpleDataSetColumn(key, description, clazz);
     	ColumnDefinition def = new ColumnDefinition(indicatorKey, dimensionQuery);
     	addColumnSpecification(column, def);
+    }
+    
+    
+    /**
+     * Adds the indicator with the passed parameter mappings as a Column in the DataSet with the given key and description
+     * @param key the key by which this indicator can be retrieved from the dataset
+     * @param description the description for this indicator
+     * @param indicator the indicator to add
+     * @param mappings the parameter mappings between indicator and datasetdefinition
+     */
+    public void addIndicator(String key, String description, CohortIndicator indicator, String mappings) {
+    	indicators.put(indicator.getUuid(), new Mapped<CohortIndicator>(indicator, mappings));
+    	addColumnSpecification(key, description, Object.class, indicator.getUuid(), null);
     }
     
     //****** PROPERTY ACCESS ******
