@@ -17,6 +17,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -27,12 +29,15 @@ import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
+import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
+import org.openmrs.module.indicator.IndicatorResult;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
+import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -42,6 +47,9 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  */
 public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 	
+	
+	private Log log = LogFactory.getLog(this.getClass());
+	
 	private DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Before
@@ -49,11 +57,16 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 		authenticate();
 	}
 	
+	@Override
+	public Boolean useInMemoryDatabase() {
+		return false;
+	}
+
 	/**
 	 * Tests report
 	 */
 	@Test
-	public void testReport() throws Exception {
+	public void shouldEvaluateCohortIndicatorReport() throws Exception {
 		
 		AgeCohortDefinition cohortDefinition = new AgeCohortDefinition();
 		cohortDefinition.setMaxAge(100);
@@ -115,4 +128,111 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 
 		 new CsvReportRenderer().render(data, null, System.out);
 	}
+	
+	
+	
+	
+	@Test
+	public void shouldCreateIndicatorReport() { 
+		
+		
+		// Get existing dataset definition
+		ReportDefinition reportDefinition = new ReportDefinition();
+		
+		reportDefinition.setName("Test Report");
+		reportDefinition.setDescription("Testing whether the report can be saved when it already exists");
+		
+		reportDefinition = Context.getService(ReportService.class).saveReportDefinition(reportDefinition);
+		
+		
+		// Check whether the report definition is new 
+		Boolean isNew = (reportDefinition.getUuid() == null);
+		Boolean hasIndicatorDataset = 
+			(reportDefinition.getDataSetDefinitions() != null && !reportDefinition.getDataSetDefinitions().isEmpty());
+		
+		String [] selectedIndicatorIds = { "2e91f5f0-af75-4403-8ba4-9e9b10befad8" };
+		
+		log.info("Indicators: " + selectedIndicatorIds);
+		
+		// Add indicators to a report schema
+		if (selectedIndicatorIds != null && selectedIndicatorIds.length > 0) { 
+
+			// We just create a new dataset definition each time
+			CohortIndicatorDataSetDefinition datasetDefinition = null;
+			
+			// If the report definition is new, we create a new dataset
+			if (!hasIndicatorDataset) { 			
+				// Dataset should be created under the covers
+				datasetDefinition = new CohortIndicatorDataSetDefinition();
+				datasetDefinition.setName(reportDefinition.getName() + " Dataset");
+				
+				log.info("Create new dataset definition for report " + datasetDefinition.getName() + " (" + datasetDefinition.getUuid() + ")");
+			} 
+			// Otherwise we just get the first available dataset
+			else { 
+				Mapped<? extends DataSetDefinition> mappedDatasetDefinition = 
+					(Mapped<? extends DataSetDefinition>) reportDefinition.getDataSetDefinitions().get(0);
+				
+				datasetDefinition = 
+					(CohortIndicatorDataSetDefinition) mappedDatasetDefinition.getParameterizable();
+				log.info("Get existing dataset definition from report " + datasetDefinition.getName() + " (" + datasetDefinition.getUuid() + ")");
+			}
+			
+
+			for (String uuid : selectedIndicatorIds) { 
+				log.info("Looking up indicator: " + uuid);
+				// FIXME Assumes cohort indicators
+				CohortIndicator indicator = (CohortIndicator)
+					Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+				
+				log.info("Found indicator " + indicator);					
+				if (indicator != null) { 
+					// Adding indicator to dataset definition with default parameter mapping
+					datasetDefinition.addIndicator(indicator.getName(), indicator, 
+							"startDate=${startDate},endDate=${endDate},location=${location}");
+					
+					// Adding column specification to dataset 
+					datasetDefinition.addColumnSpecification(indicator.getName(), 
+							indicator.getDescription(), Number.class, indicator.getName(), null);						
+											
+				}										
+			}
+
+			// Save the intermediate dataset definition
+			datasetDefinition = 
+				(CohortIndicatorDataSetDefinition) Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(datasetDefinition);
+			
+			log.info("Add dataset definition: " + datasetDefinition.getUuid() + " to the report");
+			// Remove all existing dataset definitions
+			// FIXME: Adding dataset to report requires mapping
+			// (like "location=${report.location},effectiveDate=${report.reportDate}")
+			reportDefinition.getDataSetDefinitions().clear();			
+			reportDefinition.addDataSetDefinition(datasetDefinition,
+					"startDate=${startDate},endDate=${endDate},location=${location}");
+			
+		}
+		
+		log.info("Saving report definition " + reportDefinition.getUuid() + ", name=" + reportDefinition.getName());
+		log.info("Dataset definition " + reportDefinition.getDataSetDefinitions().size());
+		
+		Context.getService(ReportService.class).saveReportDefinition(reportDefinition);		
+		
+	}
+	
+	@Test
+	public void shouldEvaluateCohortIndicator() { 
+		
+		EvaluationContext context = new EvaluationContext();
+		
+		CohortIndicator indicator = 
+			(CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid("2e91f5f0-af75-4403-8ba4-9e9b10befad8");
+
+		
+		IndicatorResult result = Context.getService(IndicatorService.class).evaluate(indicator, context);
+		
+		log.info("result: " + result.getValue());
+		
+	}
+	
+	
 }

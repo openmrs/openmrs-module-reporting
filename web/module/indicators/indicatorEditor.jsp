@@ -1,6 +1,8 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ include file="../localHeader.jsp"%>
+<%@ include file="../dialogSupport.jsp"%>
+
 
 <!-- Form -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
@@ -33,9 +35,20 @@ $(document).ready(function() {
 	$("#close-button").click(function(){
 		$("#indicator-parameter-dialog").dialog('close');
 	});
-	
 	$("#add-parameter-button").click(function(event){ 
-		$("#indicator-parameter-dialog").dialog('open');
+		//$("#indicator-parameter-dialog").dialog('open');
+
+		showReportingDialog({ 
+			title: 'Add Parameter', 
+			url: '<c:url value="/module/reporting/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&redirectUrl=${redirectUrl}"/>',
+			successCallback: function() { 
+				$('#testTarget').html('Yes it does.'); 
+				alert("success");
+			} 
+		});
+		
+
+		
 	});
 
 	
@@ -125,7 +138,7 @@ $(document).ready(function() {
 		$("#cohortDefinitionSpan").html(data.name + " " + data.description);
 		$("#cohortDefinitionSpan").show();
 		$("#cohortDefinitionName").hide();
-		
+		$("#saveIndicatorForm").submit();
 	});
 
 	/*
@@ -200,7 +213,8 @@ var cohortDefinitions = [
                 <li><a href="#indicator-advanced-tab"><span>Advanced</span></a></li>
             </ul>
 			<div id="indicator-basic-tab">
-				<form method="post" action="${pageContext.request.contextPath}/module/reporting/saveIndicator.form">			
+				<form method="post" id="saveIndicatorForm" 
+						action="${pageContext.request.contextPath}/module/reporting/saveIndicator.form">			
 					<input type="hidden" id="uuid" name="uuid" value="${indicator.uuid}"/>				
 					<div>
 						<ul>		
@@ -221,9 +235,7 @@ var cohortDefinitions = [
 							</li>
 							<li>
 								<label class="desc" for="indicator">Define your indicator</label>
-								<div>
-								
-									<label class="inline" for="cohortDefinition">Choose a cohort definition</label>
+								<div>								
 									<span id="cohortDefinitionSpan">
 										${indicator.cohortDefinition.parameterizable.name}
 									</span>
@@ -233,8 +245,14 @@ var cohortDefinitions = [
 									
 									<input id="cohortDefinitionUuid" name="cohortDefinition.uuid" type="hidden"  tabindex="4" 
 											value="${indicator.cohortDefinition.parameterizable.uuid}"/>							
-								</div>									
+								</div>	
+							</li>
+							<li>								
 								<div>
+
+									<input type="hidden" id="aggregator" name="aggregator" value="CountAggregator">
+								
+									<%-- 								
 									<label class="inline" for="cohortDefinition">How do you want to aggregate this cohort?</label>
 									<c:set var="aggregatorLabels" value="Count,Distinct,Max,Mean,Median,Min,Sum" />
 									<c:set var="aggregators" value="CountAggregator,DistinctAggregator,MaxAggregator,MeanAggregator,MedianAggregator,MinAggregator,SumAggregator" />									
@@ -243,10 +261,17 @@ var cohortDefinitions = [
 											<option value="${aggregator}" <c:if test="${aggregator == indicator.aggregator.simpleName}">selected</c:if>>${aggregator}</option>
 										</c:forEach>
 									</select>
+									--%>
 								</div>
+							</li>
+							<li>
 								<div>
 								
-									<label class="inline" for="cohortDefinition">Map parameters</label>
+									<label class="desc" for="cohortDefinition">Map parameters</label>
+								
+									<div>(hidden)</div>
+									
+									<%-- 
 									<table id="indicator-parameter-mapping-table">
 										<thead>
 											<tr>
@@ -282,46 +307,76 @@ var cohortDefinitions = [
 										<tfoot>			
 										</tfoot>
 									</table>
+									--%>
 								</div>
 								
 								
 							</li>
 
 
-<!-- 
 							<li>
-								<label class="desc" for="parameters">Parameters</label>
+								<label class="desc">Parameters</label>	
+	
+	
+								<c:set var="redirectUrl" value='/module/reporting/manageIndicators.list' />								
+								<%-- <c:url var="redirectUrl" value='/module/reporting/editCohortDefinition.form?uuid=${param.uuid}&type=${param.type}'/> --%>
+								<c:url var="addParameterUrl" value='/module/reporting/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&redirectUrl=${redirectUrl}'/>
+	
+
+								<input type="button" id="add-parameter-button" value="Add Parameter"/>	
+								<span id="testTarget">Does it work?</span>
+
+								<!--  
+								<a href="${addParameterUrl}">Add Parameter</a><br/>
+								<a href="#" id="add-parameter-button">Add Parameter</a> <i>(modal window)</i>
+								-->
 								<div>
-									<table id="indicator-parameter-table" class="display">
+									<table id="cohort-definition-parameter-table" class="display">
 										<thead>
 											<tr>
-												<th width="1px">Prompt</th>
-												<th width="1px">Required</th>
-												<th>Label</th>
-												<th>Name</th>
-											</tr>
+												<th align="left">Edit</th>
+												<th align="left">Name</th>
+												<th align="left">Label</th>
+												<th align="left">Type</th>
+												<th align="left">Collection Type</th>
+												<th align="left">Default Value</th>
+												<th align="left">Delete</th>
+											</tr>	
 										</thead>
-										<tbody>										
-											<c:forEach var="parameter" items="${indicator.parameters}">
-												<tr>
-													<td>yes</td>
-													<td>yes</td>
-													<td>${parameter.label}</td> 
-													<td>${parameter.name}</td>													
-												</tr>
+										<tbody>
+											<c:forEach items="${indicator.parameters}" var="parameter" varStatus="varStatus">												
+												<c:url var="editParameterUrl" value='/module/reporting/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>																
+												<c:url var="deleteParameterUrl" value='/module/reporting/deleteParameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>
+												<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
+													<td valign="top" nowrap="true">
+														<a href="${editParameterUrl}"><img src='<c:url value="/images/edit.gif"/>' border="0"/></a>
+													</td>
+													<td valign="top" nowrap="true">
+														${parameter.name}
+													</td>
+													<td valign="top">
+														${parameter.label}
+													</td>
+													<td valign="top">
+														${parameter.clazz}																									
+													</td>
+													<td valign="top">
+														${parameter.collectionType}
+													</td>
+													<td valign="top">
+														${parameter.defaultValue}
+													</td>
+													<td valign="top" nowrap="true">
+														<a href="${deleteParameterUrl}"><img src='<c:url value="/images/trash.gif"/>' border="0"/></a>
+													</td>
+												</tr>	
 											</c:forEach>
 										</tbody>
-										<tfoot>
-											<tr>
-												<th colspan="4" align="center">
-													<a href="<c:url value='/module/reporting/indicatorParameter.form?uuid=${indicator.uuid}'/>">add parameter</a>
-												</th>
-											</tr>									
-										</tfoot>
-									</table>						
+									</table>
 								</div>
 							</li>
- -->
+
+
 
 							
 							<li class="buttons">
@@ -336,21 +391,11 @@ var cohortDefinitions = [
 			
 			<div id="indicator-advanced-tab">
 	
-				<form method="post" action="${pageContext.request.contextPath}/module/reporting/saveIndicator.form">			
-					<input type="hidden" id="uuid" name="uuid" value="${indicator.uuid}"/>
 	
-					<h2>Map the parameters of the indicator to those in the cohort definition: </h2>
+				To be determined ... 
 	
 	
-					<ul>
-
-						<li class="buttons">
-							<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-							<button id="cancel-button" name="cancel">Cancel</button>
-							<a href="<c:url value="/module/reporting/manageIndicators.list"/>">Go back</a>
-						</li>
-					</ul>	
-				</form>
+	
 			</div>
 			
 		</div><!--  #tabs -->

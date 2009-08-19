@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +21,7 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
+import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -31,6 +34,8 @@ import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.reporting.web.model.IndicatorForm;
+import org.openmrs.module.reporting.web.model.IndicatorReportForm;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -44,7 +49,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/module/reporting/indicatorReport")
+@RequestMapping("/module/reporting/reports/indicatorReportEditor")
 public class IndicatorReportFormController {
 
 	private Log log = LogFactory.getLog(this.getClass());
@@ -62,6 +67,11 @@ public class IndicatorReportFormController {
     }    
     
 	
+    /**
+     * Show the form 
+     * 
+     * @return
+     */
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView showForm() {
 		log.info("Inside show() method");
@@ -69,6 +79,12 @@ public class IndicatorReportFormController {
 		return new ModelAndView("/module/reporting/reports/indicatorReportEditor");
 	}	
 
+	
+	/**
+	 * Add reference data to the request.
+	 * 
+	 * @param model
+	 */
 	@ModelAttribute
 	public void referenceData(ModelMap model){
 		log.info("Building the reference data for all requests");
@@ -82,8 +98,169 @@ public class IndicatorReportFormController {
 		model.addAttribute("cohortDefinitions", cohortDefinitions);
 		model.addAttribute("indicators", indicators);
 	}	
+		
+	/**
+	 * 
+	 * @param request
+	 * @param indicatorReport
+	 * @param bindingResult
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	@RequestMapping(method = RequestMethod.POST)
+	public ModelAndView processForm(
+			HttpServletRequest request,
+			@RequestParam(value = "id", required=false) String id,
+			@RequestParam(value = "value", required=false) String value,
+			@ModelAttribute("indicatorReport") IndicatorReportForm indicatorReport, 
+			BindingResult bindingResult) {
+		log.info("Inside submit() method");
+			
+		if (bindingResult.hasErrors()) {
+			return showForm();
+		}
+		
+		ReportDefinition reportDefinition = indicatorReport.getReportDefinition();
+				
+		// Check whether the report definition is new 
+		Boolean isNew = (reportDefinition.getUuid() == null);
+		
+		
+		String [] selectedIndicatorIds = request.getParameterValues("indicatorId");
+		
+		log.info("Indicators: " + selectedIndicatorIds);
+		
+		// Add indicators to a report schema
+		if (selectedIndicatorIds != null && selectedIndicatorIds.length > 0) { 
+
+			// We just create a new dataset definition each time
+			CohortIndicatorDataSetDefinition datasetDefinition = null;
+			
+			// If the report definition is new, we create a new dataset
+			if (isNew) { 			
+				// Dataset should be created under the covers
+				datasetDefinition = new CohortIndicatorDataSetDefinition();
+				datasetDefinition.setName(indicatorReport.getReportDefinition().getName() + " Dataset");
+				
+				log.info("Create new dataset definition for report " + datasetDefinition.getName() + " (" + datasetDefinition.getUuid() + ")");
+			} 
+			// Otherwise we just get the first available dataset
+			else { 
+				Mapped<? extends DataSetDefinition> mappedDatasetDefinition = 
+					(Mapped<? extends DataSetDefinition>) indicatorReport.getReportDefinition().getDataSetDefinitions().get(0);
+				
+				datasetDefinition = 
+					(CohortIndicatorDataSetDefinition) mappedDatasetDefinition.getParameterizable();
+				log.info("Get existing dataset definition from report " + datasetDefinition.getName() + " (" + datasetDefinition.getUuid() + ")");
+			}
+
+			// Add the indicators to the dataset definition
+			for (String uuid : selectedIndicatorIds) { 
+				log.info("Looking up indicator: " + uuid);
+				// FIXME Assumes cohort indicators
+				CohortIndicator indicator = (CohortIndicator)
+					Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+				
+				log.info("Found indicator " + indicator);					
+				if (indicator != null) { 
+					// Adding indicator to dataset definition with default parameter mapping
+					datasetDefinition.addIndicator(indicator.getName(), indicator, 
+							"startDate=${startDate},endDate=${endDate},location=${location}");
+					
+					// Adding column specification to dataset 
+					datasetDefinition.addColumnSpecification(indicator.getName(), 
+							indicator.getDescription(), Number.class, indicator.getName(), null);						
+											
+				}										
+			}
+
+			// Save the intermediate dataset definition
+			datasetDefinition = 
+				(CohortIndicatorDataSetDefinition) Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(datasetDefinition);
+			
+			log.info("Add dataset definition: " + datasetDefinition.getUuid() + " to the report");
+			// Remove all existing dataset definitions
+			// FIXME: Adding dataset to report requires mapping
+			// (like "location=${report.location},effectiveDate=${report.reportDate}")
+			indicatorReport.getReportDefinition().getDataSetDefinitions().clear();			
+			indicatorReport.getReportDefinition().addDataSetDefinition(datasetDefinition,
+					"startDate=${startDate},endDate=${endDate},location=${location}");
+			
+		}
+		
+		log.info("Saving report definition " + reportDefinition.getUuid() + ", name=" + reportDefinition.getName());
+		log.info("Dataset definition " + reportDefinition.getDataSetDefinitions().size());
+		
+		Context.getService(ReportService.class).saveReportDefinition(reportDefinition);
+
+		return new ModelAndView("redirect:/module/reporting/reports/reportManager.list");
+	}
 	
-	@RequestMapping("/module/reporting/evaluateReport")		
+
+	/**
+	 * Gets an existing indicator report from the database or creates one
+	 * from scratch.
+	 * 
+	 * @param uuid
+	 * @param className
+	 * @return
+	 */
+	@ModelAttribute("indicatorReport")
+	public IndicatorReportForm formBackingObject(
+			@RequestParam(value = "uuid", required=false) String uuid,
+			@RequestParam(value = "className", required=false) String className
+	) {
+		log.info("Inside formBackingObject(String, String) method with ");
+		log.info("UUID=" + uuid + ", className=" + className);
+		
+		IndicatorReportForm indicatorReport = new IndicatorReportForm();
+		
+		ReportService service = Context.getService(ReportService.class);		
+		ReportDefinition reportDefinition = service.getReportDefinitionByUuid(uuid);
+		
+		if (reportDefinition == null) { 		
+			reportDefinition = new ReportDefinition();
+		} 
+
+		// Code required just to get indicators from the report definition
+		List<Indicator> indicators = new LinkedList<Indicator>();
+		List<Mapped<? extends DataSetDefinition>> datasetDefinitions = 
+			reportDefinition.getDataSetDefinitions();
+		if (datasetDefinitions != null && !datasetDefinitions.isEmpty()) { 
+			Mapped<? extends DataSetDefinition> mapped = datasetDefinitions.get(0);
+			if (mapped.getParameterizable() instanceof CohortIndicatorDataSetDefinition) { 
+				CohortIndicatorDataSetDefinition indicatorDataSetDefinition = 
+					(CohortIndicatorDataSetDefinition) mapped.getParameterizable();
+				
+				Map<String, Mapped<CohortIndicator>> mappedIndicators = 
+					indicatorDataSetDefinition.getIndicators();
+
+				for (Mapped<CohortIndicator> indicator : mappedIndicators.values()) { 
+					indicators.add(indicator.getParameterizable());
+				}
+			}
+		}
+
+		
+		indicatorReport.setReportDefinition(reportDefinition);
+		indicatorReport.setIndicators(indicators);
+		
+		
+		return indicatorReport;
+	}
+
+
+	/**
+	 * Evaluates an indicator report.
+	 * 
+	 * @param uuid
+	 * @param renderType
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws Exception
+	 */
+	@RequestMapping("/module/reporting/reports/evaluateIndicatorReport")		
 	public void evaluateReport( 
    		@RequestParam(required=false, value="uuid") String uuid,
 		@RequestParam(required=false, value="renderAs") String renderType,
@@ -136,97 +313,7 @@ public class IndicatorReportFormController {
 		renderer.render(reportData, null, response.getOutputStream()); 
 
 		model.addAttribute("reportDefinition", reportDefinition);
-	}
-	
-	
-	@SuppressWarnings("unused")
-	@ModelAttribute("reportDefinition")
-	@RequestMapping(method = RequestMethod.POST)
-	public ModelAndView processForm(
-			HttpServletRequest request,
-			ReportDefinition reportDefinition, 
-			BindingResult bindingResult) {
-		log.info("Inside submit() method");
-		
-			
-		if (bindingResult.hasErrors()) {
-			return showForm();
-		}
-		
-		String action = request.getParameter("action");
-
-		// Add indicators to a report schema
-		if ("addIndicators".equalsIgnoreCase(action)) { 
-						
-			// We just create a new dataset definition each time
-			CohortIndicatorDataSetDefinition datasetDefinition = new CohortIndicatorDataSetDefinition();
-			
-			// Dataset should be created implicitly (without the user knowing)
-			datasetDefinition.setName(reportDefinition.getName() + " Dataset");
-
-			String [] selectedIndicatorUuids = request.getParameterValues("indicatorUuid");
-			log.info("Indicators to add: " + selectedIndicatorUuids);
-			if (selectedIndicatorUuids!=null) { 
-				for (String uuid : selectedIndicatorUuids) { 
-					
-					// FIXME Assumes cohort indicators
-					CohortIndicator indicator = (CohortIndicator)
-						Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
-					
-					log.info("Found indicator" + indicator);					
-					if (indicator != null) { 
-						// FIXME: Adding indicator to dataset requires mapping from indicator to cohort definition					
-
-						datasetDefinition.addIndicator(indicator.getName(), indicator, "");
-						datasetDefinition.addColumnSpecification(indicator.getName(), 
-								indicator.getDescription(), Number.class, indicator.getName(), null);						
-												
-						// Default behavior
-						// Add all parameters to the indicator
-						for (Parameter parameter : indicator.getCohortDefinition().getParameterizable().getParameters()) {
-							indicator.addParameter(parameter);							
-							datasetDefinition.addParameter(parameter);	
-							reportDefinition.addParameter(parameter);
-						}						
-					}										
-				}
-			}
-
-			log.info("Add dataset definition: " + datasetDefinition);
-			// Remove all existing dataset definitions
-			// FIXME: Adding dataset to report requires mapping
-			// (like "location=${report.location},effectiveDate=${report.reportDate}")
-			reportDefinition.getDataSetDefinitions().clear();			
-			reportDefinition.addDataSetDefinition(datasetDefinition, "");
-		}
-		
-		
-		Context.getService(ReportService.class).saveReportDefinition(reportDefinition);
-
-		return new ModelAndView("redirect:/module/reporting/manageReports.list");
-	}
-	
-	
-	@ModelAttribute("reportDefinition")
-	public ReportDefinition formBackingObject(
-			@RequestParam(value = "uuid", required=false) String uuid,
-			@RequestParam(value = "className", required=false) String className
-	) {
-		log.info("Inside formBackingObject(String, String) method with ");
-		log.info("UUID=" + uuid + ", className=" + className);
-		
-		ReportService service = Context.getService(ReportService.class);		
-		ReportDefinition reportDefinition = service.getReportDefinitionByUuid(uuid);
-		
-		if (reportDefinition == null) { 		
-			reportDefinition = new ReportDefinition();
-		} else { 
-			log.info("Found reportDefinition with uuid " + reportDefinition.getUuid());			
-		}		
-		
-		return reportDefinition;
-	}
-
+	}	
 	
 	
 	

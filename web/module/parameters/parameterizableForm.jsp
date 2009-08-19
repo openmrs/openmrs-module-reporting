@@ -91,7 +91,6 @@ $j(document).ready(function() {
 		<div id="cohort-definition-basic-tab">
 			
 			<form:form id="saveForm" commandName="parameterizable" method="POST">
-			<!-- <form method="post" action="saveCohortDefinition.form"> -->			
 				<ul>				
 					<li>
 						<label class="desc" for="uuid">ID</label>				

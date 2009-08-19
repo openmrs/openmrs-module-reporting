@@ -43,25 +43,9 @@ import org.springframework.util.StringUtils;
 @Transactional
 public class BaseDataSetDefinitionService extends BaseOpenmrsService implements DataSetDefinitionService {
 
+	/** Logger */
 	protected Log log = LogFactory.getLog(this.getClass());
 		
-	private SerializedObjectDAO dao = null;
-	
-    /**
-     * @return the dao
-     */
-    public SerializedObjectDAO getDao() {
-    	return dao;
-    }
-
-    /**
-     * @param dao the dao to set
-     */
-    public void setDao(SerializedObjectDAO dao) {
-    	this.dao = dao;
-    }	
-
-    
     /**
      * 
      */

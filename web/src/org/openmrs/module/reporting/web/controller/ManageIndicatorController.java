@@ -113,12 +113,18 @@ public class ManageIndicatorController {
     @RequestMapping("/module/reporting/saveIndicator")
     public String saveIndicator(
     		@RequestParam(required=false, value="uuid") String uuid,
+            @RequestParam("action") String action,
             @RequestParam("name") String name,
             @RequestParam("description") String description,
             @RequestParam("cohortDefinition.name") String cohortDefinitionName,
             @RequestParam("cohortDefinition.uuid") String cohortDefinitionUuid,
             @RequestParam("aggregator") String aggregator,            
     		ModelMap model) {
+    	
+    	if ("cancel".equalsIgnoreCase(action))  {
+    		return "redirect:/module/reporting/manageIndicators.list";
+    	}
+    	
     	CohortIndicator indicator = (CohortIndicator)
     		Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
     	
@@ -148,7 +154,6 @@ public class ManageIndicatorController {
 	    	if (cohortDefinitions == null || cohortDefinitions.isEmpty()) { 
 	    		throw new APIException("Cohort Definition is required");
 	    	}    	
-    	
 	    	cohortDefinition = cohortDefinitions.get(0);
     	}
     	log.info("Setting cohort definition: " + cohortDefinition);
@@ -158,35 +163,14 @@ public class ManageIndicatorController {
     	//indicator.setParameters(parameters);
     	//indicator.setLogicCriteria(logicCriteria);
 
-    	
-    	// Set the aggregation method 
-    	if ("CountAggregator".equalsIgnoreCase(aggregator)) { 
-    		indicator.setAggregator(CountAggregator.class);
-    	} 
-    	else if ("DistinctAggregator".equalsIgnoreCase(aggregator)) { 
-    		indicator.setAggregator(DistinctAggregator.class);
-    	} 
-    	else if ("MaxAggregator".equalsIgnoreCase(aggregator)) { 
-    		indicator.setAggregator(MaxAggregator.class);
-    	} 
-    	else if ("MeanAggregator".equalsIgnoreCase(aggregator)) { 
-    		indicator.setAggregator(MeanAggregator.class);
-    	} 
-    	else if ("MedianAggregator".equalsIgnoreCase(aggregator)) { 
-    		indicator.setAggregator(MedianAggregator.class);
-    	} 
-    	else if ("MinAggregator".equalsIgnoreCase(aggregator)) { 
-    		indicator.setAggregator(MinAggregator.class);
-    	} 
-    	else if ("SumAggregator".equalsIgnoreCase(aggregator)) {     	
-    		indicator.setAggregator(SumAggregator.class);
-    	} 
-    	else { 
-    		throw new APIException("Aggregator " + aggregator + " is not currently supported");
-    	}
-    	
     	Context.getService(IndicatorService.class).saveIndicator(indicator);
 
+    	// When a cohort definition is selected, there's an implicit form submit
+    	// We want users to be redirected to the form in this case.
+    	if (action == null || action.equals("")) { 
+    		return "redirect:/module/reporting/editIndicator.form?uuid="+uuid;
+    	}    	
+    	
         return "redirect:/module/reporting/manageIndicators.list";
     }
     

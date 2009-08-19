@@ -41,7 +41,8 @@ $(document).ready(function() {
 		$("#parameter-form-dialog").html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog("open");
 		$("#modalIframeId").attr("src","${addParameterUrl}");
 
-		$('#parameter-form-dialog').dialog({height: 600,
+		$('#parameter-form-dialog').dialog({
+			height: 600,
             width: 800,
             position: 'top',
             title: 'Parameter Form',
@@ -51,7 +52,8 @@ $(document).ready(function() {
 					$(this).dialog('close');
 				},
 				'Save': function() {
-
+					var form = $("saveParameterForm");
+					alert(form.elements);
 					$(this).dialog('close');
 					window.location.reload(false);
 					
@@ -182,35 +184,42 @@ $('#saveParameterForm').submit(function(){
 								</table>
 							</div>
 						</li>
-							<li>
-								<label class="desc">Parameters</label>	
+						<li>
+							<label class="desc">Parameters</label>	
 
-								<a href="${addParameterUrl}">Add Parameter</a> <i>(normal link)</i><br/>
+							<a href="${addParameterUrl}">Add Parameter</a><br/>
+<!-- 
 								<a href="#" id="add-parameter-button">Add Parameter</a> <i>(should open in a dialog box -- not working yet!)</i>
-								
-								<div>
-									<table id="cohort-definition-parameter-table" class="display">
-										<thead>
-											<tr>
-												<th align="left">Delete</th>
-												<th align="left">Edit</th>
-												<th align="left">Name</th>
-												<th align="left">Label</th>
-												<th align="left">Type</th>
-												<th align="left">Collection Type</th>
-												<th align="left">Default Value</th>
-											</tr>	
-										</thead>
-										<tbody>
-											<c:forEach items="${cohortDefinition.parameters}" var="parameter" varStatus="varStatus">
+ -->							
+							<div>
+								<table id="cohort-definition-parameter-table" class="display">
+									<thead>
+										<tr>
+											<th align="left">Edit</th>
+											<th align="left">Name</th>
+											<th align="left">Label</th>
+											<th align="left">Type</th>
+											<th align="left">Collection Type</th>
+											<th align="left">Default Value</th>
+											<th align="left">Delete</th>
+										</tr>	
+									</thead>
+									<tbody>
+										<c:forEach items="${cohortDefinition.parameters}" var="parameter" varStatus="varStatus">
+											
+											<c:set var="isParameter" value="true" />
+											<c:forEach items="${cohortDefinition.configurationProperties}" var="property">
+												<c:if test="${parameter.name == property.field.name}">
+													<c:set var="isParameter" value="false" />
+												</c:if>
+											</c:forEach>
+											
+											<c:if test="${isParameter}">
 												<c:url var="editParameterUrl" value='/module/reporting/parameter.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>																
 												<c:url var="deleteParameterUrl" value='/module/reporting/deleteParameter.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>
 												<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
 													<td valign="top" nowrap="true">
-														<a href="${editParameterUrl}">Edit</a>
-													</td>
-													<td valign="top" nowrap="true">
-														<a href="${deleteParameterUrl}">Delete</a>
+														<a href="${editParameterUrl}"><img src='<c:url value="/images/edit.gif"/>' border="0"/></a>
 													</td>
 													<td valign="top" nowrap="true">
 														${parameter.name}
@@ -227,12 +236,16 @@ $('#saveParameterForm').submit(function(){
 													<td valign="top">
 														${parameter.defaultValue}
 													</td>
+													<td valign="top" nowrap="true">
+														<a href="${deleteParameterUrl}"><img src='<c:url value="/images/trash.gif"/>' border="0"/></a>
+													</td>
 												</tr>	
-											</c:forEach>
-										</tbody>
-									</table>
-								</div>
-							</li>
+											</c:if>
+										</c:forEach>
+									</tbody>
+								</table>
+							</div>
+						</li>
 
 						<li>					
 							<div align="center">				

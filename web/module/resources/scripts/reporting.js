@@ -100,7 +100,7 @@ function showReportingDialog(opts) {
 	reportingDialogSuccessCallback = opts.successCallback;
 	$('#reportingDialog')
 		.dialog('option', 'title', opts.title)
-		.dialog('option', 'height', $(window).height() - 50)
+		.dialog('option', 'height',$(window).height()-50)
 		.dialog('open');
 	dialogCurrentlyShown = $('#reportingDialog');
 	$("#reportingDialog > iframe").attr("src", opts.url);
