@@ -6,7 +6,7 @@
 	$(document).ready(function() {
 		$("#report-schema-table").dataTable( {
 			"bPaginate": true,
-			"bLengthChange": true,
+			"bLengthChange": false,
 			"bFilter": true,
 			"bSort": true,
 			"bInfo": true,
@@ -39,8 +39,7 @@
 					<th width="1%"></th>
 					<th width="10%">Name</th>
 					<th width="20%">Type</th>
-					<th width="30%">Description</th>
-					<th width="10%">Created</th>
+					<th width="40%">Description</th>
 					<th width="1%"></th>
 					<th width="1%"></th>
 				</tr>
@@ -68,9 +67,6 @@
 						</td>
 						<td width="30%">
 							${reportDefinition.description}
-						</td>
-						<td width="10%">
-							Created by ${reportDefinition.creator.username} on ${reportDefinition.dateCreated}
 						</td>
 						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportDefinition.uuid}">
