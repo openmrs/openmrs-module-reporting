@@ -23,24 +23,6 @@ public class BaseParameterizableEditor {
 	public BaseParameterizableEditor() { }
     
     /**
-     * Retrieves either an existing or new BaseParameterizable object to edit
-     */
-    @RequestMapping("/module/reporting/reports/baseParameterizableEditor")
-    @SuppressWarnings("unchecked")
-    public ModelMap getBaseParameterizable(ModelMap model, HttpServletRequest request,
-    		@RequestParam(required=true, value="type") Class<? extends BaseParameterizable> type,
-    		@RequestParam(required=true, value="uuid") String uuid) {
-    	
-    	model.put("type", type);
-    	model.put("uuid", uuid);
-    	if (StringUtils.isNotEmpty(uuid)) {
-    		model.put("object", ParameterizableUtil.getParameterizable(uuid, type));
-    	}
-    	
-        return model;
-    }
-    
-    /**
      * Saves a BaseOpenmrsMetadata object
      */
     @RequestMapping("/module/reporting/reports/saveBaseParameterizable")

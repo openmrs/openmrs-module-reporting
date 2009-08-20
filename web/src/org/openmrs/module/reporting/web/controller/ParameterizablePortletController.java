@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.util.ParameterizableUtil;
+import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.web.controller.PortletController;
 
 /**
@@ -21,6 +22,9 @@ public class ParameterizablePortletController extends PortletController {
 
 	@SuppressWarnings("unchecked")
 	protected void populateModel(HttpServletRequest request, Map model) {
+		
+		// TODO: Figure out why this is necessary.
+		Thread.currentThread().setContextClassLoader(OpenmrsClassLoader.getInstance());
 
 		String type = (String)model.get("type");
 		String uuid = (String)model.get("uuid");
