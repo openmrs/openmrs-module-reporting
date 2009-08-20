@@ -51,7 +51,36 @@ public abstract class BaseDataSetDefinition extends BaseParameterizable implemen
 		this();
 		this.setName(name);
 		this.setDescription(description);
-	}	    
+	}
+	
+	//***** INSTANCE METHODS *****
+	
+	/** @see Object#equals(Object) */
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof DataSetDefinition) {
+			DataSetDefinition p = (DataSetDefinition) obj;
+			if (this.getUuid() != null) {
+				return (this.getUuid().equals(p.getUuid()));
+			}
+		}
+		return this == obj;
+	}
+	
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (getUuid() == null ? 0 : 31 * getUuid().hashCode());
+	}
+	
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getName();
+	}
     
     
     //***** PROPERTY ACCESS *****
@@ -99,9 +128,5 @@ public abstract class BaseDataSetDefinition extends BaseParameterizable implemen
 			columnKeys.add(column.getKey());
 		}
 		return columnKeys;
-	}			
-
-	
-	
-	
+	}
 }

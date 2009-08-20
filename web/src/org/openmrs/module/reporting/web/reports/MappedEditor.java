@@ -53,24 +53,19 @@ public class MappedEditor {
     	// Retrieve the child property, or null
        	Parameterizable child = null;
        	Map<String, String> mappings = new HashMap<String, String>();
+       	Class<? extends Parameterizable> childType = ParameterizableUtil.getMappedType(parentType, mappedProperty);
        	
-    	Field f = ReflectionUtil.getField(parentType, mappedProperty);
-    	Type[] genericTypes = ReflectionUtil.getGenericTypes(f);
-    	Class<? extends Parameterizable> childType = (Class<? extends Parameterizable>) genericTypes[0];
        	if (StringUtils.isEmpty(childUuid)) {
-	    	Object propertyValue = ReflectionUtil.getPropertyValue(parent, mappedProperty);
-	    	if (propertyValue != null) {
-	    		Mapped<? extends Parameterizable> mapped = (Mapped<? extends Parameterizable>) propertyValue;
-	    		child = mapped.getParameterizable();
-	    		if (mappings != null) {
-	    			mappings = mapped.getParameterMappings();
-	    		}
-	    	}      		
+       		Mapped<Parameterizable> mapped = ParameterizableUtil.getMappedProperty(parent, mappedProperty, collectionKey);
+       		if (mapped != null) {
+       			child = mapped.getParameterizable();
+       			mappings = mapped.getParameterMappings();
+       		}
        	}
        	else if (childUuid != null) {
-	       	child = ParameterizableUtil.getParameterizable(childUuid, childType);
+       		child = ParameterizableUtil.getParameterizable(childUuid, childType);
        	}
-       	
+
        	Map<String, String> mappedParams = new HashMap<String, String>();
        	Map<String, String> complexParams = new HashMap<String, String>();
        	Map<String, String> fixedParams = new HashMap<String, String>();
