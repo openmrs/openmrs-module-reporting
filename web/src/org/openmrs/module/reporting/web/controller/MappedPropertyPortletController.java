@@ -10,50 +10,39 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationUtil;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.util.ParameterizableUtil;
-import org.openmrs.web.controller.PortletController;
 
 /**
  * This Controller loads a Mapped property given the passed parameters
  */
-public class MappedPropertyPortletController extends PortletController {
+public class MappedPropertyPortletController extends ParameterizablePortletController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 
 	@SuppressWarnings("unchecked")
 	protected void populateModel(HttpServletRequest request, Map model) {
+		
+		super.populateModel(request, model);
 
-		String type = (String)model.get("type");
 		String uuid = (String)model.get("uuid");
 		String property = (String)model.get("property");
 		String collectionKey = (String)model.get("collectionKey");
 		String mappedUuid = (String) model.get("mappedUuid");
 		
-		// Get Parameterizable class from the passed type
-		Class<? extends Parameterizable> clazz = null;
-		try {
-			clazz = (Class<? extends Parameterizable>)Context.loadClass(type);
-			model.put("clazz", clazz);
-		}
-		catch (Exception e) {
-			throw new IllegalArgumentException("Type " + type + " cannot be loaded", e);
-		}
+		Class<?> clazz = (Class<?>)model.get("clazz");
+		Parameterizable obj = (Parameterizable)model.get("obj");
 		
 		// Get generic type of the Mapped property, if specified
 		Class<? extends Parameterizable> mappedType = null;
 		if (StringUtils.isNotEmpty(property)) {
 			mappedType = ParameterizableUtil.getMappedType(clazz, property);
 		}
-		
-		Parameterizable obj = null;
+
 		if (StringUtils.isNotEmpty(uuid)) {
-			obj = ParameterizableUtil.getParameterizable(uuid, clazz);
-			model.put("obj", obj);
 
 	    	// Retrieve the child property, or null
 	       	Parameterizable mappedObj = null;

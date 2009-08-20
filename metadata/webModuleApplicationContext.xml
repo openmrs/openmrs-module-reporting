@@ -22,6 +22,7 @@
     	<property name="mappings">
             <props>
             	<prop key="**/mappedProperty.portlet">mappedPropertyPortletController</prop>
+            	<prop key="**/baseMetadata.portlet">parameterizablePortletController</prop>
 				<prop key="module/reporting/newIndicator.form">indicatorFormController</prop>
 			</props>
 		</property>
@@ -32,6 +33,7 @@
 		<property name="validator" ref="indicatorFormValidator"/>
 	</bean>
 	
+	<bean id="parameterizablePortletController" class="org.openmrs.module.reporting.web.controller.ParameterizablePortletController" />
 	<bean id="mappedPropertyPortletController" class="org.openmrs.module.reporting.web.controller.MappedPropertyPortletController" />
 
 <!--  

@@ -12,7 +12,7 @@
 	} );
 </script>
 
-<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>">
+<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
 	<b class="boxHeader" style="font-weight:bold; text-align:right;">
 		<span style="float:left;">${model.label}</span>
 		<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>

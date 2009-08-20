@@ -19,7 +19,7 @@
 		<table style="font-size:small;">
 			<tr>
 				<td valign="top">
-					<rptTag:baseParameterizableField id="rptBase" label="Basic Details" type="${report.class.name}" object="${report}" width="380"/>
+					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|size=380|label=Basic Details" />
 					<br/>
 					<openmrs:portlet url="mappedProperty" id="baseCohortDefinition" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|property=baseCohortDefinition|size=380|label=Base Cohort Definition" />
 				</td>
