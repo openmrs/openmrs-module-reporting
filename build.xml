@@ -81,13 +81,13 @@
 		</copy>
 		
 		<!--  Compile module java files -->
-		<javac destdir="build" classpathref="classpath" debug="true" debuglevel="lines,source">
+		<javac destdir="build" classpathref="classpath" debug="true" debuglevel="lines,vars,source">
 			<src path="src/" />
 			<include name="**/*.java" />
 		</javac>
 		
 		<!--  Compile module web java files -->
-		<javac destdir="build" classpathref="classpath" debug="true" debuglevel="lines,source">
+		<javac destdir="build" classpathref="classpath" debug="true" debuglevel="lines,vars,source">
 			<compilerarg line="-g" />
 			<src path="web/src/" />
 			<include name="**/*.java" />
