@@ -33,19 +33,18 @@
 						<td valign="top">
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|size=380|label=Basic Details" />
 							<br/>
-							<openmrs:portlet url="mappedProperty" id="baseCohortDefinition" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|property=baseCohortDefinition|size=380|label=Base Cohort Definition" />
+							<openmrs:portlet url="mappedProperty" id="baseCohortDefinition" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|property=baseCohortDefinition|size=380|label=Base Cohort Definition|nullValueLabel=All Patients" />
 						</td>
 						<td valign="top" width="100%">
 							<b class="boxHeader">Dataset Definitions</b>
 							<div class="box" style="vertical-align:top;">
 								<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
 									<openmrs:portlet url="mappedProperty" id="dataSetDefinition${dsdStatus.index}" moduleId="reporting" 
-													parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=${dsdStatus.index}|label=${dsdStatus.count}" />
+													parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=${dsdStatus.index}|label=${dsd.parameterizable.name}" />
 									<br/>
 								</c:forEach>
-								<openmrs:portlet url="mappedProperty" id="dataSetDefinition${dsdStatus.index}" moduleId="reporting" 
-												 parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=|label=Add new" />
-		
+								<openmrs:portlet url="mappedProperty" id="newDataSetDefinition" moduleId="reporting" 
+												 parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=|mode=add|label=New Dataset Definition" />
 							</div>
 						</td>
 					</tr>

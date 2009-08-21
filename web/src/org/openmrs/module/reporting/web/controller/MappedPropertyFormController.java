@@ -1,8 +1,11 @@
 package org.openmrs.module.reporting.web.controller;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,23 +43,27 @@ public class MappedPropertyFormController {
     		@RequestParam(required=true, value="uuid") String uuid,
             @RequestParam(required=true, value="property") String property,
             @RequestParam(required=false, value="collectionKey") String collectionKey,
-            @RequestParam(required=false, value="mappedUuid") String childUuid) {
+            @RequestParam(required=false, value="mappedUuid") String mappedUuid) {
     	
     	Parameterizable parent = ParameterizableUtil.getParameterizable(uuid, type);
     	Field f = ReflectionUtil.getField(type, property);
+    	Class<?> fieldType = ReflectionUtil.getFieldType(f);
     	
-    	if (StringUtils.isEmpty(childUuid)) {
-    		ReflectionUtil.setPropertyValue(parent, f, null);
-    	}
-    	else {
-        	Type[] genericTypes = ReflectionUtil.getGenericTypes(f);
-        	Class<? extends Parameterizable> childType = (Class<? extends Parameterizable>) genericTypes[0];
-    		Parameterizable child = ParameterizableUtil.getParameterizable(childUuid, childType);
+		Class<? extends Parameterizable> mappedType = null;
+		if (StringUtils.isNotEmpty(property)) {
+			mappedType = ParameterizableUtil.getMappedType(type, property);
+		}
+		
+		Parameterizable valToSet = null;
+		Object previousValue = ReflectionUtil.getPropertyValue(parent, property);
+		
+		if (StringUtils.isNotEmpty(mappedUuid)) {
+			valToSet = ParameterizableUtil.getParameterizable(mappedUuid, mappedType);
     		
     		Mapped m = new Mapped();
-    		m.setParameterizable(child);
+    		m.setParameterizable(valToSet);
     		
-        	for (Parameter p : child.getParameters()) {
+        	for (Parameter p : valToSet.getParameters()) {
         		String valueType = request.getParameterValues("valueType_"+p.getName())[0];
         		String[] value = request.getParameterValues(valueType+"Value_"+p.getName());
         		if (value != null && value.length > 0) {
@@ -70,7 +77,39 @@ public class MappedPropertyFormController {
     	    		m.addParameterMapping(p.getName(), paramValue);
         		}
         	}
-        	ReflectionUtil.setPropertyValue(parent, f, m);
+        	
+        	if (previousValue != null || valToSet != null) {
+        		
+        		if (List.class.isAssignableFrom(fieldType)) {
+        			List newValue = null;
+        			if (previousValue == null) {
+        				newValue = new ArrayList();
+        				newValue.add(m);
+        			}
+        			else {
+        				newValue = (List)previousValue;
+        				if (StringUtils.isEmpty(collectionKey)) {
+        					newValue.add(m);
+        				}
+        				else {
+        					int listIndex = Integer.parseInt(collectionKey);
+        					newValue.set(listIndex, m);
+        				}
+        			}
+        			ReflectionUtil.setPropertyValue(parent, f, newValue);
+        		}
+        		else if (Map.class.isAssignableFrom(fieldType)) {
+        			Map newValue = (previousValue == null ? new HashMap() : (Map)previousValue);
+        			newValue.put(collectionKey, m);
+        			ReflectionUtil.setPropertyValue(parent, f, newValue);
+        		}
+        		else if (Mapped.class.isAssignableFrom(fieldType)) {
+        			ReflectionUtil.setPropertyValue(parent, f, m);
+        		}
+        		else {
+        			throw new IllegalArgumentException("Cannot set property fo type: " + fieldType + " to " + m);
+        		}
+        	}
     	}
     	
     	ParameterizableUtil.saveParameterizable(parent);
