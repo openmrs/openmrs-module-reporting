@@ -236,7 +236,7 @@ public class ManageReportController {
     	reportService.
     		deleteReportDefinition(reportService.getReportDefinitionByUuid(uuid));	
     	
-    	return "redirect:/module/reporting/manageReports.list";
+    	return "redirect:/module/reporting/reports/reportManager.list";
     }        
     
     

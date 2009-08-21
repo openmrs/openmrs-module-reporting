@@ -74,7 +74,7 @@
 							</a>
 						</td>
 						<td width="1%" align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportDefinition.uuid}">
+							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportDefinition.uuid}" onclick="return confirm('Please confirm that you wish to delete: ${reportDefinition.name}');">
 								<img src='<c:url value="/images/trash.gif"/>' border="0"/>							
 							</a>
 						</td>
