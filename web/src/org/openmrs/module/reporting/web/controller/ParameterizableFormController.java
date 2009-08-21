@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.evaluation.parameter.BaseParameterizable;
+import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.util.ParameterizableUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,9 +33,9 @@ public class ParameterizableFormController {
     		@RequestParam(required=true, value="name") String name,
     		@RequestParam(required=true, value="description") String description){
     	
-    	BaseParameterizable p = null;
+    	Parameterizable p = null;
     	if (StringUtils.isNotEmpty(uuid)) {
-    		p = (BaseParameterizable)ParameterizableUtil.getParameterizable(uuid, type);
+    		p = ParameterizableUtil.getParameterizable(uuid, type);
     	}
     	else {
     		try {
@@ -46,8 +47,13 @@ public class ParameterizableFormController {
     	}
     	p.setName(name);
     	p.setDescription(description);
-    	ParameterizableUtil.saveParameterizable(p);
+    	p = ParameterizableUtil.saveParameterizable(p);
     	
+    	String successUrl = request.getParameter("successUrl");
+    	if (StringUtils.isNotEmpty(successUrl)) {
+    		successUrl = "redirect:"+successUrl.replace("=uuid", "=" + p.getUuid());
+    		return successUrl;
+    	}
     	return "redirect:/module/reporting/closeWindow.htm";
     }
 }

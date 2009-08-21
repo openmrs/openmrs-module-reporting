@@ -15,29 +15,45 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Report Editor</h1>	
-		<table style="font-size:small;">
-			<tr>
-				<td valign="top">
-					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|size=380|label=Basic Details" />
-					<br/>
-					<openmrs:portlet url="mappedProperty" id="baseCohortDefinition" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|property=baseCohortDefinition|size=380|label=Base Cohort Definition" />
-				</td>
-				<td valign="top" width="100%">
-					<b class="boxHeader">Dataset Definitions</b>
-					<div class="box" style="vertical-align:top;">
-						<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
-							<openmrs:portlet url="mappedProperty" id="dataSetDefinition${dsdStatus.index}" moduleId="reporting" 
-											parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=${dsdStatus.index}|label=${dsdStatus.count}" />
+		<h1>Report Editor</h1>
+		
+		<c:choose>
+			
+			<c:when test="${report.uuid == null}">
+				<b class="boxHeader">Create New Report</b>
+				<div class="box">
+					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.report.ReportDefinition|size=380|mode=edit|dialog=false|cancelUrl=reportManager.form|successUrl=reportEditor.form?type=org.openmrs.module.report.ReportDefinition&uuid=uuid" />
+				</div>
+			</c:when>
+			
+			<c:otherwise>
+		
+				<table style="font-size:small;">
+					<tr>
+						<td valign="top">
+							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|size=380|label=Basic Details" />
 							<br/>
-						</c:forEach>
-						<openmrs:portlet url="mappedProperty" id="dataSetDefinition${dsdStatus.index}" moduleId="reporting" 
-										 parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=|label=Add new" />
-
-					</div>
-				</td>
-			</tr>
-		</table>
+							<openmrs:portlet url="mappedProperty" id="baseCohortDefinition" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|property=baseCohortDefinition|size=380|label=Base Cohort Definition" />
+						</td>
+						<td valign="top" width="100%">
+							<b class="boxHeader">Dataset Definitions</b>
+							<div class="box" style="vertical-align:top;">
+								<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
+									<openmrs:portlet url="mappedProperty" id="dataSetDefinition${dsdStatus.index}" moduleId="reporting" 
+													parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=${dsdStatus.index}|label=${dsdStatus.count}" />
+									<br/>
+								</c:forEach>
+								<openmrs:portlet url="mappedProperty" id="dataSetDefinition${dsdStatus.index}" moduleId="reporting" 
+												 parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=|label=Add new" />
+		
+							</div>
+						</td>
+					</tr>
+				</table>
+				
+			</c:otherwise>
+			
+		</c:choose>
 	</div>
 </div>
 	

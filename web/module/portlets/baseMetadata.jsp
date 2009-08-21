@@ -4,12 +4,21 @@
 
 	<c:when test="${model.mode == 'edit'}">
 	
-		<%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
+		<c:if test="${model.dialog != 'false'}">
+			<%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
+		</c:if>
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready(function() {
 		
 				$('#cancelButton').click(function(event){
-					closeReportingDialog(false);
+					<c:choose>
+						<c:when test="${model.dialog != 'false'}">
+							closeReportingDialog(false);
+						</c:when>
+						<c:otherwise>
+							document.location.href = '${model.cancelUrl}';
+						</c:otherwise>
+					</c:choose>
 				});
 		
 				$('#submitButton').click(function(event){
@@ -23,9 +32,10 @@
 			div.metadataField label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
 		</style>
 		
-		<form id="baseParameterizableEditorForm" method="post" action="reports/saveBaseParameterizable.form">
+		<form id="baseParameterizableEditorForm" method="post" action="${pageContext.request.contextPath}/module/reporting/reports/saveBaseParameterizable.form">
 			<input type="hidden" name="uuid" value="${model.uuid}"/>
 			<input type="hidden" name="type" value="${model.type}"/>
+			<input type="hidden" name="successUrl" value="${model.successUrl}"/>
 			<div style="margin:0; padding:0; width:100%; padd">
 				<div class="metadataField">
 					<label class="desc" for="name">Name</label>
