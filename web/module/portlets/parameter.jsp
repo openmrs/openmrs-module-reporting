@@ -86,20 +86,29 @@
 			} );
 		</script>
 		
-		<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
-			<b class="boxHeader" style="font-weight:bold; text-align:right;">
-				<span style="float:left;">${model.label}</span>
-				<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
-			</b>
-			<div class="box">
-				<div style="padding-bottom:5px;">
-					Name: ${model.parameter.name}<br/>
-					Type: ${model.parameter.clazz} ${model.parameter.collectionType}<br/>
-					Label: ${model.parameter.label}
-				</div>
-			</div>
-		</div>
+		<c:choose>
 		
+			<c:when test="${model.mode == 'add'}">
+				<a style="font-weight:bold;" href="#" id="${model.id}EditLink">[+] Add</a>
+			</c:when>
+			
+			<c:otherwise>
+		
+				<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
+					<b class="boxHeader" style="font-weight:bold; text-align:right;">
+						<span style="float:left;">${model.label}</span>
+						<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
+					</b>
+					<div class="box">
+						<div style="padding-bottom:5px;">
+							Name: ${model.parameter.name}<br/>
+							Type: ${model.parameter.clazz} ${model.parameter.collectionType}<br/>
+							Label: ${model.parameter.label}
+						</div>
+					</div>
+				</div>
+			</c:otherwise>
+		</c:choose>
 	</c:otherwise>
 	
 </c:choose>
