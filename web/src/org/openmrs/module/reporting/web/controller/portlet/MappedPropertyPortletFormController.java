@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.web.controller;
+package org.openmrs.module.reporting.web.controller.portlet;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -24,14 +24,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class MappedPropertyFormController {
+public class MappedPropertyPortletFormController {
 
-	protected static Log log = LogFactory.getLog(MappedPropertyFormController.class);
+	protected static Log log = LogFactory.getLog(MappedPropertyPortletFormController.class);
 	
 	/**
 	 * Default Constructor
 	 */
-	public MappedPropertyFormController() { }
+	public MappedPropertyPortletFormController() { }
     
     /**
      * Saves mapped parameters

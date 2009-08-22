@@ -24,6 +24,7 @@
 				<prop key="module/reporting/indicatorWizard.form">indicatorFormController</prop>
             	<prop key="**/mappedProperty.portlet">mappedPropertyPortletController</prop>
             	<prop key="**/baseMetadata.portlet">parameterizablePortletController</prop>
+            	<prop key="**/parameter.portlet">parameterPortletController</prop>
 				<prop key="module/reporting/newIndicator.form">indicatorFormController</prop>
 			</props>
 		</property>
@@ -34,9 +35,9 @@
 		<property name="validator" ref="indicatorFormValidator"/>
 	</bean>
 	
-	<bean id="parameterizablePortletController" class="org.openmrs.module.reporting.web.controller.ParameterizablePortletController" />
-	<bean id="mappedPropertyPortletController" class="org.openmrs.module.reporting.web.controller.MappedPropertyPortletController" />
-
+	<bean id="parameterizablePortletController" class="org.openmrs.module.reporting.web.controller.portlet.ParameterizablePortletController" />
+	<bean id="mappedPropertyPortletController" class="org.openmrs.module.reporting.web.controller.portlet.MappedPropertyPortletController" />
+	<bean id="parameterPortletController" class="org.openmrs.module.reporting.web.controller.portlet.ParameterPortletController" />
 <!--  
  	<bean id="exceptionResolver"
 		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">

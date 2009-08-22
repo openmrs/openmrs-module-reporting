@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.web.controller;
+package org.openmrs.module.reporting.web.controller.portlet;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class ParameterizableFormController {
+public class ParameterizablePortletFormController {
 
-	protected static Log log = LogFactory.getLog(ParameterizableFormController.class);
+	protected static Log log = LogFactory.getLog(ParameterizablePortletFormController.class);
 	
 	/**
 	 * Default Constructor
 	 */
-	public ParameterizableFormController() { }
+	public ParameterizablePortletFormController() { }
     
     /**
      * Saves a BaseOpenmrsMetadata object

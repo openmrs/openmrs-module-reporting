@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.web.controller;
+package org.openmrs.module.reporting.web.controller.portlet;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

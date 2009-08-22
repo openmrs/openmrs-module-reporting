@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.web.controller;
+package org.openmrs.module.reporting.web.controller.portlet;
 
 import java.io.IOException;
 import java.util.Map;
