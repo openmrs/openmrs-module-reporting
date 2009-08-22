@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/view/module/reporting/localHeader.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportManager.list" />
 
-<c:url value="reportEditor.form" var="pageUrl">
+<c:url value="/module/reporting/reports/reportEditor.form" var="pageUrl">
 	<c:param name="uuid" value="${report.uuid}" />
 </c:url>
 
@@ -41,7 +41,7 @@
 							<div class="box" style="vertical-align:top;">
 								<c:forEach items="${report.parameters}" var="p">
 									<openmrs:portlet url="parameter" id="parameter${p.name}" moduleId="reporting" 
-													 parameters="type=${report.class.name}|uuid=${report.uuid}|name=${p.name}|label=Parameter: ${p.name}" />
+													 parameters="type=${report.class.name}|uuid=${report.uuid}|name=${p.name}|label=Parameter: ${p.name}|parentUrl=${pageUrl}" />
 									<br/>
 								</c:forEach>
 								<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" 

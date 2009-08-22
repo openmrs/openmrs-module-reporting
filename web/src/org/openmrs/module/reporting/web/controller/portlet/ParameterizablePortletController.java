@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.web.controller.portlet;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -61,5 +62,7 @@ public class ParameterizablePortletController extends PortletController {
     	if (StringUtils.isNotEmpty(uuid)) {
     		model.put("obj", ParameterizableUtil.getParameterizable(uuid, clazz));
     	}
+    	
+    	model.put("portletUUID", UUID.randomUUID().toString().replace("-", ""));
 	}
 }

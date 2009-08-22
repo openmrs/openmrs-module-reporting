@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.util.ParameterizableUtil;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -29,9 +30,9 @@ public class ParameterPortletFormController {
      * Saves mapped parameters
      */
     @RequestMapping("/module/reporting/parameters/saveParameter")
-    public String saveMappedProperty(ModelMap model, HttpServletRequest request,
-    		@RequestParam(required=true, value="parentType") Class<? extends Parameterizable> parentType,
-    		@RequestParam(required=true, value="parentUuid") String parentUuid,
+    public String saveParameter(ModelMap model, HttpServletRequest request,
+    		@RequestParam(required=true, value="type") Class<? extends Parameterizable> parentType,
+    		@RequestParam(required=true, value="uuid") String parentUuid,
     		@RequestParam(required=true, value="currentName") String currentName,
             @RequestParam(required=true, value="newName") String newName,
             @RequestParam(required=true, value="clazz") Class<?> clazz,
@@ -57,15 +58,20 @@ public class ParameterPortletFormController {
      * Remove mapped property
      */
     @RequestMapping("/module/reporting/parameters/deleteParameter")
-    public String removeParameter(ModelMap model, HttpServletRequest request,
-    		@RequestParam(required=true, value="parentType") Class<? extends Parameterizable> parentType,
-    		@RequestParam(required=true, value="parentUuid") String parentUuid,
+    public String deleteParameter(ModelMap model, HttpServletRequest request,
+    		@RequestParam(required=true, value="type") Class<? extends Parameterizable> parentType,
+    		@RequestParam(required=true, value="uuid") String parentUuid,
             @RequestParam(required=true, value="name") String name,
             @RequestParam(required=true, value="returnUrl") String returnUrl) {
     	
        	Parameterizable parent = ParameterizableUtil.getParameterizable(parentUuid, parentType);
        	parent.removeParameter(name);
     	ParameterizableUtil.saveParameterizable(parent);
+    	
+    	String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
+    	if (returnUrl.startsWith(pathToRemove)) {
+    		returnUrl = returnUrl.substring(pathToRemove.length());
+    	}
     	
     	return "redirect:"+returnUrl;
     }
