@@ -76,46 +76,65 @@
 	
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready(function() {
-				$('#${model.portletUUID}EditLink').click(function(event){
+				<c:forEach items="${model.obj.parameters}" var="p" varStatus="paramStatus">
+					$('#${model.portletUUID}EditLink${paramStatus.index}').click(function(event){
+						showReportingDialog({
+							title: 'Parameter: ${p.name}',
+							url: '<c:url value="/module/reporting/viewPortlet.htm?id=parameterPortlet&url=parameter&parameters=type=${model.type}|uuid=${model.uuid}|name=${p.name}|mode=edit"/>',
+							successCallback: function() { window.location.reload(true); }
+						});
+					});
+					$('#${model.portletUUID}RemoveLink${paramStatus.index}').click(function(event){					
+						if (confirm('Please confirm you wish to remove parameter ${p.name}')) {
+							document.location.href='${pageContext.request.contextPath}/module/reporting/parameters/deleteParameter.form?type=${model.type}&uuid=${model.uuid}&name=${p.name}&returnUrl=${model.parentUrl}';
+						}
+					});
+				</c:forEach>
+				$('#${model.portletUUID}AddLink').click(function(event){
 					showReportingDialog({
-						title: '${model.label}',
-						url: '<c:url value="/module/reporting/viewPortlet.htm?id=parameterPortlet&url=parameter&parameters=type=${model.type}|uuid=${model.uuid}|name=${model.parameter.name}|mode=edit"/>',
+						title: 'New Parameter',
+						url: '<c:url value="/module/reporting/viewPortlet.htm?id=parameterPortlet&url=parameter&parameters=type=${model.type}|uuid=${model.uuid}|mode=edit"/>',
 						successCallback: function() { window.location.reload(true); }
 					});
-				});
-				$('#${model.portletUUID}RemoveLink').click(function(event){					
-					if (confirm('Please confirm you wish to remove parameter ${model.parameter.name}')) {
-						document.location.href='${pageContext.request.contextPath}/module/reporting/parameters/deleteParameter.form?type=${model.type}&uuid=${model.uuid}&name=${model.parameter.name}&returnUrl=${model.parentUrl}';
-					}
 				});
 			} );
 		</script>
 		
-		<c:choose>
-		
-			<c:when test="${model.mode == 'add'}">
-				<a style="font-weight:bold;" href="#" id="${model.portletUUID}EditLink">[+] Add</a>
-			</c:when>
+		<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
+			<b class="boxHeader">${model.label}</b>
 			
-			<c:otherwise>
+			<div class="box">
+				<c:if test="${!empty model.obj.parameters}">
+					<table width="100%" style="margin-bottom:5px;">
+						<tr>
+							<th style="text-align:left; border-bottom:1px solid black;">Name</th>
+							<th style="text-align:left; border-bottom:1px solid black;">Label</th>
+							<th style="text-align:left; border-bottom:1px solid black;">Type</th>
+							<th style="border-bottom:1px solid black;">[X]</th>
+						</tr>
+						<c:forEach items="${model.obj.parameters}" var="p" varStatus="paramStatus">
+							<tr>
+								<td nowrap><a href="#" id="${model.portletUUID}EditLink${paramStatus.index}">${p.name}</a></td>
+								<td width="100%">${p.label}</td>
+								<td nowrap>
+									<c:choose>
+										<c:when test="${p.collectionType != null}">
+											${p.collectionType.simpleName}&lt;${p.clazz.simpleName}&gt;
+										</c:when>
+										<c:otherwise>
+											${p.clazz.simpleName}
+										</c:otherwise>
+									</c:choose>
+								</td>
+								<td nowrap align="center"><a href="#" id="${model.portletUUID}RemoveLink${paramStatus.index}">[X]</a></td>
+							</tr>
+						</c:forEach>
+					</table>
+				</c:if>
+				<a style="font-weight:bold;" href="#" id="${model.portletUUID}AddLink">[+] Add</a>
+			</div>
+		</div>
 		
-				<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
-					<b class="boxHeader" style="font-weight:bold; text-align:right;">
-						<span style="float:left;">${model.label}</span>
-						<a style="color:lightyellow;" href="#" id="${model.portletUUID}EditLink">Edit</a>
-						&nbsp;|&nbsp;
-						<a style="color:lightyellow;" href="#" id="${model.portletUUID}RemoveLink">Delete</a>
-					</b>
-					<div class="box">
-						<div style="padding-bottom:5px;">
-							Name: ${model.parameter.name}<br/>
-							Type: ${model.parameter.clazz} ${model.parameter.collectionType}<br/>
-							Label: ${model.parameter.label}
-						</div>
-					</div>
-				</div>
-			</c:otherwise>
-		</c:choose>
 	</c:otherwise>
 	
 </c:choose>

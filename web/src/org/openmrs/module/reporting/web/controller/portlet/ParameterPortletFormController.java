@@ -39,8 +39,8 @@ public class ParameterPortletFormController {
             @RequestParam(required=false, value="label") String label,
             @RequestParam(required=false, value="collectionType") Class<? extends Collection<?>> collectionType) {
     	
-    	Parameterizable parent = ParameterizableUtil.getParameterizable(parentUuid, parentType);;
-    	Parameter p = new Parameter(newName, label, clazz);
+    	Parameterizable parent = ParameterizableUtil.getParameterizable(parentUuid, parentType);
+    	Parameter p = new Parameter(newName, label, clazz, collectionType, null);
     	
     	if (StringUtils.hasText(currentName)) {
     		int index = parent.getParameters().indexOf(parent.getParameter(currentName));

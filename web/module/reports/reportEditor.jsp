@@ -37,16 +37,7 @@
 						<td valign="top">
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|size=380|label=Basic Details" />
 							<br/>
-							<b class="boxHeader">Parameters</b>
-							<div class="box" style="vertical-align:top;">
-								<c:forEach items="${report.parameters}" var="p">
-									<openmrs:portlet url="parameter" id="parameter${p.name}" moduleId="reporting" 
-													 parameters="type=${report.class.name}|uuid=${report.uuid}|name=${p.name}|label=Parameter: ${p.name}|parentUrl=${pageUrl}" />
-									<br/>
-								</c:forEach>
-								<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" 
-												 parameters="type=${report.class.name}|uuid=${report.uuid}|mode=add|label=New Parameter" />
-							</div>
+							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 							<br/>
 							<openmrs:portlet url="mappedProperty" id="baseCohortDefinition" moduleId="reporting" 
 											 parameters="type=${report.class.name}|uuid=${report.uuid}|property=baseCohortDefinition|label=Base Cohort Definition|nullValueLabel=All Patients" />
