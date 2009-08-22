@@ -36,9 +36,9 @@ public class MappedPropertyFormController {
     /**
      * Saves mapped parameters
      */
-    @RequestMapping("/module/reporting/reports/saveMappedParameters")
+    @RequestMapping("/module/reporting/reports/saveMappedProperty")
     @SuppressWarnings("unchecked")
-    public String saveMappedParameters(ModelMap model, HttpServletRequest request,
+    public String saveMappedProperty(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="type") Class<? extends Parameterizable> type,
     		@RequestParam(required=true, value="uuid") String uuid,
             @RequestParam(required=true, value="property") String property,
@@ -115,5 +115,41 @@ public class MappedPropertyFormController {
     	ParameterizableUtil.saveParameterizable(parent);
     	
     	return "redirect:/module/reporting/closeWindow.htm";
+    }
+    
+    /**
+     * Remove mapped property
+     */
+    @RequestMapping("/module/reporting/reports/removeMappedProperty")
+    @SuppressWarnings("unchecked")
+    public String removeMappedProperty(ModelMap model, HttpServletRequest request,
+    		@RequestParam(required=true, value="type") Class<? extends Parameterizable> type,
+    		@RequestParam(required=true, value="uuid") String uuid,
+            @RequestParam(required=true, value="property") String property,
+            @RequestParam(required=true, value="collectionKey") String collectionKey,
+            @RequestParam(required=true, value="returnUrl") String returnUrl) {
+    	
+       	Parameterizable parent = ParameterizableUtil.getParameterizable(uuid, type);
+    	Field f = ReflectionUtil.getField(type, property);
+    	Class<?> fieldType = ReflectionUtil.getFieldType(f);	
+		Object previousValue = ReflectionUtil.getPropertyValue(parent, property);
+		
+        if (List.class.isAssignableFrom(fieldType)) {
+        	List v = (List)previousValue;
+			int listIndex = Integer.parseInt(collectionKey);
+			v.remove(listIndex);
+        }
+		else if (Map.class.isAssignableFrom(fieldType)) {
+			Map v = (Map)previousValue;
+			v.remove(collectionKey);
+		}
+		else {
+        	throw new IllegalArgumentException("Cannot remove property in fieldType: " + fieldType + " with key " + collectionKey);
+    	}
+        
+        ReflectionUtil.setPropertyValue(parent, f, previousValue);
+    	ParameterizableUtil.saveParameterizable(parent);
+    	
+    	return "redirect:"+returnUrl;
     }
 }

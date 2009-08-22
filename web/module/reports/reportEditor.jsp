@@ -1,6 +1,10 @@
 <%@ include file="/WEB-INF/view/module/reporting/localHeader.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportManager.list" />
 
+<c:url value="reportEditor.form" var="pageUrl">
+	<c:param name="uuid" value="${report.uuid}" />
+</c:url>
+
 <script type="text/javascript" charset="utf-8">
 
 	$(document).ready(function() {
@@ -40,11 +44,11 @@
 							<div class="box" style="vertical-align:top;">
 								<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
 									<openmrs:portlet url="mappedProperty" id="dataSetDefinition${dsdStatus.index}" moduleId="reporting" 
-													parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=${dsdStatus.index}|label=${dsd.parameterizable.name}" />
+													parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=${dsdStatus.index}|label=${dsd.parameterizable.name}|parentUrl=${pageUrl}" />
 									<br/>
 								</c:forEach>
 								<openmrs:portlet url="mappedProperty" id="newDataSetDefinition" moduleId="reporting" 
-												 parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=|mode=add|label=New Dataset Definition" />
+												 parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|mode=add|label=New Dataset Definition" />
 							</div>
 						</td>
 					</tr>

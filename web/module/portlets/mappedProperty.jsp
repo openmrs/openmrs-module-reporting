@@ -44,7 +44,7 @@
 		
 		${model.mappedType.simpleName}: <rpt:widget id="parameterizableSelector${model.id}" name="parameterizableSelector" type="${model.mappedType.name}" defaultValue="${model.mappedObj}"/>
 		
-		<form id="mapParametersForm${model.id}" method="post" action="reports/saveMappedParameters.form">
+		<form id="mapParametersForm${model.id}" method="post" action="reports/saveMappedProperty.form">
 			<input type="hidden" name="type" value="${model.type}"/>
 			<input type="hidden" name="uuid" value="${model.uuid}"/>
 			<input type="hidden" name="property" value="${model.property}"/>
@@ -104,8 +104,7 @@
 				<input type="button" id="mapParametersFormCancelButton_${model.id}" class="ui-button ui-state-default ui-corner-all" value="Cancel"/>
 				<input type="button" id="mapParametersFormSubmitButton_${model.id}" class="ui-button ui-state-default ui-corner-all" value="Submit"/>
 			</div>
-		</form>	
-	
+		</form>
 	
 	</c:when>
 	
@@ -120,6 +119,13 @@
 						successCallback: function() { window.location.reload(true); }
 					});
 				});
+				<c:if test="${model.collectionKey != null}">
+					$('#${model.id}RemoveLink').click(function(event){					
+						if (confirm('Please confirm you wish to remove ${model.mappedObj.name}')) {
+							document.location.href='<c:url value="/module/reporting/reports/removeMappedProperty.form?type=${model.type}&uuid=${model.uuid}&property=${model.property}&collectionKey=${model.collectionKey}&returnUrl=${model.parentUrl}"/>';
+						}
+					});
+				</c:if>
 			} );
 		</script>
 		
@@ -135,6 +141,10 @@
 					<b class="boxHeader" style="font-weight:bold; text-align:right;">
 						<span style="float:left;">${model.label}</span>
 						<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
+						<c:if test="${model.collectionKey != null}">
+							&nbsp;|&nbsp;
+							<a style="color:lightyellow;" href="#" id="${model.id}RemoveLink">Remove</a>
+						</c:if>
 					</b>
 					<div class="box">
 						<table>
