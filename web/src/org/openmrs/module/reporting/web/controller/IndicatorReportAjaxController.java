@@ -88,14 +88,41 @@ public class IndicatorReportAjaxController {
 			
 	}
 	
-	@RequestMapping("/module/reporting/reports/evaluateIndicator")
+	
+	
+	@RequestMapping("/module/reporting/indicators/evaluateIndicator")
 	public void evaluateIndicator(
+			@RequestParam(value = "uuid", required=false) String uuid,
+			HttpServletResponse response) { 
+		
+		try { 
+			EvaluationContext context = new EvaluationContext();			
+			CohortIndicator indicator = 
+				(CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+			IndicatorResult result = Context.getService(IndicatorService.class).evaluate(indicator, context);
+	
+			response.getWriter().write(result.getValue().toString());		
+
+		} 
+		catch (Exception e) { 
+			log.error("Error occurred while writing to response: ", e);
+		}
+	}
+	
+
+	@RequestMapping("/module/reporting/indicators/evaluatePeriodIndicator")
+	public void evaluatePeriodIndicator(
 			@RequestParam(value = "uuid", required=false) String uuid,
 			HttpServletResponse response) { 
 
 		
 		try { 
 			EvaluationContext context = new EvaluationContext();
+	
+			// FIXME - We need a way to pass in these values into this method
+			context.addParameterValue("startDate", new Date());
+			context.addParameterValue("endDate", new Date());
+			context.addParameterValue("location", new Location());
 			
 			CohortIndicator indicator = 
 				(CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);

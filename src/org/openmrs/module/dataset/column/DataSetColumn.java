@@ -24,12 +24,12 @@ public interface DataSetColumn extends Comparable<DataSetColumn>, Serializable {
     /**
      * @return the key
      */
-    public String getKey();	
+    public String getColumnKey();	
     
     /**
      * @return the columnName
      */
-    public String getColumnName();	
+    public String getDisplayName();	
 	    
     /**
      * @return the description

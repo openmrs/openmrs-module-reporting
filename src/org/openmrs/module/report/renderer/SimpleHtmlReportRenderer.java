@@ -92,7 +92,7 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 			writer.write("<h4>" + key + "</h4>");
 			writer.write("<table border=1><tr>");
 			for (DataSetColumn column : columns) {
-				writer.write("<th>"+column.getKey()+"</th>");
+				writer.write("<th>"+column.getColumnKey()+"</th>");
 			}
 			writer.write("</tr>");
 
@@ -101,7 +101,7 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 				writer.write("<tr>");
 				for (DataSetColumn column : columns) {
 					writer.write("<td>");
-					Object colValue = map.get(column.getKey());
+					Object colValue = map.get(column.getColumnKey());
 					if (colValue != null) {
 						if (colValue instanceof Cohort) {
 							writer.write(Integer.toString(((Cohort) colValue).size()));

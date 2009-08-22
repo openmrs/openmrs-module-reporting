@@ -20,22 +20,27 @@ import org.apache.commons.lang.StringUtils;
  */
 public class SimpleDataSetColumn implements DataSetColumn {
 	
-	private String key;
-	private String columnName;
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Properties
+	 */
+	private String columnKey;
+	private String displayName;
 	private String description;
 	private Class<?> dataType;
 	
 	/**
 	 * Default Constructor
 	 */
-	public SimpleDataSetColumn() { } 
+	//public SimpleDataSetColumn() { } 
 	
 	/**
 	 * Constructor to populate all properties
 	 */
-	public SimpleDataSetColumn(String key, String columnName, String description, Class<?> dataType) {
-		this.key = key;
-		this.columnName = columnName;
+	public SimpleDataSetColumn(String columnKey, String displayName, String description, Class<?> dataType) {
+		this.columnKey = columnKey;
+		this.displayName = displayName;
 		this.description = description;
 		this.dataType = dataType;
 	}
@@ -65,29 +70,15 @@ public class SimpleDataSetColumn implements DataSetColumn {
     /**
      * @return the key
      */
-    public String getKey() {
-    	return key;
+    public String getColumnKey() {
+    	return columnKey;
     }
 	
-    /**
-     * @param key the key to set
-     */
-    public void setKey(String key) {
-    	this.key = key;
-    }
-
 	/**
 	 * @return the columnName
 	 */
-	public String getColumnName() {
-		return columnName;
-	}
-
-	/**
-	 * @param columnName the columnName to set
-	 */
-	public void setColumnName(String columnName) {
-		this.columnName = columnName;
+	public String getDisplayName() {
+		return displayName;
 	}
 
 	/**
@@ -97,13 +88,6 @@ public class SimpleDataSetColumn implements DataSetColumn {
     	return description;
     }
 	
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-    	this.description = description;
-    }
-
     /**
      * @return the dataType
      */
@@ -123,7 +107,7 @@ public class SimpleDataSetColumn implements DataSetColumn {
      */
     @Override
     public String toString() {
-    	return getKey();
+    	return getColumnKey() + " " + getDisplayName();
     }
 
 	/**
@@ -133,7 +117,7 @@ public class SimpleDataSetColumn implements DataSetColumn {
     public boolean equals(Object obj) {
    		if (obj instanceof DataSetColumn) {
    			DataSetColumn col = (DataSetColumn) obj;
-			if (StringUtils.equals(this.getKey(), col.getKey())) {
+			if (StringUtils.equals(this.getColumnKey(), col.getColumnKey())) {
 				return true;
 			}
 		}
@@ -146,7 +130,7 @@ public class SimpleDataSetColumn implements DataSetColumn {
     @Override
     public int hashCode() {
 		int hash = 7;
-		hash = 31 * hash + (this.getKey() == null ? 0 : this.getKey().hashCode());
+		hash = 31 * hash + (this.getColumnKey() == null ? 0 : this.getColumnKey().hashCode());
 		return hash;
     }
 
@@ -154,6 +138,6 @@ public class SimpleDataSetColumn implements DataSetColumn {
      * 
      */
 	public int compareTo(DataSetColumn other) {		
-		return this.getColumnName().compareTo(other.getColumnName());		
+		return this.getDisplayName().compareTo(other.getDisplayName());		
 	}
 }

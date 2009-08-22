@@ -36,7 +36,7 @@ public class ManageIndicatorController {
 	 * @param model
 	 * @return
 	 */
-    @RequestMapping("/module/reporting/manageIndicators")
+    @RequestMapping("/module/reporting/indicators/manageIndicators")
     public String manageIndicators(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
@@ -55,7 +55,7 @@ public class ManageIndicatorController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/selectCohort")
+    @RequestMapping("/module/reporting/indicators/selectCohort")
     public String selectCohort(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
@@ -79,7 +79,7 @@ public class ManageIndicatorController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/editIndicator")
+    @RequestMapping("/module/reporting/indicators/editIndicator")
     public String editIndicator(
     		@RequestParam(required=false, value="uuid") String uuid,
     		@RequestParam(required=false, value="action") String action,
@@ -100,6 +100,11 @@ public class ManageIndicatorController {
     }
     
     /**
+     * Saves the indicator.
+     * 
+     * This was one of the first annotated controllers, so it's a bit ugly.
+     * 
+     * TODO Cleanup - should be more like the indicator report editor or cohort definition editor.
      * 
      * @param uuid
      * @param name
@@ -110,25 +115,26 @@ public class ManageIndicatorController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/saveIndicator")
+    @RequestMapping("/module/reporting/indicators/saveIndicator")
     public String saveIndicator(
     		@RequestParam(required=false, value="uuid") String uuid,
-            @RequestParam("action") String action,
-            @RequestParam("name") String name,
-            @RequestParam("description") String description,
-            @RequestParam("cohortDefinition.name") String cohortDefinitionName,
-            @RequestParam("cohortDefinition.uuid") String cohortDefinitionUuid,
-            @RequestParam("aggregator") String aggregator,            
+            @RequestParam(required=false, value="action") String action,
+            @RequestParam(required=false, value="name") String name,
+            @RequestParam(required=false, value="description") String description,
+            @RequestParam(required=false, value="cohortDefinition.name") String cohortDefinitionName,
+            @RequestParam(required=false, value="cohortDefinition.uuid") String cohortDefinitionUuid,
+            @RequestParam(required=false, value="aggregator") String aggregator,            
     		ModelMap model) {
     	
     	if ("cancel".equalsIgnoreCase(action))  {
     		return "redirect:/module/reporting/manageIndicators.list";
     	}
     	
+    	// Find indicator, if one already exists
     	CohortIndicator indicator = (CohortIndicator)
     		Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
     	
-    	
+    	// Create a new indicator if one does not exist
     	if (indicator == null) { 
     		indicator = new CohortIndicator();
     	}    	
@@ -138,10 +144,8 @@ public class ManageIndicatorController {
     	indicator.setDescription(description);
     	
     	
+    	// Find the selected cohort definition by UUID
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	// Find the selected cohort definition by name
-    	// TODO Should be a lookup by UUID
-
     	log.info("Looking up cohort definition with uuid " + cohortDefinitionUuid);
     	CohortDefinition cohortDefinition = service.getCohortDefinitionByUuid(cohortDefinitionUuid);
     	
@@ -158,11 +162,10 @@ public class ManageIndicatorController {
     	}
     	log.info("Setting cohort definition: " + cohortDefinition);
     	
+    	// TODO We need to map the indicator 
     	indicator.setCohortDefinition(cohortDefinition, "");
     	
-    	//indicator.setParameters(parameters);
-    	//indicator.setLogicCriteria(logicCriteria);
-
+    	// Save the indicator to the database
     	Context.getService(IndicatorService.class).saveIndicator(indicator);
 
     	// When a cohort definition is selected, there's an implicit form submit
@@ -171,7 +174,8 @@ public class ManageIndicatorController {
     		return "redirect:/module/reporting/editIndicator.form?uuid="+uuid;
     	}    	
     	
-        return "redirect:/module/reporting/manageIndicators.list";
+    	// If user clicks "save" they will be taken back to the indicator list
+        return "redirect:/module/reporting/indicators/manageIndicators.list";
     }
     
     
@@ -180,7 +184,7 @@ public class ManageIndicatorController {
      * @param uuid
      * @return
      */
-    @RequestMapping("/module/reporting/purgeIndicator")
+    @RequestMapping("/module/reporting/indicators/purgeIndicator")
     public String saveIndicator(
     		@RequestParam(required=false, value="uuid") String uuid) {
     	
@@ -195,7 +199,7 @@ public class ManageIndicatorController {
     		Context.getService(IndicatorService.class).purgeIndicator(indicator);
     	}     	
     	
-        return "redirect:/module/reporting/manageIndicators.list";
+        return "redirect:/module/reporting/indicators/manageIndicators.list";
     }
     
     

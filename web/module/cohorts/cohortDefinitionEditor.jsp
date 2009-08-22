@@ -62,21 +62,21 @@ $(document).ready(function() {
     	});   
 	});
 
+	/*
+	$('#saveParameterForm').submit(function(){ 
+	    $.each(params, function(i,param){
+	        
+	    });
 
-
+	    return true;
+	});
+	*/
 	
 	
 } );
 
 
 
-$('#saveParameterForm').submit(function(){ 
-    $.each(params, function(i,param){
-        
-    });
-
-    return true;
-});
 
 
 

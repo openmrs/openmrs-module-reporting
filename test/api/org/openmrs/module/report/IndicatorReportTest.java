@@ -15,6 +15,7 @@ package org.openmrs.module.report;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -22,10 +23,13 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Location;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
@@ -36,6 +40,7 @@ import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.IndicatorResult;
+import org.openmrs.module.indicator.PeriodCohortIndicator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
@@ -101,15 +106,20 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 		CohortIndicator indicator = new CohortIndicator();
 		indicator.setName(cohortDefinition.getName());
 		indicator.setCohortDefinition(cohortDefinition, "");
-		datasetDefinition.addIndicator("Test Indicator", indicator, "");
-		
+		/*
+		datasetDefinition.addIndicator("Test Indicator", indicator, "");		
 		datasetDefinition.addColumnSpecification(
 				"1.", 
 				"# Adult Patients", 
 				Number.class, 
 				"Test Indicator", 
 				null);
-
+		*/
+		
+		datasetDefinition.addCohortIndicator(indicator, "");
+		datasetDefinition.addColumnSpecification("1.a", "# Adult Patients", Number.class, indicator, null);
+		
+		
 		ReportDefinition report = new ReportDefinition();
 		//report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true, false));
 		//report.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true, false));
@@ -130,6 +140,43 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	
+	@Test
+	public void shouldEvaluateIndicator() { 
+
+		// Create a new program state cohort definition
+		ProgramStateCohortDefinition cohortDefinition = new ProgramStateCohortDefinition();
+		Program program = Context.getProgramWorkflowService().getProgramByName("HIV PROGRAM");
+		cohortDefinition.setProgram(program);
+		cohortDefinition.addParameter(new Parameter("sinceDate", "Enrolled since", Date.class, null, true));
+		cohortDefinition.addParameter(new Parameter("untilDate", "Enrolled until", Date.class, null, true));
+		cohortDefinition.addParameter(new Parameter("location", "Enrolled at", Location.class, null, true));
+				
+		// Create period indicator  
+		PeriodCohortIndicator indicator = new PeriodCohortIndicator();
+		indicator.addParameter(new Parameter("startDate", "Enter a Start Date", Date.class, null, true));
+		indicator.addParameter(new Parameter("endDate", "Enter an End Date", Date.class, null, true));
+		indicator.addParameter(new Parameter("location", "Choose a Location", Location.class, null, true));
+		
+		// Map the cohort definition to the indicator
+		indicator.setCohortDefinition(cohortDefinition, "sinceDate=${startDate},untilDate=${endDate},location=${location}");
+		
+		Calendar calendar = Calendar.getInstance();
+		Date endDate = calendar.getTime();
+		calendar.set(2009, 8, 1);
+		Date startDate = calendar.getTime();
+		
+		Location location = Context.getLocationService().getAllLocations().get(0);
+		
+		EvaluationContext context = new EvaluationContext();
+		context.addParameterValue("startDate", startDate);
+		context.addParameterValue("endDate", endDate);
+		context.addParameterValue("location", location);
+		
+		
+		IndicatorResult result = Context.getService(IndicatorService.class).evaluate(indicator, context);
+		log.info("result: " + result.getValue());
+	
+	}
 	
 	
 	@Test
@@ -188,12 +235,12 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 				log.info("Found indicator " + indicator);					
 				if (indicator != null) { 
 					// Adding indicator to dataset definition with default parameter mapping
-					datasetDefinition.addIndicator(indicator.getName(), indicator, 
+					datasetDefinition.addCohortIndicator(indicator.getName(), indicator, 
 							"startDate=${startDate},endDate=${endDate},location=${location}");
 					
 					// Adding column specification to dataset 
 					datasetDefinition.addColumnSpecification(indicator.getName(), 
-							indicator.getDescription(), Number.class, indicator.getName(), null);						
+							indicator.getDescription(), Number.class, indicator, null);						
 											
 				}										
 			}

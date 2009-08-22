@@ -53,7 +53,7 @@ public class NewJoinDataSetDefinitionEvaluator implements DataSetEvaluator {
         	//Object joinValue = row.get(dsd.getJoinColumnOnRight());
         	Object joinValue = null;
         	for (DataSetColumn column : row.keySet()) { 
-            	if (column.getColumnName().equals(dsd.getJoinColumnOnLeft())) { 
+            	if (column.getDisplayName().equals(dsd.getJoinColumnOnLeft())) { 
             		joinValue = row.get(column);
             	}            	
             }
@@ -81,7 +81,7 @@ public class NewJoinDataSetDefinitionEvaluator implements DataSetEvaluator {
         	//Object joinValue = row.get(dsd.getJoinColumnOnRight());
             Object joinValue = null;
         	for (DataSetColumn column : row.keySet()) { 
-            	if (column.getColumnName().equals(dsd.getJoinColumnOnRight())){ 
+            	if (column.getDisplayName().equals(dsd.getJoinColumnOnRight())){ 
             		joinValue = row.get(column);
             	}            	
             }
@@ -111,7 +111,7 @@ public class NewJoinDataSetDefinitionEvaluator implements DataSetEvaluator {
     
     
     private DataSetColumn prefixDataSetColumn(String prefixForLeft, DataSetColumn c) {
-        return new SimpleDataSetColumn(prefixForLeft + c.getKey(), c.getColumnName(), c.getDescription(), c.getDataType());
+        return new SimpleDataSetColumn(prefixForLeft + c.getColumnKey(), c.getDisplayName(), c.getDescription(), c.getDataType());
     }
 }
 

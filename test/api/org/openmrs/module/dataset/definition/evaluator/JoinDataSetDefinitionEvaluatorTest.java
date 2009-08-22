@@ -46,9 +46,9 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
         DataSet<?> result = Context.getService(DataSetDefinitionService.class).evaluate(join, new EvaluationContext());
         Map<DataSetColumn, Object> row1 = (Map<DataSetColumn, Object>) result.iterator().next();
         for (Map.Entry<DataSetColumn, Object> e : row1.entrySet()) {
-            if (e.getKey().getKey().equals("patient.name"))
+            if (e.getKey().getColumnKey().equals("patient.name"))
                 Assert.assertEquals(e.getValue(), "Alice");
-            else if (e.getKey().getKey().equals("encounter.encounter_type"))
+            else if (e.getKey().getColumnKey().equals("encounter.encounter_type"))
                 Assert.assertEquals(e.getValue(), "Registration");
         }
         

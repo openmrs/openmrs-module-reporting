@@ -13,8 +13,11 @@ $(document).ready(function() {
 		"bAutoWidth": true
 	} );			
 } );
-
 </script>
+<style>
+.small { text-decoration: italic; font-size: x-small;  }
+</style>
+
 
 <div id="page">
 	<div id="container">
@@ -23,8 +26,8 @@ $(document).ready(function() {
 		<div id="inline-list">
 			<p>
 				<ul>
-					<li class="first"><a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form">Add Indicator</a></li>
-					<li><a href="${pageContext.request.contextPath}/module/reporting/newIndicator.form">Add Cohort Indicator</a></li>
+					<li class="first"><a href="${pageContext.request.contextPath}/module/reporting/indicators/editIndicator.form">Add Indicator</a></li>
+					<li><a href="${pageContext.request.contextPath}/module/reporting/indicators/indicatorWizard.form">Add Cohort Indicator</a></li>
 					<li class="last">more to come...</li>
 				</ul>
 			</p>
@@ -33,38 +36,39 @@ $(document).ready(function() {
 		<table id="indicator-table" class="display" >
 			<thead>
 				<tr>
-					<th width="1%"></th>
-					<th width="40%">Indicator</th>
-					<th width="10%">Aggregator</th>
-					<th width="10%">Cohort Definition</th>
-					<th width="15%">Created</th>
-					<th width="1%"></th>
+					<th>Indicator</th>
+					<th>Cohort Definition</th>
+					<th>Edit</th>
+					<th>Created</th>
+					<th>Delete</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${indicators}" var="indicator" varStatus="status">
 					<tr>
-						<td align="center">							
-							<a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}">
+						<td align="center" width="1%">							
+							<a href="${pageContext.request.contextPath}/module/reporting/indicators/editIndicator.form?uuid=${indicator.uuid}">
 								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
 							</a>
 						</td>
-						<td>
-							<a href="${pageContext.request.contextPath}/module/reporting/editIndicator.form?uuid=${indicator.uuid}">
+						<td width="20%">
+							<a href="${pageContext.request.contextPath}/module/reporting/indicators/editIndicator.form?uuid=${indicator.uuid}">
 								${indicator.name}
 							</a>
 						</td>					
-						<td width="10%">
-							${indicator.aggregator.simpleName}		
-						</td>
-						<td width="10%">
-							${indicator.cohortDefinition.parameterizable.name}
+						<td width="40%">
+							${indicator.cohortDefinition.parameterizable.name}<br/>					
+							<span nowrap="" class="small">defined by parameters (
+								<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}" varStatus="status">
+									${parameter.name}<c:if test="${!status.last}">,</c:if>
+								</c:forEach>
+							)</span>
 						</td>
 						<td width="15%">
-							Created by ${indicator.creator.username} on ${indicator.dateCreated}
+							<span class="small">Created by ${indicator.creator.username} on ${indicator.dateCreated}</span>
 						</td>
-						<td align="center">							
-							<a href="${pageContext.request.contextPath}/module/reporting/purgeIndicator.form?uuid=${indicator.uuid}">
+						<td align="center" width="1%">							
+							<a href="${pageContext.request.contextPath}/module/reporting/indicators/purgeIndicator.form?uuid=${indicator.uuid}">
 								<img src="<c:url value='/images/trash.gif'/>" border="0"/>
 							</a>
 						</td>

@@ -40,11 +40,11 @@ import org.openmrs.propertyeditor.PatientIdentifierTypeEditor;
  * @author jmiranda
  *
  */
-public class IndicatorFormController extends AbstractWizardFormController {
+public class IndicatorWizardFormController extends AbstractWizardFormController {
 
 	private Log log = LogFactory.getLog(this.getClass());
 	
-	public IndicatorFormController() {
+	public IndicatorWizardFormController() {
 		setCommandName("indicatorForm");
 		setPages(new String[] {
 				"/module/reporting/indicators/wizard/chooseIndicatorTypeForm", 

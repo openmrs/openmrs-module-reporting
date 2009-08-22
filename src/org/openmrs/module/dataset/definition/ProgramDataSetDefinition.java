@@ -39,7 +39,7 @@ public class ProgramDataSetDefinition extends BaseDataSetDefinition {
 
 	private Collection<Program> programs;
 	
-	private CohortDefinition filter;
+	private CohortDefinition cohortDefinition;
 
 	/**
 	 * Default constructor
@@ -51,25 +51,13 @@ public class ProgramDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * Full-arg constructor
 	 */
-	public ProgramDataSetDefinition(String name, String description, Collection<Program> programs, CohortDefinition filter) {
+	public ProgramDataSetDefinition(String name, String description, Collection<Program> programs, CohortDefinition cohortDefinition) {
 		this.setName(name);
 		this.setDescription(description);
 		this.programs = programs;
-		this.filter = filter;
+		this.cohortDefinition = cohortDefinition;
 		
 	}
-	
-	
-	
-	public List<Class> getColumnDatatypes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<String> getColumnKeys() {
-		// TODO Auto-generated method stub
-		return null;
-	}		
 	
 	/**
 	 * @see org.openmrs.module.datasetDefinition#getColumns()
@@ -100,11 +88,11 @@ public class ProgramDataSetDefinition extends BaseDataSetDefinition {
 		this.programs = programs;
 	}
 	
-	public CohortDefinition getFilter() {
-		return filter;
+	public CohortDefinition getCohortDefinition() {
+		return cohortDefinition;
 	}
 	
-	public void setFilter(CohortDefinition filter) {
-		this.filter = filter;
+	public void setFilter(CohortDefinition cohortDefinition) {
+		this.cohortDefinition = cohortDefinition;
 	}
 }

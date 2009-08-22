@@ -14,6 +14,10 @@
 		} );
 	} );
 </script>
+<style>
+.small { font-size: x-small; }
+</style>
+
 
 <div id="page">
 	<div id="container">
@@ -29,13 +33,14 @@
 			</select>
 			<input type="submit" value="Create"/>
 		</form>
-		| &nbsp;
-		<a href="${pageContext.request.contextPath}/module/reporting/reports/indicatorReportEditor.form">Add Indicator Report</a>
+		<span>|</span> 
+		<a href="${pageContext.request.contextPath}/module/reporting/reports/indicatorReportEditor.form">Indicator Report</a>
+		<span>|</span> 
+		<a href="${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReportEditor.form">Period Indicator Report</a>
 
 		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
-					<th width="1%"></th>
 					<th width="1%"></th>
 					<th width="10%">Name</th>
 					<th width="20%">Type</th>
@@ -47,26 +52,38 @@
 			<tbody>
 				<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
 					<tr>
-						<td width="1%">
-							<a href="${pageContext.request.contextPath}/module/reporting/reports/indicatorReportEditor.form?uuid=${reportDefinition.uuid}">
+						<td width="1%" nowrap="">
+							<c:set var="editUrl">
+								<c:choose>
+									<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
+										${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReportEditor.form?uuid=${reportDefinition.uuid}
+									</c:when>
+									<c:otherwise>
+										<c:choose>
+											<c:when test="${reportDefinition.class.simpleName == 'IndicatorReportDefinition'}">
+												${pageContext.request.contextPath}/module/reporting/reports/indicatorReportEditor.form?uuid=${reportDefinition.uuid}
+											</c:when>
+											<c:otherwise>
+												${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}
+											</c:otherwise>
+										</c:choose>
+									</c:otherwise>
+								</c:choose>
+							</c:set>						
+							<a href="${editUrl}">
 								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
 							</a>
 						</td>
-						<td width="1%" align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}">
-								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
-							</a>
-						</td>
-						<td width="10%">
-							<a href="${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}">
+						<td width="10%" nowrap="">
+							<a href="${editUrl}">
 								${reportDefinition.name}
 							</a>
 						</td>
-						<td width="20%">
+						<td width="20%" nowrap="">
 							${reportDefinition.class.simpleName}
 						</td>
 						<td width="30%">
-							${reportDefinition.description}
+							<span class="small">${reportDefinition.description}</span>
 						</td>
 						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportDefinition.uuid}">
@@ -74,7 +91,7 @@
 							</a>
 						</td>
 						<td width="1%" align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportDefinition.uuid}" onclick="return confirm('Please confirm that you wish to delete: ${reportDefinition.name}');">
+							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportDefinition.uuid}">
 								<img src='<c:url value="/images/trash.gif"/>' border="0"/>							
 							</a>
 						</td>

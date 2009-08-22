@@ -15,6 +15,7 @@ package org.openmrs.module.dataset.definition.evaluator;
 
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.ObsDataSet;
+import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.ObsDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;

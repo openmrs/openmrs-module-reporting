@@ -72,8 +72,10 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 		StringBuilder datasetBuilder = new StringBuilder();
 		datasetBuilder.append("\n");
 		int columnCount = 0;
+		
+		
 		for (DataSetColumn column : dataSet.getDataSetDefinition().getColumns()) { 
-			datasetBuilder.append(column.getKey());
+			datasetBuilder.append(column.getColumnKey());
 			if (columnCount++ <= dataSet.getDataSetDefinition().getColumns().size())
 				datasetBuilder.append(",");
 		}
@@ -85,7 +87,7 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 			Map<DataSetColumn, Object> columnSet = (Map<DataSetColumn, Object>) rowSet;			
 
 			for (DataSetColumn column : dataSet.getDataSetDefinition().getColumns()) {
-				datasetBuilder.append(column.getColumnName() + "=" + columnSet.get(column));
+				datasetBuilder.append(column.getDisplayName() + "=" + columnSet.get(column));
 				if (columnCount++ <= dataSet.getDataSetDefinition().getColumns().size()) {
 					datasetBuilder.append(",");
 				}

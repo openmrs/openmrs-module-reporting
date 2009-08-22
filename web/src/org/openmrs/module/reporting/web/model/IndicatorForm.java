@@ -28,17 +28,68 @@ public class IndicatorForm {
 	
     private static final long serialVersionUID = 1L;
     
-    //***** PROPERTIES *****
-    private String logicQuery = null;
-    private String indicatorType = null;  // supports CohortDefinition and LogicQuery
+    // Basic Details 
+    private String columnKey = null;
+    private String displayName = null;
+    private String indicatorType = null;  // supports CohortDefinition or LogicQuery
+
+    // Action 
+    private String action = null;
     
+    // Logic-based indicator  
+    private String logicQuery = null;
+    private String aggregator = null;
+    
+    // Cohort-based indicator
+    private String uuid = null; 		
+    private String reportUuid = null;
     private String cohortDefinitionUuid = null;
-    private CohortIndicator cohortIndicator = new CohortIndicator();
+    private CohortIndicator cohortIndicator = null;
     private CohortDefinition cohortDefinition = null;
-    private Map<String, Parameter> parameters = new HashMap<String, Parameter>();
+    private Map<String, Parameter> parameterMapping = new HashMap<String, Parameter>();
     
     //***** CONSTRUCTORS *****
     public IndicatorForm() { }
+
+    public String getUuid() { 
+    	return this.uuid;
+    }
+    
+    public void setUuid(String uuid) { 
+    	this.uuid = uuid;
+    }    
+    
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}    
+    
+	public String getColumnKey() {
+		return columnKey;
+	}
+
+	public void setColumnKey(String key) {
+		this.columnKey = key;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public String getAggregator() {
+		return aggregator;
+	}
+
+	public void setAggregator(String aggregator) {
+		this.aggregator = aggregator;
+	}
 
 	public CohortIndicator getCohortIndicator() {
 		return cohortIndicator;
@@ -48,12 +99,12 @@ public class IndicatorForm {
 		this.cohortIndicator = cohortIndicator;
 	}
 
-	public Map<String, Parameter> getParameters() {
-		return parameters;
+	public Map<String, Parameter> getParameterMapping() {
+		return parameterMapping;
 	}
 
-	public void setParameters(Map<String, Parameter> parameters) {
-		this.parameters = parameters;
+	public void setParameterMapping(Map<String, Parameter> parameterMapping) {
+		this.parameterMapping = parameterMapping;
 	}
 
 	public String getIndicatorType() {
@@ -88,4 +139,12 @@ public class IndicatorForm {
 		this.cohortDefinitionUuid = cohortDefinitionUuid;
 	}
 
+	public String getReportUuid() {
+		return reportUuid;
+	}
+
+	public void setReportUuid(String reportUuid) {
+		this.reportUuid = reportUuid;
+	}
+	
 }

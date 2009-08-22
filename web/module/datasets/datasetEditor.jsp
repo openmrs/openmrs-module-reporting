@@ -137,8 +137,8 @@ $(document).ready(function() {
 						<tbody>					
 							<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="status">				
 								<tr>
-									<td><input type="checkbox" name="deleteColumn" value="${column.columnName}"></td>
-									<td>${column.columnName}</td>
+									<td><input type="checkbox" name="deleteColumn" value="${column.columnKey}"></td>
+									<td>${column.displayName}</td>
 									<td>${column.dataType}</td>
 								</tr>
 							</c:forEach>
@@ -185,7 +185,7 @@ $(document).ready(function() {
 										<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="varStatus">				
 											<c:if test="${varStatus.index < 7}">
 												<th>
-													${column.columnName}
+													${column.displayName}
 												</th>
 											</c:if>
 										</c:forEach>

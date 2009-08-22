@@ -54,6 +54,19 @@ public class ReportDefinition extends BaseParameterizable {
 	// INSTANCE METHODS
 	//***********************
 	
+	
+	/**
+	 * Convenience method to check for existing dataset definitions.
+	 * 
+	 * @return	
+	 * 		true 	If report definition has at least one dataset definition.
+	 * 		false	If report definition has no dataset definitions. 
+	 */
+	public boolean hasDataSetDefinitions() { 
+		return dataSetDefinitions != null && !dataSetDefinitions.isEmpty();
+	}
+	
+	
 	/**
 	 * @param definition the Mapped<DataSetDefinition> to add
 	 */

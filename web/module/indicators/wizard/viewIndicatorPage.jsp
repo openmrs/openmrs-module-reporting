@@ -15,7 +15,7 @@
 			<b>Please confirm the information below and then press continue...</b>
 		</center>
 			
-		<form action="<c:url value="/module/reporting/newIndicator.form"/>" method="post">			
+		<form action="<c:url value="/module/reporting/indicators/indicatorWizard.form"/>" method="post">			
 			<fieldset>
 			<legend>Done!</legend>			
 				<div>

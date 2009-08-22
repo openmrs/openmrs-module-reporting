@@ -74,7 +74,7 @@ public class DataExportDataSetEvaluatorTest extends BaseModuleContextSensitiveTe
 		DataSet<?> dataSet = dsds.evaluate(dataSetDefinition, evalContext);
 	
 		for (DataSetColumn column : dataSet.getDataSetDefinition().getColumns()) { 
-			log.info("column: " + column.getKey() + " " + column.getDataType());		
+			log.info("column: " + column.getColumnKey() + " " + column.getDataType());		
 		}
 		Assert.fail("Need to add test conditions");
 	}

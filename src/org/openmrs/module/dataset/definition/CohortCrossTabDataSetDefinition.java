@@ -96,7 +96,7 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 		List<DataSetColumn> cols = new Vector<DataSetColumn>();
 		for (DataSetColumn rowColumn : rowCohortDataSetDefinition.getParameterizable().getColumns()) {
 			for (DataSetColumn colColumn : columnCohortDataSetDefinition.getParameterizable().getColumns()) {
-				String key = rowColumn.getKey() + rowColumnDelimiter + colColumn.getKey();
+				String key = rowColumn.getColumnKey() + rowColumnDelimiter + colColumn.getColumnKey();
 				String desc = rowColumn.getDescription() + rowColumnDelimiter + colColumn.getDescription();
 				cols.add(new SimpleDataSetColumn(key, desc, Cohort.class));
 			}

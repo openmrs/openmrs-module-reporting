@@ -92,10 +92,10 @@ public class JoinDataSetDefinition extends BaseDataSetDefinition {
     public List<DataSetColumn> getColumns() {
         List<DataSetColumn> ret = new ArrayList<DataSetColumn>();
         for (DataSetColumn col : left.getColumns()) {
-            ret.add(new SimpleDataSetColumn(prefixForLeft + col.getKey(), col.getColumnName(), col.getDescription(), col.getDataType()));
+            ret.add(new SimpleDataSetColumn(prefixForLeft + col.getColumnKey(), col.getDisplayName(), col.getDescription(), col.getDataType()));
         }
         for (DataSetColumn col : right.getColumns()) {
-            ret.add(new SimpleDataSetColumn(prefixForRight + col.getKey(), col.getColumnName(), col.getDescription(), col.getDataType()));
+            ret.add(new SimpleDataSetColumn(prefixForRight + col.getColumnKey(), col.getDisplayName(), col.getDescription(), col.getDataType()));
         }
         return ret;
     }

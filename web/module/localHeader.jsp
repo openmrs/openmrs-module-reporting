@@ -5,7 +5,7 @@
 <div style="border-bottom: 1px solid black;">
 	<ul id="menu">
 		<li class="first">
-			<a href="index.htm" style="text-decoration:none;"><spring:message code="@MODULE_ID@.title" /></a>
+			<a href="${pageContext.request.contextPath}/module/reporting/manageDashboard.form" style="text-decoration:none;"><spring:message code="@MODULE_ID@.title" /></a>
 		</li>
 		<li class="">
 			<a href="${pageContext.request.contextPath}/module/reporting/manageCohortDefinitions.list">Manage Cohorts</a>
@@ -14,7 +14,7 @@
 			<a href="${pageContext.request.contextPath}/module/reporting/manageDatasets.list">Manage Datasets</a>
 		</li>
 		<li class="">
-			<a href="${pageContext.request.contextPath}/module/reporting/manageIndicators.list">Manage Indicators</a>
+			<a href="${pageContext.request.contextPath}/module/reporting/indicators/manageIndicators.list">Manage Indicators</a>
 		</li>	
 		<li class="last">
 			<a href="${pageContext.request.contextPath}/module/reporting/reports/reportManager.list">Manage Reports</a>

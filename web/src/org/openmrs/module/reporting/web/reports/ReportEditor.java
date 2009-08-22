@@ -33,6 +33,7 @@ public class ReportEditor {
     	ReportDefinition r = Context.getService(ReportService.class).getReportDefinition(uuid, type);
     	model.addAttribute("report", r);
     	
+    	
         return model;
     }
     

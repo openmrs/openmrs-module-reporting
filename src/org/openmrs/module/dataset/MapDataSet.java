@@ -68,7 +68,7 @@ public class MapDataSet<T> implements DataSet<T> {
     public void addData(String columnKey, T dataElement) {
     	boolean found = false;
     	for (DataSetColumn c : definition.getColumns()) {
-    		if (c.getKey() != null && c.getKey().equals(columnKey)) {
+    		if (c.getColumnKey() != null && c.getColumnKey().equals(columnKey)) {
     			data.put(c, dataElement);
     			found = true;
     		}
@@ -87,7 +87,7 @@ public class MapDataSet<T> implements DataSet<T> {
 		if (data != null) {
 			for (Iterator<DataSetColumn> i = data.keySet().iterator(); i.hasNext();) {
 				DataSetColumn c = i.next();
-				sb.append(c.getKey() + "=" + data.get(c) + (i.hasNext() ? ", " : ""));
+				sb.append(c.getColumnKey() + "=" + data.get(c) + (i.hasNext() ? ", " : ""));
 			}
 		}
 		return sb.toString();

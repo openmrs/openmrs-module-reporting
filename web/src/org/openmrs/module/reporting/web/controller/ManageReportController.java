@@ -75,7 +75,7 @@ public class ManageReportController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/manageReports")
+    //@RequestMapping("/module/reporting/manageReports")
     public String manageReports(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
@@ -179,7 +179,7 @@ public class ManageReportController {
 				throw new APIException("Unknown rendering type");
 			}
 			renderer.render(reportData, null, response.getOutputStream()); 
-	    	return "redirect:/module/reporting/manageReports.list";
+	    	return "redirect:/module/reporting/reports/reportManager.list";
     	}    
     	
     	model.addAttribute("reportSchema", reportSchema);
@@ -561,7 +561,7 @@ public class ManageReportController {
     	}
     	
     	// TODO Refactor controller -- this should never happen, not should it be necessary
-    	//return "redirect:/module/reporting/manageReports.list";
+    	//return "redirect:/module/reporting/reports/reportManager.list";
     } 
         
 }

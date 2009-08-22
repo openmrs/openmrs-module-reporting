@@ -90,7 +90,7 @@ public class DataExportDataSet implements DataSet<Object> {
 			Map<String, Object> vals = iter.next();
 			Map<DataSetColumn, Object> ret = new HashMap<DataSetColumn, Object>();
 			for (DataSetColumn c : definition.getColumns()) {
-				ret.put(c, vals.get(c.getKey()));
+				ret.put(c, vals.get(c.getColumnKey()));
 			}
 			return ret;
 		}

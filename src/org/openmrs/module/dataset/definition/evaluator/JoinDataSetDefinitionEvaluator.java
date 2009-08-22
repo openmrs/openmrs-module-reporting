@@ -84,7 +84,7 @@ public class JoinDataSetDefinitionEvaluator implements DataSetEvaluator {
      */
     private DataSetColumn findColumnDefinition(DataSetDefinition definition, String columnKey) {
         for (DataSetColumn test : definition.getColumns()) {
-            if (test.getKey().equals(columnKey)) {
+            if (test.getColumnKey().equals(columnKey)) {
                 return test;
             }
         }
@@ -92,6 +92,6 @@ public class JoinDataSetDefinitionEvaluator implements DataSetEvaluator {
     }
 
     private DataSetColumn prefixDataSetColumn(String prefixForLeft, DataSetColumn c) {
-        return new SimpleDataSetColumn(prefixForLeft + c.getKey(), c.getColumnName(), c.getDescription(), c.getDataType());
+        return new SimpleDataSetColumn(prefixForLeft + c.getColumnKey(), c.getDisplayName(), c.getDescription(), c.getDataType());
     }
 }

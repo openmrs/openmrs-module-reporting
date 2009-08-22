@@ -102,9 +102,9 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 		// header row
 		writer.write(getBeforeRowDelimiter());
 		for (DataSetColumn column : columns) {
-			if (isDisplayColumn(column.getKey())) { 
+			if (isDisplayColumn(column.getColumnKey())) { 
 				writer.write(getBeforeColumnDelimiter());
-				writer.write(escape(column.getKey()));
+				writer.write(escape(column.getColumnKey()));
 				writer.write(getAfterColumnDelimiter());
 			}
 		}
@@ -116,7 +116,7 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 			Map<DataSetColumn, Object> map = i.next();
 			for (DataSetColumn column : columns) {
 			
-				if (isDisplayColumn(column.getKey())) { 
+				if (isDisplayColumn(column.getColumnKey())) { 
 					Object colValue = map.get(column);
 					writer.write(getBeforeColumnDelimiter());
 					if (colValue != null) { 

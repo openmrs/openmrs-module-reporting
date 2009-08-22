@@ -39,7 +39,7 @@ public class ConceptDataSetColumn implements DataSetColumn {
 	 * TODO Test when short name does not exist for a given concept
 	 * TODO Figure out the best way to get the short name for a concept
      */
-    public String getKey() {
+    public String getColumnKey() {
     	return (concept.getName() != null) ? 
     				(concept.getName().getShortName()!=null) ?
     						concept.getName().getShortName() :
@@ -53,7 +53,7 @@ public class ConceptDataSetColumn implements DataSetColumn {
 	 * TODO Test when short name does not exist for a given concept
 	 * TODO Figure out the best way to get the short name for a concept
 	 */
-	public String getColumnName() {	    
+	public String getDisplayName() {	    
     	return (concept.getName() != null) ? 
 				(concept.getName().getShortName()!=null) ?
 						concept.getName().getShortName() :
@@ -101,7 +101,7 @@ public class ConceptDataSetColumn implements DataSetColumn {
     public boolean equals(Object obj) {
    		if (obj instanceof DataSetColumn) {
    			DataSetColumn col = (DataSetColumn) obj;
-			if (StringUtils.equals(getKey(), col.getKey())) {
+			if (StringUtils.equals(getColumnKey(), col.getColumnKey())) {
 				return true;
 			}
 		}
@@ -114,7 +114,7 @@ public class ConceptDataSetColumn implements DataSetColumn {
     @Override
     public int hashCode() {
 		int hash = 7;
-		hash = 31 * hash + (getKey() == null ? 0 : getKey().hashCode());
+		hash = 31 * hash + (getColumnKey() == null ? 0 : getColumnKey().hashCode());
 		return hash;
     }
 
@@ -122,6 +122,6 @@ public class ConceptDataSetColumn implements DataSetColumn {
      * Compares columns by their name.  
      */
 	public int compareTo(DataSetColumn other) {		
-		return this.getColumnName().compareTo(other.getColumnName());		
+		return this.getDisplayName().compareTo(other.getDisplayName());		
 	}
 }

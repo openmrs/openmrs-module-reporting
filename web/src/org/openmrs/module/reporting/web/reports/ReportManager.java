@@ -7,6 +7,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.report.IndicatorReportDefinition;
+import org.openmrs.module.report.PeriodIndicatorReportDefinition;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.springframework.stereotype.Controller;
@@ -40,6 +42,8 @@ public class ReportManager {
     	// Get possible new reports to create
     	Map<Class<? extends ReportDefinition>, String> types = new HashMap<Class<? extends ReportDefinition>, String>();
     	types.put(ReportDefinition.class, "Basic Report");
+    	types.put(IndicatorReportDefinition.class, "Indicator Report");
+    	types.put(PeriodIndicatorReportDefinition.class, "Period Indicator Report");
     	model.addAttribute("types", types);
     	
         return model;

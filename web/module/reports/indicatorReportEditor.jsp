@@ -65,8 +65,8 @@ $(document).ready(function() {
 	} );			
 	
 	// Redirect to the listing page
-	$('#cancel-button').click(function(event){
-		window.location.href='<c:url value="/module/reporting/manageReports.list"/>';
+	$('#back-button').click(function(event){
+		window.location.href='<c:url value="/module/reporting/reports/reportManager.list"/>';
 	});
 
 	// Call client side validation method
@@ -176,51 +176,23 @@ $(document).ready(function() {
 									</c:otherwise>
 								</c:choose>
 							</li>
-							<li>
-								<div>
-									<label class="desc" for="startDate">Start Date</label>			
-									<openmrs:fieldGen type="java.util.Date" 
-										formFieldName="startDate" 
-										val="" parameters="" />
-								</div>
-							</li>	
-							<li>
-								<div>
-									<label class="desc" for="endDate">End Date</label>			
-									<openmrs:fieldGen type="java.util.Date" 
-										formFieldName="endDate" 
-										val="" parameters="" />
-								</div>
-							</li>	
-							<li>
-								<div>
-									<label class="desc" for="location">Location</label>			
-									<openmrs:fieldGen type="org.openmrs.Location" 
-										formFieldName="location" 
-										val="" parameters="" />
-								</div>
-							</li>
 							<li>														
 								<div>
-									<table id="report-schema-indicator-table" class="display">
+									<table id="report-schema-indicator-table">
 										<thead>
 											<tr>
+												<th>Key</th>
+												<th>Display Name</th>
 												<th>Indicator</th>
 												<th>Result</th>
 											</tr>
 										</thead>
 										<tbody>																				
-											<tr>
-												<td>
-													<c:if test="${empty indicatorReport.indicators}">
-														There are currently no indicators available within this report.
-													</c:if>
-												</td>
-												<td></td>
-											</tr>
 											<c:forEach var="indicator" items="${indicatorReport.indicators}">
 												<tr>
-													<td>
+													<td width="5%">${indicator.name}</td>
+													<td width="10%">${indicator.name}</td>												
+													<td width="20%">
 														<strong>${indicator.name}</strong><br/>
 														<c:forEach var="property" items="${indicator.cohortDefinition.parameterizable.configurationProperties}">
 															<c:if test="${!empty property.value}"> 															
@@ -233,28 +205,21 @@ $(document).ready(function() {
 															</c:if>
 														</c:forEach>
 													</td>
-													<td align="center">
+													<td wdith="5%" align="center">
 													   <span id="result-${indicator.uuid}" class="result">?</span>
 													</td>
 												</tr>									
 											</c:forEach>
-											<tr>
-												<td>
-													<select name="indicatorId">
-														<option></option>
-														<c:forEach var="indicator" items="${indicators}">
-															<option value="${indicator.uuid}">${indicator.name}</option>
-														</c:forEach>
-													</select>																								
-													<input type="submit" name="action" value="Add"/>
-												</td>	
-												<td></td>										
-											</tr>
 										</tbody>
 									</table>
-									
 								</div>	
 							</li>					
+							<li>
+								<div>
+									<input id="add-indicator-button" type="button" value="Add an indicator"/>
+									<input id="back-button" type="button" value="Back to reports"/>									
+								</div>						
+							</li>
 						</ul>
 					</c:if>
 				</form:form>

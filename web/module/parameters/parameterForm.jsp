@@ -54,7 +54,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 		<div>
 		
 		
-			<form id="saveParameterForm" method="post" action="<c:url value='/module/reporting/parameter.form'/>">
+			<form id="saveParameterForm" method="post" action="<c:url value='/module/reporting/parameters/parameter.form'/>">
 					<ul>								
 						<spring:hasBindErrors name="parameter">  
 							<li>
@@ -129,7 +129,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 <!-- 
 
 
-			<c:url var="formAction" value='/module/reporting/parameter.form'/>
+			<c:url var="formAction" value='/module/reporting/parameters/parameter.form'/>
 			<form:form id="saveParameterForm" commandName="parameter" action="parameter.form" method="POST">
 					<ul>								
 						

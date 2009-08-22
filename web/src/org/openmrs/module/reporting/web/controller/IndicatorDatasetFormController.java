@@ -111,7 +111,7 @@ public class IndicatorDatasetFormController {
 						String parameterMapping = "indicator.location=${dataset.location},indicator.date=${dataset.date}";
 
 						// FIXME Assumes CohortIndicatorDataSetDefinition and CohortIndicator
-						dataSetDefinition.addIndicator(
+						dataSetDefinition.addCohortIndicator(
 								indicator.getName(),(CohortIndicator) indicator, parameterMapping);
 										
 					}										

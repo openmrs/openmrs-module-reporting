@@ -4,10 +4,9 @@
 <%@ include file="../dialogSupport.jsp"%>
 
 
-<!-- Form -->
+<!-- Wufoo Form CSS and Javascript
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
-<!-- 
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/wufoo/wufoo.js"></script>
  -->
 
@@ -35,19 +34,20 @@ $(document).ready(function() {
 	$("#close-button").click(function(){
 		$("#indicator-parameter-dialog").dialog('close');
 	});
+
+	// ======  Dialog : Indicator Dataset ===============================================
+
+
 	$("#add-parameter-button").click(function(event){ 
 		//$("#indicator-parameter-dialog").dialog('open');
 
 		showReportingDialog({ 
 			title: 'Add Parameter', 
-			url: '<c:url value="/module/reporting/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&redirectUrl=${redirectUrl}"/>',
+			url: '<c:url value="/module/reporting/parameters/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&redirectUrl=${redirectUrl}"/>',
 			successCallback: function() { 
 				window.location.reload(true);
 			} 
 		});
-		
-
-		
 	});
 
 	
@@ -137,37 +137,24 @@ $(document).ready(function() {
 		$("#cohortDefinitionSpan").html(data.name + " " + data.description);
 		$("#cohortDefinitionSpan").show();
 		$("#cohortDefinitionName").hide();
+
+		// Submit the page to allow it to refresh
 		$("#saveIndicatorForm").submit();
 	});
-
-	/*
-	// Clear the cohort definition fields on re-focus (save values for 'onblur' event)
-	$("#cohortDefinitionName").bind('focus', function() {
-		currentCohortName = $("#cohortDefinitionName").val();
-		currentCohortUuid = $("#cohortDefinitionUuid").val();		
-		$("#cohortDefinitionName").val('');
-		$("#cohortDefinitionUuid").val('');
-	});
-	*/ 
-	
-	/*
-	// When leaving the field, we want to reset the value if nothing was selected
-	$("#cohortDefinitionName").bind('blur', function(event) {
-		if ($("#cohortDefinitionName").val() == '') { 
-			$("#cohortDefinitionName").val(currentCohortName);
-			$("#cohortDefinitionUuid").val(currentCohortUuid);
-			event.preventDefault();	
-		}
-	}); 
-	*/	
-
 
 	// ======  Button: Cancel Button ========================================
 	
 	// Redirect to the listing page
 	$('#cancel-indicator-button').click(function(event){
-		window.location.href='<c:url value="/module/reporting/manageIndicators.list"/>';
+		window.location.href='<c:url value="/module/reporting/indicators/manageIndicators.list"/>';
 	});	
+
+	$('#show-parameter-mapping').click(function(event){
+		$('#parameter-mapping').show();
+	});
+	$('#hide-parameter-mapping').click(function(event){
+		$('#parameter-mapping').hide();
+	});
 	
 });
 
@@ -190,12 +177,23 @@ var cohortDefinitions = [
 </script>
 
 <style>
+#parameter-mapping { 
+	padding:10px;
+	width:400px;
+	margin:10px;
+}
+
 .indicator-parameter-table { 
 	width: 100%;
 }
 .ui-tabs .ui-tabs-hide {
      display: none;
 }
+
+form ul { margin:0; padding:0; list-style-type:none; width:100%; }
+form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
+label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
+
 </style>
 
 <div id="page">
@@ -209,14 +207,19 @@ var cohortDefinitions = [
 		<div id="indicator-tabs" class="ui-tabs-hide">			
 			<ul>
                 <li><a href="#indicator-basic-tab"><span>Basic</span></a></li>
-                <li><a href="#indicator-advanced-tab"><span>Advanced</span></a></li>
             </ul>
 			<div id="indicator-basic-tab">
 				<form method="post" id="saveIndicatorForm" 
-						action="${pageContext.request.contextPath}/module/reporting/saveIndicator.form">			
+						action="${pageContext.request.contextPath}/module/reporting/indicators/saveIndicator.form">			
 					<input type="hidden" id="uuid" name="uuid" value="${indicator.uuid}"/>				
 					<div>
 						<ul>		
+						
+						
+							<%-- ===============================================================
+												B a s i c   I n f o r m a t i o n 
+							   	 =============================================================== --%>
+						
 							<li>
 								<label class="desc" for="name">Name</label>
 								<div>
@@ -231,20 +234,6 @@ var cohortDefinitions = [
 										class="field textarea small" rows="3" cols="20"
 										tabindex="2">${indicator.description}</textarea>				
 								</div>					
-							</li>
-							<li>
-								<label class="desc" for="indicator">Define your indicator</label>
-								<div>								
-									<span id="cohortDefinitionSpan">
-										${indicator.cohortDefinition.parameterizable.name}
-									</span>
-									
-									<input id="cohortDefinitionName" name="cohortDefinition.name" type="text" class="field text large" tabindex="3"
-											value="${indicator.cohortDefinition.parameterizable.name}"/>
-									
-									<input id="cohortDefinitionUuid" name="cohortDefinition.uuid" type="hidden"  tabindex="4" 
-											value="${indicator.cohortDefinition.parameterizable.uuid}"/>							
-								</div>	
 							</li>
 							<li>								
 								<div>
@@ -263,63 +252,74 @@ var cohortDefinitions = [
 									--%>
 								</div>
 							</li>
+							
+							<%-- ===============================================================
+												C o h o r t   D e f i n i t i o n
+							   	 =============================================================== --%>
+							
 							<li>
-								<div>
-								
-									<label class="desc" for="cohortDefinition">Map parameters</label>
-								
-									<div>(hidden)</div>
+								<label class="desc" for="indicator">Define your indicator</label>
+								<div>								
+									<span id="cohortDefinitionSpan">
+										${indicator.cohortDefinition.parameterizable.name}
+									</span>
 									
-									<%-- 
-									<table id="indicator-parameter-mapping-table">
-										<thead>
-											<tr>
-												<th></th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>										
-											<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}" varStatus="varstatus">
-												<tr>
-													<td>
-														<strong>${parameter.name}</strong>
-													</td>
-													<td>							
-														<input type="radio" name="source_${parameter.name}" "value="inherit"/>
-														map <strong>${parameter.name}</strong> to default <strong>indicator.${parameter.name}</strong> parameter
-														<br/>
-														<input type="radio" name="source_${parameter.name}" value="choose"/>
-														<select>
-															<c:if test="${empty indicator.parameters}">
-																<option>(map to an existing parameter)</option>
-															</c:if>
-															<c:forEach var="mappedParameter" items="${indicator.parameters}">										
-																<option>${mappedParameter.name}</option>
-															</c:forEach>
-														</select>
-														<img id="add-parameter-button" src="<c:url value='/images/add.gif'/>" border='0'/>
-													</td>									
-					
-												</tr>
-											</c:forEach>
-										</tbody>
-										<tfoot>			
-										</tfoot>
-									</table>
-									--%>
-								</div>
+									<input id="cohortDefinitionName" name="cohortDefinition.name" type="text" class="field text large" tabindex="3"
+											value="${indicator.cohortDefinition.parameterizable.name}"/>
+									
+									<input id="cohortDefinitionUuid" name="cohortDefinition.uuid" type="hidden"  tabindex="4" 
+											value="${indicator.cohortDefinition.parameterizable.uuid}"/>							
+								</div>	
+								<br/>
 								
+
+							<%-- ===============================================================
+												P a r a m e t e r   M a p p i n g
+							   	 =============================================================== --%>
+
+								<div>
+									<rptTag:mappedField id="indicatorPararameterMapping" label="Parameter Mapping" 
+														parentType="${indicator.class.name}" parentObj="${indicator}" 
+														mappedProperty="cohortDefinition" 
+														defaultValue="${indicator.cohortDefinition}" nullValueLabel="None" 
+														width="375"/>
+								</div>
+	
+								<a id="show-parameter-mapping" href="#">Show</a>
+								<a id="hide-parameter-mapping" href="#">Hide</a>
+								<div id="parameter-mapping" style="display:none;">
+									<fieldset>								
+										<legend>Parameter Mapping</legend>									
+										<div>
+											<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}" varStatus="varstatus">
+												<strong>${parameter.name}</strong>:
+												<select>
+													<option>(choose a parameter mapping)</option>
+													<c:forEach var="mappedParameter" items="${indicator.parameters}">										
+														<option>${mappedParameter.name}</option>
+													</c:forEach>
+												</select>
+												<br/><br/>
+											</c:forEach>
+										</div>
+									</fieldset>
+								</div>
+									
 								
 							</li>
 
+
+							<%-- ===============================================================
+													P a r a m e t e r s
+							   	 =============================================================== --%>
 
 							<li>
 								<label class="desc">Parameters</label>	
 	
 	
-								<c:set var="redirectUrl" value='/module/reporting/manageIndicators.list' />								
+								<c:set var="redirectUrl" value='/module/reporting/indicators/manageIndicators.list' />								
 								<%-- <c:url var="redirectUrl" value='/module/reporting/editCohortDefinition.form?uuid=${param.uuid}&type=${param.type}'/> --%>
-								<c:url var="addParameterUrl" value='/module/reporting/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&redirectUrl=${redirectUrl}'/>
+								<c:url var="addParameterUrl" value='/module/reporting/parameters/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&redirectUrl=${redirectUrl}'/>
 	
 
 								
@@ -343,8 +343,8 @@ var cohortDefinitions = [
 										</thead>
 										<tbody>
 											<c:forEach items="${indicator.parameters}" var="parameter" varStatus="varStatus">												
-												<c:url var="editParameterUrl" value='/module/reporting/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>																
-												<c:url var="deleteParameterUrl" value='/module/reporting/deleteParameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>
+												<c:url var="editParameterUrl" value='/module/reporting/parameters/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>																
+												<c:url var="deleteParameterUrl" value='/module/reporting/parameters/deleteParameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>
 												<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
 													<td valign="top" nowrap="true">
 														<a href="${editParameterUrl}"><img src='<c:url value="/images/edit.gif"/>' border="0"/></a>
@@ -372,31 +372,23 @@ var cohortDefinitions = [
 										</tbody>
 									</table>
 								</div>
-								<span id="testTarget">Does it work?</span>
+
 							</li>
 
 
 
 							
 							<li class="buttons">
-								<input id="save-indicator-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
+								<input id="save-indicator-button" class="btTxt submit" name="action" type="submit" value="Save" tabindex="7" />
 								<input type="button" id="add-parameter-button" value="Add Parameter"/>	
-								<input id="cancel-indicator-button" type="button" name="cancel" value="Cancel">
+								<input id="cancel-indicator-button" type="button" name="action" value="Cancel">
 							</li>
 						</ul>
 					</div>
 				</form>								
 			</div>
 			
-			
-			<div id="indicator-advanced-tab">
-	
-	
-				To be determined ... 
-	
-	
-	
-			</div>
+		
 			
 		</div><!--  #tabs -->
 	</div><!--#container-->

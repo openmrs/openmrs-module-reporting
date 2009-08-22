@@ -40,6 +40,13 @@ public class AgeCohortDefinition extends BaseCohortDefinition {
 		super();
 	}
 	
+	public AgeCohortDefinition(Integer minAge, Integer maxAge, Date effectiveDate) { 
+		super();
+		this.minAge = minAge;
+		this.maxAge = maxAge;
+		this.effectiveDate = effectiveDate;
+	}
+	
 	//***** INSTANCE METHODS *****
 	
 	/**

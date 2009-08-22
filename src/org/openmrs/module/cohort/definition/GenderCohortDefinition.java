@@ -29,11 +29,21 @@ public class GenderCohortDefinition extends BaseCohortDefinition {
 	//***** CONSTRUCTORS *****
 
 	/**
-	 * Default Constructor
+	 * Default constructor
 	 */
 	public GenderCohortDefinition() {
 		super();
 	}
+	
+	/**
+	 * Default Constructor
+	 */
+	public GenderCohortDefinition(String gender) {
+		super();
+		setGender(gender);
+	}
+	
+	
 	
 	//***** INSTANCE METHODS *****
 	

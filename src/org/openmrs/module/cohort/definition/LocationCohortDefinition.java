@@ -42,6 +42,12 @@ public class LocationCohortDefinition extends BaseCohortDefinition {
 	public LocationCohortDefinition() {
 		super();
 	}
+	
+	public LocationCohortDefinition(List<Location> locations) { 
+		super();
+		this.locations = locations;
+	}
+	
 
 	//***** PROPERTY ACCESS *****
 	

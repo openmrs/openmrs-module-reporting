@@ -71,7 +71,7 @@
 														<option>${mappedParameter.name}</option>
 													</c:forEach>
 												</select>							
-												<a href="<c:url value='/module/reporting/indicatorParameter.form?uuid=${indicator.uuid}'/>">
+												<a href="<c:url value='/module/reporting/indicators/indicatorParameter.form?uuid=${indicator.uuid}'/>">
 													<img src="<c:url value='/images/add.gif'/>" border='0'/>
 												</a>
 											</td>									

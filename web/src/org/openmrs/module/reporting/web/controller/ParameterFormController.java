@@ -43,7 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.WebUtils;
 
 @Controller
-@RequestMapping("/module/reporting/parameter")
+@RequestMapping("/module/reporting/parameters/parameter")
 public class ParameterFormController {
 
 	/* Logger */
@@ -130,7 +130,9 @@ public class ParameterFormController {
 				ParameterizableUtil.saveParameterizable(parameterizable);		
 			}
 		}
-		return new ModelAndView("/module/reporting/parameters/parameterSuccess");
+		
+		return new ModelAndView("redirect:/module/reporting/closeWindow.htm");
+		//return new ModelAndView("/module/reporting/parameters/parameterSuccess");
 		//return new ModelAndView("redirect:" + redirectUrl);
 	}
 	

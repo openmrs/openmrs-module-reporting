@@ -125,7 +125,7 @@ public abstract class BaseDataSetDefinition extends BaseParameterizable implemen
 	public List<String> getColumnKeys() {
 		List<String> columnKeys = new ArrayList<String>();
 		for (DataSetColumn column : getColumns()) { 
-			columnKeys.add(column.getKey());
+			columnKeys.add(column.getColumnKey());
 		}
 		return columnKeys;
 	}

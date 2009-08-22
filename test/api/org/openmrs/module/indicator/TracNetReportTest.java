@@ -44,8 +44,19 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  *  Test implemented as a proof-of-concept for producing the Rwanda Tracnet Report
  */
 public class TracNetReportTest extends BaseModuleContextSensitiveTest {
-	
+
 	private static final DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+
+	@Override
+	public Boolean useInMemoryDatabase() {
+		return false;
+	}
+
+	@Before
+	public void runBeforeAllTests() throws Exception {
+		authenticate();
+	}	
+	
 	
 	public ReportDefinition setupReport() {
 		
@@ -123,7 +134,7 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		paramMap.put("indicator.startDate", "${dataSet.startDate}");
 		paramMap.put("indicator.endDate", "${dataSet.endDate}");
 		
-		dsd.addIndicator(key, indicator, paramMap);	
+		dsd.addCohortIndicator(key, indicator, paramMap);	
 		
 		return indicator;
 	}
@@ -146,11 +157,14 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		ReportDefinition rs = setupReport();
 		CohortIndicatorDataSetDefinition dsd = setupDataSetDefinition(rs);
 
+		CohortIndicator indicator = dsd.getIndicator("onArvsAtEnd").getParameterizable();
+		
+		// Replaced "onArvsAtEnd" with indicator
 		dsd.addColumnSpecification("4.", "Nombre total de patients pediatriques (moins de 15 ans) qui sont actuellement sous ARV", 
-								   Number.class, "onArvsAtEnd", "age=child");
+								   Number.class, indicator, "age=child");
 		
 		dsd.addColumnSpecification("9.", "Nombre total de patients adultes (plus de 15 ans) qui sont actuellement sous traitement ARV", 
-				   Number.class, "onArvsAtEnd", "age=adult");
+				   Number.class, indicator, "age=adult");
 		
 		EvaluationContext context = new EvaluationContext();
 		CsvReportRenderer renderer = new CsvReportRenderer();
@@ -167,13 +181,5 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		}
 	}
 	
-	@Override
-	public Boolean useInMemoryDatabase() {
-		return false;
-	}
 
-	@Before
-	public void runBeforeAllTests() throws Exception {
-		authenticate();
-	}
 }

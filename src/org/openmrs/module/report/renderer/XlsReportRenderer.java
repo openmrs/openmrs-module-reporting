@@ -69,8 +69,8 @@ public class XlsReportRenderer extends AbstractReportRenderer {
             
             // Display top header
             for (DataSetColumn column : columnList) {
-            	if (isDisplayColumn(column.getKey()))
-            		helper.addCell(column.getColumnName(), styleHelper.getStyle("bold,border=bottom"));
+            	if (isDisplayColumn(column.getColumnKey()))
+            		helper.addCell(column.getDisplayName(), styleHelper.getStyle("bold,border=bottom"));
             }
             for (Iterator<Map<DataSetColumn, Object>> i = dataset.iterator(); i.hasNext(); ) {
                 helper.nextRow();
@@ -78,7 +78,7 @@ public class XlsReportRenderer extends AbstractReportRenderer {
                 for (DataSetColumn column : columnList) {
 
                 	// If the column is meant for display, we display it
-                	if (isDisplayColumn(column.getKey())) { 
+                	if (isDisplayColumn(column.getColumnKey())) { 
 	                	Object cellValue = row.get(column);
 	                    HSSFCellStyle style = null;
 	                    if (cellValue instanceof Date) {

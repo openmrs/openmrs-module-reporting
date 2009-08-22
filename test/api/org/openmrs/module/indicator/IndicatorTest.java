@@ -68,45 +68,39 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		CohortIndicator indicator = new CohortIndicator();
 		indicator.addParameter(new Parameter("indicator.location", "Location", Location.class));
 		indicator.addParameter(new Parameter("indicator.effDate", "Date", Date.class));
+		indicator.setLogicCriteria(null);
+		indicator.setAggregator(CountAggregator.class);
+		
 		LocationCohortDefinition atSite = new LocationCohortDefinition();
 		atSite.addParameter(new Parameter("location", "location", Location.class));
 		indicator.setCohortDefinition(atSite, "location=${indicator.location}");
-		indicator.setLogicCriteria(null);
-		indicator.setAggregator(CountAggregator.class);
-		dsd.addIndicator("patientsAtSite", indicator, "indicator.location=${location},indicator.effDate=${effectiveDate}");
+		dsd.addCohortIndicator("patientsAtSite", indicator, "indicator.location=${location},indicator.effDate=${effectiveDate}");
 		
 		// Dimensions
-		CohortDefinitionDimension genderDimension = new CohortDefinitionDimension();
-		
-		GenderCohortDefinition males = new GenderCohortDefinition();
-		males.setGender("M");
-		genderDimension.addCohortDefinition("male", males, null);
-		
-		GenderCohortDefinition females = new GenderCohortDefinition();
-		females.setGender("F");
-		genderDimension.addCohortDefinition("female", females, null);
-		
+		CohortDefinitionDimension genderDimension = new CohortDefinitionDimension();		
+		genderDimension.addCohortDefinition("male", new GenderCohortDefinition("M"), null);		
+		genderDimension.addCohortDefinition("female", new GenderCohortDefinition("F"), null);		
 		dsd.addDimension("gender", genderDimension, null);
 		
 		CohortDefinitionDimension ageDimension = new CohortDefinitionDimension();
 		ageDimension.addParameter(new Parameter("ageDate", "ageDate", Date.class));
 
-		AgeCohortDefinition adult = new AgeCohortDefinition();
+		AgeCohortDefinition adult = new AgeCohortDefinition(15, null, null);
 		adult.setMinAge(15);
 		adult.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 		ageDimension.addCohortDefinition("adult", adult, "effectiveDate=${ageDate}");
 		
-		AgeCohortDefinition child = new AgeCohortDefinition();
-		child.setMaxAge(14);
+		AgeCohortDefinition child = new AgeCohortDefinition(null, 14, null);
 		child.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 		ageDimension.addCohortDefinition("child", child, "effectiveDate=${ageDate}");
 		
 		dsd.addDimension("age", ageDimension, "ageDate=${indicator.effDate}");
 		
-		dsd.addColumnSpecification("1.A", "Male Adult", Object.class, "patientsAtSite", "gender=male,age=adult");
-		dsd.addColumnSpecification("1.B", "Male Child", Object.class, "patientsAtSite", "gender=male,age=child");
-		dsd.addColumnSpecification("2.A", "Female Adult", Object.class, "patientsAtSite", "gender=female,age=adult");
-		dsd.addColumnSpecification("2.B", "Female Child", Object.class, "patientsAtSite", "gender=female,age=child");
+		// Replace "patientsAtSite" with indicator
+		dsd.addColumnSpecification("1.A", "Male Adult", Object.class, indicator, "gender=male,age=adult");
+		dsd.addColumnSpecification("1.B", "Male Child", Object.class, indicator, "gender=male,age=child");
+		dsd.addColumnSpecification("2.A", "Female Adult", Object.class, indicator, "gender=female,age=adult");
+		dsd.addColumnSpecification("2.B", "Female Child", Object.class, indicator, "gender=female,age=child");
 		
 		EvaluationContext context = new EvaluationContext();
 		CsvReportRenderer renderer = new CsvReportRenderer();

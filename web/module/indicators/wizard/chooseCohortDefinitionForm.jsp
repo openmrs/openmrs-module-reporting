@@ -97,7 +97,7 @@ var cohortDefinitions = [
 <div id="page">
 	<div id="container">
 		<h1>Create a new cohort indicator</h1>
-		<form action="<c:url value="/module/reporting/newIndicator.form"/>" method="post">			
+		<form action="<c:url value="/module/reporting/indicators/indicatorWizard.form"/>" method="post">			
 			<fieldset>
 			<legend>Step 2</legend>			
 				<div>

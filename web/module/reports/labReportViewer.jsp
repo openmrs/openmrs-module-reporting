@@ -48,7 +48,7 @@ $(document).ready(function() {
 	// Redirect to the listing page
 	$('#cancel-button').click(function(event){
 		event.preventDefault();  // To prevent the submit		
-		window.location.href='<c:url value="/module/reporting/manageReports.list"/>';
+		window.location.href='<c:url value="/module/reporting/reports/reportManager.list"/>';
 	});
 	
 

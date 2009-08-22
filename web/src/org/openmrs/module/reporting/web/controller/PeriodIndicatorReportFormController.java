@@ -51,8 +51,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/module/reporting/reports/indicatorReportEditor")
-public class IndicatorReportFormController {
+@RequestMapping("/module/reporting/reports/periodIndicatorReportEditor")
+public class PeriodIndicatorReportFormController {
 
 	private Log log = LogFactory.getLog(this.getClass());
 
@@ -77,8 +77,8 @@ public class IndicatorReportFormController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView showForm() {
 		log.info("Inside show() method");
-
-		return new ModelAndView("/module/reporting/reports/indicatorReportEditor");	
+		
+		return new ModelAndView("/module/reporting/reports/periodIndicatorReportEditor");
 	}	
 
 	
@@ -117,57 +117,45 @@ public class IndicatorReportFormController {
 			@ModelAttribute("indicatorReport") IndicatorReportForm indicatorReport, 
 			BindingResult bindingResult) {
 		log.info("Inside submit() method");
-			
+
+		
 		if (bindingResult.hasErrors()) {
 			return showForm();
 		}
 		
-		IndicatorReportDefinition reportDefinition = 
-			(IndicatorReportDefinition) indicatorReport.getReportDefinition();
+		PeriodIndicatorReportDefinition reportDefinition = 
+			(PeriodIndicatorReportDefinition) indicatorReport.getReportDefinition();
 		
 		// Check whether the report definition is new 
 		Boolean isNew = (reportDefinition.getUuid() == null);
-		
-		String [] selectedIndicatorIds = request.getParameterValues("indicatorId");
-		
-		log.info("Indicators: " + selectedIndicatorIds);
-		
-		
-		
-		// Add indicators to a report schema
-		if (selectedIndicatorIds != null && selectedIndicatorIds.length > 0) { 
-			
-			// Add the indicators to the dataset definition
-			for (String uuid : selectedIndicatorIds) { 
-				log.info("Looking up indicator: " + uuid);
-				// FIXME Assumes cohort indicators
-				CohortIndicator cohortIndicator = (CohortIndicator)
-					Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
-				
-				log.info("Found indicator " + cohortIndicator);					
-				if (cohortIndicator != null) { 
-					reportDefinition.addCohortIndicator("1.a", "my cohort indicator", cohortIndicator);
-					
-				}										
-			}
 
-			// Save the intermediate dataset definition
-			//datasetDefinition = 
-			//	(CohortIndicatorDataSetDefinition) Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(datasetDefinition);
+		// For new reports, we need to explicitly save the dataset definition and add it to the report
+		if (!reportDefinition.hasDataSetDefinitions()) { 
+			// Dataset definition should be created under the covers
+			CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
+			dataSetDefinition.setName(reportDefinition.getName() + " Dataset");
+			
+			// Save the dataset definition
+			// FIXME Saving dataset definition explicitly because we are using short serialization with all reporting objects
+			dataSetDefinition = (CohortIndicatorDataSetDefinition)
+				Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);				
+			
+			// Add dataset definition to the report
+			reportDefinition.addDataSetDefinition(dataSetDefinition.getName(),
+					dataSetDefinition, "startDate=${startDate},endDate=${endDate},location=${location}");
 		}
 		
-		log.info("Saving report definition " + reportDefinition.getUuid() + ", name=" + reportDefinition.getName());
-		log.info("Dataset definition " + reportDefinition.getDataSetDefinitions().size());
-		
-		reportDefinition = (IndicatorReportDefinition)
+		// Save the report definition
+		reportDefinition = (PeriodIndicatorReportDefinition)
 			Context.getService(ReportService.class).saveReportDefinition(reportDefinition);
 
 		
-		if (isNew) { 
-			return showForm();
-		}
+		// If its a new report definition, then we want the user to be t
+		if (isNew) 
+			return new ModelAndView("redirect:/module/reporting/reports/periodIndicatorReportEditor.form?uuid=" + reportDefinition.getUuid());		
 		
-		return new ModelAndView("redirect:/module/reporting/reports/reportManager.list");
+		return new ModelAndView("redirect:/module/reporting/reports/reportManager.list");		
+		
 	}
 	
 
@@ -184,27 +172,25 @@ public class IndicatorReportFormController {
 			@RequestParam(value = "uuid", required=false) String uuid,
 			@RequestParam(value = "className", required=false) String className
 	) {
-		log.info("Inside formBackingObject(String, String) method with ");
-		log.info("UUID=" + uuid + ", className=" + className);
-		
-		IndicatorReportForm indicatorReport = new IndicatorReportForm();
-		
 		ReportService reportService = Context.getService(ReportService.class);		
 
-		// Create the indicator and save it to the period indicator report
+		// Create the model object to be used during form workflow
+		IndicatorReportForm indicatorReport = new IndicatorReportForm();
+
+		// Find the reporting object that we'd like to  
 		IndicatorReportDefinition reportDefinition = (IndicatorReportDefinition) 
 			reportService.getReportDefinitionByUuid(uuid);
 		
-
 		//if (!PeriodIndicatorReportDefinition.class.isAssignableFrom(reportDefinition.getClass())) { 
 		//	throw new APIException("Unsupported report definition type <" + reportDefinition.getClass() + ">");
 		//}		
 		
+		// If the report does not exist, we create a brand new one
 		if (reportDefinition == null) { 		
-			reportDefinition = new IndicatorReportDefinition();
+			reportDefinition = new PeriodIndicatorReportDefinition();
 		} 
 
-		
+		// Populate the model object
 		indicatorReport.setReportDefinition(reportDefinition);
 		indicatorReport.setIndicators(reportDefinition.getIndicators());
 		

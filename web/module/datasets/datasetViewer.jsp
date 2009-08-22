@@ -105,7 +105,7 @@ $(document).ready(function() {
 								<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="varStatus">				
 									<c:if test="${varStatus.index < 7}">
 										<th>
-											${column.columnName}
+											${column.displayName}
 										</th>
 									</c:if>
 								</c:forEach>

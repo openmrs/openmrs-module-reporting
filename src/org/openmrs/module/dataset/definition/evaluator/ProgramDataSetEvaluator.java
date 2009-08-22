@@ -60,8 +60,8 @@ public class ProgramDataSetEvaluator implements DataSetEvaluator {
 		
 		ProgramDataSetDefinition definition = (ProgramDataSetDefinition) dataSetDefinition;
 		Cohort patients = context.getBaseCohort();
-		if (definition.getFilter() != null) {
-			Cohort c = Context.getService(CohortDefinitionService.class).evaluate(definition.getFilter(), context);
+		if (definition.getCohortDefinition() != null) {
+			Cohort c = Context.getService(CohortDefinitionService.class).evaluate(definition.getCohortDefinition(), context);
 			patients = (patients == null ? c : Cohort.intersect(patients, c));
 		}
 		
