@@ -63,7 +63,7 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.addParameter(new Parameter("location", "Location", Location.class));
 		dsd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-		rs.addDataSetDefinition(dsd, "location=${report.location},effectiveDate=${report.reportDate}");
+		rs.addDataSetDefinition("test", dsd, "location=${report.location},effectiveDate=${report.reportDate}");
 		
 		CohortIndicator indicator = new CohortIndicator();
 		indicator.addParameter(new Parameter("indicator.location", "Location", Location.class));

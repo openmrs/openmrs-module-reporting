@@ -13,8 +13,7 @@
  */
 package org.openmrs.module.report;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.Cohort;
@@ -43,7 +42,7 @@ public class ReportDefinition extends BaseParameterizable {
 	
 	private Integer id;
 	private Mapped<CohortDefinition> baseCohortDefinition;
-	private List<Mapped<? extends DataSetDefinition>> dataSetDefinitions = new ArrayList<Mapped<? extends DataSetDefinition>>();
+	private Map<String, Mapped<? extends DataSetDefinition>> dataSetDefinitions = new HashMap<String, Mapped<? extends DataSetDefinition>>();
 	
 	//***********************
 	// CONSTRUCTORS
@@ -58,25 +57,25 @@ public class ReportDefinition extends BaseParameterizable {
 	/**
 	 * @param definition the Mapped<DataSetDefinition> to add
 	 */
-	public void addDataSetDefinition(Mapped<? extends DataSetDefinition> definition) {
+	public void addDataSetDefinition(String key, Mapped<? extends DataSetDefinition> definition) {
 		if (dataSetDefinitions == null) {
-			dataSetDefinitions = new ArrayList<Mapped<? extends DataSetDefinition>>();
+			dataSetDefinitions = new HashMap<String, Mapped<? extends DataSetDefinition>>();
 		}
-		dataSetDefinitions.add(definition);
+		dataSetDefinitions.put(key, definition);
 	}
 	
 	/**
 	 * @param definition the DataSetDefinition to add
 	 */
-	public void addDataSetDefinition(DataSetDefinition definition, Map<String, String> mappings) {
-		addDataSetDefinition(new Mapped<DataSetDefinition>(definition, mappings));
+	public void addDataSetDefinition(String key, DataSetDefinition definition, Map<String, String> mappings) {
+		addDataSetDefinition(key, new Mapped<DataSetDefinition>(definition, mappings));
 	}
 
 	/**
 	 * @param definition the DataSetDefinition to add
 	 */
-	public void addDataSetDefinition(DataSetDefinition definition, String mappings) {
-		addDataSetDefinition(new Mapped<DataSetDefinition>(definition, mappings));
+	public void addDataSetDefinition(String key, DataSetDefinition definition, String mappings) {
+		addDataSetDefinition(key, new Mapped<DataSetDefinition>(definition, mappings));
 	}
 	
 	//***********************
@@ -121,14 +120,14 @@ public class ReportDefinition extends BaseParameterizable {
 	/**
 	 * @return the dataSetDefinitions
 	 */
-	public List<Mapped<? extends DataSetDefinition>> getDataSetDefinitions() {
+	public Map<String, Mapped<? extends DataSetDefinition>> getDataSetDefinitions() {
 		return dataSetDefinitions;
 	}
 
 	/**
 	 * @param dataSetDefinitions the dataSetDefinitions to set
 	 */
-	public void setDataSetDefinitions(List<Mapped<? extends DataSetDefinition>> dataSetDefinitions) {
+	public void setDataSetDefinitions(Map<String, Mapped<? extends DataSetDefinition>> dataSetDefinitions) {
 		this.dataSetDefinitions = dataSetDefinitions;
 	}
 }

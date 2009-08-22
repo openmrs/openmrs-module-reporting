@@ -43,13 +43,14 @@
 							<b class="boxHeader">Dataset Definitions</b>
 							<div class="box" style="vertical-align:top;">
 								<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
-									<openmrs:portlet url="mappedProperty" id="dataSetDefinition${dsdStatus.index}" moduleId="reporting" 
-													parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|collectionKey=${dsdStatus.index}|label=${dsd.parameterizable.name}|parentUrl=${pageUrl}" />
+									<openmrs:portlet url="mappedProperty" id="dsd${dsd.key}" moduleId="reporting" 
+													parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|currentKey=${dsd.key}|label=${dsd.value.parameterizable.name}|parentUrl=${pageUrl}" />
 									<br/>
 								</c:forEach>
-								<openmrs:portlet url="mappedProperty" id="newDataSetDefinition" moduleId="reporting" 
+								<openmrs:portlet url="mappedProperty" id="newDsd" moduleId="reporting" 
 												 parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|mode=add|label=New Dataset Definition" />
 							</div>
+							
 						</td>
 					</tr>
 				</table>

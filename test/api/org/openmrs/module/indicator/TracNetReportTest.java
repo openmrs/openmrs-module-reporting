@@ -72,7 +72,7 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		paramMap.put("dataSet.startDate", "${report.startDate}");
 		paramMap.put("dataSet.endDate", "${report.endDate}");
 		
-		rs.addDataSetDefinition(dsd, paramMap);
+		rs.addDataSetDefinition("test", dsd, paramMap);
 		setupDimensions(dsd);
 		setupIndicators(dsd);
 		

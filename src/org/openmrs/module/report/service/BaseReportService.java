@@ -150,10 +150,11 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 		
 		DataSetDefinitionService dss = Context.getService(DataSetDefinitionService.class);
 		if (reportDefinition.getDataSetDefinitions() != null) {
-			for (Mapped<? extends DataSetDefinition> pd : reportDefinition.getDataSetDefinitions()) {
+			for (String key : reportDefinition.getDataSetDefinitions().keySet()) {
+				Mapped<? extends DataSetDefinition> pd = reportDefinition.getDataSetDefinitions().get(key);
 				EvaluationContext childEc = EvaluationContext.cloneForChild(evalContext, pd);
 				childEc.setBaseCohort(baseCohort);
-				data.put(pd.getParameterizable().getName(), dss.evaluate(pd.getParameterizable(), childEc));
+				data.put(key, dss.evaluate(pd.getParameterizable(), childEc));
 			}
 		}
 		

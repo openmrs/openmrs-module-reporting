@@ -42,7 +42,8 @@ public class MappedPropertyFormController {
     		@RequestParam(required=true, value="type") Class<? extends Parameterizable> type,
     		@RequestParam(required=true, value="uuid") String uuid,
             @RequestParam(required=true, value="property") String property,
-            @RequestParam(required=false, value="collectionKey") String collectionKey,
+            @RequestParam(required=false, value="currentKey") String currentKey,
+            @RequestParam(required=false, value="newKey") String newKey,
             @RequestParam(required=false, value="mappedUuid") String mappedUuid) {
     	
     	Parameterizable parent = ParameterizableUtil.getParameterizable(uuid, type);
@@ -88,11 +89,11 @@ public class MappedPropertyFormController {
         			}
         			else {
         				newValue = (List)previousValue;
-        				if (StringUtils.isEmpty(collectionKey)) {
+        				if (StringUtils.isEmpty(newKey)) {
         					newValue.add(m);
         				}
         				else {
-        					int listIndex = Integer.parseInt(collectionKey);
+        					int listIndex = Integer.parseInt(newKey);
         					newValue.set(listIndex, m);
         				}
         			}
@@ -100,7 +101,10 @@ public class MappedPropertyFormController {
         		}
         		else if (Map.class.isAssignableFrom(fieldType)) {
         			Map newValue = (previousValue == null ? new HashMap() : (Map)previousValue);
-        			newValue.put(collectionKey, m);
+        			newValue.put(newKey, m);
+        			if (!newKey.equals(currentKey) && currentKey != null) {
+        				newValue.remove(currentKey);
+        			}
         			ReflectionUtil.setPropertyValue(parent, f, newValue);
         		}
         		else if (Mapped.class.isAssignableFrom(fieldType)) {
@@ -126,7 +130,7 @@ public class MappedPropertyFormController {
     		@RequestParam(required=true, value="type") Class<? extends Parameterizable> type,
     		@RequestParam(required=true, value="uuid") String uuid,
             @RequestParam(required=true, value="property") String property,
-            @RequestParam(required=true, value="collectionKey") String collectionKey,
+            @RequestParam(required=true, value="currentKey") String currentKey,
             @RequestParam(required=true, value="returnUrl") String returnUrl) {
     	
        	Parameterizable parent = ParameterizableUtil.getParameterizable(uuid, type);
@@ -136,15 +140,15 @@ public class MappedPropertyFormController {
 		
         if (List.class.isAssignableFrom(fieldType)) {
         	List v = (List)previousValue;
-			int listIndex = Integer.parseInt(collectionKey);
+			int listIndex = Integer.parseInt(currentKey);
 			v.remove(listIndex);
         }
 		else if (Map.class.isAssignableFrom(fieldType)) {
 			Map v = (Map)previousValue;
-			v.remove(collectionKey);
+			v.remove(currentKey);
 		}
 		else {
-        	throw new IllegalArgumentException("Cannot remove property in fieldType: " + fieldType + " with key " + collectionKey);
+        	throw new IllegalArgumentException("Cannot remove property in fieldType: " + fieldType + " with key " + currentKey);
     	}
         
         ReflectionUtil.setPropertyValue(parent, f, previousValue);

@@ -114,7 +114,7 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 		//report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true, false));
 		//report.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true, false));
 		//report.addDataSetDefinition(new Mapped<DataSetDefinition>(dsd, "d1=${report.startDate},d2=${report.endDate}"));
-		report.addDataSetDefinition(datasetDefinition, "");
+		report.addDataSetDefinition("test", datasetDefinition, "");
 		
 		EvaluationContext evalContext = new EvaluationContext();
 		Cohort baseCohort = Context.getPatientSetService().getAllPatients();
@@ -207,7 +207,7 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 			// FIXME: Adding dataset to report requires mapping
 			// (like "location=${report.location},effectiveDate=${report.reportDate}")
 			reportDefinition.getDataSetDefinitions().clear();			
-			reportDefinition.addDataSetDefinition(datasetDefinition,
+			reportDefinition.addDataSetDefinition("test", datasetDefinition,
 					"startDate=${startDate},endDate=${endDate},location=${location}");
 			
 		}

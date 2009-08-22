@@ -373,7 +373,7 @@ public class ManageDatasetDefinitionController {
 
 	    	// Evaluate dataset report
 	    	ReportDefinition reportDefinition = new ReportDefinition();
-	    	reportDefinition.addDataSetDefinition(dataSetDefinition, "");
+	    	reportDefinition.addDataSetDefinition("test", dataSetDefinition, "");
 	    	ReportData reportData = Context.getService(ReportService.class).evaluate(reportDefinition, context);
 	    		    	
 	    	// We usually render, but for now we're just going to return it

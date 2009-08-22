@@ -62,7 +62,7 @@ public class ReportTest extends BaseModuleContextSensitiveTest {
 		ReportDefinition report = new ReportDefinition();
 		report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class));
 		report.addParameter(new Parameter("report.endDate", "Report End Date", Date.class));
-		report.addDataSetDefinition(new Mapped<DataSetDefinition>(dsd, "d1=${report.startDate},d2=${report.endDate}"));
+		report.addDataSetDefinition("test", new Mapped<DataSetDefinition>(dsd, "d1=${report.startDate},d2=${report.endDate}"));
 		
 		EvaluationContext ec = new EvaluationContext();
 		ec.addParameterValue("report.startDate", ymd.parse("1980-01-01"));

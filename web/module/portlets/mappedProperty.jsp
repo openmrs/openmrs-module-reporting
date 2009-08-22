@@ -11,8 +11,9 @@
 		
 				$('#parameterizableSelector${model.id}').change(function(event){
 					var currVal = $(this).val();
+					var newKey = $('#${model.id}NewKey').val();
 					if (currVal != '') {
-						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|collectionKey=${model.collectionKey}|mode=edit|mappedUuid='+currVal+'"/>';
+						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|currentKey=${model.currentKey}|newKey='+newKey+'|mode=edit|mappedUuid='+currVal+'"/>';
 					}
 					else {
 						$("#mapParameterSection${model.id}").html('');
@@ -42,14 +43,31 @@
 			});
 		</script>
 		
-		${model.mappedType.simpleName}: <rpt:widget id="parameterizableSelector${model.id}" name="parameterizableSelector" type="${model.mappedType.name}" defaultValue="${model.mappedObj}"/>
+		<br/>
 		
 		<form id="mapParametersForm${model.id}" method="post" action="reports/saveMappedProperty.form">
 			<input type="hidden" name="type" value="${model.type}"/>
 			<input type="hidden" name="uuid" value="${model.uuid}"/>
 			<input type="hidden" name="property" value="${model.property}"/>
-			<input type="hidden" name="collectionKey" value="${model.collectionKey}"/>
-			<input type="hidden" id="mappedUuidField${model.id}" name="mappedUuid" value="${model.mappedObj.uuid}"/>
+			<input type="hidden" name="currentKey" value="${model.currentKey}"/>
+			
+			<table>
+				<c:choose>
+					<c:when test="${model.multiType == 'map'}">
+						<tr>
+							<td>Key</td>
+							<td><input type="text" size="20" id="${model.id}NewKey" name="newKey" value="${model.newKey == null ? model.currentKey : model.newKey}"/></td>
+						</tr>
+					</c:when>
+					<c:otherwise>
+						<input type="hidden" name="newKey" value="${model.newKey}"/>
+					</c:otherwise>
+				</c:choose>
+				<tr>
+					<td>${model.mappedType.simpleName}:</td>
+					<td><rpt:widget id="parameterizableSelector${model.id}" name="mappedUuid" type="${model.mappedType.name}" defaultValue="${model.mappedObj}"/></td>
+				</tr>
+			</table>		 
 			
 			<div id="mapParameterSection${model.id}">
 				<table>								
@@ -115,14 +133,14 @@
 				$('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
-						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|collectionKey=${model.collectionKey}|mode=edit"/>',
+						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|currentKey=${model.currentKey}|mode=edit"/>',
 						successCallback: function() { window.location.reload(true); }
 					});
 				});
-				<c:if test="${model.collectionKey != null}">
+				<c:if test="${model.currentKey != null}">
 					$('#${model.id}RemoveLink').click(function(event){					
 						if (confirm('Please confirm you wish to remove ${model.mappedObj.name}')) {
-							document.location.href='<c:url value="/module/reporting/reports/removeMappedProperty.form?type=${model.type}&uuid=${model.uuid}&property=${model.property}&collectionKey=${model.collectionKey}&returnUrl=${model.parentUrl}"/>';
+							document.location.href='<c:url value="/module/reporting/reports/removeMappedProperty.form?type=${model.type}&uuid=${model.uuid}&property=${model.property}&currentKey=${model.currentKey}&returnUrl=${model.parentUrl}"/>';
 						}
 					});
 				</c:if>
@@ -139,9 +157,12 @@
 		
 				<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
 					<b class="boxHeader" style="font-weight:bold; text-align:right;">
-						<span style="float:left;">${model.label}</span>
+						<span style="float:left;">
+							<c:if test="${model.multiType == 'map'}">${model.currentKey} = </c:if>
+							${model.label}
+						</span>
 						<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
-						<c:if test="${model.collectionKey != null}">
+						<c:if test="${model.currentKey != null}">
 							&nbsp;|&nbsp;
 							<a style="color:lightyellow;" href="#" id="${model.id}RemoveLink">Remove</a>
 						</c:if>

@@ -1,8 +1,8 @@
 package org.openmrs.module.reporting.web.controller;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
-import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -34,7 +32,6 @@ import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
-import org.openmrs.module.reporting.web.model.IndicatorForm;
 import org.openmrs.module.reporting.web.model.IndicatorReportForm;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -183,7 +180,7 @@ public class IndicatorReportFormController {
 			// FIXME: Adding dataset to report requires mapping
 			// (like "location=${report.location},effectiveDate=${report.reportDate}")
 			indicatorReport.getReportDefinition().getDataSetDefinitions().clear();			
-			indicatorReport.getReportDefinition().addDataSetDefinition(datasetDefinition,
+			indicatorReport.getReportDefinition().addDataSetDefinition("test",datasetDefinition,
 					"startDate=${startDate},endDate=${endDate},location=${location}");
 			
 		}
@@ -224,10 +221,10 @@ public class IndicatorReportFormController {
 
 		// Code required just to get indicators from the report definition
 		List<Indicator> indicators = new LinkedList<Indicator>();
-		List<Mapped<? extends DataSetDefinition>> datasetDefinitions = 
-			reportDefinition.getDataSetDefinitions();
+		Collection<Mapped<? extends DataSetDefinition>> datasetDefinitions = 
+			reportDefinition.getDataSetDefinitions().values();
 		if (datasetDefinitions != null && !datasetDefinitions.isEmpty()) { 
-			Mapped<? extends DataSetDefinition> mapped = datasetDefinitions.get(0);
+			Mapped<? extends DataSetDefinition> mapped = datasetDefinitions.iterator().next();
 			if (mapped.getParameterizable() instanceof CohortIndicatorDataSetDefinition) { 
 				CohortIndicatorDataSetDefinition indicatorDataSetDefinition = 
 					(CohortIndicatorDataSetDefinition) mapped.getParameterizable();

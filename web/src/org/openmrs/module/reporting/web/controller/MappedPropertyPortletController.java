@@ -1,7 +1,9 @@
 package org.openmrs.module.reporting.web.controller;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,6 +17,7 @@ import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.util.ParameterizableUtil;
+import org.openmrs.module.util.ReflectionUtil;
 
 /**
  * This Controller loads a Mapped property given the passed parameters
@@ -30,13 +33,24 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 
 		String uuid = (String)model.get("uuid");
 		String property = (String)model.get("property");
-		String collectionKey = (String)model.get("collectionKey");
+		String currentKey = (String)model.get("currentKey");
 		String mappedUuid = (String) model.get("mappedUuid");
 		
 		Class<?> clazz = (Class<?>)model.get("clazz");
 		Parameterizable obj = (Parameterizable)model.get("obj");
 		
 		// Get generic type of the Mapped property, if specified
+		Field f = ReflectionUtil.getField(clazz, property);
+		if (f != null) {
+			Class<?> fieldType = ReflectionUtil.getFieldType(f);
+			if (List.class.isAssignableFrom(fieldType)) {
+				model.put("multiType", "list");
+			}
+			else if (Map.class.isAssignableFrom(fieldType)) {
+				model.put("multiType", "map");
+			}
+		}
+		
 		Class<? extends Parameterizable> mappedType = null;
 		if (StringUtils.isNotEmpty(property)) {
 			mappedType = ParameterizableUtil.getMappedType(clazz, property);
@@ -50,7 +64,7 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 	       	Map<String, String> mappings = new HashMap<String, String>();
 	       	
 	       	if (StringUtils.isEmpty(mappedUuid)) {
-	       		Mapped<Parameterizable> mapped = ParameterizableUtil.getMappedProperty(obj, property, collectionKey);
+	       		Mapped<Parameterizable> mapped = ParameterizableUtil.getMappedProperty(obj, property, currentKey);
 	       		if (mapped != null) {
 	       			mappedObj = mapped.getParameterizable();
 	       			mappings = mapped.getParameterMappings();
