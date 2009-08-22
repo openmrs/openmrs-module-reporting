@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.web.reports;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class ReportManager {
     	model.addAttribute("reportDefinitions", reportDefinitions);
     	
     	// Get possible new reports to create
-    	Map<Class<? extends ReportDefinition>, String> types = new HashMap<Class<? extends ReportDefinition>, String>();
+    	Map<Class<? extends ReportDefinition>, String> types = new LinkedHashMap<Class<? extends ReportDefinition>, String>();
     	types.put(ReportDefinition.class, "Basic Report");
     	types.put(IndicatorReportDefinition.class, "Indicator Report");
     	types.put(PeriodIndicatorReportDefinition.class, "Period Indicator Report");

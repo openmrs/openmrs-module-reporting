@@ -41,12 +41,12 @@
 		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
-					<th width="1%"></th>
+					<th width="1%">Edit</th>
 					<th width="10%">Name</th>
 					<th width="20%">Type</th>
 					<th width="40%">Description</th>
-					<th width="1%"></th>
-					<th width="1%"></th>
+					<th width="1%">Run</th>
+					<th width="1%">Remove</th>
 				</tr>
 			</thead>
 			<tbody>
