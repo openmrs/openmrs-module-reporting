@@ -160,17 +160,30 @@
 		
 				<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
 					
-					<table width="100%" style="font-size:small;">
-						<tr>
-							<td style="font-weight:bold;">
-								<c:if test="${model.multiType == 'map'}">${model.currentKey}: </c:if>${model.label}
-							</td>
-							<td align="right" nowrap="true" valign="top">
-								<a href="#" id="${model.id}EditLink">Edit</a>&nbsp;|&nbsp;
-								<a href="#" id="${model.id}RemoveLink">Delete</a>
-							</td>
-						</tr>
-					</table>
+					<c:choose>
+						<c:when test="${empty model.headerClass}">
+							<b class="boxHeader" style="font-weight:bold; text-align:right;">
+								<span style="float:left;">${model.label}</span>
+								<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
+								<c:if test="${model.currentKey != null}">
+									&nbsp;|&nbsp;
+									<a style="color:lightyellow;" href="#" id="${model.id}RemoveLink">Delete</a>
+								</c:if>
+							</b>
+						</c:when>
+						<c:otherwise>
+							<span class="${model.headerClass}" id="${model.id}Header">
+								<span id="${model.id}HeaderLabel" style="font-weight:bold;">${model.label}</span>&nbsp;&nbsp;&nbsp;
+								<span id="${model.id}HeaderLinks">
+									<a href="#" id="${model.id}EditLink">Edit</a>
+									<c:if test="${model.currentKey != null}">&nbsp;|&nbsp;
+										<a href="#" id="${model.id}RemoveLink">Delete</a>
+									</c:if>
+								</span>
+							</span>
+						</c:otherwise>
+					</c:choose>
+
 					<c:choose>
 						<c:when test="${!empty model.viewId}">
 							<div id="${model.viewId}Template"></div>
