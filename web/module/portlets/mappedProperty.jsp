@@ -168,32 +168,39 @@
 						</c:if>
 					</b>
 					<div class="box">
-						<table>
-							<tr><th colspan="3" align="left">
+						<c:choose>
+							<c:when test="${model.mappedObj != null}">
 								<c:choose>
-									<c:when test="${model.mappedObj != null}">
-										${model.mappedObj.name}
+									<c:when test="${!empty model.mapped.description}">
+										${model.mapped.description}
 									</c:when>
 									<c:otherwise>
-										${model.nullValueLabel}
+										<table>
+											<tr>
+												<th colspan="3" align="left">${model.mappedObj.name}</th>
+											</tr>
+											<c:forEach items="${model.mappedObj.parameters}" var="p">
+												<tr>
+													<td align="right">&nbsp;&nbsp;${p.name}</td>
+													<td align="left">--&gt;</td>
+													<td align="left" width="100%">
+														<c:choose>
+															<c:when test="${model.mappings[p.name] == null}">
+																<span style="color:red; font-style:italic;">Undefined</span>
+															</c:when>
+															<c:otherwise>${model.mappings[p.name]}</c:otherwise>
+														</c:choose>
+													</td>
+												</tr>
+											</c:forEach>
+										</table>
 									</c:otherwise>
 								</c:choose>
-							</th></tr>
-							<c:forEach items="${model.mappedObj.parameters}" var="p">
-								<tr>
-									<td align="right">${p.name}</td>
-									<td align="left">--&gt;</td>
-									<td align="left" width="100%">
-										<c:choose>
-											<c:when test="${model.mappings[p.name] == null}">
-												<span style="color:red; font-style:italic;">Undefined</span>
-											</c:when>
-											<c:otherwise>${model.mappings[p.name]}</c:otherwise>
-										</c:choose>
-									</td>
-								</tr>
-							</c:forEach>
-						</table>
+							</c:when>
+							<c:otherwise>
+								${model.nullValueLabel}
+							</c:otherwise>
+						</c:choose>
 					</div>
 				</div>
 				

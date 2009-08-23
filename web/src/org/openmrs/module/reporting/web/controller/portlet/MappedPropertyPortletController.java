@@ -66,6 +66,7 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 	       	if (StringUtils.isEmpty(mappedUuid)) {
 	       		Mapped<Parameterizable> mapped = ParameterizableUtil.getMappedProperty(obj, property, currentKey);
 	       		if (mapped != null) {
+	       			model.put("mapped", mapped);
 	       			mappedObj = mapped.getParameterizable();
 	       			mappings = mapped.getParameterMappings();
 	       		}

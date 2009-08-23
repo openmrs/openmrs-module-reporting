@@ -17,6 +17,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Provides a Wrapper class for a Parameterizable instance, which
  * includes a Mapping of Parameter Name to Expressions in order to
@@ -68,6 +70,27 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	//***********************
 	// INSTANCE METHODS
 	//***********************
+
+	/**
+	 * Returns a description that fills in any parameter names in the description
+	 * of the {@link Parameterizable}, with values from the populated mappings.  For example, 
+	 * if the underlying {@link Parameterizable} had a description of 
+	 * Patients in the program on ${effectiveDate}, and a parameter mapping which mapped effectiveDate to
+	 * 01/01/2009, the returned description would read Patients in the program on 01/01/2009
+	 */
+	public String getDescription() {
+		if (parameterizable != null) {
+			String s = parameterizable.getDescription();
+			if (StringUtils.isNotEmpty(s)) {
+				for (String from : getParameterMappings().keySet()) {
+					String to = getParameterMappings().get(from);
+					s = s.replace("${"+from+"}", to);
+				}
+				return s;
+			}
+		}
+		return "";
+	}
 	
 	/**
 	 * Convenience method that enables passing parameter mappings as a String.
