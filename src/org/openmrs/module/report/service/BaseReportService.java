@@ -28,6 +28,7 @@ import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
+import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.util.StringUtils;
 
@@ -41,6 +42,7 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 
 	// Data access object
 	private SerializedObjectDAO serializedObjectDAO;
+	private OpenmrsSerializer serializer;
 
 	/**
 	 * @return serializedObjectDAO
@@ -54,8 +56,15 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	 */
 	public void setDao(SerializedObjectDAO serializedObjectDAO) {
 		this.serializedObjectDAO = serializedObjectDAO;
-	}	
+	}
 	
+    /**
+     * @param serializer the serializer to set
+     */
+    public void setSerializer(OpenmrsSerializer serializer) {
+    	this.serializer = serializer;
+    }
+
 	/**
 	 * Default constructor
 	 */
@@ -65,7 +74,7 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	 * @see ReportService#saveReportDefinition(ReportDefinition)
 	 */
 	public ReportDefinition saveReportDefinition(ReportDefinition reportDefinition) throws APIException {
-		return serializedObjectDAO.saveObject(reportDefinition);
+		return serializedObjectDAO.saveObject(reportDefinition, serializer);
 	}
 	
 	/**

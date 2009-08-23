@@ -29,7 +29,7 @@ public class AgeCohortDefinition extends BaseCohortDefinition {
 	private Integer maxAge;
 	
 	@ConfigurationProperty(required=false)
-	private Date effectiveDate = new Date();
+	private Date effectiveDate;
 	
 	//***** CONSTRUCTORS *****
 

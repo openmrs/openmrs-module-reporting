@@ -18,6 +18,7 @@ import java.util.List;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
+import org.openmrs.serialization.OpenmrsSerializer;
 
 /**
  * This class returns DataSetDefinitions that have been Serialized to the database
@@ -34,6 +35,7 @@ public class SerializedDataSetDefinitionPersister implements DataSetDefinitionPe
     //****************
 	
 	private SerializedObjectDAO dao = null;
+	private OpenmrsSerializer serializer = null;
 
     //****************
     // Instance methods
@@ -71,7 +73,7 @@ public class SerializedDataSetDefinitionPersister implements DataSetDefinitionPe
      * @see DataSetDefinitionPersister#saveDataSetDefinition(DataSetDefinition)
      */
     public DataSetDefinition saveDataSetDefinition(DataSetDefinition dataSetDefinition) {
-    	return dao.saveObject(dataSetDefinition);
+    	return dao.saveObject(dataSetDefinition, serializer);
     }
 
 	/**
@@ -97,5 +99,19 @@ public class SerializedDataSetDefinitionPersister implements DataSetDefinitionPe
      */
     public void setDao(SerializedObjectDAO dao) {
     	this.dao = dao;
+    }
+    
+    /**
+     * @return the serializer
+     */
+    public OpenmrsSerializer getSerializer() {
+    	return serializer;
+    }
+	
+    /**
+     * @param serializer the serializer to set
+     */
+    public void setSerializer(OpenmrsSerializer serializer) {
+    	this.serializer = serializer;
     }
 }

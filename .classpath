@@ -34,7 +34,7 @@
 	<classpathentry kind="lib" path="lib-common/hsqldb-1.8.0.10.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.2-FINAL-20081019.jar"/>
 	<classpathentry kind="lib" path="lib-common/liquibase-1.9.1-mod.jar"/>
-	<classpathentry kind="lib" path="lib-common/xstream-1.3.1.jar"/>
+	<classpathentry kind="lib" path="lib-common/xstream-1.3.1.jar" sourcepath="/openmrs-source/xstream-distribution-1.3.1-src.zip"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/mail/activation.jar"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/mail/mail.jar"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/antlr/antlr_2.7.6.jar"/>
@@ -47,9 +47,9 @@
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/jakarta-taglibs/taglibs-response-1.1.jar"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/jakarta-taglibs/taglibs-standard-1.1.jar"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/hibernate/hibernate325-mod.jar" sourcepath="/openmrs-source/hibernate-3.2.5ga-lite.zip"/>
-	<classpathentry kind="lib" path="lib-common/serialization.xstream-0.1.6.jar"/>
-	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.0.9831-RC2.jar"/>
-	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.0.9831-RC2.jar"/>
-	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.0.9831-RC2.jar"/>
+	<classpathentry kind="lib" path="lib-common/serialization.xstream-0.1.6.jar" sourcepath="/serialization.xstream"/>
+	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.0.9966-RC2.jar"/>
+	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.0.9966-RC2.jar"/>
+	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.0.9966-RC2.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

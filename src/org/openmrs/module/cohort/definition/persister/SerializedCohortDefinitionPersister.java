@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.serialization.OpenmrsSerializer;
 
 /**
  * This class returns CohortDefinitions that have been Serialized to the database
@@ -43,7 +44,7 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
     //****************
 	
 	private SerializedObjectDAO dao = null;
-
+	private OpenmrsSerializer serializer = null;
 	
     /**
      * @return the dao
@@ -58,12 +59,26 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
     public void setDao(SerializedObjectDAO dao) {
     	this.dao = dao;
     }
+    
+    /**
+     * @return the serializer
+     */
+    public OpenmrsSerializer getSerializer() {
+    	return serializer;
+    }
+	
+    /**
+     * @param serializer the serializer to set
+     */
+    public void setSerializer(OpenmrsSerializer serializer) {
+    	this.serializer = serializer;
+    }
 	
 	
     //****************
     // Instance methods
     //****************
-    
+
 	/**
      * @see CohortDefinitionPersister#getCohortDefinition(Integer)
      */
@@ -96,7 +111,7 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
      * @see CohortDefinitionPersister#saveCohortDefinition(CohortDefinition)
      */
     public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {    	
-    	return dao.saveObject(cohortDefinition);
+    	return dao.saveObject(cohortDefinition, serializer);
     }
 
 	/**

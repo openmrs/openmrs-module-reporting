@@ -11,6 +11,16 @@
            http://www.springframework.org/schema/util
            http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
+	<!-- Reporting serializer -->
+	<bean id="reportingSerializer" class="org.openmrs.module.reporting.serializer.ReportingSerializer"/>
+	<bean parent="serializationServiceTarget">
+		<property name="serializers">
+			<list>
+				<ref bean="reportingSerializer"/>
+			</list>
+		</property>
+	</bean>
+
 	<!-- Serialized Data Access Object 	-->
 	<bean parent="serializedObjectDAO">
 		<property name="supportedTypes">
@@ -26,13 +36,16 @@
 
 	<!-- Initialize report persistence handlers -->
 	<bean id="serializedCohortDefinitionPersister" class="org.openmrs.module.cohort.definition.persister.SerializedCohortDefinitionPersister">
-		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
+		<property name="dao"><ref bean="serializedObjectDAO"/></property>
+		<property name="serializer"><ref bean="reportingSerializer"/></property>	
 	</bean>
 	<bean id="serializedDataSetDefinitionPersister" class="org.openmrs.module.dataset.definition.persister.SerializedDataSetDefinitionPersister">
-		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
+		<property name="dao"><ref bean="serializedObjectDAO"/></property>
+		<property name="serializer"><ref bean="reportingSerializer"/></property>
 	</bean>	
 	<bean id="serializedIndicatorPersister" class="org.openmrs.module.indicator.persister.SerializedIndicatorPersister">
-		<property name="dao"><ref bean="serializedObjectDAO"/></property>	
+		<property name="dao"><ref bean="serializedObjectDAO"/></property>
+		<property name="serializer"><ref bean="reportingSerializer"/></property>
 	</bean>
 	
 	
@@ -46,6 +59,7 @@
 					<property name="target">
 						<bean class="org.openmrs.module.report.service.BaseReportService">
 							<property name="dao"><ref bean="serializedObjectDAO"/></property>			
+							<property name="serializer"><ref bean="reportingSerializer"/></property>
 						</bean>
 					</property>
 					<property name="preInterceptors">

@@ -70,6 +70,10 @@ public class CompoundCohortDefinition extends BaseCohortDefinition {
 		this.operator = operator;
 		this.definitions = Arrays.asList(definitions);
 	}
+	
+	public void addDefinition(Mapped<CohortDefinition> definition) {
+		definitions.add(definition);
+	}
 
 	//***** PROPERTY ACCESS *****
 	
