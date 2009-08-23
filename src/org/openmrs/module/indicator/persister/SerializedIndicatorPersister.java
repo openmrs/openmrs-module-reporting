@@ -70,15 +70,15 @@ public class SerializedIndicatorPersister implements IndicatorPersister {
 	/**
      * @see IndicatorPersister#saveIndicator(Indicator)
      */
-    public Indicator saveIndicator(Indicator dataSetDefinition) {
-    	return dao.saveObject(dataSetDefinition);
+    public Indicator saveIndicator(Indicator indicator) {
+    	return dao.saveObject(indicator);
     }
 
 	/**
      * @see IndicatorPersister#purgeIndicator(Indicator)
      */
-    public void purgeIndicator(Indicator dataSetDefinition) {
-    	dao.purgeObject(dataSetDefinition.getId());
+    public void purgeIndicator(Indicator indicator) {
+    	dao.purgeObject(indicator.getId());
     }
 
     //****************

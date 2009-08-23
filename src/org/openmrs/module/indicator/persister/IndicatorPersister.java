@@ -77,7 +77,7 @@ public interface IndicatorPersister {
 	 * @should update existing {@link Indicator}
 	 * @should set identifier after save
 	 */
-	public Indicator saveIndicator(Indicator datasetDefinition);
+	public Indicator saveIndicator(Indicator indicator);
 	
 	/**
 	 * Deletes a {@link Indicator} from the system.
@@ -86,5 +86,5 @@ public interface IndicatorPersister {
 	 * 
 	 * @should remove the Indicator
 	 */
-	public void purgeIndicator(Indicator dataSetDefinition);
+	public void purgeIndicator(Indicator indicator);
 }

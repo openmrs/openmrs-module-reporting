@@ -59,9 +59,6 @@ public class CohortIndicator extends BaseIndicator {
     	this.cohortDefinition = cohortDefinition;
     	this.logicCriteria = logicCriteria;
     	this.aggregator = aggregator;
-
-    	// TODO Need to remove this once we get a serialization working
-    	this.setUuid(UUID.randomUUID().toString());
     }
 	
     //***** Property Access *****

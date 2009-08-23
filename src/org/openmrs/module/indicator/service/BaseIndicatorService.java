@@ -74,8 +74,8 @@ public class BaseIndicatorService implements IndicatorService {
 	/**
 	 * @see IndicatorService#saveIndicator(String)
 	 */
-	public void purgeIndicator(Indicator indicator) throws APIException { 		
-		getPersister(indicator.getClass()).saveIndicator(indicator);
+	public void purgeIndicator(Indicator indicator) throws APIException { 
+		getPersister(indicator.getClass()).purgeIndicator(indicator);
 	}
 	
 	/** 
