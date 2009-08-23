@@ -28,6 +28,7 @@ import org.openmrs.module.dataset.PatientDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.util.CohortUtil;
 
 /**
  * The logic that evaluates a {@link PatientDataSetDefinition} 
@@ -62,6 +63,9 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		if (cohort == null) {			
 			throw new APIException("Cohort cannot be empty");
 		}
+		
+		// Reduce the number of patients to evaluate
+		CohortUtil.limitCohort(cohort, context.getRowLimit());
 		
 		List<Patient> patients = 
 			Context.getPatientSetService().getPatients(cohort.getMemberIds());

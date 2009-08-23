@@ -38,6 +38,18 @@ public abstract class AbstractReportRenderer implements ReportRenderer  {
 	
 	/**
 	 * 
+	 */
+	public String escape(String text) {
+		if (text == null) {
+			return null;
+		}
+		else {
+			return text.replaceAll("\"", "\\\"");
+		}
+	}	
+
+	/**
+	 * 
 	 * @param column
 	 * @return
 	 */

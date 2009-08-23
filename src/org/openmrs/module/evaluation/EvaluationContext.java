@@ -35,6 +35,7 @@ public class EvaluationContext {
 	// PROPERTIES 
 	// *******************
 	
+	private Integer rowLimit = new Integer(0);
 	private Cohort baseCohort;	
 	private Map<String, Object> parameterValues = new HashMap<String, Object>();
 	private transient Map<String, Object> cache = new HashMap<String, Object>();
@@ -197,4 +198,20 @@ public class EvaluationContext {
 	public void setBaseCohort(Cohort baseCohort) {
 		this.baseCohort = baseCohort;
 	}
+
+	/**
+	 * @return the number of rows to evaluate
+	 */
+	public Integer getRowLimit() {
+		return rowLimit;
+	}
+	
+	/**
+	 * @param the baseCohort
+	 */
+	public void setRowLimit(Integer rowLimit) {
+		this.rowLimit = rowLimit;
+	}
+
+
 }

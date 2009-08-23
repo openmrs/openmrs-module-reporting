@@ -26,7 +26,12 @@ import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
+import org.openmrs.module.report.renderer.ReportRenderer;
+import org.openmrs.module.report.renderer.TsvReportRenderer;
+import org.openmrs.module.report.renderer.XlsReportRenderer;
+import org.openmrs.module.report.renderer.XmlReportRenderer;
 import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.util.CohortUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -66,26 +71,26 @@ public class ManageDatasetDefinitionController {
     /**
      * Shows a dataset definition given a uuid (or an id and class name). 
      * 
-     * @param uuid
-     * 		the universally unique identifier of the dataset definition
      * @param id
-     * 		the identifier of the dataset definition
+     * 			The identifier of the dataset definition
+     * @param uuid
+     * 			The universally unique identifier of the dataset definition
      * @param className
-     * 		the class name of the dataset to be created/retrieved
+     * 			The class name of the dataset to be created/retrieved
      * @param cohortSize
-     * 		the size of the cohort used to preview the dataset
+     * 			The size of the cohort used to preview the dataset
      * @param action
-     * 		the action to be taken
+     * 			The action to be taken
      * @param model
-     * 		the model map used to hold the dataset definition and preview dataset
+     * 			The model map used to hold the dataset definition and preview dataset
      * @return
-     * 		the name of the JSP to present to the user
+     * 		The name of the JSP to present to the user
      */
     @SuppressWarnings("unchecked")
 	@RequestMapping("/module/reporting/showDataset")
     public String showDatasetDefinition(
-    		@RequestParam(required=false, value="uuid") String uuid,
     		@RequestParam(required=false, value="id") Integer id,
+    		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="className") String className,
             @RequestParam(required=false, value="cohortSize") Integer cohortSize,
             @RequestParam(required=false, value="action") String action,
@@ -98,7 +103,7 @@ public class ManageDatasetDefinitionController {
     	
     	if (dataSetDefinition != null && "preview".equalsIgnoreCase(action)) { 
     		EvaluationContext context = new EvaluationContext();
-    		context.setBaseCohort(getRandomCohort(cohortSize));
+    		context.setBaseCohort(CohortUtil.getRandomCohort(cohortSize));
         	DataSet dataSet = 
         		Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);        
         	model.addAttribute("dataSet", dataSet);
@@ -163,54 +168,6 @@ public class ManageDatasetDefinitionController {
     	return "";
     }
     	
-    
-    
-
-    /**
-     * Returns a cohort of patients of the given size.
-     *       
-     * @param size
-     * 		the desired size of the cohort 
-     * @return	
-     * 		a cohort of patients 
-     */
-    public Cohort getRandomCohort(Integer size) { 
-    	
-    	Integer cohortSize = 
-    		(size != null && size > 0) ? size 
-    				: Integer.parseInt(Context.getAdministrationService().getGlobalProperty("reporting.preview.cohortSize", "100"));
-    	
-		Cohort randomCohort = new Cohort();
-    
-		Cohort tempCohort = Context.getPatientSetService().getAllPatients();
-
-		Random random = new Random();
-		
-		// Convert patient IDs to a list
-		List<Integer> patientIds = Arrays.asList(tempCohort.getMemberIds().toArray(new Integer[0]));
-		if (tempCohort != null && !tempCohort.isEmpty()) { 
-
-			// If the "all patients" cohort is less than or equal to the desired cohort size
-			// then we just use the available "all patients" cohort.
-			if (tempCohort.getMemberIds().size()<=cohortSize) { 
-				randomCohort = tempCohort;
-			} 
-			// Otherwise we create a random cohort 
-			else { 
-				for(int i=0; i<cohortSize; i++) {					
-					Integer randomIndex = random.nextInt(tempCohort.getSize());
-					Integer patientId = patientIds.get(randomIndex);
-					// TODO We need to deal with patients that have already been selected
-					//  because we don't want duplicates.  This requires special handling
-					// since we want to have exactly "cohortSize" patients in the cohort.					
-					randomCohort.addMember(patientId);
-				}
-			}
-		}		
-		return randomCohort;
-    	
-    }
-    
     
     /**
      * Retrieve an existing dataset or create a new dataset given the type.
@@ -349,9 +306,10 @@ public class ManageDatasetDefinitionController {
     @SuppressWarnings("deprecation")
 	@RequestMapping("/module/reporting/downloadDataset")
     public void downloadDataset(
-       		@RequestParam(required=false, value="uuid") String uuid,
     		@RequestParam(required=false, value="id") Integer id,
+       		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="className") String className,
+            @RequestParam(required=false, value="format") String format,
             HttpServletResponse response) {
     	 
        	try { 
@@ -364,7 +322,8 @@ public class ManageDatasetDefinitionController {
     		
     		// Set the cohort to use when evaluating the dataset
     		Cohort baseCohort = Context.getPatientSetService().getAllPatients();
-	    	context.setBaseCohort(baseCohort);	    		
+	    	context.setBaseCohort(baseCohort);	 
+	    	context.setRowLimit(100);
 	    	
 	    	
 	    	// Evaluate the dataset
@@ -375,11 +334,22 @@ public class ManageDatasetDefinitionController {
 	    	ReportDefinition reportDefinition = new ReportDefinition();
 	    	reportDefinition.addDataSetDefinition("test", dataSetDefinition, "");
 	    	ReportData reportData = Context.getService(ReportService.class).evaluate(reportDefinition, context);
+
+	    	ReportRenderer renderer = new CsvReportRenderer();
 	    		    	
 	    	// We usually render, but for now we're just going to return it
-			response.setContentType("text/csv");
-			response.setHeader("Content-Disposition", "attachment; filename=\"report.csv\"");  	    	
-	    	new CsvReportRenderer().render(reportData, null, response.getOutputStream());
+	    	if ("xml".equalsIgnoreCase(format)) { 
+	    		renderer = new XmlReportRenderer();
+	    	} 
+	    	else if ("tsv".equalsIgnoreCase(format)) { 
+	    		renderer = new TsvReportRenderer();
+	    	}
+	    	else if ("xls".equalsIgnoreCase(format)) { 
+	    		renderer = new XlsReportRenderer();
+	    	}
+			response.setContentType(renderer.getRenderedContentType(reportDefinition, null));
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + dataSetDefinition.getName() + "." + format + "\"");  	    	
+	    	renderer.render(reportData, null, response.getOutputStream());
 	    	response.getOutputStream().close();
        	} 
        	catch (Exception e) { 

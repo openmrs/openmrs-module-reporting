@@ -70,18 +70,6 @@ public class CsvReportRenderer extends DelimitedTextReportRenderer {
 	}
 	
 	/**
-	 * @see DelimitedTextReportRenderer#escape(String)
-	 */
-	public String escape(String text) {
-		if (text == null) {
-			return null;
-		}
-		else {
-			return text.replaceAll("\"", "\\\"");
-		}
-	}
-	
-	/**
 	 * @see org.openmrs.report.ReportRenderer#getRenderedContentType(ReportDefinition, String)
 	 */
 	public String getRenderedContentType(ReportDefinition model, String argument) {

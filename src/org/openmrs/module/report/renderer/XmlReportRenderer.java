@@ -32,38 +32,13 @@ import org.openmrs.module.report.ReportDefinition;
 /**
  * ReportRenderer that renders to a delimited text file
  */
-public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer {
+public class XmlReportRenderer extends AbstractReportRenderer {
 	
-	/**
-	 * @return the filename extension for the particular type of delimited file
-	 */
-	public abstract String getFilenameExtension();
-	
-	/**
-	 * @return the delimiter that occurs before each column
-	 */
-	public abstract String getBeforeColumnDelimiter();
-	
-	/**
-	 * @return the delimiter that occurs after each column
-	 */
-	public abstract String getAfterColumnDelimiter();
-	
-	/**
-	 * @return the delimiter that occurs before each row
-	 */
-	public abstract String getBeforeRowDelimiter();
-	
-	/**
-	 * @return the delimiter that occurs after each row
-	 */
-	public abstract String getAfterRowDelimiter();
-		
 	/**
 	 * @see ReportRenderer#getFilename(ReportDefinition, String)
 	 */
 	public String getFilename(ReportDefinition reportDefinition, String argument) {
-		return reportDefinition.getName() + "." + getFilenameExtension();
+		return reportDefinition.getName() + ".xml";
 	}
 	
 	/**
@@ -88,46 +63,47 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 	/**
 	 * @see ReportRenderer#render(ReportData, String, Writer)
 	 */
-	public void render(ReportData results, String argument, Writer writer) throws IOException, RenderingException {
+	public void render(ReportData results, String argument, Writer xmlWriter) throws IOException, RenderingException {
 		DataSet dataset = results.getDataSets().values().iterator().next();
+		
 		
 		List<DataSetColumn> columns = 
 			dataset.getDataSetDefinition().getColumns();
-		
-		// header row
-		writer.write(getBeforeRowDelimiter());
-		for (DataSetColumn column : columns) {
-			if (isDisplayColumn(column.getColumnKey())) { 
-				writer.write(getBeforeColumnDelimiter());
-				writer.write(escape(column.getColumnKey()));
-				writer.write(getAfterColumnDelimiter());
-			}
-		}
-		writer.write(getAfterRowDelimiter());
-		
-		// data rows
+		xmlWriter.write("<?xml version=\"1.0\"?>\n");
+		xmlWriter.write("<dataset>\n");
+		xmlWriter.write("\t<rows>\n");
 		for (Iterator<Map<DataSetColumn, Object>> i = dataset.iterator(); i.hasNext();) {
-			writer.write(getBeforeRowDelimiter());
-			Map<DataSetColumn, Object> map = i.next();
+			xmlWriter.write("\t\t<row>");
+			Map<DataSetColumn, Object> rowMap = i.next();
 			for (DataSetColumn column : columns) {
-			
+				
 				if (isDisplayColumn(column.getColumnKey())) { 
-					Object colValue = map.get(column);
-					writer.write(getBeforeColumnDelimiter());
+					Object colValue = rowMap.get(column);
+					xmlWriter.write("<" + column.getDisplayName() + ">");
 					if (colValue != null) { 
 						if (colValue instanceof Cohort) {
-							writer.write(escape(Integer.toString(((Cohort) colValue).size())));
+							xmlWriter.write(escape(Integer.toString(((Cohort) colValue).size())));
 						} 
 						else {
-							writer.write(escape(colValue.toString()));
+							xmlWriter.write(escape(colValue.toString()));
 						}
 					}
-					writer.write(getAfterColumnDelimiter());
+					xmlWriter.write("</" + column.getDisplayName() + ">");
 				}
 			}
-			writer.write(getAfterRowDelimiter());
-		}
-		
-		writer.flush();
+			xmlWriter.write("</row>\n");
+		}		
+		xmlWriter.write("\t</rows>\n");
+		xmlWriter.write("</dataset>\n");
+		xmlWriter.flush();
+	}
+
+	public String getLabel() {
+		return "XML";
+	}
+
+	public String getRenderedContentType(ReportDefinition schema,
+			String argument) {
+		return "text/xml";
 	}
 }
