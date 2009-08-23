@@ -14,11 +14,11 @@ $(document).ready(function() {
 	});
 });
 
-	function deleteCohortDefinition(name, uuid) {
-		if (confirm("Are you sure you want to delete " + name + "?")) {
-			document.location.href = '${pageContext.request.contextPath}/module/reporting/purgeCohortDefinition.form?uuid='+uuid;
-		}
+function confirmDelete(name, uuid) {
+	if (confirm("Are you sure you want to delete " + name + "?")) {
+		document.location.href = '${pageContext.request.contextPath}/module/reporting/purgeCohortDefinition.form?uuid='+uuid;
 	}
+}
 
 </script>
 
@@ -30,7 +30,7 @@ $(document).ready(function() {
 		<h1>Cohort Manager</h1>
 		<form method="get" action="editCohortDefinition.form" style="display:inline">
 			<strong>Create a new cohort definition</strong>
-			<select name="type">
+			<select name="type" style="font-size: 1.5em;">
 				<option value="">&nbsp;</option>
 				<c:forEach items="${types}" var="type">
 					<option value="${type.name}">${type.simpleName}</option>
@@ -51,13 +51,13 @@ $(document).ready(function() {
 		<table id="cohort-definition-table" class="display" >
 			<thead>
 				<tr>
-					<th align="center" width="1%"></th>
+					<th align="center" width="1%">Edit</th>
 					<th>Name</th>
 					<th>Type</th>
 					<th>Description</th>
 					<th>Created</th>
-					<th align="center" width="1%"></th>
-					<th align="center" width="1%"></th>
+					<th align="center" width="1%">Evaluate</th>
+					<th align="center" width="1%">Remove</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -89,7 +89,7 @@ $(document).ready(function() {
 							</a>
 						</td>
 						<td align="center">
-							<a href="javascript:deleteCohortDefinition('${cohortDefinition.name}','${cohortDefinition.uuid}');">
+							<a href="javascript:confirmDelete('${cohortDefinition.name}','${cohortDefinition.uuid}');">
 								<img src="<c:url value='/images/trash.gif'/>" border="0"/>
 							</a>
 						</td>

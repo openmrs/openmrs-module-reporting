@@ -183,70 +183,7 @@ $(document).ready(function() {
 									</tfoot>								
 								</table>
 							</div>
-						</li>
-						<li>
-							<label class="desc">Parameters</label>	
-
-							<a href="${addParameterUrl}">Add Parameter</a><br/>
-<!-- 
-								<a href="#" id="add-parameter-button">Add Parameter</a> <i>(should open in a dialog box -- not working yet!)</i>
- -->							
-							<div>
-								<table id="cohort-definition-parameter-table" class="display">
-									<thead>
-										<tr>
-											<th align="left">Edit</th>
-											<th align="left">Name</th>
-											<th align="left">Label</th>
-											<th align="left">Type</th>
-											<th align="left">Collection Type</th>
-											<th align="left">Default Value</th>
-											<th align="left">Delete</th>
-										</tr>	
-									</thead>
-									<tbody>
-										<c:forEach items="${cohortDefinition.parameters}" var="parameter" varStatus="varStatus">
-											
-											<c:set var="isParameter" value="true" />
-											<c:forEach items="${cohortDefinition.configurationProperties}" var="property">
-												<c:if test="${parameter.name == property.field.name}">
-													<c:set var="isParameter" value="false" />
-												</c:if>
-											</c:forEach>
-											
-											<c:if test="${isParameter}">
-												<c:url var="editParameterUrl" value='/module/reporting/parameter.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>																
-												<c:url var="deleteParameterUrl" value='/module/reporting/deleteParameter.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>
-												<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
-													<td valign="top" nowrap="true">
-														<a href="${editParameterUrl}"><img src='<c:url value="/images/edit.gif"/>' border="0"/></a>
-													</td>
-													<td valign="top" nowrap="true">
-														${parameter.name}
-													</td>
-													<td valign="top">
-														${parameter.label}
-													</td>
-													<td valign="top">
-														${parameter.clazz}																									
-													</td>
-													<td valign="top">
-														${parameter.collectionType}
-													</td>
-													<td valign="top">
-														${parameter.defaultValue}
-													</td>
-													<td valign="top" nowrap="true">
-														<a href="${deleteParameterUrl}"><img src='<c:url value="/images/trash.gif"/>' border="0"/></a>
-													</td>
-												</tr>	
-											</c:if>
-										</c:forEach>
-									</tbody>
-								</table>
-							</div>
-						</li>
-
+						</li>					
 						<li>					
 							<div align="center">				
 								<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
