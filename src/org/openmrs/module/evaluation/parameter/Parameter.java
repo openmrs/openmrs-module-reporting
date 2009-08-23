@@ -51,7 +51,7 @@ public class Parameter implements Serializable {
 	/**
 	 * The datatype of this parameter
 	 */
-	private Class<?> clazz;
+	private Class<?> type;
 	
 	/**
 	 * If this parameter can have multiple values specified, this is the underlying Collection type
@@ -76,16 +76,16 @@ public class Parameter implements Serializable {
 	 * Initialize this Parameter with the given values
 	 * @param name The defined descriptive name
 	 * @param label The label to display to the user if value is needed
-	 * @param clazz The data type of this parameter
+	 * @param type The data type of this parameter
 	 * @param collectionType Indicates whether this parameter can have multiple values in a Collection
 	 * @param defaultValue The value to fill in if nothing provided by the user
 	 */
-	public Parameter(String name, String label, Class<?> clazz, 
+	public Parameter(String name, String label, Class<?> type, 
 					 Class<? extends Collection<?>> collectionType, Object defaultValue) {
 		super();
 		setName(name);
 		setLabel(label);
-		setClazz(clazz);
+		setType(type);
 		setCollectionType(collectionType);
 		setDefaultValue(defaultValue);
 	}
@@ -95,10 +95,10 @@ public class Parameter implements Serializable {
 	 * 
 	 * @param name The defined descriptive name
 	 * @param label The label to display to the user if value is needed
-	 * @param clazz The data type of this parameter
+	 * @param type The data type of this parameter
 	 */
-	public Parameter(String name, String label, Class<?> clazz) {
-		this(name, label, clazz, null, null);
+	public Parameter(String name, String label, Class<?> type) {
+		this(name, label, type, null, null);
 	}
 	
 	//***********************
@@ -115,7 +115,7 @@ public class Parameter implements Serializable {
     	if (collectionType != null) {
     		sb.append(collectionType+"<");
     	}
-    	sb.append(",clazz="+ (clazz == null ? "null" : clazz.getName()));
+    	sb.append(",type="+ (type == null ? "null" : type.getName()));
     	if (collectionType != null) {
     		sb.append(">");
     	}
@@ -176,17 +176,17 @@ public class Parameter implements Serializable {
 	}
 
 	/**
-	 * @return the clazz
+	 * @return the type
 	 */
-	public Class<?> getClazz() {
-		return clazz;
+	public Class<?> getType() {
+		return type;
 	}
 
 	/**
-	 * @param clazz the clazz to set
+	 * @param type the type to set
 	 */
-	public void setClazz(Class<?> clazz) {
-		this.clazz = clazz;
+	public void setType(Class<?> type) {
+		this.type = type;
 	}
 	
 

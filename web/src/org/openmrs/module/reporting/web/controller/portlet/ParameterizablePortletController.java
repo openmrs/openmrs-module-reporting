@@ -46,21 +46,21 @@ public class ParameterizablePortletController extends PortletController {
 		// TODO: Figure out why this is necessary.
 		Thread.currentThread().setContextClassLoader(OpenmrsClassLoader.getInstance());
 
-		String type = (String)model.get("type");
+		String typeClass = (String)model.get("type");
 		String uuid = (String)model.get("uuid");
 		
 		// Get Parameterizable class from the passed type
-		Class<? extends Parameterizable> clazz = null;
+		Class<? extends Parameterizable> type = null;
 		try {
-			clazz = (Class<? extends Parameterizable>)Context.loadClass(type);
-			model.put("clazz", clazz);
+			type = (Class<? extends Parameterizable>)Context.loadClass(typeClass);
+			model.put("type", type);
 		}
 		catch (Exception e) {
 			throw new IllegalArgumentException("Type " + type + " cannot be loaded", e);
 		}
 
     	if (StringUtils.isNotEmpty(uuid)) {
-    		model.put("obj", ParameterizableUtil.getParameterizable(uuid, clazz));
+    		model.put("obj", ParameterizableUtil.getParameterizable(uuid, type));
     	}
     	
     	model.put("portletUUID", UUID.randomUUID().toString().replace("-", ""));

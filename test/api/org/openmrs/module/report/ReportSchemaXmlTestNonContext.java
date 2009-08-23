@@ -38,11 +38,11 @@ public class ReportSchemaXmlTestNonContext {
 		xml.append("	</description>\n");
 		xml.append("	<parameters class=\"java.util.ArrayList\">\n");
 		xml
-		        .append("		<parameter clazz=\"java.util.Date\"><name>report.startDate</name><label>When does the report period start?</label></parameter>/>\n");
+		        .append("		<parameter type=\"java.util.Date\"><name>report.startDate</name><label>When does the report period start?</label></parameter>/>\n");
 		xml
-		        .append("		<parameter clazz=\"java.util.Date\"><name>report.endDate</name><label>When does the report period end?</label></parameter>\n");
+		        .append("		<parameter type=\"java.util.Date\"><name>report.endDate</name><label>When does the report period end?</label></parameter>\n");
 		xml
-		        .append("		<parameter clazz=\"org.openmrs.Location\"><name>report.location</name><label>For which clinic is this report?</label></parameter>\n");
+		        .append("		<parameter type=\"org.openmrs.Location\"><name>report.location</name><label>For which clinic is this report?</label></parameter>\n");
 		xml.append("	</parameters>\n");
 		xml.append("	<dataSets class=\"java.util.ArrayList\">\n");
 		xml.append("		<dataSetDefinition class=\"org.openmrs.dataset.CohortDataSetDefinition\" name=\"Cohorts\">\n");
@@ -89,11 +89,11 @@ public class ReportSchemaXmlTestNonContext {
 		xml.append("	</description>\n");
 		xml.append("	<parameters class=\"java.util.ArrayList\">\n");
 		xml
-		        .append("		<parameter clazz=\"java.util.Date\"><name>report.startDate</name><label>When does the report period start?</label></parameter>/>\n");
+		        .append("		<parameter type=\"java.util.Date\"><name>report.startDate</name><label>When does the report period start?</label></parameter>/>\n");
 		xml
-		        .append("		<parameter clazz=\"java.util.Date\"><name>report.endDate</name><label>When does the report period end?</label></parameter>\n");
+		        .append("		<parameter type=\"java.util.Date\"><name>report.endDate</name><label>When does the report period end?</label></parameter>\n");
 		xml
-		        .append("		<parameter clazz=\"org.openmrs.Location\"><name>report.location</name><label>For which clinic is this report?</label></parameter>\n");
+		        .append("		<parameter type=\"org.openmrs.Location\"><name>report.location</name><label>For which clinic is this report?</label></parameter>\n");
 		xml.append("	</parameters>\n");
 		xml.append("	<dataSets class=\"java.util.ArrayList\">\n");
 		xml.append("		<dataSetDefinition class=\"org.openmrs.dataset.CohortDataSetDefinition\" name=\"Cohorts\">\n");
@@ -138,11 +138,11 @@ public class ReportSchemaXmlTestNonContext {
 		xml.append("	</description>\n");
 		xml.append("	<parameters class=\"java.util.ArrayList\">\n");
 		xml
-		        .append("		<parameter clazz=\"java.util.Date\"><name>report.startDate</name><label>When does the report period start?</label></parameter>/>\n");
+		        .append("		<parameter type=\"java.util.Date\"><name>report.startDate</name><label>When does the report period start?</label></parameter>/>\n");
 		xml
-		        .append("		<parameter clazz=\"java.util.Date\"><name>report.endDate</name><label>When does the report period end?</label></parameter>\n");
+		        .append("		<parameter type=\"java.util.Date\"><name>report.endDate</name><label>When does the report period end?</label></parameter>\n");
 		xml
-		        .append("		<parameter clazz=\"org.openmrs.Location\"><name>report.location</name><label>For which clinic is this report?</label></parameter>\n");
+		        .append("		<parameter type=\"org.openmrs.Location\"><name>report.location</name><label>For which clinic is this report?</label></parameter>\n");
 		xml.append("	</parameters>\n");
 		xml.append("	<dataSets class=\"java.util.ArrayList\">\n");
 		xml.append("		<dataSetDefinition class=\"org.openmrs.dataset.CohortDataSetDefinition\" name=\"Cohorts\">\n");
@@ -188,11 +188,11 @@ public class ReportSchemaXmlTestNonContext {
 		xml.append("	</description>\n");
 		xml.append("	<parameters class=\"java.util.ArrayList\">\n");
 		xml
-		        .append("		<parameter clazz=\"java.util.Date\"><name>report.startDate</name><label>When does the report period start?</label></parameter>/>\n");
+		        .append("		<parameter type=\"java.util.Date\"><name>report.startDate</name><label>When does the report period start?</label></parameter>/>\n");
 		xml
-		        .append("		<parameter clazz=\"java.util.Date\"><name>report.endDate</name><label>When does the report period end?</label></parameter>\n");
+		        .append("		<parameter type=\"java.util.Date\"><name>report.endDate</name><label>When does the report period end?</label></parameter>\n");
 		xml
-		        .append("		<parameter clazz=\"org.openmrs.Location\"><name>report.location</name><label>For which clinic is this report?</label></parameter>\n");
+		        .append("		<parameter type=\"org.openmrs.Location\"><name>report.location</name><label>For which clinic is this report?</label></parameter>\n");
 		xml.append("	</parameters>\n");
 		xml.append("	<dataSets class=\"java.util.ArrayList\">\n");
 		xml.append("		<dataSetDefinition class=\"org.openmrs.dataset.CohortDataSetDefinition\" name=\"Cohorts\">\n");

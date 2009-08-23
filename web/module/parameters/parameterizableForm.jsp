@@ -174,7 +174,7 @@ $j(document).ready(function() {
 										<tr>
 											<td>${p.name}</td>
 											<td>${p.defaultValue}</td>
-											<td><openmrs:fieldGen type="${p.clazz}" formFieldName="parameters[${varStatus.index}].defaultValue" val="${p.defaultValue}" parameters="" /></td>
+											<td><openmrs:fieldGen type="${p.type}" formFieldName="parameters[${varStatus.index}].defaultValue" val="${p.defaultValue}" parameters="" /></td>
 											<td><input type="checkbox" name="parameters[${varStatus.index}].allowAtEvaluation" /></td>
 											<td>
 												<c:choose>

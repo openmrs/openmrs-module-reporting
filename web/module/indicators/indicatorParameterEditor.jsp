@@ -11,7 +11,7 @@
 		
 		<h1>Indicator Parameter Editor</h1>
 
-		<form:errors path="parameter.clazz"></form:errors>
+		<form:errors path="parameter.type"></form:errors>
 
 		<div class="errors"> 
 			<spring:hasBindErrors name="indicatorParameter">  
@@ -92,8 +92,8 @@
 					<li>	
 						<label class="desc" for="type">Type</label>
 						<div>
-							<form:input path="parameter.clazz" cssClass="field text short" />		
-							<form:errors path="parameter.clazz"></form:errors>
+							<form:input path="parameter.type" cssClass="field text short" />		
+							<form:errors path="parameter.type"></form:errors>
 						</div>
 					</li>
 					<li>

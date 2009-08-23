@@ -48,8 +48,8 @@ public class CohortExpressionParser {
 	private static List<Character> closeParenthesesWords = Arrays.asList(')',']','}');
 	private static List<Character> characterWords = Arrays.asList('+','!','(','[','{',')',']','}');
 	
-	public static boolean supports(Class<?> clazz) {
-		return getSupportedTypes().contains(clazz);
+	public static boolean supports(Class<?> type) {
+		return getSupportedTypes().contains(type);
 	}
 	
 	public static List<Class<?>> getSupportedTypes() {
@@ -360,8 +360,8 @@ public class CohortExpressionParser {
 					CohortDefinition filter = null; // TODO: Fix this...Context.getReportService().getCohortDefinitionByName(name);
 					if (filter == null) {
 						try {
-							Class<?> clazz = Context.loadClass(name);
-							filter = (CohortDefinition) clazz.newInstance();
+							Class<?> type = Context.loadClass(name);
+							filter = (CohortDefinition) type.newInstance();
 							for (Map.Entry<String, String> e : paramValues.entrySet()) {
 								boolean isExpression = EvaluationUtil.isExpression(e.getValue());
 								// TODO: Fix this: filter.addParameter(new Parameter());

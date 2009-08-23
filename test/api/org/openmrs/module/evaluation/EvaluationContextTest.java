@@ -60,15 +60,15 @@ public class EvaluationContextTest {
 	/**
 	 * Helper method to evaluate an expression
 	 * @param expression
-	 * @param clazz
+	 * @param type
 	 * @return
 	 * @throws Exception
 	 */
-	public Object evaluate(String expression, Class<?> clazz) throws Exception {
+	public Object evaluate(String expression, Class<?> type) throws Exception {
 		EvaluationContext context = new EvaluationContext();
 		context.addParameterValue("report.d1", df.parse("2007-01-10 10:30:17"));
 		context.addParameterValue("report.gender", "male");
-		return EvaluationUtil.evaluateExpression(expression, context.getParameterValues(), clazz);
+		return EvaluationUtil.evaluateExpression(expression, context.getParameterValues(), type);
 	}
 	
 }

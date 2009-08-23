@@ -47,10 +47,10 @@
 							<option value="${supportedType.value}" <c:if test="${model.parameter.collectionType.name == supportedType.value}">selected</c:if>>${supportedType.labelText} of</option>
 						</c:forEach>
 					</select>
-					<select name="clazz">
-						<option value="" <c:if test="${model.parameter.clazz == null}">selected</c:if>></option>
+					<select name="type">
+						<option value="" <c:if test="${model.parameter.type == null}">selected</c:if>></option>
 						<c:forEach var="supportedType" items="${model.supportedTypes}">
-							<option value="${supportedType.value}" <c:if test="${model.parameter.clazz.name == supportedType.value}">selected</c:if>>${supportedType.labelText}</option>
+							<option value="${supportedType.value}" <c:if test="${model.parameter.type.name == supportedType.value}">selected</c:if>>${supportedType.labelText}</option>
 						</c:forEach>
 					</select>
 				</div>
@@ -119,10 +119,10 @@
 								<td nowrap>
 									<c:choose>
 										<c:when test="${p.collectionType != null}">
-											${p.collectionType.simpleName}&lt;${p.clazz.simpleName}&gt;
+											${p.collectionType.simpleName}&lt;${p.type.simpleName}&gt;
 										</c:when>
 										<c:otherwise>
-											${p.clazz.simpleName}
+											${p.type.simpleName}
 										</c:otherwise>
 									</c:choose>
 								</td>

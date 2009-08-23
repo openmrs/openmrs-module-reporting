@@ -60,13 +60,13 @@
 		sel.setAttribute("name", "parameterClass");
 		var opt = document.createElement("option");
 		sel.appendChild(opt);
-		<c:forEach var="clazz" items="${parameterClasses}">
+		<c:forEach var="type" items="${parameterClasses}">
 			opt = document.createElement("option");
-			<c:if test="${param.clazz == clazz}">
+			<c:if test="${param.type == type}">
 				opt.setAttribute("selected", "true");
 			</c:if>
-			opt.setAttribute("value", "${clazz.name}");
-			opt.innerHTML = "${clazz.simpleName}";
+			opt.setAttribute("value", "${type.name}");
+			opt.innerHTML = "${type.simpleName}";
 			sel.appendChild(opt);
 		</c:forEach>
 		cell.appendChild(sel);
@@ -253,9 +253,9 @@
 						<td>
 							<select name="parameterClass">
 								<option value=""></option>
-								<c:forEach var="clazz" items="${parameterClasses}">
-									<option <c:if test="${parameter.clazz == clazz}">selected="true"</c:if> value="${clazz.name}">
-										${clazz.simpleName}
+								<c:forEach var="type" items="${parameterClasses}">
+									<option <c:if test="${parameter.type == type}">selected="true"</c:if> value="${type.name}">
+										${type.simpleName}
 									</option>
 								</c:forEach>
 							</select>

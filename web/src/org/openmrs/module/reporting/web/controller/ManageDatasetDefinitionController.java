@@ -308,14 +308,18 @@ public class ManageDatasetDefinitionController {
     public void downloadDataset(
     		@RequestParam(required=false, value="id") Integer id,
        		@RequestParam(required=false, value="uuid") String uuid,
-            @RequestParam(required=false, value="className") String className,
+            @RequestParam(required=false, value="type") String type,
             @RequestParam(required=false, value="format") String format,
+            @RequestParam(required=false, value="username") String username,
+            @RequestParam(required=false, value="password") String password,
             HttpServletResponse response) {
     	 
        	try { 
-       		
+       		if (username != null && password != null) { 
+       			Context.authenticate(username, password);
+       		}
        		// Retrieve the dataset definition
-           	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, className, id); 
+           	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, type, id); 
 	
            	// Create evaluation context
     		EvaluationContext context = new EvaluationContext();	    	

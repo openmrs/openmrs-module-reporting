@@ -69,7 +69,7 @@ public class WidgetTag extends TagSupport {
 		// TODO: Figure out why this is necessary.
 		Thread.currentThread().setContextClassLoader(OpenmrsClassLoader.getInstance());
 		
-		// Retrieve the type, depending on either an object/property combination or a clazz type
+		// Retrieve the type, depending on either an object/property combination or a class type
 		Class<?> fieldType = null;
 		Type[] genericTypes = null;
 		Object propertyValue = null;

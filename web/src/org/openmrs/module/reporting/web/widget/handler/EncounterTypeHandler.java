@@ -40,7 +40,7 @@ public class EncounterTypeHandler extends CodedHandler {
 	 * @see WidgetHandler#parse(String, Class<?>)
 	 */
 	@Override
-	public Object parse(String input, Class<?> clazz) {
+	public Object parse(String input, Class<?> type) {
 		return Context.getEncounterService().getEncounterTypeByUuid(input);
 	}
 }

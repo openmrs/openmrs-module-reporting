@@ -80,7 +80,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 									</c:forEach>
 								</select>
 
-								<select name="clazz">
+								<select name="type">
 									<c:forEach var="supportedType" items="${supportedTypes}">
 										<option value="${supportedType.value}">${supportedType.labelText}</option>
 									</c:forEach>
@@ -155,7 +155,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 						            <form:options items="${supportedCollectionTypes}" itemValue="value" itemLabel="labelText"/>
 								</form:select>
 
-								<form:select path="clazz"										
+								<form:select path="type"										
 									itemLabel="labelText"
 									itemValue="value"
 									items="${supportedTypes}"/>	

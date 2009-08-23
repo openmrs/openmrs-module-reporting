@@ -71,7 +71,7 @@ public class MappedHandler extends WidgetHandler {
 	 * @see WidgetHandler#parse(String)
 	 */
 	@Override
-	public Object parse(String input, Class<?> clazz) {
+	public Object parse(String input, Class<?> type) {
 		throw new IllegalArgumentException("Not supported");
 	}
 }

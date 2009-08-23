@@ -26,8 +26,8 @@ public class IndicatorFormValidator implements Validator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
-	public boolean supports(Class clazz) {
-		return IndicatorForm.class.isAssignableFrom(clazz);
+	public boolean supports(Class type) {
+		return IndicatorForm.class.isAssignableFrom(type);
 	}
 
 	/**

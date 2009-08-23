@@ -37,7 +37,7 @@ public class WidgetConfig {
 	private PageContext pageContext; // This represents the PageContext in which to render the widget
 	private String id; // This represents the id of the input field
 	private String name;  // This represents the name of the input field
-	private Class<?> type; // The represents the clazz to edit. It is an alternative to object/property
+	private Class<?> type; // The represents the class to edit. It is an alternative to object/property
 	private Type[] genericTypes; // Any generic types on the class
 	private Object defaultValue; // This represents a default value for the field
 	private String format; // This represents an optional means for rendering a widget

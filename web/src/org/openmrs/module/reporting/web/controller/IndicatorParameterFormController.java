@@ -69,7 +69,7 @@ public class IndicatorParameterFormController {
 		log.info("Processing form ..." + indicatorParameter.getCohortIndicator().getUuid());
 		
 		//parameter.setAllowUserInput(allowUserInput);
-		//parameter.setClazz(clazz);
+		//parameter.setTyp(type);
 		//parameter.setDefaultValue(defaultValue);
 		//parameter.setLabel(label);
 		//parameter.setName(name);

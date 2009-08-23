@@ -145,7 +145,7 @@ public class ManageReportController {
 			
 			EvaluationContext evalContext = new EvaluationContext();
 			for (Parameter param : reportSchema.getParameters() ) { 
-				log.info("Setting parameter " + param.getName() + " of class " + param.getClazz() + " = " + request.getParameter(param.getName()) );
+				log.info("Setting parameter " + param.getName() + " of class " + param.getType() + " = " + request.getParameter(param.getName()) );
 				String paramValue = request.getParameter(param.getName());
 				// TODO Need to convert from string to object
 				// TODO Parameter needs a data type property

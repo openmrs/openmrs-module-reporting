@@ -42,9 +42,9 @@ public class EnumHandler extends CodedHandler {
 	 * @see WidgetHandler#parse(String, Class<?>)
 	 */
 	@Override
-	public Object parse(String input, Class<?> clazz) {
+	public Object parse(String input, Class<?> type) {
 		if (input != null) {
-			Object[] enums = clazz.getEnumConstants();
+			Object[] enums = type.getEnumConstants();
 			if (enums != null) {
 				for (Object o : enums) {
 					if (input.equals(o.toString())) {

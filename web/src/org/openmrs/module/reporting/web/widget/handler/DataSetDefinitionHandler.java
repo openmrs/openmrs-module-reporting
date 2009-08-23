@@ -41,7 +41,7 @@ public class DataSetDefinitionHandler extends CodedHandler {
 	 * @see WidgetHandler#parse(String, Class<?>)
 	 */
 	@Override
-	public Object parse(String input, Class<?> clazz) {
+	public Object parse(String input, Class<?> type) {
 		return Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(input);
 	}
 }

@@ -88,7 +88,7 @@ public class EvaluationUtil {
 	 * @throws ParameterException
 	 */
 	public static Object evaluateExpression(String expression, Map<String, Object> parameterValues, 
-											Class<?> clazz) throws ParameterException {
+											Class<?> type) throws ParameterException {
 		
 		log.info("evaluateExpression(): " + expression + " " + parameterValues);
 		
@@ -108,7 +108,7 @@ public class EvaluationUtil {
 			if (isStartOfExpr || c == '}') {
 				if (curr.length() > 0) {
 					if (c == '}') {
-						elements.add(evaluateParameterExpression(curr.toString(), parameterValues, clazz));
+						elements.add(evaluateParameterExpression(curr.toString(), parameterValues, type));
 					}
 					else {
 						elements.add(curr.toString());
@@ -133,8 +133,8 @@ public class EvaluationUtil {
 		}
 		// Otherwise, return the String concatenation of all elements
 		else {
-			if (clazz != null && clazz != String.class) {
-				throw new ParameterException("Unable to evaluate " + expression + " to a " + clazz);
+			if (type != null && type != String.class) {
+				throw new ParameterException("Unable to evaluate " + expression + " to a " + type);
 			}
 			StringBuilder sb = new StringBuilder();
 			for (Object o : elements) {
@@ -172,7 +172,7 @@ public class EvaluationUtil {
 	 * @throws ParameterException
 	 */
 	public static Object evaluateParameterExpression(String expression, Map<String, Object> parameterValues,
-													 Class<?> clazz) throws ParameterException {
+													 Class<?> type) throws ParameterException {
 		
 		log.info("evaluateParameterExpression(): " + expression + " " + parameterValues);
 

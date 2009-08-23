@@ -33,18 +33,18 @@ public class ReflectionUtil {
 	
 	/**
 	 * Returns the field with the given name from the passed class, including it's superclasses
-	 * @param clazz - The clazz to look at
+	 * @param type - The type to look at
 	 * @param propertyName - The name of the field to return
 	 * @return - The field with the given name, or null if not found
 	 */
-	public static Field getField(Class<?> clazz, String fieldName) {
-		if (clazz != null) {
-			for (Field f : clazz.getDeclaredFields()) {
+	public static Field getField(Class<?> type, String fieldName) {
+		if (type != null) {
+			for (Field f : type.getDeclaredFields()) {
 				if (f.getName().equals(fieldName)) {
 					return f;
 				}
 			}
-			return getField(clazz.getSuperclass(), fieldName);
+			return getField(type.getSuperclass(), fieldName);
 		}
 		return null;
 	}

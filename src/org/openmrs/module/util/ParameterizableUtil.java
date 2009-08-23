@@ -91,16 +91,16 @@ public class ParameterizableUtil {
 	 * Map<String, Mapped<Parameterizable>>
 	 * Map<String, Mapped<? extends Parameterizable>>
 	 * 
-	 * @param clazz the class
+	 * @param type the class
 	 * @param property the property
 	 * @return the matching Parameterizable type
 	 */
 	@SuppressWarnings("unchecked")
-    public static Class<? extends Parameterizable> getMappedType(Class<?> clazz, String property) {
+    public static Class<? extends Parameterizable> getMappedType(Class<?> type, String property) {
 		// Get generic type of the Mapped property, if specified
 		Class<? extends Parameterizable> mappedType = null;
 		if (StringUtils.isNotEmpty(property)) {
-	    	Field f = ReflectionUtil.getField(clazz, property);
+	    	Field f = ReflectionUtil.getField(type, property);
 			try {
 				Type genericType = null;
 				if (Mapped.class.isAssignableFrom(f.getType())) {
@@ -117,7 +117,7 @@ public class ParameterizableUtil {
 					genericType = mapped.getActualTypeArguments()[0];
 				}
 				else {
-					throw new RuntimeException("Cannot retrieve Mapped type from: " + clazz.getSimpleName() + "." + property);
+					throw new RuntimeException("Cannot retrieve Mapped type from: " + type.getSimpleName() + "." + property);
 				}
 				if (genericType instanceof WildcardType) {
 					genericType = ((WildcardType) genericType).getUpperBounds()[0];
@@ -128,7 +128,7 @@ public class ParameterizableUtil {
 				mappedType = (Class<? extends Parameterizable>) genericType;
 			}
 			catch (Exception e) {
-				throw new IllegalArgumentException("Cannot retrieve Mapped type from: " + clazz.getSimpleName() + "." + property, e);
+				throw new IllegalArgumentException("Cannot retrieve Mapped type from: " + type.getSimpleName() + "." + property, e);
 			}
 		}
 		return mappedType;

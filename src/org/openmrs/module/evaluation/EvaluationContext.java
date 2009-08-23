@@ -76,7 +76,7 @@ public class EvaluationContext {
 				throw new ParameterException("Cannot find parameter with name <" + paramName + "> in " + child.getParameterizable());
 			}
 			String paramVal = child.getParameterMappings().get(paramName);
-			Object eval = EvaluationUtil.evaluateExpression(paramVal, initialContext.getParameterValues(), p.getClazz());
+			Object eval = EvaluationUtil.evaluateExpression(paramVal, initialContext.getParameterValues(), p.getType());
 			ec.addParameterValue(paramName, eval);
 		}
 		return ec;

@@ -48,7 +48,7 @@ public class StringHandler extends WidgetHandler {
 	 * @see WidgetHandler#parse(String, Class<?>)
 	 */
 	@Override
-	public Object parse(String input, Class<?> clazz) {
+	public Object parse(String input, Class<?> type) {
 		return input;
 	}
 }

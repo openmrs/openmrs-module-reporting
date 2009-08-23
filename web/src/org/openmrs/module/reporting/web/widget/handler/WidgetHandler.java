@@ -35,7 +35,7 @@ public abstract class WidgetHandler {
 	/**
 	 * This is the main method that should be overridden by subclasses to parse an input string to an object
 	 * @param input
-	 * @param clazz
+	 * @param type
 	 */
-	public abstract Object parse(String input, Class<?> clazz);
+	public abstract Object parse(String input, Class<?> type);
 }

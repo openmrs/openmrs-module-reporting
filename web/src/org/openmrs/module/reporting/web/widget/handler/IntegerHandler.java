@@ -43,9 +43,9 @@ public class IntegerHandler extends WidgetHandler {
 	 * @see WidgetHandler#parse(String, Class<?>)
 	 */
 	@Override
-	public Object parse(String input, Class<?> clazz) {
+	public Object parse(String input, Class<?> type) {
 		if (input != null) {
-			if (clazz == Long.class) {
+			if (type == Long.class) {
 				return Long.valueOf(input);
 			}
 			return Integer.valueOf(input);

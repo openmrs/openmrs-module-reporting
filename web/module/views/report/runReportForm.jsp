@@ -38,7 +38,7 @@
 					           <spring:message code="${p.label}"/>:
 		                    </td>
 		                    <td>
-		                    	<openmrs:fieldGen type="${p.clazz.name}" formFieldName="${status.expression}" val="${status.value}"/>
+		                    	<openmrs:fieldGen type="${p.type.name}" formFieldName="${status.expression}" val="${status.value}"/>
 		                        <c:if test="${status.errorMessage != ''}">
 		                            <span class="error">${status.errorMessage}</span>
 		                        </c:if>

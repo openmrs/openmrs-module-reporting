@@ -121,7 +121,7 @@ $j(document).ready(function() {
 												${parameter.name}
 											</td>
 											<td>
-												<openmrs:fieldGen type="${parameter.clazz}" formFieldName="parameter.${parameter.name}.defaultValue" val="${parameter.defaultValue}" parameters="" />
+												<openmrs:fieldGen type="${parameter.type}" formFieldName="parameter.${parameter.name}.defaultValue" val="${parameter.defaultValue}" parameters="" />
 											</td>
 											<td>
 												<input type="checkbox" name="parameter.${parameter.name}.allowUserInput" />

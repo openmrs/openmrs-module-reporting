@@ -356,7 +356,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 														${parameter.label}
 													</td>
 													<td valign="top">
-														${parameter.clazz}																									
+														${parameter.type}																									
 													</td>
 													<td valign="top">
 														${parameter.collectionType}
