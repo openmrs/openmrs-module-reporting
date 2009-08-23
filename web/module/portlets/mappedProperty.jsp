@@ -130,6 +130,9 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready(function() {
+				<c:if test="${!empty model.viewId}">
+					$('#${model.viewId}Template').html($('#${model.viewId}').html());
+				</c:if>
 				$('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
@@ -156,52 +159,63 @@
 			<c:otherwise>
 		
 				<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
-					<b class="boxHeader" style="font-weight:bold; text-align:right;">
-						<span style="float:left;">
-							<c:if test="${model.multiType == 'map'}">${model.currentKey} = </c:if>
-							${model.label}
-						</span>
-						<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
-						<c:if test="${model.currentKey != null}">
-							&nbsp;|&nbsp;
-							<a style="color:lightyellow;" href="#" id="${model.id}RemoveLink">Remove</a>
-						</c:if>
-					</b>
-					<div class="box">
-						<c:choose>
-							<c:when test="${model.mappedObj != null}">
+					
+					<table width="100%" style="font-size:small;">
+						<tr>
+							<td style="font-weight:bold;">
+								<c:if test="${model.multiType == 'map'}">${model.currentKey}: </c:if>${model.label}
+							</td>
+							<td align="right" nowrap="true" valign="top">
+								<a href="#" id="${model.id}EditLink">Edit</a>&nbsp;|&nbsp;
+								<a href="#" id="${model.id}RemoveLink">Delete</a>
+							</td>
+						</tr>
+					</table>
+					<c:choose>
+						<c:when test="${!empty model.viewId}">
+							<div id="${model.viewId}Template"></div>
+						</c:when>
+						<c:otherwise>
+
+							<div class="box">
 								<c:choose>
-									<c:when test="${!empty model.mapped.description}">
-										${model.mapped.description}
+									<c:when test="${model.mappedObj != null}">
+										<c:choose>
+											<c:when test="${!empty model.mapped.description}">
+												${model.mapped.description}
+											</c:when>
+											<c:otherwise>
+												<table>
+													<tr>
+														<th colspan="3" align="left">${model.mappedObj.name}</th>
+													</tr>
+													<c:forEach items="${model.mappedObj.parameters}" var="p">
+														<tr>
+															<td align="right">&nbsp;&nbsp;${p.name}</td>
+															<td align="left">--&gt;</td>
+															<td align="left" width="100%">
+																<c:choose>
+																	<c:when test="${model.mappings[p.name] == null}">
+																		<span style="color:red; font-style:italic;">Undefined</span>
+																	</c:when>
+																	<c:otherwise>${model.mappings[p.name]}</c:otherwise>
+																</c:choose>
+															</td>
+														</tr>
+													</c:forEach>
+												</table>
+											</c:otherwise>
+										</c:choose>
 									</c:when>
 									<c:otherwise>
-										<table>
-											<tr>
-												<th colspan="3" align="left">${model.mappedObj.name}</th>
-											</tr>
-											<c:forEach items="${model.mappedObj.parameters}" var="p">
-												<tr>
-													<td align="right">&nbsp;&nbsp;${p.name}</td>
-													<td align="left">--&gt;</td>
-													<td align="left" width="100%">
-														<c:choose>
-															<c:when test="${model.mappings[p.name] == null}">
-																<span style="color:red; font-style:italic;">Undefined</span>
-															</c:when>
-															<c:otherwise>${model.mappings[p.name]}</c:otherwise>
-														</c:choose>
-													</td>
-												</tr>
-											</c:forEach>
-										</table>
+										${model.nullValueLabel}
 									</c:otherwise>
 								</c:choose>
-							</c:when>
-							<c:otherwise>
-								${model.nullValueLabel}
-							</c:otherwise>
-						</c:choose>
-					</div>
+							</div>
+						
+						</c:otherwise>
+					</c:choose>
+					
 				</div>
 				
 			</c:otherwise>

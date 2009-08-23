@@ -18,6 +18,7 @@ import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.module.util.ReflectionUtil;
 import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -153,6 +154,11 @@ public class MappedPropertyPortletFormController {
         
         ReflectionUtil.setPropertyValue(parent, f, previousValue);
     	ParameterizableUtil.saveParameterizable(parent);
+    	
+    	String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
+    	if (returnUrl.startsWith(pathToRemove)) {
+    		returnUrl = returnUrl.substring(pathToRemove.length());
+    	}
     	
     	return "redirect:"+returnUrl;
     }

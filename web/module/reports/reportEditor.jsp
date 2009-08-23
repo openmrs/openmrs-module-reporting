@@ -44,10 +44,35 @@
 						</td>
 						<td valign="top" width="100%">
 							<b class="boxHeader">Dataset Definitions</b>
+							
+							<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
+								<div style="display:none; width:100%" id="dsdView${dsdStatus.index}">
+									<table width="100%" style="font-size:smaller; color:grey; border:1px solid black;">
+										<tr>
+											<c:forEach items="${dsd.value.parameterizable.columns}" var="column" varStatus="colStatus">
+												<c:if test="${colStatus.count < 7}">
+													<th style="border-bottom:1px solid black;">${column.columnKey}</th>
+												</c:if>
+												<c:if test="${colStatus.count == 7}">
+													<th style="border-bottom:1px solid black;">...</th>
+												</c:if>
+											</c:forEach>
+										</tr>
+										<tr>
+											<c:forEach items="${dsd.value.parameterizable.columns}" var="column" varStatus="colStatus">
+												<c:if test="${colStatus.count <= 7}">
+													<td align="center">{...}</td>
+												</c:if>
+											</c:forEach>
+										</tr>
+									</table>
+								</div>
+							</c:forEach>
+							
 							<div class="box" style="vertical-align:top;">
 								<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
 									<openmrs:portlet url="mappedProperty" id="dsd${dsd.key}" moduleId="reporting" 
-													parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|currentKey=${dsd.key}|label=${dsd.value.parameterizable.name}|parentUrl=${pageUrl}" />
+													parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|currentKey=${dsd.key}|label=${dsd.value.parameterizable.name}|parentUrl=${pageUrl}|viewId=dsdView${dsdStatus.index}" />
 									<br/>
 								</c:forEach>
 								<openmrs:portlet url="mappedProperty" id="newDsd" moduleId="reporting" 
