@@ -2,37 +2,22 @@ package org.openmrs.module.reporting.web.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.annotation.Handler;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
-import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.evaluation.parameter.Parameterizable;
+import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.PeriodCohortIndicator;
 import org.openmrs.module.indicator.service.IndicatorService;
-import org.openmrs.module.report.PeriodIndicatorReportDefinition;
-import org.openmrs.module.report.ReportDefinition;
-import org.openmrs.module.report.service.ReportService;
-import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
-import org.openmrs.module.reporting.web.widget.html.Option;
+import org.openmrs.module.propertyeditor.CohortDefinitionEditor;
 import org.openmrs.module.reporting.web.model.IndicatorForm;
-import org.openmrs.module.reporting.web.util.ParameterUtil;
-import org.openmrs.module.util.ParameterizableUtil;
-import org.openmrs.util.HandlerUtil;
+import org.openmrs.module.reporting.web.validator.IndicatorFormValidator;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -42,9 +27,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.util.WebUtils;
 
 @Controller
 @RequestMapping("/module/reporting/indicators/periodIndicator")
@@ -64,6 +47,7 @@ public class PeriodIndicatorFormController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(ymd, true));
+		binder.registerCustomEditor(CohortDefinition.class, new CohortDefinitionEditor());
 	}
 
 	/**
@@ -77,14 +61,15 @@ public class PeriodIndicatorFormController {
 	public ModelAndView setupForm(
 		@RequestParam(value = "uuid", required = false) String uuid) {
 
-				
-		ModelAndView model = new ModelAndView(
-				"/module/reporting/indicators/periodIndicatorForm");
-
-		model.addObject("cohortDefinitions", Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));
-		return model;
+		return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
 	}
 
+	@ModelAttribute("cohortDefinitions")
+    public Collection<CohortDefinition> populateCohortDefinitions() {
+        return Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false);
+    }
+	
+	
 	/**
 	 * Processes the form when a user submits.
 	 * 
@@ -93,26 +78,39 @@ public class PeriodIndicatorFormController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public String processForm(
+	public ModelAndView processForm(
+			@RequestParam(value = "action", required = false) String action,
 			@ModelAttribute("indicatorForm") IndicatorForm indicatorForm,
 			BindingResult bindingResult) {
 
-		//new IndicatorFormValidator().validate(indicatorForm, bindResult);
+		log.info("action: " + action);
+		
+		Boolean isSave = "save".equalsIgnoreCase(action);
+		CohortIndicator cohortIndicator = indicatorForm.getCohortIndicator();
+		
+		
+		log.info("Parameter mapping: " + indicatorForm.getParameterMapping());
+		
+		if (isSave) { 
+			log.info("saving indicator" + cohortIndicator);
+			
+			// validate the parameter mapping
+			new IndicatorFormValidator().validateParameterMapping(indicatorForm, bindingResult);
 
-		
-		if (bindingResult.hasErrors()) 
-			return "periodIndicatorForm";
-		
-		log.info("indicatorForm.getUuid(): " + indicatorForm.getUuid());
-		
-		// Find the selected indicator
-		PeriodCohortIndicator indicator = (PeriodCohortIndicator) Context
-				.getService(IndicatorService.class).getIndicatorByUuid(indicatorForm.getUuid());
-		
-		// Save the report definition with the new indicator
-		Context.getService(IndicatorService.class).saveIndicator(indicator);
+			if (bindingResult.hasErrors()) 
+				return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
+			
+			
+			CohortDefinition cohortDefinition = indicatorForm.getCohortDefinition();
+			Map<String, String> parameterMapping = indicatorForm.getParameterMapping();		
+			cohortIndicator.setCohortDefinition(cohortDefinition, parameterMapping);
+			
+			// Save the report definition with the new indicator
+			Context.getService(IndicatorService.class).saveIndicator(indicatorForm.getCohortIndicator());			
+			return new ModelAndView("redirect:/module/reporting/closeWindow.htm");
+		}
 
-		return "redirect:/module/reporting/closeWindow.htm";
+		return this.setupForm(cohortIndicator.getUuid());
 	}
 	
 	
@@ -126,28 +124,29 @@ public class PeriodIndicatorFormController {
 	@ModelAttribute("indicatorForm")
 	public IndicatorForm formBackingObject(	
 			@RequestParam(value = "uuid", required=false) String uuid) { 
-	
-	
+
+		log.info("formBackingObject(): ");		
+		
 		IndicatorForm indicatorForm = new IndicatorForm();
 
 		
-		Indicator indicator = Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+		Indicator indicator = 
+			Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
 		
 		// If indicator does not exist, we just create a new one
-		if (indicator == null) { 
-			indicatorForm.setCohortIndicator(new PeriodCohortIndicator());
+		if (indicator != null ) { 
+			log.info("formBackingObject(): found indicator ");		
+			if (!indicator.getClass().isAssignableFrom(PeriodCohortIndicator.class)) 
+				indicatorForm.setCohortIndicator((PeriodCohortIndicator)indicator);
 		} 
 		// Otherwise, we populate the form bean with the indicator
 		else {			
-			if (!indicator.getClass().isAssignableFrom(PeriodCohortIndicator.class)) 
-				indicatorForm.setCohortIndicator((PeriodCohortIndicator)indicator);
-			
+			log.info("formBackingObject(): creating new indicator ");		
+			if (indicatorForm.getCohortIndicator() == null)  	
+				indicatorForm.setCohortIndicator(new PeriodCohortIndicator());			
 		}		
-		log.info("formBackingObject(): " + indicatorForm.getUuid());
 		return indicatorForm;
-	}
-	
-	
+	}	
 }
 
 

@@ -5,26 +5,14 @@
 
 
 <style type="text/css">
-
-#container, #page { text-align:center; width: 100%; } 
-form ul { margin:0; padding:0; list-style-type:none; width:100%; }
-form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
-
-fieldset { padding: 25px; margin:25px; }
-fieldset legend { font-weight: bold; background: #E2E4FF; padding: 6px; border: 1px solid black; }
-
-label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
-
-.errors { 
-	margin-left:200px; 
-	margin-top:20px; 
-	margin-bottom:20px;	
-	font-family:Verdana,Arial,sans-serif; 
-	font-size:12px;
-
-}
-#report-schema-tabs { width: 80%; margin-left: 10%; margin-right: 10%;  }
-
+	#report-schema-tabs { width: 80%; margin-left: 10%; margin-right: 10%;  }
+	#container, #page { text-align:center; width: 100%; } 
+	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
+	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
+	fieldset { padding: 25px; margin:25px; }
+	fieldset legend { font-weight: bold; background: #E2E4FF; padding: 6px; border: 1px solid black; }
+	label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
+	.errors { margin-left:200px; margin-top:20px; margin-bottom:20px; font-family:Verdana,Arial,sans-serif; font-size:12px; }
 </style>
 
 
@@ -36,7 +24,6 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
  -->
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-
 
 	// ======  Tabs: Cohort Definition Tabs  ================================================
 
@@ -74,10 +61,7 @@ $(document).ready(function() {
 		// no-op
 	});	
 
-
-	
 	// Disable the parameters 
-	
 	$('#startDate').attr('value','01/01/2009');
 	$('#endDate').attr('value','31/01/2009');
 	$('#startDate').attr('disabled','disabled');

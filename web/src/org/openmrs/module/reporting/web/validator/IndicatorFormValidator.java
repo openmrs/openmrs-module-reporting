@@ -1,5 +1,10 @@
 package org.openmrs.module.reporting.web.validator;
 
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.reporting.web.model.IndicatorForm;
 import org.springframework.validation.Errors;
@@ -18,6 +23,9 @@ import org.springframework.validation.Validator;
  */
 public class IndicatorFormValidator implements Validator {
 
+	
+	private Log log = LogFactory.getLog(this.getClass());
+	
 	public boolean supports(Class clazz) {
 		return IndicatorForm.class.isAssignableFrom(clazz);
 	}
@@ -32,15 +40,40 @@ public class IndicatorFormValidator implements Validator {
 	}
 
 	/**
+	 * Should validate whether all parameter mappings have been specified.
+	 * 
+	 * @param indicatorForm
+	 * @param errors
+	 * 
+	 */
+	public void validateParameterMapping(IndicatorForm indicatorForm, Errors errors) {
+		// errors, field, errorKey, defaultMessage
+		if (indicatorForm != null) { 
+			
+			List<Parameter> parameters = 
+				indicatorForm.getCohortDefinition().getParameters();
+			for(Parameter parameter : parameters) {
+				
+				String value = indicatorForm.getParameterMapping().get(parameter.getName());
+				log.info("value = '" + value + "'");
+				if (value == null || value.equals("")) { 
+					ValidationUtils.rejectIfEmpty(errors, "parameterMapping", "parameterMapping.required", "Must map each parameter");
+				}				
+			}			
+		}
+	}
+	
+	
+	/**
 	 * Should validate all data submitted in step 1.
 	 * @param indicatorForm
 	 * @param errors
 	 */
 	public void validateStep1(IndicatorForm indicatorForm, Errors errors) {
 		// errors, field, errorKey, defaultMessage
-		ValidationUtils.rejectIfEmpty(errors, "cohortIndicator.name", "cohortIndicator.name.required", "Name required");
-		ValidationUtils.rejectIfEmpty(errors, "cohortIndicator.description", "cohortIndicator.description.required", "Description required");
-		ValidationUtils.rejectIfEmpty(errors, "cohortIndicator.cohortDefinition", "cohortIndicator.cohortDefinition.required", "Cohort definition required");		
+		ValidationUtils.rejectIfEmpty(errors, "cohortIndicator.name", "cohortIndicator.name.required", "Must specify indicator name");
+		ValidationUtils.rejectIfEmpty(errors, "cohortIndicator.description", "cohortIndicator.description.required", "Must specify description");
+		ValidationUtils.rejectIfEmpty(errors, "cohortIndicator.cohortDefinition", "cohortIndicator.cohortDefinition.required", "Must specify cohort definition");		
 	}
 
 	/**

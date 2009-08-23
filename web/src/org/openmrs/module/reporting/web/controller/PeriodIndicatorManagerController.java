@@ -76,9 +76,10 @@ public class PeriodIndicatorManagerController {
 		
 		
 		ModelAndView model = new ModelAndView("/module/reporting/indicators/periodIndicatorManager");
-		
-		log.info("GET /module/reporting/indicators/addPeriodIndicator");
-		model.addObject("indicators", Context.getService(IndicatorService.class).getAllIndicators(false));
+		//model.addObject("indicators", 
+		//	Context.getService(IndicatorService.class).getIndicatorsByType(PeriodCohortIndicator.class, false));
+		model.addObject("indicators", 
+				Context.getService(IndicatorService.class).getAllIndicators(false));
 		
 		
 		// Nothing to do right now except forward to the JSP

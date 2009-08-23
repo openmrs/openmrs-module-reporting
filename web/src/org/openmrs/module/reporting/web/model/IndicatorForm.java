@@ -46,7 +46,7 @@ public class IndicatorForm {
     private String cohortDefinitionUuid = null;
     private CohortIndicator cohortIndicator = null;
     private CohortDefinition cohortDefinition = null;
-    private Map<String, Parameter> parameterMapping = new HashMap<String, Parameter>();
+    private Map<String, String> parameterMapping = new HashMap<String, String>();
     
     //***** CONSTRUCTORS *****
     public IndicatorForm() { }
@@ -99,11 +99,11 @@ public class IndicatorForm {
 		this.cohortIndicator = cohortIndicator;
 	}
 
-	public Map<String, Parameter> getParameterMapping() {
+	public Map<String, String> getParameterMapping() {
 		return parameterMapping;
 	}
 
-	public void setParameterMapping(Map<String, Parameter> parameterMapping) {
+	public void setParameterMapping(Map<String, String> parameterMapping) {
 		this.parameterMapping = parameterMapping;
 	}
 
