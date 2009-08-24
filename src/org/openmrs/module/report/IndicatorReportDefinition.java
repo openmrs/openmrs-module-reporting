@@ -1,26 +1,21 @@
 package org.openmrs.module.report;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Cohort;
-import org.openmrs.Location;
-import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.evaluation.BaseDefinition;
+import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
-import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
-import org.openmrs.module.report.service.ReportService;
 
 /**
  * This class represents the metadata that describes an indicator report. 
@@ -48,18 +43,23 @@ public class IndicatorReportDefinition extends ReportDefinition {
 		//getCohortIndicatorDataSetDefinition().addIndicator(key, displayName, cohortIndicator, 
 		//		"startDate=${startDate},endDate=${endDate},location=${location}");
 		
-		CohortIndicatorDataSetDefinition datasetDefinition = getDataSetDefinition();
+		CohortIndicatorDataSetDefinition dataSetDefinition = getDataSetDefinition();
 		
-		if (datasetDefinition != null) { 
-			log.info("adding indicator with column key " + columnKey + " dataset definition " + datasetDefinition);
+		if (dataSetDefinition != null) { 
+			log.info("adding indicator with column key " + columnKey + " dataset definition " + dataSetDefinition);
 			
 			// Adding indicator to dataset definition with default parameter mapping
-			datasetDefinition.addCohortIndicator(columnKey, cohortIndicator, "startDate=${startDate},endDate=${endDate},location=${location}");
+			dataSetDefinition.addCohortIndicator(
+					columnKey, 
+					cohortIndicator, 
+					"startDate=${startDate},endDate=${endDate},location=${location}");
 	
 			log.info("adding column specification " + columnKey + ", displayName=" + displayName + " cohortIndicator=" + cohortIndicator);
 	
 			// Adding column specification to dataset 
-			datasetDefinition.addColumnSpecification(columnKey, displayName, Number.class, cohortIndicator, null);							
+			dataSetDefinition.addColumnSpecification(columnKey, displayName, Number.class, cohortIndicator, null);	
+						
+			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);
 		}
 	}
 	

@@ -101,7 +101,21 @@ $(document).ready(function() {
 			} 
 		});
 	});
-    
+
+	$(".preview-indicator-button").click(function(event){ 
+		alert('show preview indicator page' + this.id);
+		/*
+		showReportingDialog({ 
+			title: 'Add Period Indicator', 
+			url: '<c:url value="/module/reporting/indicators/previewPeriodIndicator.form?uuid="/>',
+			successCallback: function() { 
+				window.location.reload(true);
+			} 
+		});
+		*/
+	});
+
+	
 } );
 
 </script>
@@ -123,11 +137,12 @@ $(document).ready(function() {
 			</spring:hasBindErrors>
 		</div>
 	
-		<h1>Period Indicator Report Editor</h1>
+		<h1>Period Indicator Report Designer</h1>
 
 		<div id="report-schema-tabs" class="ui-tabs-hide">			
 			<ul>
-                <li><a href="#report-schema-basic-tab"><span>Basic</span></a></li>
+                <li><a href="#report-schema-basic-tab"><span>Design</span></a></li>
+                <li><a href="#report-schema-preview-tab"><span>Preview</span></a></li>
                 <!-- 
                 <li><a href="#report-schema-advanced-tab"><span>Advanced</span></a></li>
                 <li><a href="#report-schema-preview-tab"><span>Preview</span></a></li>
@@ -205,7 +220,7 @@ $(document).ready(function() {
 									<openmrs:fieldGen type="java.util.Date" 
 										formFieldName="endDate" 
 										val="" parameters="" />
-								</div>
+								</div>																
 							</li>	
 							<li>
 								<div>
@@ -230,6 +245,7 @@ $(document).ready(function() {
 												<th>Display Name</th>
 												<th>Indicator</th>
 												<th>Edit</th>
+												<th>Preview</th>
 												<th>Remove</th>
 											</tr>
 										</thead>
@@ -262,10 +278,13 @@ $(document).ready(function() {
 														--%>
 													</td>
 													<td width="1%" align="center">
-														<a href="#"><img src="<c:url value="/images/edit.gif"/>" border="0"/></a>
+														<a href="#" id="${indicator.uuid}" class="edit-indicator"><img src="<c:url value="/images/edit.gif"/>" border="0"/></a>
 													</td>
 													<td width="1%" align="center">
-														<a href="#"><img src="<c:url value="/images/trash.gif"/>" border="0"/></a>
+														<a href="#" id="${indicator.uuid}" class="preview-indicator-button"><img src="<c:url value="/images/play.gif"/>" border="0"/></a>
+													</td>
+													<td width="1%" align="center">
+														<a href="#" id="${indicator.uuid}" class="remove-indicator"><img src="<c:url value="/images/trash.gif"/>" border="0"/></a>
 													</td>
 													<%-- 
 													<td wdith="5%" align="center">
@@ -293,6 +312,13 @@ $(document).ready(function() {
 					
 					</c:if>
 				</form:form>
+			</div>
+			
+			<div id="report-schema-preview-tab">				
+				
+				Preview report
+				
+				
 			</div>
 		</div>		
 	</div>

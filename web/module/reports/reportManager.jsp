@@ -38,42 +38,41 @@
 		<span>|</span> 
 		<a href="${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReportEditor.form">Period Indicator Report</a>
 
+
+
 		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
-					<th width="1%">Edit</th>
 					<th width="10%">Name</th>
 					<th width="20%">Type</th>
 					<th width="40%">Description</th>
-					<th width="1%">Run</th>
+					<th width="40%">Author</th>
+					<th width="1%">Design</th>
+					<th width="1%">Preview</th>
 					<th width="1%">Remove</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
-					<tr>
-						<td width="1%" nowrap="">
-							<c:set var="editUrl">
+					<c:set var="editUrl">
+						<c:choose>
+							<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
+								${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReportEditor.form?uuid=${reportDefinition.uuid}
+							</c:when>
+							<c:otherwise>
 								<c:choose>
-									<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
-										${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReportEditor.form?uuid=${reportDefinition.uuid}
+									<c:when test="${reportDefinition.class.simpleName == 'IndicatorReportDefinition'}">
+										${pageContext.request.contextPath}/module/reporting/reports/indicatorReportEditor.form?uuid=${reportDefinition.uuid}
 									</c:when>
 									<c:otherwise>
-										<c:choose>
-											<c:when test="${reportDefinition.class.simpleName == 'IndicatorReportDefinition'}">
-												${pageContext.request.contextPath}/module/reporting/reports/indicatorReportEditor.form?uuid=${reportDefinition.uuid}
-											</c:when>
-											<c:otherwise>
-												${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}
-											</c:otherwise>
-										</c:choose>
+										${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}
 									</c:otherwise>
 								</c:choose>
-							</c:set>						
-							<a href="${editUrl}">
-								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
-							</a>
-						</td>
+							</c:otherwise>
+						</c:choose>
+					</c:set>						
+
+					<tr>
 						<td width="10%" nowrap="">
 							<a href="${editUrl}">
 								${reportDefinition.name}
@@ -84,6 +83,14 @@
 						</td>
 						<td width="30%">
 							<span class="small">${reportDefinition.description}</span>
+						</td>
+						<td width="30%">
+							<span class="small">${reportDefinition.creator}</span>
+						</td>
+						<td width="1%" nowrap="" align="center">
+							<a href="${editUrl}">
+								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+							</a>
 						</td>
 						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportDefinition.uuid}">
