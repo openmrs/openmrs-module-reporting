@@ -13,12 +13,11 @@
  */
 package org.openmrs.module.indicator;
 
-import org.openmrs.OpenmrsMetadata;
-import org.openmrs.module.evaluation.parameter.Parameterizable;
+import org.openmrs.module.evaluation.Definition;
 
 /**
  * Represents an indicator
  */
-public interface Indicator extends OpenmrsMetadata, Parameterizable  {
+public interface Indicator extends Definition  {
 	
 }

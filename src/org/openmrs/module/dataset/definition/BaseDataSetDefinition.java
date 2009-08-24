@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.evaluation.parameter.BaseParameterizable;
+import org.openmrs.module.evaluation.BaseDefinition;
 
 /**
  * Base Implementation of a DataSetDefinition which provides core method
  * implementations for handling Parameters and common Property values
  * @see DataSetDefinition
  */
-public abstract class BaseDataSetDefinition extends BaseParameterizable implements DataSetDefinition {
+public abstract class BaseDataSetDefinition extends BaseDefinition implements DataSetDefinition {
 	
     private static final long serialVersionUID = 1L;
     

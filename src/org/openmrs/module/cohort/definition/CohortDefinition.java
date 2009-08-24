@@ -15,15 +15,14 @@ package org.openmrs.module.cohort.definition;
 
 import java.util.List;
 
-import org.openmrs.OpenmrsMetadata;
 import org.openmrs.module.cohort.definition.configuration.Property;
-import org.openmrs.module.evaluation.parameter.Parameterizable;
+import org.openmrs.module.evaluation.Definition;
 
 /**
  * Represents a search strategy for arriving at a cohort.<br/>
  * You evaluate a CohortDefinition using CohortEvaluator
  */
-public interface CohortDefinition extends OpenmrsMetadata, Parameterizable  {
+public interface CohortDefinition extends Definition  {
 	
 	/**
      * Returns a List of all Properties that can be configured on this CohortDefinition.

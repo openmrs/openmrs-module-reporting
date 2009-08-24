@@ -18,15 +18,15 @@ import java.util.List;
 import org.openmrs.module.cohort.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.cohort.definition.configuration.Property;
 import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
+import org.openmrs.module.evaluation.BaseDefinition;
 import org.openmrs.module.evaluation.caching.Caching;
-import org.openmrs.module.evaluation.parameter.BaseParameterizable;
 
 /**
  * Base Implementation of CohortDefinition which provides core method
  * implementations for handling Parameters and common Property values
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public abstract class BaseCohortDefinition extends BaseParameterizable implements CohortDefinition {
+public abstract class BaseCohortDefinition extends BaseDefinition implements CohortDefinition {
 	
     private static final long serialVersionUID = 1920394873L;
     

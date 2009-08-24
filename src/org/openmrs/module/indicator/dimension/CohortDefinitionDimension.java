@@ -20,14 +20,14 @@ import java.util.Map;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.evaluation.parameter.BaseParameterizable;
+import org.openmrs.module.evaluation.BaseDefinition;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.util.IndicatorUtil;
 
 /**
  * Represents a Dimension of an Indicator based on CohortDefinitions
  */
-public class CohortDefinitionDimension extends BaseParameterizable implements CohortDimension {
+public class CohortDefinitionDimension extends BaseDefinition implements CohortDimension {
 
 	private static final long serialVersionUID = 192837748L;
 	

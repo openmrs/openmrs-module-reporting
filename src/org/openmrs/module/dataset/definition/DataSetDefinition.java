@@ -15,28 +15,25 @@ package org.openmrs.module.dataset.definition;
 
 import java.util.List;
 
-import org.openmrs.OpenmrsMetadata;
-import org.openmrs.module.evaluation.parameter.Parameterizable;
-import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.DataSet;
-import org.simpleframework.xml.Attribute;
+import org.openmrs.module.dataset.ObsDataSet;
+import org.openmrs.module.dataset.column.DataSetColumn;
+import org.openmrs.module.dataset.definition.evaluator.DataSetEvaluator;
+import org.openmrs.module.dataset.definition.evaluator.ObsDataSetEvaluator;
+import org.openmrs.module.evaluation.Definition;
 import org.simpleframework.xml.Root;
 
 /**
- * Implementations of this interface describe the metadata that can be evaluated to produce a
- * {@link DataSet}. This is one of three interfaces that work together to define and evaluate an
- * OpenMRS DataSet. You need to implement all three of DataSetProvider, {@link DataSetDefinition},
- * and {@link DataSet} in order to get useful behavior. For example:
- * {@link ObsDataSetProvider}, {@link ObsDataSetDefinition}, and
- * {@link ObsDataSet} The metadata that describes what data will be produced is defined in
- * this interface The logic that evaluates that metadata goes in an implementation of
- * {@link DataSetProvider}. After evaluation, the data is represented by a {@link DataSet}.
- * 
- * @see DataSetProvider
+ * Implementations of this interface describe the metadata that can be evaluated to produce a {@link DataSet}. 
+ * This is one of three interfaces that work together to define and evaluate an OpenMRS DataSet. 
+ * You need to implement all three of {@link DataSetEvaluator}, {@link DataSetDefinition}, and {@link DataSet} 
+ * in order to get useful behavior. 
+ * For example: {@link ObsDataSetEvaluator}, {@link ObsDataSetDefinition}, and {@link ObsDataSet}.
+ * @see DataSetEvaluator
  * @see DataSet
  */
 @Root(strict = false)
-public interface DataSetDefinition extends OpenmrsMetadata, Parameterizable {
+public interface DataSetDefinition extends Definition {
         
         /**
          * Gets a list of dataset columns.

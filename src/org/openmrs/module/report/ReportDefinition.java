@@ -19,8 +19,8 @@ import java.util.Map;
 import org.openmrs.Cohort;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
+import org.openmrs.module.evaluation.BaseDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
-import org.openmrs.module.evaluation.parameter.BaseParameterizable;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.report.service.ReportService;
 
@@ -32,7 +32,7 @@ import org.openmrs.module.report.service.ReportService;
  * 
  * @see {@link ReportService#evaluate(ReportDefinition, Cohort, EvaluationContext)}
  */
-public class ReportDefinition extends BaseParameterizable {
+public class ReportDefinition extends BaseDefinition {
 	
 	private static final long serialVersionUID = 1L;
 	

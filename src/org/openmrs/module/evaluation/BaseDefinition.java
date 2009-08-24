@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.evaluation.parameter;
+package org.openmrs.module.evaluation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +19,15 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.evaluation.parameter.Parameterizable;
 
 /**
- * Provides a Base implementation of the Parameterizable interface
+ * Provides a Base implementation of the Definition interface
  */
-public abstract class BaseParameterizable extends BaseOpenmrsMetadata implements Parameterizable {
+public abstract class BaseDefinition extends BaseOpenmrsMetadata implements Definition {
 
-	protected static Log log = LogFactory.getLog(BaseParameterizable.class);
+	protected static Log log = LogFactory.getLog(BaseDefinition.class);
 	private static final long serialVersionUID = 1L;
 	
 	//***********************
@@ -41,7 +43,7 @@ public abstract class BaseParameterizable extends BaseOpenmrsMetadata implements
 	/**
 	 * Default constructor
 	 */
-	public BaseParameterizable() {
+	public BaseDefinition() {
 		super();
 	}
 	

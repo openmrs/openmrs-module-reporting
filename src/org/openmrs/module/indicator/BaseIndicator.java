@@ -13,12 +13,12 @@
  */
 package org.openmrs.module.indicator;
 
-import org.openmrs.module.evaluation.parameter.BaseParameterizable;
+import org.openmrs.module.evaluation.BaseDefinition;
 
 /**
  * Base Implementation of Indicator
  */
-public abstract class BaseIndicator extends BaseParameterizable implements Indicator {
+public abstract class BaseIndicator extends BaseDefinition implements Indicator {
 	
     private static final long serialVersionUID = 1920394873L;
     

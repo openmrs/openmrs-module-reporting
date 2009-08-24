@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.evaluation.parameter.BaseParameterizable;
+import org.openmrs.module.evaluation.BaseDefinition;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.util.ParameterizableUtil;
 import org.springframework.stereotype.Controller;
@@ -28,7 +28,7 @@ public class ParameterizablePortletFormController {
      */
     @RequestMapping("/module/reporting/reports/saveBaseParameterizable")
     public String saveBaseParameterizable(ModelMap model, HttpServletRequest request,
-    		@RequestParam(required=true, value="type") Class<? extends BaseParameterizable> type,
+    		@RequestParam(required=true, value="type") Class<? extends BaseDefinition> type,
     		@RequestParam(required=true, value="uuid") String uuid,
     		@RequestParam(required=true, value="name") String name,
     		@RequestParam(required=true, value="description") String description){
