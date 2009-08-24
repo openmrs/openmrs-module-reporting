@@ -56,13 +56,13 @@ public class MappedPropertyPortletFormController {
 			mappedType = ParameterizableUtil.getMappedType(type, property);
 		}
 		
-		Parameterizable valToSet = null;
+		Mapped m = null;
 		Object previousValue = ReflectionUtil.getPropertyValue(parent, property);
 		
 		if (StringUtils.isNotEmpty(mappedUuid)) {
-			valToSet = ParameterizableUtil.getParameterizable(mappedUuid, mappedType);
+			Parameterizable valToSet = ParameterizableUtil.getParameterizable(mappedUuid, mappedType);
     		
-    		Mapped m = new Mapped();
+			m = new Mapped();
     		m.setParameterizable(valToSet);
     		
         	for (Parameter p : valToSet.getParameters()) {
@@ -79,42 +79,44 @@ public class MappedPropertyPortletFormController {
     	    		m.addParameterMapping(p.getName(), paramValue);
         		}
         	}
+		}
         	
-        	if (previousValue != null || valToSet != null) {
+        if (previousValue != null || m != null) {
         		
-        		if (List.class.isAssignableFrom(fieldType)) {
-        			List newValue = null;
-        			if (previousValue == null) {
-        				newValue = new ArrayList();
-        				newValue.add(m);
-        			}
-        			else {
-        				newValue = (List)previousValue;
-        				if (StringUtils.isEmpty(newKey)) {
-        					newValue.add(m);
-        				}
-        				else {
-        					int listIndex = Integer.parseInt(newKey);
-        					newValue.set(listIndex, m);
-        				}
-        			}
-        			ReflectionUtil.setPropertyValue(parent, f, newValue);
-        		}
-        		else if (Map.class.isAssignableFrom(fieldType)) {
-        			Map newValue = (previousValue == null ? new HashMap() : (Map)previousValue);
-        			newValue.put(newKey, m);
+    		if (List.class.isAssignableFrom(fieldType)) {
+    			List newValue = null;
+    			if (previousValue == null) {
+    				newValue = new ArrayList();
+    				newValue.add(m);
+    			}
+    			else if (m != null) {
+    				newValue = (List)previousValue;
+    				if (StringUtils.isEmpty(newKey)) {
+    					newValue.add(m);
+    				}
+    				else {
+    					int listIndex = Integer.parseInt(newKey);
+    					newValue.set(listIndex, m);
+    				}
+    			}
+    			ReflectionUtil.setPropertyValue(parent, f, newValue);
+    		}
+    		else if (Map.class.isAssignableFrom(fieldType)) {
+    			if (m != null) {
+    				Map newValue = (previousValue == null ? new HashMap() : (Map)previousValue);
+    				newValue.put(newKey, m);
         			if (!newKey.equals(currentKey) && currentKey != null) {
         				newValue.remove(currentKey);
         			}
         			ReflectionUtil.setPropertyValue(parent, f, newValue);
-        		}
-        		else if (Mapped.class.isAssignableFrom(fieldType)) {
-        			ReflectionUtil.setPropertyValue(parent, f, m);
-        		}
-        		else {
-        			throw new IllegalArgumentException("Cannot set property fo type: " + fieldType + " to " + m);
-        		}
-        	}
+    			}
+    		}
+    		else if (Mapped.class.isAssignableFrom(fieldType)) {
+    			ReflectionUtil.setPropertyValue(parent, f, m);
+    		}
+    		else {
+    			throw new IllegalArgumentException("Cannot set property of type: " + fieldType + " to " + m);
+    		}
     	}
     	
     	ParameterizableUtil.saveParameterizable(parent);

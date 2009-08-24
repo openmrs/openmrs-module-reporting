@@ -47,7 +47,7 @@
 							<option value="${supportedType.value}" <c:if test="${model.parameter.collectionType.name == supportedType.value}">selected</c:if>>${supportedType.labelText} of</option>
 						</c:forEach>
 					</select>
-					<select name="type">
+					<select name="parameterType">
 						<option value="" <c:if test="${model.parameter.type == null}">selected</c:if>></option>
 						<c:forEach var="supportedType" items="${model.supportedTypes}">
 							<option value="${supportedType.value}" <c:if test="${model.parameter.type.name == supportedType.value}">selected</c:if>>${supportedType.labelText}</option>

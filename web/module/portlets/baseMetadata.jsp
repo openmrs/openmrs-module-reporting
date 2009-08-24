@@ -33,7 +33,7 @@
 		
 		<form id="baseParameterizableEditorForm" method="post" action="${pageContext.request.contextPath}/module/reporting/reports/saveBaseParameterizable.form">
 			<input type="hidden" name="uuid" value="${model.uuid}"/>
-			<input type="hidden" name="type" value="${param.type}"/>
+			<input type="hidden" name="type" value="${model.type}"/>
 			<input type="hidden" name="successUrl" value="${model.successUrl}"/>
 			<div style="margin:0; padding:0; width:100%; padd">
 				<div class="metadataField">

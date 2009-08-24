@@ -36,11 +36,11 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 		String currentKey = (String)model.get("currentKey");
 		String mappedUuid = (String) model.get("mappedUuid");
 		
-		Class<?> type = (Class<?>)model.get("type");
+		Class<?> typeClass = (Class<?>)model.get("typeClass");
 		Parameterizable obj = (Parameterizable)model.get("obj");
 		
 		// Get generic type of the Mapped property, if specified
-		Field f = ReflectionUtil.getField(type, property);
+		Field f = ReflectionUtil.getField(typeClass, property);
 		if (f != null) {
 			Class<?> fieldType = ReflectionUtil.getFieldType(f);
 			if (List.class.isAssignableFrom(fieldType)) {
@@ -53,7 +53,7 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 		
 		Class<? extends Parameterizable> mappedType = null;
 		if (StringUtils.isNotEmpty(property)) {
-			mappedType = ParameterizableUtil.getMappedType(type, property);
+			mappedType = ParameterizableUtil.getMappedType(typeClass, property);
 		}
 		model.put("mappedType", mappedType);
 
