@@ -54,8 +54,8 @@ public class CohortCrossTabDataSetEvaluator implements DataSetEvaluator {
 		}
 		
 		MapDataSet<Cohort> data = new MapDataSet<Cohort>();
-		data.setDataSetDefinition(dataSetDefinition);
-		data.setEvaluationContext(context);
+		data.setDefinition(dataSetDefinition);
+		data.setContext(context);
 		data.setName(dataSetDefinition.getName());
 
 		CohortCrossTabDataSetDefinition crossTabDef = (CohortCrossTabDataSetDefinition) dataSetDefinition;
@@ -67,8 +67,8 @@ public class CohortCrossTabDataSetEvaluator implements DataSetEvaluator {
 		@SuppressWarnings("unchecked")
 		MapDataSet<Cohort> colData = (MapDataSet<Cohort>) dds.evaluate(crossTabDef.getColumnCohortDataSetDefinition(), context);
 		
-		for (DataSetColumn rowDataCol : rowData.getDataSetDefinition().getColumns()) {
-			for (DataSetColumn colDataCol : colData.getDataSetDefinition().getColumns()) {
+		for (DataSetColumn rowDataCol : rowData.getDefinition().getColumns()) {
+			for (DataSetColumn colDataCol : colData.getDefinition().getColumns()) {
 				Cohort rowCohort = rowData.getData().get(rowDataCol);
 				Cohort colCohort = colData.getData().get(colDataCol);
 				String key = rowDataCol.getColumnKey() + crossTabDef.getRowColumnDelimiter() + colDataCol.getColumnKey();

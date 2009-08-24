@@ -62,10 +62,10 @@ public class XlsReportRenderer extends AbstractReportRenderer {
         HSSFWorkbook wb = new HSSFWorkbook();
         ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
         for (Map.Entry<String, DataSet> e : reportData.getDataSets().entrySet()) {
-            DataSet dataset = e.getValue();
+            DataSet<Object> dataset = e.getValue();
             HSSFSheet sheet = wb.createSheet(ExcelSheetHelper.fixSheetName(e.getKey()));
             ExcelSheetHelper helper = new ExcelSheetHelper(sheet);
-            List<DataSetColumn> columnList = dataset.getDataSetDefinition().getColumns();
+            List<DataSetColumn> columnList = dataset.getDefinition().getColumns();
             
             // Display top header
             for (DataSetColumn column : columnList) {

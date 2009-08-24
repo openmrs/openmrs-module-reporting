@@ -66,8 +66,8 @@ public class ProgramDataSetEvaluator implements DataSetEvaluator {
 		}
 		
 		ProgramDataSet dataSet = new ProgramDataSet();
-		dataSet.setDataSetDefinition(definition);
-		dataSet.setEvaluationContext(context);
+		dataSet.setDefinition(definition);
+		dataSet.setContext(context);
 		List<Program> programs = new ArrayList<Program>(definition.getPrograms());
 		List<PatientProgram> patientPrograms = Context.getProgramWorkflowService().getPatientPrograms(patients, programs);
 		dataSet.setData(patientPrograms);

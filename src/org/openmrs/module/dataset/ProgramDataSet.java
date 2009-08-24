@@ -21,12 +21,10 @@ import java.util.Map;
 
 import org.openmrs.PatientProgram;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.EvaluationContext;
-import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.ProgramDataSetDefinition;
+import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
  *
@@ -35,7 +33,7 @@ public class ProgramDataSet implements DataSet<Object> {
 	
 	private ProgramDataSetDefinition definition;
 	
-	private EvaluationContext evaluationContext;
+	private EvaluationContext context;
 	
 	private List<PatientProgram> data;
 	
@@ -77,10 +75,6 @@ public class ProgramDataSet implements DataSet<Object> {
 		
 	}
 	
-	public DataSetDefinition getDataSetDefinition() {
-		return definition;
-	}
-	
 	public Iterator<Map<DataSetColumn, Object>> iterator() {
 		return new HelperIterator(data.iterator());
 	}
@@ -91,10 +85,6 @@ public class ProgramDataSet implements DataSet<Object> {
 	 */
 	public Iterator<Map<DataSetColumn, Object>> getIterator() {
 		return iterator();
-	}	
-	
-	public EvaluationContext getEvaluationContext() {
-		return evaluationContext;
 	}
 	
 	public List<PatientProgram> getData() {
@@ -104,12 +94,32 @@ public class ProgramDataSet implements DataSet<Object> {
 	public void setData(List<PatientProgram> data) {
 		this.data = data;
 	}
-	
-	public void setDataSetDefinition(ProgramDataSetDefinition definition) {
+
+	/**
+	 * @return the definition
+	 */
+	public ProgramDataSetDefinition getDefinition() {
+		return definition;
+	}
+
+	/**
+	 * @param definition the definition to set
+	 */
+	public void setDefinition(ProgramDataSetDefinition definition) {
 		this.definition = definition;
 	}
-	
-	public void setEvaluationContext(EvaluationContext evaluationContext) {
-		this.evaluationContext = evaluationContext;
+
+	/**
+	 * @return the context
+	 */
+	public EvaluationContext getContext() {
+		return context;
+	}
+
+	/**
+	 * @param context the context to set
+	 */
+	public void setContext(EvaluationContext context) {
+		this.context = context;
 	}
 }

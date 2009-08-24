@@ -13,19 +13,15 @@
  */
 package org.openmrs.module.dataset;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Encounter;
 import org.openmrs.Location;
-import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
@@ -37,12 +33,11 @@ import org.openmrs.PersonName;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
  * A dataset with one-row-per-encounter.
@@ -55,7 +50,7 @@ public class PatientDataSet implements DataSet<Object> {
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	private PatientDataSetDefinition definition;	
-	private EvaluationContext evaluationContext;	
+	private EvaluationContext context;	
 	private List<Patient> patients;
 
 
@@ -84,7 +79,7 @@ public class PatientDataSet implements DataSet<Object> {
 	 */
 	public PatientDataSet(PatientDataSetDefinition definition, EvaluationContext context, List<Patient> patients) { 
 		this.definition = definition;
-		this.evaluationContext = context;
+		this.context = context;
 		this.patients = patients;
 	}	
 	
@@ -114,33 +109,31 @@ public class PatientDataSet implements DataSet<Object> {
 	/**
 	 * @return the definition
 	 */
-	public DataSetDefinition getDataSetDefinition() {
+	public PatientDataSetDefinition getDefinition() {
 		return definition;
 	}
-	
+
 	/**
 	 * @param definition the definition to set
 	 */
-	public void setDataSetDefinition(PatientDataSetDefinition definition) {
+	public void setDefinition(PatientDataSetDefinition definition) {
 		this.definition = definition;
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.dataset.DataSet#getEvaluationContext()
+	 * @return the context
 	 */
-	public EvaluationContext getEvaluationContext() {
-		return evaluationContext;
+	public EvaluationContext getContext() {
+		return context;
 	}
-	
+
 	/**
-	 * @param evaluationContext the evaluationContext to set
+	 * @param context the context to set
 	 */
-	public void setEvaluationContext(EvaluationContext evaluationContext) {
-		this.evaluationContext = evaluationContext;
+	public void setContext(EvaluationContext context) {
+		this.context = context;
 	}
-	
-	
-	
+
 	/**
 	 * Gets the current treatment group for the given patient.
 	 * 

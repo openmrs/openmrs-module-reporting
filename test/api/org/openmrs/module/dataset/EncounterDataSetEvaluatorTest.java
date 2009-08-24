@@ -66,17 +66,16 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 		EvaluationContext evalContext = new EvaluationContext();
 		
 		DataSetDefinition dataSetDefinition = new EncounterDataSetDefinition();
-		DataSet dataSet = 
-			Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
+		DataSet<Object> dataSet = Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
 	
 		StringBuilder datasetBuilder = new StringBuilder();
 		datasetBuilder.append("\n");
 		int columnCount = 0;
 		
 		
-		for (DataSetColumn column : dataSet.getDataSetDefinition().getColumns()) { 
+		for (DataSetColumn column : dataSet.getDefinition().getColumns()) { 
 			datasetBuilder.append(column.getColumnKey());
-			if (columnCount++ <= dataSet.getDataSetDefinition().getColumns().size())
+			if (columnCount++ <= dataSet.getDefinition().getColumns().size())
 				datasetBuilder.append(",");
 		}
 		datasetBuilder.append("\n");
@@ -86,9 +85,9 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 			columnCount = 0;
 			Map<DataSetColumn, Object> columnSet = (Map<DataSetColumn, Object>) rowSet;			
 
-			for (DataSetColumn column : dataSet.getDataSetDefinition().getColumns()) {
+			for (DataSetColumn column : dataSet.getDefinition().getColumns()) {
 				datasetBuilder.append(column.getDisplayName() + "=" + columnSet.get(column));
-				if (columnCount++ <= dataSet.getDataSetDefinition().getColumns().size()) {
+				if (columnCount++ <= dataSet.getDefinition().getColumns().size()) {
 					datasetBuilder.append(",");
 				}
 			}			

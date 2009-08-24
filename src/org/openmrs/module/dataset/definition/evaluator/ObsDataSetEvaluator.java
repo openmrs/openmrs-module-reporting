@@ -67,8 +67,8 @@ public class ObsDataSetEvaluator implements DataSetEvaluator {
 		}
 		
 		ObsDataSet ret = new ObsDataSet();
-		ret.setDataSetDefinition(definition);
-		ret.setEvaluationContext(context);
+		ret.setDefinition(definition);
+		ret.setContext(context);
 		List<Concept> concepts = new ArrayList<Concept>(definition.getQuestions());
 		List<Obs> list = Context.getObsService().getObservations(patients, concepts, definition.getFromDate(), definition.getToDate());
 		ret.setData(list);

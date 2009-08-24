@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -30,7 +29,7 @@ public class MapDataSet<T> implements DataSet<T> {
 	
 	private String name;
 	private DataSetDefinition definition;
-	private EvaluationContext evaluationContext;
+	private EvaluationContext context;
 	private Map<DataSetColumn, T> data = new LinkedHashMap<DataSetColumn, T>();
 	
 	public MapDataSet() { }
@@ -106,36 +105,36 @@ public class MapDataSet<T> implements DataSet<T> {
     public void setName(String name) {
     	this.name = name;
     }
-	
-	/**
-	 * @see DataSet#getDefinition()
-	 */
-	public DataSetDefinition getDataSetDefinition() {
-		return definition;
-	}
-	
-    /**
-     * @param definition the definition to set
-     */
-    public void setDataSetDefinition(DataSetDefinition definition) {
-    	this.definition = definition;
-    }
-	
-	/**
-	 * @see DataSet#getEvaluationContext()
-	 */
-	public EvaluationContext getEvaluationContext() {
-		return evaluationContext;
-	}
-	
-	/**
-	 * @param evaluationContext the evaluationContext to set
-	 */
-	public void setEvaluationContext(EvaluationContext evaluationContext) {
-		this.evaluationContext = evaluationContext;
-	}
 
     /**
+	 * @return the definition
+	 */
+	public DataSetDefinition getDefinition() {
+		return definition;
+	}
+
+	/**
+	 * @param definition the definition to set
+	 */
+	public void setDefinition(DataSetDefinition definition) {
+		this.definition = definition;
+	}
+
+	/**
+	 * @return the context
+	 */
+	public EvaluationContext getContext() {
+		return context;
+	}
+
+	/**
+	 * @param context the context to set
+	 */
+	public void setContext(EvaluationContext context) {
+		this.context = context;
+	}
+
+	/**
      * @return the data
      */
     public Map<DataSetColumn, T> getData() {

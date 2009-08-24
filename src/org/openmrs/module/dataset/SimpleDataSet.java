@@ -14,8 +14,8 @@ import org.openmrs.module.evaluation.EvaluationContext;
  */
 public class SimpleDataSet implements DataSet<Object> {
     
-    private DataSetDefinition dataSetDefinition;
-    private EvaluationContext evaluationContext;
+    private DataSetDefinition definition;
+    private EvaluationContext context;
     private List<Map<DataSetColumn, Object>> data;
     
     // *************
@@ -36,8 +36,8 @@ public class SimpleDataSet implements DataSet<Object> {
      */
     public SimpleDataSet(DataSetDefinition definition, EvaluationContext evaluationContext) {
         this();
-        this.dataSetDefinition = definition;
-        this.evaluationContext = evaluationContext;
+        this.definition = definition;
+        this.context = evaluationContext;
     }
     
     // *************
@@ -71,34 +71,34 @@ public class SimpleDataSet implements DataSet<Object> {
     // *************
     // PROPERTY ACCESS
     // *************
-    
-    /**
-	 * @return the dataSetDefinition
-	 */
-	public DataSetDefinition getDataSetDefinition() {
-		return dataSetDefinition;
-	}
-
-	/**
-	 * @param dataSetDefinition the dataSetDefinition to set
-	 */
-	public void setDataSetDefinition(DataSetDefinition dataSetDefinition) {
-		this.dataSetDefinition = dataSetDefinition;
-	}
-
-	/**
-	 * @return the evaluationContext
-	 */
-	public EvaluationContext getEvaluationContext() {
-		return evaluationContext;
-	}
 	
-    /**
-     * @param evaluationContext the evaluationContext to set
-     */
-    public void setEvaluationContext(EvaluationContext evaluationContext) {
-        this.evaluationContext = evaluationContext;
-    }
+	/**
+	 * @return the definition
+	 */
+	public DataSetDefinition getDefinition() {
+		return definition;
+	}
+
+	/**
+	 * @param definition the definition to set
+	 */
+	public void setDefinition(DataSetDefinition definition) {
+		this.definition = definition;
+	}
+
+	/**
+	 * @return the context
+	 */
+	public EvaluationContext getContext() {
+		return context;
+	}
+
+	/**
+	 * @param context the context to set
+	 */
+	public void setContext(EvaluationContext context) {
+		this.context = context;
+	}
 
     /**
      * @return the data
@@ -110,7 +110,7 @@ public class SimpleDataSet implements DataSet<Object> {
         return data;
     }
 
-    /**
+	/**
      * @param data the data to set
      */
     public void setData(List<Map<DataSetColumn, Object>> data) {

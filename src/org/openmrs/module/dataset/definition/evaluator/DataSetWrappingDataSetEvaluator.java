@@ -21,8 +21,8 @@ public class DataSetWrappingDataSetEvaluator implements DataSetEvaluator {
         DataSetWrappingDataSetDefinition def = (DataSetWrappingDataSetDefinition) dataSetDefinition;
         DataSet<?> data = def.getData();
         if (data instanceof SimpleDataSet) {
-            ((SimpleDataSet) data).setDataSetDefinition(def);
-            ((SimpleDataSet) data).setEvaluationContext(evalContext);
+            ((SimpleDataSet) data).setDefinition(def);
+            ((SimpleDataSet) data).setContext(evalContext);
         }
         return data;
     }

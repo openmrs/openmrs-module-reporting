@@ -21,23 +21,20 @@ import java.util.Map;
 
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.EvaluationContext;
-import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.ObsDataSetDefinition;
+import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
  * A dataset with one-row-per-obs.
- * 
- * @see RowPerObsDataSetDefinition
+ * @see ObsDataSetDefinition
  */
 public class ObsDataSet implements DataSet<Object> {
 	
 	private ObsDataSetDefinition definition;
 	
-	private EvaluationContext evaluationContext;
+	private EvaluationContext context;
 	
 	private List<Obs> data;
 	
@@ -124,29 +121,29 @@ public class ObsDataSet implements DataSet<Object> {
 	/**
 	 * @return the definition
 	 */
-	public ObsDataSetDefinition getDataSetDefinition() {
+	public ObsDataSetDefinition getDefinition() {
 		return definition;
 	}
 	
 	/**
 	 * @param definition the definition to set
 	 */
-	public void setDataSetDefinition(ObsDataSetDefinition definition) {
+	public void setDefinition(ObsDataSetDefinition definition) {
 		this.definition = definition;
 	}
 	
 	/**
-	 * @see org.openmrs.module.dataset.DataSet#getEvaluationContext()
+	 * @see DataSet#getContext()
 	 */
-	public EvaluationContext getEvaluationContext() {
-		return evaluationContext;
+	public EvaluationContext getContext() {
+		return context;
 	}
 	
 	/**
-	 * @param evaluationContext the evaluationContext to set
+	 * @param context the evaluationContext to set
 	 */
-	public void setEvaluationContext(EvaluationContext evaluationContext) {
-		this.evaluationContext = evaluationContext;
+	public void setContext(EvaluationContext context) {
+		this.context = context;
 	}
 	
 }

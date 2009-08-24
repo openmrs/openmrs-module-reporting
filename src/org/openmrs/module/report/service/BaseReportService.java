@@ -152,8 +152,8 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 		ReportData ret = new ReportData();
 		Map<String, DataSet> data = new HashMap<String, DataSet>();
 		ret.setDataSets(data);
-		ret.setReportDefinition(reportDefinition);
-		ret.setEvaluationContext(evalContext);
+		ret.setDefinition(reportDefinition);
+		ret.setContext(evalContext);
 		
 		Cohort baseCohort = CohortFilter.filter(evalContext, reportDefinition.getBaseCohortDefinition());
 		

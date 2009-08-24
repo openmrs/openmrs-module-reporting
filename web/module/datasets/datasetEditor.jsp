@@ -209,11 +209,11 @@ $(document).ready(function() {
 		
 									<% 
 				
-										org.openmrs.module.dataset.DataSet dataSetTemp = 
+										org.openmrs.module.dataset.DataSet<Object> dataSetTemp = 
 											(org.openmrs.module.dataset.DataSet) request.getAttribute("dataSet");
 				
 										java.util.List<org.openmrs.module.dataset.column.DataSetColumn> columns = 
-											dataSetTemp.getDataSetDefinition().getColumns();
+											dataSetTemp.getDefinition().getColumns();
 				
 									
 										for(Object object : dataSetTemp) { 							

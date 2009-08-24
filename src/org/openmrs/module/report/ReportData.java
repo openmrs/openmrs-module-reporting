@@ -16,16 +16,17 @@ package org.openmrs.module.report;
 import java.util.Map;
 
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.evaluation.Evaluated;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
  * Report Data obtained from evaluating a ReportDefinition with a given EvaluationContext.
  */
-public class ReportData {
+public class ReportData implements Evaluated<ReportDefinition> {
 	
-	private ReportDefinition reportDefinition;
+	private ReportDefinition definition;
 	
-	private EvaluationContext evaluationContext;
+	private EvaluationContext context;
 	
 	@SuppressWarnings("unchecked")
 	private Map<String, DataSet> dataSets;
@@ -42,29 +43,32 @@ public class ReportData {
 	public void setDataSets(Map<String, DataSet> dataSets) {
 		this.dataSets = dataSets;
 	}
-	
+
 	/**
-	 * @return Returns the EvaluationContext that was used to obtain this ReportData.
+	 * @return the definition
 	 */
-	public EvaluationContext getEvaluationContext() {
-		return evaluationContext;
+	public ReportDefinition getDefinition() {
+		return definition;
 	}
-	
+
 	/**
-	 * Saves the EvaluationContext that was used to obtain this ReportData.
-	 * 
-	 * @param evaluationContext
+	 * @param definition the definition to set
 	 */
-	public void setEvaluationContext(EvaluationContext evaluationContext) {
-		this.evaluationContext = evaluationContext;
+	public void setDefinition(ReportDefinition definition) {
+		this.definition = definition;
 	}
-	
-	public ReportDefinition getReportDefinition() {
-		return reportDefinition;
+
+	/**
+	 * @return the context
+	 */
+	public EvaluationContext getContext() {
+		return context;
 	}
-	
-	public void setReportDefinition(ReportDefinition reportDefinition) {
-		this.reportDefinition = reportDefinition;
+
+	/**
+	 * @param context the context to set
+	 */
+	public void setContext(EvaluationContext context) {
+		this.context = context;
 	}
-	
 }

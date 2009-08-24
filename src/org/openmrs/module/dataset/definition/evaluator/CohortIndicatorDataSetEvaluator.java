@@ -71,8 +71,8 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		IndicatorService is = Context.getService(IndicatorService.class);
 		
 		MapDataSet<IndicatorResult> data = new MapDataSet<IndicatorResult>();
-		data.setDataSetDefinition(dataSetDefinition);
-		data.setEvaluationContext(context);
+		data.setDefinition(dataSetDefinition);
+		data.setContext(context);
 		data.setName(dataSetDefinition.getName());
 		
 		CohortIndicatorDataSetDefinition dsd = (CohortIndicatorDataSetDefinition) dataSetDefinition;

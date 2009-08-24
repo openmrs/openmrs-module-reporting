@@ -89,10 +89,11 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 	 * @see ReportRenderer#render(ReportData, String, Writer)
 	 */
 	public void render(ReportData results, String argument, Writer writer) throws IOException, RenderingException {
-		DataSet dataset = results.getDataSets().values().iterator().next();
 		
-		List<DataSetColumn> columns = 
-			dataset.getDataSetDefinition().getColumns();
+		@SuppressWarnings("unchecked")
+		DataSet<Object> dataset = results.getDataSets().values().iterator().next();
+		
+		List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 		
 		// header row
 		writer.write(getBeforeRowDelimiter());

@@ -51,8 +51,8 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 		}
 		
 		MapDataSet<Cohort> data = new MapDataSet<Cohort>();
-		data.setDataSetDefinition(dataSetDefinition);
-		data.setEvaluationContext(context);
+		data.setDefinition(dataSetDefinition);
+		data.setContext(context);
 		data.setName(dataSetDefinition.getName());
 
 		CohortDataSetDefinition listDef = (CohortDataSetDefinition) dataSetDefinition;

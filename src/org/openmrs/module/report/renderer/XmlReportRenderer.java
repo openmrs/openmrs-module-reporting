@@ -64,11 +64,11 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 	 * @see ReportRenderer#render(ReportData, String, Writer)
 	 */
 	public void render(ReportData results, String argument, Writer xmlWriter) throws IOException, RenderingException {
-		DataSet dataset = results.getDataSets().values().iterator().next();
 		
+		@SuppressWarnings("unchecked")
+		DataSet<Object> dataset = results.getDataSets().values().iterator().next();	
 		
-		List<DataSetColumn> columns = 
-			dataset.getDataSetDefinition().getColumns();
+		List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 		xmlWriter.write("<?xml version=\"1.0\"?>\n");
 		xmlWriter.write("<dataset>\n");
 		xmlWriter.write("\t<rows>\n");

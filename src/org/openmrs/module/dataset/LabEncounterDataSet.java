@@ -13,16 +13,10 @@
  */
 package org.openmrs.module.dataset;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,13 +25,13 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.dataset.column.ConceptDataSetColumn;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.LabEncounterDataSetDefinition;
+import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
  * A dataset with one-row-per-encounter.
@@ -46,17 +40,17 @@ import org.openmrs.module.dataset.definition.LabEncounterDataSetDefinition;
  */
 public class LabEncounterDataSet implements DataSet<Object> {
 	
-	private Log log = LogFactory.getLog(getClass());
+	protected Log log = LogFactory.getLog(getClass());
 		
 	private LabEncounterDataSetDefinition definition;
 	
-	private EvaluationContext evaluationContext;
+	private EvaluationContext context;
 	
 	private List<Encounter> encounters;
 	
 	public LabEncounterDataSet(LabEncounterDataSetDefinition definition, EvaluationContext context, List<Encounter> encounters) { 
 		this.definition = definition;
-		this.evaluationContext = context;
+		this.context = context;
 		this.encounters = encounters;
 		
 	}
@@ -105,13 +99,10 @@ public class LabEncounterDataSet implements DataSet<Object> {
 
 			for (DataSetColumn column : definition.getColumns()) { 
 				if (column instanceof ConceptDataSetColumn) {
-					ConceptDataSetColumn conceptColumn = 
-						(ConceptDataSetColumn) column;
+					ConceptDataSetColumn conceptColumn = (ConceptDataSetColumn) column;
 										
 					// FIXME Quick hack to get this working
-					Obs value = 
-						findObsByConcept(encounter, 
-								((ConceptDataSetColumn) column).getConcept() );
+					Obs value = findObsByConcept(encounter, conceptColumn.getConcept());
 					
 					vals.put(column, value.getValueAsString(Context.getLocale()));
 				}				
@@ -162,15 +153,15 @@ public class LabEncounterDataSet implements DataSet<Object> {
 	/**
 	 * @return the definition
 	 */
-	public DataSetDefinition getDataSetDefinition() {
+	public DataSetDefinition getDefinition() {
 		return definition;
 	}
 		
 	/**
-	 * @see org.openmrs.module.dataset.DataSet#getEvaluationContext()
+	 * @see DataSet#getContext()
 	 */
-	public EvaluationContext getEvaluationContext() {
-		return evaluationContext;
+	public EvaluationContext getContext() {
+		return context;
 	}
 
 	/**

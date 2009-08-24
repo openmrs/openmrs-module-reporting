@@ -47,7 +47,7 @@ public class NewJoinDataSetDefinitionEvaluator implements DataSetEvaluator {
         for (Map<DataSetColumn, ?> row : righthandDataset) {
             
         	log.info("Right-side row: " + row);
-        	log.info("Right-side columns: " + righthandDataset.getDataSetDefinition().getColumns());
+        	log.info("Right-side columns: " + righthandDataset.getDefinition().getColumns());
         	log.info("Join column on right: " + dsd.getJoinColumnOnRight());
         	log.info("Row keys: " + row.keySet());
         	//Object joinValue = row.get(dsd.getJoinColumnOnRight());
@@ -75,7 +75,7 @@ public class NewJoinDataSetDefinitionEvaluator implements DataSetEvaluator {
         for (Map<DataSetColumn, ?> row : lefthandDataset) {
  
         	log.info("Left-side row: " + row);
-        	log.info("Left-side columns: " + lefthandDataset.getDataSetDefinition().getColumns());
+        	log.info("Left-side columns: " + lefthandDataset.getDefinition().getColumns());
         	log.info("Join column on right: " + dsd.getJoinColumnOnRight());
         	log.info("Row keys: " + row.keySet());
         	//Object joinValue = row.get(dsd.getJoinColumnOnRight());

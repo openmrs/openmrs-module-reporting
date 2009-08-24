@@ -34,7 +34,7 @@ public class DataExportDataSet implements DataSet<Object> {
 	private DataExportDataSetDefinition definition;
 	
 	/* Evaluation context */
-	private EvaluationContext evaluationContext;
+	private EvaluationContext context;
 	
 	/* The actual data generated from the data export */
 	private List<Map<String, Object>> data;
@@ -118,7 +118,7 @@ public class DataExportDataSet implements DataSet<Object> {
 	/**
 	 * @return the definition
 	 */
-	public DataExportDataSetDefinition getDataSetDefinition() {
+	public DataExportDataSetDefinition getDefinition() {
 		return definition;
 	}
 	
@@ -130,16 +130,16 @@ public class DataExportDataSet implements DataSet<Object> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.dataset.DataSet#getEvaluationContext()
+	 * @see DataSet#getContext()
 	 */
-	public EvaluationContext getEvaluationContext() {
-		return evaluationContext;
+	public EvaluationContext getContext() {
+		return context;
 	}
 	
 	/**
-	 * @param evaluationContext the evaluationContext to set
+	 * @param context the evaluationContext to set
 	 */
-	public void setEvaluationContext(EvaluationContext evaluationContext) {
-		this.evaluationContext = evaluationContext;
+	public void setContext(EvaluationContext context) {
+		this.context = context;
 	}
 }

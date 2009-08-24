@@ -24,13 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Cohort;
-import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.report.renderer.RenderingException;
-import org.openmrs.module.report.renderer.RenderingMode;
-import org.openmrs.module.report.renderer.ReportRenderer;
+import org.openmrs.module.report.ReportData;
+import org.openmrs.module.report.ReportDefinition;
 
 /**
  * A Default Renderer Implementation that aims to support all ReportDefinitions
@@ -87,8 +84,8 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 	@SuppressWarnings("unchecked")
 	public void render(ReportData results, String argument, Writer writer) throws IOException, RenderingException {
 		for (String key : results.getDataSets().keySet()) {
-			DataSet dataset = results.getDataSets().get(key);
-			List<DataSetColumn> columns = dataset.getDataSetDefinition().getColumns();
+			DataSet<Object> dataset = results.getDataSets().get(key);
+			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 			writer.write("<h4>" + key + "</h4>");
 			writer.write("<table border=1><tr>");
 			for (DataSetColumn column : columns) {
@@ -96,8 +93,8 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 			}
 			writer.write("</tr>");
 
-			for (Iterator<Map<String, Object>> i = dataset.iterator(); i.hasNext();) {
-				Map<String, Object> map = i.next();
+			for (Iterator<Map<DataSetColumn, Object>> i = dataset.iterator(); i.hasNext();) {
+				Map<DataSetColumn, Object> map = i.next();
 				writer.write("<tr>");
 				for (DataSetColumn column : columns) {
 					writer.write("<td>");
