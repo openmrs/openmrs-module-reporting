@@ -13,10 +13,12 @@
  */
 package org.openmrs.module.indicator;
 
+import org.openmrs.module.evaluation.Evaluated;
+
 /**
  * Represents the evaluated Value of a particular indicator
  */
-public interface IndicatorResult  {
+public interface IndicatorResult extends Evaluated<Indicator>  {
 	
 	/**
 	 * Returns the total value for this IndicatorResult across all Dimensions

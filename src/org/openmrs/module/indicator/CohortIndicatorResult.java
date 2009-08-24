@@ -34,7 +34,7 @@ public class CohortIndicatorResult implements IndicatorResult {
 
     private CohortIndicator indicator;
     private Map<CohortDimension, String> dimensions;
-    private EvaluationContext evaluationContext;
+    private EvaluationContext context;
     private Map<Integer, Number> cohortValues;
 
     //***** CONSTRUCTORS *****
@@ -80,6 +80,13 @@ public class CohortIndicatorResult implements IndicatorResult {
     
     //***** Property Access *****
 
+	/** 
+	 * @see Evaluated#getDefinition()
+	 */
+	public Indicator getDefinition() {
+		return indicator;
+	}
+
 	/**
 	 * @return the indicator
 	 */
@@ -93,19 +100,19 @@ public class CohortIndicatorResult implements IndicatorResult {
 	public void setIndicator(CohortIndicator indicator) {
 		this.indicator = indicator;
 	}
-	
+
 	/**
-	 * @return the evaluationContext
+	 * @return the context
 	 */
-	public EvaluationContext getEvaluationContext() {
-		return evaluationContext;
+	public EvaluationContext getContext() {
+		return context;
 	}
 
 	/**
-	 * @param evaluationContext the evaluationContext to set
+	 * @param context the context to set
 	 */
-	public void setEvaluationContext(EvaluationContext evaluationContext) {
-		this.evaluationContext = evaluationContext;
+	public void setContext(EvaluationContext context) {
+		this.context = context;
 	}
 
 	/**

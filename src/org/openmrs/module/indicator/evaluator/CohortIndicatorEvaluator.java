@@ -51,7 +51,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
     	CohortIndicator cid = (CohortIndicator) indicator;
     	
     	CohortIndicatorResult ind = new CohortIndicatorResult();
-    	ind.setEvaluationContext(context);
+    	ind.setContext(context);
     	ind.setIndicator(cid);
 		
 		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
