@@ -5,7 +5,7 @@
 
 
 <style type="text/css">
-	#report-schema-tabs { width: 60%; margin-left: 20%; margin-right: 20%;  }
+	#wrapper { width: 60%; margin-left: 20%; margin-right: 20%;  }
 	#container, #page { text-align:center; width: 100%; } 
 	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
 	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
@@ -31,8 +31,8 @@ $(document).ready(function() {
 
 	// ======  Tabs: Cohort Definition Tabs  ================================================
 
-	$('#report-schema-tabs').tabs();
-	$('#report-schema-tabs').show();
+	//$('#report-schema-tabs').tabs();
+	//$('#report-schema-tabs').show();
 
 
 	// ======  DataTable: Cohort Definition Parameter  ======================================
@@ -140,18 +140,11 @@ $(document).ready(function() {
 	
 		<h1>Period Indicator Report Designer</h1>
 
-		<div id="report-schema-tabs" class="ui-tabs-hide">			
-			<ul>
-                <li><a href="#report-schema-basic-tab"><span>Design</span></a></li>
-                <li><a href="#report-schema-preview-tab"><span>Preview</span></a></li>
-                <!-- 
-                <li><a href="#report-schema-advanced-tab"><span>Advanced</span></a></li>
-                <li><a href="#report-schema-preview-tab"><span>Preview</span></a></li>
-                 -->
-            </ul>
-		
-			<div id="report-schema-basic-tab">			
+
+			<div id="wrapper">
 				<form:form id="saveForm" commandName="indicatorReport" method="POST">						
+
+
 
 					<c:if test="${empty indicatorReport.reportDefinition.uuid}">
 						<ul>
@@ -204,7 +197,6 @@ $(document).ready(function() {
 							</li>
 						</ul>
 
-
 					<%-- 
 					<fieldset>
 						<legend>Parameters</legend>
@@ -238,10 +230,9 @@ $(document).ready(function() {
 					--%>
 					
 					
-					<fieldset>
-						<legend>Indicators</legend>
 						<ul>
 							<li>														
+								<label class="desc" for="name">Indicators</label>	
 								<div>
 									<table id="report-schema-indicator-table" class="display">
 										<thead>
@@ -303,7 +294,6 @@ $(document).ready(function() {
 								</div>	
 							</li>		
 						</ul>
-					</fieldset>
 					
 						<ul>
 							<li>
@@ -319,13 +309,6 @@ $(document).ready(function() {
 				</form:form>
 			</div>
 			
-			<div id="report-schema-preview-tab">				
-				
-				Preview report
-				
-				
-			</div>
-		</div>		
 	</div>
 </div>
 

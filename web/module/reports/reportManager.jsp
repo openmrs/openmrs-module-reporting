@@ -44,9 +44,7 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Type</th>
 					<th>Description</th>
-					<th>Author</th>
 					<th>Design</th>
 					<th>Preview</th>
 					<th>Remove</th>
@@ -78,14 +76,8 @@
 								${reportDefinition.name}
 							</a>
 						</td>
-						<td width="10%" nowrap="">
-							${reportDefinition.class.simpleName}
-						</td>
 						<td width="20%">
 							<span class="small">${reportDefinition.description}</span>
-						</td>
-						<td width="10%">
-							<span class="small">${reportDefinition.creator}</span>
 						</td>
 						<td width="1%" nowrap="" align="center">
 							<a href="${editUrl}">
