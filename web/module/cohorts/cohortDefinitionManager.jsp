@@ -25,7 +25,6 @@ function confirmDelete(name, uuid) {
 <div id="page">
 
 	<div id="container">
-
 	
 		<h1>Cohort Manager</h1>
 		<form method="get" action="editCohortDefinition.form" style="display:inline">
@@ -38,24 +37,13 @@ function confirmDelete(name, uuid) {
 			</select>
 			<input type="submit" value="Create"/>
 		</form>
-		<!-- 
-		<div id="inline-list">	
-			<ul>
-				<li class="first"></li>
-				<li class="last"></li>
-			</ul>
-		</div>
-		-->		
 		
 		<br/>
 		<table id="cohort-definition-table" class="display" >
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Type</th>
 					<th>Description</th>
-					<th>Author</th>
-					<th align="center" width="1%">Design</th>
 					<th align="center" width="1%">Preview</th>
 					<th align="center" width="1%">Remove</th>
 				</tr>
@@ -64,24 +52,12 @@ function confirmDelete(name, uuid) {
 				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
 					<tr>
 						<td>
-							${cohortDefinition.name}
-						</td>
-						<td>
-							${cohortDefinition.class.simpleName}
+							<a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">
+								${cohortDefinition.name}
+							</a>
 						</td>
 						<td>
 							${cohortDefinition.description}
-						</td>
-						<td>
-							<!-- TODO This should be fixed!  All cohort definitions should have metadata -->
-							<c:if test="${!cohortDefinition.class.simpleName eq 'StaticCohortDefinition'}">
-								${cohortDefinition.creator}
-							</c:if>
-						</td>						
-						<td align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">
-								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
-							</a>
 						</td>
 						<td align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateCohortDefinition.form?uuid=${cohortDefinition.uuid}">
@@ -96,21 +72,10 @@ function confirmDelete(name, uuid) {
 					</tr>
 				</c:forEach>	
 			</tbody>
-<!-- 
-			<tfoot>
-				<tr>
-					<th colspan="4" align="center">
-						<button onclick="location.href='${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form'">Add Cohort Definition</button>
-					</th>			
-				</tr>	
-			</tfoot>
- -->				
 		</table>
 
 	</div>
 
 </div>
-
-
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

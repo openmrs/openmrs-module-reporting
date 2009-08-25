@@ -30,25 +30,6 @@
 			<input type="hidden" name="type" value="${cohortDefinition.class.name}"/>
 			<ul>				
 				<li>
-					<label class="desc" for="id">ID</label>				
-					<div>
-						<c:choose>
-							<c:when test="${!empty cohortDefinition.uuid}">${cohortDefinition.uuid}</c:when>
-							<c:otherwise>
-								<c:choose>
-									<c:when test="${!empty cohortDefinition.id}">${cohortDefinition.id}</c:when>
-									<c:otherwise>(new)</c:otherwise>
-								</c:choose>
-							</c:otherwise>
-						</c:choose>	
-					</div>
-				</li>				
-				<li>
-					<label class="desc" for="type">Type</label>
-					<div>${cohortDefinition.class.name}</div>
-				</li>
-				
-				<li>
 					<label class="desc" for="name">Name</label>			
 					<div>
 						<input 	type="text" class="field text medium" id="name"  tabindex="2"
@@ -62,7 +43,10 @@
 									name="description">${cohortDefinition.description}</textarea>			
 					</div>
 				</li>
-				
+				<li>
+					<label class="desc" for="type">Type</label>
+					<div><spring:message code="reporting.${cohortDefinition.class.name}.name" /></div>
+				</li>
 				<li>
 					<label class="desc">Fixed Properties</label>			
 					
