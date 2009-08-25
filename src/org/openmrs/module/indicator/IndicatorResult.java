@@ -18,7 +18,7 @@ import org.openmrs.module.evaluation.Evaluated;
 /**
  * Represents the evaluated Value of a particular indicator
  */
-public interface IndicatorResult extends Evaluated<Indicator>  {
+public interface IndicatorResult<T extends Indicator> extends Evaluated<T>  {
 	
 	/**
 	 * Returns the total value for this IndicatorResult across all Dimensions

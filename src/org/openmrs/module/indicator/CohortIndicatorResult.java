@@ -26,7 +26,7 @@ import org.openmrs.module.indicator.dimension.CohortDimension;
 /**
  * Cohort-based indicator
  */
-public class CohortIndicatorResult implements IndicatorResult {
+public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
 	
     private static final long serialVersionUID = 1L;
     
@@ -56,6 +56,19 @@ public class CohortIndicatorResult implements IndicatorResult {
     	return AggregationUtil.aggregate(cohortValues.values(), aggregator);
     }
     
+	public Number getValueForSubset(Cohort... filters) {
+		Class<? extends Aggregator> aggregator = getIndicator().getAggregator();
+    	if (aggregator == null) {
+    		aggregator = CountAggregator.class;
+    	}
+    	Map<Integer, Number> limitedValues = new HashMap<Integer, Number>(cohortValues);
+    	for (Cohort filter : filters) {
+    		limitedValues.keySet().retainAll(filter.getMemberIds());
+    	}
+    	return AggregationUtil.aggregate(limitedValues.values(), aggregator);
+    }
+
+    
     public void addCohortValue(Integer memberId, Number value) {
     	getCohortValues().put(memberId, value);
     }
@@ -80,10 +93,10 @@ public class CohortIndicatorResult implements IndicatorResult {
     
     //***** Property Access *****
 
-	/** 
+	/**
 	 * @see Evaluated#getDefinition()
 	 */
-	public Indicator getDefinition() {
+	public CohortIndicator getDefinition() {
 		return indicator;
 	}
 
@@ -148,4 +161,5 @@ public class CohortIndicatorResult implements IndicatorResult {
 	public void setCohortValues(Map<Integer, Number> cohortValues) {
 		this.cohortValues = cohortValues;
 	}
+
 }
