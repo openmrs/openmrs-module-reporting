@@ -116,6 +116,17 @@ $(document).ready(function() {
 		});
 	});
 
+	$("#preview-report-button").click(function(event){ 
+		showReportingDialog({ 
+			title: 'Preview Period Indicator Report', 
+			url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${indicatorReport.reportDefinition.uuid}&type=${indicatorReport.reportDefinition.class.name}',
+			successCallback: function() { 
+				window.location.reload(true);
+			} 
+		});
+	});
+
+
 	
 } );
 
@@ -299,6 +310,7 @@ $(document).ready(function() {
 							<li>
 								<div align="center">
 									<input id="add-indicator-button" type="button" value="Add an indicator"/>
+									<input id="preview-report-button" type="button" value="Preview report"/>
 									<input id="back-button" type="button" value="Back to reports"/>									
 								</div>						
 							</li>

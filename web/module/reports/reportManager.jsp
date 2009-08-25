@@ -52,6 +52,21 @@
 			</thead>
 			<tbody>
 				<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
+					<script>				
+						$(document).ready(function() {
+							$("#preview-report-button-${reportDefinition.uuid}").click(function(event){ 
+								showReportingDialog({ 
+									title: 'Preview Period Indicator Report', 
+									url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition.class.name}',
+									successCallback: function() { 
+										window.location.reload(true);
+									} 
+								});
+							});		
+						} );
+					</script>				
+				
+				
 					<c:set var="editUrl">
 						<c:choose>
 							<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
@@ -84,8 +99,15 @@
 								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
 							</a>
 						</td>
+						<%-- 
 						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportDefinition.uuid}">
+								<img src='<c:url value="/images/play.gif"/>' border="0"/>
+							</a>
+						</td>
+						--%>
+						<td width="1%" align="center">
+							<a href="#" id="preview-report-button-${reportDefinition.uuid}">
 								<img src='<c:url value="/images/play.gif"/>' border="0"/>
 							</a>
 						</td>

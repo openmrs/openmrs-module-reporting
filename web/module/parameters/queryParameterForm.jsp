@@ -33,7 +33,7 @@ $(document).ready(function() {
 
 <style type="text/css">
 	* { margin: 0; }
-	#container { height: 99%; border: 1px }
+	#container { height: 95%; border: 1px }
 	#wrapper { min-height: 100%; height: auto !important; height:100%; margin: 0 auto -4em; }
 	.button { margin: 5px; width: 10%; } 
 	.buttonBar { height: 4em; background-color: #eee; vertical-align: middle; text-align:center;}
@@ -98,38 +98,23 @@ $(document).ready(function() {
 							</div>
 						</li>						
 					</c:forEach>
-					<li>					
-						<hr/>
-					</li>				
-					<li>				
-						<h4>Results of the evaluation</h4>
-						<div>
-							<span>Type: </span>
-							<span>
-								<strong>
-									<c:choose>
-										<c:when test="${empty result}">?</c:when>
-										<c:otherwise>
-											${result.class.simpleName}
-										</c:otherwise>
-									</c:choose>
-								</strong>							
-							</span>
-						</div>
-						<div>
-							<span># of Patients returned:</span>						
-							<span>
-								<strong>
-									<c:choose>
-										<c:when test="${empty result}">?</c:when>
-										<c:otherwise>
-											${result} 										
-										</c:otherwise>
-									</c:choose>
-								</strong>
-							</span>
-						</div>
-					</li>
+					<c:if test="${!empty result}">
+						<li>				
+							<h4>Results of the evaluation</h4>
+							<div>
+								<span>Type: </span>
+								<span>
+									<strong>${result.class.simpleName}</strong>							
+								</span>
+							</div>
+							<div>
+								<span># of Patients returned:</span>						
+								<span>
+									<strong>${result}</strong>
+								</span>
+							</div>
+						</li>
+					</c:if>
 				</ul>										
 			</form>
 		</div>		
