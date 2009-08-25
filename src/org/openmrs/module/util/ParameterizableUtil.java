@@ -22,6 +22,7 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
@@ -41,22 +42,22 @@ public class ParameterizableUtil {
 	 * @param uuid
 	 * @return
 	 */
-	public static Parameterizable getParameterizable(String uuid, Class<? extends Parameterizable> parameterizableClass) { 
+	public static Parameterizable getParameterizable(String uuid, Class<? extends Parameterizable> type) { 
 		
-		if (DataSetDefinition.class.isAssignableFrom(parameterizableClass)) {
+		if (DataSetDefinition.class.isAssignableFrom(type)) {
 			return Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(uuid);			
 		} 
-		else if (CohortDefinition.class.isAssignableFrom(parameterizableClass)) {
+		else if (CohortDefinition.class.isAssignableFrom(type)) {
 			return Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(uuid);
 		}
-		else if (ReportDefinition.class.isAssignableFrom(parameterizableClass)) {
+		else if (ReportDefinition.class.isAssignableFrom(type)) {
 			return Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);						
 		}
-		else if (Indicator.class.isAssignableFrom(parameterizableClass)) {
+		else if (Indicator.class.isAssignableFrom(type)) {
 			return Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);	
 		}
 		else { 
-			throw new APIException("Unable to save parameterizable type " + parameterizableClass);
+			throw new APIException("Unable to save parameterizable type " + type);
 		}		
 	}
 
@@ -88,6 +89,41 @@ public class ParameterizableUtil {
 		//return parameterizable;
 	}
 	
+
+	
+	/**
+	 * Saves the given parameterizable.
+	 * 
+	 * @param parameterizable
+	 * @return
+	 */
+	public static Object evaluateParameterizable(Parameterizable parameterizable, EvaluationContext context) { 
+		Object result = null;
+		
+		if (parameterizable != null) { 
+			if (DataSetDefinition.class.isAssignableFrom(parameterizable.getClass())) {
+				return Context.getService(DataSetDefinitionService.class).evaluate(
+						(DataSetDefinition)parameterizable, context);			
+			} 
+			else if (CohortDefinition.class.isAssignableFrom(parameterizable.getClass())) {
+				return Context.getService(CohortDefinitionService.class).evaluate(
+						(CohortDefinition)parameterizable, context);
+			}
+			else if (ReportDefinition.class.isAssignableFrom(parameterizable.getClass())) {
+				return Context.getService(ReportService.class).evaluate(
+						(ReportDefinition)parameterizable, context);						
+			}
+			else if (Indicator.class.isAssignableFrom(parameterizable.getClass())) {
+				return Context.getService(IndicatorService.class).evaluate(
+						(Indicator)parameterizable, context);	
+			}
+			else { 
+				throw new APIException("Unable to evaluate parameterizable of type <" + parameterizable.getClass().getName() + ">");
+			}
+		}
+		return result;
+	}
+	
 	
 	
 	/**
@@ -104,7 +140,7 @@ public class ParameterizableUtil {
 				String text = parameterStrings.get(parameter.getName());
 				PropertyEditor editor = null;
 				if(parameter.getType().isAssignableFrom(Date.class)) { 
-					editor = new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true);
+					editor = new CustomDateEditor(Context.getDateFormat(), true);
 					editor.setAsText(text);
 					parameterValues.put(parameter.getName(), editor.getValue());
 				} 
@@ -112,6 +148,12 @@ public class ParameterizableUtil {
 					Location location = Context.getLocationService().getLocationByUuid(text);
 					parameterValues.put(parameter.getName(), location);
 				}
+				// ==========================================================================
+				//
+				// TODO We need many more of these in order to support more parameter types
+				//
+				// ==========================================================================
+				
 			}
 		}
 		return parameterValues;
