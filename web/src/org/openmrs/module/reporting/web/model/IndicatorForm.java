@@ -46,7 +46,12 @@ public class IndicatorForm {
     private String cohortDefinitionUuid = null;
     private CohortIndicator cohortIndicator = null;
     private CohortDefinition cohortDefinition = null;
+    
+    // Parameter to parameter mapping (for adding a child to parent)
     private Map<String, String> parameterMapping = new HashMap<String, String>();
+
+    // Parameter to value mapping (for evaluating a parameterizable)  
+    private Map<String, String> parameterValues = new HashMap<String, String>();
     
     //***** CONSTRUCTORS *****
     public IndicatorForm() { }
@@ -105,6 +110,14 @@ public class IndicatorForm {
 
 	public void setParameterMapping(Map<String, String> parameterMapping) {
 		this.parameterMapping = parameterMapping;
+	}
+
+	public Map<String, String> getParameterValues() {
+		return parameterValues;
+	}
+
+	public void setParameterValues(Map<String, String> parameterValues) {
+		this.parameterValues = parameterValues;
 	}
 
 	public String getIndicatorType() {

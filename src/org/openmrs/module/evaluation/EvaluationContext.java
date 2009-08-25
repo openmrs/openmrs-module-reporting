@@ -16,6 +16,8 @@ package org.openmrs.module.evaluation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -31,13 +33,23 @@ import org.openmrs.module.evaluation.parameter.Parameterizable;
  */
 public class EvaluationContext {
 	
+	/* Logger */
+	private static Log log = LogFactory.getLog(EvaluationContext.class);	
+	
 	// *******************
 	// PROPERTIES 
 	// *******************
 	
-	private Integer rowLimit = new Integer(0);
+	// Set a limit on the number of rows to evaluate 
+	private Integer limit = new Integer(0);
+
+	// Base cohort to use for evalution
 	private Cohort baseCohort;	
+	
+	// Parameter values entered by user (or defaulted)
 	private Map<String, Object> parameterValues = new HashMap<String, Object>();
+
+	// Generic object cache
 	private transient Map<String, Object> cache = new HashMap<String, Object>();
 	
 	// *******************
@@ -70,6 +82,7 @@ public class EvaluationContext {
 	public static EvaluationContext cloneForChild(EvaluationContext initialContext, 
 												  Mapped<? extends Parameterizable> child) {
 		EvaluationContext ec = EvaluationContext.clone(initialContext);
+		
 		for (String paramName : child.getParameterMappings().keySet()) {
 			Parameter p = child.getParameterizable().getParameter(paramName);
 			if (p == null) {
@@ -77,6 +90,7 @@ public class EvaluationContext {
 			}
 			String paramVal = child.getParameterMappings().get(paramName);
 			Object eval = EvaluationUtil.evaluateExpression(paramVal, initialContext.getParameterValues(), p.getType());
+			
 			ec.addParameterValue(paramName, eval);
 		}
 		return ec;
@@ -202,15 +216,15 @@ public class EvaluationContext {
 	/**
 	 * @return the number of rows to evaluate
 	 */
-	public Integer getRowLimit() {
-		return rowLimit;
+	public Integer getLimit() {
+		return limit;
 	}
 	
 	/**
-	 * @param the baseCohort
+	 * @param the 
 	 */
-	public void setRowLimit(Integer rowLimit) {
-		this.rowLimit = rowLimit;
+	public void setLimit(Integer limit) {
+		this.limit = limit;
 	}
 
 

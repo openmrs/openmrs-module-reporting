@@ -5,14 +5,18 @@
 
 
 <style type="text/css">
-	#report-schema-tabs { width: 80%; margin-left: 10%; margin-right: 10%;  }
+	#report-schema-tabs { width: 60%; margin-left: 20%; margin-right: 20%;  }
 	#container, #page { text-align:center; width: 100%; } 
 	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
 	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
-	fieldset { padding: 25px; margin:25px; }
+	fieldset { padding: 5px; margin:5px; }
 	fieldset legend { font-weight: bold; background: #E2E4FF; padding: 6px; border: 1px solid black; }
 	label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
 	.errors { margin-left:200px; margin-top:20px; margin-bottom:20px; font-family:Verdana,Arial,sans-serif; font-size:12px; }
+	#report-schema-basic-tab { 
+		margin: 50px; 
+	}
+
 </style>
 
 
@@ -103,16 +107,13 @@ $(document).ready(function() {
 	});
 
 	$(".preview-indicator-button").click(function(event){ 
-		alert('show preview indicator page' + this.id);
-		/*
 		showReportingDialog({ 
-			title: 'Add Period Indicator', 
-			url: '<c:url value="/module/reporting/indicators/previewPeriodIndicator.form?uuid="/>',
+			title: 'Preview Period Indicator', 
+			url: '<c:url value="/module/reporting/indicators/previewPeriodIndicator.form"/>?uuid=' + this.id,
 			successCallback: function() { 
 				window.location.reload(true);
 			} 
 		});
-		*/
 	});
 
 	
@@ -203,6 +204,8 @@ $(document).ready(function() {
 							</li>
 						</ul>
 
+
+					<%-- 
 					<fieldset>
 						<legend>Parameters</legend>
 						<ul>
@@ -232,6 +235,8 @@ $(document).ready(function() {
 							</li>
 						</ul>
 					</fieldset>
+					--%>
+					
 					
 					<fieldset>
 						<legend>Indicators</legend>
@@ -244,7 +249,7 @@ $(document).ready(function() {
 												<th>Key</th>
 												<th>Display Name</th>
 												<th>Indicator</th>
-												<th>Edit</th>
+												<th>Design</th>
 												<th>Preview</th>
 												<th>Remove</th>
 											</tr>
@@ -278,13 +283,13 @@ $(document).ready(function() {
 														--%>
 													</td>
 													<td width="1%" align="center">
-														<a href="#" id="${indicator.uuid}" class="edit-indicator"><img src="<c:url value="/images/edit.gif"/>" border="0"/></a>
+														<a href="#" id="${column.indicator.uuid}" class="edit-indicator"><img src="<c:url value="/images/edit.gif"/>" border="0"/></a>
 													</td>
 													<td width="1%" align="center">
-														<a href="#" id="${indicator.uuid}" class="preview-indicator-button"><img src="<c:url value="/images/play.gif"/>" border="0"/></a>
+														<a href="#" id="${column.indicator.uuid}" class="preview-indicator-button"><img src="<c:url value="/images/play.gif"/>" border="0"/></a>
 													</td>
 													<td width="1%" align="center">
-														<a href="#" id="${indicator.uuid}" class="remove-indicator"><img src="<c:url value="/images/trash.gif"/>" border="0"/></a>
+														<a href="#" id="${column.indicator.uuid}" class="remove-indicator"><img src="<c:url value="/images/trash.gif"/>" border="0"/></a>
 													</td>
 													<%-- 
 													<td wdith="5%" align="center">

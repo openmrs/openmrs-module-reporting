@@ -43,13 +43,13 @@
 		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
-					<th width="10%">Name</th>
-					<th width="20%">Type</th>
-					<th width="40%">Description</th>
-					<th width="40%">Author</th>
-					<th width="1%">Design</th>
-					<th width="1%">Preview</th>
-					<th width="1%">Remove</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Description</th>
+					<th>Author</th>
+					<th>Design</th>
+					<th>Preview</th>
+					<th>Remove</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -73,18 +73,18 @@
 					</c:set>						
 
 					<tr>
-						<td width="10%" nowrap="">
+						<td width="20%" nowrap="">
 							<a href="${editUrl}">
 								${reportDefinition.name}
 							</a>
 						</td>
-						<td width="20%" nowrap="">
+						<td width="10%" nowrap="">
 							${reportDefinition.class.simpleName}
 						</td>
-						<td width="30%">
+						<td width="20%">
 							<span class="small">${reportDefinition.description}</span>
 						</td>
-						<td width="30%">
+						<td width="10%">
 							<span class="small">${reportDefinition.creator}</span>
 						</td>
 						<td width="1%" nowrap="" align="center">

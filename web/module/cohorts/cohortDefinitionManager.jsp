@@ -51,23 +51,18 @@ function confirmDelete(name, uuid) {
 		<table id="cohort-definition-table" class="display" >
 			<thead>
 				<tr>
-					<th align="center" width="1%">Edit</th>
 					<th>Name</th>
 					<th>Type</th>
 					<th>Description</th>
-					<th>Created</th>
-					<th align="center" width="1%">Evaluate</th>
+					<th>Author</th>
+					<th align="center" width="1%">Design</th>
+					<th align="center" width="1%">Preview</th>
 					<th align="center" width="1%">Remove</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
 					<tr>
-						<td align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">
-								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
-							</a>
-						</td>
 						<td>
 							${cohortDefinition.name}
 						</td>
@@ -80,9 +75,14 @@ function confirmDelete(name, uuid) {
 						<td>
 							<!-- TODO This should be fixed!  All cohort definitions should have metadata -->
 							<c:if test="${!cohortDefinition.class.simpleName eq 'StaticCohortDefinition'}">
-								${cohortDefinition.createdDate}
+								${cohortDefinition.creator}
 							</c:if>
 						</td>						
+						<td align="center">
+							<a href="${pageContext.request.contextPath}/module/reporting/editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">
+								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
+							</a>
+						</td>
 						<td align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateCohortDefinition.form?uuid=${cohortDefinition.uuid}">
 								<img src="<c:url value='/images/play.gif'/>" border="0"/>

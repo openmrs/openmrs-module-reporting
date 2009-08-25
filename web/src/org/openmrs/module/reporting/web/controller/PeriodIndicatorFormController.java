@@ -102,7 +102,8 @@ public class PeriodIndicatorFormController {
 			
 			
 			CohortDefinition cohortDefinition = indicatorForm.getCohortDefinition();
-			Map<String, String> parameterMapping = indicatorForm.getParameterMapping();		
+			Map<String, String> parameterMapping = indicatorForm.getParameterMapping();	
+			
 			cohortIndicator.setCohortDefinition(cohortDefinition, parameterMapping);
 			
 			// Save the report definition with the new indicator

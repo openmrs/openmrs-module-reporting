@@ -327,7 +327,7 @@ public class ManageDatasetDefinitionController {
     		// Set the cohort to use when evaluating the dataset
     		Cohort baseCohort = Context.getPatientSetService().getAllPatients();
 	    	context.setBaseCohort(baseCohort);	 
-	    	context.setRowLimit(100);
+	    	context.setLimit(100);
 	    	
 	    	
 	    	// Evaluate the dataset

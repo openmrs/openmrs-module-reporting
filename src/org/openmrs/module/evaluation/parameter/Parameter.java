@@ -148,6 +148,16 @@ public class Parameter implements Serializable {
 	//***********************
 
 	/**
+	 * Convenience method to help us retrieve the parameter's default expression.
+	 * 
+	 * @return	
+	 * 			An expression based on the parameter's name.
+	 */
+	public String getExpression() { 		
+		return "${" + getName() + "}";
+	}
+	
+	/**
 	 * @return the name
 	 */
 	public String getName() {

@@ -105,24 +105,32 @@ public class ReflectionUtil {
 	/**
 	 * Utility method which sets the value of a Field in an Object with the given value
 	 */
-    public static void setPropertyValue(Object objectToUpdate, String propertyName, Object value) {
-    	Field f = getField(objectToUpdate.getClass(), propertyName);
-    	setPropertyValue(objectToUpdate, f, value);
+    public static void setPropertyValue(Object object, String propertyName, Object value) {
+    	Field field = getField(object.getClass(), propertyName);
+    	setPropertyValue(object, field, value);
    	}
 	
 	/**
 	 * Utility method which sets the value of a Field in an Object with the given value
+	 * 
+	 * @param	object
+	 * 					The object to update.
+	 * @param	field	
+	 * 					The field to update.
+	 * @param	value	
+	 * 					The value to set on the given object and field.
+	 * 
 	 */
-    public static void setPropertyValue(Object objectToUpdate, Field f, Object value) {
-		if (objectToUpdate != null && f != null) {
+    public static void setPropertyValue(Object object, Field field, Object value) {
+		if (object != null && field != null) {
 			try {
-				String baseName = f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
-				Method setterMethod = objectToUpdate.getClass().getMethod("set"+baseName, f.getType());
-				setterMethod.invoke(objectToUpdate, value);
+				String baseName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+				Method setterMethod = object.getClass().getMethod("set"+baseName, field.getType());
+				setterMethod.invoke(object, value);
     		}
 			catch (Exception e) {
-    			throw new APIException("Error setting trying to set field <" + f + "> on object " + 
-    									objectToUpdate + " with value <" + value + ">");
+    			throw new APIException("Error trying to set field <" + field.getName() + "> on " + 
+    					object.getClass() + " object with value <" + value + ">", e);
     		}
     	}
    	}

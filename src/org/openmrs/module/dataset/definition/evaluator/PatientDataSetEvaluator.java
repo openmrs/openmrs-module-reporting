@@ -65,7 +65,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		}
 		
 		// Reduce the number of patients to evaluate
-		CohortUtil.limitCohort(cohort, context.getRowLimit());
+		CohortUtil.limitCohort(cohort, context.getLimit());
 		
 		List<Patient> patients = 
 			Context.getPatientSetService().getPatients(cohort.getMemberIds());

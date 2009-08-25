@@ -13,13 +13,8 @@
 
 $(document).ready(function() {
 	$('#cancel-indicator-button').click(function(event){ closeReportingDialog(false); });
-	$('#save-indicator-button').click(function(event){ $('#indicator-form').submit(); });
-	$('#select-cohort-definition').change(function(event){ $('#indicator-form').submit(); });
+	$('#preview-indicator-button').click(function(event){ $('#preview-indicator-form').submit(); });
 
-	$('#show-advanced-logic').click(function(event){ 
-		var showLogic = $('show-advanced-logic').val();
-		$('#advanced-logic').show(); 
-	});
 });
 
 </script>
@@ -28,7 +23,7 @@ $(document).ready(function() {
 <style type="text/css">
 	* { margin: 0; }
 	#container { height: 99%; border: 1px }
-	#wrapper { min-height: 100%; height: auto !important; height:100%; margin: 0 auto -4em; }
+	#wrapper { min-height: 99%; height: auto !important; height:99%; margin: 0 auto -4em; }
 	.button { margin: 5px; width: 10%; } 
 	.buttonBar { height: 4em; background-color: #eee; vertical-align: middle; text-align:center;}
 	input, select, textarea, label, button, span { font-size: 2em; } 
@@ -55,8 +50,14 @@ $(document).ready(function() {
 <div id="page">
 	<div id="container">
 		<div id="wrapper">		
-			<c:url var="postUrl" value='/module/reporting/indicators/periodIndicator.form'/>
-			<form:form id="indicator-form" commandName="indicatorForm" action="${postUrl}" method="POST">
+
+			<span><h2>${indicatorForm.cohortIndicator.name}</h2></span>
+
+			<c:url var="postUrl" value='/module/reporting/indicators/previewPeriodIndicator.form'/>
+			<form:form id="preview-indicator-form" commandName="indicatorForm" action="${postUrl}" method="POST">
+			
+				<input type="hidden" name="uuid" value="${indicatorForm.cohortIndicator.uuid}"/>
+			
 				<ul>								
 					<spring:hasBindErrors name="indicatorForm">  
 						<li>
@@ -72,66 +73,38 @@ $(document).ready(function() {
 							</div>
 						</li>
 					</spring:hasBindErrors>
-					<c:if test="${indicatorForm.cohortIndicator.uuid != null}">
-						<li>
-							<label class="desc" for="uuid">ID</label>
-							<div>
-								${indicatorForm.cohortIndicator.uuid}
-							</div>
-						</li>		
-					</c:if>
-					<li>
-						<label class="desc" for="name">Name</label>
-						<div>
-							<form:input path="cohortIndicator.name" cssClass="field text small" size="30"/>														
-						</div>
-					</li>		
-					<li>		
-						<label class="desc" for="description">Description</label>
-						<div>
-							<form:textarea path="cohortIndicator.description" cssClass="field text medium" cols="29"/>
-						</div>					
-					</li>
-					<li>		
-						<label class="desc" for="indicatorType">Type of calculation</label>
-						<div>							
-							<span id="indicator-type">COUNT [count the number of patients]</span>
-						</div>						
-					</li>
-					<li>
-						<label class="desc" for="cohortDefinition">Which patients?</label>
-						<div>
-							<form:select id="select-cohort-definition" path="cohortDefinition">										
-								<form:option value="" label="Select a cohort definition"/>
-					            <form:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
-							</form:select>					
-						</div>															
-					</li>								
 				</ul>		
-										
-				<ul>
-					<c:if test="${indicatorForm.cohortDefinition!=null}">
-						<input type="hidden" name="action" value="save"/>
+								
+				
+				<ul>				
+				
+					<c:forEach var="parameter" items="${indicatorForm.cohortIndicator.parameters}">				
 						<li>
-							<label class="desc" for="parameterMapping">Map parameters</label>
-							<div>					
-								<c:forEach var="parameter" items="${indicatorForm.cohortDefinition.parameters}">
-									<label class="inline">${parameter.name} -> </label> 
-									<form:select path="parameterMapping[${parameter.name}]" multiple="false">										
-										<form:option value="" label="Select a parameter"/>
-							            <form:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
-									</form:select>					
-									<br/>
-								</c:forEach>
+							<label class="desc" for="${parameter.name}">${parameter.label}</label>
+							<div>						
+								<rpt:widget id="${parameter.name}" name="parameterValues[${parameter.name}]" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
 							</div>
-						</li>
-					</c:if>								
-				</ul>				
+						</li>						
+					</c:forEach>
+					<li>					
+						<hr/>
+					</li>				
+					<li>
+						<span># of Patients returned:</span>
+						
+						<span>
+							<c:choose>
+								<c:when test="${empty indicatorResult}">?</c:when>
+								<c:otherwise><strong>${indicatorResult.value}</strong></c:otherwise>
+							</c:choose>
+						</span>
+					</li>
+				</ul>										
 			</form:form>
 
 		</div>		
 		<div class="buttonBar" align="center">						
-			<input class="button" id="save-indicator-button" type="button" value="Save" />
+			<input class="button" id="preview-indicator-button" type="button" value="Preview" />
 			<input class="button" id="cancel-indicator-button" type="button" value="Cancel"/>								
 		</div>					
 

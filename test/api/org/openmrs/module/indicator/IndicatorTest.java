@@ -16,8 +16,13 @@ package org.openmrs.module.indicator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
@@ -29,6 +34,7 @@ import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.aggregation.CountAggregator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
+import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
@@ -39,6 +45,9 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  *
  */
 public class IndicatorTest extends BaseModuleContextSensitiveTest {
+	
+	/* Logger */
+	private static Log log = LogFactory.getLog(IndicatorTest.class);	
 	
 	@Override
 	public Boolean useInMemoryDatabase() {
@@ -51,8 +60,37 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		authenticate();
 	}
 	
+	
 	@Test
-	public void test() throws Exception {
+	public void evaluateIndicator() throws Exception { 
+		
+		String uuid = "79e204e8-0360-4058-9966-072f371b5e6c"; 
+		Indicator indicator = Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+		log.info("indicator = " + indicator);
+		
+		//Map<String, Object> parameterValues = new HashMap<String, Object>();
+		//parameterValues.put("startDate", new Date());
+		//parameterValues.put("endDate", new Date());
+		//parameterValues.put("location", new Location());
+		
+		
+		EvaluationContext context = new EvaluationContext();
+		context.addParameterValue("startDate", new Date());
+		context.addParameterValue("endDate", new Date());
+		context.addParameterValue("location", new Date());
+		
+		
+		//context.setParameterValues(parameterValues);
+		
+		IndicatorResult result = 
+			Context.getService(IndicatorService.class).evaluate(indicator, context);		
+	
+		log.info("Result: " + result);
+	}
+	
+	
+	@Ignore
+	public void evaluteIndicatorReport() throws Exception {
 		
 		DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 		

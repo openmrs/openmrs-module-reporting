@@ -1,15 +1,21 @@
 package org.openmrs.module.util;
 
+import java.beans.PropertyEditor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -17,11 +23,14 @@ import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.parameter.Mapped;
+import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
+import org.openmrs.propertyeditor.LocationEditor;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 
 
 public class ParameterizableUtil {
@@ -78,6 +87,36 @@ public class ParameterizableUtil {
 		}
 		//return parameterizable;
 	}
+	
+	
+	
+	/**
+	 * 
+	 * @param parameterizable
+	 * @param parameterValues
+	 * @return
+	 */
+	public static Map<String, Object> getParameterValues(Parameterizable parameterizable, Map<String,String> parameterStrings) { 
+		Map<String, Object> parameterValues = new HashMap<String, Object>();
+		if (parameterizable != null && parameterizable.getParameters() != null) { 
+			for (Parameter parameter : parameterizable.getParameters()) {
+				
+				String text = parameterStrings.get(parameter.getName());
+				PropertyEditor editor = null;
+				if(parameter.getType().isAssignableFrom(Date.class)) { 
+					editor = new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true);
+					editor.setAsText(text);
+					parameterValues.put(parameter.getName(), editor.getValue());
+				} 
+				else if (parameter.getType().isAssignableFrom(Location.class)) { 
+					Location location = Context.getLocationService().getLocationByUuid(text);
+					parameterValues.put(parameter.getName(), location);
+				}
+			}
+		}
+		return parameterValues;
+	}
+	
 	
 	
 	/**

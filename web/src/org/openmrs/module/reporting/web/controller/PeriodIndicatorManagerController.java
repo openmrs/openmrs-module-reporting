@@ -19,10 +19,12 @@ import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
+import org.openmrs.module.indicator.IndicatorResult;
 import org.openmrs.module.indicator.PeriodCohortIndicator;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.PeriodIndicatorReportDefinition;
@@ -86,6 +88,9 @@ public class PeriodIndicatorManagerController {
 		return model;
 	}
 
+	
+	
+	
 	/**
 	 * Processes the form when a user submits.
 	 * 
@@ -167,6 +172,4 @@ public class PeriodIndicatorManagerController {
 		return indicatorForm;
 	}
 	
-
-
 }
