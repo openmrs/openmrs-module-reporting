@@ -16,8 +16,10 @@ package org.openmrs.module.reporting.web.widget.handler;
 import java.io.IOException;
 
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
+import org.openmrs.module.reporting.web.widget.html.AutocompleteWidget;
 import org.openmrs.module.reporting.web.widget.html.CodedWidget;
 import org.openmrs.module.reporting.web.widget.html.Option;
+import org.openmrs.module.reporting.web.widget.html.RadioWidget;
 import org.openmrs.module.reporting.web.widget.html.SelectWidget;
 import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 
@@ -38,7 +40,19 @@ public abstract class CodedHandler extends WidgetHandler {
 	 */
 	@Override
 	public void render(WidgetConfig config) throws IOException {
-		CodedWidget w = WidgetFactory.getInstance(getDefaultWidget(), config);
+		
+		Class<? extends CodedWidget> t = getDefaultWidget();
+		if ("select".equalsIgnoreCase(config.getFormat())) {
+			t = SelectWidget.class;
+		}
+		else if ("radio".equalsIgnoreCase(config.getFormat())) {
+			t = RadioWidget.class;
+		}
+		else if ("autocomplete".equalsIgnoreCase(config.getFormat())) {
+			t = AutocompleteWidget.class;
+		}
+		CodedWidget w = WidgetFactory.getInstance(t, config);
+		
 		String showEmptyAtt = config.getAttributeValue("showEmptyOption");
 		if ("true".equals(showEmptyAtt) || (showEmptyAtt == null && w instanceof SelectWidget)) {
 			String emptyCode = config.getAttributeValue("emptyCode", null);

@@ -23,7 +23,7 @@ public class RepeatingWidget implements Widget {
 	@SuppressWarnings("unchecked")
 	public void render(WidgetConfig config) throws IOException {
 		
-		HtmlUtil.renderResource(config.getPageContext(), "/scripts/jquery/jquery-1.2.6.min.js");
+		HtmlUtil.renderResource(config.getPageContext(), "/moduleResources/reporting/scripts/jquery/jquery-1.3.2.min.js");
 		HtmlUtil.renderResource(config.getPageContext(), "/moduleResources/reporting/scripts/reporting.js");
 		Writer w = config.getPageContext().getOut();
 		String id = config.getId();
@@ -69,7 +69,22 @@ public class RepeatingWidget implements Widget {
 				throw new RuntimeException("Default value for a repeating widget must be an Object[], Collection, or null");
 			}
 		}
-
+		
+		w.write("<script type=\"text/javascript\" charset=\"utf-8\">");
+		w.write("	$(document).ready(function() {");
+		w.write("		$(\"#"+id+"AddButton\").click(function(event){");
+		w.write("			var count = parseInt($('#"+id+"Count').html()) + 1;");
+		w.write("			$('#"+id+"Count').html(count);");
+		w.write("			var $newRow = cloneAndInsertBefore('"+id+"Template', this);");
+		w.write("			$newRow.attr('id', '"+id+"' + count);");
+		w.write("			var newRowChildren = $newRow.children();");
+		w.write("			for (var i=0; i<newRowChildren.length; i++) {");
+		w.write("				newRowChildren[i].id = newRowChildren[i].id + count;");
+		w.write("			}");
+		w.write(		"});");
+		w.write("	});");
+		w.write("</script>");
+		
 		HtmlUtil.renderOpenTag(w, "div", "id="+id+"MultiFieldDiv");
 
 		for (int i=0; i<=valuesToRender.size(); i++) {
@@ -85,7 +100,7 @@ public class RepeatingWidget implements Widget {
 			Set<Attribute> atts = new HashSet<Attribute>();
 			atts.add(new Attribute("class", "multiFieldInput", null, null));
 			if (o == null) {
-				atts.add(new Attribute("id", config.getId()+"Template", null, null));
+				atts.add(new Attribute("id", id+"Template", null, null));
 				atts.add(new Attribute("style", "display:none;", null, null));
 			}
 			
@@ -96,7 +111,10 @@ public class RepeatingWidget implements Widget {
 			HtmlUtil.renderCloseTag(w, "span");
 		}
 			
-		HtmlUtil.renderSimpleTag(w, "input", "type=button|value=+|size=1|onclick=cloneAndInsertBefore('"+id+"Template', this);");
+		HtmlUtil.renderSimpleTag(w, "input", "id="+id+"AddButton|type=button|value=+|size=1");
+		HtmlUtil.renderOpenTag(w, "span", "id="+id+"Count|style=display:none;");
+		w.write(valuesToRender.size() + 1);
+		HtmlUtil.renderCloseTag(w, "span");
 		HtmlUtil.renderCloseTag(w, "div");
 	}
 }

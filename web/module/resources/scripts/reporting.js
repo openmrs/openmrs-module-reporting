@@ -89,6 +89,7 @@ function getClone(idToClone) {
 function cloneAndInsertBefore(idToClone, elementToAddBefore) {
 	var newRow = getClone(idToClone);
 	$(newRow).insertBefore(elementToAddBefore);
+	return newRow;
 }
 
 ////// Support for a single modal dialog for all reporting pages //////////////////

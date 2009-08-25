@@ -15,7 +15,7 @@ public class TextWidget implements Widget {
 		String textValue = config.getDefaultValue() == null ? "" : config.getDefaultValue().toString();
 		config.setFixedAttribute("type", "text");
 		config.setDefaultAttribute("value", textValue);
-		config.setDefaultAttribute("size", "20");
+		config.setDefaultAttribute("size", "40");
 		HtmlUtil.renderSimpleTag(w, "input", config.getAttributes());
 	}
 }
