@@ -20,7 +20,19 @@
 	<!-- Extensions -->
 	<extension>
 		<point>org.openmrs.admin.list</point>
-		<class>@MODULE_PACKAGE@.extension.html.AdminListExt</class>
+		<class>@MODULE_PACKAGE@.extension.html.RunAdminListExt</class>
+	</extension>
+	<extension>
+		<point>org.openmrs.module.reporting.run.localheader</point>
+		<class>@MODULE_PACKAGE@.extension.html.RunAdminListExt</class>
+	</extension>
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>@MODULE_PACKAGE@.extension.html.ConfigAdminListExt</class>
+	</extension>
+	<extension>
+		<point>org.openmrs.module.reporting.config.localheader</point>
+		<class>@MODULE_PACKAGE@.extension.html.ConfigAdminListExt</class>
 	</extension>
 	<extension>
 		<point>org.openmrs.gutter.tools</point>

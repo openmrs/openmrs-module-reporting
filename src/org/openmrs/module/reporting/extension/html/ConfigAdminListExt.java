@@ -1,21 +1,19 @@
 package org.openmrs.module.reporting.extension.html;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.openmrs.module.Extension;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
 
-public class AdminListExt extends AdministrationSectionExt {
+public class ConfigAdminListExt extends AdministrationSectionExt {
 
 	public Extension.MEDIA_TYPE getMediaType() {
 		return Extension.MEDIA_TYPE.html;
 	}
 	
 	public String getTitle() {
-		return "reporting.title";
+		return "reporting.config.title";
 	}
 	
 	public String getRequiredPrivilege() {
@@ -25,9 +23,11 @@ public class AdminListExt extends AdministrationSectionExt {
 	public Map<String, String> getLinks() {
 		// Using linked hash map to keep order of links
 		Map<String, String> map = new LinkedHashMap<String, String>();
-		map.put("module/reporting/manageDashboard.form", "reporting.reportDashboard.title");
-		map.put("module/reporting/showLabReport.form", "reporting.rwandaReports.title");
-		
+		map.put("module/reporting/config/manageReports.form", "reporting.manageReports.title");
+		map.put("module/reporting/config/manageDataSets.form", "reporting.manageDataSets.title");
+		map.put("module/reporting/config/manageIndicators.form", "reporting.manageIndicators.title");
+		map.put("module/reporting/config/manageDimensions.form", "reporting.manageDimensions.title");
+		map.put("module/reporting/config/manageCohortDefinitions.form", "reporting.manageCohortDefinitions.title");
 		return map;
 	}
 	
