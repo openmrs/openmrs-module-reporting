@@ -3,6 +3,8 @@ package org.openmrs.module.reporting.web.cohorts;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.StaticCohortDefinition;
 import org.openmrs.module.cohort.definition.configuration.Property;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
@@ -45,7 +48,15 @@ public class ManageCohortDefinitionsController {
     	// Add all saved CohortDefinitions
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
     	boolean retired = includeRetired != null && includeRetired.booleanValue();
-    	model.addAttribute("cohortDefinitions", service.getAllCohortDefinitions(retired));
+    	
+    	// 
+    	List<CohortDefinition> cohortDefs = service.getAllCohortDefinitions(retired);
+    	for (Iterator<CohortDefinition> iter = cohortDefs.iterator(); iter.hasNext(); ) {
+    		if (StaticCohortDefinition.class.isAssignableFrom(iter.next().getClass())) {
+    			iter.remove();
+    		}
+    	}
+    	model.addAttribute("cohortDefinitions", cohortDefs);
     	
     	// Add all available CohortDefinitions
     	model.addAttribute("types", service.getCohortDefinitionTypes());
@@ -62,7 +73,7 @@ public class ManageCohortDefinitionsController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/editCohortDefinition")
+    @RequestMapping("/module/reporting/cohorts/editCohortDefinition")
     public String editCohortDefinition(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends CohortDefinition> type,
@@ -85,7 +96,7 @@ public class ManageCohortDefinitionsController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/saveCohortDefinition")
+    @RequestMapping("/module/reporting/cohorts/saveCohortDefinition")
     @SuppressWarnings("unchecked")
     public String saveCohortDefinition(
     		@RequestParam(required=false, value="uuid") String uuid,
@@ -165,7 +176,7 @@ public class ManageCohortDefinitionsController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/evaluateCohortDefinition")
+    @RequestMapping("/module/reporting/cohorts/evaluateCohortDefinition")
     public String evaluateCohortDefinition(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends CohortDefinition> type,
@@ -182,7 +193,7 @@ public class ManageCohortDefinitionsController {
      	model.addAttribute("cohort", cohort);
      	model.addAttribute("cohortDefinition", cohortDefinition);
      	
-        return "/module/reporting/cohortDefinitionEvaluator";
+        return "/module/reporting/cohorts/cohortDefinitionEvaluator";
     }    
     
     
@@ -194,7 +205,7 @@ public class ManageCohortDefinitionsController {
      * @return	
      * 		the name or URL that represents the view
      */
-    @RequestMapping("/module/reporting/purgeCohortDefinition")
+    @RequestMapping("/module/reporting/cohorts/purgeCohortDefinition")
     public String purgeCohortDefinition(@RequestParam(required=false, value="uuid") String uuid) {
     	CohortDefinitionService service = 
     		Context.getService(CohortDefinitionService.class);

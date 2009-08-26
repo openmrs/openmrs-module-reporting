@@ -1,7 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ include file="../localHeader.jsp"%>
-<%@ include file="../dialogSupport.jsp"%>
+<%@ include file="../manage/localHeader.jsp"%>
+<openmrs:require privilege="Manage Indicators" otherwise="/login.htm" redirect="/module/reporting/indicators/manageIndicators.form" />
 
 
 <!-- Wufoo Form CSS and Javascript
@@ -376,11 +375,10 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							</li>
 
 
-
+							<input type="button" id="add-parameter-button" value="Add Parameter"/>
 							
 							<li class="buttons">
 								<input id="save-indicator-button" class="btTxt submit" name="action" type="submit" value="Save" tabindex="7" />
-								<input type="button" id="add-parameter-button" value="Add Parameter"/>	
 								<input id="cancel-indicator-button" type="button" name="action" value="Cancel">
 							</li>
 						</ul>

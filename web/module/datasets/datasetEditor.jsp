@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ include file="../localHeader.jsp"%>
+<openmrs:require privilege="Manage Data Sets" otherwise="/login.htm" redirect="/module/reporting/datasets/manageDataSets.form" />
+<%@ include file="../manage/localHeader.jsp"%>
 
 <!-- Wufoo Forms -->
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css"/>

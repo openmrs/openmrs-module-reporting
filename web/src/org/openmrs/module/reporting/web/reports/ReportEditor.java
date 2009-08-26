@@ -26,13 +26,12 @@ public class ReportEditor {
      * Retrieves either an existing or new report to edit
      */
     @RequestMapping("/module/reporting/reports/reportEditor")
-    public ModelMap editReport(ModelMap model,
+    public void editReport(ModelMap model,
 		    		@RequestParam(required=false, value="uuid") String uuid,
 		            @RequestParam(required=false, value="type") Class<? extends ReportDefinition> type) {
     	
     	ReportDefinition r = Context.getService(ReportService.class).getReportDefinition(uuid, type);
     	model.addAttribute("report", r);
-        return model;
     }
     
     /**

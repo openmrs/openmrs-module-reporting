@@ -103,7 +103,7 @@ public interface DataSetDefinitionService extends OpenmrsService {
 	public void purgeDataSetDefinition(DataSetDefinition dataSetDefinition);
 
 	/**
-	 * Evaluate a DataSetDefinition to get turn it into a DataSet
+	 * Evaluate a Mapped<DataSetDefinition> to get turn it into a DataSet
 	 * 
 	 * @param definition
 	 * @param inputCohort Input cohort optionally specified by the user.
@@ -115,7 +115,7 @@ public interface DataSetDefinitionService extends OpenmrsService {
 	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws APIException;
 	
 	/**
-	 * Evaluate a Mapped<DataSetDefinition> to get turn it into a DataSet
+	 * Evaluate a DataSetDefinition to get turn it into a DataSet
 	 * 
 	 * @param definition
 	 * @param inputCohort Input cohort optionally specified by the user.

@@ -1,5 +1,5 @@
-<%@ include file="/WEB-INF/view/module/reporting/localHeader.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />			
+<%@ include file="../manage/localHeader.jsp"%>
+<openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/cohorts/manageCohortDefinitions.form" />			
 
 <script type="text/javascript" charset="utf-8">
 

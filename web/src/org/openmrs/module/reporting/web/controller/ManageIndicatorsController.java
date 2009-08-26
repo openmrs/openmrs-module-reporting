@@ -114,7 +114,7 @@ public class ManageIndicatorsController {
     		ModelMap model) {
     	
     	if ("cancel".equalsIgnoreCase(action))  {
-    		return "redirect:/module/reporting/manageIndicators.form";
+    		return "redirect:/module/reporting/indicators/manageIndicators.form";
     	}
     	
     	// Find indicator, if one already exists
@@ -158,7 +158,7 @@ public class ManageIndicatorsController {
     	// When a cohort definition is selected, there's an implicit form submit
     	// We want users to be redirected to the form in this case.
     	if (action == null || action.equals("")) { 
-    		return "redirect:/module/reporting/editIndicator.form?uuid="+uuid;
+    		return "redirect:/module/reporting/indicators/editIndicator.form?uuid="+uuid;
     	}    	
     	
     	// If user clicks "save" they will be taken back to the indicator list
