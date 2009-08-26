@@ -13,9 +13,11 @@
  */
 package org.openmrs.module.cohort.definition;
 
+import java.util.Date;
 import java.util.Locale;
 
 import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
@@ -37,7 +39,19 @@ public class ObsCohortDefinition extends DateRangeCohortDefinition {
 	private TimeModifier timeModifier;
 	
 	@ConfigurationProperty(required=false)
-	private Object value;
+	private Concept valueCoded;
+	
+	@ConfigurationProperty(required=false)
+	private Drug valueDrug;
+	
+	@ConfigurationProperty(required=false)
+	private Date valueDatetime;
+	
+	@ConfigurationProperty(required=false)
+	private Double valueNumeric;
+	
+	@ConfigurationProperty(required=false)
+	private String valueText;
 
 	//***** CONSTRUCTORS *****
 	
@@ -59,8 +73,8 @@ public class ObsCohortDefinition extends DateRangeCohortDefinition {
 		
 		StringBuffer ret = new StringBuffer();
 		if (question == null) {
-			if (value != null) {
-				String conceptName = ((Concept) value).getBestName(locale).getName();
+			if (getValue() != null) {
+				String conceptName = ((Concept) getValue()).getBestName(locale).getName();
 				ret.append("Patients with " + timeModifier + " obs with value " + conceptName);
 			}
 			else {
@@ -71,18 +85,38 @@ public class ObsCohortDefinition extends DateRangeCohortDefinition {
 			ret.append("Patients with ");
 			ret.append(timeModifier + " ");
 			ret.append((question == null ? "CONCEPT" : question.getBestName(locale).getName()));
-			if (value != null && modifier != null) {
+			if (getValue() != null && modifier != null) {
 				ret.append(" " + modifier.getSqlRepresentation() + " ");
-				if (value instanceof Concept) {
-					ret.append(((Concept) value).getBestName(locale).getName());
+				if (getValue() instanceof Concept) {
+					ret.append(((Concept) getValue()).getBestName(locale).getName());
 				}
 				else {
-					ret.append(value);
+					ret.append(getValue());
 				}
 			}
 		}
 		ret.append(getDateRangeDescription());
 		return ret.toString();
+	}
+	
+	/**
+	 * Return the specific value field that is non-null
+	 * @return the value field that is non-null, or null otherwise
+	 */
+	public Object getValue() {
+		if (valueCoded != null) {
+			return valueCoded;
+		}
+		else if (valueDrug != null) {
+			return valueDrug;
+		}
+		else if (valueDatetime != null) {
+			return valueDatetime;
+		}
+		else if (valueNumeric != null) {
+			return valueNumeric;
+		}
+		return valueText;
 	}
 	
 	//***** PROPERTY ACCESS *****
@@ -129,17 +163,73 @@ public class ObsCohortDefinition extends DateRangeCohortDefinition {
     	this.timeModifier = timeModifier;
     }
 
-    /**
-     * @return the value
-     */
-    public Object getValue() {
-    	return value;
-    }
-	
-    /**
-     * @param value the value to set
-     */
-    public void setValue(Object value) {
-    	this.value = value;
-    }
+	/**
+	 * @return the valueCoded
+	 */
+	public Concept getValueCoded() {
+		return valueCoded;
+	}
+
+	/**
+	 * @param valueCoded the valueCoded to set
+	 */
+	public void setValueCoded(Concept valueCoded) {
+		this.valueCoded = valueCoded;
+	}
+
+	/**
+	 * @return the valueDrug
+	 */
+	public Drug getValueDrug() {
+		return valueDrug;
+	}
+
+	/**
+	 * @param valueDrug the valueDrug to set
+	 */
+	public void setValueDrug(Drug valueDrug) {
+		this.valueDrug = valueDrug;
+	}
+
+	/**
+	 * @return the valueDatetime
+	 */
+	public Date getValueDatetime() {
+		return valueDatetime;
+	}
+
+	/**
+	 * @param valueDatetime the valueDatetime to set
+	 */
+	public void setValueDatetime(Date valueDatetime) {
+		this.valueDatetime = valueDatetime;
+	}
+
+	/**
+	 * @return the valueNumeric
+	 */
+	public Double getValueNumeric() {
+		return valueNumeric;
+	}
+
+	/**
+	 * @param valueNumeric the valueNumeric to set
+	 */
+	public void setValueNumeric(Double valueNumeric) {
+		this.valueNumeric = valueNumeric;
+	}
+
+	/**
+	 * @return the valueText
+	 */
+	public String getValueText() {
+		return valueText;
+	}
+
+	/**
+	 * @param valueText the valueText to set
+	 */
+	public void setValueText(String valueText) {
+		this.valueText = valueText;
+	}
 }
