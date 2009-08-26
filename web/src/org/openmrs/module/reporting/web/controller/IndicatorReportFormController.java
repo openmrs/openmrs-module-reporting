@@ -128,15 +128,10 @@ public class IndicatorReportFormController {
 		// Check whether the report definition is new 
 		Boolean isNew = (reportDefinition.getUuid() == null);
 		
-		String [] selectedIndicatorIds = request.getParameterValues("indicatorId");
-		
-		log.info("Indicators: " + selectedIndicatorIds);
-		
-		
 		
 		// Add indicators to a report schema
-		if (selectedIndicatorIds != null && selectedIndicatorIds.length > 0) { 
-			
+		String [] selectedIndicatorIds = request.getParameterValues("indicatorId");
+		if (selectedIndicatorIds != null && selectedIndicatorIds.length > 0) { 			
 			// Add the indicators to the dataset definition
 			for (String uuid : selectedIndicatorIds) { 
 				log.info("Looking up indicator: " + uuid);
@@ -146,18 +141,14 @@ public class IndicatorReportFormController {
 				
 				log.info("Found indicator " + cohortIndicator);					
 				if (cohortIndicator != null) { 
-					reportDefinition.addCohortIndicator("1.a", "my cohort indicator", cohortIndicator);
-					
+					reportDefinition.addCohortIndicator(
+							"1.a", 
+							"my cohort indicator", 
+							cohortIndicator, 
+							"startDate=${startDate},endDate=${endDate},location=${location}");					
 				}										
 			}
-
-			// Save the intermediate dataset definition
-			//datasetDefinition = 
-			//	(CohortIndicatorDataSetDefinition) Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(datasetDefinition);
 		}
-		
-		log.info("Saving report definition " + reportDefinition.getUuid() + ", name=" + reportDefinition.getName());
-		log.info("Dataset definition " + reportDefinition.getDataSetDefinitions().size());
 		
 		reportDefinition = (IndicatorReportDefinition)
 			Context.getService(ReportService.class).saveReportDefinition(reportDefinition);

@@ -37,7 +37,7 @@ public class IndicatorReportDefinition extends ReportDefinition {
 	 * 
 	 * @param indicator
 	 */
-	public void addCohortIndicator(String columnKey, String displayName, CohortIndicator cohortIndicator) { 
+	public void addCohortIndicator(String columnKey, String displayName, CohortIndicator cohortIndicator, String parameterMapping) { 
 
 		// @FIXME  Needs to call addIndicator() method when it becomes available
 		//getCohortIndicatorDataSetDefinition().addIndicator(key, displayName, cohortIndicator, 
@@ -45,22 +45,35 @@ public class IndicatorReportDefinition extends ReportDefinition {
 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = getDataSetDefinition();
 		
-		if (dataSetDefinition != null) { 
-			log.info("adding indicator with column key " + columnKey + " dataset definition " + dataSetDefinition);
+		if (dataSetDefinition == null) {			
+			// Dataset definition should be created under the covers
+			dataSetDefinition = new CohortIndicatorDataSetDefinition();
+			dataSetDefinition.setName(this.getName() + " Dataset");
+			dataSetDefinition.setParameters(this.getParameters());
+
+			// Save the dataset definition explicitly so it has a uuid
+			dataSetDefinition = (CohortIndicatorDataSetDefinition)
+				Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);				
 			
-			// Adding indicator to dataset definition with default parameter mapping
-			dataSetDefinition.addCohortIndicator(
-					columnKey, 
-					cohortIndicator, 
-					"startDate=${startDate},endDate=${endDate},location=${location}");
-	
-			log.info("adding column specification " + columnKey + ", displayName=" + displayName + " cohortIndicator=" + cohortIndicator);
-	
-			// Adding column specification to dataset 
-			dataSetDefinition.addColumnSpecification(columnKey, displayName, Number.class, cohortIndicator, null);	
-						
-			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);
+			// Add dataset definition to the report
+			this.addDataSetDefinition(dataSetDefinition.getName(),
+					dataSetDefinition, parameterMapping);			
 		}
+		log.info("adding indicator with column key " + columnKey + " dataset definition " + dataSetDefinition);
+		
+		// Adding indicator to dataset definition with default parameter mapping
+		dataSetDefinition.addCohortIndicator(
+				columnKey, 
+				cohortIndicator, 
+				"startDate=${startDate},endDate=${endDate},location=${location}");
+
+		log.info("adding column specification " + columnKey + ", displayName=" + displayName + " cohortIndicator=" + cohortIndicator);
+
+		// Adding column specification to dataset 
+		dataSetDefinition.addColumnSpecification(columnKey, displayName, Number.class, cohortIndicator, null);	
+					
+		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);
+		
 	}
 	
 	
@@ -144,7 +157,7 @@ public class IndicatorReportDefinition extends ReportDefinition {
 	 * 		A dataset definition containing all indicators
 	 */
 	public CohortIndicatorDataSetDefinition getDataSetDefinition() { 
-		CohortIndicatorDataSetDefinition datasetDefinition = new CohortIndicatorDataSetDefinition();		
+		CohortIndicatorDataSetDefinition datasetDefinition = null;		
 		Map<String, Mapped<? extends DataSetDefinition>> datasetDefinitions = getDataSetDefinitions();
 		if (datasetDefinitions != null && !datasetDefinitions.isEmpty()) { 						
 			Collection<Mapped<? extends DataSetDefinition>> mappedList = datasetDefinitions.values();

@@ -62,43 +62,44 @@ $(document).ready(function() {
 	<div id="container">
 		<div id="wrapper">		
 
-			<span><h2>${parameterizable.name}</h2></span>
-			<span><h4>${parameterizable.description}</h4></span>
 
-			<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
-			<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
-				<input type="hidden" name="action" value="preview"/>
-				<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
-				<input type="hidden" name="type" value="${parameterizable.class.name}"/>
-				<ul>								
-					<spring:hasBindErrors name="indicatorForm">  
-						<li>
-							<div class="errors"> 
-								<font color="red"> 
-									<h3><u>Please correct the following errors</u></h3>   
-									<ul class="none">
-										<c:forEach items="${errors.allErrors}" var="error">
-											<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
-										</c:forEach> 
-									</ul> 
-								</font>  
-							</div>
-						</li>
-					</spring:hasBindErrors>
-				</ul>		
-								
-				
-				<ul>				
-				
-					<c:forEach var="parameter" items="${parameterizable.parameters}">				
-						<li>
-							<label class="desc" for="${parameter.name}">${parameter.label}</label>
-							<div>						
-								<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
-							</div>
-						</li>						
-					</c:forEach>
-					<c:if test="${!empty result}">
+			<c:if test="${empty result}">
+				<span><h2>${parameterizable.name}</h2></span>
+				<span><h4>${parameterizable.description}</h4></span>
+				<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
+				<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
+					<input type="hidden" name="action" value="preview"/>
+					<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
+					<input type="hidden" name="type" value="${parameterizable.class.name}"/>
+					<ul>								
+						<spring:hasBindErrors name="indicatorForm">  
+							<li>
+								<div class="errors"> 
+									<font color="red"> 
+										<h3><u>Please correct the following errors</u></h3>   
+										<ul class="none">
+											<c:forEach items="${errors.allErrors}" var="error">
+												<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
+											</c:forEach> 
+										</ul> 
+									</font>  
+								</div>
+							</li>
+						</spring:hasBindErrors>
+					</ul>																
+					<ul>									
+						<c:forEach var="parameter" items="${parameterizable.parameters}">				
+							<li>
+								<label class="desc" for="${parameter.name}">${parameter.label}</label>
+								<div>						
+									<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
+								</div>
+							</li>						
+						</c:forEach>
+					</ul>
+				</c:if>
+				<c:if test="${!empty result}">
+					<ul>
 						<li>				
 							<h4>Results of the evaluation</h4>
 							<div>
@@ -114,8 +115,8 @@ $(document).ready(function() {
 								</span>
 							</div>
 						</li>
-					</c:if>
-				</ul>										
+					</ul>
+				</c:if>
 			</form>
 		</div>		
 		<div class="buttonBar" align="center">						

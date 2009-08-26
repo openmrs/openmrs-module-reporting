@@ -23,9 +23,8 @@
 
 <!-- Form -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
-<!-- 
+<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/wufoo/wufoo.js"></script>
- -->
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 
@@ -163,20 +162,20 @@ $(document).ready(function() {
 							
 								<label class="desc" for="name">Name</label>	
 								<div>								
-									<form:input path="reportDefinition.name" tabindex="1" cssClass="field text medium" />								
+									<form:input path="reportDefinition.name" cssClass="field text medium" />								
 								</div>
 							</li>
 							<li>
 								<label class="desc" for="description">Description</label>	
 								<div>
-									<form:input path="reportDefinition.description" tabindex="2" cssClass="field text medium" /> 
+									<form:textarea path="reportDefinition.description" cssClass="field text medium" cols="50"/> 
 								</div>
 							</li>
 
 							<li>					
-								<div align="center">				
+								<div align="left">				
 									<input id="save-button" name="save" type="submit" value="Save" />
-									<button id="cancel-button" name="cancel">Cancel</button>
+									<input id="cancel-button" name="cancel" type="button" value="Cancel"/>
 								</div>					
 							</li>
 						</ul>

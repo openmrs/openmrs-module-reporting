@@ -129,21 +129,6 @@ public class PeriodIndicatorReportFormController {
 		// Check whether the report definition is new 
 		Boolean isNew = (reportDefinition.getUuid() == null);
 
-		// For new reports, we need to explicitly save the dataset definition and add it to the report
-		if (!reportDefinition.hasDataSetDefinitions()) { 
-			// Dataset definition should be created under the covers
-			CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
-			dataSetDefinition.setName(reportDefinition.getName() + " Dataset");
-			
-			// Save the dataset definition
-			// FIXME Saving dataset definition explicitly because we are using short serialization with all reporting objects
-			dataSetDefinition = (CohortIndicatorDataSetDefinition)
-				Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);				
-			
-			// Add dataset definition to the report
-			reportDefinition.addDataSetDefinition(dataSetDefinition.getName(),
-					dataSetDefinition, "startDate=${startDate},endDate=${endDate},location=${location}");
-		}
 		
 		// Save the report definition
 		reportDefinition = (PeriodIndicatorReportDefinition)
