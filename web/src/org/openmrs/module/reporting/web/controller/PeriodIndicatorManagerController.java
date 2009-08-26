@@ -7,6 +7,8 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.dataset.definition.DataSetDefinition;
+import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.PeriodCohortIndicator;
@@ -73,7 +75,8 @@ public class PeriodIndicatorManagerController {
 	public ModelAndView managePeriodIndicator(
 		@ModelAttribute("indicatorForm") IndicatorForm indicatorForm,
 		@RequestParam(required=false,value="action") String action,
-		@RequestParam(required=false,value="indicatorKey") String indicatorKey) {
+		@RequestParam(required=false,value="indicatorKey") String indicatorKey,
+		@RequestParam(required=false,value="columnKey") String columnKey) {
 		
 		log.info("POST /module/reporting/indicators/managePeriodIndicator " + action);
 		
@@ -109,9 +112,16 @@ public class PeriodIndicatorManagerController {
 			} 
 			else if ("remove".equalsIgnoreCase(action)) { 	
 				
-				log.info("Removing indicator key " + indicatorReportDefinition + " from report " + indicatorKey);
-				
-				indicatorReportDefinition.removeCohortIndicator(indicatorKey);
+				log.info("Removing indicator " + indicatorKey + " from report " + indicatorReportDefinition);				
+				indicatorReportDefinition.removeIndicator(indicatorKey);
+
+				log.info("Removing column specification " + indicatorKey + " from report " + indicatorReportDefinition);				
+				indicatorReportDefinition.removeColumnSpecification(columnKey);
+	
+				// We have to serialize everything individually
+				DataSetDefinition dataSetDefinition = 
+					indicatorReportDefinition.getDataSetDefinition();				
+				Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);			
 			}
 				
 			// Save the report definition with the new indicator

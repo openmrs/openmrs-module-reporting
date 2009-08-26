@@ -80,14 +80,24 @@ public class IndicatorReportDefinition extends ReportDefinition {
 	 * @param indicatorKey
 	 * 		The indicator key that represents the indicator to be removed.
 	 */
-	public void removeCohortIndicator(String indicatorKey) { 		
+	public void removeIndicator(String indicatorKey) { 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = getDataSetDefinition();
-		dataSetDefinition.removeCohortIndicator(indicatorKey);
-		
+		dataSetDefinition.removeCohortIndicator(indicatorKey);		
+	}
+
+	/**
+	 * Remove the column specification represented by the given column key 
+	 * from the dataset definition. 
+	 * 
+	 * @param indicatorKey
+	 * 		The indicator key that represents the indicator to be removed.
+	 */
+	public void removeColumnSpecification(String columnKey) { 		
+		CohortIndicatorDataSetDefinition dataSetDefinition = getDataSetDefinition();
+		dataSetDefinition.removeColumnSpecification(columnKey);
 		// TODO Need to move this functionality to the service layer.
 		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);
 	}
-
 	
 	
 	/**

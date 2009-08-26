@@ -215,6 +215,20 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
     	return null;
     }
     
+    
+	/**
+	 * Removes the Column Specification with the given column key 
+	 * @param columnKey the key with which to associate this column specification
+	 * @throws APIException if the key already exists
+	 */
+    public void removeColumnSpecification(String columnKey) {
+    	for (DataSetColumn k : getColumnSpecifications().keySet()) {
+    		if (k.getColumnKey().equalsIgnoreCase(columnKey)) {
+    	    	getColumnSpecifications().remove(columnKey);
+    		}
+    	}
+    }        
+    
 	/**
 	 * Adds a Column Specification with the given data
 	 * @param key the key with which to associate this indicator
@@ -228,7 +242,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
     		}
     	}
     	getColumnSpecifications().put(column, specification);
-    }
+    }    
     
 	/**
 	 * Adds a Column Specification with the given data.

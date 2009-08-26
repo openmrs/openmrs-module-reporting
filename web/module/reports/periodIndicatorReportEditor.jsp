@@ -224,12 +224,13 @@ $(document).ready(function() {
 	});
 	$("#remove-indicator-${status.index}").click(function(event){ 
 		$.post("${pageContext.request.contextPath}/module/reporting/indicators/managePeriodIndicator.form", { 	
-					action: 		"remove", 
-					reportUuid: 	"${indicatorReport.reportDefinition.uuid}", 
-					indicatorKey:	"${column.indicator.uuid}" 
-				},
-				function(data){ });
+			action: 		"remove",	
+			reportUuid: 	"${indicatorReport.reportDefinition.uuid}", 
+			indicatorKey:	"${column.indicator.uuid}",
+			columnKey:		"${column.columnKey}"
+		}, function(data){ });
 
+		// Refresh page
 		window.location.reload(true); 
 	});
 

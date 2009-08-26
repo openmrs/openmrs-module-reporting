@@ -7,12 +7,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
+import org.openmrs.module.report.ReportData;
+import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.util.ParameterizableUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -73,11 +76,13 @@ public class QueryParameterFormController {
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView processForm(
 			HttpServletRequest request,	
+			HttpServletResponse response,	
 			@RequestParam(value = "uuid", required=false) String uuid,
 			@RequestParam(value = "type", required=false) Class<Parameterizable> type,
 			@RequestParam(value = "action", required=false) String action,
+			@RequestParam(value = "format", required=false) String format,
 			@ModelAttribute("parameterizable") Parameterizable parameterizable, 
-			BindingResult bindingResult) {
+			BindingResult bindingResult) throws Exception {
 					
 		
 		if (bindingResult.hasErrors()) {
@@ -85,7 +90,7 @@ public class QueryParameterFormController {
 		}
 		
 		ModelAndView model = new ModelAndView("/module/reporting/parameters/queryParameterForm");
-		Object result = null;
+		Object results = null;
 
 		log.info("Parameterizable: " + parameterizable);
 		if ( parameterizable == null ) 
@@ -111,8 +116,21 @@ public class QueryParameterFormController {
 			context.setParameterValues(parameterValues);		
 			
 			// Evaluate the parameterizable and populate the model
-			result = ParameterizableUtil.evaluateParameterizable(parameterizable, context);		
-			model.addObject("result", result);
+			results = ParameterizableUtil.evaluateParameterizable(parameterizable, context);		
+			
+			// Store evaluation result on the session  
+			//model.addObject("result", result);
+			request.getSession().setAttribute("results", results);
+						
+			// Render a report definition as a CSV
+			// TODO Move the rendering to another controller method 
+			if (results instanceof ReportData) { 	
+				String filename = parameterizable.getName() + "." + format;
+				ReportData reportData = (ReportData) results;
+				response.setContentType("text/csv");				
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");  				
+				new CsvReportRenderer().render(reportData, null, response.getOutputStream());
+			}
 		}
 		
 		
