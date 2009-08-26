@@ -16,6 +16,7 @@
 	#report-schema-basic-tab { 
 		margin: 50px; 
 	}
+	#wrapper { margin-top: 50px; }
 
 </style>
 
@@ -81,8 +82,7 @@ $(document).ready(function() {
         submit    : 'Save',
         indicator : 'Saving...',
         tooltip   : 'Click to edit...'
-    });
-
+    });	
 
 	// ======  Indicator Results  ===============================================
 
@@ -94,21 +94,11 @@ $(document).ready(function() {
 
 
 	// ======  Dialog : Indicator Dataset ===============================================
-
+		
 	$("#add-indicator-button").click(function(event){ 
 		showReportingDialog({ 
 			title: 'Add Period Indicator', 
-			url: '<c:url value="/module/reporting/indicators/addPeriodIndicator.form?reportUuid=${indicatorReport.reportDefinition.uuid}&action=add"/>',
-			successCallback: function() { 
-				window.location.reload(true);
-			} 
-		});
-	});
-
-	$(".preview-indicator-button").click(function(event){ 
-		showReportingDialog({ 
-			title: 'Preview Period Indicator', 
-			url: '<c:url value="/module/reporting/indicators/previewPeriodIndicator.form"/>?uuid=' + this.id,
+			url: '<c:url value="/module/reporting/indicators/managePeriodIndicator.form?reportUuid=${indicatorReport.reportDefinition.uuid}&action=add"/>',
 			successCallback: function() { 
 				window.location.reload(true);
 			} 
@@ -124,9 +114,6 @@ $(document).ready(function() {
 			} 
 		});
 	});
-
-
-	
 } );
 
 </script>
@@ -168,14 +155,14 @@ $(document).ready(function() {
 							<li>
 								<label class="desc" for="description">Description</label>	
 								<div>
-									<form:textarea path="reportDefinition.description" cssClass="field text medium" cols="50"/> 
+									<form:textarea path="reportDefinition.description" cssClass="field text medium" cols="66"/> 
 								</div>
 							</li>
 
 							<li>					
 								<div align="left">				
 									<input id="save-button" name="save" type="submit" value="Save" />
-									<input id="cancel-button" name="cancel" type="button" value="Cancel"/>
+									<input id="back-button" name="cancel" type="button" value="Cancel"/>																		
 								</div>					
 							</li>
 						</ul>
@@ -206,40 +193,6 @@ $(document).ready(function() {
 								</c:choose>
 							</li>
 						</ul>
-
-					<%-- 
-					<fieldset>
-						<legend>Parameters</legend>
-						<ul>
-							<li>
-								<div>
-									<label class="desc" for="startDate">Start Date</label>			
-									<openmrs:fieldGen type="java.util.Date" 
-										formFieldName="startDate" 
-										val="" parameters="" />
-								</div>
-							</li>	
-							<li>
-								<div>
-									<label class="desc" for="endDate">End Date</label>			
-									<openmrs:fieldGen type="java.util.Date" 
-										formFieldName="endDate" 
-										val="" parameters="" />
-								</div>																
-							</li>	
-							<li>
-								<div>
-									<label class="desc" for="location">Location</label>			
-									<openmrs:fieldGen type="org.openmrs.Location" 
-										formFieldName="location" 
-										val="" parameters="" />
-								</div>
-							</li>
-						</ul>
-					</fieldset>
-					--%>
-					
-					
 						<ul>
 							<li>														
 								<label class="desc" for="name">Indicators</label>	
@@ -250,23 +203,51 @@ $(document).ready(function() {
 												<th>Key</th>
 												<th>Display Name</th>
 												<th>Indicator</th>
-												<th>Design</th>
 												<th>Preview</th>
 												<th>Remove</th>
 											</tr>
 										</thead>
 										<tbody>																				
-											<c:forEach var="column" items="${indicatorReport.reportDefinition.columns}">
+											<c:forEach var="column" items="${indicatorReport.reportDefinition.columns}" varStatus="status">
+											
+											
+<script>					
+$(document).ready(function() {
+	$("#preview-indicator-${status.index}").click(function(event){ 
+		showReportingDialog({ 
+			title: 'Preview Period Indicator', 
+			url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${column.indicator.uuid}&type=${column.indicator.class.name}',
+			successCallback: function() { 
+				window.location = window.location; //.reload(true);
+			} 
+		});
+	});
+	$("#remove-indicator-${status.index}").click(function(event){ 
+		$.post("${pageContext.request.contextPath}/module/reporting/indicators/managePeriodIndicator.form", { 	
+					action: 		"remove", 
+					reportUuid: 	"${indicatorReport.reportDefinition.uuid}", 
+					indicatorKey:	"${column.indicator.uuid}" 
+				},
+				function(data){ });
+
+		window.location.reload(true); 
+	});
+
+	
+	
+} );
+</script>									
+											
 												<tr>
 													<td width="5%">${column.columnKey}</td>
 													<td width="45%">${column.displayName}</td>												
 													<td width="40%">
 														<c:choose>
 															<c:when test="${column.indicator==null}">
-																<strong>cannot get cohort indicator</strong>
+																(no cohort indicator)
 															</c:when>
 															<c:otherwise>
-																<strong>${column.indicator.cohortDefinition.parameterizable.name}</strong>
+																${column.indicator.cohortDefinition.parameterizable.name}
 															</c:otherwise>
 														</c:choose>
 														
@@ -284,19 +265,11 @@ $(document).ready(function() {
 														--%>
 													</td>
 													<td width="1%" align="center">
-														<a href="#" id="${column.indicator.uuid}" class="edit-indicator"><img src="<c:url value="/images/edit.gif"/>" border="0"/></a>
+														<a href="#" id="preview-indicator-${status.index}"><img src="<c:url value="/images/play.gif"/>" border="0"/></a>
 													</td>
 													<td width="1%" align="center">
-														<a href="#" id="${column.indicator.uuid}" class="preview-indicator-button"><img src="<c:url value="/images/play.gif"/>" border="0"/></a>
+														<a href="#" id="remove-indicator-${status.index}"><img src="<c:url value="/images/trash.gif"/>" border="0"/></a>
 													</td>
-													<td width="1%" align="center">
-														<a href="#" id="${column.indicator.uuid}" class="remove-indicator"><img src="<c:url value="/images/trash.gif"/>" border="0"/></a>
-													</td>
-													<%-- 
-													<td wdith="5%" align="center">
-													   <span id="result-${indicator.uuid}" class="result">?</span>
-													</td>
-													--%>
 												</tr>									
 											</c:forEach>
 										</tbody>

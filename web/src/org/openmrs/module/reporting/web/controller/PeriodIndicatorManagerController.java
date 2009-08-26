@@ -51,10 +51,8 @@ public class PeriodIndicatorManagerController {
 	 * 
 	 * @return the form model and view
 	 */
-	@RequestMapping(value="/module/reporting/indicators/addPeriodIndicator", method=RequestMethod.GET)
+	@RequestMapping(value="/module/reporting/indicators/managePeriodIndicator", method=RequestMethod.GET)
 	public ModelAndView showForm() {
-		
-		
 		ModelAndView model = new ModelAndView("/module/reporting/indicators/periodIndicatorManager");
 		model.addObject("indicators", 
 				Context.getService(IndicatorService.class).getAllIndicators(false));
@@ -71,16 +69,17 @@ public class PeriodIndicatorManagerController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@RequestMapping(value="/module/reporting/indicators/addPeriodIndicator",method = RequestMethod.POST)
-	public ModelAndView addPeriodIndicator(
+	@RequestMapping(value="/module/reporting/indicators/managePeriodIndicator",method = RequestMethod.POST)
+	public ModelAndView managePeriodIndicator(
 		@ModelAttribute("indicatorForm") IndicatorForm indicatorForm,
-		BindingResult bindingResult) {
+		@RequestParam(required=false,value="action") String action,
+		@RequestParam(required=false,value="indicatorKey") String indicatorKey) {
 		
-		log.info("GET /module/reporting/indicators/addPeriodIndicator");
+		log.info("POST /module/reporting/indicators/managePeriodIndicator " + action);
 		
-		if (bindingResult.hasErrors()) {
-			return showForm();
-		}
+		//if (bindingResult.hasErrors()) {
+		//	return showForm();
+		//}
 
 	
 		ReportService reportService = Context.getService(ReportService.class);
@@ -95,17 +94,26 @@ public class PeriodIndicatorManagerController {
 			PeriodIndicatorReportDefinition indicatorReportDefinition = 
 				(PeriodIndicatorReportDefinition) reportDefinition;
 
-			// Find the selected indicator
-			CohortIndicator cohortIndicator = (CohortIndicator)
-				Context.getService(IndicatorService.class).getIndicatorByUuid(indicatorForm.getUuid());
-							
-			// Add cohort indicator to the report definition
-			indicatorReportDefinition.addCohortIndicator(
-					indicatorForm.getColumnKey(), 
-					indicatorForm.getDisplayName(), 
-					cohortIndicator,
-					"startDate=${startDate},endDate=${endDate},location=${location}");
-							
+			if ("add".equalsIgnoreCase(action)) { 
+				
+				// Find the selected indicator
+				CohortIndicator cohortIndicator = (CohortIndicator)
+					Context.getService(IndicatorService.class).getIndicatorByUuid(indicatorForm.getUuid());
+								
+				// Add cohort indicator to the report definition
+				indicatorReportDefinition.addCohortIndicator(
+						indicatorForm.getColumnKey(), 
+						indicatorForm.getDisplayName(), 
+						cohortIndicator,
+						"startDate=${startDate},endDate=${endDate},location=${location}");
+			} 
+			else if ("remove".equalsIgnoreCase(action)) { 	
+				
+				log.info("Removing indicator key " + indicatorReportDefinition + " from report " + indicatorKey);
+				
+				indicatorReportDefinition.removeCohortIndicator(indicatorKey);
+			}
+				
 			// Save the report definition with the new indicator
 			reportService.saveReportDefinition(indicatorReportDefinition);
 			

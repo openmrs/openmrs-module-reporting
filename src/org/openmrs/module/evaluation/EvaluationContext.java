@@ -82,14 +82,14 @@ public class EvaluationContext {
 	public static EvaluationContext cloneForChild(EvaluationContext initialContext, 
 												  Mapped<? extends Parameterizable> child) {
 		EvaluationContext ec = EvaluationContext.clone(initialContext);
-		
+			
 		for (String paramName : child.getParameterMappings().keySet()) {
-			Parameter p = child.getParameterizable().getParameter(paramName);
-			if (p == null) {
+			Parameter parameter = child.getParameterizable().getParameter(paramName);
+			if (parameter == null) {
 				throw new ParameterException("Cannot find parameter with name <" + paramName + "> in " + child.getParameterizable());
 			}
 			String paramVal = child.getParameterMappings().get(paramName);
-			Object eval = EvaluationUtil.evaluateExpression(paramVal, initialContext.getParameterValues(), p.getType());
+			Object eval = EvaluationUtil.evaluateExpression(paramVal, initialContext.getParameterValues(), parameter.getType());
 			
 			ec.addParameterValue(paramName, eval);
 		}

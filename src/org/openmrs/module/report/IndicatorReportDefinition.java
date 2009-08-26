@@ -39,10 +39,7 @@ public class IndicatorReportDefinition extends ReportDefinition {
 	 */
 	public void addCohortIndicator(String columnKey, String displayName, CohortIndicator cohortIndicator, String parameterMapping) { 
 
-		// @FIXME  Needs to call addIndicator() method when it becomes available
-		//getCohortIndicatorDataSetDefinition().addIndicator(key, displayName, cohortIndicator, 
-		//		"startDate=${startDate},endDate=${endDate},location=${location}");
-		
+		log.info("Adding indicator to report: " + columnKey + " " + displayName + " " + parameterMapping);
 		CohortIndicatorDataSetDefinition dataSetDefinition = getDataSetDefinition();
 		
 		if (dataSetDefinition == null) {			
@@ -52,26 +49,25 @@ public class IndicatorReportDefinition extends ReportDefinition {
 			dataSetDefinition.setParameters(this.getParameters());
 
 			// Save the dataset definition explicitly so it has a uuid
-			dataSetDefinition = (CohortIndicatorDataSetDefinition)
-				Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);				
-			
+			if (dataSetDefinition.getUuid() == null) { 
+				dataSetDefinition = (CohortIndicatorDataSetDefinition)
+					Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);				
+			}			
 			// Add dataset definition to the report
 			this.addDataSetDefinition(dataSetDefinition.getName(),
 					dataSetDefinition, parameterMapping);			
 		}
-		log.info("adding indicator with column key " + columnKey + " dataset definition " + dataSetDefinition);
 		
 		// Adding indicator to dataset definition with default parameter mapping
-		dataSetDefinition.addCohortIndicator(
+		log.info("adding indicator with column key " + columnKey + " dataset definition " + dataSetDefinition + " parameter mapping = " + parameterMapping);
+		dataSetDefinition.addIndicator(
 				columnKey, 
+				displayName,
 				cohortIndicator, 
-				"startDate=${startDate},endDate=${endDate},location=${location}");
+				parameterMapping);
 
-		log.info("adding column specification " + columnKey + ", displayName=" + displayName + " cohortIndicator=" + cohortIndicator);
-
-		// Adding column specification to dataset 
-		dataSetDefinition.addColumnSpecification(columnKey, displayName, Number.class, cohortIndicator, null);	
-					
+		
+		// TODO Need to move this functionality to the service layer.
 		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);
 		
 	}
@@ -85,8 +81,11 @@ public class IndicatorReportDefinition extends ReportDefinition {
 	 * 		The indicator key that represents the indicator to be removed.
 	 */
 	public void removeCohortIndicator(String indicatorKey) { 		
-		CohortIndicatorDataSetDefinition datasetDefinition = getDataSetDefinition();
-		datasetDefinition.removeCohortIndicator(indicatorKey);
+		CohortIndicatorDataSetDefinition dataSetDefinition = getDataSetDefinition();
+		dataSetDefinition.removeCohortIndicator(indicatorKey);
+		
+		// TODO Need to move this functionality to the service layer.
+		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);
 	}
 
 	

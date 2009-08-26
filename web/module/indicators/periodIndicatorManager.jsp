@@ -30,6 +30,7 @@ form ul { margin:0; padding:0; list-style-type:none; width:100%; }
 form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
 label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
 .errors { margin-left:200px; margin-top:20px; margin-bottom:20px;	font-family:Verdana,Arial,sans-serif; font-size:12px; }
+
 * { margin: 0; }
 #container { height: 100%; border: 1px }
 #wrapper { min-height: 100%; height: auto !important; height:100%; margin: 0 auto -6em; }
@@ -41,11 +42,12 @@ input, select, textarea, label, button { font-size: 2em; }
 <div id="page">
 	<div id="container">
 		<div id="wrapper">	
-			<c:url var="postUrl" value='/module/reporting/indicators/addPeriodIndicator.form'/>
+			<c:url var="postUrl" value='/module/reporting/indicators/managePeriodIndicator.form'/>
 			<form:form id="saveIndicatorForm" commandName="indicatorForm" action="${postUrl}" method="POST">
 				<!-- hidden form fields from URL--> 
 
 				<input type="hidden" name="reportUuid" value="${param.reportUuid}"/> 
+				<input type="hidden" name="action" value="add"/> 
 
 				<ul>				
 					<spring:hasBindErrors name="indicatorForm">  
@@ -62,18 +64,6 @@ input, select, textarea, label, button { font-size: 2em; }
 							</div>
 						</li>
 					</spring:hasBindErrors>
-					<li>
-						<label class="desc" for="name">Indicator Key</label>
-						<div>
-							<form:input path="columnKey" tabindex="1" cssClass="field text small" size="10"/>														
-						</div>
-					</li>		
-					<li>		
-						<label class="desc" for="displayName">Display Name</label>
-						<div>
-							<form:input path="displayName" tabindex="1" cssClass="field text medium" size="30"/>														
-						</div>					
-					</li>							
 					<li>		
 						<label class="desc" for="indicator">Indicator</label>
 						<div>
@@ -82,6 +72,20 @@ input, select, textarea, label, button { font-size: 2em; }
 					            <form:options items="${indicators}" itemValue="uuid" itemLabel="name"/>
 							</form:select>
 						</div>					
+					</li>							
+					<li>
+						<label class="desc" for="name">Indicator Key</label>
+						<div>
+							<form:input path="columnKey" tabindex="1" cssClass="field text small" size="10"/>														
+						</div>
+						<span class="small"><em>(ex. "1.a")</em></span>
+					</li>		
+					<li>		
+						<label class="desc" for="displayName">Display Name</label>						
+						<div>
+							<form:input path="displayName" tabindex="1" cssClass="field text medium" size="30"/>														
+						</div>					
+						<span class="small"><em>(ex. "Enrolled in HIV Program between dates")</em></span>
 					</li>							
 				</ul>						
 			</form:form>

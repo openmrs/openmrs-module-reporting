@@ -54,62 +54,63 @@ $(document).ready(function() {
 		background-color: lightpink;
 	}
 	.radio { margin-right: 20px; } 	
+	#preview-parameterizable-form { margin-top: 100px; margin-left: 575px; } 
 	
-	
+	.hr { height: 1px solid black; width: 40% } 
 </style>
 
 <div id="page">
 	<div id="container">
-		<div id="wrapper">		
-
-
+		<div id="wrapper">
 			<c:if test="${empty result}">
 				<span><h2>${parameterizable.name}</h2></span>
-				<span><h4>${parameterizable.description}</h4></span>
-				<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
-				<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
-					<input type="hidden" name="action" value="preview"/>
-					<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
-					<input type="hidden" name="type" value="${parameterizable.class.name}"/>
-					<ul>								
-						<spring:hasBindErrors name="indicatorForm">  
-							<li>
-								<div class="errors"> 
-									<font color="red"> 
-										<h3><u>Please correct the following errors</u></h3>   
-										<ul class="none">
-											<c:forEach items="${errors.allErrors}" var="error">
-												<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
-											</c:forEach> 
-										</ul> 
-									</font>  
-								</div>
-							</li>
-						</spring:hasBindErrors>
-					</ul>																
-					<ul>									
-						<c:forEach var="parameter" items="${parameterizable.parameters}">				
-							<li>
-								<label class="desc" for="${parameter.name}">${parameter.label}</label>
-								<div>						
-									<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
-								</div>
-							</li>						
-						</c:forEach>
-					</ul>
+				<span><h3>${parameterizable.description}</h3></span>
+				
+				
+					<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
+					<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
+						<input type="hidden" name="action" value="preview"/>
+						<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
+						<input type="hidden" name="type" value="${parameterizable.class.name}"/>
+						
+						<ul>								
+							<spring:hasBindErrors name="indicatorForm">  
+								<li>
+									<div class="errors"> 
+										<font color="red"> 
+											<h3><u>Please correct the following errors</u></h3>   
+											<ul class="none">
+												<c:forEach items="${errors.allErrors}" var="error">
+													<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
+												</c:forEach> 
+											</ul> 
+										</font>  
+									</div>
+								</li>
+							</spring:hasBindErrors>
+						</ul>																
+						<ul>									
+							<c:forEach var="parameter" items="${parameterizable.parameters}">				
+								<li>
+									<label class="desc" for="${parameter.name}">${parameter.label}</label>
+									<div>						
+										<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
+									</div>
+								</li>						
+							</c:forEach>
+						</ul>
+					</form>	
 				</c:if>
 				<c:if test="${!empty result}">
 					<ul>
 						<li>				
-							<h4>Results of the evaluation</h4>
+							<h4>Evaluation Result</h4>
 							<div>
-								<span>Type: </span>
-								<span>
-									<strong>${result.class.simpleName}</strong>							
-								</span>
+								<span>Result Type: </span>
+								<strong>${result.class.simpleName}</strong>							
 							</div>
 							<div>
-								<span># of Patients returned:</span>						
+								<span>Result:</span>						
 								<span>
 									<strong>${result}</strong>
 								</span>
@@ -117,16 +118,19 @@ $(document).ready(function() {
 						</li>
 					</ul>
 				</c:if>
-			</form>
-		</div>		
+		</div>
 		<div class="buttonBar" align="center">						
 			<input class="button" id="preview-parameterizable-button" type="button" value="Preview" />
 			<input class="button" id="close-button" type="button" value="Close"/>								
 		</div>					
-
-
 	</div>	
 </div>
 	
 	
 	
+
+</div>
+
+</div>
+
+

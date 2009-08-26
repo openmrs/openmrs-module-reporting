@@ -334,7 +334,7 @@ $(function() {
 									</li>														
 									<li>
 										<div>
-											<select class="field select medium" id='uuid' name='uuid'>
+											<select id='dataset-definition-uuid' name='uuid'>
 												<option value="">Choose a dataset</option>
 												<c:forEach var='datasetDefinition' items='${datasetDefinitions}'>
 													<option value="${datasetDefinition.uuid}">${datasetDefinition.name}</option>
@@ -369,7 +369,7 @@ $(function() {
 			
 						<div align="left" style="padding: 10px; margin-left:100px">					
 							<form method="post" action="${pageContext.request.contextPath}/module/reporting/renderLabReport.form">		
-								<input type="hidden" id="uuid" name="uuid" value="0123456789"/>									
+								<input type="hidden" id="lab-report-cohort-uuid" name="uuid" value="0123456789"/>									
 								<input type="hidden" name="action" value="render"/>
 								<div>
 										<label class="desc" for="renderType">Download as:</label>
