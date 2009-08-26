@@ -1,11 +1,12 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportManager.form" />
-<%@ include file="../localHeader.jsp"%>
+<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/manageReports.form" />
+<%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		$("#report-schema-table").dataTable( {
 			"bPaginate": true,
+			"iDisplayLength": 25,
 			"bLengthChange": false,
 			"bFilter": true,
 			"bSort": true,
@@ -23,28 +24,18 @@
 	<div id="container">
 		<h1>Report Manager</h1>
 		
-		<form method="get" action="reportEditor.form" style="display:inline">
-			<strong>Create a new report:</strong>
-			<select name="type">
-				<option value="">&nbsp;</option>
-				<c:forEach items="${types}" var="type">
-					<option value="${type.key.name}">${type.value}</option>
-				</c:forEach>
-			</select>
-			<input type="submit" value="Create"/>
-		</form>
-		<span>|</span> 
-		<a href="${pageContext.request.contextPath}/module/reporting/reports/indicatorReportEditor.form">Indicator Report</a>
-		<span>|</span> 
-		<a href="${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReportEditor.form">Period Indicator Report</a>
-
-
+		<spring:message code="reporting.manage.createNew"/>:
+		<c:forEach var="createLink" items="${createLinks}">
+			<input type="button" value="${createLink.key}" onClick="window.location='${createLink.value}';"/>
+		</c:forEach>
 
 		<table id="report-schema-table" class="display" >
 			<thead>
 				<tr>
 					<th>Name</th>
+					<th>Type</th>
 					<th>Description</th>
+					<th>Author</th>
 					<th>Design</th>
 					<th>Preview</th>
 					<th>Remove</th>
@@ -52,21 +43,6 @@
 			</thead>
 			<tbody>
 				<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
-					<script>				
-						$(document).ready(function() {
-							$("#preview-report-button-${reportDefinition.uuid}").click(function(event){ 
-								showReportingDialog({ 
-									title: 'Preview Period Indicator Report', 
-									url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition.class.name}',
-									successCallback: function() { 
-										window.location.reload(true);
-									} 
-								});
-							});		
-						} );
-					</script>				
-				
-				
 					<c:set var="editUrl">
 						<c:choose>
 							<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
@@ -91,23 +67,22 @@
 								${reportDefinition.name}
 							</a>
 						</td>
+						<td width="10%" nowrap="">
+							${reportDefinition.class.simpleName}
+						</td>
 						<td width="20%">
 							<span class="small">${reportDefinition.description}</span>
+						</td>
+						<td width="10%">
+							<span class="small">${reportDefinition.creator}</span>
 						</td>
 						<td width="1%" nowrap="" align="center">
 							<a href="${editUrl}">
 								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
 							</a>
 						</td>
-						<%-- 
 						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportDefinition.uuid}">
-								<img src='<c:url value="/images/play.gif"/>' border="0"/>
-							</a>
-						</td>
-						--%>
-						<td width="1%" align="center">
-							<a href="#" id="preview-report-button-${reportDefinition.uuid}">
 								<img src='<c:url value="/images/play.gif"/>' border="0"/>
 							</a>
 						</td>

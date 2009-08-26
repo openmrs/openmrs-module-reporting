@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.web.controller;
+package org.openmrs.module.reporting.web.cohorts;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class ManageCohortDefinitionController {
+public class ManageCohortDefinitionsController {
 	
-	protected static Log log = LogFactory.getLog(ManageCohortDefinitionController.class);
+	protected static Log log = LogFactory.getLog(ManageCohortDefinitionsController.class);
 	
 	/**
 	 * Lists the cohort definitions.
@@ -38,8 +38,8 @@ public class ManageCohortDefinitionController {
 	 * @param model
 	 * @return
 	 */
-    @RequestMapping("/module/reporting/manageCohortDefinitions")
-    public String manageCohortDefinitions(
+    @RequestMapping("/module/reporting/cohorts/manageCohortDefinitions")
+    public void manageCohortDefinitions(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
     	// Add all saved CohortDefinitions
@@ -49,8 +49,6 @@ public class ManageCohortDefinitionController {
     	
     	// Add all available CohortDefinitions
     	model.addAttribute("types", service.getCohortDefinitionTypes());
-    	
-        return "/module/reporting/cohorts/cohortDefinitionManager";
     }
     
     
@@ -154,7 +152,7 @@ public class ManageCohortDefinitionController {
     	log.warn("Saving: " + cohortDefinition);
     	Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);
 
-        return "redirect:/module/reporting/manageCohortDefinitions.list";
+        return "redirect:/module/reporting/cohorts/manageCohortDefinitions.form";
     }
 
     
@@ -202,7 +200,7 @@ public class ManageCohortDefinitionController {
     		Context.getService(CohortDefinitionService.class);
     	CohortDefinition cohortDefinition = service.getCohortDefinitionByUuid(uuid);
     	service.purgeCohortDefinition(cohortDefinition);	
-        return "redirect:/module/reporting/manageCohortDefinitions.list";
+        return "redirect:/module/reporting/cohorts/manageCohortDefinitions.form";
     }    
     
 

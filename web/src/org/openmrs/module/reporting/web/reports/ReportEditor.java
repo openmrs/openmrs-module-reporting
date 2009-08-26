@@ -55,6 +55,6 @@ public class ReportEditor {
     	log.warn("Saving: " + r);
     	Context.getService(ReportService.class).saveReportDefinition(r);
 
-        return "redirect:/module/reporting/reports/reportManager.form";
+        return "redirect:/module/reporting/reports/manageReports.form";
     }
 }

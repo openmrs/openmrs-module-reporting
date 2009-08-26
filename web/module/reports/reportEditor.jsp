@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/view/module/reporting/localHeader.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportManager.list" />
+<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/manageReports.list" />
 
 <c:url value="/module/reporting/reports/reportEditor.form" var="pageUrl">
 	<c:param name="uuid" value="${report.uuid}" />
@@ -26,7 +26,7 @@
 			<c:when test="${report.uuid == null}">
 				<b class="boxHeader">Create New Report</b>
 				<div class="box">
-					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.report.ReportDefinition|size=380|mode=edit|dialog=false|cancelUrl=reportManager.form|successUrl=reportEditor.form?type=org.openmrs.module.report.ReportDefinition&uuid=uuid" />
+					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.report.ReportDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageReports.form|successUrl=reportEditor.form?type=org.openmrs.module.report.ReportDefinition&uuid=uuid" />
 				</div>
 			</c:when>
 			

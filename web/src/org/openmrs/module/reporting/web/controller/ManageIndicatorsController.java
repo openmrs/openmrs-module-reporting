@@ -6,19 +6,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.logic.LogicCriteria;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
-import org.openmrs.module.indicator.aggregation.Aggregator;
-import org.openmrs.module.indicator.aggregation.CountAggregator;
-import org.openmrs.module.indicator.aggregation.DistinctAggregator;
-import org.openmrs.module.indicator.aggregation.MaxAggregator;
-import org.openmrs.module.indicator.aggregation.MeanAggregator;
-import org.openmrs.module.indicator.aggregation.MedianAggregator;
-import org.openmrs.module.indicator.aggregation.MinAggregator;
-import org.openmrs.module.indicator.aggregation.SumAggregator;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class ManageIndicatorController {
+public class ManageIndicatorsController {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 	
@@ -37,7 +28,7 @@ public class ManageIndicatorController {
 	 * @return
 	 */
     @RequestMapping("/module/reporting/indicators/manageIndicators")
-    public String manageIndicators(
+    public void manageIndicators(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
     	 	
@@ -45,8 +36,6 @@ public class ManageIndicatorController {
     		Context.getService(IndicatorService.class).getAllIndicators(false);
 
     	model.addAttribute("indicators", indicators);
-    	
-        return "/module/reporting/indicators/indicatorManager";
     }
     
     /**
@@ -56,7 +45,7 @@ public class ManageIndicatorController {
      * @return
      */
     @RequestMapping("/module/reporting/indicators/selectCohort")
-    public String selectCohort(
+    public void selectCohort(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
     	 	
@@ -67,8 +56,6 @@ public class ManageIndicatorController {
     	
     	// Add all available CohortDefinitions
     	model.addAttribute("types", cds.getCohortDefinitionTypes());
-    	
-        return "/module/reporting/indicators/selectCohort";
     }
     
     
@@ -127,7 +114,7 @@ public class ManageIndicatorController {
     		ModelMap model) {
     	
     	if ("cancel".equalsIgnoreCase(action))  {
-    		return "redirect:/module/reporting/manageIndicators.list";
+    		return "redirect:/module/reporting/manageIndicators.form";
     	}
     	
     	// Find indicator, if one already exists
@@ -175,7 +162,7 @@ public class ManageIndicatorController {
     	}    	
     	
     	// If user clicks "save" they will be taken back to the indicator list
-        return "redirect:/module/reporting/indicators/manageIndicators.list";
+        return "redirect:/module/reporting/indicators/manageIndicators.form";
     }
     
     
@@ -199,7 +186,7 @@ public class ManageIndicatorController {
     		Context.getService(IndicatorService.class).purgeIndicator(indicator);
     	}     	
     	
-        return "redirect:/module/reporting/indicators/manageIndicators.list";
+        return "redirect:/module/reporting/indicators/manageIndicators.form";
     }
     
     

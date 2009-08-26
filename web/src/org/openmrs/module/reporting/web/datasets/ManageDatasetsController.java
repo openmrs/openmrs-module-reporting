@@ -1,8 +1,6 @@
-package org.openmrs.module.reporting.web.controller;
+package org.openmrs.module.reporting.web.datasets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -11,13 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
-import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetException;
-import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
@@ -34,17 +30,16 @@ import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.util.CohortUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class ManageDatasetDefinitionController {
+public class ManageDatasetsController {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 	
-    @RequestMapping("/module/reporting/manageDatasets")
-    public String manageDatasetDefinition(
+    @RequestMapping("/module/reporting/datasets/manageDataSets")
+    public void manageDatasetDefinition(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
     	
@@ -64,8 +59,6 @@ public class ManageDatasetDefinitionController {
     	
     	model.addAttribute("types", service.getDataSetDefinitionTypes());    	
     	model.addAttribute("datasetDefinitions", datasetDefinitions);
-    	
-        return "/module/reporting/datasets/datasetManager";
     }
     
     /**

@@ -28,11 +28,11 @@
 	</extension>
 	<extension>
 		<point>org.openmrs.admin.list</point>
-		<class>@MODULE_PACKAGE@.extension.html.ConfigAdminListExt</class>
+		<class>@MODULE_PACKAGE@.extension.html.ManageAdminListExt</class>
 	</extension>
 	<extension>
-		<point>org.openmrs.module.reporting.config.localheader</point>
-		<class>@MODULE_PACKAGE@.extension.html.ConfigAdminListExt</class>
+		<point>org.openmrs.module.reporting.manage.localheader</point>
+		<class>@MODULE_PACKAGE@.extension.html.ManageAdminListExt</class>
 	</extension>
 	<extension>
 		<point>org.openmrs.gutter.tools</point>

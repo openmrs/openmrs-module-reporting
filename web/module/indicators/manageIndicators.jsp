@@ -1,12 +1,13 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/indicatorManager.form" />
-<%@ include file="../localHeader.jsp"%>
+<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/manageIndicators.form" />
+<%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 	$('#indicator-table').dataTable( {
 		"bPaginate": true,
-		"bLengthChange": true,
+		"iDisplayLength": 25,
+		"bLengthChange": false,
 		"bFilter": true,
 		"bSort": true,
 		"bInfo": true,
@@ -44,24 +45,9 @@ $(document).ready(function() {
 	<div id="container">
 		<h1>Indicator Manager</h1>
 
-		<div id="inline-list">
-			<p>
-				<ul>
-					<li class="first">
-						<strong>Create a new:</strong>
-					</li>
-					<li class="first">
-						<a href="${pageContext.request.contextPath}/module/reporting/indicators/editIndicator.form">Indicator</a>
-					</li>
-					<li>
-						<a href="#" id="add-cohort-indicator">Cohort Indicator</a>
-					</li>
-					<li class="last">
-						<a href="#" id="add-period-indicator">Period Indicator</a>
-					</li>
-				</ul>
-			</p>
-		</div>	
+		<spring:message code="reporting.manage.createNew"/>:
+		<input type="button" id="add-period-indicator" value="Period Indicator"/>
+		<input type="button" onClick="window.location = 'editIndicator.form';" value="Custom Indicator (Advanced)"/>
 
 		<table id="indicator-table" class="display" >
 			<thead>

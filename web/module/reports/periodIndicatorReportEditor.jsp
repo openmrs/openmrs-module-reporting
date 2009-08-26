@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ include file="../localHeader.jsp"%>
+<%@ include file="../manage/localHeader.jsp"%>
 
 
 <style type="text/css">
@@ -57,7 +57,7 @@ $(document).ready(function() {
 	
 	// Redirect to the listing page
 	$('#back-button').click(function(event){
-		window.location.href='<c:url value="/module/reporting/reports/reportManager.list"/>';
+		window.location.href='<c:url value="/module/reporting/reports/manageReports.list"/>';
 	});
 
 	// Call client side validation method

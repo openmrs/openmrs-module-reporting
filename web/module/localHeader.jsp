@@ -17,7 +17,7 @@
 			<a href="${pageContext.request.contextPath}/module/reporting/indicators/manageIndicators.list">Manage Indicators</a>
 		</li>	
 		<li class="last">
-			<a href="${pageContext.request.contextPath}/module/reporting/reports/reportManager.list">Manage Reports</a>
+			<a href="${pageContext.request.contextPath}/module/reporting/reports/manageReports.list">Manage Reports</a>
 		</li>
 	</ul>
 </div>

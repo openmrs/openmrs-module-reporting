@@ -1,12 +1,13 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ include file="../localHeader.jsp"%>
+<%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 	$('#cohort-definition-table').dataTable( {
 		"bPaginate": true,
-		"bLengthChange": true,
+		"iDisplayLength": 25,
+		"bLengthChange": false,
 		"bFilter": true,
 		"bSort": true,
 		"bInfo": true,
@@ -26,7 +27,7 @@ function confirmDelete(name, uuid) {
 
 	<div id="container">
 	
-		<h1>Cohort Manager</h1>
+		<spring:message code="reporting.manage.createNew"/>:
 		<form method="get" action="editCohortDefinition.form" style="display:inline">
 			<strong>Create a new cohort definition</strong>
 			<select name="type" style="font-size: 1.5em;">

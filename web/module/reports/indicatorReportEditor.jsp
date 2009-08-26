@@ -66,7 +66,7 @@ $(document).ready(function() {
 	
 	// Redirect to the listing page
 	$('#back-button').click(function(event){
-		window.location.href='<c:url value="/module/reporting/reports/reportManager.list"/>';
+		window.location.href='<c:url value="/module/reporting/reports/manageReports.list"/>';
 	});
 
 	// Call client side validation method

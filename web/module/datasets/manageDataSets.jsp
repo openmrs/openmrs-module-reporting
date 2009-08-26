@@ -1,13 +1,13 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="View Orders" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ include file="../localHeader.jsp"%>
+<openmrs:require privilege="Manage Data Sets" otherwise="/login.htm" redirect="/module/reporting/datasets/manageDataSets.list" />
+<%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 	$('#dataset-table').dataTable( {
 		"bPaginate": true,
-		"iDisplayLength": 10,
-		"bLengthChange": true,
+		"iDisplayLength": 25,
+		"bLengthChange": false,
 		"bFilter": true,
 		"bSort": true,
 		"bInfo": true,
@@ -34,11 +34,21 @@ $(document).ready(function() {
 	<div id="container">
 
 		<h1>Dataset Manager</h1>
+		<%--
+		<spring:message code="reporting.manage.createNew"/>:
+		<c:forEach var="createLink" items="${types}">
+			<form style="display: inline" action="../newDataset.form">
+				<input type="hidden" name="type" value="${createLink.name}"/>
+				<input type="submit" value="${createLink.simpleName}"/>
+			</form>
+		</c:forEach>
+		--%>
+
 		<div id="inline-list">	
 			<p>	
 				<ul>
 					<li class="first">
-						<form method="get" action="newDataset.form" style="display:inline">					
+						<form method="get" action="../newDataset.form" style="display:inline">					
 							<strong>Create a New Dataset:</strong>
 							<select name="type">
 								<option value="">&nbsp;</option>
@@ -48,10 +58,6 @@ $(document).ready(function() {
 							</select>
 							<input type="submit" value="Create"/>					
 						</form>		
-					</li>
-					
-					<li class="last">
-						<a href="<c:url value='/module/reporting/indicatorDataset.form'/>">Create Indicator Dataset</a>
 					</li>
 				</ul>
 			</p>			

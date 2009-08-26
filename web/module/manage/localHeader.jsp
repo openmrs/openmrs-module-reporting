@@ -3,7 +3,7 @@
 <%@ include file="/WEB-INF/view/module/reporting/dialogSupport.jsp" %>
 
 <div style="border-bottom: 1px solid black;">
-	<openmrs:extensionPoint pointId="org.openmrs.module.reporting.config.localheader" type="html">
+	<openmrs:extensionPoint pointId="org.openmrs.module.reporting.manage.localheader" type="html">
 		<openmrs:hasPrivilege privilege="${extension.requiredPrivilege}">
 			<ul id="menu">
 				<c:forEach items="${extension.links}" var="link" varStatus="status">
