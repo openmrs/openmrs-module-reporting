@@ -59,6 +59,20 @@ public abstract class CodedWidget implements Widget {
 	}
 	
 	/**
+	 * Returns the Selected option given the passed WidgetConfig
+	 * @param config the WidgetConfig to check
+	 * @return the matching Option
+	 */
+	public Option getSelectedOption(WidgetConfig config) {
+		for (Option o : getOptions()) {
+			if (isSelected(o, config.getDefaultValue())) {
+				return o;
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Adds and configures the passed Option as needed with information in WidgetConfig
 	 * @param config the WidgetConfig
 	 */

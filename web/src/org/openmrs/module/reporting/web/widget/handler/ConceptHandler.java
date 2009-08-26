@@ -14,33 +14,38 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.Concept;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.html.CodedWidget;
 import org.openmrs.module.reporting.web.widget.html.Option;
 
 /**
- * FieldGenHandler for Boolean Types
+ * FieldGenHandler for Enumerated Types
  */
-@Handler(supports={Boolean.class}, order=50)
-public class BooleanHandler extends CodedHandler {
+@Handler(supports={Concept.class}, order=50)
+public class ConceptHandler extends CodedHandler {
 	
-	/** 
-	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
-	 */
-	@Override
-	public void populateOptions(WidgetConfig config, CodedWidget widget) {
-		widget.addOption(new Option("t", null, "general.true", Boolean.TRUE), config);
-		widget.addOption(new Option("f", null, "general.false", Boolean.FALSE), config);
-	}
-
 	/**
 	 * @see CodedHandler#setDefaults(WidgetConfig)
 	 */
 	@Override
 	protected void setDefaults(WidgetConfig config) {
 		if (StringUtils.isEmpty(config.getFormat())) {
-			config.setFormat("radio");
+			config.setFormat("ajax");
+		}
+		config.setDefaultAttribute("ajaxUrl", "/module/reporting/widget/conceptSearch.form");
+	}
+
+	/** 
+	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
+	 */
+	@Override
+	public void populateOptions(WidgetConfig config, CodedWidget widget) {
+		if (config.getDefaultValue() != null) {
+			Concept c = (Concept) config.getDefaultValue();
+			widget.addOption(new Option(c.getUuid(), c.getDisplayString(), null, c), config);
 		}
 	}
 	
@@ -49,12 +54,6 @@ public class BooleanHandler extends CodedHandler {
 	 */
 	@Override
 	public Object parse(String input, Class<?> type) {
-		if ("t".equals(input)) {
-			return Boolean.TRUE;
-		}
-		if ("f".equals(input)) {
-			return Boolean.FALSE;
-		}
-		return null;
+		return Context.getConceptService().getConceptByUuid(input);
 	}
 }

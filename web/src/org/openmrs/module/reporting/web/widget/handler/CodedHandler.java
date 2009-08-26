@@ -15,7 +15,9 @@ package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
+import org.openmrs.module.reporting.web.widget.html.AjaxAutocompleteWidget;
 import org.openmrs.module.reporting.web.widget.html.AutocompleteWidget;
 import org.openmrs.module.reporting.web.widget.html.CodedWidget;
 import org.openmrs.module.reporting.web.widget.html.Option;
@@ -29,10 +31,12 @@ import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 public abstract class CodedHandler extends WidgetHandler {
 	
 	/**
-	 * Provides a means for specifying the default Widget
+	 * Provides a means for specifying default configuration values
 	 */
-	protected Class<? extends CodedWidget> getDefaultWidget() {
-		return SelectWidget.class;
+	protected void setDefaults(WidgetConfig config) {
+		if (StringUtils.isEmpty(config.getFormat())) {
+			config.setFormat("select");
+		}
 	}
 	
 	/** 
@@ -41,7 +45,8 @@ public abstract class CodedHandler extends WidgetHandler {
 	@Override
 	public void render(WidgetConfig config) throws IOException {
 		
-		Class<? extends CodedWidget> t = getDefaultWidget();
+		setDefaults(config);
+		Class<? extends CodedWidget> t = SelectWidget.class;
 		if ("select".equalsIgnoreCase(config.getFormat())) {
 			t = SelectWidget.class;
 		}
@@ -50,6 +55,14 @@ public abstract class CodedHandler extends WidgetHandler {
 		}
 		else if ("autocomplete".equalsIgnoreCase(config.getFormat())) {
 			t = AutocompleteWidget.class;
+		}
+		else if ("ajax".equalsIgnoreCase(config.getFormat())) {
+			if (StringUtils.isNotEmpty(config.getAttributeValue("ajaxUrl"))) {
+				t = AjaxAutocompleteWidget.class;
+			}
+			else {
+				t = AutocompleteWidget.class;
+			}
 		}
 		CodedWidget w = WidgetFactory.getInstance(t, config);
 		
