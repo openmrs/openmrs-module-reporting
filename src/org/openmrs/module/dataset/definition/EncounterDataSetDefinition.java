@@ -34,7 +34,7 @@ import org.openmrs.module.dataset.column.SimpleDataSetColumn;
  */
 public class EncounterDataSetDefinition extends BaseDataSetDefinition {
 		
-    // Constants 
+	// Constants 
 	public static final String ENCOUNTER_ID		= "encounter_id";
 	public static final String ENCOUNTER_TYPE 	= "encounter_type";
 	public static final String FORM 			= "form";
@@ -81,7 +81,19 @@ public class EncounterDataSetDefinition extends BaseDataSetDefinition {
 	private static Class [] columnDatatypes = { 
 		Integer.class, String.class, String.class, String.class, String.class, String.class, Integer.class
 	};
-		
+
+	
+	
+    public Collection<Concept> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(Collection<Concept> questions) {
+		this.questions = questions;
+	}
+
+
+	
 		
 	/**
 	 * @see org.openmrs.report.DataSetDefinition#getColumnDatatypes()
