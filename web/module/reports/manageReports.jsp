@@ -35,8 +35,6 @@
 					<th>Name</th>
 					<th>Type</th>
 					<th>Description</th>
-					<th>Author</th>
-					<th>Design</th>
 					<th>Preview</th>
 					<th>Remove</th>
 				</tr>
@@ -72,14 +70,6 @@
 						</td>
 						<td width="20%">
 							<span class="small">${reportDefinition.description}</span>
-						</td>
-						<td width="10%">
-							<span class="small">${reportDefinition.creator}</span>
-						</td>
-						<td width="1%" nowrap="" align="center">
-							<a href="${editUrl}">
-								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
-							</a>
 						</td>
 						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportDefinition.uuid}">

@@ -7,7 +7,7 @@
 	
 		// Redirect to listing page
 		$('#cancel-button').click(function(event){
-			window.location.href='<c:url value="/module/reporting/manageCohortDefinition.list"/>';
+			window.location.href='<c:url value="/module/reporting/cohorts/manageCohortDefinitions.form"/>';
 		});
 		
 	} );
@@ -93,8 +93,8 @@
 				</li>					
 				<li>					
 					<div align="center">				
-						<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-						<button id="cancel-button" name="cancel">Cancel</button>
+						<input id="save-button" type="submit" value="Save" tabindex="7" />
+						<input id="cancel-button" name="cancel" type="button" value="Cancel"/>
 					</div>					
 				</li>
 			</ul>				

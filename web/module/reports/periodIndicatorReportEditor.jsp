@@ -170,7 +170,6 @@ $(document).ready(function() {
 
 
 					<c:if test="${!empty indicatorReport.reportDefinition.uuid}">
-					
 						<ul>
 							<li>
 							
@@ -197,12 +196,13 @@ $(document).ready(function() {
 							<li>														
 								<label class="desc" for="name">Indicators</label>	
 								<div>
+									<input id="add-indicator-button" type="button" value="Add an indicator"/>
 									<table id="report-schema-indicator-table" class="display">
 										<thead>
 											<tr>
 												<th>Key</th>
 												<th>Display Name</th>
-												<th>Indicator</th>
+												<th>Cohort Definition</th>
 												<th>Preview</th>
 												<th>Remove</th>
 											</tr>
@@ -282,9 +282,7 @@ $(document).ready(function() {
 						<ul>
 							<li>
 								<div align="center">
-									<input id="add-indicator-button" type="button" value="Add an indicator"/>
 									<input id="preview-report-button" type="button" value="Preview report"/>
-									<input id="back-button" type="button" value="Back to reports"/>									
 								</div>						
 							</li>
 						</ul>
