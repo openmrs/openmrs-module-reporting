@@ -26,6 +26,7 @@
 		<property name="supportedTypes">
 			<list>
 				<value>org.openmrs.module.indicator.Indicator</value>
+				<value>org.openmrs.module.indicator.dimension.Dimension</value>
 				<value>org.openmrs.module.cohort.definition.CohortDefinition</value>
 				<value>org.openmrs.module.dataset.definition.DataSetDefinition</value>
 				<value>org.openmrs.module.report.ReportDefinition</value>
@@ -44,6 +45,10 @@
 		<property name="serializer"><ref bean="reportingSerializer"/></property>
 	</bean>	
 	<bean id="serializedIndicatorPersister" class="org.openmrs.module.indicator.persister.SerializedIndicatorPersister">
+		<property name="dao"><ref bean="serializedObjectDAO"/></property>
+		<property name="serializer"><ref bean="reportingSerializer"/></property>
+	</bean>
+	<bean id="serializedDimensionPersister" class="org.openmrs.module.dimension.persister.SerializedDimensionPersister">
 		<property name="dao"><ref bean="serializedObjectDAO"/></property>
 		<property name="serializer"><ref bean="reportingSerializer"/></property>
 	</bean>
@@ -136,4 +141,27 @@
 			</list>
 		</property>
 	</bean>
+
+	
+	<!--  Base Dimension Service -->
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list merge="true">
+				<value>org.openmrs.module.dimension.service.DimensionService</value> 
+				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+					<property name="transactionManager"><ref bean="transactionManager"/></property>
+					<property name="target">
+						<bean class="org.openmrs.module.dimension.service.DimensionServiceImpl"></bean>
+					</property>
+					<property name="preInterceptors">
+						<ref bean="serviceInterceptors" />
+					</property>
+					<property name="transactionAttributeSource">
+						<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+					</property>
+				</bean>		
+			</list>
+		</property>
+	</bean>
+	
 </beans>
