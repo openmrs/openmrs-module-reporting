@@ -27,6 +27,8 @@ function confirmDelete(name, uuid) {
 
 	<div id="container">
 	
+		<h1>Cohort Definitions</h1>
+	
 		<spring:message code="reporting.manage.createNew"/>:
 		<form method="get" action="editCohortDefinition.form" style="display:inline">
 			<select name="type" style="font-size: 1.5em;">
