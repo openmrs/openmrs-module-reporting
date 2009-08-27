@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.cohort.definition;
 
-import org.openmrs.logic.LogicCriteria;
 import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
 
 /**
@@ -26,7 +25,7 @@ public class LogicCohortDefinition extends BaseCohortDefinition {
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty(required=true)
-	private LogicCriteria criteria;
+	private String criteria;
 
 	//***** CONSTRUCTORS *****
 	
@@ -51,14 +50,14 @@ public class LogicCohortDefinition extends BaseCohortDefinition {
     /**
      * @return the criteria
      */
-    public LogicCriteria getCriteria() {
+    public String getCriteria() {
     	return criteria;
     }
 	
     /**
      * @param criteria the criteria to set
      */
-    public void setCriteria(LogicCriteria criteria) {
+    public void setCriteria(String criteria) {
     	this.criteria = criteria;
     }
 }

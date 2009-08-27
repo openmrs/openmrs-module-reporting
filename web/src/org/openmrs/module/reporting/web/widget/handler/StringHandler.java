@@ -39,7 +39,7 @@ public class StringHandler extends WidgetHandler {
 			config.setConfiguredAttribute("maxLength", "1");
 		}
 		else {
-			config.setConfiguredAttribute("size", "20");
+			config.setConfiguredAttribute("size", "40");
 		}
 		w.render(config);
 	}

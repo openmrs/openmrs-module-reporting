@@ -18,6 +18,7 @@ import java.util.Map;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.logic.LogicCriteria;
 import org.openmrs.logic.LogicException;
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -42,7 +43,8 @@ public class LogicCohortDefinitionEvaluator implements CohortDefinitionEvaluator
     	LogicCohortDefinition d = (LogicCohortDefinition) cohortDefinition;
 		try {
 			Cohort input = null;
-			Map<Integer, Result> results = Context.getLogicService().eval(input, d.getCriteria());
+			LogicCriteria c = Context.getLogicService().parseString(d.getCriteria());
+			Map<Integer, Result> results = Context.getLogicService().eval(input, c);
 			// Assume these results are booleans
 			Cohort matches = new Cohort();
 			for (Map.Entry<Integer, Result> e : results.entrySet()) {
