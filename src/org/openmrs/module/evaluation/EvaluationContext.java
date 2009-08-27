@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.evaluation;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ import org.openmrs.module.evaluation.parameter.Parameterizable;
 public class EvaluationContext {
 	
 	/* Logger */
-	private static Log log = LogFactory.getLog(EvaluationContext.class);	
+	protected static Log log = LogFactory.getLog(EvaluationContext.class);	
 	
 	// *******************
 	// PROPERTIES 
@@ -43,7 +44,7 @@ public class EvaluationContext {
 	// Set a limit on the number of rows to evaluate 
 	private Integer limit = new Integer(0);
 
-	// Base cohort to use for evalution
+	// Base cohort to use for evaluation
 	private Cohort baseCohort;	
 	
 	// Parameter values entered by user (or defaulted)
@@ -52,6 +53,9 @@ public class EvaluationContext {
 	// Generic object cache
 	private transient Map<String, Object> cache = new HashMap<String, Object>();
 	
+	// Stores the date for which the Evaluation Context was constructed
+	private Date evaluationDate;
+	
 	// *******************
 	// CONSTRUCTORS 
 	// *******************
@@ -59,14 +63,23 @@ public class EvaluationContext {
 	/**
 	 * Default Constructor
 	 */
-	public EvaluationContext() { }
+	public EvaluationContext() { 
+		evaluationDate = new Date();
+	}
 	
 	// *******************
 	// FACTORY METHOD 
 	// *******************
 	
+	/**
+	 * Clones an evaluation context and returns it
+	 * @param initialContext the EvaluationContext to clone
+	 * @return EvaluationContext the cloned EvaluationContext
+	 */
 	public static EvaluationContext clone(EvaluationContext initialContext) {
 		EvaluationContext ec = new EvaluationContext();
+		ec.setEvaluationDate(ec.getEvaluationDate());
+		ec.setLimit(initialContext.getLimit());
 		ec.setCache(initialContext.getCache());
 		ec.setBaseCohort(initialContext.getBaseCohort());
 		ec.setParameterValues(initialContext.getParameterValues());
@@ -74,7 +87,8 @@ public class EvaluationContext {
 	}
 	
 	/**
-	 * 
+	 * Clone an EvaluationContext, replacing the parameters with those 
+	 * in the mapped child object as appropriate.
 	 * @param baseCohort
 	 * @param parameters
 	 * @return
@@ -89,7 +103,7 @@ public class EvaluationContext {
 				throw new ParameterException("Cannot find parameter with name <" + paramName + "> in " + child.getParameterizable());
 			}
 			String paramVal = child.getParameterMappings().get(paramName);
-			Object eval = EvaluationUtil.evaluateExpression(paramVal, initialContext.getParameterValues(), parameter.getType());
+			Object eval = EvaluationUtil.evaluateExpression(paramVal, initialContext, parameter.getType());
 			
 			ec.addParameterValue(paramName, eval);
 		}
@@ -227,5 +241,18 @@ public class EvaluationContext {
 		this.limit = limit;
 	}
 
+	/**
+	 * @return the evaluationDate
+	 */
+	public Date getEvaluationDate() {
+		return evaluationDate;
+	}
+
+	/**
+	 * @param evaluationDate the evaluationDate to set
+	 */
+	public void setEvaluationDate(Date evaluationDate) {
+		this.evaluationDate = evaluationDate;
+	}
 
 }
