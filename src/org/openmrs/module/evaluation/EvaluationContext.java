@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.evaluation.parameter.ParameterConstants;
 import org.openmrs.module.evaluation.parameter.ParameterException;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 
@@ -48,10 +49,10 @@ public class EvaluationContext {
 	private Cohort baseCohort;	
 	
 	// Parameter values entered by user (or defaulted)
-	private Map<String, Object> parameterValues = new HashMap<String, Object>();
+	private Map<String, Object> parameterValues;
 
 	// Generic object cache
-	private transient Map<String, Object> cache = new HashMap<String, Object>();
+	private transient Map<String, Object> cache;
 	
 	// Stores the date for which the Evaluation Context was constructed
 	private Date evaluationDate;
@@ -64,7 +65,29 @@ public class EvaluationContext {
 	 * Default Constructor
 	 */
 	public EvaluationContext() { 
-		evaluationDate = new Date();
+		this(new Date());
+	}
+	
+	/**
+	 * Constructor which sets the Evaluation Date to a particular date
+	 */
+	public EvaluationContext(Date evaluationDate) { 
+		this.evaluationDate = evaluationDate;
+		for (ParameterConstants c : ParameterConstants.values()) {
+			addParameterValue(c.getParameterName(), c.getParameterValue(this));
+		}
+	}
+	
+	/**
+	 * Constructs a new EvaluationContext given the passed EvaluationContext
+	 * @param context
+	 */
+	public EvaluationContext(EvaluationContext context) {
+		this.setEvaluationDate(context.getEvaluationDate());
+		this.setLimit(context.getLimit());
+		this.setCache(context.getCache());
+		this.setBaseCohort(context.getBaseCohort());
+		this.setParameterValues(context.getParameterValues());
 	}
 	
 	// *******************
@@ -77,13 +100,7 @@ public class EvaluationContext {
 	 * @return EvaluationContext the cloned EvaluationContext
 	 */
 	public static EvaluationContext clone(EvaluationContext initialContext) {
-		EvaluationContext ec = new EvaluationContext();
-		ec.setEvaluationDate(ec.getEvaluationDate());
-		ec.setLimit(initialContext.getLimit());
-		ec.setCache(initialContext.getCache());
-		ec.setBaseCohort(initialContext.getBaseCohort());
-		ec.setParameterValues(initialContext.getParameterValues());
-		return ec;
+		return new EvaluationContext(initialContext);
 	}
 	
 	/**
@@ -120,6 +137,9 @@ public class EvaluationContext {
 	 * @return Map<String, Object>
 	 */
 	public Map<String, Object> getCache() {
+		if (cache == null) {
+			cache = new HashMap<String, Object>();
+		}
 		return cache;
 	}
 	
@@ -136,7 +156,7 @@ public class EvaluationContext {
 	 * Add a value to the cache with a given key
 	 */
 	public void addToCache(String key, Object value) {
-		cache.put(key, value);
+		getCache().put(key, value);
 	}
 	
 	/**
@@ -145,7 +165,7 @@ public class EvaluationContext {
 	 * @param key
 	 */
 	public void removeFromCache(String key) {
-		cache.remove(key);
+		getCache().remove(key);
 	}
 	
 	/**
@@ -154,7 +174,7 @@ public class EvaluationContext {
 	 * @param key
 	 */
 	public Object getFromCache(String key) {
-		return cache.get(key);
+		return getCache().get(key);
 	}
 	
 	/**
@@ -163,20 +183,23 @@ public class EvaluationContext {
 	 * @param key
 	 */
 	public boolean isCached(String key) {
-		return cache.get(key) != null;
+		return getCache().get(key) != null;
 	}
 	
 	/**
 	 * Clear the entire cache
 	 */
 	public void clearCache() {
-		cache.clear();
+		getCache().clear();
 	}
 	
 	/**
 	 * @return the parameterValues
 	 */
 	public Map<String, Object> getParameterValues() {
+		if (parameterValues == null) {
+			parameterValues = new HashMap<String, Object>();
+		}
 		return parameterValues;
 	}
 
@@ -193,7 +216,7 @@ public class EvaluationContext {
 	 * @return true if a Parameter with this name has been added to the Context
 	 */
 	public boolean containsParameter(String parameterName) {
-		return this.parameterValues.containsKey(parameterName);
+		return getParameterValues().containsKey(parameterName);
 	}
 	
 	/**
@@ -202,7 +225,7 @@ public class EvaluationContext {
 	 * @param value
 	 */
 	public void addParameterValue(String parameterName, Object value) {
-		parameterValues.put(parameterName, value);
+		getParameterValues().put(parameterName, value);
 	}
 	
 	/**
@@ -210,7 +233,7 @@ public class EvaluationContext {
 	 * @param parameterName
 	 */
 	public Object getParameterValue(String parameterName) {
-		return parameterValues.get(parameterName);
+		return getParameterValues().get(parameterName);
 	}
 
 	/**

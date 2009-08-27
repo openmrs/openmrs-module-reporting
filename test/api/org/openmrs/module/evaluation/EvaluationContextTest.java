@@ -29,18 +29,18 @@ import org.openmrs.module.evaluation.parameter.ParameterException;
  */
 public class EvaluationContextTest {
 	
-	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
 	
 	@Test
 	public void shouldEvaluateExpression() throws Exception {
 
-		assertEquals(evaluate("${report.d1}", Date.class), df.parse("2007-01-10 10:30:17"));
-		assertEquals(evaluate("${report.d1-15d}", Date.class), df.parse("2006-12-26 10:30:17"));
-		assertEquals(evaluate("${report.d1+3w}", Date.class), df.parse("2007-01-31 10:30:17"));
-		assertEquals(evaluate("${report.d1-12m}", Date.class), df.parse("2006-01-10 10:30:17"));
-		assertEquals(evaluate("${report.d1-1y}", Date.class), df.parse("2006-01-10 10:30:17"));
-		assertEquals(evaluate("${report.d1+37d}", Date.class), df.parse("2007-02-16 10:30:17"));
-		assertEquals(evaluate("${report.d1-10w}", Date.class), df.parse("2006-11-01 10:30:17"));
+		assertEquals(evaluate("${report.d1}", Date.class), df.parse("2007-01-10 10:30:17:000"));
+		assertEquals(evaluate("${report.d1-15d}", Date.class), df.parse("2006-12-26 10:30:17:000"));
+		assertEquals(evaluate("${report.d1+3w}", Date.class), df.parse("2007-01-31 10:30:17:000"));
+		assertEquals(evaluate("${report.d1-12m}", Date.class), df.parse("2006-01-10 10:30:17:000"));
+		assertEquals(evaluate("${report.d1-1y}", Date.class), df.parse("2006-01-10 10:30:17:000"));
+		assertEquals(evaluate("${report.d1+37d}", Date.class), df.parse("2007-02-16 10:30:17:000"));
+		assertEquals(evaluate("${report.d1-10w}", Date.class), df.parse("2006-11-01 10:30:17:000"));
 		
 		try {
 			evaluate("${report.doesNotExist}", Date.class);
@@ -57,6 +57,32 @@ public class EvaluationContextTest {
 							   "From 2007-01-10 to 2007-01-31 for males");
 	}
 	
+	@Test
+	public void shouldEvaluatePredefinedParameters() throws Exception {
+		
+		EvaluationContext context = new EvaluationContext(df.parse("2007-01-17 10:30:17:123"));
+
+		assertEquals(evaluate("${now}", Date.class, context), context.getEvaluationDate());
+		assertEquals(evaluate("${start_of_today}", Date.class, context), df.parse("2007-01-17 00:00:00:000"));
+		assertEquals(evaluate("${end_of_today}", Date.class, context), df.parse("2007-01-17 23:59:59:999"));
+		assertEquals(evaluate("${start_of_last_month}", Date.class, context), df.parse("2006-12-01 00:00:00:000"));
+		assertEquals(evaluate("${end_of_last_month}", Date.class, context), df.parse("2006-12-31 23:59:59:999"));
+	}
+	
+	/**
+	 * Helper method to evaluate an expression
+	 * @param context
+	 * @param expression
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	public Object evaluate(String expression, Class<?> type, EvaluationContext context) throws Exception {
+		context.addParameterValue("report.d1", df.parse("2007-01-10 10:30:17:000"));
+		context.addParameterValue("report.gender", "male");
+		return EvaluationUtil.evaluateExpression(expression, context, type);
+	}
+	
 	/**
 	 * Helper method to evaluate an expression
 	 * @param expression
@@ -65,10 +91,7 @@ public class EvaluationContextTest {
 	 * @throws Exception
 	 */
 	public Object evaluate(String expression, Class<?> type) throws Exception {
-		EvaluationContext context = new EvaluationContext();
-		context.addParameterValue("report.d1", df.parse("2007-01-10 10:30:17"));
-		context.addParameterValue("report.gender", "male");
-		return EvaluationUtil.evaluateExpression(expression, context.getParameterValues(), type);
+		return evaluate(expression, type, new EvaluationContext());
 	}
 	
 }

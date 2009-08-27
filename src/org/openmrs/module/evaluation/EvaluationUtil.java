@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,10 +86,9 @@ public class EvaluationUtil {
 	 * @return value for given expression, as an <code>Object</code>
 	 * @throws ParameterException
 	 */
-	public static Object evaluateExpression(String expression, Map<String, Object> parameterValues, 
-											Class<?> type) throws ParameterException {
+	public static Object evaluateExpression(String expression, EvaluationContext context, Class<?> type) throws ParameterException {
 		
-		log.info("evaluateExpression(): " + expression + " " + parameterValues);
+		log.info("evaluateExpression(): " + expression);
 		
 		if (expression == null) {
 			log.warn("evaluateExpression returning null.");
@@ -108,7 +106,7 @@ public class EvaluationUtil {
 			if (isStartOfExpr || c == '}') {
 				if (curr.length() > 0) {
 					if (c == '}') {
-						elements.add(evaluateParameterExpression(curr.toString(), parameterValues, type));
+						elements.add(evaluateParameterExpression(curr.toString(), context, type));
 					}
 					else {
 						elements.add(curr.toString());
@@ -171,10 +169,9 @@ public class EvaluationUtil {
 	 * @return value for given expression, as an <code>Object</code>
 	 * @throws ParameterException
 	 */
-	public static Object evaluateParameterExpression(String expression, Map<String, Object> parameterValues,
-													 Class<?> type) throws ParameterException {
+	public static Object evaluateParameterExpression(String expression, EvaluationContext context, Class<?> type) throws ParameterException {
 		
-		log.info("evaluateParameterExpression(): " + expression + " " + parameterValues);
+		log.info("evaluateParameterExpression(): " + expression);
 
 		log.debug("Starting expression: " + expression);
 		String[] paramAndFormat = expression.split(FORMAT_SEPARATOR, 2);
@@ -187,7 +184,7 @@ public class EvaluationUtil {
 				
 				log.debug("Found date expression of: " + matcher.group(0));
 				String parameterName = matcher.group(1);
-				Object paramVal = parameterValues.get(parameterName);
+				Object paramVal = context.getParameterValue(parameterName);
 				
 				if (paramVal == null) {
 					throw new ParameterException("Unable to find matching parameter value (" + paramVal + ") for parameter " + parameterName);
@@ -215,7 +212,7 @@ public class EvaluationUtil {
 		
 		// If this is not a Date operation, handle generally
 		if (paramValueToFormat == null) {
-			paramValueToFormat = parameterValues.get(paramAndFormat[0]);
+			paramValueToFormat = context.getParameterValue(paramAndFormat[0]);
 			if (paramValueToFormat == null) {
 				throw new ParameterException("Unable to find matching parameter value (" + paramValueToFormat + ") for expression " + paramAndFormat[0]);				
 			}
