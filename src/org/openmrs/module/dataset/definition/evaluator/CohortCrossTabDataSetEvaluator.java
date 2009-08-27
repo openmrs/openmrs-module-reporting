@@ -18,7 +18,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataset.CohortDataSet;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.MapDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -29,10 +28,10 @@ import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
- * The logic that evaluates a {@link CohortDataSetDefinition} and produces a {@link CohortDataSet}
+ * The logic that evaluates a {@link CohortCrossTabDataSetDefinition} and produces a {@link MapDataSet<Cohort>}
  * 
  * @see CohortDataSetDefinition
- * @see CohortDataSet
+ * @see MapDataSet<Cohort>
  */
 @Handler(supports={CohortCrossTabDataSetDefinition.class})
 public class CohortCrossTabDataSetEvaluator implements DataSetEvaluator {

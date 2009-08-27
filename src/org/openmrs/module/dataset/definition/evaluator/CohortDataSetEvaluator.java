@@ -20,7 +20,6 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.dataset.CohortDataSet;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.MapDataSet;
 import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
@@ -29,10 +28,10 @@ import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 
 /**
- * The logic that evaluates a {@link CohortDataSetDefinition} and produces a {@link CohortDataSet}
+ * The logic that evaluates a {@link CohortDataSetDefinition} and produces a {@link MapDataSet<Cohort>}
  * 
  * @see CohortDataSetDefinition
- * @see CohortDataSet
+ * @see MapDataSet<Cohort>
  */
 @Handler(supports={CohortDataSetDefinition.class})
 public class CohortDataSetEvaluator implements DataSetEvaluator {

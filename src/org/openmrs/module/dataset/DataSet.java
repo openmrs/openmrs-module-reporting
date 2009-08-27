@@ -22,7 +22,6 @@ import org.openmrs.module.dataset.definition.ObsDataSetDefinition;
 import org.openmrs.module.dataset.definition.evaluator.DataSetEvaluator;
 import org.openmrs.module.dataset.definition.evaluator.ObsDataSetEvaluator;
 import org.openmrs.module.evaluation.Evaluated;
-import org.simpleframework.xml.Root;
 
 /**
  * Implementations of this interface describe the metadata that can be evaluated to produce a {@link DataSet}. 
@@ -33,12 +32,12 @@ import org.simpleframework.xml.Root;
  * @see DataSetEvaluator
  * @see DataSetDefinition
  */
-@Root
 public interface DataSet<T extends Object> extends Evaluated<DataSetDefinition>, Iterable<Map<DataSetColumn, T>> {
 	
 	/**
 	 * Each iteration of this iterator returns a Map<DataSetColumn, T>.
 	 * @return an iterator over the rows in this dataset.
+	 * @see Iterable#iterator()
 	 */
 	public Iterator<Map<DataSetColumn, T>> iterator();
 	

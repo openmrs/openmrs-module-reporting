@@ -21,13 +21,13 @@ import java.util.Vector;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.dataset.CohortDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
+import org.openmrs.module.dataset.definition.evaluator.CohortDataSetEvaluator;
 import org.openmrs.module.evaluation.parameter.Mapped;
 
 /**
- * Metadata that defines a CohortDataSet. (I.e. a list of cohorts, each of which has a name)
+ * Metadata that defines a MapDataSet<Cohort>. (I.e. a list of cohorts, each of which has a name)
  * <p>
  * For example a CohortDatasetDefinition might represent:<br/>
  * "1. Total # of Patients" -> (CohortDefinition) everyone <br/>
@@ -36,7 +36,7 @@ import org.openmrs.module.evaluation.parameter.Mapped;
  * "1.c. Male Children" -> (CohortDefinition) Male AND NOT Adult<br/>
  * "1.d. Female Children" -> (CohortDefinition) Female AND NOT Adult ...
  * 
- * @see CohortDataSet
+ * @see MapDataSet<Cohort>
  * @see CohortDataSetEvaluator
  */
 public class CohortDataSetDefinition extends BaseDataSetDefinition {
