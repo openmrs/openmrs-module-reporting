@@ -15,7 +15,9 @@ package org.openmrs.module.evaluation.parameter;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -115,6 +117,24 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	}
 	
 	/**
+	 * Convenience method that returns the parameter mappings as String
+	 * This will return parameters in order of key, with each entry separated by a <code>,</code>
+	 * and each key/value pair separated by a <code>=</code>
+	 * @return a String representation of the parameter mappings
+	 */
+	public String getParameterMappingsAsString() {
+		StringBuilder ret = new StringBuilder();
+		if (parameterMappings != null) {
+			Map<String, String> sortedMappings = new TreeMap<String, String>(parameterMappings);
+			for (Iterator<String> i = sortedMappings.keySet().iterator(); i.hasNext();) {
+				String key = i.next();
+				ret.append(key + "=" + sortedMappings.get(key) + (i.hasNext() ? "," : ""));
+			}
+		}
+		return ret.toString();
+	}
+	
+	/**
 	 * Adds a new Parameter Mapping to this wrapper class
 	 * @param parameterName - The name of the Parameter to wrap
 	 * @param expression - The expression which Maps to a Parameter Name in the enclosing class
@@ -124,6 +144,39 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 			parameterMappings = new HashMap<String, String>();
 		}
 		parameterMappings.put(parameterName, expression);
+	}
+	
+	/** 
+	 * @see Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof Mapped) {
+			Mapped<?> m = (Mapped<?>) obj;
+			if (m.getParameterizable() != null && m.getParameterizable().equals(this.getParameterizable())) {
+				return m.getParameterMappingsAsString().equals(this.getParameterMappingsAsString());
+			}
+		}
+		return this == obj;
+	}
+
+	/** 
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 8;
+		hash = (parameterizable == null ? hash : hash * parameterizable.hashCode());
+		hash = hash * getParameterMappingsAsString().hashCode();
+		return 31 * hash;
+	}
+
+	/** 
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getDescription();
 	}
 	
 	//***********************
