@@ -13,7 +13,7 @@
 			"bInfo": true,
 			"bAutoWidth": true
 		} );
-	} );
+	} );	
 </script>
 <style>
 .small { font-size: x-small; }
@@ -36,6 +36,7 @@
 					<th>Type</th>
 					<th>Description</th>
 					<th>Preview</th>
+					<th>Render</th>
 					<th>Remove</th>
 				</tr>
 			</thead>
@@ -59,6 +60,35 @@
 						</c:choose>
 					</c:set>						
 
+
+<script>					
+$(document).ready(function() {
+	$("#preview-report-${reportDefinition.uuid}").click(function(event){ 
+		showReportingDialog({ 
+			title: 'Run Report', 
+			url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition.class.name}',
+			successCallback: function() { 
+				window.location = window.location; //.reload(true);
+			} 
+		});
+	});
+} );
+</script>	
+<script>					
+$(document).ready(function() {
+	$("#render-report-${reportDefinition.uuid}").click(function(event){ 
+		showReportingDialog({ 
+			title: 'Run Report', 
+			url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition.class.name}&format=indicator&successView=redirect:/module/reporting/reports/renderReport.form',
+			successCallback: function() { 
+				window.location = window.location; //.reload(true);
+			} 
+		});
+	});
+} );
+</script>	
+
+
 					<tr>
 						<td width="20%" nowrap="">
 							<a href="${editUrl}">
@@ -71,9 +101,21 @@
 						<td width="20%">
 							<span class="small">${reportDefinition.description}</span>
 						</td>
+<!-- 
 						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportDefinition.uuid}">
 								<img src='<c:url value="/images/play.gif"/>' border="0"/>
+							</a>
+						</td>
+ -->						
+						<td width="1%" align="center">
+							<a href="#" id="preview-report-${reportDefinition.uuid}">
+								<img src='<c:url value="/images/play.gif"/>' border="0"/>
+							</a>
+						</td>
+						<td width="1%" align="center">
+							<a href="#" id="render-report-${reportDefinition.uuid}">
+								<img src='<c:url value="/images/note.gif"/>' border="0"/>
 							</a>
 						</td>
 						<td width="1%" align="center">

@@ -21,10 +21,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
+import org.openmrs.module.dataset.MapDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
@@ -32,14 +34,14 @@ import org.openmrs.module.report.ReportDefinition;
 /**
  * A Default Renderer Implementation that aims to support all ReportDefinitions
  */
-public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
+public class IndicatorReportRenderer extends AbstractReportRenderer {
 	
 		
 	/**
      * @see org.openmrs.report.ReportRenderer#getLabel()
      */
     public String getLabel() {
-    	return "Simple Html";
+    	return "Indicator Report";
     }
 
 	/**
@@ -74,8 +76,7 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 	 * @see org.openmrs.report.ReportRenderer#render(ReportData, String, OutputStream)
 	 */
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
-		PrintWriter pw = new PrintWriter(out);
-		render(results, argument, pw);
+		render(results, argument, new PrintWriter(out));
 	}
 	
 	/**
@@ -84,41 +85,32 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 	@SuppressWarnings("unchecked")
 	public void render(ReportData results, String argument, Writer writer) throws IOException, RenderingException {
 		
-		writer.write("<html>");
-		writer.write("<head>");				
-		writer.write("<body>");
-		for (String key : results.getDataSets().keySet()) {
-			DataSet<Object> dataset = results.getDataSets().get(key);
-			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
-			writer.write("<h4>" + key + "</h4>");
-			writer.write("<table id=\"simple-html-dataset-" + key + "\" class=\"display simple-html-dataset\"><tr>");
-			for (DataSetColumn column : columns) {
-				writer.write("<th>"+column.getColumnKey()+"</th>");
-			}
-			writer.write("</tr>");
+		// For each dataset in the report
+		for (String dataSetKey : results.getDataSets().keySet()) {
+			DataSet<Object> dataset = results.getDataSets().get(dataSetKey);
 
-			for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {
-				DataSetRow<Object> row = i.next();
+			//MapDataSet mapDataSet = (MapDataSet) dataset;
+			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
+			writer.write("<h4>" + dataSetKey + "</h4>");			
+			writer.write("<table id=\"indicator-report-dataset-" + dataSetKey +"\" class=\"display indicator-report-dataset\">");
+			for (DataSetColumn column : columns) {
 				writer.write("<tr>");
-				for (DataSetColumn column : columns) {
-					writer.write("<td>");
-					Object colValue = row.getColumnValue(column.getColumnKey());
-					if (colValue != null) {
-						if (colValue instanceof Cohort) {
-							writer.write(Integer.toString(((Cohort) colValue).size()));
-						} else {
-							writer.write(colValue.toString());
-						}
-					}
-					writer.write("</td>");
+				writer.write("<td>"+column.getColumnKey()+"</td>");
+				writer.write("<td>"+column.getDisplayName()+"</td>");
+								
+				// Wondering if you can even do this ... iterate over a dataset multiple times (once for each column?)
+				// If not, then we need to get the actual dataset data (i.e. MapDataSet).
+				for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {	
+				//for (Iterator<Map<DataSetColumn, Object>> i = dataset.iterator(); i.hasNext();) {
+					DataSetRow<Object> row = i.next();
+
+					Object cellValue = row.getColumnValue(column.getColumnKey());				
+					writer.write("<td><a href=\"#\">" + ((cellValue != null) ? cellValue : "n/a") + "</a></td>");					
 				}
 				writer.write("</tr>");
 			}
 			writer.write("</table>");
-		}
-		writer.write("</body>");
-		writer.write("</head>");		
-		writer.write("</html>");
+		}		
 		writer.flush();
 	}
 	

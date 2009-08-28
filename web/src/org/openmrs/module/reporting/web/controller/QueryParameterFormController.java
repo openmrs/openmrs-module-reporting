@@ -11,12 +11,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.evaluation.parameter.ParameterException;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
+import org.openmrs.module.report.renderer.SimpleHtmlReportRenderer;
+import org.openmrs.module.report.renderer.TsvReportRenderer;
+import org.openmrs.module.report.renderer.XmlReportRenderer;
 import org.openmrs.module.util.ParameterizableUtil;
+import org.openmrs.web.WebConstants;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -45,7 +51,7 @@ public class QueryParameterFormController {
 	 */
     @InitBinder
     public void initBinder(WebDataBinder binder) { 
-    	binder.registerCustomEditor(Date.class, new CustomDateEditor(ymd, true)); 
+    	binder.registerCustomEditor(Date.class, new CustomDateEditor(Context.getDateFormat(), true)); 
     }    
 	
 	
@@ -81,16 +87,23 @@ public class QueryParameterFormController {
 			@RequestParam(value = "type", required=false) Class<Parameterizable> type,
 			@RequestParam(value = "action", required=false) String action,
 			@RequestParam(value = "format", required=false) String format,
+			@RequestParam(value = "successView", required=false) String successView,
 			@ModelAttribute("parameterizable") Parameterizable parameterizable, 
 			BindingResult bindingResult) throws Exception {
 					
+		log.info("Action: " + action);
 		
-		if (bindingResult.hasErrors()) {
+		Object results = null;
+		String defaultView = "/module/reporting/parameters/queryParameterForm";
+		ModelAndView model = new ModelAndView(defaultView);
+		
+		if (bindingResult.hasErrors()) {			
+			log.info("BindingResult: " + bindingResult);
+			log.info("Errors: " + bindingResult.getAllErrors());
+			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "An error has occurred.  See below for more details.");
 			return setupForm();
 		}
 		
-		ModelAndView model = new ModelAndView("/module/reporting/parameters/queryParameterForm");
-		Object results = null;
 
 		log.info("Parameterizable: " + parameterizable);
 		if ( parameterizable == null ) 
@@ -112,34 +125,27 @@ public class QueryParameterFormController {
 				ParameterizableUtil.getParameterValues(parameterizable, parameterValuesAsStrings);
 
 			log.info("parameter values: " + parameterValues);
+			log.info("success view: " + successView);
 			// Set parameter values
 			context.setParameterValues(parameterValues);		
-			
-			// Evaluate the parameterizable and populate the model
-			results = ParameterizableUtil.evaluateParameterizable(parameterizable, context);		
-			
-			// Store evaluation result on the session  
-			//model.addObject("result", result);
-			request.getSession().setAttribute("results", results);
-						
-			// Render a report definition as a CSV
-			// TODO Move the rendering to another controller method 
-			if (results instanceof ReportData) { 	
-				String filename = parameterizable.getName() + "." + format;
-				ReportData reportData = (ReportData) results;
-				response.setContentType("text/csv");				
-				response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");  				
-				new CsvReportRenderer().render(reportData, null, response.getOutputStream());
-			}
-		}
+			try { 
+				// Evaluate the parameterizable and populate the model
+				results = ParameterizableUtil.evaluateParameterizable(parameterizable, context);						
+				//model.addObject("results", results);
+				request.getSession().setAttribute("results", results);
+				if (successView != null) {
+					successView += "?uuid=" + parameterizable.getUuid() + "&type=" + type + "&format=" + format; 
+					model.setViewName(successView);
+				}
+			} 
+			catch(ParameterException e) { 
+				log.error("unable to evaluate report: ", e);
+				request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "Unable to evaluate report: " + e.getMessage());
+				setupForm();
+			}								
+		}		
 		
-		
-		// Requires explicitly close so the user can evaluate multiple times 
-		// based on different parameter values
-		if (action.equalsIgnoreCase("close")) 	
-			return new ModelAndView("redirect:/module/reporting/closeWindow.htm");
-		
-		
+		log.info("Returning model with view " + model.getViewName() + " and map " + model.getModelMap());
 		return model;
 	}
 	

@@ -67,8 +67,13 @@ $(document).ready(function() {
 		<table id="dataset-table" class="display" >
 			<thead>
 				<tr>
-					<th width="84%">Name</th>
+					<th align="center" width="1%"><img src='<c:url value="/images/trash.gif"/>' border="0"/></th>
 					<th width="10%">Type</th>
+					<th width="84%">Name</th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
 					<th align="center" width="1%"></th>
 					<th align="center" width="1%"></th>
 				</tr>
@@ -77,13 +82,16 @@ $(document).ready(function() {
 			<tbody>
 				<c:forEach items="${datasetDefinitions}" var="dataset" varStatus="status">
 					<tr>
+						<td  width="1%" align="center">
+							<input type="checkbox" name="selectedUuid" value="${dataset.uuid}"/>
+						</td>
+						<td width="10%">
+							${dataset.class.simpleName}
+						</td>
 						<td width="84%">
 							<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&id=${dataset.id}&className=${dataset.class.name}&action=edit">				
 								${dataset.name}
 							</a>
-						</td>
-						<td width="10%">
-							${dataset.class.simpleName}
 						</td>
 		<!-- 
 						<td>
@@ -94,10 +102,26 @@ $(document).ready(function() {
 								<c:otherwise>${dataset.description}</c:otherwise>
 							</c:choose>				
 						</td>
-		 -->				
-						<td align="center" width="1%">
+		 -->								
+		 				<td align="center" width="1%">
 							<a href="${pageContext.request.contextPath}/module/reporting/showDatasetPreview.form?uuid=${dataset.uuid}&id=${dataset.id}&className=${dataset.class.name}">					
 								<img src="${pageContext.request.contextPath}/images/play.gif" alt="preview" border="0"/>
+							</a> 
+						</td>
+						<td align="center" width="1%">
+							<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}&action=edit">				
+								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+							</a>
+						</td>
+						<td align="center" width="1%">
+							<a href="${pageContext.request.contextPath}/module/reporting/showDatasetPreview.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">					
+								<img src="${pageContext.request.contextPath}/images/play.gif" alt="preview" border="0"/>
+							</a> 
+						</td>
+						<td align="center" width="1%">				
+							<img src="${pageContext.request.contextPath}/images/copy.gif" alt="duplicate" border="0"/>					
+							<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&action=duplicate">
+								<!--  copy the above image here when feature has been implemented -->
 							</a> 
 						</td>
 						<td align="center">				
@@ -105,6 +129,12 @@ $(document).ready(function() {
 							<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&action=delete">
 								<!--  copy the above image here when feature has been implemented -->
 							</a> 
+						</td>
+						<td align="center">				
+							<img src="${pageContext.request.contextPath}/images/save.gif" alt="export" border="0"/>
+							<a href="${pageContext.request.contextPath}/module/reporting/showDataset.form?uuid=${dataset.uuid}&action=export">
+								<!--  copy the above image here when feature has been implemented -->
+							</a>
 						</td>
 					</tr>
 				</c:forEach>	

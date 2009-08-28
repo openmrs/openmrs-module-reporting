@@ -84,7 +84,7 @@ public class ManageDatasetsController {
     public String showDatasetDefinition(
     		@RequestParam(required=false, value="id") Integer id,
     		@RequestParam(required=false, value="uuid") String uuid,
-            @RequestParam(required=false, value="className") String className,
+            @RequestParam(required=false, value="type") String className,
             @RequestParam(required=false, value="cohortSize") Integer cohortSize,
             @RequestParam(required=false, value="action") String action,
     		ModelMap model) {
@@ -225,8 +225,8 @@ public class ManageDatasetsController {
     public String showDatasetPreview(
        		@RequestParam(required=false, value="uuid") String uuid,
     		@RequestParam(required=false, value="id") Integer id,
-            @RequestParam(required=false, value="className") String className,
-            @RequestParam(required=false, value="cohortName") String cohortName,
+            @RequestParam(required=false, value="type") String type,
+            @RequestParam(required=false, value="cohortUuid") String cohortUuid,
             @RequestParam(required=false, value="action") String action,
     		ModelMap model
      	) {
@@ -240,17 +240,23 @@ public class ManageDatasetsController {
     	DataSetDefinition dataSetDefinition = service.getDataSetDefinitionByUuid(uuid); 
     	
     	// If we cannot find the dataset by uuid, then try to retrieve it by ID
+    	// Supports data exports until we allow data exports to have UUIDs
     	if (dataSetDefinition == null) {     		
 			try {
-				Class<? extends DataSetDefinition> type = 
-					(Class<? extends DataSetDefinition>) Class.forName(className);
-				dataSetDefinition = service.getDataSetDefinition(type, id);    		
+				Class<? extends DataSetDefinition> clazz = 
+					(Class<? extends DataSetDefinition>) Class.forName(type);
+				dataSetDefinition = service.getDataSetDefinition(clazz, id);    		
 			} 
 			catch (ClassNotFoundException e) {
 				log.error("Unable to retrieve dataset definition by id and type: ", e);
-			}
-    	
+			}    	
     	}
+    	
+    	// If it's still null, then we should use a default dataset definition
+    	if (dataSetDefinition == null) { 
+    		dataSetDefinition = new PatientDataSetDefinition();
+    	}
+    	
     	
     	if ("preview".equalsIgnoreCase(action)) { 
 	    	EvaluationContext context = new EvaluationContext();
@@ -259,24 +265,22 @@ public class ManageDatasetsController {
 	    	CohortDefinition cohortDefinition = null;
 
 	    	// If a cohort name was specified, we'll use that cohort
-	    	if (cohortName != null && !cohortName.equals("")) { 
+	    	if (cohortUuid != null) { 
 	    		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
-	    		cohortDefinition = cds.getCohortDefinitions(cohortName, true).get(0);
+	    		cds.getCohortDefinitionByUuid(cohortUuid);
 	    		baseCohort = cds.evaluate(cohortDefinition, context);
 	    	} 
 	    	
 	    	// Otherwise, use a random cohort from saved cohorts
-	    	// TODO This should be removed once we get serialization working
-	    	if (baseCohort == null || baseCohort.isEmpty()) { 
-	    		Random random = new Random();	    		
+	    	// TODO This should be removed once we get serialization working	    	
+	    	if (baseCohort == null) { 
 		    	List<Cohort> cohorts = Context.getCohortService().getAllCohorts();
-	    		baseCohort = cohorts.get(random.nextInt(cohorts.size()));
+	    		baseCohort = cohorts.get(new Random().nextInt(cohorts.size()));
 	    	}
-
 	    	context.setBaseCohort(baseCohort);	    		
 	    	
 	    	// Evaluate the dataset
-	    	DataSet dataSet = service.evaluate(dataSetDefinition, context);
+	    	DataSet<Object> dataSet = service.evaluate(dataSetDefinition, context);
 	    	
 	    	// We usually render, but for now we're just going to return it
 	    	// TODO Render as an html table and pass that back to the JSP

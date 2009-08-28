@@ -37,7 +37,6 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	
 	/* Data export object */
 	private DataExportReportObject dataExport;
-	
 	/**
 	 * Default public constructor 
 	 */
@@ -65,25 +64,35 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 		return columns;
 	}
 
+    
+	public String getUuid() { 
+		return dataExport.getUuid();
+	}
+	
+	public void setUuid(String uuid) { 
+		this.dataExport.setUuid(uuid);
+	}
+	
+    
     /**
 	 * @see DataSetDefinition#getId()
      */
     public Integer getId() { 
-    	return this.dataExport.getReportObjectId();  	
+    	return dataExport.getReportObjectId();  	
     }    
     
     /**
 	 * @see DataSetDefinition#getName()
      */
     public String getName() { 
-    	return this.dataExport.getName();    	
+    	return dataExport.getName();    	
     }
 
     /**
 	 * @see DataSetDefinition#getDescription()
      */
     public String getDescription() { 
-    	return this.dataExport.getDescription();    	
+    	return dataExport.getDescription();    	
     }
 
     /**
@@ -91,7 +100,7 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
      * @return	the data export object that backs this dataset definition
      */
     public DataExportReportObject getDataExportReportObject() {
-    	return this.dataExport;
+    	return dataExport;
     }
     
     /**

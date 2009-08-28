@@ -25,6 +25,7 @@ $(document).ready(function() {
 		</c:choose>
 	});
 	$('#preview-parameterizable-button').click(function(event){ 
+		alert('submit');
 		$('#preview-parameterizable-form').submit(); 
 	});
 });
@@ -68,13 +69,12 @@ $(document).ready(function() {
 				
 					<%-- <c:url var="postUrl" value='/module/reporting/reports/renderReport.form'/>--%>
 					<%-- <c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>--%>
-					<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
+					<c:url var="postUrl" value='/module/reporting/reports/renderReport.form'/>
 					<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
 						<input type="hidden" name="action" value="preview"/>
 						<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
 						<input type="hidden" name="type" value="${parameterizable.class.name}"/>
-						<input type="hidden" name="format" value="${param.format}"/>
-						<input type="hidden" name="successView" value="${param.successView}"/>
+						<input type="hidden" name="format" value="indicator"/>
 						
 						<ul>								
 							<spring:hasBindErrors name="indicatorForm">  
@@ -101,7 +101,10 @@ $(document).ready(function() {
 						</ul>
 					</form>	
 				</c:if>
-								
+				
+				Results:  ${results}
+				
+				
 				<c:if test="${!empty results}">
 					<ul>
 						<li>				

@@ -30,7 +30,7 @@ public interface ReportRenderer {
 	/**
 	 * @return an escaped representation of the passed text
 	 */
-	public abstract String escape(String text);	
+	public String escape(String text);	
 	
 	/**
 	 * @return the key for which to retrieve the localized label for this ReportRenderer
@@ -73,15 +73,33 @@ public interface ReportRenderer {
 	 */
 	public void setDisplayColumns(List<String> displayColumns);
 	
+	
 	/**
 	 * Render the report's data to a stream
 	 * 
 	 * @param reportData Data that was calculated by the Reporting API and service
-	 * @param argument Argument from the RenderingMode that the user selected
-	 * @param out
+	 * @param out	the output stream to write report data to
+	 * @throws ReportRenderingException
+	 */
+	public void render(ReportData reportData, OutputStream out) throws IOException, RenderingException;
+		
+	/**
+	 * Render the report's data to a stream
+	 * 
+	 * @param reportData Data that was calculated by the Reporting API and service
+	 * @param out	the output stream to write report data to
 	 * @throws ReportRenderingException
 	 */
 	public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException;
+	
+	/**
+	 * Render the report's data to a stream
+	 * 
+	 * @param reportData Data that was calculated by the Reporting API and service
+	 * @param writer the object to write the output to
+	 * @throws ReportRenderingException
+	 */
+	public void render(ReportData reportData, Writer writer) throws IOException, RenderingException;	
 	
 	/**
 	 * Render the report's data to a stream

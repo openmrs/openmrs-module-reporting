@@ -5,27 +5,17 @@
 
 
 <style type="text/css">
-	#wrapper { width: 60%; margin-left: 20%; margin-right: 20%;  }
-	#container, #page { text-align:center; width: 100%; } 
+	#wrapper input, #wrapper select, #wrapper textarea, #wrapper label, #wrapper button, #wrapper span, #wrapper div { font-size: large; } 
 	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
 	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
 	fieldset { padding: 5px; margin:5px; }
 	fieldset legend { font-weight: bold; background: #E2E4FF; padding: 6px; border: 1px solid black; }
 	label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
 	.errors { margin-left:200px; margin-top:20px; margin-bottom:20px; font-family:Verdana,Arial,sans-serif; font-size:12px; }
-	#report-schema-basic-tab { 
-		margin: 50px; 
-	}
+	#report-schema-basic-tab { margin: 50px; }
 	#wrapper { margin-top: 50px; }
-
 </style>
 
-
-
-<!-- Form -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/wufoo/wufoo.js"></script>
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 
@@ -76,7 +66,7 @@ $(document).ready(function() {
 	
     $('.editable').editable('${pageContext.request.contextPath}/module/reporting/reports/editIndicatorReport.form', { 
         type      : 'text',
-        height	  : '24px',
+        height	  : '32px',
         width	  : '500px',
         cancel    : 'Cancel',
         submit    : 'Save',
@@ -149,13 +139,13 @@ $(document).ready(function() {
 							
 								<label class="desc" for="name">Name</label>	
 								<div>								
-									<form:input path="reportDefinition.name" cssClass="field text medium" />								
+									<form:input path="reportDefinition.name" cssClass="field text large" />								
 								</div>
 							</li>
 							<li>
 								<label class="desc" for="description">Description</label>	
 								<div>
-									<form:textarea path="reportDefinition.description" cssClass="field text medium" cols="66"/> 
+									<form:textarea path="reportDefinition.description" cssClass="field text large" cols="66"/> 
 								</div>
 							</li>
 

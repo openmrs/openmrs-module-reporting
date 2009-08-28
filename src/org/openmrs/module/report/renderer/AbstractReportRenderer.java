@@ -13,7 +13,12 @@
  */
 package org.openmrs.module.report.renderer;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.List;
+
+import org.openmrs.module.report.ReportData;
 
 /**
  * Abstract implementation of a ReportRenderer.
@@ -37,7 +42,10 @@ public abstract class AbstractReportRenderer implements ReportRenderer  {
 	}
 	
 	/**
+	 * Convenience method used to escape a string of text.
 	 * 
+	 * @param	text 	The text to escape.
+	 * @return	The escaped text.
 	 */
 	public String escape(String text) {
 		if (text == null) {
@@ -60,6 +68,21 @@ public abstract class AbstractReportRenderer implements ReportRenderer  {
 		
 		// If display columns aren't specified, the given column should be displayed
 		return true;
+	}
+	
+	/**
+	 * Delegates to the render method.
+	 * 
+	 */
+	public void render(ReportData reportData, OutputStream out) throws IOException, RenderingException {
+		this.render(reportData, null, out);
+	}
+	
+	/** 
+	 * Delegates to the render method.
+	 */
+	public void render(ReportData reportData, Writer writer) throws IOException, RenderingException {
+		render(reportData, null, writer);
 	}
 	
 	

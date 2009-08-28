@@ -1,33 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="../localHeader.jsp"%>
 
-<!--  CSS -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/page.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/table.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.dataTables/custom.css" rel="stylesheet"/>
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.autocomplete/jquery.autocomplete.css" rel="stylesheet"/>
 
-<!-- Autocomplete -->
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.js"></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/thickbox-compressed.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.bgiframe.min.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.ajaxQueue.js'></script>
-<script type='text/javascript' src='${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.autocomplete/jquery.autocomplete.js'></script>
-
-<!-- Other -->
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/wufoo/wufoo.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.dataTables/jquery.dataTables.js"></script>
-
-<!-- JQuery UI -->
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.ui-1.6/ui.all.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.ui-1.6/jquery-ui-1.6.custom.min.js"></script>
-
-<!-- 
-<link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/jquery.ui/jquery-ui-1.7.1.custom.css" rel="stylesheet"/>
-<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/jquery.ui/jquery-ui-1.7.1.custom.min.js"></script>
- -->
  
  
 <script type="text/javascript" charset="utf-8">
@@ -43,9 +17,6 @@ $(document).ready(function() {
 		//"sDom": '<"top"i>rt<"bottom"flp<"clear">'
 	} );
 
-
-	$('#dataset-tabs').tabs();
-	$('#dataset-tabs').show();
 	
 } );
 </script>
@@ -56,50 +27,35 @@ $(document).ready(function() {
 	
 		<div id="datasetPreview" >
 
-			<h1>Dataset Viewer</h1>
-			
-			
-			<div id="dataset-tabs" class="ui-tabs-hide">			
-				<ul>
-	                <li><a href="#dataset-viewer-tab"><span>Viewer</span></a></li>
-	            </ul>
-			</div>
-		
-		
-			<div id="dataset-viewer-tab">
-	
+				<h1>Dataset Viewer</h1>
+				
 				<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
 					method="post" action="${pageContext.request.contextPath}/module/reporting/showDatasetPreview.form">
 	
 					<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
 					<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
-					<input type="hidden" id="className" name="className" value="${dataSetDefinition.class.name}"/>
+					<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
 	
 	
-					<ul>
-						<li>
-						
-							<label class="desc" for="uuid">Data Set:</label>
-							<h2>${dataSetDefinition.name} (<i>${dataSetDefinition.class.simpleName}</i>)</h2>
-	
-							<label class="desc" for="uuid">Cohort:</label>
-							<div>						
-								<select id="cohort-select" name="cohortName">
-									<option value="">Random Cohort</option>						
-									<c:forEach items="${cohortDefinitions}" var="cohortDefinition">
-										<option value="${cohortDefinition.uuid}">${cohortDefinition.name} <i>(${cohortDefinition.class.simpleName})</i></option>
-									</c:forEach>								
-								</select>
-								
-								<input type="submit" name="action" value="Preview"/>
-							</div>
-						</li>
-					</ul>				
+					<div>						
+						<h2>Choose Columns:</h2>
+						${dataSetDefinition.name} (<i>${dataSetDefinition.class.simpleName}</i>)
+					</div>	
+					<div>				
+						<h2>Choose Patients:</h2>													
+						<select id="cohort-select" name="cohortUuid">
+							<option value="">Random Cohort</option>						
+							<c:forEach items="${cohortDefinitions}" var="cohortDefinition">
+								<option value="${cohortDefinition.uuid}">${cohortDefinition.name} <i>(${cohortDefinition.class.simpleName})</i></option>
+							</c:forEach>								
+						</select>						
+						<input type="submit" name="action" value="Preview"/>
+					</div>
 				</form>	
 
 
-				<div style="overflow:auto">							
-					<table id="dataset-preview-table" class="display" width="50%">
+				<div>							
+					<table id="dataset-preview-table" class="display">
 						<thead>
 							<tr>
 								<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="varStatus">				
@@ -119,7 +75,7 @@ $(document).ready(function() {
 						</thead>
 						<tbody>						
 							<c:if test="${!empty dataSet}">
-	
+								<c:forEach var="row" items="${dataSet}">${row}</c:forEach>	
 								<%-- 
 								
 								
@@ -133,8 +89,11 @@ $(document).ready(function() {
 									org.openmrs.module.dataset.DataSet dataSetTemp = 
 										(org.openmrs.module.dataset.DataSet) request.getAttribute("dataSet");
 			
+									org.openmrs.module.dataset.definition.DataSetDefinition dataSetDefinition = 
+										(org.openmrs.module.dataset.definition.DataSetDefinition) dataSetTemp.getDefinition();
+									
 									java.util.List<org.openmrs.module.dataset.column.DataSetColumn> columns = 
-										dataSetTemp.getDataSetDefinition().getColumns();
+										dataSetDefinition.getColumns();
 			
 								
 									for(Object object : dataSetTemp) { 							

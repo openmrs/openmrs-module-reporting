@@ -164,7 +164,7 @@ $(document).ready(function() {
 							method="post" action="${pageContext.request.contextPath}/module/reporting/showDataset.form#dataset-preview-tab">
 						<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
 						<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
-						<input type="hidden" id="className" name="className" value="${dataSetDefinition.class.name}"/>
+						<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
 
 						
 						Show a random cohort of <select name="cohortSize">
@@ -177,7 +177,6 @@ $(document).ready(function() {
 						<input type="submit" name="action" value="Preview"/>	<br/>						
 					</form>
 	
-					<c:if test="${!empty dataSet}">
 						<div id="datasetPreviewTable" style="overflow:auto;">
 							<table id="dataset-preview-table" class="display">
 								<thead>
@@ -199,6 +198,7 @@ $(document).ready(function() {
 								</thead>
 								<tbody>						
 		
+									<c:if test="${!empty dataSet}">
 									<%-- 
 									
 									
@@ -239,7 +239,7 @@ $(document).ready(function() {
 									<%									
 										}
 									%>		
-													
+									</c:if>													
 								</tbody>
 							</table>
 						</div>
@@ -249,7 +249,7 @@ $(document).ready(function() {
 			
 								<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
 								<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
-								<input type="hidden" id="className" name="className" value="${dataSetDefinition.class.name}"/>
+								<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
 				
 								<div align="center"">						
 									<input type="submit" name="action" value="Download"/>						
@@ -259,7 +259,7 @@ $(document).ready(function() {
 					</c:if>					
 				</div>
 				<span width="100%" align="right">
-					<a href="${pageContext.request.contextPath}/module/reporting/showDatasetPreview.form?uuid=${dataSetDefinition.uuid}&id=${dataSetDefinition.id}&className=${dataSetDefinition.class.name}">Data Set Viewer</a>
+					<a href="${pageContext.request.contextPath}/module/reporting/showDatasetPreview.form?uuid=${dataSetDefinition.uuid}&type=${dataSetDefinition.class.name}">Data Set Viewer</a>
 				</span>					
 			</div>
 		</div>
