@@ -33,7 +33,7 @@ public class SimpleDataSetColumn implements DataSetColumn {
 	/**
 	 * Default Constructor
 	 */
-	//public SimpleDataSetColumn() { } 
+	public SimpleDataSetColumn() { } 
 	
 	/**
 	 * Constructor to populate all properties
@@ -66,41 +66,6 @@ public class SimpleDataSetColumn implements DataSetColumn {
 	public SimpleDataSetColumn(String key, String description, Class<?> dataType) {
 		this(key, key, description, dataType);
 	}
-	
-    /**
-     * @return the key
-     */
-    public String getColumnKey() {
-    	return columnKey;
-    }
-	
-	/**
-	 * @return the columnName
-	 */
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	/**
-     * @return the description
-     */
-    public String getDescription() {
-    	return description;
-    }
-	
-    /**
-     * @return the dataType
-     */
-    public Class<?> getDataType() {
-    	return dataType;
-    }
-
-    /**
-     * @param dataType the dataType to set
-     */
-    public void setDataType(Class<?> dataType) {
-    	this.dataType = dataType;
-    }
 
 	/**
      * @see java.lang.Object#toString()
@@ -135,9 +100,67 @@ public class SimpleDataSetColumn implements DataSetColumn {
     }
 
     /**
-     * 
+     * @see Comparable#compareTo(Object)
      */
 	public int compareTo(DataSetColumn other) {		
 		return this.getDisplayName().compareTo(other.getDisplayName());		
+	}
+	
+	//****** PROPERTY ACCESS ******
+
+	/**
+	 * @return the columnKey
+	 */
+	public String getColumnKey() {
+		return columnKey;
+	}
+
+	/**
+	 * @param columnKey the columnKey to set
+	 */
+	public void setColumnKey(String columnKey) {
+		this.columnKey = columnKey;
+	}
+
+	/**
+	 * @return the displayName
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	/**
+	 * @param displayName the displayName to set
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @return the dataType
+	 */
+	public Class<?> getDataType() {
+		return dataType;
+	}
+
+	/**
+	 * @param dataType the dataType to set
+	 */
+	public void setDataType(Class<?> dataType) {
+		this.dataType = dataType;
 	}
 }

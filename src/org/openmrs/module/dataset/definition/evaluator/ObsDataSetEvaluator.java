@@ -15,6 +15,7 @@ package org.openmrs.module.dataset.definition.evaluator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,19 +26,15 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.EncounterDataSet;
-import org.openmrs.module.dataset.ObsDataSet;
+import org.openmrs.module.dataset.DataSetRow;
+import org.openmrs.module.dataset.SimpleDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.ObsDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
- * The logic that evaluates a {@link EncounterDataSetDefinition} 
- * and produces an {@link EncounterDataSet}
- * 
- * @see EncounterDataSetDefinition
- * @see EncounterDataSet
+ * The logic that evaluates a {@link ObsDataSetDefinition} and produces an {@link DataSet}
+ * @see ObsDataSetDefinition
  */
 @Handler(supports={ObsDataSetDefinition.class})
 public class ObsDataSetEvaluator implements DataSetEvaluator {
@@ -66,12 +63,28 @@ public class ObsDataSetEvaluator implements DataSetEvaluator {
 			patients = (patients == null ? c : Cohort.intersect(patients, c));
 		}
 		
-		ObsDataSet ret = new ObsDataSet();
-		ret.setDefinition(definition);
-		ret.setContext(context);
+		Locale locale = Context.getLocale();
+		SimpleDataSet dataSet = new SimpleDataSet(definition, context);
 		List<Concept> concepts = new ArrayList<Concept>(definition.getQuestions());
-		List<Obs> list = Context.getObsService().getObservations(patients, concepts, definition.getFromDate(), definition.getToDate());
-		ret.setData(list);
-		return ret;
+		List<Obs> obsList = Context.getObsService().getObservations(patients, concepts, definition.getFromDate(), definition.getToDate());
+		for (Obs obs : obsList) {
+			DataSetRow<Object> row = new DataSetRow<Object>();
+			row.addColumnValue(ObsDataSetDefinition.PATIENT_ID, obs.getPersonId());
+			row.addColumnValue(ObsDataSetDefinition.QUESTION, obs.getConcept().getName(locale, false));
+			row.addColumnValue(ObsDataSetDefinition.QUESTION_CONCEPT_ID, obs.getConcept().getConceptId());
+			row.addColumnValue(ObsDataSetDefinition.ANSWER, obs.getValueAsString(locale));
+			row.addColumnValue(ObsDataSetDefinition.OBS_DATETIME, obs.getObsDatetime());
+			if (obs.getValueCoded() != null) {
+				row.addColumnValue(ObsDataSetDefinition.ANSWER_CONCEPT_ID, obs.getValueCoded());
+			}
+			if (obs.getEncounter() != null) {
+				row.addColumnValue(ObsDataSetDefinition.ENCOUNTER_ID, obs.getEncounter().getEncounterId());
+			}
+			if (obs.getObsGroup() != null) {
+				row.addColumnValue(ObsDataSetDefinition.OBSGROUP_ID, obs.getObsGroup().getObsId());
+			}
+			dataSet.addRow(row);
+		}
+		return dataSet;
 	}
 }

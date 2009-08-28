@@ -16,30 +16,36 @@ package org.openmrs.module.dataset.definition;
 import java.util.List;
 
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.ObsDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.evaluator.DataSetEvaluator;
-import org.openmrs.module.dataset.definition.evaluator.ObsDataSetEvaluator;
 import org.openmrs.module.evaluation.Definition;
-import org.simpleframework.xml.Root;
 
 /**
  * Implementations of this interface describe the metadata that can be evaluated to produce a {@link DataSet}. 
  * This is one of three interfaces that work together to define and evaluate an OpenMRS DataSet. 
- * You need to implement all three of {@link DataSetEvaluator}, {@link DataSetDefinition}, and {@link DataSet} 
- * in order to get useful behavior. 
- * For example: {@link ObsDataSetEvaluator}, {@link ObsDataSetDefinition}, and {@link ObsDataSet}.
+ * An implementation of {@link DataSetEvaluator} transforms one or more implementations of {@link DataSetDefinition}
+ * to produce a specific type of {@link DataSet}.
  * @see DataSetEvaluator
  * @see DataSet
  */
-@Root(strict = false)
 public interface DataSetDefinition extends Definition {
         
-        /**
-         * Gets a list of dataset columns.
-         * 
-         * @return
-         */
-        public List<DataSetColumn> getColumns();
-        
+	/**
+	 * Gets a list of dataset columns.
+	 * @return
+	 */
+	public List<DataSetColumn> getColumns();
+	
+	/**
+	 * Returns the {@link DataSetColumn} defined by the passed column key
+	 * @param columnKey
+	 * @return
+	 */
+	public DataSetColumn getColumn(String columnKey);
+	
+	/**
+	 * Adds a {@link DataSetColumn}
+	 * @param column
+	 */
+	public void addColumn(DataSetColumn column);
 }	

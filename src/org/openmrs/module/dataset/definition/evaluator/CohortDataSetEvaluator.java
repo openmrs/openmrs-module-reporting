@@ -22,6 +22,7 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.MapDataSet;
+import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -54,16 +55,11 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 		data.setContext(context);
 		data.setName(dataSetDefinition.getName());
 
-		CohortDataSetDefinition listDef = (CohortDataSetDefinition) dataSetDefinition;
-		for (String key : listDef.getStrategies().keySet()) {
-			Mapped<CohortDefinition> pd = listDef.getStrategies().get(key);
-			EvaluationContext newEc = EvaluationContext.cloneForChild(context, pd);
-			CohortDefinition cd = pd.getParameterizable();
-			Cohort temp = Context.getService(CohortDefinitionService.class).evaluate(cd, newEc);
-			if (context.getBaseCohort() != null) {
-				temp = Cohort.intersect(temp, context.getBaseCohort());
-			}
-			data.addData(key, temp);
+		CohortDataSetDefinition d = (CohortDataSetDefinition) dataSetDefinition;
+		for (DataSetColumn c : d.getColumns()) {
+			Mapped<? extends CohortDefinition> mapped = d.getDefinitions().get(c);
+			Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(mapped, context);
+			data.addData(c, cohort);
 		}
 
 		return data;

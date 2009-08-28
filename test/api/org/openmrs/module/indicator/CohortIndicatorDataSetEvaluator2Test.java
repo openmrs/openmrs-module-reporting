@@ -8,6 +8,7 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
@@ -41,9 +42,9 @@ public class CohortIndicatorDataSetEvaluator2Test extends BaseModuleContextSensi
 		DataSet<?> ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		
 		int i = 0;
-		for (Map<DataSetColumn, ?> row : ds) {
+		for (DataSetRow<?> row : ds) {
 			System.out.println("Row " + (++i));
-			for (Map.Entry<DataSetColumn, ?> col : row.entrySet()) {
+			for (Map.Entry<DataSetColumn, ?> col : row.getColumnValues().entrySet()) {
 				System.out.println(col.getKey().getDisplayName() + " -> " + col.getValue());
 			}
 		}

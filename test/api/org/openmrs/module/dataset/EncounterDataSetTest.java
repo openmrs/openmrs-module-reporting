@@ -13,24 +13,13 @@
  */
 package org.openmrs.module.dataset;
 
-import java.util.Date;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
-import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
-import org.openmrs.logic.LogicCriteria;
-import org.openmrs.logic.result.Result;
-import org.openmrs.logic.util.LogicCriteriaBuilder;
-import org.openmrs.module.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -40,7 +29,6 @@ public class EncounterDataSetTest extends BaseModuleContextSensitiveTest {
 	
 	private static Log log = LogFactory.getLog(EncounterDataSetTest.class);
 	
-	
 	/**
 	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()
 	 */
@@ -49,45 +37,22 @@ public class EncounterDataSetTest extends BaseModuleContextSensitiveTest {
 	    return false;
 	}
 
-
-
-
-
 	/**
 	 * Auto generated method comment
 	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void shouldEvaludateDataSet() throws Exception {
-
-		//initializeInMemoryDatabase();
-		//executeDataSet("org/openmrs/report/include/ReportTests-patients.xml");
-		
-		
+	public void shouldEvaluateDataSet() throws Exception {
 		authenticate();
-		
-		
+
+		EncounterDataSetDefinition definition = new EncounterDataSetDefinition();
 		EvaluationContext evalContext = new EvaluationContext();
-		AgeCohortDefinition kids = new AgeCohortDefinition();
-		kids.setName("Cohort");
-		kids.setMaxAge(10);
-		
-		
 		DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);		
 		
-		EncounterDataSetDefinition definition = new EncounterDataSetDefinition();
-		definition.setFilter(kids);
-
-		
-		
-		DataSet<Object> data = service.evaluate(definition, evalContext);
-		for (Map<DataSetColumn, Object> row : data) {
-			for (Map.Entry<DataSetColumn, Object> e : row.entrySet()) {
-				log.info(e.getKey() + " -> " + e.getValue());
-			}
-			
+		DataSet<?> data = service.evaluate(definition, evalContext);
+		for (DataSetRow<?> row : data) {
+			log.info(row.toString());
 		}
-
 	}
 }

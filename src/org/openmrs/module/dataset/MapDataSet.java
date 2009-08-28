@@ -15,8 +15,6 @@ package org.openmrs.module.dataset;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
@@ -27,18 +25,23 @@ import org.openmrs.module.evaluation.EvaluationContext;
  */
 public class MapDataSet<T> implements DataSet<T> {
 	
+	//****** PROPERTIES ******
+	
 	private String name;
 	private DataSetDefinition definition;
 	private EvaluationContext context;
-	private Map<DataSetColumn, T> data = new LinkedHashMap<DataSetColumn, T>();
+	private DataSetRow<T> data = new DataSetRow<T>();
 	
+	/**
+	 * Default Constructor
+	 */
 	public MapDataSet() { }
 	
 	/**
 	 * Returns this map as a single-row data set
-	 * @see org.openmrs.module.dataset.api.DataSet#iterator()
+	 * @see DataSet#iterator()
 	 */
-	public Iterator<Map<DataSetColumn, T>> iterator() {
+	public Iterator<DataSetRow<T>> iterator() {
 		return Collections.singleton(data).iterator();
 	}
 
@@ -46,7 +49,7 @@ public class MapDataSet<T> implements DataSet<T> {
 	 * Convenience method for JSTL method.  
 	 * TODO This will be removed once we get a decent solution for the dataset iterator solution.  
 	 */
-	public Iterator<Map<DataSetColumn, T>> getIterator() {
+	public Iterator<DataSetRow<T>> getIterator() {
 		return iterator();
 	}
 	
@@ -56,7 +59,7 @@ public class MapDataSet<T> implements DataSet<T> {
      * @param dataElement - The data to add
      */
     public void addData(DataSetColumn column, T dataElement) {
-    	data.put(column, dataElement);
+    	data.addColumnValue(column, dataElement);
     }
     
 	/**
@@ -65,14 +68,11 @@ public class MapDataSet<T> implements DataSet<T> {
      * @param dataElement - The data to add
      */
     public void addData(String columnKey, T dataElement) {
-    	boolean found = false;
-    	for (DataSetColumn c : definition.getColumns()) {
-    		if (c.getColumnKey() != null && c.getColumnKey().equals(columnKey)) {
-    			data.put(c, dataElement);
-    			found = true;
-    		}
+    	DataSetColumn c = definition.getColumn(columnKey);
+    	if (c != null) {
+    		data.addColumnValue(c, dataElement);
     	}
-    	if (!found) {
+    	else {
     		throw new IllegalArgumentException("Column with key <" + columnKey + "> is not valid.");
     	}
     }
@@ -82,14 +82,10 @@ public class MapDataSet<T> implements DataSet<T> {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
 		if (data != null) {
-			for (Iterator<DataSetColumn> i = data.keySet().iterator(); i.hasNext();) {
-				DataSetColumn c = i.next();
-				sb.append(c.getColumnKey() + "=" + data.get(c) + (i.hasNext() ? ", " : ""));
-			}
+			return data.toString();
 		}
-		return sb.toString();
+		return super.toString();
 	}
 
 	/**
@@ -137,14 +133,14 @@ public class MapDataSet<T> implements DataSet<T> {
 	/**
      * @return the data
      */
-    public Map<DataSetColumn, T> getData() {
+    public DataSetRow<T> getData() {
     	return data;
     }
     
     /**
      * @param data the data to set
      */
-    public void setData(Map<DataSetColumn, T> data) {
+    public void setData(DataSetRow<T> data) {
     	this.data = data;
     }	
 }

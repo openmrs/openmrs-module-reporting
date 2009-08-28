@@ -67,7 +67,7 @@ public class PepfarReportSerializationTest extends BaseContextSensitiveTest {
 		// create the columns of the report
 		CohortDataSetDefinition cohortDataSetDef = new CohortDataSetDefinition();
 		cohortDataSetDef.setName("Sheet1");		
-		cohortDataSetDef.addStrategy("1.a", new StaticCohortDefinition(new Cohort()), null);
+		cohortDataSetDef.addDefinition("1.a", "Question 1.A", new StaticCohortDefinition(new Cohort()), null);
 		
 		pepfarReportDefinition.addDataSetDefinition("test", cohortDataSetDef, (String)null);
 		

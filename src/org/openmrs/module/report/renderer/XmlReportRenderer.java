@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
@@ -72,13 +72,13 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 		xmlWriter.write("<?xml version=\"1.0\"?>\n");
 		xmlWriter.write("<dataset>\n");
 		xmlWriter.write("\t<rows>\n");
-		for (Iterator<Map<DataSetColumn, Object>> i = dataset.iterator(); i.hasNext();) {
+		for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {
 			xmlWriter.write("\t\t<row>");
-			Map<DataSetColumn, Object> rowMap = i.next();
+			DataSetRow<Object> row = i.next();
 			for (DataSetColumn column : columns) {
 				
 				if (isDisplayColumn(column.getColumnKey())) { 
-					Object colValue = rowMap.get(column);
+					Object colValue = row.getColumnValue(column);
 					xmlWriter.write("<" + column.getDisplayName() + ">");
 					if (colValue != null) { 
 						if (colValue instanceof Cohort) {

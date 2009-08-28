@@ -25,8 +25,7 @@ import org.openmrs.module.evaluation.parameter.Mapped;
 /**
  * Metadata that defines a CohortCrossTabDataSet. (i.e. a table of cohorts, each of which 
  * is the cross product between a "row" Cohort and a "column" Cohort).
- * 
- * @see CohortDataSet
+ * @see MapDataSet<Cohort>
  * @see CohortCrossTabDataSetProvider
  */
 public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
@@ -47,46 +46,38 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 
 	/**
 	 * Add the given cohortDefinition as a "row" to this definition with the given key. 
-	 * The name is also added as the description.
-	 * 
 	 * @param name key to refer by which to refer to this cohort
 	 * @param cohortDefinition The cohortDefinition for this column
 	 */
-	public void addRowDefinition(String name, CohortDefinition cohortDefinition, String mappings) {
-		rowCohortDataSetDefinition.getParameterizable().addStrategy(name, cohortDefinition, mappings);
-	}	
+	public void addRowDefinition(String key, String displayName, CohortDefinition cohortDefinition, String mappings) {
+		rowCohortDataSetDefinition.getParameterizable().addDefinition(key, displayName, cohortDefinition, mappings);
+	}
 	
 	/**
 	 * Add the given cohortDefinition as a "row" to this definition with the given key. 
-	 * The name is also added as the description.
-	 * 
 	 * @param name key to refer by which to refer to this cohort
 	 * @param cohortDefinition The cohortDefinition for this column
 	 */
-	public void addRowDefinition(String name, Mapped<CohortDefinition> cohortDefinition) {
-		rowCohortDataSetDefinition.getParameterizable().addStrategy(name, cohortDefinition);
+	public void addRowDefinition(String key, String displayName, Mapped<CohortDefinition> cohortDefinition) {
+		rowCohortDataSetDefinition.getParameterizable().addDefinition(key, displayName, cohortDefinition);
 	}
 	
 	/**
 	 * Add the given cohortDefinition as a "column" to this definition with the given key. 
-	 * The name is also added as the description.
-	 * 
 	 * @param name key to refer by which to refer to this cohort
 	 * @param cohortDefinition The cohortDefinition for this column
 	 */
-	public void addColumnDefinition(String name, Mapped<CohortDefinition> cohortDefinition) {
-		columnCohortDataSetDefinition.getParameterizable().addStrategy(name, cohortDefinition);
+	public void addColumnDefinition(String key, String displayName, CohortDefinition cohortDefinition, String mappings) {
+		columnCohortDataSetDefinition.getParameterizable().addDefinition(key, displayName, cohortDefinition, mappings);
 	}
 	
 	/**
 	 * Add the given cohortDefinition as a "column" to this definition with the given key. 
-	 * The name is also added as the description.
-	 * 
 	 * @param name key to refer by which to refer to this cohort
 	 * @param cohortDefinition The cohortDefinition for this column
 	 */
-	public void addColumnDefinition(String name, CohortDefinition cohortDefinition, String mappings) {
-		columnCohortDataSetDefinition.getParameterizable().addStrategy(name, cohortDefinition, mappings);
+	public void addColumnDefinition(String key, String displayName, Mapped<CohortDefinition> cohortDefinition) {
+		columnCohortDataSetDefinition.getParameterizable().addDefinition(key, displayName, cohortDefinition);
 	}
 	
 	/**
@@ -97,8 +88,8 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 		for (DataSetColumn rowColumn : rowCohortDataSetDefinition.getParameterizable().getColumns()) {
 			for (DataSetColumn colColumn : columnCohortDataSetDefinition.getParameterizable().getColumns()) {
 				String key = rowColumn.getColumnKey() + rowColumnDelimiter + colColumn.getColumnKey();
-				String desc = rowColumn.getDescription() + rowColumnDelimiter + colColumn.getDescription();
-				cols.add(new SimpleDataSetColumn(key, desc, Cohort.class));
+				String disp = rowColumn.getDisplayName() + rowColumnDelimiter + colColumn.getDisplayName();
+				cols.add(new SimpleDataSetColumn(key, disp, Cohort.class));
 			}
 		}
 		return cols;
@@ -160,5 +151,4 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
     public void setRowColumnDelimiter(String rowColumnDelimiter) {
     	this.rowColumnDelimiter = rowColumnDelimiter;
     }
-
 }

@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
@@ -107,13 +107,13 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 		writer.write(getAfterRowDelimiter());
 		
 		// data rows
-		for (Iterator<Map<DataSetColumn, Object>> i = dataset.iterator(); i.hasNext();) {
+		for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {
 			writer.write(getBeforeRowDelimiter());
-			Map<DataSetColumn, Object> map = i.next();
+			DataSetRow<Object> map = i.next();
 			for (DataSetColumn column : columns) {
 			
 				if (isDisplayColumn(column.getColumnKey())) { 
-					Object colValue = map.get(column);
+					Object colValue = map.getColumnValue(column);
 					writer.write(getBeforeColumnDelimiter());
 					if (colValue != null) { 
 						if (colValue instanceof Cohort) {

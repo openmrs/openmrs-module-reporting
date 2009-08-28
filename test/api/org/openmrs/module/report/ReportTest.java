@@ -56,8 +56,8 @@ public class ReportTest extends BaseModuleContextSensitiveTest {
 		CohortDataSetDefinition dsd = new CohortDataSetDefinition();
 		dsd.addParameter(new Parameter("d1", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("d2", "End Date", Date.class));
-		dsd.addStrategy("Children at Start", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d1}"));
-		dsd.addStrategy("Children at End", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d2}"));
+		dsd.addDefinition("childAtStart", "Children at Start", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d1}"));
+		dsd.addDefinition("childAtEnd", "Children at End", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d2}"));
 		
 		ReportDefinition report = new ReportDefinition();
 		report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class));

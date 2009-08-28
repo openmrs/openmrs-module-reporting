@@ -13,29 +13,23 @@
  */
 package org.openmrs.module.dataset.definition.evaluator;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.EncounterDataSet;
+import org.openmrs.module.dataset.DataSetRow;
+import org.openmrs.module.dataset.SimpleDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
- * The logic that evaluates a {@link EncounterDataSetDefinition} 
- * and produces an {@link EncounterDataSet}
- * 
+ * The logic that evaluates a {@link EncounterDataSetDefinition} and produces a {@link DataSet}
  * @see EncounterDataSetDefinition
- * @see EncounterDataSet
  */
 @Handler(supports={EncounterDataSetDefinition.class})
 public class EncounterDataSetEvaluator implements DataSetEvaluator {
@@ -56,17 +50,18 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 			context = new EvaluationContext();
 		}
 		
-		EncounterDataSetDefinition definition = (EncounterDataSetDefinition) dataSetDefinition;
-		Cohort cohort = context.getBaseCohort();
-		if (definition.getFilter() != null) {
-			Cohort tempCohort = Context.getService(CohortDefinitionService.class).evaluate(definition.getFilter(), context);
-			cohort = (cohort == null ? tempCohort : Cohort.intersect(cohort, tempCohort));
+		Map<Integer, Encounter> encounterMap = Context.getPatientSetService().getEncounters(context.getBaseCohort());
+		
+		SimpleDataSet dataSet = new SimpleDataSet();
+		for (Encounter e : encounterMap.values()) {
+			DataSetRow<Object> row = new DataSetRow<Object>();
+			row.addColumnValue(EncounterDataSetDefinition.ENCOUNTER_ID, e.getEncounterId());
+			row.addColumnValue(EncounterDataSetDefinition.ENCOUNTER_TYPE, e.getEncounterType().getName());
+			row.addColumnValue(EncounterDataSetDefinition.FORM, (e.getForm() != null) ? e.getForm().getName() : "none");
+			row.addColumnValue(EncounterDataSetDefinition.LOCATION, e.getLocation().getName());
+			row.addColumnValue(EncounterDataSetDefinition.PATIENT_ID, e.getPatient().getPatientId());
+			dataSet.addRow(row);
 		}
-		
-		Map<Integer, Encounter> encounterMap = Context.getPatientSetService().getEncounters(cohort);
-		List<Encounter> encounters = new Vector<Encounter>(encounterMap.values());
-		
-		return new EncounterDataSet(definition, context, encounters);		
+		return dataSet;	
 	}
-
 }

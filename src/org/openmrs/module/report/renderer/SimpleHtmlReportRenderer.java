@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
@@ -93,12 +93,12 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 			}
 			writer.write("</tr>");
 
-			for (Iterator<Map<DataSetColumn, Object>> i = dataset.iterator(); i.hasNext();) {
-				Map<DataSetColumn, Object> map = i.next();
+			for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {
+				DataSetRow<Object> row = i.next();
 				writer.write("<tr>");
 				for (DataSetColumn column : columns) {
 					writer.write("<td>");
-					Object colValue = map.get(column.getColumnKey());
+					Object colValue = row.getColumnValue(column.getColumnKey());
 					if (colValue != null) {
 						if (colValue instanceof Cohort) {
 							writer.write(Integer.toString(((Cohort) colValue).size()));

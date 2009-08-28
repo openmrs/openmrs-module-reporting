@@ -1,7 +1,6 @@
 package org.openmrs.module.reporting.web.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +20,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.LabEncounterDataSet;
 import org.openmrs.module.dataset.definition.JoinDataSetDefinition;
 import org.openmrs.module.dataset.definition.LabEncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
@@ -445,13 +443,8 @@ public class ManageReportController {
     			new LabEncounterDataSetDefinition(Arrays.asList(LAB_CONCEPT_IDS));				
     		    		
     		 
-    		LabEncounterDataSet labDataSet = (LabEncounterDataSet) 
-    			Context.getService(
-    				DataSetDefinitionService.class).evaluate(
-    						ledsDefinition, sharedContext);	
-    		
-    		
-    		
+    		DataSet<?> labDataSet = Context.getService(DataSetDefinitionService.class).evaluate(ledsDefinition, sharedContext);	
+
             //ReportData labReportData = new ReportData();
             //Map<String, DataSet> labDataSets = new HashMap<String, DataSet>();
             //labDataSets.put("encounter", labDataSet);
@@ -466,7 +459,8 @@ public class ManageReportController {
     		// This is very time/memory consuming so we don't want to do this forever.
     		// For the patient dataset, we need to find out what patients were
     		// included in the lab encounter dataset 
-    		sharedContext.setBaseCohort(labDataSet.getCohort());
+    		// MS: Not sure what this was doing before, commenting it out since it no longer works
+    		//     -> sharedContext.setBaseCohort(labDataSet.getCohort());
     		
     		// Create, evaluate, and render the patient dataset
     		PatientDataSetDefinition pdsDefinition = new PatientDataSetDefinition();

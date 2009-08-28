@@ -8,6 +8,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.SimpleDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
@@ -44,8 +45,8 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
         
         JoinDataSetDefinition join = new JoinDataSetDefinition(leftDef, "patient.", "patient_id", rightDef, "encounter.", "patient_id");
         DataSet<?> result = Context.getService(DataSetDefinitionService.class).evaluate(join, new EvaluationContext());
-        Map<DataSetColumn, Object> row1 = (Map<DataSetColumn, Object>) result.iterator().next();
-        for (Map.Entry<DataSetColumn, Object> e : row1.entrySet()) {
+        DataSetRow<Object> row1 = (DataSetRow<Object>) result.iterator().next();
+        for (Map.Entry<DataSetColumn, Object> e : row1.getColumnValues().entrySet()) {
             if (e.getKey().getColumnKey().equals("patient.name"))
                 Assert.assertEquals(e.getValue(), "Alice");
             else if (e.getKey().getColumnKey().equals("encounter.encounter_type"))
@@ -68,10 +69,10 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
     }
 
     // needs to have an even number of arguments
-    private Map<DataSetColumn, Object> makeRowHelper(Object... o) {
-        Map<DataSetColumn, Object> ret = new HashMap<DataSetColumn, Object>();
+    private DataSetRow<Object> makeRowHelper(Object... o) {
+        DataSetRow<Object> ret = new DataSetRow<Object>();
         for (int i = 0; i < o.length; i += 2) {
-            ret.put(new SimpleDataSetColumn((String) o[i]), o[i + 1]);
+            ret.addColumnValue(new SimpleDataSetColumn((String) o[i]), o[i + 1]);
         }
         return ret;
     }

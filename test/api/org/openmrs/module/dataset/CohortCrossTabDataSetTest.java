@@ -106,13 +106,13 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 
 		CohortDataSetDefinition genderDef = new CohortDataSetDefinition();
 		genderDef.setName("gender");
-		genderDef.addStrategy("male", maleDef, null);
-		genderDef.addStrategy("female", femaleDef, null);
+		genderDef.addDefinition("male", "male", maleDef, null);
+		genderDef.addDefinition("female", "female", femaleDef, null);
 		
 		CohortDataSetDefinition ageDef = new CohortDataSetDefinition();
 		ageDef.setName("age");
-		ageDef.addStrategy("adult", adultOnDate, null);
-		ageDef.addStrategy("child", childOnDate, null);
+		ageDef.addDefinition("adult", "adult", adultOnDate, null);
+		ageDef.addDefinition("child", "adult", childOnDate, null);
 		
 		CohortCrossTabDataSetDefinition def = new CohortCrossTabDataSetDefinition();
 		def.setName("test");

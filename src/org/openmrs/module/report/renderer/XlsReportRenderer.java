@@ -15,6 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
@@ -72,14 +73,14 @@ public class XlsReportRenderer extends AbstractReportRenderer {
             	if (isDisplayColumn(column.getColumnKey()))
             		helper.addCell(column.getDisplayName(), styleHelper.getStyle("bold,border=bottom"));
             }
-            for (Iterator<Map<DataSetColumn, Object>> i = dataset.iterator(); i.hasNext(); ) {
+            for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext(); ) {
                 helper.nextRow();
-                Map<DataSetColumn, Object> row = i.next();
+                DataSetRow<Object> row = i.next();
                 for (DataSetColumn column : columnList) {
 
                 	// If the column is meant for display, we display it
                 	if (isDisplayColumn(column.getColumnKey())) { 
-	                	Object cellValue = row.get(column);
+	                	Object cellValue = row.getColumnValue(column);
 	                    HSSFCellStyle style = null;
 	                    if (cellValue instanceof Date) {
 	                        style = styleHelper.getStyle("date");

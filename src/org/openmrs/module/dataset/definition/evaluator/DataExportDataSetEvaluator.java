@@ -14,17 +14,13 @@
 package org.openmrs.module.dataset.definition.evaluator;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.dataset.DataExportDataSet;
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.DataSetRow;
+import org.openmrs.module.dataset.SimpleDataSet;
 import org.openmrs.module.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -34,7 +30,6 @@ import org.openmrs.util.OpenmrsUtil;
 
 /**
  * The logic that evaluates a {@link DataExportDataSetDefinition} and produces a {@link DataSet}
- * 
  * @see DataExportDataSetDefinition
  * @see DataSet
  */
@@ -53,54 +48,15 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
      */
 	public DataSet<?> evaluate(DataSetDefinition definition, EvaluationContext context) {
 		
-		DataExportDataSetDefinition dataExportDefinition = (DataExportDataSetDefinition) definition;
-
-		DataExportReportObject dataExport = dataExportDefinition.getDataExportReportObject();
-		
-		// TODO We probably need to handle the case where a cohort is specified by the data export 
-		/*
-		Cohort patients = context.getBaseCohort();
-		
-		// If the data export already has a DataSet defined, we intersect it with the 
-		if (dataExportDefinition.getFilter() != null) {
-			if (patients != null)
-				patients = Cohort.intersect(patients, Context.getCohortService().evaluate(dataExportDefinition.getFilter(),
-				    evalContext));
-			else
-				patients = Context.getCohortService().evaluate(dataExportDefinition.getFilter(), evalContext);
-		}
-		*/
-		DataExportDataSet dataset = null;
-		try { 
-			// We write out the data export
+		SimpleDataSet dataSet = new SimpleDataSet(definition, context);
+		try {
+			DataExportDataSetDefinition dataExportDefinition = (DataExportDataSetDefinition) definition;
+			DataExportReportObject dataExport = dataExportDefinition.getDataExportReportObject();
 			DataExportUtil.generateExport(dataExport, context.getBaseCohort(), null);
 			
-			// ... and then convert the export to a DataSet
-			dataset = getDataExportDataSet(dataExportDefinition);
-		} 
-		catch (Exception e) { 
-			// TODO Probably should throw an exception here
-			//throw new DataSetException(e.getMessage());
-		}
+			File dataFile = DataExportUtil.getGeneratedFile(dataExportDefinition.getDataExportReportObject());			
+			log.error("getting data export data set for data export " + dataFile.getAbsolutePath());
 
-		return dataset;
-	}
-
-	
-	/**
-	 * Returns a list of rows read from the given data export.
-	 * 
-	 * @param xlsFile
-	 */
-	public DataExportDataSet getDataExportDataSet(DataExportDataSetDefinition dataSetDefinition) { 
-		
-		DataExportDataSet dataset = new DataExportDataSet(dataSetDefinition);
-		
-		File dataFile = DataExportUtil.getGeneratedFile(dataSetDefinition.getDataExportReportObject());			
-		
-		List<Map<String,Object>> dataSetRows = new ArrayList<Map<String,Object>>();
-		log.error("getting data export data set for data export " + dataFile.getAbsolutePath());
-		try { 
 			// Get contents as a string 
 			// TODO Test whether this is faster than another approach
 			String contents = OpenmrsUtil.getFileAsString(dataFile);		
@@ -111,27 +67,20 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
 	
 			// Iterate over remaining rows
 			for (int i=1; i<rows.length;i++) { 
-				
-				Map<String,Object> dataSetRow = new HashMap<String,Object>();
+				DataSetRow<Object> row = new DataSetRow<Object>();
 				String [] cells = rows[i].split("\\t");
 				for (int j=0; j<cells.length; j++) { 	
-					
 					log.error("column=" + columns[j] + " value=" + cells[j]);
-					dataSetRow.put(columns[j], cells[j]);
+					row.addColumnValue(definition.getColumn(columns[j]), cells[j]);
 				}
-				
-				dataSetRows.add(dataSetRow);	
+				dataSet.addRow(row);	
 			}
-			dataset.setData(dataSetRows);
-			
-			log.info("Dataset: " + dataset);
+			log.info("Dataset: " + dataSet);
 		} 
-		catch (IOException e) { 
-			log.error("Exception " + e.getMessage());
-			
+		catch (Exception e) {
+			log.error("An error occurred while generating a data export.", e);
+			throw new RuntimeException("An error occurred while generating a data export.", e);
 		}
-		return dataset;
+		return dataSet;
 	}
-	
-	
 }

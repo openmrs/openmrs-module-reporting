@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -27,8 +26,8 @@ import org.openmrs.module.dataset.definition.evaluator.CohortDataSetEvaluator;
 import org.openmrs.module.evaluation.parameter.Mapped;
 
 /**
- * Metadata that defines a MapDataSet<Cohort>. (I.e. a list of cohorts, each of which has a name)
- * <p>
+ * Metadata that defines a MapDataSet<Cohort>. 
+ * (I.e. a list of cohorts, each of which has a name)<p>
  * For example a CohortDatasetDefinition might represent:<br/>
  * "1. Total # of Patients" -> (CohortDefinition) everyone <br/>
  * "1.a. Male Adults" -> (CohortDefinition) Male AND Adult<br/>
@@ -41,169 +40,71 @@ import org.openmrs.module.evaluation.parameter.Mapped;
  */
 public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	
-	private static final long serialVersionUID = -658417752199413012L;
-	
-	// TODO Consolidate down to DataSetColumn
-	//private Map<String, String> descriptions;
-	private Map<String, Mapped<CohortDefinition>> strategies;
+	//***** PROPERTIES *****
+	private Map<DataSetColumn, Mapped<? extends CohortDefinition>> definitions;
 	
 	/**
 	 * Default constructor
 	 */
 	public CohortDataSetDefinition() {
-		strategies = new LinkedHashMap<String, Mapped<CohortDefinition>>();
-		//descriptions = new LinkedHashMap<String, String>();
+		super();
 	}
 	
 	/**
 	 * Public constructor
-	 * 
 	 * @param name
 	 * @param description
-	 * @param questions
 	 */
 	public CohortDataSetDefinition(String name, String description) { 
-		this();
-		this.setName(name);
-		this.setDescription(description);
-	}	
-	
-	
-	
-
-	/**
-	 * Add the given cohort as a "column" to this definition with the given key. The name is also
-	 * added as the description.
-	 * 
-	 * @param name key to refer by which to refer to this cohort
-	 * @param cohortDefinition	the cohort definition
-	 */
-	public void addStrategy(String name, CohortDefinition cohortDefinition, String mappings) {
-		addStrategy(name, name, new Mapped<CohortDefinition>(cohortDefinition, mappings));
+		super(name, description);
 	}
-    
-    
-	/**
-	 * Add the given cohort as a "column" to this definition with the given key. The name is also
-	 * added as the description.
-	 * 
-	 * @param name key to refer by which to refer to this cohort
-	 * @param cohortDefinition The patients for this column
+	
+	//****** INSTANCE METHODS ******
+	
+	/** 
+	 * @see DataSetDefinition#getColumns()
 	 */
-	public void addStrategy(String name, Mapped<CohortDefinition> cohortDefinition) {
-		addStrategy(name, name, cohortDefinition);
-	}	
+	public List<DataSetColumn> getColumns() {
+		return new ArrayList<DataSetColumn>(definitions.keySet());
+	}
+
 	
 	/**
-	 * Add the given cohort as a "column" to this definition with the given key and the given
-	 * description.
-	 * 
+	 * Add the given CohortDefinition with the given key, display name, and mappings
 	 * @param name
-	 * @param description
+	 * @param displayName
 	 * @param cohortDefinition
 	 */
-	public void addStrategy(String name, String description, Mapped<CohortDefinition> cohortDefinition) {
-		strategies.put(name, cohortDefinition);
-		//descriptions.put(name, description);
+	public void addDefinition(String key, String displayName, CohortDefinition definition, String mappings) {
+		addDefinition(key, displayName, new Mapped<CohortDefinition>(definition, mappings));
 	}
 	
 	/**
-	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getColumnKeys()
+	 * Add the given Mapped<CohortDefinition> with the given key and the given display name
+	 * @param name
+	 * @param displayName
+	 * @param cohortDefinition
 	 */
-	public List<String> getColumnKeys() {
-		return new Vector<String>(strategies.keySet());
+	public void addDefinition(String key, String displayName, Mapped<? extends CohortDefinition> definition) {
+		getDefinitions().put(new SimpleDataSetColumn(key, displayName, Cohort.class), definition);
 	}
 	
-	/**
-	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getColumnDatatypes()
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Class> getColumnDatatypes() {
-		//return (List<Class>) Collections.nCopies(strategies.size(), Cohort.class);
-		List<Class> ret = new ArrayList<Class>();
-		for (int i = strategies.size(); i > 0; --i)
-			ret.add(Cohort.class);
-		return ret;
-	}
-	
+	//****** PROPERTY ACCESS ******
 
 	/**
-	 * Sets a description for the cohort name if it exists. Returns true if a cohort exists with the
-	 * specified name else returns false.
-	 * 
-	 * @param name
-	 * @param description
-	 * @return true if a cohort exists with the specified name, false otherwise
-	public boolean setDescription(String name, String description) {
-		if (strategies.containsKey(name)) {
-			descriptions.put(name, description);
-			return true;
+	 * @return the definitions
+	 */
+	public Map<DataSetColumn, Mapped<? extends CohortDefinition>> getDefinitions() {
+		if (definitions == null) {
+			definitions = new LinkedHashMap<DataSetColumn, Mapped<? extends CohortDefinition>>();
 		}
-		return false;
+		return definitions;
 	}
-	 */
-	
+
 	/**
-	 * Returns a description for the @param cohort strategy name.
-	 * 
-	 * @param name
-	 * @return
-	public String getDescription(String name) {
-		return descriptions.get(name);
+	 * @param definitions the definitions to set
+	 */
+	public void setDefinitions(Map<DataSetColumn, Mapped<? extends CohortDefinition>> definitions) {
+		this.definitions = definitions;
 	}
-	 */
-	
-	/**
-	 * Returns the map of cohort strategy names, descriptions.
-	 * 
-	 * @return a <code>Map<String, String></code> of the strategy names and descriptions
-	public Map<String, String> getDescriptions() {
-		return this.descriptions;
-	}
-	 */
-	
-	/**
-	 * Get the key-value pairs of names to defined cohorts
-	 * 
-	 * @return
-	 */
-	public Map<String, Mapped<CohortDefinition>> getStrategies() {
-		return strategies;
-	}
-	
-	/**
-	 * Set the key-value pairs of names to cohorts
-	 * 
-	 * @param strategies
-	 */
-	public void setStrategies(Map<String, Mapped<CohortDefinition>> strategies) {
-		this.strategies = strategies;
-	}
-	
-	/**
-	 * Set the key-value pairs of names to cohort descriptions
-	 * 
-	 * @param descriptions
-	public void setDescriptions(Map<String, String> descriptions) {
-		this.descriptions = descriptions;
-	}
-	 */
-	
-	/**
-     * @see org.openmrs.module.dataset.definition.DataSetDefinition#getColumns()
-     */
-    public List<DataSetColumn> getColumns() {
-    	List<DataSetColumn> columns = new ArrayList<DataSetColumn>();
-    	for (String key : strategies.keySet()) {
-    		CohortDefinition cd = 
-    			strategies.get(key).getParameterizable();
-    		columns.add(new SimpleDataSetColumn(key, cd.getName(), Cohort.class));
-    		//columns.add(new CohortDataSetColumn(key, strategies.get(key)));
-       	}
-    	return columns;
-    }
-	
-    
-	
-	
 }

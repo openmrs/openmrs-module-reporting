@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.dataset.definition;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.openmrs.Program;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
+import org.openmrs.module.dataset.definition.evaluator.ProgramDataSetEvaluator;
 
 /**
  * Definition of a dataset that produces one-row-per-PatientProgram. Output might look like:
@@ -31,68 +31,82 @@ import org.openmrs.module.dataset.column.SimpleDataSetColumn;
  * 123, "HIV PROGRAM", 1, "2008-01-01", null, 5383<br/>
  * 123, "TB PROGRAM", 2, "2006-04-11", "2006-10-11", 4253
  * 
- * @see RowPerProgramEnrollmentDataSet
+ * @see ProgramDataSetEvaluator
  */
 public class ProgramDataSetDefinition extends BaseDataSetDefinition {
 	
     private static final long serialVersionUID = -1408727201579935500L;
+    
+    // ***** FIXED COLUMNS *****
+	public static DataSetColumn PATIENT_ID = new SimpleDataSetColumn("patientId", Integer.class);
+	public static DataSetColumn PROGRAM_NAME = new SimpleDataSetColumn("programName", String.class);
+	public static DataSetColumn PROGRAM_ID = new SimpleDataSetColumn("programId", Integer.class);
+	public static DataSetColumn ENROLLMENT_DATE = new SimpleDataSetColumn("enrollmentDate", Date.class);
+	public static DataSetColumn COMPLETION_DATE = new SimpleDataSetColumn("completionDate", Date.class);
+	public static DataSetColumn PATIENT_PROGRAM_ID = new SimpleDataSetColumn("patientProgramId", Integer.class);
 
+    // ***** PROPERTIES *****
+    
 	private Collection<Program> programs;
-	
 	private CohortDefinition cohortDefinition;
 
 	/**
 	 * Default constructor
 	 */
 	public ProgramDataSetDefinition() {
-		programs = new HashSet<Program>();
+		super();
 	}
 
 	/**
-	 * Full-arg constructor
+	 * Full constructor
 	 */
 	public ProgramDataSetDefinition(String name, String description, Collection<Program> programs, CohortDefinition cohortDefinition) {
+		this();
 		this.setName(name);
 		this.setDescription(description);
 		this.programs = programs;
 		this.cohortDefinition = cohortDefinition;
-		
 	}
 	
-	/**
-	 * @see org.openmrs.module.datasetDefinition#getColumns()
+	//****** INSTANCE METHODS ******
+	
+	/** 
+	 * @see DataSetDefinition#getColumns()
 	 */
 	public List<DataSetColumn> getColumns() {
-		List<DataSetColumn> ret = new ArrayList<DataSetColumn>();
-		ret.add(new SimpleDataSetColumn("patientId", Integer.class));
-		ret.add(new SimpleDataSetColumn("programName", String.class));
-		ret.add(new SimpleDataSetColumn("programId", Integer.class));
-		ret.add(new SimpleDataSetColumn("enrollmentDate", Date.class));
-		ret.add(new SimpleDataSetColumn("completionDate", Date.class));
-		ret.add(new SimpleDataSetColumn("patientProgramId", Integer.class));
-		return ret;
+		return Arrays.asList(PATIENT_ID, PROGRAM_NAME, PROGRAM_ID, ENROLLMENT_DATE, COMPLETION_DATE, PATIENT_PROGRAM_ID);
 	}
 	
+	//****** PROPERTY ACCESS ********
+
 	/**
-	 * @see org.openmrs.module.evaluation.parameter.Parameterizable#getParameters()
+	 * @return the programs
 	 */
-	public List<Parameter> getParameters() {
-		return new ArrayList<Parameter>();
-	}
-	
 	public Collection<Program> getPrograms() {
+		if (programs == null) {
+			programs = new HashSet<Program>();
+		}
 		return programs;
 	}
-	
+
+	/**
+	 * @param programs the programs to set
+	 */
 	public void setPrograms(Collection<Program> programs) {
 		this.programs = programs;
 	}
-	
+
+	/**
+	 * @return the cohortDefinition
+	 */
 	public CohortDefinition getCohortDefinition() {
 		return cohortDefinition;
 	}
-	
-	public void setFilter(CohortDefinition cohortDefinition) {
+
+	/**
+	 * @param cohortDefinition the cohortDefinition to set
+	 */
+	public void setCohortDefinition(CohortDefinition cohortDefinition) {
 		this.cohortDefinition = cohortDefinition;
 	}
 }

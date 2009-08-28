@@ -14,19 +14,16 @@
 package org.openmrs.module.dataset.definition.evaluator;
 
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.ObsDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.ObsDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
  * Implementations of this interface describe the metadata that can be evaluated to produce a {@link DataSet}. 
  * This is one of three interfaces that work together to define and evaluate an OpenMRS DataSet. 
- * You need to implement all three of {@link DataSetEvaluator}, {@link DataSetDefinition}, and {@link DataSet} 
- * in order to get useful behavior. 
- * For example: {@link ObsDataSetEvaluator}, {@link ObsDataSetDefinition}, and {@link ObsDataSet}.
- * @see DataSet
+ * An implementation of {@link DataSetEvaluator} transforms one or more implementations of {@link DataSetDefinition}
+ * to produce a specific type of {@link DataSet}.
  * @see DataSetDefinition
+ * @see DataSet
  */
 public interface DataSetEvaluator {
 	

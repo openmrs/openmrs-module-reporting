@@ -13,28 +13,88 @@
  */
 package org.openmrs.module.dataset;
 
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.openmrs.module.dataset.column.DataSetColumn;
 
 /**
- * A dataset row is a generic way to store a map of key-value pairs that make up 
- * a row in a dataset.
+ * Represents one row of data in a {@link DataSet}
+ * This can be parameterized such that each column value matches the parameterized type
  */
-public class DataSetRow {
+public class DataSetRow<T extends Object> {
+
+	//****** PROPERTIES ******
 	
-	public Map<String, Object> row = new HashMap<String, Object>();
+	private Map<DataSetColumn, T> columnValues;
 	
+	/**
+	 * Default Constructor
+	 */
 	public DataSetRow() { } 
 	
-	public void putValue(String key, Object value) { 
-		row.put(key, value);
+	/**
+	 * Retrieves the value for the row given the passed column
+	 * @param column
+	 * @param value
+	 */
+	public T getColumnValue(DataSetColumn column) {
+		return getColumnValues().get(column);
 	}
 	
-	public Object getValue(String key) { 
-		return row.get(key);
+	/**
+	 * Retrieves the value for the row given the passed column key
+	 * @param columnKey
+	 * @param value
+	 */
+	public T getColumnValue(String columnKey) {
+		for (Map.Entry<DataSetColumn, T> e : getColumnValues().entrySet()) {
+			if (e.getKey().getColumnKey().equals(columnKey)) {
+				return e.getValue();
+			}
+		}
+		return null;
 	}
 	
+	/**
+	 * Adds a column value to the row
+	 * @param column
+	 * @param value
+	 */
+	public void addColumnValue(DataSetColumn column, T value) {
+		getColumnValues().put(column, value);
+	}
 	
-	
+	//****** PROPERTY ACCESS ******
+
+	/** 
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (Iterator<DataSetColumn> i = getColumnValues().keySet().iterator(); i.hasNext();) {
+			DataSetColumn c = i.next();
+			sb.append(c.getColumnKey() + "=" + getColumnValue(c) + (i.hasNext() ? ", " : ""));
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * @return the columnValues
+	 */
+	public Map<DataSetColumn, T> getColumnValues() {
+		if (columnValues == null) {
+			columnValues = new LinkedHashMap<DataSetColumn, T>();
+		}
+		return columnValues;
+	}
+
+	/**
+	 * @param columnValues the columnValues to set
+	 */
+	public void setColumnValues(Map<DataSetColumn, T> columnValues) {
+		this.columnValues = columnValues;
+	}
 }

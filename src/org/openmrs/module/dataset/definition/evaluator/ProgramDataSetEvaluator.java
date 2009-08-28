@@ -15,6 +15,7 @@ package org.openmrs.module.dataset.definition.evaluator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,19 +26,15 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.EncounterDataSet;
-import org.openmrs.module.dataset.ProgramDataSet;
+import org.openmrs.module.dataset.DataSetRow;
+import org.openmrs.module.dataset.SimpleDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.ProgramDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
- * The logic that evaluates a {@link ProgramDataSetDefinition} 
- * and produces an {@link ProgramDataSet}
- * 
- * @see EncounterDataSetDefinition
- * @see EncounterDataSet
+ * The logic that evaluates a {@link ProgramDataSetDefinition} and produces a {@link DataSet}
+ * @see ProgramDataSetDefinition
  */
 @Handler(supports={ProgramDataSetDefinition.class})
 public class ProgramDataSetEvaluator implements DataSetEvaluator {
@@ -65,12 +62,22 @@ public class ProgramDataSetEvaluator implements DataSetEvaluator {
 			patients = (patients == null ? c : Cohort.intersect(patients, c));
 		}
 		
-		ProgramDataSet dataSet = new ProgramDataSet();
-		dataSet.setDefinition(definition);
-		dataSet.setContext(context);
+		Locale locale = Context.getLocale();
+		SimpleDataSet dataSet = new SimpleDataSet(definition, context);
 		List<Program> programs = new ArrayList<Program>(definition.getPrograms());
 		List<PatientProgram> patientPrograms = Context.getProgramWorkflowService().getPatientPrograms(patients, programs);
-		dataSet.setData(patientPrograms);
+		
+		for (PatientProgram pp : patientPrograms) {
+			DataSetRow<Object> row = new DataSetRow<Object>();
+			row.addColumnValue(ProgramDataSetDefinition.PATIENT_ID, pp.getPatient().getPatientId());
+			row.addColumnValue(ProgramDataSetDefinition.PROGRAM_NAME, pp.getProgram().getConcept().getName(locale, false).getName());
+			row.addColumnValue(ProgramDataSetDefinition.PROGRAM_ID, pp.getProgram().getProgramId());
+			row.addColumnValue(ProgramDataSetDefinition.ENROLLMENT_DATE, pp.getDateEnrolled());
+			row.addColumnValue(ProgramDataSetDefinition.COMPLETION_DATE, pp.getDateCompleted());
+			row.addColumnValue(ProgramDataSetDefinition.PATIENT_PROGRAM_ID, pp.getPatientProgramId());
+			dataSet.addRow(row);
+		}
+		
 		return dataSet;
 	}
 }

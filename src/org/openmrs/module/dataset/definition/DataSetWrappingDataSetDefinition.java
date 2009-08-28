@@ -2,9 +2,9 @@ package org.openmrs.module.dataset.definition;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
 
 /**
@@ -44,11 +44,11 @@ public class DataSetWrappingDataSetDefinition extends BaseDataSetDefinition {
     
     /**
      * Infers columns from the first row in the underlying dataset
-     * 
      * @see DataSetDefinition#getColumns()
      */
     public List<DataSetColumn> getColumns() {
-        return new ArrayList<DataSetColumn>(((Map<DataSetColumn, ?>) data.iterator().next()).keySet());
+    	DataSetRow<?> r = data.iterator().next();
+    	return new ArrayList<DataSetColumn>(r.getColumnValues().keySet());
     }
     
     // ***************

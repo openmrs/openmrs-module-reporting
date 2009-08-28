@@ -13,166 +13,44 @@
  */
 package org.openmrs.module.dataset.definition;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
-import org.openmrs.Concept;
-import org.openmrs.Obs;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
+import org.openmrs.module.dataset.definition.evaluator.EncounterDataSetEvaluator;
 
 /**
- * Definition of a dataset that produces one-row-per-encounter table. 
- *
- * @see EncounterDataSet
+ * Definition of a dataset that produces one-row-per-encounter table.
+ * @see EncounterDataSetEvaluator
  */
 public class EncounterDataSetDefinition extends BaseDataSetDefinition {
-		
-	// Constants 
-	public static final String ENCOUNTER_ID		= "encounter_id";
-	public static final String ENCOUNTER_TYPE 	= "encounter_type";
-	public static final String FORM 			= "form";
-	public static final String LOCATION 		= "location";
-	public static final String PERSON 			= "person";
-	public static final String GENDER 			= "gender";
-	public static final String AGE 				= "age";
 	
-	// Attributes 
-	private Date toDate;
-	private Date fromDate;
-	private CohortDefinition filter;
-	private Collection<Concept> questions;	
+    // ***** FIXED COLUMNS *****
+	public static DataSetColumn PATIENT_ID = new SimpleDataSetColumn("patientId", Integer.class);
+	public static DataSetColumn ENCOUNTER_ID = new SimpleDataSetColumn("encounter_id", Integer.class);
+	public static DataSetColumn ENCOUNTER_TYPE = new SimpleDataSetColumn("encounter_type", String.class);
+	public static DataSetColumn FORM = new SimpleDataSetColumn("form", String.class);
+	public static DataSetColumn LOCATION = new SimpleDataSetColumn("location", String.class);
 	
 	/**
 	 * Constructor
 	 */
 	public EncounterDataSetDefinition() {
-		questions = new HashSet<Concept>();		
+		super();
 	}
 	
 	/**
-	 * Public constructor
-	 * 
-	 * @param name
-	 * @param description
-	 * @param questions
+	 * Full constructor
 	 */
-	public EncounterDataSetDefinition(String name, String description, Date toDate, Date fromDate, CohortDefinition filter, Collection<Concept> questions) { 
-		this.setName(name);
-		this.setDescription(description);
-		
-		this.toDate = toDate;
-		this.fromDate = fromDate;
-		this.filter = filter;
-		this.questions = questions;
-	}		
-	
-		
-	private static String [] columnKeys = { 		
-		ENCOUNTER_ID, ENCOUNTER_TYPE, FORM, LOCATION, PERSON, GENDER, AGE	
-	};
-		
-	private static Class [] columnDatatypes = { 
-		Integer.class, String.class, String.class, String.class, String.class, String.class, Integer.class
-	};
-
-	
-	
-    public Collection<Concept> getQuestions() {
-		return questions;
-	}
-
-	public void setQuestions(Collection<Concept> questions) {
-		this.questions = questions;
-	}
-
-
-	
-		
-	/**
-	 * @see org.openmrs.report.DataSetDefinition#getColumnDatatypes()
-     * TODO Move to BaseDataSetDefinition
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Class> getColumnDatatypes() {
-		return Arrays.asList(columnDatatypes);
+	public EncounterDataSetDefinition(String name, String description) { 
+		super(name, description);	
 	}
 	
 	/**
-	 * @see org.openmrs.report.DataSetDefinition#getColumnKeys()
-     * TODO Move to BaseDataSetDefinition
+     * @see DataSetDefinition#getColumns()
 	 */
-	public List<String> getColumnKeys() {
-		return Arrays.asList(columnKeys);
-	}
-	
-	/**
-     * @see org.openmrs.module.dataset.definition.DataSetDefinition#getColumns()
-     * TODO Move to BaseDataSetDefinition
-	 */
-    public List<DataSetColumn> getColumns() {    	
-    	List<DataSetColumn> columns = new ArrayList<DataSetColumn>();
-    	for (int i = 0; i < columnKeys.length; i++) {     		
-    		DataSetColumn column = 
-    			new SimpleDataSetColumn(columnKeys[i], columnDatatypes[i]);
-    		columns.add(column);
-    	}
-    	return columns;
-
-	}
-	
-	/**
-	 * @see org.openmrs.module.evaluation.parameter.Parameterizable#getParameters()
-	 */
-	public List<Parameter> getParameters() {
-		return new ArrayList<Parameter>();
-	}
-	
-	/**
-	 * @return the filter
-	 */
-	public CohortDefinition getFilter() {
-		return filter;
-	}
-	
-	/**
-	 * @param filter the filter to set
-	 */
-	public void setFilter(CohortDefinition filter) {
-		this.filter = filter;
-	}
-	
-	/**
-	 * @return the fromDate
-	 */
-	public Date getFromDate() {
-		return fromDate;
-	}
-	
-	/**
-	 * @param fromDate the fromDate to set
-	 */
-	public void setFromDate(Date fromDate) {
-		this.fromDate = fromDate;
-	}
-	
-	/**
-	 * @return the toDate
-	 */
-	public Date getToDate() {
-		return toDate;
-	}
-	
-	/**
-	 * @param toDate the toDate to set
-	 */
-	public void setToDate(Date toDate) {
-		this.toDate = toDate;
+    public List<DataSetColumn> getColumns() {
+    	return Arrays.asList(PATIENT_ID, ENCOUNTER_ID, ENCOUNTER_TYPE, FORM, LOCATION);
 	}
 }

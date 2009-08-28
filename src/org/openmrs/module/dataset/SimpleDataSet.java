@@ -3,9 +3,7 @@ package org.openmrs.module.dataset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 
@@ -16,7 +14,7 @@ public class SimpleDataSet implements DataSet<Object> {
     
     private DataSetDefinition definition;
     private EvaluationContext context;
-    private List<Map<DataSetColumn, Object>> data;
+    private List<DataSetRow<Object>> rows;
     
     // *************
     // CONSTRUCTORS
@@ -26,7 +24,7 @@ public class SimpleDataSet implements DataSet<Object> {
      * Default Constructor
      */
     public SimpleDataSet() {
-        data = new ArrayList<Map<DataSetColumn, Object>>();
+        rows = new ArrayList<DataSetRow<Object>>();
     }
     
     /**
@@ -48,25 +46,24 @@ public class SimpleDataSet implements DataSet<Object> {
      * Adds a row to this DataSet
      * @param row the row to add to the DataSet
      */
-    public void addRow(Map<DataSetColumn, Object> row) {
-        getData().add(row);
+    public void addRow(DataSetRow<Object> row) {
+        getRows().add(row);
     }
 
     /**
      * @see DataSet#iterator()
      */
-    public Iterator<Map<DataSetColumn, Object>> iterator() {
-        return getData().iterator();
+    public Iterator<DataSetRow<Object>> iterator() {
+        return getRows().iterator();
     }
     
 	/**
 	 * Convenience method for JSTL method.  
 	 * TODO This will be removed once we get a decent solution for the dataset iterator solution.  
 	 */
-	public Iterator<Map<DataSetColumn, Object>> getIterator() {
+	public Iterator<DataSetRow<Object>> getIterator() {
 		return iterator();
 	}
-    
     
     // *************
     // PROPERTY ACCESS
@@ -103,17 +100,17 @@ public class SimpleDataSet implements DataSet<Object> {
     /**
      * @return the data
      */
-    public List<Map<DataSetColumn, Object>> getData() {
-    	if (data == null) {
-    		data = new ArrayList<Map<DataSetColumn, Object>>();
+    public List<DataSetRow<Object>> getRows() {
+    	if (rows == null) {
+    		rows = new ArrayList<DataSetRow<Object>>();
     	}
-        return data;
+        return rows;
     }
 
 	/**
      * @param data the data to set
      */
-    public void setData(List<Map<DataSetColumn, Object>> data) {
-        this.data = data;
+    public void setRows(List<DataSetRow<Object>> rows) {
+        this.rows = rows;
     }
 }

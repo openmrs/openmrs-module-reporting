@@ -6,15 +6,12 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.SimpleDataSet;
-import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetWrappingDataSetDefinition;
 import org.openmrs.module.dataset.definition.evaluator.DataSetWrappingDataSetEvaluator;
@@ -66,10 +63,10 @@ public class XmlReportRendererTest {
     }
     
     // needs to have an even number of arguments
-    private Map<DataSetColumn, Object> makeRowHelper(Object... o) {
-        Map<DataSetColumn, Object> ret = new HashMap<DataSetColumn, Object>();
+    private DataSetRow<Object> makeRowHelper(Object... o) {
+    	DataSetRow<Object> ret = new DataSetRow<Object>();
         for (int i = 0; i < o.length; i += 2) {
-            ret.put(new SimpleDataSetColumn((String) o[i]), o[i + 1]);
+            ret.addColumnValue(new SimpleDataSetColumn((String) o[i]), o[i + 1]);
         }
         return ret;
     }

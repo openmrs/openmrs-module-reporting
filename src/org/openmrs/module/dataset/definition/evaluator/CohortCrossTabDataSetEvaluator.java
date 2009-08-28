@@ -68,8 +68,8 @@ public class CohortCrossTabDataSetEvaluator implements DataSetEvaluator {
 		
 		for (DataSetColumn rowDataCol : rowData.getDefinition().getColumns()) {
 			for (DataSetColumn colDataCol : colData.getDefinition().getColumns()) {
-				Cohort rowCohort = rowData.getData().get(rowDataCol);
-				Cohort colCohort = colData.getData().get(colDataCol);
+				Cohort rowCohort = rowData.getData().getColumnValue(rowDataCol);
+				Cohort colCohort = colData.getData().getColumnValue(colDataCol);
 				String key = rowDataCol.getColumnKey() + crossTabDef.getRowColumnDelimiter() + colDataCol.getColumnKey();
 				data.addData(key, Cohort.intersect(rowCohort, colCohort));
 			}

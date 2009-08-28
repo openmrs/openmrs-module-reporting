@@ -16,7 +16,6 @@ package org.openmrs.module.dataset.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
 import org.openmrs.reporting.export.DataExportReportObject;
@@ -38,7 +37,6 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	
 	/* Data export object */
 	private DataExportReportObject dataExport;
-
 	
 	/**
 	 * Default public constructor 
@@ -49,17 +47,13 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	
 	/**
 	 *  Public constructor
-	 * 
-	 *  TODO Is this ok or should we add a method like convertDataExport()
-	 *  We could also just have getters pull the name, description from the 
-	 *  data export object
 	 */
 	public DataExportDataSetDefinition(DataExportReportObject dataExport) { 
 		this.dataExport = dataExport;
 	}
 	
 	/**
-	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getColumns()
+	 * @see DataSetDefinition#getColumns()
 	 */
     public List<DataSetColumn> getColumns() {
 		List<DataSetColumn> columns = new ArrayList<DataSetColumn>();
@@ -72,50 +66,26 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	}
 
     /**
-	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getId()
+	 * @see DataSetDefinition#getId()
      */
     public Integer getId() { 
     	return this.dataExport.getReportObjectId();  	
     }    
     
     /**
-	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getName()
+	 * @see DataSetDefinition#getName()
      */
     public String getName() { 
     	return this.dataExport.getName();    	
     }
 
     /**
-	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getDescription()
+	 * @see DataSetDefinition#getDescription()
      */
     public String getDescription() { 
     	return this.dataExport.getDescription();    	
     }
-    
-	/**
-	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getColumnDatatypes()
-	 */
-	public List<Class> getColumnDatatypes() {		
-		// TODO Need to iterate over getColumns() and return data types
-		return null;
-	}
-	
-	/**
-	 * @see org.openmrs.module.dataset.definition.DataSetDefinition#getColumnKeys()
-	 */
-	public List<String> getColumnKeys() {
-		// TODO Need to iterate over getColumns() and return keys
-		return null;
-	}	
 
-	/**
-     * @see org.openmrs.module.evaluation.parameter.Parameterizable#getParameters()
-     */
-    public List<Parameter> getParameters() {
-	    return new ArrayList<Parameter>();
-    }	
-    
-    
     /**
      * Returns the data export object that backs this dataset definition.
      * @return	the data export object that backs this dataset definition
@@ -130,7 +100,5 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
      */
     public void setDataExportReportObject(DataExportReportObject dataExport) { 
     	this.dataExport = dataExport;
-    }
-    
-    
+    }    
 }

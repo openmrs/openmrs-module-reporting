@@ -81,8 +81,48 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
 	public String toString() {
 		return getName();
 	}
-    
-    
+	
+	/** 
+	 * @see DataSetDefinition#addColumn(DataSetColumn)
+	 */
+	public void addColumn(DataSetColumn column) {
+		getColumns().add(column);
+	}
+
+	/** 
+	 * @see DataSetDefinition#getColumn(String)
+	 */
+	public DataSetColumn getColumn(String columnKey) {
+		for (DataSetColumn c : getColumns()) {
+			if (c.getColumnKey().equals(columnKey)) {
+				return c;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * @return a List of Column DataTypes
+	 */
+	public List<Class<?>> getColumnDatatypes() {
+		List<Class<?>> dataTypes = new ArrayList<Class<?>>();
+		for (DataSetColumn column : getColumns()) { 
+			dataTypes.add(column.getClass());
+		}
+		return dataTypes;
+	}
+
+	/**
+	 * @return a List of Column keys
+	 */
+	public List<String> getColumnKeys() {
+		List<String> columnKeys = new ArrayList<String>();
+		for (DataSetColumn column : getColumns()) { 
+			columnKeys.add(column.getColumnKey());
+		}
+		return columnKeys;
+	}
+	
     //***** PROPERTY ACCESS *****
     
     /**
@@ -97,36 +137,5 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
 	 */
 	public void setId(Integer id) {
 		this.id = id;
-	}
-	
-	/**
-	 * 
-	 */
-	public Integer getColumnCount() { 
-		return this.getColumns().size();
-	}
-	
-	/**
-	 * Get column data types 
-	 * TODO Should be shared by all classes.
-	 */
-	public List<Class> getColumnDatatypes() {
-		List<Class> dataTypes = new ArrayList<Class>();
-		for (DataSetColumn column : getColumns()) { 
-			dataTypes.add(column.getClass());
-		}
-		return dataTypes;
-	}
-
-	/**
-	 * Get column keys
-	 * TODO Should be shared by all classes.
-	 */
-	public List<String> getColumnKeys() {
-		List<String> columnKeys = new ArrayList<String>();
-		for (DataSetColumn column : getColumns()) { 
-			columnKeys.add(column.getColumnKey());
-		}
-		return columnKeys;
 	}
 }

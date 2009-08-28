@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.dataset.definition;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -23,9 +22,9 @@ import java.util.Set;
 
 import org.openmrs.Concept;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
+import org.openmrs.module.dataset.definition.evaluator.ObsDataSetEvaluator;
 
 /**
  * Definition of a dataset that produces one-row-per-obs. Output might look like: patientId,
@@ -33,27 +32,34 @@ import org.openmrs.module.dataset.column.SimpleDataSetColumn;
  * "WEIGHT (KG)", 5089, 70, null, "2007-05-23", 2345 123, "OCCUPATION", 987, "STUDENT", 988,
  * "2008-01-30", 2658
  * 
- * @see RowPerObsDataSet
+ * @see ObsDataSetEvaluator
  */
 public class ObsDataSetDefinition extends BaseDataSetDefinition {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String name;
+    // ***** FIXED COLUMNS *****
+	public static DataSetColumn PATIENT_ID = new SimpleDataSetColumn("patientId", Integer.class);
+	public static DataSetColumn QUESTION = new SimpleDataSetColumn("question", String.class);
+	public static DataSetColumn QUESTION_CONCEPT_ID = new SimpleDataSetColumn("questionConceptId", Integer.class);
+	public static DataSetColumn ANSWER = new SimpleDataSetColumn("answer", Object.class);
+	public static DataSetColumn ANSWER_CONCEPT_ID = new SimpleDataSetColumn("answerConceptId", Integer.class);
+	public static DataSetColumn OBS_DATETIME = new SimpleDataSetColumn("obsDatetime", Date.class);
+	public static DataSetColumn ENCOUNTER_ID = new SimpleDataSetColumn("encounterId", Integer.class);
+	public static DataSetColumn OBSGROUP_ID = new SimpleDataSetColumn("obsGroupId", Integer.class);
+	
+	// ****** PROPERTIES *******
 	
 	private Collection<Concept> questions;
-	
 	private CohortDefinition filter;
-	
 	private Date fromDate;
-	
 	private Date toDate;
 
 	/**
 	 * Default constructor
 	 */
 	public ObsDataSetDefinition() {
-		questions = new HashSet<Concept>();
+		super();
 	}
 	
 	/**
@@ -63,121 +69,75 @@ public class ObsDataSetDefinition extends BaseDataSetDefinition {
 	 * @param description
 	 * @param questions
 	 */
-	public ObsDataSetDefinition(String name, String description, Set<Concept> questions) { 
-		this.setName(name);
-		this.setDescription(description);
-		this.setQuestions(questions);
+	public ObsDataSetDefinition(String name, String description, Set<Concept> questions) {
+		super(name, description);
+		setQuestions(questions);
 	}
 	
+	//****** INSTANCE METHODS ******
 	
-	private static Class[] columnDatatypes = {
-		Integer.class, // patientId
-		String.class, // question concept name
-		Integer.class, // question concept id
-		Object.class, // answer
-		Integer.class, // answer concept id
-		Date.class, // obsDatetime
-		Integer.class, // encounterId
-		Integer.class // obsGroupId
-	};
-	
-	private static String[] columnKeys = { 
-		"patientId", 
-		"question", 
-		"questionConceptId",
-		"answer", 
-		"answerConceptId", 
-		"obsDatetime", 
-		"encounterId", 
-		"obsGroupId" 
-	};	
-	
-	
-	/**
-	 * @see org.openmrs.report.DataSetDefinition#getColumnDatatypes()
+	/** 
+	 * @see DataSetDefinition#getColumns()
 	 */
-	@SuppressWarnings("unchecked")
-	public List<Class> getColumnDatatypes() {
-		return Arrays.asList(columnDatatypes);
+	public List<DataSetColumn> getColumns() {
+		return Arrays.asList(PATIENT_ID, QUESTION, QUESTION_CONCEPT_ID, ANSWER, 
+							 ANSWER_CONCEPT_ID, OBS_DATETIME, ENCOUNTER_ID, OBSGROUP_ID);
 	}
 	
-	/**
-	 * @see org.openmrs.module.datasetDefinition#getName()
-	 */
-	public List<String> getColumnKeys() {
-		return Arrays.asList(columnKeys);
-	}
-	
-	/**
-	 * @see org.openmrs.module.datasetDefinition#setName(java.lang.String)
-	 */
-    public List<DataSetColumn> getColumns() {    	
-    	List<DataSetColumn> columns = new ArrayList<DataSetColumn>();
-    	for (int i = 0; i < columnKeys.length; i++) {     		
-    		DataSetColumn column = 
-    			new SimpleDataSetColumn(columnKeys[i], columnKeys[i], columnDatatypes[i]);
-    		columns.add(column);
-    	}
-    	return columns;
+	//****** PROPERTY ACCESS ********
 
-	}
-   
-	/**
-	 * @see org.openmrs.module.evaluation.parameter.Parameterizable#getParameters()
-	 */
-	public List<Parameter> getParameters() {
-		return new ArrayList<Parameter>();
-	}
-	
-	/**
-	 * @return the filter
-	 */
-	public CohortDefinition getFilter() {
-		return filter;
-	}
-	
-	/**
-	 * @param filter the filter to set
-	 */
-	public void setFilter(CohortDefinition filter) {
-		this.filter = filter;
-	}
-	
-	/**
-	 * @return the fromDate
-	 */
-	public Date getFromDate() {
-		return fromDate;
-	}
-	
-	/**
-	 * @param fromDate the fromDate to set
-	 */
-	public void setFromDate(Date fromDate) {
-		this.fromDate = fromDate;
-	}
-	
 	/**
 	 * @return the questions
 	 */
 	public Collection<Concept> getQuestions() {
+		if (questions == null) {
+			questions = new HashSet<Concept>();
+		}
 		return questions;
 	}
-	
+
 	/**
 	 * @param questions the questions to set
 	 */
 	public void setQuestions(Collection<Concept> questions) {
 		this.questions = questions;
 	}
-	
+
+	/**
+	 * @return the filter
+	 */
+	public CohortDefinition getFilter() {
+		return filter;
+	}
+
+	/**
+	 * @param filter the filter to set
+	 */
+	public void setFilter(CohortDefinition filter) {
+		this.filter = filter;
+	}
+
+	/**
+	 * @return the fromDate
+	 */
+	public Date getFromDate() {
+		return fromDate;
+	}
+
+	/**
+	 * @param fromDate the fromDate to set
+	 */
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
 	/**
 	 * @return the toDate
 	 */
 	public Date getToDate() {
 		return toDate;
 	}
-	
+
 	/**
 	 * @param toDate the toDate to set
 	 */

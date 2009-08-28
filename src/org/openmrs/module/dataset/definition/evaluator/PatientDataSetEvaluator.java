@@ -13,36 +13,39 @@
  */
 package org.openmrs.module.dataset.definition.evaluator;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.PatientState;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
+import org.openmrs.ProgramWorkflow;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.PatientDataSet;
+import org.openmrs.module.dataset.DataSetRow;
+import org.openmrs.module.dataset.SimpleDataSet;
+import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.util.CohortUtil;
 
 /**
- * The logic that evaluates a {@link PatientDataSetDefinition} 
- * and produces an {@link PatientDataSet}
- * 
+ * The logic that evaluates a {@link PatientDataSetDefinition} and produces an {@link DataSet}
  * @see PatientDataSetDefinition
- * @see PatientDataSet
  */
 @Handler(supports={PatientDataSetDefinition.class})
 public class PatientDataSetEvaluator implements DataSetEvaluator {
 
-	/**
-	 * Logger 
-	 */
 	protected Log log = LogFactory.getLog(this.getClass());
 
 	/**
@@ -55,8 +58,9 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 	 */
 	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
+		SimpleDataSet dataSet = new SimpleDataSet();
 		PatientDataSetDefinition definition = (PatientDataSetDefinition) dataSetDefinition;
-
+		
 		Cohort cohort = context.getBaseCohort();
 
 		// By default, get all patients
@@ -66,10 +70,43 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		
 		// Reduce the number of patients to evaluate
 		CohortUtil.limitCohort(cohort, context.getLimit());
+		List<Patient> patients = Context.getPatientSetService().getPatients(cohort.getMemberIds());
 		
-		List<Patient> patients = 
-			Context.getPatientSetService().getPatients(cohort.getMemberIds());
+		// Pre-calculate the program states
+		Map<ProgramWorkflow, Map<Integer, PatientState>> states = new HashMap<ProgramWorkflow, Map<Integer, PatientState>>();
+		for (ProgramWorkflow wf : definition.getProgramWorkflows()) {
+			states.put(wf, Context.getPatientSetService().getCurrentStates(cohort, wf));
+		}
 		
-		return new PatientDataSet(definition, context, patients);
+		for (Patient p : patients) {
+			
+			DataSetRow<Object> row = new DataSetRow<Object>();
+			row.addColumnValue(PatientDataSetDefinition.PATIENT_ID, p.getPatientId());			
+			row.addColumnValue(PatientDataSetDefinition.GIVEN_NAME, p.getGivenName());
+			row.addColumnValue(PatientDataSetDefinition.FAMILY_NAME, p.getFamilyName());
+			row.addColumnValue(PatientDataSetDefinition.GENDER, p.getGender());	
+			row.addColumnValue(PatientDataSetDefinition.AGE, p.getAge());
+			
+			for (PatientIdentifierType t : definition.getIdentifierTypes()) {
+				DataSetColumn c = definition.getColumn(t.getName());
+				PatientIdentifier id = p.getPatientIdentifier(t);
+				row.addColumnValue(c, id == null ? null : id.getIdentifier());
+			}
+			
+			for (PersonAttributeType t : definition.getPersonAttributeTypes()) {
+				DataSetColumn c = definition.getColumn(t.getName());
+				PersonAttribute att = p.getAttribute(t);
+				row.addColumnValue(c, att == null ? null : att.getHydratedObject());
+			}
+			
+			for (ProgramWorkflow t : definition.getProgramWorkflows()) {
+				DataSetColumn c = definition.getColumn(t.getName());
+				PatientState ps = states.get(t).get(p.getPatientId());
+				row.addColumnValue(c, (ps == null || !ps.getActive()) ? null : ps.getState().getName());
+			}
+			
+			dataSet.addRow(row);
+		}
+		return dataSet;
 	}
 }
