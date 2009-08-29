@@ -32,10 +32,15 @@ public class MapDataSet<T> implements DataSet<T> {
 	private EvaluationContext context;
 	private DataSetRow<T> data = new DataSetRow<T>();
 	
-	/**
-	 * Default Constructor
-	 */
-	public MapDataSet() { }
+    /**
+     * Default Constructor which creates an empty DataSet for the given definition and evaluationContext
+     * @param definition
+     * @param evaluationContext
+     */
+    public MapDataSet(DataSetDefinition definition, EvaluationContext evaluationContext) {
+        this.definition = definition;
+        this.context = evaluationContext;
+    }
 	
 	/**
 	 * Returns this map as a single-row data set

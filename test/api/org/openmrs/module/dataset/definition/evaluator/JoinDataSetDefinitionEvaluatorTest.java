@@ -30,13 +30,13 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     @Verifies(value = "should join two plain datasets correctly", method = "evaluate(DataSetDefinition,EvaluationContext)")
     public void evaluate_shouldJoinTwoPlainDatasetsCorrectly() throws Exception {
-        SimpleDataSet left = new SimpleDataSet();
+        SimpleDataSet left = new SimpleDataSet(null, null);
         left.addRow(makeRowHelper("patient_id", 1, "name", "Alice"));
         left.addRow(makeRowHelper("patient_id", 2, "name", "Bob"));
         left.addRow(makeRowHelper("patient_id", 3, "name", "Charles"));
         DataSetDefinition leftDef = new DataSetWrappingDataSetDefinition(left);
         
-        SimpleDataSet right = new SimpleDataSet();
+        SimpleDataSet right = new SimpleDataSet(null, null);
         right.addRow(makeRowHelper("patient_id", 1, "encounter_id", 1, "encounter_type", "Registration"));
         right.addRow(makeRowHelper("patient_id", 1, "encounter_id", 2, "encounter_type", "LabOrder"));
         right.addRow(makeRowHelper("patient_id", 2, "encounter_id", 3, "encounter_type", "Registration"));

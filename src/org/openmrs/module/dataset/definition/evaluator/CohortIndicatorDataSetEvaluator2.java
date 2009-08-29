@@ -38,7 +38,7 @@ public class CohortIndicatorDataSetEvaluator2 implements DataSetEvaluator {
 			evalContext = new EvaluationContext();
 		}
 		
-		MapDataSet<Number> ret = new MapDataSet<Number>();
+		MapDataSet<Number> ret = new MapDataSet<Number>(dataSetDefinition, evalContext);
 		
 		CohortIndicatorDataSetDefinition2 dsd = (CohortIndicatorDataSetDefinition2) dataSetDefinition;
 		

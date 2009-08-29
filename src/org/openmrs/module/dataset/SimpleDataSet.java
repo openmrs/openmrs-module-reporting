@@ -21,19 +21,11 @@ public class SimpleDataSet implements DataSet<Object> {
     // *************
     
     /**
-     * Default Constructor
-     */
-    public SimpleDataSet() {
-        rows = new ArrayList<DataSetRow<Object>>();
-    }
-    
-    /**
      * Default Constructor which creates an empty DataSet for the given definition and evaluationContext
      * @param definition
      * @param evaluationContext
      */
     public SimpleDataSet(DataSetDefinition definition, EvaluationContext evaluationContext) {
-        this();
         this.definition = definition;
         this.context = evaluationContext;
     }

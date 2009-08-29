@@ -58,7 +58,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 	 */
 	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
-		SimpleDataSet dataSet = new SimpleDataSet();
+		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 		PatientDataSetDefinition definition = (PatientDataSetDefinition) dataSetDefinition;
 		
 		Cohort cohort = context.getBaseCohort();

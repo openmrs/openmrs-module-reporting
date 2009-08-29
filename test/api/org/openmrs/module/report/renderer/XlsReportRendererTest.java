@@ -29,11 +29,11 @@ public class XlsReportRendererTest {
     public void render_shouldRenderReportDataToAnXlsFile() throws Exception {
         DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
         
-        SimpleDataSet ds1 = new SimpleDataSet();
+        SimpleDataSet ds1 = new SimpleDataSet(null, null);
         ds1.addRow(makeRowHelper("patient_id", 123, "given_name", "Darius", "family_name", "Jazayeri"));
         ds1.addRow(makeRowHelper("patient_id", 321, "given_name", "Ryan", "family_name", "Jazayeri"));
         
-        SimpleDataSet ds2 = new SimpleDataSet();
+        SimpleDataSet ds2 = new SimpleDataSet(null, null);
         ds2.addRow(makeRowHelper("patient_id", 123, "encounter_id", 1, "encounter_date", ymd.parse("2009-03-12")));
         ds2.addRow(makeRowHelper("patient_id", 123, "encounter_id", 2, "encounter_date", ymd.parse("2009-04-11")));
         ds2.addRow(makeRowHelper("patient_id", 123, "encounter_id", 3, "encounter_date", ymd.parse("2009-05-10")));

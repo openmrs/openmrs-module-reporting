@@ -52,7 +52,7 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 		
 		Map<Integer, Encounter> encounterMap = Context.getPatientSetService().getEncounters(context.getBaseCohort());
 		
-		SimpleDataSet dataSet = new SimpleDataSet();
+		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 		for (Encounter e : encounterMap.values()) {
 			DataSetRow<Object> row = new DataSetRow<Object>();
 			row.addColumnValue(EncounterDataSetDefinition.ENCOUNTER_ID, e.getEncounterId());
