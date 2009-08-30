@@ -16,6 +16,7 @@ import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
+import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -51,8 +52,8 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		
 		CompoundCohortDefinition cd = new CompoundCohortDefinition();
 		cd.setOperator(BooleanOperator.AND);
-		cd.addDefinition(new Mapped<CohortDefinition>(age, "onDate=07/08/2009"));
-		cd.addDefinition(new Mapped<CohortDefinition>(gender, ""));
+		cd.addDefinition(new Mapped<CohortDefinition>(age, ParameterizableUtil.createParameterMappings("onDate=07/08/2009")));
+		cd.addDefinition(new Mapped<CohortDefinition>(gender, null));
 		
 		String xml = new ReportingSerializer().serialize(cd);
 		System.out.println(xml);
@@ -73,7 +74,7 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		System.out.println("age cohort definition saved as " + age.getUuid());
 		
 		CohortIndicator ind = new CohortIndicator();
-		ind.setCohortDefinition(age, "onDate=07/08/2009");
+		ind.setCohortDefinition(age, ParameterizableUtil.createParameterMappings("onDate=07/08/2009"));
 		ind.setName("Age on some random date");
 		
 		String xml = new ReportingSerializer().serialize(ind);

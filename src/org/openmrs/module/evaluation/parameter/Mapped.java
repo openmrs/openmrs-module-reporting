@@ -15,16 +15,20 @@ package org.openmrs.module.evaluation.parameter;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.evaluation.EvaluationUtil;
 
 /**
  * Provides a Wrapper class for a Parameterizable instance, which
- * includes a Mapping of Parameter Name to Expressions in order to
- * to Parameters in an enclosing class.
+ * includes a Mapping of Parameter Name to either object values, or
+ * expressions that reference parameters in the enclosing class.
+ * @see EvaluationContext
+ * @see EvaluationUtil
  */
 public class Mapped<T extends Parameterizable> implements Serializable {
 
@@ -35,7 +39,7 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	//***********************
 	
 	private T parameterizable;
-	private Map<String, String> parameterMappings;
+	private Map<String, Object> parameterMappings;
 	
 	//***********************
 	// CONSTRUCTORS
@@ -46,27 +50,18 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	 */
 	public Mapped() {
 		super();
-		parameterMappings = new HashMap<String, String>();
+		parameterMappings = new HashMap<String, Object>();
 	}
 	
 	/**
-	 * Constructor which allows you to set all available Map<String, String>
+	 * Constructor which allows you to set all available Map<String, Object>
 	 */
-	public Mapped(T parameterizable, Map<String, String> parameterMappings) {
+	public Mapped(T parameterizable, Map<String, Object> parameterMappings) {
 		this();
 		this.parameterizable = parameterizable;
 		if (parameterMappings != null) {
 			this.parameterMappings = parameterMappings;
 		}
-	}
-	
-	/**
-	 * Constructor which allows you to set all available properties
-	 */
-	public Mapped(T parameterizable, String parameterMappings) {
-		this();
-		this.parameterizable = parameterizable;
-		setParameterMappings(parameterMappings);
 	}
 	
 	//***********************
@@ -84,54 +79,13 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 		if (parameterizable != null) {
 			String s = parameterizable.getDescription();
 			if (StringUtils.isNotEmpty(s)) {
-				for (String from : getParameterMappings().keySet()) {
-					String to = getParameterMappings().get(from);
-					s = s.replace("${"+from+"}", to);
+				Object evaluated = EvaluationUtil.evaluateExpression(s, getParameterMappings(), String.class);
+				if (evaluated != null) {
+					s = evaluated.toString();
 				}
-				return s;
 			}
 		}
 		return "";
-	}
-	
-	/**
-	 * Convenience method that enables passing parameter mappings as a String.
-	 * Entries are separated by <code>,</code> and keys are separated from values by <code>=</code>
-	 */
-	public void setParameterMappings(String mappingsAsString) throws ParameterException {
-		parameterMappings = new HashMap<String, String>();
-		if (mappingsAsString != null) {
-			try {
-				String[] split = mappingsAsString.split(",");
-				for (int i=0; i<split.length; i++) {
-					String[] keyVal = split[i].split("=");
-					if (keyVal.length > 1) { // sanity check
-						parameterMappings.put(keyVal[0], keyVal[1]);
-					}
-				}
-			}
-			catch (Exception e) {
-				throw new ParameterException("Error while setting parameter mappings from String", e);
-			}
-		}
-	}
-	
-	/**
-	 * Convenience method that returns the parameter mappings as String
-	 * This will return parameters in order of key, with each entry separated by a <code>,</code>
-	 * and each key/value pair separated by a <code>=</code>
-	 * @return a String representation of the parameter mappings
-	 */
-	public String getParameterMappingsAsString() {
-		StringBuilder ret = new StringBuilder();
-		if (parameterMappings != null) {
-			Map<String, String> sortedMappings = new TreeMap<String, String>(parameterMappings);
-			for (Iterator<String> i = sortedMappings.keySet().iterator(); i.hasNext();) {
-				String key = i.next();
-				ret.append(key + "=" + sortedMappings.get(key) + (i.hasNext() ? "," : ""));
-			}
-		}
-		return ret.toString();
 	}
 	
 	/**
@@ -139,11 +93,8 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	 * @param parameterName - The name of the Parameter to wrap
 	 * @param expression - The expression which Maps to a Parameter Name in the enclosing class
 	 */
-	public void addParameterMapping(String parameterName, String expression) {
-		if (parameterMappings == null) {
-			parameterMappings = new HashMap<String, String>();
-		}
-		parameterMappings.put(parameterName, expression);
+	public void addParameterMapping(String parameterName, Object valueOrExpression) {
+		parameterMappings.put(parameterName, valueOrExpression);
 	}
 	
 	/** 
@@ -154,7 +105,16 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 		if (obj != null && obj instanceof Mapped) {
 			Mapped<?> m = (Mapped<?>) obj;
 			if (m.getParameterizable() != null && m.getParameterizable().equals(this.getParameterizable())) {
-				return m.getParameterMappingsAsString().equals(this.getParameterMappingsAsString());
+				Set<String> keys = new HashSet<String>(m.getParameterMappings().keySet());
+				keys.addAll(this.getParameterMappings().keySet());
+				if (m.getParameterMappings().size() == keys.size() && this.getParameterMappings().size() == keys.size()) {
+					for (String key : keys) {
+						if (!m.getParameterMappings().get(key).equals(this.getParameterMappings().get(key))) {
+							return false;
+						}
+					}
+					return true;
+				}
 			}
 		}
 		return this == obj;
@@ -167,7 +127,7 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	public int hashCode() {
 		int hash = 8;
 		hash = (parameterizable == null ? hash : hash * parameterizable.hashCode());
-		hash = hash * getParameterMappingsAsString().hashCode();
+		hash = hash * getParameterMappings().hashCode();
 		return 31 * hash;
 	}
 
@@ -200,14 +160,17 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	/**
 	 * @return the parameterMappings
 	 */
-	public Map<String, String> getParameterMappings() {
+	public Map<String, Object> getParameterMappings() {
+		if (parameterMappings == null) {
+			parameterMappings = new HashMap<String, Object>();
+		}
 		return parameterMappings;
 	}
 
 	/**
 	 * @param parameterMappings the parameterMappings to set
 	 */
-	public void setParameterMappings(Map<String, String> parameterMappings) {
+	public void setParameterMappings(Map<String, Object> parameterMappings) {
 		this.parameterMappings = parameterMappings;
 	}
 }

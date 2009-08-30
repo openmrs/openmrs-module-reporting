@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
+import org.openmrs.module.reporting.web.widget.WidgetUtil;
 import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.module.util.ReflectionUtil;
 import org.openmrs.util.OpenmrsUtil;
@@ -69,9 +70,10 @@ public class MappedPropertyPortletFormController {
         		String valueType = request.getParameterValues("valueType_"+p.getName())[0];
         		String[] value = request.getParameterValues(valueType+"Value_"+p.getName());
         		if (value != null && value.length > 0) {
-    	    		String paramValue = null;
+    	    		Object paramValue = null;
     	    		if (StringUtils.isEmpty(valueType) || valueType.equals("fixed")) {
-    	    			paramValue = OpenmrsUtil.join(Arrays.asList(value), ",");
+    	    			String fixedValueString = OpenmrsUtil.join(Arrays.asList(value), ",");
+    	    			paramValue = WidgetUtil.parseInput(fixedValueString, p.getType());
     	    		}
     	    		else {
     	    			paramValue = "${"+value[0]+"}";

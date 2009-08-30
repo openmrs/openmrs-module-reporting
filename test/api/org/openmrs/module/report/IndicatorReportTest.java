@@ -27,10 +27,7 @@ import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
-import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
@@ -38,13 +35,12 @@ import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
-import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.IndicatorResult;
 import org.openmrs.module.indicator.PeriodCohortIndicator;
-import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -105,7 +101,7 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 		
 		CohortIndicator indicator = new CohortIndicator();
 		indicator.setName(cohortDefinition.getName());
-		indicator.setCohortDefinition(cohortDefinition, "");
+		indicator.setCohortDefinition(cohortDefinition, null);
 		/*
 		datasetDefinition.addIndicator("Test Indicator", indicator, "");		
 		datasetDefinition.addColumnSpecification(
@@ -116,7 +112,7 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 				null);
 		*/
 		
-		datasetDefinition.addCohortIndicator(indicator, "");
+		datasetDefinition.addCohortIndicator(indicator, null);
 		datasetDefinition.addColumnSpecification("1.a", "# Adult Patients", Number.class, indicator, null);
 		
 		
@@ -124,7 +120,7 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 		//report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class, null, true, false));
 		//report.addParameter(new Parameter("report.endDate", "Report End Date", Date.class, null, true, false));
 		//report.addDataSetDefinition(new Mapped<DataSetDefinition>(dsd, "d1=${report.startDate},d2=${report.endDate}"));
-		report.addDataSetDefinition("test", datasetDefinition, "");
+		report.addDataSetDefinition("test", datasetDefinition, null);
 		
 		EvaluationContext evalContext = new EvaluationContext();
 		Cohort baseCohort = Context.getPatientSetService().getAllPatients();
@@ -158,7 +154,8 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 		indicator.addParameter(new Parameter("location", "Choose a Location", Location.class, null, true));
 		
 		// Map the cohort definition to the indicator
-		indicator.setCohortDefinition(cohortDefinition, "sinceDate=${startDate},untilDate=${endDate},location=${location}");
+		indicator.setCohortDefinition(cohortDefinition, 
+				ParameterizableUtil.createParameterMappings("sinceDate=${startDate},untilDate=${endDate},location=${location}"));
 		
 		Calendar calendar = Calendar.getInstance();
 		Date endDate = calendar.getTime();
@@ -236,7 +233,7 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 				if (indicator != null) { 
 					// Adding indicator to dataset definition with default parameter mapping
 					datasetDefinition.addCohortIndicator(indicator.getName(), indicator, 
-							"startDate=${startDate},endDate=${endDate},location=${location}");
+							ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
 					
 					// Adding column specification to dataset 
 					datasetDefinition.addColumnSpecification(indicator.getName(), 
@@ -255,7 +252,7 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 			// (like "location=${report.location},effectiveDate=${report.reportDate}")
 			reportDefinition.getDataSetDefinitions().clear();			
 			reportDefinition.addDataSetDefinition("test", datasetDefinition,
-					"startDate=${startDate},endDate=${endDate},location=${location}");
+					ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
 			
 		}
 		

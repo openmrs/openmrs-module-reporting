@@ -150,7 +150,7 @@ public class ManageIndicatorsController {
     	log.info("Setting cohort definition: " + cohortDefinition);
     	
     	// TODO We need to map the indicator 
-    	indicator.setCohortDefinition(cohortDefinition, "");
+    	indicator.setCohortDefinition(cohortDefinition, null);
     	
     	// Save the indicator to the database
     	Context.getService(IndicatorService.class).saveIndicator(indicator);

@@ -1,6 +1,5 @@
 package org.openmrs.module.reporting.web.controller;
 
-import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,30 +7,21 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.beans.propertyeditors.CustomNumberEditor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.indicator.CohortIndicator;
+import org.openmrs.module.reporting.web.model.IndicatorForm;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ModelAndViewDefiningException;
 import org.springframework.web.servlet.mvc.AbstractWizardFormController;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.Location;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.api.CohortService;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.evaluation.parameter.Mapped;
-import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.indicator.CohortIndicator;
-import org.openmrs.module.reporting.web.model.IndicatorForm;
-import org.openmrs.propertyeditor.ConceptEditor;
-import org.openmrs.propertyeditor.LocationEditor;
-import org.openmrs.propertyeditor.PatientIdentifierTypeEditor;
 
 
 
@@ -102,7 +92,7 @@ public class IndicatorWizardFormController extends AbstractWizardFormController 
 		else if (page == 2) { 
 						
 			IndicatorForm indicatorForm = (IndicatorForm) command;	
-			Map<String, String> parameterMapping = new HashMap<String,String>();
+			Map<String, Object> parameterMapping = new HashMap<String,Object>();
 			// Iterate over the cohort definitions parameters and create a parameter mapping
 			// By default we map the cohort definition parameters directly to the 
 			for (Parameter parameter : indicatorForm.getCohortDefinition().getParameters()) { 								

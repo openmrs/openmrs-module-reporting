@@ -55,7 +55,7 @@ public class CohortDefinitionDimension extends BaseDefinition implements CohortD
 	/**
      * @param cohortDefinition - The CohortDefinition to add
      */
-    public void addCohortDefinition(String key, CohortDefinition definition, String mappings) {
+    public void addCohortDefinition(String key, CohortDefinition definition, Map<String, Object> mappings) {
     	if (IndicatorUtil.containsIgnoreCase(getCohortDefinitions().keySet(), key)) {
     		throw new APIException("Dimension already contains an element named <" + key + ">");
     	}

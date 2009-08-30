@@ -3,7 +3,9 @@ package org.openmrs.module.reporting.web.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -108,8 +110,10 @@ public class IndicatorDatasetFormController {
 					Indicator indicator = (CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
 					if (indicator != null) { 					
 						// FIXME Hacked the mapping
-						String parameterMapping = "indicator.location=${dataset.location},indicator.date=${dataset.date}";
-
+						Map<String, Object> parameterMapping = new HashMap<String, Object>();
+						parameterMapping.put("indicator.location", "${dataset.location}");
+						parameterMapping.put("indicator.date", "${dataset.date}");
+						
 						// FIXME Assumes CohortIndicatorDataSetDefinition and CohortIndicator
 						dataSetDefinition.addCohortIndicator(
 								indicator.getName(),(CohortIndicator) indicator, parameterMapping);

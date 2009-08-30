@@ -14,6 +14,7 @@
 package org.openmrs.module.dataset.definition;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.openmrs.Cohort;
@@ -49,7 +50,7 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 	 * @param name key to refer by which to refer to this cohort
 	 * @param cohortDefinition The cohortDefinition for this column
 	 */
-	public void addRowDefinition(String key, String displayName, CohortDefinition cohortDefinition, String mappings) {
+	public void addRowDefinition(String key, String displayName, CohortDefinition cohortDefinition, Map<String, Object> mappings) {
 		rowCohortDataSetDefinition.getParameterizable().addDefinition(key, displayName, cohortDefinition, mappings);
 	}
 	
@@ -67,7 +68,7 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 	 * @param name key to refer by which to refer to this cohort
 	 * @param cohortDefinition The cohortDefinition for this column
 	 */
-	public void addColumnDefinition(String key, String displayName, CohortDefinition cohortDefinition, String mappings) {
+	public void addColumnDefinition(String key, String displayName, CohortDefinition cohortDefinition, Map<String, Object> mappings) {
 		columnCohortDataSetDefinition.getParameterizable().addDefinition(key, displayName, cohortDefinition, mappings);
 	}
 	
@@ -106,7 +107,7 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * @param rowCohortDataSetDefinition the rowCohortDataSetDefinition to set
 	 */
-	public void setRowCohortDataSetDefinition(CohortDataSetDefinition definition, String mappings) {
+	public void setRowCohortDataSetDefinition(CohortDataSetDefinition definition, Map<String, Object> mappings) {
 		this.rowCohortDataSetDefinition = new Mapped<CohortDataSetDefinition>(definition, mappings);
 	}
 	
@@ -134,7 +135,7 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * @param columnCohortDataSetDefinition the columnCohortDataSetDefinition to set
 	 */
-	public void setColumnCohortDataSetDefinition(CohortDataSetDefinition columnCohortDataSetDefinition, String mappings) {
+	public void setColumnCohortDataSetDefinition(CohortDataSetDefinition columnCohortDataSetDefinition, Map<String, Object> mappings) {
 		this.columnCohortDataSetDefinition = new Mapped<CohortDataSetDefinition>(columnCohortDataSetDefinition, mappings);
 	}	
 	

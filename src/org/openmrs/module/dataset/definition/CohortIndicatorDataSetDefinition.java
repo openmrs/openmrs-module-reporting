@@ -23,10 +23,8 @@ import java.util.Map;
 import org.openmrs.api.APIException;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.IndicatorDataSetColumn;
-import org.openmrs.module.dataset.column.SimpleDataSetColumn;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.CohortIndicator;
-import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.dimension.CohortDimension;
 import org.openmrs.module.indicator.dimension.DimensionSet;
 
@@ -97,7 +95,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	 * @param dimension the dimension to add
 	 * @throws APIException if the key already exists or is a reserved key
 	 */
-    public void addDimension(String key, CohortDimension dimension, String mappings) {
+    public void addDimension(String key, CohortDimension dimension, Map<String, Object> mappings) {
     	addDimension(key, new Mapped<CohortDimension>(dimension, mappings));
     }
     
@@ -146,7 +144,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	 * @param indicator the indicator to add
 	 * @throws APIException if the key already exists
 	 */
-    public void addCohortIndicator(CohortIndicator indicator, String mappings) {
+    public void addCohortIndicator(CohortIndicator indicator, Map<String, Object> mappings) {
     	addCohortIndicator(indicator.getUuid(), new Mapped<CohortIndicator>(indicator, mappings));
     }    
     
@@ -177,20 +175,9 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	 * @param indicator the indicator to add
 	 * @throws APIException if the key already exists
 	 */
-    public void addCohortIndicator(String key, CohortIndicator indicator, String mappings) {
+    public void addCohortIndicator(String key, CohortIndicator indicator, Map<String, Object> mappings) {
     	addCohortIndicator(key, new Mapped<CohortIndicator>(indicator, mappings));
     }
-    
-	/**
-	 * Adds a Indicator with the given key
-	 * @param key the key with which to associate this indicator
-	 * @param indicator the indicator to add
-	 * @throws APIException if the key already exists
-	 */
-    public void addCohortIndicator(String key, CohortIndicator indicator, Map<String, String> mappings) {
-    	addCohortIndicator(key, new Mapped<CohortIndicator>(indicator, mappings));
-    }
-
     
     /**
      * Remove the cohort indicator represented by the given indicator key.
@@ -290,7 +277,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
      * @param mappings 
      * 		The parameter mappings between indicator and dataset definition.
      */
-    public void addIndicator(String columnKey, String displayName, CohortIndicator indicator, String mappings) {
+    public void addIndicator(String columnKey, String displayName, CohortIndicator indicator, Map<String, Object> mappings) {
     	
     	// Add indicator
     	indicators.put(indicator.getUuid(), new Mapped<CohortIndicator>(indicator, mappings));

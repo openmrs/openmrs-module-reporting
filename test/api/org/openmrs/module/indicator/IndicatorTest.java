@@ -16,8 +16,6 @@ package org.openmrs.module.indicator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +37,7 @@ import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -101,7 +100,8 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.addParameter(new Parameter("location", "Location", Location.class));
 		dsd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-		rs.addDataSetDefinition("test", dsd, "location=${report.location},effectiveDate=${report.reportDate}");
+		rs.addDataSetDefinition("test", dsd, 
+				ParameterizableUtil.createParameterMappings("location=${report.location},effectiveDate=${report.reportDate}"));
 		
 		CohortIndicator indicator = new CohortIndicator();
 		indicator.addParameter(new Parameter("indicator.location", "Location", Location.class));
@@ -111,8 +111,9 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		
 		LocationCohortDefinition atSite = new LocationCohortDefinition();
 		atSite.addParameter(new Parameter("location", "location", Location.class));
-		indicator.setCohortDefinition(atSite, "location=${indicator.location}");
-		dsd.addCohortIndicator("patientsAtSite", indicator, "indicator.location=${location},indicator.effDate=${effectiveDate}");
+		indicator.setCohortDefinition(atSite, ParameterizableUtil.createParameterMappings("location=${indicator.location}"));
+		dsd.addCohortIndicator("patientsAtSite", indicator, 
+				ParameterizableUtil.createParameterMappings("indicator.location=${location},indicator.effDate=${effectiveDate}"));
 		
 		// Dimensions
 		CohortDefinitionDimension genderDimension = new CohortDefinitionDimension();		
@@ -126,13 +127,13 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		AgeCohortDefinition adult = new AgeCohortDefinition(15, null, null);
 		adult.setMinAge(15);
 		adult.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		ageDimension.addCohortDefinition("adult", adult, "effectiveDate=${ageDate}");
+		ageDimension.addCohortDefinition("adult", adult, ParameterizableUtil.createParameterMappings("effectiveDate=${ageDate}"));
 		
 		AgeCohortDefinition child = new AgeCohortDefinition(null, 14, null);
 		child.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		ageDimension.addCohortDefinition("child", child, "effectiveDate=${ageDate}");
+		ageDimension.addCohortDefinition("child", child, ParameterizableUtil.createParameterMappings("effectiveDate=${ageDate}"));
 		
-		dsd.addDimension("age", ageDimension, "ageDate=${indicator.effDate}");
+		dsd.addDimension("age", ageDimension, ParameterizableUtil.createParameterMappings("ageDate=${indicator.effDate}"));
 		
 		// Replace "patientsAtSite" with indicator
 		dsd.addColumnSpecification("1.A", "Male Adult", Object.class, indicator, "gender=male,age=adult");

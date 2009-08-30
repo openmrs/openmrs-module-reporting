@@ -80,14 +80,7 @@ public class ReportDefinition extends BaseDefinition {
 	/**
 	 * @param definition the DataSetDefinition to add
 	 */
-	public void addDataSetDefinition(String key, DataSetDefinition definition, Map<String, String> mappings) {
-		addDataSetDefinition(key, new Mapped<DataSetDefinition>(definition, mappings));
-	}
-
-	/**
-	 * @param definition the DataSetDefinition to add
-	 */
-	public void addDataSetDefinition(String key, DataSetDefinition definition, String mappings) {
+	public void addDataSetDefinition(String key, DataSetDefinition definition, Map<String, Object> mappings) {
 		addDataSetDefinition(key, new Mapped<DataSetDefinition>(definition, mappings));
 	}
 	
@@ -126,7 +119,7 @@ public class ReportDefinition extends BaseDefinition {
 	/**
 	 * @param baseCohortDefinition the baseCohortDefinition to set
 	 */
-	public void setBaseCohortDefinition(CohortDefinition cohortDefinition, String mappings) { 
+	public void setBaseCohortDefinition(CohortDefinition cohortDefinition, Map<String, Object> mappings) { 
 		this.baseCohortDefinition = new Mapped<CohortDefinition>(cohortDefinition, mappings);
 	}
 

@@ -25,19 +25,19 @@ public class CohortIndicatorDataSetEvaluator2Test extends BaseModuleContextSensi
 		CohortDefinition male = new GenderCohortDefinition("M");
 		
 		CohortDefinitionDimension gender = new CohortDefinitionDimension();
-		gender.addCohortDefinition("female", female, "");
-		gender.addCohortDefinition("male", male, "");
+		gender.addCohortDefinition("female", female, null);
+		gender.addCohortDefinition("male", male, null);
 		
 		ProgramStateCohortDefinition inProgram = new ProgramStateCohortDefinition();
 		inProgram.setProgram(Context.getProgramWorkflowService().getProgram(1));
 
-		CohortIndicator ind = new CohortIndicator("In HIV Program", null, new Mapped<ProgramStateCohortDefinition>(inProgram, ""), null, null);
+		CohortIndicator ind = new CohortIndicator("In HIV Program", null, new Mapped<ProgramStateCohortDefinition>(inProgram, null), null, null);
 		
 		CohortIndicatorDataSetDefinition2 dsd = new CohortIndicatorDataSetDefinition2();
-		dsd.addDimension("gender", new Mapped<CohortDefinitionDimension>(gender, ""));
-		dsd.addColumn("1", "Total in program", new Mapped<CohortIndicator>(ind, ""), "");
-		dsd.addColumn("1.a", "Males in program", new Mapped<CohortIndicator>(ind, ""), "gender=male");
-		dsd.addColumn("1.b", "Females in program", new Mapped<CohortIndicator>(ind, ""), "gender=female");
+		dsd.addDimension("gender", new Mapped<CohortDefinitionDimension>(gender, null));
+		dsd.addColumn("1", "Total in program", new Mapped<CohortIndicator>(ind, null), "");
+		dsd.addColumn("1.a", "Males in program", new Mapped<CohortIndicator>(ind, null), "gender=male");
+		dsd.addColumn("1.b", "Females in program", new Mapped<CohortIndicator>(ind, null), "gender=female");
 		
 		DataSet<?> ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		

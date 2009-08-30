@@ -15,10 +15,8 @@ package org.openmrs.module.reporting.web.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 
 /**
@@ -48,7 +46,7 @@ public class IndicatorForm {
     private CohortDefinition cohortDefinition = null;
     
     // Parameter to parameter mapping (for adding a child to parent)
-    private Map<String, String> parameterMapping = new HashMap<String, String>();
+    private Map<String, Object> parameterMapping = new HashMap<String, Object>();
 
     // Parameter to value mapping (for evaluating a parameterizable)  
     private Map<String, String> parameterValues = new HashMap<String, String>();
@@ -104,11 +102,11 @@ public class IndicatorForm {
 		this.cohortIndicator = cohortIndicator;
 	}
 
-	public Map<String, String> getParameterMapping() {
+	public Map<String, Object> getParameterMapping() {
 		return parameterMapping;
 	}
 
-	public void setParameterMapping(Map<String, String> parameterMapping) {
+	public void setParameterMapping(Map<String, Object> parameterMapping) {
 		this.parameterMapping = parameterMapping;
 	}
 

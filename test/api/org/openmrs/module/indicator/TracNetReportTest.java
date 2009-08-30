@@ -38,6 +38,7 @@ import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -68,7 +69,7 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		LocationCohortDefinition initialCohort = new LocationCohortDefinition();
 		initialCohort.setCalculationMethod(PatientLocationMethod.PATIENT_HEALTH_CENTER);
 		initialCohort.addParameter(new Parameter("location", "location", Location.class));
-		rs.setBaseCohortDefinition(initialCohort, "location=${report.location}");
+		rs.setBaseCohortDefinition(initialCohort, ParameterizableUtil.createParameterMappings("location=${report.location}"));
 
 		return rs;
 	}
@@ -79,7 +80,7 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		dsd.addParameter(new Parameter("dataSet.startDate", "DataSet Start Date", Date.class));
 		dsd.addParameter(new Parameter("dataSet.endDate", "DataSet End Date", Date.class));
 		
-		Map<String, String> paramMap = new HashMap<String, String>();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("dataSet.startDate", "${report.startDate}");
 		paramMap.put("dataSet.endDate", "${report.endDate}");
 		
@@ -112,14 +113,14 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		AgeCohortDefinition adult = new AgeCohortDefinition();
 		adult.setMinAge(15);
 		adult.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		ageDimension.addCohortDefinition("adult", adult, "effectiveDate=${ageDate}");
+		ageDimension.addCohortDefinition("adult", adult, ParameterizableUtil.createParameterMappings("effectiveDate=${ageDate}"));
 		
 		AgeCohortDefinition child = new AgeCohortDefinition();
 		child.setMaxAge(14);
 		child.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		ageDimension.addCohortDefinition("child", child, "effectiveDate=${ageDate}");
+		ageDimension.addCohortDefinition("child", child, ParameterizableUtil.createParameterMappings("effectiveDate=${ageDate}"));
 		
-		dsd.addDimension("age", ageDimension, "ageDate=${dataSet.startDate}");
+		dsd.addDimension("age", ageDimension, ParameterizableUtil.createParameterMappings("ageDate=${dataSet.startDate}"));
 	}
 	
 	public CohortIndicator setupIndicator(String key, CohortIndicatorDataSetDefinition dsd) {
@@ -130,7 +131,7 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		indicator.setLogicCriteria(null);
 		indicator.setAggregator(CountAggregator.class);
 		
-		Map<String, String> paramMap = new HashMap<String, String>();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("indicator.startDate", "${dataSet.startDate}");
 		paramMap.put("indicator.endDate", "${dataSet.endDate}");
 		
@@ -148,7 +149,7 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		cd.setAnyOrAll(GroupMethod.ANY);
 		cd.addParameter(new Parameter("sinceDate", "sinceDate", Date.class));
 		cd.addParameter(new Parameter("untilDate", "untilDate", Date.class));
-		i.setCohortDefinition(cd, "sinceDate=${indicator.endDate},untilDate=${indicator.endDate}");
+		i.setCohortDefinition(cd, ParameterizableUtil.createParameterMappings("sinceDate=${indicator.endDate},untilDate=${indicator.endDate}"));
 	}
 	
 	@Test

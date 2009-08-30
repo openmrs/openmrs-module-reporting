@@ -37,7 +37,7 @@ public class IndicatorReportDefinition extends ReportDefinition {
 	 * 
 	 * @param indicator
 	 */
-	public void addCohortIndicator(String columnKey, String displayName, CohortIndicator cohortIndicator, String parameterMapping) { 
+	public void addCohortIndicator(String columnKey, String displayName, CohortIndicator cohortIndicator, Map<String, Object> parameterMapping) { 
 
 		log.info("Adding indicator to report: " + columnKey + " " + displayName + " " + parameterMapping);
 		CohortIndicatorDataSetDefinition dataSetDefinition = getDataSetDefinition();

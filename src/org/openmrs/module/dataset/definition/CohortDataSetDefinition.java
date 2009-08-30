@@ -75,7 +75,7 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	 * @param displayName
 	 * @param cohortDefinition
 	 */
-	public void addDefinition(String key, String displayName, CohortDefinition definition, String mappings) {
+	public void addDefinition(String key, String displayName, CohortDefinition definition, Map<String, Object> mappings) {
 		addDefinition(key, displayName, new Mapped<CohortDefinition>(definition, mappings));
 	}
 	

@@ -66,7 +66,7 @@ public class RowPerProgramEnrollmentDatasetTest extends BaseModuleContextSensiti
 		ReportDefinition rs = new ReportDefinition();
 		rs.setName("Testing row-per-obs");
 		rs.setDescription("Tesing RowPerObsDataSet*");
-		rs.addDataSetDefinition("test", definition, (String)null);
+		rs.addDataSetDefinition("test", definition, null);
 		
 		Serializer serializer = OpenmrsUtil.getSerializer();
 		StringWriter writer = new StringWriter();

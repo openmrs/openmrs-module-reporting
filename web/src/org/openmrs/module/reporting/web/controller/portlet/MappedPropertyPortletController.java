@@ -61,7 +61,7 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 
 	    	// Retrieve the child property, or null
 	       	Parameterizable mappedObj = null;
-	       	Map<String, String> mappings = new HashMap<String, String>();
+	       	Map<String, Object> mappings = new HashMap<String, Object>();
 	       	
 	       	if (StringUtils.isEmpty(mappedUuid)) {
 	       		Mapped<Parameterizable> mapped = ParameterizableUtil.getMappedProperty(obj, property, currentKey);
@@ -84,7 +84,7 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
        	
 	       	if (mappedObj != null) {
 				for (Parameter p : mappedObj.getParameters()) {
-					String mappedVal = mappings.get(p.getName());
+					Object mappedObjVal = mappings.get(p.getName());
 					
 					Set<String> allowed  = new HashSet<String>();
 					for (Parameter parentParam : obj.getParameters()) {
@@ -94,7 +94,8 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 					}
 					allowedParams.put(p.getName(), allowed);
 					
-					if (mappedVal != null) {
+					if (mappedObjVal != null && mappedObjVal instanceof String) {
+						String mappedVal = (String) mappedObjVal;
 						if (EvaluationUtil.isExpression(mappedVal)) {
 							mappedVal = EvaluationUtil.stripExpression(mappedVal);
 							if (obj.getParameter(mappedVal) != null) {

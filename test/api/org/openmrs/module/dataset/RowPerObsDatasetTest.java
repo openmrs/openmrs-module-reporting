@@ -84,7 +84,7 @@ public class RowPerObsDatasetTest extends BaseModuleContextSensitiveTest {
 		ReportDefinition rs = new ReportDefinition();
 		rs.setName("Testing row-per-obs");
 		rs.setDescription("Tesing RowPerObsDataSet*");
-		rs.addDataSetDefinition("test", definition, (String)null);
+		rs.addDataSetDefinition("test", definition, null);
 		
 		Serializer serializer = OpenmrsUtil.getShortSerializer();
 		StringWriter writer = new StringWriter();

@@ -29,6 +29,7 @@ import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -56,13 +57,16 @@ public class ReportTest extends BaseModuleContextSensitiveTest {
 		CohortDataSetDefinition dsd = new CohortDataSetDefinition();
 		dsd.addParameter(new Parameter("d1", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("d2", "End Date", Date.class));
-		dsd.addDefinition("childAtStart", "Children at Start", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d1}"));
-		dsd.addDefinition("childAtEnd", "Children at End", new Mapped<CohortDefinition>(childOnDate, "effectiveDate=${d2}"));
+		dsd.addDefinition("childAtStart", "Children at Start", 
+				new Mapped<CohortDefinition>(childOnDate, ParameterizableUtil.createParameterMappings("effectiveDate=${d1}")));
+		dsd.addDefinition("childAtEnd", "Children at End", 
+				new Mapped<CohortDefinition>(childOnDate, ParameterizableUtil.createParameterMappings("effectiveDate=${d2}")));
 		
 		ReportDefinition report = new ReportDefinition();
 		report.addParameter(new Parameter("report.startDate", "Report Start Date", Date.class));
 		report.addParameter(new Parameter("report.endDate", "Report End Date", Date.class));
-		report.addDataSetDefinition("test", new Mapped<DataSetDefinition>(dsd, "d1=${report.startDate},d2=${report.endDate}"));
+		report.addDataSetDefinition("test", 
+				new Mapped<DataSetDefinition>(dsd, ParameterizableUtil.createParameterMappings("d1=${report.startDate},d2=${report.endDate}")));
 		
 		EvaluationContext ec = new EvaluationContext();
 		ec.addParameterValue("report.startDate", ymd.parse("1980-01-01"));

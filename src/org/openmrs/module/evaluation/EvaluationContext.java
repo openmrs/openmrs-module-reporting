@@ -119,10 +119,11 @@ public class EvaluationContext {
 			if (parameter == null) {
 				throw new ParameterException("Cannot find parameter with name <" + paramName + "> in " + child.getParameterizable());
 			}
-			String paramVal = child.getParameterMappings().get(paramName);
-			Object eval = EvaluationUtil.evaluateExpression(paramVal, initialContext, parameter.getType());
-			
-			ec.addParameterValue(paramName, eval);
+			Object paramVal = child.getParameterMappings().get(paramName);
+			if (paramVal instanceof String) {
+				paramVal = EvaluationUtil.evaluateExpression(paramVal.toString(), initialContext, parameter.getType());
+			}
+			ec.addParameterValue(paramName, paramVal);
 		}
 		return ec;
 	}

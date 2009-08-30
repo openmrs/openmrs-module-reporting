@@ -17,9 +17,9 @@ import org.openmrs.module.report.PeriodIndicatorReportDefinition;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.web.model.IndicatorForm;
+import org.openmrs.module.util.ParameterizableUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -108,7 +108,7 @@ public class PeriodIndicatorManagerController {
 						indicatorForm.getColumnKey(), 
 						indicatorForm.getDisplayName(), 
 						cohortIndicator,
-						"startDate=${startDate},endDate=${endDate},location=${location}");
+						ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
 			} 
 			else if ("remove".equalsIgnoreCase(action)) { 	
 				

@@ -14,7 +14,6 @@
 package org.openmrs.module.indicator;
 
 import java.util.Map;
-import java.util.UUID;
 
 import org.openmrs.logic.LogicCriteria;
 import org.openmrs.module.cohort.definition.CohortDefinition;
@@ -80,14 +79,7 @@ public class CohortIndicator extends BaseIndicator {
     /**
      * @param cohortDefinition the cohortDefinition to set
      */
-    public void setCohortDefinition(CohortDefinition cohortDefinition, Map<String, String> mappings) {
-    	this.cohortDefinition = new Mapped<CohortDefinition>(cohortDefinition, mappings);
-    }
-    
-    /**
-     * @param cohortDefinition the cohortDefinition to set
-     */
-    public void setCohortDefinition(CohortDefinition cohortDefinition, String mappings) {
+    public void setCohortDefinition(CohortDefinition cohortDefinition, Map<String, Object> mappings) {
     	this.cohortDefinition = new Mapped<CohortDefinition>(cohortDefinition, mappings);
     }
 	

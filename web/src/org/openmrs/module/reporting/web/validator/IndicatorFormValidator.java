@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.reporting.web.model.IndicatorForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -54,7 +53,7 @@ public class IndicatorFormValidator implements Validator {
 				indicatorForm.getCohortDefinition().getParameters();
 			for(Parameter parameter : parameters) {
 				
-				String value = indicatorForm.getParameterMapping().get(parameter.getName());
+				Object value = indicatorForm.getParameterMapping().get(parameter.getName());
 				log.info("value = '" + value + "'");
 				if (value == null || value.equals("")) { 
 					ValidationUtils.rejectIfEmpty(errors, "parameterMapping", "parameterMapping.required", "Must map each parameter");

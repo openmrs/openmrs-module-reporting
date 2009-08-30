@@ -333,7 +333,7 @@ public class ManageDatasetsController {
 
 	    	// Evaluate dataset report
 	    	ReportDefinition reportDefinition = new ReportDefinition();
-	    	reportDefinition.addDataSetDefinition("test", dataSetDefinition, "");
+	    	reportDefinition.addDataSetDefinition("test", dataSetDefinition, null);
 	    	ReportData reportData = Context.getService(ReportService.class).evaluate(reportDefinition, context);
 
 	    	ReportRenderer renderer = new CsvReportRenderer();

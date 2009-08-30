@@ -118,7 +118,7 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 		def.setName("test");
 		def.setRowCohortDataSetDefinition(ageDef, null);
 		def.setColumnCohortDataSetDefinition(genderDef, null);
-		schema.addDataSetDefinition("test", def, (String)null);
+		schema.addDataSetDefinition("test", def, null);
 		
 		EvaluationContext evalContext = new EvaluationContext();
 		evalContext.addParameterValue(dateParam.getName(), new Date());

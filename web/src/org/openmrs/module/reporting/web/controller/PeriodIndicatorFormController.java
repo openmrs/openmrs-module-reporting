@@ -102,7 +102,7 @@ public class PeriodIndicatorFormController {
 			
 			
 			CohortDefinition cohortDefinition = indicatorForm.getCohortDefinition();
-			Map<String, String> parameterMapping = indicatorForm.getParameterMapping();	
+			Map<String, Object> parameterMapping = indicatorForm.getParameterMapping();	
 			
 			cohortIndicator.setCohortDefinition(cohortDefinition, parameterMapping);
 			

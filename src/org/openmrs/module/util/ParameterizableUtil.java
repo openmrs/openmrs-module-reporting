@@ -5,8 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -30,7 +28,6 @@ import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
-import org.openmrs.propertyeditor.LocationEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 
 
@@ -265,4 +262,22 @@ public class ParameterizableUtil {
 		return null;
 	}	
 	
+	public static Map<String, Object> createParameterMappings(String paramString) {
+		Map<String, Object> m = new HashMap<String, Object>();
+		if (paramString != null) {
+			try {
+				String[] split = paramString.split(",");
+				for (int i=0; i<split.length; i++) {
+					String[] keyVal = split[i].split("=");
+					if (keyVal.length > 1) { // sanity check
+						m.put(keyVal[0], keyVal[1]);
+					}
+				}
+			}
+			catch (Exception e) {
+				throw new RuntimeException("Error while setting parameter mappings from String", e);
+			}
+		}
+		return m;
+	}
 }
