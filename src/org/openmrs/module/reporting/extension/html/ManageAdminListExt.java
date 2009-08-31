@@ -26,7 +26,7 @@ public class ManageAdminListExt extends AdministrationSectionExt {
 		map.put("module/reporting/reports/manageReports.form", "reporting.manageReports.title");
 		map.put("module/reporting/datasets/manageDataSets.form", "reporting.manageDataSets.title");
 		map.put("module/reporting/indicators/manageIndicators.form", "reporting.manageIndicators.title");
-		map.put("module/reporting/dimensions/manageDimensions.form", "reporting.manageDimensions.title");
+		map.put("module/reporting/indicators/manageDimensions.form", "reporting.manageDimensions.title");
 		map.put("module/reporting/cohorts/manageCohortDefinitions.form", "reporting.manageCohortDefinitions.title");
 		return map;
 	}

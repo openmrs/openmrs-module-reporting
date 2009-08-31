@@ -49,6 +49,8 @@ public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
     //***** INSTANCE METHODS *****
     
     public Number getValue() {
+    	if (cohortValues == null)
+    		return null;
     	Class<? extends Aggregator> aggregator = getIndicator().getAggregator();
     	if (aggregator == null) {
     		aggregator = CountAggregator.class;
@@ -57,6 +59,8 @@ public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
     }
     
 	public Number getValueForSubset(Cohort... filters) {
+		if (cohortValues == null)
+    		return null;
 		Class<? extends Aggregator> aggregator = getIndicator().getAggregator();
     	if (aggregator == null) {
     		aggregator = CountAggregator.class;

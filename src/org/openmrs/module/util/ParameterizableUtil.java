@@ -25,6 +25,7 @@ import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.indicator.Indicator;
+import org.openmrs.module.indicator.dimension.Dimension;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
@@ -53,6 +54,9 @@ public class ParameterizableUtil {
 		else if (Indicator.class.isAssignableFrom(type)) {
 			return Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);	
 		}
+		else if (Dimension.class.isAssignableFrom(type)) {
+			return Context.getService(IndicatorService.class).getDimensionByUuid(uuid);
+		}
 		else { 
 			throw new APIException("Unable to save parameterizable type " + type);
 		}		
@@ -79,6 +83,9 @@ public class ParameterizableUtil {
 		}
 		else if (Indicator.class.isAssignableFrom(parameterizable.getClass())) {
 			return Context.getService(IndicatorService.class).saveIndicator((Indicator)parameterizable);	
+		}
+		else if (Dimension.class.isAssignableFrom(parameterizable.getClass())) {
+			return Context.getService(IndicatorService.class).saveDimension((Dimension) parameterizable);
 		}
 		else { 
 			throw new APIException("Unable to save parameterizable type " + parameterizable.getClass());

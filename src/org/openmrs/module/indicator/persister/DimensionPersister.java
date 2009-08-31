@@ -1,4 +1,4 @@
-package org.openmrs.module.dimension.persister;
+package org.openmrs.module.indicator.persister;
 
 import java.util.List;
 

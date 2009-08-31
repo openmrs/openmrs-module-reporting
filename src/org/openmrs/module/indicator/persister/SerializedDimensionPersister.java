@@ -1,4 +1,4 @@
-package org.openmrs.module.dimension.persister;
+package org.openmrs.module.indicator.persister;
 
 import java.util.List;
 
@@ -54,28 +54,28 @@ public class SerializedDimensionPersister implements DimensionPersister {
 	}
 	
 	/**
-	 * @see org.openmrs.module.dimension.persister.DimensionPersister#getDimension(java.lang.Integer)
+	 * @see org.openmrs.module.indicator.persister.DimensionPersister#getDimension(java.lang.Integer)
 	 */
 	public Dimension getDimension(Integer id) {
 		return dao.getObject(Dimension.class, id);
 	}
 	
 	/**
-	 * @see org.openmrs.module.dimension.persister.DimensionPersister#getDimensionByUuid(java.lang.String)
+	 * @see org.openmrs.module.indicator.persister.DimensionPersister#getDimensionByUuid(java.lang.String)
 	 */
 	public Dimension getDimensionByUuid(String uuid) {
 		return dao.getObjectByUuid(Dimension.class, uuid);
 	}
 	
 	/**
-	 * @see org.openmrs.module.dimension.persister.DimensionPersister#getDimensions(java.lang.String, boolean)
+	 * @see org.openmrs.module.indicator.persister.DimensionPersister#getDimensions(java.lang.String, boolean)
 	 */
 	public List<Dimension> getDimensions(String name, boolean exactMatchOnly) {
 		return dao.getAllObjectsByName(Dimension.class, name, exactMatchOnly);
 	}
 	
 	/**
-	 * @see org.openmrs.module.dimension.persister.DimensionPersister#purgeDimension(org.openmrs.module.indicator.dimension.Dimension)
+	 * @see org.openmrs.module.indicator.persister.DimensionPersister#purgeDimension(org.openmrs.module.indicator.dimension.Dimension)
 	 */
 	public void purgeDimension(Dimension dimension) {
 		dao.purgeObject(dimension.getId());

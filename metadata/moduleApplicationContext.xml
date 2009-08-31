@@ -48,7 +48,7 @@
 		<property name="dao"><ref bean="serializedObjectDAO"/></property>
 		<property name="serializer"><ref bean="reportingSerializer"/></property>
 	</bean>
-	<bean id="serializedDimensionPersister" class="org.openmrs.module.dimension.persister.SerializedDimensionPersister">
+	<bean id="serializedDimensionPersister" class="org.openmrs.module.indicator.persister.SerializedDimensionPersister">
 		<property name="dao"><ref bean="serializedObjectDAO"/></property>
 		<property name="serializer"><ref bean="reportingSerializer"/></property>
 	</bean>
@@ -142,26 +142,5 @@
 		</property>
 	</bean>
 
-	
-	<!--  Base Dimension Service -->
-	<bean parent="serviceContext">
-		<property name="moduleService">
-			<list merge="true">
-				<value>org.openmrs.module.dimension.service.DimensionService</value> 
-				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-					<property name="transactionManager"><ref bean="transactionManager"/></property>
-					<property name="target">
-						<bean class="org.openmrs.module.dimension.service.DimensionServiceImpl"></bean>
-					</property>
-					<property name="preInterceptors">
-						<ref bean="serviceInterceptors" />
-					</property>
-					<property name="transactionAttributeSource">
-						<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
-					</property>
-				</bean>		
-			</list>
-		</property>
-	</bean>
 	
 </beans>
