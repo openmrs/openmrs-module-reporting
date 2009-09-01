@@ -43,8 +43,7 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
 	public void register() {
-		SerializedObjectDAO dao = 
-			Context.getRegisteredComponents(SerializedObjectDAO.class).iterator().next();
+		SerializedObjectDAO dao = Context.getRegisteredComponents(SerializedObjectDAO.class).iterator().next();
 		dao.registerSupportedType(CohortDefinition.class);
 		dao.registerSupportedType(DataSetDefinition.class);
 	}
@@ -55,8 +54,7 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 	 * @return
 	 */
 	public CohortDefinition getStrategy(String text) {
-		String query = Context.getService(ReportService.class).applyReportXmlMacros(text);
-		return CohortExpressionParser.parse(query);
+		return CohortExpressionParser.parse(text);
 	}
 	
 	/**
