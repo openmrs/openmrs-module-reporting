@@ -53,52 +53,7 @@ import org.springframework.web.servlet.view.RedirectView;
  */
 public class RunReportFormController extends SimpleFormController implements Validator {
 	
-	public class CommandObject {
-		
-		private ReportDefinition reportDefinition;
-		
-		private Map<String, String> userEnteredParams;
-		
-		private List<RenderingMode> renderingModes;
-		
-		private String selectedRenderer;
-		
-		public CommandObject() {
-			userEnteredParams = new LinkedHashMap<String, String>();
-		}
-		
-		public List<RenderingMode> getRenderingModes() {
-			return renderingModes;
-		}
-		
-		public void setRenderingModes(List<RenderingMode> rendereringModes) {
-			this.renderingModes = rendereringModes;
-		}
-		
-		public ReportDefinition getReportDefinition() {
-			return reportDefinition;
-		}
-		
-		public void setReportDefinition(ReportDefinition reportDefinition) {
-			this.reportDefinition = reportDefinition;
-		}
-		
-		public String getSelectedRenderer() {
-			return selectedRenderer;
-		}
-		
-		public void setSelectedRenderer(String selectedRenderer) {
-			this.selectedRenderer = selectedRenderer;
-		}
-		
-		public Map<String, String> getUserEnteredParams() {
-			return userEnteredParams;
-		}
-		
-		public void setUserEnteredParams(Map<String, String> userEnteredParams) {
-			this.userEnteredParams = userEnteredParams;
-		}
-	}
+
 	
 	@SuppressWarnings("unchecked")
 	public boolean supports(Class c) {
@@ -212,6 +167,48 @@ public class RunReportFormController extends SimpleFormController implements Val
 	}
 	
 		
-	
+	public class CommandObject {
+		
+		private ReportDefinition reportDefinition;		
+		private Map<String, String> userEnteredParams;		
+		private List<RenderingMode> renderingModes;		
+		private String selectedRenderer;
+		
+		public CommandObject() {
+			userEnteredParams = new LinkedHashMap<String, String>();
+		}
+		
+		public List<RenderingMode> getRenderingModes() {
+			return renderingModes;
+		}
+		
+		public void setRenderingModes(List<RenderingMode> rendereringModes) {
+			this.renderingModes = rendereringModes;
+		}
+		
+		public ReportDefinition getReportDefinition() {
+			return reportDefinition;
+		}
+		
+		public void setReportDefinition(ReportDefinition reportDefinition) {
+			this.reportDefinition = reportDefinition;
+		}
+		
+		public String getSelectedRenderer() {
+			return selectedRenderer;
+		}
+		
+		public void setSelectedRenderer(String selectedRenderer) {
+			this.selectedRenderer = selectedRenderer;
+		}
+		
+		public Map<String, String> getUserEnteredParams() {
+			return userEnteredParams;
+		}
+		
+		public void setUserEnteredParams(Map<String, String> userEnteredParams) {
+			this.userEnteredParams = userEnteredParams;
+		}
+	}	
 	
 }

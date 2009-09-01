@@ -6,16 +6,16 @@
 
 <%@ include file="localHeader.jsp" %>
 
-<h2>${reportData.reportSchema.name} </h2>
-<i>${reportData.reportSchema.description }</i>
+<h2>${reportData.definition.name} </h2>
+<i>${reportData.definition.description }</i>
 
 <br/>
 <br/>
 
-<b><spring:message code="reportingcompatibility.Report.parameters"/></b>
+<b><spring:message code="reporting.Report.parameters"/></b>
 <small>
 	<table>
-	    <c:forEach var="parameter" items="${reportData.reportSchema.reportParameters}" varStatus="varStatus">
+	    <c:forEach var="parameter" items="${reportData.definition.parameters}" varStatus="varStatus">
 	    <tr>
 	        <td>
 	            ${parameter.label}
@@ -38,31 +38,31 @@
 	<br/>
 	<form method="post">
 		<input type="hidden" name="action" value="rerender"/>
-		<spring:message code="reportingcompatibility.Report.run.renderAgain"/>
+		<spring:message code="reporting.Report.run.renderAgain"/>
 		<select name="renderingMode">
 			<c:forEach var="r" items="${otherRenderingModes}">
 				<option value="${r.renderer.class.name}!${r.argument}">${r.label}</option>
 			</c:forEach>
 		</select>
-		<input type="submit" value="<spring:message code="reportingcompatibility.Report.renderAgain"/>"/>
+		<input type="submit" value="<spring:message code="reporting.Report.renderAgain"/>"/>
 	</form>
 </c:if>
 
 <br/>
-<b class="boxHeader"><spring:message code="reportingcompatibility.Report.cohortReport.data"/></b>
+<b class="boxHeader"><spring:message code="reporting.Report.cohortReport.data"/></b>
 <div class="box">
     <table>
         <tr>
             <th>
-                <spring:message code="reportingcompatibility.Report.cohortReport.indicatorName"/>
+                <spring:message code="reporting.Report.cohortReport.indicatorName"/>
             </th>
             <th name="optional"></th>
             <th name="optional">
-                <spring:message code="reportingcompatibility.Report.cohortReport.indicatorDescription"/>
+                <spring:message code="reporting.Report.cohortReport.indicatorDescription"/>
             </th>
             <th></th>
             <th>
-                <spring:message code="reportingcompatibility.Report.cohortReport.indicatorValue"/>
+                <spring:message code="reporting.Report.cohortReport.indicatorValue"/>
             </th>
         </tr>
         <c:forEach var="dataSet" items="${reportData.dataSets}">
@@ -74,7 +74,7 @@
                     <td name="optional" >&nbsp;</td>
                     <td name="optional" >
                         <c:set var="hasDescription" value="false" />
-                        <c:forEach var="def" items="${reportData.reportSchema.dataSetDefinitions}">
+                        <c:forEach var="def" items="${reportData.definition.dataSetDefinitions}">
                             <c:forEach var="description" items="${def.descriptions}" varStatus="dVarStat">
                                 <c:if test="${cohortData.key == description.key }">
                                     &nbsp;${description.value } <c:set var="hasDescription" value="true" />

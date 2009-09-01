@@ -6,7 +6,7 @@
 
 <div style="width: 60%">
 	<h2>
-		<spring:message code="reportingcompatibility.Report.run.title"/>:
+		<spring:message code="reporting.Report.run.title"/>:
 		${report.reportDefinition.name}
 	</h2>
 	<i>${report.reportDefinition.description}</i>
@@ -26,7 +26,7 @@
 	<br/><br/>
 	
 	<form method="post">
-		<b><spring:message code="reportingcompatibility.Report.parameters"/></b>
+		<b><spring:message code="reporting.Report.parameters"/></b>
 		
 		<spring:nestedPath path="report">
 			<table>
@@ -54,7 +54,7 @@
 	        
 	        <br/><br/>
 			
-			<b><spring:message code="reportingcompatibility.Report.run.outputFormat"/></b>
+			<b><spring:message code="reporting.Report.run.outputFormat"/></b>
 			<spring:bind path="selectedRenderer">
 	            <select name="${status.expression}">
 	                <c:forEach var="r" items="${report.renderingModes}">
@@ -71,6 +71,6 @@
 		
 		<br/>
 		<br/>
-		<input type="submit" value="<spring:message code="reportingcompatibility.Report.run.button"/>" style="margin-left: 9em"/>
+		<input type="submit" value="<spring:message code="reporting.Report.run.button"/>" style="margin-left: 9em"/>
 	</form>
 </div>

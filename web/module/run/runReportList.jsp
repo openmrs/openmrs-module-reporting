@@ -1,21 +1,19 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="localHeader.jsp"%>
 
-
-
 <openmrs:require privilege="Run Reports" otherwise="/login.htm" redirect="/admin/reports/runReport.list" />
 
-<h2><spring:message code="reportingcompatibility.Report.list.title" /></h2>
+<h2><spring:message code="reporting.Report.list.title" /></h2>
 
 <br/>
 
 <c:if test="${fn:length(reports) == 0}">
-	<spring:message code="reportingcompatibility.Report.noReports" />
+	<spring:message code="reporting.Report.noReports" />
 </c:if>
 
 <c:if test="${fn:length(reports) != 0}">
     <div class="boxHeader">
-        <b><spring:message code="reportingcompatibility.Report.list.pick" /></b>
+        <b><spring:message code="reporting.Report.list.pick" /></b>
     </div>
     <div class="box">
 	<table cellpadding="2" cellspacing="0">
