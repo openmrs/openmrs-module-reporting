@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
@@ -33,6 +35,8 @@ import org.openmrs.module.report.ReportDefinition;
  * ReportRenderer that renders to a delimited text file
  */
 public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer {
+	
+	protected final Log log = LogFactory.getLog(getClass());
 	
 	/**
 	 * @return the filename extension for the particular type of delimited file

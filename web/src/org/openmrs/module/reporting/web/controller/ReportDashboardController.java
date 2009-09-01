@@ -47,12 +47,21 @@ public class ReportDashboardController {
     }    
 
     
+    /**
+     * 
+     * @param model
+     */
     @RequestMapping("/module/reporting/viewDemographicData")
     public void showDemographicData(ModelMap model) {     
     	// not implemented yet    	
     }
 
-    
+
+    /**
+     * 
+     * @param cohort
+     * @param model
+     */
     @RequestMapping("/module/reporting/showProgramEnrollementData")
     public void showProgramEnrollmentData(
     		@RequestParam(required=false, value="cohort") String cohort,
@@ -67,6 +76,12 @@ public class ReportDashboardController {
     }    
     
     
+    /**
+     * 
+     * @param cohort
+     * @param model
+     * @return
+     */
     @RequestMapping("/module/reporting/manageCohortDashboard")
     public String manageCohortDashboard(
     		@RequestParam(required=false, value="cohort") String cohort,
@@ -94,10 +109,6 @@ public class ReportDashboardController {
     		else 
     			model.addAttribute("cohort", Context.getPatientSetService().getAllPatients());    		
     	}
-    	
-    	
-    	
-    	
     	return "/module/reporting/dashboard/cohortDashboard";
     	
     }

@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -37,6 +38,8 @@ import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
+import org.openmrs.reporting.AbstractReportObject;
+import org.openmrs.reporting.ReportObjectService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -44,9 +47,29 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  */
 public class SerializationTest extends BaseModuleContextSensitiveTest {
 	
+	
+	
+	@Override
+	public Boolean useInMemoryDatabase() {
+		return false;
+	}
+
+
 	// Logger
 	private Log log = LogFactory.getLog(this.getClass());
 		
+	@Test
+	public void shouldReturnDataExportsWithUuids() { 
+		
+		List<AbstractReportObject> reportObjects = Context.getService(ReportObjectService.class).getAllReportObjects();
+		
+		for (AbstractReportObject reportObject : reportObjects) { 
+			log.info("object " + reportObject.getName() + " " + reportObject.getType() + " " + reportObject.getUuid());			
+		}
+		
+	}
+	
+	
 	@Test
 	public void shouldReturnSameClassName(){
 		User admin = Context.getAuthenticatedUser();
