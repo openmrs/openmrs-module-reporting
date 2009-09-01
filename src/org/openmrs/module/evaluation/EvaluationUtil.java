@@ -109,22 +109,24 @@ public class EvaluationUtil {
 		
 		// Iterate over the expression and create a List of elements
 		char[] chars = expression.toCharArray();
+		boolean inExpression = false;
 		for (int i=0; i<chars.length; i++) {
 			char c = chars[i];
 			boolean isStartOfExpr = (c == '$' && chars.length > (i+1) && chars[i+1] == '{');
-			if (isStartOfExpr || c == '}') {
+			if (isStartOfExpr) {
 				if (curr.length() > 0) {
-					if (c == '}') {
-						elements.add(evaluateParameterExpression(curr.toString(), parameters, type));
-					}
-					else {
-						elements.add(curr.toString());
-					}
+					elements.add(curr.toString());
 					curr = new StringBuilder();
 				}
-				if (isStartOfExpr) {
-					i++;
+				inExpression = true;
+				i++;
+			}
+			else if (c == '}' && inExpression) {
+				if (curr.length() > 0) {
+					elements.add(evaluateParameterExpression(curr.toString(), parameters, type));
+					curr = new StringBuilder();
 				}
+				inExpression = false;
 			}
 			else {
 				curr.append(c);
