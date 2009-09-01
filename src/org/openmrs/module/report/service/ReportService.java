@@ -15,7 +15,6 @@ package org.openmrs.module.report.service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Properties;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
@@ -119,30 +118,7 @@ public interface ReportService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	public List<RenderingMode> getRenderingModes(ReportDefinition schema);
 
-	
-	/**
-	 * Gets the macros
-	 * 
-	 * @return macros
-	 */
-	@Transactional(readOnly = true)
-	public Properties getReportXmlMacros();
-	
-	/**
-	 * Saves the macros
-	 * 
-	 * @param macros the macros to set
-	 */
-	public void saveReportXmlMacros(Properties macros);
-	
-	/**
-	 * Applies the report xml macros to the input, and returns it.
-	 * 
-	 * @param input The text (presumably a report schema xml definition) that you want to apply
-	 *            macros to
-	 * @return the result of applying macro substitutions to input
-	 */
-	public String applyReportXmlMacros(String input);
+
 
 }
 
