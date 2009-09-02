@@ -36,8 +36,8 @@
 					<th>Type</th>
 					<th>Description</th>
 					<th>Author</th>
-					<th>Last modified</th>
-					<th>First created</th>
+					<th>Last Modified</th>
+					<th>Created</th>
 					<th>Preview</th>
 					<th>Render</th>
 					<th>Remove</th>

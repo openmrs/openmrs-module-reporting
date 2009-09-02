@@ -77,6 +77,8 @@ $(document).ready(function() {
 							<label class="desc" for="uuid">ID</label>
 							<div>
 								${indicatorForm.cohortIndicator.uuid}
+								<form:hidden path="cohortIndicator.id"/>
+								<form:hidden path="cohortIndicator.uuid"/>
 							</div>
 						</li>		
 					</c:if>

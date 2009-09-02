@@ -8,7 +8,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.indicator.CohortIndicator;
@@ -60,12 +62,18 @@ public class PeriodIndicatorFormController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView setupForm(
 		@RequestParam(value = "uuid", required = false) String uuid) {
-
+		log.info("Setup form");
 		return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
 	}
 
+	/**
+	 * Populate the cohort definitions that are available to this indicator.
+	 * 
+	 * @return	a list of cohort definitions
+	 */
 	@ModelAttribute("cohortDefinitions")
     public Collection<CohortDefinition> populateCohortDefinitions() {
+		log.info("Populate cohort definitions");
         return Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false);
     }
 	
@@ -83,31 +91,22 @@ public class PeriodIndicatorFormController {
 			@ModelAttribute("indicatorForm") IndicatorForm indicatorForm,
 			BindingResult bindingResult) {
 
-		log.info("action: " + action);
-		
 		Boolean isSave = "save".equalsIgnoreCase(action);
 		CohortIndicator cohortIndicator = indicatorForm.getCohortIndicator();
-		
-		
-		log.info("Parameter mapping: " + indicatorForm.getParameterMapping());
-		
-		if (isSave) { 
-			log.info("saving indicator" + cohortIndicator);
-			
+				
+		if (isSave) { 			
 			// validate the parameter mapping
 			new IndicatorFormValidator().validateParameterMapping(indicatorForm, bindingResult);
 
 			if (bindingResult.hasErrors()) 
 				return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
 			
+			// Assemble to cohort indicator
+			cohortIndicator.setCohortDefinition(
+					indicatorForm.getCohortDefinition(), 
+					indicatorForm.getParameterMapping());
 			
-			CohortDefinition cohortDefinition = indicatorForm.getCohortDefinition();
-			Map<String, Object> parameterMapping = indicatorForm.getParameterMapping();	
-			
-			cohortIndicator.setCohortDefinition(cohortDefinition, parameterMapping);
-			
-			// Save the report definition with the new indicator
-			Context.getService(IndicatorService.class).saveIndicator(indicatorForm.getCohortIndicator());			
+			Context.getService(IndicatorService.class).saveIndicator(cohortIndicator);			
 			return new ModelAndView("redirect:/module/reporting/closeWindow.htm");
 		}
 
@@ -123,28 +122,39 @@ public class PeriodIndicatorFormController {
 	 * @return
 	 */
 	@ModelAttribute("indicatorForm")
-	public IndicatorForm formBackingObject(	
+	public IndicatorForm populateFormBackingObject(	
 			@RequestParam(value = "uuid", required=false) String uuid) { 
 
 		log.info("formBackingObject(): ");		
 		
+		log.info("Lookup indicator by UUID: " + uuid);
 		IndicatorForm indicatorForm = new IndicatorForm();
-
-		
 		Indicator indicator = 
 			Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+
+		log.info("Found indicator: " + indicator);
 		
 		// If indicator does not exist, we just create a new one
 		if (indicator != null ) { 
-			log.info("formBackingObject(): found indicator ");		
-			if (!indicator.getClass().isAssignableFrom(PeriodCohortIndicator.class)) 
-				indicatorForm.setCohortIndicator((PeriodCohortIndicator)indicator);
+			log.info("formBackingObject(): found indicator " + indicator);	
+			if (PeriodCohortIndicator.class.isAssignableFrom(indicator.getClass())) {
+				PeriodCohortIndicator cohortIndicator = (PeriodCohortIndicator)indicator;
+				indicatorForm.setCohortIndicator(cohortIndicator);
+				if (cohortIndicator.getCohortDefinition() != null) { 
+					indicatorForm.setCohortDefinition(cohortIndicator.getCohortDefinition().getParameterizable());
+					indicatorForm.setParameterMapping(cohortIndicator.getCohortDefinition().getParameterMappings());
+				}
+			}
+			
+			else 
+				throw new APIException("Unable to edit a <" + indicator.getClass().getName() + "> indicator using the period indicator form");
 		} 
 		// Otherwise, we populate the form bean with the indicator
 		else {			
 			log.info("formBackingObject(): creating new indicator ");		
-			if (indicatorForm.getCohortIndicator() == null)  	
-				indicatorForm.setCohortIndicator(new PeriodCohortIndicator());			
+			if (indicatorForm.getCohortIndicator() == null)  { 
+				indicatorForm.setCohortIndicator(new PeriodCohortIndicator());
+			}
 		}		
 		return indicatorForm;
 	}	
