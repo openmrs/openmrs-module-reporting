@@ -111,6 +111,10 @@ public class DateUtil {
 	 */
 	public static String getTimespan(Date now, Date then) {
 
+		if (now == null || then == null) { 
+			return "";
+		}
+		
 		// Time span between two dates (in seconds)
 		long delta = (now.getTime() - then.getTime()) / MILLISECOND;
 
