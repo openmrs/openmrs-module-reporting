@@ -210,8 +210,8 @@ public class ManageDatasetsController {
     	
     	dataSetDefinition = 
     		service.saveDataSetDefinition(dataSetDefinition);
-    	
-    	return "redirect:/module/reporting/manageDatasets.list";
+
+    	return "redirect:/module/reporting/datasets/manageDataSets.list";
         //return "redirect:/module/reporting/showDataset.form?uuid="+dataSetDefinition.getUuid();
     }
     
