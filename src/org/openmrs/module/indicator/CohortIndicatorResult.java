@@ -35,7 +35,7 @@ public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
     private CohortIndicator indicator;
     private Map<CohortDimension, String> dimensions;
     private EvaluationContext context;
-    private Map<Integer, Number> cohortValues;
+    private Map<Integer, Number> cohortValues = new HashMap<Integer, Number>();
 
     //***** CONSTRUCTORS *****
     
@@ -49,7 +49,7 @@ public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
     //***** INSTANCE METHODS *****
     
     public Number getValue() {
-    	if (cohortValues == null)
+		if (cohortValues == null)
     		return null;
     	Class<? extends Aggregator> aggregator = getIndicator().getAggregator();
     	if (aggregator == null) {
