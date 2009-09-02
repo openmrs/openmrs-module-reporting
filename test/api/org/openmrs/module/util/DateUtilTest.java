@@ -50,14 +50,25 @@ public class DateUtilTest {
 
 	// Logger
 	private Log log = LogFactory.getLog(this.getClass());
-		
+
+	
+	@Test
+	public void shouldReturnInTheFuture() { 
+		Calendar calendar = Calendar.getInstance();
+		Date now = new Date();
+		calendar.setTime(now);
+		calendar.add(Calendar.SECOND, +1);		
+		Assert.assertEquals("in the future", DateUtil.getTimespan(now, calendar.getTime()));
+	}
+	
+	
 	@Test
 	public void shouldReturnOneSecondAgo() { 
 		Calendar calendar = Calendar.getInstance();
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.SECOND, -1);		
-		Assert.assertEquals("one second ago", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("one second ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	
@@ -67,7 +78,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.SECOND, -30);		
-		Assert.assertEquals("30 seconds ago", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("30 seconds ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	
@@ -77,7 +88,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.MINUTE, -40);		
-		Assert.assertEquals("40 minutes ago", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("40 minutes ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 	
 	@Test
@@ -86,7 +97,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.MINUTE, -65);		
-		Assert.assertEquals("an hour ago", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("an hour ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 	
 	@Test
@@ -95,7 +106,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.HOUR, -6);		
-		Assert.assertEquals("6 hours ago", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("6 hours ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	
@@ -105,7 +116,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.DAY_OF_MONTH, -1);
-		Assert.assertEquals("yesterday", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("yesterday", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	@Test
@@ -114,7 +125,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.DAY_OF_MONTH, -10);
-		Assert.assertEquals("10 days ago", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("10 days ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 	
 	@Test
@@ -123,7 +134,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.MONTH, -1);
-		Assert.assertEquals("one month ago", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("one month ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	@Test
@@ -132,7 +143,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.MONTH, -5);
-		Assert.assertEquals("5 months ago", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("5 months ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}	
 	@Test
 	public void shouldReturnOneYearAgo() { 
@@ -140,7 +151,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.YEAR, -1);
-		Assert.assertEquals("one year ago", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("one year ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 	
 	@Test
@@ -149,7 +160,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.YEAR, -10);
-		Assert.assertEquals("10 years ago", DateUtil.getRelativeTime(now, calendar.getTime()));
+		Assert.assertEquals("10 years ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}	
 	
 }

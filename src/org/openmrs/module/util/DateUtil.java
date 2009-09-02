@@ -5,7 +5,6 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.commons.Timespan;
 
 /**
  * A utility class for common date operations
@@ -13,6 +12,14 @@ import org.databene.commons.Timespan;
 public class DateUtil {
 
 	protected static Log log = LogFactory.getLog(DateUtil.class);
+
+	// Added for readability (see below)
+	final static int MILLISECOND = 1000;
+	final static int SECOND = 1;
+	final static int MINUTE = 60 * SECOND;
+	final static int HOUR = 60 * MINUTE;
+	final static int DAY = 24 * HOUR;
+	final static int MONTH = 30 * DAY;
 
 	/**
 	 * Returns the passed date, at the specified time
@@ -84,24 +91,32 @@ public class DateUtil {
 
 	
 	/**
-	 * Returns a string that represents the relative time between the given dates 
-	 * (e.g. one hour ago, 5 weeks ago).  
+	 * Get a string that represents the time span that has elapsed 
+	 * between now and the given date.
+	 * 
+	 * @param then
+	 * @return	a string that represents the timespan between two dates
+	 */
+	public static String getTimespan(Date then) { 
+		return getTimespan(new Date(), then);
+	}
+	
+	/**
+	 * Returns a string that represents the time span that has elapsed 
+	 * between the given dates (e.g. one hour ago, 5 weeks ago).  
 	 * 
 	 * @param now
 	 * @param then
-	 * @return	a string that represents the relative time between the given dates
+	 * @return	a string that represents the timespan between two dates
 	 */
-	public static String getRelativeTime(Date now, Date then) {
-		int MILLISECOND = 1000;
-		final int SECOND = 1;
-		final int MINUTE = 60 * SECOND;
-		final int HOUR = 60 * MINUTE;
-		final int DAY = 24 * HOUR;
-		final int MONTH = 30 * DAY;
+	public static String getTimespan(Date now, Date then) {
 
 		// Time span between two dates (in seconds)
 		long delta = (now.getTime() - then.getTime()) / MILLISECOND;
 
+		if (delta < 0) { 
+			return "in the future";
+		}
 		if (delta < 1 * MINUTE) {
 			return (delta / SECOND) == 1 ? "one second ago" : (delta / SECOND) + " seconds ago";
 		}

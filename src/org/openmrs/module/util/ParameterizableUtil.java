@@ -23,6 +23,7 @@ import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.evaluation.parameter.ParameterException;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.dimension.Dimension;
@@ -143,15 +144,19 @@ public class ParameterizableUtil {
 				
 				String text = parameterStrings.get(parameter.getName());
 				PropertyEditor editor = null;
-				if(parameter.getType().isAssignableFrom(Date.class)) { 
+				if(Date.class.isAssignableFrom(parameter.getType())) { 
 					editor = new CustomDateEditor(Context.getDateFormat(), true);
 					editor.setAsText(text);
 					parameterValues.put(parameter.getName(), editor.getValue());
 				} 
-				else if (parameter.getType().isAssignableFrom(Location.class)) { 
+				else if (Location.class.isAssignableFrom(parameter.getType())) { 
 					Location location = Context.getLocationService().getLocationByUuid(text);
 					parameterValues.put(parameter.getName(), location);
 				}
+				else { 					
+					throw new ParameterException("Unable to handle " + parameter.getName());
+				}
+
 				// ==========================================================================
 				//
 				// TODO We need many more of these in order to support more parameter types
