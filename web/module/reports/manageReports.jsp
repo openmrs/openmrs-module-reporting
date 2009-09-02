@@ -47,16 +47,12 @@
 							<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
 								${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReportEditor.form?uuid=${reportDefinition.uuid}
 							</c:when>
+							<c:when test="${reportDefinition.class.simpleName == 'IndicatorReportDefinition'}">
+								${pageContext.request.contextPath}/module/reporting/reports/indicatorReportEditor.form?uuid=${reportDefinition.uuid}
+							</c:when>
 							<c:otherwise>
-								<c:choose>
-									<c:when test="${reportDefinition.class.simpleName == 'IndicatorReportDefinition'}">
-										${pageContext.request.contextPath}/module/reporting/reports/indicatorReportEditor.form?uuid=${reportDefinition.uuid}
-									</c:when>
-									<c:otherwise>
-										${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}
-									</c:otherwise>
-								</c:choose>
-							</c:otherwise>
+								${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}
+							</c:otherwise>							
 						</c:choose>
 					</c:set>						
 

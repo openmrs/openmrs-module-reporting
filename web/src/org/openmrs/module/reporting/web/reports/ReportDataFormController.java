@@ -39,6 +39,7 @@ import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.web.renderers.CohortReportWebRenderer;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
+import org.openmrs.report.CohortDataSet;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -84,9 +85,10 @@ public class ReportDataFormController extends SimpleFormController {
 		ReportData report = (ReportData) request.getSession().getAttribute(ReportingConstants.OPENMRS_REPORT_DATA);
 		
 		// If we're authorized to render a report, the report exists, and the user has requested 
-		// "re-render" as the action, then we render the report using the appropriate report renderer 
+		// "rerender" as the action, then we render the report using the appropriate report renderer 
 		if (Context.isAuthenticated() && report != null && "rerender".equals(request.getParameter("action"))) {
 			ReportDefinition reportDefinition = report.getDefinition();
+			ReportService reportService = (ReportService) Context.getService(ReportService.class);
 			String renderClass = request.getParameter("renderingMode");
 			String renderArg = "";
 			
@@ -98,8 +100,7 @@ public class ReportDataFormController extends SimpleFormController {
 			}
 			
 			// Figure out how to render the report
-			//ReportRenderer renderer = reportService.getReportRenderer(renderClass);
-			ReportRenderer renderer = new IndicatorReportRenderer();
+			ReportRenderer renderer = reportService.getReportRenderer(renderClass);
 			
 			log.info("Re-rendering report with " + renderer.getClass() + " and argument " + renderArg);
 			
@@ -148,7 +149,7 @@ public class ReportDataFormController extends SimpleFormController {
 		if (null != report) {
 			return report;
 		} else {
-			// Avoid the annoying NPE
+			// Avoid the annoying NPE			
 			EvaluationContext context = new EvaluationContext();
 			PatientDataSetDefinition dsd = new PatientDataSetDefinition();
 			MapDataSet emptyData = new MapDataSet(dsd, context);			

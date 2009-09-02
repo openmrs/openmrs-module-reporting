@@ -110,6 +110,25 @@ public interface ReportService extends OpenmrsService {
 	public Collection<ReportRenderer> getReportRenderers();
 	
 	/**
+	 * Returns the preferred ReportRenderer for the given class name.
+	 * 
+	 * @param objectType
+	 * @return	the preferred ReportRenderer for the given class name
+	 */
+	@Transactional(readOnly = true)
+	public ReportRenderer getReportRenderer(String className);
+	
+	/**
+	 * Returns the preferred ReportRenderer for the given object type.
+	 * 
+	 * @param objectType
+	 * @return	the preferred ReportRenderer for the given object type
+	 */
+	@Transactional(readOnly = true)
+	public ReportRenderer getPreferredReportRenderer(Class<Object> objectType);
+	
+	
+	/**
 	 * Returns a List of {@link RenderingMode}s that the passed {@link ReportDefinition} supports, in
 	 * their preferred order
 	 * 

@@ -5,18 +5,20 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.databene.commons.Timespan;
 
 /**
  * A utility class for common date operations
  */
 public class DateUtil {
-	
+
 	protected static Log log = LogFactory.getLog(DateUtil.class);
-	
+
 	/**
 	 * Returns the passed date, at the specified time
 	 */
-	public static Date getDateTime(int year, int mon, int day, int hr, int min, int sec, int ms) {
+	public static Date getDateTime(int year, int mon, int day, int hr, int min,
+			int sec, int ms) {
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.YEAR, year);
 		c.set(Calendar.MONTH, mon);
@@ -27,11 +29,12 @@ public class DateUtil {
 		c.set(Calendar.MILLISECOND, ms);
 		return c.getTime();
 	}
-	
+
 	/**
 	 * Returns the passed date, at the specified time
 	 */
-	public static Date getDateTime(Date d, int hour, int minute, int second, int millisecond) {
+	public static Date getDateTime(Date d, int hour, int minute, int second,
+			int millisecond) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
 		c.set(Calendar.HOUR_OF_DAY, hour);
@@ -40,21 +43,21 @@ public class DateUtil {
 		c.set(Calendar.MILLISECOND, millisecond);
 		return c.getTime();
 	}
-	
+
 	/**
 	 * Returns the last second of the day
 	 */
 	public static Date getEndOfDay(Date d) {
 		return getDateTime(d, 23, 59, 59, 999);
 	}
-	
+
 	/**
 	 * Returns a date that represents the very beginning of the passed date
 	 */
 	public static Date getStartOfDay(Date d) {
 		return getDateTime(d, 0, 0, 0, 0);
 	}
-	
+
 	/**
 	 * Returns a date that is the very beginning of the first of the month,
 	 * given the passed date and adjustment
@@ -66,10 +69,10 @@ public class DateUtil {
 		c.add(Calendar.MONTH, monthAdjustment);
 		return c.getTime();
 	}
-	
+
 	/**
-	 * Returns a date that is the very end of the last of the month,
-	 * given the passed date and adjustment
+	 * Returns a date that is the very end of the last of the month, given the
+	 * passed date and adjustment
 	 */
 	public static Date getEndOfMonth(Date d, int monthAdjustment) {
 		Calendar c = Calendar.getInstance();
@@ -78,4 +81,56 @@ public class DateUtil {
 		c.add(Calendar.MONTH, monthAdjustment);
 		return c.getTime();
 	}
+
+	
+	/**
+	 * Returns a string that represents the relative time between the given dates 
+	 * (e.g. one hour ago, 5 weeks ago).  
+	 * 
+	 * @param now
+	 * @param then
+	 * @return	a string that represents the relative time between the given dates
+	 */
+	public static String getRelativeTime(Date now, Date then) {
+		int MILLISECOND = 1000;
+		final int SECOND = 1;
+		final int MINUTE = 60 * SECOND;
+		final int HOUR = 60 * MINUTE;
+		final int DAY = 24 * HOUR;
+		final int MONTH = 30 * DAY;
+
+		// Time span between two dates (in seconds)
+		long delta = (now.getTime() - then.getTime()) / MILLISECOND;
+
+		if (delta < 1 * MINUTE) {
+			return (delta / SECOND) == 1 ? "one second ago" : (delta / SECOND) + " seconds ago";
+		}
+		if (delta < 2 * MINUTE) {
+			return "a minute ago";
+		}
+		if (delta < 45 * MINUTE) {
+			return (delta / MINUTE) + " minutes ago";
+		}
+		if (delta < 90 * MINUTE) {
+			return "an hour ago";
+		}
+		if (delta < 24 * HOUR) {
+			return (delta / HOUR) + " hours ago";
+		}
+		if (delta < 48 * HOUR) {
+			return "yesterday";
+		}
+		if (delta < 30 * DAY) {
+			return (delta / DAY) + " days ago";
+		}
+		if (delta < 12 * MONTH) {
+			int months = (int) (delta / (DAY * 30));
+			return months <= 1 ? "one month ago" : months + " months ago";
+		} else {
+			int years = (int) (delta / (DAY * 365));
+			return years <= 1 ? "one year ago" : years + " years ago";
+		}
+
+	}
+
 }

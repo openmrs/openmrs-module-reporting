@@ -21,12 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.openmrs.Cohort;
+import org.openmrs.annotation.Handler;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
-import org.openmrs.module.dataset.MapDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
@@ -34,6 +32,7 @@ import org.openmrs.module.report.ReportDefinition;
 /**
  * A Default Renderer Implementation that aims to support all ReportDefinitions
  */
+@Handler
 public class IndicatorReportRenderer extends AbstractReportRenderer {
 	
 		

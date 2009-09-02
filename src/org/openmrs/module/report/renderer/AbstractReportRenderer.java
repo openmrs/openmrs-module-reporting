@@ -40,21 +40,6 @@ public abstract class AbstractReportRenderer implements ReportRenderer  {
 	public List<String> getDisplayColumns() { 
 		return displayColumns;
 	}
-	
-	/**
-	 * Convenience method used to escape a string of text.
-	 * 
-	 * @param	text 	The text to escape.
-	 * @return	The escaped text.
-	 */
-	public String escape(String text) {
-		if (text == null) {
-			return null;
-		}
-		else {
-			return text.replaceAll("\"", "\\\"");
-		}
-	}	
 
 	/**
 	 * 

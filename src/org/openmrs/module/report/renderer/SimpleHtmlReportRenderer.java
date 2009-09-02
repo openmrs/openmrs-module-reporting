@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.openmrs.Cohort;
+import org.openmrs.annotation.Handler;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -32,6 +33,7 @@ import org.openmrs.module.report.ReportDefinition;
 /**
  * A Default Renderer Implementation that aims to support all ReportDefinitions
  */
+@Handler
 public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 	
 		

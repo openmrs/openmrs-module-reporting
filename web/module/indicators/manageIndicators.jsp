@@ -61,9 +61,25 @@ $(document).ready(function() {
 			</thead>
 			<tbody>
 				<c:forEach items="${indicators}" var="indicator" varStatus="status">
+				
+					<c:set var="editUrl">
+						<c:choose>
+							<c:when test="${indicator.class.simpleName == 'PeriodCohortIndicator'}">
+								${pageContext.request.contextPath}/module/reporting/indicators/periodIndicator.form?uuid=${indicator.uuid}
+							</c:when>
+							<c:when test="${indicator.class.simpleName == 'CohortIndicator'}">
+								${pageContext.request.contextPath}/module/reporting/indicators/cohortIndicator.form?uuid=${indicator.uuid}
+							</c:when>
+							<c:otherwise>
+								${pageContext.request.contextPath}/module/reporting/indicators/editIndicator.form?uuid=${indicator.uuid}
+							</c:otherwise>							
+						</c:choose>
+					</c:set>						
+				
+				
 					<tr>
 						<td width="20%">
-							<a href="${pageContext.request.contextPath}/module/reporting/indicators/editIndicator.form?uuid=${indicator.uuid}">
+							<a href="${editUrl}">
 								${indicator.name}
 							</a>
 						</td>					

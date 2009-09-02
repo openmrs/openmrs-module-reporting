@@ -138,6 +138,31 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	}
 
 	/**
+	 * @see ReportService#getPreferredReportRenderer()
+	 */
+	public ReportRenderer getPreferredReportRenderer(Class<Object> supportedType) {
+		return HandlerUtil.getPreferredHandler(ReportRenderer.class, supportedType);
+	}
+	
+	/**
+	 * @see ReportService#getPreferredReportRenderer()
+	 */
+	public ReportRenderer getReportRenderer(String className) {
+		try { 
+			return (ReportRenderer) Class.forName(className).newInstance();
+		} catch(ClassNotFoundException e) { 
+			/* ignore */
+		} catch (IllegalAccessException e) { 
+			/* ignore */
+		} catch (InstantiationException e) {
+			/* ignore */
+		}
+		
+		return null;
+	}
+	
+	
+	/**
 	 * @see ReportService#evaluate(ReportDefinition, Cohort, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
@@ -169,16 +194,16 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	/**
 	 * @see ReportService#getRenderingModes(ReportDefinition)
 	 */
-	public List<RenderingMode> getRenderingModes(ReportDefinition schema) {
-		List<RenderingMode> ret = new Vector<RenderingMode>();
-		for (ReportRenderer r : getReportRenderers()) {
-			Collection<RenderingMode> modes = r.getRenderingModes(schema);
+	public List<RenderingMode> getRenderingModes(ReportDefinition reportDefinition) {
+		List<RenderingMode> renderingModes = new Vector<RenderingMode>();
+		for (ReportRenderer renderer : getReportRenderers()) {
+			Collection<RenderingMode> modes = renderer.getRenderingModes(reportDefinition);
 			if (modes != null) {
-				ret.addAll(modes);
+				renderingModes.addAll(modes);
 			}
 		}
-		Collections.sort(ret);
-		return ret;
+		Collections.sort(renderingModes);
+		return renderingModes;
 	}
 
 

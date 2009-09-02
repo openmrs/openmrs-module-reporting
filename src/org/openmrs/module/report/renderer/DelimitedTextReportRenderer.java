@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.annotation.Handler;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -62,7 +63,22 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 	 * @return the delimiter that occurs after each row
 	 */
 	public abstract String getAfterRowDelimiter();
-		
+	
+	/**
+	 * Convenience method used to escape a string of text.
+	 * 
+	 * @param	text 	The text to escape.
+	 * @return	The escaped text.
+	 */
+	public String escape(String text) {
+		if (text == null) {
+			return null;
+		}
+		else {
+			return text.replaceAll("\"", "\\\"");
+		}
+	}			
+	
 	/**
 	 * @see ReportRenderer#getFilename(ReportDefinition, String)
 	 */

@@ -62,7 +62,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 	
 	public void validate(Object commandObject, Errors errors) {
 		CommandObject command = (CommandObject) commandObject;
-		ValidationUtils.rejectIfEmpty(errors, "reportDefinition", "Missing reportId, or report not found");
+		ValidationUtils.rejectIfEmpty(errors, "reportDefinition", "Missing reportId or report not found");
 		if (command.getReportDefinition() != null) {
 			ReportDefinition reportDefinition = command.getReportDefinition();
 			Set<String> requiredParams = new HashSet<String>();
@@ -137,9 +137,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 			renderClass = renderClass.substring(0, ind);
 		}
 		
-		//ReportRenderer renderer = reportService.getReportRenderer(renderClass);
-		ReportRenderer renderer = new IndicatorReportRenderer();
-		
+		ReportRenderer renderer = reportService.getReportRenderer(renderClass);
 		
 		// If we're supposed to use a web report renderer, then we just redirect to the appropriate URL 
 		if (renderer instanceof WebReportRenderer) {

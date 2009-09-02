@@ -30,14 +30,14 @@
 		
 		<spring:nestedPath path="report">
 			<table>
-				<c:forEach var="p" items="${report.reportDefinition.parameters}">
+				<c:forEach var="parameter" items="${report.reportDefinition.parameters}">
 	                <tr>
-	                    <spring:bind path="userEnteredParams[${p.name}]">
+	                    <spring:bind path="userEnteredParams[${parameter.name}]">
 				            <td>
-					           <spring:message code="${p.label}"/>:
+					           <spring:message code="${parameter.label}"/>:
 		                    </td>
 		                    <td>
-		                    	<openmrs:fieldGen type="${p.type.name}" formFieldName="${status.expression}" val="${status.value}"/>
+		                    	<openmrs:fieldGen type="${parameter.type.name}" formFieldName="${status.expression}" val="${status.value}"/>
 		                        <c:if test="${status.errorMessage != ''}">
 		                            <span class="error">${status.errorMessage}</span>
 		                        </c:if>
@@ -57,12 +57,11 @@
 			<b><spring:message code="reporting.Report.run.outputFormat"/></b>
 			<spring:bind path="selectedRenderer">
 	            <select name="${status.expression}">
-	                <c:forEach var="r" items="${report.renderingModes}">
-	                	<c:set var="thisVal" value="${r.renderer.class.name}!${r.argument}"/>
+	                <c:forEach var="renderingMode" items="${report.renderingModes}">
+	                	<c:set var="thisVal" value="${renderingMode.renderer.class.name}!${renderingMode.argument}"/>
 	                    <option
 	                        <c:if test="${status.value == thisVal}"> selected</c:if>
-	                        value="${thisVal}">
-	                            ${r.label}
+	                        value="${thisVal}">${renderingMode.label}
 	                    </option>
 	                </c:forEach>
 	            </select>

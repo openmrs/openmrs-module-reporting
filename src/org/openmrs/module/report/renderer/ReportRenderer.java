@@ -28,11 +28,6 @@ import org.openmrs.module.report.ReportDefinition;
 public interface ReportRenderer {
 	
 	/**
-	 * @return an escaped representation of the passed text
-	 */
-	public String escape(String text);	
-	
-	/**
 	 * @return the key for which to retrieve the localized label for this ReportRenderer
 	 */
 	public String getLabel();

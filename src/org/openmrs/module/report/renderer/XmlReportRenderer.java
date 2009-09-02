@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Cohort;
+import org.openmrs.annotation.Handler;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -33,6 +34,7 @@ import org.openmrs.module.report.ReportDefinition;
 /**
  * ReportRenderer that renders to a delimited text file
  */
+@Handler
 public class XmlReportRenderer extends AbstractReportRenderer {
 	
 	/**
@@ -84,10 +86,10 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 					xmlWriter.write("<" + column.getDisplayName() + ">");
 					if (colValue != null) { 
 						if (colValue instanceof Cohort) {
-							xmlWriter.write(escape(Integer.toString(((Cohort) colValue).size())));
+							xmlWriter.write(Integer.toString(((Cohort) colValue).size()));
 						} 
 						else {
-							xmlWriter.write(escape(colValue.toString()));
+							xmlWriter.write(colValue.toString());
 						}
 					}
 					xmlWriter.write("</" + column.getDisplayName() + ">");
