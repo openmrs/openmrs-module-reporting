@@ -35,6 +35,14 @@ import org.openmrs.module.report.renderer.RenderingMode;
 public class CohortReportWebRenderer implements WebReportRenderer {
 	
 	public CohortReportWebRenderer() { }
+
+	
+	/**
+	 * TODO Copy any logic from getRenderingModes() into this method
+	 */
+	public boolean canRender(ReportDefinition reportDefinition) { 		
+		return true;
+	}
 	
 	/**
 	 * 

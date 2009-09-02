@@ -28,6 +28,11 @@ import org.openmrs.module.report.ReportDefinition;
 public interface ReportRenderer {
 	
 	/**
+	 * @return	whether the render implementation can handle the given report definition
+	 */
+	public boolean canRender(ReportDefinition reportDefinition);	
+	
+	/**
 	 * @return the key for which to retrieve the localized label for this ReportRenderer
 	 */
 	public String getLabel();

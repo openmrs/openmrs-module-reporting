@@ -28,11 +28,14 @@ import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.IndicatorReportRenderer;
+import org.openmrs.module.report.renderer.RenderingException;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
+import org.openmrs.module.report.renderer.ReportRendererException;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
+import org.openmrs.report.ReportRenderingException;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.util.StringUtils;
@@ -138,7 +141,11 @@ public class RunReportFormController extends SimpleFormController implements Val
 		}
 		
 		ReportRenderer renderer = reportService.getReportRenderer(renderClass);
-		
+				
+		// Check to make sure the renderer can render this report 
+		if (!renderer.canRender(reportDefinition))  
+			throw new RenderingException("Unable to render report definition " + reportDefinition.getName());
+				
 		// If we're supposed to use a web report renderer, then we just redirect to the appropriate URL 
 		if (renderer instanceof WebReportRenderer) {
 			WebReportRenderer webRenderer = (WebReportRenderer) renderer;

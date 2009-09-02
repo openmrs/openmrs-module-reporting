@@ -19,24 +19,43 @@ import java.io.Writer;
 import java.util.List;
 
 import org.openmrs.module.report.ReportData;
+import org.openmrs.module.report.ReportDefinition;
 
 /**
  * Abstract implementation of a ReportRenderer.
  */
 public abstract class AbstractReportRenderer implements ReportRenderer  {
+
 	
+	/**
+	 * Columns that have been chosen for display.
+	 */
 	private List<String> displayColumns;
 	
 	/**
 	 * Default Constructor
 	 */
 	public AbstractReportRenderer() { }
-
 	
+	/**
+	 * TODO Copy any logic from getRenderingModes() into this method
+	 */
+	public boolean canRender(ReportDefinition reportDefinition) { 		
+		return true;
+	}
+	
+	
+	/**
+	 * @param	displayColumns	the columns to display
+	 */
 	public void setDisplayColumns(List<String> displayColumns) { 
 		this.displayColumns = displayColumns;
 	}
-
+	
+	
+	/**
+	 * @return	the columns to display
+	 */
 	public List<String> getDisplayColumns() { 
 		return displayColumns;
 	}
