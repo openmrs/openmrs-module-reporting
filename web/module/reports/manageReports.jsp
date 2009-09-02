@@ -35,6 +35,9 @@
 					<th>Name</th>
 					<th>Type</th>
 					<th>Description</th>
+					<th>Author</th>
+					<th>Last modified</th>
+					<th>First created</th>
 					<th>Preview</th>
 					<th>Render</th>
 					<th>Remove</th>
@@ -96,6 +99,15 @@ $(document).ready(function() {
 						</td>
 						<td width="20%">
 							<span class="small">${reportDefinition.description}</span>
+						</td>
+						<td width="5%">
+							<span class="small">${reportDefinition.creator}</span>
+						</td>
+						<td width="5%">
+							<span class="small"><rpt:timespan then="${reportDefinition.dateChanged}"/></span>
+						</td>
+						<td width="5%">
+							<span class="small"><rpt:timespan then="${reportDefinition.dateCreated}"/></span>
 						</td>
 <!-- 
 						<td width="1%" align="center">

@@ -56,4 +56,21 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	
+	<tag>
+		<description>Returns a string representation of a timespan between two dates</description>
+		<name>timespan</name>
+		<tag-class>org.openmrs.module.reporting.web.taglib.TimespanTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>now</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>	
+		<attribute>
+			<name>then</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>	
+	</tag>
 </taglib>
