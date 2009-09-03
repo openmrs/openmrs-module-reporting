@@ -38,8 +38,14 @@ public class ManageDatasetsController {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 	
+	
+	/**
+	 * 
+	 * @param includeRetired
+	 * @param model
+	 */
     @RequestMapping("/module/reporting/datasets/manageDataSets")
-    public void manageDatasetDefinition(
+    public void manageDataSets(
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
     	
@@ -81,7 +87,7 @@ public class ManageDatasetsController {
      */
     @SuppressWarnings("unchecked")
 	@RequestMapping("/module/reporting/datasets/editDataSet")
-    public String showDatasetDefinition(
+    public String editDataSet(
     		@RequestParam(required=false, value="id") Integer id,
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") String type,
@@ -108,7 +114,7 @@ public class ManageDatasetsController {
     
     
 	@RequestMapping("/module/reporting/datasets/removeDataSet")
-    public String showDatasetDefinition(
+    public String removeDataSet(
     		@RequestParam(required=false, value="id") Integer id,
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") String type,
@@ -130,7 +136,7 @@ public class ManageDatasetsController {
      * @return
      */
     @RequestMapping("/module/reporting/datasets/addConceptColumn")
-    public String addColumn(
+    public String addConceptColumn(
     		@RequestParam(required=false, value="uuid") String uuid,
     		@RequestParam(required=false, value="id") Integer id,
             @RequestParam(required=false, value="type") String type,
@@ -188,7 +194,7 @@ public class ManageDatasetsController {
      * @return
      */
     @RequestMapping("/module/reporting/datasets/newDataSet")
-    public String editCohortDefinition(
+    public String newDataSet(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends DataSetDefinition> type,
     		ModelMap model) {
@@ -212,7 +218,7 @@ public class ManageDatasetsController {
      * @return
      */
     @RequestMapping("/module/reporting/datasets/saveDataSet")
-    public String saveDatasetDefinition(
+    public String saveDataSet(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends DataSetDefinition> type,
             @RequestParam(required=true, value="name") String name,
@@ -239,7 +245,7 @@ public class ManageDatasetsController {
      * @return
      */
     @RequestMapping("/module/reporting/datasets/viewDataSet")
-    public String showDatasetPreview(
+    public String viewDataset(
        		@RequestParam(required=false, value="uuid") String uuid,
     		@RequestParam(required=false, value="id") Integer id,
             @RequestParam(required=false, value="type") String type,

@@ -103,13 +103,13 @@ $(document).ready(function() {
 							<rpt:timespan then="${dataset.dateCreated}"/>
 						</td>
 		 				<td align="center" width="1%">
-							<a href="${pageContext.request.contextPath}/module/reporting/datasets/showDataSet.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">					
-								<img src="${pageContext.request.contextPath}/images/play.gif" alt="preview" border="0"/>
+							<a href="${pageContext.request.contextPath}/module/reporting/datasets/viewDataSet.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">					
+								<img src="${pageContext.request.contextPath}/images/play.gif" alt="view" border="0"/>
 							</a> 
 						</td>
 						<td align="center" width="1%">
 							<a href="${pageContext.request.contextPath}/module/reporting/datasets/editDataSet.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">				
-								<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+								<img src='<c:url value="/images/edit.gif"/>' alt="edit" border="0"/>
 							</a>
 						</td>
 						<td align="center" width="1%">				
