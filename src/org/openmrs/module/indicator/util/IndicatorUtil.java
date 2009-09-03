@@ -14,6 +14,8 @@
 package org.openmrs.module.indicator.util;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Indicator-related Utility methods
@@ -37,5 +39,13 @@ public class IndicatorUtil {
 			}
 		}
 		return false;
+	}
+	
+	public static Map<String, Object> periodIndicatorMappings() {
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("startDate", "${startDate}");
+		ret.put("endDate", "${endDate}");
+		ret.put("location", "${location}");
+		return ret;
 	}
 }
