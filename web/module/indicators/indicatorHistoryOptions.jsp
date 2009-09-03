@@ -5,7 +5,7 @@
 
 <h1>Indicator History</h1>
 
-<form:form commandName="query" action="indicatorHistory.form">
+<form:form method="get" commandName="query" action="indicatorHistory.form">
 	
 	<br/>
 	

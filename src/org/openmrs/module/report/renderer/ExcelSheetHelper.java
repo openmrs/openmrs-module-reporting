@@ -7,6 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.openmrs.module.indicator.CohortIndicatorResult;
 
 /**
  * A wrapper around a POI HSSFSheet that lets you interact via
@@ -93,6 +94,9 @@ public class ExcelSheetHelper {
         } else if (cellValue instanceof Boolean) {
             cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_BOOLEAN);
             cell.setCellValue((Boolean) cellValue);
+        } else if (cellValue instanceof CohortIndicatorResult) {
+        	cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
+            cell.setCellValue((Integer) ((CohortIndicatorResult) cellValue).getValue());
         } else {
             throw new RuntimeException("Do not know how to handle: " + cellValue.getClass());
         }

@@ -8,31 +8,35 @@
 <h1>Indicator History</h1>
 
 <div style="float: right; border: 1px black solid; padding: 20px">
-	<form:form commandName="query" action="indicatorHistoryOptions.form">
+	<form:form method="get" commandName="query" action="indicatorHistoryOptions.form">
 		<form:hidden path="location"/>
 		<form:hidden path="lastMonths"/>
 		<form:hidden path="indicatorUuid"/>
 		<input type="submit" value="Change Options"/>
 	</form:form>
-	<br/>
-	Location: ${query.location.name}
-	<br/>
-	<br/>
-	<div id="indicatorHistoryLegend"></div>
+	<table>
+		<tr>
+			<td align="right">Location:</td>
+			<td>${query.location.name}</td>
+		</tr>
+		<tr>
+			<td align="right">Indicators:</td>
+			<td><div id="indicatorHistoryLegend"></div></td>
+		</tr>
+	</table>
 </div>
 
 <div id="indicatorHistoryGraph" style="margin: 20px; width: 640px; height: 400px"></div>
 
-<form:form action="indicatorHistory.form" commandName="query">
+<form:form method="get" action="indicatorHistory.form" commandName="query">
 	<form:hidden path="location"/>
 	<form:hidden path="indicatorUuid"/>
 	When?
-	<form:select path="lastMonths">
+	<form:select path="lastMonths" onchange="submit()">
 		<form:option value="6">Last 6 months</form:option>
 		<form:option value="12">Last 12 months</form:option>
 		<form:option value="24">Last 24 months</form:option>
 	</form:select>
-	<input type="submit" value="Calculate"/>
 </form:form>
 
 <c:if test="${dataSet != null}">

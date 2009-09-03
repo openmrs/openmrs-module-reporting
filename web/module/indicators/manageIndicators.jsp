@@ -48,7 +48,7 @@ $(document).ready(function() {
 
 		<spring:message code="reporting.manage.createNew"/>:
 		<input type="button" id="period-indicator-form" value="Period Indicator"/>
-		<input type="button" onClick="window.location = 'editIndicator.form';" value="Custom Indicator (Advanced)"/>
+		<!-- <input type="button" onClick="window.location = 'editIndicator.form';" value="Custom Indicator (Advanced)"/>  -->
 
 		<table id="indicator-table" class="display" >
 			<thead>
