@@ -1,6 +1,5 @@
-<%@ include file="/WEB-INF/template/include.jsp"%> 
-<%@ include file="../localHeaderMinimal.jsp"%>
-<%@ include file="../dialogSupport.jsp"%>
+<%@ include file="/WEB-INF/template/include.jsp"%>
+<%@ include file="../run/localHeader.jsp"%>
 
 <style type="text/css">
 	#wrapper input, #wrapper select, #wrapper textarea, #wrapper label, #wrapper button, #wrapper span, #wrapper div { font-size: large; } 
@@ -19,10 +18,6 @@
 	<div id="container">
 			<div id="wrapper">
 			
-			
-						
-				
-				
 				<c:forEach var="dataSetMapEntry" items="${__openmrs_report_data.dataSets}">
 					<table border="1">					
 						<c:forEach var="dataSetRow" items="${dataSetMapEntry.value.iterator}" varStatus="varStatus">

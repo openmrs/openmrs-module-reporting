@@ -106,11 +106,6 @@ $(document).ready(function() {
 							<span class="small"><rpt:timespan then="${reportDefinition.dateCreated}"/></span>
 						</td>
 						<td width="1%" align="center">
-							<a href="#" id="preview-report-${reportDefinition.uuid}">
-								<img src='<c:url value="/images/note.gif"/>' border="0"/>								
-							</a>
-						</td>
-						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?reportId=${reportDefinition.uuid}">
 								<img src='<c:url value="/images/play.gif"/>' border="0"/>
 							</a>
