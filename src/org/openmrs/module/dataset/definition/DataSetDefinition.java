@@ -42,10 +42,4 @@ public interface DataSetDefinition extends Definition {
 	 * @return
 	 */
 	public DataSetColumn getColumn(String columnKey);
-	
-	/**
-	 * Adds a {@link DataSetColumn}
-	 * @param column
-	 */
-	public void addColumn(DataSetColumn column);
 }	

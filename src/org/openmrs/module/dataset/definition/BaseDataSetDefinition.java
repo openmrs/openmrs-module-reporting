@@ -81,13 +81,6 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
 	public String toString() {
 		return getName();
 	}
-	
-	/** 
-	 * @see DataSetDefinition#addColumn(DataSetColumn)
-	 */
-	public void addColumn(DataSetColumn column) {
-		getColumns().add(column);
-	}
 
 	/** 
 	 * @see DataSetDefinition#getColumn(String)
