@@ -58,7 +58,7 @@ public class ManageDatasetsController {
     	}
     	
     	model.addAttribute("types", service.getDataSetDefinitionTypes());    	
-    	model.addAttribute("datasetDefinitions", datasetDefinitions);
+    	model.addAttribute("dataSetDefinitions", datasetDefinitions);
     }
     
     /**
@@ -80,23 +80,21 @@ public class ManageDatasetsController {
      * 		The name of the JSP to present to the user
      */
     @SuppressWarnings("unchecked")
-	@RequestMapping("/module/reporting/showDataset")
+	@RequestMapping("/module/reporting/datasets/editDataSet")
     public String showDatasetDefinition(
     		@RequestParam(required=false, value="id") Integer id,
     		@RequestParam(required=false, value="uuid") String uuid,
-            @RequestParam(required=false, value="type") String className,
+            @RequestParam(required=false, value="type") String type,
             @RequestParam(required=false, value="cohortSize") Integer cohortSize,
             @RequestParam(required=false, value="action") String action,
     		ModelMap model) {
 
     	DataSetDefinition dataSetDefinition = 
-    		getDataSetDefinition(uuid, className, id);
-    	
-    	
-    	
-    	if (dataSetDefinition != null && "preview".equalsIgnoreCase(action)) { 
+    		getDataSetDefinition(uuid, type, id);
+    	    	
+    	if (dataSetDefinition != null) { 
     		EvaluationContext context = new EvaluationContext();
-    		context.setBaseCohort(CohortUtil.getRandomCohort(cohortSize));
+    		context.setBaseCohort(CohortUtil.getRandomCohort(cohortSize != null ? cohortSize : 10));
         	DataSet dataSet = 
         		Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);        
         	model.addAttribute("dataSet", dataSet);
@@ -108,15 +106,34 @@ public class ManageDatasetsController {
     }
     
     
+    
+	@RequestMapping("/module/reporting/datasets/removeDataSet")
+    public String showDatasetDefinition(
+    		@RequestParam(required=false, value="id") Integer id,
+    		@RequestParam(required=false, value="uuid") String uuid,
+            @RequestParam(required=false, value="type") String type,
+    		ModelMap model) {
+
+    	DataSetDefinition dataSetDefinition = 
+    		getDataSetDefinition(uuid, type, id);
+    	
+    	if (dataSetDefinition != null) 
+    		Context.getService(DataSetDefinitionService.class).purgeDataSetDefinition(dataSetDefinition);
+    		    	
+    	return "redirect:/module/reporting/datasets/manageDataSets.list";    	    	
+    }
+        
+    
+    
     /**
      * Adds a column to the given dataset.  
      * @return
      */
-    @RequestMapping("/module/reporting/addConceptColumn")
+    @RequestMapping("/module/reporting/datasets/addConceptColumn")
     public String addColumn(
     		@RequestParam(required=false, value="uuid") String uuid,
     		@RequestParam(required=false, value="id") Integer id,
-            @RequestParam(required=false, value="className") String className,
+            @RequestParam(required=false, value="type") String type,
     		@RequestParam("conceptId") Integer conceptId,
     		@RequestParam("columnName") String columnName,
     		@RequestParam("modifier") String modifier,
@@ -125,11 +142,12 @@ public class ManageDatasetsController {
     		ModelMap model) {
 
     	
-    	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, className, id);
+    	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, type, id);
 
     	if (dataSetDefinition instanceof DataExportDataSetDefinition) { 
     		DataExportDataSetDefinition instance = 
-    			(DataExportDataSetDefinition) dataSetDefinition;    	
+    			(DataExportDataSetDefinition) dataSetDefinition;  
+    		
     		instance.getDataExportReportObject().addConceptColumn(
     				columnName, 
     				modifier, 
@@ -140,8 +158,7 @@ public class ManageDatasetsController {
     	else if (dataSetDefinition instanceof PatientDataSetDefinition) {
     		PatientDataSetDefinition instance = 
     			(PatientDataSetDefinition) dataSetDefinition;
-        	//Concept concept = Context.getConceptService().getConcept(conceptId);
-    		
+        	//Concept concept = Context.getConceptService().getConcept(conceptId);    		
         	// TODO Implement concept column in patient dataset 
     		throw new DataSetException("Patient Data Set Definition does not currently support additional columns");
     	}    		
@@ -153,7 +170,7 @@ public class ManageDatasetsController {
      * Adds a column to the given dataset.  
      * @return
      */
-    @RequestMapping("/module/reporting/removeColumn")
+    @RequestMapping("/module/reporting/datasets/removeColumn")
     public String removeColumn(
     		@RequestParam(required=false, value="uuid") String uuid,
     		ModelMap model) {
@@ -170,7 +187,7 @@ public class ManageDatasetsController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/newDataset")
+    @RequestMapping("/module/reporting/datasets/newDataSet")
     public String editCohortDefinition(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends DataSetDefinition> type,
@@ -194,7 +211,7 @@ public class ManageDatasetsController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/saveDataset")
+    @RequestMapping("/module/reporting/datasets/saveDataSet")
     public String saveDatasetDefinition(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends DataSetDefinition> type,
@@ -212,7 +229,7 @@ public class ManageDatasetsController {
     		service.saveDataSetDefinition(dataSetDefinition);
 
     	return "redirect:/module/reporting/datasets/manageDataSets.list";
-        //return "redirect:/module/reporting/showDataset.form?uuid="+dataSetDefinition.getUuid();
+        //return "redirect:/module/reporting/editDataSet.form?uuid="+dataSetDefinition.getUuid();
     }
     
     
@@ -221,7 +238,7 @@ public class ManageDatasetsController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/showDatasetPreview")
+    @RequestMapping("/module/reporting/datasets/viewDataSet")
     public String showDatasetPreview(
        		@RequestParam(required=false, value="uuid") String uuid,
     		@RequestParam(required=false, value="id") Integer id,
@@ -237,20 +254,9 @@ public class ManageDatasetsController {
     	
     	
        	DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
-    	DataSetDefinition dataSetDefinition = service.getDataSetDefinitionByUuid(uuid); 
     	
-    	// If we cannot find the dataset by uuid, then try to retrieve it by ID
-    	// Supports data exports until we allow data exports to have UUIDs
-    	if (dataSetDefinition == null) {     		
-			try {
-				Class<? extends DataSetDefinition> clazz = 
-					(Class<? extends DataSetDefinition>) Class.forName(type);
-				dataSetDefinition = service.getDataSetDefinition(clazz, id);    		
-			} 
-			catch (ClassNotFoundException e) {
-				log.error("Unable to retrieve dataset definition by id and type: ", e);
-			}    	
-    	}
+       	
+       	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, type, id);
     	
     	// If it's still null, then we should use a default dataset definition
     	if (dataSetDefinition == null) { 
@@ -301,7 +307,7 @@ public class ManageDatasetsController {
      * @return
      */
     @SuppressWarnings("deprecation")
-	@RequestMapping("/module/reporting/downloadDataset")
+	@RequestMapping("/module/reporting/datasets/downloadDataSet")
     public void downloadDataset(
     		@RequestParam(required=false, value="id") Integer id,
        		@RequestParam(required=false, value="uuid") String uuid,
@@ -357,7 +363,7 @@ public class ManageDatasetsController {
        		log.error("Exception ocurred while downloading dataset ", e);
        	}
        	
-       	//return "redirect:/module/reporting/showDataset.form?uuid="+uuid;
+       	//return "redirect:/module/reporting/showDataSet.form?uuid="+uuid;
     }    
         
     
@@ -370,11 +376,8 @@ public class ManageDatasetsController {
      * @param id
      * @return
      */
-    public DataSetDefinition getDataSetDefinition(String uuid, String className, Integer id) { 
-    	
-    	
+    public DataSetDefinition getDataSetDefinition(String uuid, String className, Integer id) {     	
     	DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
-    	
     	
     	DataSetDefinition dataSetDefinition = null;
     	if (uuid != null) { 
@@ -385,7 +388,6 @@ public class ManageDatasetsController {
     	
     	log.info("Dataset definition: " + dataSetDefinition);
     	
-    	
     	// If we cannot find the dataset by uuid or if no uuid was specified, then try to retrieve it by ID
     	if (dataSetDefinition == null || dataSetDefinition.getUuid() == null) {     		
 			try {
@@ -393,7 +395,7 @@ public class ManageDatasetsController {
 				
 				Class<? extends DataSetDefinition> type = 
 					(Class<? extends DataSetDefinition>) Class.forName(className);
-				dataSetDefinition = service.getDataSetDefinition(type, id);    		
+				dataSetDefinition = service.getDataSetDefinition(type, id); 
 			} 
 			catch (ClassNotFoundException e) {
 				log.error("Unable to retrieve dataset definition by id and type: ", e);

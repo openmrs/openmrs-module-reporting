@@ -6,7 +6,7 @@
 
 <div id="conceptColumn">
 	<form id="datasetColumnForm" name="datasetColumnForm" class="wufoo topLabel" method="post" 
-		action="${pageContext.request.contextPath}/module/reporting/addConceptColumn.form">
+		action="${pageContext.request.contextPath}/module/reporting/datasets/addConceptColumn.form">
 	
 	
 		<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
@@ -100,7 +100,7 @@
 			<li>
 				<div align="center">
 					<input id="save-button" type="submit" value="Add"/>
-					<button id="cancel-button">Close</button>
+					<input id="cancel-button" type="button" value="Close"/>
 				</div>
 			</li>
 			

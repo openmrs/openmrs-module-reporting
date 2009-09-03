@@ -133,7 +133,7 @@ $(document).ready(function() {
 				<div align="center" style="padding:10px;">
 
 					<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
-						method="post" action="${pageContext.request.contextPath}/module/reporting/downloadDataset.form">
+						method="post" action="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form">
 	
 						<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
 						<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>

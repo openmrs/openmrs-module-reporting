@@ -323,7 +323,7 @@ $(function() {
 						
 						<div align="center">
 							
-							<form method="post" action="${pageContext.request.contextPath}/module/reporting/downloadDataset.form">					
+							<form method="post" action="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form">					
 								<ul>				
 									<li>
 										<div>						
