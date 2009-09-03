@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.api.APIException;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.ParameterConstants;
@@ -112,6 +113,10 @@ public class EvaluationContext {
 	 */
 	public static EvaluationContext cloneForChild(EvaluationContext initialContext, 
 												  Mapped<? extends Parameterizable> child) {
+		
+		if (child == null) 
+			throw new APIException("The specified report could not be evaluated because one of its components has been removed from the database");
+		
 		EvaluationContext ec = EvaluationContext.clone(initialContext);
 			
 		for (String paramName : child.getParameterMappings().keySet()) {

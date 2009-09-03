@@ -46,43 +46,13 @@ public class ReportDashboardController {
     	binder.registerCustomEditor(Date.class, new CustomDateEditor(Context.getDateFormat(), false)); 
     }    
 
-    
-    /**
-     * 
-     * @param model
-     */
-    @RequestMapping("/module/reporting/viewDemographicData")
-    public void showDemographicData(ModelMap model) {     
-    	// not implemented yet    	
-    }
-
-
-    /**
-     * 
-     * @param cohort
-     * @param model
-     */
-    @RequestMapping("/module/reporting/showProgramEnrollementData")
-    public void showProgramEnrollmentData(
-    		@RequestParam(required=false, value="cohort") String cohort,
-    		
-    		
-    		ModelMap model) {     
-
-    	
-    	
-    	// not implemented yet
-    	
-    }    
-    
-    
     /**
      * 
      * @param cohort
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/manageCohortDashboard")
+    @RequestMapping("/module/reporting/dashboard/manageCohortDashboard")
     public String manageCohortDashboard(
     		@RequestParam(required=false, value="cohort") String cohort,
     		ModelMap model) { 
@@ -103,11 +73,13 @@ public class ReportDashboardController {
     	}
     	else { 
     		
-    		Program program = Context.getProgramWorkflowService().getProgramByName(cohort);
-    		if (program != null) 
-    			model.addAttribute("cohort", getProgramStateCohort(evaluationContext, program));
-    		else 
-    			model.addAttribute("cohort", Context.getPatientSetService().getAllPatients());    		
+    		if (cohort != null) { 
+	    		Program program = Context.getProgramWorkflowService().getProgramByName(cohort);
+	    		if (program != null) 
+	    			model.addAttribute("cohort", getProgramStateCohort(evaluationContext, program));
+	    		else 
+	    			model.addAttribute("cohort", Context.getPatientSetService().getAllPatients());    		
+    		}
     	}
     	return "/module/reporting/dashboard/cohortDashboard";
     	
@@ -120,7 +92,7 @@ public class ReportDashboardController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/manageDashboard")
+    @RequestMapping("/module/reporting/dashboard/manageDashboard")
     public String manageDashboard(ModelMap model) {
     	    	
     	// Get all reporting objects
@@ -175,7 +147,6 @@ public class ReportDashboardController {
 		return "/module/reporting/dashboard/dashboardManager";
     }    
     
-
     /**
      * Get program cohort.
      * 
@@ -189,8 +160,7 @@ public class ReportDashboardController {
     	programStateCohortDefinition.setStateList(null);
     	return Context.getService(CohortDefinitionService.class).evaluate(programStateCohortDefinition, evaluationContext);     	
     }
-    
-    
+        
     /**
      * Get program cohort.
      * 
@@ -201,8 +171,7 @@ public class ReportDashboardController {
     public Cohort getGenderCohort(EvaluationContext evaluationContext, String gender) {     	
 		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
 		genderCohortDefinition.setGender(gender);
-		return Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, evaluationContext);    	
-    
+		return Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, evaluationContext); 
     }
 
     /**
@@ -221,12 +190,4 @@ public class ReportDashboardController {
     	ageCohortDefinition.setEffectiveDate(effectiveDate);		
     	return Context.getService(CohortDefinitionService.class).evaluate(ageCohortDefinition, evaluationContext);    
     }
-    
-    
-    
-    
-    
-    
-    
-        
 }

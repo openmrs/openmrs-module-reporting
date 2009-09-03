@@ -1,39 +1,33 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<%@ include file="localHeader.jsp"%>
+<%@ include file="../run/localHeader.jsp"%>
 
 <openmrs:require privilege="Run Reports" otherwise="/login.htm" redirect="/admin/reports/runReport.list" />
 
-
+<div id="page">
+	<div id="container">
 <div style="width: 60%">
-	<h2>
-		<spring:message code="reporting.Report.run.title"/>:
-		${report.reportDefinition.name}
-	</h2>
-	<i>${report.reportDefinition.description}</i>
-	
-	<br/><br/>
+	<h2><b>${report.reportDefinition.name}</b></h2>
+	<h3><i>${report.reportDefinition.description}</i></h3>
 	
 	<spring:hasBindErrors name="reportFromXml">
+		<br /><br/>		
 		<spring:message code="fix.error"/>
 		<div class="error">
 			<c:forEach items="${errors.allErrors}" var="error">
 				<spring:message code="${error.code}" text="${error.code}"/><br/>
 			</c:forEach>
 		</div>
-		<br />
+		<br />	
 	</spring:hasBindErrors>
-	
-	<br/><br/>
-	
+	<br/>	
 	<form method="post">
-		<b><spring:message code="reporting.Report.parameters"/></b>
 		
 		<spring:nestedPath path="report">
 			<table>
 				<c:forEach var="parameter" items="${report.reportDefinition.parameters}">
 	                <tr>
 	                    <spring:bind path="userEnteredParams[${parameter.name}]">
-				            <td>
+				            <td align="right">
 					           <spring:message code="${parameter.label}"/>:
 		                    </td>
 		                    <td>
@@ -50,26 +44,32 @@
 			            <span class="error">${status.errorMessage}</span>
 			        </c:if>
 	            </spring:bind>
+				<tr>				
+					<td align="right"><spring:message code="reporting.Report.run.outputFormat"/>:</td>					
+					<td>
+						<spring:bind path="selectedRenderer">
+				            <select name="${status.expression}">
+				                <c:forEach var="renderingMode" items="${report.renderingModes}">
+				                	<c:set var="thisVal" value="${renderingMode.renderer.class.name}!${renderingMode.argument}"/>
+				                    <option
+				                        <c:if test="${status.value == thisVal}"> selected</c:if>
+				                        value="${thisVal}">${renderingMode.label}
+				                    </option>
+				                </c:forEach>
+				            </select>
+				        </spring:bind>
+					</td>		
+				</tr>
+				<tr><td>&nbsp;</td></tr>			
+				<tr>
+					<td></td>
+					<td>					
+						<input type="submit" value="<spring:message code="reporting.Report.run.button"/>" />
+	        		</td>
+	        	</tr>
 	        </table>
-	        
-	        <br/><br/>
-			
-			<b><spring:message code="reporting.Report.run.outputFormat"/></b>
-			<spring:bind path="selectedRenderer">
-	            <select name="${status.expression}">
-	                <c:forEach var="renderingMode" items="${report.renderingModes}">
-	                	<c:set var="thisVal" value="${renderingMode.renderer.class.name}!${renderingMode.argument}"/>
-	                    <option
-	                        <c:if test="${status.value == thisVal}"> selected</c:if>
-	                        value="${thisVal}">${renderingMode.label}
-	                    </option>
-	                </c:forEach>
-	            </select>
-	        </spring:bind>
 		</spring:nestedPath>
-		
-		<br/>
-		<br/>
-		<input type="submit" value="<spring:message code="reporting.Report.run.button"/>" style="margin-left: 9em"/>
 	</form>
+</div>
+</div>
 </div>

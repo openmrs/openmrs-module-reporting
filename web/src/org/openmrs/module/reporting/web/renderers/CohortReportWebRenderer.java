@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.openmrs.annotation.Handler;
 import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.evaluation.parameter.Mapped;
@@ -32,6 +33,7 @@ import org.openmrs.module.report.renderer.RenderingMode;
  * A ReportRenderer that provides a dynamic web view of a CohortDataSet. This renderer can only
  * handle reports with a single data set, that's a cohort data set.
  */
+@Handler
 public class CohortReportWebRenderer implements WebReportRenderer {
 	
 	public CohortReportWebRenderer() { }
@@ -50,7 +52,7 @@ public class CohortReportWebRenderer implements WebReportRenderer {
 	public Collection<RenderingMode> getRenderingModes(ReportDefinition reportDefinition) {
 		if (reportDefinition.getDataSetDefinitions().size() == 1) { 
 			Mapped<? extends DataSetDefinition> mapped = reportDefinition.getDataSetDefinitions().get(0);
-			if (mapped.getParameterizable() instanceof CohortDataSetDefinition) {
+			if (mapped != null && mapped.getParameterizable() instanceof CohortDataSetDefinition) {
 				return Collections.singleton(new RenderingMode(this, this.getLabel(), null, 100));
 			}
 		} 

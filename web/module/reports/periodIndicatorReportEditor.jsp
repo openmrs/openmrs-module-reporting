@@ -13,7 +13,7 @@
 	label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
 	.errors { margin-left:200px; margin-top:20px; margin-bottom:20px; font-family:Verdana,Arial,sans-serif; font-size:12px; }
 	#report-schema-basic-tab { margin: 50px; }
-	#wrapper { margin-top: 50px; }
+	#wrapper { margin-top: 10px; }
 </style>
 
 <script type="text/javascript" charset="utf-8">
@@ -47,6 +47,7 @@ $(document).ready(function() {
 	
 	// Redirect to the listing page
 	$('#back-button').click(function(event){
+		event.preventDefault();
 		window.location.href='<c:url value="/module/reporting/reports/manageReports.list"/>';
 	});
 
@@ -273,6 +274,7 @@ $(document).ready(function() {
 							<li>
 								<div align="center">
 									<input id="preview-report-button" type="button" value="Preview report"/>
+									<input id="back-button" type="button" value="Back to reports"/>
 								</div>						
 							</li>
 						</ul>

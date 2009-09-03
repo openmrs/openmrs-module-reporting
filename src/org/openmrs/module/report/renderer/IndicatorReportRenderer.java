@@ -104,7 +104,7 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 					DataSetRow<Object> row = i.next();
 
 					Object cellValue = row.getColumnValue(column.getColumnKey());				
-					writer.write("<td><a href=\"#\">" + ((cellValue != null) ? cellValue : "n/a") + "</a></td>");					
+					writer.write("<td>" + ((cellValue != null) ? cellValue : "n/a") + "</td>");					
 				}
 				writer.write("</tr>");
 			}

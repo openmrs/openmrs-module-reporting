@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -54,7 +55,10 @@ public class RenderReportFormController {
     	binder.registerCustomEditor(Date.class, new CustomDateEditor(ymd, true)); 
     }    
 	
-    
+    @RequestMapping("/module/reporting/reports/renderIndicatorReportData")
+	public ModelAndView renderIndicatorReport() {     	
+    	return new ModelAndView("/module/reporting/reports/renderIndicatorReportData");    	
+    }
     
 	/**
 	 * 

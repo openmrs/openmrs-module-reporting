@@ -159,16 +159,16 @@ public class RunReportFormController extends SimpleFormController implements Val
 				return new ModelAndView(new RedirectView(url));
 			}
 		}
-		
 		// Otherwise, just render the report 
-		// TODO it's possible that a web renderer will handle this -- is that ok?
-		String filename = renderer.getFilename(reportDefinition, renderArg).replace(" ", "_");
-		response.setContentType(renderer.getRenderedContentType(reportDefinition, renderArg));
-		response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-		response.setHeader("Pragma", "no-cache");
-		renderer.render(data, renderArg, response.getOutputStream());
-		return null;
-		
+		else { 
+			// TODO it's possible that a web renderer will handle this -- is that ok?
+			String filename = renderer.getFilename(reportDefinition, renderArg).replace(" ", "_");
+			response.setContentType(renderer.getRenderedContentType(reportDefinition, renderArg));
+			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+			response.setHeader("Pragma", "no-cache");
+			renderer.render(data, renderArg, response.getOutputStream());
+		}
+		return null;		
 	}
 	
 		

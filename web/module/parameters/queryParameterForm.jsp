@@ -38,7 +38,7 @@ $(document).ready(function() {
 	#wrapper { min-height: 100%; height: auto !important; height:100%; margin: 0 auto -4em; }
 	.button { margin: 5px; width: 10%; } 
 	.buttonBar { height: 4em; background-color: #eee; vertical-align: middle; text-align:center;}
-	input, select, textarea, label, button, span { font-size: 2em; } 
+	/*input, select, textarea, label, button, span { font-size: 2em; }*/ 
 	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
 	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
 	fieldset { padding: 25px; margin:25px; }
@@ -61,63 +61,57 @@ $(document).ready(function() {
 <div id="page">
 	<div id="container">
 		<div id="wrapper">
-			<c:if test="${empty results}">
-				<span><h2>${parameterizable.name}</h2></span>
-				<span><h3>${parameterizable.description}</h3></span>
-				
-				
-					<%-- <c:url var="postUrl" value='/module/reporting/reports/renderReport.form'/>--%>
-					<%-- <c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>--%>
-					<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
-					<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
-						<input type="hidden" name="action" value="preview"/>
-						<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
-						<input type="hidden" name="type" value="${parameterizable.class.name}"/>
-						<input type="hidden" name="format" value="${param.format}"/>
-						<input type="hidden" name="successView" value="${param.successView}"/>
-						
-						<ul>								
-							<spring:hasBindErrors name="indicatorForm">  
-								<li>
-									<div class="errors"> 
-										<font color="red"> 
-											<h3><u>Please correct the following errors</u></h3>   
-											
-											<form:errors path="parameterizable"></form:errors>
-										</font>  
-									</div>
-								</li>
-							</spring:hasBindErrors>
-						</ul>																
-						<ul>									
-							<c:forEach var="parameter" items="${parameterizable.parameters}">				
-								<li>
-									<label class="desc" for="${parameter.name}">${parameter.label}</label>
-									<div>						
-										<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
-									</div>
-								</li>						
-							</c:forEach>
-						</ul>
-					</form>	
-				</c:if>
+			<h1>${parameterizable.name}</h1>
+			<h4>${parameterizable.description}</h4>
+			
+			
+				<%-- <c:url var="postUrl" value='/module/reporting/reports/renderReport.form'/>--%>
+				<%-- <c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>--%>
+				<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
+				<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
+					<input type="hidden" name="action" value="preview"/>
+					<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
+					<input type="hidden" name="type" value="${parameterizable.class.name}"/>
+					<input type="hidden" name="format" value="${param.format}"/>
+					<input type="hidden" name="successView" value="${param.successView}"/>
+					
+					<ul>								
+						<spring:hasBindErrors name="indicatorForm">  
+							<li>
+								<div class="errors"> 
+									<font color="red"> 
+										<h3><u>Please correct the following errors</u></h3>   
+										
+										<form:errors path="parameterizable"></form:errors>
+									</font>  
+								</div>
+							</li>
+						</spring:hasBindErrors>
+					</ul>																
+					<ul>									
+						<c:forEach var="parameter" items="${parameterizable.parameters}">				
+							<li>
+								<label class="desc" for="${parameter.name}">${parameter.label}</label>
+								<div>						
+									<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
+								</div>
+							</li>						
+						</c:forEach>
+					</ul>
+				</form>	
 								
 				<c:if test="${!empty results}">
-					<ul>
-						<li>				
-							<h4>Evaluation Result</h4>
-							<div>
-								<span>Result Type: </span>
-								<strong>${results.class.simpleName}</strong>							
-							</div>
-							<div>
-								<span>Result:</span>						
-								<span>
-									<strong>${results}</strong>
-								</span>
-							</div>
-						</li>
-					</ul>
+					<h1>Evaluation Result</h1>
+					<div>
+						<span>Result Type: </span>
+						<strong>${results.class.simpleName}</strong>							
+					</div>
+					<div>
+						<span>Result:</span>						
+						<span>
+							<strong>${results}</strong>
+						</span>
+					</div>
 				</c:if>
 		</div>
 		<div class="buttonBar" align="left">						

@@ -36,7 +36,6 @@
 					<th>Type</th>
 					<th>Description</th>
 					<th>Author</th>
-					<th>Last Modified</th>
 					<th>Created</th>
 					<th>Preview</th>
 					<th>Render</th>
@@ -91,39 +90,29 @@ $(document).ready(function() {
 					<tr>
 						<td width="20%" nowrap="">
 							<a href="${editUrl}">
-								${reportDefinition.name}
+								<span class="small">${reportDefinition.name}</span>
 							</a>
 						</td>
 						<td width="10%" nowrap="">
-							${reportDefinition.class.simpleName}
+							<span class="small">${reportDefinition.class.simpleName}</span>
 						</td>
 						<td width="20%">
 							<span class="small">${reportDefinition.description}</span>
 						</td>
-						<td width="5%">
+						<td width="5%" nowrap>
 							<span class="small">${reportDefinition.creator}</span>
 						</td>
-						<td width="5%">
-							<span class="small"><rpt:timespan then="${reportDefinition.dateChanged}"/></span>
-						</td>
-						<td width="5%">
+						<td width="5%" nowrap>
 							<span class="small"><rpt:timespan then="${reportDefinition.dateCreated}"/></span>
 						</td>
-<!-- 
-						<td width="1%" align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/evaluateReport.form?uuid=${reportDefinition.uuid}">
-								<img src='<c:url value="/images/play.gif"/>' border="0"/>
-							</a>
-						</td>
- -->						
 						<td width="1%" align="center">
 							<a href="#" id="preview-report-${reportDefinition.uuid}">
-								<img src='<c:url value="/images/play.gif"/>' border="0"/>
+								<img src='<c:url value="/images/note.gif"/>' border="0"/>								
 							</a>
 						</td>
 						<td width="1%" align="center">
-							<a href="#" id="render-report-${reportDefinition.uuid}">
-								<img src='<c:url value="/images/note.gif"/>' border="0"/>
+							<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?reportId=${reportDefinition.uuid}">
+								<img src='<c:url value="/images/play.gif"/>' border="0"/>
 							</a>
 						</td>
 						<td width="1%" align="center">
