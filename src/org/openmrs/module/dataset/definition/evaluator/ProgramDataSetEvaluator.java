@@ -31,6 +31,7 @@ import org.openmrs.module.dataset.SimpleDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.ProgramDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.util.CohortUtil;
 
 /**
  * The logic that evaluates a {@link ProgramDataSetDefinition} and produces a {@link DataSet}
@@ -57,6 +58,7 @@ public class ProgramDataSetEvaluator implements DataSetEvaluator {
 		
 		ProgramDataSetDefinition definition = (ProgramDataSetDefinition) dataSetDefinition;
 		Cohort patients = context.getBaseCohort();
+		
 		if (definition.getCohortDefinition() != null) {
 			Cohort c = Context.getService(CohortDefinitionService.class).evaluate(definition.getCohortDefinition(), context);
 			patients = (patients == null ? c : Cohort.intersect(patients, c));

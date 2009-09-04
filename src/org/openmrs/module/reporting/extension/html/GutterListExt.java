@@ -14,7 +14,7 @@ public class GutterListExt extends Extension {
 	}
 
 	public String getUrl() {
-		return "module/reporting/manageDashboard.form";
+		return "module/reporting/dashboard/manageDashboard.form";
 	}
 
 	/**

@@ -64,12 +64,13 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		Cohort cohort = context.getBaseCohort();
 
 		// By default, get all patients
-		if (cohort == null) {			
+		if (cohort == null)
 			throw new APIException("Cohort cannot be empty");
-		}
-		
-		// Reduce the number of patients to evaluate
-		CohortUtil.limitCohort(cohort, context.getLimit());
+					
+		if (context.getLimit() != null)
+			CohortUtil.limitCohort(cohort, context.getLimit());
+
+		// Get a list of patients based on the cohort members
 		List<Patient> patients = Context.getPatientSetService().getPatients(cohort.getMemberIds());
 		
 		// Pre-calculate the program states
@@ -78,8 +79,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 			states.put(wf, Context.getPatientSetService().getCurrentStates(cohort, wf));
 		}
 		
-		for (Patient p : patients) {
-			
+		for (Patient p : patients) {			
 			DataSetRow<Object> row = new DataSetRow<Object>();
 			row.addColumnValue(PatientDataSetDefinition.PATIENT_ID, p.getPatientId());			
 			row.addColumnValue(PatientDataSetDefinition.GIVEN_NAME, p.getGivenName());

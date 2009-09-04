@@ -51,10 +51,13 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
 	public DataSetDefinition getDataSetDefinitionByUuid(String uuid) {	
 		// As a temporary hack, infer uuid from Class + id for saved DataSetDefinitions
     	for(DataSetDefinition dsd : getAllDataSetDefinitions(false)) {
+    		if (dsd.getUuid() != null && dsd.getUuid().equals(uuid))
+    			return dsd;
+    		/*
     		String inferredUuid = dsd.getClass() + ":" + dsd.getId();
     		if (inferredUuid.equalsIgnoreCase(uuid)) {
     			return dsd;
-    		}
+    		}*/
     	}
     	return null;
 	}
@@ -62,16 +65,14 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
 	/**
      * @see DataSetDefinitionPersister#getAllDataSetDefinitions(boolean)
      */
-    public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {
-	    
+    public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {	    
     	// Get all data exports in the system
 	    ReportObjectService ros = Context.getService(ReportObjectService.class);
-	    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");
-    	
-	    // Iterate through the report definitions and wrap each with a BIRT report
+	    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");    	
     	List <DataSetDefinition> dataSetDefinitions = new Vector<DataSetDefinition>();
     	for (AbstractReportObject obj : dataExports) { 
     		DataExportReportObject dataExport = (DataExportReportObject) obj;
+    		dataExport.setUuid(obj.getUuid());	// hack to get uuids into data exports
     		dataSetDefinitions.add(new DataExportDataSetDefinition(dataExport));    		
     	}    	
     	return dataSetDefinitions;

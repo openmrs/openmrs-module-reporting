@@ -37,7 +37,6 @@ public class CohortUtil {
 		Cohort limitCohort = new Cohort();
 		
 		if (cohort != null && !cohort.isEmpty()) { 	
-			log.info("cohort: " + cohort.getMemberIds());
 			if (cohort.getSize() <= size) 
 				return cohort;	
 			int count = 0;

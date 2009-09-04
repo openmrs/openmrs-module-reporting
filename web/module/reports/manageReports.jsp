@@ -37,8 +37,6 @@
 					<th>Description</th>
 					<th>Author</th>
 					<th>Created</th>
-					<th>Preview</th>
-					<th>Render</th>
 					<th>Remove</th>
 				</tr>
 			</thead>
@@ -92,6 +90,10 @@ $(document).ready(function() {
 
 					<tr>
 						<td width="20%" nowrap="">
+							<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?reportId=${reportDefinition.uuid}">
+								<img src='<c:url value="/images/play.gif"/>' align="absmiddle" border="0"/>
+							</a>							
+							&nbsp;
 							<a href="${editUrl}">
 								<span class="small">${reportDefinition.name}</span>
 							</a>
@@ -107,11 +109,6 @@ $(document).ready(function() {
 						</td>
 						<td width="5%" nowrap>
 							<span class="small"><rpt:timespan then="${reportDefinition.dateCreated}"/></span>
-						</td>
-						<td width="1%" align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?reportId=${reportDefinition.uuid}">
-								<img src='<c:url value="/images/play.gif"/>' border="0"/>
-							</a>
 						</td>
 						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportDefinition.uuid}">

@@ -26,6 +26,7 @@ import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.ParameterConstants;
 import org.openmrs.module.evaluation.parameter.ParameterException;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
+import org.openmrs.module.util.CohortUtil;
 
 /**
  * The EvaluationContext provides the following capabilities: - A baseCohort, i.e. the universe of
@@ -246,6 +247,8 @@ public class EvaluationContext {
 	 * @return the baseCohort
 	 */
 	public Cohort getBaseCohort() {
+		if (getLimit() != null && getLimit() > 0)
+			return CohortUtil.limitCohort(baseCohort, getLimit());
 		return baseCohort;
 	}
 	
