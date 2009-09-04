@@ -11,7 +11,9 @@
 	<form:form method="get" commandName="query" action="indicatorHistoryOptions.form">
 		<form:hidden path="location"/>
 		<form:hidden path="lastMonths"/>
-		<form:hidden path="indicatorUuid"/>
+		<c:forEach var="ind" items="${query.indicators}">
+			<input type="hidden" name="indicators" value="${ind.uuid}"/>
+		</c:forEach>
 		<input type="submit" value="Change Options"/>
 	</form:form>
 	<table>
@@ -30,7 +32,9 @@
 
 <form:form method="get" action="indicatorHistory.form" commandName="query">
 	<form:hidden path="location"/>
-	<form:hidden path="indicatorUuid"/>
+	<c:forEach var="ind" items="${query.indicators}">
+		<input type="hidden" name="indicators" value="${ind.uuid}"/>
+	</c:forEach>
 	When?
 	<form:select path="lastMonths" onchange="submit()">
 		<form:option value="6">Last 6 months</form:option>
@@ -42,18 +46,22 @@
 <c:if test="${dataSet != null}">
 	<script type="text/javascript">
 		var series = [];
-		var data = [];
+		<c:forEach var="col" items="${dataSet.definition.columns}">
+			<c:if test="${col.columnKey != 'startDate' && col.columnKey != 'endDate' && col.columnKey != 'location'}">
+				series.push({ label: "${col.indicator.name}", data: [] });
+			</c:if>
+		</c:forEach>
 		<c:forEach var="row" items="${dataSet.iterator}">
-			data.push([${row.columnValuesByKey['startDate'].time}, ${row.columnValuesByKey['indicator'].value}]);
-			<%-- terrible hack --%>
-			<c:forEach var="col" items="${row.columnValues}">
-				<c:if test="${col.key.columnKey == 'indicator'}">
-					<c:set var="indicatorName" value="${col.key.displayName}"/>
+			<c:set var="startDate" value="${row.columnValuesByKey['startDate'].time}"/>
+			<c:set var="ind" value="0"/>
+			<c:forEach var="column" items="${row.columnValues}">
+				<c:if test="${column.key.columnKey != 'startDate' && column.key.columnKey != 'endDate' && column.key.columnKey != 'location'}">
+					series[${ind}].data.push([ ${startDate} , ${column.value} ]);
+					<c:set var="ind" value="${ind + 1}"/>
 				</c:if>
 			</c:forEach>
 		</c:forEach>
-		series.push( { label: "${indicatorName}", data: data} );
-
+		
 		var options = {
 			xaxis: { mode: "time" },
 			points: { show: true },

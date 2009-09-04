@@ -11,7 +11,7 @@
 	
 	<table>
 		<tr>
-			<td>
+			<td align="right">
 				Where?
 			</td>
 			<td>
@@ -22,7 +22,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>
+			<td align="right">
 				When?
 			</td>
 			<td>
@@ -33,21 +33,18 @@
 				</form:select>
 			</td>
 		</tr>
-		<tr>
-			<td>
-				Indicator:
+		<tr valign="top">
+			<td align="right">
+				Which<br/>Indicators?
 			</td>
 			<td>
+				<form:checkboxes path="indicators" items="${indicators}" itemLabel="name" itemValue="uuid" delimiter="<br/>"/>
 				<%--
-				<select name="indicators" multiple="true" size="10">
-					<c:forEach var="ind" items="${indicators}">
-					</c:forEach>
-				</select>
-				--%>
-				<form:select path="indicatorUuid">
+				<form:select path="indicators">
 					<form:option value=""/>
 					<form:options items="${indicators}" itemLabel="name" itemValue="uuid"/>
 				</form:select>
+				--%>
 			</td>
 		</tr>
 		<tr>

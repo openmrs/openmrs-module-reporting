@@ -14,6 +14,7 @@
 package org.openmrs.module.indicator.util;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,11 +42,16 @@ public class IndicatorUtil {
 		return false;
 	}
 	
+	private static Map<String, Object> perIndMappings;
+	static {
+		perIndMappings = new HashMap<String, Object>();
+		perIndMappings.put("startDate", "${startDate}");
+		perIndMappings.put("endDate", "${endDate}");
+		perIndMappings.put("location", "${location}");
+		perIndMappings = Collections.unmodifiableMap(perIndMappings);
+	}
+	
 	public static Map<String, Object> periodIndicatorMappings() {
-		Map<String, Object> ret = new HashMap<String, Object>();
-		ret.put("startDate", "${startDate}");
-		ret.put("endDate", "${endDate}");
-		ret.put("location", "${location}");
-		return ret;
+		return perIndMappings;
 	}
 }

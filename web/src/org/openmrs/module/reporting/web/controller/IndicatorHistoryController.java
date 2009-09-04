@@ -33,21 +33,21 @@ public class IndicatorHistoryController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) { 
-    	binder.registerCustomEditor(Location.class, new LocationEditor()); 
+    	binder.registerCustomEditor(Location.class, new LocationEditor());
     	binder.registerCustomEditor(Indicator.class, new IndicatorEditor());
     }
     
 	@ModelAttribute("query")
 	public Query formBackingObject(@RequestParam(value="lastMonths", required=false) Integer lastMonths,
 	                               @RequestParam(value="location", required=false) Location location,
-	                               @RequestParam(value="indicatorUuid", required=false) String indicatorUuid) {
+	                               @RequestParam(value="indicators", required=false) List<Indicator> indicators) {
 		Query query = new Query();
 		if (lastMonths != null)
 			query.setLastMonths(lastMonths);
 		if (location != null)
 			query.setLocation(location);
-		if (indicatorUuid != null)
-			query.setIndicatorUuid(indicatorUuid);
+		if (indicators != null )
+			query.setIndicators(indicators);
 		return query;
 	}
 
@@ -73,10 +73,10 @@ public class IndicatorHistoryController {
 	@RequestMapping("/module/reporting/indicators/indicatorHistory")
 	public String getIndicatorHistory(ModelMap model,
 	                                @ModelAttribute("query") Query query) {
-		if (query.getIndicatorUuid() == null) {
+		if (query.getIndicators() == null || query.getIndicators().size() == 0) {
 			return "redirect:indicatorHistoryOptions.form";
 		}
-		CohortIndicator indicator = (CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid(query.getIndicatorUuid());
+		//CohortIndicator indicator = (CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid(query.getIndicatorUuid());
 
 		// determine which periods to do this for
 		List<Iteration> iterations = new ArrayList<Iteration>();
@@ -96,7 +96,14 @@ public class IndicatorHistoryController {
 		}
 			
 		CohortIndicatorDataSetDefinition indDSD = new CohortIndicatorDataSetDefinition();
-		indDSD.addIndicator("indicator", indicator.getName(), indicator, IndicatorUtil.periodIndicatorMappings());
+		for (Indicator ind : query.getIndicators()) {
+			try {
+				CohortIndicator indicator = (CohortIndicator) ind;
+				indDSD.addIndicator(indicator.getUuid(), indicator.getName(), indicator, IndicatorUtil.periodIndicatorMappings());
+			} catch (ClassCastException ex) {
+				throw new RuntimeException("This feature only works for Cohort Indicators");
+			}
+		}
 		MultiPeriodIndicatorDataSetDefinition dsd = new MultiPeriodIndicatorDataSetDefinition(indDSD);
 		dsd.setIterations(iterations);
 		
@@ -108,7 +115,7 @@ public class IndicatorHistoryController {
 	public class Query {
 		private Integer lastMonths;
 		private Location location;
-		private String indicatorUuid;
+		private List<Indicator> indicators;
 
 		public Query() { }
 
@@ -128,12 +135,13 @@ public class IndicatorHistoryController {
         	this.location = location;
         }
 		
-        public String getIndicatorUuid() {
-        	return indicatorUuid;
+        public List<Indicator> getIndicators() {
+        	return indicators;
         }
 		
-        public void setIndicatorUuid(String indicatorUuid) {
-        	this.indicatorUuid = indicatorUuid;
+        public void setIndicators(List<Indicator> indicators) {
+        	this.indicators = indicators;
         }
+		
 	}
 }
