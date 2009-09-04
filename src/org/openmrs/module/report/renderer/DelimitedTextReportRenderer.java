@@ -29,6 +29,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
+import org.openmrs.module.indicator.IndicatorResult;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 
@@ -138,7 +139,9 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 					if (colValue != null) { 
 						if (colValue instanceof Cohort) {
 							writer.write(escape(Integer.toString(((Cohort) colValue).size())));
-						} 
+						} else if (colValue instanceof IndicatorResult<?>) {
+							writer.write(Double.toString(((IndicatorResult<?>) colValue).getValue().doubleValue()));
+						}
 						else {
 							writer.write(escape(colValue.toString()));
 						}

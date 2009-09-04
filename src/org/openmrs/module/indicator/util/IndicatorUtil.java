@@ -42,16 +42,11 @@ public class IndicatorUtil {
 		return false;
 	}
 	
-	private static Map<String, Object> perIndMappings;
-	static {
-		perIndMappings = new HashMap<String, Object>();
+	public static Map<String, Object> periodIndicatorMappings() {
+		Map<String, Object> perIndMappings = new HashMap<String, Object>();
 		perIndMappings.put("startDate", "${startDate}");
 		perIndMappings.put("endDate", "${endDate}");
 		perIndMappings.put("location", "${location}");
-		perIndMappings = Collections.unmodifiableMap(perIndMappings);
-	}
-	
-	public static Map<String, Object> periodIndicatorMappings() {
 		return perIndMappings;
 	}
 }

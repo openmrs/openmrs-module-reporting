@@ -7,8 +7,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
-import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
+import org.openmrs.module.dataset.MapDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
@@ -39,13 +39,13 @@ public class CohortIndicatorDataSetEvaluator2Test extends BaseModuleContextSensi
 		dsd.addColumn("1.a", "Males in program", new Mapped<CohortIndicator>(ind, null), "gender=male");
 		dsd.addColumn("1.b", "Females in program", new Mapped<CohortIndicator>(ind, null), "gender=female");
 		
-		DataSet<?> ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
+		MapDataSet<IndicatorResult<CohortIndicator>> ds = (MapDataSet<IndicatorResult<CohortIndicator>>) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		
 		int i = 0;
-		for (DataSetRow<?> row : ds) {
+		for (DataSetRow<IndicatorResult<CohortIndicator>> row : ds) {
 			System.out.println("Row " + (++i));
-			for (Map.Entry<DataSetColumn, ?> col : row.getColumnValues().entrySet()) {
-				System.out.println(col.getKey().getDisplayName() + " -> " + col.getValue());
+			for (Map.Entry<DataSetColumn, IndicatorResult<CohortIndicator>> col : row.getColumnValues().entrySet()) {
+				System.out.println(col.getKey().getDisplayName() + " -> " + col.getValue().getValue());
 			}
 		}
 	}

@@ -2,13 +2,17 @@ package org.openmrs.module.dataset.definition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.CohortIndicator;
+import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -33,8 +37,25 @@ public class CohortIndicatorDataSetDefinition2 extends BaseDataSetDefinition {
 		dimensions.put(dimensionKey, dimension);
 	}
 	
+	public void removeDimension(String dimensionKey) {
+		dimensions.remove(dimensionKey);
+	}
+	
 	public void addColumn(String key, String displayName, Mapped<CohortIndicator> indicator, Map<String, String> dimensionOptions) {
 		columns.add(new ColumnDefinition(key, displayName, indicator, dimensionOptions));
+	}
+	
+	/**
+	 * Removes a column by its key
+	 * 
+	 * @param key
+	 */
+	public void removeColumn(String key) {
+		for (Iterator<ColumnDefinition> i = columns.iterator(); i.hasNext(); ) {
+			if (i.next().getColumnKey().equals(key)) {
+				i.remove();
+			}
+		}
 	}
 	
 	/**
@@ -54,6 +75,20 @@ public class CohortIndicatorDataSetDefinition2 extends BaseDataSetDefinition {
 	    return dimensions.get(key);
     }
 	
+    /**
+     * @param dimensions the dimensions to set
+     */
+    public void setDimensions(Map<String, Mapped<CohortDefinitionDimension>> dimensions) {
+    	this.dimensions = dimensions;
+    }
+
+    /**
+     * @param columns the columns to set
+     */
+    public void setColumns(List<ColumnDefinition> columns) {
+    	this.columns = columns;
+    }
+
 	public class ColumnDefinition extends SimpleDataSetColumn {
 
         private static final long serialVersionUID = 1L;

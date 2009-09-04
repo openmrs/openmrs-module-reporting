@@ -12,7 +12,6 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.MapDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
@@ -22,7 +21,9 @@ import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.CohortIndicatorResult;
+import org.openmrs.module.indicator.IndicatorResult;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
+import org.openmrs.module.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.indicator.service.IndicatorService;
 
 
@@ -33,12 +34,12 @@ public class CohortIndicatorDataSetEvaluator2 implements DataSetEvaluator {
 	
 	public CohortIndicatorDataSetEvaluator2() { }
 	
-	public MapDataSet<Number> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
+	public MapDataSet<IndicatorResult<CohortIndicator>> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
 		if (evalContext == null) {
 			evalContext = new EvaluationContext();
 		}
 		
-		MapDataSet<Number> ret = new MapDataSet<Number>(dataSetDefinition, evalContext);
+		MapDataSet<IndicatorResult<CohortIndicator>> ret = new MapDataSet<IndicatorResult<CohortIndicator>>(dataSetDefinition, evalContext);
 		
 		CohortIndicatorDataSetDefinition2 dsd = (CohortIndicatorDataSetDefinition2) dataSetDefinition;
 		
@@ -55,7 +56,7 @@ public class CohortIndicatorDataSetEvaluator2 implements DataSetEvaluator {
 					temp = new HashMap<String, Cohort>();
 					dimensionCalculationCache.put(dimensionKey, temp);
 				}
-				log.warn("Caching dimension: " + dimensionKey + " = " + optionKey + " -> " + cohort.size());
+				log.debug("Caching dimension: " + dimensionKey + " = " + optionKey + " -> " + cohort.size());
 				temp.put(optionKey, cohort);
 			}
 		}
@@ -66,7 +67,7 @@ public class CohortIndicatorDataSetEvaluator2 implements DataSetEvaluator {
 			ColumnDefinition col = (ColumnDefinition) c;
 			if (!indicatorCalculationCache.containsKey(col.getIndicator())) {
 				CohortIndicatorResult result = (CohortIndicatorResult) Context.getService(IndicatorService.class).evaluate(col.getIndicator(), evalContext);
-				log.warn("Caching indicator: " + col.getIndicator() + " -> " + result.getCohortValues().size());
+				log.debug("Caching indicator: " + col.getIndicator() + " -> " + result.getCohortValues().size());
 				indicatorCalculationCache.put(col.getIndicator(), result);
 			}
 		}
@@ -77,16 +78,17 @@ public class CohortIndicatorDataSetEvaluator2 implements DataSetEvaluator {
 			// get this indicator result from the cache
 			CohortIndicatorResult result = indicatorCalculationCache.get(col.getIndicator());
 			// get its value taking dimensions into account
+			CohortIndicatorAndDimensionResult resultWithDimensions = new CohortIndicatorAndDimensionResult(result, evalContext);
 			List<Cohort> filters = new ArrayList<Cohort>();
 			if (col.getDimensionOptions() != null) {
 				for (Map.Entry<String, String> e : col.getDimensionOptions().entrySet()) {
-					log.warn("looking up dimension: " + e.getKey() + " = " + e.getValue());
+					log.debug("looking up dimension: " + e.getKey() + " = " + e.getValue());
 					Cohort temp = dimensionCalculationCache.get(e.getKey()).get(e.getValue());
+					resultWithDimensions.applyFilter(e.getKey(), temp);
 					filters.add(temp);
 				}
 			}
-			Number thisResult = filters.size() > 0 ? result.getValueForSubset(filters.toArray(new Cohort[0])) : result.getValue();
-			ret.addData(col, thisResult);
+			ret.addData(col, resultWithDimensions);
 		}
 		
 		return ret;

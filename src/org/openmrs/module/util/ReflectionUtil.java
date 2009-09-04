@@ -129,6 +129,7 @@ public class ReflectionUtil {
 				setterMethod.invoke(object, value);
     		}
 			catch (Exception e) {
+				log.error("Failed to set property value", e);
     			throw new APIException("Error trying to set field <" + field.getName() + "> on " + 
     					object.getClass() + " object with value <" + value + ">", e);
     		}

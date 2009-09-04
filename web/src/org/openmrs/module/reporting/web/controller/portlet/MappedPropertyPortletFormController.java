@@ -110,7 +110,7 @@ public class MappedPropertyPortletFormController {
         			if (!newKey.equals(currentKey) && currentKey != null) {
         				newValue.remove(currentKey);
         			}
-        			ReflectionUtil.setPropertyValue(parent, f, newValue);
+       				ReflectionUtil.setPropertyValue(parent, f, newValue);
     			}
     		}
     		else if (Mapped.class.isAssignableFrom(fieldType)) {

@@ -19,6 +19,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.OpenmrsMetadata;
+import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 
@@ -110,5 +112,24 @@ public abstract class BaseDefinition extends BaseOpenmrsMetadata implements Defi
 			parameters = new ArrayList<Parameter>();
 		}
 		return parameters;
+	}
+	
+	/** @see Object#equals(Object) */
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof Definition) {
+			Definition def = (Definition) obj;
+			if (this.getUuid() != null) {
+				return (this.getUuid().equals(def.getUuid()));
+			}
+		}
+		return this == obj;
+	}
+	
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (getUuid() == null ? 0 : 31 * getUuid().hashCode());
 	}
 }
