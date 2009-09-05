@@ -186,30 +186,36 @@ $(document).ready(function() {
 									</c:choose>
 								</c:set>
 							
-								In Step 2, we showed you <strong>${recordCount}</strong> out of <strong>${cohort.size}</strong> 
-								<strong>${dataSetDefinition.name}</strong> records.  Now, for a limited time only,  
+								In Step 2, we showed you <strong>${dataSetDefinition.name}</strong> records 
+								for <strong>${recordCount}</strong> out of <strong>${cohort.size}</strong>
+								patients in the ${cohortDefinition.name} cohort.  Now, for a limited time only,  
 								you can download the <strong>entire dataset</strong> (at no extra cost) 
 								by choosing a <strong>format</strong> and clicking the <strong>Download</strong> button.
 							</c:if>
 						</div>
 
-						<div align="left" style="padding-top:10px;">	
+						<div align="left" style="padding-top:10px; font-size: medium">	
 							<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
 								method="post" action="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form">
 								<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
 								<input type="hidden" id="dataSetId" name="dataSetId" value="${dataSetDefinition.uuid}"/>
 								<input type="hidden" id="cohortId" name="cohortId" value="${cohortDefinition.uuid}"/>
 								<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
-								<label class="desc">Choose your desired format</label>
+
+								<label class="desc">Choose number of rows and your desired format</label>
+								<select name="limit">
+								 	<option value="${param.limit}" selected>Download ${param.limit} records</option>
+								 	<option value="0" selected>Download all records</option>
+								</select>
 								<select name="format">
 									<option value=""></option>
-									<option value="csv">CSV</option>
-									<option value="tsv">TSV</option>
-									<option value="xml">XML</option>
-									<option value="xls">XLS</option>
-									<option value="xls">HTML</option>
-								</select>								
-								<input type="submit" name="action" value="Download Data Set"/>							
+									<option value="csv" selected>as CSV</option>
+									<option value="tsv">as TSV</option>
+									<option value="xml">as XML</option>
+									<option value="xls">as XLS</option>
+									<option value="html">as HTML</option>
+								</select>
+								<input type="submit" name="action" value="Go"/>							
 							</form>							
 						</div>
 					</div>
