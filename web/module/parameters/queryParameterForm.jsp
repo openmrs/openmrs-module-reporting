@@ -87,7 +87,13 @@ $(document).ready(function() {
 								</div>
 							</li>
 						</spring:hasBindErrors>
-					</ul>																
+					</ul>	
+					<div>			
+						<c:if test="${empty parameterizable.parameters}">
+							${parameterizable.name} does not have any parameters.  
+							Click 'Run' to evaluate based on this objects properties.
+						</c:if> 
+					</div>
 					<ul>									
 						<c:forEach var="parameter" items="${parameterizable.parameters}">				
 							<li>
@@ -103,14 +109,12 @@ $(document).ready(function() {
 				<c:if test="${!empty results}">
 					<h1>Evaluation Result</h1>
 					<div>
-						<span>Result Type: </span>
-						<strong>${results.class.simpleName}</strong>							
+						<label class="desc">Result Type </label>
+						<span>${results.class.simpleName}</span>
 					</div>
 					<div>
-						<span>Result:</span>						
-						<span>
-							<strong>${results}</strong>
-						</span>
+						<label class="desc">Result</label>						
+						<span>${results}</span>
 					</div>
 				</c:if>
 		</div>

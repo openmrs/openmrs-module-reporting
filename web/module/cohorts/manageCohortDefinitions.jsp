@@ -46,26 +46,26 @@ function confirmDelete(name, uuid) {
 				<tr>
 					<th>Name</th>
 					<th>Description</th>
-					<th align="center" width="1%">Preview</th>
+					<th align="center" width="1%">Run</th>
 					<th align="center" width="1%">Remove</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
 				
-<script>					
-$(document).ready(function() {
-	$("#cohort-${cohortDefinition.uuid}").click(function(event){ 
-		showReportingDialog({ 
-			title: 'Preview Cohort Definition', 
-			url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}',
-			successCallback: function() { 
-				window.location = window.location; //.reload(true);
-			} 
-		});
-	});
-} );
-</script>					
+					<script>					
+					$(document).ready(function() {
+						$("#cohort-${cohortDefinition.uuid}").click(function(event){ 
+							showReportingDialog({ 
+								title: 'Preview Cohort Definition', 
+								url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}',
+								successCallback: function() { 
+									window.location = window.location; //.reload(true);
+								} 
+							});
+						});
+					} );
+					</script>					
 				
 					<tr>
 						<td>

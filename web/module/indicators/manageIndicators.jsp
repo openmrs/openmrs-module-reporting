@@ -60,6 +60,7 @@ $(document).ready(function() {
 					<th nowrap>Last modified</th>
 					<th>Created</th>
 					<th>Edit</th>
+					<th>Run</th>
 					<th>Delete</th>
 				</tr>
 			</thead>
@@ -92,6 +93,19 @@ $(document).ready(function() {
 						});
 					});
 					</script>
+					<script>					
+					$(document).ready(function() {
+						$("#preview-indicator-${indicator.uuid}").click(function(event){ 
+							showReportingDialog({ 
+								title: 'Preview Indicator', 
+								url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${indicator.uuid}&type=${indicator.class.name}',
+								successCallback: function() { 
+									window.location = window.location; //.reload(true);
+								} 
+							});
+						});
+					} );
+					</script>					
 				
 				
 					<tr>
@@ -124,6 +138,11 @@ $(document).ready(function() {
 								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
 							</a>
 						</td>
+						<td align="center">
+							<a href="#" id="preview-indicator-${indicator.uuid}">
+								<img src="<c:url value='/images/play.gif'/>" border="0"/>
+							</a>
+						</td>					
 						<td align="center" width="1%">							
 							<a href="${pageContext.request.contextPath}/module/reporting/indicators/purgeIndicator.form?uuid=${indicator.uuid}">
 								<img src="<c:url value='/images/trash.gif'/>" border="0"/>

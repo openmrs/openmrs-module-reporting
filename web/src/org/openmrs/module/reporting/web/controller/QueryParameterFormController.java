@@ -9,8 +9,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hsqldb.lib.StringUtil;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -62,9 +64,9 @@ public class QueryParameterFormController {
      * @return	the form model and view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView setupForm() {
-
-				
+	public ModelAndView setupForm(HttpServletRequest request) {
+		// Remove results on new requests
+		request.getSession().removeAttribute("results");		
 		ModelAndView model = 
 			new ModelAndView("/module/reporting/parameters/queryParameterForm");
 		
@@ -94,14 +96,13 @@ public class QueryParameterFormController {
 		log.info("Action: " + action);
 		
 		Object results = null;
-		String defaultView = "/module/reporting/parameters/queryParameterForm";
-		ModelAndView model = new ModelAndView(defaultView);
+		ModelAndView model = new ModelAndView();
 		
 		if (bindingResult.hasErrors()) {			
 			log.info("BindingResult: " + bindingResult);
 			log.info("Errors: " + bindingResult.getAllErrors());
 			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "An error has occurred.  See below for more details.");
-			return setupForm();
+			return setupForm(request);
 		}
 		
 
@@ -133,15 +134,17 @@ public class QueryParameterFormController {
 				results = ParameterizableUtil.evaluateParameterizable(parameterizable, context);						
 				//model.addObject("results", results);
 				request.getSession().setAttribute("results", results);
-				if (successView != null) {
-					successView += "?uuid=" + parameterizable.getUuid() + "&type=" + type + "&format=" + format; 
-					model.setViewName(successView);
-				}
+				
+				// Use the success view if it's given, default view otherwise
+				//successView = (!StringUtils.isEmpty(successView)) ? successView : defaultView;
+				//successView += "?uuid=" + parameterizable.getUuid() + "&type=" + type + "&format=" + format; 
+				model.setViewName("/module/reporting/parameters/queryParameterForm");
+				
 			} 
 			catch(ParameterException e) { 
 				log.error("unable to evaluate report: ", e);
 				request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "Unable to evaluate report: " + e.getMessage());
-				setupForm();
+				setupForm(request);
 			}								
 		}		
 		
