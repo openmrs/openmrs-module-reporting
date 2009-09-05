@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
-import org.openmrs.annotation.Handler;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -95,63 +94,52 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 			return null;
 		}
 		else {
-			return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MIN_VALUE));
+			return Collections.singleton(new RenderingMode(this, getLabel(), null, Integer.MIN_VALUE));
 		}
 	}
 	
 	/**
-	 * @see .ReportRenderer#render(ReportData, String, OutputStream)
+	 * @see ReportRenderer#render(ReportData, String, OutputStream)
 	 */
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
-		render(results, argument, new PrintWriter(out));
-	}
-	
-	/**
-	 * @see ReportRenderer#render(ReportData, String, Writer)
-	 */
-	public void render(ReportData results, String argument, Writer writer) throws IOException, RenderingException {
 		
+		Writer w = new PrintWriter(out);
 		@SuppressWarnings("unchecked")
 		DataSet<Object> dataset = results.getDataSets().values().iterator().next();
 		
 		List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 		
 		// header row
-		writer.write(getBeforeRowDelimiter());
+		w.write(getBeforeRowDelimiter());
 		for (DataSetColumn column : columns) {
-			if (isDisplayColumn(column.getColumnKey())) { 
-				writer.write(getBeforeColumnDelimiter());
-				writer.write(escape(column.getColumnKey()));
-				writer.write(getAfterColumnDelimiter());
-			}
+			w.write(getBeforeColumnDelimiter());
+			w.write(escape(column.getColumnKey()));
+			w.write(getAfterColumnDelimiter());
 		}
-		writer.write(getAfterRowDelimiter());
+		w.write(getAfterRowDelimiter());
 		
 		// data rows
 		for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {
-			writer.write(getBeforeRowDelimiter());
+			w.write(getBeforeRowDelimiter());
 			DataSetRow<Object> map = i.next();
 			for (DataSetColumn column : columns) {
-			
-				if (isDisplayColumn(column.getColumnKey())) { 
-					Object colValue = map.getColumnValue(column);
-					writer.write(getBeforeColumnDelimiter());
-					if (colValue != null) { 
-						if (colValue instanceof Cohort) {
-							writer.write(escape(Integer.toString(((Cohort) colValue).size())));
-						} else if (colValue instanceof IndicatorResult<?>) {
-							writer.write(Double.toString(((IndicatorResult<?>) colValue).getValue().doubleValue()));
-						}
-						else {
-							writer.write(escape(colValue.toString()));
-						}
+				Object colValue = map.getColumnValue(column);
+				w.write(getBeforeColumnDelimiter());
+				if (colValue != null) { 
+					if (colValue instanceof Cohort) {
+						w.write(escape(Integer.toString(((Cohort) colValue).size())));
+					} else if (colValue instanceof IndicatorResult<?>) {
+						w.write(Double.toString(((IndicatorResult<?>) colValue).getValue().doubleValue()));
 					}
-					writer.write(getAfterColumnDelimiter());
+					else {
+						w.write(escape(colValue.toString()));
+					}
 				}
+				w.write(getAfterColumnDelimiter());
 			}
-			writer.write(getAfterRowDelimiter());
+			w.write(getAfterRowDelimiter());
 		}
 		
-		writer.flush();
+		w.flush();
 	}
 }

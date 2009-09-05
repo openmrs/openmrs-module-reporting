@@ -15,13 +15,12 @@ package org.openmrs.module.dataset;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
@@ -33,11 +32,8 @@ import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.report.service.ReportService;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
-import org.openmrs.util.OpenmrsUtil;
-import org.simpleframework.xml.Serializer;
 
 /**
  *
@@ -84,31 +80,21 @@ public class RowPerObsDatasetTest extends BaseModuleContextSensitiveTest {
 		ReportDefinition rs = new ReportDefinition();
 		rs.setName("Testing row-per-obs");
 		rs.setDescription("Tesing RowPerObsDataSet*");
-		rs.addDataSetDefinition("test", definition, null);
+		rs.addDataSetDefinition("test", definition, null);		
+		ReportData data = Context.getService(ReportService.class).evaluate(rs, evalContext);
 		
-		Serializer serializer = OpenmrsUtil.getShortSerializer();
-		StringWriter writer = new StringWriter();
-		serializer.write(rs, writer);
-		String xmlOutput = writer.toString();
-		XMLAssert.assertXpathEvaluatesTo("5089", "//reportDefinition/dataSets/dataSetDefinition/questions/concept/@conceptId", xmlOutput);
-		
-		rs = (ReportDefinition) serializer.read(ReportDefinition.class, xmlOutput);
-		assertEquals("Testing row-per-obs", rs.getName());
-		assertEquals(1, rs.getDataSetDefinitions().size());
-		
-		ReportData data = 
-			Context.getService(ReportService.class).evaluate(rs, evalContext);
-		//System.out.println("Result=");
-		
-		StringWriter w = new StringWriter();
-		new TsvReportRenderer().render(data, null, w);
-		
-		String expectedOutput = "\"patientId\"	\"question\"	\"questionConceptId\"	\"answer\"	\"answerConceptId\"	\"obsDatetime\"	\"encounterId\"	\"obsGroupId\"	\n\"2\"	\"WEIGHT\"	\"5089\"	\"100.0\"	\"\"	\"2005-01-01 00:00:00.0\"	\"1\"	\"\"	\n";
-		// (This line was used to generate the above line of code)
-		// TestUtil.printAssignableToSingleString(w.toString());
-		
-		assertEquals(expectedOutput, w.toString());
-		
+		ByteArrayOutputStream out = null;
+		try {
+			out = new ByteArrayOutputStream();
+			new TsvReportRenderer().render(data, null, out);
+			String expectedOutput = "\"patientId\"	\"question\"	\"questionConceptId\"	\"answer\"	\"answerConceptId\"	\"obsDatetime\"	\"encounterId\"	\"obsGroupId\"	\n\"2\"	\"WEIGHT\"	\"5089\"	\"100.0\"	\"\"	\"2005-01-01 00:00:00.0\"	\"1\"	\"\"	\n";
+			assertEquals(expectedOutput, out.toString("UTF-8"));
+		}
+		finally {
+			if (out != null) {
+				out.close();
+			}
+		}
 	}
 	
 }

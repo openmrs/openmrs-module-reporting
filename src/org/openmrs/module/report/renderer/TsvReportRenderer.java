@@ -14,26 +14,21 @@
 package org.openmrs.module.report.renderer;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.common.DisplayLabel;
 import org.openmrs.module.report.ReportDefinition;
 
 /**
  * Implementation of a ReportRenderer that renders ReportData to a TSV file
  */
 @Handler
+@DisplayLabel(labelDefault="TSV")
 public class TsvReportRenderer extends DelimitedTextReportRenderer {
 	
 	/**
 	 * Default Constructor
 	 */
 	public TsvReportRenderer() { }
-	
-	/**
-	 * @see DelimitedTextReportRenderer#getLabel()
-	 */
-	public String getLabel() {
-		return "TSV";
-	}
-	
+
 	/**
 	 * @see DelimitedTextReportRenderer#getFilenameExtension()
 	 */

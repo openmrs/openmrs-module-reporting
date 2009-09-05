@@ -538,7 +538,7 @@ public class ManageReportController {
 				response.setContentType("application/vnd.ms-excel");
 				response.setHeader("Content-Disposition", "attachment; filename=\"lab-order-report.xls\"");            
 				XlsReportRenderer renderer = new XlsReportRenderer();
-				renderer.setDisplayColumns(displayColumns);
+				//renderer.setDisplayColumns(displayColumns); MS: No longer supported in renderer...move to DSD
 				renderer.render(reportData, null, response.getOutputStream());
             }
             else {
@@ -547,7 +547,7 @@ public class ManageReportController {
 				response.setContentType("text/csv");
 				response.setHeader("Content-Disposition", "attachment; filename=\"lab-order-report.csv\"");            
 	            CsvReportRenderer renderer = new CsvReportRenderer();
-				renderer.setDisplayColumns(displayColumns);
+				//renderer.setDisplayColumns(displayColumns); MS: No longer supported in renderer...move to DSD
 	            renderer.render(reportData, null, response.getOutputStream());
             }
     	} catch (IOException e) { 

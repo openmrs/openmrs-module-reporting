@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.report;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,30 +24,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Cohort;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
 import org.openmrs.Location;
-import org.openmrs.Order;
-import org.openmrs.OrderType;
-import org.openmrs.Patient;
-import org.openmrs.User;
-import org.openmrs.api.OrderService.ORDER_STATUS;
 import org.openmrs.api.context.Context;
-import org.openmrs.logic.LogicCriteria;
-import org.openmrs.logic.result.Result;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
-import org.openmrs.module.dataset.definition.JoinDataSetDefinition;
 import org.openmrs.module.dataset.definition.LabEncounterDataSetDefinition;
-import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
-import org.openmrs.module.report.renderer.TsvReportRenderer;
-import org.openmrs.module.report.service.ReportService;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -124,7 +106,7 @@ public class LabOrderReportTest extends BaseModuleContextSensitiveTest {
         displayColumns.addAll(ledsColumns);        
         
         CsvReportRenderer renderer = new CsvReportRenderer();
-        renderer.setDisplayColumns(displayColumns);
+        //renderer.setDisplayColumns(displayColumns);  MS: No longer supported in renderer...move to DSD
         renderer.render(labReportData, null, System.out);			
 		
 	}

@@ -41,6 +41,13 @@
 							<br/>
 							<openmrs:portlet url="mappedProperty" id="baseCohortDefinition" moduleId="reporting" 
 											 parameters="type=${report.class.name}|uuid=${report.uuid}|property=baseCohortDefinition|label=Base Cohort Definition|nullValueLabel=All Patients" />
+							<br/>
+							<b class="boxHeader">Output Designs</b>
+							<div class="box">
+								<c:forEach items="${designs}" var="design" varStatus="designStatus">
+									${design.name}<br/>
+								</c:forEach>
+							</div>
 						</td>
 						<td valign="top" width="100%">
 							<b class="boxHeader">Dataset Definitions</b>

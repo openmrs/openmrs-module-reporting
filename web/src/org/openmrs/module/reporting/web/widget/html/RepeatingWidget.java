@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
 import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
+import org.openmrs.module.util.ReflectionUtil;
 import org.openmrs.util.HandlerUtil;
 
 public class RepeatingWidget implements Widget {
@@ -70,6 +71,9 @@ public class RepeatingWidget implements Widget {
 			}
 		}
 		
+		boolean usePostfix = "t".equals(config.getAttributeValue("postfix"));
+		String postfixSeparator = config.getAttributeValue("postfixSeparator", ".");
+		
 		w.write("<script type=\"text/javascript\" charset=\"utf-8\">");
 		w.write("	$(document).ready(function() {");
 		w.write("		$(\"#"+id+"AddButton\").click(function(event){");
@@ -97,6 +101,18 @@ public class RepeatingWidget implements Widget {
 			c.setGenericTypes(genericTypes);
 			c.setDefaultValue(o);
 			
+			if (usePostfix && i != valuesToRender.size()) {
+				String postfixProperty = config.getAttributeValue("postfixProperty", null);
+				String pf = Integer.toString(i);
+				if (o != null && postfixProperty != null) {
+					Object postfixObj = ReflectionUtil.getPropertyValue(o, postfixProperty);
+					if (postfixObj != null) {
+						pf = postfixObj.toString();
+					}
+				}
+				c.setName(config.getName() + postfixSeparator + pf);
+			}
+			
 			Set<Attribute> atts = new HashSet<Attribute>();
 			atts.add(new Attribute("class", "multiFieldInput", null, null));
 			if (o == null) {
@@ -113,7 +129,7 @@ public class RepeatingWidget implements Widget {
 			
 		HtmlUtil.renderSimpleTag(w, "input", "id="+id+"AddButton|type=button|value=+|size=1");
 		HtmlUtil.renderOpenTag(w, "span", "id="+id+"Count|style=display:none;");
-		w.write(valuesToRender.size() + 1);
+		w.write("" + (valuesToRender.size() + 1));
 		HtmlUtil.renderCloseTag(w, "span");
 		HtmlUtil.renderCloseTag(w, "div");
 	}

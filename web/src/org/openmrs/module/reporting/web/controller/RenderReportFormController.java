@@ -1,11 +1,9 @@
 package org.openmrs.module.reporting.web.controller;
 
-import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,21 +13,20 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationContext;
-import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.ParameterException;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
+import org.openmrs.module.report.ReportDesign;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.renderer.IndicatorReportRenderer;
+import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.module.report.renderer.SimpleHtmlReportRenderer;
 import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.report.renderer.XmlReportRenderer;
 import org.openmrs.module.report.service.ReportService;
-import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -104,31 +101,46 @@ public class RenderReportFormController {
 			if (reportData != null) { 	
 				String filename = reportDefinition.getName() + "." + format;
 				
-				log.info("Rendering report data as " + format + " file named " + filename);
-				StringWriter writer = new StringWriter();					
+				log.info("Rendering report data as " + format + " file named " + filename);		
+				
+				for (ReportDesign d : Context.getService(ReportService.class).getReportDesigns(reportDefinition, null, false)) {
+					ReportRenderer r = d.getRendererType().newInstance();
+					System.out.println("-------Rendering design: " + d.getName() + "--------");
+					r.render(reportData, d.getUuid(), System.out);
+					System.out.println("---------------");
+				}
 				
 				if ("csv".equalsIgnoreCase(format)) { 
 					response.setContentType("text/csv");				
 					response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");  				
-					new CsvReportRenderer().render(reportData, response.getOutputStream());
+					new CsvReportRenderer().render(reportData, null, response.getOutputStream());
 				} 
 				else if ("tsv".equalsIgnoreCase(format)) { 
 					response.setContentType("text/tsv");
 					response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");  				
-					new TsvReportRenderer().render(reportData, response.getOutputStream());					
+					new TsvReportRenderer().render(reportData, null, response.getOutputStream());					
 				}
 				else if ("xml".equalsIgnoreCase(format)) { 
 					response.setContentType("text/xml");				
 					response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");  				
-					new XmlReportRenderer().render(reportData, response.getOutputStream());					
+					new XmlReportRenderer().render(reportData, null, response.getOutputStream());					
 				}
 				else if ("indicator".equalsIgnoreCase(format)) {  
 					model = new ModelAndView("/module/reporting/reports/renderReportData");
-					new IndicatorReportRenderer().render(reportData, writer);
-					model.addObject("renderedData", writer.toString());
+					ByteArrayOutputStream out = null;
+					try {
+						out = new ByteArrayOutputStream();
+						new IndicatorReportRenderer().render(reportData, null, out);
+						model.addObject("renderedData", out.toString("UTF-8"));
+					}
+					finally {
+						if (out != null) {
+							out.close();
+						}
+					}
 				}
 				else { 
-					new SimpleHtmlReportRenderer().render(reportData, response.getOutputStream());
+					new SimpleHtmlReportRenderer().render(reportData, null, response.getOutputStream());
 				}							
 				request.getSession().removeAttribute("results");
 				

@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.common.DisplayLabel;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -35,6 +35,7 @@ import org.openmrs.module.report.ReportDefinition;
  * ReportRenderer that renders to a delimited text file
  */
 @Handler
+@DisplayLabel(labelDefault="XML")
 public class XmlReportRenderer extends AbstractReportRenderer {
 	
 	/**
@@ -57,53 +58,41 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 	}
 	
 	/**
-	 * @see .ReportRenderer#render(ReportData, String, OutputStream)
+	 * @see ReportRenderer#render(ReportData, String, OutputStream)
 	 */
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
-		render(results, argument, new PrintWriter(out));
-	}
-	
-	/**
-	 * @see ReportRenderer#render(ReportData, String, Writer)
-	 */
-	public void render(ReportData results, String argument, Writer xmlWriter) throws IOException, RenderingException {
+		
+		Writer w = new PrintWriter(out);
 		
 		@SuppressWarnings("unchecked")
 		DataSet<Object> dataset = results.getDataSets().values().iterator().next();	
 
 		List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 		
-		xmlWriter.write("<?xml version=\"1.0\"?>\n");
-		xmlWriter.write("<dataset>\n");
-		xmlWriter.write("\t<rows>\n");
+		w.write("<?xml version=\"1.0\"?>\n");
+		w.write("<dataset>\n");
+		w.write("\t<rows>\n");
 		for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {		
-			xmlWriter.write("\t\t<row>");
+			w.write("\t\t<row>");
 			DataSetRow<Object> row = i.next();
-			for (DataSetColumn column : columns) {
-				
-				if (isDisplayColumn(column.getColumnKey())) { 
-					Object colValue = row.getColumnValue(column);
-					xmlWriter.write("<" + column.getDisplayName() + ">");
-					if (colValue != null) { 
-						if (colValue instanceof Cohort) {
-							xmlWriter.write(Integer.toString(((Cohort) colValue).size()));
-						} 
-						else {
-							xmlWriter.write(colValue.toString());
-						}
+			for (DataSetColumn column : columns) {			
+				Object colValue = row.getColumnValue(column);
+				w.write("<" + column.getDisplayName() + ">");
+				if (colValue != null) { 
+					if (colValue instanceof Cohort) {
+						w.write(Integer.toString(((Cohort) colValue).size()));
+					} 
+					else {
+						w.write(colValue.toString());
 					}
-					xmlWriter.write("</" + column.getDisplayName() + ">");
 				}
+				w.write("</" + column.getDisplayName() + ">");
 			}
-			xmlWriter.write("</row>\n");
+			w.write("</row>\n");
 		}		
-		xmlWriter.write("\t</rows>\n");
-		xmlWriter.write("</dataset>\n");
-		xmlWriter.flush();
-	}
-
-	public String getLabel() {
-		return "XML";
+		w.write("\t</rows>\n");
+		w.write("</dataset>\n");
+		w.flush();
 	}
 
 	public String getRenderedContentType(ReportDefinition schema,

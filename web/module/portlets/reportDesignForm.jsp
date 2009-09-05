@@ -1,0 +1,119 @@
+<%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
+<c:if test="${model.dialog != 'false'}">
+	<%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
+</c:if>
+
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+
+		$('#cancelButton').click(function(event){
+			<c:choose>
+				<c:when test="${model.dialog != 'false'}">
+					closeReportingDialog(false);
+				</c:when>
+				<c:otherwise>
+					document.location.href = '${model.cancelUrl}';
+				</c:otherwise>
+			</c:choose>
+		});
+
+		$('#submitButton').click(function(event){
+			$('#reportDesignForm').submit();
+		});
+
+		$("#resourcesAddButton").click(function(event){
+			var count = parseInt($('#resourcesCount').html()) + 1;
+			$('#resourcesCount').html(count);
+			var $newRow = cloneAndInsertBefore('resourcesTemplate', this);
+			$newRow.attr('id', 'resources' + count);
+			var newRowChildren = $newRow.children();
+			for (var i=0; i<newRowChildren.length; i++) {
+				newRowChildren[i].id = newRowChildren[i].id + count;
+			}
+			var resourceInput = $newRow.find("input[name='resources']")[0];
+			$(resourceInput).attr('name', 'resources.new'+count);
+		});
+
+	});
+
+	function showResourceChange(element) {
+		$(element).parent().parent().children('.currentResourceSection').hide();
+		$(element).parent().parent().children('.resourceChangeSection').show();
+	}
+	function hideResourceChange(element) {		
+		$(element).parent().parent().children('.currentResourceSection').show();		
+		$(element).parent().parent().children('.resourceChangeSection').hide();	
+	}
+</script>
+
+<style>
+	.metadataField { padding:6px 5px 9px 9px; color:#444; }
+	.metadataField th { padding-right:20px; border:none; color:#222; vertical-align:top; text-align:right; white-space:nowrap; }
+</style>
+
+<form id="reportDesignForm" method="post" action="${pageContext.request.contextPath}/module/reporting/reports/saveReportDesign.form" enctype="multipart/form-data">
+	<input type="hidden" name="uuid" value="${model.design.uuid}" />
+	<input type="hidden" name="successUrl" value="${model.successUrl}"/>
+	<table style="margin:0; padding:0; width:100%; border:1px solid black;">
+	
+		<tr class="metadataField">
+			<th class="fieldLabel">Name</th>
+			<td width="100%"><rpt:widget id="name" name="name" object="${model.design}" property="name" attributes="size=50"/></td>
+		</tr>
+		<tr class="metadataField">
+			<th class="fieldLabel">Description</th>			
+			<td width="100%"><rpt:widget id="description" name="description" object="${model.design}" property="description" attributes="cols=50|rows=2"/></td>
+		</tr>
+		<tr class="metadataField">
+			<th class="fieldLabel">Report Definition</th>			
+			<td width="100%"><rpt:widget id="reportDefinition" name="reportDefinition" object="${model.design}" property="reportDefinition" attributes=""/></td>
+		</tr>
+		<tr class="metadataField">
+			<th class="fieldLabel">Renderer Type</th>			
+			<td width="100%"><rpt:widget id="rendererType" name="rendererType" object="${model.design}" property="rendererType" attributes="type=org.openmrs.module.report.renderer.ReportRenderer|simple=true"/></td>
+		</tr>
+		<tr class="metadataField">
+			<th class="fieldLabel">Design Properties</th>
+			<td width="100%"><rpt:widget id="properties" name="properties" object="${model.design}" property="properties" attributes="rows=10|cols=50"/></td>
+		</tr>
+		<tr class="metadataField">
+			<th class="fieldLabel">Design Resources</th>
+			<td width="100%">
+				<div id="resourcesMultiFieldDiv">
+					<c:forEach items="${model.design.resources}" var="resource" varStatus="resourceStatus">
+						<span class="multiFieldInput" id="resources_${resource.uuid}">
+							<span class="fileUploadWidget">
+								<span class="currentResourceSection" style="display:none;">
+									<input type="button" value="Change" onclick="showResourceChange(this);"/>
+								</span>
+								<span class="resourceChangeSection;">
+									<input type="file" name="resources.${resource.uuid}"/>
+								</span>
+							</span>
+							<input type="button" value="X" size="1" onclick="removeParentWithClass(this,'multiFieldInput');"/><br/>
+						</span>
+					</c:forEach>
+					<span class="multiFieldInput" id="resourcesTemplate" style="display:none;">
+						<span class="fileUploadWidget">
+							<span class="currentResourceSection" style="display:none;">
+								<input type="button" value="Change" onclick="showResourceChange(this);"/>
+							</span>
+							<span class="resourceChangeSection;">
+								<input type="file" name="resources"/>
+							</span>
+						</span>
+						<input type="button" value="X" size="1" onclick="removeParentWithClass(this,'multiFieldInput');"/><br/>
+					</span>
+					<input id="resourcesAddButton" type="button" value="+" size="1"/>
+					<span id="resourcesCount" style="display:none;">${fn:length(model.design.resources)+1}</span>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<hr style="color:blue;"/>
+	<div style="width:100%; text-align:left;">
+		<input type="button" id="cancelButton" class="ui-button ui-state-default ui-corner-all" value="Cancel"/>
+		<input type="button" id="submitButton" class="ui-button ui-state-default ui-corner-all" value="Submit"/>
+	</div>
+</form>
+

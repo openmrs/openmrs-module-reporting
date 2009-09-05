@@ -63,7 +63,12 @@
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
 						<bean class="org.openmrs.module.report.service.BaseReportService">
-							<property name="dao"><ref bean="serializedObjectDAO"/></property>			
+							<property name="serializedObjectDAO"><ref bean="serializedObjectDAO"/></property>
+							<property name="reportDAO">
+								<bean class="org.openmrs.module.report.service.db.HibernateReportDAO">
+									<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+								</bean>
+							</property>
 							<property name="serializer"><ref bean="reportingSerializer"/></property>
 						</bean>
 					</property>

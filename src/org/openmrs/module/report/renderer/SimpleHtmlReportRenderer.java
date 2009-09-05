@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.common.DisplayLabel;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -34,15 +35,8 @@ import org.openmrs.module.report.ReportDefinition;
  * A Default Renderer Implementation that aims to support all ReportDefinitions
  */
 @Handler
+@DisplayLabel(labelDefault="Simple Html")
 public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
-	
-		
-	/**
-     * @see org.openmrs.report.ReportRenderer#getLabel()
-     */
-    public String getLabel() {
-    	return "Simple Html";
-    }
 
 	/**
      * @see org.openmrs.report.ReportRenderer#getRenderedContentType(org.openmrs.report.ReportDefinition, java.lang.String)
@@ -75,53 +69,46 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 	/**
 	 * @see org.openmrs.report.ReportRenderer#render(ReportData, String, OutputStream)
 	 */
-	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
-		PrintWriter pw = new PrintWriter(out);
-		render(results, argument, pw);
-	}
-	
-	/**
-	 * @see org.openmrs.report.ReportRenderer#render(ReportData, String, Writer)
-	 */
 	@SuppressWarnings("unchecked")
-	public void render(ReportData results, String argument, Writer writer) throws IOException, RenderingException {
+	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
 		
-		writer.write("<html>");
-		writer.write("<head>");				
-		writer.write("<body>");
+		Writer w = new PrintWriter(out);
+		w.write("<html>");
+		w.write("<head>");				
+		w.write("<body>");
 		for (String key : results.getDataSets().keySet()) {
 			DataSet<Object> dataset = results.getDataSets().get(key);
 			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
-			writer.write("<h4>" + key + "</h4>");
-			writer.write("<table id=\"simple-html-dataset-" + key + "\" class=\"display simple-html-dataset\"><tr>");
+			w.write("<h4>" + key + "</h4>");
+			w.write("<table id=\"simple-html-dataset-" + key + "\" class=\"display simple-html-dataset\"><tr>");
 			for (DataSetColumn column : columns) {
-				writer.write("<th>"+column.getColumnKey()+"</th>");
+				w.write("<th>"+column.getColumnKey()+"</th>");
 			}
-			writer.write("</tr>");
+			w.write("</tr>");
 
 			for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {
 				DataSetRow<Object> row = i.next();
-				writer.write("<tr>");
+				w.write("<tr>");
 				for (DataSetColumn column : columns) {
-					writer.write("<td>");
+					w.write("<td>");
 					Object colValue = row.getColumnValue(column.getColumnKey());
 					if (colValue != null) {
 						if (colValue instanceof Cohort) {
-							writer.write(Integer.toString(((Cohort) colValue).size()));
+							w.write(Integer.toString(((Cohort) colValue).size()));
 						} else {
-							writer.write(colValue.toString());
+							w.write(colValue.toString());
 						}
 					}
-					writer.write("</td>");
+					w.write("</td>");
 				}
-				writer.write("</tr>");
+				w.write("</tr>");
 			}
-			writer.write("</table>");
+			w.write("</table>");
 		}
-		writer.write("</body>");
-		writer.write("</head>");		
-		writer.write("</html>");
-		writer.flush();
+		w.write("</body>");
+		w.write("</head>");		
+		w.write("</html>");
+		w.flush();
 	}
 	
 }

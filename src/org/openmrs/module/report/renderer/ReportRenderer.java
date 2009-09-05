@@ -15,9 +15,7 @@ package org.openmrs.module.report.renderer;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
 import java.util.Collection;
-import java.util.List;
 
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
@@ -30,84 +28,35 @@ public interface ReportRenderer {
 	/**
 	 * @return	whether the render implementation can handle the given report definition
 	 */
-	public boolean canRender(ReportDefinition reportDefinition);	
+	public boolean canRender(ReportDefinition reportDefinition);
 	
 	/**
-	 * @return the key for which to retrieve the localized label for this ReportRenderer
+	 * Returns the {@link RenderingMode}s in which this report definition could be rendered.
+	 * @param definition - The {@link ReportDefinition} to check
+	 * @return a <code>Collection<RenderingMode></code> of all modes in which the given ReportDefinition can be rendered
 	 */
-	public String getLabel();
-	
-	/**
-	 * Returns the ReportDesigns in which this report schema could be rendered.
-	 * 
-	 * @param schema - The {@link ReportDefinition} to check
-	 * @return a <code>Collection<ReportDesign></code> of all modes in which the given ReportDefinition can be rendered
-	 */
-	public Collection<RenderingMode> getRenderingModes(ReportDefinition schema);
+	public Collection<RenderingMode> getRenderingModes(ReportDefinition definition);
 	
 	/**
 	 * The content-type that will be rendered
-	 * 
-	 * @param schema The ReportDefinition to render
+	 * @param definition The ReportDefinition to render
 	 * @param argument Argument from the RenderingMode that the user selected
 	 * @return the <code>String</code> representation of the rendered content type
 	 */
-	public String getRenderedContentType(ReportDefinition schema, String argument);
+	public String getRenderedContentType(ReportDefinition definition, String argument);
 	
 	/**
-	 * @param schema
+	 * @param definition
 	 * @param argument Argument from the RenderingMode that the user selected
 	 * @return Suggested filename to save the rendered report as.
 	 */
-	public String getFilename(ReportDefinition schema, String argument);
-	
-	
-	/**
-	 * @return	the columns that have been specified for display
-	 */
-	public List<String> getDisplayColumns();
-	
-	/**
-	 * Setting the columns that should be displayed when rendered.
-	 * @param displayColumns
-	 */
-	public void setDisplayColumns(List<String> displayColumns);
-	
-	
+	public String getFilename(ReportDefinition definition, String argument);
+
 	/**
 	 * Render the report's data to a stream
-	 * 
 	 * @param reportData Data that was calculated by the Reporting API and service
 	 * @param out	the output stream to write report data to
-	 * @throws ReportRenderingException
-	 */
-	public void render(ReportData reportData, OutputStream out) throws IOException, RenderingException;
-		
-	/**
-	 * Render the report's data to a stream
-	 * 
-	 * @param reportData Data that was calculated by the Reporting API and service
-	 * @param out	the output stream to write report data to
-	 * @throws ReportRenderingException
+	 * @throws RenderingException
 	 */
 	public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException;
-	
-	/**
-	 * Render the report's data to a stream
-	 * 
-	 * @param reportData Data that was calculated by the Reporting API and service
-	 * @param writer the object to write the output to
-	 * @throws ReportRenderingException
-	 */
-	public void render(ReportData reportData, Writer writer) throws IOException, RenderingException;	
-	
-	/**
-	 * Render the report's data to a stream
-	 * 
-	 * @param reportData Data that was calculated by the Reporting API and service
-	 * @param argument Argument from the RenderingMode that the user selected
-	 * @param writer the object to write the output to
-	 * @throws ReportRenderingException
-	 */
-	public void render(ReportData reportData, String argument, Writer writer) throws IOException, RenderingException;
 }

@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.common.DisplayLabel;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -33,15 +34,8 @@ import org.openmrs.module.report.ReportDefinition;
  * A Default Renderer Implementation that aims to support all ReportDefinitions
  */
 @Handler
+@DisplayLabel(labelDefault="Indicator Report")
 public class IndicatorReportRenderer extends AbstractReportRenderer {
-	
-		
-	/**
-     * @see org.openmrs.report.ReportRenderer#getLabel()
-     */
-    public String getLabel() {
-    	return "Indicator Report";
-    }
 
 	/**
      * @see org.openmrs.report.ReportRenderer#getRenderedContentType(org.openmrs.report.ReportDefinition, java.lang.String)
@@ -70,19 +64,14 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 	public Collection<RenderingMode> getRenderingModes(ReportDefinition schema) {
 		return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MIN_VALUE));
 	}
-	
+
 	/**
 	 * @see org.openmrs.report.ReportRenderer#render(ReportData, String, OutputStream)
 	 */
-	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
-		render(results, argument, new PrintWriter(out));
-	}
-	
-	/**
-	 * @see org.openmrs.report.ReportRenderer#render(ReportData, String, Writer)
-	 */
 	@SuppressWarnings("unchecked")
-	public void render(ReportData results, String argument, Writer writer) throws IOException, RenderingException {
+	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
+		
+		Writer w = new PrintWriter(out);
 		
 		// For each dataset in the report
 		for (String dataSetKey : results.getDataSets().keySet()) {
@@ -90,12 +79,12 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 
 			//MapDataSet mapDataSet = (MapDataSet) dataset;
 			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
-			writer.write("<h4>" + dataSetKey + "</h4>");			
-			writer.write("<table id=\"indicator-report-dataset-" + dataSetKey +"\" class=\"display indicator-report-dataset\">");
+			w.write("<h4>" + dataSetKey + "</h4>");			
+			w.write("<table id=\"indicator-report-dataset-" + dataSetKey +"\" class=\"display indicator-report-dataset\">");
 			for (DataSetColumn column : columns) {
-				writer.write("<tr>");
-				writer.write("<td>"+column.getColumnKey()+"</td>");
-				writer.write("<td>"+column.getDisplayName()+"</td>");
+				w.write("<tr>");
+				w.write("<td>"+column.getColumnKey()+"</td>");
+				w.write("<td>"+column.getDisplayName()+"</td>");
 								
 				// Wondering if you can even do this ... iterate over a dataset multiple times (once for each column?)
 				// If not, then we need to get the actual dataset data (i.e. MapDataSet).
@@ -104,13 +93,13 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 					DataSetRow<Object> row = i.next();
 
 					Object cellValue = row.getColumnValue(column.getColumnKey());				
-					writer.write("<td>" + ((cellValue != null) ? cellValue : "n/a") + "</td>");					
+					w.write("<td>" + ((cellValue != null) ? cellValue : "n/a") + "</td>");					
 				}
-				writer.write("</tr>");
+				w.write("</tr>");
 			}
-			writer.write("</table>");
+			w.write("</table>");
 		}		
-		writer.flush();
+		w.flush();
 	}
 	
 }

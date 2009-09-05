@@ -14,25 +14,20 @@
 package org.openmrs.module.report.renderer;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.common.DisplayLabel;
 import org.openmrs.module.report.ReportDefinition;
 
 /**
  * Implementation of a ReportRenderer that renders ReportData to a CSV file
  */
 @Handler
+@DisplayLabel(labelDefault="CSV")
 public class CsvReportRenderer extends DelimitedTextReportRenderer {
 	
 	/**
 	 * Default Constructor
 	 */
 	public CsvReportRenderer() { }
-	
-	/**
-	 * @see DelimitedTextReportRenderer#getLabel()
-	 */
-	public String getLabel() {
-		return "CSV";
-	}
 	
 	/**
 	 * @see DelimitedTextReportRenderer#getFilenameExtension()

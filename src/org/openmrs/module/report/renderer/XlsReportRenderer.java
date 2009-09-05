@@ -2,7 +2,6 @@ package org.openmrs.module.report.renderer;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -14,6 +13,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.common.DisplayLabel;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -24,6 +24,7 @@ import org.openmrs.module.report.ReportDefinition;
  * Report renderer that produces an Excel pre-2007 workbook with one sheet per dataset in the report.
  */
 @Handler
+@DisplayLabel(labelDefault="XLS (Excel 97-2003)")
 public class XlsReportRenderer extends AbstractReportRenderer {
 
     /**
@@ -31,13 +32,6 @@ public class XlsReportRenderer extends AbstractReportRenderer {
      */
     public String getFilename(ReportDefinition schema, String argument) {
         return schema.getName() + ".xls";
-    }
-
-    /**
-     * @see org.openmrs.module.report.renderer.ReportRenderer#getLabel()
-     */
-    public String getLabel() {
-        return "XLS (Excel 97-2003)";
     }
 
     /**
@@ -70,36 +64,22 @@ public class XlsReportRenderer extends AbstractReportRenderer {
             
             // Display top header
             for (DataSetColumn column : columnList) {
-            	if (isDisplayColumn(column.getColumnKey()))
-            		helper.addCell(column.getDisplayName(), styleHelper.getStyle("bold,border=bottom"));
+            	helper.addCell(column.getDisplayName(), styleHelper.getStyle("bold,border=bottom"));
             }
             for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext(); ) {
                 helper.nextRow();
                 DataSetRow<Object> row = i.next();
                 for (DataSetColumn column : columnList) {
-
-                	// If the column is meant for display, we display it
-                	if (isDisplayColumn(column.getColumnKey())) { 
-	                	Object cellValue = row.getColumnValue(column);
-	                    HSSFCellStyle style = null;
-	                    if (cellValue instanceof Date) {
-	                        style = styleHelper.getStyle("date");
-	                    }
-	                    helper.addCell(cellValue, style);
-                	}
+                	Object cellValue = row.getColumnValue(column);
+                    HSSFCellStyle style = null;
+                    if (cellValue instanceof Date) {
+                        style = styleHelper.getStyle("date");
+                    }
+                    helper.addCell(cellValue, style);
                 }
             }
         }
         
         wb.write(out);
     }
-
-    /**
-     * This throws an {@link UnsupportedOperationException} because a binary Excel file cannot be outputted to a Writer.
-     * @see org.openmrs.module.report.renderer.ReportRenderer#render(org.openmrs.module.report.ReportData, java.lang.String, java.io.Writer)
-     */
-    public void render(ReportData reportData, String argument, Writer writer) throws IOException, RenderingException {
-        throw new UnsupportedOperationException();
-    }
-
 }

@@ -44,6 +44,11 @@
 		<lang>en</lang>
 		<file>messages.properties</file>
 	</messages>
+	
+	<!-- Hibernate Mappings -->
+	<mappingFiles>
+		ReportDesign.hbm.xml
+	</mappingFiles>	
 
 </module>
 

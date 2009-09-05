@@ -22,8 +22,10 @@ import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
+import org.openmrs.module.report.ReportDesign;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
+import org.openmrs.module.report.service.db.ReportDAO;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.util.StringUtils;
@@ -37,22 +39,9 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	private transient Log log = LogFactory.getLog(this.getClass());
 
 	// Data access object
+	private ReportDAO reportDAO;
 	private SerializedObjectDAO serializedObjectDAO;
 	private OpenmrsSerializer serializer;
-
-	/**
-	 * @return serializedObjectDAO
-	 */
-	public SerializedObjectDAO getDao() {
-		return serializedObjectDAO;
-	}
-	
-	/**
-	 * @param serializedObjectDAO
-	 */
-	public void setDao(SerializedObjectDAO serializedObjectDAO) {
-		this.serializedObjectDAO = serializedObjectDAO;
-	}
 	
     /**
      * @param serializer the serializer to set
@@ -206,5 +195,76 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 		return renderingModes;
 	}
 
+	/** 
+	 * @see ReportService#getAllReportDesigns(boolean)
+	 */
+	public List<ReportDesign> getAllReportDesigns(boolean includeRetired) {
+		return reportDAO.getReportDesigns(null, null, includeRetired);
+	}
 
+	/** 
+	 * @see ReportService#getAllReportDesigns(Integer, boolean)
+	 */
+	public List<ReportDesign> getReportDesigns(ReportDefinition reportDefinition, Class<? extends ReportRenderer> rendererType, 
+											   boolean includeRetired) throws APIException {
+		return reportDAO.getReportDesigns(reportDefinition, rendererType, includeRetired);
+	}
+
+	/** 
+	 * @see ReportService#getReportDesign(Integer)
+	 */
+	public ReportDesign getReportDesign(Integer id) throws APIException {
+		return reportDAO.getReportDesign(id);
+	}
+
+	/** 
+	 * @see ReportService#getReportDesignByUuid(String)
+	 */
+	public ReportDesign getReportDesignByUuid(String uuid) throws APIException {
+		return reportDAO.getReportDesignByUuid(uuid);
+	}
+
+	/** 
+	 * @see ReportService#purgeReportDesign(ReportDesign)
+	 */
+	public void purgeReportDesign(ReportDesign reportDesign) {
+		reportDAO.purgeReportDesign(reportDesign);
+	}
+
+	/** 
+	 * @see ReportService#saveReportDesign(ReportDesign)
+	 */
+	public ReportDesign saveReportDesign(ReportDesign reportDesign) throws APIException {
+		return reportDAO.saveReportDesign(reportDesign);
+	}
+	
+	//***** PROPERTY ACCESS *****
+
+	/**
+	 * @return the reportDAO
+	 */
+	public ReportDAO getReportDAO() {
+		return reportDAO;
+	}
+
+	/**
+	 * @param reportDAO the reportDAO to set
+	 */
+	public void setReportDAO(ReportDAO reportDAO) {
+		this.reportDAO = reportDAO;
+	}
+
+	/**
+	 * @return the serializedObjectDAO
+	 */
+	public SerializedObjectDAO getSerializedObjectDAO() {
+		return serializedObjectDAO;
+	}
+
+	/**
+	 * @param serializedObjectDAO the serializedObjectDAO to set
+	 */
+	public void setSerializedObjectDAO(SerializedObjectDAO serializedObjectDAO) {
+		this.serializedObjectDAO = serializedObjectDAO;
+	}
 }

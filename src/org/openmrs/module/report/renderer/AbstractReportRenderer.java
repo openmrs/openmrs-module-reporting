@@ -13,81 +13,29 @@
  */
 package org.openmrs.module.report.renderer;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
-import java.util.List;
+import java.util.Collection;
 
-import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
+import org.openmrs.module.util.MessageUtil;
 
 /**
- * Abstract implementation of a ReportRenderer.
+ * Base Abstract implementation of a ReportRenderer.
  */
 public abstract class AbstractReportRenderer implements ReportRenderer  {
-
 	
 	/**
-	 * Columns that have been chosen for display.
-	 */
-	private List<String> displayColumns;
-	
-	/**
-	 * Default Constructor
-	 */
-	public AbstractReportRenderer() { }
-	
-	/**
-	 * TODO Copy any logic from getRenderingModes() into this method
+	 * @see ReportRenderer#canRender(ReportDefinition)
 	 */
 	public boolean canRender(ReportDefinition reportDefinition) { 		
-		return true;
-	}
-	
-	
-	/**
-	 * @param	displayColumns	the columns to display
-	 */
-	public void setDisplayColumns(List<String> displayColumns) { 
-		this.displayColumns = displayColumns;
-	}
-	
-	
-	/**
-	 * @return	the columns to display
-	 */
-	public List<String> getDisplayColumns() { 
-		return displayColumns;
-	}
-
-	/**
-	 * 
-	 * @param column
-	 * @return
-	 */
-	protected boolean isDisplayColumn(String column) { 
-		// Check if the given column is specified as a display column
-		if (displayColumns != null && !displayColumns.isEmpty())
-			return displayColumns.contains(column);		
-		
-		// If display columns aren't specified, the given column should be displayed
-		return true;
+		Collection<RenderingMode> modes = getRenderingModes(reportDefinition);
+		return (modes != null && !modes.isEmpty());
 	}
 	
 	/**
-	 * Delegates to the render method.
-	 * 
+	 * Convenience method to return the display label for the Renderer
+	 * @return a String display label
 	 */
-	public void render(ReportData reportData, OutputStream out) throws IOException, RenderingException {
-		this.render(reportData, null, out);
+	public String getLabel() {
+		return MessageUtil.getDisplayLabel(this.getClass());
 	}
-	
-	/** 
-	 * Delegates to the render method.
-	 */
-	public void render(ReportData reportData, Writer writer) throws IOException, RenderingException {
-		render(reportData, null, writer);
-	}
-	
-	
 }
