@@ -33,9 +33,9 @@
 									<th>Value</th>
 								</tr>
 							</c:if>
-							<tr>
-								<c:forEach var="dataSetCol" items="${dataSetRow.columnValues}">
-									<c:url var="url" value="/module/reporting/dashboard/manageCohortDashboard.form?cohort=none&indicator=${dataSetCol.key.indicator.uuid}"/>
+							<c:forEach var="dataSetCol" items="${dataSetRow.columnValues}">
+								<tr>
+									<c:url var="url" value="/module/reporting/dashboard/manageCohortDashboard.form?cohort=none&indicator=${dataSetCol.key.indicator.parameterizable.uuid}"/>
 									<td>
 										${dataSetCol.key.columnKey}
 									</td>
@@ -43,10 +43,10 @@
 										${dataSetCol.key.displayName}
 									</td>
 									<td>
-										<a href="${url}">${dataSetCol.value}</a>
+										<a href="${url}">${dataSetCol.value.value}</a>
 									</td>
-								</c:forEach>
-							</tr>
+								</tr>
+							</c:forEach>
 						</c:forEach>
 					</table>
 				</c:forEach>
