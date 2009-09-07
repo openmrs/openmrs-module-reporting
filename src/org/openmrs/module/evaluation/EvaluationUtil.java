@@ -15,10 +15,8 @@ package org.openmrs.module.evaluation;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,8 +64,7 @@ public class EvaluationUtil {
 	public static Object evaluateExpression(String expression, EvaluationContext context, Class<?> type) throws ParameterException {
 		return evaluateExpression(expression, context.getParameterValues(), type);
 	}
-
-		
+	
 	/**
 	 * This method will parse the passed expression and return a value based on the following
 	 * criteria:<br/>
@@ -96,61 +93,41 @@ public class EvaluationUtil {
 	 * @throws ParameterException
 	 */
 	public static Object evaluateExpression(String expression, Map<String, Object> parameters, Class<?> type) throws ParameterException {
-		
-		log.info("evaluateExpression(): " + expression);
-		
-		if (expression == null) {
-			log.warn("evaluateExpression returning null.");
-			return null;
-		}
-		
-		List<Object> elements = new ArrayList<Object>();
-		StringBuilder curr = new StringBuilder();
-		
-		// Iterate over the expression and create a List of elements
-		char[] chars = expression.toCharArray();
-		boolean inExpression = false;
-		for (int i=0; i<chars.length; i++) {
-			char c = chars[i];
-			boolean isStartOfExpr = (c == '$' && chars.length > (i+1) && chars[i+1] == '{');
-			if (isStartOfExpr) {
-				if (curr.length() > 0) {
-					elements.add(curr.toString());
-					curr = new StringBuilder();
-				}
-				inExpression = true;
-				i++;
-			}
-			else if (c == '}' && inExpression) {
-				if (curr.length() > 0) {
-					elements.add(evaluateParameterExpression(curr.toString(), parameters, type));
-					curr = new StringBuilder();
-				}
-				inExpression = false;
-			}
-			else {
-				curr.append(c);
-			}
-		}
-		if (curr.length() > 0) {
-			elements.add(curr.toString());
-		}
-		
-		// If only one element was evaluated, return that element
-		if (elements.size() == 1) {
-			return elements.get(0);
-		}
-		// Otherwise, return the String concatenation of all elements
-		else {
-			if (type != null && type != String.class) {
-				throw new ParameterException("Unable to evaluate " + expression + " to a " + type);
-			}
+		return evaluateExpression(expression, parameters, type, EXPRESSION_START, EXPRESSION_END);
+	}
+
+	/**
+	 */
+	public static Object evaluateExpression(String expression, Map<String, Object> parameters, Class<?> type, 
+						 					String expressionPrefix, String expressionPostfix) throws ParameterException {
+
+		while (expression != null) {
+			String newExpression = expression;
+			
+			int startIndex = expression.indexOf(expressionPrefix);
+			int endIndex = expression.indexOf(expressionPostfix, startIndex+1);
 			StringBuilder sb = new StringBuilder();
-			for (Object o : elements) {
-				sb.append(o.toString());
+			if (startIndex != -1 && endIndex != -1) {
+				
+				String e = expression.substring(startIndex + expressionPrefix.length(), endIndex);
+				Object replacement = evaluateParameterExpression(e, parameters, type);
+				
+				if (startIndex == 0 && endIndex == expression.length()-1) {
+					return replacement;
+				}
+				
+				sb.append(expression.substring(0, startIndex));
+				sb.append(replacement.toString());
+				sb.append(expression.substring(endIndex + expressionPostfix.length()));
+				newExpression = sb.toString();
 			}
-			return sb.toString();
+			
+			if (newExpression.equals(expression)) {
+				return newExpression;
+			}
+			expression = newExpression;
 		}
+		return null;
 	}
 		
 	/**
@@ -168,11 +145,7 @@ public class EvaluationUtil {
 	 * The following should result:<br/>
 	 * <br/>
 	 * <pre>
-	 * evaluateExpression("${report.startDate}") -> "2007-01-10" as Date
-	 * evaluateExpression("${report.startDate+5d}") -> "2007-01-15" as Date
-	 * evaluateExpression("${report.startDate-1w}") -> "2007-01-03" as Date
-	 * evaluateExpression("${report.startDate+3m}") -> "2007-04-15" as Date
-	 * evaluateExpression("${report.startDate+1y}") -> "2008-01-10" as Date
+	 * evaluateParameterExpression("report.startDate") -> "2007-01-10" as Date
 	 * <pre>
 	 * </ul>
 	 * 
@@ -225,7 +198,7 @@ public class EvaluationUtil {
 		if (paramValueToFormat == null) {
 			paramValueToFormat = parameters.get(paramAndFormat[0]);
 			if (paramValueToFormat == null) {
-				throw new ParameterException("Unable to find matching parameter value (" + paramValueToFormat + ") for expression " + paramAndFormat[0]);				
+				return expression;			
 			}
 			log.debug("Evaluated to: " + paramValueToFormat);
 		}

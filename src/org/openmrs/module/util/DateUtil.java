@@ -1,5 +1,7 @@
 package org.openmrs.module.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -152,4 +154,14 @@ public class DateUtil {
 
 	}
 
+	/**
+	 * Utility method to format a date in the given format
+	 * @param d the date to format
+	 * @return a String representing the date in the passed format
+	 */
+	public static String formatDate(Date d, String format) {
+		DateFormat df = new SimpleDateFormat(format);
+		return df.format(d);
+	}
+	
 }

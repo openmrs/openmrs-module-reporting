@@ -1,7 +1,10 @@
 package org.openmrs.module.reporting.web.controller.portlet;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -67,6 +70,7 @@ public class ReportDesignFormController {
     	
     	MultipartHttpServletRequest mpr = (MultipartHttpServletRequest) request;
     	Map<String, MultipartFile> files = (Map<String, MultipartFile>)mpr.getFileMap();
+    	Set<String> foundResources = new HashSet<String>();
     	for (String paramName : files.keySet()) {
     		try {
 	    		String[] split = paramName.split("\\.", 2);
@@ -76,20 +80,31 @@ public class ReportDesignFormController {
 	    				resource = new ReportDesignResource();
 	    			}
 	    			else {
-	    				// TODO: Need service method to get resource by uuid
+	    				foundResources.add(split[1]);
+	    				resource = design.getResourceByUuid(split[1]);
 	    			}
 	    			MultipartFile file = files.get(paramName);
 	    			String fileName = file.getOriginalFilename();
-	    			int index = fileName.lastIndexOf(".");
-	    			resource.setContentType(file.getContentType());
-	    			resource.setName(fileName.substring(0, index-1));
-	    			resource.setExtension(fileName.substring(index));
-	    			resource.setContents(file.getBytes());
-	    			design.getResources().add(resource);
+	    			if (StringUtils.isNotEmpty(fileName)) {
+		    			int index = fileName.lastIndexOf(".");
+		    			resource.setReportDesign(design);
+		    			resource.setContentType(file.getContentType());
+		    			resource.setName(fileName.substring(0, index));
+		    			resource.setExtension(fileName.substring(index+1));
+		    			resource.setContents(file.getBytes());
+		    			design.getResources().add(resource);
+	    			}
 	    		}
     		}
     		catch (Exception e) {
     			throw new RuntimeException("Unable to add resource to design.", e);
+    		}
+    	}
+
+    	for (Iterator<ReportDesignResource> i = design.getResources().iterator(); i.hasNext();) {
+    		ReportDesignResource r = i.next();
+    		if (r.getUuid() != null && !foundResources.contains(r.getUuid())) {
+    			i.remove();
     		}
     	}
 

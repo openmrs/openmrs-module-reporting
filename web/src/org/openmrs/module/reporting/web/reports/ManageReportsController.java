@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.ReportDesign;
+import org.openmrs.module.report.ReportDesignResource;
 import org.openmrs.module.report.service.ReportService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -70,35 +71,24 @@ public class ManageReportsController {
      * Provide all reports designs, optionally including those that are retired, to a page 
      * that lists them and provides options for working with them.
      */
-    @RequestMapping("/module/reporting/reports/viewDesignContent")
+    @RequestMapping("/module/reporting/reports/viewReportDesignResource")
     public void viewDesignContent(ModelMap model, 
     									HttpServletResponse response,
-    									@RequestParam(required=true, value="uuid") String uuid,
-    									@RequestParam(required=true, value="property") String property) {
+    									@RequestParam(required=true, value="designUuid") String designUuid,
+    									@RequestParam(required=true, value="resourceUuid") String resourceUuid) {
     	
-    	ReportDesign d = Context.getService(ReportService.class).getReportDesignByUuid(uuid);
-    	String baseName = d.getName().replace(" ", "_");
+    	ReportDesign d = Context.getService(ReportService.class).getReportDesignByUuid(designUuid);
+    	ReportDesignResource r = d.getResourceByUuid(resourceUuid);
+    	
 		response.setHeader("Pragma", "No-cache");
 		response.setDateHeader("Expires", 0);
 		response.setHeader("Cache-Control", "no-cache");
-		// TODO: Fix below
-		/*
+		response.setHeader("Content-Disposition", "attachment; filename=" + r.getResourceFilename());
 		try {
-			if ("designSpecification".equals(property)) {
-				response.setHeader("Content-Disposition", "attachment; filename=" + baseName + "_specification");
-				response.getWriter().write(d.getDesignSpecification());
-			}
-			else if ("designData".equals(property)) {
-				response.setHeader("Content-Disposition", "attachment; filename=" + baseName + "_data");
-				response.getOutputStream().write(d.getDesignData());
-			}
-			else {
-				response.getWriter().write("Please indicate an appropriate property to view");
-			}
+			response.getOutputStream().write(r.getContents());
 		}
 		catch (Exception e) {
-			throw new RuntimeException("Unable to render contents.", e);
+			throw new RuntimeException("Unable to render contents of file", e);
 		}
-		*/
     }
 }

@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -105,7 +104,7 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 		
 		Writer w = new PrintWriter(out);
 		@SuppressWarnings("unchecked")
-		DataSet<Object> dataset = results.getDataSets().values().iterator().next();
+		DataSet<? extends Object> dataset = results.getDataSets().values().iterator().next();
 		
 		List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 		
@@ -119,11 +118,10 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 		w.write(getAfterRowDelimiter());
 		
 		// data rows
-		for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {
+		for (DataSetRow<?> row : dataset) {
 			w.write(getBeforeRowDelimiter());
-			DataSetRow<Object> map = i.next();
 			for (DataSetColumn column : columns) {
-				Object colValue = map.getColumnValue(column);
+				Object colValue = row.getColumnValue(column);
 				w.write(getBeforeColumnDelimiter());
 				if (colValue != null) { 
 					if (colValue instanceof Cohort) {

@@ -13,14 +13,11 @@
  */
 package org.openmrs.module.report.renderer;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.ReportDesign;
 import org.openmrs.module.report.service.ReportService;
@@ -42,23 +39,13 @@ public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
 		}
 		return ret;
 	}
-
-	/** 
-	 * @see ReportRenderer#render(ReportData, String, OutputStream)
-	 * For this renderer, argument represents the uuid of the chosen ReportDesign instance
-	 */
-	public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException {
-		ReportDesign d = Context.getService(ReportService.class).getReportDesignByUuid(argument);
-		render(reportData, d, out);
-	}
 	
 	/**
-	 * This is the primary method that implementations of this class should implement to render a report.
-	 * @param reportData the {@link ReportData} to implement
-	 * @param design the {@link ReportDesign} to use in the rendering
-	 * @param out the OutputStream to output to
-	 * @throws IOException
-	 * @throws RenderingException
+	 * Returns the selected ReportDesign, given the rendering mode argument
+	 * @param argument
+	 * @return
 	 */
-	public abstract void render(ReportData reportData, ReportDesign design, OutputStream out) throws IOException, RenderingException;
+	public ReportDesign getDesign(String argument) {
+		return Context.getService(ReportService.class).getReportDesignByUuid(argument);
+	}
 }

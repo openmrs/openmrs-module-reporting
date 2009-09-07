@@ -37,6 +37,42 @@ public class ReportDesignResource extends BaseOpenmrsMetadata {
 	 */
 	public ReportDesignResource() {}
 	
+	//***** INSTANCE METHODS *****
+	
+	/** @see Object#equals(Object) */
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof ReportDesignResource) {
+			ReportDesignResource p = (ReportDesignResource) obj;
+			if (this.getUuid() != null) {
+				return (this.getUuid().equals(p.getUuid()));
+			}
+		}
+		return this == obj;
+	}
+	
+	/**
+	 * Returns a file name for the resource
+	 */
+	public String getResourceFilename() {
+		return getName() + (getExtension() == null ? "" : "." + getExtension());
+	}
+	
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (getUuid() == null ? 0 : 31 * getUuid().hashCode());
+	}
+	
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getResourceFilename();
+	}
+	
 	//***** PROPERTY ACCESS *****
 	
 	/**

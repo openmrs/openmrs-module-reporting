@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.module.report.renderer.ReportRenderer;
 
@@ -40,6 +41,73 @@ public class ReportDesign extends BaseOpenmrsMetadata  {
 	 * Default Constructor
 	 */
 	public ReportDesign() {}
+	
+	//***** INSTANCE METHODS *****
+	
+	/**
+	 * Returns the resource with the given name for this ReportDesign
+	 * @param name the ReportDesignResource name to match
+	 * @return ReportDesignResource
+	 */
+	public ReportDesignResource getResourceByName(String name) {
+		for (ReportDesignResource r : getResources()) {
+			if (StringUtils.equals(r.getName(), name)) {
+				return r;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the resource with the given uuid for this ReportDesign
+	 * @param name the ReportDesignResource uuid to match
+	 * @return ReportDesignResource
+	 */
+	public ReportDesignResource getResourceByUuid(String uuid) {
+		for (ReportDesignResource r : getResources()) {
+			if (StringUtils.equals(r.getUuid(), uuid)) {
+				return r;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the property value given the passed name
+	 */
+	public String getPropertyValue(String name, String defaultValue) {
+		if (getProperties() != null) {
+			return getProperties().getProperty(name, defaultValue);
+		}
+		return defaultValue;
+	}
+	
+	/** @see Object#equals(Object) */
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof ReportDesign) {
+			ReportDesign p = (ReportDesign) obj;
+			if (this.getUuid() != null) {
+				return (this.getUuid().equals(p.getUuid()));
+			}
+		}
+		return this == obj;
+	}
+	
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (getUuid() == null ? 0 : 31 * getUuid().hashCode());
+	}
+	
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getName();
+	}
 	
 	//***** PROPERTY ACCESS *****
 	

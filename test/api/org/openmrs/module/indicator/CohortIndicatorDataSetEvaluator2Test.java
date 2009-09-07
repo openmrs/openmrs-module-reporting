@@ -42,9 +42,9 @@ public class CohortIndicatorDataSetEvaluator2Test extends BaseModuleContextSensi
 		MapDataSet<IndicatorResult<CohortIndicator>> ds = (MapDataSet<IndicatorResult<CohortIndicator>>) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		
 		int i = 0;
-		for (DataSetRow<IndicatorResult<CohortIndicator>> row : ds) {
+		for (DataSetRow<? extends IndicatorResult<CohortIndicator>> row : ds) {
 			System.out.println("Row " + (++i));
-			for (Map.Entry<DataSetColumn, IndicatorResult<CohortIndicator>> col : row.getColumnValues().entrySet()) {
+			for (Map.Entry<DataSetColumn, ? extends IndicatorResult<CohortIndicator>> col : row.getColumnValues().entrySet()) {
 				System.out.println(col.getKey().getDisplayName() + " -> " + col.getValue().getValue());
 			}
 		}

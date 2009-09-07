@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.EvaluationUtil;
 
@@ -33,6 +35,7 @@ import org.openmrs.module.evaluation.EvaluationUtil;
 public class Mapped<T extends Parameterizable> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private transient final Log log = LogFactory.getLog(getClass());
 	
 	//***********************
 	// PROPERTIES
@@ -79,10 +82,16 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 		if (parameterizable != null) {
 			String s = parameterizable.getDescription();
 			if (StringUtils.isNotEmpty(s)) {
-				Object evaluated = EvaluationUtil.evaluateExpression(s, getParameterMappings(), String.class);
-				if (evaluated != null) {
-					s = evaluated.toString();
+				try {
+					Object evaluated = EvaluationUtil.evaluateExpression(s, getParameterMappings(), String.class);
+					if (evaluated != null) {
+						s = evaluated.toString();
+					}
 				}
+				catch (Exception e) {
+					log.warn("Error evaluating expression.", e);
+				}
+				return s;
 			}
 		}
 		return "";

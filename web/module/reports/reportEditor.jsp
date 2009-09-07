@@ -13,6 +13,28 @@
 		$('#cancel-button').click(function(event){
 			window.location.href='<c:url value="/module/reporting/report/reportEditor.form"/>';
 		});
+
+		<c:forEach items="${designs}" var="design" varStatus="designStatus">
+			$('#${design.uuid}DesignEditLink').click(function(event){
+				showReportingDialog({
+					title: 'Edit Report Design',
+					url: '<c:url value="/module/reporting/viewPortlet.htm?id=reportDesignPortlet&url=reportDesignForm&parameters=reportDesignUuid=${design.uuid}"/>',
+					successCallback: function() { window.location.reload(true); }
+				});
+			});
+			$('#${design.uuid}DesignRemoveLink').click(function(event){					
+				if (confirm('Please confirm you wish to permanantly delete <b>${design.name}</b>')) {
+					document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportDesign.form?uuid=${design.uuid}&returnUrl=${pageUrl}';
+				}
+			});
+		</c:forEach>
+		$('#designAddLink').click(function(event){
+			showReportingDialog({
+				title: 'Add New Report Design',
+				url: '<c:url value="/module/reporting/viewPortlet.htm?id=reportDesignPortlet&url=reportDesignForm&parameters=reportDefinitionUuid=${report.uuid}"/>',
+				successCallback: function() { window.location.reload(true); }
+			});
+		});
 		
 	} );
 </script>
@@ -44,9 +66,23 @@
 							<br/>
 							<b class="boxHeader">Output Designs</b>
 							<div class="box">
-								<c:forEach items="${designs}" var="design" varStatus="designStatus">
-									${design.name}<br/>
-								</c:forEach>
+								<c:if test="${!empty designs}">
+									<table width="100%" style="margin-bottom:5px;">
+										<tr>
+											<th style="text-align:left; border-bottom:1px solid black;">Name</th>
+											<th style="text-align:left; border-bottom:1px solid black;">Type</th>
+											<th style="border-bottom:1px solid black;">[X]</th>
+										</tr>
+										<c:forEach items="${designs}" var="design" varStatus="designStatus">
+											<tr>
+												<td nowrap><a href="#" id="${design.uuid}DesignEditLink">${design.name}</a></td>
+												<td width="100%">${design.rendererType.simpleName}</td>
+												<td nowrap align="center"><a href="#" id="${design.uuid}DesignRemoveLink">[X]</a></td>
+											</tr>
+										</c:forEach>
+									</table>
+								</c:if>
+								<a style="font-weight:bold;" href="#" id="designAddLink">[+] Add</a>
 							</div>
 						</td>
 						<td valign="top" width="100%">

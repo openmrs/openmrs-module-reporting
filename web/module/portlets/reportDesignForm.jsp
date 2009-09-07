@@ -47,47 +47,48 @@
 </script>
 
 <style>
-	.metadataField { padding:6px 5px 9px 9px; color:#444; }
-	.metadataField th { padding-right:20px; border:none; color:#222; vertical-align:top; text-align:right; white-space:nowrap; }
+	.metadataField { padding-top:5px; border:none; color:#222; display:block; vertical-align:top; font-weight:bold; white-space:nowrap; }
 </style>
 
 <form id="reportDesignForm" method="post" action="${pageContext.request.contextPath}/module/reporting/reports/saveReportDesign.form" enctype="multipart/form-data">
 	<input type="hidden" name="uuid" value="${model.design.uuid}" />
 	<input type="hidden" name="successUrl" value="${model.successUrl}"/>
-	<table style="margin:0; padding:0; width:100%; border:1px solid black;">
 	
-		<tr class="metadataField">
-			<th class="fieldLabel">Name</th>
-			<td width="100%"><rpt:widget id="name" name="name" object="${model.design}" property="name" attributes="size=50"/></td>
-		</tr>
-		<tr class="metadataField">
-			<th class="fieldLabel">Description</th>			
-			<td width="100%"><rpt:widget id="description" name="description" object="${model.design}" property="description" attributes="cols=50|rows=2"/></td>
-		</tr>
-		<tr class="metadataField">
-			<th class="fieldLabel">Report Definition</th>			
-			<td width="100%"><rpt:widget id="reportDefinition" name="reportDefinition" object="${model.design}" property="reportDefinition" attributes=""/></td>
-		</tr>
-		<tr class="metadataField">
-			<th class="fieldLabel">Renderer Type</th>			
-			<td width="100%"><rpt:widget id="rendererType" name="rendererType" object="${model.design}" property="rendererType" attributes="type=org.openmrs.module.report.renderer.ReportRenderer|simple=true"/></td>
-		</tr>
-		<tr class="metadataField">
-			<th class="fieldLabel">Design Properties</th>
-			<td width="100%"><rpt:widget id="properties" name="properties" object="${model.design}" property="properties" attributes="rows=10|cols=50"/></td>
-		</tr>
-		<tr class="metadataField">
-			<th class="fieldLabel">Design Resources</th>
-			<td width="100%">
+	<table style="margin:0; padding:0; font-size:small;" padding="5">
+		<tr>
+			<td valign="top" align="left">
+				<span class="metadataField">Name</span>
+				<rpt:widget id="name" name="name" object="${model.design}" property="name" attributes="size=50"/>
+				<br/>
+				<span class="metadataField">Description</span>			
+				<rpt:widget id="description" name="description" object="${model.design}" property="description" attributes="cols=38|rows=2"/>
+				<br/>
+				<span class="metadataField">Report Definition</span>
+				<c:choose>
+					<c:when test="${!empty model.reportDefinitionUuid}">
+						<span style="color:navy;">${model.design.reportDefinition.name}</span>
+						<input type="hidden" name="reportDefinition" value="${model.reportDefinitionUuid}"/>
+					</c:when>
+					<c:otherwise>
+						<rpt:widget id="reportDefinition" name="reportDefinition" object="${model.design}" property="reportDefinition" attributes=""/>
+					</c:otherwise>
+				</c:choose>		
+				<br/>
+				<span class="metadataField">Renderer Type</span>			
+				<rpt:widget id="rendererType" name="rendererType" object="${model.design}" property="rendererType" attributes="type=org.openmrs.module.report.renderer.ReportRenderer|simple=true"/>
+				<br/>
+				<span class="metadataField">Resource Files</span>			
 				<div id="resourcesMultiFieldDiv">
 					<c:forEach items="${model.design.resources}" var="resource" varStatus="resourceStatus">
 						<span class="multiFieldInput" id="resources_${resource.uuid}">
 							<span class="fileUploadWidget">
-								<span class="currentResourceSection" style="display:none;">
+								<span class="currentResourceSection">
+									<a href="${pageContext.request.contextPath}/module/reporting/reports/viewReportDesignResource.form?designUuid=${model.design.uuid}&resourceUuid=${resource.uuid}">${resource.name}.${resource.extension}</a>
 									<input type="button" value="Change" onclick="showResourceChange(this);"/>
 								</span>
-								<span class="resourceChangeSection;">
+								<span class="resourceChangeSection" style="display:none;">
 									<input type="file" name="resources.${resource.uuid}"/>
+									<input type="button" value="Cancel" onclick="hideResourceChange(this);"/>
 								</span>
 							</span>
 							<input type="button" value="X" size="1" onclick="removeParentWithClass(this,'multiFieldInput');"/><br/>
@@ -107,6 +108,10 @@
 					<input id="resourcesAddButton" type="button" value="+" size="1"/>
 					<span id="resourcesCount" style="display:none;">${fn:length(model.design.resources)+1}</span>
 				</div>
+			</td>
+			<td valign="top" align="left">
+				<span class="metadataField">Design Properties</span>	
+				<rpt:widget id="properties" name="properties" object="${model.design}" property="properties" attributes="rows=20|cols=50"/>
 			</td>
 		</tr>
 	</table>
