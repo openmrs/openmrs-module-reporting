@@ -22,6 +22,7 @@ public class CohortIndicatorAndDimensionResult implements IndicatorResult<Cohort
 	
 	public CohortIndicatorAndDimensionResult(CohortIndicatorResult parentResult, EvaluationContext context) {
 	    this.parentResult = parentResult;
+	    this.context = context;
     }
 
 	public void applyFilter(String key, Cohort cohort) {

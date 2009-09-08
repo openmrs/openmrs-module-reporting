@@ -12,6 +12,15 @@
 		$('#cancel-button').click(function(event){
 			window.location.href='<c:url value="/module/reporting/indicators/editCohortDefinitionDimension.form"/>';
 		});
+
+		$('#options-table').dataTable({
+			"bPaginate": false,
+			"bLengthChange": false,
+			"bFilter": false,
+			"bSort": false,
+			"bInfo": false,
+			"bAutoWidth": false
+		} );
 		
 	} );
 </script>
@@ -41,12 +50,12 @@
 						<td valign="top" width="100%">
 							<b class="boxHeader">Options</b>
 							<div class="box">
-								<table border="1" cellspacing="0" cellpadding="2">
+								<table id="options-table">
 									<thead>
 										<tr>
-											<td>Key</td>
-											<td>Display Name</td>
-											<td>&nbsp;</td>
+											<th>Key</th>
+											<th>Cohort Definition</th>
+											<th>&nbsp;</th>
 										</tr>
 									</thead>
 									<tbody>

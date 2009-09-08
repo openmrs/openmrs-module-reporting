@@ -48,7 +48,7 @@
 		var series = [];
 		<c:forEach var="col" items="${dataSet.definition.columns}">
 			<c:if test="${col.columnKey != 'startDate' && col.columnKey != 'endDate' && col.columnKey != 'location'}">
-				series.push({ label: "${col.indicator.name}", data: [] });
+				series.push({ label: "${col.indicator.parameterizable.name}", data: [] });
 			</c:if>
 		</c:forEach>
 		<c:forEach var="row" items="${dataSet.iterator}">

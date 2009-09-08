@@ -119,3 +119,12 @@ function closeReportingDialog(doCallback) {
 		window.parent.closeReportingDialog(doCallback);
 	}
 }
+
+function navigateParent(url) {
+	if (dialogCurrentlyShown && dialogCurrentlyShown.length > 0) {
+		dialogCurrentlyShown.dialog('close');
+		window.location = url;
+	} else if (window.parent && window.parent != window) {
+		window.parent.navigateParent(url);
+	}
+}

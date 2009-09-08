@@ -113,7 +113,7 @@ public class IndicatorHistoryController {
 	}
 
 	public class Query {
-		private Integer lastMonths;
+		private Integer lastMonths = 6;
 		private Location location;
 		private List<Indicator> indicators;
 

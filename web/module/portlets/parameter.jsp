@@ -110,7 +110,7 @@
 							<th style="text-align:left; border-bottom:1px solid black;">Name</th>
 							<th style="text-align:left; border-bottom:1px solid black;">Label</th>
 							<th style="text-align:left; border-bottom:1px solid black;">Type</th>
-							<th style="border-bottom:1px solid black;">[X]</th>
+							<th style="border-bottom:1px solid black;"></th>
 						</tr>
 						<c:forEach items="${model.obj.parameters}" var="p" varStatus="paramStatus">
 							<tr>
@@ -126,7 +126,7 @@
 										</c:otherwise>
 									</c:choose>
 								</td>
-								<td nowrap align="center"><a href="#" id="${model.portletUUID}RemoveLink${paramStatus.index}">[X]</a></td>
+								<td nowrap align="center"><a href="#" id="${model.portletUUID}RemoveLink${paramStatus.index}"><img src='<c:url value="/images/trash.gif"/>' border="0"/></a></td>
 							</tr>
 						</c:forEach>
 					</table>
