@@ -1,22 +1,16 @@
 package org.openmrs.module.report;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.openmrs.Location;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
-import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.indicator.CohortIndicator;
-import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.indicator.util.IndicatorUtil;
-import org.openmrs.module.report.service.ReportService;
 
 
 public class DariusPeriodIndicatorReportDefinition extends ReportDefinition {
-
+	
 	public DariusPeriodIndicatorReportDefinition() {
 		super();
 
@@ -28,40 +22,6 @@ public class DariusPeriodIndicatorReportDefinition extends ReportDefinition {
 		// a single CohortIndicatorDataSetDefinition
 		setupDataSetDefinition();
 	}
-
-	
-	public void addDimension(String key, Mapped<CohortDefinitionDimension> dimension) {
-		getIndicatorDataSetDefinition().addDimension(key, dimension);
-		saveReport();
-	}
-	
-	
-	private void saveReport() {
-	    Context.getService(ReportService.class).saveReportDefinition(this);
-    }
-
-
-	public void removeDimension(String key) {
-		getIndicatorDataSetDefinition().removeDimension(key);
-		saveReport();
-	}
-	
-	
-	public void addColumn(String key, String displayName, CohortIndicator indicator, Map<String, String> dimensionOptions) {
-		getIndicatorDataSetDefinition().addColumn(key, displayName, new Mapped<CohortIndicator>(indicator, IndicatorUtil.periodIndicatorMappings()), dimensionOptions);
-		saveDataset();
-	}
-	
-	
-	private void saveDataset() {
-	    Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(getIndicatorDataSetDefinition());
-    }
-
-
-	public void removeColumn(String key) {
-		getIndicatorDataSetDefinition().removeColumn(key);
-		saveDataset();
-	}
 	
 	
 	public CohortIndicatorDataSetDefinition2 getIndicatorDataSetDefinition() {
@@ -72,23 +32,11 @@ public class DariusPeriodIndicatorReportDefinition extends ReportDefinition {
 			return null;
 	}
 
-
-	/**
-	 * TODO: move this
-	 * 
-	 * @param report
-	 */
-	public static void ensureCorrectlyPersisted(DariusPeriodIndicatorReportDefinition report) {
-		report.setupDataSetDefinition();
-		if (report.getIndicatorDataSetDefinition().getUuid() == null) {
-			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(report.getIndicatorDataSetDefinition());
-			Context.getService(ReportService.class).saveReportDefinition(report);
-		}
-	}
-
 	
-	private void setupDataSetDefinition() {
-		// Make sure the report has a data set definition
+	/**
+	 * Ensure this report has a data set definition
+	 */
+	public void setupDataSetDefinition() {
 		if (this.getIndicatorDataSetDefinition() == null) {
 			CohortIndicatorDataSetDefinition2 dsd = new CohortIndicatorDataSetDefinition2();
 			dsd.setName("Internal Period Indicator Report DSD");

@@ -10,6 +10,7 @@ import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.propertyeditor.IndicatorEditor;
 import org.openmrs.module.report.DariusPeriodIndicatorReportDefinition;
+import org.openmrs.module.report.DariusPeriodIndicatorReportUtil;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.springframework.stereotype.Controller;
@@ -45,8 +46,6 @@ public class DariusPeriodIndicatorReportController {
 			if (def instanceof DariusPeriodIndicatorReportDefinition) {
 				DariusPeriodIndicatorReportDefinition report = (DariusPeriodIndicatorReportDefinition) def;
 				model.addAttribute("report", report);
-
-				DariusPeriodIndicatorReportDefinition.ensureCorrectlyPersisted(report);
 			} else {
 				throw new RuntimeException("This report is not of the right class");
 			} 
@@ -76,8 +75,7 @@ public class DariusPeriodIndicatorReportController {
 			}
 		}
 		
-		report.addColumn(key, displayName, (CohortIndicator) indicator, dimensionOptions);
-		//Context.getService(ReportService.class).saveReportDefinition(report);
+		DariusPeriodIndicatorReportUtil.addColumn(report, key, displayName, (CohortIndicator) indicator, dimensionOptions);
 		
 		return "redirect:dariusPeriodIndicatorReport.form?uuid=" + uuid;
 	} 
@@ -87,8 +85,7 @@ public class DariusPeriodIndicatorReportController {
 	                           @RequestParam("key") String key) {
 		
 		DariusPeriodIndicatorReportDefinition report = (DariusPeriodIndicatorReportDefinition) Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
-		report.removeColumn(key);
-		//Context.getService(ReportService.class).saveReportDefinition(report);
+		DariusPeriodIndicatorReportUtil.removeColumn(report, key);
 		
 		return "redirect:dariusPeriodIndicatorReport.form?uuid=" + uuid;
 	}
