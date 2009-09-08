@@ -185,13 +185,15 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	 */
 	public List<RenderingMode> getRenderingModes(ReportDefinition reportDefinition) {
 		List<RenderingMode> renderingModes = new Vector<RenderingMode>();
-		for (ReportRenderer renderer : getReportRenderers()) {
-			Collection<RenderingMode> modes = renderer.getRenderingModes(reportDefinition);
-			if (modes != null) {
-				renderingModes.addAll(modes);
+		if (reportDefinition != null) {
+			for (ReportRenderer renderer : getReportRenderers()) {
+				Collection<RenderingMode> modes = renderer.getRenderingModes(reportDefinition);
+				if (modes != null) {
+					renderingModes.addAll(modes);
+				}
 			}
+			Collections.sort(renderingModes);
 		}
-		Collections.sort(renderingModes);
 		return renderingModes;
 	}
 
