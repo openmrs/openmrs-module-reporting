@@ -2,14 +2,21 @@ package org.openmrs.module.report.util;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.indicator.CohortIndicator;
+import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.indicator.dimension.Dimension;
 import org.openmrs.module.indicator.service.IndicatorService;
@@ -62,23 +69,27 @@ public class ReportUtil {
 				Context.getService(CohortDefinitionService.class).saveCohortDefinition(age);
 			}
 		});
-		/*
-		for (Program program : Context.getProgramWorkflowService().getAllPrograms()) {
-			ProgramStateCohortDefinition def = new ProgramStateCohortDefinition();
-			def.setProgram(program);
-			def.addParameter(new Parameter("untilDate", "untilDate", Date.class));
-			def.setName("Ever in " + program.getName() + " Before Date");
-			ret.add(def);
-			
-			def = new ProgramStateCohortDefinition();
-			def.setProgram(program);
-			def.addParameter(new Parameter("sinceDate", "sinceDate", Date.class));
-			def.addParameter(new Parameter("untilDate", "untilDate", Date.class));
-			def.setName("In " + program.getName() + " Between Dates");
-			ret.add(def);
+		for (final Program program : Context.getProgramWorkflowService().getAllPrograms()) {
+			ret.add(new InitialDataElement(CohortDefinition.class, "Ever in " + program.getName() + " Before Date") {
+				public void apply() {
+					ProgramStateCohortDefinition def = new ProgramStateCohortDefinition();
+					def.setProgram(program);
+					def.addParameter(new Parameter("untilDate", "untilDate", Date.class));
+					def.setName("Ever in " + program.getName() + " Before Date");
+					Context.getService(CohortDefinitionService.class).saveCohortDefinition(def);
+				}
+			});
+			ret.add(new InitialDataElement(CohortDefinition.class, "In " + program.getName() + " Between Dates") {
+				public void apply() {
+					ProgramStateCohortDefinition def = new ProgramStateCohortDefinition();
+					def.setProgram(program);
+					def.addParameter(new Parameter("sinceDate", "sinceDate", Date.class));
+					def.addParameter(new Parameter("untilDate", "untilDate", Date.class));
+					def.setName("In " + program.getName() + " Between Dates");
+					Context.getService(CohortDefinitionService.class).saveCohortDefinition(def);
+				}
+			});
 		}
-		return ret;
-		*/
 		/*
 		ret.add(new InitialDataElement(CohortDefinition.class, "") {
 			public void apply() {
@@ -91,7 +102,7 @@ public class ReportUtil {
 				CohortDefinition female = getCohortDefinition("Female");
 				CohortDefinition male = getCohortDefinition("Male");
 				if (male == null || female == null) {
-					throw new IllegalArgumentException("Cannot crate Gender dimension without Male and Female cohort definitions");
+					throw new IllegalArgumentException("Cannot create Gender dimension without Male and Female cohort definitions");
 				}
 				CohortDefinitionDimension gender = new CohortDefinitionDimension();
 			    gender.setName("Gender");
@@ -100,6 +111,53 @@ public class ReportUtil {
 			    Context.getService(IndicatorService.class).saveDimension(gender);
 			}
 		});
+		for (final Program program : Context.getProgramWorkflowService().getAllPrograms()) {
+			ret.add(new InitialDataElement(Indicator.class, "Cumulative " + program.getName() + " enrollment at start") {
+				public void apply() {
+					CohortDefinition inProg = getCohortDefinition("Ever in " + program.getName() + " Before Date");
+					if (inProg == null)
+						throw new IllegalArgumentException("Missing cohort def");
+					Map<String, Object> mappings = new HashMap<String, Object>();
+					mappings.put("untilDate", "${startDate}");
+					CohortIndicator ind = new CohortIndicator("Cumulative " + program.getName() + " enrollment at start", null, new Mapped<CohortDefinition>(inProg, mappings), null, null);
+					Context.getService(IndicatorService.class).saveIndicator(ind);
+				}
+			});
+			ret.add(new InitialDataElement(Indicator.class, "Cumulative " + program.getName() + " enrollment at end") {
+				public void apply() {
+					CohortDefinition inProg = getCohortDefinition("Ever in " + program.getName() + " Before Date");
+					if (inProg == null)
+						throw new IllegalArgumentException("Missing cohort def");
+					Map<String, Object> mappings = new HashMap<String, Object>();
+					mappings.put("untilDate", "${endDate}");
+					CohortIndicator ind = new CohortIndicator("Cumulative " + program.getName() + " enrollment at end", null, new Mapped<CohortDefinition>(inProg, mappings), null, null);
+					Context.getService(IndicatorService.class).saveIndicator(ind);
+				}
+			});		
+			ret.add(new InitialDataElement(Indicator.class, "Current " + program.getName() + " enrollment at start") {
+				public void apply() {
+					CohortDefinition inProg = getCohortDefinition("In " + program.getName() + " Between Dates");
+					if (inProg == null)
+						throw new IllegalArgumentException("Missing cohort def");
+					Map<String, Object> mappings = new HashMap<String, Object>();
+					mappings.put("untilDate", "${startDate}");
+					CohortIndicator ind = new CohortIndicator("Current " + program.getName() + " enrollment at start", null, new Mapped<CohortDefinition>(inProg, mappings), null, null);
+					Context.getService(IndicatorService.class).saveIndicator(ind);
+				}
+			});
+			ret.add(new InitialDataElement(Indicator.class, "Current " + program.getName() + " enrollment at end") {
+				public void apply() {
+					CohortDefinition inProg = getCohortDefinition("In " + program.getName() + " Between Dates");
+					if (inProg == null)
+						throw new IllegalArgumentException("Missing cohort def");
+					Map<String, Object> mappings = new HashMap<String, Object>();
+					mappings.put("untilDate", "${endDate}");
+					CohortIndicator ind = new CohortIndicator("Current " + program.getName() + " enrollment at end", null, new Mapped<CohortDefinition>(inProg, mappings), null, null);
+					Context.getService(IndicatorService.class).saveIndicator(ind);
+				}
+			});
+
+		}
 		return ret;
 	}
 	
