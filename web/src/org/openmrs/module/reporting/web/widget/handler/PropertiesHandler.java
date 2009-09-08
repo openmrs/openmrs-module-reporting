@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.Properties;
 
 import org.openmrs.annotation.Handler;
@@ -36,14 +37,14 @@ public class PropertiesHandler extends WidgetHandler {
 	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {	
-		TextAreaWidget w = WidgetFactory.getInstance(TextAreaWidget.class, config);
+	public void render(WidgetConfig config, Writer w) throws IOException {	
+		TextAreaWidget widget = WidgetFactory.getInstance(TextAreaWidget.class, config);
 		Properties p = (Properties) config.getDefaultValue();
 		if (p != null && !p.isEmpty()) {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			OpenmrsUtil.storeProperties(p, out, null);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			OpenmrsUtil.storeProperties(p, baos, null);
 			try {
-				config.setDefaultValue(out.toString("UTF-8"));
+				config.setDefaultValue(baos.toString("UTF-8"));
 			}
 			catch (UnsupportedEncodingException e) {
 				throw new RuntimeException("Unable to load properties from string", e);
@@ -52,7 +53,7 @@ public class PropertiesHandler extends WidgetHandler {
 		else {
 			config.setDefaultValue(null);
 		}
-		w.render(config);
+		widget.render(config, w);
 	}
 	
 	/** 

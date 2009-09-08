@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.annotation.Handler;
@@ -33,12 +34,12 @@ public class StringHandler extends WidgetHandler {
 	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		
-		Widget w = null;
+		Widget widget = null;
 		
 		if (config.getType() == Character.class) {
-			w = WidgetFactory.getInstance(TextWidget.class, config);
+			widget = WidgetFactory.getInstance(TextWidget.class, config);
 			config.setConfiguredAttribute("size", "2");
 			config.setConfiguredAttribute("maxLength", "1");
 		}
@@ -46,14 +47,14 @@ public class StringHandler extends WidgetHandler {
 			String rows = config.getAttributeValue("rows");
 			String cols = config.getAttributeValue("cols");
 			if (StringUtils.isNotEmpty(rows) || StringUtils.isNotEmpty(cols) || "textarea".equals(config.getFormat())) {
-				w = WidgetFactory.getInstance(TextAreaWidget.class, config);
+				widget = WidgetFactory.getInstance(TextAreaWidget.class, config);
 			}
 			else {
-				w = WidgetFactory.getInstance(TextWidget.class, config);
+				widget = WidgetFactory.getInstance(TextWidget.class, config);
 				config.setConfiguredAttribute("size", "40");
 			}
 		}
-		w.render(config);
+		widget.render(config, w);
 	}
 
 	/** 

@@ -22,11 +22,10 @@ public class RepeatingWidget implements Widget {
 	 * @see Widget#render(WidgetConfig)
 	 */
 	@SuppressWarnings("unchecked")
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		
-		HtmlUtil.renderResource(config.getPageContext(), "/moduleResources/reporting/scripts/jquery/jquery-1.3.2.min.js");
-		HtmlUtil.renderResource(config.getPageContext(), "/moduleResources/reporting/scripts/reporting.js");
-		Writer w = config.getPageContext().getOut();
+		HtmlUtil.renderResource(w, config.getRequest(), "/moduleResources/reporting/scripts/jquery/jquery-1.3.2.min.js");
+		HtmlUtil.renderResource(w, config.getRequest(), "/moduleResources/reporting/scripts/reporting.js");
 		String id = config.getId();
 		
 		Class<?> type = null;
@@ -121,7 +120,7 @@ public class RepeatingWidget implements Widget {
 			}
 			
 			HtmlUtil.renderOpenTag(w, "span", atts);
-			handler.render(c);
+			handler.render(c, w);
 			HtmlUtil.renderSimpleTag(w, "input", "type=button|value=X|size=1|onclick=removeParentWithClass(this,'multiFieldInput');");
 			HtmlUtil.renderSimpleTag(w, "br", "");
 			HtmlUtil.renderCloseTag(w, "span");

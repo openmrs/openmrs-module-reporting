@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
 
 import org.openmrs.annotation.Handler;
@@ -31,9 +32,9 @@ public class CollectionHandler extends WidgetHandler {
 	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		RepeatingWidget widget = WidgetFactory.getInstance(RepeatingWidget.class, config);
-		widget.render(config);
+		widget.render(config, w);
 	}
 	
 	/** 

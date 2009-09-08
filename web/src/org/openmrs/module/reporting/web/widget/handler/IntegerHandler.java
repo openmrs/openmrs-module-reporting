@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
@@ -30,13 +31,13 @@ public class IntegerHandler extends WidgetHandler {
 	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		
-		TextWidget w = WidgetFactory.getInstance(TextWidget.class, config);
+		TextWidget widget = WidgetFactory.getInstance(TextWidget.class, config);
 		config.setConfiguredAttribute("size", "8");
 		
 		// TODO: Add validation
-		w.render(config);
+		widget.render(config, w);
 	}
 	
 	/** 

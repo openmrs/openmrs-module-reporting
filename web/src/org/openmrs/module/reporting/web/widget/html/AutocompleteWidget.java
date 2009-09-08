@@ -43,12 +43,11 @@ public class AutocompleteWidget extends CodedWidget {
 	/** 
 	 * @see Widget#render(WidgetConfig)
 	 */
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		
-		HtmlUtil.renderResource(config.getPageContext(), "/moduleResources/reporting/scripts/jquery/jquery-1.3.2.min.js");
-		HtmlUtil.renderResource(config.getPageContext(), "/moduleResources/reporting/scripts/jquery/autocomplete/css/jquery.autocomplete.css");
-		HtmlUtil.renderResource(config.getPageContext(), "/moduleResources/reporting/scripts/jquery/autocomplete/jquery.autocomplete.js");
-		Writer w = config.getPageContext().getOut();
+		HtmlUtil.renderResource(w, config.getRequest(), "/moduleResources/reporting/scripts/jquery/jquery-1.3.2.min.js");
+		HtmlUtil.renderResource(w, config.getRequest(), "/moduleResources/reporting/scripts/jquery/autocomplete/css/jquery.autocomplete.css");
+		HtmlUtil.renderResource(w, config.getRequest(), "/moduleResources/reporting/scripts/jquery/autocomplete/jquery.autocomplete.js");
 		String id = config.getId();
 
 		

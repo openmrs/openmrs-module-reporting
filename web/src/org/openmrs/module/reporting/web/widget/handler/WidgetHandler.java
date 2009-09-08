@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,8 +30,9 @@ public abstract class WidgetHandler {
 	/**
 	 * This is the main method that should be overridden by subclasses to render the appropriate Widget
 	 * @param config
+	 * @param out
 	 */
-	public abstract void render(WidgetConfig config) throws IOException;
+	public abstract void render(WidgetConfig config, Writer w) throws IOException;
 	
 	/**
 	 * This is the main method that should be overridden by subclasses to parse an input string to an object

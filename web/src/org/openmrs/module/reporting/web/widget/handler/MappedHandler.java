@@ -20,7 +20,6 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
-import org.openmrs.module.reporting.web.widget.html.HtmlUtil;
 import org.openmrs.util.HandlerUtil;
 
 /**
@@ -34,7 +33,7 @@ public class MappedHandler extends WidgetHandler {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		
 		if (config.getGenericTypes() == null || config.getGenericTypes().length != 1) {
 			throw new IllegalArgumentException("Invalid generic types.");
@@ -45,26 +44,8 @@ public class MappedHandler extends WidgetHandler {
 		if (handler == null) {
 			throw new RuntimeException("No Preferred Handler found for: " + childType);
 		}
-		
-		Writer w = config.getPageContext().getOut();
-		
-		HtmlUtil.renderOpenTag(w, "span", "style=color:red;");
-		w.write("This will be a widget for a " + parentType.getSimpleName() + "&lt;" + childType.getSimpleName() + "&gt;");
-		HtmlUtil.renderCloseTag(w, "span");
-		
-		/*
-		HtmlUtil.renderResource(config.getPageContext(), "/scripts/jquery/jquery-1.2.6.min.js");
-		HtmlUtil.renderResource(config.getPageContext(), "/moduleResources/reporting/scripts/reporting.js");
-		
-		String id = config.getId();
 
-		// Render type selector
-		config.setFixedAttribute("onChange", "addMappedParameters(this.value, '"+id+"ParamMapTable');");
-		handler.render(config);
-		
-		HtmlUtil.renderOpenTag(w, "table", "style=border:1px solid black;|id="+id+"ParamMapTable");
-		HtmlUtil.renderCloseTag(w, "table");
-		*/
+		w.write("This will be a widget for a " + parentType.getSimpleName() + "&lt;" + childType.getSimpleName() + "&gt;");
 	}
 	
 	/** 

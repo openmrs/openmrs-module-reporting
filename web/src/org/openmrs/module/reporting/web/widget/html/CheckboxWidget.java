@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.web.widget.html;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -17,9 +18,9 @@ public class CheckboxWidget extends CodedWidget {
 	 * @see CodedWidget#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		config.setFixedAttribute("type", "checkbox");
-		super.render(config);
+		super.render(config, w);
 	}
 	
 	/**

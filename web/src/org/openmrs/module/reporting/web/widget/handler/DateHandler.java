@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -34,9 +35,9 @@ public class DateHandler extends WidgetHandler {
 	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {	
-		DateWidget w = WidgetFactory.getInstance(DateWidget.class, config);
-		w.render(config);
+	public void render(WidgetConfig config, Writer w) throws IOException {	
+		DateWidget widget = WidgetFactory.getInstance(DateWidget.class, config);
+		widget.render(config, w);
 	}
 	
 	/** 

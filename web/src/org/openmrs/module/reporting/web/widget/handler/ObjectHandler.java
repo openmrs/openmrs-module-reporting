@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
@@ -28,8 +29,8 @@ public class ObjectHandler extends WidgetHandler {
 	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {
-		config.getPageContext().getOut().write("There is no handler for type: " + config.getType().getSimpleName());
+	public void render(WidgetConfig config, Writer w) throws IOException {
+		w.write("There is no handler for type: " + config.getType().getSimpleName());
 	}
 
 	/** 

@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.annotation.Handler;
@@ -34,18 +35,18 @@ public class ClassHandler extends CodedHandler {
 	 * @see CodedHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		if (StringUtils.isNotEmpty(config.getAttributeValue("type"))) {
-			super.render(config);
+			super.render(config, w);
 		}
 		else {
-			TextWidget w = WidgetFactory.getInstance(TextWidget.class, config);
+			TextWidget widget = WidgetFactory.getInstance(TextWidget.class, config);
 			config.setConfiguredAttribute("size", "60");
 			if (config.getDefaultValue() != null) {
 				Class<?> clazz = (Class<?>) config.getDefaultValue();
 				config.setDefaultValue(clazz.getName());
 			}
-			w.render(config);
+			widget.render(config, w);
 		}
 	}
 

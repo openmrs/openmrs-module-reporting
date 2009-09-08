@@ -17,8 +17,7 @@ public class SelectWidget extends CodedWidget {
 	 * @see CodedWidget#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {
-		Writer w = config.getPageContext().getOut();
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		
 		// Open Select Tag
 		HtmlUtil.renderOpenTag(w, "select", config.getAttributes());

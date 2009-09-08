@@ -10,10 +10,9 @@ public class FileUploadWidget implements Widget {
 	/** 
 	 * @see Widget#render(WidgetConfig)
 	 */
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		
-		HtmlUtil.renderResource(config.getPageContext(), "/moduleResources/reporting/scripts/jquery/jquery-1.3.2.min.js");
-		Writer w = config.getPageContext().getOut();
+		HtmlUtil.renderResource(w, config.getRequest(), "/moduleResources/reporting/scripts/jquery/jquery-1.3.2.min.js");
 		String id = config.getId();
 		
 		w.write("<script type=\"text/javascript\" charset=\"utf-8\">" +

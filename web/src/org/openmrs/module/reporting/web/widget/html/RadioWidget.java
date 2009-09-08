@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.web.widget.html;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
 
@@ -13,10 +14,10 @@ public class RadioWidget extends CodedWidget {
 	 * @see CodedWidget#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		config.setFixedAttribute("type", "radio");
 		config.setFixedAttribute("onmousedown", "this.__chk = this.checked;");
 		config.setFixedAttribute("onclick", "this.checked = !this.__chk;");
-		super.render(config);
+		super.render(config, w);
 	}
 }

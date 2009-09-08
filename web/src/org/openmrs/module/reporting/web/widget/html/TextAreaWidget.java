@@ -13,8 +13,7 @@ public class TextAreaWidget implements Widget {
 	/** 
 	 * @see Widget#render(WidgetConfig)
 	 */
-	public void render(WidgetConfig config) throws IOException {
-		Writer w = config.getPageContext().getOut();
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		config.setDefaultAttribute("cols", "20");
 		config.setDefaultAttribute("rows", "2");
 		HtmlUtil.renderOpenTag(w, "textarea", config.getAttributes());

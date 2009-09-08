@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.report.ReportDesignResource;
@@ -32,8 +33,8 @@ public class ReportDesignResourceHandler extends WidgetHandler {
 	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {
-		Widget w = WidgetFactory.getInstance(FileUploadWidget.class, config);
+	public void render(WidgetConfig config, Writer w) throws IOException {
+		Widget widget = WidgetFactory.getInstance(FileUploadWidget.class, config);
 		ReportDesignResource r = (ReportDesignResource)config.getDefaultValue();
 		if (r != null) {
 			config.setConfiguredAttribute("linkName", r.getName());
@@ -41,7 +42,7 @@ public class ReportDesignResourceHandler extends WidgetHandler {
 			config.setConfiguredAttribute("linkUrl", url);
 		}
 		
-		w.render(config);
+		widget.render(config, w);
 	}
 	
 	/** 

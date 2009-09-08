@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -108,7 +109,7 @@ public class WidgetTag extends TagSupport {
 		
 		// Setup Widget Configuration
 		WidgetConfig config = new WidgetConfig();
-		config.setPageContext(pageContext);
+		config.setRequest((HttpServletRequest)pageContext.getRequest());
 		config.setId(getId());
 		config.setName(getName());
 		config.setType(fieldType);
@@ -127,7 +128,7 @@ public class WidgetTag extends TagSupport {
 		
 		// Run the Handler with this Configuration 
 		try {
-			handler.render(config);
+			handler.render(config, pageContext.getOut());
 		}
 		catch (Exception e) {
 			throw new JspException("Error handling Widget: " + type, e);

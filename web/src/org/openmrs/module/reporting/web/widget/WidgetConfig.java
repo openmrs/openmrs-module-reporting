@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.jsp.PageContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +34,7 @@ public class WidgetConfig {
 	protected static final Log log = LogFactory.getLog(WidgetConfig.class);
 	
 	// ******* PROPERTIES *******
-	private PageContext pageContext; // This represents the PageContext in which to render the widget
+	private HttpServletRequest request; // This represents the Request
 	private String id; // This represents the id of the input field
 	private String name;  // This represents the name of the input field
 	private Class<?> type; // The represents the class to edit. It is an alternative to object/property
@@ -58,7 +58,7 @@ public class WidgetConfig {
 	@Override
 	public WidgetConfig clone() {
 		WidgetConfig c = new WidgetConfig();
-		c.setPageContext(pageContext);
+		c.setRequest(request);
 		c.setId(id);
 		c.setName(name);
 		c.setType(type);
@@ -71,16 +71,16 @@ public class WidgetConfig {
 	
 	// ******* PROPERTY ACCESS ********
 	/**
-	 * @return the pageContext
+	 * @return the request
 	 */
-	public PageContext getPageContext() {
-		return pageContext;
+	public HttpServletRequest getRequest() {
+		return request;
 	}
 	/**
-	 * @param pageContext the pageContext to set
+	 * @param request the request to set
 	 */
-	public void setPageContext(PageContext pageContext) {
-		this.pageContext = pageContext;
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
 	}
 	/**
 	 * @return the id

@@ -3,8 +3,6 @@ package org.openmrs.module.reporting.web.widget.html;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
 
 public class AjaxAutocompleteWidget extends AutocompleteWidget {
@@ -14,8 +12,7 @@ public class AjaxAutocompleteWidget extends AutocompleteWidget {
 	 */
 	@Override
 	protected void renderAutocomplete(Writer w, WidgetConfig config) throws IOException {
-		HttpServletRequest req = (HttpServletRequest)config.getPageContext().getRequest();
-		String baseUrl = req.getContextPath();
+		String baseUrl = config.getRequest().getContextPath();
 		w.write("$textField.autocomplete( '" + baseUrl + config.getAttributeValue("ajaxUrl") + "',{");
 		w.write("minChars: " + config.getAttributeValue("minChars", "0") + ",");
 		w.write("width: " + config.getAttributeValue("width", "600") + ",");

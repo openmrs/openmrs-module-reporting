@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.reporting.web.widget.WidgetConfig;
@@ -43,7 +44,7 @@ public abstract class CodedHandler extends WidgetHandler {
 	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	public void render(WidgetConfig config) throws IOException {
+	public void render(WidgetConfig config, Writer w) throws IOException {
 		
 		setDefaults(config);
 		Class<? extends CodedWidget> t = SelectWidget.class;
@@ -64,16 +65,16 @@ public abstract class CodedHandler extends WidgetHandler {
 				t = AutocompleteWidget.class;
 			}
 		}
-		CodedWidget w = WidgetFactory.getInstance(t, config);
+		CodedWidget widget = WidgetFactory.getInstance(t, config);
 		
 		String showEmptyAtt = config.getAttributeValue("showEmptyOption");
-		if ("true".equals(showEmptyAtt) || (showEmptyAtt == null && w instanceof SelectWidget)) {
+		if ("true".equals(showEmptyAtt) || (showEmptyAtt == null && widget instanceof SelectWidget)) {
 			String emptyCode = config.getAttributeValue("emptyCode", null);
 			String emptyLabel = config.getAttributeValue("emptyLabel", "");
-			w.addOption(new Option("", emptyLabel, emptyCode, null), config);
+			widget.addOption(new Option("", emptyLabel, emptyCode, null), config);
 		}
-		populateOptions(config, w);
-		w.render(config);
+		populateOptions(config, widget);
+		widget.render(config, w);
 	}
 
 	/**

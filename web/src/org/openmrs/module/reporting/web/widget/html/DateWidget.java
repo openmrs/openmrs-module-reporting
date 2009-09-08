@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.web.widget.html;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Date;
 
 import org.openmrs.api.context.Context;
@@ -11,8 +12,9 @@ public class DateWidget implements Widget {
 	/** 
 	 * @see Widget#render(WidgetConfig)
 	 */
-	public void render(WidgetConfig config) throws IOException {
-		HtmlUtil.renderResource(config.getPageContext(), "/scripts/calendar/calendar.js");
+	public void render(WidgetConfig config, Writer w) throws IOException {
+
+		HtmlUtil.renderResource(w, config.getRequest(), "/scripts/calendar/calendar.js");
 		
 		config.setFixedAttribute("size", "10");
 		config.setFixedAttribute("onClick", "showCalendar(this);");
@@ -22,6 +24,6 @@ public class DateWidget implements Widget {
 			config.setDefaultValue(Context.getDateFormat().format((Date) v));
 		}
 		TextWidget widget = WidgetFactory.getInstance(TextWidget.class, config);
-		widget.render(config);
+		widget.render(config, w);
 	}
 }
