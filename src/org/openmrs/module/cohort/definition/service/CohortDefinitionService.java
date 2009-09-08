@@ -15,9 +15,9 @@ package org.openmrs.module.cohort.definition.service;
 
 import java.util.List;
 
-import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.cohort.EvaluatedCohort;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
@@ -102,7 +102,7 @@ public interface CohortDefinitionService extends OpenmrsService {
 	 * @return the cohort of all patients who meet the definition now
 	 */
 	@Transactional(readOnly = true)
-	public Cohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws APIException;
+	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws APIException;
 	
 	/**
 	 * Computes the list of patients who currently meet the given definition<br/>
@@ -111,6 +111,6 @@ public interface CohortDefinitionService extends OpenmrsService {
 	 * @return the cohort of all patients who meet the definition now
 	 */
 	@Transactional(readOnly = true)
-	public Cohort evaluate(CohortDefinition definition, EvaluationContext context) throws APIException;
+	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws APIException;
 
 }

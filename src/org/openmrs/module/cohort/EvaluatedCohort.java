@@ -45,6 +45,15 @@ public class EvaluatedCohort extends Cohort implements Evaluated<CohortDefinitio
 		super();
 	}
 	
+	/**
+	 * Full Constructor
+	 */
+	public EvaluatedCohort(Cohort c, CohortDefinition definition, EvaluationContext context) {
+		super(c.getMemberIds());
+		this.definition = definition;
+		this.context = context;
+	}
+	
 	//***********************
 	// PROPERTY ACCESS
 	//***********************

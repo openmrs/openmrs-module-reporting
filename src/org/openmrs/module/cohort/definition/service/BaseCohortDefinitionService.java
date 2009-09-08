@@ -24,6 +24,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.cohort.EvaluatedCohort;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister;
@@ -184,7 +185,7 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 	 * Convenience method which accepts a Mapped<CohortDefinition>, and an initial EvaluationContext to evaluate
      * @see evaluate(CohortDefinition, EvaluationContext)
 	 */
-	public Cohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext evalContext) throws APIException {
+	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext evalContext) throws APIException {
 		EvaluationContext childContext = EvaluationContext.cloneForChild(evalContext, definition);
 		log.debug("Evaluating CohortDefinition: " + definition.getParameterizable() + "(" + evalContext.getParameterValues() + ")");
 		return evaluate(definition.getParameterizable(), childContext);
@@ -202,7 +203,7 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 	 * @see getCacheKey(EvaluationContext)
      * @see CohortDefinitionEvaluator#evaluate(EvaluationContext)
 	 */
-	public Cohort evaluate(CohortDefinition definition, EvaluationContext evalContext) throws APIException {
+	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext evalContext) throws APIException {
 		
 		// Retrieve CohortDefinitionEvaluator which can evaluate this CohortDefinition
 		CohortDefinitionEvaluator evaluator = HandlerUtil.getPreferredHandler(CohortDefinitionEvaluator.class, definition.getClass());
@@ -248,6 +249,6 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 			c = Cohort.intersect(c, evalContext.getBaseCohort());
 		}
 		
-		return c;
+		return new EvaluatedCohort(c, clonedDefinition, evalContext);
 	}
 }
