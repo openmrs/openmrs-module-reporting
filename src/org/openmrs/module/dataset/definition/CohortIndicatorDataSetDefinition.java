@@ -231,6 +231,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
     	getColumnSpecifications().put(column, specification);
     }    
     
+    
 	/**
 	 * Adds a Column Specification with the given data.
 	 * 
@@ -247,15 +248,15 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	 * 
 	 * @throws APIException if the key already exists
 	 */
-    public void addColumnSpecification(String columnKey, String displayName, Class<?> dataType, CohortIndicator indicator, String dimensionQuery) {
+    public void addColumnSpecification(String columnKey, String displayName, Class<?> dataType, Mapped<CohortIndicator> indicator, String dimensionQuery) {
     	
     	log.info("Cohort indicator " + indicator);
-    	log.info("Cohort indicator UUID " + indicator.getUuid());
+    	log.info("Cohort indicator UUID " + indicator.getParameterizable().getUuid());
     	
     	IndicatorDataSetColumn column = 
     		new IndicatorDataSetColumn(columnKey, displayName, dataType, indicator);
     	ColumnDefinition columnDefinition = 
-    		new ColumnDefinition(indicator.getUuid(), dimensionQuery);
+    		new ColumnDefinition(indicator.getParameterizable().getUuid(), dimensionQuery);
     	
     	log.info("Column: " + column);
     	log.info("Column definition: " + columnDefinition);
@@ -279,11 +280,13 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
      */
     public void addIndicator(String columnKey, String displayName, CohortIndicator indicator, Map<String, Object> mappings) {
     	
+    	Mapped<CohortIndicator> mappedIndicator = new Mapped<CohortIndicator>(indicator, mappings);
+    	
     	// Add indicator
-    	indicators.put(indicator.getUuid(), new Mapped<CohortIndicator>(indicator, mappings));
+    	indicators.put(indicator.getUuid(), mappedIndicator);
 
     	// Add new column specification for the indicator
-    	addColumnSpecification(columnKey, displayName, Object.class, indicator, null);
+    	addColumnSpecification(columnKey, displayName, Object.class, mappedIndicator, null);
     }
     
     //****** PROPERTY ACCESS ******

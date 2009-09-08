@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.dataset.column;
 
+import org.openmrs.module.evaluation.parameter.Mapped;
+import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 
 /**
@@ -28,13 +30,13 @@ public class IndicatorDataSetColumn extends SimpleDataSetColumn {
 	/**
 	 * The indicator backing this column
 	 */
-	private Indicator indicator;
+	private Mapped<CohortIndicator> indicator;
 	
 
 	/**
 	 * Public Constructor
 	 */
-	public IndicatorDataSetColumn(String columnKey, String displayName, String description, Class<?> dataType, Indicator indicator) {
+	public IndicatorDataSetColumn(String columnKey, String displayName, String description, Class<?> dataType, Mapped<CohortIndicator> indicator) {
 		super(columnKey, displayName, description, dataType);
 		this.indicator = indicator;
 	} 
@@ -42,14 +44,14 @@ public class IndicatorDataSetColumn extends SimpleDataSetColumn {
 	/**
 	 * Public Constructor
 	 */
-	public IndicatorDataSetColumn(String columnKey, String displayName, Class<?> dataType, Indicator indicator) {
+	public IndicatorDataSetColumn(String columnKey, String displayName, Class<?> dataType, Mapped<CohortIndicator> indicator) {
 		this(columnKey, displayName, null, dataType, indicator);
 	} 
 	
     /**
      * @return the concept 
      */
-    public Indicator getIndicator() { 
+    public Mapped<CohortIndicator> getIndicator() { 
     	return this.indicator;
     }
     

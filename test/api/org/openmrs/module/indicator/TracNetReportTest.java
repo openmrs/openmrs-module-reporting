@@ -31,6 +31,7 @@ import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.LocationCohortDefinition;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.aggregation.CountAggregator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
@@ -158,7 +159,9 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		ReportDefinition rs = setupReport();
 		CohortIndicatorDataSetDefinition dsd = setupDataSetDefinition(rs);
 
-		CohortIndicator indicator = dsd.getIndicator("onArvsAtEnd").getParameterizable();
+		Mapped<CohortIndicator> indicator = dsd.getIndicator("onArvsAtEnd");
+		
+		
 		
 		// Replaced "onArvsAtEnd" with indicator
 		dsd.addColumnSpecification("4.", "Nombre total de patients pediatriques (moins de 15 ans) qui sont actuellement sous ARV", 
@@ -167,13 +170,13 @@ public class TracNetReportTest extends BaseModuleContextSensitiveTest {
 		dsd.addColumnSpecification("9.", "Nombre total de patients adultes (plus de 15 ans) qui sont actuellement sous traitement ARV", 
 				   Number.class, indicator, "age=adult");
 		
-		EvaluationContext context = new EvaluationContext();
 		CsvReportRenderer renderer = new CsvReportRenderer();
 		ReportData data = null;
 		
 		System.out.println("Patient on ARVs at the end of 2008 by Location...");
 		for (Location l : Context.getLocationService().getAllLocations()) {
 			System.out.println("\n" + l.getName() + "\n" + "------------------------");
+			EvaluationContext context = new EvaluationContext();
 			context.addParameterValue("report.location", l);
 			context.addParameterValue("report.startDate", ymd.parse("2008-12-01"));
 			context.addParameterValue("report.endDate", ymd.parse("2008-12-31"));

@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +36,7 @@ import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
+import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.IndicatorResult;
 import org.openmrs.module.indicator.PeriodCohortIndicator;
 import org.openmrs.module.indicator.service.IndicatorService;
@@ -113,7 +115,7 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 		*/
 		
 		datasetDefinition.addCohortIndicator(indicator, null);
-		datasetDefinition.addColumnSpecification("1.a", "# Adult Patients", Number.class, indicator, null);
+		datasetDefinition.addColumnSpecification("1.a", "# Adult Patients", Number.class, new Mapped<CohortIndicator>(indicator, null), null);
 		
 		
 		ReportDefinition report = new ReportDefinition();
@@ -231,13 +233,15 @@ public class IndicatorReportTest extends BaseModuleContextSensitiveTest {
 				
 				log.info("Found indicator " + indicator);					
 				if (indicator != null) { 
+					Map<String,Object> mapping = 
+						ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}");
+					Mapped<CohortIndicator> mappedIndicator = new Mapped<CohortIndicator>(indicator, mapping);
 					// Adding indicator to dataset definition with default parameter mapping
-					datasetDefinition.addCohortIndicator(indicator.getName(), indicator, 
-							ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
+					datasetDefinition.addCohortIndicator(indicator.getName(), mappedIndicator);
 					
 					// Adding column specification to dataset 
 					datasetDefinition.addColumnSpecification(indicator.getName(), 
-							indicator.getDescription(), Number.class, indicator, null);						
+							indicator.getDescription(), Number.class, mappedIndicator, null);						
 											
 				}										
 			}

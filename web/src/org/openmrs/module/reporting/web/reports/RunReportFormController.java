@@ -35,6 +35,7 @@ import org.openmrs.module.report.renderer.ReportRendererException;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
+import org.openmrs.module.reporting.web.widget.WidgetUtil;
 import org.openmrs.report.ReportRenderingException;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
@@ -118,7 +119,9 @@ public class RunReportFormController extends SimpleFormController implements Val
 					Object value;
 					if (StringUtils.hasText(valString)) {
 						try {
-							value = OpenmrsUtil.parse(valString, parameter.getType());
+							value = WidgetUtil.parseInput(valString, parameter.getType());
+							
+							//value = OpenmrsUtil.parse(valString, parameter.getType());
 							evalContext.addParameterValue(parameter.getName(), value);
 						}
 						catch (Exception ex) {

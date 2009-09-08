@@ -29,6 +29,7 @@ import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.LocationCohortDefinition;
 import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.aggregation.CountAggregator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
@@ -135,11 +136,13 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 		
 		dsd.addDimension("age", ageDimension, ParameterizableUtil.createParameterMappings("ageDate=${indicator.effDate}"));
 		
+		
+		Mapped<CohortIndicator> mappedIndicator = new Mapped<CohortIndicator>(indicator, null);
 		// Replace "patientsAtSite" with indicator
-		dsd.addColumnSpecification("1.A", "Male Adult", Object.class, indicator, "gender=male,age=adult");
-		dsd.addColumnSpecification("1.B", "Male Child", Object.class, indicator, "gender=male,age=child");
-		dsd.addColumnSpecification("2.A", "Female Adult", Object.class, indicator, "gender=female,age=adult");
-		dsd.addColumnSpecification("2.B", "Female Child", Object.class, indicator, "gender=female,age=child");
+		dsd.addColumnSpecification("1.A", "Male Adult", Object.class, mappedIndicator, "gender=male,age=adult");
+		dsd.addColumnSpecification("1.B", "Male Child", Object.class, mappedIndicator, "gender=male,age=child");
+		dsd.addColumnSpecification("2.A", "Female Adult", Object.class, mappedIndicator, "gender=female,age=adult");
+		dsd.addColumnSpecification("2.B", "Female Child", Object.class, mappedIndicator, "gender=female,age=child");
 		
 		EvaluationContext context = new EvaluationContext();
 		CsvReportRenderer renderer = new CsvReportRenderer();

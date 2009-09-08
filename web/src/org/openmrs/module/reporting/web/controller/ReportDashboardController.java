@@ -14,9 +14,13 @@ import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.dataset.definition.DataSetDefinition;
+import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.indicator.service.IndicatorService;
+import org.openmrs.module.report.ReportData;
+import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -57,30 +61,46 @@ public class ReportDashboardController {
     		@RequestParam(required=false, value="cohort") String cohort,
     		ModelMap model) { 
     	
+    	Cohort selectedCohort = null;
 		model.addAttribute("selected", cohort);
     	EvaluationContext evaluationContext = new EvaluationContext();
-    	if ("males".equalsIgnoreCase(cohort)) { 
-    		model.addAttribute("cohort", getGenderCohort(evaluationContext, "M"));    		
+    	if ("males".equalsIgnoreCase(cohort)) {
+    		selectedCohort = getGenderCohort(evaluationContext, "M");
     	}
     	else if ("females".equalsIgnoreCase(cohort)) { 
-    		model.addAttribute("cohort", getGenderCohort(evaluationContext, "F"));    		
+    		selectedCohort = getGenderCohort(evaluationContext, "F");    		
     	}
     	else if ("adults".equalsIgnoreCase(cohort)) { 
-    		model.addAttribute("cohort", getAgeCohort(evaluationContext, 15, 150, new Date()));    		
+    		selectedCohort = getAgeCohort(evaluationContext, 15, 150, new Date());    		
     	}
     	else if ("children".equalsIgnoreCase(cohort)) { 
-    		model.addAttribute("cohort", getAgeCohort(evaluationContext, 0, 14, new Date()));    		
+    		selectedCohort = getAgeCohort(evaluationContext, 0, 14, new Date());    		
     	}
     	else { 
     		
     		if (cohort != null) { 
 	    		Program program = Context.getProgramWorkflowService().getProgramByName(cohort);
 	    		if (program != null) 
-	    			model.addAttribute("cohort", getProgramStateCohort(evaluationContext, program));
+	    			selectedCohort = getProgramStateCohort(evaluationContext, program);    		
 	    		else 
-	    			model.addAttribute("cohort", Context.getPatientSetService().getAllPatients());    		
+	    			selectedCohort = Context.getPatientSetService().getAllPatients();    		
     		}
     	}
+		model.addAttribute("cohort", selectedCohort);    		
+    	
+    	if (selectedCohort != null && !selectedCohort.isEmpty()) { 
+    		EvaluationContext evalContext = new EvaluationContext();
+    		evalContext.setBaseCohort(selectedCohort);
+	    	ReportDefinition reportDefinition = new ReportDefinition();
+	    	DataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
+	    	reportDefinition.addDataSetDefinition("patientDataSet", dataSetDefinition, null);
+	    	ReportData reportData = Context.getService(ReportService.class).evaluate(reportDefinition, evalContext);
+	    	model.addAttribute("reportData", reportData);    	
+    	}    	
+    	
+    	
+    	manageDashboard(model);
+    	
     	return "/module/reporting/dashboard/cohortDashboard";
     	
     }
@@ -96,15 +116,15 @@ public class ReportDashboardController {
     public String manageDashboard(ModelMap model) {
     	    	
     	// Get all reporting objects
-    	model.addAttribute("cohortDefinitions", 
-    			Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));
+    	//model.addAttribute("cohortDefinitions", 
+    	//		Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));
 
-    	model.addAttribute("datasetDefinitions", 
-    			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false));
+    	//model.addAttribute("datasetDefinitions", 
+    	//		Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false));
     	
     	
-    	model.addAttribute("indicators", 
-    			Context.getService(IndicatorService.class).getAllIndicators(false));
+    	//model.addAttribute("indicators", 
+    	//		Context.getService(IndicatorService.class).getAllIndicators(false));
     	model.addAttribute("reportDefinitions", 
     			Context.getService(ReportService.class).getReportDefinitions());
     	model.addAttribute("reportRenderers", 

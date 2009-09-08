@@ -33,20 +33,20 @@
 									<th>Value</th>
 								</tr>
 							</c:if>
-							<c:forEach var="dataSetCol" items="${dataSetRow.columnValues}">
-								<tr>
+								<c:forEach var="dataSetCol" items="${dataSetRow.columnValues}">
+									<tr>
 									<c:url var="url" value="/module/reporting/dashboard/manageCohortDashboard.form?cohort=none&indicator=${dataSetCol.key.indicator.parameterizable.uuid}"/>
-									<td>
-										${dataSetCol.key.columnKey}
-									</td>
-									<td>
-										${dataSetCol.key.displayName}
-									</td>
-									<td>
-										<a href="${url}">${dataSetCol.value.value}</a>
-									</td>
-								</tr>
-							</c:forEach>
+										<td>
+											${dataSetCol.key.columnKey}
+										</td>
+										<td>
+											${dataSetCol.key.displayName}
+										</td>
+										<td>
+											<a href="${url}">${dataSetCol.value.value}</a>
+										</td>
+									</tr>
+								</c:forEach>
 						</c:forEach>
 					</table>
 				</c:forEach>

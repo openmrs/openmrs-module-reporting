@@ -31,7 +31,12 @@
 					           <spring:message code="${parameter.label}"/>:
 		                    </td>
 		                    <td>
+		                    
+								<rpt:widget id="${status.expression}" name="${status.expression}" type="${parameter.type.name}" property="${status.expression}"/>
+		                    
+			                    <%-- 
 		                    	<openmrs:fieldGen type="${parameter.type.name}" formFieldName="${status.expression}" val="${status.value}"/>
+		                    	--%>
 		                        <c:if test="${status.errorMessage != ''}">
 		                            <span class="error">${status.errorMessage}</span>
 		                        </c:if>

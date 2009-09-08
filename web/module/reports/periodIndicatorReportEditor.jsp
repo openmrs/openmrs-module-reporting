@@ -56,13 +56,6 @@ $(document).ready(function() {
 		// no-op
 	});	
 
-	// Disable the parameters 
-	$('#startDate').attr('value','01/01/2009');
-	$('#endDate').attr('value','31/01/2009');
-	$('#startDate').attr('disabled','disabled');
-	$('#endDate').attr('disabled','disabled');
-	$('#location').attr('disabled','disabled');
-
 	// ======  Editable  ===============================================
 	
     $('.editable').editable('${pageContext.request.contextPath}/module/reporting/reports/editIndicatorReport.form', { 
@@ -207,7 +200,7 @@ $(document).ready(function() {
 	$("#preview-indicator-${status.index}").click(function(event){ 
 		showReportingDialog({ 
 			title: 'Preview Period Indicator', 
-			url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${column.indicator.uuid}&type=${column.indicator.class.name}',
+			url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${column.indicator.parameterizable.uuid}&type=${column.indicator.parameterizable.class.name}',
 			successCallback: function() { 
 				window.location = window.location; //.reload(true);
 			} 
@@ -217,7 +210,7 @@ $(document).ready(function() {
 		$.post("${pageContext.request.contextPath}/module/reporting/indicators/managePeriodIndicator.form", { 	
 			action: 		"remove",	
 			reportUuid: 	"${indicatorReport.reportDefinition.uuid}", 
-			indicatorKey:	"${column.indicator.uuid}",
+			indicatorKey:	"${column.indicator.parameterizable.uuid}",
 			columnKey:		"${column.columnKey}"
 		}, function(data){ });
 
@@ -239,22 +232,9 @@ $(document).ready(function() {
 																(no cohort indicator)
 															</c:when>
 															<c:otherwise>
-																${column.indicator.cohortDefinition.parameterizable.name}
+																${column.indicator.parameterizable.cohortDefinition.parameterizable.name}
 															</c:otherwise>
-														</c:choose>
-														
-														<%-- 
-														<c:forEach var="property" items="${indicator.cohortDefinition.parameterizable.configurationProperties}">
-															<c:if test="${!empty property.value}"> 															
-																${property.field.name}=${property.value.name} (${property.class.simpleName})
-															</c:if>									
-														</c:forEach>
-														<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}">
-															<c:if test="${!empty parameter.defaultValue}"> 															
-																${parameter.name}=${parameter.defaultValue} (${parameter.class.simpleName})
-															</c:if>
-														</c:forEach>
-														--%>
+														</c:choose>														
 													</td>
 													<td width="1%" align="center">
 														<a href="#" id="preview-indicator-${status.index}"><img src="<c:url value="/images/play.gif"/>" border="0"/></a>
