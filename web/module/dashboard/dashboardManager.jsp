@@ -38,6 +38,15 @@ $(function() {
 
 	$(".column").disableSelection();
 
+	$('#report-table').dataTable( {
+		"bPaginate": false,
+		"bLengthChange": false,
+		"bFilter": false,
+		"bSort": false,
+		"bInfo": false,
+		"bAutoWidth": false
+	} );
+	
 	$('#gender-breakdown-table').dataTable( {
 		"bPaginate": false,
 		"bLengthChange": false,
@@ -130,40 +139,44 @@ $(function() {
 
 			<div class="column">	
 				<div class="portlet">
-					<div class="portlet-header">Program Enrollment Search</div>
+					<div class="portlet-header">Reports</div>
 					<div class="portlet-content">							
-						<form method="post" action="">					
-							<ul>				
-								<li>
-									<label class="desc" for="programId">Show patients that are enrolled in program(s) </label>
-									<div>			
-										<c:forEach var="program" items='${programs}'>
-											<input type="checkbox" name="programId" value="${program.programId}"/>${program.name} <br/>
-										</c:forEach>
-									</div>
-								</li>				
-								<li>
-									<label class="desc" for="programId">enrolled on or after </label>
-									<div>			
-										<openmrs:fieldGen type="java.util.Date" formFieldName="startDate" val="" parameters=""/>
-									</div>
-								</li>	
-								<li>
-									<label class="desc" for="programId">enrolled on or before </label>
-									<div>			
-										<openmrs:fieldGen type="java.util.Date" formFieldName="endDate" val="" parameters=""/>
-									</div>
-								</li>													
-								<li>
-									<div>			
-										<input type="submit" value="Search"/>
-									</div>
-								</li>									
-																				
-							</ul>			
+						<form method="post" action="">	
+						
+							<c:if test="${empty reportDefinitions}">
+								There are no reports in the system yet.
+							</c:if>	
+							<table id="report-table" class="display">
+								<thead>
+									<tr>
+										<th>Report Name</th>
+										<th>Created</th>
+									</tr>
+								</thead>
+								<tbody>					
+									<c:forEach var="reportDefinition" items="${reportDefinitions}" varStatus="varStatus">								
+										<c:if test="${varStatus.index < 5}">
+											<tr>
+												<td>
+													${reportDefinition.name}<br/>
+												</td>											
+												<td nowrap>
+													<rpt:timespan then="${reportDefinition.dateCreated}"/>
+												</td>
+											</tr>						
+										</c:if>		
+									</c:forEach>						
+									<tr>
+										<td>
+											<c:if test="${fn:length(reportDefinitions) > 5}">
+												<a href="<c:url value='/module/reporting/reports/manageReports.list'/>">more ...</a>
+											</c:if>
+										</td>
+										<td></td>
+									</tr>																								
+								</tbody>
+							</table>
 						</form>
-					
-					
 					</div><!-- portlet-content -->
 				</div><!-- portlet -->
 			</div><!-- column -->
@@ -178,7 +191,7 @@ $(function() {
 					<div class="portlet-content">
 					
 						<span>
-							There are <strong><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard?cohort=all">${all.size}</a></strong> patients in the EMR.
+							There are <strong><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard?cohort=all">${all.size}</a></strong> patients in the EMR.
 						</span>
 					
 						<div id="cohort-breakdown-tabs" class="ui-tabs-hide">			
@@ -203,14 +216,14 @@ $(function() {
 										<tbody>
 											<tr>
 												<td>Male</td>
-												<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=males">${males.size}</a></td>
+												<td><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form?cohort=males">${males.size}</a></td>
 												<td>
 													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${males.size / all.size}"/>													
 												</td>
 											</tr>
 											<tr>
 												<td>Female</td>
-												<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=females">${females.size}</a></td>
+												<td><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form?cohort=females">${females.size}</a></td>
 												<td>
 													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${females.size / all.size}"/>													
 												</td>
@@ -246,14 +259,14 @@ $(function() {
 										<tbody>
 											<tr>
 												<td>Adult</td>
-												<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=adults">${adults.size}</a></td>
+												<td><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form?cohort=adults">${adults.size}</a></td>
 												<td>
 													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${adults.size / all.size}"/>													
 												</td>
 											</tr>
 											<tr>
 												<td>Child</td>
-												<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=children">${children.size}</a></td>
+												<td><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form?cohort=children">${children.size}</a></td>
 												<td>
 													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${children.size / all.size}"/>
 												</td>
@@ -290,7 +303,7 @@ $(function() {
 											<c:forEach var="entry" items="${programCohortMap}">
 												<tr>
 													<td>${entry.key.name}</td>
-													<td><a href="${pageContext.request.contextPath}/module/reporting/manageCohortDashboard.form?cohort=${entry.key.name}">${entry.value.size}</a></td>
+													<td><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form?cohort=${entry.key.name}">${entry.value.size}</a></td>
 													<td>
 														<fmt:formatNumber type="percent" maxFractionDigits="2" value="${entry.value.size / all.size}"/>
 													</td>														

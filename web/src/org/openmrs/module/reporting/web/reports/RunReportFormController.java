@@ -57,8 +57,6 @@ import org.springframework.web.servlet.view.RedirectView;
  */
 public class RunReportFormController extends SimpleFormController implements Validator {
 	
-
-	
 	@SuppressWarnings("unchecked")
 	public boolean supports(Class c) {
 		return c == CommandObject.class;

@@ -21,6 +21,7 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.module.dataset.column.DataSetColumn;
+import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
 import org.openmrs.module.dataset.definition.evaluator.PatientDataSetEvaluator;
 
@@ -44,6 +45,9 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	public List<PersonAttributeType> personAttributeTypes;
 	public List<PatientIdentifierType> identifierTypes;
 	public List<ProgramWorkflow> programWorkflows;
+
+	//***** MORE COLUMNS ******
+	public List<LogicDataSetColumn> logicColumns; 
 	
 	/**
 	 * Constructor
@@ -81,6 +85,9 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 		for (ProgramWorkflow t : getProgramWorkflows()) {
 			cols.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
 		}
+		if (logicColumns != null)
+			cols.addAll(logicColumns);
+
 		return cols;
 	}
 	
@@ -137,4 +144,25 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	public void setProgramWorkflows(List<ProgramWorkflow> programWorkflows) {
 		this.programWorkflows = programWorkflows;
 	}
+	
+
+	/**
+	 * @return the logic queries
+	 */
+	public List<LogicDataSetColumn> getLogicColumns() {
+		if (logicColumns == null) {
+			logicColumns = new ArrayList<LogicDataSetColumn>();
+		}
+		return logicColumns;
+	}
+
+	/**
+	 * @param logicQueries the programWorkflows to set
+	 */
+	public void setLogicDataSetColumns(List<LogicDataSetColumn> logicColumns) {
+		this.logicColumns = logicColumns;
+	}
+	
+	
+	
 }

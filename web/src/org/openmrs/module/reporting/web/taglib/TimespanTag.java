@@ -21,6 +21,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
 import org.openmrs.module.util.DateUtil;
 
 public class TimespanTag extends BodyTagSupport {
@@ -29,12 +30,19 @@ public class TimespanTag extends BodyTagSupport {
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
-	private Date now = new Date();
-	private Date then;
+	private Date now = null;
+	private Date then = null;
 	
 	
 	public int doStartTag() throws JspException {
 		try { 
+			if (now == null) { 
+				now = new Date();
+			}
+			if (then == null) { 
+				throw new APIException("Timespan is expecting at least 'then' date");
+			}
+			
 			pageContext.getOut().write("<span class=\"timespan\"> " + DateUtil.getTimespan(now, then) + " </span>");
 		} catch(IOException e) { 
 			log.error("Unable to write timespan to output", e);

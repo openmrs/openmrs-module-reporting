@@ -12,6 +12,8 @@
 	#accordion { width: 100%; } 
 	table { width: 100%; } 
 	.profileImage { width: 75px; height: 86px; }
+	#cohort-details-table_wrapper { width: 75%; } 
+	#cohort-details-table { border: 0px; } 
 </style>
 <script type="text/javascript">
 $(function() {
@@ -128,7 +130,7 @@ $(function() {
 				<div style="border-top: 1px solid black; height: 25%;" >				
 					<h3><a href="#">Summary</a></h3>
 					<span>
-						There are <strong>${cohort.size}</strong> patients in the selected cohort.
+						There are <strong>${cohort.size}</strong> patients in the current cohort.
 					</span>
 					<div id="summary"></div>
 				
@@ -140,38 +142,47 @@ $(function() {
 		
 			<div id="cohortResultsColumn">	
 			
-				<div style="overflow: auto">
+				<div style="overflow: auto" align="center">
 					<table id="cohort-details-table" class="display" width="100%">
 						<thead>
 							<tr>
-								<th style="background-color: #E2E4FF;">
+								<th>
 									<div id="filters" style="margin: 2px; padding:2px;">
-										<span style="color: white;">Filters Applied:</span>
+										<span style="color: black;">Filters Applied:</span>
 										<span style="border: 1px solid #ccc; margin-left: 5px; padding-left: 5px; background-color: #DDECF7; ">
-											Gender <img src="${pageContext.request.contextPath}/images/delete.gif" align="absmiddle"/></span>
-										<span style="border: 1px solid #ccc;  margin-left: 5px; padding-left: 5px; background-color: #DDECF7; ">
-											Age <img src="${pageContext.request.contextPath}/images/delete.gif" align="absmiddle"/></span>
-										<span style="border: 1px solid #ccc;  margin-left: 5px; padding-left: 5px; background-color: #DDECF7; ">
-											Health Center <img src="${pageContext.request.contextPath}/images/delete.gif" align="absmiddle"/></span>
-									</div>				
-									${reportData}								
+											${selected} <img src="${pageContext.request.contextPath}/images/delete.gif" align="absmiddle"/>
+										</span>										 										
+									</div>																	
 								</th>
 							</tr>
 						</thead>
 						<tbody>										
-							<c:forEach var="memberId" items="${cohort.memberIds}" varStatus="status">
+							<c:forEach var="patient" items="${patients}" varStatus="status">
 								<tr height="25px">
 									<td>
 										<table width="100%" cellspacing="0" cellpadding="0">
 											<tr>
-												<td width="5%" align="center">
-													<img class="profileImage" src="<c:url value='/images/patient_F.gif'/>"/>
+												<td rowspan="2" "width="5%" align="center">
+													<img class="profileImage" src="<c:url value='/images/patient_${patient.gender}.gif'/>"/>
 												</td>
 												<td width="90%" valign="top" align="left">
-													Patient #<strong>${memberId}</strong>
-													
-													
+													<strong>${patient.givenName} ${patient.familyName}</strong><br/>
+													Age:
+													<strong>
+														<c:choose>
+															<c:when test="${patient.birthdate!=null}">
+																<rpt:timespan then="${patient.birthdate}"/>
+															</c:when>
+															<c:otherwise>unknown</c:otherwise>
+														</c:choose>
+													</strong>
+													<br/>
 												</td>																
+											</tr>
+											<tr>
+												<td></td>
+												<td align="right">
+													<a href="#">details</a></td>
 											</tr>
 										</table>
 									</td>

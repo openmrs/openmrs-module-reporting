@@ -121,7 +121,7 @@ public class DateUtil {
 		long delta = (now.getTime() - then.getTime()) / MILLISECOND;
 
 		if (delta < 0) { 
-			return "in the future";
+			return "(in the future?)";
 		}
 		if (delta < 1 * MINUTE) {
 			return (delta / SECOND) == 1 ? "one second ago" : (delta / SECOND) + " seconds ago";

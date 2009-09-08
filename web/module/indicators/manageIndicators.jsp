@@ -57,7 +57,6 @@ $(document).ready(function() {
 					<th>Cohort Definition</th>
 					<th>Parameters</th>
 					<th>Author</th>
-					<th nowrap>Last modified</th>
 					<th>Created</th>
 					<th>Edit</th>
 					<th>Run</th>
@@ -118,20 +117,15 @@ $(document).ready(function() {
 							${indicator.cohortDefinition.parameterizable.name}<br/>					
 						</td>
 						<td width="20%">
-							<span nowrap="" class="small">
-								<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}" varStatus="status">
-									${parameter.name}<c:if test="${!status.last}">,</c:if>
-								</c:forEach>
-							</span>						
+							<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}" varStatus="status">
+								${parameter.name}<c:if test="${!status.last}">,</c:if>
+							</c:forEach>
 						</td>
-						<td width="5%">
-							<span class="small">${indicator.creator}</span>
+						<td nowrap width="5%">
+							${indicator.creator}
 						</td>
-						<td width="5%" nowrap>
-							<span class="small"><rpt:timespan then="${indicator.dateChanged}"/></span>
-						</td>
-						<td width="5%">
-							<span class="small"><rpt:timespan then="${indicator.dateCreated}"/></span>
+						<td nowrap>
+							<rpt:timespan then="${indicator.dateCreated}"/>
 						</td>
 						<td align="center" width="1%">							
 							<a href="#" id="period-indicator-form-${indicator.uuid}">

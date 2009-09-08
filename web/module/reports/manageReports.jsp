@@ -95,20 +95,20 @@ $(document).ready(function() {
 							</a>							
 							&nbsp;
 							<a href="${editUrl}">
-								<span class="small">${reportDefinition.name}</span>
+								${reportDefinition.name}
 							</a>
 						</td>
 						<td width="10%" nowrap="">
-							<span class="small">${reportDefinition.class.simpleName}</span>
+							${reportDefinition.class.simpleName}
 						</td>
 						<td width="20%">
-							<span class="small">${reportDefinition.description}</span>
+							${reportDefinition.description}
 						</td>
 						<td width="5%" nowrap>
-							<span class="small">${reportDefinition.creator}</span>
+							${reportDefinition.creator}
 						</td>
 						<td width="5%" nowrap>
-							<span class="small"><rpt:timespan then="${reportDefinition.dateCreated}"/></span>
+							<rpt:timespan then="${reportDefinition.dateCreated}"/>
 						</td>
 						<td width="1%" align="center">
 							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportDefinition.uuid}">

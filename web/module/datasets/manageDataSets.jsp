@@ -100,7 +100,9 @@ $(document).ready(function() {
 							${dataset.creator}
 						</td>
 						<td width="5%" nowrap>
-							<rpt:timespan then="${dataset.dateCreated}"/>
+							<c:if test="${dateset.dateCreated!=null}">
+								<rpt:timespan then="${dataset.dateCreated}"/>
+							</c:if>
 						</td>
 		 				<td align="center" width="1%">
 							<a href="${pageContext.request.contextPath}/module/reporting/datasets/viewDataSet.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">					

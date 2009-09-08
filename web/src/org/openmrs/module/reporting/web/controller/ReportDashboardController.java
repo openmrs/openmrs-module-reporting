@@ -22,6 +22,7 @@ import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.util.CohortUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -63,6 +64,7 @@ public class ReportDashboardController {
     	
     	Cohort selectedCohort = null;
 		model.addAttribute("selected", cohort);
+		
     	EvaluationContext evaluationContext = new EvaluationContext();
     	if ("males".equalsIgnoreCase(cohort)) {
     		selectedCohort = getGenderCohort(evaluationContext, "M");
@@ -76,26 +78,35 @@ public class ReportDashboardController {
     	else if ("children".equalsIgnoreCase(cohort)) { 
     		selectedCohort = getAgeCohort(evaluationContext, 0, 14, new Date());    		
     	}
+    	else if ("all".equalsIgnoreCase(cohort)) { 
+    		selectedCohort = Context.getPatientSetService().getAllPatients();
+    	}
     	else { 
     		
     		if (cohort != null) { 
 	    		Program program = Context.getProgramWorkflowService().getProgramByName(cohort);
 	    		if (program != null) 
 	    			selectedCohort = getProgramStateCohort(evaluationContext, program);    		
-	    		else 
-	    			selectedCohort = Context.getPatientSetService().getAllPatients();    		
+	    		else {  
+	    			selectedCohort = CohortUtil.limitCohort(Context.getPatientSetService().getAllPatients(), 100);
+	    		}
     		}
     	}
-		model.addAttribute("cohort", selectedCohort);    		
-    	
     	if (selectedCohort != null && !selectedCohort.isEmpty()) { 
+    		// Evaluate on the fly report
+    		/*
     		EvaluationContext evalContext = new EvaluationContext();
     		evalContext.setBaseCohort(selectedCohort);
 	    	ReportDefinition reportDefinition = new ReportDefinition();
 	    	DataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
 	    	reportDefinition.addDataSetDefinition("patientDataSet", dataSetDefinition, null);
 	    	ReportData reportData = Context.getService(ReportService.class).evaluate(reportDefinition, evalContext);
-	    	model.addAttribute("reportData", reportData);    	
+			model.addAttribute("reportData", reportData);    	
+	    	*/
+    		
+	    	// Add generated report, patients, and cohort to request
+	    	model.addAttribute("patients", Context.getPatientSetService().getPatients(selectedCohort.getMemberIds()));
+	    	model.addAttribute("cohort", selectedCohort);    		
     	}    	
     	
     	
@@ -116,23 +127,19 @@ public class ReportDashboardController {
     public String manageDashboard(ModelMap model) {
     	    	
     	// Get all reporting objects
-    	//model.addAttribute("cohortDefinitions", 
-    	//		Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));
-
-    	//model.addAttribute("datasetDefinitions", 
-    	//		Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false));
-    	
-    	
-    	//model.addAttribute("indicators", 
-    	//		Context.getService(IndicatorService.class).getAllIndicators(false));
+    	model.addAttribute("cohortDefinitions", 
+    			Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));
+    	model.addAttribute("datasetDefinitions", 
+    			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false));
+    	model.addAttribute("indicators", 
+    			Context.getService(IndicatorService.class).getAllIndicators(false));
     	model.addAttribute("reportDefinitions", 
     			Context.getService(ReportService.class).getReportDefinitions());
     	model.addAttribute("reportRenderers", 
     			Context.getService(ReportService.class).getReportRenderers());
     	
     	// Get all static data
-    	List<Program> programs = Context.getProgramWorkflowService().getAllPrograms();
-    	
+    	List<Program> programs = Context.getProgramWorkflowService().getAllPrograms();    	
     	model.addAttribute("programs", programs);
     	model.addAttribute("encounterTypes", Context.getEncounterService().getAllEncounterTypes());
     	model.addAttribute("identifierTypes", Context.getPatientService().getAllPatientIdentifierTypes());
