@@ -19,9 +19,11 @@ import java.util.List;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.report.Report;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.ReportDesign;
+import org.openmrs.module.report.ReportRequest;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.springframework.transaction.annotation.Transactional;
@@ -197,6 +199,45 @@ public interface ReportService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	public List<RenderingMode> getRenderingModes(ReportDefinition schema);
 
+
+	/**
+	 * <pre>
+	 * Runs a report synchronously, blocking until the report is ready. This method populates the uuid
+	 * field on the ReportRequest that is passed in.
+	 * 
+	 * If request specifies a WebRenderer, then the ReportDefinition will be evaluated, and the Report
+	 * returned will contain the raw ReportData output, but no rendering will happen.
+	 * 
+	 * If request specifies a non-WebRenderer, the ReportDefinition will be evaluated <i>and</i> the
+	 * data will be rendered, and the Report returned will include raw ReportData and a File.
+	 * 
+	 * Implementations of this service may choose to run the report directly, or to queue it,
+	 * but if they queue it they should do so with HIGHEST priority.
+	 * </pre>
+	 * 
+	 * @param request
+	 * @return the result of running the report.
+	 * 
+	 * @should set uuid on the request
+	 * @should render the report if a plain renderer is specified
+	 * @should not render the report if a web renderer is specified
+	 */
+	@Transactional(readOnly = true)
+	public Report runReport(ReportRequest request);
+	
+	
+	/**
+	 * Queues a report to be run asynchronously, returning immediately. The ReportRequest is assigned a uuid,
+	 * which allows its result to be fetched later after the run has completed.
+	 * 
+	 * The service will respect the prioritization specified in the ReportRequests 
+	 * 
+	 * TODO add a callback-on-completion mechanism
+	 *
+	 * @param request
+	 * @return the ReportRequest that was passed in, with its uuid populated.
+	 */
+	public ReportRequest queueReport(ReportRequest request);
 	
 }
 

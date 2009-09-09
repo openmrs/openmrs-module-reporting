@@ -1,10 +1,14 @@
 package org.openmrs.module.report.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
@@ -20,12 +24,16 @@ import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
+import org.openmrs.module.report.Report;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.ReportDesign;
+import org.openmrs.module.report.ReportRequest;
+import org.openmrs.module.report.renderer.RenderingException;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.module.report.service.db.ReportDAO;
+import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.util.StringUtils;
@@ -269,4 +277,49 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	public void setSerializedObjectDAO(SerializedObjectDAO serializedObjectDAO) {
 		this.serializedObjectDAO = serializedObjectDAO;
 	}
+
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#queueReport(org.openmrs.module.report.ReportRequest)
+	 */
+	public ReportRequest queueReport(ReportRequest request) {
+	    throw new APIException("Not Yet Implemented");
+    }
+	
+	/**
+	 * This implementation runs this request directly, it does not queue it.
+	 * @see org.openmrs.module.report.service.ReportService#runReport(org.openmrs.module.report.ReportRequest)
+	 */
+	public Report runReport(ReportRequest request) {
+		request.setUuid(UUID.randomUUID().toString());
+		request.setRequestDate(new Date());
+		Report ret = new Report(request);
+		
+		ret.startEvaluating();
+		
+		EvaluationContext ec = new EvaluationContext();
+		ec.setParameterValues(request.getParameterValues());
+		ReportData rawData = evaluate(request.getReportDefinition(), ec);
+		
+		ret.rawDataEvaluated(rawData);
+		
+		if (request.getReportRenderer() != null) {
+			if (!(request.getReportRenderer() instanceof WebReportRenderer)) {
+				try {
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+		            request.getReportRenderer().render(rawData, request.getRenderArgument(), out);
+		            
+		            ret.outputRendered(out.toByteArray());
+	            }
+	            catch (RenderingException e) {
+		            log.error("Failed to Render ReportData", e);
+		            throw new APIException(e);
+	            }
+	            catch (IOException e) {
+		            log.error("Failed to write rendered data to stream", e);
+		            throw new APIException(e);
+	            }
+			}
+		}
+		return ret;
+    }
 }
