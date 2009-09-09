@@ -145,6 +145,7 @@ public class ReportUtil {
 					if (inProg == null)
 						throw new IllegalArgumentException("Missing cohort def");
 					Map<String, Object> mappings = new HashMap<String, Object>();
+					mappings.put("sinceDate", "${startDate}");
 					mappings.put("untilDate", "${startDate}");
 					PeriodCohortIndicator ind = new PeriodCohortIndicator();
 					ind.setName("Current " + program.getName() + " enrollment at start");
@@ -158,6 +159,7 @@ public class ReportUtil {
 					if (inProg == null)
 						throw new IllegalArgumentException("Missing cohort def");
 					Map<String, Object> mappings = new HashMap<String, Object>();
+					mappings.put("sinceDate", "${endDate}");
 					mappings.put("untilDate", "${endDate}");
 					PeriodCohortIndicator ind = new PeriodCohortIndicator();
 					ind.setName("Current " + program.getName() + " enrollment at end");
