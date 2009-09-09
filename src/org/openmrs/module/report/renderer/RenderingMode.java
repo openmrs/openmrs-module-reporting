@@ -88,7 +88,10 @@ public class RenderingMode implements Comparable<RenderingMode> {
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	public int compareTo(RenderingMode other) {
-		return other.sortWeight.compareTo(sortWeight);
+		int temp = other.sortWeight.compareTo(sortWeight);
+		if (temp == 0)
+			temp = other.label.compareTo(label);
+		return temp;
 	}
 	
 }

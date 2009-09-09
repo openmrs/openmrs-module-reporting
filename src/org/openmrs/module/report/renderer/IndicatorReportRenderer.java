@@ -62,7 +62,7 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 	 * @see org.openmrs.report.ReportRenderer#getRenderingModes(org.openmrs.report.ReportDefinition)
 	 */
 	public Collection<RenderingMode> getRenderingModes(ReportDefinition schema) {
-		return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MIN_VALUE));
+		return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MAX_VALUE - 1));
 	}
 
 	/**
