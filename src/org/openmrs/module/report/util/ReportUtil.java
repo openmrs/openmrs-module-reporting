@@ -17,6 +17,7 @@ import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
+import org.openmrs.module.indicator.PeriodCohortIndicator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.indicator.dimension.Dimension;
 import org.openmrs.module.indicator.service.IndicatorService;
@@ -119,7 +120,9 @@ public class ReportUtil {
 						throw new IllegalArgumentException("Missing cohort def");
 					Map<String, Object> mappings = new HashMap<String, Object>();
 					mappings.put("untilDate", "${startDate}");
-					CohortIndicator ind = new CohortIndicator("Cumulative " + program.getName() + " enrollment at start", null, new Mapped<CohortDefinition>(inProg, mappings), null, null);
+					PeriodCohortIndicator ind = new PeriodCohortIndicator();
+					ind.setName("Cumulative " + program.getName() + " enrollment at start");
+					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
 					Context.getService(IndicatorService.class).saveIndicator(ind);
 				}
 			});
@@ -130,7 +133,9 @@ public class ReportUtil {
 						throw new IllegalArgumentException("Missing cohort def");
 					Map<String, Object> mappings = new HashMap<String, Object>();
 					mappings.put("untilDate", "${endDate}");
-					CohortIndicator ind = new CohortIndicator("Cumulative " + program.getName() + " enrollment at end", null, new Mapped<CohortDefinition>(inProg, mappings), null, null);
+					PeriodCohortIndicator ind = new PeriodCohortIndicator();
+					ind.setName("Cumulative " + program.getName() + " enrollment at end");
+					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
 					Context.getService(IndicatorService.class).saveIndicator(ind);
 				}
 			});		
@@ -141,7 +146,9 @@ public class ReportUtil {
 						throw new IllegalArgumentException("Missing cohort def");
 					Map<String, Object> mappings = new HashMap<String, Object>();
 					mappings.put("untilDate", "${startDate}");
-					CohortIndicator ind = new CohortIndicator("Current " + program.getName() + " enrollment at start", null, new Mapped<CohortDefinition>(inProg, mappings), null, null);
+					PeriodCohortIndicator ind = new PeriodCohortIndicator();
+					ind.setName("Current " + program.getName() + " enrollment at start");
+					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
 					Context.getService(IndicatorService.class).saveIndicator(ind);
 				}
 			});
@@ -152,7 +159,9 @@ public class ReportUtil {
 						throw new IllegalArgumentException("Missing cohort def");
 					Map<String, Object> mappings = new HashMap<String, Object>();
 					mappings.put("untilDate", "${endDate}");
-					CohortIndicator ind = new CohortIndicator("Current " + program.getName() + " enrollment at end", null, new Mapped<CohortDefinition>(inProg, mappings), null, null);
+					PeriodCohortIndicator ind = new PeriodCohortIndicator();
+					ind.setName("Current " + program.getName() + " enrollment at end");
+					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
 					Context.getService(IndicatorService.class).saveIndicator(ind);
 				}
 			});
