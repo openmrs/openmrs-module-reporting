@@ -10,7 +10,7 @@ import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.MapDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
@@ -33,7 +33,7 @@ public class CohortIndicatorDataSetEvaluator2Test extends BaseModuleContextSensi
 
 		CohortIndicator ind = new CohortIndicator("In HIV Program", null, new Mapped<ProgramStateCohortDefinition>(inProgram, null), null, null);
 		
-		CohortIndicatorDataSetDefinition2 dsd = new CohortIndicatorDataSetDefinition2();
+		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.addDimension("gender", new Mapped<CohortDefinitionDimension>(gender, null));
 		dsd.addColumn("1", "Total in program", new Mapped<CohortIndicator>(ind, null), "");
 		dsd.addColumn("1.a", "Males in program", new Mapped<CohortIndicator>(ind, null), "gender=male");

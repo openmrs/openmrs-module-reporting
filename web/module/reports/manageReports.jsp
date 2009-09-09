@@ -44,8 +44,8 @@
 				<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
 					<c:set var="editUrl">
 						<c:choose>
-							<c:when test="${reportDefinition.class.simpleName == 'DariusPeriodIndicatorReportDefinition'}">
-								${pageContext.request.contextPath}/module/reporting/reports/dariusPeriodIndicatorReport.form?uuid=${reportDefinition.uuid}
+							<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
+								${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReport.form?uuid=${reportDefinition.uuid}
 							</c:when>
 							<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
 								${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReportEditor.form?uuid=${reportDefinition.uuid}

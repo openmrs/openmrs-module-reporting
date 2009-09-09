@@ -47,8 +47,8 @@
 			</div>
 			<hr style="color:blue;"/>
 			<div style="width:100%; text-align:left;">
-				<input type="button" id="submitButton" class="ui-button ui-state-default ui-corner-all" value="Submit"/>
-				<input type="button" id="cancelButton" class="ui-button ui-state-default ui-corner-all" value="Cancel"/>
+				<input tabindex="3" type="button" id="submitButton" class="ui-button ui-state-default ui-corner-all" value="Submit"/>
+				<input tabindex="4" type="button" id="cancelButton" class="ui-button ui-state-default ui-corner-all" value="Cancel"/>
 			</div>
 		</form>
 	</c:when>

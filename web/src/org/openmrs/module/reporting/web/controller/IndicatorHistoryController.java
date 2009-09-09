@@ -8,7 +8,7 @@ import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.MultiPeriodIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.MultiPeriodIndicatorDataSetDefinition.Iteration;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
@@ -96,7 +96,7 @@ public class IndicatorHistoryController {
 			}
 		}
 			
-		CohortIndicatorDataSetDefinition2 indDSD = new CohortIndicatorDataSetDefinition2();
+		CohortIndicatorDataSetDefinition indDSD = new CohortIndicatorDataSetDefinition();
 		for (Indicator ind : query.getIndicators()) {
 			try {
 				CohortIndicator indicator = (CohortIndicator) ind;

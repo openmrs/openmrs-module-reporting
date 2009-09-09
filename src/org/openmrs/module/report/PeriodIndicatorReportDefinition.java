@@ -3,15 +3,22 @@ package org.openmrs.module.report;
 import java.util.Date;
 
 import org.openmrs.Location;
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.util.IndicatorUtil;
 
 
-public class DariusPeriodIndicatorReportDefinition extends ReportDefinition {
+/**
+ * A thin wrapper around a ReportDefinition that gives it startDate, endDate, and location parameters,
+ * and a single {@link CohortIndicatorDataSetDefinition} by default.
+ * 
+ * @see CohortIndicatorDataSetDefinition
+ * @see PeriodIndicatorReportUtil
+ */
+public class PeriodIndicatorReportDefinition extends ReportDefinition {
 	
-	public DariusPeriodIndicatorReportDefinition() {
+	public PeriodIndicatorReportDefinition() {
 		super();
 
 		// add parameters for startDate, endDate, and location
@@ -24,8 +31,8 @@ public class DariusPeriodIndicatorReportDefinition extends ReportDefinition {
 	}
 	
 	
-	public CohortIndicatorDataSetDefinition2 getIndicatorDataSetDefinition() {
-		Mapped<CohortIndicatorDataSetDefinition2> ret = (Mapped<CohortIndicatorDataSetDefinition2>) getDataSetDefinitions().get("dataset");
+	public CohortIndicatorDataSetDefinition getIndicatorDataSetDefinition() {
+		Mapped<CohortIndicatorDataSetDefinition> ret = (Mapped<CohortIndicatorDataSetDefinition>) getDataSetDefinitions().get("dataset");
 		if (ret != null)
 			return ret.getParameterizable();
 		else
@@ -38,7 +45,7 @@ public class DariusPeriodIndicatorReportDefinition extends ReportDefinition {
 	 */
 	public void setupDataSetDefinition() {
 		if (this.getIndicatorDataSetDefinition() == null) {
-			CohortIndicatorDataSetDefinition2 dsd = new CohortIndicatorDataSetDefinition2();
+			CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 			dsd.setName(getName() + " DSD");
 			dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 			dsd.addParameter(new Parameter("endDate", "End Date", Date.class));

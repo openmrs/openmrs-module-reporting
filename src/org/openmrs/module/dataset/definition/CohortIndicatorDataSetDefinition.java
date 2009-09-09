@@ -13,12 +13,23 @@ import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.util.OpenmrsUtil;
 
-public class CohortIndicatorDataSetDefinition2 extends BaseDataSetDefinition {
+/**
+ * <pre>
+ * This represents a data set where each column is an Indicator plus (optionally) dimension options
+ * 
+ * For example:
+ *   1.a. Enrolled in HIV Program at start of Period (gender=Female, age=Adult)
+ *   1.b. Enrolled in HIV Program at start of Period (gender=Male, age=Adult)
+ *   2.a. Newly Enrolled in HIV Program during Period (gender=Female, age=Adult)
+ *   2.b. Newly Enrolled in HIV Program during Period (gender=Male, age=Adult)
+ * </pre>
+ */
+public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	
 	Map<String, Mapped<CohortDefinitionDimension>> dimensions = new HashMap<String, Mapped<CohortDefinitionDimension>>();
 	List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 	
-	public CohortIndicatorDataSetDefinition2() {
+	public CohortIndicatorDataSetDefinition() {
 		super();
 	}
 	
@@ -32,6 +43,10 @@ public class CohortIndicatorDataSetDefinition2 extends BaseDataSetDefinition {
 	
 	public void addDimension(String dimensionKey, Mapped<CohortDefinitionDimension> dimension) {
 		dimensions.put(dimensionKey, dimension);
+	}
+	
+	public void addDimension(String dimensionKey, CohortDefinitionDimension dimension, Map<String, Object> parameterMappings) {
+		addDimension(dimensionKey, new Mapped<CohortDefinitionDimension>(dimension, parameterMappings));
 	}
 	
 	public void removeDimension(String dimensionKey) {

@@ -16,7 +16,7 @@ package org.openmrs.module.report;
 import java.io.Serializable;
 import java.util.List;
 
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.indicator.CohortIndicator;
 
 /**
@@ -28,7 +28,7 @@ public class CohortIndicatorReport implements Serializable {
 	
 	private String name;
 	private String description;
-	private CohortIndicatorDataSetDefinition2 dataSetDefinition;
+	private CohortIndicatorDataSetDefinition dataSetDefinition;
     private List<CohortIndicator> cohortIndicators;
     /**
      * Default Constructor
@@ -70,13 +70,13 @@ public class CohortIndicatorReport implements Serializable {
 	}
 
 
-	public CohortIndicatorDataSetDefinition2 getDataSetDefinition() {
+	public CohortIndicatorDataSetDefinition getDataSetDefinition() {
 		return dataSetDefinition;
 	}
 
 
 	public void setDataSetDefinition(
-			CohortIndicatorDataSetDefinition2 dataSetDefinition) {
+			CohortIndicatorDataSetDefinition dataSetDefinition) {
 		this.dataSetDefinition = dataSetDefinition;
 	}
 

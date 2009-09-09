@@ -6,7 +6,7 @@
 
 				<b class="boxHeader">Create Period Indicator Report</b>
 				<div class="box">
-					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.report.DariusPeriodIndicatorReportDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageReports.form|successUrl=dariusPeriodIndicatorReport.form?uuid=uuid" />
+					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.report.PeriodIndicatorReportDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageReports.form|successUrl=periodIndicatorReport.form?uuid=uuid" />
 				</div>
 
 			</c:when>		
@@ -33,11 +33,19 @@
 							"bInfo": false,
 							"bAutoWidth": false
 						} );
+						$('#dimensions-table').dataTable({
+							"bPaginate": false,
+							"bLengthChange": false,
+							"bFilter": false,
+							"bSort": false,
+							"bInfo": false,
+							"bAutoWidth": false
+						} );
 					} ); 
 				</script>
 			
 				<div id="addColumnDialog" style="display: none">
-					<form method="post" action="dariusPeriodIndicatorReportAddColumn.form">
+					<form method="post" action="periodIndicatorReportAddColumn.form">
 						<input type="hidden" name="uuid" value="${report.uuid}"/>
 						<table>
 							<tr>
@@ -103,12 +111,12 @@
 							
 							<b class="boxHeader">Dimensions</b>
 							<div class="box">
-								<table border="1" cellspacing="0" cellpadding="2">
+								<table id="dimensions-table">
 									<thead>
 										<tr>
-											<td>Key</td>
-											<td>Display Name</td>
-											<td>&nbsp;</td>
+											<th>Key</th>
+											<th>Display Name</th>
+											<th>&nbsp;</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -117,7 +125,7 @@
 												<td>${dim.key}</td>
 												<td>${dim.value.parameterizable.name}</td>
 												<td>
-													<a href="dariusPeriodIndicatorReportRemoveDimension.form?key=${dim.key}&uuid=${report.uuid}">
+													<a href="periodIndicatorReportRemoveDimension.form?key=${dim.key}&uuid=${report.uuid}">
 														<img src='<c:url value="/images/trash.gif"/>' border="0"/>
 													</a>
 												</td>
@@ -147,7 +155,7 @@
 								<span style="float:left">
 									Columns
 								</span>
-								<a href="#" class="addColumnButton"><spring:message code="general.add"/></a>
+								<a href="javascript:void(0)" class="addColumnButton"><spring:message code="general.add"/></a>
 							</b>
 								<table id="column-table">
 									<thead>
@@ -171,7 +179,7 @@
 													</c:forEach>
 												</td>
 												<td>
-													<a href="dariusPeriodIndicatorReportRemoveColumn.form?key=${col.columnKey}&uuid=${report.uuid}">
+													<a href="periodIndicatorReportRemoveColumn.form?key=${col.columnKey}&uuid=${report.uuid}">
 														<img src='<c:url value="/images/trash.gif"/>' border="0"/>
 													</a>
 												</td>

@@ -17,7 +17,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.MultiPeriodIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.MultiPeriodIndicatorDataSetDefinition.Iteration;
@@ -58,7 +58,7 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		periodMappings.put("endDate", "${endDate}");
 		periodMappings.put("location", "${location}");
 		
-		CohortIndicatorDataSetDefinition2 def = new CohortIndicatorDataSetDefinition2();
+		CohortIndicatorDataSetDefinition def = new CohortIndicatorDataSetDefinition();
 		def.addColumn("1", "Indicator", new Mapped<PeriodCohortIndicator>(lessThanOneAtStart, periodMappings), "");
 		
 		MultiPeriodIndicatorDataSetDefinition multi = new MultiPeriodIndicatorDataSetDefinition(def);

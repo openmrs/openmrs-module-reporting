@@ -119,8 +119,8 @@
 			</div>
 			<hr style="color:blue;"/>
 			<div style="width:100%; text-align:left;">
-				<input type="button" id="mapParametersFormCancelButton_${model.id}" class="ui-button ui-state-default ui-corner-all" value="Cancel"/>
 				<input type="button" id="mapParametersFormSubmitButton_${model.id}" class="ui-button ui-state-default ui-corner-all" value="Submit"/>
+				<input type="button" id="mapParametersFormCancelButton_${model.id}" class="ui-button ui-state-default ui-corner-all" value="Cancel"/>
 			</div>
 		</form>
 	

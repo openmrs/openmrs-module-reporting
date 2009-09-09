@@ -9,8 +9,8 @@ import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.propertyeditor.IndicatorEditor;
-import org.openmrs.module.report.DariusPeriodIndicatorReportDefinition;
-import org.openmrs.module.report.DariusPeriodIndicatorReportUtil;
+import org.openmrs.module.report.PeriodIndicatorReportDefinition;
+import org.openmrs.module.report.PeriodIndicatorReportUtil;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.springframework.stereotype.Controller;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
 @Controller
-public class DariusPeriodIndicatorReportController {
+public class PeriodIndicatorReportController {
 
 	@InitBinder
     public void initBinder(WebDataBinder binder) { 
@@ -36,16 +36,16 @@ public class DariusPeriodIndicatorReportController {
 		return Context.getService(IndicatorService.class).getAllIndicators(false);
 	}
 
-	@RequestMapping("/module/reporting/reports/dariusPeriodIndicatorReport")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReport")
 	public void showForm(ModelMap model,
 	                     @RequestParam(value="uuid", required=false) String uuid) {
 		if (uuid == null) {
-			model.addAttribute("report", new DariusPeriodIndicatorReportDefinition());
+			model.addAttribute("report", new PeriodIndicatorReportDefinition());
 		} else {
 			ReportDefinition def = Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
-			if (def instanceof DariusPeriodIndicatorReportDefinition) {
-				DariusPeriodIndicatorReportDefinition report = (DariusPeriodIndicatorReportDefinition) def;
-				DariusPeriodIndicatorReportUtil.ensureDataSetDefinition(report);
+			if (def instanceof PeriodIndicatorReportDefinition) {
+				PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) def;
+				PeriodIndicatorReportUtil.ensureDataSetDefinition(report);
 				model.addAttribute("report", report);
 			} else {
 				throw new RuntimeException("This report is not of the right class");
@@ -54,14 +54,14 @@ public class DariusPeriodIndicatorReportController {
 	}
 
 	
-	@RequestMapping("/module/reporting/reports/dariusPeriodIndicatorReportAddColumn")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReportAddColumn")
 	public String addColumn(@RequestParam("uuid") String uuid,
 	                        @RequestParam("key") String key,
 	                        @RequestParam("displayName") String displayName,
 	                        @RequestParam("indicator") Indicator indicator,
 	                        WebRequest request) {
 		
-		DariusPeriodIndicatorReportDefinition report = (DariusPeriodIndicatorReportDefinition) Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
+		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
 		
 		// special code because I don't think I can do a RequestParam for: Map<String, String> dimensionOptions
 		Map<String, String> dimensionOptions = new HashMap<String, String>();
@@ -76,18 +76,18 @@ public class DariusPeriodIndicatorReportController {
 			}
 		}
 		
-		DariusPeriodIndicatorReportUtil.addColumn(report, key, displayName, (CohortIndicator) indicator, dimensionOptions);
+		PeriodIndicatorReportUtil.addColumn(report, key, displayName, (CohortIndicator) indicator, dimensionOptions);
 		
-		return "redirect:dariusPeriodIndicatorReport.form?uuid=" + uuid;
+		return "redirect:periodIndicatorReport.form?uuid=" + uuid;
 	} 
 	
-	@RequestMapping("/module/reporting/reports/dariusPeriodIndicatorReportRemoveColumn")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveColumn")
 	public String removeColumn(@RequestParam("uuid") String uuid,
 	                           @RequestParam("key") String key) {
 		
-		DariusPeriodIndicatorReportDefinition report = (DariusPeriodIndicatorReportDefinition) Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
-		DariusPeriodIndicatorReportUtil.removeColumn(report, key);
+		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
+		PeriodIndicatorReportUtil.removeColumn(report, key);
 		
-		return "redirect:dariusPeriodIndicatorReport.form?uuid=" + uuid;
+		return "redirect:periodIndicatorReport.form?uuid=" + uuid;
 	}
 }

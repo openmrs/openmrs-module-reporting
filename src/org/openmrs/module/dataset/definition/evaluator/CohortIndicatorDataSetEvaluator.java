@@ -14,9 +14,9 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.MapDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2.ColumnDefinition;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition.ColumnDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.CohortIndicator;
@@ -27,12 +27,12 @@ import org.openmrs.module.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.indicator.service.IndicatorService;
 
 
-@Handler(supports={CohortIndicatorDataSetDefinition2.class})
-public class CohortIndicatorDataSetEvaluator2 implements DataSetEvaluator {
+@Handler(supports={CohortIndicatorDataSetDefinition.class})
+public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
-	public CohortIndicatorDataSetEvaluator2() { }
+	public CohortIndicatorDataSetEvaluator() { }
 	
 	public MapDataSet<IndicatorResult<CohortIndicator>> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
 		if (evalContext == null) {
@@ -41,7 +41,7 @@ public class CohortIndicatorDataSetEvaluator2 implements DataSetEvaluator {
 		
 		MapDataSet<IndicatorResult<CohortIndicator>> ret = new MapDataSet<IndicatorResult<CohortIndicator>>(dataSetDefinition, evalContext);
 		
-		CohortIndicatorDataSetDefinition2 dsd = (CohortIndicatorDataSetDefinition2) dataSetDefinition;
+		CohortIndicatorDataSetDefinition dsd = (CohortIndicatorDataSetDefinition) dataSetDefinition;
 		
 		// evaluate all dimension options
 		Map<String, Map<String, Cohort>> dimensionCalculationCache = new HashMap<String, Map<String, Cohort>>();

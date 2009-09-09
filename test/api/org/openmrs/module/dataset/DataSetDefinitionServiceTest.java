@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -68,7 +68,7 @@ public class DataSetDefinitionServiceTest extends BaseModuleContextSensitiveTest
 	@Test
 	public void shouldSaveDataSetDefinition() throws Exception { 
 
-		DataSetDefinition newDataset = new CohortIndicatorDataSetDefinition2();
+		DataSetDefinition newDataset = new CohortIndicatorDataSetDefinition();
 		newDataset.setName("Test Dataset #1");
 		newDataset.setDescription("Just a simple dataset with no columns");
 		
@@ -89,7 +89,7 @@ public class DataSetDefinitionServiceTest extends BaseModuleContextSensitiveTest
 	@Test
 	public void shouldSaveAndResaveDataSetDefinition() throws Exception { 
 
-		DataSetDefinition newDataset = new CohortIndicatorDataSetDefinition2();
+		DataSetDefinition newDataset = new CohortIndicatorDataSetDefinition();
 		newDataset.setName("Test Dataset #1");
 		newDataset.setDescription("Just a simple dataset with no columns");
 		

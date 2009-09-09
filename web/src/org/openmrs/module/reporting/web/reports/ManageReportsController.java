@@ -43,7 +43,7 @@ public class ManageReportsController {
     	
     	// Get possible new reports to create
     	Map<String, String> types = new LinkedHashMap<String, String>();
-    	types.put("Period Indicator Report", "dariusPeriodIndicatorReport.form");
+    	types.put("Period Indicator Report", "periodIndicatorReport.form");
     	types.put("Custom Report (Advanced)", "reportEditor.form?type=" + ReportDefinition.class.getName());
     	model.addAttribute("createLinks", types);
     	
