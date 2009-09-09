@@ -8,10 +8,11 @@ import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
 import org.openmrs.module.dataset.definition.MultiPeriodIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.MultiPeriodIndicatorDataSetDefinition.Iteration;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.service.IndicatorService;
@@ -95,11 +96,15 @@ public class IndicatorHistoryController {
 			}
 		}
 			
-		CohortIndicatorDataSetDefinition indDSD = new CohortIndicatorDataSetDefinition();
+		CohortIndicatorDataSetDefinition2 indDSD = new CohortIndicatorDataSetDefinition2();
 		for (Indicator ind : query.getIndicators()) {
 			try {
 				CohortIndicator indicator = (CohortIndicator) ind;
-				indDSD.addIndicator(indicator.getUuid(), indicator.getName(), indicator, IndicatorUtil.periodIndicatorMappings());
+				indDSD.addColumn(
+					indicator.getUuid(),
+					indicator.getName(),
+					new Mapped<CohortIndicator>(indicator, IndicatorUtil.periodIndicatorMappings()),
+					"");
 			} catch (ClassCastException ex) {
 				throw new RuntimeException("This feature only works for Cohort Indicators");
 			}

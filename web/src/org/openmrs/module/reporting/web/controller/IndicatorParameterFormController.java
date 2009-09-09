@@ -1,30 +1,13 @@
 package org.openmrs.module.reporting.web.controller;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicator;
-import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.service.IndicatorService;
-import org.openmrs.module.report.ReportDefinition;
-import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.web.model.IndicatorParameterBean;
 import org.springframework.beans.propertyeditors.ClassEditor;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;

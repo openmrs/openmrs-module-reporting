@@ -45,6 +45,7 @@ public class DariusPeriodIndicatorReportController {
 			ReportDefinition def = Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
 			if (def instanceof DariusPeriodIndicatorReportDefinition) {
 				DariusPeriodIndicatorReportDefinition report = (DariusPeriodIndicatorReportDefinition) def;
+				DariusPeriodIndicatorReportUtil.ensureDataSetDefinition(report);
 				model.addAttribute("report", report);
 			} else {
 				throw new RuntimeException("This report is not of the right class");

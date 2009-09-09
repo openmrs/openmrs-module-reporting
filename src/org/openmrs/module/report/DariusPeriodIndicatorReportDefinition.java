@@ -39,7 +39,7 @@ public class DariusPeriodIndicatorReportDefinition extends ReportDefinition {
 	public void setupDataSetDefinition() {
 		if (this.getIndicatorDataSetDefinition() == null) {
 			CohortIndicatorDataSetDefinition2 dsd = new CohortIndicatorDataSetDefinition2();
-			dsd.setName("Internal Period Indicator Report DSD");
+			dsd.setName(getName() + " DSD");
 			dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 			dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 			dsd.addParameter(new Parameter("location", "Location", Location.class));

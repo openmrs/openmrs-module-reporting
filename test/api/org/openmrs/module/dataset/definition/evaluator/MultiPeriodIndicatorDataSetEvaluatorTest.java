@@ -17,13 +17,13 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
-import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.dataset.definition.CohortIndicatorDataSetDefinition2;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.MultiPeriodIndicatorDataSetDefinition;
 import org.openmrs.module.dataset.definition.MultiPeriodIndicatorDataSetDefinition.Iteration;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.CohortIndicatorResult;
 import org.openmrs.module.indicator.PeriodCohortIndicator;
@@ -58,8 +58,8 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		periodMappings.put("endDate", "${endDate}");
 		periodMappings.put("location", "${location}");
 		
-		CohortIndicatorDataSetDefinition def = new CohortIndicatorDataSetDefinition();
-		def.addIndicator("1", "Indicator", lessThanOneAtStart, periodMappings);
+		CohortIndicatorDataSetDefinition2 def = new CohortIndicatorDataSetDefinition2();
+		def.addColumn("1", "Indicator", new Mapped<PeriodCohortIndicator>(lessThanOneAtStart, periodMappings), "");
 		
 		MultiPeriodIndicatorDataSetDefinition multi = new MultiPeriodIndicatorDataSetDefinition(def);
 		// for every month in 2009, which is the year that patient 6 turns 1 year old. (Actually this

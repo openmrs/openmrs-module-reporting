@@ -62,7 +62,7 @@ public class CohortIndicatorDataSetEvaluator2 implements DataSetEvaluator {
 		}
 		
 		// evaluate unique indicators
-		Map<Mapped<CohortIndicator>, CohortIndicatorResult> indicatorCalculationCache = new HashMap<Mapped<CohortIndicator>, CohortIndicatorResult>();
+		Map<Mapped<? extends CohortIndicator>, CohortIndicatorResult> indicatorCalculationCache = new HashMap<Mapped<? extends CohortIndicator>, CohortIndicatorResult>();
 		for (DataSetColumn c : dsd.getColumns()) {
 			ColumnDefinition col = (ColumnDefinition) c;
 			if (!indicatorCalculationCache.containsKey(col.getIndicator())) {

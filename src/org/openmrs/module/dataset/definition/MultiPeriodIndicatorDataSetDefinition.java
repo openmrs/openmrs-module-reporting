@@ -8,7 +8,6 @@ import org.openmrs.Location;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
-import org.openmrs.module.evaluation.EvaluationContext;
 
 
 /**
@@ -20,7 +19,7 @@ import org.openmrs.module.evaluation.EvaluationContext;
  */
 public class MultiPeriodIndicatorDataSetDefinition extends BaseDataSetDefinition implements DataSetDefinition {
 	
-	private CohortIndicatorDataSetDefinition baseDefinition;
+	private CohortIndicatorDataSetDefinition2 baseDefinition;
 	
 	private List<Iteration> iterations;
 	
@@ -28,7 +27,7 @@ public class MultiPeriodIndicatorDataSetDefinition extends BaseDataSetDefinition
 		iterations = new ArrayList<Iteration>();
 	}
 	
-	public MultiPeriodIndicatorDataSetDefinition(CohortIndicatorDataSetDefinition baseDefinition) {
+	public MultiPeriodIndicatorDataSetDefinition(CohortIndicatorDataSetDefinition2 baseDefinition) {
 		this();
 		this.baseDefinition = baseDefinition;
 	}
@@ -50,14 +49,14 @@ public class MultiPeriodIndicatorDataSetDefinition extends BaseDataSetDefinition
     /**
      * @return the baseDefinition
      */
-    public CohortIndicatorDataSetDefinition getBaseDefinition() {
+    public CohortIndicatorDataSetDefinition2 getBaseDefinition() {
     	return baseDefinition;
     }
 	
     /**
      * @param baseDefinition the baseDefinition to set
      */
-    public void setBaseDefinition(CohortIndicatorDataSetDefinition baseDefinition) {
+    public void setBaseDefinition(CohortIndicatorDataSetDefinition2 baseDefinition) {
     	this.baseDefinition = baseDefinition;
     }
 	

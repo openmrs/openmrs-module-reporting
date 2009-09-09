@@ -38,7 +38,7 @@ public class CohortIndicatorDataSetDefinition2 extends BaseDataSetDefinition {
 		dimensions.remove(dimensionKey);
 	}
 	
-	public void addColumn(String key, String displayName, Mapped<CohortIndicator> indicator, Map<String, String> dimensionOptions) {
+	public void addColumn(String key, String displayName, Mapped<? extends CohortIndicator> indicator, Map<String, String> dimensionOptions) {
 		columns.add(new ColumnDefinition(key, displayName, indicator, dimensionOptions));
 	}
 	
@@ -64,7 +64,7 @@ public class CohortIndicatorDataSetDefinition2 extends BaseDataSetDefinition {
 	 * @param indicator
 	 * @param dimensionOptions something like gender=male|age=adult, where gender and age are keys into 'dimensions'
 	 */
-	public void addColumn(String key, String displayName, Mapped<CohortIndicator> indicator, String dimensionOptions) {
+	public void addColumn(String key, String displayName, Mapped<? extends CohortIndicator> indicator, String dimensionOptions) {
 		addColumn(key, displayName, indicator, OpenmrsUtil.parseParameterList(dimensionOptions));
 	}
 	
@@ -90,10 +90,10 @@ public class CohortIndicatorDataSetDefinition2 extends BaseDataSetDefinition {
 
         private static final long serialVersionUID = 1L;
         
-		private Mapped<CohortIndicator> indicator;
+		private Mapped<? extends CohortIndicator> indicator;
 		private Map<String, String> dimensionOptions;
 		
-		public ColumnDefinition(String columnKey, String displayName, Mapped<CohortIndicator> indicator, Map<String, String> dimensionOptions) {
+		public ColumnDefinition(String columnKey, String displayName, Mapped<? extends CohortIndicator> indicator, Map<String, String> dimensionOptions) {
 			super(columnKey, displayName, null, Object.class);
 			this.indicator = indicator;
 			this.dimensionOptions = dimensionOptions;
@@ -102,7 +102,7 @@ public class CohortIndicatorDataSetDefinition2 extends BaseDataSetDefinition {
         /**
          * @return the indicator
          */
-        public Mapped<CohortIndicator> getIndicator() {
+        public Mapped<? extends CohortIndicator> getIndicator() {
         	return indicator;
         }
 		

@@ -186,20 +186,12 @@
 		</jar>
 	</target>
 	
-	<target name="deploy-web" depends="package-module">
+	<target name="deploy-web" depends="package-module" description="Copy web files to webapp">
 		<copy todir="${tomcat.home}/webapps/openmrs/WEB-INF/view/module/${module.id}">
 			<fileset dir="web/module" includes="**/*" />
 		</copy>
 	</target>
-	
-	<target name="deploy-web-darius" depends="package-module" description="Copy web files to webapp">
-		<property environment="env"/>
-		<property name="env.CATALINA_HOME" value="/home/djazayeri/apache-tomcat-6.0.16"/>
-		<copy todir="${env.CATALINA_HOME}/webapps/openmrs/WEB-INF/view/module/${module.id}">
-			<fileset dir="web/module" includes="**/*" />
-		</copy>
-	</target>
-	
+		
 	<target name="package-jar" depends="package-module" description="Packages class files into jar file to be included in other projects">
 		<!-- Create distributable jar file -->
 		<jar destfile="dist/${module.id}-${module.version}.jar">

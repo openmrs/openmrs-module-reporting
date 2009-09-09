@@ -109,7 +109,7 @@ $(document).ready(function() {
 				
 					<tr>
 						<td width="30%">
-							<a href="#" id="period-indicator-form-${indicator.uuid}">
+							<a href="javascript:void(0)" id="period-indicator-form-${indicator.uuid}">
 								${indicator.name}
 							</a>
 						</td>					
@@ -128,12 +128,12 @@ $(document).ready(function() {
 							<rpt:timespan then="${indicator.dateCreated}"/>
 						</td>
 						<td align="center" width="1%">							
-							<a href="#" id="period-indicator-form-${indicator.uuid}">
+							<a href="javascript:void(0)" id="period-indicator-form-${indicator.uuid}">
 								<img src="<c:url value='/images/edit.gif'/>" border="0"/>
 							</a>
 						</td>
 						<td align="center">
-							<a href="#" id="preview-indicator-${indicator.uuid}">
+							<a href="javascript:void(0)" id="preview-indicator-${indicator.uuid}">
 								<img src="<c:url value='/images/play.gif'/>" border="0"/>
 							</a>
 						</td>					

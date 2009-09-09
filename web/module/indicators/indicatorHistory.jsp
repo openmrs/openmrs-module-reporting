@@ -56,7 +56,7 @@
 			<c:set var="ind" value="0"/>
 			<c:forEach var="column" items="${row.columnValues}">
 				<c:if test="${column.key.columnKey != 'startDate' && column.key.columnKey != 'endDate' && column.key.columnKey != 'location'}">
-					series[${ind}].data.push([ ${startDate} , ${column.value} ]);
+					series[${ind}].data.push([ ${startDate} , ${column.value.value} ]);
 					<c:set var="ind" value="${ind + 1}"/>
 				</c:if>
 			</c:forEach>

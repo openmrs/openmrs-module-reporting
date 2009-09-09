@@ -45,10 +45,8 @@ public class DariusPeriodIndicatorReportUtil {
 		saveDataSetDefinition(def);
 	}
 
-	
-	// ==== PRIVATE ====
 
-	private static void ensureDataSetDefinition(DariusPeriodIndicatorReportDefinition def) {
+	public static void ensureDataSetDefinition(DariusPeriodIndicatorReportDefinition def) {
 	    if (def.getIndicatorDataSetDefinition() == null) {
 	    	def.setupDataSetDefinition();
 	    	saveDataSetDefinition(def);
@@ -56,6 +54,8 @@ public class DariusPeriodIndicatorReportUtil {
 	    }
     }
 
+	// ==== PRIVATE ====
+	
 	private static void saveReportDefinition(ReportDefinition def) {
 	    Context.getService(ReportService.class).saveReportDefinition(def);
     }
