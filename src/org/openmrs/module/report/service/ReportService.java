@@ -319,5 +319,14 @@ public interface ReportService extends OpenmrsService {
 	 * @param req
 	 */
 	public void saveReportRequest(ReportRequest req);
+
+	
+	/**
+	 * Finds a historic Report by its uuid.
+	 * 
+	 * @param uuid
+	 * @return
+	 */
+	public Report getReportByUuid(String uuid);
 }
 

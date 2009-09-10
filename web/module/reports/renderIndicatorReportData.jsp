@@ -47,7 +47,7 @@
 											<a href="${url}">${result.value}</a>
 											&nbsp;&nbsp;&nbsp;
 											<a href="#" onClick="showReportingDialog({ title: 'Indicator Info', url: '${pageContext.request.contextPath}/module/reporting/indicators/indicatorInfo.form?uuid=${result.definition.uuid}&location=${result.context.parameterValues['location'].locationId}' });">
-												<img src="${pageContext.request.contextPath}/images/info.gif"/>
+												<img src="${pageContext.request.contextPath}/images/info.gif" border="0"/>
 											</a>
 										</td>
 									</tr>

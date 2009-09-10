@@ -57,7 +57,8 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 
 	private final static String REPORT_RESULTS_DIR = "REPORT_RESULTS";
 
-	private static final String REPORT_RESULTS_FILE_EXTENSION = "openmrsreport";
+	private static final String REPORT_REQUEST_FILE_EXTENSION = ".request";
+	private static final String REPORT_RESULTS_FILE_EXTENSION = ".report";
 	
 	// Logger
 	private transient Log log = LogFactory.getLog(this.getClass());
@@ -332,9 +333,13 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 			if (!(request.getRenderingMode().getRenderer() instanceof InteractiveReportRenderer)) {
 				try {
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
-		            request.getRenderingMode().getRenderer().render(rawData, request.getRenderingMode().getArgument(), out);
+					RenderingMode rm = request.getRenderingMode();
+		            rm.getRenderer().render(rawData, rm.getArgument(), out);
 		            
-		            ret.outputRendered(out.toByteArray());
+		            ret.outputRendered(
+		            	rm.getRenderer().getFilename(request.getReportDefinition(), rm.getArgument()),
+		            	rm.getRenderer().getRenderedContentType(request.getReportDefinition(), rm.getArgument()),
+		            	out.toByteArray());
 	            }
 	            catch (RenderingException e) {
 		            log.error("Failed to Render ReportData", e);
@@ -441,6 +446,14 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
     }
 	
 
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#getReportByUuid(java.lang.String)
+	 */
+	public Report getReportByUuid(String uuid) {
+	    return loadReportFromFile(uuid);
+    }
+	
+	
 	private List<ReportRequest> getReportRequestHistory() {
 	    if (reportRequestHistory == null) {
 	    	rebuildReportRequestHistory();
@@ -449,32 +462,17 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
     }
 
 	private void saveReportToFile(Report report) {
-		log.info("Saving report: " + report.getRequest().getUuid());
-		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-	    File file = new File(dir, getFilename(report.getRequest()));
-	    if (file.exists()) {
-	    	file.delete();
-	    }
-	    try {
-	    	OpenmrsSerializer serializer = Context.getSerializationService().getSerializer(ReportingSerializer.class);
-	    	PrintWriter wr = new PrintWriter(new FileWriter(file));
-	    	wr.write(serializer.serialize(report.getRequest()));
-	    	//os.writeUTF(serializer.serialize(report));
-	    	wr.close();
-	    } catch (IOException ex) {
-	    	throw new APIException("Error writing run report data file", ex);
-	    } catch (SerializationException e) {
-	        throw new APIException("Error serializing ReportRun");
-        }
+		saveToFileHelper(report.getRequest(), report.getRequest().getUuid() + ".request");
+		saveToFileHelper(report, report.getRequest().getUuid() + ".report");
 	}
 	
 	private ReportRequest loadRequestFromFile(String requestUuid) {
 		log.info("Loading saved report request: " + requestUuid);
 		OpenmrsSerializer serializer = Context.getSerializationService().getSerializer(ReportingSerializer.class);
 		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-		File file = new File(dir, getFilename(requestUuid));
+		File file = new File(dir, requestUuid + REPORT_REQUEST_FILE_EXTENSION);
 		if (!file.exists()) {
-			throw new APIException("The persisted ReportRun file is missing: " + file.getAbsolutePath());
+			throw new APIException("The persisted Report Request file is missing: " + file.getAbsolutePath());
 		}
 		BufferedReader r = null;
 		try {
@@ -498,9 +496,9 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 		log.info("Loading saved report: " + requestUuid);
 		OpenmrsSerializer serializer = Context.getSerializationService().getSerializer(ReportingSerializer.class);
 		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-		File file = new File(dir, getFilename(requestUuid));
+		File file = new File(dir, requestUuid + REPORT_RESULTS_FILE_EXTENSION);
 		if (!file.exists()) {
-			throw new APIException("The persisted ReportRun file is missing: " + file.getAbsolutePath());
+			throw new APIException("The persisted Report file is missing: " + file.getAbsolutePath());
 		}
 		BufferedReader r = null;
 		try {
@@ -509,8 +507,7 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 			for (String s = r.readLine(); s != null; s = r.readLine()) {
 				sb.append(s);
 			}
-			ReportRequest req = serializer.deserialize(sb.toString(), ReportRequest.class);
-			return new Report(req);
+			return serializer.deserialize(sb.toString(), Report.class);
 		}
         catch (Exception ex) {
 	        throw new APIException("Failed to load file: " + file.getAbsolutePath(), ex);
@@ -523,25 +520,18 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	
 	private void deleteSavedReportFile(ReportRequest request) {
 		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-		File file = new File(dir, getFilename(request));
-		if (file.exists())
-			file.delete();
+		for (File file : dir.listFiles()) {
+			if (file.getName().startsWith(request.getUuid()))
+				file.delete();
+		}
     }
 	
-	private String getFilename(String requestUuid) {
-		return requestUuid + "." + REPORT_RESULTS_FILE_EXTENSION;
-	}
-
-	private String getFilename(ReportRequest request) {
-		return getFilename(request.getUuid());
-    }
-
 	private void rebuildReportRequestHistory() {
 		log.info("Rebuilding Report Request History...");
 		Vector<ReportRequest> history = new Vector<ReportRequest>();
 		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
 		for (File file : dir.listFiles()) {
-			if (!file.getName().endsWith("." + REPORT_RESULTS_FILE_EXTENSION)) {
+			if (!file.getName().endsWith(REPORT_RESULTS_FILE_EXTENSION)) {
 				continue;
 			}
 			String uuid = file.getName().substring(0, file.getName().indexOf("."));
@@ -555,6 +545,25 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 		});
 		log.info("...Done Rebuilding Report Request History");
 		reportRequestHistory = history;
+    }
+
+	private void saveToFileHelper(Object object, String filename) {
+		log.info("Saving to: " + filename);
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+	    File file = new File(dir, filename);
+	    if (file.exists()) {
+	    	file.delete();
+	    }
+	    try {
+	    	OpenmrsSerializer serializer = Context.getSerializationService().getSerializer(ReportingSerializer.class);
+	    	PrintWriter wr = new PrintWriter(new FileWriter(file));
+	    	wr.write(serializer.serialize(object));
+	    	wr.close();
+	    } catch (IOException ex) {
+	    	throw new APIException("Error writing data file", ex);
+	    } catch (SerializationException e) {
+	        throw new APIException("Error serializing");
+        }
     }
 
 }

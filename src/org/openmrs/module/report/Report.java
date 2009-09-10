@@ -17,6 +17,8 @@ public class Report {
 	private ReportData rawData;
 	// TODO maybe switch byte[] to a file instead
 	private byte[] renderedOutput;
+	private String renderedFilename;
+	private String renderedContentType;
 	
 	public Report() {
 	}
@@ -38,10 +40,13 @@ public class Report {
 	}
 
 	
-	public void outputRendered(byte[] renderedOutput) {
+	public void outputRendered(String filename, String contentType, byte[] renderedOutput) {
+		this.renderedFilename = filename;
+		this.renderedContentType = contentType;
 		this.renderedOutput = renderedOutput;
 		this.renderCompleteDate = new Date();
 	}
+	
 	
     /**
      * @return the request
@@ -90,6 +95,7 @@ public class Report {
     	this.evaluateCompleteDate = evaluateCompleteDate;
     }
 
+    
 	/**
      * @return the rawData
      */
@@ -152,6 +158,37 @@ public class Report {
     public void setRenderCompleteDate(Date renderCompleteDate) {
     	this.renderCompleteDate = renderCompleteDate;
     }
-	
 
+	
+    /**
+     * @return the renderedFilename
+     */
+    public String getRenderedFilename() {
+    	return renderedFilename;
+    }
+
+	
+    /**
+     * @param renderedFilename the renderedFilename to set
+     */
+    public void setRenderedFilename(String renderedFilename) {
+    	this.renderedFilename = renderedFilename;
+    }
+
+
+    /**
+     * @return the renderedContentType
+     */
+    public String getRenderedContentType() {
+    	return renderedContentType;
+    }
+
+
+    /**
+     * @param renderedContentType the renderedContentType to set
+     */
+    public void setRenderedContentType(String renderedContentType) {
+    	this.renderedContentType = renderedContentType;
+    }
+	
 }
