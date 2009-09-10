@@ -14,7 +14,7 @@
 package org.openmrs.module.reporting.web.renderers;
 
 import org.openmrs.module.report.ReportDefinition;
-import org.openmrs.module.report.renderer.ReportRenderer;
+import org.openmrs.module.report.renderer.InteractiveReportRenderer;
 
 
 /**
@@ -22,7 +22,7 @@ import org.openmrs.module.report.renderer.ReportRenderer;
  * most likely be used to redirect to another URL (which, in most cases, delegates to another
  * rendering engine).
  */
-public interface WebReportRenderer extends ReportRenderer {
+public interface WebReportRenderer extends InteractiveReportRenderer {
 	
 	/**
 	 * If this method returns a value, then this renderer should be called by redirecting to that

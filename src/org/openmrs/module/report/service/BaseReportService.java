@@ -1,11 +1,19 @@
 package org.openmrs.module.report.service;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -18,6 +26,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.cohort.definition.util.CohortFilter;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
@@ -29,13 +38,16 @@ import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.ReportDesign;
 import org.openmrs.module.report.ReportRequest;
+import org.openmrs.module.report.renderer.InteractiveReportRenderer;
 import org.openmrs.module.report.renderer.RenderingException;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.module.report.service.db.ReportDAO;
-import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
+import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.serialization.OpenmrsSerializer;
+import org.openmrs.serialization.SerializationException;
 import org.openmrs.util.HandlerUtil;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.util.StringUtils;
 
 /**
@@ -43,6 +55,10 @@ import org.springframework.util.StringUtils;
  */
 public class BaseReportService extends BaseOpenmrsService implements ReportService {
 
+	private final static String REPORT_RESULTS_DIR = "REPORT_RESULTS";
+
+	private static final String REPORT_RESULTS_FILE_EXTENSION = "openmrsreport";
+	
 	// Logger
 	private transient Log log = LogFactory.getLog(this.getClass());
 
@@ -51,6 +67,9 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	private SerializedObjectDAO serializedObjectDAO;
 	private OpenmrsSerializer serializer;
 	
+	// history of run reports
+	private List<ReportRequest> reportRequestHistory;
+		
     /**
      * @param serializer the serializer to set
      */
@@ -292,21 +311,28 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	public Report runReport(ReportRequest request) {
 		request.setUuid(UUID.randomUUID().toString());
 		request.setRequestDate(new Date());
+		request.setRequestedBy(Context.getAuthenticatedUser());
 		Report ret = new Report(request);
 		
 		ret.startEvaluating();
 		
 		EvaluationContext ec = new EvaluationContext();
 		ec.setParameterValues(request.getParameterValues());
+
+		if (request.getBaseCohort() != null) {
+			Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(request.getBaseCohort(), ec);
+			ec.setBaseCohort(baseCohort);
+		}
+		
 		ReportData rawData = evaluate(request.getReportDefinition(), ec);
 		
 		ret.rawDataEvaluated(rawData);
 		
-		if (request.getReportRenderer() != null) {
-			if (!(request.getReportRenderer() instanceof WebReportRenderer)) {
+		if (request.getRenderingMode() != null) {
+			if (!(request.getRenderingMode().getRenderer() instanceof InteractiveReportRenderer)) {
 				try {
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
-		            request.getReportRenderer().render(rawData, request.getRenderArgument(), out);
+		            request.getRenderingMode().getRenderer().render(rawData, request.getRenderingMode().getArgument(), out);
 		            
 		            ret.outputRendered(out.toByteArray());
 	            }
@@ -320,6 +346,215 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	            }
 			}
 		}
+
+		saveReportToFile(ret);
+		addToHistory(request);
 		return ret;
     }
+	
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#getCompletedReportRequests()
+	 */
+	public List<ReportRequest> getCompletedReportRequests() {
+	    return Collections.unmodifiableList(getReportRequestHistory());
+    }
+
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#getQueuedReportRequests()
+	 */
+	public List<ReportRequest> getQueuedReportRequests() {
+		// TODO implement this
+	    return Collections.emptyList();
+    }
+
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#getReport(org.openmrs.module.report.ReportRequest)
+	 */
+	public Report getReport(ReportRequest request) {
+		try {
+			return loadReportFromFile(request.getUuid());
+		} catch (Exception ex) {
+			return null;
+		}
+    }
+
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#getSavedReportRequests()
+	 */
+	public List<ReportRequest> getSavedReportRequests() {
+	    List<ReportRequest> ret = new ArrayList<ReportRequest>();
+	    for (ReportRequest req : getReportRequestHistory()) {
+	    	if (req.isSaved())
+	    		ret.add(req);
+	    }
+	    return ret;
+    }
+
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#archiveReportRequest(org.openmrs.module.report.ReportRequest)
+	 */
+	public void archiveReportRequest(ReportRequest request) {
+	    request.setSaved(true);
+	    saveReportRequest(request);
+    }
+
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#addToHistory(org.openmrs.module.report.ReportRequest)
+	 */
+	public void addToHistory(ReportRequest request) {
+	    getReportRequestHistory().add(request);
+    }
+
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#deleteReportRequest(java.lang.String)
+	 */
+	public void deleteFromHistory(String uuid) {
+	    for (Iterator<ReportRequest> i = getReportRequestHistory().iterator(); i.hasNext(); ) {
+	    	ReportRequest rr = i.next();
+	    	if (uuid.equals(rr.getUuid())) {
+	    		i.remove();
+	    		deleteSavedReportFile(rr);
+	    	}
+	    }
+    }
+	
+	
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#getReportRequestByUuid(java.lang.String)
+	 */
+	public ReportRequest getReportRequestByUuid(String uuid) {
+	    for (ReportRequest request : getReportRequestHistory()) {
+	    	if (request.getUuid().equals(uuid))
+	    		return request;
+	    }
+	    return null;
+    }
+	
+	
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#saveReportRequest(org.openmrs.module.report.ReportRequest)
+	 */
+	public void saveReportRequest(ReportRequest request) {
+	    Report report = loadReportFromFile(request.getUuid());
+	    report.setRequest(request);
+	    saveReportToFile(report);
+    }
+	
+
+	private List<ReportRequest> getReportRequestHistory() {
+	    if (reportRequestHistory == null) {
+	    	rebuildReportRequestHistory();
+	    }
+	    return reportRequestHistory;
+    }
+
+	private void saveReportToFile(Report report) {
+		log.info("Saving report: " + report.getRequest().getUuid());
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+	    File file = new File(dir, getFilename(report.getRequest()));
+	    if (file.exists()) {
+	    	file.delete();
+	    }
+	    try {
+	    	OpenmrsSerializer serializer = Context.getSerializationService().getSerializer(ReportingSerializer.class);
+	    	PrintWriter wr = new PrintWriter(new FileWriter(file));
+	    	wr.write(serializer.serialize(report.getRequest()));
+	    	//os.writeUTF(serializer.serialize(report));
+	    	wr.close();
+	    } catch (IOException ex) {
+	    	throw new APIException("Error writing run report data file", ex);
+	    } catch (SerializationException e) {
+	        throw new APIException("Error serializing ReportRun");
+        }
+	}
+	
+	private ReportRequest loadRequestFromFile(String requestUuid) {
+		log.info("Loading saved report request: " + requestUuid);
+		OpenmrsSerializer serializer = Context.getSerializationService().getSerializer(ReportingSerializer.class);
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+		File file = new File(dir, getFilename(requestUuid));
+		if (!file.exists()) {
+			throw new APIException("The persisted ReportRun file is missing: " + file.getAbsolutePath());
+		}
+		BufferedReader r = null;
+		try {
+			r = new BufferedReader(new FileReader(file));
+			StringBuilder sb = new StringBuilder();
+			for (String s = r.readLine(); s != null; s = r.readLine()) {
+				sb.append(s);
+			}
+			return serializer.deserialize(sb.toString(), ReportRequest.class);
+		}
+        catch (Exception ex) {
+	        throw new APIException("Failed to load file: " + file.getAbsolutePath(), ex);
+        } finally {
+			try {
+				r.close();
+            } catch (IOException e) { }
+		}
+	}
+	
+	private Report loadReportFromFile(String requestUuid) {
+		log.info("Loading saved report: " + requestUuid);
+		OpenmrsSerializer serializer = Context.getSerializationService().getSerializer(ReportingSerializer.class);
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+		File file = new File(dir, getFilename(requestUuid));
+		if (!file.exists()) {
+			throw new APIException("The persisted ReportRun file is missing: " + file.getAbsolutePath());
+		}
+		BufferedReader r = null;
+		try {
+			r = new BufferedReader(new FileReader(file));
+			StringBuilder sb = new StringBuilder();
+			for (String s = r.readLine(); s != null; s = r.readLine()) {
+				sb.append(s);
+			}
+			ReportRequest req = serializer.deserialize(sb.toString(), ReportRequest.class);
+			return new Report(req);
+		}
+        catch (Exception ex) {
+	        throw new APIException("Failed to load file: " + file.getAbsolutePath(), ex);
+        } finally {
+			try {
+				r.close();
+            } catch (IOException e) { }
+		}
+	}
+	
+	private void deleteSavedReportFile(ReportRequest request) {
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+		File file = new File(dir, getFilename(request));
+		if (file.exists())
+			file.delete();
+    }
+	
+	private String getFilename(String requestUuid) {
+		return requestUuid + "." + REPORT_RESULTS_FILE_EXTENSION;
+	}
+
+	private String getFilename(ReportRequest request) {
+		return getFilename(request.getUuid());
+    }
+
+	private void rebuildReportRequestHistory() {
+		log.info("Rebuilding Report Request History...");
+		Vector<ReportRequest> history = new Vector<ReportRequest>();
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+		for (File file : dir.listFiles()) {
+			if (!file.getName().endsWith("." + REPORT_RESULTS_FILE_EXTENSION)) {
+				continue;
+			}
+			String uuid = file.getName().substring(0, file.getName().indexOf("."));
+			ReportRequest request = loadRequestFromFile(uuid);
+			history.add(request);
+		}
+		Collections.sort(history, new Comparator<ReportRequest>() {
+			public int compare(ReportRequest left, ReportRequest right) {
+	            return left.getRequestDate().compareTo(right.getRequestDate());
+            }
+		});
+		log.info("...Done Rebuilding Report Request History");
+		reportRequestHistory = history;
+    }
+
 }

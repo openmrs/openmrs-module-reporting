@@ -72,7 +72,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 
 		// By default, get all patients
 		if (cohort == null)
-			throw new APIException("Cohort cannot be empty");
+			cohort = Context.getPatientSetService().getAllPatients();
 					
 		if (context.getLimit() != null)
 			CohortUtil.limitCohort(cohort, context.getLimit());

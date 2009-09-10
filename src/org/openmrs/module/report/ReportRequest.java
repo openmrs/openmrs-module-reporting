@@ -1,10 +1,13 @@
 package org.openmrs.module.report;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.openmrs.User;
-import org.openmrs.module.report.renderer.ReportRenderer;
+import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.util.OpenmrsUtil;
 
 
@@ -37,26 +40,45 @@ public class ReportRequest implements Comparable<ReportRequest> {
 	}
 
 	private String uuid;
+	private CohortDefinition baseCohort; //optional
 	private ReportDefinition reportDefinition;
 	private Map<String, Object> parameterValues;
-	private ReportRenderer reportRenderer;
-	private String renderArgument;
+	private RenderingMode renderingMode;
 	private User requestedBy;
 	private Date requestDate;
+	private boolean saved = false;
+	private List<String> labels;
 	private Priority priority = Priority.NORMAL;
+	
 	
 	public ReportRequest() {
 	}
 
-	public ReportRequest(ReportDefinition reportDefinition, Map<String, Object> parameterValues,
-        ReportRenderer reportRenderer, String renderArgument, Priority priority) {
+	
+	public ReportRequest(ReportDefinition reportDefinition, CohortDefinition baseCohort, Map<String, Object> parameterValues,
+        RenderingMode renderingMode, Priority priority) {
 	    super();
 	    this.reportDefinition = reportDefinition;
+	    this.baseCohort = baseCohort;
 	    this.parameterValues = parameterValues;
-	    this.reportRenderer = reportRenderer;
-	    this.renderArgument = renderArgument;
+	    this.renderingMode = renderingMode;
 	    this.priority = priority;
     }
+	
+
+	public void addLabel(String label) {
+		if (labels == null) {
+			labels = new ArrayList<String>();
+		}
+		if (!labels.contains(label)) {
+			labels.add(label);
+		}
+	}
+	
+	
+	public void removeLabel(String label) {
+		labels.remove(label);
+	}
 	
 	
 	/**
@@ -116,41 +138,24 @@ public class ReportRequest implements Comparable<ReportRequest> {
     public void setParameterValues(Map<String, Object> parameterValues) {
     	this.parameterValues = parameterValues;
     }
-
 	
+    
     /**
-     * @return the reportRenderer
+     * @return the renderingMode
      */
-    public ReportRenderer getReportRenderer() {
-    	return reportRenderer;
+    public RenderingMode getRenderingMode() {
+    	return renderingMode;
     }
 
 	
     /**
-     * @param reportRenderer the reportRenderer to set
+     * @param renderingMode the renderingMode to set
      */
-    public void setReportRenderer(ReportRenderer reportRenderer) {
-    	this.reportRenderer = reportRenderer;
+    public void setRenderingMode(RenderingMode renderingMode) {
+    	this.renderingMode = renderingMode;
     }
 
-	
-    /**
-     * @return the renderArgument
-     */
-    public String getRenderArgument() {
-    	return renderArgument;
-    }
-
-	
-    /**
-     * @param renderArgument the renderArgument to set
-     */
-    public void setRenderArgument(String renderArgument) {
-    	this.renderArgument = renderArgument;
-    }
-
-	
-    /**
+	/**
      * @return the requestedBy
      */
     public User getRequestedBy() {
@@ -211,6 +216,54 @@ public class ReportRequest implements Comparable<ReportRequest> {
      */
     public void setUuid(String requestUuid) {
     	this.uuid = requestUuid;
+    }
+
+	
+    /**
+     * @return the baseCohort
+     */
+    public CohortDefinition getBaseCohort() {
+    	return baseCohort;
+    }
+
+	
+    /**
+     * @param baseCohort the baseCohort to set
+     */
+    public void setBaseCohort(CohortDefinition baseCohort) {
+    	this.baseCohort = baseCohort;
+    }
+
+	
+    /**
+     * @return the saved
+     */
+    public boolean isSaved() {
+    	return saved;
+    }
+
+	
+    /**
+     * @param saved the saved to set
+     */
+    public void setSaved(boolean saved) {
+    	this.saved = saved;
+    }
+
+	
+    /**
+     * @return the labels
+     */
+    public List<String> getLabels() {
+    	return labels;
+    }
+
+	
+    /**
+     * @param labels the labels to set
+     */
+    public void setLabels(List<String> labels) {
+    	this.labels = labels;
     }
 
 }

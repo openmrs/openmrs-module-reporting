@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,22 +23,21 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.report.ReportData;
+import org.openmrs.module.report.Report;
 import org.openmrs.module.report.ReportDefinition;
-import org.openmrs.module.report.renderer.IndicatorReportRenderer;
+import org.openmrs.module.report.ReportRequest;
 import org.openmrs.module.report.renderer.RenderingException;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
-import org.openmrs.module.report.renderer.ReportRendererException;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 import org.openmrs.module.reporting.web.widget.WidgetUtil;
-import org.openmrs.report.ReportRenderingException;
-import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
@@ -56,6 +56,8 @@ import org.springframework.web.servlet.view.RedirectView;
  * form's response.
  */
 public class RunReportFormController extends SimpleFormController implements Validator {
+
+	private transient Log log = LogFactory.getLog(this.getClass());
 	
 	@SuppressWarnings("unchecked")
 	public boolean supports(Class c) {
@@ -132,7 +134,6 @@ public class RunReportFormController extends SimpleFormController implements Val
 		if (errors.hasErrors())
 			return showForm(request, response, errors);
 		
-		ReportData data = reportService.evaluate(reportDefinition, evalContext);
 		String renderClass = command.getSelectedRenderer();
 		String renderArg = "";
 		if (renderClass.indexOf("!") > 0) {
@@ -140,18 +141,39 @@ public class RunReportFormController extends SimpleFormController implements Val
 			renderArg = renderClass.substring(ind + 1);
 			renderClass = renderClass.substring(0, ind);
 		}
-		
 		ReportRenderer renderer = reportService.getReportRenderer(renderClass);
-				
+
 		// Check to make sure the renderer can render this report 
 		if (!renderer.canRender(reportDefinition))  
 			throw new RenderingException("Unable to render report definition " + reportDefinition.getName());
-				
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		if (reportDefinition.getParameters() != null) {
+			for (Parameter parameter : reportDefinition.getParameters()) {
+				if (command.getUserEnteredParams() != null) {
+					String valString = command.getUserEnteredParams().get(parameter.getName());
+					Object value;
+					if (StringUtils.hasText(valString)) {
+						try {
+							value = WidgetUtil.parseInput(valString, parameter.getType());
+							params.put(parameter.getName(), value);
+						}
+						catch (Exception ex) {
+							// this was already checked above
+						}
+					}
+				}
+			}
+		}
+		
+		ReportRequest run = new ReportRequest(reportDefinition, null, params, command.getSelectedMode(), ReportRequest.Priority.HIGHEST);
+		Report report = reportService.runReport(run);
+		
 		// If we're supposed to use a web report renderer, then we just redirect to the appropriate URL 
 		if (renderer instanceof WebReportRenderer) {
 			WebReportRenderer webRenderer = (WebReportRenderer) renderer;
 			if (webRenderer.getLinkUrl(reportDefinition) != null) {
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, data);
+				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, report.getRawData());
 				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, renderArg);
 				String url = webRenderer.getLinkUrl(reportDefinition);
 				if (!url.startsWith("/"))
@@ -167,9 +189,9 @@ public class RunReportFormController extends SimpleFormController implements Val
 			response.setContentType(renderer.getRenderedContentType(reportDefinition, renderArg));
 			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 			response.setHeader("Pragma", "no-cache");
-			renderer.render(data, renderArg, response.getOutputStream());
+			response.getOutputStream().write(report.getRenderedOutput());
 		}
-		return null;		
+		return null;
 	}
 	
 		
@@ -178,10 +200,26 @@ public class RunReportFormController extends SimpleFormController implements Val
 		private ReportDefinition reportDefinition;		
 		private Map<String, String> userEnteredParams;		
 		private List<RenderingMode> renderingModes;		
-		private String selectedRenderer;
+		private String selectedRenderer; // as RendererClass!Arg
 		
 		public CommandObject() {
 			userEnteredParams = new LinkedHashMap<String, String>();
+		}
+		
+		public RenderingMode getSelectedMode() throws ClassNotFoundException {
+			if (selectedRenderer == null)
+				return null;
+			String[] temp = selectedRenderer.split("!");
+			Class<? extends ReportRenderer> rc = (Class<? extends ReportRenderer>) Context.loadClass(temp[0]);
+			String arg = (temp.length > 1 && StringUtils.hasText(temp[1])) ? temp[1] : null;
+			for (RenderingMode mode : renderingModes) {
+				if (mode.getRenderer().getClass().equals(rc)
+						&& OpenmrsUtil.nullSafeEquals(mode.getArgument(), arg)) {
+					return mode;
+				}
+			}
+			log.warn("Could not find requested rendering mode: " + selectedRenderer);
+			return null;
 		}
 		
 		public List<RenderingMode> getRenderingModes() {

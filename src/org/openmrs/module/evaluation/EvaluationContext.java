@@ -119,6 +119,7 @@ public class EvaluationContext {
 			throw new APIException("The specified report could not be evaluated because one of its components has been removed from the database");
 		
 		EvaluationContext ec = EvaluationContext.clone(initialContext);
+		ec.setParameterValues(new HashMap<String, Object>());
 			
 		for (String paramName : child.getParameterMappings().keySet()) {
 			Parameter parameter = child.getParameterizable().getParameter(paramName);

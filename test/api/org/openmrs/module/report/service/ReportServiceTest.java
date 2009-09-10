@@ -9,6 +9,7 @@ import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.report.Report;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.ReportRequest;
+import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.reporting.web.renderers.IndicatorReportWebRenderer;
@@ -18,6 +19,15 @@ import org.openmrs.test.Verifies;
 
 public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	
+	@Test
+	public void shouldSaveReportDefinition() throws Exception { 		
+		ReportService service = Context.getService(ReportService.class);
+		ReportDefinition reportDefinition = new ReportDefinition();		
+		reportDefinition.setName("Testing");
+		ReportDefinition savedReportDefinition = service.saveReportDefinition(reportDefinition);		
+		Assert.assertTrue(savedReportDefinition.getId()!=null);
+	}
+
 	/**
 	 * @see {@link ReportService#runReport(ReportRequest)}
 	 * 
@@ -43,7 +53,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		DataSetDefinition dsd = new PatientDataSetDefinition();
 		def.addDataSetDefinition("patients", dsd, null);
 		ReportRenderer renderer = new TsvReportRenderer();
-		ReportRequest request = new ReportRequest(def, null, renderer, null, null);
+		ReportRequest request = new ReportRequest(def, null, null, new RenderingMode(renderer, "TSV", null, 100), null);
 		Report result = Context.getService(ReportService.class).runReport(request);
 		Assert.assertNotNull(result.getRawData());
 		Assert.assertNotNull(result.getRenderedOutput());
@@ -58,7 +68,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	public void runReport_shouldNotRenderTheReportIfAWebRendererIsSpecified() throws Exception {
 		ReportDefinition def = new ReportDefinition();
 		WebReportRenderer renderer = new IndicatorReportWebRenderer(); 
-		ReportRequest request = new ReportRequest(def, null, renderer, null, null);
+		ReportRequest request = new ReportRequest(def, null, null, new RenderingMode(renderer, "Web", null, 100), null);
 		Report result = Context.getService(ReportService.class).runReport(request);
 		Assert.assertNotNull(result.getRawData());
 		Assert.assertNull(result.getRenderedOutput());
