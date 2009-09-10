@@ -105,7 +105,7 @@ $(document).ready(function() {
 							</c:if>
 						</td>
 		 				<td align="center" width="1%">
-							<a href="${pageContext.request.contextPath}/module/reporting/datasets/viewDataSet.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">					
+							<a href="${pageContext.request.contextPath}/module/reporting/datasets/viewDataSet.form?dataSetId=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">					
 								<img src="${pageContext.request.contextPath}/images/play.gif" alt="view" border="0"/>
 							</a> 
 						</td>

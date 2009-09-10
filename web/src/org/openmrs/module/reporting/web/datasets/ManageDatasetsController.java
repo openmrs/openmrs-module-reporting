@@ -16,6 +16,8 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetException;
+import org.openmrs.module.dataset.column.DataSetColumn;
+import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
@@ -123,7 +125,30 @@ public class ManageDatasetsController {
     	return "redirect:/module/reporting/datasets/manageDataSets.list";    	    	
     }
         
-    
+    /**
+     * Adds a column to the given dataset.  
+     * @return
+     */
+    @RequestMapping("/module/reporting/datasets/addLogicColumn")
+    public String addLogicColumn(
+    		@RequestParam(required=false, value="uuid") String uuid,
+    		@RequestParam(required=false, value="id") Integer id,
+            @RequestParam(required=false, value="type") String type,
+    		@RequestParam("columnName") String columnName,
+    		@RequestParam("logicQuery") String logicQuery,
+    		ModelMap model) {
+
+    	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, type, id);
+    	if (dataSetDefinition instanceof PatientDataSetDefinition) { 
+    		PatientDataSetDefinition instance = (PatientDataSetDefinition) dataSetDefinition;
+    		instance.addLogicColumn(new LogicDataSetColumn(columnName, String.class, logicQuery));
+    		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(instance);
+    	}    	   
+    	
+    	return "redirect:/module/reporting/datasets/editDataSet.form?uuid=" + uuid;
+    }
+	
+	
     
     /**
      * Adds a column to the given dataset.  
@@ -154,6 +179,8 @@ public class ManageDatasetsController {
     				modifierNum, 
     				conceptId.toString(), 
     				extras);
+    		
+    		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(instance);
     	}
     	else if (dataSetDefinition instanceof PatientDataSetDefinition) {
     		PatientDataSetDefinition instance = 
@@ -162,21 +189,30 @@ public class ManageDatasetsController {
         	// TODO Implement concept column in patient dataset 
     		throw new DataSetException("Patient Data Set Definition does not currently support additional columns");
     	}    		
-    	return "";
+    	return "redirect:/module/reporting/datasets/editDataSet.form?uuid=" + uuid;
     }
     
-    
-    /**
-     * Adds a column to the given dataset.  
-     * @return
-     */
     @RequestMapping("/module/reporting/datasets/removeColumn")
     public String removeColumn(
+    		@RequestParam(required=false, value="id") Integer id,
     		@RequestParam(required=false, value="uuid") String uuid,
+            @RequestParam(required=false, value="type") String type,
+    		@RequestParam("columnKey") String columnKey,
     		ModelMap model) {
 
-    	return "";
+    	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, type, id);
+    	
+    	if (dataSetDefinition instanceof PatientDataSetDefinition) {
+    		PatientDataSetDefinition instance = 
+    			(PatientDataSetDefinition) dataSetDefinition;
+    		instance.removeLogicColumn(columnKey);
+    		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);
+    	}
+
+    	
+    	return "redirect:/module/reporting/datasets/editDataSet.form?uuid=" + uuid;
     }
+	    
     	
     
     /**
@@ -194,8 +230,12 @@ public class ManageDatasetsController {
     		ModelMap model) {
     	
     	DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
-    	DataSetDefinition datasetDefinition = service.getDataSetDefinition(uuid, type);
-     	model.addAttribute("dataSetDefinition", datasetDefinition);
+    	DataSetDefinition dataSetDefinition = service.getDataSetDefinition(uuid, type);
+    	
+    	dataSetDefinition.setName("(untitled dataset definition)");
+    	dataSetDefinition = service.saveDataSetDefinition(dataSetDefinition);
+    	
+     	model.addAttribute("dataSetDefinition", dataSetDefinition);
      	     	
         return "/module/reporting/datasets/datasetEditor";
     }    

@@ -511,7 +511,7 @@ public class ManageReportController {
             // of rendering and passing us back a Rendered object.
             List<String> displayColumns = new LinkedList<String>();
             List<String> pdsColumns = new LinkedList<String>();
-            pdsColumns.addAll(pdsDefinition.getColumnKeys());
+            //pdsColumns.addAll(pdsDefinition.getColumnKeys());
             pdsColumns.remove(PatientDataSetDefinition.PATIENT_ID);
             displayColumns.addAll(pdsColumns);
 
@@ -522,7 +522,7 @@ public class ManageReportController {
             }
             
             List<String> ledsColumns = new LinkedList<String>();
-            ledsColumns.addAll(ledsDefinition.getColumnKeys());
+            //ledsColumns.addAll(ledsDefinition.getColumnKeys());
             ledsColumns.remove(LabEncounterDataSetDefinition.ENCOUNTER_ID);
             ledsColumns.remove(LabEncounterDataSetDefinition.PATIENT_ID);
             

@@ -14,6 +14,7 @@
 package org.openmrs.module.dataset.definition;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -30,6 +31,7 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
     
     //***** PROPERTIES *****
     private Integer id;
+    private List<DataSetColumn> columns = new LinkedList<DataSetColumn>();
  
     //***** CONSTRUCTORS *****
     
@@ -52,9 +54,41 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
 		this.setName(name);
 		this.setDescription(description);
 	}
+
+
+	/** 
+	 * Gets the dataset column.
+	public List<DataSetColumn> getColumns() { 
+		return this.columns;
+	}
+	 */
+	
+	
+	/**
+	 * Sets the dataset column.
+	 * @param columns
+	public void setColumns(List<DataSetColumn> columns) { 
+		this.columns = columns;
+	}
+	 */
+	
+	
+	/** 
+	 * @see DataSetDefinition#getColumn(String)
+	 */
+	public DataSetColumn getColumn(String columnKey) {
+		for (DataSetColumn c : getColumns()) {
+			if (c.getColumnKey().equals(columnKey)) {
+				return c;
+			}
+		}
+		return null;
+	}
+	
+	
 	
 	//***** INSTANCE METHODS *****
-	
+
 	/** @see Object#equals(Object) */
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof DataSetDefinition) {
@@ -82,39 +116,6 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
 		return getName();
 	}
 
-	/** 
-	 * @see DataSetDefinition#getColumn(String)
-	 */
-	public DataSetColumn getColumn(String columnKey) {
-		for (DataSetColumn c : getColumns()) {
-			if (c.getColumnKey().equals(columnKey)) {
-				return c;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * @return a List of Column DataTypes
-	 */
-	public List<Class<?>> getColumnDatatypes() {
-		List<Class<?>> dataTypes = new ArrayList<Class<?>>();
-		for (DataSetColumn column : getColumns()) { 
-			dataTypes.add(column.getClass());
-		}
-		return dataTypes;
-	}
-
-	/**
-	 * @return a List of Column keys
-	 */
-	public List<String> getColumnKeys() {
-		List<String> columnKeys = new ArrayList<String>();
-		for (DataSetColumn column : getColumns()) { 
-			columnKeys.add(column.getColumnKey());
-		}
-		return columnKeys;
-	}
 	
     //***** PROPERTY ACCESS *****
     

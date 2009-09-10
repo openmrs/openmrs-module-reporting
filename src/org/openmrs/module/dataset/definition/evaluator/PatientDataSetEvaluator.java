@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.dataset.definition.evaluator;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +31,16 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.logic.LogicCriteria;
+import org.openmrs.logic.Rule;
+import org.openmrs.logic.result.Result;
+import org.openmrs.logic.rule.ReferenceRule;
+import org.openmrs.logic.util.LogicCriteriaBuilder;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.SimpleDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
+import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -72,6 +79,9 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 
 		// Get a list of patients based on the cohort members
 		List<Patient> patients = Context.getPatientSetService().getPatients(cohort.getMemberIds());
+
+		
+		Map<String, LogicResultHolder> logicResultMap = new HashMap<String, LogicResultHolder>();
 		
 		// Pre-calculate the program states
 		Map<ProgramWorkflow, Map<Integer, PatientState>> states = new HashMap<ProgramWorkflow, Map<Integer, PatientState>>();
@@ -105,8 +115,85 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 				row.addColumnValue(c, (ps == null || !ps.getActive()) ? null : ps.getState().getName());
 			}
 			
+			for (LogicDataSetColumn column : definition.getLogicColumns().values()) { 
+				Result result = null;
+				Object value = null;
+				try { 
+					String token = column.getLogicQuery();
+					//Rule rule = new ReferenceRule("obs." + token);
+					//Context.getLogicService().addRule(token, rule);
+					Map<Integer,Result> results = null;
+					if (logicResultMap != null) { 												
+						LogicResultHolder holder = logicResultMap.get(token);
+						if (holder == null) { 						
+							LogicCriteria criteria = new LogicCriteria(token).last();
+							results = Context.getLogicService().eval(cohort, criteria);	
+							holder = new LogicResultHolder(token, criteria, results, true);
+							logicResultMap.put(token, holder);
+						} else { 
+							results = holder.getResults();
+						}
+					}					
+					result = results.get(p.getPatientId());
+					value = result.getResultObject();
+					log.info("logic value: " + value);
+				} catch (Exception e) { 
+					value = new String("logic error: " + e.getMessage());
+				}
+				row.addColumnValue(column, value);
+			}
 			dataSet.addRow(row);
 		}
 		return dataSet;
 	}
+	
+	
+	class LogicResultHolder { 
+	
+		private String token;
+		private Boolean evaluated;
+		private LogicCriteria criteria;
+		private Map<Integer, Result> results;
+		
+		public LogicResultHolder(String token, LogicCriteria criteria, Map<Integer,Result> results, Boolean evaluated) { 
+			this.token = token;
+			this.criteria = criteria;
+			this.results = results;
+			this.evaluated = evaluated;			
+		}
+		
+		
+		public String getToken() { 
+			return this.token;
+		}
+		
+		public void setToken(String token) { 
+			this.token = token;
+		}
+		
+		public Boolean getEvaluated() {
+			return evaluated;
+		}
+		public void setEvaluated(Boolean evaluated) {
+			this.evaluated = evaluated;
+		}
+		public LogicCriteria getCriteria() {
+			return criteria;
+		}
+		public void setCriteria(LogicCriteria criteria) {
+			this.criteria = criteria;
+		}
+		public Map<Integer, Result> getResults() {
+			return results;
+		}
+		public void setResults(Map<Integer, Result> results) {
+			this.results = results;
+		}
+
+		
+		
+	
+	
+	}
+	
 }

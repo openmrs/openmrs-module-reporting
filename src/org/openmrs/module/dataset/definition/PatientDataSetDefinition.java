@@ -15,7 +15,10 @@ package org.openmrs.module.dataset.definition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
@@ -35,11 +38,11 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	private static final long serialVersionUID = 6405583324151111487L;
 	
     // ***** FIXED COLUMNS *****
-	public static DataSetColumn PATIENT_ID = new SimpleDataSetColumn("patientId", Integer.class);
-	public static DataSetColumn FAMILY_NAME = new SimpleDataSetColumn("family_name", String.class);
-	public static DataSetColumn GIVEN_NAME = new SimpleDataSetColumn("given_name", String.class);
-	public static DataSetColumn AGE = new SimpleDataSetColumn("age", Integer.class);
-	public static DataSetColumn GENDER = new SimpleDataSetColumn("gender", String.class);
+	public transient static DataSetColumn PATIENT_ID = new SimpleDataSetColumn("patientId", Integer.class);
+	public transient static DataSetColumn FAMILY_NAME = new SimpleDataSetColumn("family_name", String.class);
+	public transient static DataSetColumn GIVEN_NAME = new SimpleDataSetColumn("given_name", String.class);
+	public transient static DataSetColumn AGE = new SimpleDataSetColumn("age", Integer.class);
+	public transient static DataSetColumn GENDER = new SimpleDataSetColumn("gender", String.class);
 	
 	//***** PROPERTIES ******
 	public List<PersonAttributeType> personAttributeTypes;
@@ -47,7 +50,7 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	public List<ProgramWorkflow> programWorkflows;
 
 	//***** MORE COLUMNS ******
-	public List<LogicDataSetColumn> logicColumns; 
+	public Map<String, LogicDataSetColumn> logicColumns = new HashMap<String,LogicDataSetColumn>(); 
 	
 	/**
 	 * Constructor
@@ -75,21 +78,53 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	 * @see DataSetDefinition#getColumns()
 	 */
 	public List<DataSetColumn> getColumns() {
-		List<DataSetColumn> cols = Arrays.asList(PATIENT_ID, FAMILY_NAME, GIVEN_NAME, AGE, GENDER);
-		for (PatientIdentifierType t : getIdentifierTypes()) {
-			cols.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
+		List<DataSetColumn> columns = new LinkedList<DataSetColumn>();
+		columns.addAll(Arrays.asList(PATIENT_ID, FAMILY_NAME, GIVEN_NAME, AGE, GENDER));
+		
+		try { 
+			for (PatientIdentifierType t : getIdentifierTypes()) {
+				columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
+			}
+			for (PersonAttributeType t : getPersonAttributeTypes()) {
+				columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
+			}
+			for (ProgramWorkflow t : getProgramWorkflows()) {
+				columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
+			}
+			for (LogicDataSetColumn column : getLogicColumns().values()) { 
+				columns.add(column);
+			}
+	
+		} catch (Exception e) { 			
+			log.error("Unable to get columns for dataset ", e);			
 		}
-		for (PersonAttributeType t : getPersonAttributeTypes()) {
-			cols.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
-		}
-		for (ProgramWorkflow t : getProgramWorkflows()) {
-			cols.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
-		}
-		if (logicColumns != null)
-			cols.addAll(logicColumns);
-
-		return cols;
+		return columns;
 	}
+	
+	public Map<String, LogicDataSetColumn> getLogicColumns() { 
+		return this.logicColumns;
+	}
+
+	/**
+	 * @param logicQueries the programWorkflows to set
+	 */
+	public void setLogicColumns(Map<String, LogicDataSetColumn> logicColumns) {
+		this.logicColumns = logicColumns;
+	}
+	
+	/**
+	 * 
+	 * @param column
+	 */
+	public void addLogicColumn(LogicDataSetColumn column) { 
+		logicColumns.put(column.getColumnKey(), column);
+	}
+	
+	public void removeLogicColumn(String columnKey) { 
+		logicColumns.remove(columnKey);
+	}
+	
+	
 	
 	//****** PROPERTY ACCESS ******
 
@@ -144,25 +179,5 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	public void setProgramWorkflows(List<ProgramWorkflow> programWorkflows) {
 		this.programWorkflows = programWorkflows;
 	}
-	
-
-	/**
-	 * @return the logic queries
-	 */
-	public List<LogicDataSetColumn> getLogicColumns() {
-		if (logicColumns == null) {
-			logicColumns = new ArrayList<LogicDataSetColumn>();
-		}
-		return logicColumns;
-	}
-
-	/**
-	 * @param logicQueries the programWorkflows to set
-	 */
-	public void setLogicDataSetColumns(List<LogicDataSetColumn> logicColumns) {
-		this.logicColumns = logicColumns;
-	}
-	
-	
 	
 }

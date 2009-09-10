@@ -23,12 +23,15 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.logic.LogicCriteria;
+import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
+import org.openmrs.module.util.CohortUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -71,10 +74,13 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void shouldEvaluatePatientDataSet() throws Exception {
 
 		EvaluationContext evalContext = new EvaluationContext();
-		evalContext.setBaseCohort(Context.getPatientSetService().getAllPatients());
+		evalContext.setBaseCohort(CohortUtil.limitCohort(Context.getPatientSetService().getAllPatients(), 1000));
 		
 		// Evaluate dataset
-		DataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
+		PatientDataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
+		LogicDataSetColumn column = new LogicDataSetColumn("WEIGHT (KG)", String.class, "WEIGHT (KG)");
+		dataSetDefinition.addLogicColumn(column);
+		
 		DataSet dataSet = Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
 
 		// Build report

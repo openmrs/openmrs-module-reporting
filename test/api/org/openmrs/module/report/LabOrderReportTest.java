@@ -98,13 +98,7 @@ public class LabOrderReportTest extends BaseModuleContextSensitiveTest {
         Map<String, DataSet> labDataSets = new HashMap<String, DataSet>();
         labDataSets.put("encounter", labDataSet);
         labReportData.setDataSets(labDataSets);       
-        
-        List<String> displayColumns = new LinkedList<String>();
-        List<String> ledsColumns = labDataSetDefinition.getColumnKeys();
-        ledsColumns.remove(LabEncounterDataSetDefinition.ENCOUNTER_ID);
-        ledsColumns.remove(LabEncounterDataSetDefinition.PATIENT_ID);
-        displayColumns.addAll(ledsColumns);        
-        
+                
         CsvReportRenderer renderer = new CsvReportRenderer();
         //renderer.setDisplayColumns(displayColumns);  MS: No longer supported in renderer...move to DSD
         renderer.render(labReportData, null, System.out);			

@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.dataset.column;
 
-import org.apache.commons.lang.StringUtils;
-import org.jfree.util.Log;
-import org.openmrs.Concept;
-import org.openmrs.api.context.Context;
-
 /**
  * Implementation of logic rule backed dataset column.
  */
@@ -29,6 +24,15 @@ public class LogicDataSetColumn extends SimpleDataSetColumn {
 	private static final long serialVersionUID = 1L;
 	
 	private String logicQuery;
+
+	
+	/**
+	 * Default Constructor
+	 */
+	public LogicDataSetColumn(String displayName, Class<?> dataType, String logicQuery) {
+		super(displayName, displayName, null, dataType);
+		this.logicQuery = logicQuery;
+	} 	
 	
 	/**
 	 * Default Constructor
