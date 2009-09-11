@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- <!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN" "../lib-common/config-1.0.dtd">  -->
 <module configVersion="1.0">
 	
 	<!-- Base Module Properties -->
 	<id>reporting</id>
 	<name>Reporting</name>
-	<version>0.2.0</version>
+	<version>0.3.0</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>Core reporting API and services</description>
 	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>
 	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL>	
-	<require_version>1.4.0.20.9108</require_version><!-- 1.5.0.7475 -->
+	<require_version>1.4.0.20.9108</require_version>
+    <!-- 1.5.0.7475 -->
 
 	<require_modules>
 	   	<require_module>org.openmrs.module.serialization.xstream</require_module>
@@ -51,4 +51,3 @@
 	</mappingFiles>	
 
 </module>
-

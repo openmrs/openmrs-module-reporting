@@ -27,3 +27,35 @@
 	content: "";
 	}
 	
+.small {
+	font-size: x-small;
+}
+
+.report-label {
+	border: 1px gray solid;
+	padding: 0px;
+	margin: 0.2em;
+}
+
+.faded {
+	color: #a0a0a0
+}
+
+.portlet {
+	margin: 0.1em;
+}
+	
+.portlet-header {
+	padding: 0 0.2em;
+}
+.portlet-content {
+	padding: 0 0.2em 0.2em 0.2em;
+}
+
+.reporting-data-table {
+	border-collapse: collapse;
+}
+
+.reporting-data-table td, .reporting-data-table th {
+	padding: 0;
+}

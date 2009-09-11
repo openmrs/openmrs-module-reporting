@@ -14,7 +14,7 @@ public class GutterListExt extends Extension {
 	}
 
 	public String getUrl() {
-		return "module/reporting/dashboard/manageDashboard.form";
+		return "module/reporting/dashboard/index.form";
 	}
 
 	/**
@@ -25,7 +25,7 @@ public class GutterListExt extends Extension {
 	 * @return Privilege string
 	 */
 	public String getRequiredPrivilege() {
-		return "Manage Reports";
+		return "View Reports";
 	}
 
 }

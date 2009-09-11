@@ -4,7 +4,7 @@
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
-		$("#report-schema-table").dataTable( {
+		$(".reporting-data-table").dataTable( {
 			"bPaginate": true,
 			"iDisplayLength": 25,
 			"bLengthChange": false,
@@ -13,7 +13,7 @@
 			"bInfo": true,
 			"bAutoWidth": true
 		} );
-	} );	
+	} );
 </script>
 <style>
 .small { font-size: x-small; }
@@ -29,7 +29,7 @@
 			<input type="button" value="${createLink.key}" onClick="window.location='${createLink.value}';"/>
 		</c:forEach>
 
-		<table id="report-schema-table" class="display" >
+		<table class="reporting-data-table display">
 			<thead>
 				<tr>
 					<th>Name</th>

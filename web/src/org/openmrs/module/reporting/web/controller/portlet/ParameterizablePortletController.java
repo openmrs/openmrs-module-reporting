@@ -19,7 +19,7 @@ public class ParameterizablePortletController extends ReportingPortletController
 	protected final Log log = LogFactory.getLog(getClass());
 
 	@SuppressWarnings("unchecked")
-	protected void populateModel(HttpServletRequest request, Map model) {
+	protected void populateModel(HttpServletRequest request, Map<String, Object> model) {
 		
 		super.populateModel(request, model);
 

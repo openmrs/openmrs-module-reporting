@@ -4,7 +4,7 @@
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-	$('#dataset-table').dataTable( {
+	$('.reporting-data-table').dataTable( {
 		"bPaginate": true,
 		"iDisplayLength": 25,
 		"bLengthChange": false,
@@ -63,7 +63,7 @@ $(document).ready(function() {
 			</p>			
 		</div>
 						
-		<table id="dataset-table" class="display" >
+		<table class="reporting-data-table display" >
 			<thead>
 				<tr>
 					<th width="84%">Name</th>

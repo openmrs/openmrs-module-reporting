@@ -20,8 +20,7 @@ public class ReportDesignPortletController extends ReportingPortletController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 
-	@SuppressWarnings("unchecked")
-	protected void populateModel(HttpServletRequest request, Map model) {
+	protected void populateModel(HttpServletRequest request, Map<String, Object> model) {
 		
 		// TODO: Figure out why this is necessary.
 		Thread.currentThread().setContextClassLoader(OpenmrsClassLoader.getInstance());

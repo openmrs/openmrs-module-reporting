@@ -2,6 +2,10 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ include file="/WEB-INF/view/module/reporting/dialogSupport.jsp" %>
 
+<script type="text/javascript">
+	jqUiDecoration();
+</script>
+
 <div style="border-bottom: 1px solid black;">
 	<openmrs:extensionPoint pointId="org.openmrs.module.reporting.manage.localheader" type="html">
 		<openmrs:hasPrivilege privilege="${extension.requiredPrivilege}">

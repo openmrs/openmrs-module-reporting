@@ -26,6 +26,8 @@
             	<prop key="**/baseMetadata.portlet">parameterizablePortletController</prop>
             	<prop key="**/parameter.portlet">parameterPortletController</prop>
             	<prop key="**/reportDesignForm.portlet">reportDesignPortletController</prop>
+            	<prop key="**/reportHistory.portlet">reportHistoryPortletController</prop>
+            	<prop key="**/runReport.portlet">runReportPortletController</prop>
 				<prop key="module/reporting/newIndicator.form">indicatorFormController</prop>
 				<prop key="module/reporting/run/runReport.list">runReportList</prop>
 				<prop key="module/reporting/run/runReport.form">runReportForm</prop>
@@ -44,6 +46,8 @@
 	<bean id="mappedPropertyPortletController" class="org.openmrs.module.reporting.web.controller.portlet.MappedPropertyPortletController" />
 	<bean id="parameterPortletController" class="org.openmrs.module.reporting.web.controller.portlet.ParameterPortletController" />
 	<bean id="reportDesignPortletController" class="org.openmrs.module.reporting.web.controller.portlet.ReportDesignPortletController" />
+	<bean id="reportHistoryPortletController" class="org.openmrs.module.reporting.web.controller.portlet.ReportHistoryPortletController" />
+	<bean id="runReportPortletController" class="org.openmrs.module.reporting.web.controller.portlet.RunReportPortletController" />
 
 	<bean id="runReportList" class="org.openmrs.module.reporting.web.reports.RunReportListController">
         <property name="commandName"><value>reports</value></property>

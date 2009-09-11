@@ -440,9 +440,10 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	 * @see org.openmrs.module.report.service.ReportService#saveReportRequest(org.openmrs.module.report.ReportRequest)
 	 */
 	public void saveReportRequest(ReportRequest request) {
-	    Report report = loadReportFromFile(request.getUuid());
-	    report.setRequest(request);
-	    saveReportToFile(report);
+	    //Report report = loadReportFromFile(request.getUuid());
+	    //report.setRequest(request);
+	    //saveReportToFile(report);
+		saveToFileHelper(request, request.getUuid() + ".request");
     }
 	
 
@@ -564,6 +565,16 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	    } catch (SerializationException e) {
 	        throw new APIException("Error serializing");
         }
+    }
+
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#getLastReportRequestsByReport()
+	 */
+	public Map<ReportDefinition, ReportRequest> getLastReportRequestsByReport() {
+	    Map<ReportDefinition, ReportRequest> ret = new HashMap<ReportDefinition, ReportRequest>();
+	    for (ReportRequest req : getReportRequestHistory())
+	    	ret.put(req.getReportDefinition(), req);
+	    return ret;
     }
 
 }

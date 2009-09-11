@@ -123,7 +123,7 @@ public class ReportDashboardController {
      * @param model
      * @return
      */
-    @RequestMapping("/module/reporting/dashboard/manageDashboard")
+    //@RequestMapping("/module/reporting/dashboard/manageDashboard")
     public String manageDashboard(ModelMap model) {
     	    	
     	// Get all reporting objects

@@ -15,6 +15,7 @@ package org.openmrs.module.report.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
@@ -328,5 +329,13 @@ public interface ReportService extends OpenmrsService {
 	 * @return
 	 */
 	public Report getReportByUuid(String uuid);
+
+	
+	/**
+	 * Finds the most recently run ReportRequest for each ReportDefinition
+	 *
+	 */
+	public Map<ReportDefinition, ReportRequest> getLastReportRequestsByReport();
+	
 }
 

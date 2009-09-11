@@ -36,8 +36,7 @@ public class ReportingPortletController extends PortletController {
 		return super.handleRequest(request, response);
 	}
 
-	@SuppressWarnings("unchecked")
-	protected void populateModel(HttpServletRequest request, Map model) {
+	protected void populateModel(HttpServletRequest request, Map<String, Object> model) {
 		// TODO: Figure out why this is necessary.
 		Thread.currentThread().setContextClassLoader(OpenmrsClassLoader.getInstance());
     	model.put("portletUUID", UUID.randomUUID().toString().replace("-", ""));

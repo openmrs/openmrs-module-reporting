@@ -4,7 +4,7 @@
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-	$('#indicator-table').dataTable( {
+	$('.reporting-data-table').dataTable( {
 		"bPaginate": true,
 		"iDisplayLength": 25,
 		"bLengthChange": false,
@@ -37,10 +37,6 @@ $(document).ready(function() {
 
 } );
 </script>
-<style>
-.small { text-decoration: italic; font-size: x-small;  }
-</style>
-
 
 <div id="page">
 	<div id="container">
@@ -50,7 +46,7 @@ $(document).ready(function() {
 		<input type="button" id="period-indicator-form" value="Period Indicator"/>
 		<!-- <input type="button" onClick="window.location = 'editIndicator.form';" value="Custom Indicator (Advanced)"/>  -->
 
-		<table id="indicator-table" class="display" >
+		<table class="reporting-data-table display" >
 			<thead>
 				<tr>
 					<th>Indicator</th>

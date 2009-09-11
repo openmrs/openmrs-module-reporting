@@ -4,7 +4,7 @@
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-	$('#cohort-definition-table').dataTable( {
+	$('.reporting-data-table').dataTable( {
 		"bPaginate": true,
 		"iDisplayLength": 25,
 		"bLengthChange": false,
@@ -41,7 +41,7 @@ function confirmDelete(name, uuid) {
 		</form>
 		
 		<br/>
-		<table id="cohort-definition-table" class="display" >
+		<table class="reporting-data-table display" >
 			<thead>
 				<tr>
 					<th>Name</th>

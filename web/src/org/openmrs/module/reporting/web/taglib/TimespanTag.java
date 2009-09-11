@@ -46,9 +46,16 @@ public class TimespanTag extends BodyTagSupport {
 			pageContext.getOut().write("<span class=\"timespan\"> " + DateUtil.getTimespan(now, then) + " </span>");
 		} catch(IOException e) { 
 			log.error("Unable to write timespan to output", e);
-		}		
+		}
+		reset();
 		return SKIP_BODY;
 	}
+
+
+	private void reset() {
+	    now = null;
+	    then = null;
+    }
 
 
 	public Date getNow() {

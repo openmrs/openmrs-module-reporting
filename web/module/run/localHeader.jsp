@@ -2,25 +2,31 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ include file="/WEB-INF/view/module/reporting/dialogSupport.jsp" %>
 
+<script type="text/javascript">
+	jqUiDecoration();
+	$(document).ready(function() {
+		//uiDecoration();
+		
+		<c:if test="${__openmrs_report_data!=null}">
+			$("#currentReportDetails").hide();
+			$("#currentReportHelper").show();
+			$(".toggleReportDetails").click(function(event){
+				var details = $("#currentReportDetails");
+				var visible = details.is(':visible');
+				if (visible) details.hide();
+				else details.show();
+	
+				var helper = $("#currentReportHelper");
+				var visible = helper.is(':visible'); 
+				if (visible) helper.hide();
+				else helper.show();					
+			});
+		</c:if>
+	});
+</script>
+
 <c:if test="${__openmrs_report_data!=null}">
 	<div style="float: right; border: 1px solid #8FABC7; background-color: white; padding: 10px; position: absolute; right: 0px; top: 50px; z-index: 1">
-		<script>
-			$(document).ready(function() {
-				$("#currentReportDetails").hide();
-				$("#currentReportHelper").show();
-				$(".toggleReportDetails").click(function(event){
-					var details = $("#currentReportDetails");
-					var visible = details.is(':visible');
-					if (visible) details.hide();
-					else details.show();
-
-					var helper = $("#currentReportHelper");
-					var visible = helper.is(':visible'); 
-					if (visible) helper.hide();
-					else helper.show();					
-				});
-			});
-		</script>	
 		<div id="currentReportHelper">
 			<div align="center">
 				<a class="toggleReportDetails" href="#">

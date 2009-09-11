@@ -4,7 +4,7 @@
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
-		$("#dimensions-table").dataTable( {
+		$(".reporting-data-table").dataTable( {
 			"bPaginate": true,
 			"iDisplayLength": 25,
 			"bLengthChange": false,
@@ -15,10 +15,6 @@
 		} );
 	} );
 </script>
-<style>
-.small { font-size: x-small; }
-</style>
-
 
 <div id="page">
 	<div id="container">
@@ -27,7 +23,7 @@
 		<spring:message code="reporting.manage.createNew"/>:
 		<input type="button" value="Dimension" onClick="window.location='editCohortDefinitionDimension.form';"/>
 
-		<table id="dimensions-table" class="display" >
+		<table class="reporting-data-table display" >
 			<thead>
 				<tr>
 					<th>Name</th>

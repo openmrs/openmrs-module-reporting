@@ -1,7 +1,8 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
+<%@page import="org.openmrs.module.report.ReportRequest"%>
 
+<openmrs:require privilege="View Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportHistory.form" />
 
-<%@page import="org.openmrs.module.report.ReportRequest"%><openmrs:require privilege="View Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportHistory.form" />
 <%@ include file="../run/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
@@ -17,9 +18,13 @@
 		} );
 	} );	
 </script>
+
 <style>
-	.small { font-size: x-small; }
-	.report-label { border: 1px gray solid; padding: 0px; margin: 0.2em; }
+	.report-label {
+		border: 1px gray solid;
+		padding: 0px;
+		margin: 0.2em;
+	}
 </style>
 
 <h2>Report History</h2>
