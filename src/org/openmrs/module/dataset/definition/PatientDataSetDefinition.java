@@ -105,17 +105,10 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 		return this.logicColumns;
 	}
 
-	/**
-	 * @param logicQueries the programWorkflows to set
-	 */
 	public void setLogicColumns(Map<String, LogicDataSetColumn> logicColumns) {
 		this.logicColumns = logicColumns;
 	}
 	
-	/**
-	 * 
-	 * @param column
-	 */
 	public void addLogicColumn(LogicDataSetColumn column) { 
 		logicColumns.put(column.getColumnKey(), column);
 	}

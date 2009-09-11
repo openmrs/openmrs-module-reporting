@@ -135,8 +135,8 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 						}
 					}					
 					result = results.get(p.getPatientId());
-					value = result.getResultObject();
-					log.info("logic value: " + value);
+					
+					value = result.toString();
 				} catch (Exception e) { 
 					value = new String("logic error: " + e.getMessage());
 				}

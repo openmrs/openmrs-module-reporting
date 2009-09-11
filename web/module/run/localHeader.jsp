@@ -2,8 +2,8 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ include file="/WEB-INF/view/module/reporting/dialogSupport.jsp" %>
 
-<div style="float: right; border: 1px solid #8FABC7; background-color: white; padding: 10px; position: absolute; right: 0px; top: 50px; z-index: 1">
-	<c:if test="${__openmrs_report_data!=null}">
+<c:if test="${__openmrs_report_data!=null}">
+	<div style="float: right; border: 1px solid #8FABC7; background-color: white; padding: 10px; position: absolute; right: 0px; top: 50px; z-index: 1">
 		<script>
 			$(document).ready(function() {
 				$("#currentReportDetails").hide();
@@ -92,8 +92,8 @@
 				</tr>
 			</table>
 		</div>
-	</c:if>
-</div>
+	</div>
+</c:if>
 <div style="border-bottom: 1px solid black;">
 	<openmrs:extensionPoint pointId="org.openmrs.module.reporting.run.localheader" type="html">
 		<openmrs:hasPrivilege privilege="${extension.requiredPrivilege}">

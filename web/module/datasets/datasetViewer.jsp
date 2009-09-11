@@ -49,7 +49,7 @@ $(document).ready(function() {
 					
 					<fieldset style="padding: 25px; width: 100%;">
 						<legend>Step 1.  Configure your dataset</legend>
-						<div>				
+						<span>
 							<select id="dataset-select" name="dataSetId">	
 								<option value="">Choose a dataset definition ...</option>					
 								<c:forEach var="dsdOption" items="${dataSetDefinitions}">
@@ -66,9 +66,8 @@ $(document).ready(function() {
 									</c:if>
 								</c:forEach>								
 							</select><!-- <a href="#" id="show-columns">Show Columns</a> -->
-						</div>
-						<br/>
-						<div>				
+						</span>
+						<span>				
 							<select id="cohort-select" name="cohortId">
 								<option value="all">Choose a filter ...</option>						
 								<option value="all">All patients [default]</option>						
@@ -84,10 +83,10 @@ $(document).ready(function() {
 									</c:if>
 								</c:forEach>								
 							</select>						
-						</div>
+						</span>
 
 						<!--  Eventually this will be used to show columns for selected dataset -->
-						<div>
+						<span>
 							<c:forEach var="dsd" items="${dataSetDefinitions}">											
 								<c:if test="${!empty dsd.columns}">					
 									<div id="dataset-columns-${dsd.uuid}" style="display:none;">
@@ -99,9 +98,9 @@ $(document).ready(function() {
 									</div>
 								</c:if>
 							</c:forEach>						
-						</div>
-						<br/>
-						<div>					
+						</span>
+
+						<span>					
 							<select id="limit" name="limit">
 								<option <c:if test="${param.limit=='all'}">selected</c:if> value="all">Show me all records (this may take awhile)</option>
 								<option <c:if test="${param.limit=='10'}">selected</c:if> value="10">Only show the first 10 records</option>
@@ -109,20 +108,32 @@ $(document).ready(function() {
 								<option <c:if test="${param.limit=='500'}">selected</c:if> value="500">Only show the first 500 records</option>
 								<option <c:if test="${param.limit=='1000'}">selected</c:if> value="1000">Only show the first 1000 records</option>
 							</select>		
-						</div>
-						<br/><br/>
-						<div align="left">
+						</span>
+						
+
+						<span align="left">
 							<input type="submit" value="Go"/> get me some data!					
-						</div>
-					</div>
+						</span>
+						
 					</fieldset>
 				</form>	
 				
 			<c:if test="${!empty dataSet}">
-
 				<fieldset style="padding: 25px; margin-bottom: 50px; width: 100%;">
 					<legend>Step 2.  Preview your dataset</legend>
+
+					
+					<div align="right">
+						<strong>Download:</strong> 
+						<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=csv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition.class.name}">csv</a> |
+						<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=tsv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition.class.name}">tsv</a> |
+						<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xml&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition.class.name}">xml</a> |
+						<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=web&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition.class.name}">web</a> |
+						<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xls&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition.class.name}">xls</a>
+						
+					</div>
 					<div>						
+
 
 						<div style="margin-bottom: 25px; font-size: medium; width:75%;">
 							<c:if test="${dataSetDefinition != null}">
@@ -172,55 +183,7 @@ $(document).ready(function() {
 						</table>
 					</div>					
 				</fieldset>
-				
-				<fieldset style="padding: 25px; width: 100%;">
-					<legend>Step 3.  Download the dataset</legend>				
-					<div>
-
-						<div style="margin-bottom: 25px; font-size: medium; width:75%;">
-							<c:if test="${dataSetDefinition != null}">
-								<c:set var="recordCount">
-									<c:choose>
-										<c:when test="${param.limit!='all'}">${param.limit}</c:when>
-										<c:otherwise>${cohort.size}</c:otherwise>
-									</c:choose>
-								</c:set>
-							
-								In Step 2, we showed you <strong>${dataSetDefinition.name}</strong> records 
-								for <strong>${recordCount}</strong> out of <strong>${cohort.size}</strong>
-								patients in the ${cohortDefinition.name} cohort.  Now, for a limited time only,  
-								you can download the <strong>entire dataset</strong> (at no extra cost) 
-								by choosing a <strong>format</strong> and clicking the <strong>Download</strong> button.
-							</c:if>
-						</div>
-
-						<div align="left" style="padding-top:10px; font-size: medium">	
-							<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
-								method="post" action="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form">
-								<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
-								<input type="hidden" id="dataSetId" name="dataSetId" value="${dataSetDefinition.uuid}"/>
-								<input type="hidden" id="cohortId" name="cohortId" value="${cohortDefinition.uuid}"/>
-								<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
-
-								<label class="desc">Choose number of rows and your desired format</label>
-								<select name="limit">
-								 	<option value="${param.limit}" selected>Download ${param.limit} records</option>
-								 	<option value="0" selected>Download all records</option>
-								</select>
-								<select name="format">
-									<option value=""></option>
-									<option value="csv" selected>as CSV</option>
-									<option value="tsv">as TSV</option>
-									<option value="xml">as XML</option>
-									<option value="xls">as XLS</option>
-									<option value="html">as HTML</option>
-								</select>
-								<input type="submit" name="action" value="Go"/>							
-							</form>							
-						</div>
-					</div>
-				</fieldset>
-								
+												
 			</c:if>											
 				
 				

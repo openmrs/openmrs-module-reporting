@@ -17,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class ManageReportsController {
@@ -28,6 +30,18 @@ public class ManageReportsController {
 	 */
 	public ManageReportsController() { }
 
+	/*
+	@RequestMapping(value="/admin/patients/newPatient")
+	public ModelAndView newPatientOverride() { 
+		
+		ModelAndView model = new ModelAndView();
+		model.setViewName("redirect:/module/reporting/dashboard/manageDashboard.form");
+		
+		return model;
+	}
+	*/
+	
+	
     /**
      * Provide all reports, optionally including those that are retired, to a page 
      * that lists them and provides options for working with these reports.

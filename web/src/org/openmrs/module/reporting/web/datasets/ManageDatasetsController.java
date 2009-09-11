@@ -2,7 +2,6 @@ package org.openmrs.module.reporting.web.datasets;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,9 +13,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetException;
-import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
@@ -32,7 +29,6 @@ import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.report.renderer.XlsReportRenderer;
 import org.openmrs.module.report.renderer.XmlReportRenderer;
 import org.openmrs.module.report.service.ReportService;
-import org.openmrs.module.util.CohortUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;

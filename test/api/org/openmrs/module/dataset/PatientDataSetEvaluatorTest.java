@@ -22,8 +22,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicCriteria;
+import org.openmrs.logic.result.Result;
 import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
@@ -73,25 +75,28 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void shouldEvaluatePatientDataSet() throws Exception {
 
-		EvaluationContext evalContext = new EvaluationContext();
-		evalContext.setBaseCohort(CohortUtil.limitCohort(Context.getPatientSetService().getAllPatients(), 1000));
+		//EvaluationContext evalContext = new EvaluationContext();
+		//evalContext.setBaseCohort(CohortUtil.limitCohort(Context.getPatientSetService().getAllPatients(), 1000));
 		
 		// Evaluate dataset
-		PatientDataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
-		LogicDataSetColumn column = new LogicDataSetColumn("WEIGHT (KG)", String.class, "WEIGHT (KG)");
-		dataSetDefinition.addLogicColumn(column);
+		//PatientDataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
+		//LogicDataSetColumn column = new LogicDataSetColumn("WEIGHT (KG)", String.class, "WEIGHT (KG)");
+		//dataSetDefinition.addLogicColumn(column);
 		
-		DataSet dataSet = Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
-
+		//DataSet dataSet = Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
+		LogicCriteria criteria = new LogicCriteria("WEIGHT (KG)").last();
+		Result result = Context.getLogicService().eval(new Patient(1448), criteria);
+		
+		log.info("result: " + result.toString());
 		// Build report
-        ReportData reportData = new ReportData();
-        Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
-        dataSets.put("patient", dataSet);
-        reportData.setDataSets(dataSets);
+        //ReportData reportData = new ReportData();
+        //Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
+        //dataSets.put("patient", dataSet);
+        //reportData.setDataSets(dataSets);
         
         // Render report
-        FileOutputStream fileOutputStream = new FileOutputStream(new File("/home/jmiranda/Workspace/module-reporting-core/patient.csv"));        
-        new CsvReportRenderer().render(reportData, null, fileOutputStream);
+        //FileOutputStream fileOutputStream = new FileOutputStream(new File("/home/jmiranda/Workspace/module-reporting-core/patient.csv"));        
+        //new CsvReportRenderer().render(reportData, null, fileOutputStream);
 		
 	}
 	
