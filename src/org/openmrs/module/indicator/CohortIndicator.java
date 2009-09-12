@@ -15,7 +15,6 @@ package org.openmrs.module.indicator;
 
 import java.util.Map;
 
-import org.openmrs.logic.LogicCriteria;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.aggregation.Aggregator;
@@ -31,7 +30,7 @@ public class CohortIndicator extends BaseIndicator {
 
     private Mapped<? extends CohortDefinition> cohortDefinition;
     private Class<? extends Aggregator> aggregator;
-    private LogicCriteria logicCriteria;
+    private String logicExpression;
 
     //***** CONSTRUCTORS *****
     
@@ -51,12 +50,12 @@ public class CohortIndicator extends BaseIndicator {
      * @param logicCriteria
      * @param aggregator
      */
-    public CohortIndicator(String name, String description, Mapped<? extends CohortDefinition> cohortDefinition, LogicCriteria logicCriteria, Class<? extends Aggregator> aggregator) { 
+    public CohortIndicator(String name, String description, Mapped<? extends CohortDefinition> cohortDefinition, String logicExpression, Class<? extends Aggregator> aggregator) { 
     	super();
     	this.setName(name);
     	this.setDescription(description);
     	this.cohortDefinition = cohortDefinition;
-    	this.logicCriteria = logicCriteria;
+    	this.logicExpression = logicExpression;
     	this.aggregator = aggregator;
     }
 	
@@ -82,22 +81,22 @@ public class CohortIndicator extends BaseIndicator {
     public void setCohortDefinition(CohortDefinition cohortDefinition, Map<String, Object> mappings) {
     	this.cohortDefinition = new Mapped<CohortDefinition>(cohortDefinition, mappings);
     }
-	
-    /**
-     * @return the logicCriteria
-     */
-    public LogicCriteria getLogicCriteria() {
-    	return logicCriteria;
-    }
-	
-    /**
-     * @param logicCriteria the logicCriteria to set
-     */
-    public void setLogicCriteria(LogicCriteria logicCriteria) {
-    	this.logicCriteria = logicCriteria;
-    }
     
     /**
+	 * @return the logicExpression
+	 */
+	public String getLogicExpression() {
+		return logicExpression;
+	}
+
+	/**
+	 * @param logicExpression the logicExpression to set
+	 */
+	public void setLogicExpression(String logicExpression) {
+		this.logicExpression = logicExpression;
+	}
+
+	/**
      * @return the aggregator
      */
     public Class<? extends Aggregator> getAggregator() {

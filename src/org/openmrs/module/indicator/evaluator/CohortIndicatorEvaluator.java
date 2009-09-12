@@ -21,6 +21,7 @@ import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.logic.LogicCriteria;
 import org.openmrs.logic.LogicException;
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
@@ -63,9 +64,10 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 		}
 		
 		// Evaluate Logic Criteria
-    	if (cid.getLogicCriteria() != null) {
+    	if (cid.getLogicExpression() != null) {
     		try {
-    			Map<Integer, Result> logicResults = Context.getLogicService().eval(c, cid.getLogicCriteria());
+    			LogicCriteria criteria = Context.getLogicService().parseString(cid.getLogicExpression());
+    			Map<Integer, Result> logicResults = Context.getLogicService().eval(c, criteria);
     			for (Integer memberId : logicResults.keySet()) {
     				ind.addCohortValue(memberId, logicResults.get(memberId).toNumber());
     			}
