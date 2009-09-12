@@ -35,6 +35,13 @@ public class CohortIndicatorAndDimensionResult implements IndicatorResult<Cohort
 		else
 			return parentResult.getValue();
     }
+	
+	public Cohort getCohort() {
+		if (appliedCohorts.size() > 0)
+			return parentResult.getCohortForSubset(appliedCohorts.values().toArray(new Cohort[appliedCohorts.size()]));
+		else
+			return parentResult.getCohort();
+    }
 
 	public EvaluationContext getContext() {
 	    return context;

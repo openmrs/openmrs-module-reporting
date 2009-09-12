@@ -17,6 +17,7 @@ import org.openmrs.module.dataset.DataSetException;
 import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
+import org.openmrs.module.dataset.definition.JdbcDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -144,6 +145,28 @@ public class ManageDatasetsController {
     	return "redirect:/module/reporting/datasets/editDataSet.form?uuid=" + uuid;
     }
 	
+    
+    /**
+     * Adds a column to the given dataset.  
+     * @return
+     */
+    @RequestMapping("/module/reporting/datasets/addSqlColumn")
+    public String addSqlColumn(
+    		@RequestParam(required=false, value="id") Integer id,
+    		@RequestParam(required=false, value="uuid") String uuid,
+            @RequestParam(required=false, value="type") String type,
+    		@RequestParam("sqlQuery") String sqlQuery,
+    		ModelMap model) {
+
+    	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, type, id);
+    	if (dataSetDefinition instanceof JdbcDataSetDefinition) { 
+    		JdbcDataSetDefinition instance = (JdbcDataSetDefinition) dataSetDefinition;
+    		instance.setSqlQuery(sqlQuery);
+    		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(instance);
+    	}    	   
+    	
+    	return "redirect:/module/reporting/datasets/editDataSet.form?uuid=" + uuid;
+    }    
 	
     
     /**

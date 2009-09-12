@@ -46,17 +46,20 @@ $(document).ready(function() {
 	function noop() { 
 		alert("this is a no op");
 	}
+
+	$('#save-sql-column-button').click(function(event){
+		$("#add-sql-column-form").submit();
+		$("#dataset-column-dialog").dialog('close');		
+	});
+	$('#cancel-sql-column-button').click(function(event){
+		window.location=window.location;
+	});
+
 	
-	// Redirect to the listing page
 	$('#save-logic-column-button').click(function(event){
 		$("#add-logic-column-form").submit();
 		$("#dataset-column-dialog").dialog('close');		
-	
-		//window.location=window.location;
-		//'<c:url value="/module/reporting/datasets/editDataSet.form"/>?uuid=${dataSetDefinition.uuid}';
 	});
-	
-	// Redirect to the listing page
 	$('#cancel-logic-column-button').click(function(event){
 		window.location=window.location;
 	});
@@ -246,6 +249,7 @@ $(document).ready(function() {
 	<div id="dataset-column-tabs" class="ui-tabs-hide">			
 		<ul>
 			<li><a href="#dataset-column-logic-tab"><span>Logic</span></a></li>
+			<li><a href="#dataset-column-sql-tab"><span>SQL</span></a></li>			
 			<li><a href="#dataset-column-concept-tab"><span>Concept</span></a></li>			
 		</ul>
 		<div id="dataset-column-logic-tab">	
@@ -280,8 +284,33 @@ $(document).ready(function() {
 				</form>			
 			</div>
 		</div>	
-		<div id="dataset-column-concept-tab">	
-			
+		<div id="dataset-column-sql-tab">	
+			<div id="sqlColumn">
+				<c:url var="actionUrl" value="/module/reporting/datasets/addSqlColumn.form"/>
+				<form id="add-sql-column-form" name="add-sql-column-form" action="${actionUrl}" class="wufoo topLabel" method="post">
+					
+					<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
+					<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
+					<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
+				
+					<ul>		
+						<li>
+							<label class="desc" for="sqlQuery"><spring:message code="reporting.columnValue"/></label>
+							<span>		
+								<input type="text" name="sqlQuery" size="30" />		
+							</span> 
+						</li>				
+						<li>
+							<div align="center">
+								<input id="save-sql-column-button" type="button" value="Add"/>
+								<input id="cancel-sql-column-button" type="button" value="Cancel"/>
+							</div>
+						</li>
+					</ul>
+				</form>			
+			</div>
+		</div>	
+		<div id="dataset-column-concept-tab">				
 			<div id="conceptColumn">
 				<form id="datasetColumnForm" name="datasetColumnForm" class="wufoo topLabel" method="post" 
 					action="${pageContext.request.contextPath}/module/reporting/datasets/addConceptColumn.form">

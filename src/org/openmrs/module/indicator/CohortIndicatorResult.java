@@ -35,7 +35,7 @@ public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
     private CohortIndicator indicator;
     private Map<CohortDimension, String> dimensions;
     private EvaluationContext context;
-    private Map<Integer, Number> cohortValues = new HashMap<Integer, Number>();
+    private Map<Integer, Number> cohortValues = new HashMap<Integer, Number>();  // patient id -> logic value or 1
 
     //***** CONSTRUCTORS *****
     
@@ -58,6 +58,12 @@ public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
     	return AggregationUtil.aggregate(cohortValues.values(), aggregator);
     }
     
+    /**
+     * Intended to be used when you are breaking this indicator result down by dimensions
+     * 
+     * @param filters
+     * @return
+     */
 	public Number getValueForSubset(Cohort... filters) {
 		if (cohortValues == null)
     		return null;
@@ -83,7 +89,19 @@ public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
     }
     
     public Cohort getCohort() {
+    	if (cohortValues == null)
+    		return null;
     	return new Cohort(getCohortValues().keySet());
+    }
+    
+    public Cohort getCohortForSubset(Cohort... filters) {
+    	if (cohortValues == null)
+    		return null;
+    	Cohort ret = new Cohort(getCohortValues().keySet());
+    	for (Cohort filter : filters) {
+    		ret = Cohort.intersect(ret, filter);
+    	}
+    	return ret;
     }
     
 	/** 
