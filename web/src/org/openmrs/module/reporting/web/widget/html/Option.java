@@ -3,7 +3,7 @@ package org.openmrs.module.reporting.web.widget.html;
 /**
  * Represents a Coded Option
  */
-public class Option extends Label {
+public class Option extends Label implements Comparable<Option> {
 	
 	//****** Properties ******
 	private String code;
@@ -34,6 +34,13 @@ public class Option extends Label {
     	this.group = group;
     }
 	
+	/** 
+	 * @see Comparable#compareTo(Object)
+	 */
+	public int compareTo(Option o) {
+		return this.getLabel().compareTo(o.getLabel());
+	}
+
 	//***** Property Access *****
 	
 	/**
