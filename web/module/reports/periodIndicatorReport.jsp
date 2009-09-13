@@ -79,10 +79,11 @@
 													</td>
 													<td>
 														<select name="dimensionOption_${dim.key}">
-															<option value="">*</option>
+															<option value="">all</option>
 															<c:forEach var="dimOpt" items="${dim.value.parameterizable.cohortDefinitions}">
 																<option value="${dimOpt.key}">${dimOpt.key}</option>
 															</c:forEach>
+															<option value="?">unclassified</option>
 														</select>
 													</td>
 												</tr>
