@@ -33,8 +33,8 @@ import org.openmrs.module.report.ReportDefinition;
 /**
  * A Default Renderer Implementation that aims to support all ReportDefinitions
  */
-@Handler
-@DisplayLabel(labelDefault="Indicator Report")
+//@Handler
+//@DisplayLabel(labelDefault="Indicator Report")
 public class IndicatorReportRenderer extends AbstractReportRenderer {
 
 	/**

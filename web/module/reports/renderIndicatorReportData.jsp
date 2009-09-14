@@ -11,6 +11,7 @@
 	.errors { margin-left:200px; margin-top:20px; margin-bottom:20px; font-family:Verdana,Arial,sans-serif; font-size:12px; }
 	#report-schema-basic-tab { margin: 50px; }
 	#wrapper { margin-top: 50px; }
+	td.value { border: 1px solid black; } 
 </style>
 
 
@@ -19,33 +20,37 @@
 			<div id="wrapper">
 			
 				<c:forEach var="dataSetMapEntry" items="${__openmrs_report_data.dataSets}">
-					<table border="1">					
+					<table cellpadding="2" width="50%" style="border: 1px solid black">					
 						<c:forEach var="dataSetRow" items="${dataSetMapEntry.value.iterator}" varStatus="varStatus">
 							<c:if test="${varStatus.first}">
 								<tr>
-									<td colspan="3">
+									<th colspan="4" align="center">
 										<h2>${dataSetMapEntry.value.definition.name}<h2>
-									</td>
+									</th>
 								</tr>
 								<tr>
-									<th>Key</th>
-									<th>Indicator</th>
-									<th>Value</th>
+									<th align="left" colspan="2">Indicator</th>
+									<th></th>
+									<th></th>
 								</tr>
 							</c:if>
 								<c:forEach var="dataSetCol" items="${dataSetRow.columnValues}">
 									<tr>
-									<c:url var="url" value="/module/reporting/dashboard/manageCohortDashboard.form?cohort=none&indicator=${dataSetCol.key.indicator.parameterizable.uuid}"/>
-										<td>
+									<!-- 
+									 <c:url var="url" value="/module/reporting/dashboard/manageCohortDashboard.form?cohort=none&indicator=${dataSetCol.key.indicator.parameterizable.uuid}"/>
+									-->
+									<c:url var="url" value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetId=${dataSetMapEntry.value.definition.uuid}&savedColumnKey=${dataSetCol.key.columnKey}"/>
+										<td align="left">
 											${dataSetCol.key.columnKey}
 										</td>
-										<td>
+										<td align="left">
 											${dataSetCol.key.displayName}
 										</td>
-										<td>
+										<td align="center" class="value" width="1%" nowrap>
 											<c:set var="result" value="${dataSetCol.value}"/>
 											<a href="${url}">${result.value}</a>
-											&nbsp;&nbsp;&nbsp;
+										</td>
+										<td align="center">
 											<a href="#" onClick="showReportingDialog({ title: 'Indicator Info', url: '${pageContext.request.contextPath}/module/reporting/indicators/indicatorInfo.form?uuid=${result.definition.uuid}&location=${result.context.parameterValues['location'].locationId}' });">
 												<img src="${pageContext.request.contextPath}/images/info.gif" border="0"/>
 											</a>

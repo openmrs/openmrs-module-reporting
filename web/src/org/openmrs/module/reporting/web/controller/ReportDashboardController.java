@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -14,14 +16,19 @@ import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.MapDataSet;
+import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.util.CohortUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -51,6 +58,67 @@ public class ReportDashboardController {
     	binder.registerCustomEditor(Date.class, new CustomDateEditor(Context.getDateFormat(), false)); 
     }    
 
+    
+    /**
+     * 
+     * @param cohort
+     * @param model
+     * @return
+     */
+    @RequestMapping("/module/reporting/dashboard/viewCohortDataSet")
+    public String viewCohortDataSet(
+    		@RequestParam(required=false, value="savedDataSetId") String savedDataSetId,
+    		@RequestParam(required=false, value="savedColumnKey") String savedColumnKey,   		
+    		@RequestParam(required=false, value="applyDataSetId") String applyDataSetId,
+    		HttpServletRequest request,
+    		ModelMap model) { 
+    	    
+    	
+		ReportData reportData = (ReportData) request.getSession().getAttribute(ReportingConstants.OPENMRS_REPORT_DATA);
+    
+		for (DataSet dataSet : reportData.getDataSets().values()) { 
+			if (dataSet.getDefinition().getUuid().equals(savedDataSetId)) { 
+				
+				MapDataSet mapDataSet = (MapDataSet) dataSet;
+				DataSetDefinition definition = (DataSetDefinition) dataSet.getDefinition();
+				DataSetColumn dataSetColumn = definition.getColumn(savedColumnKey);
+				CohortIndicatorAndDimensionResult result = (CohortIndicatorAndDimensionResult) mapDataSet.getData(dataSetColumn);	
+				Cohort selectedCohort = result.getCohort();
+				
+				model.addAttribute("selectedCohort", selectedCohort);
+				model.addAttribute("patients", Context.getPatientSetService().getPatients(selectedCohort.getMemberIds()));		
+				
+				// Evaluate the default patient dataset definition
+				DataSetDefinition dsd = null; 
+				try {
+					
+					dsd = Context.getService(DataSetDefinitionService.class).getDataSetDefinition(applyDataSetId, null);
+					
+				} catch (Exception e) { 
+					log.error("exception getting dataset definition", e);					
+				}
+				
+				if (dsd == null) 
+					dsd = new PatientDataSetDefinition();
+				
+				EvaluationContext evalContext = new EvaluationContext();
+				evalContext.setBaseCohort(selectedCohort);
+				
+				DataSet patientDataSet = Context.getService(DataSetDefinitionService.class).evaluate(dsd, evalContext);
+				model.addAttribute("dataSet", patientDataSet);
+		    	model.addAttribute("dataSetDefinition", dsd);
+				
+			}
+		}
+    	// Add all dataset definition to the request (allow user to choose)
+    	model.addAttribute("dataSetDefinitions", 
+    			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false)); 			
+		
+    	return "/module/reporting/dashboard/cohortDataSetDashboard";
+    	
+    }
+    
+    
     /**
      * 
      * @param cohort

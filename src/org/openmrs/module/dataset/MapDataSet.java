@@ -82,6 +82,15 @@ public class MapDataSet<T> implements DataSet<T> {
     	}
     }
 
+	/**
+     * Gets a Data Element from this DataSet
+     * @param key - The column key to add this element to
+     * @param dataElement - The data to add
+     */
+    public T getData(DataSetColumn column) {
+    	return data.getColumnValue(column);
+    }    
+    
 	/** 
 	 * @see Object#toString()
 	 */
