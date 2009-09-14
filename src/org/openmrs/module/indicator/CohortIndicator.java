@@ -59,6 +59,12 @@ public class CohortIndicator extends BaseIndicator {
     	this.aggregator = aggregator;
     }
 	
+    //***** Methods *****
+    
+    public String toString() {
+    	return getName();
+    }
+    
     //***** Property Access *****
 
 	/**

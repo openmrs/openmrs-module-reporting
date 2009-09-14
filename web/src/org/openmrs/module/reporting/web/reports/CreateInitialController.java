@@ -14,7 +14,6 @@ import org.openmrs.module.indicator.dimension.Dimension;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.util.ReportUtil;
 import org.openmrs.module.report.util.ReportUtil.InitialDataElement;
-import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,42 +31,6 @@ public class CreateInitialController {
 
 	@RequestMapping(method=RequestMethod.GET)
 	public void showOptions(ModelMap model) {
-		/*
-		{
-			List<CohortDefinition> available = new ArrayList<CohortDefinition>();
-			List<CohortDefinition> already = new ArrayList<CohortDefinition>();
-			Set<String> alreadyNames = new HashSet<String>();
-			for (CohortDefinition def : Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(true)) {
-				alreadyNames.add(def.getName());
-			}
-			for (CohortDefinition def : ReportUtil.getInitialCohortDefinitions()) {
-				if (alreadyNames.contains(def.getName()))
-					already.add(def);
-				else
-					available.add(def);
-			}
-			model.addAttribute("cohortDefinitions", available);
-			model.addAttribute("cohortDefinitionsAlready", already);
-		}
-		{
-			List<Dimension> available = new ArrayList<Dimension>();
-			List<Dimension> already = new ArrayList<Dimension>();
-			Set<String> alreadyNames = new HashSet<String>();
-			for (Dimension def : Context.getService(IndicatorService.class).getAllDimensions(true)) {
-				alreadyNames.add(def.getName());
-			}
-			for (Dimension def : ReportUtil.getInitialDimensions()) {
-				if (alreadyNames.contains(def.getName()))
-					already.add(def);
-				else
-					available.add(def);
-			}
-			model.addAttribute("dimensions", available);
-			model.addAttribute("dimensionsAlready", already);
-		}
-		
-		model.addAttribute("indicators", ReportUtil.getInitialIndicators());
-		*/
 		Set<String> alreadyNames = new HashSet<String>();
 		for (CohortDefinition def : Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(true)) {
 			alreadyNames.add(CohortDefinition.class.getName() + " " + def.getName());

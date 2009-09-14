@@ -5,7 +5,16 @@
 
 <openmrs:htmlInclude file="/moduleResources/reporting/scripts/flot/jquery.flot.js"/>
 
-<h2>Indicator History</h2>
+<h2>
+	<c:choose>
+		<c:when test="${fn:length(query.indicators) == 1}">
+			${query.indicators[0].name}
+		</c:when>
+		<c:otherwise>
+			History of Indicators
+		</c:otherwise>
+	</c:choose>
+</h2>
 
 <div style="float: right; border: 1px black solid; padding: 20px">
 	<form:form method="get" commandName="query" action="indicatorHistoryOptions.form">

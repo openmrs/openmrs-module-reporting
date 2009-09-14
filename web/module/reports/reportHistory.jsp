@@ -45,10 +45,10 @@
 		<c:forEach var="r" items="${complete}">
 			<c:choose>
 				<c:when test="${isWebRenderer[r]}">
-					<c:set var="openImageFilename" value="open.gif"/>
+					<c:set var="openImageFilename" value="/moduleResources/reporting/images/report_icon.gif"/>
 				</c:when>
 				<c:otherwise>
-					<c:set var="openImageFilename" value="file.gif"/>
+					<c:set var="openImageFilename" value="/images/file.gif"/>
 				</c:otherwise>
 			</c:choose>
 			<tr valign="baseline">
@@ -67,7 +67,7 @@
  				</td>
 				<td valign="middle">
 					<button onClick="window.location='reportHistoryOpen.form?uuid=${r.uuid}';">
-						<img src='<c:url value="/images/${openImageFilename}"/>' border="0" width="32" height="32"/>
+						<img src='<c:url value="${openImageFilename}"/>' border="0" width="32" height="32"/>
 						<br/>
 						${shortNames[r]}
 					</button>

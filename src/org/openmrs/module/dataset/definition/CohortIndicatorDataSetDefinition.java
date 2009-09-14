@@ -127,7 +127,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
         public Map<String, String> getDimensionOptions() {
         	return dimensionOptions;
         }
-		
+        		
 	}
 	
 }

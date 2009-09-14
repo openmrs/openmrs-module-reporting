@@ -100,7 +100,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			wb.write(out);
 		}
 		catch (Exception e) {
-			throw new RenderingException("Unable to render results due to: " + e);
+			throw new RenderingException("Unable to render results due to: " + e, e);
 		}
 		finally {
 			if (is != null) {

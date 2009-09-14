@@ -32,16 +32,16 @@
 	<c:forEach var="r" items="${model.completedRequests}" begin="0" end="${howManyRows}">
 		<c:choose>
 			<c:when test="${model.isWebRenderer[r]}">
-				<c:set var="openImageFilename" value="open.gif"/>
+				<c:set var="openImageFilename" value="/moduleResources/reporting/images/report_icon.gif"/>
 			</c:when>
 			<c:otherwise>
-				<c:set var="openImageFilename" value="file.gif"/>
+				<c:set var="openImageFilename" value="/images/file.gif"/>
 			</c:otherwise>
 		</c:choose>
 		<tr valign="top">
 			<td style="border-bottom: 1px #c0c0c0 solid; white-space: nowrap;">
 				<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistoryOpen.form?uuid=${r.uuid}">
-					<img src='<c:url value="/images/${openImageFilename}"/>' border="0" width="16" height="16"/>
+					<img src='<c:url value="${openImageFilename}"/>' border="0" width="16" height="16"/>
 					${r.reportDefinition.name}
 				</a>
 				<br/>

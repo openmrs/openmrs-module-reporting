@@ -1,21 +1,24 @@
 package org.openmrs.module.report.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmrs.Concept;
 import org.openmrs.Program;
+import org.openmrs.api.PatientSetService.GroupMethod;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.PeriodCohortIndicator;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
@@ -91,6 +94,27 @@ public class ReportUtil {
 				}
 			});
 		}
+		try {
+			String temp = Context.getAdministrationService().getGlobalProperty("dashboard.regimen.displayDrugSetIds");
+			if (temp != null) {
+				for (String name : temp.split(",")) {
+					final Concept drugSet = Context.getConceptService().getConceptByIdOrName(name);
+					if (drugSet != null) {
+						ret.add(new InitialDataElement(CohortDefinition.class, "Taking any " + drugSet.getBestName(Context.getLocale()) + " Between Dates") {
+							public void apply() {
+								DrugOrderCohortDefinition def = new DrugOrderCohortDefinition();
+								def.setAnyOrAll(GroupMethod.ANY);
+								def.setDrugSets(Collections.singletonList(drugSet));
+								def.addParameter(new Parameter("sinceDate", "sinceDate", Date.class));
+								def.addParameter(new Parameter("untilDate", "untilDate", Date.class));
+								def.setName("Taking any " + drugSet.getBestName(Context.getLocale()) + " Between Dates");
+								Context.getService(CohortDefinitionService.class).saveCohortDefinition(def);
+							}
+						});
+					}
+				}
+			}
+		} catch (Exception ex) { }
 		/*
 		ret.add(new InitialDataElement(CohortDefinition.class, "") {
 			public void apply() {

@@ -17,7 +17,7 @@ import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 
-public class CohortIndicatorDataSetEvaluator2Test extends BaseModuleContextSensitiveTest {
+public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void shouldEvaluteIndicatorWithNoParameters() throws Exception {

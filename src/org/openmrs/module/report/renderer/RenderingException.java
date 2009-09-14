@@ -29,4 +29,8 @@ public class RenderingException extends APIException {
 	public RenderingException(String message) {
 		super(message);
 	}
+	
+	public RenderingException(String message, Throwable t) {
+		super(message, t);
+	}
 }

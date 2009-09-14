@@ -179,6 +179,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 				if (!url.startsWith("/"))
 					url = "/" + url;
 				url = request.getContextPath() + url;
+				request.getSession().setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, url);
 				return new ModelAndView(new RedirectView(url));
 			}
 		}

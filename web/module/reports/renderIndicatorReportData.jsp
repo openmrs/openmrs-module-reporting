@@ -46,7 +46,7 @@
 										</td>
 										<td align="center" class="value" width="1%" nowrap>
 											<c:set var="result" value="${dataSetCol.value}"/>
-											<a style="text-decoration: underline" href="${url}" target="_blank">${result.value}</a>
+											<a style="text-decoration: underline" href="${url}">${result.value}</a>
 										</td>
 										<td align="center">
 											<a href="#" onClick="showReportingDialog({ title: 'Indicator Info', url: '${pageContext.request.contextPath}/module/reporting/indicators/indicatorInfo.form?uuid=${result.definition.uuid}&location=${result.context.parameterValues['location'].locationId}' });">

@@ -36,7 +36,11 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	 * Returns the template resource
 	 */
 	public ReportDesignResource getTemplate(ReportDesign design) {
-		return design.getResourceByName("template");
+		ReportDesignResource ret = design.getResourceByName("template");
+		if (ret == null) {
+			ret = design.getResources().iterator().next();
+		}
+		return ret;
 	}
 	
 	/** 
@@ -89,13 +93,13 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 		// Add row to replacement data
 		for (Object entry : row.getColumnValues().entrySet()) {
 			Map.Entry<DataSetColumn, Object> e = (Map.Entry<DataSetColumn, Object>) entry;
-			String replacementValue = "";
+			Object replacementValue = "";
 			if (e.getValue() != null) { 
 				if (e.getValue() instanceof Cohort) {
-					replacementValue = Integer.toString(((Cohort) e.getValue()).size());
+					replacementValue = new Integer(((Cohort) e.getValue()).size());
 				} 
 				else if (e.getValue() instanceof IndicatorResult<?>) {
-					replacementValue = (Double.toString(((IndicatorResult<?>) e.getValue()).getValue().doubleValue()));
+					replacementValue = new Double(((IndicatorResult<?>) e.getValue()).getValue().doubleValue());
 				}
 				else {
 					replacementValue = e.getValue().toString();

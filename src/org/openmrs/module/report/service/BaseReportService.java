@@ -48,6 +48,8 @@ import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.serialization.SerializationException;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsUtil;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.util.StringUtils;
 
 /**
@@ -461,10 +463,23 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	    }
 	    return reportRequestHistory;
     }
+	
+	private TaskExecutor executor;
 
-	private void saveReportToFile(Report report) {
+	private void saveReportToFile(final Report report) {
+		if (executor == null)
+			executor = new SimpleAsyncTaskExecutor();
 		saveToFileHelper(report.getRequest(), report.getRequest().getUuid() + ".request");
-		saveToFileHelper(report, report.getRequest().getUuid() + ".report");
+		executor.execute(new Runnable() {
+			public void run() {
+				Context.openSession();
+				try {
+					saveToFileHelper(report, report.getRequest().getUuid() + ".report");
+				} finally {
+					Context.closeSession();
+				}
+            }
+		});
 	}
 	
 	private ReportRequest loadRequestFromFile(String requestUuid) {

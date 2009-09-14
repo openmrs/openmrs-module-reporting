@@ -36,5 +36,6 @@ public class ReportingConstants {
 	
 	public static final String OPENMRS_REPORT_DATA = "__openmrs_report_data";
 	public static final String OPENMRS_REPORT_ARGUMENT = "__openmrs_report_argument";
+	public static final String OPENMRS_LAST_REPORT_URL = "__openmrs_last_report_url";
 
 }

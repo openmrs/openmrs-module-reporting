@@ -21,6 +21,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class ReportHistoryController {
@@ -92,7 +94,7 @@ public class ReportHistoryController {
 	}
 	
 	@RequestMapping("/module/reporting/reports/reportHistoryOpen")
-	public String openFromHistory(@RequestParam("uuid") String uuid,
+	public ModelAndView openFromHistory(@RequestParam("uuid") String uuid,
 	                            HttpServletResponse response,
 	                            WebRequest request) throws IOException {
 		Report report = Context.getService(ReportService.class).getReportByUuid(uuid);
@@ -111,7 +113,10 @@ public class ReportHistoryController {
 			String url = ((WebReportRenderer) rm.getRenderer()).getLinkUrl(report.getRequest().getReportDefinition());
 			if (!url.startsWith("/"))
 				url = "/" + url;
-			return "redirect:" + url;
+			url = request.getContextPath() + url;
+			request.setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, url, WebRequest.SCOPE_SESSION);
+			//return "redirect:" + url;
+			return new ModelAndView(new RedirectView(url));
 		}
 	}
 }
