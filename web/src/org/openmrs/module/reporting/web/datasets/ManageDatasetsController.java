@@ -331,7 +331,7 @@ public class ManageDatasetsController {
 	    			Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(cohortId));    		    	
 
 	    	// If we don't have a cohort yet, just get all patients
-	    	if (cohort == null || cohortId.equals("all")) 
+	    	if (cohort == null || cohortId.equals("0")) 
 	    		cohort = Context.getPatientSetService().getAllPatients();
 
 	    	

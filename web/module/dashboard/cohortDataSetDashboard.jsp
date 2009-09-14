@@ -145,6 +145,17 @@ $(function() {
 								</c:forEach>								
 							</select><!-- <a href="#" id="show-columns">Show Columns</a> -->
 						</span>
+						
+						<span>					
+							<select id="limit" name="limit">
+								<option <c:if test="${param.limit=='0'}">selected</c:if> value="all">Show me all records (this may take awhile)</option>
+								<option <c:if test="${param.limit=='10'}">selected</c:if> value="10">Only show the first 10 records</option>
+								<option <c:if test="${param.limit=='100'}">selected</c:if> value="100">Only show the first 100 records</option>
+								<option <c:if test="${param.limit=='500'}">selected</c:if> value="500">Only show the first 500 records</option>
+								<option <c:if test="${param.limit=='1000'}">selected</c:if> value="1000">Only show the first 1000 records</option>
+							</select>		
+						</span>
+						
 						<span align="left">
 							<input type="submit" value="Go"/> get me some data!					
 						</span>
@@ -156,8 +167,6 @@ $(function() {
 			<c:if test="${!empty dataSet}">
 				<fieldset style="padding: 25px; margin-bottom: 50px; width: 100%;">
 					<legend>Step 2.  Preview your dataset</legend>
-
-						Returned <strong>${selectedCohort.size}</strong> patients.
 	
 						<table id="dataset-preview-table" class="display">
 							<thead>

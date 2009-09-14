@@ -70,6 +70,7 @@ public class ReportDashboardController {
     		@RequestParam(required=false, value="savedDataSetId") String savedDataSetId,
     		@RequestParam(required=false, value="savedColumnKey") String savedColumnKey,   		
     		@RequestParam(required=false, value="applyDataSetId") String applyDataSetId,
+    		@RequestParam(required=false, value="limit") Integer limit,
     		HttpServletRequest request,
     		ModelMap model) { 
     	    
@@ -102,6 +103,8 @@ public class ReportDashboardController {
 					dsd = new PatientDataSetDefinition();
 				
 				EvaluationContext evalContext = new EvaluationContext();
+				if (limit != null && limit > 0) 
+					evalContext.setLimit(limit);
 				evalContext.setBaseCohort(selectedCohort);
 				
 				DataSet patientDataSet = Context.getService(DataSetDefinitionService.class).evaluate(dsd, evalContext);
