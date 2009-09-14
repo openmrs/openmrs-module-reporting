@@ -6,7 +6,7 @@
 	jqUiDecoration();
 </script>
 
-<c:if test="${__openmrs_report_data!=null}">
+<c:if test="${ __openmrs_report_data != null && __openmrs_hide_report_link == null }">
 	<div style="float: right; border: 1px solid #8FABC7; background-color: white; padding: 10px; position: absolute; right: 0px; top: 50px; z-index: 1">
 		<div align="center">
 			<a href="${__openmrs_last_report_url}">

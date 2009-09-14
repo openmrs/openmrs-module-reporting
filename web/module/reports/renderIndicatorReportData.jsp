@@ -1,5 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<c:set var="__openmrs_hide_report_link" value="true"/>
 <%@ include file="../run/localHeader.jsp"%>
 
 <style type="text/css">
@@ -13,7 +14,6 @@
 	#report-schema-basic-tab { margin: 50px; }
 	#wrapper { margin-top: 50px; }
 </style>
-
 
 <div id="page">
 	<div id="container">
