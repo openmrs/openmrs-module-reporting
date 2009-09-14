@@ -136,6 +136,64 @@ public class ReportUtil {
 			    Context.getService(IndicatorService.class).saveDimension(gender);
 			}
 		});
+		try {
+			String temp = Context.getAdministrationService().getGlobalProperty("dashboard.regimen.displayDrugSetIds");
+			if (temp != null) {
+				for (String name : temp.split(",")) {
+					final Concept drugSet = Context.getConceptService().getConceptByIdOrName(name);
+					if (drugSet != null) {
+						ret.add(new InitialDataElement(Indicator.class, "On " + drugSet.getBestName(Context.getLocale()) + " During Period") {
+							public void apply() {
+								CohortDefinition cd = getCohortDefinition("Taking any " + drugSet.getBestName(Context.getLocale()) + " Between Dates");
+								if (cd == null) {
+									throw new IllegalArgumentException("Cannot find drug cohort definition dimension to do drug indicators");
+								}
+								
+								Map<String, Object> mappings = new HashMap<String, Object>();
+								mappings.put("sinceDate", "${startDate}");
+								mappings.put("untilDate", "${endDate}");
+								PeriodCohortIndicator ind = new PeriodCohortIndicator();
+								ind.setName("On " + drugSet.getBestName(Context.getLocale()) + " During Period");
+								ind.setCohortDefinition(new Mapped<CohortDefinition>(cd, mappings));
+								Context.getService(IndicatorService.class).saveIndicator(ind);
+							}
+						});
+						ret.add(new InitialDataElement(Indicator.class, "On " + drugSet.getBestName(Context.getLocale()) + " At Start of Period") {
+							public void apply() {
+								CohortDefinition cd = getCohortDefinition("Taking any " + drugSet.getBestName(Context.getLocale()) + " Between Dates");
+								if (cd == null) {
+									throw new IllegalArgumentException("Cannot find drug cohort definition dimension to do drug indicators");
+								}
+								
+								Map<String, Object> mappings = new HashMap<String, Object>();
+								mappings.put("sinceDate", "${startDate}");
+								mappings.put("untilDate", "${startDate}");
+								PeriodCohortIndicator ind = new PeriodCohortIndicator();
+								ind.setName("On " + drugSet.getBestName(Context.getLocale()) + " At Start of Period");
+								ind.setCohortDefinition(new Mapped<CohortDefinition>(cd, mappings));
+								Context.getService(IndicatorService.class).saveIndicator(ind);
+							}
+						});
+						ret.add(new InitialDataElement(Indicator.class, "On " + drugSet.getBestName(Context.getLocale()) + " At End of Period") {
+							public void apply() {
+								CohortDefinition cd = getCohortDefinition("Taking any " + drugSet.getBestName(Context.getLocale()) + " Between Dates");
+								if (cd == null) {
+									throw new IllegalArgumentException("Cannot find drug cohort definition dimension to do drug indicators");
+								}
+								
+								Map<String, Object> mappings = new HashMap<String, Object>();
+								mappings.put("sinceDate", "${endDate}");
+								mappings.put("untilDate", "${endDate}");
+								PeriodCohortIndicator ind = new PeriodCohortIndicator();
+								ind.setName("On " + drugSet.getBestName(Context.getLocale()) + " At End of Period");
+								ind.setCohortDefinition(new Mapped<CohortDefinition>(cd, mappings));
+								Context.getService(IndicatorService.class).saveIndicator(ind);
+							}
+						});
+					}
+				}
+			}
+		} catch (Exception ex) { }
 		for (final Program program : Context.getProgramWorkflowService().getAllPrograms()) {
 			ret.add(new InitialDataElement(Indicator.class, "Cumulative " + program.getName() + " enrollment at start") {
 				public void apply() {

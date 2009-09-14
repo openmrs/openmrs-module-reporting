@@ -7,48 +7,60 @@
 	.indInfo td + td { text-align: left; font-size: 1.0em; }
 </style>
 
-<h2>${indicator.name}</h2>
-<table class="indInfo" cellpadding="5">
-	<tr valign="baseline">
-		<td>Description</td>
-		<td><span style="font-size: 1.5em">${indicator.description}</span></td>
-	</tr>
-	<tr valign="baseline">
-		<td>Parameters</td>
-		<td>
-			<c:forEach var="p" items="${indicator.parameters}">
-				${ p.name } (${p.type.simpleName})<br/>
-			</c:forEach>
-		</td>
-	</tr>
-	<c:if test="${not empty indicator.aggregator}">
-		<tr valign="baseline">
-			<td>Aggregation</td>
-			<td>${indicator.aggregator.name}</td>
+<div style="float:left">
+	<table class="indInfo">
+		<tr>
+			<td>Title</td>
+			<td><h2>${indicator.name}</h2></td>
 		</tr>
-	</c:if>
-	<c:if test="${not empty indicator.cohortDefinition}">
-		<tr valign="baseline">
-			<td>Cohort Definition</td>
+		<tr>
+			<td>Description</td>
 			<td>
-				${indicator.cohortDefinition.parameterizable.name}<br/>
-				<small>
-					<c:forEach var="m" items="${indicator.cohortDefinition.parameterMappings}">
-						${m.key}->${m.value}
-					</c:forEach>
-				</small>
+				<h4>
+					<c:if test="${empty indicator.description}">
+						None
+					</c:if>
+					${indicator.description}
+				</h4>
 			</td>
 		</tr>
-	</c:if>
-	<tr valign="baseline">
-		<td></td>
-		<td>
-			<br/>
-			<a href="#" onClick="navigateParent('${pageContext.request.contextPath}/module/reporting/indicators/indicatorHistory.form?indicators=${indicator.uuid}&location=${location.locationId}')">
-				[View History]
-			</a>
-		</td>
-	</tr>
-</table>
+	</table>
+	
+	<br/>
+	
+	<table cellpadding="10">
+		<tr valign="top">
+			<td>
+				<fieldset>
+					<legend>Cohort Definition</legend>
+					${indicator.cohortDefinition.parameterizable.name}<br/>
+					<small>
+						<c:forEach var="m" items="${indicator.cohortDefinition.parameterMappings}">
+							&nbsp;&nbsp;&nbsp;&nbsp;${m.key}->${m.value}<br/>
+						</c:forEach>
+					</small>
+				</fieldset>
+			</td>
+			<td>
+				<c:if test="${not empty indicator.aggregator}">
+						<legend>Aggregation</legend>
+						${indicator.aggregator.name}
+					</fieldset>
+				</c:if>
+				<fieldset>
+					<legend>Dimensions</legend>
+					<small>To Do</small>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div style="float:left; margin-top: 2em; margin-left: 3em">
+	<a href="#" onClick="navigateParent('${pageContext.request.contextPath}/module/reporting/indicators/indicatorHistory.form?indicators=${indicator.uuid}&location=${location.locationId}')">
+		[View last 6 months]
+	</a>
+</div>
+
 
 <%@ include file="/WEB-INF/template/footerMinimal.jsp"%>

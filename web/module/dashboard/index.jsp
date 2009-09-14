@@ -5,6 +5,7 @@
 <%@ include file="../run/localHeader.jsp"%>
 
 	<div style="float: left">
+		<openmrs:portlet url="savedReports" moduleId="reporting"/>
 		<openmrs:portlet url="reportHistory" moduleId="reporting"/>
 	</div>
 	<div style="float: left">
