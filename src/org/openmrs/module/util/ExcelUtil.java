@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.openmrs.module.report.renderer.ExcelStyleHelper;
 
 /**
  * A utility class for manipulating Excel documents via POI
@@ -39,7 +40,7 @@ public class ExcelUtil {
 	 * @param cell the cell to set
 	 * @param cellValue the value to set the cell to
 	 */
-	public static void setCellContents(HSSFCell cell, Object cellValue) {
+	public static void setCellContents(ExcelStyleHelper styleHelper, HSSFCell cell, Object cellValue) {
 		
 		if (cellValue == null) { cellValue = ""; }
 		if (!cellValue.equals(getCellContentsAsString(cell))) {
@@ -48,6 +49,7 @@ public class ExcelUtil {
 				return;
 			}
 			if (cellValue instanceof Date) {
+				cell.setCellStyle(styleHelper.getStyle("date"));
 				cell.setCellValue(((Date) cellValue));
 				return;
 			}

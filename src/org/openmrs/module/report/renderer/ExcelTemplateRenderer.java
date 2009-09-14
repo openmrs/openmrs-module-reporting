@@ -65,6 +65,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			is = new ByteArrayInputStream(r.getContents());
 			POIFSFileSystem fs = new POIFSFileSystem(is);
 			HSSFWorkbook wb = new HSSFWorkbook(fs);
+			ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
 			log.debug("New Workbook Constructed");
 			
 			HSSFSheet sheet = wb.getSheetAt(0);
@@ -92,7 +93,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			    	String contents = ExcelUtil.getCellContentsAsString(cell);
 			    	if (StringUtils.isNotEmpty(contents)) {
 			    		Object newContent = EvaluationUtil.evaluateExpression(contents, replacements, Object.class, prefix, postfix);
-			    		ExcelUtil.setCellContents(cell, newContent);
+			    		ExcelUtil.setCellContents(styleHelper, cell, newContent);
 			    	}
 				}
 			}
