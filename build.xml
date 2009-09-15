@@ -12,7 +12,6 @@
 	<!-- **                 BUILD PROPERTIES                      ** -->
 	<!-- *********************************************************** -->
 	<property environment="env"/>
-	<property file="build.properties" />
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="lib-common/ant-contrib-1.0b2.jar"/>
 	
@@ -82,13 +81,13 @@
 		</copy>
 		
 		<!--  Compile module java files -->
-		<javac destdir="build" classpathref="classpath" debug="true" debuglevel="lines,vars,source">
+		<javac destdir="build" classpathref="classpath" debug="true" target="1.5" debuglevel="lines,vars,source">
 			<src path="src/" />
 			<include name="**/*.java" />
 		</javac>
 		
 		<!--  Compile module web java files -->
-		<javac destdir="build" classpathref="classpath" debug="true" debuglevel="lines,vars,source">
+		<javac destdir="build" classpathref="classpath" debug="true" target="1.5" debuglevel="lines,vars,source">
 			<compilerarg line="-g" />
 			<src path="web/src/" />
 			<include name="**/*.java" />
