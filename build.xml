@@ -12,6 +12,7 @@
 	<!-- **                 BUILD PROPERTIES                      ** -->
 	<!-- *********************************************************** -->
 	<property environment="env"/>
+	<property file="build.properties" />
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="lib-common/ant-contrib-1.0b2.jar"/>
 	
