@@ -3,6 +3,7 @@
 
 <openmrs:require privilege="View Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportHistory.form" />
 
+<c:set var="__openmrs_hide_report_link" value="true"/>
 <%@ include file="../run/localHeader.jsp"%>
 
 <c:url var="iconFilename" value="/images/file.gif"/>
