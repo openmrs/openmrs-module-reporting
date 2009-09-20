@@ -41,6 +41,15 @@
 							"bInfo": false,
 							"bAutoWidth": false
 						} );
+						$('#previewButton').click(function(event) { 
+							showReportingDialog({ 
+								title: 'Preview Report', 
+								url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${report.uuid}&type=${report.class.name}'
+							});
+						}).height(32);
+						$('#closeButton').click(function(event) {
+							window.location = 'manageReports.form';
+						}).height(32);
 					} ); 
 				</script>
 			
@@ -145,10 +154,17 @@
 							</div>
 					
 							<br/>
-							<br/>
 							<openmrs:portlet url="mappedProperty" id="baseCohortDefinition" moduleId="reporting" 
 											 parameters="type=${report.class.name}|uuid=${report.uuid}|property=baseCohortDefinition|label=Filter|nullValueLabel=All Patients" />
-						
+							
+							<br/>
+							<button id="previewButton">
+								<img src="<c:url value="/images/play.gif"/>" border="0"/>
+								Preview
+							</button>
+							<button id="closeButton">
+								<spring:message code="general.close"/>
+							</button>
 						</td>
 						<td>
 

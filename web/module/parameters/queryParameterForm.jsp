@@ -61,62 +61,63 @@ $(document).ready(function() {
 <div id="page">
 	<div id="container">
 		<div id="wrapper">
-			<h1>${parameterizable.name}</h1>
-			<h4>${parameterizable.description}</h4>
-			
-			
-				<%-- <c:url var="postUrl" value='/module/reporting/reports/renderReport.form'/>--%>
-				<%-- <c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>--%>
-				<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
-				<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
-					<input type="hidden" name="action" value="preview"/>
-					<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
-					<input type="hidden" name="type" value="${parameterizable.class.name}"/>
-					<input type="hidden" name="format" value="${param.format}"/>
-					<input type="hidden" name="successView" value="${param.successView}"/>
+			<table>
+				<tr valign="top">
+					<td style="padding-right: 1em">
+						<h1>${parameterizable.name}</h1>
+						<h4>${parameterizable.description}</h4>
+						
+						
+						<%-- <c:url var="postUrl" value='/module/reporting/reports/renderReport.form'/>--%>
+						<%-- <c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>--%>
+						<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
+						<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
+							<input type="hidden" name="action" value="preview"/>
+							<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
+							<input type="hidden" name="type" value="${parameterizable.class.name}"/>
+							<input type="hidden" name="format" value="${param.format}"/>
+							<input type="hidden" name="successView" value="${param.successView}"/>
+							
+							<ul>								
+								<spring:hasBindErrors name="indicatorForm">  
+									<li>
+										<div class="errors"> 
+											<font color="red"> 
+												<h3><u>Please correct the following errors</u></h3>   
+												
+												<form:errors path="parameterizable"></form:errors>
+											</font>  
+										</div>
+									</li>
+								</spring:hasBindErrors>
+							</ul>	
+							<div>			
+								<c:if test="${empty parameterizable.parameters}">
+									${parameterizable.name} does not have any parameters.  
+									Click 'Run' to evaluate based on this objects properties.
+								</c:if> 
+							</div>
+							<ul>									
+								<c:forEach var="parameter" items="${parameterizable.parameters}">				
+									<li>
+										<label class="desc" for="${parameter.name}">${parameter.label}</label>
+										<div>						
+											<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
+										</div>
+									</li>						
+								</c:forEach>
+							</ul>
+						</form>	
+					</td>
 					
-					<ul>								
-						<spring:hasBindErrors name="indicatorForm">  
-							<li>
-								<div class="errors"> 
-									<font color="red"> 
-										<h3><u>Please correct the following errors</u></h3>   
-										
-										<form:errors path="parameterizable"></form:errors>
-									</font>  
-								</div>
-							</li>
-						</spring:hasBindErrors>
-					</ul>	
-					<div>			
-						<c:if test="${empty parameterizable.parameters}">
-							${parameterizable.name} does not have any parameters.  
-							Click 'Run' to evaluate based on this objects properties.
-						</c:if> 
-					</div>
-					<ul>									
-						<c:forEach var="parameter" items="${parameterizable.parameters}">				
-							<li>
-								<label class="desc" for="${parameter.name}">${parameter.label}</label>
-								<div>						
-									<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
-								</div>
-							</li>						
-						</c:forEach>
-					</ul>
-				</form>	
-								
-				<c:if test="${!empty results}">
-					<h1>Evaluation Result</h1>
-					<div>
-						<label class="desc">Result Type </label>
-						<span>${results.class.simpleName}</span>
-					</div>
-					<div>
-						<label class="desc">Result</label>						
-						<span>${results}</span>
-					</div>
-				</c:if>
+					<c:if test="${!empty results}">
+						<td style="padding-left: 1em; border-left: 1px #e0e0e0 solid">
+							<h1>Evaluation Result</h1>
+							<rpt:format object="${results}"/>
+						</td>
+					</c:if>
+				</tr>
+			</table>
 		</div>
 		<div class="buttonBar" align="left">						
 			<input class="button" id="preview-parameterizable-button" type="button" value="Run" />

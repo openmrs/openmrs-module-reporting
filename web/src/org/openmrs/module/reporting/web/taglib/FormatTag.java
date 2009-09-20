@@ -1,12 +1,16 @@
 package org.openmrs.module.reporting.web.taglib;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -14,6 +18,12 @@ import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.cohort.EvaluatedCohort;
+import org.openmrs.module.dataset.DataSet;
+import org.openmrs.module.dataset.DataSetRow;
+import org.openmrs.module.dataset.MapDataSet;
+import org.openmrs.module.dataset.column.DataSetColumn;
+import org.openmrs.module.report.ReportData;
 import org.springframework.util.StringUtils;
 
 
@@ -51,6 +61,14 @@ public class FormatTag extends TagSupport {
 	
 	private Location location;
 	
+	private String string;
+	
+	private ReportData reportData;
+	
+	private DataSet<?> dataSet;
+	
+	private Cohort cohort;
+		
 	public int doStartTag() {
 		StringBuilder sb = new StringBuilder();
 		if (object != null) {
@@ -68,6 +86,14 @@ public class FormatTag extends TagSupport {
 				encounterType = (EncounterType) object;
 			else if (object instanceof Location)
 				location = (Location) object;
+			else if (object instanceof ReportData)
+				reportData = (ReportData) object;
+			else if (object instanceof DataSet)
+				dataSet = (DataSet<?>) object;
+			else if (object instanceof Cohort)
+				cohort = (Cohort) object;
+			else
+				string = "" + object;
 		}
 		
 		if (date != null)
@@ -112,6 +138,21 @@ public class FormatTag extends TagSupport {
 			printLocation(sb, location);
 		}
 		
+		if (reportData != null) {
+			printReportData(sb, reportData);
+		}
+		
+		if (dataSet != null) {
+			printDataSet(sb, null, dataSet);
+		}
+		
+		if (cohort != null) {
+			printCohort(sb, cohort);
+		}
+		
+		if (string != null)
+			sb.append(string);
+		
 		if (StringUtils.hasText(var)) {
 			pageContext.setAttribute(var, sb.toString());
 		} else {
@@ -124,6 +165,7 @@ public class FormatTag extends TagSupport {
 		return SKIP_BODY;
 	}
 	
+
 	/**
      * formats a date and prints it to sb
      * 
@@ -163,6 +205,94 @@ public class FormatTag extends TagSupport {
     private void printUser(StringBuilder sb, User u) {
     	sb.append(u.getPersonName());
     }
+    
+	/**
+	 * Formats a ReportData and prints it to sb
+	 * 
+	 * @param sb
+	 * @param reportData
+	 */
+	private void printReportData(StringBuilder sb, ReportData reportData) {
+	    sb.append("<h4>" + reportData.getDefinition().getName() + "</h4>");
+	    for (Map.Entry<String, DataSet<?>> ds : reportData.getDataSets().entrySet()) {
+	    	printDataSet(sb, ds.getKey(), ds.getValue());
+	    }
+    }
+    
+	
+	/**
+	 * Formats a DataSet and prints it to sb
+	 * 
+	 * @param sb
+	 * @param title
+	 * @param dataSet
+	 */
+	private void printDataSet(StringBuilder sb, String title, DataSet<?> dataSet) {
+	    sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
+	    List<DataSetColumn> cols = dataSet.getDefinition().getColumns();
+	    sb.append("<thead>");
+	    if (StringUtils.hasText(title)) {
+	    	sb.append("<tr bgcolor=\"#f0f0f0\"><th colspan=\"" + cols.size() + "\">" + title + "</th></tr>");
+	    }
+	    if (!(dataSet instanceof MapDataSet)) {
+	    	sb.append("<tr>");
+		    for (DataSetColumn col : cols) {
+		    	sb.append("<th>" + col.getDisplayName() + "</th>");
+		    }
+		    sb.append("</tr>");
+	    }
+	    sb.append("</thead>");
+	    sb.append("<tbody>");
+	    if (dataSet instanceof MapDataSet) {
+	    	MapDataSet<?> map = (MapDataSet<?>) dataSet;
+	    	DataSetRow<?> row = map.getData();
+	    	for (DataSetColumn col : cols) {
+	    		sb.append("<tr><th>")
+	    			.append(col.getDisplayName())
+	    			.append("</th><td>")
+	    			.append(formatHelper(row.getColumnValue(col)))
+	    			.append("</td></tr>");
+	    	}
+	    } else {
+		    for (DataSetRow<?> row : dataSet) {
+		    	sb.append("<tr>");
+		    	for (DataSetColumn col : cols) {
+		    		sb.append("<td>").append(formatHelper(row.getColumnValue(col))).append("</td>");
+		    	}
+		    	sb.append("</tr>");
+		    }
+	    }
+	    sb.append("</tbody>");
+	    sb.append("</table>");
+    }
+	
+	/**
+	 * formats a cohort to sb
+	 * 
+	 * @param sb
+	 * @param cohort
+	 */
+	private void printCohort(StringBuilder sb, Cohort cohort) {
+		sb.append("Cohort of " + cohort.size() + " patients");
+		if (cohort instanceof EvaluatedCohort) {
+			EvaluatedCohort eval = (EvaluatedCohort) cohort;
+			if (StringUtils.hasText(eval.getDefinition().getName()))
+				sb.append(" (evaluated from " + eval.getDefinition().getName() + ")");
+			else
+				sb.append(" (evaluated from a " + eval.getDefinition().getClass().getSimpleName() + ")");
+		}
+    }
+
+	private String formatHelper(Object o) {
+		if (o == null)
+			return "";
+	    try {
+	    	Method method = o.getClass().getMethod("getValue");
+	    	return method.invoke(o).toString();
+	    } catch (Exception ex) {
+	    	return o.toString();
+	    }
+    }
 
 	public int doEndTag() {
 		reset();
@@ -184,6 +314,10 @@ public class FormatTag extends TagSupport {
 		encounterType = null;
 		locationId = null;
 		location = null;
+		reportData = null;
+		dataSet = null;
+		cohort = null;
+		string = null;
 	}
 	
 	public Integer getConceptId() {

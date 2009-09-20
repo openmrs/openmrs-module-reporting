@@ -22,22 +22,21 @@ import org.openmrs.module.evaluation.EvaluationContext;
 /**
  * Report Data obtained from evaluating a ReportDefinition with a given EvaluationContext.
  */
-@SuppressWarnings("unchecked")
 public class ReportData implements Evaluated<ReportDefinition> {
 	
 	private ReportDefinition definition;
 	
 	private EvaluationContext context;
 	
-	private Map<String, DataSet> dataSets;
+	private Map<String, DataSet<?>> dataSets;
 	
 	public ReportData() { }
 
-	public Map<String, DataSet> getDataSets() {
+	public Map<String, DataSet<?>> getDataSets() {
 		return dataSets;
 	}
 	
-	public void setDataSets(Map<String, DataSet> dataSets) {
+	public void setDataSets(Map<String, DataSet<?>> dataSets) {
 		this.dataSets = dataSets;
 	}
 
