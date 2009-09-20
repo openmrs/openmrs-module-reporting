@@ -19,6 +19,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -27,6 +28,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.cohort.EvaluatedCohort;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
+import org.openmrs.module.cohort.definition.history.CohortDefinitionSearchHistory;
 import org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister;
 import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -36,6 +38,7 @@ import org.openmrs.module.evaluation.caching.NoCachingStrategy;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.util.ReflectionUtil;
+import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -48,23 +51,43 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 	
 	private static Log log = LogFactory.getLog(BaseCohortDefinitionService.class);
 	
-	private SerializedObjectDAO dao = null;
+	private SerializedObjectDAO serializedObjectDAO = null;
 	
+	private OpenmrsSerializer serializer;
+	
+    
     /**
-     * @return the dao
+     * @return the serializer
      */
-    public SerializedObjectDAO getDao() {
-    	return dao;
+    public OpenmrsSerializer getSerializer() {
+    	return serializer;
     }
 
+	
     /**
-     * @param dao the dao to set
+     * @param serializer the serializer to set
      */
-    public void setDao(SerializedObjectDAO dao) {
-    	this.dao = dao;
-    }	
+    public void setSerializer(OpenmrsSerializer serializer) {
+    	this.serializer = serializer;
+    }
 	
 	
+    /**
+     * @return the serializedObjectDAO
+     */
+    public SerializedObjectDAO getSerializedObjectDAO() {
+    	return serializedObjectDAO;
+    }
+
+	
+    /**
+     * @param serializedObjectDAO the serializedObjectDAO to set
+     */
+    public void setSerializedObjectDAO(SerializedObjectDAO serializedObjectDao) {
+    	this.serializedObjectDAO = serializedObjectDao;
+    }
+
+
 	/**
 	 * Returns the CohortDefinitionPersister for the passed CohortDefinition
 	 * @param definition
@@ -251,4 +274,48 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 		
 		return new EvaluatedCohort(c, clonedDefinition, evalContext);
 	}
+
+	/**
+	 * @see org.openmrs.module.cohort.definition.service.CohortDefinitionService#clearCurrentUsersCohortDefinitionSearchHistory()
+	 */
+	public void clearCurrentUsersCohortDefinitionSearchHistory() throws APIException {
+		String name = getNameForPersistedSearchHistory(Context.getAuthenticatedUser());
+	    List<CohortDefinitionSearchHistory> list = serializedObjectDAO.getAllObjectsByName(CohortDefinitionSearchHistory.class, name, true);
+	    if (list != null && list.size() > 0) {
+	    	for (CohortDefinitionSearchHistory h : list) {
+	    		serializedObjectDAO.purgeObject(h.getId());
+	    	}
+	    }
+    }
+
+	/**
+	 * @see org.openmrs.module.cohort.definition.service.CohortDefinitionService#getCurrentUsersCohortDefinitionSearchHistory()
+	 */
+	public CohortDefinitionSearchHistory getCurrentUsersCohortDefinitionSearchHistory() throws APIException {
+	    String name = getNameForPersistedSearchHistory(Context.getAuthenticatedUser());
+	    return getPersistedSearchHistory(Context.getAuthenticatedUser());
+    }
+
+	/**
+	 * @see org.openmrs.module.cohort.definition.service.CohortDefinitionService#setCurrentUsersCohortDefinitionSearchHistory(org.openmrs.module.cohort.definition.history.CohortDefinitionSearchHistory)
+	 */
+	public void setCurrentUsersCohortDefinitionSearchHistory(CohortDefinitionSearchHistory history) throws APIException {
+		String name = getNameForPersistedSearchHistory(Context.getAuthenticatedUser());
+		history.setName(name);
+		serializedObjectDAO.saveObject(history, serializer);
+    }
+	
+	private CohortDefinitionSearchHistory getPersistedSearchHistory(User user) {
+		String name = getNameForPersistedSearchHistory(user);
+	    List<CohortDefinitionSearchHistory> ret = serializedObjectDAO.getAllObjectsByName(CohortDefinitionSearchHistory.class, name, true);
+	    if (ret == null || ret.size() == 0)
+	    	return null;
+	    if (ret.size() > 1)
+	    	log.warn("Multiple copies (" + ret.size() + ") of " + name);
+	    return ret.get(0);
+    }
+
+	private String getNameForPersistedSearchHistory(User user) {
+	    return "SYSTEM - Search History for " + user.getUsername();
+    }
 }

@@ -92,6 +92,23 @@ function cloneAndInsertBefore(idToClone, elementToAddBefore) {
 	return newRow;
 }
 
+////// non-shared dialogs for DIVs ///////////
+
+function makeDialog(divId) {
+	$('#' + divId).dialog({
+		autoOpen: false,
+		draggable: false,
+		resizable: false,
+		show: null,
+		width: '90%',
+		modal: true
+	});
+}
+
+function showDialog(divId, title) {
+	$('#' + divId).dialog('option', 'title', title).dialog('open');
+}
+
 ////// Support for a single modal dialog for all reporting pages //////////////////
 
 var dialogCurrentlyShown = null;

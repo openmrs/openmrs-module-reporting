@@ -91,7 +91,10 @@
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.cohort.definition.service.BaseCohortDefinitionService"></bean>
+						<bean class="org.openmrs.module.cohort.definition.service.BaseCohortDefinitionService">
+							<property name="serializedObjectDAO"><ref bean="serializedObjectDAO"/></property>
+							<property name="serializer"><ref bean="reportingSerializer"/></property>
+						</bean>
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors" />

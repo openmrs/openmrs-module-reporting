@@ -14,6 +14,7 @@
 package org.openmrs.module.cohort.definition;
 
 import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.evaluation.parameter.Mapped;
 
 public class InverseCohortDefinition extends BaseCohortDefinition {
 	
@@ -23,6 +24,22 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty(required=true)
     private CohortDefinition baseDefinition;
+
+	//***** STATIC METHODS *****
+
+	/**
+     * Takes a Mapped<CohortDefinition> and returns <Mapped<NOT CohortDefinition>>
+     * The inverted cohort definition will have the same parameters as the original cohort definition.
+     * 
+     * @param original
+     * @return
+     */
+	public static Mapped<InverseCohortDefinition> invert(Mapped<? extends CohortDefinition> original) {
+	    InverseCohortDefinition inv = new InverseCohortDefinition(original.getParameterizable());
+	    inv.setParameters(original.getParameterizable().getParameters());
+	    Mapped<InverseCohortDefinition> ret = new Mapped<InverseCohortDefinition>(inv, original.getParameterMappings());
+	    return ret;
+    }
 	
 	//***** CONSTRUCTORS *****
 	
@@ -66,4 +83,5 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
     public void setBaseDefinition(CohortDefinition baseDefinition) {
     	this.baseDefinition = baseDefinition;
     }
+
 }

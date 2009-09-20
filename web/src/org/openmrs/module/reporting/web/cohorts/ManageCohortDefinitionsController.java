@@ -2,9 +2,13 @@ package org.openmrs.module.reporting.web.cohorts;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.cohort.definition.StaticCohortDefinition;
 import org.openmrs.module.cohort.definition.configuration.Property;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
@@ -26,6 +31,7 @@ import org.openmrs.util.HandlerUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -33,6 +39,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ManageCohortDefinitionsController {
 	
 	protected static Log log = LogFactory.getLog(ManageCohortDefinitionsController.class);
+	
+	@ModelAttribute("customPages")
+	public Map<Class<? extends CohortDefinition>, String> getCustomPages() {
+		Map<Class<? extends CohortDefinition>, String> ret = new LinkedHashMap<Class<? extends CohortDefinition>, String>();
+		ret.put(CompositionCohortDefinition.class, "compositionCohortDefinition.form");
+		return ret;
+	}
 	
 	/**
 	 * Lists the cohort definitions.
@@ -59,7 +72,13 @@ public class ManageCohortDefinitionsController {
     	model.addAttribute("cohortDefinitions", cohortDefs);
     	
     	// Add all available CohortDefinitions
-    	model.addAttribute("types", service.getCohortDefinitionTypes());
+    	List<Class<? extends CohortDefinition>> types = service.getCohortDefinitionTypes();
+    	Collections.sort(types, new Comparator<Class<? extends CohortDefinition>>() {
+    		public int compare(Class<? extends CohortDefinition> left, Class<? extends CohortDefinition> right) {
+	            return left.getSimpleName().compareTo(right.getSimpleName());
+            }
+    	});
+    	model.addAttribute("types", types);
     }
     
     

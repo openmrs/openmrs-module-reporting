@@ -37,6 +37,16 @@
 			<input type="hidden" name="type" value="${model.type}"/>
 			<input type="hidden" name="currentName" value="${model.parameter.name}"/>
 			<input type="hidden" name="successUrl" value="${model.successUrl}"/>
+			<input type="hidden" id="shortcut" name="shortcut" value=""/>
+			
+			<div style="background-color: #f0f0f0">
+				One-click shortcuts:
+				<a href="javascript:void(0)" onClick="$('#shortcut').val('date'); $('#editParameterForm').submit();">date</a>
+				<a href="javascript:void(0)" onClick="$('#shortcut').val('startDate'); $('#editParameterForm').submit();">startDate</a>
+				<a href="javascript:void(0)" onClick="$('#shortcut').val('endDate'); $('#editParameterForm').submit();">endDate</a>
+				<a href="javascript:void(0)" onClick="$('#shortcut').val('location'); $('#editParameterForm').submit();">location</a>
+			</div>
+			
 			<div style="margin:0; padding:0; width:100%;">
 			
 				<div class="metadataField">

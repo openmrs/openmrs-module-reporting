@@ -19,6 +19,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.cohort.EvaluatedCohort;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.history.CohortDefinitionSearchHistory;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,4 +114,27 @@ public interface CohortDefinitionService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws APIException;
 
+	/**
+	 * Gets the current user's CohortDefinitionSearchHistory, or null if none exists yet  
+	 * @return
+	 * @throws APIException
+	 */
+	@Transactional(readOnly = true)
+	public CohortDefinitionSearchHistory getCurrentUsersCohortDefinitionSearchHistory() throws APIException;
+	
+	/**
+	 * Sets the current user's CohortDefinitionSearchHistory 
+	 * @param history
+	 * @throws APIException
+	 */
+	@Transactional
+	public void setCurrentUsersCohortDefinitionSearchHistory(CohortDefinitionSearchHistory history) throws APIException;
+	
+	/**
+	 * Removes the current user's search history from persisted storage
+	 * 
+	 * @throws APIException
+	 */
+	public void clearCurrentUsersCohortDefinitionSearchHistory() throws APIException;
+	
 }

@@ -27,6 +27,7 @@ import org.openmrs.module.report.ReportDesign;
 import org.openmrs.module.report.ReportRequest;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -336,6 +337,12 @@ public interface ReportService extends OpenmrsService {
 	 *
 	 */
 	public Map<ReportDefinition, ReportRequest> getLastReportRequestsByReport();
+
+	/**
+	 * Deletes report requests that are not saved, and are older than the value specified by
+	 * {@link ReportingConstants#GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS}
+	 */
+	public void deleteOldReportRequests();
 	
 }
 

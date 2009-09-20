@@ -6,8 +6,8 @@
 <div id="page">
 	<div id="container">
 <div style="width: 60%">
-	<h2><b>${report.reportDefinition.name}</b></h2>
-	<h3><i>${report.reportDefinition.description}</i></h3>
+	<h1><b><big>${report.reportDefinition.name}</big></b></h1>
+	<h2><i>${report.reportDefinition.description}</i></h2>
 	
 	<spring:hasBindErrors name="reportFromXml">
 		<br /><br/>		
@@ -31,8 +31,7 @@
 					           <spring:message code="${parameter.label}"/>:
 		                    </td>
 		                    <td>
-		                    
-								<rpt:widget id="${status.expression}" name="${status.expression}" type="${parameter.type.name}" property="${status.expression}"/>
+								<rpt:widget id="${status.expression}" name="${status.expression}" type="${parameter.type.name}" property="${status.expression}" defaultValue="${status.value}"/>
 		                    
 			                    <%-- 
 		                    	<openmrs:fieldGen type="${parameter.type.name}" formFieldName="${status.expression}" val="${status.value}"/>

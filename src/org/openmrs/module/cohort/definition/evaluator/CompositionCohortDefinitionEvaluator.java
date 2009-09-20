@@ -17,32 +17,29 @@ import java.util.List;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.CohortHistoryCompositionCohortDefinition;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.cohort.definition.util.CohortExpressionParser;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
- * Evaluates an CohortHistoryCompositionCohortDefinition and produces a Cohort
+ * Evaluates an CompositionCohortDefinition and produces a Cohort
  */
-@Handler(supports={CohortHistoryCompositionCohortDefinition.class})
-public class CohortHistoryCompositionCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports={CompositionCohortDefinition.class})
+public class CompositionCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	
 	/**
 	 * Default Constructor
 	 */
-	public CohortHistoryCompositionCohortDefinitionEvaluator() {}
+	public CompositionCohortDefinitionEvaluator() {}
 
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	CohortHistoryCompositionCohortDefinition d = (CohortHistoryCompositionCohortDefinition) cohortDefinition;
+    	CompositionCohortDefinition d = (CompositionCohortDefinition) cohortDefinition;
     	
 		List<Object> tokens = CohortExpressionParser.parseIntoTokens(d.getCompositionString());
-		CohortDefinition def = CohortExpressionParser.evaluate(tokens, d.getHistory());
-		return Context.getService(CohortDefinitionService.class).evaluate(def, context);
+		return CohortExpressionParser.evaluate(tokens, d, context);
     }
 }

@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
-import java.util.HashMap;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -94,11 +95,29 @@ public class RunReportFormController extends SimpleFormController implements Val
 	protected Object formBackingObject(HttpServletRequest request) throws Exception {
 		CommandObject command = new CommandObject();
 		if (Context.isAuthenticated()) {
-			String uuid = request.getParameter("reportId");
-			ReportService reportService = (ReportService) Context.getService(ReportService.class);
-			ReportDefinition reportDefinition = reportService.getReportDefinitionByUuid(uuid);
-			command.setReportDefinition(reportDefinition);
-			command.setRenderingModes(reportService.getRenderingModes(reportDefinition));
+			ReportService reportService = Context.getService(ReportService.class);
+			if (StringUtils.hasText(request.getParameter("copyRequest"))) {
+				ReportRequest req = reportService.getReportRequestByUuid(request.getParameter("copyRequest"));
+				command.setReportDefinition(req.getReportDefinition());
+				for (Map.Entry<String, Object> param : req.getParameterValues().entrySet()) {
+					Object val = param.getValue();
+					String valString;
+					if (val instanceof Date) {
+						valString = Context.getDateFormat().format((Date) val);
+					} else if (val instanceof OpenmrsObject) {
+						valString = ((OpenmrsObject) val).getUuid();
+					} else {
+						valString = val.toString();
+					}
+					command.getUserEnteredParams().put(param.getKey(), valString);
+				}
+				command.setSelectedRenderer(req.getRenderingMode().getRenderer().getClass().getName() + "!" + req.getRenderingMode().getArgument());
+			} else {
+				String uuid = request.getParameter("reportId");
+				ReportDefinition reportDefinition = reportService.getReportDefinitionByUuid(uuid);
+				command.setReportDefinition(reportDefinition);
+			}
+			command.setRenderingModes(reportService.getRenderingModes(command.getReportDefinition()));
 		}
 		return command;
 	}
@@ -147,7 +166,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 		if (!renderer.canRender(reportDefinition))  
 			throw new RenderingException("Unable to render report definition " + reportDefinition.getName());
 		
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new LinkedHashMap<String, Object>();
 		if (reportDefinition.getParameters() != null) {
 			for (Parameter parameter : reportDefinition.getParameters()) {
 				if (command.getUserEnteredParams() != null) {

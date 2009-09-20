@@ -26,12 +26,18 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.api.PatientSetService.BooleanOperator;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.cohort.definition.CompoundCohortDefinition;
 import org.openmrs.module.cohort.definition.InverseCohortDefinition;
 import org.openmrs.module.cohort.definition.history.CohortDefinitionHistory;
+import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.evaluation.parameter.Mapped;
 
 /**
  * This class encapsulates the parsing logic necessary to take a String
@@ -145,6 +151,91 @@ public class CohortExpressionParser {
 	
 	
 	/**
+	 * Recursively traverse the List<Object> phrase to produce a (possibly nested) CompoundCohortDefinition
+	 * If another List<Object> is found in the list, recursively evaluate it in place
+	 * If anything in this list is a key into searches, replace it with the relevant filter from searches
+	 * @param phrase
+	 * @param searches
+	 * @param context
+	 * @return Cohort
+	 */
+	@SuppressWarnings("unchecked")
+	public static Cohort evaluate(List<Object> phrase, CompositionCohortDefinition composition, EvaluationContext context) {
+		log.debug("Starting with " + phrase);
+		List<Object> use = new ArrayList<Object>();
+		for (Object o : phrase) {
+			if (o instanceof List) {
+				use.add(evaluate((List<Object>) o, composition, context));
+			}
+			else if (o instanceof String) {
+				use.add(composition.getSearches().get((String) o));
+			}
+			else {
+				use.add(o);
+			}
+		}
+		
+		// base case. All elements are CohortDefinition or BooleanOperator.
+		log.debug("Base case with " + use);
+		
+		// first, replace all [..., NOT, CohortDefinition, ...] with [ ..., InvertedCohortDefinition, ...]
+		boolean invertTheNext = false;
+		for (ListIterator<Object> i = use.listIterator(); i.hasNext();) {
+			Object o = i.next();
+			if (o instanceof BooleanOperator) {
+				if ((BooleanOperator) o == BooleanOperator.NOT) {
+					i.remove();
+					invertTheNext = !invertTheNext;
+				} else {
+					if (invertTheNext) 
+						throw new RuntimeException("Can't have NOT AND. Test() should have failed");
+				}
+			} else {
+				if (invertTheNext) {
+					i.set(InverseCohortDefinition.invert((Mapped<CohortDefinition>) o));
+					invertTheNext = false;
+				}
+			}
+		}
+		
+		log.debug("Finished with NOTs: " + use);
+		
+		// Now all we have left are CohortDefinition, AND, OR
+		// eventually go with left-to-right precedence, and we can combine runs of the same operator into a single one
+		//     1 AND 2 AND 3 -> AND(1, 2, 3)
+		//     1 AND 2 OR 3 -> OR(AND(1, 2), 3)
+		// for now a hack so we take the last operator in the run, and apply that to all filters
+		//     for example 1 AND 2 OR 3 -> OR(1, 2, 3)
+		if (use.size() == 1) {
+			return Context.getService(CohortDefinitionService.class).evaluate((Mapped<CohortDefinition>) use.get(0), context);
+		}
+		
+		BooleanOperator bo = BooleanOperator.AND;
+		List<Cohort> args = new ArrayList<Cohort>();
+		for (Object o : use) {
+			if (o instanceof BooleanOperator) {
+				bo = (BooleanOperator) o;
+			}
+			else {
+				args.add(Context.getService(CohortDefinitionService.class).evaluate((Mapped<CohortDefinition>) o, context));
+			}
+		}
+		
+		Cohort ret = null;
+		for (Cohort cohort : args) {
+			if (ret == null) {
+				ret = cohort;
+			} else if (bo == BooleanOperator.AND) {
+				ret = Cohort.intersect(ret, cohort);
+			} else {
+				ret = Cohort.union(ret, cohort);
+			}
+		}
+		return ret;
+	}
+	
+	
+	/**
 	 * Elements in this list can be: an Integer, indicating a 1-based index into a search history a
 	 * BooleanOperator (AND, OR, NOT) a CohortDefinition a PatientSearch another List of the same form,
 	 * which indicates a parenthetical expression
@@ -170,8 +261,7 @@ public class CohortExpressionParser {
 				} else if (closeParenthesesWords.contains(st.ttype)) {
 					tokens.add(")");
 				} else if (st.ttype == StreamTokenizer.TT_WORD) {
-					String str = st.sval.toLowerCase();
-					tokens.add(str);
+					tokens.add(st.sval);
 				}
 			}
 			return parseIntoTokens(tokens);
@@ -189,32 +279,37 @@ public class CohortExpressionParser {
 			for (Object token : tokens) {
 				if (token instanceof String) {
 					String s = (String) token;
-					s = s.toLowerCase();
-					if (andWords.contains(s)) {
+					String lower = s.toLowerCase();
+					if (andWords.contains(lower)) {
 						currentLine.add(PatientSetService.BooleanOperator.AND);
 					} 
-					else if (orWords.contains(s)) {
+					else if (orWords.contains(lower)) {
 						currentLine.add(PatientSetService.BooleanOperator.OR);
 					} 
-					else if (notWords.contains(s)) {
+					else if (notWords.contains(lower)) {
 						currentLine.add(PatientSetService.BooleanOperator.NOT);
 					} 
-					else if (s.length() == 1) {
-						char c = s.charAt(0);
-						if (openParenthesesWords.contains(c)) {
-							stack.push(currentLine);
-							currentLine = new ArrayList<Object>();
-						} 
-						else if (closeParenthesesWords.contains(c)) {
-							List<Object> l = stack.pop();
-							l.add(currentLine);
-							currentLine = l;
-						}
-					} 
 					else {
-						throw new IllegalArgumentException("Unrecognized string token: " + s);
+						if (s.length() == 1) {
+							char c = s.charAt(0);
+							if (openParenthesesWords.contains(c)) {
+								stack.push(currentLine);
+								currentLine = new ArrayList<Object>();
+							} 
+							else if (closeParenthesesWords.contains(c)) {
+								List<Object> l = stack.pop();
+								l.add(currentLine);
+								currentLine = l;
+							}
+							else {
+								currentLine.add(s);
+							}
+						}
+						else {
+							currentLine.add(s);
+						}
 					}
-				} 
+				}
 				else if (supports(token.getClass())) {
 					currentLine.add(token);
 				} 

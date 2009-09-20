@@ -1,20 +1,22 @@
 package org.openmrs.module.cohort.definition;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.cohort.definition.history.CohortDefinitionHistory;
+import org.openmrs.module.evaluation.parameter.Mapped;
 
-public class CohortHistoryCompositionCohortDefinition extends BaseCohortDefinition {
+public class CompositionCohortDefinition extends BaseCohortDefinition {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	public static final long serialVersionUID = 6736677001L;
+	public static final long serialVersionUID = 1L;
 	
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty(required=true)
-	private CohortDefinitionHistory history;
+	private Map<String, Mapped<CohortDefinition>> searches;
 	
 	@ConfigurationProperty(required=true)
 	private String compositionString;
@@ -24,25 +26,11 @@ public class CohortHistoryCompositionCohortDefinition extends BaseCohortDefiniti
     /**
      * Default Constructor
      */
-	public CohortHistoryCompositionCohortDefinition() {
+	public CompositionCohortDefinition() {
 		super();
 	}
 	
 	//***** PROPERTY ACCESS *****
-	
-    /**
-     * @return the history
-     */
-    public CohortDefinitionHistory getHistory() {
-    	return history;
-    }
-
-    /**
-     * @param history the history to set
-     */
-    public void setHistory(CohortDefinitionHistory history) {
-    	this.history = history;
-    }
 	
     /**
      * @return the compositionString
@@ -51,10 +39,26 @@ public class CohortHistoryCompositionCohortDefinition extends BaseCohortDefiniti
     	return compositionString;
     }
 	
-    /**
+	/**
      * @param compositionString the compositionString to set
      */
     public void setCompositionString(String compositionString) {
     	this.compositionString = compositionString;
     }
+    
+    /**
+     * @return the searches
+     */
+    public Map<String, Mapped<CohortDefinition>> getSearches() {
+    	return searches;
+    }
+
+	
+    /**
+     * @param searches the searches to set
+     */
+    public void setSearches(Map<String, Mapped<CohortDefinition>> searches) {
+    	this.searches = searches;
+    }
+
 }

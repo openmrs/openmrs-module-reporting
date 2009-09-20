@@ -28,16 +28,18 @@ public class CheckboxWidget extends CodedWidget {
 	 */
 	@Override
 	public boolean isSelected(Option option, Object value) {
-		if (ObjectUtils.equals(option.getValue(), value)) {
+		if (ObjectUtils.equals(option.getValue(), value) ||
+				ObjectUtils.equals(option.getCode(), value)) {
 			return true;
 		}
 		else if (value instanceof Collection) {
-			return ((Collection<?>) value).contains(option.getValue());
+			return ((Collection<?>) value).contains(option.getValue()) ||
+				((Collection<?>) value).contains(option.getCode());
 		}
 		else if (value instanceof Object[]) {
 			List<Object> l = Arrays.asList((Object[]) value);
 			if (l != null) {
-				return l.contains(option.getValue());
+				return l.contains(option.getValue()) || l.contains(option.getCode());
 			}
 		}
 		return false;

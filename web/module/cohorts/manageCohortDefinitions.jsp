@@ -30,11 +30,17 @@ function confirmDelete(name, uuid) {
 		<h1>Cohort Definitions</h1>
 	
 		<spring:message code="reporting.manage.createNew"/>:
+		<c:forEach var="p" items="${customPages}">
+			<button onClick="window.location = '${p.value}';">${p.key.simpleName}</button>
+		</c:forEach>
 		<form method="get" action="editCohortDefinition.form" style="display:inline">
+			or other:
 			<select name="type" style="font-size: 1.5em;">
 				<option value="">&nbsp;</option>
 				<c:forEach items="${types}" var="type">
-					<option value="${type.name}">${type.simpleName}</option>
+					<c:if test="${customPages[type] == null}">
+						<option value="${type.name}">${type.simpleName}</option>
+					</c:if>
 				</c:forEach>
 			</select>
 			<input type="submit" value="Create"/>
@@ -66,10 +72,19 @@ function confirmDelete(name, uuid) {
 						});
 					} );
 					</script>					
+
+					<c:choose>
+						<c:when test="${customPages[cohortDefinition.class] == null}">
+							<c:set var="editUrl" value="editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}"/>
+						</c:when>
+						<c:otherwise>
+							<c:set var="editUrl" value="${customPages[cohortDefinition.class]}?uuid=${cohortDefinition.uuid}"/>
+						</c:otherwise>
+					</c:choose>
 				
 					<tr>
 						<td>
-							<a href="editCohortDefinition.form?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}">
+							<a href="${editUrl}">
 								${cohortDefinition.name}
 							</a>
 						</td>

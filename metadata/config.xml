@@ -39,6 +39,14 @@
 		<class>@MODULE_PACKAGE@.extension.html.GutterListExt</class>
 	</extension>
 	
+	<!-- Global Properties -->
+	<globalProperty>
+		<property>report.deleteReportsAgeInHours</property> <!-- Must start with `moduleId.` -->
+		<defaultValue>72</defaultValue>
+		<description>Reports that are not explicitly saved are deleted automatically when they are this many hours old. (Values less than or equal to zero means do not delete automatically)</description>
+	</globalProperty>
+	
+	
 	<!--  Message Properties -->
 	<messages>
 		<lang>en</lang>

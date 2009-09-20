@@ -103,6 +103,10 @@ public class DateUtil {
 		return getTimespan(new Date(), then);
 	}
 	
+	public static String getTimespan(Date now, Date then) {
+		return getTimespan(now, then, true);
+	}
+	
 	/**
 	 * Returns a string that represents the time span that has elapsed 
 	 * between the given dates (e.g. one hour ago, 5 weeks ago).  
@@ -111,7 +115,7 @@ public class DateUtil {
 	 * @param then
 	 * @return	a string that represents the timespan between two dates
 	 */
-	public static String getTimespan(Date now, Date then) {
+	public static String getTimespan(Date now, Date then, boolean showAgoWord) {
 
 		if (now == null || then == null) { 
 			return "";
@@ -119,37 +123,39 @@ public class DateUtil {
 		
 		// Time span between two dates (in seconds)
 		long delta = (now.getTime() - then.getTime()) / MILLISECOND;
+		
+		String suffix = showAgoWord ? " ago" : "";
 
 		if (delta < 0) { 
 			return "(in the future?)";
 		}
 		if (delta < 1 * MINUTE) {
-			return (delta / SECOND) == 1 ? "one second ago" : (delta / SECOND) + " seconds ago";
+			return (delta / SECOND) == 1 ? "one second" + suffix : (delta / SECOND) + " seconds" + suffix;
 		}
 		if (delta < 2 * MINUTE) {
-			return "a minute ago";
+			return "a minute" + suffix;
 		}
 		if (delta < 45 * MINUTE) {
-			return (delta / MINUTE) + " minutes ago";
+			return (delta / MINUTE) + " minutes" + suffix;
 		}
 		if (delta < 90 * MINUTE) {
-			return "an hour ago";
+			return "an hour" + suffix;
 		}
 		if (delta < 24 * HOUR) {
-			return (delta / HOUR) + " hours ago";
+			return (delta / HOUR) + " hours" + suffix;
 		}
-		if (delta < 48 * HOUR) {
+		if (delta < 48 * HOUR && showAgoWord) {
 			return "yesterday";
 		}
 		if (delta < 30 * DAY) {
-			return (delta / DAY) + " days ago";
+			return (delta / DAY) + " days" + suffix;
 		}
 		if (delta < 12 * MONTH) {
 			int months = (int) (delta / (DAY * 30));
-			return months <= 1 ? "one month ago" : months + " months ago";
+			return months <= 1 ? "one month" + suffix : months + " months" + suffix;
 		} else {
 			int years = (int) (delta / (DAY * 365));
-			return years <= 1 ? "one year ago" : years + " years ago";
+			return years <= 1 ? "one year" + suffix : years + " years" + suffix;
 		}
 
 	}
@@ -162,6 +168,22 @@ public class DateUtil {
 	public static String formatDate(Date d, String format) {
 		DateFormat df = new SimpleDateFormat(format);
 		return df.format(d);
+	}
+	
+	
+	/**
+	 * Utility method to determine the number of hours between two dates (rounding down)
+	 * 
+	 * @param a
+	 * @param b
+	 * @return the number of hours between a and b
+	 */
+	public static int getHoursBetween(Date a, Date b) {
+		long diff = (b.getTime() - a.getTime()) / MILLISECOND;
+		if (diff < 0)
+			diff = -diff;
+		diff /= HOUR;
+		return (int) diff;
 	}
 	
 }

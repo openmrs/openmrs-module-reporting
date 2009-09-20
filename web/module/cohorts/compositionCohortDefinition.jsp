@@ -1,0 +1,118 @@
+<%@ include file="/WEB-INF/template/include.jsp"%>
+<openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/cohorts/manageCohortDefinitions.form" />
+<%@ include file="../manage/localHeader.jsp"%>
+
+<c:url value="/module/reporting/reports/compositionCohortDefinition.form" var="pageUrl">
+	<c:param name="uuid" value="${definition.uuid}" />
+</c:url>
+
+<c:choose>
+	<c:when test="${definition.uuid == null}">
+
+		<b class="boxHeader">Create Composition Cohort Definition</b>
+		<div class="box">
+			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.cohort.definition.CompositionCohortDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageCohortDefinitions.form|successUrl=${pageUrl}" />
+		</div>
+		
+	</c:when>		
+	<c:otherwise>
+	
+		<script>
+			$(document).ready(function() {
+				makeDialog('saveAsDialog');
+				$('#andAllTogether').click(function(event) {
+					$('#compositionString').val(combineAllSearches("AND"));
+				});
+				$('#orAllTogether').click(function(event) {
+					$('#compositionString').val(combineAllSearches("OR"));
+				});
+				$('#saveAsButton').click(function(event) {
+					showDialog('saveAsDialog', 'Save a Copy');
+				});
+			});
+
+			function combineAllSearches(delimiter) {
+				var temp = "";
+				<c:forEach items="${definition.searches}" var="h" varStatus="searchesStatus">
+					temp += '<spring:message javaScriptEscape="true" text="${h.key}"/>';
+					<c:if test="${!searchesStatus.last}">
+						temp += ' ' + delimiter + ' ';
+					</c:if>
+				</c:forEach>
+				return temp;
+			}
+		</script>
+
+		<table><tr valign="top">
+		<td width="34%">	
+	
+			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${definition.class.name}|uuid=${definition.uuid}|label=Basic Details" />
+			
+			<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${definition.class.name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrl}" />
+			
+			<b class="boxHeader">
+				Composition string
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<small>Shortcuts:</small>
+				<a id="andAllTogether" href="javascript:void(0)">
+					AND-all
+				</a>
+				&nbsp;
+				<a id="orAllTogether" href="javascript:void(0)">
+					OR-all
+				</a>
+			</b>
+			<div class="box">
+				<form method="post" action="compositionCohortDefinitionSetComposition.form">
+					<input type="hidden" name="uuid" value="${definition.uuid}"/>
+					<textarea rows="3" cols="50" id="compositionString" name="compositionString">${definition.compositionString}</textarea>
+					<br/>
+					<input type="submit" value="Save"/>
+					<input type="button" value="Close" onClick="window.location='manageCohortDefinitions.form';"/>
+					
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<input type="button" id="saveAsButton" value="Save as new"/>
+				</form>
+			</div>			
+		
+		</td>
+		<td width="66%">
+			<b class="boxHeader">Searches to combine</b>
+			<div class="box" style="border: none">
+			
+				<c:forEach items="${definition.searches}" var="h">
+					<openmrs:portlet url="mappedProperty" id="search${h.key}" moduleId="reporting" 
+						parameters="type=${definition.class.name}|uuid=${definition.uuid}|property=searches|currentKey=${h.key}|label=${h.key}|parentUrl=${pageUrl}" />
+				</c:forEach>
+			
+				<openmrs:portlet url="mappedProperty" id="newSearch" moduleId="reporting" 
+					 parameters="type=${definition.class.name}|uuid=${definition.uuid}|property=searches|mode=add|label=Add Search to Combine" />
+			</div>
+		</td>
+		</tr></table>
+		
+		<div id="saveAsDialog" style="display:none">
+			<form method="get" action="compositionCohortDefinitionClone.form">
+				<input type="hidden" name="copyFromUuid" value="${definition.uuid}"/>
+				<table>
+					<tr>
+						<th align="right">Name:</th>
+						<td><input type="text" name="name"/></td>
+					</tr>
+					<tr valign="top">
+						<th align="right">Description:</th>
+						<td><textarea name="description"></textarea></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="submit" value="Save As"/></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+
+	</c:otherwise>
+</c:choose>
+
+<%@ include file="/WEB-INF/template/footer.jsp"%>

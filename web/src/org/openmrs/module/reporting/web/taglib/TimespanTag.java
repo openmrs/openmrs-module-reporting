@@ -32,6 +32,7 @@ public class TimespanTag extends BodyTagSupport {
 	
 	private Date now = null;
 	private Date then = null;
+	private Boolean showAgoWord = true;
 	
 	
 	public int doStartTag() throws JspException {
@@ -42,8 +43,10 @@ public class TimespanTag extends BodyTagSupport {
 			if (then == null) { 
 				throw new APIException("Timespan is expecting at least 'then' date");
 			}
-			
-			pageContext.getOut().write("<span class=\"timespan\"> " + DateUtil.getTimespan(now, then) + " </span>");
+			if (showAgoWord == null) {
+				showAgoWord = true;
+			}
+			pageContext.getOut().write("<span class=\"timespan\"> " + DateUtil.getTimespan(now, then, showAgoWord) + " </span>");
 		} catch(IOException e) { 
 			log.error("Unable to write timespan to output", e);
 		}
@@ -55,6 +58,7 @@ public class TimespanTag extends BodyTagSupport {
 	private void reset() {
 	    now = null;
 	    then = null;
+	    showAgoWord = true;
     }
 
 
@@ -76,10 +80,15 @@ public class TimespanTag extends BodyTagSupport {
 	public void setThen(Date then) {
 		this.then = then;
 	}
-	
-	
-	
-	
-	
+
+
+    public Boolean getShowAgoWord() {
+    	return showAgoWord;
+    }
+
+
+    public void setShowAgoWord(Boolean showAgoWord) {
+    	this.showAgoWord = showAgoWord;
+    }
 	
 }

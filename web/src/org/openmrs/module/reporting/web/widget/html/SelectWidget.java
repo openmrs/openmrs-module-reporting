@@ -47,7 +47,8 @@ public class SelectWidget extends CodedWidget {
 			// Render Option
 			List<Attribute> atts = new ArrayList<Attribute>();
 			atts.add(new Attribute("value", option.getCode(), null, null));
-			if (ObjectUtils.equals(option.getValue(), config.getDefaultValue())) {
+			if (ObjectUtils.equals(option.getValue(), config.getDefaultValue()) ||
+					ObjectUtils.equals(option.getCode(), config.getDefaultValue())) {
 				atts.add(new Attribute("selected", "true", null, null));
 			}
 			HtmlUtil.renderOpenTag(w, "option", atts);

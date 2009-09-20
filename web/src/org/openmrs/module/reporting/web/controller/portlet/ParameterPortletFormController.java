@@ -1,11 +1,13 @@
 package org.openmrs.module.reporting.web.controller.portlet;
 
+import java.sql.Date;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.util.ParameterizableUtil;
@@ -37,7 +39,32 @@ public class ParameterPortletFormController {
             @RequestParam(required=true, value="newName") String newName,
             @RequestParam(required=true, value="parameterType") Class<?> parameterType,
             @RequestParam(required=false, value="label") String label,
-            @RequestParam(required=false, value="collectionType") Class<? extends Collection<?>> collectionType) {
+            @RequestParam(required=false, value="collectionType") Class<? extends Collection<?>> collectionType,
+            @RequestParam(required=false, value="shortcut") String shortcut
+            	) {
+    	
+    	if (shortcut != null) {
+    		if (shortcut.equals("date")) {
+    			newName = "date";
+    			label="Date";
+    			parameterType = Date.class;
+    		}
+    		else if (shortcut.equals("startDate")) {
+    			newName = "startDate";
+    			label="Start Date";
+    			parameterType = Date.class;
+    		}
+    		else if (shortcut.equals("endDate")) {
+    			newName = "endDate";
+    			label="End Date";
+    			parameterType = Date.class;
+    		}
+    		else if (shortcut.equals("location")) {
+    			newName = "location";
+    			label="Location";
+    			parameterType = Location.class;
+    		}
+    	}
     	
     	Parameterizable parent = ParameterizableUtil.getParameterizable(parentUuid, parentType);
     	Parameter p = new Parameter(newName, label, parameterType, collectionType, null);

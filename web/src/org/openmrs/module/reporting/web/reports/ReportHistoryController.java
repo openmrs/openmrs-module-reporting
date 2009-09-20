@@ -96,16 +96,11 @@ public class ReportHistoryController {
 	@RequestMapping("/module/reporting/reports/reportHistoryOpen")
 	public ModelAndView openFromHistory(@RequestParam("uuid") String uuid,
 	                            HttpServletResponse response,
-	                            WebRequest request) throws IOException {
+	                            WebRequest request,
+	                            ModelMap model) throws IOException {
+		//ReportRequest req = Context.getService(ReportService.class).getReportRequestByUuid(uuid);
 		Report report = Context.getService(ReportService.class).getReportByUuid(uuid);
-		if (report.getRenderedFilename() != null) {
-			String filename = report.getRenderedFilename().replace(" ", "_");
-			response.setContentType(report.getRenderedContentType());
-			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-			response.setHeader("Pragma", "no-cache");
-			response.getOutputStream().write(report.getRenderedOutput());
-			return null;
-		} else {
+		if (report.getRequest().getRenderingMode().getRenderer() instanceof WebReportRenderer) {
 			RenderingMode rm = report.getRequest().getRenderingMode();
 			request.setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, report.getRawData(), WebRequest.SCOPE_SESSION);
 			request.setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument(), WebRequest.SCOPE_SESSION);
@@ -115,8 +110,25 @@ public class ReportHistoryController {
 				url = "/" + url;
 			url = request.getContextPath() + url;
 			request.setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, url, WebRequest.SCOPE_SESSION);
-			//return "redirect:" + url;
 			return new ModelAndView(new RedirectView(url));
+		} else {
+			model.addAttribute("report", report);
+			return new ModelAndView("/module/reporting/reports/reportHistoryOpen", model);
 		}
+	}
+	
+	@RequestMapping("/module/reporting/reports/reportHistoryDownload")
+	public void downloadFromHistory(@RequestParam("uuid") String uuid,
+	                            HttpServletResponse response,
+	                            WebRequest request) throws IOException {
+		Report report = Context.getService(ReportService.class).getReportByUuid(uuid);
+		if (report.getRenderedFilename() == null) {
+			throw new RuntimeException("This report doesn't have a rendered filename");
+		}
+		String filename = report.getRenderedFilename().replace(" ", "_");
+		response.setContentType(report.getRenderedContentType());
+		response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+		response.setHeader("Pragma", "no-cache");
+		response.getOutputStream().write(report.getRenderedOutput());
 	}
 }

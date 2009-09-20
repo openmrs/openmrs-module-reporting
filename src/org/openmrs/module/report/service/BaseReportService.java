@@ -43,7 +43,11 @@ import org.openmrs.module.report.renderer.RenderingException;
 import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.module.report.service.db.ReportDAO;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
+import org.openmrs.module.util.DateUtil;
+import org.openmrs.scheduler.SchedulerException;
+import org.openmrs.scheduler.TaskDefinition;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.serialization.SerializationException;
 import org.openmrs.util.HandlerUtil;
@@ -72,6 +76,9 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	
 	// history of run reports
 	private List<ReportRequest> reportRequestHistory;
+	
+	// Name of the task to delete old reportsconcept word update task.
+	public static final String DELETE_OLD_REPORTS_TASK_NAME = "Delete Old Reports";
 		
     /**
      * @param serializer the serializer to set
@@ -83,7 +90,8 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	/**
 	 * Default constructor
 	 */
-	public BaseReportService() { }
+	public BaseReportService() {
+	}
 
 	/**
 	 * @see ReportService#saveReportDefinition(ReportDefinition)
@@ -312,6 +320,9 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	 * @see org.openmrs.module.report.service.ReportService#runReport(org.openmrs.module.report.ReportRequest)
 	 */
 	public Report runReport(ReportRequest request) {
+		// TODO: move this somewhere so it starts automatically
+		ensureDeleteOldReportsTask();
+		
 		request.setUuid(UUID.randomUUID().toString());
 		request.setRequestDate(new Date());
 		request.setRequestedBy(Context.getAuthenticatedUser());
@@ -590,6 +601,57 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	    for (ReportRequest req : getReportRequestHistory())
 	    	ret.put(req.getReportDefinition(), req);
 	    return ret;
+    }
+
+	/**
+	 * @see org.openmrs.module.report.service.ReportService#deleteOldReportRequests()
+	 */
+	public void deleteOldReportRequests() {
+		int ageInHoursToDelete = 72;
+		try {
+			ageInHoursToDelete = Integer.parseInt(Context.getAdministrationService().getGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS));
+		} catch (Exception ex) {
+			log.warn("Illegal value for " + ReportingConstants.GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS + " global property. Using default value of 72.", ex);
+		}
+		if (ageInHoursToDelete <= 0)
+			return;
+		
+		List<String> uuidsToDelete = new ArrayList<String>();
+		Date now = new Date();
+		for (ReportRequest req : reportRequestHistory) {
+			if (!req.isSaved() && DateUtil.getHoursBetween(req.getRequestDate(), now) >= ageInHoursToDelete) {
+				uuidsToDelete.add(req.getUuid());
+			}
+		}
+		for (String uuid : uuidsToDelete) {
+			try {
+				deleteFromHistory(uuid);
+			} catch (Exception ex) {
+				log.warn("Error deleting old request " + uuid, ex);
+			}
+		}		
+    }
+	
+	/**
+	 * Makes sure there's a scheduled task registered to DeleteOldReports
+	 */
+	private void ensureDeleteOldReportsTask() {
+	    TaskDefinition task = Context.getSchedulerService().getTaskByName(DELETE_OLD_REPORTS_TASK_NAME);
+	    if (task == null) {
+	    	task = new TaskDefinition();
+			task.setTaskClass("org.openmrs.module.report.service.DeleteOldReportsTask");
+			task.setRepeatInterval(60 * 60l); // hourly
+			task.setStartOnStartup(true);
+			task.setStartTime(null); // to induce immediate execution
+			task.setName(DELETE_OLD_REPORTS_TASK_NAME);
+			task.setDescription("Deletes reports that have not been saved and are older than the age specified in the global property.");
+			try {
+	            Context.getSchedulerService().scheduleTask(task);
+            }
+            catch (SchedulerException e) {
+	            log.warn("Failed to schedule Delete Old Reports task. Old reports will not be automatically deleted", e);
+            }
+	    }
     }
 
 }

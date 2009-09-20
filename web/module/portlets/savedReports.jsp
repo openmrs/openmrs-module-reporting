@@ -25,7 +25,7 @@
 			<div class="portlet-content">
 	</c:if>
 	
-	<c:if test="${fn:length(model.savedRequest) == 0}">
+	<c:if test="${fn:length(model.savedRequests) == 0}">
 		None
 	</c:if>
 	
