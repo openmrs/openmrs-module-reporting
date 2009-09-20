@@ -98,7 +98,8 @@ public class RunReportFormController extends SimpleFormController implements Val
 			ReportService reportService = Context.getService(ReportService.class);
 			if (StringUtils.hasText(request.getParameter("copyRequest"))) {
 				ReportRequest req = reportService.getReportRequestByUuid(request.getParameter("copyRequest"));
-				command.setReportDefinition(req.getReportDefinition());
+				// avoid lazy init exceptions
+				command.setReportDefinition(reportService.getReportDefinitionByUuid(req.getReportDefinition().getUuid()));
 				for (Map.Entry<String, Object> param : req.getParameterValues().entrySet()) {
 					Object val = param.getValue();
 					String valString;
