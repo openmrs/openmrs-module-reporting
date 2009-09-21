@@ -21,7 +21,6 @@
     	<property name="order"><value>50</value></property>
     	<property name="mappings">
             <props>
-				<prop key="module/reporting/indicatorWizard.form">indicatorFormController</prop>
             	<prop key="**/mappedProperty.portlet">mappedPropertyPortletController</prop>
             	<prop key="**/baseMetadata.portlet">parameterizablePortletController</prop>
             	<prop key="**/parameter.portlet">parameterPortletController</prop>
@@ -29,11 +28,10 @@
             	<prop key="**/reportHistory.portlet">reportHistoryPortletController</prop>
             	<prop key="**/savedReports.portlet">savedReportsPortletController</prop>
             	<prop key="**/runReport.portlet">runReportPortletController</prop>
+				<prop key="module/reporting/indicatorWizard.form">indicatorFormController</prop>
 				<prop key="module/reporting/newIndicator.form">indicatorFormController</prop>
 				<prop key="module/reporting/run/runReport.list">runReportList</prop>
 				<prop key="module/reporting/run/runReport.form">runReportForm</prop>
-                <prop key="module/reporting/run/reportData.form">reportDataForm</prop>
-                <prop key="module/reporting/run/reportData.list">reportDataList</prop>
 			</props>
 		</property>
 	</bean>	
@@ -63,16 +61,6 @@
         <property name="validator">
 		    <ref bean="runReportForm" />
 		</property>
-    </bean>
-    <bean id="reportDataForm" class="org.openmrs.module.reporting.web.reports.ReportDataFormController">
-        <property name="commandName"><value>reportData</value></property>
-        <property name="formView"><value>/module/reporting/run/reportDataForm</value></property>
-        <property name="successView"><value>reportData.form</value></property>
-    </bean>
-    <bean id="reportDataList" class="org.openmrs.module.reporting.web.reports.ReportDataListController">
-        <property name="commandName"><value>reportData</value></property>
-        <property name="formView"><value>/module/reporting/run/reportDataList</value></property>
-        <property name="successView"><value>reportData.list</value></property>
     </bean>
 
 <!--  
