@@ -77,7 +77,7 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 		w.write("<head>");				
 		w.write("<body>");
 		for (String key : results.getDataSets().keySet()) {
-			DataSet<Object> dataset = results.getDataSets().get(key);
+			DataSet<?> dataset = results.getDataSets().get(key);
 			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 			w.write("<h4>" + key + "</h4>");
 			w.write("<table id=\"simple-html-dataset-" + key + "\" class=\"display simple-html-dataset\"><tr>");
@@ -86,8 +86,7 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 			}
 			w.write("</tr>");
 
-			for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {
-				DataSetRow<Object> row = i.next();
+			for (DataSetRow<?> row : dataset) {
 				w.write("<tr>");
 				for (DataSetColumn column : columns) {
 					w.write("<td>");

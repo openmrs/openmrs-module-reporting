@@ -78,10 +78,10 @@ public class LabEncounterDataSetEvaluatorTest extends BaseModuleContextSensitive
 		LabEncounterDataSetDefinition definition = 
 			new LabEncounterDataSetDefinition(Arrays.asList(conceptIds));
 		
-		DataSet<Object> dataSet = service.evaluate(definition, evalContext);
+		DataSet<?> dataSet = service.evaluate(definition, evalContext);
 
 		ReportData reportData = new ReportData();
-		Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
+		Map<String, DataSet<?>> dataSets = new HashMap<String, DataSet<?>>();
 		dataSets.put("labDataSet", dataSet);
 		reportData.setDataSets(dataSets);
 

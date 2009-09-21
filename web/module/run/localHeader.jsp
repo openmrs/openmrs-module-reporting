@@ -35,6 +35,12 @@
 						</c:choose>
 					</li>
 				</c:forEach>
+				
+				<li class="last">
+					<a href='<c:url value="/module/reporting/dashboard/manageCohortDashboard.form"/>'>Cohort Dashboard</a>
+				</li>				
+				
+				
 			</ul>
 		</openmrs:hasPrivilege>
 	</openmrs:extensionPoint>

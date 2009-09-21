@@ -297,7 +297,7 @@ $(document).ready(function() {
 						<li>
 							<label class="desc" for="sqlQuery"><spring:message code="reporting.columnValue"/></label>
 							<span>		
-								<input type="text" name="sqlQuery" size="30" />		
+								<textarea type="text" name="sqlQuery" cols="60" rows="6"></textarea>	
 							</span> 
 						</li>				
 						<li>

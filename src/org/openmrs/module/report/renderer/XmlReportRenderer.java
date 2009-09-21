@@ -64,17 +64,14 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 		
 		Writer w = new PrintWriter(out);
 		
-		@SuppressWarnings("unchecked")
-		DataSet<Object> dataset = results.getDataSets().values().iterator().next();	
-
+		DataSet<?> dataset = results.getDataSets().values().iterator().next();	
 		List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 		
 		w.write("<?xml version=\"1.0\"?>\n");
 		w.write("<dataset>\n");
 		w.write("\t<rows>\n");
-		for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {		
+		for (DataSetRow<?> row : dataset) {		
 			w.write("\t\t<row>");
-			DataSetRow<Object> row = i.next();
 			for (DataSetColumn column : columns) {			
 				Object colValue = row.getColumnValue(column);
 				w.write("<" + column.getDisplayName() + ">");

@@ -75,7 +75,7 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 		
 		// For each dataset in the report
 		for (String dataSetKey : results.getDataSets().keySet()) {
-			DataSet<Object> dataset = results.getDataSets().get(dataSetKey);
+			DataSet<?> dataset = results.getDataSets().get(dataSetKey);
 
 			//MapDataSet mapDataSet = (MapDataSet) dataset;
 			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
@@ -88,10 +88,7 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 								
 				// Wondering if you can even do this ... iterate over a dataset multiple times (once for each column?)
 				// If not, then we need to get the actual dataset data (i.e. MapDataSet).
-				for (Iterator<DataSetRow<Object>> i = dataset.iterator(); i.hasNext();) {	
-				//for (Iterator<Map<DataSetColumn, Object>> i = dataset.iterator(); i.hasNext();) {
-					DataSetRow<Object> row = i.next();
-
+				for (DataSetRow<?> row : dataset) {
 					Object cellValue = row.getColumnValue(column.getColumnKey());				
 					w.write("<td>" + ((cellValue != null) ? cellValue : "n/a") + "</td>");					
 				}

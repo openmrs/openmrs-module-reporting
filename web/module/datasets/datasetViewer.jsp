@@ -139,7 +139,7 @@ $(document).ready(function() {
 							<c:if test="${dataSetDefinition != null}">
 								<c:set var="recordCount">
 									<c:choose>
-										<c:when test="${param.limit!='all'}">${param.limit}</c:when>
+										<c:when test="${param.limit!='0'}">${param.limit}</c:when>
 										<c:otherwise>${cohort.size}</c:otherwise>
 									</c:choose>
 								</c:set>

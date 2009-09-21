@@ -54,7 +54,7 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
         }
         
         ReportData temp = new ReportData();
-        Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
+        Map<String, DataSet<?>> dataSets = new HashMap<String, DataSet<?>>();
         dataSets.put("joined", result);
         temp.setDataSets(dataSets);
         

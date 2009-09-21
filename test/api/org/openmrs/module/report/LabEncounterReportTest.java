@@ -162,13 +162,13 @@ public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
         // TODO Need to pass a Mapped<DataSetDefinition>
 		//reportDefinition.addDataSetDefinition(joinDataSetDefinition);
 
-        DataSet joinDataSet = 
+        DataSet<?> joinDataSet = 
         	Context.getService(DataSetDefinitionService.class).evaluate(
         			joinDataSetDefinition, 
         			sharedContext);
         
         ReportData reportData = new ReportData();
-        Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
+        Map<String, DataSet<?>> dataSets = new HashMap<String, DataSet<?>>();
         dataSets.put("joinDataSet", joinDataSet);
         reportData.setDataSets(dataSets);
         

@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.web.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.openmrs.Cohort;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.cohort.definition.CompoundCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
@@ -131,11 +133,18 @@ public class ReportDashboardController {
     @RequestMapping("/module/reporting/dashboard/manageCohortDashboard")
     public String manageCohortDashboard(
     		@RequestParam(required=false, value="cohort") String cohort,
+    		@RequestParam(required=false, value="ageCohort") String ageCohort,
+    		@RequestParam(required=false, value="genderCohort") String genderCohort,
+    		@RequestParam(required=false, value="locationCohort") String locationCohort,
+    		@RequestParam(required=false, value="programCohort") String programCohort,
+    		
     		ModelMap model) { 
     	
-    	Cohort selectedCohort = null;
-		model.addAttribute("selected", cohort);
+    	Cohort selectedCohort = new Cohort();
+    	//Cohort selectedCohort = Context.getPatientSetService().getAllPatients();
 		
+		/*
+		model.addAttribute("selected", cohort);
     	EvaluationContext evaluationContext = new EvaluationContext();
     	if ("males".equalsIgnoreCase(cohort)) {
     		selectedCohort = getGenderCohort(evaluationContext, "M");
@@ -163,6 +172,61 @@ public class ReportDashboardController {
 	    		}
     		}
     	}
+    	*/
+    	
+    	List<String> selectedCohorts = new ArrayList<String>();
+    	//CompoundCohortDefinition cohortDefinition = new CompoundCohortDefinition();
+    	EvaluationContext evalContext = new EvaluationContext();
+    	Cohort tempCohort = null;
+    	if (genderCohort != null || ageCohort != null) {
+    		selectedCohort = CohortUtil.limitCohort(Context.getPatientSetService().getAllPatients(), 238);    		
+    		if (genderCohort != null && genderCohort.equals("male")) {
+	    		//cohortDefinition.addDefinition(new Mapped(new GenderCohortDefinition("M")))
+	    		tempCohort = getGenderCohort(evalContext, "M");
+	    		selectedCohort = selectedCohort.intersect(selectedCohort, tempCohort);
+	    		selectedCohorts.add("Males");
+	    	}
+	    	if (genderCohort != null && genderCohort.equals("female")) {
+	    		//cohortDefinition.addDefinition(new Mapped(new GenderCohortDefinition("F")))
+	    		tempCohort = getGenderCohort(evalContext, "F");
+	    		selectedCohort = selectedCohort.intersect(selectedCohort, tempCohort);
+	    		selectedCohorts.add("Females");
+	    	}
+	    	if (ageCohort != null && ageCohort.equals("infant")) {
+	    		tempCohort = getAgeCohort(evalContext, 0, 2, new Date());
+	    		selectedCohort = selectedCohort.intersect(selectedCohort, tempCohort);
+	    		selectedCohorts.add("Infant (0 - 2)");
+	    	}
+	    	if (ageCohort != null && ageCohort.equals("child")) {
+	    		tempCohort = getAgeCohort(evalContext, 3, 15, new Date());
+	    		selectedCohort = selectedCohort.intersect(selectedCohort, tempCohort);
+	    		selectedCohorts.add("Child (3 - 15)");
+	    	}
+	    	if (ageCohort != null && ageCohort.equals("adult")) {
+	    		tempCohort = getAgeCohort(evalContext, 15, 200, new Date());
+	    		selectedCohort = selectedCohort.intersect(selectedCohort, tempCohort);
+	    		selectedCohorts.add("Adult (15+)");
+	    	}
+    	}    	
+    	else if (ageCohort == null && genderCohort == null) { 
+    		selectedCohort = CohortUtil.limitCohort(Context.getPatientSetService().getAllPatients(), 238);
+    		selectedCohorts.add("All patients");
+    	}
+    	
+    	
+    	if (selectedCohorts == null || selectedCohorts.isEmpty()) { 
+    		selectedCohorts.add("None");
+    	}
+		model.addAttribute("selectedCohorts", selectedCohorts);    		
+    	
+    	//Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, context);
+    	
+    	/*
+    	if (selectedCohort == null || selectedCohort.isEmpty()) { 
+    		selectedCohort = CohortUtil.limitCohort(Context.getPatientSetService().getAllPatients(), 100);
+    	}*/
+    	
+    	
     	if (selectedCohort != null && !selectedCohort.isEmpty()) { 
     		// Evaluate on the fly report
     		/*
@@ -177,7 +241,7 @@ public class ReportDashboardController {
     		
 	    	// Add generated report, patients, and cohort to request
 	    	model.addAttribute("patients", Context.getPatientSetService().getPatients(selectedCohort.getMemberIds()));
-	    	model.addAttribute("cohort", selectedCohort);    		
+	    	
     	}    	
     	
     	

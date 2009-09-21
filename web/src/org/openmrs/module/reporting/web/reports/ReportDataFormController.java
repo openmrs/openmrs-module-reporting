@@ -154,7 +154,7 @@ public class ReportDataFormController extends SimpleFormController {
 			PatientDataSetDefinition dsd = new PatientDataSetDefinition();
 			MapDataSet emptyData = new MapDataSet(dsd, context);			
 			emptyData.setName("empty");
-			Map<String, DataSet> emptyMap = new HashMap<String, DataSet>();
+			Map<String, DataSet<?>> emptyMap = new HashMap<String, DataSet<?>>();
 			emptyMap.put("empty", emptyData);
 			ReportDefinition emptySchema = new ReportDefinition();
 			emptySchema.setName("empty");

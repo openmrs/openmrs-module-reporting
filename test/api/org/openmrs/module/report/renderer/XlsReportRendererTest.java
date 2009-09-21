@@ -49,7 +49,7 @@ public class XlsReportRendererTest {
         }
 
         ReportData data = new ReportData();
-        data.setDataSets(new LinkedHashMap<String, DataSet>());
+        data.setDataSets(new LinkedHashMap<String, DataSet<?>>());
         data.getDataSets().put("patients", ds1);
         data.getDataSets().put("encounters", ds2);
         
