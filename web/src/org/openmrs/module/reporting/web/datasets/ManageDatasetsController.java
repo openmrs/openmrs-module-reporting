@@ -309,19 +309,18 @@ public class ManageDatasetsController {
     		ModelMap model
      	) {
 
-    	// 
-    	if (cohortId != null && dataSetId != null) { 
 	    	
-	    	// Step 1 
-	    	// Find the dataset definition and if it's still null, 
-	       	// then we should use a default dataset definition
-	       	DataSetDefinition dataSetDefinition = getDataSetDefinition(dataSetId, type, id);    	
-	    	model.addAttribute("dataSetDefinition", 
-	    			dataSetDefinition == null ? new PatientDataSetDefinition() : dataSetDefinition);
-	
-	    	// Step 2 
-	    	// Find the cohort definition and evaluate the base cohort
-    		// Set the cohort to use when evaluating the dataset
+    	// Step 1 
+    	// Find the dataset definition and if it's still null, 
+       	// then we should use a default dataset definition
+       	DataSetDefinition dataSetDefinition = getDataSetDefinition(dataSetId, type, id);    	
+    	model.addAttribute("dataSetDefinition", dataSetDefinition);
+
+    	// Step 2 
+    	// If we have both the cohort and the dataset, we should display the evaluated dataset
+    	// Find the cohort definition and evaluate the base cohort
+		// Set the cohort to use when evaluating the dataset
+	    if (cohortId != null && dataSetId != null) { 
     		Cohort cohort = evaluateCohort(cohortId);
 	    	    		
     		log.info("evaluated cohort: " + cohort.size());
