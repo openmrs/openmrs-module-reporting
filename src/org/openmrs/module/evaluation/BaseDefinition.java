@@ -53,6 +53,17 @@ public abstract class BaseDefinition extends BaseOpenmrsMetadata implements Defi
 	// INSTANCE METHODS
 	//***********************
 	
+	
+	/**
+	 * Add a list of parameters.
+	 */
+	public void addParameters(List<Parameter> parameters) { 
+		for (Parameter parameter : parameters) { 
+			addParameter(parameter);
+		}		
+	}
+	
+	
 	/**
 	 * @see Parameterizable#addParameter(Parameter)
 	 */

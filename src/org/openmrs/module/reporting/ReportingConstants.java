@@ -13,6 +13,11 @@
  */
 package org.openmrs.module.reporting;
 
+import java.util.Date;
+
+import org.openmrs.Location;
+import org.openmrs.module.evaluation.parameter.Parameter;
+
 /**
  * Constants required by this module
  */
@@ -40,4 +45,9 @@ public class ReportingConstants {
 	public static final String OPENMRS_LAST_REPORT_URL = "__openmrs_last_report_url";
 	public static final String OPENMRS_HIDE_REPORT_LINK = "__openmrs_hide_report_link";
 
+	// Some default parameters used by multiple reporting objects 
+	public static final Parameter START_DATE_PARAMETER = new Parameter("startDate", "Start date", Date.class);
+	public static final Parameter END_DATE_PARAMETER = new Parameter("endDate", "End date", Date.class);
+	public static final Parameter LOCATION_PARAMETER = new Parameter("location", "Location", Location.class);
+	
 }

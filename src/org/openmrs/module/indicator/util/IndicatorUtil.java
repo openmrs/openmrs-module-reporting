@@ -16,12 +16,26 @@ package org.openmrs.module.indicator.util;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+
+import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.ReportingConstants;
 
 /**
  * Indicator-related Utility methods
  */
 public class IndicatorUtil {
+	
+	private static List<Parameter> defaultParameters = new LinkedList<Parameter>();
+	
+	// Statically initialize the default period indicator parameters
+	static {
+		defaultParameters.add(ReportingConstants.START_DATE_PARAMETER);
+		defaultParameters.add(ReportingConstants.END_DATE_PARAMETER);
+		defaultParameters.add(ReportingConstants.LOCATION_PARAMETER);		
+	}
 	
 	/**
 	 * Utility method which does a case-insensitive check on the given Collection of Strings
@@ -42,11 +56,17 @@ public class IndicatorUtil {
 		return false;
 	}
 	
-	public static Map<String, Object> periodIndicatorMappings() {
+	public static Map<String, Object> getDefaultParameterMappings() {
 		Map<String, Object> perIndMappings = new HashMap<String, Object>();
 		perIndMappings.put("startDate", "${startDate}");
 		perIndMappings.put("endDate", "${endDate}");
 		perIndMappings.put("location", "${location}");
 		return perIndMappings;
 	}
+
+	public static List<Parameter> getDefaultParameters() {
+		return defaultParameters;
+	}
+
+
 }

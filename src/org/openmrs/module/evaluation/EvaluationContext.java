@@ -124,7 +124,7 @@ public class EvaluationContext {
 		for (String paramName : child.getParameterMappings().keySet()) {
 			Parameter parameter = child.getParameterizable().getParameter(paramName);
 			if (parameter == null) {
-				throw new ParameterException("Cannot find parameter with name <" + paramName + "> in " + child.getParameterizable());
+				throw new ParameterException("Cannot find parameter with name <" + paramName + "> in " + child.getParameterizable().getName());
 			}
 			Object paramVal = child.getParameterMappings().get(paramName);
 			if (paramVal instanceof String) {

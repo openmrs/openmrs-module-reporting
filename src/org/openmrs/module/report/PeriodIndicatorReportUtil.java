@@ -34,7 +34,7 @@ public class PeriodIndicatorReportUtil {
 	
 	public static void addColumn(PeriodIndicatorReportDefinition def, String key, String displayName, CohortIndicator indicator, Map<String, String> dimensionOptions) {
 		ensureDataSetDefinition(def);
-		def.getIndicatorDataSetDefinition().addColumn(key, displayName, new Mapped<CohortIndicator>(indicator, IndicatorUtil.periodIndicatorMappings()), dimensionOptions);
+		def.getIndicatorDataSetDefinition().addColumn(key, displayName, new Mapped<CohortIndicator>(indicator, IndicatorUtil.getDefaultParameterMappings()), dimensionOptions);
 		saveDataSetDefinition(def);
 	}
 	

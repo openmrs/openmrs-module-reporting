@@ -103,7 +103,7 @@ public class IndicatorHistoryController {
 				indDSD.addColumn(
 					indicator.getUuid(),
 					indicator.getName(),
-					new Mapped<CohortIndicator>(indicator, IndicatorUtil.periodIndicatorMappings()),
+					new Mapped<CohortIndicator>(indicator, IndicatorUtil.getDefaultParameterMappings()),
 					"");
 			} catch (ClassCastException ex) {
 				throw new RuntimeException("This feature only works for Cohort Indicators");

@@ -18,6 +18,7 @@ import java.util.Map;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.aggregation.Aggregator;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Cohort-based indicator

@@ -25,28 +25,35 @@ import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.indicator.aggregation.Aggregator;
 
 /**
- * Period cohort-based indicator
+ * Period cohort-based indicator is a simple indicator that has three
+ * default parameters (start date, end date, location).  
  */
 public class PeriodCohortIndicator extends CohortIndicator {
 	
     private static final long serialVersionUID = 1L;
-    
-    //***** PROPERTIES *****
-    
-
-    //***** CONSTRUCTORS *****
-    
+        
     /**
-     * Default Constructor
+     * Default constructor that just adds the default parameters.
      */
     public PeriodCohortIndicator() {
-    	super();
-		if (this.getUuid()==null) { 
-			this.addParameter(new Parameter("startDate", "Enter a Start Date", Date.class, null, true));
-			this.addParameter(new Parameter("endDate", "Enter an End Date", Date.class, null, true));
-			this.addParameter(new Parameter("location", "Choose a Location", Location.class, null, true));			
-		}
-    	
+    	super();    	
+    	// FIXME 
+		addParameter(new Parameter("startDate", "Enter a start date", Date.class, null, true));
+		addParameter(new Parameter("endDate", "Enter an end date", Date.class, null, true));
+		addParameter(new Parameter("location", "Choose a location", Location.class, null, true));    	
     }
+ 
+    /** 
+     * Constructor that fully specifies the indicator.
+     * 
+     * @param cohortDefinition
+     * @param mappings
+     */
+    public PeriodCohortIndicator(CohortDefinition cohortDefinition, Map<String,Object> mappings) { 
+    	this();
+    	setCohortDefinition(cohortDefinition, mappings);
+    }
+    
+    
 
 }

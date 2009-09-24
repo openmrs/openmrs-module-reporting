@@ -1,5 +1,6 @@
 package org.openmrs.module.indicator;
 
+import java.awt.Dimension;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -26,6 +27,7 @@ import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
+import org.openmrs.module.indicator.dimension.CohortDimension;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 
@@ -84,9 +86,6 @@ public class ProgramEnrollmentIndicatorTest extends BaseModuleContextSensitiveTe
 		
 		EvaluatedCohort evaluatedCohort = 
 			Context.getService(CohortDefinitionService.class).evaluate(definition, evalContext);
-		//Context.getService(ReportService.class);
-		//Context.getService(IndicatorService.class);		
-		//Context.getService(DataSetDefinitionService.class);
 		log.info("cohort size: " + evaluatedCohort.size());
 		
 		Assert.assertEquals("value should be X", evaluatedCohort.size(), 3043);
@@ -106,14 +105,20 @@ public class ProgramEnrollmentIndicatorTest extends BaseModuleContextSensitiveTe
 		ProgramStateCohortDefinition inProgram = new ProgramStateCohortDefinition();
 		inProgram.setProgram(Context.getProgramWorkflowService().getProgram(1));
 
-		CohortIndicator ind = new CohortIndicator("In HIV Program", null, new Mapped<ProgramStateCohortDefinition>(inProgram, null), null, null);
+		
+		Mapped<ProgramStateCohortDefinition> inProgramMapped = new Mapped<ProgramStateCohortDefinition>(inProgram, null);
+		CohortIndicator ind = new CohortIndicator("In HIV Program", null, inProgramMapped, null, null);
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+		
+		
 		dsd.addDimension("gender", new Mapped<CohortDefinitionDimension>(gender, null));
 		dsd.addColumn("1", "Total in program", new Mapped<CohortIndicator>(ind, null), "");
 		dsd.addColumn("1.a", "Males in program", new Mapped<CohortIndicator>(ind, null), "gender=male");
 		dsd.addColumn("1.b", "Females in program", new Mapped<CohortIndicator>(ind, null), "gender=female");
+
 		
+		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		MapDataSet<IndicatorResult<CohortIndicator>> ds = (MapDataSet<IndicatorResult<CohortIndicator>>) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		
 		int i = 0;

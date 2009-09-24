@@ -34,7 +34,6 @@
 		</property>
 	</bean>	
 
-
 	<!-- Initialize report persistence handlers -->
 	<bean id="serializedCohortDefinitionPersister" class="org.openmrs.module.cohort.definition.persister.SerializedCohortDefinitionPersister">
 		<property name="dao"><ref bean="serializedObjectDAO"/></property>
@@ -150,5 +149,34 @@
 		</property>
 	</bean>
 
+	<bean id="cohortQueryDAO" class="org.openmrs.module.cohort.query.db.hibernate.HibernateCohortQueryDAO">
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+	</bean>							
+
+    <bean parent="serviceContext">
+		<property name="moduleService">
+			<list>
+				<value>org.openmrs.module.cohort.query.service.CohortQueryService</value> <!-- service interface name -->
+				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+					<property name="transactionManager"><ref bean="transactionManager"/></property>
+					<property name="target">
+						<bean class="org.openmrs.module.cohort.query.service.CohortQueryServiceImpl">
+							<property name="cohortQueryDAO">
+								<ref bean="cohortQueryDAO" />
+							</property>	
+						</bean>
+					</property>
+					<property name="preInterceptors">
+						<list>
+							<ref bean="authorizationInterceptor"/>
+						</list>
+					</property>
+					<property name="transactionAttributeSource">
+						<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
 	
 </beans>

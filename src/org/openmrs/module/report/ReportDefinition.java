@@ -66,6 +66,19 @@ public class ReportDefinition extends BaseDefinition {
 		return dataSetDefinitions != null && !dataSetDefinitions.isEmpty();
 	}
 	
+	/**
+	 * @param definition the DataSetDefinition to add
+	 */
+	public void addDataSetDefinition(DataSetDefinition definition, Map<String, Object> mappings) {
+		addDataSetDefinition(definition.getName(), new Mapped<DataSetDefinition>(definition, mappings));
+	}	
+
+	/**
+	 * @param definition the DataSetDefinition to add
+	 */
+	public void addDataSetDefinition(String key, DataSetDefinition definition, Map<String, Object> mappings) {
+		addDataSetDefinition(key, new Mapped<DataSetDefinition>(definition, mappings));
+	}
 	
 	/**
 	 * @param definition the Mapped<DataSetDefinition> to add
@@ -77,12 +90,7 @@ public class ReportDefinition extends BaseDefinition {
 		dataSetDefinitions.put(key, definition);
 	}
 	
-	/**
-	 * @param definition the DataSetDefinition to add
-	 */
-	public void addDataSetDefinition(String key, DataSetDefinition definition, Map<String, Object> mappings) {
-		addDataSetDefinition(key, new Mapped<DataSetDefinition>(definition, mappings));
-	}
+	
 	
 	/** @see Object#equals(Object) */
 	public boolean equals(Object obj) {

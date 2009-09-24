@@ -15,7 +15,7 @@
 	</logger>	
 	
 	<root>
-		<level value="INFO"/>
+		<level value="WARN"/>
 		<appender-ref ref="CONSOLE"/>
 	</root>
 	

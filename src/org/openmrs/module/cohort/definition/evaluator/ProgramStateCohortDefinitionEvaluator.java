@@ -43,6 +43,9 @@ public class ProgramStateCohortDefinitionEvaluator implements CohortDefinitionEv
 		PatientSetService service = Context.getPatientSetService();
 		Date fromDate = d.getCalculatedFromDate(context);
 		Date toDate = d.getCalculatedToDate(context);
+		
 		return service.getPatientsByProgramAndState(d.getProgram(), d.getStateList(), fromDate, toDate);
+		
+		
     }
 }
