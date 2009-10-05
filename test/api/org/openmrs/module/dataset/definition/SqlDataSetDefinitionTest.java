@@ -30,10 +30,10 @@ import org.openmrs.test.SkipBaseSetup;
  * 
  */
 @SkipBaseSetup
-public class JdbcDataSetDefinitionTest extends BaseModuleContextSensitiveTest {
+public class SqlDataSetDefinitionTest extends BaseModuleContextSensitiveTest {
 	
 	/** Logger */
-	private static Log log = LogFactory.getLog(JdbcDataSetDefinitionTest.class);
+	private static Log log = LogFactory.getLog(SqlDataSetDefinitionTest.class);
 	
 	/**
 	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()
@@ -56,10 +56,8 @@ public class JdbcDataSetDefinitionTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void shouldGetAllPatientColumns() throws Exception { 
 
-		JdbcDataSetDefinition jdbcDSD = new JdbcDataSetDefinition("my sql dataset", "another sql dataset", "select * from patient");
-
-		
-		log.info("Columns: " + jdbcDSD.getColumns());
+		SqlDataSetDefinition sqlDSD = new SqlDataSetDefinition("my sql dataset", "another sql dataset", "select * from patient");
+		log.info("Columns: " + sqlDSD.getColumns());
 		
 		
 		

@@ -17,7 +17,7 @@ import org.openmrs.module.dataset.DataSetException;
 import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.JdbcDataSetDefinition;
+import org.openmrs.module.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
@@ -159,8 +159,8 @@ public class ManageDatasetsController {
     		ModelMap model) {
 
     	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, type, id);
-    	if (dataSetDefinition instanceof JdbcDataSetDefinition) { 
-    		JdbcDataSetDefinition instance = (JdbcDataSetDefinition) dataSetDefinition;
+    	if (dataSetDefinition instanceof SqlDataSetDefinition) { 
+    		SqlDataSetDefinition instance = (SqlDataSetDefinition) dataSetDefinition;
     		instance.setSqlQuery(sqlQuery);
     		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(instance);
     	}    	   

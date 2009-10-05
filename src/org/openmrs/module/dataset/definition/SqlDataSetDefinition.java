@@ -38,7 +38,7 @@ import org.openmrs.util.DatabaseUpdater;
  * Definition of a dataset that produces one-row-per-patient table. 
  * @see PatientDataSetEvaluator
  */
-public class JdbcDataSetDefinition extends BaseDataSetDefinition {
+public class SqlDataSetDefinition extends BaseDataSetDefinition {
 
 	// Serial version UID
 	private static final long serialVersionUID = 6405583324151111487L;
@@ -48,7 +48,7 @@ public class JdbcDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * Constructor
 	 */
-	public JdbcDataSetDefinition() {
+	public SqlDataSetDefinition() {
 		super();
 	}
 	
@@ -59,7 +59,7 @@ public class JdbcDataSetDefinition extends BaseDataSetDefinition {
 	 * @param description
 	 * @param questions
 	 */
-	public JdbcDataSetDefinition(String name, String description, String sqlQuery) {
+	public SqlDataSetDefinition(String name, String description, String sqlQuery) {
 		this();
 		this.setName(name);
 		this.setDescription(description);

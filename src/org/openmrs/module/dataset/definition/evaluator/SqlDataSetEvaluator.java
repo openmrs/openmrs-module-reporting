@@ -48,8 +48,8 @@ import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.JdbcDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.util.CohortUtil;
 import org.openmrs.util.DatabaseUpdater;
@@ -58,20 +58,20 @@ import org.openmrs.util.DatabaseUpdater;
  * The logic that evaluates a {@link PatientDataSetDefinition} and produces an {@link DataSet}
  * @see PatientDataSetDefinition
  */
-@Handler(supports={JdbcDataSetDefinition.class})
-public class JdbcDataSetEvaluator implements DataSetEvaluator {
+@Handler(supports={SqlDataSetDefinition.class})
+public class SqlDataSetEvaluator implements DataSetEvaluator {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
 	/**
 	 * Public constructor
 	 */
-	public JdbcDataSetEvaluator() { }
+	public SqlDataSetEvaluator() { }
 	
 	
 	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
-		if (dataSetDefinition instanceof JdbcDataSetDefinition) { 
-			return evaluate((JdbcDataSetDefinition)dataSetDefinition, evalContext);			
+		if (dataSetDefinition instanceof SqlDataSetDefinition) { 
+			return evaluate((SqlDataSetDefinition)dataSetDefinition, evalContext);			
 		} 
 		throw new APIException("JdbcDataSetEvaluator cannot evaluate dataset definition of type" + dataSetDefinition.getClass().getName());
 	}
@@ -80,7 +80,7 @@ public class JdbcDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(JdbcDataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet<?> evaluate(SqlDataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 		
