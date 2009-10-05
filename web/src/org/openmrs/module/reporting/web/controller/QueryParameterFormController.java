@@ -23,6 +23,7 @@ import org.openmrs.module.report.renderer.CsvReportRenderer;
 import org.openmrs.module.report.renderer.SimpleHtmlReportRenderer;
 import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.report.renderer.XmlReportRenderer;
+import org.openmrs.module.reporting.web.widget.WidgetUtil;
 import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -93,26 +94,21 @@ public class QueryParameterFormController {
 			@ModelAttribute("parameterizable") Parameterizable parameterizable, 
 			BindingResult bindingResult) throws Exception {
 					
-		log.info("Action: " + action);
-		
 		Object results = null;
 		ModelAndView model = new ModelAndView();
 		
 		if (bindingResult.hasErrors()) {			
-			log.info("BindingResult: " + bindingResult);
-			log.info("Errors: " + bindingResult.getAllErrors());
 			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "An error has occurred.  See below for more details.");
 			return setupForm(request);
 		}
 		
 
-		log.info("Parameterizable: " + parameterizable);
 		if ( parameterizable == null ) 
 			parameterizable = ParameterizableUtil.getParameterizable(uuid, type);		
 			
 			
 		if (parameterizable != null) {			
-			EvaluationContext context = new EvaluationContext();
+			EvaluationContext evaluationContext = new EvaluationContext();
 
 			// Build a map of parameters from the request
 			Map<String, String> parameterValuesAsStrings = new HashMap<String,String>();
@@ -122,16 +118,25 @@ public class QueryParameterFormController {
 			}
 			
 			// Convert values from string to object
-			Map<String, Object> parameterValues = 
-				ParameterizableUtil.getParameterValues(parameterizable, parameterValuesAsStrings);
+			//Map<String, Object> parameterValues = 
+				//ParameterizableUtil.getParameterValues(parameterizable, parameterValuesAsStrings);
+				
+			Map<String, Object> parameterValues = new HashMap<String, Object>();
+			if (parameterizable != null && parameterizable.getParameters() != null) { 
+				for (Parameter parameter : parameterizable.getParameters()) {
+					String textValue = parameterValuesAsStrings.get(parameter.getName());			
+					Object objectValue = WidgetUtil.parseInput(textValue, parameter.getType());
+					parameterValues.put(parameter.getName(), objectValue);								
+				}
+			}
 
-			log.info("parameter values: " + parameterValues);
-			log.info("success view: " + successView);
 			// Set parameter values
-			context.setParameterValues(parameterValues);		
+			evaluationContext.setParameterValues(parameterValues);		
+
+			model.addObject("evaluationContext", evaluationContext);
 			try { 
 				// Evaluate the parameterizable and populate the model
-				results = ParameterizableUtil.evaluateParameterizable(parameterizable, context);						
+				results = ParameterizableUtil.evaluateParameterizable(parameterizable, evaluationContext);						
 				//model.addObject("results", results);
 				request.getSession().setAttribute("results", results);
 				

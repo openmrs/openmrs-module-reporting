@@ -17,24 +17,43 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Cohort;
+import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.api.PatientSetService.Modifier;
+import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.cohort.definition.CompoundCohortDefinition;
+import org.openmrs.module.cohort.definition.DrugOrderCohortDefinition;
+import org.openmrs.module.cohort.definition.DrugsActiveCohortDefinition;
+import org.openmrs.module.cohort.definition.DrugsCompletedCohortDefinition;
+import org.openmrs.module.cohort.definition.DrugsStartedCohortDefinition;
+import org.openmrs.module.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.cohort.definition.InverseCohortDefinition;
+import org.openmrs.module.cohort.definition.ObsCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
+import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.MapDataSet;
@@ -53,8 +72,11 @@ import org.openmrs.module.indicator.dimension.CohortDimension;
 import org.openmrs.module.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.indicator.dimension.Dimension;
 import org.openmrs.module.indicator.dimension.DimensionCategory;
+import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.tracnet.report.definition.TracNetReportDefinition;
+import org.openmrs.module.util.DateUtil;
 import org.openmrs.test.BaseContextSensitiveTest;
 
 /**
@@ -103,6 +125,28 @@ public class TracNetReportTest extends BaseContextSensitiveTest {
 		//executeDataSet("org/openmrs/report/include/TracNetReportTest.xml");
 				
 
+		// ===============================================================================			
+		//
+		//		 Initialize data
+		//
+		// ===============================================================================		
+
+		
+		Calendar calendar = Calendar.getInstance();		
+		calendar.set(Calendar.MONTH, Calendar.FEBRUARY);
+		calendar.set(Calendar.YEAR, 2009);
+		
+		Date reportStartDate = DateUtil.getStartOfMonth(calendar.getTime());
+		Date reportEndDate = DateUtil.getEndOfMonth(calendar.getTime());
+		
+		//DateUtil.getStartOfMonth(d, monthAdjustment)
+		
+		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
+
+		TracNetReportDefinition tracNetReport = new TracNetReportDefinition();
+		Cohort cohort = new Cohort();
+		EvaluationContext context = new EvaluationContext();
+		
 		
 		// ===============================================================================			
 		//
@@ -110,10 +154,235 @@ public class TracNetReportTest extends BaseContextSensitiveTest {
 		//
 		// ===============================================================================		
 
+
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByName("HIV PROGRAM");
+		Program pmtctProgram = Context.getProgramWorkflowService().getProgramByName("PMTCT PROGRAM");
 		ProgramWorkflow treatmentStatusWorkflow = hivProgram.getWorkflowByName("TREATMENT STATUS");
-		ProgramWorkflowState onAntiretroviralsState = treatmentStatusWorkflow.getStateByName("ON ANTIRETROVIRALS");
+		List<Concept> firstLineDrugSets = Context.getConceptService().getConceptsByName("ANTIRETROVIRAL DRUGS");
 		Location rwinkwavu = Context.getLocationService().getLocation(26);
+		
+		// HIV PROGRAM TREATMENT STATUS
+		ProgramWorkflowState onAntiretroviralsState = treatmentStatusWorkflow.getStateByName("ON ANTIRETROVIRALS");
+		ProgramWorkflowState treatmentStoppedSideEffectsState = treatmentStatusWorkflow.getStateByName("TREATMENT STOPPED - SIDE EFFECTS");
+		ProgramWorkflowState treatmentStoppedPatientRefusedState = treatmentStatusWorkflow.getStateByName("TREATMENT STOPPED - PATIENT REFUSED");
+		ProgramWorkflowState treatmentStoppedState = treatmentStatusWorkflow.getStateByName("TREATMENT STOPPED");
+		ProgramWorkflowState patientDefaultedState = treatmentStatusWorkflow.getStateByName("PATIENT DEFAULTED");
+		ProgramWorkflowState patientDiedState = treatmentStatusWorkflow.getStateByName("PATIENT DIED");
+		
+		// ON ARV state(s)
+		List<ProgramWorkflowState> onArvStates = new ArrayList<ProgramWorkflowState>();
+		onArvStates.add(onAntiretroviralsState);
+		
+		// STOPPED state(s)
+		List<ProgramWorkflowState> treatmentStoppedStates = new ArrayList<ProgramWorkflowState>();
+		treatmentStoppedStates.add(treatmentStoppedSideEffectsState);
+		treatmentStoppedStates.add(treatmentStoppedPatientRefusedState);
+		treatmentStoppedStates.add(treatmentStoppedState);
+		
+		// DEFAULTED state(s)
+		List<ProgramWorkflowState> patientDefaultedStates = new ArrayList<ProgramWorkflowState>();
+		patientDefaultedStates.add(patientDefaultedState);
+		
+		// DIED state(s)
+		List<ProgramWorkflowState> patientDiedStates = new ArrayList<ProgramWorkflowState>();
+		patientDiedStates.add(patientDiedState);
+		
+		
+		
+		
+		
+		List<Drug> allArvDrugs = TracNetReportDefinition.getDrugsByDrugSetName("ANTIRETROVIRAL DRUGS");
+		List<Drug> secondLineRegimen = TracNetReportDefinition.getDrugByConceptName("LOPINAVIR AND RITONAVIR");
+		for (Drug drug : secondLineRegimen) { 
+			log.warn("second line drugs: " + drug.getName());			
+		}		
+		List<Drug> firstLineRegimen = new ArrayList<Drug>(allArvDrugs);
+		firstLineRegimen.removeAll(secondLineRegimen);
+		for (Drug drug : firstLineRegimen) { 
+			log.warn("first line drugs: " + drug.getName());			
+		}
+
+		
+		// ===============================================================================			
+		//
+		//		 Create initial cohort queries to be used within indicators
+		//
+		// ===============================================================================		
+		
+		// CURRENTLY IN HIV PROGRAM (Program)  
+		ProgramStateCohortDefinition currentlyInHivProgram = new ProgramStateCohortDefinition();
+		currentlyInHivProgram.setProgram(hivProgram);
+		currentlyInHivProgram.setSinceDate(reportEndDate);
+		//currentlyInHivProgram.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
+		//currentlyInHivProgram.addParameter(new Parameter("untilDate", "Period ends:", Date.class));
+		cohort = cds.evaluate(currentlyInHivProgram, context);
+		log.warn("currently on any ARV treatment: " + cohort.getSize());
+		
+		// CURRENTLY ON ARV (ProgramWorkflowState)
+		// Was ON ARV as of the last day of the period.  sinceDate and untilDate map to the last day of the period
+		ProgramStateCohortDefinition currentlyOnAntiretrovirals = new ProgramStateCohortDefinition();
+		currentlyOnAntiretrovirals.setProgram(hivProgram);
+		currentlyOnAntiretrovirals.setStateList(onArvStates);
+		currentlyOnAntiretrovirals.setSinceDate(reportEndDate);
+		//onArvTreatment.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
+		//onArvTreatment.addParameter(new Parameter("untilDate", "Period begins:", Date.class));
+		cohort = cds.evaluate(currentlyOnAntiretrovirals, context);
+		log.warn("currently on any ARV treatment: " + cohort.getSize());
+		
+		// STARTED HIV PROGRAM DURING PERIOD
+		ProgramStateCohortDefinition startHivProgram = new ProgramStateCohortDefinition();
+		startHivProgram.setProgram(hivProgram);
+		startHivProgram.setSinceDate(reportStartDate);
+		startHivProgram.setUntilDate(reportEndDate);
+		//inHivProgram.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
+		//inHivProgram.addParameter(new Parameter("untilDate", "Period ends:", Date.class));
+		cohort = cds.evaluate(currentlyInHivProgram, context);
+		log.warn("started ART during the period: " + cohort.getSize());
+		
+		// Started ON ARV DURING PERIOD
+		ProgramStateCohortDefinition startedOnAntiretrovirals = new ProgramStateCohortDefinition();
+		startedOnAntiretrovirals.setProgram(hivProgram);
+		startedOnAntiretrovirals.setStateList(onArvStates);
+		startedOnAntiretrovirals.setSinceDate(reportEndDate);
+		//onArvTreatment.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
+		//onArvTreatment.addParameter(new Parameter("untilDate", "Period begins:", Date.class));
+		cohort = cds.evaluate(currentlyOnAntiretrovirals, context);
+		log.warn("started on any ARV treatment during the period: " + cohort.getSize());		
+		
+		
+		// CURRENTLY ON ARVs
+		DrugsActiveCohortDefinition currentlyOnArvs = new DrugsActiveCohortDefinition();		
+		currentlyOnArvs.setDrugs(allArvDrugs);
+		currentlyOnArvs.setAsOfDate(reportEndDate);	// report end date
+		cohort = cds.evaluate(currentlyOnArvs, context);
+		log.warn("currently on any ARV treatment: " + cohort.getSize());
+
+		
+		// CURRENTLY ON FIRST LINE REGIMEN
+		DrugsActiveCohortDefinition currentlyOnFirstLineRegimen = new DrugsActiveCohortDefinition();		
+		currentlyOnFirstLineRegimen.setDrugs(firstLineRegimen);
+		currentlyOnFirstLineRegimen.setAsOfDate(reportEndDate);	// report end date
+		cohort = cds.evaluate(currentlyOnFirstLineRegimen, context);
+		log.warn("currently on first line regimen: " + cohort.getSize());
+
+		// CURRENTLY ON SECOND LINE REGIMEN
+		DrugsActiveCohortDefinition currentlyOnSecondLineRegimen = new DrugsActiveCohortDefinition();		
+		currentlyOnSecondLineRegimen.setDrugs(secondLineRegimen);
+		currentlyOnSecondLineRegimen.setAsOfDate(reportEndDate);	// report end date
+		cohort = cds.evaluate(currentlyOnSecondLineRegimen, context);		
+		log.warn("currently on second line regimen: " + cohort.getSize());
+
+		// LAST WHO STAGE 
+		ObsCohortDefinition whoStage = new ObsCohortDefinition();
+		Concept whoStageQuestion = Context.getConceptService().getConceptByName("WHO STAGE");		
+		whoStage.setQuestion(whoStageQuestion);
+		whoStage.setModifier(Modifier.EQUAL);
+		whoStage.setTimeModifier(TimeModifier.LAST);		
+		whoStage.setSinceDate(reportStartDate);
+		whoStage.setUntilDate(reportEndDate);
+		
+		whoStage.setValueCoded(Context.getConceptService().getConceptByName("WHO STAGE 1 ADULT"));
+		cohort = cds.evaluate(whoStage, context);
+		log.warn("WHO STAGE 1 ADULT: " + cohort.getSize());
+
+		whoStage.setValueCoded(Context.getConceptService().getConceptByName("WHO STAGE 2 ADULT"));
+		cohort = cds.evaluate(whoStage, context);
+		log.warn("WHO STAGE 2 ADULT: " + cohort.getSize());
+
+		whoStage.setValueCoded(Context.getConceptService().getConceptByName("WHO STAGE 3 ADULT"));
+		cohort = cds.evaluate(whoStage, context);
+		log.warn("WHO STAGE 3 ADULT: " + cohort.getSize());
+		
+		whoStage.setValueCoded(Context.getConceptService().getConceptByName("WHO STAGE 4 ADULT"));
+		cohort = cds.evaluate(whoStage, context);
+		log.warn("WHO STAGE 4 ADULT: " + cohort.getSize());
+
+		whoStage.setValueCoded(Context.getConceptService().getConceptByName("WHO STAGE 1 PEDS"));
+		cohort = cds.evaluate(whoStage, context);		
+		log.warn("WHO STAGE 1 PEDS: " + cohort.getSize());
+		
+		whoStage.setValueCoded(Context.getConceptService().getConceptByName("WHO STAGE 2 PEDS"));
+		cohort = cds.evaluate(whoStage, context);
+		log.warn("WHO STAGE 2 PEDS: " + cohort.getSize());
+		
+		whoStage.setValueCoded(Context.getConceptService().getConceptByName("WHO STAGE 3 PEDS"));
+		cohort = cds.evaluate(whoStage, context);
+		log.warn("WHO STAGE 3 PEDS: " + cohort.getSize());
+		
+		whoStage.setValueCoded(Context.getConceptService().getConceptByName("WHO STAGE 4 PEDS"));
+		cohort = cds.evaluate(whoStage, context);
+		log.warn("WHO STAGE 4 PEDS: " + cohort.getSize());
+		
+
+		// AT LEAST ONE ENCOUNTER IN THE LAST THREE MONTHS (needs some work)		
+		EncounterCohortDefinition encounterWithinLastThreeMonths = new EncounterCohortDefinition();
+		encounterWithinLastThreeMonths.setSinceDate(reportStartDate);
+		encounterWithinLastThreeMonths.setUntilDate(reportEndDate);
+		//encounterWithinLastThreeMonths.setEncounterType();
+		//encounterWithinLastThreeMonths.setWithinLastMonths(3);
+		//encounterWithinLastThreeMonths.setUntilDate(reportEndDate-3m);		
+		cohort = cds.evaluate(encounterWithinLastThreeMonths, context);
+		log.warn("Any encounter in the last month: " + cohort.getSize());
+		
+		// NO ENCOUNTER IN THE PAST THREE MONTHS
+		InverseCohortDefinition noEncounterWithLastThreeMonths = new InverseCohortDefinition();
+		noEncounterWithLastThreeMonths.setBaseDefinition(encounterWithinLastThreeMonths);		
+		cohort = cds.evaluate(noEncounterWithLastThreeMonths, context);
+		log.warn("No encounter in the last month: " + cohort.getSize());
+		
+
+		// STARTED TREATMENT DURING PERIOD
+		DrugsStartedCohortDefinition drugsStartedCohortDefinition = new DrugsStartedCohortDefinition();
+		drugsStartedCohortDefinition.setDrugs(allArvDrugs);
+		drugsStartedCohortDefinition.setStartedOnOrAfter(reportStartDate);
+		drugsStartedCohortDefinition.setStartedOnOrBefore(reportEndDate);		
+		cohort = cds.evaluate(drugsStartedCohortDefinition, context);
+		log.warn("Started on ARVs during period: " + cohort.getSize());
+		
+		
+		// STOPPED TREATMENT DURING PERIOD
+		DrugsCompletedCohortDefinition drugsStoppedCohortDefinition = new DrugsCompletedCohortDefinition();
+		drugsStoppedCohortDefinition.setDrugs(allArvDrugs);
+		drugsStoppedCohortDefinition.setCompletedOnOrAfter(reportStartDate);
+		drugsStoppedCohortDefinition.setCompletedOnOrBefore(reportEndDate);		
+		cohort = cds.evaluate(drugsStoppedCohortDefinition, context);
+		log.warn("Stopped ARVs during period: " + cohort.getSize());
+		
+		// NOT ON ARV AT END OF PERIOD
+		log.warn("currently on any ARV treatment: " + cohort.getSize());
+		InverseCohortDefinition notOnArvsAtPeriodEnd = new InverseCohortDefinition();
+		notOnArvsAtPeriodEnd.setBaseDefinition(currentlyOnArvs);		
+		cohort = cds.evaluate(notOnArvsAtPeriodEnd, context);		
+		log.warn("Not on ARVs at end of period: " + cohort.getSize());
+		
+		CompoundCohortDefinition notOnArvButEligible = new CompoundCohortDefinition();
+		notOnArvButEligible.addDefinition(new Mapped<CohortDefinition>(notOnArvsAtPeriodEnd, null));
+		notOnArvButEligible.addDefinition(new Mapped<CohortDefinition>(currentlyInHivProgram, null));
+		cohort = cds.evaluate(notOnArvButEligible, context);		
+		log.warn("Not on ARVs at end of period, but eligible: " + cohort.getSize());
+		
+		
+		// HOSPITALIZED DURING PERIOD
+		ObsCohortDefinition hospitalizedDuringPeriod = new ObsCohortDefinition();
+		Concept hospitalizedQuestion = Context.getConceptService().getConceptByName("PATIENT HOSPITALIZED SINCE LAST VISIT");		
+		hospitalizedDuringPeriod.setQuestion(hospitalizedQuestion);
+		hospitalizedDuringPeriod.setSinceDate(reportStartDate);
+		hospitalizedDuringPeriod.setUntilDate(reportEndDate);
+		hospitalizedDuringPeriod.setValueNumeric(1d);
+		hospitalizedDuringPeriod.setModifier(Modifier.EQUAL);
+		hospitalizedDuringPeriod.setTimeModifier(TimeModifier.ANY);		
+		cohort = cds.evaluate(hospitalizedDuringPeriod, context);
+		log.warn("Patients that have been hospitalized during the period: " + cohort.getSize());
+
+		
+		
+		
+		if (true)
+			return;
+		
+		
+
+
 		
 		
 		// ===============================================================================			
@@ -126,47 +395,7 @@ public class TracNetReportTest extends BaseContextSensitiveTest {
 		//Parameter endDateParameter = new Parameter("endDate", "End Date:", java.util.Date.class);
 		//Parameter locationParameter = new Parameter("location", "Health Center:", org.openmrs.Location.class);
 		
-		// ===============================================================================			
-		//
-		//		 Create initial cohort queries to be used within indicators
-		//
-		// ===============================================================================
-		
-		// Males 
-		GenderCohortDefinition males = new GenderCohortDefinition("M");
 
-		// Females 
-		GenderCohortDefinition females = new GenderCohortDefinition("F");		
-		
-		// Adults 
-		AgeCohortDefinition adults = new AgeCohortDefinition(15, null, null);		
-		adults.addParameter(new Parameter("effectiveDate", "As of:", Date.class));
-
-		// Pediatrics -- the effective parameter 
-		AgeCohortDefinition pediatrics = new AgeCohortDefinition(null,15, null);
-		pediatrics.addParameter(new Parameter("effectiveDate", "As of:", Date.class));
-						
-		// Currently in HIV Program  
-		ProgramStateCohortDefinition inHivProgram = new ProgramStateCohortDefinition();
-		inHivProgram.setProgram(hivProgram);
-		inHivProgram.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
-		inHivProgram.addParameter(new Parameter("untilDate", "Period ends:", Date.class));
-		
-		// Currently on ARV
-		// Was ON ARV as of the last day of the period.  sinceDate and untilDate map to the last day of the period
-		ProgramStateCohortDefinition onArvTreatment = new ProgramStateCohortDefinition();
-		onArvTreatment.setProgram(hivProgram);
-		onArvTreatment.setStateList(new ArrayList<ProgramWorkflowState>());
-		onArvTreatment.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
-		onArvTreatment.addParameter(new Parameter("untilDate", "Period begins:", Date.class));
-		
-		// Currently on First Line Regimen
-		
-		// Currently on Second Line Regimen
-		
-		// Started HIV Program during the month
-		
-		// Started ON ARV during the month
 		
 		// ===============================================================================			
 		//
@@ -182,11 +411,13 @@ public class TracNetReportTest extends BaseContextSensitiveTest {
 		//		 Create the dimensions that will be used in the report 
 		//
 		// ===============================================================================
-			
+					
 		// Define the GENDER dimension as a breakdown of males and females
 		CohortDefinitionDimension genderDimension = new CohortDefinitionDimension();
-		genderDimension.addCohortDefinition("males", males, null);		
-		genderDimension.addCohortDefinition("females", females, null);
+		GenderCohortDefinition males = new GenderCohortDefinition("M");
+		genderDimension.addCohortDefinition("males", males, null);				
+		GenderCohortDefinition females = new GenderCohortDefinition("F");		
+		genderDimension.addCohortDefinition("females", females, null);		
 		genderDimension.addParameter(ReportingConstants.START_DATE_PARAMETER);
 		
 		// Not fully implemented yet - so we'll continue to use the existing construct
@@ -199,9 +430,13 @@ public class TracNetReportTest extends BaseContextSensitiveTest {
 		Map<String,Object> ageDimensionMapping = new HashMap<String,Object>();
 		ageDimensionMapping.put("effectiveDate", "${endDate}");
 
-		// Define the AGE dimension 
-		CohortDefinitionDimension ageDimension = new CohortDefinitionDimension();
+		// Define the AGE dimension
+		CohortDefinitionDimension ageDimension = new CohortDefinitionDimension();		
+		AgeCohortDefinition adults = new AgeCohortDefinition(15, null, null);		
+		adults.addParameter(new Parameter("effectiveDate", "As of:", Date.class));
 		ageDimension.addCohortDefinition("adults", adults, ageDimensionMapping);
+		AgeCohortDefinition pediatrics = new AgeCohortDefinition(null,15, null);
+		pediatrics.addParameter(new Parameter("effectiveDate", "As of:", Date.class));
 		ageDimension.addCohortDefinition("pediatrics", pediatrics, ageDimensionMapping);		
 		//ageDimension.addParameter(ReportingConstants.START_DATE_PARAMETER);
 
@@ -219,18 +454,20 @@ public class TracNetReportTest extends BaseContextSensitiveTest {
 		//
 		// ===============================================================================
 
+		// CURRENTLY IN HIV PROGRAM 
 		// Configure the mapping between the default parameters and cohort definition attribute
 		Map<String,Object> inHivProgramMapping = new HashMap<String, Object>(); 
 		inHivProgramMapping.put("sinceDate", "${startDate}");
-		inHivProgramMapping.put("untilDate", "${endDate}");		
-
-		// In HIV Program Indicator 
+		inHivProgramMapping.put("untilDate", "${endDate}");
 		PeriodCohortIndicator inHivProgramIndicator = new PeriodCohortIndicator();
 		inHivProgramIndicator.setName("Number of patients currently enrolled in the HIV Program");
-		inHivProgramIndicator.setCohortDefinition(inHivProgram, inHivProgramMapping);
+		inHivProgramIndicator.setCohortDefinition(currentlyInHivProgram, inHivProgramMapping);
 
 		
+		// CURRENTLY ON ANTIRETROVIRALS
 		
+		
+		// STARTED 
 		
 		
 		// ===============================================================================			
@@ -239,15 +476,16 @@ public class TracNetReportTest extends BaseContextSensitiveTest {
 		//
 		// ===============================================================================
 				
+		// Currently enrolled in HIV Program (breakdown by age and gender)
 		reportDefinition.addIndicator("1", "# of patients currently in HIV Program", inHivProgramIndicator);
 		reportDefinition.addIndicator("2", "# of male patients currently in HIV Program", inHivProgramIndicator, "gender=males");
 		reportDefinition.addIndicator("3", "# of female patients currently in HIV Program", inHivProgramIndicator, "gender=females");
 		reportDefinition.addIndicator("4", "# of adult patients currently in HIV Program", inHivProgramIndicator, "age=adults");
 		reportDefinition.addIndicator("5", "# of pediatric patients currently in HIV Program", inHivProgramIndicator, "age=pediatrics");
-		reportDefinition.addIndicator("6", "# of male adult patients currently in HIV Program", inHivProgramIndicator, "gender=males,age=adults");
-		reportDefinition.addIndicator("7", "# of female adult patients currently in HIV Program", inHivProgramIndicator, "gender=females,age=adults");
-		reportDefinition.addIndicator("8", "# of male pediatric patients currently in HIV Program", inHivProgramIndicator, "gender=males,age=pediatrics");
-		reportDefinition.addIndicator("9", "# of female pediatric patients currently in HIV Program", inHivProgramIndicator, "gender=females,age=pediatrics");
+		reportDefinition.addIndicator("6", "# of male adult patients currently in HIV Program", inHivProgramIndicator, "gender=males|age=adults");
+		reportDefinition.addIndicator("7", "# of female adult patients currently in HIV Program", inHivProgramIndicator, "gender=females|age=adults");
+		reportDefinition.addIndicator("8", "# of male pediatric patients currently in HIV Program", inHivProgramIndicator, "gender=males|age=pediatrics");
+		reportDefinition.addIndicator("9", "# of female pediatric patients currently in HIV Program", inHivProgramIndicator, "gender=females|age=pediatrics");
 		
 		// ===============================================================================			
 		//
@@ -270,15 +508,12 @@ public class TracNetReportTest extends BaseContextSensitiveTest {
 					
 					log.info(column.getColumnKey() + ".) " + column.getDisplayName() + " = " + result.getValue());
 				}
-			}
-			
-		}
-				
+			}			
+		}			
 	}
 	
 	
-	public void shouldCalculateNewlyEnrolledDuringMonth() { 
-		
+	public void shouldCalculateNewlyEnrolledDuringMonth() { 		
 		ProgramStateCohortDefinition pscd = new ProgramStateCohortDefinition();
 		pscd.addParameter(ReportingConstants.START_DATE_PARAMETER);
 		pscd.addParameter(ReportingConstants.END_DATE_PARAMETER);

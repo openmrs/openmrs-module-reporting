@@ -109,6 +109,11 @@ function showDialog(divId, title) {
 	$('#' + divId).dialog('option', 'title', title).dialog('open');
 }
 
+
+
+
+
+		
 ////// Support for a single modal dialog for all reporting pages //////////////////
 
 var dialogCurrentlyShown = null;

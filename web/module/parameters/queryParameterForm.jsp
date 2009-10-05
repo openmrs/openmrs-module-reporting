@@ -37,7 +37,7 @@ $(document).ready(function() {
 	#container { height: 95%; border: 1px }
 	#wrapper { min-height: 100%; height: auto !important; height:100%; margin: 0 auto -4em; }
 	.button { margin: 5px; width: 10%; } 
-	.buttonBar { height: 4em; background-color: #eee; vertical-align: middle; text-align:center;}
+	.buttonBar { height: 4em; background-color: #eee; vertical-align: middle; text-align:center; margin-top:12px;}
 	/*input, select, textarea, label, button, span { font-size: 2em; }*/ 
 	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
 	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
@@ -61,9 +61,9 @@ $(document).ready(function() {
 <div id="page">
 	<div id="container">
 		<div id="wrapper">
-			<table>
+			<table height="100%">
 				<tr valign="top">
-					<td style="padding-right: 1em">
+					<td style="padding-right: 1em" width="50%">
 						<h1>${parameterizable.name}</h1>
 						<h4>${parameterizable.description}</h4>
 						
@@ -101,8 +101,8 @@ $(document).ready(function() {
 								<c:forEach var="parameter" items="${parameterizable.parameters}">				
 									<li>
 										<label class="desc" for="${parameter.name}">${parameter.label}</label>
-										<div>						
-											<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
+										<div>											
+											<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="" type="${parameter.type.name}"/>	
 										</div>
 									</li>						
 								</c:forEach>
@@ -113,6 +113,17 @@ $(document).ready(function() {
 					<c:if test="${!empty results}">
 						<td style="padding-left: 1em; border-left: 1px #e0e0e0 solid">
 							<h1>Evaluation Result</h1>
+							<h4>Parameters:</h4>
+							<c:forEach var="parameter" items="${evaluationContext.parameterValues}">				
+								${parameter.key} = 
+								<c:choose>
+									<c:when test="${empty parameter.value}">none</c:when>
+									<c:otherwise>${parameter.value}</c:otherwise>
+								</c:choose>
+								<br/>
+							</c:forEach>
+							
+							<h4>Results:</h4>
 							<rpt:format object="${results}"/>
 						</td>
 					</c:if>

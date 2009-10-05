@@ -157,7 +157,8 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
     			cd = type.newInstance();
     		}
     		catch (Exception e) {
-    			throw new IllegalArgumentException("Unable to instantiate a CohortDefinition of type: " + type);
+    			log.error("Exception occurred while instantiating cohort definition of type " + type, e);
+    			throw new IllegalArgumentException("Unable to instantiate a CohortDefinition of type: " + type, e);
     		}
     	}
     	else {

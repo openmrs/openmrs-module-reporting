@@ -50,10 +50,11 @@ function confirmDelete(name, uuid) {
 		<table class="reporting-data-table display" >
 			<thead>
 				<tr>
+					<th align="center" width="1%">Actions</th>
 					<th>Name</th>
 					<th>Description</th>
-					<th align="center" width="1%">Run</th>
-					<th align="center" width="1%">Remove</th>
+					<th>Creator</th>
+					<th>Created</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -83,6 +84,14 @@ function confirmDelete(name, uuid) {
 					</c:choose>
 				
 					<tr>
+						<td align="left" nowrap>
+							&nbsp;
+							<a href="${editUrl}"><img src="<c:url value='/images/edit.gif'/>" border="0"/></a>
+							&nbsp;
+							<a href="javascript:confirmDelete('${cohortDefinition.name}','${cohortDefinition.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
+							&nbsp;
+							<a href="#" id="cohort-${cohortDefinition.uuid}"><img src="<c:url value='/images/play.gif'/>" border="0"/></a>
+						</td>
 						<td>
 							<a href="${editUrl}">
 								${cohortDefinition.name}
@@ -98,15 +107,11 @@ function confirmDelete(name, uuid) {
 							</a>
 						</td>
 -->						
-						<td align="center">
-							<a href="#" id="cohort-${cohortDefinition.uuid}">
-								<img src="<c:url value='/images/play.gif'/>" border="0"/>
-							</a>
+						<td width="5%" nowrap>
+							${cohortDefinition.creator}
 						</td>
-						<td align="center">
-							<a href="javascript:confirmDelete('${cohortDefinition.name}','${cohortDefinition.uuid}');">
-								<img src="<c:url value='/images/trash.gif'/>" border="0"/>
-							</a>
+						<td width="5%" nowrap>
+							<rpt:timespan then="${cohortDefinition.dateCreated}"/>
 						</td>
 					</tr>
 				</c:forEach>	

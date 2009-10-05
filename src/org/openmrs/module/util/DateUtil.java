@@ -7,14 +7,23 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
 
 /**
  * A utility class for common date operations
  */
 public class DateUtil {
-
+		
 	protected static Log log = LogFactory.getLog(DateUtil.class);
-
+	
+	// Common periods of time
+	final static int DAILY = 0;
+	final static int WEEKLY = 1;
+	final static int MONTHLY = 2;
+	final static int QUARTERLY = 3;
+	final static int ANNUALLY = 4;
+	
+	
 	// Added for readability (see below)
 	final static int MILLISECOND = 1000;
 	final static int SECOND = 1;
@@ -66,7 +75,7 @@ public class DateUtil {
 	public static Date getStartOfDay(Date d) {
 		return getDateTime(d, 0, 0, 0, 0);
 	}
-
+	
 	/**
 	 * Returns a date that is the very beginning of the first of the month,
 	 * given the passed date and adjustment
@@ -185,5 +194,107 @@ public class DateUtil {
 		diff /= HOUR;
 		return (int) diff;
 	}
+
+	
+	/**
+	 * 
+	 * @param currentDate
+	 * @param periodType
+	 * @return
+	 */
+	public static Date getStartOfPeriod(Date currentDate, int period) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(currentDate);
+		switch (period) { 		
+			case DAILY: 
+				return getStartOfDay(currentDate);
+			case WEEKLY:								
+				return getStartOfWeek(currentDate);
+			case MONTHLY: 
+				return getStartOfMonth(currentDate);
+			case QUARTERLY:				
+				return getStartOfQuarter(currentDate);
+			case ANNUALLY:
+				return getStartOfYear(currentDate);
+		}
+		return currentDate;
+		
+	}
+	
+	
+	public static Date getStartOfWeek(Date currentDate) { 		
+		return getStartOfCalendarPeriod(currentDate, Calendar.DAY_OF_WEEK);
+	}
+		
+	public static Date getStartOfMonth(Date currentDate) { 
+		return getStartOfCalendarPeriod(currentDate, Calendar.DAY_OF_MONTH);
+	}
+
+	public static Date getStartOfQuarter(Date currentDate) { 
+		throw new APIException("Not implemented yet");
+	}	
+
+	public static Date getStartOfYear(Date currentDate) { 
+		return getStartOfCalendarPeriod(currentDate, Calendar.DAY_OF_YEAR);
+	}
+	
+	public static Date getStartOfCalendarPeriod(Date currentDate, int field) { 
+		if (currentDate == null) 
+			currentDate = new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(field, calendar.getActualMinimum(field));
+		return calendar.getTime();
+	}
+	
+	/**
+	 * 
+	 * @param currentDate
+	 * @param periodType
+	 * @return
+	 */
+	public static Date getEndOfPeriod(Date currentDate, int period) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(currentDate);
+		switch (period) { 		
+			case DAILY: 
+				return getEndOfDay(currentDate);
+			case WEEKLY:								
+				return getEndOfWeek(currentDate);
+			case MONTHLY: 
+				return getEndOfMonth(currentDate);
+			case QUARTERLY:				
+				return getEndOfQuarter(currentDate);
+			case ANNUALLY:
+				return getEndOfYear(currentDate);
+		}
+		return currentDate;
+		
+	}
+	
+	
+	public static Date getEndOfWeek(Date currentDate) { 		
+		return getEndOfCalendarPeriod(currentDate, Calendar.DAY_OF_WEEK);
+	}
+		
+	public static Date getEndOfMonth(Date currentDate) { 
+		return getEndOfCalendarPeriod(currentDate, Calendar.DAY_OF_MONTH);
+	}
+
+	public static Date getEndOfQuarter(Date currentDate) { 
+		throw new APIException("Not implemented yet");
+	}	
+
+	public static Date getEndOfYear(Date currentDate) { 
+		return getEndOfCalendarPeriod(currentDate, Calendar.DAY_OF_YEAR);
+	}
+	
+	public static Date getEndOfCalendarPeriod(Date currentDate, int field) { 
+		if (currentDate == null) 
+			currentDate = new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(field, calendar.getActualMaximum(field));
+		return calendar.getTime();
+	}	
+	
 	
 }

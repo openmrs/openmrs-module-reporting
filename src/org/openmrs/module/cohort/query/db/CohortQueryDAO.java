@@ -2,15 +2,11 @@ package org.openmrs.module.cohort.query.db;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.openmrs.Cohort;
-import org.openmrs.ConceptName;
 import org.openmrs.Drug;
-import org.openmrs.Order;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
-import org.openmrs.api.db.DAOException;
 
 public interface CohortQueryDAO {
 	
@@ -21,10 +17,15 @@ public interface CohortQueryDAO {
     public Cohort getPatientsHavingCompletedPrograms(List<Program> programs, Date completedOnOrAfter, Date completedOnOrBefore);
     
     // Started or stopped program states during a period
-    public Cohort getPatientsHavingStartedStates(List<ProgramWorkflowState> states, Date stoppedOnOrAfter, Date stoppedOnOrBefore);
-    public Cohort getPatientsHavingCompletedStates(List<ProgramWorkflowState> states, Date stoppedOnOrAfter, Date stoppedOnOrBefore);    
+    public Cohort getPatientsHavingStartedStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore);
+    public Cohort getPatientsHavingCompletedStates(List<ProgramWorkflowState> states, Date completedOnOrAfter, Date completedOnOrBefore);    
     
     // Started or stopped drugs during a period
-    public Cohort getPatientsHavingStartedDrugs(List<Drug> drugs, Date startedOnOrAfter, Date startedOnOrBefore);
-    public Cohort getPatientsHavingCompletedDrugs(List<Drug> drugs, Date startedOnOrAfter, Date startedOnOrBefore);
+    public Cohort getPatientsHavingActiveDrugOrders(List<Drug> drugs, Date asOfDate);
+    public Cohort getPatientsHavingStartedDrugOrders(List<Drug> drugs, Date startedOnOrAfter, Date startedOnOrBefore);
+    public Cohort getPatientsHavingCompletedDrugOrders(List<Drug> drugs, Date completedOnOrAfter, Date completedOnOrBefore);
+
+    // Born or died between dates
+    public Cohort getPatientsHavingBirthDateBetweenDates(Date onOrAfter, Date onOrBefore);
+    public Cohort getPatientsHavingDiedBetweenDates(Date onOrAfter, Date onOrBefore);
 }

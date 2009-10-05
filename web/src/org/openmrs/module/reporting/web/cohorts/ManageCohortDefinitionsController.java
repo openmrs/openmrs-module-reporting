@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -62,16 +63,26 @@ public class ManageCohortDefinitionsController {
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
     	boolean retired = includeRetired != null && includeRetired.booleanValue();
     	
-    	// 
-    	List<CohortDefinition> cohortDefs = service.getAllCohortDefinitions(retired);
-    	for (Iterator<CohortDefinition> iter = cohortDefs.iterator(); iter.hasNext(); ) {
+    	// Get all cohort definitions that are not static cohort definition
+    	List<CohortDefinition> cohortDefinitions = service.getAllCohortDefinitions(retired);
+    	for (Iterator<CohortDefinition> iter = cohortDefinitions.iterator(); iter.hasNext(); ) {
     		if (StaticCohortDefinition.class.isAssignableFrom(iter.next().getClass())) {
     			iter.remove();
     		}
     	}
-    	model.addAttribute("cohortDefinitions", cohortDefs);
+    	// Sort cohort definitions
+    	/*
+    	Collections.sort(cohortDefinitions, new Comparator<CohortDefinition>() {
+    		public int compare(CohortDefinition left, CohortDefinition right) {
+    			Date leftDate = (left.getDateChanged()!=null)?left.getDateChanged():left.getDateCreated();
+    			Date rightDate = (right.getDateChanged()!=null)?right.getDateChanged():right.getDateCreated();    			
+	            return leftDate.compareTo(rightDate);
+            }
+    	});
+    	*/
+    	model.addAttribute("cohortDefinitions", cohortDefinitions);
     	
-    	// Add all available CohortDefinitions
+    	// Add all available cohort definition types 
     	List<Class<? extends CohortDefinition>> types = service.getCohortDefinitionTypes();
     	Collections.sort(types, new Comparator<Class<? extends CohortDefinition>>() {
     		public int compare(Class<? extends CohortDefinition> left, Class<? extends CohortDefinition> right) {

@@ -3,17 +3,21 @@ package org.openmrs.module.reporting.web.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.indicator.Indicator;
 import org.openmrs.module.indicator.IndicatorResult;
 import org.openmrs.module.indicator.PeriodCohortIndicator;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.web.model.IndicatorForm;
+import org.openmrs.module.reporting.web.widget.WidgetUtil;
 import org.openmrs.module.util.ParameterizableUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -113,7 +117,7 @@ public class PreviewPeriodIndicatorController {
 			EvaluationContext context = new EvaluationContext();
 			
 			Map<String, Object> parameterValues = 
-				ParameterizableUtil.getParameterValues(form.getCohortIndicator(), form.getParameterValues());
+				getParameterValues(form.getCohortIndicator(), form.getParameterValues());
 			context.setParameterValues(parameterValues);
 			
 			IndicatorResult indicatorResult = 
@@ -129,7 +133,24 @@ public class PreviewPeriodIndicatorController {
 	}
 			
 	
-	
+	/**
+	 * TODO Move WidgetUtil into core reporting, rather than web. 
+	 *  
+	 * @param parameterizable
+	 * @param parameterValues
+	 * @return
+	 */
+	public static Map<String, Object> getParameterValues(Parameterizable parameterizable, Map<String,String> parameterStrings) { 
+		Map<String, Object> parameterValues = new HashMap<String, Object>();
+		if (parameterizable != null && parameterizable.getParameters() != null) { 
+			for (Parameter parameter : parameterizable.getParameters()) {
+				String textValue = parameterStrings.get(parameter.getName());			
+				Object objectValue = WidgetUtil.parseInput(textValue, parameter.getClass());
+				parameterValues.put(parameter.getName(), objectValue);								
+			}
+		}
+		return parameterValues;
+	}	
 	
 
 

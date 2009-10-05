@@ -4,30 +4,24 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.cohort.query.db.CohortQueryDAO;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface CohortQueryService extends OpenmrsService {
-    
+	public void setCohortQueryDAO(CohortQueryDAO dao);	
 	
-	public void setCohortQueryDAO(CohortQueryDAO dao);
-	
-	/**
-	 * Supports the follwoing queries:
-	 * 
-	 * Ever enrolled in program(s) 
-	 * Enrolled in program(s) between dates
-	 * Enrolled in program(s) on or after given startDate.
-	 * Enrolled in program(s) on or before given endDate.
-	 * 
-	 * @param program
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	public Cohort getPatientsHavingStartedPrograms(List<Program> programs, Date startDate, Date endDate);
+    public Cohort getPatientsHavingStartedPrograms(List<Program> programs, Date startedOnOrAfter, Date startedOnOrBefore);
+    public Cohort getPatientsHavingCompletedPrograms(List<Program> programs, Date completedOnOrAfter, Date completedOnOrBefore);
+    public Cohort getPatientsHavingStartedStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore);
+    public Cohort getPatientsHavingCompletedStates(List<ProgramWorkflowState> states, Date completedOnOrAfter, Date completedOnOrBefore);
     
+    public Cohort getPatientsHavingActiveDrugOrders(List<Drug> drugs, Date asOfDate);
+    public Cohort getPatientsHavingStartedDrugOrders(List<Drug> drugs, List<Concept> drugSetConcepts, Date startedOnOrAfter, Date startedOnOrBefore);
+    public Cohort getPatientsHavingCompletedDrugOrders(List<Drug> drugs, List<Concept> drugSetConcepts, Date completedOnOrAfter, Date completedOnOrBefore);
 }
