@@ -176,7 +176,7 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	 */
 	public ReportRenderer getReportRenderer(String className) {
 		try { 
-			return (ReportRenderer) Class.forName(className).newInstance();
+			return (ReportRenderer) Context.loadClass(className).newInstance();
 		} catch(ClassNotFoundException e) { 
 			/* ignore */
 		} catch (IllegalAccessException e) { 

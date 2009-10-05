@@ -468,7 +468,7 @@ public class ManageDatasetsController {
 			try {
 				if (className != null) { 
 					Class<? extends DataSetDefinition> type = 
-						(Class<? extends DataSetDefinition>) Class.forName(className);
+						(Class<? extends DataSetDefinition>) Context.loadClass(className);
 					dataSetDefinition = service.getDataSetDefinition(type, id); 
 				}
 			} 

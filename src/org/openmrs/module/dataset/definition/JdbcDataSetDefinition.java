@@ -27,6 +27,7 @@ import java.util.Map;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.ProgramWorkflow;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.column.SimpleDataSetColumn;
@@ -91,7 +92,7 @@ public class JdbcDataSetDefinition extends BaseDataSetDefinition {
 			for (int i=1; i<=rsmd.getColumnCount();i++) {
 				SimpleDataSetColumn column = new SimpleDataSetColumn();
 				column.setColumnKey(rsmd.getColumnName(i));
-				column.setDataType(Class.forName(rsmd.getColumnClassName(i)));
+				column.setDataType(Context.loadClass(rsmd.getColumnClassName(i)));
 				column.setDisplayName(rsmd.getColumnLabel(i));
 				column.setDescription(rsmd.toString());				
 				columns.add(column);				

@@ -95,7 +95,7 @@ public class CohortDefinitionFormController {
 		
 		if (cohortDefinition == null) { 		
 			try { 
-				cohortDefinition = (CohortDefinition) Class.forName(className).newInstance();
+				cohortDefinition = (CohortDefinition) Context.loadClass(className).newInstance();
 				cohortDefinition.setName("New " + className);
 			} 
 			catch (Exception e) { 
