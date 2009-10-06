@@ -104,31 +104,31 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		Program pmtctProgram = Context.getProgramWorkflowService().getProgramByName("PMTCT PROGRAM");
 		
 		// HIV PROGRAM TREATMENT STATUS
-		ProgramWorkflow treatmentStatusWorkflow = hivProgram.getWorkflowByName("TREATMENT STATUS");
-		ProgramWorkflowState onAntiretroviralsState = treatmentStatusWorkflow.getStateByName("ON ANTIRETROVIRALS");
-		ProgramWorkflowState treatmentStoppedSideEffectsState = treatmentStatusWorkflow.getStateByName("TREATMENT STOPPED - SIDE EFFECTS");
-		ProgramWorkflowState treatmentStoppedPatientRefusedState = treatmentStatusWorkflow.getStateByName("TREATMENT STOPPED - PATIENT REFUSED");
-		ProgramWorkflowState treatmentStoppedState = treatmentStatusWorkflow.getStateByName("TREATMENT STOPPED");
-		ProgramWorkflowState patientDefaultedState = treatmentStatusWorkflow.getStateByName("PATIENT DEFAULTED");
-		ProgramWorkflowState patientDiedState = treatmentStatusWorkflow.getStateByName("PATIENT DIED");
+		//ProgramWorkflow treatmentStatusWorkflow = hivProgram.getWorkflowByName("TREATMENT STATUS");
+		//ProgramWorkflowState onAntiretroviralsState = treatmentStatusWorkflow.getStateByName("ON ANTIRETROVIRALS");
+		//ProgramWorkflowState treatmentStoppedSideEffectsState = treatmentStatusWorkflow.getStateByName("TREATMENT STOPPED - SIDE EFFECTS");
+		//ProgramWorkflowState treatmentStoppedPatientRefusedState = treatmentStatusWorkflow.getStateByName("TREATMENT STOPPED - PATIENT REFUSED");
+		//ProgramWorkflowState treatmentStoppedState = treatmentStatusWorkflow.getStateByName("TREATMENT STOPPED");
+		//ProgramWorkflowState patientDefaultedState = treatmentStatusWorkflow.getStateByName("PATIENT DEFAULTED");
+		//ProgramWorkflowState patientDiedState = treatmentStatusWorkflow.getStateByName("PATIENT DIED");
 		
 		// ON ARV state(s)
-		List<ProgramWorkflowState> onArvStates = new ArrayList<ProgramWorkflowState>();
-		onArvStates.add(onAntiretroviralsState);
+		//List<ProgramWorkflowState> onArvStates = new ArrayList<ProgramWorkflowState>();
+		//onArvStates.add(onAntiretroviralsState);
 		
 		// STOPPED state(s)
-		List<ProgramWorkflowState> treatmentStoppedStates = new ArrayList<ProgramWorkflowState>();
-		treatmentStoppedStates.add(treatmentStoppedSideEffectsState);
-		treatmentStoppedStates.add(treatmentStoppedPatientRefusedState);
-		treatmentStoppedStates.add(treatmentStoppedState);
+		//List<ProgramWorkflowState> treatmentStoppedStates = new ArrayList<ProgramWorkflowState>();
+		//treatmentStoppedStates.add(treatmentStoppedSideEffectsState);
+		//treatmentStoppedStates.add(treatmentStoppedPatientRefusedState);
+		//treatmentStoppedStates.add(treatmentStoppedState);
 		
 		// DEFAULTED state(s)
-		List<ProgramWorkflowState> patientDefaultedStates = new ArrayList<ProgramWorkflowState>();
-		patientDefaultedStates.add(patientDefaultedState);
+		//List<ProgramWorkflowState> patientDefaultedStates = new ArrayList<ProgramWorkflowState>();
+		//patientDefaultedStates.add(patientDefaultedState);
 		
 		// DIED state(s)
-		List<ProgramWorkflowState> patientDiedStates = new ArrayList<ProgramWorkflowState>();
-		patientDiedStates.add(patientDiedState);
+		//List<ProgramWorkflowState> patientDiedStates = new ArrayList<ProgramWorkflowState>();
+		//patientDiedStates.add(patientDiedState);
 				
 		// ARV DRUGS 
 		List<Drug> cotrimoxazole = TracNetReportUtil.getDrugByConceptName("COTRIMOXAZOLE");
@@ -175,6 +175,7 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		
 		// =====  CURRENTLY ON ARV (ProgramWorkflowState)  ===============================================================================
 
+		/*
 		// Was ON ARV as of the last day of the period.  sinceDate and untilDate map to the last day of the period
 		ProgramStateCohortDefinition currentlyOnAntiretrovirals = new ProgramStateCohortDefinition();
 		currentlyOnAntiretrovirals.setProgram(hivProgram);
@@ -187,7 +188,7 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		PeriodCohortIndicator currentlyOnAntiretroviralsIndicator = new PeriodCohortIndicator();
 		currentlyOnAntiretroviralsIndicator.setName("Number of patients currently on antiretrovirals");
 		currentlyOnAntiretroviralsIndicator.setCohortDefinition(currentlyOnAntiretrovirals, currentlyOnAntiretroviralsMappings);
-		
+		*/
 		
 		// =====  STARTED HIV PROGRAM DURING PERIOD  =========================================================================
 		
