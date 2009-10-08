@@ -170,6 +170,9 @@ public class CohortExpressionParser {
 			else if (o instanceof String) {
 				use.add(composition.getSearches().get((String) o));
 			}
+			else if (o instanceof Integer) { 
+				use.add(composition.getSearches().get(o.toString()));
+			}
 			else {
 				use.add(o);
 			}

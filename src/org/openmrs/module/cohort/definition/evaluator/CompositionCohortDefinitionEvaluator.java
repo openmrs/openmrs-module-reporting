@@ -37,9 +37,9 @@ public class CompositionCohortDefinitionEvaluator implements CohortDefinitionEva
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	CompositionCohortDefinition d = (CompositionCohortDefinition) cohortDefinition;
+    	CompositionCohortDefinition composition = (CompositionCohortDefinition) cohortDefinition;
     	
-		List<Object> tokens = CohortExpressionParser.parseIntoTokens(d.getCompositionString());
-		return CohortExpressionParser.evaluate(tokens, d, context);
+		List<Object> tokens = CohortExpressionParser.parseIntoTokens(composition.getCompositionString());
+		return CohortExpressionParser.evaluate(tokens, composition, context);
     }
 }

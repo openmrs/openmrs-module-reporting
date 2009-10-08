@@ -1,5 +1,6 @@
 package org.openmrs.module.cohort.definition;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -16,7 +17,7 @@ public class CompositionCohortDefinition extends BaseCohortDefinition {
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty(required=true)
-	private Map<String, Mapped<CohortDefinition>> searches;
+	private Map<String, Mapped<CohortDefinition>> searches = new HashMap<String, Mapped<CohortDefinition>>();
 	
 	@ConfigurationProperty(required=true)
 	private String compositionString;
