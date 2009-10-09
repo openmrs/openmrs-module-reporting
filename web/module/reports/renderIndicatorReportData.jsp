@@ -2,6 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <c:set var="__openmrs_hide_report_link" value="true"/>
 <%@ include file="../run/localHeader.jsp"%>
+<%--
+  This page assumes a ReportData object in the session as the attribute '__openmrs_report_data'
+--%>
 
 <style type="text/css">
 	#wrapper input, #wrapper select, #wrapper textarea, #wrapper label, #wrapper button, #wrapper span, #wrapper div { font-size: large; } 
@@ -21,7 +24,7 @@
 	<div id="container">
 		<div align="center">
 			<c:forEach var="dataSetMapEntry" items="${__openmrs_report_data.dataSets}">
-				<table cellpadding="2" width="50%" style="border: 1px solid black;">					
+				<table cellpadding="2" style="border: 1px solid black;">					
 					<c:forEach var="dataSetRow" items="${dataSetMapEntry.value.iterator}" varStatus="varStatus">
 						<c:if test="${varStatus.first}">
 							<tr>
@@ -35,7 +38,7 @@
 								<!-- 
 								 <c:url var="url" value="/module/reporting/dashboard/manageCohortDashboard.form?cohort=none&indicator=${dataSetCol.key.indicator.parameterizable.uuid}"/>
 								-->
-								<c:url var="url"  value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetId=${dataSetMapEntry.value.definition.uuid}&savedColumnKey=${dataSetCol.key.columnKey}"/>
+								<c:url var="url"  value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetKey=${dataSetMapEntry.key}&savedColumnKey=${dataSetCol.key.columnKey}"/>
 									<td align="left">
 										${dataSetCol.key.columnKey}
 									</td>
@@ -47,9 +50,12 @@
 										<a style="text-decoration: underline" href="${url}">${result.value}</a>
 									</td>
 									<td align="center">
-										<a href="#" onClick="showReportingDialog({ title: 'Indicator Info', url: '${pageContext.request.contextPath}/module/reporting/indicators/indicatorInfo.form?uuid=${result.definition.uuid}&location=${result.context.parameterValues['location'].locationId}' });">
-											<img src="${pageContext.request.contextPath}/images/info.gif" border="0"/>
-										</a>
+										<c:catch var="exception">
+											<c:set var="infoUrl" value="${pageContext.request.contextPath}/module/reporting/indicators/indicatorInfo.form?uuid=${result.definition.uuid}&location=${result.context.parameterValues['location'].locationId}"/>
+											<a href="#" onClick="showReportingDialog({ title: 'Indicator Info', url: '${infoUrl}' });">
+												<img src="${pageContext.request.contextPath}/images/info.gif" border="0"/>
+											</a>
+										</c:catch>
 									</td>
 								</tr>
 							</c:forEach>

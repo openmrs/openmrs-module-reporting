@@ -69,7 +69,7 @@ public class ReportDashboardController {
      */
     @RequestMapping("/module/reporting/dashboard/viewCohortDataSet")
     public String viewCohortDataSet(
-    		@RequestParam(required=false, value="savedDataSetId") String savedDataSetId,
+    		@RequestParam(required=false, value="savedDataSetKey") String savedDataSetKey,
     		@RequestParam(required=false, value="savedColumnKey") String savedColumnKey,   		
     		@RequestParam(required=false, value="applyDataSetId") String applyDataSetId,
     		@RequestParam(required=false, value="limit") Integer limit,
@@ -79,26 +79,29 @@ public class ReportDashboardController {
     	
 		ReportData reportData = (ReportData) request.getSession().getAttribute(ReportingConstants.OPENMRS_REPORT_DATA);
     
-		for (DataSet dataSet : reportData.getDataSets().values()) { 
-			if (dataSet.getDefinition().getUuid().equals(savedDataSetId)) { 
+		for (Map.Entry<String, DataSet<?>> e : reportData.getDataSets().entrySet()) {
+			if (e.getKey().equals(savedDataSetKey)) { 
 				
-				MapDataSet mapDataSet = (MapDataSet) dataSet;
-				DataSetDefinition definition = (DataSetDefinition) dataSet.getDefinition();
+				MapDataSet mapDataSet = (MapDataSet) e.getValue();
+				DataSetDefinition definition = (DataSetDefinition) mapDataSet.getDefinition();
 				DataSetColumn dataSetColumn = definition.getColumn(savedColumnKey);
 				CohortIndicatorAndDimensionResult result = (CohortIndicatorAndDimensionResult) mapDataSet.getData(dataSetColumn);	
 				Cohort selectedCohort = result.getCohort();
 				
+				model.addAttribute("selectedColumn", dataSetColumn);
 				model.addAttribute("selectedCohort", selectedCohort);
 				model.addAttribute("patients", Context.getPatientSetService().getPatients(selectedCohort.getMemberIds()));		
 				
 				// Evaluate the default patient dataset definition
-				DataSetDefinition dsd = null; 
-				try {
-					
-					dsd = Context.getService(DataSetDefinitionService.class).getDataSetDefinition(applyDataSetId, null);
-					
-				} catch (Exception e) { 
-					log.error("exception getting dataset definition", e);					
+				DataSetDefinition dsd = null;
+				if (applyDataSetId != null) {
+					try {
+						
+						dsd = Context.getService(DataSetDefinitionService.class).getDataSetDefinition(applyDataSetId, null);
+						
+					} catch (Exception ex) { 
+						log.error("exception getting dataset definition", ex);				
+					}
 				}
 				
 				if (dsd == null) 
