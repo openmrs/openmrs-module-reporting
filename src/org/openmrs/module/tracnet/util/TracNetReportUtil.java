@@ -147,48 +147,35 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		// =====  CURRENTLY IN HIV PROGRAM (Program)  ===============================================================================
 
 		ProgramStateCohortDefinition currentlyInHivProgram = new ProgramStateCohortDefinition();
-		currentlyInHivProgram.setName("Currently in HIV Program");
+		currentlyInHivProgram.setName("Currently in HIV Program at end of period");
 		currentlyInHivProgram.setProgram(hivProgram);
 		currentlyInHivProgram.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
+		currentlyInHivProgram.addParameter(new Parameter("untiDate", "Period ends:", Date.class));
 				
 		Map<String,Object> currentlyInHivProgramMappings = new HashMap<String, Object>(); 
 		currentlyInHivProgramMappings.put("sinceDate", "${endDate}");
+		currentlyInHivProgramMappings.put("untilDate", "${endDate}");
 		
 		PeriodCohortIndicator currentlyInHivProgramIndicator = new PeriodCohortIndicator();
-		currentlyInHivProgramIndicator.setName("Number of patients currently enrolled in the HIV Program");
+		currentlyInHivProgramIndicator.setName("Number of patients currently enrolled in the HIV Program at end of period");
 		currentlyInHivProgramIndicator.setCohortDefinition(currentlyInHivProgram, currentlyInHivProgramMappings);
 
 		// =====  CURRENTLY IN HIV PROGRAM (Program)  ===============================================================================
 
 		ProgramStateCohortDefinition currentlyInPmtctProgram = new ProgramStateCohortDefinition();
-		currentlyInPmtctProgram.setName("Currently in PMTCT Program");
+		currentlyInPmtctProgram.setName("Currently in PMTCT Program at end of period");
 		currentlyInPmtctProgram.setProgram(pmtctProgram);
 		currentlyInPmtctProgram.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
+		currentlyInPmtctProgram.addParameter(new Parameter("untilDate", "Period ends:", Date.class));
 				
 		Map<String,Object> currentlyInPmtctProgramMappings = new HashMap<String, Object>(); 
 		currentlyInPmtctProgramMappings.put("sinceDate", "${endDate}");
+		currentlyInPmtctProgramMappings.put("untilDate", "${endDate}");
 		
 		PeriodCohortIndicator currentlyInPmtctProgramIndicator = new PeriodCohortIndicator();
-		currentlyInPmtctProgramIndicator.setName("Number of patients currently enrolled in the PMTCT Program");
+		currentlyInPmtctProgramIndicator.setName("Number of patients currently enrolled in the PMTCT Program at end of period");
 		currentlyInPmtctProgramIndicator.setCohortDefinition(currentlyInPmtctProgram, currentlyInPmtctProgramMappings);
 		
-		
-		// =====  CURRENTLY ON ARV (ProgramWorkflowState)  ===============================================================================
-
-		/*
-		// Was ON ARV as of the last day of the period.  sinceDate and untilDate map to the last day of the period
-		ProgramStateCohortDefinition currentlyOnAntiretrovirals = new ProgramStateCohortDefinition();
-		currentlyOnAntiretrovirals.setProgram(hivProgram);
-		currentlyOnAntiretrovirals.setStateList(onArvStates);
-		currentlyOnAntiretrovirals.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
-		
-		Map<String,Object> currentlyOnAntiretroviralsMappings = new HashMap<String, Object>(); 
-		currentlyOnAntiretroviralsMappings.put("sinceDate", "${endDate}");
-		
-		PeriodCohortIndicator currentlyOnAntiretroviralsIndicator = new PeriodCohortIndicator();
-		currentlyOnAntiretroviralsIndicator.setName("Number of patients currently on antiretrovirals");
-		currentlyOnAntiretroviralsIndicator.setCohortDefinition(currentlyOnAntiretrovirals, currentlyOnAntiretroviralsMappings);
-		*/
 		
 		// =====  STARTED HIV PROGRAM DURING PERIOD  =========================================================================
 		
@@ -204,46 +191,7 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		PeriodCohortIndicator startedHivProgramIndicator = new PeriodCohortIndicator();
 		startedHivProgramIndicator.setName("Number of patients that started in HIV Program during month");
 		startedHivProgramIndicator.setCohortDefinition(startedHivProgram, startedHivProgramMappings);
-		
-		
-		// =====  STARTED ON ARV DURING PERIOD  =============================================================================
-		/*
-		ProgramStateCohortDefinition startedOnAntiretrovirals = new ProgramStateCohortDefinition();
-		startedOnAntiretrovirals.setProgram(hivProgram);
-		startedOnAntiretrovirals.setStateList(onArvStates);
-		startedOnAntiretrovirals.setSinceDate(endDate);
-		startedOnAntiretrovirals.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
-		startedOnAntiretrovirals.addParameter(new Parameter("untilDate", "Period begins:", Date.class));
-
-		Map<String,Object> startedOnAntiretroviralsMappings = new HashMap<String, Object>(); 
-		startedOnAntiretroviralsMappings.put("sinceDate", "${startDate}");
-		startedOnAntiretroviralsMappings.put("untilDate", "${endDate}");
-		
-		PeriodCohortIndicator startedOnAntiretroviralsIndicator = new PeriodCohortIndicator();
-		startedOnAntiretroviralsIndicator.setName("Number of patients that started ON ARVs during month");
-		startedOnAntiretroviralsIndicator.setCohortDefinition(startedOnAntiretrovirals, startedOnAntiretroviralsMappings);
-		*/
-		
-		
-		// =====  ON ARVS DURING THE PERIOD  ===========================================================
-		
-		/*
-		DrugOrderCohortDefinition onArvsDuringPeriod = new DrugOrderCohortDefinition();
-		onArvsDuringPeriod.setAnyOrAll(GroupMethod.ANY);
-		onArvsDuringPeriod.setDrugList(allArvDrugs);
-		onArvsDuringPeriod.addParameter(new Parameter("sinceDate", "sinceDate", Date.class));
-		onArvsDuringPeriod.addParameter(new Parameter("untilDate", "untilDate", Date.class));
-		onArvsDuringPeriod.setName("Taking any arv drugs Between Dates");		
-
-		Map<String,Object> onArvsDuringPeriodMappings = new HashMap<String, Object>(); 
-		onArvsDuringPeriodMappings.put("sinceDate", "${startDate}");
-		onArvsDuringPeriodMappings.put("untilDate", "${endDate}");
-		
-		PeriodCohortIndicator onArvsDuringPeriodIndicator = new PeriodCohortIndicator();
-		onArvsDuringPeriodIndicator.setName("Number of patients ON ARVs during month");
-		onArvsDuringPeriodIndicator.setCohortDefinition(onArvsDuringPeriod, onArvsDuringPeriodMappings);
-		*/	
-		
+				
 		// =====  CURRENTLY ON ARVs  ===============================================================================
 		
 		DrugsActiveCohortDefinition onArvsDuringPeriod = new DrugsActiveCohortDefinition();		
@@ -256,7 +204,6 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		PeriodCohortIndicator onArvsDuringPeriodIndicator = new PeriodCohortIndicator();
 		onArvsDuringPeriodIndicator.setName("On ARVs During Period");
 		onArvsDuringPeriodIndicator.setCohortDefinition(new Mapped<CohortDefinition>(onArvsDuringPeriod, onArvsDuringPeriodMappings));
-
 				
 		// =====  CURRENTLY ON FIRST LINE REGIMEN  ===============================================================================
 		
@@ -300,7 +247,6 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		PeriodCohortIndicator startedOnArvsDuringPeriodIndicator = new PeriodCohortIndicator();
 		startedOnArvsDuringPeriodIndicator.setName("Started on ARVs During Period");
 		startedOnArvsDuringPeriodIndicator.setCohortDefinition(new Mapped<CohortDefinition>(startedOnArvsDuringPeriod, startedOnArvsDuringPeriodMappings));
-
 		
 		// =====  WHO STAGE 4 CHILDREN  ===============================================================================
 		
@@ -519,14 +465,14 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		//  =====  DIED DURING PERIOD  ===========================================================
 		
 		ObsCohortDefinition diedDuringPeriod = new ObsCohortDefinition();
-		Concept diedDuringPeriodQuestion = Context.getConceptService().getConceptByName("REASON FOR EXITING CARE");	
-		Concept diedDuringPeriodAnswer = Context.getConceptService().getConceptByName("PATIENT DIED");
+		Concept diedDuringPeriodQuestion = Context.getConceptService().getConceptByName("REASON FOR EXITING CARE");	// 1811
+		Concept diedDuringPeriodAnswer = Context.getConceptService().getConceptByName("PATIENT DIED");	// 1742
 		diedDuringPeriod.setQuestion(diedDuringPeriodQuestion);
 		diedDuringPeriod.setValueCoded(diedDuringPeriodAnswer);
 		diedDuringPeriod.setModifier(Modifier.EQUAL);
 		diedDuringPeriod.setTimeModifier(TimeModifier.ANY);
-		diedDuringPeriod.addParameter(new Parameter("sinceDate", "", Date.class));
-		diedDuringPeriod.addParameter(new Parameter("untilDate", "", Date.class));
+		diedDuringPeriod.addParameter(new Parameter("sinceDate", "Patient died on/after ", Date.class));
+		diedDuringPeriod.addParameter(new Parameter("untilDate", "Patient died on/before ", Date.class));
 		
 		Map<String,Object> diedDuringPeriodMappings = new HashMap<String, Object>(); 
 		modeOfAdmissionMappings.put("sinceDate", "${startDate}");
@@ -535,7 +481,6 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		PeriodCohortIndicator diedDuringPeriodIndicator = new PeriodCohortIndicator();
 		diedDuringPeriodIndicator.setName("Patients who have died during the period");
 		diedDuringPeriodIndicator.setCohortDefinition(new Mapped<CohortDefinition>(diedDuringPeriod, diedDuringPeriodMappings));		
-
 		
 		//  =====  ON CTX DURING PERIOD  ===========================================================
 		
@@ -547,20 +492,19 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		onCtxDuringPeriodMappings.put("asOfDate", "${endDate}");
 
 		PeriodCohortIndicator onCtxDuringPeriodIndicator = new PeriodCohortIndicator();
-		onCtxDuringPeriodIndicator.setName("On CTX During Period");
+		onCtxDuringPeriodIndicator.setName("On CTX at the end of the period");
 		onCtxDuringPeriodIndicator.setCohortDefinition(new Mapped<CohortDefinition>(onCtxDuringPeriod, onCtxDuringPeriodMappings));
 		
 		//  =====  SEXUALLY TRANSMITTED SERVICES  ===========================================================
-		
+		// 174 - only 3 obs in 
 		ObsCohortDefinition sti = new ObsCohortDefinition();
-		//Concept modeOfAdmissionQuestion = Context.getConceptService().getConceptByName("MODE OF ADMISSION");	
 		Concept stiAnswer = Context.getConceptService().getConceptByName("STI");
-		//sti.setQuestion(stiQuestion);
+		//sti.setQuestion(stiQuestion);  // We don't care which question, as long as STI is the answer
 		sti.setValueCoded(stiAnswer);
 		sti.setModifier(Modifier.EQUAL);
 		sti.setTimeModifier(TimeModifier.ANY);
-		sti.addParameter(new Parameter("sinceDate", "", Date.class));
-		sti.addParameter(new Parameter("untilDate", "", Date.class));
+		sti.addParameter(new Parameter("sinceDate", "On/after", Date.class));
+		sti.addParameter(new Parameter("untilDate", "On/before", Date.class));
 		
 		Map<String,Object> stiMappings = new HashMap<String, Object>(); 
 		stiMappings.put("sinceDate", "${startDate}");
@@ -572,13 +516,12 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		
 		// =====  STARTED TREATMENT 12 MONTHS AGO  ===========================================================
 		
-		/*
 		DrugsStartedCohortDefinition startedOnArvsTwelveMonthsAgo = new DrugsStartedCohortDefinition();
 		startedOnArvsTwelveMonthsAgo.setDrugs(allArvDrugs);
 		startedOnArvsTwelveMonthsAgo.addParameter(new Parameter("startedOnOrBefore", "Started on or before", Date.class));
 		
 		Map<String,Object> startedOnArvsTwelveMonthsAgoMappings = new HashMap<String, Object>(); 
-		startedOnArvsTwelveMonthsAgoMappings.put("startedOnOrBefore", "${endDate - 12m}");
+		startedOnArvsTwelveMonthsAgoMappings.put("startedOnOrBefore", "${endDate-12m}");
 		
 		CompoundCohortDefinition onArvsAfterTwelveMonths = new CompoundCohortDefinition();
 		onArvsAfterTwelveMonths.addDefinition(new Mapped<CohortDefinition>(startedOnArvsTwelveMonthsAgo, startedOnArvsTwelveMonthsAgoMappings));
@@ -587,8 +530,7 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		PeriodCohortIndicator onArvsAfterTwelveMonthsIndicator = new PeriodCohortIndicator();
 		onArvsAfterTwelveMonthsIndicator.setName("Patients who have been on ARVs for 12 months");
 		onArvsAfterTwelveMonthsIndicator.setCohortDefinition(new Mapped<CohortDefinition>(onArvsAfterTwelveMonths, startedOnArvsTwelveMonthsAgoMappings));		
-		*/
-
+		
 		//  =====  OPPORTUNISTIC INFECTION (NOT TB)  ===========================================================
 		
 		ObsCohortDefinition opportunisticInfection = new ObsCohortDefinition();
@@ -628,6 +570,59 @@ public class TracNetReportUtil extends PeriodIndicatorReportDefinition {
 		opportunisticInfectionTuberculosisIndicator.setCohortDefinition(new Mapped<CohortDefinition>(opportunisticInfectionTuberculosis, opportunisticInfectionTuberculosisMappings));		
 		
 
+		// =====  CURRENTLY ON ARV (ProgramWorkflowState)  ====================================================
+		/*
+		// Was ON ARV as of the last day of the period.  sinceDate and untilDate map to the last day of the period
+		ProgramStateCohortDefinition currentlyOnAntiretrovirals = new ProgramStateCohortDefinition();
+		currentlyOnAntiretrovirals.setProgram(hivProgram);
+		currentlyOnAntiretrovirals.setStateList(onArvStates);
+		currentlyOnAntiretrovirals.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
+		
+		Map<String,Object> currentlyOnAntiretroviralsMappings = new HashMap<String, Object>(); 
+		currentlyOnAntiretroviralsMappings.put("sinceDate", "${endDate}");
+		
+		PeriodCohortIndicator currentlyOnAntiretroviralsIndicator = new PeriodCohortIndicator();
+		currentlyOnAntiretroviralsIndicator.setName("Number of patients currently on antiretrovirals");
+		currentlyOnAntiretroviralsIndicator.setCohortDefinition(currentlyOnAntiretrovirals, currentlyOnAntiretroviralsMappings);
+		*/
+				
+		// =====  STARTED ON ARV DURING PERIOD (ProgramWorkflowState)  =======================================
+		/*
+		ProgramStateCohortDefinition startedOnAntiretrovirals = new ProgramStateCohortDefinition();
+		startedOnAntiretrovirals.setProgram(hivProgram);
+		startedOnAntiretrovirals.setStateList(onArvStates);
+		startedOnAntiretrovirals.setSinceDate(endDate);
+		startedOnAntiretrovirals.addParameter(new Parameter("sinceDate", "Period begins:", Date.class));
+		startedOnAntiretrovirals.addParameter(new Parameter("untilDate", "Period begins:", Date.class));
+
+		Map<String,Object> startedOnAntiretroviralsMappings = new HashMap<String, Object>(); 
+		startedOnAntiretroviralsMappings.put("sinceDate", "${startDate}");
+		startedOnAntiretroviralsMappings.put("untilDate", "${endDate}");
+		
+		PeriodCohortIndicator startedOnAntiretroviralsIndicator = new PeriodCohortIndicator();
+		startedOnAntiretroviralsIndicator.setName("Number of patients that started ON ARVs during month");
+		startedOnAntiretroviralsIndicator.setCohortDefinition(startedOnAntiretrovirals, startedOnAntiretroviralsMappings);
+		*/
+		
+		
+		// =====  ON ARVS DURING THE PERIOD  ===========================================================
+		
+		/*
+		DrugOrderCohortDefinition onArvsDuringPeriod = new DrugOrderCohortDefinition();
+		onArvsDuringPeriod.setAnyOrAll(GroupMethod.ANY);
+		onArvsDuringPeriod.setDrugList(allArvDrugs);
+		onArvsDuringPeriod.addParameter(new Parameter("sinceDate", "sinceDate", Date.class));
+		onArvsDuringPeriod.addParameter(new Parameter("untilDate", "untilDate", Date.class));
+		onArvsDuringPeriod.setName("Taking any arv drugs Between Dates");		
+
+		Map<String,Object> onArvsDuringPeriodMappings = new HashMap<String, Object>(); 
+		onArvsDuringPeriodMappings.put("sinceDate", "${startDate}");
+		onArvsDuringPeriodMappings.put("untilDate", "${endDate}");
+		
+		PeriodCohortIndicator onArvsDuringPeriodIndicator = new PeriodCohortIndicator();
+		onArvsDuringPeriodIndicator.setName("Number of patients ON ARVs during month");
+		onArvsDuringPeriodIndicator.setCohortDefinition(onArvsDuringPeriod, onArvsDuringPeriodMappings);
+		*/	
 		
 		
 		

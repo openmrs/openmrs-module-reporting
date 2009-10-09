@@ -19,14 +19,18 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.common.DisplayLabel;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
+import org.openmrs.module.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 
@@ -72,14 +76,33 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
 		
 		Writer w = new PrintWriter(out);
+
+		
+		Map<String, Object> parameterValues = results.getContext().getParameterValues();
+
 		
 		// For each dataset in the report
 		for (String dataSetKey : results.getDataSets().keySet()) {
 			DataSet<?> dataset = results.getDataSets().get(dataSetKey);
 
+			
 			//MapDataSet mapDataSet = (MapDataSet) dataset;
 			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
-			w.write("<h4>" + dataSetKey + "</h4>");			
+			w.write("<h1>" + results.getDefinition().getName() + "</h1>");			
+			w.write("<span>" + results.getDefinition().getDescription() + "</span>");			
+			w.write("<ul>");
+			for (String key : parameterValues.keySet()) { 
+				String value = "";
+				Object object = parameterValues.get(key);
+				if (object instanceof Date) { 
+					value = Context.getDateFormat().format((Date)object);
+				} 
+				else { 
+					value = object.toString();
+				}		
+				w.write("<li>" + key + ": <strong>" + value + "</strong></li>");								
+			}
+			w.write("</ul>");
 			w.write("<table id=\"indicator-report-dataset-" + dataSetKey +"\" class=\"display indicator-report-dataset\">");
 			for (DataSetColumn column : columns) {
 				w.write("<tr>");
@@ -89,8 +112,14 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 				// Wondering if you can even do this ... iterate over a dataset multiple times (once for each column?)
 				// If not, then we need to get the actual dataset data (i.e. MapDataSet).
 				for (DataSetRow<?> row : dataset) {
-					Object cellValue = row.getColumnValue(column.getColumnKey());				
-					w.write("<td>" + ((cellValue != null) ? cellValue : "n/a") + "</td>");					
+					Object cellValue = row.getColumnValue(column.getColumnKey());	
+					if (cellValue instanceof CohortIndicatorAndDimensionResult) { 
+						CohortIndicatorAndDimensionResult result = (CohortIndicatorAndDimensionResult) cellValue;
+						w.write("<td>" + ((cellValue != null) ? result.getValue() : "n/a") + "</td>");					
+					}
+					else { 
+						w.write("<td>" + ((cellValue != null) ? cellValue : "n/a") + "</td>");					
+					}
 				}
 				w.write("</tr>");
 			}

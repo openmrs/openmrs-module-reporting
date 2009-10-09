@@ -242,6 +242,7 @@ public class DateUtil {
 		if (currentDate == null) 
 			currentDate = new Date();
 		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(currentDate);
 		calendar.set(field, calendar.getActualMinimum(field));
 		return calendar.getTime();
 	}
@@ -292,6 +293,7 @@ public class DateUtil {
 		if (currentDate == null) 
 			currentDate = new Date();
 		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(currentDate);
 		calendar.set(field, calendar.getActualMaximum(field));
 		return calendar.getTime();
 	}	
