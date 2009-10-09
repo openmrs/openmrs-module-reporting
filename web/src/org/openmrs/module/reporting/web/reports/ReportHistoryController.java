@@ -9,6 +9,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.report.Report;
 import org.openmrs.module.report.ReportRequest;
@@ -16,6 +19,7 @@ import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +30,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class ReportHistoryController {
+	
+	/** Logger for this class and subclasses */
+	protected final Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping("/module/reporting/reports/reportHistory")
 	public void showReportHistory(ModelMap model) {
@@ -98,22 +105,31 @@ public class ReportHistoryController {
 	                            HttpServletResponse response,
 	                            WebRequest request,
 	                            ModelMap model) throws IOException {
-		//ReportRequest req = Context.getService(ReportService.class).getReportRequestByUuid(uuid);
-		Report report = Context.getService(ReportService.class).getReportByUuid(uuid);
-		if (report.getRequest().getRenderingMode().getRenderer() instanceof WebReportRenderer) {
-			RenderingMode rm = report.getRequest().getRenderingMode();
-			request.setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, report.getRawData(), WebRequest.SCOPE_SESSION);
-			request.setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument(), WebRequest.SCOPE_SESSION);
-			
-			String url = ((WebReportRenderer) rm.getRenderer()).getLinkUrl(report.getRequest().getReportDefinition());
-			if (!url.startsWith("/"))
-				url = "/" + url;
-			url = request.getContextPath() + url;
-			request.setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, url, WebRequest.SCOPE_SESSION);
-			return new ModelAndView(new RedirectView(url));
-		} else {
-			model.addAttribute("report", report);
-			return new ModelAndView("/module/reporting/reports/reportHistoryOpen", model);
+		try {
+			Report report = Context.getService(ReportService.class).getReportByUuid(uuid);
+			if (report.getRequest().getRenderingMode().getRenderer() instanceof WebReportRenderer) {
+				RenderingMode rm = report.getRequest().getRenderingMode();
+				request.setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, report.getRawData(), WebRequest.SCOPE_SESSION);
+				request.setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument(), WebRequest.SCOPE_SESSION);
+				
+				String url = ((WebReportRenderer) rm.getRenderer()).getLinkUrl(report.getRequest().getReportDefinition());
+				if (!url.startsWith("/"))
+					url = "/" + url;
+				url = request.getContextPath() + url;
+				request.setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, url, WebRequest.SCOPE_SESSION);
+				return new ModelAndView(new RedirectView(url));
+			} else {
+				model.addAttribute("report", report);
+				return new ModelAndView("/module/reporting/reports/reportHistoryOpen", model);
+			}
+		} catch (APIException ex) {
+			if (ex.getMessage().startsWith("The persisted Report file is missing")) {
+				request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "The saved file is still being written. Try again in a few minutes", WebRequest.SCOPE_SESSION);
+			} else {
+				log.error("Unexpected exception", ex);
+				request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, ex.getMessage(), WebRequest.SCOPE_SESSION);
+			}
+			return new ModelAndView(new RedirectView("/module/reporting/reports/reportHistory.form"));
 		}
 	}
 	
