@@ -240,7 +240,7 @@ public class DateUtil {
 	
 	public static Date getStartOfCalendarPeriod(Date currentDate, int field) { 
 		if (currentDate == null) 
-			currentDate = new Date();
+			throw new APIException("Please specify a date");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(currentDate);
 		calendar.set(field, calendar.getActualMinimum(field));
@@ -291,7 +291,7 @@ public class DateUtil {
 	
 	public static Date getEndOfCalendarPeriod(Date currentDate, int field) { 
 		if (currentDate == null) 
-			currentDate = new Date();
+			throw new APIException("Please specify a date");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(currentDate);
 		calendar.set(field, calendar.getActualMaximum(field));
