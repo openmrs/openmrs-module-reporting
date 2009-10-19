@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.web.widget;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +19,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.ConceptWord;
+import org.openmrs.Role;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationUtil;
 import org.openmrs.module.evaluation.parameter.Mapped;
@@ -63,6 +66,31 @@ public class AjaxController {
     		}
     		out.print("|" + w.getConcept().getUuid() + (i.hasNext() ? "\n" : ""));
     	}
+    }
+    
+    /**
+     * Concept Search
+     */
+    @RequestMapping("/module/reporting/widget/userSearch")
+    public void userSearch(ModelMap model, HttpServletRequest request, HttpServletResponse response, 
+    				@RequestParam(required=false, value="roles") String roles,
+		    		@RequestParam(required=true, value="q") String query) throws Exception {
+    	
+    	response.setContentType("text/plain");
+    	ServletOutputStream out = response.getOutputStream();
+    	
+		List<Role> roleList = null;
+		if (StringUtils.isNotEmpty(roles)) {
+			roleList = new ArrayList<Role>();
+			for (String roleName : roles.split(",")) {
+				roleList.add(Context.getUserService().getRole(roleName));
+			}
+			
+		}
+		for (Iterator<User> i = Context.getUserService().getUsers(query, roleList, false).iterator(); i.hasNext();) {
+			User u = i.next();
+			out.print(u.getFamilyName() + ", " + u.getGivenName() + "|" + u.getUuid() + (i.hasNext() ? "\n" : ""));
+		}
     }
     
     /**
