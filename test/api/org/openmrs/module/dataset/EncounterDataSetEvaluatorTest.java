@@ -15,6 +15,8 @@ package org.openmrs.module.dataset;
 
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
@@ -80,13 +82,14 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 		}
 		datasetBuilder.append("\n");
 
-		
-		for (Object rowSet : dataSet) { 
+		int rowCount = 0;
+		for (DataSetRow row : dataSet) { 
+			rowCount++;
 			columnCount = 0;
-			Map<DataSetColumn, Object> columnSet = (Map<DataSetColumn, Object>) rowSet;			
+			//Map<DataSetColumn, Object> columnSet = (Map<DataSetColumn, Object>) rowSet;			
 
 			for (DataSetColumn column : dataSet.getDefinition().getColumns()) {
-				datasetBuilder.append(column.getDisplayName() + "=" + columnSet.get(column));
+				datasetBuilder.append(column.getDisplayName() + "=" + row.getColumnValue(column));
 				if (columnCount++ <= dataSet.getDefinition().getColumns().size()) {
 					datasetBuilder.append(",");
 				}
@@ -94,6 +97,9 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 			datasetBuilder.append("\n");
 		}
 		log.info(datasetBuilder);
+
+		
+		Assert.assertEquals(1, rowCount);
 		
 	}
 	
