@@ -72,7 +72,7 @@ public class UserHandler extends CodedHandler {
 				widget.addOption(new Option(u.getUuid(), getUserDisplay(u, config), null, u), config);
 			}
 		}
-		else if (config.getDefaultValue() != null) {
+		else if (config.getDefaultValue() != null && StringUtils.isNotEmpty(config.getDefaultValue().toString())) {
 			User u = (User) config.getDefaultValue();
 			widget.addOption(new Option(u.getUuid(), getUserDisplay(u, config), null, u), config);
 		}
