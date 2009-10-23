@@ -94,7 +94,8 @@ public class HtmlUtil  {
 			if (m == null || !initialRequestId.equals(lastRequestId)) {
 				m = new HashMap<String, String>();
 			}
-			if (!m.containsKey(resource)) {
+			String otherResource = "/" + WebConstants.WEBAPP_NAME + resource;
+			if (!m.containsKey(resource) && !m.containsKey(otherResource)) {
 				m.put(resource, "true");
 				session.setAttribute(HtmlIncludeTag.OPENMRS_HTML_INCLUDE_MAP_KEY, m);
 				session.setAttribute(HtmlIncludeTag.OPENMRS_HTML_INCLUDE_REQUEST_ID_KEY, initialRequestId);
