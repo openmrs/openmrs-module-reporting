@@ -1,7 +1,5 @@
 package org.openmrs.module.reporting.web.controller;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,20 +7,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hsqldb.lib.StringUtil;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.ParameterException;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
-import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.renderer.CsvReportRenderer;
-import org.openmrs.module.report.renderer.SimpleHtmlReportRenderer;
-import org.openmrs.module.report.renderer.TsvReportRenderer;
-import org.openmrs.module.report.renderer.XmlReportRenderer;
 import org.openmrs.module.reporting.web.widget.WidgetUtil;
 import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.web.WebConstants;
@@ -43,9 +34,6 @@ public class QueryParameterFormController {
 
 	/* Logger */
 	private Log log = LogFactory.getLog(this.getClass());
-
-	/* Date format */
-	private DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 
 	
 	/**
@@ -96,37 +84,18 @@ public class QueryParameterFormController {
 					
 		Object results = null;
 		ModelAndView model = new ModelAndView();
-		
-		if (bindingResult.hasErrors()) {			
-			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "An error has occurred.  See below for more details.");
-			return setupForm(request);
-		}
-		
 
 		if ( parameterizable == null ) 
 			parameterizable = ParameterizableUtil.getParameterizable(uuid, type);		
 			
-			
 		if (parameterizable != null) {			
 			EvaluationContext evaluationContext = new EvaluationContext();
-
-			// Build a map of parameters from the request
-			Map<String, String> parameterValuesAsStrings = new HashMap<String,String>();
-			for (Parameter parameter : parameterizable.getParameters()) { 				
-				log.info("Parameter: " + parameter.getName() + " = " + request.getParameter(parameter.getName()) );
-				parameterValuesAsStrings.put(parameter.getName(), request.getParameter(parameter.getName()));				
-			}
 			
-			// Convert values from string to object
-			//Map<String, Object> parameterValues = 
-				//ParameterizableUtil.getParameterValues(parameterizable, parameterValuesAsStrings);
-				
 			Map<String, Object> parameterValues = new HashMap<String, Object>();
 			if (parameterizable != null && parameterizable.getParameters() != null) { 
 				for (Parameter parameter : parameterizable.getParameters()) {
-					String textValue = parameterValuesAsStrings.get(parameter.getName());			
-					Object objectValue = WidgetUtil.parseInput(textValue, parameter.getType());
-					parameterValues.put(parameter.getName(), objectValue);								
+					Object paramVal = WidgetUtil.getFromRequest(parameter.getName(), parameterizable, request);
+					parameterValues.put(parameter.getName(), paramVal);								
 				}
 			}
 

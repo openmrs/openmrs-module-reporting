@@ -13,7 +13,18 @@
  */
 package org.openmrs.module.reporting.web.widget;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
+import org.openmrs.module.util.ReflectionUtil;
 import org.openmrs.util.HandlerUtil;
 
 /**
@@ -36,5 +47,50 @@ public class WidgetUtil {
 		catch (Exception e) {
 			throw new RuntimeException("Unable to convert input <" + input + "> to type " + type.getSimpleName(), e);
 		}
+	}
+	
+	/**
+	 * Return the object value of the passed type, given it's String representation
+	 * @param input the String representation
+	 * @param type the type to return
+	 * @return the Object of the passed type, given the passed input
+	 */
+	@SuppressWarnings("unchecked")
+	public static Object getFromRequest(String paramName, Parameterizable p, HttpServletRequest request) {
+		
+		Object ret = null;
+		
+		if (p != null && p.getParameters() != null) { 
+				
+    		Class<? extends Collection<?>> collectionType = null;
+    		Field f = ReflectionUtil.getField(p.getClass(), paramName);
+    		Class<?> fieldType = f.getType();
+    		
+			if (ReflectionUtil.isCollection(f)) {
+				
+				collectionType = (Class<? extends Collection<?>>)fieldType;
+				fieldType = (Class<?>)ReflectionUtil.getGenericTypes(f)[0];
+				String[] paramVals = request.getParameterValues(paramName);
+				
+				if (paramVals != null) {
+					Collection defaultValue = Set.class.isAssignableFrom(collectionType) ? new HashSet() : new ArrayList();
+					for (String val : paramVals) {
+						if (StringUtils.isNotEmpty(val)) {
+							WidgetHandler h = HandlerUtil.getPreferredHandler(WidgetHandler.class, fieldType);
+							defaultValue.add(h.parse(val, fieldType));
+						}
+					}
+					ret = defaultValue;
+				}
+			}
+			else {
+				String paramVal = request.getParameter(paramName);
+				if (StringUtils.isNotEmpty(paramVal)) {
+					WidgetHandler h = HandlerUtil.getPreferredHandler(WidgetHandler.class, fieldType);
+					ret = h.parse(paramVal, fieldType);
+				}
+			}
+		}
+		return ret;
 	}
 }
