@@ -1,10 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%> 
-<%@ include file="../localHeaderMinimal.jsp"%>
-<%@ include file="../dialogSupport.jsp"%>
-
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-
 
 <%--<%@ include file="/WEB-INF/view/module/reporting/include.jsp"%> --%>
 <c:if test="${model.dialog != 'false'}">
@@ -136,12 +132,7 @@ $(document).ready(function() {
 		</div>					
 	</div>	
 </div>
-	
-	
-	
 
-</div>
-
-</div>
-
-
+<c:if test="${model.dialog != 'false'}">
+<%@ include file="/WEB-INF/template/footerMinimal.jsp"%>
+</c:if>
