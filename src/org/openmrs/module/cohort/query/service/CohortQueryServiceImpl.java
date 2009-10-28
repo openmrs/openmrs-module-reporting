@@ -12,8 +12,11 @@ import org.openmrs.ConceptSet;
 import org.openmrs.Drug;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.User;
+import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.cohort.query.db.CohortQueryDAO;
 
 public class CohortQueryServiceImpl  extends BaseOpenmrsService implements CohortQueryService {
@@ -26,6 +29,12 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
         this.dao = dao;
     }
     
+    
+	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
+            PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers) { 
+		return dao.getPatientsHavingObs(conceptId, timeModifier, modifier, value, fromDate, toDate, providers);
+	}
+
     
     public Cohort getPatientsHavingStartedPrograms(List<Program> programs, Date startedOnOrAfter, Date startedOnOrBefore) {     	
     	return dao.getPatientsHavingStartedPrograms(programs, startedOnOrAfter, startedOnOrBefore);

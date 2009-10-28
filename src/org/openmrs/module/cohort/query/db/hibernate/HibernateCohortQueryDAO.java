@@ -1,5 +1,6 @@
 package org.openmrs.module.cohort.query.db.hibernate;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,9 +13,15 @@ import org.hibernate.CacheMode;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.User;
+import org.openmrs.api.PatientSetService;
+import org.openmrs.api.PatientSetService.Modifier;
+import org.openmrs.api.PatientSetService.TimeModifier;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.cohort.query.db.CohortQueryDAO;
 
@@ -189,8 +196,6 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.setDate("asOfDate", asOfDate);
 		return new Cohort(query.list());							
 	}	
-	
-	
 	
 	
 	/**
@@ -384,6 +389,188 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		return new Cohort(query.list());
 		
 	}
-	
 
+	public Cohort getPatientsHavingObs(Integer conceptId,
+			TimeModifier timeModifier, Modifier modifier, Object value,
+			Date fromDate, Date toDate, List<User> providers) {
+	
+		if (conceptId == null && value == null)
+			throw new IllegalArgumentException(
+					"Can't have conceptId == null and value == null");
+		if (conceptId == null
+				&& (timeModifier != TimeModifier.ANY && timeModifier != TimeModifier.NO))
+			throw new IllegalArgumentException(
+					"If conceptId == null, timeModifier must be ANY or NO");
+		if (conceptId == null && modifier != Modifier.EQUAL) {
+			throw new IllegalArgumentException(
+					"If conceptId == null, modifier must be EQUAL");
+		}
+		Concept concept = null;
+		if (conceptId != null)
+			concept = Context.getConceptService().getConcept(conceptId);
+		Number numericValue = null;
+		String stringValue = null;
+		Concept codedValue = null;
+		Date dateValue = null;
+		Boolean booleanValue = null;
+		String valueSql = null;
+		if (value != null) {
+			if (concept == null) {
+				if (value instanceof Concept)
+					codedValue = (Concept) value;
+				else
+					codedValue = Context.getConceptService().getConceptByName(
+							value.toString());
+				valueSql = "o.value_coded";
+			} else if (concept.getDatatype().isNumeric()) {
+				if (value instanceof Number)
+					numericValue = (Number) value;
+				else
+					numericValue = new Double(value.toString());
+				valueSql = "o.value_numeric";
+			} else if (concept.getDatatype().isText()) {
+				stringValue = value.toString();
+				valueSql = "o.value_text";
+				if (modifier == null)
+					modifier = Modifier.EQUAL;
+			} else if (concept.getDatatype().isCoded()) {
+				if (value instanceof Concept)
+					codedValue = (Concept) value;
+				else
+					codedValue = Context.getConceptService().getConceptByName(
+							value.toString());
+				valueSql = "o.value_coded";
+			} else if (concept.getDatatype().isDate()) {
+				if (value instanceof Date) {
+					dateValue = (Date) value;
+				} else {
+					try {
+						dateValue = Context.getDateFormat().parse(
+								value.toString());
+					} catch (ParseException ex) {
+						throw new IllegalArgumentException("Cannot interpret "
+								+ dateValue + " as a date in the format "
+								+ Context.getDateFormat());
+					}
+				}
+				valueSql = "o.value_datetime";
+			} else if (concept.getDatatype().isBoolean()) {
+				if (value instanceof Boolean) { 
+					booleanValue = (Boolean) value;
+				} 
+				else if (value instanceof Number) {
+					numericValue = (Number) value;
+					booleanValue = (numericValue.doubleValue() != 0.0) ? Boolean.TRUE : Boolean.FALSE;
+ 				}
+				else
+					booleanValue = Boolean.valueOf(value.toString());
+				valueSql = "o.value_numeric";
+			}
+		}
+
+		StringBuilder sb = new StringBuilder();
+		boolean useValue = value != null;
+		boolean doSqlAggregation = timeModifier == TimeModifier.MIN
+				|| timeModifier == TimeModifier.MAX
+				|| timeModifier == TimeModifier.AVG;
+		boolean doInvert = false;
+
+		String dateSql = "";
+		String dateSqlForSubquery = "";
+		if (fromDate != null) {
+			dateSql += " and o.obs_datetime >= :fromDate ";
+			dateSqlForSubquery += " and obs_datetime >= :fromDate ";
+		}
+		if (toDate != null) {
+			dateSql += " and o.obs_datetime <= :toDate ";
+			dateSqlForSubquery += " and obs_datetime <= :toDate ";
+		}
+
+		if (timeModifier == TimeModifier.ANY || timeModifier == TimeModifier.NO) {
+			if (timeModifier == TimeModifier.NO)
+				doInvert = true;
+			sb.append("select o.person_id from obs o where o.voided = false ");
+			if (conceptId != null)
+				sb.append("and concept_id = :concept_id ");
+			sb.append(dateSql);
+
+		} else if (timeModifier == TimeModifier.FIRST
+				|| timeModifier == TimeModifier.LAST) {
+			boolean isFirst = timeModifier == PatientSetService.TimeModifier.FIRST;
+			sb
+					.append("select o.person_id "
+							+ "from obs o inner join ("
+							+ "    select person_id, "
+							+ (isFirst ? "min" : "max")
+							+ "(obs_datetime) as obs_datetime"
+							+ "    from obs"
+							+ "    where voided = false and concept_id = :concept_id "
+							+ dateSqlForSubquery
+							+ "    group by person_id"
+							+ ") subq on o.person_id = subq.person_id and o.obs_datetime = subq.obs_datetime "
+							+ "where o.voided = false and o.concept_id = :concept_id ");
+
+		} else if (doSqlAggregation) {
+			String sqlAggregator = timeModifier.toString();
+			valueSql = sqlAggregator + "(" + valueSql + ")";
+			sb
+					.append("select o.person_id "
+							+ "from obs o where o.voided = false and concept_id = :concept_id "
+							+ dateSql + "group by o.person_id ");
+
+		} else {
+			throw new IllegalArgumentException("TimeModifier '" + timeModifier
+					+ "' not recognized");
+		}
+
+		if (useValue) {
+			sb.append(doSqlAggregation ? " having " : " and ");
+			sb.append(valueSql + " ");
+			sb.append(modifier.getSqlRepresentation() + " :value");
+		}
+		if (!doSqlAggregation)
+			sb.append(" group by o.person_id ");
+
+		log.debug("query: " + sb);
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(
+				sb.toString());
+		query.setCacheMode(CacheMode.IGNORE);
+
+		if (conceptId != null)
+			query.setInteger("concept_id", conceptId);
+		if (useValue) {
+			if (numericValue != null)
+				query.setDouble("value", numericValue.doubleValue());
+			else if (codedValue != null)
+				query.setInteger("value", codedValue.getConceptId());
+			else if (stringValue != null)
+				query.setString("value", stringValue);
+			else if (dateValue != null)
+				query.setDate("value", dateValue);
+			else if (booleanValue != null)
+				query.setDouble("value", booleanValue ? 1.0 : 0.0);
+			else
+				throw new IllegalArgumentException(
+						"useValue is true, but numeric, coded, string, boolean, and date values are all null");
+		}
+		if (fromDate != null)
+			query.setDate("fromDate", fromDate);
+		if (toDate != null)
+			query.setDate("toDate", toDate);
+
+		Cohort ret;
+		if (doInvert) {
+			ret = Context.getPatientSetService().getAllPatients();
+			ret.getMemberIds().removeAll(query.list());
+		} else {
+			ret = new Cohort(query.list());
+		}
+
+		return ret;
+	}
+
+
+
+	
+	
 }

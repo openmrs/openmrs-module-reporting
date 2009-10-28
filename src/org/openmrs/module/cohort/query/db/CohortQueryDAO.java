@@ -7,6 +7,9 @@ import org.openmrs.Cohort;
 import org.openmrs.Drug;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.User;
+import org.openmrs.api.PatientSetService.TimeModifier;
+import org.openmrs.api.impl.PatientSetServiceImpl;
 
 public interface CohortQueryDAO {
 	
@@ -28,4 +31,9 @@ public interface CohortQueryDAO {
     // Born or died between dates
     public Cohort getPatientsHavingBirthDateBetweenDates(Date onOrAfter, Date onOrBefore);
     public Cohort getPatientsHavingDiedBetweenDates(Date onOrAfter, Date onOrBefore);
+
+    // Patients having certain observations 
+	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
+            PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers);
+
 }
