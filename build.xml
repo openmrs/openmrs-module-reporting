@@ -46,8 +46,6 @@
 			<xmlcatalog refid="common-dtds"/>
 		</xmlproperty>
 		
-		<xmlproperty file="metadata/config.xml" />
-
 		<filterset id="variables.to.replace">
 			<filter token="MODULE_ID" value="${module.id}" />
 			<filter token="MODULE_NAME" value="${module.name}" />
