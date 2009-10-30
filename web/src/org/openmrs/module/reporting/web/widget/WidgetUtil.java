@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.web.widget;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,9 +21,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
-import org.openmrs.module.util.ReflectionUtil;
 import org.openmrs.util.HandlerUtil;
 
 /**
@@ -61,17 +60,13 @@ public class WidgetUtil {
 		Object ret = null;
 		
 		if (p != null && p.getParameters() != null) { 
-				
-    		Class<? extends Collection<?>> collectionType = null;
-    		Field f = ReflectionUtil.getField(p.getClass(), paramName);
-    		Class<?> fieldType = f.getType();
+			
+    		Parameter param = p.getParameter(paramName);
+    		Class<? extends Collection> collectionType = param.getCollectionType();
+    		Class<?> fieldType = param.getType();
     		
-			if (ReflectionUtil.isCollection(f)) {
-				
-				collectionType = (Class<? extends Collection<?>>)fieldType;
-				fieldType = (Class<?>)ReflectionUtil.getGenericTypes(f)[0];
-				String[] paramVals = request.getParameterValues(paramName);
-				
+			if (collectionType != null) {
+				String[] paramVals = request.getParameterValues(paramName);				
 				if (paramVals != null) {
 					Collection defaultValue = Set.class.isAssignableFrom(collectionType) ? new HashSet() : new ArrayList();
 					for (String val : paramVals) {
