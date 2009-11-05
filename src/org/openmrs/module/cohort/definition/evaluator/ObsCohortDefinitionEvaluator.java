@@ -17,10 +17,10 @@ import java.util.Date;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.ObsCohortDefinition;
+import org.openmrs.module.cohort.query.service.CohortQueryService;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
@@ -38,14 +38,13 @@ public class ObsCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	ObsCohortDefinition ed = (ObsCohortDefinition) cohortDefinition;
+    	ObsCohortDefinition ocd = (ObsCohortDefinition) cohortDefinition;
 		
-		PatientSetService pss = Context.getPatientSetService();
-		
-    	Date fromDate = ed.getCalculatedFromDate(context);
-    	Date toDate = ed.getCalculatedToDate(context);
-    	Integer questionId = ed.getQuestion() == null ? null : ed.getQuestion().getConceptId();
-    	
-		return pss.getPatientsHavingObs(questionId, ed.getTimeModifier(), ed.getModifier(), ed.getValue(), fromDate, toDate);
+		Date fromDate = ocd.getCalculatedFromDate(context);
+    	Date toDate = ocd.getCalculatedToDate(context);
+    	Integer questionId = ocd.getQuestion() == null ? null : ocd.getQuestion().getConceptId();
+  
+    	return Context.getService(CohortQueryService.class).getPatientsHavingObs(
+    			questionId, ocd.getTimeModifier(), ocd.getModifier(), ocd.getValue(), fromDate, toDate, null);
     }
 }

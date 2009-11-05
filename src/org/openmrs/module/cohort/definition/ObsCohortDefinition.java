@@ -51,6 +51,9 @@ public class ObsCohortDefinition extends DateRangeCohortDefinition {
 	private Double valueNumeric;
 	
 	@ConfigurationProperty(required=false)
+	private Boolean valueBoolean;
+	
+	@ConfigurationProperty(required=false)
 	private String valueText;
 
 	//***** CONSTRUCTORS *****
@@ -114,7 +117,10 @@ public class ObsCohortDefinition extends DateRangeCohortDefinition {
 			return valueDatetime;
 		}
 		else if (valueNumeric != null) {
-			return valueNumeric;
+			return valueNumeric;			
+		}
+		else if (valueBoolean != null) { 
+			return valueBoolean;
 		}
 		return valueText;
 	}
@@ -219,6 +225,20 @@ public class ObsCohortDefinition extends DateRangeCohortDefinition {
 		this.valueNumeric = valueNumeric;
 	}
 
+	/**
+	 * @return the valueBoolean
+	 */
+	public Boolean getValueBoolean() {
+		return valueBoolean;
+	}
+
+	/**
+	 * @param valueNumeric the valueNumeric to set
+	 */
+	public void setValueBoolean(Boolean valueBoolean) {
+		this.valueBoolean = valueBoolean;
+	}	
+	
 	/**
 	 * @return the valueText
 	 */

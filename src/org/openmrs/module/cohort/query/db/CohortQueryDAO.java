@@ -15,6 +15,7 @@ public interface CohortQueryDAO {
 	
 	//public Cohort getPatientsInPrograms(List<Program> programs, Date startedAfter, Date startedBefore);
 	
+	
     // Started or stopped programs during a period
 	public Cohort getPatientsHavingStartedPrograms(List<Program> programs, Date startedOnOrAfter, Date startedOnOrBefore);
     public Cohort getPatientsHavingCompletedPrograms(List<Program> programs, Date completedOnOrAfter, Date completedOnOrBefore);
