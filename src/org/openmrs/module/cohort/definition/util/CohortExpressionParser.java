@@ -219,7 +219,10 @@ public class CohortExpressionParser {
 			if (o instanceof BooleanOperator) {
 				bo = (BooleanOperator) o;
 			}
-			else {
+			else if (o instanceof Cohort) {
+				// straight pass-through
+				args.add((Cohort) o);
+			} else {
 				args.add(Context.getService(CohortDefinitionService.class).evaluate((Mapped<CohortDefinition>) o, context));
 			}
 		}
@@ -259,9 +262,9 @@ public class CohortExpressionParser {
 						return null;
 					}
 					tokens.add(thisInt);
-				} else if (openParenthesesWords.contains(st.ttype)) {
+				} else if (openParenthesesWords.contains(Character.valueOf((char) st.ttype))) {
 					tokens.add("(");
-				} else if (closeParenthesesWords.contains(st.ttype)) {
+				} else if (closeParenthesesWords.contains(Character.valueOf((char) st.ttype))) {
 					tokens.add(")");
 				} else if (st.ttype == StreamTokenizer.TT_WORD) {
 					tokens.add(st.sval);
