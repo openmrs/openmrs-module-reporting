@@ -94,7 +94,7 @@ $(document).ready(function() {
 								<li>
 									<label class="desc" for="${parameter.name}">${parameter.label}</label>
 									<div>						
-										<rpt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
+										<wgt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
 									</div>
 								</li>						
 							</c:forEach>

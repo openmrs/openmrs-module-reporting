@@ -328,10 +328,7 @@ $(document).ready(function() {
 						<li>
 							<label class="desc" for="conceptId"><spring:message code="reporting.columnValue"/></label>
 							<span>				
-							
-							<!-- 
-								<rpt:widget id="conceptId" name="conceptId" type="org.openmrs.Concept"/>
-							 -->
+
 							
 							</span>
 							

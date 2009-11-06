@@ -58,10 +58,10 @@
 		<tr>
 			<td valign="top" align="left">
 				<span class="metadataField">Name</span>
-				<rpt:widget id="name" name="name" object="${model.design}" property="name" attributes="size=50"/>
+				<wgt:widget id="name" name="name" object="${model.design}" property="name" attributes="size=50"/>
 				<br/>
 				<span class="metadataField">Description</span>			
-				<rpt:widget id="description" name="description" object="${model.design}" property="description" attributes="cols=38|rows=2"/>
+				<wgt:widget id="description" name="description" object="${model.design}" property="description" attributes="cols=38|rows=2"/>
 				<br/>
 				<span class="metadataField">Report Definition</span>
 				<c:choose>
@@ -70,12 +70,12 @@
 						<input type="hidden" name="reportDefinition" value="${model.reportDefinitionUuid}"/>
 					</c:when>
 					<c:otherwise>
-						<rpt:widget id="reportDefinition" name="reportDefinition" object="${model.design}" property="reportDefinition" attributes=""/>
+						<wgt:widget id="reportDefinition" name="reportDefinition" object="${model.design}" property="reportDefinition" attributes=""/>
 					</c:otherwise>
 				</c:choose>		
 				<br/>
 				<span class="metadataField">Renderer Type</span>			
-				<rpt:widget id="rendererType" name="rendererType" object="${model.design}" property="rendererType" attributes="type=org.openmrs.module.report.renderer.ReportRenderer|simple=true"/>
+				<wgt:widget id="rendererType" name="rendererType" object="${model.design}" property="rendererType" attributes="type=org.openmrs.module.report.renderer.ReportRenderer|simple=true"/>
 				<br/>
 				<span class="metadataField">Resource Files</span>			
 				<div id="resourcesMultiFieldDiv">
@@ -111,7 +111,7 @@
 			</td>
 			<td valign="top" align="left">
 				<span class="metadataField">Design Properties</span>	
-				<rpt:widget id="properties" name="properties" object="${model.design}" property="properties" attributes="rows=20|cols=50"/>
+				<wgt:widget id="properties" name="properties" object="${model.design}" property="properties" attributes="rows=20|cols=50"/>
 			</td>
 		</tr>
 	</table>

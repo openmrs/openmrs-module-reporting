@@ -2,11 +2,12 @@ package org.openmrs.module.reporting.web.widget.handler;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.htmlwidgets.web.WidgetConfig;
+import org.openmrs.module.htmlwidgets.web.handler.CodedHandler;
+import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
+import org.openmrs.module.htmlwidgets.web.html.Option;
 import org.openmrs.module.indicator.dimension.Dimension;
 import org.openmrs.module.indicator.service.IndicatorService;
-import org.openmrs.module.reporting.web.widget.WidgetConfig;
-import org.openmrs.module.reporting.web.widget.html.CodedWidget;
-import org.openmrs.module.reporting.web.widget.html.Option;
 
 @Handler(supports={Dimension.class}, order=50)
 public class DimensionHandler extends CodedHandler {

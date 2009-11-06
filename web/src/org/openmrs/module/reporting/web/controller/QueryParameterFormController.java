@@ -14,7 +14,7 @@ import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.ParameterException;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.web.widget.WidgetUtil;
+import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -93,9 +93,9 @@ public class QueryParameterFormController {
 			
 			Map<String, Object> parameterValues = new HashMap<String, Object>();
 			if (parameterizable != null && parameterizable.getParameters() != null) { 
-				for (Parameter parameter : parameterizable.getParameters()) {
-					Object paramVal = WidgetUtil.getFromRequest(parameter.getName(), parameterizable, request);
-					parameterValues.put(parameter.getName(), paramVal);								
+				for (Parameter p : parameterizable.getParameters()) {
+					Object paramVal = WidgetUtil.getFromRequest(request, p.getName(), p.getType(), p.getCollectionType());
+					parameterValues.put(p.getName(), paramVal);								
 				}
 			}
 

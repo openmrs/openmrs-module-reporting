@@ -52,5 +52,6 @@
 	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.0.9966-RC2.jar" sourcepath="/openmrs-1.5.x"/>
 	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.0.9966-RC2.jar"/>
 	<classpathentry kind="lib" path="lib-common/hibernate325-mod.jar"/>
+	<classpathentry kind="lib" path="lib-common/htmlwidgets-1.5.0.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

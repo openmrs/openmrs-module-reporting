@@ -1,16 +1,12 @@
 package org.openmrs.module.reporting.web.cohorts;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,12 +22,10 @@ import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
+import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.util.ReflectionUtil;
-import org.openmrs.util.HandlerUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -150,34 +144,14 @@ public class ManageCohortDefinitionsController {
     		String prefix = "parameter." + fieldName;
     		String valParamName =  prefix + ".value";
     		boolean isParameter = "t".equals(request.getParameter(prefix+".allowAtEvaluation"));
-    		Object valToSet = null;
+    		
+    		Object valToSet = WidgetUtil.getFromRequest(request, valParamName, p.getField());
     		
     		Class<? extends Collection<?>> collectionType = null;
-    		Class<?> fieldType = p.getField().getType();
-    		
+    		Class<?> fieldType = p.getField().getType();   		
 			if (ReflectionUtil.isCollection(p.getField())) {
-				
 				collectionType = (Class<? extends Collection<?>>)p.getField().getType();
 				fieldType = (Class<?>)ReflectionUtil.getGenericTypes(p.getField())[0];
-				String[] paramVals = request.getParameterValues(valParamName);
-				
-				if (paramVals != null) {
-					Collection defaultValue = Set.class.isAssignableFrom(collectionType) ? new HashSet() : new ArrayList();
-					for (String val : paramVals) {
-						if (StringUtils.hasText(val)) {
-							WidgetHandler h = HandlerUtil.getPreferredHandler(WidgetHandler.class, fieldType);
-							defaultValue.add(h.parse(val, fieldType));
-						}
-					}
-					valToSet = defaultValue;
-				}
-			}
-			else {
-				String paramVal = request.getParameter(valParamName);
-				if (StringUtils.hasText(paramVal)) {
-					WidgetHandler h = HandlerUtil.getPreferredHandler(WidgetHandler.class, fieldType);
-					valToSet = h.parse(paramVal, fieldType);
-				}
 			}
 			
 			if (isParameter) {

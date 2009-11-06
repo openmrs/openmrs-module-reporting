@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
-import org.openmrs.module.reporting.web.widget.html.Option;
+import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
+import org.openmrs.module.htmlwidgets.web.html.Option;
 import org.openmrs.util.HandlerUtil;
 
 

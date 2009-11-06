@@ -19,7 +19,8 @@ import java.io.Writer;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.web.widget.WidgetConfig;
+import org.openmrs.module.htmlwidgets.web.WidgetConfig;
+import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
 import org.openmrs.util.HandlerUtil;
 
 /**

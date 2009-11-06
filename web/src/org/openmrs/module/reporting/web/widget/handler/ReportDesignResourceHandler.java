@@ -17,11 +17,12 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.htmlwidgets.web.WidgetConfig;
+import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
+import org.openmrs.module.htmlwidgets.web.html.FileUploadWidget;
+import org.openmrs.module.htmlwidgets.web.html.Widget;
+import org.openmrs.module.htmlwidgets.web.html.WidgetFactory;
 import org.openmrs.module.report.ReportDesignResource;
-import org.openmrs.module.reporting.web.widget.WidgetConfig;
-import org.openmrs.module.reporting.web.widget.html.FileUploadWidget;
-import org.openmrs.module.reporting.web.widget.html.Widget;
-import org.openmrs.module.reporting.web.widget.html.WidgetFactory;
 
 /**
  * FieldGenHandler for Properties Types

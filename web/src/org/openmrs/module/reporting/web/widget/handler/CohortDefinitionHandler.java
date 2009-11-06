@@ -17,9 +17,10 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.web.widget.WidgetConfig;
-import org.openmrs.module.reporting.web.widget.html.CodedWidget;
-import org.openmrs.module.reporting.web.widget.html.Option;
+import org.openmrs.module.htmlwidgets.web.WidgetConfig;
+import org.openmrs.module.htmlwidgets.web.handler.CodedHandler;
+import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
+import org.openmrs.module.htmlwidgets.web.html.Option;
 
 /**
  * FieldGenHandler for Enumerated Types

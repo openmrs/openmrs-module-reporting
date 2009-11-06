@@ -65,7 +65,7 @@
 				</c:choose>
 				<tr>
 					<td>${model.mappedType.simpleName}:</td>
-					<td><rpt:widget id="parameterizableSelector${model.id}" name="mappedUuid" type="${model.mappedType.name}" defaultValue="${model.mappedObj}"/></td>
+					<td><wgt:widget id="parameterizableSelector${model.id}" name="mappedUuid" type="${model.mappedType.name}" defaultValue="${model.mappedObj}"/></td>
 				</tr>
 			</table>		 
 			
@@ -80,7 +80,7 @@
 								<c:choose>
 									<c:when test="${empty model.allowedParams[p.name]}">
 										<input type="hidden" name="valueType_${p.name}" value="fixed"/>
-										<rpt:widget id="fixedValue_${p.name}_${model.id}" name="fixedValue_${p.name}" type="${p.type.name}" defaultValue="${model.fixedParams[p.name]}" attributes="style=vertical-align:top;"/>
+										<wgt:widget id="fixedValue_${p.name}_${model.id}" name="fixedValue_${p.name}" type="${p.type.name}" defaultValue="${model.fixedParams[p.name]}" attributes="style=vertical-align:top;"/>
 									</c:when>
 									<c:otherwise>
 										<select id="typeSelector_${p.name}_${model.id}" name="valueType_${p.name}">
@@ -95,7 +95,7 @@
 											</option>
 										</select>
 										<span id="typeSelector_${p.name}_fixed_${model.id}" style="display:none;">
-											<rpt:widget id="fixedValue_${p.name}_${model.id}" name="fixedValue_${p.name}" type="${p.type.name}" defaultValue="${model.fixedParams[p.name]}" attributes="style=vertical-align:top;"/>
+											<wgt:widget id="fixedValue_${p.name}_${model.id}" name="fixedValue_${p.name}" type="${p.type.name}" defaultValue="${model.fixedParams[p.name]}" attributes="style=vertical-align:top;"/>
 										</span>
 										<span id="typeSelector_${p.name}_mapped_${model.id}" style="display:none;">
 											<select name="mappedValue_${p.name}">

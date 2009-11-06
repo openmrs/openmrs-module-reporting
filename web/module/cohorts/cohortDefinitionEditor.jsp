@@ -81,7 +81,7 @@
 										</td>
 										<td>&nbsp;</td>
 										<td valign="top">
-											<rpt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
+											<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
 										</td>
 									</tr>
 								</c:forEach>

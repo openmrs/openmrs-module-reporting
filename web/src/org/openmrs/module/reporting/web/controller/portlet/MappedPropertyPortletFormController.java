@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.web.widget.WidgetUtil;
+import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.util.ParameterizableUtil;
 import org.openmrs.module.util.ReflectionUtil;
 import org.openmrs.util.OpenmrsUtil;

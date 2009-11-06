@@ -2,34 +2,14 @@ package org.openmrs.module.reporting.web.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.annotation.Handler;
-import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.evaluation.parameter.Parameterizable;
-import org.openmrs.module.indicator.Indicator;
-import org.openmrs.module.indicator.service.IndicatorService;
-import org.openmrs.module.report.ReportDefinition;
-import org.openmrs.module.report.service.ReportService;
-import org.openmrs.module.reporting.web.widget.handler.WidgetHandler;
-import org.openmrs.module.reporting.web.widget.html.Option;
 import org.openmrs.module.reporting.web.util.ParameterUtil;
 import org.openmrs.module.util.ParameterizableUtil;
-import org.openmrs.util.HandlerUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -40,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.util.WebUtils;
 
 @Controller
 @RequestMapping("/module/reporting/parameters/parameter")
