@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.dataset.definition.evaluator;
 
-import java.util.Map;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,10 +50,10 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 			context = new EvaluationContext();
 		}
 		
-		Map<Integer, Encounter> encounterMap = Context.getPatientSetService().getEncounters(context.getBaseCohort());
-		
+		List<Encounter> encounters = Context.getPatientSetService().getEncountersByForm(context.getBaseCohort(), null);
+
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
-		for (Encounter e : encounterMap.values()) {
+		for (Encounter e : encounters) {
 			DataSetRow<Object> row = new DataSetRow<Object>();
 			row.addColumnValue(EncounterDataSetDefinition.ENCOUNTER_ID, e.getEncounterId());
 			row.addColumnValue(EncounterDataSetDefinition.ENCOUNTER_TYPE, e.getEncounterType().getName());
