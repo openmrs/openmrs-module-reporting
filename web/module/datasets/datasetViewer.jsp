@@ -37,14 +37,7 @@ $(document).ready(function() {
 				
 				<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
 					method="get" action="${pageContext.request.contextPath}/module/reporting/datasets/viewDataSet.form">
-	
-	
-					<!--  
-					<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
-					<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
-					
-					-->
-					
+
 					<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
 					
 					<fieldset style="padding: 25px; width: 100%;">
@@ -68,9 +61,8 @@ $(document).ready(function() {
 							</select><!-- <a href="#" id="show-columns">Show Columns</a> -->
 						</span>
 						<span>				
-							<select id="cohort-select" name="cohortId">
-								<option value="all">Choose a filter ...</option>						
-								<option value="all">All patients [default]</option>						
+							<select id="cohort-select" name="cohortId">					
+								<option value="all">All patients</option>						
 								<c:forEach var="cdOption" items="${cohortDefinitions}" >
 									<c:if test="${empty cdOption.parameters && !empty cdOption.uuid}">
 										<c:set var="isSelected"></c:set>
@@ -102,7 +94,7 @@ $(document).ready(function() {
 
 						<span>					
 							<select id="limit" name="limit">
-								<option <c:if test="${param.limit=='0'}">selected</c:if> value="all">Show me all records (this may take awhile)</option>
+								<option <c:if test="${param.limit=='0'}">selected</c:if> value="">Show me all records (this may take awhile)</option>
 								<option <c:if test="${param.limit=='10'}">selected</c:if> value="10">Only show the first 10 records</option>
 								<option <c:if test="${param.limit=='100'}">selected</c:if> value="100">Only show the first 100 records</option>
 								<option <c:if test="${param.limit=='500'}">selected</c:if> value="500">Only show the first 500 records</option>
