@@ -35,4 +35,13 @@ public class MessageUtil {
 		}
 		return clazz.getName();
 	}
+	
+	/**
+	 * Return the translation for the given key
+	 * @param s the key to lookup
+	 * @return the translation of the given key
+	 */
+	public static String translate(String s) {
+    	return Context.getMessageSourceService().getMessage(s);
+    }
 }

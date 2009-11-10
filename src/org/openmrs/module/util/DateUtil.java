@@ -175,8 +175,22 @@ public class DateUtil {
 	 * @return a String representing the date in the passed format
 	 */
 	public static String formatDate(Date d, String format) {
-		DateFormat df = new SimpleDateFormat(format);
-		return df.format(d);
+		return formatDate(d, format, "");
+	}
+	
+	/**
+	 * Utility method to format a date in the given format
+	 * @param d the date to format
+	 * @param format the DateFormat to use
+	 * @param defaultIfNUll the value to return if the passed date is null
+	 * @return a String representing the date in the passed format
+	 */
+	public static String formatDate(Date d, String format, String defaultIfNull) {
+		if (d != null) {
+			DateFormat df = new SimpleDateFormat(format);
+			return df.format(d);
+		}
+		return defaultIfNull;
 	}
 	
 	
