@@ -23,6 +23,7 @@ import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
+import org.openmrs.module.util.ObjectUtil;
 import org.openmrs.module.util.ReflectionUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -64,16 +65,7 @@ public class ManageCohortDefinitionsController {
     			iter.remove();
     		}
     	}
-    	// Sort cohort definitions
-    	/*
-    	Collections.sort(cohortDefinitions, new Comparator<CohortDefinition>() {
-    		public int compare(CohortDefinition left, CohortDefinition right) {
-    			Date leftDate = (left.getDateChanged()!=null)?left.getDateChanged():left.getDateCreated();
-    			Date rightDate = (right.getDateChanged()!=null)?right.getDateChanged():right.getDateCreated();    			
-	            return leftDate.compareTo(rightDate);
-            }
-    	});
-    	*/
+
     	model.addAttribute("cohortDefinitions", cohortDefinitions);
     	
     	// Add all available cohort definition types 
@@ -142,7 +134,7 @@ public class ManageCohortDefinitionsController {
     	for (Property p : CohortDefinitionUtil.getConfigurationProperties(cohortDefinition)) {
     		String fieldName = p.getField().getName();
     		String prefix = "parameter." + fieldName;
-    		String valParamName =  prefix + ".value";
+    		String valParamName =  prefix + ".value"; 
     		boolean isParameter = "t".equals(request.getParameter(prefix+".allowAtEvaluation"));
     		
     		Object valToSet = WidgetUtil.getFromRequest(request, valParamName, p.getField());
@@ -156,7 +148,8 @@ public class ManageCohortDefinitionsController {
 			
 			if (isParameter) {
 				ReflectionUtil.setPropertyValue(cohortDefinition, p.getField(), null);
-				Parameter param = new Parameter(fieldName, fieldName, fieldType, collectionType, valToSet);
+				String paramLabel = ObjectUtil.nvlStr(request.getParameter(prefix + ".label"), fieldName);
+				Parameter param = new Parameter(fieldName, paramLabel, fieldType, collectionType, valToSet);
 				cohortDefinition.addParameter(param);
 			}
 			else {
