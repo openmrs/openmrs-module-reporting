@@ -65,7 +65,7 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	 * @see DataSetDefinition#getColumns()
 	 */
 	public List<DataSetColumn> getColumns() {
-		return new ArrayList<DataSetColumn>(definitions.keySet());
+		return new ArrayList<DataSetColumn>(getDefinitions().keySet());
 	}
 
 	
