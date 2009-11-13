@@ -3,24 +3,36 @@
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
-$(document).ready(function() {
-	$('.reporting-data-table').dataTable( {
-		"bPaginate": true,
-		"iDisplayLength": 25,
-		"bLengthChange": false,
-		"bFilter": true,
-		"bSort": true,
-		"bInfo": true,
-		"bAutoWidth": true
+	$(document).ready(function() {
+		$('.reporting-data-table').dataTable( {
+			"bPaginate": true,
+			"iDisplayLength": 25,
+			"bLengthChange": false,
+			"bFilter": true,
+			"bSort": true,
+			"bInfo": true,
+			"bAutoWidth": true,
+			"fnDrawCallback": function() {
+				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
+					$("#cohort-${cohortDefinition.uuid}").click(function(event){ 
+						showReportingDialog({ 
+							title: 'Preview Cohort Definition', 
+							url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}',
+							successCallback: function() { 
+								window.location = window.location; //.reload(true);
+							} 
+						});
+					});
+				</c:forEach>
+			}
+		});
 	});
-});
 
-function confirmDelete(name, uuid) {
-	if (confirm("Are you sure you want to delete " + name + "?")) {
-		document.location.href = 'purgeCohortDefinition.form?uuid='+uuid;
+	function confirmDelete(name, uuid) {
+		if (confirm("Are you sure you want to delete " + name + "?")) {
+			document.location.href = 'purgeCohortDefinition.form?uuid='+uuid;
+		}
 	}
-}
-
 </script>
 
 <div id="page">
@@ -58,21 +70,7 @@ function confirmDelete(name, uuid) {
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
-				
-					<script>					
-					$(document).ready(function() {
-						$("#cohort-${cohortDefinition.uuid}").click(function(event){ 
-							showReportingDialog({ 
-								title: 'Preview Cohort Definition', 
-								url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}',
-								successCallback: function() { 
-									window.location = window.location; //.reload(true);
-								} 
-							});
-						});
-					} );
-					</script>					
+				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">				
 
 					<c:choose>
 						<c:when test="${customPages[cohortDefinition.class] == null}">
@@ -90,7 +88,7 @@ function confirmDelete(name, uuid) {
 							&nbsp;
 							<a href="javascript:confirmDelete('${cohortDefinition.name}','${cohortDefinition.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
 							&nbsp;
-							<a href="#" id="cohort-${cohortDefinition.uuid}"><img src="<c:url value='/images/play.gif'/>" border="0"/></a>
+							<a href="javascript:void(0);" id="cohort-${cohortDefinition.uuid}" <img src="<c:url value='/images/play.gif'/>" border="0"/></a>
 						</td>
 						<td>
 							<a href="${editUrl}">
@@ -100,13 +98,6 @@ function confirmDelete(name, uuid) {
 						<td>
 							${cohortDefinition.description}
 						</td>
-<!--  						
-						<td align="center">
-							<a href="evaluateCohortDefinition.form?uuid=${cohortDefinition.uuid}">
-								<img src="<c:url value='/images/play.gif'/>" border="0"/>
-							</a>
-						</td>
--->						
 						<td width="5%" nowrap>
 							${cohortDefinition.creator}
 						</td>

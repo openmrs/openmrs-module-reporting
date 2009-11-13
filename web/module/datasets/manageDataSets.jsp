@@ -18,6 +18,7 @@ $(document).ready(function() {
 		              { "bSortable": false },
 		              { "bSortable": false },
 		              { "bSortable": false },
+		              { "bSortable": false },
 		              { "bSortable": false }]
 	} );			
 
@@ -71,9 +72,9 @@ $(document).ready(function() {
 					<th width="10%">Description</th>
 					<th width="10%">Author</th>
 					<th width="10%">Created</th>
-					<th align="center" width="1%">View</th>
-					<th align="center" width="1%">Edit</th>
-					<th align="center" width="1%">Remove</th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
+					<th align="center" width="1%"></th>
 				</tr>
 			</thead>
 			
