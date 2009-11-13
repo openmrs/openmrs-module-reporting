@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.dataset.definition;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.evaluation.BaseDefinition;
 
@@ -31,7 +27,6 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
     
     //***** PROPERTIES *****
     private Integer id;
-    private List<DataSetColumn> columns = new LinkedList<DataSetColumn>();
  
     //***** CONSTRUCTORS *****
     
@@ -55,24 +50,6 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
 		this.setDescription(description);
 	}
 
-
-	/** 
-	 * Gets the dataset column.
-	public List<DataSetColumn> getColumns() { 
-		return this.columns;
-	}
-	 */
-	
-	
-	/**
-	 * Sets the dataset column.
-	 * @param columns
-	public void setColumns(List<DataSetColumn> columns) { 
-		this.columns = columns;
-	}
-	 */
-	
-	
 	/** 
 	 * @see DataSetDefinition#getColumn(String)
 	 */

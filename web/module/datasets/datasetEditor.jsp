@@ -26,18 +26,6 @@ $(document).ready(function() {
 		"bAutoWidth": false
 	} );
 
-	$('#dataset-preview-table').dataTable( {
-		"bPaginate": true,
-		"bLengthChange": true,
-		"bFilter": true,
-		"bSort": true,
-		"bInfo": true,
-		"bAutoWidth": true
-	} );
-
-
-	
-	
 	// Redirect to the listing page
 	$('#cancel-button').click(function(event){
 		window.location.href='<c:url value="/module/reporting/datasets/manageDataSets.list"/>';
@@ -82,19 +70,14 @@ $(document).ready(function() {
 		event.preventDefault();
 		$("#dataset-column-dialog").dialog('open');  
 	});
-
-	$("#dataset-preview-dialog").dialog({
-		bgiframe: true,			
-		autoOpen: false,
-		title:"Preview Data Set",
-		modal:true,
-		draggable:false,
-		width:"90%",
-	});
+	
 	$("#preview-dataset-button").click(function(event){ 
 		event.preventDefault();
-		$("#dataset-preview-dialog").dialog('open');
-		 
+		showReportingDialog({ 
+			title: 'Preview Data Set', 
+			url: '<c:url value="/module/reporting/datasets/viewDataSet.form?dataSetId=${dataSetDefinition.uuid}&type=${dataSetDefinition.class.name}&mode=dialog&cohortId=all&limit=10"/>',
+			successCallback: function() { window.location = window.location; } 
+		});
 	});
 
 
@@ -102,14 +85,6 @@ $(document).ready(function() {
 	
 } );
 </script>
-
-
-<style>
-
-#dataset-preview-table { width: 85%; }
-
-
-</style>
 
 <div id="page">
 	<div id="container">
@@ -184,66 +159,6 @@ $(document).ready(function() {
 			
 		</div>
 	</div>
-
-
-<div id="dataset-preview-dialog" title="Preview Data Set">
-
-	<div>
-		<div id="datasetPreview" style="height: 500px;">
-<%-- 	
-			<div>
-				<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
-						method="post" action="${pageContext.request.contextPath}/module/reporting/datasets/editDataSet.form">
-					<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
-					<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
-					<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
-		
-					<span>Show </span>
-					<select name="cohortSize">
-						<option value="5">5</option>							
-						<option value="10">10</option>							
-						<option value="25">25</option>							
-						<option value="50">50</option>							
-						<option value="100">100</option>							
-					</select> patients 
-					<input type="submit" name="action" value="Preview"/>	<br/>	
-				</form>
-			</div>
---%>		
-			<div id="datasetPreviewTable" style="overflow:auto;">									
-				<c:if test="${!empty dataSet}">
-					<rpt:dataSet id="dataset-preview-table" dataSet="${dataSet}" cssClass="display"/> 				
-				</c:if>	
-			</div>
-			
-<%-- 
-			<div>					
-				<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
-					method="post" action="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form">
-	
-					<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
-					<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
-					<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
-	
-					<div align="center"">						
-						<input type="submit" name="action" value="Download"/>						
-					</div>
-				</form>							
-			</div>
---%>			
-		</div>
-		
-		<span width="100%" align="right">
-			<a href="${pageContext.request.contextPath}/module/reporting/datasets/viewDataset.form?uuid=${dataSetDefinition.uuid}&type=${dataSetDefinition.class.name}">View Full Data Set</a>
-		</span>					
-	
-	</div>
-
-</div>
-
-
-		
-
 
 <div id="dataset-column-dialog" title="Add Column">
 	<div id="dataset-column-tabs" class="ui-tabs-hide">			

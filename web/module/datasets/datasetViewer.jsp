@@ -1,5 +1,9 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<%@ include file="../run/localHeader.jsp"%>
+
+<c:choose>
+	<c:when test="${param.mode == 'dialog'}"><%@ include file="../localHeaderMinimal.jsp"%></c:when>
+	<c:otherwise><%@ include file="../run/localHeader.jsp"%></c:otherwise>
+</c:choose>
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
@@ -39,6 +43,7 @@ $(document).ready(function() {
 					method="get" action="${pageContext.request.contextPath}/module/reporting/datasets/viewDataSet.form">
 
 					<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
+					<input type="hidden" id="mode" name="mode" value="${param.mode}"/>
 					
 					<fieldset style="padding: 25px; width: 100%;">
 						<legend>Step 1.  Configure your dataset</legend>
@@ -104,7 +109,7 @@ $(document).ready(function() {
 						
 
 						<span align="left">
-							<input type="submit" value="Go"/> get me some data!					
+							<input type="submit" value="Go"/>				
 						</span>
 						
 					</fieldset>
@@ -184,5 +189,4 @@ $(document).ready(function() {
 	</div>
 </div>
 
-
-<%@ include file="/WEB-INF/template/footer.jsp"%>
+<c:if test="${param.mode != 'dialog'}"><%@ include file="/WEB-INF/template/footer.jsp"%></c:if>
