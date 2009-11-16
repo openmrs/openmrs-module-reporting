@@ -228,6 +228,24 @@
   <obs obs_id="15" person_id="7" concept_id="21" encounter_id="4" obs_datetime="2008-08-15 00:00:00.0" location_id="1" comments="" creator="1" date_created="2008-08-19 12:32:59.0" voided="false" uuid="1ce473c8-3fac-440d-9f92-e10facab194f"/>
   <obs obs_id="16" person_id="7" concept_id="5089" encounter_id="5" obs_datetime="2008-08-19 00:00:00.0" location_id="2" value_numeric="61.0" comments="" creator="1" date_created="2008-08-19 12:35:30.0" voided="false" uuid="2ed1e57d-9f18-41d3-b067-2eeaf4b30fb0"/>
 
+  <!-- new ones -->
+  <obs obs_id="17" person_id="20" concept_id="18" encounter_id="6" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="1" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="0bab8ea8-2443-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="18" person_id="20" concept_id="5089" encounter_id="6" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="180.0" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="8ee03fee-2443-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="19" person_id="20" concept_id="5497" encounter_id="6" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="45.0" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="9931daac-2443-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="20" person_id="21" concept_id="18" encounter_id="7" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="0" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="f354ce3c-2451-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="21" person_id="21" concept_id="5089" encounter_id="7" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="80.0" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="0089c0f8-2452-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="22" person_id="21" concept_id="5497" encounter_id="7" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="48.0" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="0aca1c3e-2452-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="23" person_id="21" concept_id="18" encounter_id="8" obs_datetime="2009-09-19 00:00:00.0" location_id="2" value_numeric="1" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="134c4008-2452-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="24" person_id="21" concept_id="5089" encounter_id="8" obs_datetime="2009-09-19 00:00:00.0" location_id="2" value_numeric="150.0" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="1a8daa00-2452-102d-96e4-000c29c2a5d7 "/>
+  <obs obs_id="25" person_id="21" concept_id="5497" encounter_id="8" obs_datetime="2009-09-19 00:00:00.0" location_id="2" value_numeric="50.0" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="216d86ce-2452-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="26" person_id="22" concept_id="18" encounter_id="9" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="1" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="2a17affc-2452-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="27" person_id="22" concept_id="5089" encounter_id="9" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="180.0" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="3305114a-2452-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="28" person_id="22" concept_id="5497" encounter_id="9" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="49.0" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="3988dab0-2452-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="29" person_id="22" concept_id="18" encounter_id="10" obs_datetime="2009-09-19 00:00:00.0" location_id="2" value_numeric="1" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="3f33dafa-2452-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="30" person_id="22" concept_id="5089" encounter_id="10" obs_datetime="2009-09-19 00:00:00.0" location_id="2" value_numeric="190.0" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="46bd9086-2452-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="31" person_id="22" concept_id="5497" encounter_id="10" obs_datetime="2009-09-19 00:00:00.0" location_id="2" value_numeric="51.0" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="4ed07356-2452-102d-96e4-000c29c2a5d7"/>
+
+
   <order_type order_type_id="1" name="Drug order" description="Order of medications for the patient" creator="1" date_created="2008-08-15 13:49:47.0" retired="false" uuid="84ce45a8-5e7c-48f7-a581-ca1d17d63a62"/>
   <order_type order_type_id="2" name="Lab test" description="An order by a clinician for a laboratory test" creator="1" date_created="2008-08-15 13:50:14.0" retired="false" uuid="f149b5e1-4314-4d0d-a95f-1c4f8031161d"/>
   <order_type order_type_id="4" name="Lunch order" description="so hungry" creator="1" date_created="2008-08-15 15:49:04.0" retired="true" uuid="e23733ab-787e-4096-8ba2-577a902d2c2b"/>
@@ -274,14 +292,14 @@
 
   <patient_state patient_state_id="1" patient_program_id="1" state="2" start_date="2008-08-08" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37e4c"/>
   
-  <!-- 14 Persons  7 Male, 6 Female, 4 pediatric -->
+  <!-- 14 Persons  7 Male, 6 Female, 4 pediatric, 2 died -->
   <person person_id="1" gender="" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562"/>
   <person person_id="2" gender="M" birthdate="1975-04-08 00:00:00.0" birthdate_estimated="0" dead="false" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" uuid="da7f524f-27ce-4bb2-86d6-6d1d05312bd5"/>
   <person person_id="6" gender="M" birthdate="2007-05-27 00:00:00.0" birthdate_estimated="0" dead="false" creator="1" date_created="2006-01-18 00:00:00.0" voided="false" uuid="a7e04421-525f-442f-8138-05b619d16def"/>
   <person person_id="7" gender="F" birthdate="1976-08-25 00:00:00.0" birthdate_estimated="1" dead="false" creator="1" date_created="2006-01-18 00:00:00.0" voided="false" uuid="5946f880-b197-400b-9caa-a3c661d23041"/>
   <person person_id="8" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2006-01-18 00:00:00.0" voided="false" uuid="8adf539e-4b5a-47aa-80c0-ba1025c957fa"/>
   <person person_id="9" gender="M" dead="false" creator="1" birthdate_estimated="0" date_created="2006-01-18 00:00:00.0" voided="false" uuid="c04ee3c8-b68f-43cc-bff3-5a831ee7225f"/>
-  <person person_id="20" gender="F" birthdate="1925-02-08 00:00:00.0" dead="false" creator="1" birthdate_estimated="0" date_created="2009-01-18 00:00:00.0" voided="false" uuid="b4266e7e-c4cb-11de-a970-6ab447468ce9"/>
+  <person person_id="20" gender="F" birthdate="1925-02-08 00:00:00.0" dead="true" creator="1" birthdate_estimated="0" date_created="2009-01-18 00:00:00.0" voided="false" uuid="b4266e7e-c4cb-11de-a970-6ab447468ce9"/>
   <person person_id="21" gender="M" birthdate="1959-06-08 00:00:00.0" dead="false" creator="1" birthdate_estimated="1" date_created="2009-01-18 00:00:00.0" voided="false" uuid="bc2f5962-c4cb-11de-a970-6ab447468ce9"/>
   <person person_id="22" gender="F" birthdate="1997-07-08 00:00:00.0" dead="false" creator="1" birthdate_estimated="0" date_created="2009-01-18 00:00:00.0" voided="false" uuid="c2b5334c-c4cb-11de-a970-6ab447468ce9"/>
   <person person_id="23" gender="M" birthdate="2000-11-08 00:00:00.0" dead="true" creator="1" birthdate_estimated="0" date_created="2009-01-18 00:00:00.0" voided="false" uuid="ca37d37f-c4cb-11de-a970-6ab447468ce9"/>
