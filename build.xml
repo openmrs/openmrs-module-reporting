@@ -188,6 +188,9 @@
 		<copy todir="${tomcat.home}/webapps/openmrs/WEB-INF/view/module/${module.id}">
 			<fileset dir="web/module" includes="**/*" />
 		</copy>
+		<copy todir="${tomcat.home}/webapps/openmrs/WEB-INF/classes">
+			<fileset dir="build" includes="**/*.class" />
+		</copy>
 	</target>
 		
 	<target name="package-jar" depends="package-module" description="Packages class files into jar file to be included in other projects">
