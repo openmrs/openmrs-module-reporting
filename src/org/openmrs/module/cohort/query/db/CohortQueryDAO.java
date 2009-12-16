@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openmrs.Cohort;
 import org.openmrs.Drug;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -35,6 +36,6 @@ public interface CohortQueryDAO {
 
     // Patients having certain observations 
 	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
-            PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers);
+            PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -29,7 +30,7 @@ public interface CohortQueryService extends OpenmrsService {
     public Cohort getPatientsHavingCompletedDrugOrders(List<Drug> drugs, List<Concept> drugSetConcepts, Date completedOnOrAfter, Date completedOnOrBefore);
 
 	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
-            PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers);
+            PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
 
 
 }

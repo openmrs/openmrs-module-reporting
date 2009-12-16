@@ -10,6 +10,7 @@ import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.ConceptSet;
 import org.openmrs.Drug;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -31,8 +32,8 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
     
     
 	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
-            PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers) { 
-		return dao.getPatientsHavingObs(conceptId, timeModifier, modifier, value, fromDate, toDate, providers);
+            PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType) { 
+		return dao.getPatientsHavingObs(conceptId, timeModifier, modifier, value, fromDate, toDate, providers, encounterType);
 	}
 
     

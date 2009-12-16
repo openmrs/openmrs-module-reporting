@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.EncounterType;
 import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
@@ -55,6 +56,9 @@ public class ObsCohortDefinition extends DateRangeCohortDefinition {
 	
 	@ConfigurationProperty(required=false)
 	private String valueText;
+	
+	@ConfigurationProperty(required=false)
+	private EncounterType encounterType;
 
 	//***** CONSTRUCTORS *****
 	
@@ -237,6 +241,20 @@ public class ObsCohortDefinition extends DateRangeCohortDefinition {
 	 */
 	public void setValueBoolean(Boolean valueBoolean) {
 		this.valueBoolean = valueBoolean;
+	}	
+	
+	/**
+	 * @return the valueEncounterType
+	 */
+	public EncounterType getEncounterType() {
+		return encounterType;
+	}
+
+	/**
+	 * @param valueNumeric the valueNumeric to set
+	 */
+	public void setEncounterType(EncounterType encounterType) {
+		this.encounterType = encounterType;
 	}	
 	
 	/**

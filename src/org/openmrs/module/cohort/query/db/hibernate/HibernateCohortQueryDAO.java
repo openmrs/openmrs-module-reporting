@@ -15,6 +15,7 @@ import org.hibernate.SessionFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -505,7 +506,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	 */
 	public Cohort getPatientsHavingObs(Integer conceptId,
 			TimeModifier timeModifier, Modifier modifier, Object value,
-			Date fromDate, Date toDate, List<User> providers) {
+			Date fromDate, Date toDate, List<User> providers, EncounterType encounterType) {
 
 		if (conceptId == null && value == null)
 			throw new IllegalArgumentException(
@@ -600,13 +601,27 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			dateSql += " and o.obs_datetime <= :toDate ";
 			dateSqlForSubquery += " and obs_datetime <= :toDate ";
 		}
+		
+		String encounterSql = "";
+		String encounterSqlTable = "";
+		String encounterJoin = "";
+		String encounterSqlForSubquery = "";
+		if(encounterType != null) {
+			encounterSqlTable = ", encounter e ";
+			encounterJoin = " and e.encounter_id = o.encounter_id ";
+			encounterSql += " and e.encounter_type = :encounterType ";
+			encounterSqlForSubquery = " inner join encounter e on e.encounter_id = o.encounter_id ";
+		}
 
 		if (timeModifier == TimeModifier.ANY || timeModifier == TimeModifier.NO) {
 			if (timeModifier == TimeModifier.NO)
 				doInvert = true;
-			sb.append("select o.person_id from obs o where o.voided = false ");
+			sb.append("select o.person_id from obs o "+encounterSqlTable+" where o.voided = false ");
 			if (conceptId != null)
-				sb.append("and concept_id = :concept_id ");
+				sb.append("and o.concept_id = :concept_id ");
+			
+			sb.append(encounterJoin);
+			sb.append(encounterSql);
 			sb.append(dateSql);
 
 		} else if (timeModifier == TimeModifier.FIRST
@@ -618,20 +633,22 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 							+ "    select person_id, "
 							+ (isFirst ? "min" : "max")
 							+ "(obs_datetime) as obs_datetime"
-							+ "    from obs"
-							+ "    where voided = false and concept_id = :concept_id "
+							+ "    from obs o"
+							+ "    where o.voided = false and o.concept_id = :concept_id "
 							+ dateSqlForSubquery
 							+ "    group by person_id"
 							+ ") subq on o.person_id = subq.person_id and o.obs_datetime = subq.obs_datetime "
-							+ "where o.voided = false and o.concept_id = :concept_id ");
+							+ encounterSqlForSubquery
+							+ "where o.voided = false and o.concept_id = :concept_id " 
+							+ encounterSql);
 
 		} else if (doSqlAggregation) {
 			String sqlAggregator = timeModifier.toString();
 			valueSql = sqlAggregator + "(" + valueSql + ")";
 			sb
 					.append("select o.person_id "
-							+ "from obs o where o.voided = false and concept_id = :concept_id "
-							+ dateSql + "group by o.person_id ");
+							+ "from obs o "+encounterSqlTable+" where o.voided = false and o.concept_id = :concept_id "
+							+ dateSql + encounterJoin + encounterSql + "group by o.person_id ");
 
 		} else {
 			throw new IllegalArgumentException("TimeModifier '" + timeModifier
@@ -672,6 +689,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.setDate("fromDate", fromDate);
 		if (toDate != null)
 			query.setDate("toDate", toDate);
+		if (encounterType != null)
+			query.setInteger("encounterType", encounterType.getEncounterTypeId());
 
 		log.debug("Patients having obs query: " + query.getQueryString());
 
@@ -685,5 +704,4 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
 		return ret;
 	}
-
 }

@@ -45,6 +45,6 @@ public class ObsCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
     	Integer questionId = ocd.getQuestion() == null ? null : ocd.getQuestion().getConceptId();
   
     	return Context.getService(CohortQueryService.class).getPatientsHavingObs(
-    			questionId, ocd.getTimeModifier(), ocd.getModifier(), ocd.getValue(), fromDate, toDate, null);
+    			questionId, ocd.getTimeModifier(), ocd.getModifier(), ocd.getValue(), fromDate, toDate, null, ocd.getEncounterType());
     }
 }
