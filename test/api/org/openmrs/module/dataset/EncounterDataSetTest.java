@@ -50,8 +50,8 @@ public class EncounterDataSetTest extends BaseModuleContextSensitiveTest {
 		EvaluationContext evalContext = new EvaluationContext();
 		DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);		
 		
-		DataSet<?> data = service.evaluate(definition, evalContext);
-		for (DataSetRow<?> row : data) {
+		DataSet data = service.evaluate(definition, evalContext);
+		for (DataSetRow row : data) {
 			log.info(row.toString());
 		}
 	}

@@ -46,7 +46,7 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
     /**
      * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
      */
-	public DataSet<?> evaluate(DataSetDefinition definition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) {
 		
 		SimpleDataSet dataSet = new SimpleDataSet(definition, context);
 		try {
@@ -67,7 +67,7 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
 	
 			// Iterate over remaining rows
 			for (int i=1; i<rows.length;i++) { 
-				DataSetRow<Object> row = new DataSetRow<Object>();
+				DataSetRow row = new DataSetRow();
 				String [] cells = rows[i].split("\\t");
 				for (int j=0; j<cells.length; j++) { 	
 					log.error("column=" + columns[j] + " value=" + cells[j]);

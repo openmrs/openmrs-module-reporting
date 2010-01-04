@@ -34,5 +34,5 @@ public interface DataSetEvaluator {
 	 * @param inputCohortencounter_datetime
 	 * @return the evaluated <code>DataSet</code>
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext);
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext);
 }

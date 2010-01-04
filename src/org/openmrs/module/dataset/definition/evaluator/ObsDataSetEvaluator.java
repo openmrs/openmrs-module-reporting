@@ -49,7 +49,7 @@ public class ObsDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		if (context == null) {
 			context = new EvaluationContext();
@@ -68,7 +68,7 @@ public class ObsDataSetEvaluator implements DataSetEvaluator {
 		List<Concept> concepts = new ArrayList<Concept>(definition.getQuestions());
 		List<Obs> obsList = Context.getObsService().getObservations(patients, concepts, definition.getFromDate(), definition.getToDate());
 		for (Obs obs : obsList) {
-			DataSetRow<Object> row = new DataSetRow<Object>();
+			DataSetRow row = new DataSetRow();
 			row.addColumnValue(ObsDataSetDefinition.PATIENT_ID, obs.getPersonId());
 			row.addColumnValue(ObsDataSetDefinition.QUESTION, obs.getConcept().getName(locale, false));
 			row.addColumnValue(ObsDataSetDefinition.QUESTION_CONCEPT_ID, obs.getConcept().getConceptId());

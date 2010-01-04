@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.openmrs.Cohort;
@@ -67,9 +66,8 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 	}
 	
 	/**
-	 * @see org.openmrs.report.ReportRenderer#render(ReportData, String, OutputStream)
+	 * @see ReportRenderer#render(ReportData, String, OutputStream)
 	 */
-	@SuppressWarnings("unchecked")
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
 		
 		Writer w = new PrintWriter(out);
@@ -77,7 +75,7 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 		w.write("<head>");				
 		w.write("<body>");
 		for (String key : results.getDataSets().keySet()) {
-			DataSet<?> dataset = results.getDataSets().get(key);
+			DataSet dataset = results.getDataSets().get(key);
 			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 			w.write("<h4>" + key + "</h4>");
 			w.write("<table id=\"simple-html-dataset-" + key + "\" class=\"display simple-html-dataset\"><tr>");
@@ -86,7 +84,7 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 			}
 			w.write("</tr>");
 
-			for (DataSetRow<?> row : dataset) {
+			for (DataSetRow row : dataset) {
 				w.write("<tr>");
 				for (DataSetColumn column : columns) {
 					w.write("<td>");

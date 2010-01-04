@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.dataset.definition.evaluator;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,13 +28,9 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicCriteria;
-import org.openmrs.logic.Rule;
 import org.openmrs.logic.result.Result;
-import org.openmrs.logic.rule.ReferenceRule;
-import org.openmrs.logic.util.LogicCriteriaBuilder;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.SimpleDataSet;
@@ -63,7 +58,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 		PatientDataSetDefinition definition = (PatientDataSetDefinition) dataSetDefinition;
@@ -90,7 +85,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		}
 		
 		for (Patient p : patients) {			
-			DataSetRow<Object> row = new DataSetRow<Object>();
+			DataSetRow row = new DataSetRow();
 			row.addColumnValue(PatientDataSetDefinition.PATIENT_ID, p.getPatientId());			
 			row.addColumnValue(PatientDataSetDefinition.GIVEN_NAME, p.getGivenName());
 			row.addColumnValue(PatientDataSetDefinition.FAMILY_NAME, p.getFamilyName());

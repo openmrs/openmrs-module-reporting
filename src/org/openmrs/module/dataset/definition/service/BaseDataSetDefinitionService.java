@@ -21,11 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.evaluator.DataSetEvaluator;
@@ -33,7 +29,6 @@ import org.openmrs.module.dataset.definition.persister.DataSetDefinitionPersiste
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.util.HandlerUtil;
-import org.simpleframework.xml.load.Persister;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -168,7 +163,7 @@ public class BaseDataSetDefinitionService extends BaseOpenmrsService implements 
 	/**
 	 * @see DataSetDefinitionService#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(DataSetDefinition definition, EvaluationContext context) throws APIException {
+	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws APIException {
 		DataSetEvaluator evaluator = HandlerUtil.getPreferredHandler(DataSetEvaluator.class, definition.getClass());
 		if (evaluator == null) {
 			throw new APIException("No DataSetEvaluator found for (" + definition.getClass() + ") " + definition.getName());
@@ -179,7 +174,7 @@ public class BaseDataSetDefinitionService extends BaseOpenmrsService implements 
 	/** 
 	 * @see DataSetDefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext evalContext) throws APIException {
+	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext evalContext) throws APIException {
 		EvaluationContext childContext = EvaluationContext.cloneForChild(evalContext, definition);
 		return evaluate(definition.getParameterizable(), childContext);
 	}

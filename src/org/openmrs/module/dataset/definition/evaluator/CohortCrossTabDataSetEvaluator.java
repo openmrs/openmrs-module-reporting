@@ -46,28 +46,26 @@ public class CohortCrossTabDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		if (context == null) {
 			context = new EvaluationContext();
 		}
 		
-		MapDataSet<Cohort> data = new MapDataSet<Cohort>(dataSetDefinition, context);
+		MapDataSet data = new MapDataSet(dataSetDefinition, context);
 		data.setName(dataSetDefinition.getName());
 
 		CohortCrossTabDataSetDefinition crossTabDef = (CohortCrossTabDataSetDefinition) dataSetDefinition;
 		
 		DataSetDefinitionService dds = Context.getService(DataSetDefinitionService.class);
 		
-		@SuppressWarnings("unchecked")
-		MapDataSet<Cohort> rowData = (MapDataSet<Cohort>) dds.evaluate(crossTabDef.getRowCohortDataSetDefinition(), context);
-		@SuppressWarnings("unchecked")
-		MapDataSet<Cohort> colData = (MapDataSet<Cohort>) dds.evaluate(crossTabDef.getColumnCohortDataSetDefinition(), context);
+		MapDataSet rowData = (MapDataSet) dds.evaluate(crossTabDef.getRowCohortDataSetDefinition(), context);
+		MapDataSet colData = (MapDataSet) dds.evaluate(crossTabDef.getColumnCohortDataSetDefinition(), context);
 		
 		for (DataSetColumn rowDataCol : rowData.getDefinition().getColumns()) {
 			for (DataSetColumn colDataCol : colData.getDefinition().getColumns()) {
-				Cohort rowCohort = rowData.getData().getColumnValue(rowDataCol);
-				Cohort colCohort = colData.getData().getColumnValue(colDataCol);
+				Cohort rowCohort = (Cohort)rowData.getData().getColumnValue(rowDataCol);
+				Cohort colCohort = (Cohort)colData.getData().getColumnValue(colDataCol);
 				String key = rowDataCol.getColumnKey() + crossTabDef.getRowColumnDelimiter() + colDataCol.getColumnKey();
 				data.addData(key, Cohort.intersect(rowCohort, colCohort));
 			}

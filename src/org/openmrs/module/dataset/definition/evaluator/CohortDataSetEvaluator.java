@@ -44,13 +44,13 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		if (context == null) {
 			context = new EvaluationContext();
 		}
 		
-		MapDataSet<Cohort> data = new MapDataSet<Cohort>(dataSetDefinition, context);
+		MapDataSet data = new MapDataSet(dataSetDefinition, context);
 		data.setName(dataSetDefinition.getName());
 
 		CohortDataSetDefinition d = (CohortDataSetDefinition) dataSetDefinition;

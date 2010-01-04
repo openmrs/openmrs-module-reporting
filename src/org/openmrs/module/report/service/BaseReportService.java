@@ -198,7 +198,7 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 		log.debug("Evaluating report: " + reportDefinition + "(" + evalContext.getParameterValues() + ")");
 		
 		ReportData ret = new ReportData();
-		Map<String, DataSet<?>> data = new HashMap<String, DataSet<?>>();
+		Map<String, DataSet> data = new HashMap<String, DataSet>();
 		ret.setDataSets(data);
 		ret.setDefinition(reportDefinition);
 		ret.setContext(evalContext);

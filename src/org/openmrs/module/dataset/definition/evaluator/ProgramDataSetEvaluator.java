@@ -31,7 +31,6 @@ import org.openmrs.module.dataset.SimpleDataSet;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.ProgramDataSetDefinition;
 import org.openmrs.module.evaluation.EvaluationContext;
-import org.openmrs.module.util.CohortUtil;
 
 /**
  * The logic that evaluates a {@link ProgramDataSetDefinition} and produces a {@link DataSet}
@@ -50,7 +49,7 @@ public class ProgramDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		if (context == null) {
 			context = new EvaluationContext();
@@ -70,7 +69,7 @@ public class ProgramDataSetEvaluator implements DataSetEvaluator {
 		List<PatientProgram> patientPrograms = Context.getProgramWorkflowService().getPatientPrograms(patients, programs);
 		
 		for (PatientProgram pp : patientPrograms) {
-			DataSetRow<Object> row = new DataSetRow<Object>();
+			DataSetRow row = new DataSetRow();
 			row.addColumnValue(ProgramDataSetDefinition.PATIENT_ID, pp.getPatient().getPatientId());
 			row.addColumnValue(ProgramDataSetDefinition.PROGRAM_NAME, pp.getProgram().getConcept().getName(locale, false).getName());
 			row.addColumnValue(ProgramDataSetDefinition.PROGRAM_ID, pp.getProgram().getProgramId());

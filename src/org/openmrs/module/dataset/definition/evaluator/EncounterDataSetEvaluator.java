@@ -44,7 +44,7 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		if (context == null) {
 			context = new EvaluationContext();
@@ -54,7 +54,7 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 		for (Encounter e : encounters) {
-			DataSetRow<Object> row = new DataSetRow<Object>();
+			DataSetRow row = new DataSetRow();
 			row.addColumnValue(EncounterDataSetDefinition.ENCOUNTER_ID, e.getEncounterId());
 			row.addColumnValue(EncounterDataSetDefinition.ENCOUNTER_TYPE, e.getEncounterType().getName());
 			row.addColumnValue(EncounterDataSetDefinition.FORM, (e.getForm() != null) ? e.getForm().getName() : "none");

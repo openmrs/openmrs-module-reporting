@@ -23,14 +23,14 @@ import org.openmrs.module.evaluation.EvaluationContext;
 /**
  * DataSet which is key-value pairs, instead of a full two-dimensional table
  */
-public class MapDataSet<T> implements DataSet<T> {
+public class MapDataSet implements DataSet {
 	
 	//****** PROPERTIES ******
 	
 	private String name;
 	private DataSetDefinition definition;
 	private EvaluationContext context;
-	private DataSetRow<T> data = new DataSetRow<T>();
+	private DataSetRow data = new DataSetRow();
 	
     /**
      * Default Constructor which creates an empty DataSet for the given definition and evaluationContext
@@ -46,7 +46,7 @@ public class MapDataSet<T> implements DataSet<T> {
 	 * Returns this map as a single-row data set
 	 * @see DataSet#iterator()
 	 */
-	public Iterator<DataSetRow<T>> iterator() {
+	public Iterator<DataSetRow> iterator() {
 		return Collections.singleton(data).iterator();
 	}
 
@@ -54,7 +54,7 @@ public class MapDataSet<T> implements DataSet<T> {
 	 * Convenience method for JSTL method.  
 	 * TODO This will be removed once we get a decent solution for the dataset iterator solution.  
 	 */
-	public Iterator<DataSetRow<T>> getIterator() {
+	public Iterator<DataSetRow> getIterator() {
 		return iterator();
 	}
 	
@@ -63,7 +63,7 @@ public class MapDataSet<T> implements DataSet<T> {
      * @param key - The column key to add this element to
      * @param dataElement - The data to add
      */
-    public void addData(DataSetColumn column, T dataElement) {
+    public void addData(DataSetColumn column, Object dataElement) {
     	data.addColumnValue(column, dataElement);
     }
     
@@ -72,7 +72,7 @@ public class MapDataSet<T> implements DataSet<T> {
      * @param key - The column key to add this element to
      * @param dataElement - The data to add
      */
-    public void addData(String columnKey, T dataElement) {
+    public void addData(String columnKey, Object dataElement) {
     	DataSetColumn c = definition.getColumn(columnKey);
     	if (c != null) {
     		data.addColumnValue(c, dataElement);
@@ -87,7 +87,7 @@ public class MapDataSet<T> implements DataSet<T> {
      * @param key - The column key to add this element to
      * @param dataElement - The data to add
      */
-    public T getData(DataSetColumn column) {
+    public Object getData(DataSetColumn column) {
     	return data.getColumnValue(column);
     }    
     
@@ -147,14 +147,14 @@ public class MapDataSet<T> implements DataSet<T> {
 	/**
      * @return the data
      */
-    public DataSetRow<T> getData() {
+    public DataSetRow getData() {
     	return data;
     }
     
     /**
      * @param data the data to set
      */
-    public void setData(DataSetRow<T> data) {
+    public void setData(DataSetRow data) {
     	this.data = data;
     }	
 }

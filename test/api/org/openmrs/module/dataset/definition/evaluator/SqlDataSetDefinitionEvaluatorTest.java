@@ -28,11 +28,10 @@ public class SqlDataSetDefinitionEvaluatorTest extends BaseModuleContextSensitiv
      */
 	@Test
     @Verifies(value = "should join two plain datasets correctly", method = "evaluate(DataSetDefinition,EvaluationContext)")
-    @SuppressWarnings("unchecked")
     public void evaluate_shouldJoinTwoPlainDatasetsCorrectly() throws Exception {
     	SqlDataSetDefinition jdbcDSD = new SqlDataSetDefinition("test", "test", "select * from patient");
-        DataSet<?> dataset = Context.getService(DataSetDefinitionService.class).evaluate(jdbcDSD, new EvaluationContext());
-        DataSetRow<Object> dataSetRow = (DataSetRow<Object>) dataset.iterator().next();
+        DataSet dataset = Context.getService(DataSetDefinitionService.class).evaluate(jdbcDSD, new EvaluationContext());
+        DataSetRow dataSetRow = (DataSetRow) dataset.iterator().next();
         for (Map.Entry<DataSetColumn, Object> entry : dataSetRow.getColumnValues().entrySet()) {
         	log.info("entry: " + entry);
         }

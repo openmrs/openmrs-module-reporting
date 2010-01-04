@@ -28,15 +28,15 @@ public class ReportData implements Evaluated<ReportDefinition> {
 	
 	private EvaluationContext context;
 	
-	private Map<String, DataSet<?>> dataSets;
+	private Map<String, DataSet> dataSets;
 	
 	public ReportData() { }
 
-	public Map<String, DataSet<?>> getDataSets() {
+	public Map<String, DataSet> getDataSets() {
 		return dataSets;
 	}
 	
-	public void setDataSets(Map<String, DataSet<?>> dataSets) {
+	public void setDataSets(Map<String, DataSet> dataSets) {
 		this.dataSets = dataSets;
 	}
 

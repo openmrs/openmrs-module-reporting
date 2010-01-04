@@ -89,13 +89,13 @@ public class LabOrderReportTest extends BaseModuleContextSensitiveTest {
 		Integer [] labTests = { 5497, 5089, 1019 };
 		LabEncounterDataSetDefinition labDataSetDefinition = 
 			new LabEncounterDataSetDefinition(Arrays.asList(labTests));				
-		DataSet<?> labDataSet = 
+		DataSet labDataSet = 
 			Context.getService(
 				DataSetDefinitionService.class).evaluate(
 						labDataSetDefinition, context);	
 		
         ReportData labReportData = new ReportData();
-        Map<String, DataSet<?>> labDataSets = new HashMap<String, DataSet<?>>();
+        Map<String, DataSet> labDataSets = new HashMap<String, DataSet>();
         labDataSets.put("encounter", labDataSet);
         labReportData.setDataSets(labDataSets);       
                 

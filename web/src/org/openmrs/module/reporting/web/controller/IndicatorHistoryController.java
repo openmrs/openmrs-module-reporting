@@ -112,7 +112,7 @@ public class IndicatorHistoryController {
 		MultiPeriodIndicatorDataSetDefinition dsd = new MultiPeriodIndicatorDataSetDefinition(indDSD);
 		dsd.setIterations(iterations);
 		
-		DataSet<?> ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
+		DataSet ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		model.addAttribute("dataSet", ds);
 		return null;
 	}

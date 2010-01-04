@@ -20,13 +20,10 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.common.DisplayLabel;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -70,9 +67,8 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 	}
 
 	/**
-	 * @see org.openmrs.report.ReportRenderer#render(ReportData, String, OutputStream)
+	 * @see ReportRenderer#render(ReportData, String, OutputStream)
 	 */
-	@SuppressWarnings("unchecked")
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
 		
 		Writer w = new PrintWriter(out);
@@ -83,7 +79,7 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 		
 		// For each dataset in the report
 		for (String dataSetKey : results.getDataSets().keySet()) {
-			DataSet<?> dataset = results.getDataSets().get(dataSetKey);
+			DataSet dataset = results.getDataSets().get(dataSetKey);
 
 			
 			//MapDataSet mapDataSet = (MapDataSet) dataset;
@@ -111,7 +107,7 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 								
 				// Wondering if you can even do this ... iterate over a dataset multiple times (once for each column?)
 				// If not, then we need to get the actual dataset data (i.e. MapDataSet).
-				for (DataSetRow<?> row : dataset) {
+				for (DataSetRow row : dataset) {
 					Object cellValue = row.getColumnValue(column.getColumnKey());	
 					if (cellValue instanceof CohortIndicatorAndDimensionResult) { 
 						CohortIndicatorAndDimensionResult result = (CohortIndicatorAndDimensionResult) cellValue;

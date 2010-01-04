@@ -58,7 +58,7 @@ public class LabEncounterDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 				
 		LabEncounterDataSetDefinition definition = (LabEncounterDataSetDefinition) dataSetDefinition;
 		SimpleDataSet dataSet = new SimpleDataSet(definition, context);
@@ -73,7 +73,7 @@ public class LabEncounterDataSetEvaluator implements DataSetEvaluator {
 		
 		for (Encounter e : encounters) {
 			
-			DataSetRow<Object> row = new DataSetRow<Object>();
+			DataSetRow row = new DataSetRow();
 			row.addColumnValue(LabEncounterDataSetDefinition.ENCOUNTER_ID, e.getEncounterId());
 			row.addColumnValue(LabEncounterDataSetDefinition.PATIENT_ID, e.getPatientId());
 			row.addColumnValue(LabEncounterDataSetDefinition.LAB_ORDER_DATE, e.getEncounterDatetime());

@@ -78,9 +78,9 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		}
 		
 		// make sure the number changes from 1 to 0 in June
-		DataSet<?> result = Context.getService(DataSetDefinitionService.class).evaluate(multi, null);
+		DataSet result = Context.getService(DataSetDefinitionService.class).evaluate(multi, null);
 		Date june1 = ymd.parse("2009-06-01");
-		for (DataSetRow<?> row : result) {
+		for (DataSetRow row : result) {
 			System.out.println("Row: " + row);
 			if (((Date) row.getColumnValue("startDate")).compareTo(june1) < 0) {
 				Assert.assertEquals("Should be 1 before June", 1d, ((CohortIndicatorResult) row.getColumnValue("1")).getValue().doubleValue());

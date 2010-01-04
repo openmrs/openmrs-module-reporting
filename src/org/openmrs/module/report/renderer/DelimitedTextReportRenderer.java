@@ -103,8 +103,7 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
 		
 		Writer w = new PrintWriter(out);
-		@SuppressWarnings("unchecked")
-		DataSet<? extends Object> dataset = results.getDataSets().values().iterator().next();
+		DataSet dataset = results.getDataSets().values().iterator().next();
 		
 		List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 		
@@ -118,7 +117,7 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 		w.write(getAfterRowDelimiter());
 		
 		// data rows
-		for (DataSetRow<?> row : dataset) {
+		for (DataSetRow row : dataset) {
 			w.write(getBeforeRowDelimiter());
 			for (DataSetColumn column : columns) {
 				Object colValue = row.getColumnValue(column);

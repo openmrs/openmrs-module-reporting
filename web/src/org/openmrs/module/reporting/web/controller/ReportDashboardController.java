@@ -14,7 +14,6 @@ import org.openmrs.Cohort;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.cohort.definition.CompoundCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
@@ -28,7 +27,6 @@ import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.indicator.service.IndicatorService;
 import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.service.ReportService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.util.CohortUtil;
@@ -79,7 +77,7 @@ public class ReportDashboardController {
     	
 		ReportData reportData = (ReportData) request.getSession().getAttribute(ReportingConstants.OPENMRS_REPORT_DATA);
     
-		for (Map.Entry<String, DataSet<?>> e : reportData.getDataSets().entrySet()) {
+		for (Map.Entry<String, DataSet> e : reportData.getDataSets().entrySet()) {
 			if (e.getKey().equals(savedDataSetKey)) { 
 				
 				MapDataSet mapDataSet = (MapDataSet) e.getValue();
@@ -186,28 +184,28 @@ public class ReportDashboardController {
     		if (genderCohort != null && genderCohort.equals("male")) {
 	    		//cohortDefinition.addDefinition(new Mapped(new GenderCohortDefinition("M")))
 	    		tempCohort = getGenderCohort(evalContext, "M");
-	    		selectedCohort = selectedCohort.intersect(selectedCohort, tempCohort);
+	    		selectedCohort = Cohort.intersect(selectedCohort, tempCohort);
 	    		selectedCohorts.add("Males");
 	    	}
 	    	if (genderCohort != null && genderCohort.equals("female")) {
 	    		//cohortDefinition.addDefinition(new Mapped(new GenderCohortDefinition("F")))
 	    		tempCohort = getGenderCohort(evalContext, "F");
-	    		selectedCohort = selectedCohort.intersect(selectedCohort, tempCohort);
+	    		selectedCohort = Cohort.intersect(selectedCohort, tempCohort);
 	    		selectedCohorts.add("Females");
 	    	}
 	    	if (ageCohort != null && ageCohort.equals("infant")) {
 	    		tempCohort = getAgeCohort(evalContext, 0, 2, new Date());
-	    		selectedCohort = selectedCohort.intersect(selectedCohort, tempCohort);
+	    		selectedCohort = Cohort.intersect(selectedCohort, tempCohort);
 	    		selectedCohorts.add("Infant (0 - 2)");
 	    	}
 	    	if (ageCohort != null && ageCohort.equals("child")) {
 	    		tempCohort = getAgeCohort(evalContext, 3, 15, new Date());
-	    		selectedCohort = selectedCohort.intersect(selectedCohort, tempCohort);
+	    		selectedCohort = Cohort.intersect(selectedCohort, tempCohort);
 	    		selectedCohorts.add("Child (3 - 15)");
 	    	}
 	    	if (ageCohort != null && ageCohort.equals("adult")) {
 	    		tempCohort = getAgeCohort(evalContext, 15, 200, new Date());
-	    		selectedCohort = selectedCohort.intersect(selectedCohort, tempCohort);
+	    		selectedCohort = Cohort.intersect(selectedCohort, tempCohort);
 	    		selectedCohorts.add("Adult (15+)");
 	    	}
     	}    	

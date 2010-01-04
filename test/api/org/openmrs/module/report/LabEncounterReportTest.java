@@ -13,11 +13,9 @@
  */
 package org.openmrs.module.report;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -27,20 +25,13 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.logic.LogicCriteria;
-import org.openmrs.logic.result.Result;
 import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.JoinDataSetDefinition;
 import org.openmrs.module.dataset.definition.LabEncounterDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
-import org.openmrs.module.report.renderer.TsvReportRenderer;
-import org.openmrs.module.report.service.ReportService;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -48,8 +39,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  */
 public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
 	
-	private Log log = LogFactory.getLog(getClass());
-	
+	protected Log log = LogFactory.getLog(getClass());
 	
 	/**
 	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()
@@ -121,54 +111,31 @@ public class LabEncounterReportTest extends BaseModuleContextSensitiveTest {
 		sharedContext.setParameterValues(parameterValues);
 		
 		// Create, evaluate, and render the patient dataset
-		PatientDataSetDefinition patientDataSetDefinition = 
-			new PatientDataSetDefinition();
-		DataSet patientDataSet = 
-			Context.getService(
-					DataSetDefinitionService.class).evaluate(
-							patientDataSetDefinition, 
-							sharedContext);
+		PatientDataSetDefinition patientDataSetDefinition = new PatientDataSetDefinition();
 
-        //ReportData patientReportData = new ReportData();
-        //Map<String, DataSet> patientDataSets = new HashMap<String, DataSet>();
-        //patientDataSets.put("patient", patientDataSet);
-        //patientReportData.setDataSets(patientDataSets);        
-        //new CsvReportRenderer().render(patientReportData, null, System.out);		
-		
 		EvaluationContext encounterDatasetContext = new EvaluationContext();
 		encounterDatasetContext.setBaseCohort(baseCohort);		
 		
 		// Create, evaluate, and render the lab dataset
 		Integer [] labTests = { 5497, 5089, 1019 };
-		LabEncounterDataSetDefinition labDataSetDefinition = 
-			new LabEncounterDataSetDefinition(Arrays.asList(labTests));				
-		DataSet<Object> labDataSet = 
-			Context.getService(
-				DataSetDefinitionService.class).evaluate(
-						labDataSetDefinition, sharedContext);	
-		
-        //ReportData labReportData = new ReportData();
-        //Map<String, DataSet> labDataSets = new HashMap<String, DataSet>();
-        //labDataSets.put("encounter", labDataSet);
-        //labReportData.setDataSets(labDataSets);        
-        //new CsvReportRenderer().render(labReportData, null, System.out);			
+		LabEncounterDataSetDefinition labDataSetDefinition = new LabEncounterDataSetDefinition(Arrays.asList(labTests));				
+
 		
 		// Create, evaluate, and render the joined dataset 
-        JoinDataSetDefinition joinDataSetDefinition = 
-        	new JoinDataSetDefinition(
+        JoinDataSetDefinition joinDataSetDefinition = new JoinDataSetDefinition(
         			patientDataSetDefinition, "patient.", "patient_id", 
         			labDataSetDefinition, "encounter.", "patient_id");
 
         // TODO Need to pass a Mapped<DataSetDefinition>
 		//reportDefinition.addDataSetDefinition(joinDataSetDefinition);
 
-        DataSet<?> joinDataSet = 
+        DataSet joinDataSet = 
         	Context.getService(DataSetDefinitionService.class).evaluate(
         			joinDataSetDefinition, 
         			sharedContext);
         
         ReportData reportData = new ReportData();
-        Map<String, DataSet<?>> dataSets = new HashMap<String, DataSet<?>>();
+        Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
         dataSets.put("joinDataSet", joinDataSet);
         reportData.setDataSets(dataSets);
         

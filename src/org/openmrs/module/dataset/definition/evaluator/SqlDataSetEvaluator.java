@@ -15,11 +15,7 @@ package org.openmrs.module.dataset.definition.evaluator;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.Statement;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,26 +23,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.PatientState;
-import org.openmrs.PersonAttribute;
-import org.openmrs.PersonAttributeType;
-import org.openmrs.ProgramWorkflow;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicCriteria;
-import org.openmrs.logic.Rule;
 import org.openmrs.logic.result.Result;
-import org.openmrs.logic.rule.ReferenceRule;
-import org.openmrs.logic.util.LogicCriteriaBuilder;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.SimpleDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.dataset.column.LogicDataSetColumn;
-import org.openmrs.module.dataset.column.SimpleDataSetColumn;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.dataset.definition.SqlDataSetDefinition;
@@ -69,7 +54,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 	public SqlDataSetEvaluator() { }
 	
 	
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
 		if (dataSetDefinition instanceof SqlDataSetDefinition) { 
 			return evaluate((SqlDataSetDefinition)dataSetDefinition, evalContext);			
 		} 
@@ -80,7 +65,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet<?> evaluate(SqlDataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(SqlDataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 		
@@ -107,7 +92,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 			}
 			while(resultSet.next()) { 
 
-				DataSetRow<Object> dataSetRow = new DataSetRow<Object>();
+				DataSetRow dataSetRow = new DataSetRow();
 				for (DataSetColumn column : columns) { 
 					String value = resultSet.getString(column.getColumnKey());
 					dataSetRow.addColumnValue(column, value);

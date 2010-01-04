@@ -24,11 +24,11 @@ import org.openmrs.module.dataset.column.DataSetColumn;
  * Represents one row of data in a {@link DataSet}
  * This can be parameterized such that each column value matches the parameterized type
  */
-public class DataSetRow<T extends Object> {
+public class DataSetRow {
 
 	//****** PROPERTIES ******
 	
-	private Map<DataSetColumn, T> columnValues;
+	private Map<DataSetColumn, Object> columnValues;
 	
 	/**
 	 * Default Constructor
@@ -40,7 +40,7 @@ public class DataSetRow<T extends Object> {
 	 * @param column
 	 * @param value
 	 */
-	public T getColumnValue(DataSetColumn column) {
+	public Object getColumnValue(DataSetColumn column) {
 		return getColumnValues().get(column);
 	}
 	
@@ -49,8 +49,8 @@ public class DataSetRow<T extends Object> {
 	 * @param columnKey
 	 * @param value
 	 */
-	public T getColumnValue(String columnKey) {
-		for (Map.Entry<DataSetColumn, T> e : getColumnValues().entrySet()) {
+	public Object getColumnValue(String columnKey) {
+		for (Map.Entry<DataSetColumn, Object> e : getColumnValues().entrySet()) {
 			if (e.getKey().getColumnKey().equals(columnKey)) {
 				return e.getValue();
 			}
@@ -63,7 +63,7 @@ public class DataSetRow<T extends Object> {
 	 * @param column
 	 * @param value
 	 */
-	public void addColumnValue(DataSetColumn column, T value) {
+	public void addColumnValue(DataSetColumn column, Object value) {
 		getColumnValues().put(column, value);
 	}
 	
@@ -75,12 +75,12 @@ public class DataSetRow<T extends Object> {
 	 * 
 	 * @return
 	 */
-	public Map<String, T> getColumnValuesByKey() {
-		Map<String, T> ret = new HashMap<String, T>();
+	public Map<String, Object> getColumnValuesByKey() {
+		Map<String, Object> ret = new HashMap<String, Object>();
 		if (columnValues == null) {
 			return ret;
 		}
-		for (Map.Entry<DataSetColumn, T> e : columnValues.entrySet()) {
+		for (Map.Entry<DataSetColumn, Object> e : columnValues.entrySet()) {
 	        ret.put(e.getKey().getColumnKey(), e.getValue());
         }
 		return ret;
@@ -104,9 +104,9 @@ public class DataSetRow<T extends Object> {
 	/**
 	 * @return the columnValues
 	 */
-	public Map<DataSetColumn, T> getColumnValues() {
+	public Map<DataSetColumn, Object> getColumnValues() {
 		if (columnValues == null) {
-			columnValues = new LinkedHashMap<DataSetColumn, T>();
+			columnValues = new LinkedHashMap<DataSetColumn, Object>();
 		}
 		return columnValues;
 	}
@@ -114,7 +114,7 @@ public class DataSetRow<T extends Object> {
 	/**
 	 * @param columnValues the columnValues to set
 	 */
-	public void setColumnValues(Map<DataSetColumn, T> columnValues) {
+	public void setColumnValues(Map<DataSetColumn, Object> columnValues) {
 		this.columnValues = columnValues;
 	}
 }

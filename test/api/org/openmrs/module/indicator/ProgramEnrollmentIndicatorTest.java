@@ -1,6 +1,5 @@
 package org.openmrs.module.indicator;
 
-import java.awt.Dimension;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -15,7 +14,6 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.EvaluatedCohort;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.CompoundCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
@@ -27,7 +25,6 @@ import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
-import org.openmrs.module.indicator.dimension.CohortDimension;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 
@@ -51,7 +48,6 @@ public class ProgramEnrollmentIndicatorTest extends BaseModuleContextSensitiveTe
 	@Test
 	public void shouldGetNumberOfPatientsEnrolledInHivProgram() throws Exception {
 		
-		Integer enrolled = 10; 
 		EvaluationContext evalContext = new EvaluationContext();
 		Cohort baseCohort = Context.getPatientSetService().getAllPatients();
 		evalContext.setBaseCohort(baseCohort);
@@ -74,8 +70,7 @@ public class ProgramEnrollmentIndicatorTest extends BaseModuleContextSensitiveTe
 
 	@Test
 	public void shouldGetNumberOfPatientsBlah() throws Exception {
-		
-		Integer enrolled = 10; 
+
 		EvaluationContext evalContext = new EvaluationContext();
 		Cohort baseCohort = Context.getPatientSetService().getAllPatients();
 		evalContext.setBaseCohort(baseCohort);
@@ -117,15 +112,14 @@ public class ProgramEnrollmentIndicatorTest extends BaseModuleContextSensitiveTe
 		dsd.addColumn("1.a", "Males in program", new Mapped<CohortIndicator>(ind, null), "gender=male");
 		dsd.addColumn("1.b", "Females in program", new Mapped<CohortIndicator>(ind, null), "gender=female");
 
-		
-		CohortDefinitionDimension dim = new CohortDefinitionDimension();
-		MapDataSet<IndicatorResult<CohortIndicator>> ds = (MapDataSet<IndicatorResult<CohortIndicator>>) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
+		MapDataSet ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		
 		int i = 0;
-		for (DataSetRow<? extends IndicatorResult<CohortIndicator>> row : ds) {
+		for (DataSetRow row : ds) {
 			System.out.println("Row " + (++i));
-			for (Map.Entry<DataSetColumn, ? extends IndicatorResult<CohortIndicator>> col : row.getColumnValues().entrySet()) {
-				System.out.println(col.getKey().getDisplayName() + " -> " + col.getValue().getValue());
+			for (Map.Entry<DataSetColumn, Object> col : row.getColumnValues().entrySet()) {
+				IndicatorResult<CohortIndicator> result = (IndicatorResult<CohortIndicator>) col.getValue();
+				System.out.println(col.getKey().getDisplayName() + " -> " + result.getValue());
 			}
 		}
 	}

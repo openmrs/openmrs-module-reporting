@@ -44,8 +44,8 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
         DataSetDefinition rightDef = new DataSetWrappingDataSetDefinition(right);
         
         JoinDataSetDefinition join = new JoinDataSetDefinition(leftDef, "patient.", "patient_id", rightDef, "encounter.", "patient_id");
-        DataSet<?> result = Context.getService(DataSetDefinitionService.class).evaluate(join, new EvaluationContext());
-        DataSetRow<Object> row1 = (DataSetRow<Object>) result.iterator().next();
+        DataSet result = Context.getService(DataSetDefinitionService.class).evaluate(join, new EvaluationContext());
+        DataSetRow row1 = (DataSetRow) result.iterator().next();
         for (Map.Entry<DataSetColumn, Object> e : row1.getColumnValues().entrySet()) {
             if (e.getKey().getColumnKey().equals("patient.name"))
                 Assert.assertEquals(e.getValue(), "Alice");
@@ -54,7 +54,7 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
         }
         
         ReportData temp = new ReportData();
-        Map<String, DataSet<?>> dataSets = new HashMap<String, DataSet<?>>();
+        Map<String, DataSet> dataSets = new HashMap<String, DataSet>();
         dataSets.put("joined", result);
         temp.setDataSets(dataSets);
         
@@ -69,8 +69,8 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
     }
 
     // needs to have an even number of arguments
-    private DataSetRow<Object> makeRowHelper(Object... o) {
-        DataSetRow<Object> ret = new DataSetRow<Object>();
+    private DataSetRow makeRowHelper(Object... o) {
+        DataSetRow ret = new DataSetRow();
         for (int i = 0; i < o.length; i += 2) {
             ret.addColumnValue(new SimpleDataSetColumn((String) o[i]), o[i + 1]);
         }

@@ -27,21 +27,21 @@ public class JoinDataSetDefinitionEvaluator implements DataSetEvaluator {
      * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
      * @should join two plain {@link DataSet}s correctly
      */
-    public DataSet<?> evaluate(DataSetDefinition joinDataSetDefinition, EvaluationContext evalContext) {
+    public DataSet evaluate(DataSetDefinition joinDataSetDefinition, EvaluationContext evalContext) {
         JoinDataSetDefinition dsd = (JoinDataSetDefinition) joinDataSetDefinition;
         SimpleDataSet ret = new SimpleDataSet(dsd, evalContext);
         
         // first we evaluate the dataset on the right side of the join, 
         // and we build an index from the join column to all rows with that value
-        DataSet<?> right = Context.getService(DataSetDefinitionService.class).evaluate(dsd.getRight(), evalContext);
+        DataSet right = Context.getService(DataSetDefinitionService.class).evaluate(dsd.getRight(), evalContext);
         DataSetColumn rightJoinColumn = dsd.getRight().getColumn(dsd.getJoinColumnOnRight());
-        Map<Object, List<DataSetRow<?>>> index = new HashMap<Object, List<DataSetRow<?>>>();
-        for (DataSetRow<?> row : right) {
+        Map<Object, List<DataSetRow>> index = new HashMap<Object, List<DataSetRow>>();
+        for (DataSetRow row : right) {
             Object joinValue = row.getColumnValue(rightJoinColumn);
             if (joinValue != null) {
-                List<DataSetRow<?>> holder = index.get(joinValue);
+                List<DataSetRow> holder = index.get(joinValue);
                 if (holder == null) {
-                    holder = new ArrayList<DataSetRow<?>>();
+                    holder = new ArrayList<DataSetRow>();
                     index.put(joinValue, holder);
                 }
                 holder.add(row);
@@ -50,15 +50,15 @@ public class JoinDataSetDefinitionEvaluator implements DataSetEvaluator {
         
         // next we evaluate the dataset on the left side of the join, and iterate over it, 
         // joining against the other dataset using the index we just created
-        DataSet<?> left = Context.getService(DataSetDefinitionService.class).evaluate(dsd.getLeft(), evalContext);
+        DataSet left = Context.getService(DataSetDefinitionService.class).evaluate(dsd.getLeft(), evalContext);
         DataSetColumn leftJoinColumn = dsd.getLeft().getColumn(dsd.getJoinColumnOnLeft());
-        for (DataSetRow<?> row : left) {
+        for (DataSetRow row : left) {
             Object joinValue = row.getColumnValue(leftJoinColumn);
             if (joinValue != null) {
-	            List<DataSetRow<?>> rowsInOtherDataset = index.get(joinValue);
+	            List<DataSetRow> rowsInOtherDataset = index.get(joinValue);
 	            if (rowsInOtherDataset != null) {
-	                for (DataSetRow<?> otherRow : rowsInOtherDataset) {
-	                    DataSetRow<Object> outputRow = new DataSetRow<Object>();
+	                for (DataSetRow otherRow : rowsInOtherDataset) {
+	                    DataSetRow outputRow = new DataSetRow();
 	                    for (Map.Entry<DataSetColumn, ?> inLeft : row.getColumnValues().entrySet()) {
 	                        outputRow.addColumnValue(prefixDataSetColumn(dsd.getPrefixForLeft(), inLeft.getKey()), inLeft.getValue());
 	                    }

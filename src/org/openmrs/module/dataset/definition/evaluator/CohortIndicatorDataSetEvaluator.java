@@ -22,7 +22,6 @@ import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.indicator.CohortIndicator;
 import org.openmrs.module.indicator.CohortIndicatorResult;
-import org.openmrs.module.indicator.IndicatorResult;
 import org.openmrs.module.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.indicator.dimension.CohortDimension;
 import org.openmrs.module.indicator.dimension.CohortIndicatorAndDimensionResult;
@@ -45,7 +44,7 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public MapDataSet<IndicatorResult<CohortIndicator>> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public MapDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		if (context == null) {
 			context = new EvaluationContext();
@@ -56,7 +55,7 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		
 		IndicatorService is = Context.getService(IndicatorService.class);
 		
-		MapDataSet<IndicatorResult<CohortIndicator>> ret = new MapDataSet<IndicatorResult<CohortIndicator>>(dataSetDefinition, context);
+		MapDataSet ret = new MapDataSet(dataSetDefinition, context);
 		ret.setName(dataSetDefinition.getName());
 		
 		CohortIndicatorDataSetDefinition dsd = (CohortIndicatorDataSetDefinition) dataSetDefinition;

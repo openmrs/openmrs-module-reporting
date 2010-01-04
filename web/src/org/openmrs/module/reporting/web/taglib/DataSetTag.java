@@ -14,9 +14,7 @@
 package org.openmrs.module.reporting.web.taglib;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -26,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.util.DateUtil;
 
 public class DataSetTag extends BodyTagSupport {
 	
@@ -40,18 +37,17 @@ public class DataSetTag extends BodyTagSupport {
 	private String cssClass = null;
 
 	// 
-	private DataSet<Object> dataSet = null;
+	private DataSet dataSet = null;
 	private String dataSetName = null;
 	private String cohortDefinition = null;
 	private String datasetDefinition = null;
 	
-	@SuppressWarnings("unchecked")
 	public int doStartTag() throws JspException {
 		try { 		
 			// By default we try to pull the dataSet out of the request
 			if (dataSet == null) { 
 				dataSetName = (dataSetName!=null)?dataSetName:"dataSet";			
-				dataSet = (DataSet<Object>) pageContext.getRequest().getAttribute(dataSetName);
+				dataSet = (DataSet) pageContext.getRequest().getAttribute(dataSetName);
 			} 
 			else { 
 				// TODO Evaluate the dataset using the UUID from the cohort and dataset definition.
@@ -116,12 +112,12 @@ public class DataSetTag extends BodyTagSupport {
 	}
 
 
-	public DataSet<Object> getDataSetObject() {
+	public DataSet getDataSetObject() {
 		return dataSet;
 	}
 
 
-	public void setDataSet(DataSet<Object> dataSet) {
+	public void setDataSet(DataSet dataSet) {
 		this.dataSet = dataSet;
 	}
 

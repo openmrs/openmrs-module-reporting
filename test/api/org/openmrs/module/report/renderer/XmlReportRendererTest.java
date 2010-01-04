@@ -49,7 +49,7 @@ public class XmlReportRendererTest {
         }
 
         ReportData data = new ReportData();
-        data.setDataSets(new LinkedHashMap<String, DataSet<?>>());
+        data.setDataSets(new LinkedHashMap<String, DataSet>());
         data.getDataSets().put("patients", ds1);
         data.getDataSets().put("encounters", ds2);
         
@@ -63,8 +63,8 @@ public class XmlReportRendererTest {
     }
     
     // needs to have an even number of arguments
-    private DataSetRow<Object> makeRowHelper(Object... o) {
-    	DataSetRow<Object> ret = new DataSetRow<Object>();
+    private DataSetRow makeRowHelper(Object... o) {
+    	DataSetRow ret = new DataSetRow();
         for (int i = 0; i < o.length; i += 2) {
             ret.addColumnValue(new SimpleDataSetColumn((String) o[i]), o[i + 1]);
         }

@@ -27,16 +27,15 @@ import org.openmrs.module.evaluation.Evaluated;
  * @see DataSetDefinition
  * @see DataSet
  */
-public interface DataSet<T extends Object> extends Evaluated<DataSetDefinition>, Iterable<DataSetRow<T>> {
+public interface DataSet extends Evaluated<DataSetDefinition>, Iterable<DataSetRow> {
 	
 	/**
 	 * Each iteration of this iterator returns a Map<DataSetColumn, T>.
 	 * @return an iterator over the rows in this dataset.
 	 * @see Iterable#iterator()
 	 */
-	public Iterator<DataSetRow<T>> iterator();
+	public Iterator<DataSetRow> iterator();
 	
-	
-	public Iterator<DataSetRow<T>> getIterator(); // TODO: Deal with these duplicate methods
+	public Iterator<DataSetRow> getIterator(); // TODO: Deal with these duplicate methods
 	
 }

@@ -39,13 +39,14 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		dsd.addColumn("1.a", "Males in program", new Mapped<CohortIndicator>(ind, null), "gender=male");
 		dsd.addColumn("1.b", "Females in program", new Mapped<CohortIndicator>(ind, null), "gender=female");
 		
-		MapDataSet<IndicatorResult<CohortIndicator>> ds = (MapDataSet<IndicatorResult<CohortIndicator>>) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
+		MapDataSet ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		
 		int i = 0;
-		for (DataSetRow<? extends IndicatorResult<CohortIndicator>> row : ds) {
+		for (DataSetRow row : ds) {
 			System.out.println("Row " + (++i));
-			for (Map.Entry<DataSetColumn, ? extends IndicatorResult<CohortIndicator>> col : row.getColumnValues().entrySet()) {
-				System.out.println(col.getKey().getDisplayName() + " -> " + col.getValue().getValue());
+			for (Map.Entry<DataSetColumn, Object> col : row.getColumnValues().entrySet()) {
+				IndicatorResult<CohortIndicator> result = (IndicatorResult<CohortIndicator>) col.getValue();
+				System.out.println(col.getKey().getDisplayName() + " -> " + result.getValue());
 			}
 		}
 	}

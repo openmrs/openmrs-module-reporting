@@ -26,7 +26,7 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 	 * 
 	 * @should evaluate a data set definition
 	 */
-	public DataSet<?> evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
 		if (evalContext == null) {
 			evalContext = new EvaluationContext();
 		}
@@ -38,7 +38,7 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 			ec.addParameterValue("startDate", iter.getStartDate());
 			ec.addParameterValue("endDate", iter.getEndDate());
 			ec.addParameterValue("location", iter.getLocation());
-			MapDataSet<?> ds = (MapDataSet<?>) Context.getService(DataSetDefinitionService.class).evaluate(dsd.getBaseDefinition(), ec);
+			MapDataSet ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd.getBaseDefinition(), ec);
 			copyIntoDataSet(ret, ds, dsd, ec);
 		}
 		
@@ -47,8 +47,8 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 	
 	private List<String> keysToCopy = Arrays.asList(new String[] { "startDate", "endDate", "location" });
 
-	private void copyIntoDataSet(SimpleDataSet ret, MapDataSet<?> ds, MultiPeriodIndicatorDataSetDefinition definition, EvaluationContext ec) {
-	    DataSetRow<Object> row = new DataSetRow<Object>();
+	private void copyIntoDataSet(SimpleDataSet ret, MapDataSet ds, MultiPeriodIndicatorDataSetDefinition definition, EvaluationContext ec) {
+	    DataSetRow row = new DataSetRow();
 	    for (DataSetColumn column : definition.getColumns()) {
 	    	if (keysToCopy.contains(column.getColumnKey())) {
 	    		row.addColumnValue(column, ec.getParameterValue(column.getColumnKey()));

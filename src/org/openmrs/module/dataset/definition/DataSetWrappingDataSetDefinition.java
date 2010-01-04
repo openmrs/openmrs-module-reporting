@@ -19,7 +19,7 @@ public class DataSetWrappingDataSetDefinition extends BaseDataSetDefinition {
     // PROPERTIES
     // ***************
     
-    private DataSet<?> data;
+    private DataSet data;
     
     // ***************
     // CONSTRUCTORS
@@ -34,7 +34,7 @@ public class DataSetWrappingDataSetDefinition extends BaseDataSetDefinition {
      * Full Constructor
      * @param data
      */
-    public DataSetWrappingDataSetDefinition(DataSet<?> data) {
+    public DataSetWrappingDataSetDefinition(DataSet data) {
         this.data = data;
     }
     
@@ -47,7 +47,7 @@ public class DataSetWrappingDataSetDefinition extends BaseDataSetDefinition {
      * @see DataSetDefinition#getColumns()
      */
     public List<DataSetColumn> getColumns() {
-    	DataSetRow<?> r = data.iterator().next();
+    	DataSetRow r = data.iterator().next();
     	return new ArrayList<DataSetColumn>(r.getColumnValues().keySet());
     }
     
@@ -58,14 +58,14 @@ public class DataSetWrappingDataSetDefinition extends BaseDataSetDefinition {
     /**
      * @return the data
      */
-    public DataSet<?> getData() {
+    public DataSet getData() {
         return data;
     }
 
     /**
      * @param data the data to set
      */
-    public void setData(DataSet<?> data) {
+    public void setData(DataSet data) {
         this.data = data;
     }
 }

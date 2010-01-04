@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.dataset;
 
-import java.util.Map;
-
 import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
@@ -61,14 +59,12 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 		
 	}
 
-	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldEvaluateDataExportDataSet() throws Exception {
 		EvaluationContext evalContext = new EvaluationContext();
 		
 		DataSetDefinition dataSetDefinition = new EncounterDataSetDefinition();
-		DataSet<Object> dataSet = Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
+		DataSet dataSet = Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, evalContext);
 	
 		StringBuilder datasetBuilder = new StringBuilder();
 		datasetBuilder.append("\n");

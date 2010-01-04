@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -56,8 +55,8 @@ public class XlsReportRenderer extends AbstractReportRenderer {
     public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException {
         HSSFWorkbook wb = new HSSFWorkbook();
         ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
-        for (Map.Entry<String, DataSet<?>> e : reportData.getDataSets().entrySet()) {
-            DataSet<?> dataset = e.getValue();
+        for (Map.Entry<String, DataSet> e : reportData.getDataSets().entrySet()) {
+            DataSet dataset = e.getValue();
             HSSFSheet sheet = wb.createSheet(ExcelSheetHelper.fixSheetName(e.getKey()));
             ExcelSheetHelper helper = new ExcelSheetHelper(sheet);
             List<DataSetColumn> columnList = dataset.getDefinition().getColumns();
@@ -66,7 +65,7 @@ public class XlsReportRenderer extends AbstractReportRenderer {
             for (DataSetColumn column : columnList) {
             	helper.addCell(column.getDisplayName(), styleHelper.getStyle("bold,border=bottom"));
             }
-            for (DataSetRow<?> row : dataset ) {
+            for (DataSetRow row : dataset ) {
                 helper.nextRow();
                 for (DataSetColumn column : columnList) {
                 	Object cellValue = row.getColumnValue(column);

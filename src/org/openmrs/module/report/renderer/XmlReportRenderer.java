@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.openmrs.Cohort;
@@ -64,13 +63,13 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 		
 		Writer w = new PrintWriter(out);
 		
-		DataSet<?> dataset = results.getDataSets().values().iterator().next();	
+		DataSet dataset = results.getDataSets().values().iterator().next();	
 		List<DataSetColumn> columns = dataset.getDefinition().getColumns();
 		
 		w.write("<?xml version=\"1.0\"?>\n");
 		w.write("<dataset>\n");
 		w.write("\t<rows>\n");
-		for (DataSetRow<?> row : dataset) {		
+		for (DataSetRow row : dataset) {		
 			w.write("\t\t<row>");
 			for (DataSetColumn column : columns) {			
 				Object colValue = row.getColumnValue(column);

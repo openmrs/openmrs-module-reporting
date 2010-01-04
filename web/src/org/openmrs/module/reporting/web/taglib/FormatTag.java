@@ -65,7 +65,7 @@ public class FormatTag extends TagSupport {
 	
 	private ReportData reportData;
 	
-	private DataSet<?> dataSet;
+	private DataSet dataSet;
 	
 	private Cohort cohort;
 		
@@ -89,7 +89,7 @@ public class FormatTag extends TagSupport {
 			else if (object instanceof ReportData)
 				reportData = (ReportData) object;
 			else if (object instanceof DataSet)
-				dataSet = (DataSet<?>) object;
+				dataSet = (DataSet) object;
 			else if (object instanceof Cohort)
 				cohort = (Cohort) object;
 			else
@@ -214,7 +214,7 @@ public class FormatTag extends TagSupport {
 	 */
 	private void printReportData(StringBuilder sb, ReportData reportData) {
 	    sb.append("<h4>" + reportData.getDefinition().getName() + "</h4>");
-	    for (Map.Entry<String, DataSet<?>> ds : reportData.getDataSets().entrySet()) {
+	    for (Map.Entry<String, DataSet> ds : reportData.getDataSets().entrySet()) {
 	    	printDataSet(sb, ds.getKey(), ds.getValue());
 	    }
     }
@@ -227,7 +227,7 @@ public class FormatTag extends TagSupport {
 	 * @param title
 	 * @param dataSet
 	 */
-	private void printDataSet(StringBuilder sb, String title, DataSet<?> dataSet) {
+	private void printDataSet(StringBuilder sb, String title, DataSet dataSet) {
 	    sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
 	    List<DataSetColumn> cols = dataSet.getDefinition().getColumns();
 	    sb.append("<thead>");
@@ -244,8 +244,8 @@ public class FormatTag extends TagSupport {
 	    sb.append("</thead>");
 	    sb.append("<tbody>");
 	    if (dataSet instanceof MapDataSet) {
-	    	MapDataSet<?> map = (MapDataSet<?>) dataSet;
-	    	DataSetRow<?> row = map.getData();
+	    	MapDataSet map = (MapDataSet) dataSet;
+	    	DataSetRow row = map.getData();
 	    	for (DataSetColumn col : cols) {
 	    		sb.append("<tr><th>")
 	    			.append(col.getDisplayName())
@@ -254,7 +254,7 @@ public class FormatTag extends TagSupport {
 	    			.append("</td></tr>");
 	    	}
 	    } else {
-		    for (DataSetRow<?> row : dataSet) {
+		    for (DataSetRow row : dataSet) {
 		    	sb.append("<tr>");
 		    	for (DataSetColumn col : cols) {
 		    		sb.append("<td>").append(formatHelper(row.getColumnValue(col))).append("</td>");

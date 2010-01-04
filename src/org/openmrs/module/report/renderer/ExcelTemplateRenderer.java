@@ -74,8 +74,8 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			if (reportData.getDataSets().size() != 1) {
 				throw new RuntimeException("Currently only one dataset is supported.");
 			}
-			Iterator<Map.Entry<String, DataSet<?>>> datSetEntryIterator = reportData.getDataSets().entrySet().iterator();
-			Map.Entry<String, DataSet<?>> dataSetEntry = datSetEntryIterator.next();
+			Iterator<Map.Entry<String, DataSet>> datSetEntryIterator = reportData.getDataSets().entrySet().iterator();
+			Map.Entry<String, DataSet> dataSetEntry = datSetEntryIterator.next();
 			DataSetRow dataSetRow = (DataSetRow)dataSetEntry.getValue().getIterator().next();
 			if (datSetEntryIterator.hasNext()) {
 				throw new RuntimeException("Currently only one dataset with one row is supported.");

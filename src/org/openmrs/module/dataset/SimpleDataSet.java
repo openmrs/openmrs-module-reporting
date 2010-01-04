@@ -10,11 +10,11 @@ import org.openmrs.module.evaluation.EvaluationContext;
 /**
  * A DataSet backed by an ArrayList, with a HashMap for each row.
  */
-public class SimpleDataSet implements DataSet<Object> {
+public class SimpleDataSet implements DataSet {
     
     private DataSetDefinition definition;
     private EvaluationContext context;
-    private List<DataSetRow<Object>> rows;
+    private List<DataSetRow> rows;
     
     // *************
     // CONSTRUCTORS
@@ -38,14 +38,14 @@ public class SimpleDataSet implements DataSet<Object> {
      * Adds a row to this DataSet
      * @param row the row to add to the DataSet
      */
-    public void addRow(DataSetRow<Object> row) {
+    public void addRow(DataSetRow row) {
         getRows().add(row);
     }
 
     /**
      * @see DataSet#iterator()
      */
-    public Iterator<DataSetRow<Object>> iterator() {
+    public Iterator<DataSetRow> iterator() {
         return getRows().iterator();
     }
     
@@ -53,7 +53,7 @@ public class SimpleDataSet implements DataSet<Object> {
 	 * Convenience method for JSTL method.  
 	 * TODO This will be removed once we get a decent solution for the dataset iterator solution.  
 	 */
-	public Iterator<DataSetRow<Object>> getIterator() {
+	public Iterator<DataSetRow> getIterator() {
 		return iterator();
 	}
     
@@ -92,9 +92,9 @@ public class SimpleDataSet implements DataSet<Object> {
     /**
      * @return the data
      */
-    public List<DataSetRow<Object>> getRows() {
+    public List<DataSetRow> getRows() {
     	if (rows == null) {
-    		rows = new ArrayList<DataSetRow<Object>>();
+    		rows = new ArrayList<DataSetRow>();
     	}
         return rows;
     }
@@ -102,7 +102,7 @@ public class SimpleDataSet implements DataSet<Object> {
 	/**
      * @param data the data to set
      */
-    public void setRows(List<DataSetRow<Object>> rows) {
+    public void setRows(List<DataSetRow> rows) {
         this.rows = rows;
     }
 }
