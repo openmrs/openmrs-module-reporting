@@ -22,7 +22,6 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
  * This interface exposes the functionality required to access the Data Access
  * functionality for a particular set of CohortDefinition implementations
  */
-//@Transactional
 public interface CohortDefinitionPersister {
 	
 	/**

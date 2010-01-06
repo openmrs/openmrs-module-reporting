@@ -13,13 +13,16 @@
  */
 package org.openmrs.module.cohort.definition.persister;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.definition.SerializedObjectCohortDefinition;
 import org.openmrs.serialization.OpenmrsSerializer;
 
 /**
@@ -83,34 +86,69 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
      * @see CohortDefinitionPersister#getCohortDefinition(Integer)
      */
     public CohortDefinition getCohortDefinition(Integer id) {
-    	return dao.getObject(CohortDefinition.class, id);
+    	SerializedObject so = dao.getSerializedObject(id);
+    	try {
+    		return dao.convertSerializedObject(CohortDefinition.class, so);
+    	}
+    	catch (Exception e) {
+    		return new SerializedObjectCohortDefinition(so);
+    	}
     }
     
 	/**
      * @see CohortDefinitionPersister#getCohortDefinitionByUuid(String)
      */
     public CohortDefinition getCohortDefinitionByUuid(String uuid) {
-    	return dao.getObjectByUuid(CohortDefinition.class, uuid);
+    	SerializedObject so = dao.getSerializedObjectByUuid(uuid);
+    	try {
+    		return dao.convertSerializedObject(CohortDefinition.class, so);
+    	}
+    	catch (Exception e) {
+    		return new SerializedObjectCohortDefinition(so);
+    	}
     }
 
 	/**
      * @see CohortDefinitionPersister#getAllCohortDefinitions(boolean)
      */
     public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired) {
-    	return dao.getAllObjects(CohortDefinition.class, includeRetired);
+    	List<CohortDefinition> ret = new ArrayList<CohortDefinition>();
+    	for (SerializedObject so : dao.getAllSerializedObjects(CohortDefinition.class, includeRetired)) {
+        	try {
+        		ret.add(dao.convertSerializedObject(CohortDefinition.class, so));
+        	}
+        	catch (Exception e) {
+        		ret.add(new SerializedObjectCohortDefinition(so));
+        	}
+    	}
+    	return ret;
     }
 
 	/**
      * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)
      */
     public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) {
-    	return dao.getAllObjectsByName(CohortDefinition.class, name, exactMatchOnly);
+    	List<CohortDefinition> ret = new ArrayList<CohortDefinition>();
+    	for (SerializedObject so : dao.getAllSerializedObjectsByName(CohortDefinition.class, name, exactMatchOnly)) {
+        	try {
+        		ret.add(dao.convertSerializedObject(CohortDefinition.class, so));
+        	}
+        	catch (Exception e) {
+        		ret.add(new SerializedObjectCohortDefinition(so));
+        	}
+    	}
+    	return ret;
     }
     
 	/**
      * @see CohortDefinitionPersister#saveCohortDefinition(CohortDefinition)
      */
-    public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {    	
+    public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {
+    	if (cohortDefinition instanceof SerializedObjectCohortDefinition) {
+    		SerializedObjectCohortDefinition socd = (SerializedObjectCohortDefinition)cohortDefinition;
+    		CohortDefinition newDef = dao.convertSerializedObject(CohortDefinition.class, socd.toSerializedObject());
+    		return dao.saveObject(newDef);
+    	}
     	return dao.saveObject(cohortDefinition, serializer);
     }
 
