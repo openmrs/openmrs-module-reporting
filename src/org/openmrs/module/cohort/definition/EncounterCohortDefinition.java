@@ -19,7 +19,7 @@ import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
-import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 public class EncounterCohortDefinition extends DateRangeCohortDefinition {
 	

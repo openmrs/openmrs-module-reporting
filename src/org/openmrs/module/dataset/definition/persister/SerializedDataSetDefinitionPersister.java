@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.dataset.definition.persister;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
+import org.openmrs.module.dataset.definition.SerializedObjectDataSetDefinition;
 import org.openmrs.serialization.OpenmrsSerializer;
 
 /**
@@ -45,34 +48,69 @@ public class SerializedDataSetDefinitionPersister implements DataSetDefinitionPe
      * @see DataSetDefinitionPersister#getDataSetDefinition(Integer)
      */
     public DataSetDefinition getDataSetDefinition(Integer id) {
-    	return dao.getObject(DataSetDefinition.class, id);
+    	SerializedObject so = dao.getSerializedObject(id);
+    	try {
+    		return dao.convertSerializedObject(DataSetDefinition.class, so);
+    	}
+    	catch (Exception e) {
+    		return new SerializedObjectDataSetDefinition(so);
+    	}
     }
     
 	/**
      * @see DataSetDefinitionPersister#getDataSetDefinitionByUuid(String)
      */
     public DataSetDefinition getDataSetDefinitionByUuid(String uuid) {
-    	return dao.getObjectByUuid(DataSetDefinition.class, uuid);
+    	SerializedObject so = dao.getSerializedObjectByUuid(uuid);
+    	try {
+    		return dao.convertSerializedObject(DataSetDefinition.class, so);
+    	}
+    	catch (Exception e) {
+    		return new SerializedObjectDataSetDefinition(so);
+    	}
     }
 
 	/**
      * @see DataSetDefinitionPersister#getAllDataSetDefinitions(boolean)
      */
     public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {
-    	return dao.getAllObjects(DataSetDefinition.class, includeRetired);
+    	List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
+    	for (SerializedObject so : dao.getAllSerializedObjects(DataSetDefinition.class, includeRetired)) {
+        	try {
+        		ret.add(dao.convertSerializedObject(DataSetDefinition.class, so));
+        	}
+        	catch (Exception e) {
+        		ret.add(new SerializedObjectDataSetDefinition(so));
+        	}
+    	}
+    	return ret;
     }
 
 	/**
      * @see DataSetDefinitionPersister#getDataSetDefinitionByName(String, boolean)
      */
     public List<DataSetDefinition> getDataSetDefinitions(String name, boolean exactMatchOnly) {
-    	return dao.getAllObjectsByName(DataSetDefinition.class, name, exactMatchOnly);
+    	List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
+    	for (SerializedObject so : dao.getAllSerializedObjectsByName(DataSetDefinition.class, name, exactMatchOnly)) {
+        	try {
+        		ret.add(dao.convertSerializedObject(DataSetDefinition.class, so));
+        	}
+        	catch (Exception e) {
+        		ret.add(new SerializedObjectDataSetDefinition(so));
+        	}
+    	}
+    	return ret;
     }
     
 	/**
      * @see DataSetDefinitionPersister#saveDataSetDefinition(DataSetDefinition)
      */
     public DataSetDefinition saveDataSetDefinition(DataSetDefinition dataSetDefinition) {
+    	if (dataSetDefinition instanceof SerializedObjectDataSetDefinition) {
+    		SerializedObjectDataSetDefinition sod = (SerializedObjectDataSetDefinition)dataSetDefinition;
+    		DataSetDefinition newDef = dao.convertSerializedObject(DataSetDefinition.class, sod.toSerializedObject());
+    		return dao.saveObject(newDef);
+    	}
     	return dao.saveObject(dataSetDefinition, serializer);
     }
 

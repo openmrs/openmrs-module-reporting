@@ -2,17 +2,11 @@
 <%@ include file="../manage/localHeader.jsp"%>
 <openmrs:require privilege="Manage Data Sets" otherwise="/login.htm" redirect="/module/reporting/datasets/manageDataSets.form" />
 
-<!-- Wufoo Forms -->
-<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css"/>
-<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/form.css" />
-<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/reporting/scripts/wufoo/wufoo.js"/>
-
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 
 	$('#dataset-tabs').tabs();
 	$('#dataset-tabs').show();
-
 
 	$('#dataset-column-tabs').tabs();
 	$('#dataset-column-tabs').show();
@@ -43,7 +37,6 @@ $(document).ready(function() {
 		window.location=window.location;
 	});
 
-	
 	$('#save-logic-column-button').click(function(event){
 		$("#add-logic-column-form").submit();
 		$("#dataset-column-dialog").dialog('close');		
@@ -51,7 +44,6 @@ $(document).ready(function() {
 	$('#cancel-logic-column-button').click(function(event){
 		window.location=window.location;
 	});
-	
 	
 	$("#dataset-column-dialog").dialog({
 		bgiframe: true,			
@@ -79,36 +71,78 @@ $(document).ready(function() {
 			successCallback: function() { window.location = window.location; } 
 		});
 	});
-
-
-	
 	
 } );
 </script>
 
-<div id="page">
-	<div id="container">
+<style>
+	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
+	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
+	label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
+</style>
 
-		<div>		
-				<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
-					method="post" action="${pageContext.request.contextPath}/module/reporting/datasets/saveDataSet.form">
-			
-					<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
-					<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
-		
-					<div id="datasetDetails">
-						<ul>		
+<div id="page">
+
+	<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
+		method="post" action="${pageContext.request.contextPath}/module/reporting/datasets/saveDataSet.form">
+
+		<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
+		<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
+
+		<table style="font-size:small;" width="95%">
+			<tr>
+				<td valign="top">
+					<ul>				
+						<li>
+							<label class="desc" for="name">Name</label>
+							<input type="text" id="name"  tabindex="2" name="name" value="${dataSetDefinition.name}" size="30"/>
+						</li>
+						<li>
+							<label class="desc" for="description">Description</label>
+							<textarea id="description" class="field text short" cols="30" rows="10" tabindex="3" name="description">${dataSetDefinition.description}</textarea>
+						</li>
+						<li>
+							<label class="desc" for="type">Type</label>
+							${dataSetDefinition.class.simpleName}
+						</li>
+					</ul>
+				</td>
+				<td>
+					<c:choose>
+						<c:when test="${dataSetDefinition.class.name == 'org.openmrs.module.dataset.definition.SerializedObjectDataSetDefinition'}">
 							<li>
-								<h1>Dataset Details</h1>
-								<label class="desc" for="name">Name</label>
-								<input id="name" name="name" type="text" class="field text large" 
-									value="${dataSetDefinition.name}" size="20" tabindex="1" />
-							</li>				
-							<li>		
-								<label class="desc" for="description">Description</label>
-								<textarea id="description" name="description" class="field textarea small" 
-									rows="10" cols="20" tabindex="2">${dataSetDefinition.description}</textarea>				
-							</li>														
+								<label class="desc">Properties</label>
+								<table id="dataset-definition-property-table" class="display">
+									<thead>
+										<tr>
+											<th align="left">Name</th>
+											<th align="left" width="100%">Type</th>
+										</tr>	
+									</thead>
+									<tbody>
+										<c:forEach items="${configurationProperties}" var="p" varStatus="varStatus">
+											<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
+												<td valign="top" nowrap="true">
+													${p.field.name}
+													<c:if test="${p.required}"><span style="color:red;">*</span></c:if>
+												</td>
+												<td style="vertical-align:top;">
+													<c:choose>
+														<c:when test="${p.field.name == 'serializedData'}">
+															<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${dataSetDefinition}" property="${p.field.name}" attributes="rows=20|cols=80"/>
+														</c:when>
+														<c:otherwise>
+															<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${dataSetDefinition}" property="${p.field.name}" attributes="size=80"/>
+														</c:otherwise>
+													</c:choose>
+												</td>
+											</tr>
+										</c:forEach>
+									</tbody>
+								</table>
+							</li>
+						</c:when>
+						<c:otherwise>
 							<li>
 								<div id="datasetColumns">
 									<h1>Dataset Columns</h1>
@@ -141,201 +175,21 @@ $(document).ready(function() {
 										</tfoot>
 									</table>
 								</div>
-								<div align="left">
-								</div>
-							
+								<div align="left"></div>
 							</li>
-							
-							<li class="buttons" align="center">
-								<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="3" />
-								<button id="preview-dataset-button">Preview</button>
-								<button id="cancel-button" name="cancel" class="btTxt submit">Cancel</button>
-							</li>
-						</ul>
-					</div>
-				</form>
-			</div>
-
-			
-		</div>
-	</div>
-
-<div id="dataset-column-dialog" title="Add Column">
-	<div id="dataset-column-tabs" class="ui-tabs-hide">			
-		<ul>
-			<li><a href="#dataset-column-logic-tab"><span>Logic</span></a></li>
-			<li><a href="#dataset-column-sql-tab"><span>SQL</span></a></li>			
-			<li><a href="#dataset-column-concept-tab"><span>Concept</span></a></li>			
-		</ul>
-		<div id="dataset-column-logic-tab">	
-			<div id="logicColumn">
-				<c:url var="actionUrl" value="/module/reporting/datasets/addLogicColumn.form"/>
-				<form id="add-logic-column-form" name="add-logic-column-form" action="${actionUrl}" class="wufoo topLabel" method="post">
-					
-					<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
-					<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
-					<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
-				
-					<ul>		
-						<li>
-							<label class="desc" for="columnName"><spring:message code="reporting.columnName"/></label>								
-							<span>
-								<input type="text" name="columnName" size="30" />
-							</span> 							
-						</li>
-						<li>
-							<label class="desc" for="logicQuery"><spring:message code="reporting.columnValue"/></label>
-							<span>		
-								<input type="text" name="logicQuery" size="30" />		
-							</span> 
-						</li>				
-						<li>
-							<div align="center">
-								<input id="save-logic-column-button" type="button" value="Add"/>
-								<input id="cancel-logic-column-button" type="button" value="Cancel"/>
-							</div>
-						</li>
-					</ul>
-				</form>			
-			</div>
-		</div>	
-		<div id="dataset-column-sql-tab">	
-			<div id="sqlColumn">
-				<c:url var="actionUrl" value="/module/reporting/datasets/addSqlColumn.form"/>
-				<form id="add-sql-column-form" name="add-sql-column-form" action="${actionUrl}" class="wufoo topLabel" method="post">
-					
-					<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
-					<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
-					<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
-				
-					<ul>		
-						<li>
-							<label class="desc" for="sqlQuery"><spring:message code="reporting.columnValue"/></label>
-							<span>		
-								<textarea type="text" name="sqlQuery" cols="60" rows="6"></textarea>	
-							</span> 
-						</li>				
-						<li>
-							<div align="center">
-								<input id="save-sql-column-button" type="button" value="Add"/>
-								<input id="cancel-sql-column-button" type="button" value="Cancel"/>
-							</div>
-						</li>
-					</ul>
-				</form>			
-			</div>
-		</div>	
-		<div id="dataset-column-concept-tab">				
-			<div id="conceptColumn">
-				<form id="datasetColumnForm" name="datasetColumnForm" class="wufoo topLabel" method="post" 
-					action="${pageContext.request.contextPath}/module/reporting/datasets/addConceptColumn.form">
-					<input type="hidden" id="id" name="id" value="${dataSetDefinition.id}"/>
-					<input type="hidden" id="uuid" name="uuid" value="${dataSetDefinition.uuid}"/>
-					<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
-				
-					<ul>		
-						<li>
-							<label class="desc" for="columnName"><spring:message code="reporting.columnName"/></label>								
-							<span>
-								<input type="text" name="columnName" size="30" />
-							</span>
-						</li>
-						<li>
-							<label class="desc" for="conceptId"><spring:message code="reporting.columnValue"/></label>
-							<span>				
-
-							
-							</span>
-							
-							
-						</li>				
-						
-						<!--  
-						
-							Need to add jquery binding for radio button label
-							
-								onclick="this.previousSibling.click()"
-						
-						 -->
-			
-						<li>
-							<label class="desc" for="type"><spring:message code="reporting.columnModifier"/></label>								
-							<div>
-								<input class="field radio" type="radio" name="modifier" checked="checked" value="mostRecent"/>
-								<label class="choice" for="modifier">
-									<spring:message code="reporting.columnModifier.mostRecent"/>
-								</label>						
-							</div>
-							<div>
-								<input class="field radio" type="radio" name="modifier" value="first"/>
-								<label class="choice" for="modifier">
-									<spring:message code="reporting.columnModifier.first"/>
-								</label>					
-							</div>
-							<div>
-								<input class="field radio" type="radio" name="modifier" value="firstNum"/>
-								<label class="choice" for="modifier">
-									<spring:message code="reporting.columnModifier.firstNum"/>						
-								</label>
-							</div>
-							<div>
-								<input class="field radio" type="radio" name="modifier" value="mostRecentNum" />
-								<label class="choice" for="modifier">
-									<spring:message code="reporting.columnModifier.mostRecentNum"/>
-									<input class="choice" type="text" name="modifierNum" size="3" />
-								</label>					
-									
-							</div>
-						</li>
-						<li>
-							<label class="desc" for="type"><spring:message code="reporting.conceptExtras"/></label>								
-							<div>
-								<input type="checkbox" name="extras" value="obsDatetime" class="field radio"/>
-								<label class="choice" for="extras">
-									<spring:message code="reporting.conceptExtra.obsDatetime"/>
-								</label>
-							</div>	
-							<div>				
-								<input type="checkbox" name="extras" value="location"  class="field radio"/>
-								<label class="choice" for="extras">
-									<spring:message code="reporting.conceptExtra.location"/>
-								</label>
-							</div>
-							<div>
-								<input type="checkbox" name="extras" value="comment"  class="field radio"/>
-								<label class="choice" for="extras">
-									<spring:message code="reporting.conceptExtra.comment"/>
-								</label>					
-							</div>
-							<div>
-								<input type="checkbox" name="extras" value="encounterType" class="field radio" />
-								<label class="choice" for="extras">
-									<spring:message code="reporting.conceptExtra.encounterType"/>
-								</label>						
-							</div>
-							<div>
-								<input type="checkbox" name="extras" value="provider" class="field radio" />
-								<label class="choice" for="extras">
-									<spring:message code="reporting.conceptExtra.provider"/>
-								</label>						
-							</div>			
-						</li>
-						<li>
-							<div align="center">
-								<input id="save-button" type="button" value="Add"/>
-								<input id="cancel-button" type="button" value="Close"/>
-							</div>
-						</li>
-					</ul>
-				</form>
-			</div>		
-		</div>		
-		
-	</div>
+						</c:otherwise>
+					</c:choose>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="3" />
+					<button id="preview-dataset-button">Preview</button>
+					<button id="cancel-button" name="cancel" class="btTxt submit">Cancel</button>
+				</td>
+			</tr>
+		</table>			
+	</form>
 </div>
-
-		
-
-
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

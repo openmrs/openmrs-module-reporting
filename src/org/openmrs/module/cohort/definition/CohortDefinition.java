@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.cohort.definition;
 
-import java.util.List;
-
-import org.openmrs.module.cohort.definition.configuration.Property;
 import org.openmrs.module.evaluation.Definition;
 
 /**
@@ -23,12 +20,5 @@ import org.openmrs.module.evaluation.Definition;
  * You evaluate a CohortDefinition using CohortEvaluator
  */
 public interface CohortDefinition extends Definition  {
-	
-	/**
-     * Returns a List of all Properties that can be configured on this CohortDefinition.
-     * Only some of these will be configured on an instance.
-     * @return - All available Properties that one might configure on this CohortDefinition
-     */
-	public List<Property> getConfigurationProperties();
 	
 }

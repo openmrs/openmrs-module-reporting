@@ -17,7 +17,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 public class VitalStatusCohortDefinition extends BaseCohortDefinition {
 

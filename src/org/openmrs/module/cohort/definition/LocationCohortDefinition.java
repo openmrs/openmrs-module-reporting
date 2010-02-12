@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.openmrs.Location;
 import org.openmrs.api.PatientSetService.PatientLocationMethod;
-import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * CohortDefinition implementation by Location

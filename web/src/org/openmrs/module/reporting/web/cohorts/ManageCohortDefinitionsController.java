@@ -17,12 +17,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.cohort.definition.StaticCohortDefinition;
-import org.openmrs.module.cohort.definition.configuration.Property;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.parameter.Parameter;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
+import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.util.ObjectUtil;
 import org.openmrs.module.util.ReflectionUtil;
 import org.springframework.stereotype.Controller;
@@ -98,6 +98,7 @@ public class ManageCohortDefinitionsController {
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
     	CohortDefinition cd = service.getCohortDefinition(uuid, type);
      	model.addAttribute("cohortDefinition", cd);
+     	model.addAttribute("configurationProperties", DefinitionUtil.getConfigurationProperties(cd));
 	
         return "/module/reporting/cohorts/cohortDefinitionEditor";
     }
@@ -131,7 +132,7 @@ public class ManageCohortDefinitionsController {
     	cohortDefinition.setDescription(description);
     	cohortDefinition.getParameters().clear();
     	
-    	for (Property p : CohortDefinitionUtil.getConfigurationProperties(cohortDefinition)) {
+    	for (Property p : DefinitionUtil.getConfigurationProperties(cohortDefinition)) {
     		String fieldName = p.getField().getName();
     		String prefix = "parameter." + fieldName;
     		String valParamName =  prefix + ".value"; 

@@ -13,13 +13,9 @@
  */
 package org.openmrs.module.cohort.definition;
 
-import java.util.List;
-
-import org.openmrs.module.cohort.definition.configuration.ConfigurationPropertyCachingStrategy;
-import org.openmrs.module.cohort.definition.configuration.Property;
-import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
 import org.openmrs.module.evaluation.BaseDefinition;
 import org.openmrs.module.evaluation.caching.Caching;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 
 /**
  * Base Implementation of CohortDefinition which provides core method
@@ -44,13 +40,6 @@ public abstract class BaseCohortDefinition extends BaseDefinition implements Coh
     }
     
     //***** INSTANCE METHODS *****
-    
-    /**
-	 * @see CohortDefinition#getConfigurationProperties()
-	 */
-	public List<Property> getConfigurationProperties() {
-		return CohortDefinitionUtil.getConfigurationProperties(this);
-	}
 	
 	/**
 	 * @see Object#toString()

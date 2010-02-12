@@ -21,8 +21,8 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.cohort.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.test.BaseContextSensitiveTest;
 
 /**

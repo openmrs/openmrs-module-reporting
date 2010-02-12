@@ -20,8 +20,8 @@ import org.junit.Test;
 import org.openmrs.api.PatientSetService.BooleanOperator;
 import org.openmrs.module.cohort.definition.CompoundCohortDefinition;
 import org.openmrs.module.cohort.definition.DrugOrderCohortDefinition;
-import org.openmrs.module.cohort.definition.configuration.Property;
-import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
+import org.openmrs.module.reporting.definition.configuration.Property;
 
 /**
  * Tests the ParameterUtil methods
@@ -34,7 +34,7 @@ public class ParameterUtilTest {
 	@Test
 	public void shouldHaveAllAnnotatedFieldsAsParameters() throws Exception {		
 		CompoundCohortDefinition def = new CompoundCohortDefinition();
-		List<Property> props = CohortDefinitionUtil.getConfigurationProperties(def);
+		List<Property> props = DefinitionUtil.getConfigurationProperties(def);
 		Assert.assertEquals(2, props.size());
 		for (Property p : props) {
 			if (p.getField().getName().equals("operator")) {
@@ -52,7 +52,7 @@ public class ParameterUtilTest {
 	@Test
 	public void shouldHaveAllInheritedAnnotatedFieldsAsParameters() throws Exception {		
 		DrugOrderCohortDefinition def = new DrugOrderCohortDefinition();
-		System.out.println(CohortDefinitionUtil.getConfigurationProperties(def));
-		Assert.assertEquals(9, CohortDefinitionUtil.getConfigurationProperties(def).size());
+		System.out.println(DefinitionUtil.getConfigurationProperties(def));
+		Assert.assertEquals(9, DefinitionUtil.getConfigurationProperties(def).size());
 	}
 }

@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.openmrs.Concept;
 import org.openmrs.Drug;
-import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * 

@@ -22,7 +22,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 public class ObsCohortDefinition extends DateRangeCohortDefinition {
 	

@@ -30,13 +30,13 @@ import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.cohort.definition.history.CohortDefinitionSearchHistory;
 import org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister;
-import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
 import org.openmrs.module.evaluation.EvaluationContext;
 import org.openmrs.module.evaluation.caching.Caching;
 import org.openmrs.module.evaluation.caching.CachingStrategy;
 import org.openmrs.module.evaluation.caching.NoCachingStrategy;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.util.ReflectionUtil;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.util.HandlerUtil;
@@ -236,7 +236,7 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 		}
 
 		// Clone CohortDefinition and set all properties from the Parameters in the EvaluationContext
-		CohortDefinition clonedDefinition = CohortDefinitionUtil.clone(definition);
+		CohortDefinition clonedDefinition = DefinitionUtil.clone(definition);
 		for (Parameter p : clonedDefinition.getParameters()) {
 			Object value = p.getDefaultValue();
 			if (evalContext != null && evalContext.containsParameter(p.getName())) {
@@ -293,7 +293,6 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 	 * @see org.openmrs.module.cohort.definition.service.CohortDefinitionService#getCurrentUsersCohortDefinitionSearchHistory()
 	 */
 	public CohortDefinitionSearchHistory getCurrentUsersCohortDefinitionSearchHistory() throws APIException {
-	    String name = getNameForPersistedSearchHistory(Context.getAuthenticatedUser());
 	    return getPersistedSearchHistory(Context.getAuthenticatedUser());
     }
 

@@ -25,7 +25,7 @@ import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.api.PatientSetService.GroupMethod;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 public class DrugOrderCohortDefinition extends DateRangeCohortDefinition {

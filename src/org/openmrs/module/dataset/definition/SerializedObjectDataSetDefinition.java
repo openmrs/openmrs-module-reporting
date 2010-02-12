@@ -11,26 +11,47 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.cohort.definition;
+package org.openmrs.module.dataset.definition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openmrs.api.db.SerializedObject;
+import org.openmrs.module.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.definition.SerializedObjectDefinition;
 
-public class SerializedObjectCohortDefinition extends SerializedObjectDefinition implements CohortDefinition {
+public class SerializedObjectDataSetDefinition extends SerializedObjectDefinition implements DataSetDefinition {
 
     private static final long serialVersionUID = 1L;
 
 	/**
 	 * Default constructor
 	 */
-	public SerializedObjectCohortDefinition() {
+	public SerializedObjectDataSetDefinition() {
 		super();
 	}
 	
 	/**
 	 * Default Constructor
 	 */
-	public SerializedObjectCohortDefinition(SerializedObject serializedObject) {
+	public SerializedObjectDataSetDefinition(SerializedObject serializedObject) {
 		super(serializedObject);
+	}
+	
+	/**
+	 * Gets a list of dataset columns.
+	 * @return
+	 */
+	public List<DataSetColumn> getColumns() {
+		return new ArrayList<DataSetColumn>();
+	}
+	
+	/**
+	 * Returns the {@link DataSetColumn} defined by the passed column key
+	 * @param columnKey
+	 * @return
+	 */
+	public DataSetColumn getColumn(String columnKey) {
+		return null;
 	}
 }

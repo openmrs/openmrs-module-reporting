@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.cohort.definition;
 
-import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 public class GenderCohortDefinition extends BaseCohortDefinition {
 

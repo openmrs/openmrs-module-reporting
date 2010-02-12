@@ -15,7 +15,7 @@ package org.openmrs.module.cohort.definition;
 
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.Cohort;
-import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  *  Simple CohortDefinition to restrict to a Static Cohort

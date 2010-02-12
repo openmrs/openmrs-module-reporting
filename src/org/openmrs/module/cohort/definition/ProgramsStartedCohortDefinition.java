@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Program;
-import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * 

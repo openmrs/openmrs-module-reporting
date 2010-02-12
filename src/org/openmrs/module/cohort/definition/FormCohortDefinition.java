@@ -16,7 +16,7 @@ package org.openmrs.module.cohort.definition;
 import java.util.List;
 
 import org.openmrs.Form;
-import org.openmrs.module.cohort.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 public class FormCohortDefinition extends DateRangeCohortDefinition {
 	

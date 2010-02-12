@@ -11,38 +11,34 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.cohort.definition.configuration;
+package org.openmrs.module.reporting.definition.configuration;
 
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.util.CohortDefinitionUtil;
+import org.openmrs.module.evaluation.Definition;
 import org.openmrs.module.evaluation.caching.Caching;
 import org.openmrs.module.evaluation.caching.CachingStrategy;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 
 /**
- * Represents a strategy for caching a particular object
- * in the EvaluationContext.  You would typically specify which
- * type of CachingStrategy an object uses by annotating
- * the class with the {@link Caching} annotation
- * 
+ * Represents a strategy for caching a particular object in the EvaluationContext.  You would typically 
+ * specify which type of CachingStrategy an object uses by annotating the class with the {@link Caching} annotation
  * @see Caching
  */
 public class ConfigurationPropertyCachingStrategy implements CachingStrategy  {
 	
 	/**
-	 * Implementation that creates a cache key out of the 
-	 * instance class name and a sorted Map of field name -> value
-	 * for all fields annotated as {@link ConfigurationProperty}
-	 * @see CachingStrategy#getCacheKey(java.lang.Object)
+	 * Implementation that creates a cache key out of the instance class name and a sorted Map of 
+	 * field name -> value for all fields annotated as {@link ConfigurationProperty}
+	 * @see CachingStrategy#getCacheKey(Object)
 	 */
 	public String getCacheKey(Object o) {
-		if (o == null || !(o instanceof CohortDefinition)) {
-			throw new IllegalArgumentException("Unable to getCacheKey for object that is null or not a CohortDefinition");
+		if (o == null || !(o instanceof Definition)) {
+			throw new IllegalArgumentException("Unable to getCacheKey for object that is null or not a Definition");
 		}
-		List<Property> props = CohortDefinitionUtil.getConfigurationProperties((CohortDefinition)o);
+		List<Property> props = DefinitionUtil.getConfigurationProperties((Definition)o);
 		Map<String, Object> m = new TreeMap<String, Object>();
 		for (Property p : props) {
 			if (p.getValue() != null) {

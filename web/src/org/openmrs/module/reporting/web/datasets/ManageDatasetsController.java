@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.web.datasets;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,10 +18,11 @@ import org.openmrs.module.dataset.DataSetException;
 import org.openmrs.module.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.evaluation.EvaluationContext;
+import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.report.ReportData;
 import org.openmrs.module.report.ReportDefinition;
 import org.openmrs.module.report.renderer.CsvReportRenderer;
@@ -30,6 +32,9 @@ import org.openmrs.module.report.renderer.TsvReportRenderer;
 import org.openmrs.module.report.renderer.XlsReportRenderer;
 import org.openmrs.module.report.renderer.XmlReportRenderer;
 import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
+import org.openmrs.module.reporting.definition.configuration.Property;
+import org.openmrs.module.util.ReflectionUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,7 +92,6 @@ public class ManageDatasetsController {
      * @return
      * 		The name of the JSP to present to the user
      */
-    @SuppressWarnings("unchecked")
 	@RequestMapping("/module/reporting/datasets/editDataSet")
     public String editDataSet(
     		@RequestParam(required=false, value="id") Integer id,
@@ -101,6 +105,7 @@ public class ManageDatasetsController {
     		getDataSetDefinition(uuid, type, id);
     	    	
     	model.addAttribute("dataSetDefinition", dataSetDefinition);
+    	model.addAttribute("configurationProperties", DefinitionUtil.getConfigurationProperties(dataSetDefinition));
         return "/module/reporting/datasets/datasetEditor";
     }
     
@@ -189,23 +194,11 @@ public class ManageDatasetsController {
     	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, type, id);
 
     	if (dataSetDefinition instanceof DataExportDataSetDefinition) { 
-    		DataExportDataSetDefinition instance = 
-    			(DataExportDataSetDefinition) dataSetDefinition;  
-    		
-    		instance.getDataExportReportObject().addConceptColumn(
-    				columnName, 
-    				modifier, 
-    				modifierNum, 
-    				conceptId.toString(), 
-    				extras);
-    		
+    		DataExportDataSetDefinition instance = (DataExportDataSetDefinition) dataSetDefinition;
+    		instance.getDataExportReportObject().addConceptColumn(columnName, modifier, modifierNum, conceptId.toString(), extras);
     		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(instance);
     	}
     	else if (dataSetDefinition instanceof PatientDataSetDefinition) {
-    		PatientDataSetDefinition instance = 
-    			(PatientDataSetDefinition) dataSetDefinition;
-        	//Concept concept = Context.getConceptService().getConcept(conceptId);    		
-        	// TODO Implement concept column in patient dataset 
     		throw new DataSetException("Patient Data Set Definition does not currently support additional columns");
     	}    		
     	return "redirect:/module/reporting/datasets/editDataSet.form?uuid=" + uuid;
@@ -276,6 +269,7 @@ public class ManageDatasetsController {
             @RequestParam(required=false, value="type") Class<? extends DataSetDefinition> type,
             @RequestParam(required=true, value="name") String name,
             @RequestParam("description") String description,
+            HttpServletRequest request,
     		ModelMap model
     ) {
     	
@@ -284,11 +278,16 @@ public class ManageDatasetsController {
     	dataSetDefinition.setName(name);
     	dataSetDefinition.setDescription(description);
     	
-    	dataSetDefinition = 
-    		service.saveDataSetDefinition(dataSetDefinition);
-
+    	for (Property p : DefinitionUtil.getConfigurationProperties(dataSetDefinition)) {
+    		String fieldName = p.getField().getName();
+    		String prefix = "parameter." + fieldName;
+    		String valParamName =  prefix + ".value"; 
+    		Object valToSet = WidgetUtil.getFromRequest(request, valParamName, p.getField());
+			ReflectionUtil.setPropertyValue(dataSetDefinition, p.getField(), valToSet);
+    	}
+    	
+    	dataSetDefinition = service.saveDataSetDefinition(dataSetDefinition);
     	return "redirect:/module/reporting/datasets/manageDataSets.list";
-        //return "redirect:/module/reporting/editDataSet.form?uuid="+dataSetDefinition.getUuid();
     }
     
     
@@ -297,7 +296,6 @@ public class ManageDatasetsController {
      * @param model
      * @return
      */
-    @SuppressWarnings("unchecked")
 	@RequestMapping("/module/reporting/datasets/viewDataSet")
     public String viewDataset(
     		@RequestParam(required=false, value="id") Integer id,
@@ -368,7 +366,6 @@ public class ManageDatasetsController {
      * @param model
      * @return
      */
-    @SuppressWarnings("deprecation")
 	@RequestMapping("/module/reporting/datasets/downloadDataSet")
     public void downloadDataset(
     		@RequestParam(required=false, value="id") Integer id,

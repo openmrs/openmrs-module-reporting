@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.cohort.definition.configuration;
+package org.openmrs.module.reporting.definition.configuration;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

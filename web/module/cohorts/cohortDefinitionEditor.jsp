@@ -16,7 +16,7 @@
 			$('#dynamicValue${cdparam.name}').show();
 		</c:forEach>
 
-		<c:forEach items="${cohortDefinition.configurationProperties}" var="p" varStatus="varStatus">
+		<c:forEach items="${configurationProperties}" var="p" varStatus="varStatus">
 			$('#selectValue${p.field.name}').change(function(event){
 				if ($(this).val() == 't') {
 					$('#paramLabel${p.field.name}').val('${cdparam.label}');
@@ -94,7 +94,7 @@
 									</tr>	
 								</thead>
 								<tbody>
-									<c:forEach items="${cohortDefinition.configurationProperties}" var="p" varStatus="varStatus">
+									<c:forEach items="${configurationProperties}" var="p" varStatus="varStatus">
 
 										<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
 											<td valign="top" nowrap="true">
