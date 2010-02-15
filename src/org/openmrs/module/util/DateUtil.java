@@ -35,8 +35,7 @@ public class DateUtil {
 	/**
 	 * Returns the passed date, at the specified time
 	 */
-	public static Date getDateTime(int year, int mon, int day, int hr, int min,
-			int sec, int ms) {
+	public static Date getDateTime(int year, int mon, int day, int hr, int min, int sec, int ms) {
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.YEAR, year);
 		c.set(Calendar.MONTH, mon);
@@ -47,12 +46,18 @@ public class DateUtil {
 		c.set(Calendar.MILLISECOND, ms);
 		return c.getTime();
 	}
+	
+	/**
+	 * Returns the passed date, at midnight
+	 */
+	public static Date getDateTime(int year, int mon, int day) {
+		return getDateTime(year, mon, day, 0, 0, 0, 0);
+	}
 
 	/**
 	 * Returns the passed date, at the specified time
 	 */
-	public static Date getDateTime(Date d, int hour, int minute, int second,
-			int millisecond) {
+	public static Date getDateTime(Date d, int hour, int minute, int second, int millisecond) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
 		c.set(Calendar.HOUR_OF_DAY, hour);
@@ -176,6 +181,22 @@ public class DateUtil {
 	 */
 	public static String formatDate(Date d, String format) {
 		return formatDate(d, format, "");
+	}
+	
+	/**
+	 * Utility method to parse a date in the given format
+	 * @param s the string to parse
+	 * @param format the date format
+	 * @return a Date representing the date in the passed format
+	 */
+	public static Date parseDate(String s, String format) {
+		DateFormat df = new SimpleDateFormat(format);
+		try {
+			return df.parse(s);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Cannot parse " + s + " into a date using format " + format);
+		}
 	}
 	
 	/**

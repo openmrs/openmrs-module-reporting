@@ -10,12 +10,16 @@ import java.util.ListIterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.CacheMode;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Expression;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
+import org.openmrs.Patient;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -25,11 +29,11 @@ import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.cohort.query.db.CohortQueryDAO;
+import org.openmrs.module.common.DurationUnit;
 
 public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
-	protected static final Log log = LogFactory
-			.getLog(HibernateCohortQueryDAO.class);
+	protected static final Log log = LogFactory.getLog(HibernateCohortQueryDAO.class);
 
 	/**
 	 * Hibernate session factory
@@ -38,6 +42,49 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+	
+	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate) {
+		
+		if (effectiveDate == null) {
+			effectiveDate = new Date();
+		}
+		if (minAgeUnit == null) {
+			minAgeUnit = DurationUnit.YEARS;
+		}
+		if (maxAgeUnit == null) {
+			maxAgeUnit = DurationUnit.YEARS;
+		}
+		
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Patient.class);
+		criteria.add(Expression.eq("voided", false));
+
+		Date maxBirthFromAge = effectiveDate;
+		if (minAge != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(effectiveDate);
+			cal.add(minAgeUnit.getCalendarField(), -minAgeUnit.getFieldQuantity()*minAge);
+			maxBirthFromAge = cal.getTime();
+		}
+		Criterion c = Expression.le("birthdate", maxBirthFromAge);
+		
+		Date minBirthFromAge = null;
+		if (maxAge != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(effectiveDate);
+			cal.add(maxAgeUnit.getCalendarField(), -(maxAgeUnit.getFieldQuantity()*maxAge + 1));
+			minBirthFromAge = cal.getTime();
+			c = Expression.and(c, Expression.ge("birthdate", minBirthFromAge));
+		}
+			
+		if (unknownAgeIncluded) {
+			criteria.add(Expression.or(Expression.isNull("birthdate"), c));
+		}
+		else {
+			criteria.add(c);
+		}
+
+		return new Cohort(criteria.list());
 	}
 
 	/**

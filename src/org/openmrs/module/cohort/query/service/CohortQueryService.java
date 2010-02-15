@@ -14,12 +14,14 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.cohort.query.db.CohortQueryDAO;
+import org.openmrs.module.common.DurationUnit;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface CohortQueryService extends OpenmrsService {
 	public void setCohortQueryDAO(CohortQueryDAO dao);	
 	
+	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate);
     public Cohort getPatientsHavingStartedPrograms(List<Program> programs, Date startedOnOrAfter, Date startedOnOrBefore);
     public Cohort getPatientsHavingCompletedPrograms(List<Program> programs, Date completedOnOrAfter, Date completedOnOrBefore);
     public Cohort getPatientsHavingStartedStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore);

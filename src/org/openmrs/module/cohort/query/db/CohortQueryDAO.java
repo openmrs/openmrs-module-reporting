@@ -11,11 +11,13 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.impl.PatientSetServiceImpl;
+import org.openmrs.module.common.DurationUnit;
 
 public interface CohortQueryDAO {
 	
 	//public Cohort getPatientsInPrograms(List<Program> programs, Date startedAfter, Date startedBefore);
 	
+	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate);
 	
     // Started or stopped programs during a period
 	public Cohort getPatientsHavingStartedPrograms(List<Program> programs, Date startedOnOrAfter, Date startedOnOrBefore);

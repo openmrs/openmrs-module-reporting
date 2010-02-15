@@ -15,10 +15,10 @@ package org.openmrs.module.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
+import org.openmrs.module.cohort.query.service.CohortQueryService;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
@@ -34,12 +34,16 @@ public class AgeCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @should return only patients born on or before the evaluation date
+     * @should return only non voided patients
+     * @should return only patients in the given age range
+     * @should only return patients with unknown age if specified
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	AgeCohortDefinition acd = (AgeCohortDefinition) cohortDefinition;
-
-		PatientSetService pss = Context.getPatientSetService();
-		return pss.getPatientsByCharacteristics(null, null, null, acd.getMinAge(), acd.getMaxAge(), 
-				null, null, acd.getEffectiveDate());
+    	CohortQueryService cqs = Context.getService(CohortQueryService.class);
+    	
+    	return cqs.getPatientsWithAgeRange(acd.getMinAge(), acd.getMinAgeUnit(), acd.getMaxAge(), acd.getMaxAgeUnit(), 
+    									   acd.isUnknownAgeIncluded(), acd.getEffectiveDate());
     }
 }

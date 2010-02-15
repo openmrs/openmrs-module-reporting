@@ -19,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.cohort.query.db.CohortQueryDAO;
+import org.openmrs.module.common.DurationUnit;
 
 public class CohortQueryServiceImpl  extends BaseOpenmrsService implements CohortQueryService {
 
@@ -30,6 +31,9 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
         this.dao = dao;
     }
     
+    public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate) {
+    	return dao.getPatientsWithAgeRange(minAge, minAgeUnit, maxAge, maxAgeUnit, unknownAgeIncluded, effectiveDate);
+    }
     
 	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
             PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType) { 

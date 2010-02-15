@@ -16,6 +16,7 @@ package org.openmrs.module.cohort.definition;
 import java.util.Date;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.common.DurationUnit;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 public class AgeCohortDefinition extends BaseCohortDefinition {
@@ -26,7 +27,16 @@ public class AgeCohortDefinition extends BaseCohortDefinition {
 	private Integer minAge;
 	
 	@ConfigurationProperty(required=false)
+	private DurationUnit minAgeUnit = DurationUnit.YEARS;
+	
+	@ConfigurationProperty(required=false)
 	private Integer maxAge;
+	
+	@ConfigurationProperty(required=false)
+	private DurationUnit maxAgeUnit = DurationUnit.YEARS;
+	
+	@ConfigurationProperty(required=false)
+	private boolean unknownAgeIncluded = false;
 	
 	@ConfigurationProperty(required=false)
 	private Date effectiveDate;
@@ -56,15 +66,15 @@ public class AgeCohortDefinition extends BaseCohortDefinition {
 		StringBuffer buffer = new StringBuffer("Patients ");
 		if (minAge != null) {
 			if (maxAge != null) {
-				buffer.append(" between the ages of " + minAge + " and " + maxAge);
+				buffer.append(" between the ages of " + minAge + " " + minAgeUnit + " and " + maxAge + " " + maxAgeUnit);
 			} 
 			else {
-				buffer.append(" at least " + minAge + " years old");
+				buffer.append(" at least " + minAge + " " + minAgeUnit + " old");
 			}
 		} 
 		else {
 			if (maxAge != null) {
-				buffer.append("| up to " + maxAge + " years old");
+				buffer.append(" up to " + maxAge + " " + maxAgeUnit + " old");
 			}
 		}	
 		if (effectiveDate != null) { 
@@ -73,7 +83,6 @@ public class AgeCohortDefinition extends BaseCohortDefinition {
 		
 		return buffer.toString();
 	}
-
 
     /**
      * @return the minAge
@@ -104,6 +113,55 @@ public class AgeCohortDefinition extends BaseCohortDefinition {
     }
     
     /**
+	 * @return the minAgeUnit
+	 */
+	public DurationUnit getMinAgeUnit() {
+		return minAgeUnit;
+	}
+
+	/**
+	 * @param minAgeUnit the minAgeUnit to set
+	 */
+	public void setMinAgeUnit(DurationUnit minAgeUnit) {
+		this.minAgeUnit = minAgeUnit;
+	}
+
+	/**
+	 * @return the maxAgeUnit
+	 */
+	public DurationUnit getMaxAgeUnit() {
+		return maxAgeUnit;
+	}
+
+	/**
+	 * @param maxAgeUnit the maxAgeUnit to set
+	 */
+	public void setMaxAgeUnit(DurationUnit maxAgeUnit) {
+		this.maxAgeUnit = maxAgeUnit;
+	}
+
+	/**
+	 * @return the unknownAgeIncluded
+	 */
+	public boolean isUnknownAgeIncluded() {
+		return getUnknownAgeIncluded();
+	}
+	
+	/**
+	 * @return the unknownAgeIncluded
+	 */
+	public boolean getUnknownAgeIncluded() {
+		return unknownAgeIncluded;
+	}
+
+	/**
+	 * @param unknownAgeIncluded the unknownAgeIncluded to set
+	 */
+	public void setUnknownAgeIncluded(boolean unknownAgeIncluded) {
+		this.unknownAgeIncluded = unknownAgeIncluded;
+	}
+
+	/**
      * @return the effectiveDate
      */
     public Date getEffectiveDate() {
