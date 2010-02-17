@@ -618,7 +618,7 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 		
 		List<String> uuidsToDelete = new ArrayList<String>();
 		Date now = new Date();
-		for (ReportRequest req : reportRequestHistory) {
+		for (ReportRequest req : getReportRequestHistory()) {
 			if (!req.isSaved() && DateUtil.getHoursBetween(req.getRequestDate(), now) >= ageInHoursToDelete) {
 				uuidsToDelete.add(req.getUuid());
 			}
