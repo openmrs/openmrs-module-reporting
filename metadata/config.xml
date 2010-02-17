@@ -15,7 +15,6 @@
 	<require_modules>
 	   	<require_module>org.openmrs.module.serialization.xstream</require_module>
 	   	<require_module>org.openmrs.module.htmlwidgets</require_module>
-	   	<require_module>org.openmrs.module.regimen</require_module>
 	</require_modules>
 
 	<!-- Extensions -->
