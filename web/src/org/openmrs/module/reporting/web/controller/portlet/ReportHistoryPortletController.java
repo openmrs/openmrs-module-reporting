@@ -35,15 +35,17 @@ public class ReportHistoryPortletController extends ReportingPortletController {
 				shortNames.put(r, "Web");
 				isWebRenderer.put(r, true);
 			} else {
-				String filename = r.getRenderingMode().getRenderer().getFilename(r.getReportDefinition(),
-				    r.getRenderingMode().getArgument());
 				try {
+					String filename = r.getRenderingMode().getRenderer().getFilename(r.getReportDefinition(),
+					    r.getRenderingMode().getArgument());
 					filename = filename.substring(filename.lastIndexOf('.') + 1);
 					filename = filename.toUpperCase();
+					shortNames.put(r, filename);
+					isWebRenderer.put(r, false);
 				}
-				catch (Exception ex) {}
-				shortNames.put(r, filename);
-				isWebRenderer.put(r, false);
+				catch (Exception ex) {
+					log.info("Error getting filename for ReportRequest " + r.getUuid() + " " , ex);
+				}
 			}
 		}
 		model.put("shortNames", shortNames);
