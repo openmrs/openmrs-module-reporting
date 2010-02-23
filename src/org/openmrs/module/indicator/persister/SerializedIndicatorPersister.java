@@ -16,9 +16,9 @@ package org.openmrs.module.indicator.persister;
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.db.SerializedObjectDAO;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.indicator.Indicator;
-import org.openmrs.serialization.OpenmrsSerializer;
+import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 
 /**
  * This class returns Indicators that have been Serialized to the database
@@ -29,89 +29,63 @@ import org.openmrs.serialization.OpenmrsSerializer;
  */
 @Handler(supports={Indicator.class})
 public class SerializedIndicatorPersister implements IndicatorPersister {
-
+	
     //****************
-    // Properties
+    // Constructor
     //****************
 	
-	private SerializedObjectDAO dao = null;
-	private OpenmrsSerializer serializer = null;
+	private SerializedIndicatorPersister() { }
 
     //****************
     // Instance methods
     //****************
+	
+	/**
+	 * Utility method that returns the SerializedDefinitionService
+	 */
+	public SerializedDefinitionService getService() {
+		return Context.getService(SerializedDefinitionService.class);
+	}
     
 	/**
      * @see IndicatorPersister#getIndicator(Integer)
      */
     public Indicator getIndicator(Integer id) {
-    	return dao.getObject(Indicator.class, id);
+    	return getService().getDefinition(Indicator.class, id);
     }
     
 	/**
      * @see IndicatorPersister#getIndicatorByUuid(String)
      */
     public Indicator getIndicatorByUuid(String uuid) {
-    	return dao.getObjectByUuid(Indicator.class, uuid);
+    	return getService().getDefinitionByUuid(Indicator.class, uuid);
     }
 
 	/**
      * @see IndicatorPersister#getAllIndicators(boolean)
      */
     public List<Indicator> getAllIndicators(boolean includeRetired) {
-    	return dao.getAllObjects(Indicator.class, includeRetired);
+    	return getService().getAllDefinitions(Indicator.class, includeRetired);
     }
 
 	/**
      * @see IndicatorPersister#getIndicatorByName(String, boolean)
      */
     public List<Indicator> getIndicators(String name, boolean exactMatchOnly) {
-    	return dao.getAllObjectsByName(Indicator.class, name, exactMatchOnly);
+    	return getService().getDefinitions(Indicator.class, name, exactMatchOnly);
     }
     
 	/**
      * @see IndicatorPersister#saveIndicator(Indicator)
      */
     public Indicator saveIndicator(Indicator indicator) {
-    	return dao.saveObject(indicator, serializer);
+    	return getService().saveDefinition(indicator);
     }
 
 	/**
      * @see IndicatorPersister#purgeIndicator(Indicator)
      */
     public void purgeIndicator(Indicator indicator) {
-    	dao.purgeObject(indicator.getId());
-    }
-
-    //****************
-    // Property access
-    //****************
-	
-    /**
-     * @return the dao
-     */
-    public SerializedObjectDAO getDao() {
-    	return dao;
-    }
-
-    /**
-     * @param dao the dao to set
-     */
-    public void setDao(SerializedObjectDAO dao) {
-    	this.dao = dao;
-    }
-    
-    /**
-     * @return the serializer
-     */
-    public OpenmrsSerializer getSerializer() {
-    	return serializer;
-    }
-	
-    /**
-     * @param serializer the serializer to set
-     */
-    public void setSerializer(OpenmrsSerializer serializer) {
-    	this.serializer = serializer;
+    	getService().purgeDefinition(indicator);
     }
 }

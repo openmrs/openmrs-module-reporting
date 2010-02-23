@@ -74,6 +74,13 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
 		}
 		return ret;
     }
+    
+	/**
+	 * @see CohortDefinitionPersister#getNumberOfCohortDefinitions(boolean)
+	 */
+	public int getNumberOfCohortDefinitions(boolean includeRetired) {
+		return Context.getCohortService().getAllCohorts(includeRetired).size();
+	}
 
 	/**
      * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)

@@ -111,14 +111,7 @@
 													labeled: <input type="text" id="paramLabel${p.field.name}" name="parameter.${p.field.name}.label" size="30"/>
 												</span>
 												<span id="fixedValue${p.field.name}" style="display:none;">: 
-													<c:choose>
-														<c:when test="${p.field.name == 'serializedData'}">
-															<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}" attributes="rows=20|cols=100"/>
-														</c:when>
-														<c:otherwise>
-															<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
-														</c:otherwise>
-													</c:choose>
+													<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
 												</span>
 											</td>
 										</tr>

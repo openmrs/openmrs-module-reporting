@@ -3,9 +3,9 @@ package org.openmrs.module.indicator.persister;
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.db.SerializedObjectDAO;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.indicator.dimension.Dimension;
-import org.openmrs.serialization.OpenmrsSerializer;
+import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 
 /**
  * This class returns Dimensions that have been Serialized to the database
@@ -18,71 +18,60 @@ import org.openmrs.serialization.OpenmrsSerializer;
 public class SerializedDimensionPersister implements DimensionPersister {
 
     //****************
-    // Properties
+    // Constructor
     //****************
-
-	private SerializedObjectDAO dao = null;
-	private OpenmrsSerializer serializer = null;
-
-	/**
-	 * Sets the DAO
-	 * 
-	 * @param dao
-	 */
-    public void setDao(SerializedObjectDAO dao) {
-    	this.dao = dao;
-    }
-
-	/**
-	 * Sets the serializer
-	 * 
-	 * @param serializer
-	 */
-    public void setSerializer(OpenmrsSerializer serializer) {
-    	this.serializer = serializer;
-    }
-
+	private SerializedDimensionPersister() { }
+	
     //****************
     // Instance methods
     //****************
+	
+	/**
+	 * Utility method that returns the SerializedDefinitionService
+	 */
+	public SerializedDefinitionService getService() {
+		return Context.getService(SerializedDefinitionService.class);
+	}
+	
+	/**
+	 * @see DimensionPersister#getDimension(Integer)
+	 */
+	public Dimension getDimension(Integer id) {
+		return getService().getDefinition(Dimension.class, id);
+	}
+	
+	/**
+	 * @see DimensionPersister#getDimensionByUuid(String)
+	 */
+	public Dimension getDimensionByUuid(String uuid) {
+		return getService().getDefinitionByUuid(Dimension.class, uuid);
+	}
 
 	/**
 	 * @see DimensionPersister#getAllDimensions(boolean)
 	 */
 	public List<Dimension> getAllDimensions(boolean includeRetired) {
-		return dao.getAllObjects(Dimension.class, includeRetired);
+		return getService().getAllDefinitions(Dimension.class, includeRetired);
 	}
 	
 	/**
-	 * @see org.openmrs.module.indicator.persister.DimensionPersister#getDimension(java.lang.Integer)
-	 */
-	public Dimension getDimension(Integer id) {
-		return dao.getObject(Dimension.class, id);
-	}
-	
-	/**
-	 * @see org.openmrs.module.indicator.persister.DimensionPersister#getDimensionByUuid(java.lang.String)
-	 */
-	public Dimension getDimensionByUuid(String uuid) {
-		return dao.getObjectByUuid(Dimension.class, uuid);
-	}
-	
-	/**
-	 * @see org.openmrs.module.indicator.persister.DimensionPersister#getDimensions(java.lang.String, boolean)
+	 * @see DimensionPersister#getDimensions(String, boolean)
 	 */
 	public List<Dimension> getDimensions(String name, boolean exactMatchOnly) {
-		return dao.getAllObjectsByName(Dimension.class, name, exactMatchOnly);
+		return getService().getDefinitions(Dimension.class, name, exactMatchOnly);
 	}
 	
 	/**
-	 * @see org.openmrs.module.indicator.persister.DimensionPersister#purgeDimension(org.openmrs.module.indicator.dimension.Dimension)
+	 * @see DimensionPersister#purgeDimension(Dimension)
 	 */
 	public void purgeDimension(Dimension dimension) {
-		dao.purgeObject(dimension.getId());
+		getService().purgeDefinition(dimension);
 	}
 	
+	/**
+	 * @see DimensionPersister#saveDimension(Dimension)
+	 */
 	public Dimension saveDimension(Dimension dimension) {
-		return dao.saveObject(dimension, serializer);
+		return getService().saveDefinition(dimension);
 	}
-	
 }

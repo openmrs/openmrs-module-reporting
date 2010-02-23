@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.cohort.definition.util.CohortFilter;
@@ -44,6 +43,7 @@ import org.openmrs.module.report.renderer.RenderingMode;
 import org.openmrs.module.report.renderer.ReportRenderer;
 import org.openmrs.module.report.service.db.ReportDAO;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.module.util.DateUtil;
 import org.openmrs.scheduler.SchedulerException;
@@ -71,47 +71,44 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 
 	// Data access object
 	private ReportDAO reportDAO;
-	private SerializedObjectDAO serializedObjectDAO;
-	private OpenmrsSerializer serializer;
 	
 	// history of run reports
 	private List<ReportRequest> reportRequestHistory;
 	
-	// Name of the task to delete old reportsconcept word update task.
+	// Name of the task to delete old reports
 	public static final String DELETE_OLD_REPORTS_TASK_NAME = "Delete Old Reports";
 		
-    /**
-     * @param serializer the serializer to set
-     */
-    public void setSerializer(OpenmrsSerializer serializer) {
-    	this.serializer = serializer;
-    }
-
 	/**
 	 * Default constructor
 	 */
-	public BaseReportService() {
+	public BaseReportService() { }
+	
+	/**
+	 * Utility method that returns the SerializedDefinitionService
+	 */
+	public SerializedDefinitionService getService() {
+		return Context.getService(SerializedDefinitionService.class);
 	}
 
 	/**
 	 * @see ReportService#saveReportDefinition(ReportDefinition)
 	 */
 	public ReportDefinition saveReportDefinition(ReportDefinition reportDefinition) throws APIException {
-		return serializedObjectDAO.saveObject(reportDefinition, serializer);
+		return getService().saveDefinition(reportDefinition);
 	}
 	
 	/**
 	 * @see ReportService#getReportDefinition(Integer)
 	 */
 	public ReportDefinition getReportDefinition(Integer reportDefinitionId) throws APIException {
-		return serializedObjectDAO.getObject(ReportDefinition.class, reportDefinitionId);
+		return getService().getDefinition(ReportDefinition.class, reportDefinitionId);
 	}
 
 	/**
 	 * @see ReportService#getReportDefinitionByUuid(String)
 	 */
 	public ReportDefinition getReportDefinitionByUuid(String uuid) throws APIException {
-		return serializedObjectDAO.getObjectByUuid(ReportDefinition.class, uuid);
+		return getService().getDefinitionByUuid(ReportDefinition.class, uuid);
 	}
 	
 	/**
@@ -147,14 +144,14 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	 * @see ReportService#getReportDefinitions(boolean)
 	 */
 	public List<ReportDefinition> getReportDefinitions(boolean includeRetired) throws APIException {
-		return serializedObjectDAO.getAllObjects(ReportDefinition.class, includeRetired);
+		return getService().getAllDefinitions(ReportDefinition.class, includeRetired);
 	}
 	
 	/**
 	 * @see ReportService#deleteReportDefinition(ReportDefinition)
 	 */
 	public void deleteReportDefinition(ReportDefinition reportDefinition) {
-		serializedObjectDAO.purgeObject(reportDefinition.getId());
+		getService().purgeDefinition(reportDefinition);
 	}
 
 	/**
@@ -292,20 +289,6 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	 */
 	public void setReportDAO(ReportDAO reportDAO) {
 		this.reportDAO = reportDAO;
-	}
-
-	/**
-	 * @return the serializedObjectDAO
-	 */
-	public SerializedObjectDAO getSerializedObjectDAO() {
-		return serializedObjectDAO;
-	}
-
-	/**
-	 * @param serializedObjectDAO the serializedObjectDAO to set
-	 */
-	public void setSerializedObjectDAO(SerializedObjectDAO serializedObjectDAO) {
-		this.serializedObjectDAO = serializedObjectDAO;
 	}
 
 	/**

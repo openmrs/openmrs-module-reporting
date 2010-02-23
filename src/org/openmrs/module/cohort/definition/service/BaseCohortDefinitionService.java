@@ -177,6 +177,17 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 		}
 		return ret;
 	}
+	
+	/** 
+	 * @see CohortDefinitionService#getNumberOfCohortDefinitions(boolean)
+	 */
+	public int getNumberOfCohortDefinitions(boolean includeRetired) {
+		int i = 0;
+		for (CohortDefinitionPersister p : HandlerUtil.getHandlersForType(CohortDefinitionPersister.class, null)) {
+			i += p.getNumberOfCohortDefinitions(includeRetired);
+		}
+		return i;
+	}
 
 	/** 
 	 * @see CohortDefinitionService#getCohortDefinitionByName(String, boolean)

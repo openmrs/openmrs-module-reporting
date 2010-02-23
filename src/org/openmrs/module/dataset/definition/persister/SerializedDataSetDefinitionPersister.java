@@ -13,15 +13,12 @@
  */
 package org.openmrs.module.dataset.definition.persister;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.db.SerializedObject;
-import org.openmrs.api.db.SerializedObjectDAO;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.SerializedObjectDataSetDefinition;
-import org.openmrs.serialization.OpenmrsSerializer;
+import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 
 /**
  * This class returns DataSetDefinitions that have been Serialized to the database
@@ -34,122 +31,67 @@ import org.openmrs.serialization.OpenmrsSerializer;
 public class SerializedDataSetDefinitionPersister implements DataSetDefinitionPersister {
 
     //****************
-    // Properties
+    // Constructor
     //****************
+	private SerializedDataSetDefinitionPersister() { }
 	
-	private SerializedObjectDAO dao = null;
-	private OpenmrsSerializer serializer = null;
-
     //****************
     // Instance methods
     //****************
-    
+	
+	/**
+	 * Utility method that returns the SerializedDefinitionService
+	 */
+	public SerializedDefinitionService getService() {
+		return Context.getService(SerializedDefinitionService.class);
+	}
+
 	/**
      * @see DataSetDefinitionPersister#getDataSetDefinition(Integer)
      */
     public DataSetDefinition getDataSetDefinition(Integer id) {
-    	SerializedObject so = dao.getSerializedObject(id);
-    	try {
-    		return dao.convertSerializedObject(DataSetDefinition.class, so);
-    	}
-    	catch (Exception e) {
-    		return new SerializedObjectDataSetDefinition(so);
-    	}
+    	return getService().getDefinition(DataSetDefinition.class, id);
     }
     
 	/**
      * @see DataSetDefinitionPersister#getDataSetDefinitionByUuid(String)
      */
     public DataSetDefinition getDataSetDefinitionByUuid(String uuid) {
-    	SerializedObject so = dao.getSerializedObjectByUuid(uuid);
-    	try {
-    		return dao.convertSerializedObject(DataSetDefinition.class, so);
-    	}
-    	catch (Exception e) {
-    		return new SerializedObjectDataSetDefinition(so);
-    	}
+     	return getService().getDefinitionByUuid(DataSetDefinition.class, uuid);
     }
 
 	/**
      * @see DataSetDefinitionPersister#getAllDataSetDefinitions(boolean)
      */
     public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {
-    	List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
-    	for (SerializedObject so : dao.getAllSerializedObjects(DataSetDefinition.class, includeRetired)) {
-        	try {
-        		ret.add(dao.convertSerializedObject(DataSetDefinition.class, so));
-        	}
-        	catch (Exception e) {
-        		ret.add(new SerializedObjectDataSetDefinition(so));
-        	}
-    	}
-    	return ret;
+     	return getService().getAllDefinitions(DataSetDefinition.class, includeRetired);
     }
+    
+	/**
+	 * @see DataSetDefinitionPersister#getNumberOfDataSetDefinitions(boolean)
+	 */
+	public int getNumberOfDataSetDefinitions(boolean includeRetired) {
+    	return getService().getNumberOfDefinitions(DataSetDefinition.class, includeRetired);
+	}
 
 	/**
      * @see DataSetDefinitionPersister#getDataSetDefinitionByName(String, boolean)
      */
     public List<DataSetDefinition> getDataSetDefinitions(String name, boolean exactMatchOnly) {
-    	List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
-    	for (SerializedObject so : dao.getAllSerializedObjectsByName(DataSetDefinition.class, name, exactMatchOnly)) {
-        	try {
-        		ret.add(dao.convertSerializedObject(DataSetDefinition.class, so));
-        	}
-        	catch (Exception e) {
-        		ret.add(new SerializedObjectDataSetDefinition(so));
-        	}
-    	}
-    	return ret;
+    	return getService().getDefinitions(DataSetDefinition.class, name, exactMatchOnly);
     }
     
 	/**
      * @see DataSetDefinitionPersister#saveDataSetDefinition(DataSetDefinition)
      */
     public DataSetDefinition saveDataSetDefinition(DataSetDefinition dataSetDefinition) {
-    	if (dataSetDefinition instanceof SerializedObjectDataSetDefinition) {
-    		SerializedObjectDataSetDefinition sod = (SerializedObjectDataSetDefinition)dataSetDefinition;
-    		DataSetDefinition newDef = dao.convertSerializedObject(DataSetDefinition.class, sod.toSerializedObject());
-    		return dao.saveObject(newDef);
-    	}
-    	return dao.saveObject(dataSetDefinition, serializer);
+     	return getService().saveDefinition(dataSetDefinition);
     }
 
 	/**
      * @see DataSetDefinitionPersister#purgeDataSetDefinition(DataSetDefinition)
      */
     public void purgeDataSetDefinition(DataSetDefinition dataSetDefinition) {
-    	dao.purgeObject(dataSetDefinition.getId());
-    }
-
-    //****************
-    // Property access
-    //****************
-	
-    /**
-     * @return the dao
-     */
-    public SerializedObjectDAO getDao() {
-    	return dao;
-    }
-
-    /**
-     * @param dao the dao to set
-     */
-    public void setDao(SerializedObjectDAO dao) {
-    	this.dao = dao;
-    }
-    
-    /**
-     * @return the serializer
-     */
-    public OpenmrsSerializer getSerializer() {
-    	return serializer;
-    }
-	
-    /**
-     * @param serializer the serializer to set
-     */
-    public void setSerializer(OpenmrsSerializer serializer) {
-    	this.serializer = serializer;
+    	getService().purgeDefinition(dataSetDefinition);
     }
 }

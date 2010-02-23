@@ -57,6 +57,13 @@ public class MockCohortDefinitionPersister implements CohortDefinitionPersister 
     public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired) {
     	return cohortDefinitions;
     }
+    
+	/**
+	 * @see CohortDefinitionPersister#getNumberOfCohortDefinitions(boolean)
+	 */
+	public int getNumberOfCohortDefinitions(boolean includeRetired) {
+		return cohortDefinitions.size();
+	}
 
 	/**
      * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)

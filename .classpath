@@ -50,7 +50,7 @@
 	<classpathentry kind="lib" path="lib-common/serialization.xstream-0.1.6.jar" sourcepath="/serialization.xstream/src"/>
 	<classpathentry kind="lib" path="lib-common/hibernate325-mod.jar"/>
 	<classpathentry kind="lib" path="lib-common/htmlwidgets-1.5.0.jar"/>
-	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.2.11623-dev.jar"/>
+	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.2.11623-dev.jar" sourcepath="/openmrs-1.5.x"/>
 	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.2.11623-dev.jar"/>
 	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.2.11623-dev.jar"/>
 	<classpathentry kind="output" path="build"/>

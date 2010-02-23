@@ -16,12 +16,12 @@ package org.openmrs.module.indicator.dimension;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openmrs.module.evaluation.parameter.Parameterizable;
+import org.openmrs.module.evaluation.Definition;
 
 /**
  * A Dimension represents the ability to produce classifications that cover an entire spectrum of values
  */
-public interface Dimension extends Parameterizable {
+public interface Dimension extends Definition {
 	
 	/**
 	 * Reserved Dimension Option Key that represents all elements

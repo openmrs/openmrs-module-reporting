@@ -33,27 +33,32 @@
 			</list>
 		</property>
 	</bean>	
-
-	<!-- Initialize report persistence handlers -->
-	<bean id="serializedCohortDefinitionPersister" class="org.openmrs.module.cohort.definition.persister.SerializedCohortDefinitionPersister">
-		<property name="dao"><ref bean="serializedObjectDAO"/></property>
-		<property name="serializer"><ref bean="reportingSerializer"/></property>	
-	</bean>
-	<bean id="serializedDataSetDefinitionPersister" class="org.openmrs.module.dataset.definition.persister.SerializedDataSetDefinitionPersister">
-		<property name="dao"><ref bean="serializedObjectDAO"/></property>
-		<property name="serializer"><ref bean="reportingSerializer"/></property>
-	</bean>	
-	<bean id="serializedIndicatorPersister" class="org.openmrs.module.indicator.persister.SerializedIndicatorPersister">
-		<property name="dao"><ref bean="serializedObjectDAO"/></property>
-		<property name="serializer"><ref bean="reportingSerializer"/></property>
-	</bean>
-	<bean id="serializedDimensionPersister" class="org.openmrs.module.indicator.persister.SerializedDimensionPersister">
-		<property name="dao"><ref bean="serializedObjectDAO"/></property>
-		<property name="serializer"><ref bean="reportingSerializer"/></property>
+	
+	<!--  Services -->
+	
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list merge="true">
+				<value>org.openmrs.module.reporting.definition.service.SerializedDefinitionService</value> 
+				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+					<property name="transactionManager"><ref bean="transactionManager"/></property>
+					<property name="target">
+						<bean class="org.openmrs.module.reporting.definition.service.BaseSerializedDefinitionService">
+							<property name="dao"><ref bean="serializedObjectDAO"/></property>
+							<property name="serializer"><ref bean="reportingSerializer"/></property>
+						</bean>
+					</property>
+					<property name="preInterceptors">
+						<ref bean="serviceInterceptors" />
+					</property>
+					<property name="transactionAttributeSource">
+						<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+					</property>
+				</bean>		
+			</list>
+		</property>
 	</bean>
 	
-	
-	<!--  Base Report Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list merge="true">
@@ -62,13 +67,11 @@
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
 						<bean class="org.openmrs.module.report.service.BaseReportService">
-							<property name="serializedObjectDAO"><ref bean="serializedObjectDAO"/></property>
 							<property name="reportDAO">
 								<bean class="org.openmrs.module.report.service.db.HibernateReportDAO">
 									<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
 								</bean>
 							</property>
-							<property name="serializer"><ref bean="reportingSerializer"/></property>
 						</bean>
 					</property>
 					<property name="preInterceptors">

@@ -43,6 +43,12 @@ public interface CohortDefinitionPersister {
 	public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired);
 	
 	/**
+	 * @param includeRetired indicates whether to also include retired CohortDefinitions in the count
+	 * @return the number of saved Cohort Definitions
+	 */
+	public int getNumberOfCohortDefinitions(boolean includeRetired);
+	
+	/**
 	 * Returns a List of {@link CohortDefinition} whose name contains the passed name.
 	 * An empty list will be returned if there are none found. Search is case insensitive.
 	 * @param name The search string

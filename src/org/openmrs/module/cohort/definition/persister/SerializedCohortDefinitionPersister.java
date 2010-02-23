@@ -13,17 +13,14 @@
  */
 package org.openmrs.module.cohort.definition.persister;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.db.SerializedObject;
-import org.openmrs.api.db.SerializedObjectDAO;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.SerializedObjectCohortDefinition;
-import org.openmrs.serialization.OpenmrsSerializer;
+import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 
 /**
  * This class returns CohortDefinitions that have been Serialized to the database
@@ -43,119 +40,62 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
 	private SerializedCohortDefinitionPersister() { }
 	
     //****************
-    // Properties
-    //****************
-	
-	private SerializedObjectDAO dao = null;
-	private OpenmrsSerializer serializer = null;
-	
-    /**
-     * @return the dao
-     */
-    public SerializedObjectDAO getDao() {
-    	return dao;
-    }
-
-    /**
-     * @param dao the dao to set
-     */
-    public void setDao(SerializedObjectDAO dao) {
-    	this.dao = dao;
-    }
-    
-    /**
-     * @return the serializer
-     */
-    public OpenmrsSerializer getSerializer() {
-    	return serializer;
-    }
-	
-    /**
-     * @param serializer the serializer to set
-     */
-    public void setSerializer(OpenmrsSerializer serializer) {
-    	this.serializer = serializer;
-    }
-	
-	
-    //****************
     // Instance methods
     //****************
+	
+	/**
+	 * Utility method that returns the SerializedDefinitionService
+	 */
+	public SerializedDefinitionService getService() {
+		return Context.getService(SerializedDefinitionService.class);
+	}
 
 	/**
      * @see CohortDefinitionPersister#getCohortDefinition(Integer)
      */
     public CohortDefinition getCohortDefinition(Integer id) {
-    	SerializedObject so = dao.getSerializedObject(id);
-    	try {
-    		return dao.convertSerializedObject(CohortDefinition.class, so);
-    	}
-    	catch (Exception e) {
-    		return new SerializedObjectCohortDefinition(so);
-    	}
+    	return getService().getDefinition(CohortDefinition.class, id);
     }
     
 	/**
      * @see CohortDefinitionPersister#getCohortDefinitionByUuid(String)
      */
     public CohortDefinition getCohortDefinitionByUuid(String uuid) {
-    	SerializedObject so = dao.getSerializedObjectByUuid(uuid);
-    	try {
-    		return dao.convertSerializedObject(CohortDefinition.class, so);
-    	}
-    	catch (Exception e) {
-    		return new SerializedObjectCohortDefinition(so);
-    	}
+     	return getService().getDefinitionByUuid(CohortDefinition.class, uuid);
     }
 
 	/**
      * @see CohortDefinitionPersister#getAllCohortDefinitions(boolean)
      */
     public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired) {
-    	List<CohortDefinition> ret = new ArrayList<CohortDefinition>();
-    	for (SerializedObject so : dao.getAllSerializedObjects(CohortDefinition.class, includeRetired)) {
-        	try {
-        		ret.add(dao.convertSerializedObject(CohortDefinition.class, so));
-        	}
-        	catch (Exception e) {
-        		ret.add(new SerializedObjectCohortDefinition(so));
-        	}
-    	}
-    	return ret;
+     	return getService().getAllDefinitions(CohortDefinition.class, includeRetired);
     }
+    
+	/**
+	 * @see CohortDefinitionPersister#getNumberOfCohortDefinitions(boolean)
+	 */
+	public int getNumberOfCohortDefinitions(boolean includeRetired) {
+    	return getService().getNumberOfDefinitions(CohortDefinition.class, includeRetired);
+	}
 
 	/**
      * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)
      */
     public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) {
-    	List<CohortDefinition> ret = new ArrayList<CohortDefinition>();
-    	for (SerializedObject so : dao.getAllSerializedObjectsByName(CohortDefinition.class, name, exactMatchOnly)) {
-        	try {
-        		ret.add(dao.convertSerializedObject(CohortDefinition.class, so));
-        	}
-        	catch (Exception e) {
-        		ret.add(new SerializedObjectCohortDefinition(so));
-        	}
-    	}
-    	return ret;
+    	return getService().getDefinitions(CohortDefinition.class, name, exactMatchOnly);
     }
     
 	/**
      * @see CohortDefinitionPersister#saveCohortDefinition(CohortDefinition)
      */
     public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {
-    	if (cohortDefinition instanceof SerializedObjectCohortDefinition) {
-    		SerializedObjectCohortDefinition socd = (SerializedObjectCohortDefinition)cohortDefinition;
-    		CohortDefinition newDef = dao.convertSerializedObject(CohortDefinition.class, socd.toSerializedObject());
-    		return dao.saveObject(newDef);
-    	}
-    	return dao.saveObject(cohortDefinition, serializer);
+     	return getService().saveDefinition(cohortDefinition);
     }
 
 	/**
      * @see CohortDefinitionPersister#purgeCohortDefinition(CohortDefinition)
      */
     public void purgeCohortDefinition(CohortDefinition cohortDefinition) {
-    	dao.purgeObject(cohortDefinition.getId());
+    	getService().purgeDefinition(cohortDefinition);
     }
 }
