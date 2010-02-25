@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.web.controller;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -13,6 +14,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.module.evaluation.Definition;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
+import org.openmrs.module.util.ObjectUtil;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.stereotype.Controller;
@@ -34,9 +36,13 @@ public class InvalidSerializedDefinitionController {
     		ModelMap model) {
     	
     	SerializedDefinitionService service = Context.getService(SerializedDefinitionService.class);
-    	List<SerializedObject> sds = service.getInvalidDefinitions(type, true);
     	model.addAttribute("type", type);
+    	List<SerializedObject> sds = new ArrayList<SerializedObject>();
+    	if (ObjectUtil.notNull(type)) {
+    		sds = service.getInvalidDefinitions(type, true);
+    	}
     	model.addAttribute("serializedDefinitions", sds);
+    	model.addAttribute("supportedTypes", service.getSupportedDefinitionTypes());
     }
     
     /**
@@ -84,8 +90,9 @@ public class InvalidSerializedDefinitionController {
      * Edit Invalid Serialized Definition Page
      */
     @RequestMapping("/module/reporting/definition/testSerializedDefinition")
+    @SuppressWarnings("unchecked")
     public void testSerializedDefinition(ModelMap model, HttpServletRequest request, HttpServletResponse response,
-            @RequestParam(required=true, value="type") Class<? extends Definition> type,
+            @RequestParam(required=true, value="type") String type,
             @RequestParam(required=true, value="serializationClass") String serializationClass,
             @RequestParam(required=true, value="data") String data) throws Exception {
     	
@@ -93,9 +100,9 @@ public class InvalidSerializedDefinitionController {
     	response.setContentType("text/plain");
     	ServletOutputStream out = response.getOutputStream();
     	try {
-    		@SuppressWarnings("unchecked")
+    		Class<? extends Definition> typeClass = (Class<? extends Definition>)Context.loadClass(type);
     		Class<? extends OpenmrsSerializer> s = (Class<? extends OpenmrsSerializer>)Context.loadClass(serializationClass);
-    		Context.getSerializationService().deserialize(data, type, s);
+    		Context.getSerializationService().deserialize(data, typeClass, s);
     		out.print("Success");
     	}
     	catch (Exception e) {

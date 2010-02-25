@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
+<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/definition/invalidSerializedDefinitions.form" />
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
@@ -13,6 +13,10 @@
 			"bInfo": true,
 			"bAutoWidth": true
 		});
+
+		$('#typeSelector').change(function(event){
+			document.location.href='invalidSerializedDefinitions.form?type=' + this.value;
+		});
 	});
 
 	function confirmDelete(name, uuid) {
@@ -20,13 +24,22 @@
 			document.location.href = 'purgeSerializedDefinition.form?uuid='+uuid;
 		}
 	}
+	
 </script>
 
 <div id="page">
 
 	<div id="container">
 	
-		<h1>Invalid Serialized Definitions of Type: ${type.simpleName}</h1>
+		<h1>
+			Invalid Serialized Definitions of Type:
+			<select name="type" id="typeSelector">
+				<option value=""></option>
+				<c:forEach items="${supportedTypes}" var="t">
+					<option value="${t.name}" <c:if test="${t == type}">selected</c:if>>${t.simpleName}</option>
+				</c:forEach>
+			</select>
+		</h1>
 		
 		<br/>
 		<table class="reporting-data-table display" >

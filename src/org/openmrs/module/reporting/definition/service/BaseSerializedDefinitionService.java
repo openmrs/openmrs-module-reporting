@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -78,6 +79,20 @@ public class BaseSerializedDefinitionService extends BaseOpenmrsService implemen
     //****************
     // Instance methods
     //****************
+    
+	/** 
+	 * @see SerializedDefinitionService#getSupportedDefinitionTypes()
+	 */
+    @SuppressWarnings("unchecked")
+	public List<Class<Definition>> getSupportedDefinitionTypes() {
+		List<Class<Definition>> d = new ArrayList<Class<Definition>>();
+		for (Class<? extends OpenmrsObject> c : dao.getSupportedTypes()) {
+			if (Definition.class.isAssignableFrom(c)) {
+				d.add((Class<Definition>)c);
+			}
+		}
+		return d;
+	}
 
 	/**
      * @see SerializedDefinitionService#getDefinition(Class, Integer)
@@ -92,7 +107,7 @@ public class BaseSerializedDefinitionService extends BaseOpenmrsService implemen
     		return null;
     	}
     }
-    
+
 	/**
      * @see SerializedDefinitionService#getDefinitionByUuid(Class, String)
      */

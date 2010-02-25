@@ -28,6 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 public interface SerializedDefinitionService extends OpenmrsService {
 	
 	/**
+	 * @return all supported Definition Types
+	 */
+	public <T extends Definition> List<Class<T>> getSupportedDefinitionTypes();
+	
+	/**
 	 * @param id
 	 * @return the Definition with the given id
 	 */
