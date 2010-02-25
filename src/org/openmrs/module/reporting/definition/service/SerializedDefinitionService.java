@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.api.db.SerializedObject;
 import org.openmrs.module.evaluation.Definition;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,4 +73,29 @@ public interface SerializedDefinitionService extends OpenmrsService {
 	 * @param definition
 	 */
 	public <T extends Definition> void purgeDefinition(T definition);
+	
+	/**
+	 * Deletes a Definition from the database with the given uuid
+	 * @param id
+	 */
+	public void purgeDefinition(String uuid);
+	
+	/**
+	 * @param definitionType the type of Definition
+	 * @return the SerializedObject with this uuid
+	 */
+    public SerializedObject getSerializedDefinitionByUuid(String uuid);
+	
+	/**
+	 * @param definitionType the type of Definition
+	 * @param includeRetired indicates whether to also include retired Definitions in the count
+	 * @return the SerializedObjects that cannot be deserialized
+	 */
+    public <T extends Definition> List<SerializedObject> getInvalidDefinitions(Class<T> definitionType, boolean includeRetired);
+    
+	/**
+	 * @param serializedDefinition the SerializedObject definition to save
+	 * @return the SerializedObject
+	 */
+    public void saveSerializedDefinition(SerializedObject serializedDefinition);
 }

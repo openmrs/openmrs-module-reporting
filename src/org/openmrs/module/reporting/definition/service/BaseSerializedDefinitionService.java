@@ -124,6 +124,22 @@ public class BaseSerializedDefinitionService extends BaseOpenmrsService implemen
     }
     
     /**
+     * @see SerializedDefinitionService#getInvalidDefinitions(Class, boolean)
+     */
+    public <T extends Definition> List<SerializedObject> getInvalidDefinitions(Class<T> definitionType, boolean includeRetired) {
+    	List<SerializedObject> ret = new ArrayList<SerializedObject>();
+    	for (SerializedObject so : dao.getAllSerializedObjects(definitionType, includeRetired)) {
+        	try {
+        		dao.convertSerializedObject(definitionType, so);
+        	}
+        	catch (Exception e) {
+        		ret.add(so);
+        	}
+    	}
+    	return ret;
+    }
+    
+    /**
      * @see SerializedDefinitionService#getNumberOfDefinitions(Class, boolean)
      */
 	public <T extends Definition> int getNumberOfDefinitions(Class<T> definitionType, boolean includeRetired) {
@@ -159,4 +175,27 @@ public class BaseSerializedDefinitionService extends BaseOpenmrsService implemen
     public <T extends Definition> void purgeDefinition(T definition) {
     	dao.purgeObject(definition.getId());
     }
+    
+	/** 
+	 * @see SerializedDefinitionService#purgeDefinition(String)
+	 */
+	public void purgeDefinition(String uuid) {
+		SerializedObject obj = dao.getSerializedObjectByUuid(uuid);
+		dao.purgeObject(obj.getId());
+	}
+
+	/** 
+	 * @see SerializedDefinitionService#getSerializedDefinitionByUuid(String)
+	 */
+	public SerializedObject getSerializedDefinitionByUuid(String uuid) {
+		return dao.getSerializedObjectByUuid(uuid);
+	}
+
+	/** 
+	 * @see SerializedDefinitionService#saveSerializedDefinition(SerializedObject)
+	 */
+	public void saveSerializedDefinition(SerializedObject serializedDefinition) {
+		Definition d = dao.convertSerializedObject(Definition.class, serializedDefinition);
+		dao.saveObject(d);
+	}
 }
