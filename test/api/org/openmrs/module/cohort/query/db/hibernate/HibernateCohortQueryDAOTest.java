@@ -156,13 +156,13 @@ public class HibernateCohortQueryDAOTest extends BaseModuleContextSensitiveTest 
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2007, 0, 1); 
 		
-		Cohort cohort = dao.getPatientsHavingStartedStates(states, null, null);
+		Cohort cohort = dao.getPatientsHavingStates(states, null, null, null, null);
 		log.warn("# Patients ON ARVs ever: " + cohort.size());
 
-		cohort = dao.getPatientsHavingStartedStates(states, calendar.getTime(), null);
+		cohort = dao.getPatientsHavingStates(states, calendar.getTime(), null, null, null);
 		log.warn("# Patients ON ARVs since date: " + cohort.size());
 
-		cohort = dao.getPatientsHavingStartedStates(states, calendar.getTime(), new Date());
+		cohort = dao.getPatientsHavingStates(states, calendar.getTime(), new Date(), null, null);
 		log.warn("# Patients ON ARVs during period: " + cohort.size());
 
 	}
@@ -181,13 +181,13 @@ public class HibernateCohortQueryDAOTest extends BaseModuleContextSensitiveTest 
 		List<Program> programs = new ArrayList<Program>();
 		programs.add(program);
 				
-		Cohort cohort = dao.getPatientsHavingStartedStates(states, null, null);
+		Cohort cohort = dao.getPatientsHavingStates(states, null, null, null, null);
 		log.warn("# Patients Defaulted ever: " + cohort.size());
 		
-		cohort = dao.getPatientsHavingStartedStates(states, calendar.getTime(), null);
+		cohort = dao.getPatientsHavingStates(states, calendar.getTime(), null, null, null);
 		log.warn("# Patients Defaulted since date: " + cohort.size());
 		
-		cohort = dao.getPatientsHavingStartedStates(states, calendar.getTime(), new Date());
+		cohort = dao.getPatientsHavingStates(states, calendar.getTime(), new Date(), null, null);
 		log.warn("# Patients Defaulted during period: " + cohort.size());
 	}		
 	

@@ -21,11 +21,7 @@ public interface CohortQueryDAO {
 	
     // Started or stopped programs in specified periods
 	public Cohort getPatientsHavingProgramEnrollment(List<Program> programs, Date enrolledOnOrAfter, Date enrolledOnOrBefore, Date completedOnOrAfter, Date completedOnOrBefore);
-    
-    // Started or stopped program states during a period
-    public Cohort getPatientsHavingStartedStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore);
-    public Cohort getPatientsHavingCompletedStates(List<ProgramWorkflowState> states, Date completedOnOrAfter, Date completedOnOrBefore);    
-    
+        
     // Started or stopped drugs during a period
     public Cohort getPatientsHavingActiveDrugOrders(List<Drug> drugs, Date asOfDate);
     public Cohort getPatientsHavingStartedDrugOrders(List<Drug> drugs, Date startedOnOrAfter, Date startedOnOrBefore);
@@ -41,5 +37,11 @@ public interface CohortQueryDAO {
 	
 	// Patients who were in a Program on the specified date or range
 	public Cohort getPatientsInProgram(List<Program> programs, Date onOrAfter, Date onOrBefore);
+
+	// based on ranges of start and end dates for patient_state
+	public Cohort getPatientsHavingStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore, Date endedOnOrAfter, Date endedOnOrBefore);
+
+	// Patients who were in a State in the specified date range
+	public Cohort getPatientsInStates(List<ProgramWorkflowState> states, Date onOrAfter, Date onOrBefore);
 
 }

@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.web.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
+import org.openmrs.module.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.dataset.DataSet;
 import org.openmrs.module.dataset.MapDataSet;
@@ -318,9 +319,8 @@ public class ReportDashboardController {
      * @return
      */
     public Cohort getProgramStateCohort(EvaluationContext evaluationContext, Program program) { 
-    	ProgramStateCohortDefinition programStateCohortDefinition = new ProgramStateCohortDefinition();    	
-    	programStateCohortDefinition.setProgram(program);
-    	programStateCohortDefinition.setStateList(null);
+    	ProgramEnrollmentCohortDefinition programStateCohortDefinition = new ProgramEnrollmentCohortDefinition();    	
+    	programStateCohortDefinition.setPrograms(Collections.singletonList(program));
     	return Context.getService(CohortDefinitionService.class).evaluate(programStateCohortDefinition, evaluationContext);     	
     }
         

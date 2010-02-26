@@ -4,19 +4,19 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
-
 /**
- * Query for whether the patient was in a program on a date or date range
+ * Query for whether the patient was in a state on a date or date range
  * (Using onDate is equivalent to setting onOrAfter==onOrBefore, but may be more efficient and readable
  */
-public class InProgramCohortDefinition extends BaseCohortDefinition {
+public class InStateCohortDefinition extends BaseCohortDefinition {
 
 	private static final long serialVersionUID = 1L;
 
 	@ConfigurationProperty(required=true)
-	private List<Program> programs;
+	private List<ProgramWorkflowState> states;
 	
 	@ConfigurationProperty(required=false)
 	private Date onOrAfter;
@@ -30,23 +30,23 @@ public class InProgramCohortDefinition extends BaseCohortDefinition {
 	/**
 	 * Default constructor
 	 */
-	public InProgramCohortDefinition() {
+	public InStateCohortDefinition() {
 	}
 
 	
     /**
-     * @return the programs
+     * @return the states
      */
-    public List<Program> getPrograms() {
-    	return programs;
+    public List<ProgramWorkflowState> getStates() {
+    	return states;
     }
 
 	
     /**
-     * @param programs the programs to set
+     * @param states the states to set
      */
-    public void setPrograms(List<Program> programs) {
-    	this.programs = programs;
+    public void setStates(List<ProgramWorkflowState> states) {
+    	this.states = states;
     }
 
 	
@@ -96,6 +96,6 @@ public class InProgramCohortDefinition extends BaseCohortDefinition {
     public void setOnDate(Date onDate) {
     	this.onDate = onDate;
     }
-	
+
 	
 }

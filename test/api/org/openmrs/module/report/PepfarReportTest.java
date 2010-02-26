@@ -100,7 +100,7 @@ public class PepfarReportTest extends BaseContextSensitiveTest {
 		
 		assertNotNull(hivProgram);
 		
-		CohortDefinition enrolledBeforeDate = new ProgramStateCohortDefinition());
+		CohortDefinition enrolledBeforeDate = new PatientStateCohortDefinition());
 		enrolledBeforeDate.setParameterValue("program", hivProgram);
 		enrolledBeforeDate.setParameterOverride("untilDate", true);
 

@@ -1,12 +1,13 @@
 package org.openmrs.module.indicator;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
+import org.openmrs.module.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.dataset.DataSetRow;
 import org.openmrs.module.dataset.MapDataSet;
 import org.openmrs.module.dataset.column.DataSetColumn;
@@ -28,10 +29,10 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		gender.addCohortDefinition("female", female, null);
 		gender.addCohortDefinition("male", male, null);
 		
-		ProgramStateCohortDefinition inProgram = new ProgramStateCohortDefinition();
-		inProgram.setProgram(Context.getProgramWorkflowService().getProgram(1));
+		InProgramCohortDefinition inProgram = new InProgramCohortDefinition();
+		inProgram.setPrograms(Collections.singletonList(Context.getProgramWorkflowService().getProgram(1)));
 
-		CohortIndicator ind = new CohortIndicator("In HIV Program", null, new Mapped<ProgramStateCohortDefinition>(inProgram, null), null, null);
+		CohortIndicator ind = new CohortIndicator("In HIV Program", null, new Mapped<InProgramCohortDefinition>(inProgram, null), null, null);
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.addDimension("gender", new Mapped<CohortDefinitionDimension>(gender, null));

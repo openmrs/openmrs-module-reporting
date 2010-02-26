@@ -13,39 +13,34 @@
  */
 package org.openmrs.module.cohort.definition.evaluator;
 
-import java.util.Date;
-
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
+import org.openmrs.module.cohort.definition.PatientStateCohortDefinition;
+import org.openmrs.module.cohort.query.service.CohortQueryService;
 import org.openmrs.module.evaluation.EvaluationContext;
 
 /**
- * Evaluates an ProgramStateCohortDefinition and produces a Cohort
+ * Evaluates an PatientStateCohortDefinition and produces a Cohort
  */
-@Handler(supports={ProgramStateCohortDefinition.class})
-public class ProgramStateCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports={PatientStateCohortDefinition.class})
+public class PatientStateCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
 	/**
 	 * Default Constructor
 	 */
-	public ProgramStateCohortDefinitionEvaluator() {}
+	public PatientStateCohortDefinitionEvaluator() {}
 	
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	ProgramStateCohortDefinition d = (ProgramStateCohortDefinition) cohortDefinition;
-		
-		PatientSetService service = Context.getPatientSetService();
-		Date fromDate = d.getCalculatedFromDate(context);
-		Date toDate = d.getCalculatedToDate(context);
-		
-		return service.getPatientsByProgramAndState(d.getProgram(), d.getStateList(), fromDate, toDate);
-		
-		
+    	PatientStateCohortDefinition d = (PatientStateCohortDefinition) cohortDefinition;
+    	return Context.getService(CohortQueryService.class).getPatientsHavingStates(d.getStates(),
+    		d.getStartedOnOrAfter(),
+    		d.getStartedOnOrBefore(),
+    		d.getEndedOnOrAfter(),
+    		d.getEndedOnOrBefore());		
     }
 }

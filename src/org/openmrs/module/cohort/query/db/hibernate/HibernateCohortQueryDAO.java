@@ -88,21 +88,6 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	}
 
 	
-	public Cohort getPatientsHavingStartedStates(
-			List<ProgramWorkflowState> states, Date startedOnOrAfter,
-			Date startedOnOrBefore) {
-		return getPatientsHavingStartedOrCompletedStates(states, "start_date",
-				startedOnOrAfter, startedOnOrBefore);
-	}
-
-	public Cohort getPatientsHavingCompletedStates(
-			List<ProgramWorkflowState> states,
-
-			Date completedOnOrAfter, Date completedOnOrBefore) {
-		return getPatientsHavingStartedOrCompletedStates(states, "end_date",
-				completedOnOrAfter, completedOnOrBefore);
-	}
-
 
 	/** 
 	 * 
@@ -246,67 +231,6 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		return new Cohort(query.list());
 	}
 
-	/**
-	 * 
-	 * @param states
-	 * @param whichColumn 
-	 * @param changedOnOrAfter 
-	 * @param changedOnOrBefore 
-	 * @return
-	 */
-	public Cohort getPatientsHavingStartedOrCompletedStates(
-			List<ProgramWorkflowState> states, String whichColumn,
-			Date changedOnOrAfter, Date changedOnOrBefore) {
-
-		List<Integer> stateIds = new ArrayList<Integer>();
-		for (ProgramWorkflowState state : states) {
-			stateIds.add(state.getProgramWorkflowStateId());
-		}
-
-		// Create SQL query
-		StringBuilder sql = new StringBuilder();
-		sql.append("select patient_program.patient_id ");
-		sql.append("from patient_program, patient_state, patient, person ");
-
-		// Join conditions
-		sql.append("where patient_program.patient_id = patient.patient_id ");
-		sql
-				.append("and patient_state.patient_program_id = patient_program.patient_program_id ");
-		sql.append("and person.person_id = patient.patient_id ");
-
-		// Create a list of clauses
-		if (stateIds != null && !stateIds.isEmpty())
-			sql.append("and patient_state.state in (:stateIds) ");
-		if (changedOnOrAfter != null)
-			sql.append("and patient_state." + whichColumn
-					+ " >= :changedOnOrAfter ");
-		if (changedOnOrBefore != null)
-			sql.append("and patient_state." + whichColumn
-					+ " <= :changedOnOrBefore ");
-
-		// Check voided
-		sql.append("and patient_state.voided = false ");
-		sql.append("and patient_program.voided = false ");
-		sql.append("and patient.voided = false ");
-		sql.append("and person.voided = false ");
-		sql.append(" group by patient_program.patient_id");
-
-		// Execute query
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(
-				sql.toString());
-
-		log
-				.debug("Patients having started or completed states between dates: \n"
-						+ query.getQueryString());
-
-		if (stateIds != null && !stateIds.isEmpty())
-			query.setParameterList("stateIds", stateIds);
-		if (changedOnOrAfter != null)
-			query.setDate("changedOnOrAfter", changedOnOrAfter);
-		if (changedOnOrBefore != null)
-			query.setDate("changedOnOrBefore", changedOnOrBefore);
-		return new Cohort(query.list());
-	}
 
 	/**
 	 * TODO: Fails to leave out patients who are voided.  
@@ -773,5 +697,93 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.setDate("onOrBefore", onOrBefore);
 		return new Cohort(query.list()); 
 	}
+
+	/**
+	 * @see org.openmrs.module.cohort.query.db.CohortQueryDAO#getPatientsHavingStates(java.util.List, java.util.Date, java.util.Date, java.util.Date, java.util.Date)
+	 */
+	public Cohort getPatientsHavingStates(List<ProgramWorkflowState> states,
+	                                      Date startedOnOrAfter, Date startedOnOrBefore,
+                                          Date endedOnOrAfter, Date endedOnOrBefore) {
+		List<Integer> stateIds = new ArrayList<Integer>();
+		for (ProgramWorkflowState state : states)
+			stateIds.add(state.getId());
+
+		// Create SQL query
+		StringBuilder sql = new StringBuilder();
+		sql.append("select pp.patient_id ");
+		sql.append("from patient_state ps ");
+		sql.append("  inner join patient_program pp on ps.patient_program_id = pp.patient_program_id ");
+		sql.append("  inner join patient p on pp.patient_id = p.patient_id ");
+		sql.append("where ps.voided = false and pp.voided = false and p.voided = false ");
+		
+		// Create a list of clauses
+		if (stateIds != null && !stateIds.isEmpty())
+			sql.append(" and ps.state in (:programIds) ");
+		if (startedOnOrAfter != null)
+			sql.append(" and ps.start_date >= :startedOnOrAfter ");
+		if (startedOnOrBefore != null)
+			sql.append(" and ps.start_date <= :startedOnOrBefore ");
+		if (endedOnOrAfter != null)
+			sql.append(" and pp.end_date >= :endedOnOrAfter ");
+		if (endedOnOrBefore != null)
+			sql.append(" and pp.end_date <= :endedOnOrBefore ");
+
+		sql.append(" group by pp.patient_id ");
+		log.debug("query: " + sql);
+
+		// Execute query
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
+
+		if (stateIds != null && !stateIds.isEmpty())
+			query.setParameterList("stateIds", stateIds);
+		if (startedOnOrAfter != null)
+			query.setDate("startedOnOrAfter", startedOnOrAfter);
+		if (startedOnOrBefore != null)
+			query.setDate("startedOnOrBefore", startedOnOrBefore);
+		if (endedOnOrAfter != null)
+			query.setDate("endedOnOrAfter", endedOnOrAfter);
+		if (endedOnOrBefore != null)
+			query.setDate("endedOnOrBefore", endedOnOrBefore);
+
+		return new Cohort(query.list());
+    }
+
+	/**
+	 * @see org.openmrs.module.cohort.query.db.CohortQueryDAO#getPatientsInStates(java.util.List, java.util.Date, java.util.Date)
+	 */
+	public Cohort getPatientsInStates(List<ProgramWorkflowState> states, Date onOrAfter, Date onOrBefore) {
+		List<Integer> stateIds = new ArrayList<Integer>();
+		for (ProgramWorkflowState state : states)
+			stateIds.add(state.getId());
+
+		// Create SQL query
+		StringBuilder sql = new StringBuilder();
+		sql.append("select pp.patient_id ");
+		sql.append("from patient_state ps ");
+		sql.append("  inner join patient_program pp on ps.patient_program_id = pp.patient_program_id ");
+		sql.append("  inner join patient p on pp.patient_id = p.patient_id ");
+		sql.append("where ps.voided = false and pp.voided = false and p.voided = false ");
+
+		// optional clauses
+		if (stateIds != null && !stateIds.isEmpty())
+			sql.append(" and ps.state in (:stateIds) ");
+		if (onOrAfter != null)
+			sql.append(" and (ps.stop_date is null or pp.stop_date >= :onOrAfter) ");
+		if (onOrBefore != null)
+			sql.append(" and (pp.start_date is null or pp.start_date <= :onOrBefore) ");
+		
+		sql.append(" group by pp.patient_id ");
+		log.debug("query: " + sql);
+
+		// Execute query
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
+		if (stateIds != null && !stateIds.isEmpty())
+			query.setParameterList("stateIds", stateIds);
+		if (onOrAfter != null)
+			query.setDate("onOrAfter", onOrAfter);
+		if (onOrBefore != null)
+			query.setDate("onOrBefore", onOrBefore);
+		return new Cohort(query.list()); 
+    }
 
 }

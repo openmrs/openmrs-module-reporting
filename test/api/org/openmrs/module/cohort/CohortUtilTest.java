@@ -27,7 +27,7 @@ import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
+import org.openmrs.module.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.cohort.definition.util.CohortExpressionParser;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -68,7 +68,7 @@ public class CohortUtilTest extends BaseContextSensitiveTest {
 		Context.getService(CohortDefinitionService.class).saveCohortDefinition(maleFilter);
 		
 		// Create a search called "EnrolledOnDate" with one parameter called untilDate
-		ProgramStateCohortDefinition enrolledOnDateFilter = new ProgramStateCohortDefinition();
+		PatientStateCohortDefinition enrolledOnDateFilter = new PatientStateCohortDefinition();
 		enrolledOnDateFilter.setName("EnrolledOnDate");
 		enrolledOnDateFilter.addParameter(new Parameter("untilDate", "Enrolled up until", Date.class, null, new Date()));
 		Context.getService(CohortDefinitionService.class).saveCohortDefinition(enrolledOnDateFilter);
@@ -83,7 +83,7 @@ public class CohortUtilTest extends BaseContextSensitiveTest {
 		assertEquals(list.get(1), PatientSetService.BooleanOperator.AND);
 		{
 			BaseCohortDefinition test = (BaseCohortDefinition) list.get(2);
-			Assert.assertTrue(test instanceof ProgramStateCohortDefinition);
+			Assert.assertTrue(test instanceof PatientStateCohortDefinition);
 			Assert.assertEquals(1, test.getParameters().size());
 		}
 	}

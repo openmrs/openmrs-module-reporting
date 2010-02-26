@@ -56,22 +56,7 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
     public Cohort getPatientsInProgram(List<Program> programs, Date onOrAfter, Date onOrBefore) {
 	    return dao.getPatientsInProgram(programs, onOrAfter, onOrBefore);
     }
-
-
-	public Cohort getPatientsHavingStartedPrograms(List<Program> programs, Date startedOnOrAfter, Date startedOnOrBefore) {     	
-    	return dao.getPatientsHavingProgramEnrollment(programs, startedOnOrAfter, startedOnOrBefore, null, null);
-    }
-    public Cohort getPatientsHavingCompletedPrograms(List<Program> programs, Date completedOnOrAfter, Date completedOnOrBefore) {     	
-    	return dao.getPatientsHavingProgramEnrollment(programs, null, null, completedOnOrAfter, completedOnOrBefore);
-    }
     
-    public Cohort getPatientsHavingStartedStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore) {     	
-    	return dao.getPatientsHavingStartedStates(states, startedOnOrAfter, startedOnOrBefore);
-    }
-    public Cohort getPatientsHavingCompletedStates(List<ProgramWorkflowState> states, Date completedOnOrAfter, Date completedOnOrBefore) {     	
-    	return dao.getPatientsHavingCompletedStates(states, completedOnOrAfter, completedOnOrBefore);
-    }
-
     
     public Cohort getPatientsHavingActiveDrugOrders(List<Drug> drugs, Date asOfDate) { 
     	return dao.getPatientsHavingActiveDrugOrders(drugs, asOfDate);
@@ -106,6 +91,21 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 			}
     	}		    	
 	    return drugs;
+    }
+
+	/**
+	 * @see org.openmrs.module.cohort.query.service.CohortQueryService#getPatientsHavingStates(java.util.List, java.util.Date, java.util.Date, java.util.Date, java.util.Date)
+	 */
+	public Cohort getPatientsHavingStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore,
+                                          Date endedOnOrAfter, Date endedOnOrBefore) {
+		return dao.getPatientsHavingStates(states, startedOnOrAfter, startedOnOrBefore, endedOnOrAfter, endedOnOrBefore);
+    }
+
+	/**
+	 * @see org.openmrs.module.cohort.query.service.CohortQueryService#getPatientsInStates(java.util.List, java.util.Date, java.util.Date)
+	 */
+	public Cohort getPatientsInStates(List<ProgramWorkflowState> states, Date onOrAfter, Date onOrBefore) {
+		return dao.getPatientsInStates(states, onOrAfter, onOrBefore);
     }
 
 

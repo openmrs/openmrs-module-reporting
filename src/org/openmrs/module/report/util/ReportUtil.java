@@ -15,7 +15,8 @@ import org.openmrs.module.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.cohort.definition.CohortDefinition;
 import org.openmrs.module.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.cohort.definition.ProgramStateCohortDefinition;
+import org.openmrs.module.cohort.definition.InProgramCohortDefinition;
+import org.openmrs.module.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.evaluation.parameter.Mapped;
 import org.openmrs.module.evaluation.parameter.Parameter;
@@ -76,19 +77,19 @@ public class ReportUtil {
 		for (final Program program : Context.getProgramWorkflowService().getAllPrograms()) {
 			ret.add(new InitialDataElement(CohortDefinition.class, "Ever in " + program.getName() + " Before Date") {
 				public void apply() {
-					ProgramStateCohortDefinition def = new ProgramStateCohortDefinition();
-					def.setProgram(program);
-					def.addParameter(new Parameter("untilDate", "untilDate", Date.class));
+					InProgramCohortDefinition def = new InProgramCohortDefinition();
+					def.setPrograms(Collections.singletonList(program));
+					def.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 					def.setName("Ever in " + program.getName() + " Before Date");
 					Context.getService(CohortDefinitionService.class).saveCohortDefinition(def);
 				}
 			});
 			ret.add(new InitialDataElement(CohortDefinition.class, "In " + program.getName() + " Between Dates") {
 				public void apply() {
-					ProgramStateCohortDefinition def = new ProgramStateCohortDefinition();
-					def.setProgram(program);
-					def.addParameter(new Parameter("sinceDate", "sinceDate", Date.class));
-					def.addParameter(new Parameter("untilDate", "untilDate", Date.class));
+					InProgramCohortDefinition def = new InProgramCohortDefinition();
+					def.setPrograms(Collections.singletonList(program));
+					def.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+					def.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 					def.setName("In " + program.getName() + " Between Dates");
 					Context.getService(CohortDefinitionService.class).saveCohortDefinition(def);
 				}
