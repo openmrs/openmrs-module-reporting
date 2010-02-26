@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.cohort.definition.evaluator;
 
+import java.util.Date;
+
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientSetService;
@@ -34,6 +36,13 @@ public class GenderCohortDefinitionEvaluator implements CohortDefinitionEvaluato
 	
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * 
+     * @should return non voided patients
+     * @should return male patients when gender equals male
+     * @should return female patients when gender equals female 
+     * @should return patients with no gender when gender equals unknown 
+     * @should return all patients when gender equals empty string
+     * @should return all patients when gender is null
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	GenderCohortDefinition gcd = (GenderCohortDefinition) cohortDefinition;

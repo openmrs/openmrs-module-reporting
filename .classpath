@@ -53,5 +53,8 @@
 	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.2.11623-dev.jar" sourcepath="/openmrs-1.5.x"/>
 	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.5.2.11623-dev.jar"/>
 	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.5.2.11623-dev.jar"/>
+	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/xerces/resolver.jar"/>
+	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/xerces/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/xerces/xml-apis.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
