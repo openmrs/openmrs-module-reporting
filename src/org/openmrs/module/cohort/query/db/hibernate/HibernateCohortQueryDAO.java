@@ -87,21 +87,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		return new Cohort(criteria.list());
 	}
 
-	/**
-	 * 
-	 */
-	public Cohort getPatientsHavingStartedPrograms(List<Program> programs,
-			Date enrolledOnOrAfter, Date enrolledOnOrBefore) {
-		return getPatientsHavingStartedOrCompletedPrograms(programs,
-				"date_enrolled", enrolledOnOrAfter, enrolledOnOrBefore);
-	}
-
-	public Cohort getPatientsHavingCompletedPrograms(List<Program> programs,
-			Date completedOnOrAfter, Date completedOnOrBefore) {
-		return getPatientsHavingStartedOrCompletedPrograms(programs,
-				"date_completed", completedOnOrAfter, completedOnOrBefore);
-	}
-
+	
 	public Cohort getPatientsHavingStartedStates(
 			List<ProgramWorkflowState> states, Date startedOnOrAfter,
 			Date startedOnOrBefore) {
@@ -143,57 +129,6 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		return cohort;
 	}
 
-
-	/**
-	 * 
-	 * @param programs
-	 * @param whichColumn
-	 * @param changedOnOrAfter
-	 * @param changedOnOrBefore
-	 * @return
-	 */
-	private Cohort getPatientsHavingStartedOrCompletedPrograms(
-			List<Program> programs, String whichColumn, Date changedOnOrAfter,
-			Date changedOnOrBefore) {
-
-		List<Integer> programIds = new ArrayList<Integer>();
-		for (Program program : programs)
-			programIds.add(program.getProgramId());
-
-		// Create SQL query
-		StringBuilder sql = new StringBuilder();
-		sql.append("select pp.patient_id ");
-		sql.append("from patient_program pp ");
-		sql.append("where pp.voided = false ");
-
-		// Create a list of clauses
-		if (programIds != null && !programIds.isEmpty())
-			sql.append(" and pp.program_id in (:programIds) ");
-		if (changedOnOrAfter != null)
-			sql.append(" and pp." + whichColumn + " >= :changedOnOrAfter ");
-		if (changedOnOrBefore != null)
-			sql.append(" and pp." + whichColumn + " <= :changedOnOrBefore ");
-
-		sql.append(" group by pp.patient_id ");
-		log.warn("query: " + sql);
-
-		// Execute query
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(
-				sql.toString());
-
-		log
-				.debug("Patients having started or stopped programs between dates:\n "
-						+ query.getQueryString());
-
-		if (programIds != null && !programIds.isEmpty())
-			query.setParameterList("programIds", programIds);
-		if (changedOnOrAfter != null)
-			query.setDate("changedOnOrAfter", changedOnOrAfter);
-		if (changedOnOrBefore != null)
-			query.setDate("changedOnOrBefore", changedOnOrBefore);
-
-		return new Cohort(query.list());
-	}
 
 	/**
 	 * select orders.patient_id from drug, drug_order, orders where
@@ -751,4 +686,92 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
 		return ret;
 	}
+
+	/**
+     * @see org.openmrs.module.cohort.query.db.CohortQueryDAO#getPatientsHavingProgramEnrollment(java.util.List, java.util.Date, java.util.Date, java.util.Date, java.util.Date)
+     */
+    public Cohort getPatientsHavingProgramEnrollment(List<Program> programs, Date enrolledOnOrAfter,
+                                                     Date enrolledOnOrBefore, Date completedOnOrAfter,
+                                                     Date completedOnOrBefore) {
+		List<Integer> programIds = new ArrayList<Integer>();
+		for (Program program : programs)
+			programIds.add(program.getProgramId());
+
+		// Create SQL query
+		StringBuilder sql = new StringBuilder();
+		sql.append("select pp.patient_id ");
+		sql.append("from patient_program pp ");
+		sql.append("  inner join patient p on pp.patient_id = p.patient_id ");
+		sql.append("where pp.voided = false and p.voided = false ");
+
+		// Create a list of clauses
+		if (programIds != null && !programIds.isEmpty())
+			sql.append(" and pp.program_id in (:programIds) ");
+		if (enrolledOnOrAfter != null)
+			sql.append(" and pp.date_enrolled >= :enrolledOnOrAfter ");
+		if (enrolledOnOrBefore != null)
+			sql.append(" and pp.date_enrolled <= :enrolledOnOrBefore ");
+		if (completedOnOrAfter != null)
+			sql.append(" and pp.date_completed >= :completedOnOrAfter ");
+		if (completedOnOrBefore != null)
+			sql.append(" and pp.date_completed <= :completedOnOrBefore ");
+
+		sql.append(" group by pp.patient_id ");
+		log.debug("query: " + sql);
+
+		// Execute query
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
+
+		if (programIds != null && !programIds.isEmpty())
+			query.setParameterList("programIds", programIds);
+		if (enrolledOnOrAfter != null)
+			query.setDate("enrolledOnOrAfter", enrolledOnOrAfter);
+		if (enrolledOnOrBefore != null)
+			query.setDate("enrolledOnOrBefore", enrolledOnOrBefore);
+		if (completedOnOrAfter != null)
+			query.setDate("completedOnOrAfter", completedOnOrAfter);
+		if (completedOnOrBefore != null)
+			query.setDate("completedOnOrBefore", completedOnOrBefore);
+
+		return new Cohort(query.list());
+    }
+
+    
+	/**
+     * @see org.openmrs.module.cohort.query.db.CohortQueryDAO#getPatientsInProgram(java.util.List, java.util.Date, java.util.Date)
+     */
+    public Cohort getPatientsInProgram(List<Program> programs, Date onOrAfter, Date onOrBefore) {
+		List<Integer> programIds = new ArrayList<Integer>();
+		for (Program program : programs)
+			programIds.add(program.getProgramId());
+
+		// Create SQL query
+		StringBuilder sql = new StringBuilder();
+		sql.append("select pp.patient_id ");
+		sql.append("from patient_program pp ");
+		sql.append("  inner join patient p on pp.patient_id = p.patient_id ");
+		sql.append("where pp.voided = false and p.voided = false ");
+
+		// optional clauses
+		if (programIds != null && !programIds.isEmpty())
+			sql.append(" and pp.program_id in (:programIds) ");
+		if (onOrAfter != null)
+			sql.append(" and (pp.date_completed is null or pp.date_completed >= :onOrAfter) ");
+		if (onOrBefore != null)
+			sql.append(" and (pp.date_enrolled is null or pp.date_enrolled <= :onOrBefore) ");
+		
+		sql.append(" group by pp.patient_id ");
+		log.debug("query: " + sql);
+
+		// Execute query
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
+		if (programIds != null && !programIds.isEmpty())
+			query.setParameterList("programIds", programIds);
+		if (onOrAfter != null)
+			query.setDate("onOrAfter", onOrAfter);
+		if (onOrBefore != null)
+			query.setDate("onOrBefore", onOrBefore);
+		return new Cohort(query.list()); 
+	}
+
 }

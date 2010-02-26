@@ -108,13 +108,13 @@ public class HibernateCohortQueryDAOTest extends BaseModuleContextSensitiveTest 
 		List<Program> programs = new ArrayList<Program>();
 		programs.add(program);
 		
-		Cohort cohort = dao.getPatientsHavingStartedPrograms(programs, null, null);
+		Cohort cohort = dao.getPatientsHavingProgramEnrollment(programs, null, null, null, null);
 		log.warn("# Patients ever enrolled in HIV PROGRAM: " + cohort.size());
 
-		cohort = dao.getPatientsHavingStartedPrograms(programs, calendar.getTime(), null);
+		cohort = dao.getPatientsHavingProgramEnrollment(programs, calendar.getTime(), null, null, null);
 		log.warn("# Patients ever enrolled in HIV PROGRAM on or after date: " + cohort.size());
 
-		cohort = dao.getPatientsHavingStartedPrograms(programs, enrolledOnOrAfter, enrolledOnOrBefore);
+		cohort = dao.getPatientsHavingProgramEnrollment(programs, enrolledOnOrAfter, enrolledOnOrBefore, null, null);
 		log.warn("# Patients ever enrolled in HIV PROGRAM during period: " + cohort.size());
 	}		
 	
@@ -135,13 +135,13 @@ public class HibernateCohortQueryDAOTest extends BaseModuleContextSensitiveTest 
 		List<Program> programs = new ArrayList<Program>();
 		programs.add(program);
 		
-		Cohort cohort = dao.getPatientsHavingCompletedPrograms(programs, null, null);
-		log.warn("# Patients ever completed TUBERCULOSIS PROGRAM: " + cohort.size());
+		Cohort cohort = dao.getPatientsHavingProgramEnrollment(programs, null, null, null, null);
+		log.warn("# Patients ever started TUBERCULOSIS PROGRAM: " + cohort.size());
 
-		cohort = dao.getPatientsHavingStartedPrograms(programs, calendar.getTime(), null);
+		cohort = dao.getPatientsHavingProgramEnrollment(programs, null, null, calendar.getTime(), null);
 		log.warn("# Patients completed TUBERCULOSIS PROGRAM on or after date: " + cohort.size());
 
-		cohort = dao.getPatientsHavingStartedPrograms(programs, enrolledOnOrAfter, enrolledOnOrBefore);
+		cohort = dao.getPatientsHavingProgramEnrollment(programs, null, null, enrolledOnOrAfter, enrolledOnOrBefore);
 		log.warn("# Patients completed TUBERCULOSIS PROGRAM during period: " + cohort.size());
 	}			
 

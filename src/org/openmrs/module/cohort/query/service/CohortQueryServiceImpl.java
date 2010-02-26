@@ -41,11 +41,28 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	}
 
     
-    public Cohort getPatientsHavingStartedPrograms(List<Program> programs, Date startedOnOrAfter, Date startedOnOrBefore) {     	
-    	return dao.getPatientsHavingStartedPrograms(programs, startedOnOrAfter, startedOnOrBefore);
+    /**
+     * @see org.openmrs.module.cohort.query.service.CohortQueryService#getPatientsHavingProgramEnrollment(java.util.List, java.util.Date, java.util.Date, java.util.Date, java.util.Date)
+     */
+    public Cohort getPatientsHavingProgramEnrollment(List<Program> programs, Date enrolledOnOrAfter, Date enrolledOnOrBefore,
+                                                     Date completedOnOrAfter, Date completedOnOrBefore) {
+    	return dao.getPatientsHavingProgramEnrollment(programs, enrolledOnOrAfter, enrolledOnOrBefore, completedOnOrAfter, completedOnOrBefore);
+    }
+
+
+	/**
+     * @see org.openmrs.module.cohort.query.service.CohortQueryService#getPatientsInProgram(java.util.List, java.util.Date, java.util.Date, java.util.Date)
+     */
+    public Cohort getPatientsInProgram(List<Program> programs, Date onOrAfter, Date onOrBefore) {
+	    return dao.getPatientsInProgram(programs, onOrAfter, onOrBefore);
+    }
+
+
+	public Cohort getPatientsHavingStartedPrograms(List<Program> programs, Date startedOnOrAfter, Date startedOnOrBefore) {     	
+    	return dao.getPatientsHavingProgramEnrollment(programs, startedOnOrAfter, startedOnOrBefore, null, null);
     }
     public Cohort getPatientsHavingCompletedPrograms(List<Program> programs, Date completedOnOrAfter, Date completedOnOrBefore) {     	
-    	return dao.getPatientsHavingCompletedPrograms(programs, completedOnOrAfter, completedOnOrBefore);
+    	return dao.getPatientsHavingProgramEnrollment(programs, null, null, completedOnOrAfter, completedOnOrBefore);
     }
     
     public Cohort getPatientsHavingStartedStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore) {     	

@@ -19,9 +19,8 @@ public interface CohortQueryDAO {
 	
 	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate);
 	
-    // Started or stopped programs during a period
-	public Cohort getPatientsHavingStartedPrograms(List<Program> programs, Date startedOnOrAfter, Date startedOnOrBefore);
-    public Cohort getPatientsHavingCompletedPrograms(List<Program> programs, Date completedOnOrAfter, Date completedOnOrBefore);
+    // Started or stopped programs in specified periods
+	public Cohort getPatientsHavingProgramEnrollment(List<Program> programs, Date enrolledOnOrAfter, Date enrolledOnOrBefore, Date completedOnOrAfter, Date completedOnOrBefore);
     
     // Started or stopped program states during a period
     public Cohort getPatientsHavingStartedStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore);
@@ -39,5 +38,8 @@ public interface CohortQueryDAO {
     // Patients having certain observations 
 	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
             PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
+	
+	// Patients who were in a Program on the specified date or range
+	public Cohort getPatientsInProgram(List<Program> programs, Date onOrAfter, Date onOrBefore);
 
 }
