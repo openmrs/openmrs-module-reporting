@@ -14,7 +14,7 @@
 
 		<b class="boxHeader">Create Composition Cohort Definition</b>
 		<div class="box">
-			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.cohort.definition.CompositionCohortDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageCohortDefinitions.form|successUrl=${pageUrl}" />
+			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageCohortDefinitions.form|successUrl=${pageUrl}" />
 		</div>
 		
 	</c:when>		

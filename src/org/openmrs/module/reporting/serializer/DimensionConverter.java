@@ -1,8 +1,8 @@
 package org.openmrs.module.reporting.serializer;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.indicator.dimension.Dimension;
-import org.openmrs.module.indicator.service.IndicatorService;
+import org.openmrs.module.reporting.indicator.dimension.Dimension;
+import org.openmrs.module.reporting.indicator.service.IndicatorService;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.ConverterLookup;

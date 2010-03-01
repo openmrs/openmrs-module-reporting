@@ -16,7 +16,7 @@ package org.openmrs.module.reporting;
 import java.util.Date;
 
 import org.openmrs.Location;
-import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 /**
  * Constants required by this module

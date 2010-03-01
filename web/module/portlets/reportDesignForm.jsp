@@ -75,7 +75,7 @@
 				</c:choose>		
 				<br/>
 				<span class="metadataField">Renderer Type</span>			
-				<wgt:widget id="rendererType" name="rendererType" object="${model.design}" property="rendererType" attributes="type=org.openmrs.module.report.renderer.ReportRenderer|simple=true"/>
+				<wgt:widget id="rendererType" name="rendererType" object="${model.design}" property="rendererType" attributes="type=org.openmrs.module.reporting.report.renderer.ReportRenderer|simple=true"/>
 				<br/>
 				<span class="metadataField">Resource Files</span>			
 				<div id="resourcesMultiFieldDiv">

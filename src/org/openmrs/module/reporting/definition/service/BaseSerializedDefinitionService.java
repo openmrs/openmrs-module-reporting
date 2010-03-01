@@ -22,8 +22,8 @@ import org.openmrs.OpenmrsObject;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.cohort.definition.persister.CohortDefinitionPersister;
-import org.openmrs.module.evaluation.Definition;
+import org.openmrs.module.reporting.cohort.definition.persister.CohortDefinitionPersister;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.springframework.transaction.annotation.Transactional;
 

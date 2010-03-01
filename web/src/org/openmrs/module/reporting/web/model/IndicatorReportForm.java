@@ -15,8 +15,8 @@ package org.openmrs.module.reporting.web.model;
 
 import java.util.List;
 
-import org.openmrs.module.indicator.Indicator;
-import org.openmrs.module.report.ReportDefinition;
+import org.openmrs.module.reporting.indicator.Indicator;
+import org.openmrs.module.reporting.report.ReportDefinition;
 
 /**
  * Indicator report bean 

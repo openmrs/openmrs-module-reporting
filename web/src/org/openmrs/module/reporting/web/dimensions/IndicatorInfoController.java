@@ -2,7 +2,7 @@ package org.openmrs.module.reporting.web.dimensions;
 
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.indicator.service.IndicatorService;
+import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.propertyeditor.LocationEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

@@ -3,8 +3,8 @@ package org.openmrs.module.reporting.web.dimensions;
 import java.util.List;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.indicator.dimension.Dimension;
-import org.openmrs.module.indicator.service.IndicatorService;
+import org.openmrs.module.reporting.indicator.dimension.Dimension;
+import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;

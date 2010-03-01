@@ -6,8 +6,8 @@ import org.openmrs.module.htmlwidgets.web.WidgetConfig;
 import org.openmrs.module.htmlwidgets.web.handler.CodedHandler;
 import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
 import org.openmrs.module.htmlwidgets.web.html.Option;
-import org.openmrs.module.indicator.dimension.Dimension;
-import org.openmrs.module.indicator.service.IndicatorService;
+import org.openmrs.module.reporting.indicator.dimension.Dimension;
+import org.openmrs.module.reporting.indicator.service.IndicatorService;
 
 @Handler(supports={Dimension.class}, order=50)
 public class DimensionHandler extends CodedHandler {

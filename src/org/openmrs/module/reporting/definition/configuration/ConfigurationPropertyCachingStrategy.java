@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.openmrs.module.evaluation.Definition;
-import org.openmrs.module.evaluation.caching.Caching;
-import org.openmrs.module.evaluation.caching.CachingStrategy;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
+import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
+import org.openmrs.module.reporting.evaluation.caching.CachingStrategy;
 
 /**
  * Represents a strategy for caching a particular object in the EvaluationContext.  You would typically 

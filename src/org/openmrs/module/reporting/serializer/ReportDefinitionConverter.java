@@ -1,8 +1,8 @@
 package org.openmrs.module.reporting.serializer;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.report.ReportDefinition;
-import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.service.ReportService;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.ConverterLookup;

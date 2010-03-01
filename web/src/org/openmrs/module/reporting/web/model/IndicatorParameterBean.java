@@ -16,8 +16,8 @@ package org.openmrs.module.reporting.web.model;
 import java.util.Map;
 import java.util.UUID;
 
-import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.indicator.CohortIndicator;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 
 /**
  * Cohort-based indicator

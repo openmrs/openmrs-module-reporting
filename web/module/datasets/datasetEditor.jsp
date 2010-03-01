@@ -109,7 +109,7 @@ $(document).ready(function() {
 				</td>
 				<td>
 					<c:choose>
-						<c:when test="${dataSetDefinition.class.name == 'org.openmrs.module.dataset.definition.SerializedObjectDataSetDefinition'}">
+						<c:when test="${dataSetDefinition.class.name == 'org.openmrs.module.reporting.dataset.definition.SerializedObjectDataSetDefinition'}">
 							<li>
 								<label class="desc">Properties</label>
 								<table id="dataset-definition-property-table" class="display">

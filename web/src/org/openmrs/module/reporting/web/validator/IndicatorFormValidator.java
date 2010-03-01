@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.web.model.IndicatorForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;

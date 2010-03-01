@@ -1,8 +1,8 @@
 package org.openmrs.module.reporting.serializer;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.ConverterLookup;

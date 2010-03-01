@@ -15,7 +15,8 @@ package org.openmrs.module.reporting.definition.configuration;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import org.openmrs.module.evaluation.EvaluationContext;
+
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
  * Represents a value that may be used to configure a CohortDefinition instance.

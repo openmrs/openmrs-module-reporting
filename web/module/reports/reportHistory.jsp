@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<%@page import="org.openmrs.module.report.ReportRequest"%>
+<%@page import="org.openmrs.module.reporting.report.ReportRequest"%>
 
 <openmrs:require privilege="View Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportHistory.form" />
 

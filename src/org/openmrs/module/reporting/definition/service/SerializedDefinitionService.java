@@ -18,7 +18,7 @@ import java.util.List;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.db.SerializedObject;
-import org.openmrs.module.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

@@ -8,8 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.evaluation.parameter.Parameterizable;
-import org.openmrs.module.util.ParameterizableUtil;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
+import org.openmrs.module.reporting.util.ParameterizableUtil;
 
 /**
  * This Controller loads a Parameterizable class and object given the passed parameters

@@ -1,8 +1,8 @@
 package org.openmrs.module.reporting.serializer;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.serialization.xstream.converter.BaseShortConverter;
 
 import com.thoughtworks.xstream.converters.Converter;

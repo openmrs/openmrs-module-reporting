@@ -21,13 +21,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.dataset.definition.CohortDataSetDefinition;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.evaluation.parameter.Mapped;
-import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportDefinition;
-import org.openmrs.module.report.renderer.RenderingException;
-import org.openmrs.module.report.renderer.RenderingMode;
+import org.openmrs.module.reporting.dataset.definition.CohortDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.renderer.RenderingException;
+import org.openmrs.module.reporting.report.renderer.RenderingMode;
 
 /**
  * A ReportRenderer that provides a dynamic web view of a CohortDataSet. This renderer can only

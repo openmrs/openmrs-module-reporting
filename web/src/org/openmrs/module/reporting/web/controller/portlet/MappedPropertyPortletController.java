@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.evaluation.EvaluationUtil;
-import org.openmrs.module.evaluation.parameter.Mapped;
-import org.openmrs.module.evaluation.parameter.Parameter;
-import org.openmrs.module.evaluation.parameter.Parameterizable;
-import org.openmrs.module.util.ParameterizableUtil;
-import org.openmrs.module.util.ReflectionUtil;
+import org.openmrs.module.reporting.evaluation.EvaluationUtil;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
+import org.openmrs.module.reporting.util.ParameterizableUtil;
+import org.openmrs.module.reporting.util.ReflectionUtil;
 
 /**
  * This Controller loads a Mapped property given the passed parameters

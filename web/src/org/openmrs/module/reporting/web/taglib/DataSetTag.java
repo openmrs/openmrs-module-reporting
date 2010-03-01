@@ -21,9 +21,9 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.DataSetRow;
-import org.openmrs.module.dataset.column.DataSetColumn;
+import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 
 public class DataSetTag extends BodyTagSupport {
 	

@@ -19,9 +19,9 @@ import java.io.Writer;
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.report.ReportData;
-import org.openmrs.module.report.ReportDefinition;
-import org.openmrs.module.report.renderer.RenderingException;
+import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.renderer.RenderingException;
 
 /**
  * An abstract Web Renderer implementation that stubs all render methods.

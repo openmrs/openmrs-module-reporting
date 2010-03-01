@@ -17,10 +17,10 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.evaluation.parameter.Mapped;
-import org.openmrs.module.evaluation.parameter.Parameterizable;
 import org.openmrs.module.htmlwidgets.web.WidgetConfig;
 import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.util.HandlerUtil;
 
 /**

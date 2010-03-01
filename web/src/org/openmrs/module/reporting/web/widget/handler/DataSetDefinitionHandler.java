@@ -15,12 +15,12 @@ package org.openmrs.module.reporting.web.widget.handler;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.dataset.definition.DataSetDefinition;
-import org.openmrs.module.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.htmlwidgets.web.WidgetConfig;
 import org.openmrs.module.htmlwidgets.web.handler.CodedHandler;
 import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
 import org.openmrs.module.htmlwidgets.web.html.Option;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 
 /**
  * FieldGenHandler for Enumerated Types

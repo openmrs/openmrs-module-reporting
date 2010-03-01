@@ -17,8 +17,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.report.ReportDefinition;
-import org.openmrs.module.report.renderer.RenderingMode;
+import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.renderer.RenderingMode;
 
 /**
  * A Default Renderer Implementation that aims to support all ReportDefinitions

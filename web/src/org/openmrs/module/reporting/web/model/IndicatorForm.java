@@ -16,8 +16,8 @@ package org.openmrs.module.reporting.web.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openmrs.module.cohort.definition.CohortDefinition;
-import org.openmrs.module.indicator.CohortIndicator;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 
 /**
  * Cohort-based indicator bean 

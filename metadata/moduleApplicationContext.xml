@@ -25,11 +25,11 @@
 	<bean parent="serializedObjectDAO">
 		<property name="supportedTypes">
 			<list>
-				<value>org.openmrs.module.indicator.Indicator</value>
-				<value>org.openmrs.module.indicator.dimension.Dimension</value>
-				<value>org.openmrs.module.cohort.definition.CohortDefinition</value>
-				<value>org.openmrs.module.dataset.definition.DataSetDefinition</value>
-				<value>org.openmrs.module.report.ReportDefinition</value>
+				<value>org.openmrs.module.reporting.indicator.Indicator</value>
+				<value>org.openmrs.module.reporting.indicator.dimension.Dimension</value>
+				<value>org.openmrs.module.reporting.cohort.definition.CohortDefinition</value>
+				<value>org.openmrs.module.reporting.dataset.definition.DataSetDefinition</value>
+				<value>org.openmrs.module.reporting.report.ReportDefinition</value>
 			</list>
 		</property>
 	</bean>	
@@ -62,13 +62,13 @@
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list merge="true">
-				<value>org.openmrs.module.report.service.ReportService</value> 
+				<value>org.openmrs.module.reporting.report.service.ReportService</value> 
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.report.service.BaseReportService">
+						<bean class="org.openmrs.module.reporting.report.service.BaseReportService">
 							<property name="reportDAO">
-								<bean class="org.openmrs.module.report.service.db.HibernateReportDAO">
+								<bean class="org.openmrs.module.reporting.report.service.db.HibernateReportDAO">
 									<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
 								</bean>
 							</property>
@@ -89,11 +89,11 @@
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list merge="true">
-				<value>org.openmrs.module.cohort.definition.service.CohortDefinitionService</value> 
+				<value>org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService</value> 
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.cohort.definition.service.BaseCohortDefinitionService">
+						<bean class="org.openmrs.module.reporting.cohort.definition.service.BaseCohortDefinitionService">
 							<property name="serializedObjectDAO"><ref bean="serializedObjectDAO"/></property>
 							<property name="serializer"><ref bean="reportingSerializer"/></property>
 						</bean>
@@ -113,11 +113,11 @@
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list merge="true">
-				<value>org.openmrs.module.dataset.definition.service.DataSetDefinitionService</value> 
+				<value>org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService</value> 
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.dataset.definition.service.BaseDataSetDefinitionService"></bean>
+						<bean class="org.openmrs.module.reporting.dataset.definition.service.BaseDataSetDefinitionService"></bean>
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors" />
@@ -135,11 +135,11 @@
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list merge="true">
-				<value>org.openmrs.module.indicator.service.IndicatorService</value> 
+				<value>org.openmrs.module.reporting.indicator.service.IndicatorService</value> 
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.indicator.service.BaseIndicatorService"></bean>
+						<bean class="org.openmrs.module.reporting.indicator.service.BaseIndicatorService"></bean>
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors" />
@@ -152,18 +152,18 @@
 		</property>
 	</bean>
 
-	<bean id="cohortQueryDAO" class="org.openmrs.module.cohort.query.db.hibernate.HibernateCohortQueryDAO">
+	<bean id="cohortQueryDAO" class="org.openmrs.module.reporting.cohort.query.db.hibernate.HibernateCohortQueryDAO">
 		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
 	</bean>							
 
     <bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
-				<value>org.openmrs.module.cohort.query.service.CohortQueryService</value> <!-- service interface name -->
+				<value>org.openmrs.module.reporting.cohort.query.service.CohortQueryService</value> <!-- service interface name -->
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.cohort.query.service.CohortQueryServiceImpl">
+						<bean class="org.openmrs.module.reporting.cohort.query.service.CohortQueryServiceImpl">
 							<property name="cohortQueryDAO">
 								<ref bean="cohortQueryDAO" />
 							</property>	

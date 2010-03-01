@@ -18,12 +18,12 @@ import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.cohort.EvaluatedCohort;
-import org.openmrs.module.dataset.DataSet;
-import org.openmrs.module.dataset.DataSetRow;
-import org.openmrs.module.dataset.MapDataSet;
-import org.openmrs.module.dataset.column.DataSetColumn;
-import org.openmrs.module.report.ReportData;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
+import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.MapDataSet;
+import org.openmrs.module.reporting.dataset.column.DataSetColumn;
+import org.openmrs.module.reporting.report.ReportData;
 import org.springframework.util.StringUtils;
 
 

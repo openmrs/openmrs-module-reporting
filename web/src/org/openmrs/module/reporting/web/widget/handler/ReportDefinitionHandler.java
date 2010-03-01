@@ -19,8 +19,8 @@ import org.openmrs.module.htmlwidgets.web.WidgetConfig;
 import org.openmrs.module.htmlwidgets.web.handler.CodedHandler;
 import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
 import org.openmrs.module.htmlwidgets.web.html.Option;
-import org.openmrs.module.report.ReportDefinition;
-import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.service.ReportService;
 
 /**
  * FieldGenHandler for Enumerated Types

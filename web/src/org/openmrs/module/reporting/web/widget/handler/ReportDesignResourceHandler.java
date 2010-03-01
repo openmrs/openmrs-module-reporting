@@ -22,7 +22,7 @@ import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
 import org.openmrs.module.htmlwidgets.web.html.FileUploadWidget;
 import org.openmrs.module.htmlwidgets.web.html.Widget;
 import org.openmrs.module.htmlwidgets.web.html.WidgetFactory;
-import org.openmrs.module.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.ReportDesignResource;
 
 /**
  * FieldGenHandler for Properties Types

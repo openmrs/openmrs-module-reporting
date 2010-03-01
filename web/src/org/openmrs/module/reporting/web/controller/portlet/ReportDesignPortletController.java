@@ -9,8 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.report.ReportDesign;
-import org.openmrs.module.report.service.ReportService;
+import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.OpenmrsClassLoader;
 
 /**
