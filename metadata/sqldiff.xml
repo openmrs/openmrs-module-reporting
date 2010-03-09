@@ -21,7 +21,7 @@
 			Create table to persist report design specifications
 		</description>
 		<sql>
-			CREATE TABLE `reporting_report_design` (
+			CREATE TABLE IF NOT EXISTS `reporting_report_design` (
 			  `id` int(11) NOT NULL auto_increment,
 			  `uuid` char(38) NOT NULL,
 			  `name` varchar(255) NOT NULL,
@@ -48,7 +48,7 @@
 			  CONSTRAINT `retired_by for reporting_report_design` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 			
-			CREATE TABLE `reporting_report_design_resource` (
+			CREATE TABLE IF NOT EXISTS `reporting_report_design_resource` (
 			  `id` int(11) NOT NULL auto_increment,
 			  `uuid` char(38) NOT NULL,
 			  `name` varchar(255) NOT NULL,
