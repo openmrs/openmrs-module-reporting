@@ -15,10 +15,10 @@ package org.openmrs.module.reporting.indicator;
 
 import java.util.Map;
 
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.aggregation.Aggregator;
-import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Cohort-based indicator
@@ -27,9 +27,19 @@ public class CohortIndicator extends BaseIndicator {
 	
     private static final long serialVersionUID = 1L;
     
+    /**
+     * Enumerated Indicator Types
+     */
+    public enum IndicatorType {
+    	COUNT, FRACTION, LOGIC
+    }
+    
     //***** PROPERTIES *****
-
+    
+    private IndicatorType type = IndicatorType.COUNT;
     private Mapped<? extends CohortDefinition> cohortDefinition;
+    private Mapped<? extends CohortDefinition> denominator;
+    private Mapped<? extends CohortDefinition> locationFilter;
     private Class<? extends Aggregator> aggregator;
     private String logicExpression;
 
@@ -40,6 +50,7 @@ public class CohortIndicator extends BaseIndicator {
      */
     public CohortIndicator() {
     	super();
+    	addParameter(ReportingConstants.LOCATION_PARAMETER);
     }
 
     
@@ -68,14 +79,28 @@ public class CohortIndicator extends BaseIndicator {
     
     //***** Property Access *****
 
+    /**
+	 * @return the type
+	 */
+	public IndicatorType getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(IndicatorType type) {
+		this.type = type;
+	}
+    
 	/**
      * @return the cohortDefinition
      */
     public Mapped<? extends CohortDefinition> getCohortDefinition() {
     	return cohortDefinition;
     }
-	
-    /**
+
+	/**
      * @param cohortDefinition the cohortDefinition to set
      */
     public void setCohortDefinition(Mapped<? extends CohortDefinition> cohortDefinition) {
@@ -90,6 +115,48 @@ public class CohortIndicator extends BaseIndicator {
     }
     
     /**
+	 * @return the denominator
+	 */
+	public Mapped<? extends CohortDefinition> getDenominator() {
+		return denominator;
+	}
+
+	/**
+	 * @param denominator the denominator to set
+	 */
+	public void setDenominator(Mapped<? extends CohortDefinition> denominator) {
+		this.denominator = denominator;
+	}
+
+    /**
+     * @param denominator the denominator to set
+     */
+    public void setDenominator(CohortDefinition denominator, Map<String, Object> mappings) {
+    	this.denominator = new Mapped<CohortDefinition>(denominator, mappings);
+    }
+
+	/**
+	 * @return the locationFilter
+	 */
+	public Mapped<? extends CohortDefinition> getLocationFilter() {
+		return locationFilter;
+	}
+
+	/**
+	 * @param locationFilter the locationFilter to set
+	 */
+	public void setLocationFilter(Mapped<? extends CohortDefinition> locationFilter) {
+		this.locationFilter = locationFilter;
+	}
+
+    /**
+     * @param locationFilter the locationFilter to set
+     */
+    public void setLocationFilter(CohortDefinition locationFilter, Map<String, Object> mappings) {
+    	this.locationFilter = new Mapped<CohortDefinition>(locationFilter, mappings);
+    }
+
+	/**
 	 * @return the logicExpression
 	 */
 	public String getLogicExpression() {
