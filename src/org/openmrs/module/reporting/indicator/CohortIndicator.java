@@ -52,23 +52,60 @@ public class CohortIndicator extends BaseIndicator {
     	super();
     	addParameter(ReportingConstants.LOCATION_PARAMETER);
     }
-
     
     /**
-     * Public constructor with arguments.
-     * @param name
-     * @param description
-     * @param cohortDefinition
-     * @param logicCriteria
-     * @param aggregator
+     * Default Constructor with name
      */
-    public CohortIndicator(String name, String description, Mapped<? extends CohortDefinition> cohortDefinition, String logicExpression, Class<? extends Aggregator> aggregator) { 
-    	super();
-    	this.setName(name);
-    	this.setDescription(description);
-    	this.cohortDefinition = cohortDefinition;
-    	this.logicExpression = logicExpression;
-    	this.aggregator = aggregator;
+    public CohortIndicator(String name) {
+    	this();
+    	setName(name);
+    }
+    
+    //***** FACTORY METHODS *****
+    
+    /**
+     * Constructs a new Count Indicator
+     */
+    public static CohortIndicator newCountIndicator(String name,
+    												Mapped<? extends CohortDefinition> cohortDefinition, 
+    												Mapped<? extends CohortDefinition> locationFilter) {
+    	CohortIndicator ci = new CohortIndicator(name);
+    	ci.setType(IndicatorType.COUNT);
+    	ci.setCohortDefinition(cohortDefinition);
+    	ci.setLocationFilter(locationFilter);
+    	return ci;
+    }
+    
+    /**
+     * Constructs a new Fraction Indicator
+     */
+    public static CohortIndicator newFractionIndicator(String name,
+    												   Mapped<? extends CohortDefinition> numerator, 
+    												   Mapped<? extends CohortDefinition> denominator, 
+    												   Mapped<? extends CohortDefinition> locationFilter) {
+    	CohortIndicator ci = new CohortIndicator(name);
+    	ci.setType(IndicatorType.FRACTION);
+    	ci.setCohortDefinition(numerator);
+    	ci.setDenominator(denominator);
+    	ci.setLocationFilter(locationFilter);
+    	return ci;
+    }
+    
+    /**
+     * Constructs a new Logic Indicator
+     */
+    public static CohortIndicator newLogicIndicator(String name,
+    												Mapped<? extends CohortDefinition> cohortDefinition,  
+    												Mapped<? extends CohortDefinition> locationFilter,
+    												Class<? extends Aggregator> aggregator,
+    												String logicExpression) {
+    	CohortIndicator ci = new CohortIndicator(name);
+    	ci.setType(IndicatorType.LOGIC);
+    	ci.setCohortDefinition(cohortDefinition);
+    	ci.setLocationFilter(locationFilter);
+    	ci.setAggregator(aggregator);
+    	ci.setLogicExpression(logicExpression);
+    	return ci;
     }
 	
     //***** Methods *****

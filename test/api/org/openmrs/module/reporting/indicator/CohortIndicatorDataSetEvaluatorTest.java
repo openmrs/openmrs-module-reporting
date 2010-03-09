@@ -34,7 +34,7 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		InProgramCohortDefinition inProgram = new InProgramCohortDefinition();
 		inProgram.setPrograms(Collections.singletonList(Context.getProgramWorkflowService().getProgram(1)));
 
-		CohortIndicator ind = new CohortIndicator("In HIV Program", null, new Mapped<InProgramCohortDefinition>(inProgram, null), null, null);
+		CohortIndicator ind = CohortIndicator.newCountIndicator("In HIV Program", new Mapped<InProgramCohortDefinition>(inProgram, null), null);
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.addDimension("gender", new Mapped<CohortDefinitionDimension>(gender, null));

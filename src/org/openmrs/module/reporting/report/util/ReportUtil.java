@@ -16,19 +16,16 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
-import org.openmrs.module.reporting.indicator.PeriodCohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 
-
 public class ReportUtil {
-	
 	
 	public static List<InitialDataElement> getInitialDataElements() {
 		List<InitialDataElement> ret = new ArrayList<InitialDataElement>();
@@ -99,7 +96,7 @@ public class ReportUtil {
 			String temp = Context.getAdministrationService().getGlobalProperty("dashboard.regimen.displayDrugSetIds");
 			if (temp != null) {
 				for (String name : temp.split(",")) {
-					final Concept drugSet = Context.getConceptService().getConceptByIdOrName(name);
+					final Concept drugSet = Context.getConceptService().getConcept(name);
 					if (drugSet != null) {
 						ret.add(new InitialDataElement(CohortDefinition.class, "Taking any " + drugSet.getBestName(Context.getLocale()) + " Between Dates") {
 							public void apply() {
@@ -141,7 +138,7 @@ public class ReportUtil {
 			String temp = Context.getAdministrationService().getGlobalProperty("dashboard.regimen.displayDrugSetIds");
 			if (temp != null) {
 				for (String name : temp.split(",")) {
-					final Concept drugSet = Context.getConceptService().getConceptByIdOrName(name);
+					final Concept drugSet = Context.getConceptService().getConcept(name);
 					if (drugSet != null) {
 						ret.add(new InitialDataElement(Indicator.class, "On " + drugSet.getBestName(Context.getLocale()) + " During Period") {
 							public void apply() {
@@ -153,7 +150,7 @@ public class ReportUtil {
 								Map<String, Object> mappings = new HashMap<String, Object>();
 								mappings.put("sinceDate", "${startDate}");
 								mappings.put("untilDate", "${endDate}");
-								PeriodCohortIndicator ind = new PeriodCohortIndicator();
+								CohortIndicator ind = new CohortIndicator();
 								ind.setName("On " + drugSet.getBestName(Context.getLocale()) + " During Period");
 								ind.setCohortDefinition(new Mapped<CohortDefinition>(cd, mappings));
 								Context.getService(IndicatorService.class).saveIndicator(ind);
@@ -169,7 +166,7 @@ public class ReportUtil {
 								Map<String, Object> mappings = new HashMap<String, Object>();
 								mappings.put("sinceDate", "${startDate}");
 								mappings.put("untilDate", "${startDate}");
-								PeriodCohortIndicator ind = new PeriodCohortIndicator();
+								CohortIndicator ind = new CohortIndicator();
 								ind.setName("On " + drugSet.getBestName(Context.getLocale()) + " At Start of Period");
 								ind.setCohortDefinition(new Mapped<CohortDefinition>(cd, mappings));
 								Context.getService(IndicatorService.class).saveIndicator(ind);
@@ -185,7 +182,7 @@ public class ReportUtil {
 								Map<String, Object> mappings = new HashMap<String, Object>();
 								mappings.put("sinceDate", "${endDate}");
 								mappings.put("untilDate", "${endDate}");
-								PeriodCohortIndicator ind = new PeriodCohortIndicator();
+								CohortIndicator ind = new CohortIndicator();
 								ind.setName("On " + drugSet.getBestName(Context.getLocale()) + " At End of Period");
 								ind.setCohortDefinition(new Mapped<CohortDefinition>(cd, mappings));
 								Context.getService(IndicatorService.class).saveIndicator(ind);
@@ -203,7 +200,7 @@ public class ReportUtil {
 						throw new IllegalArgumentException("Missing cohort def");
 					Map<String, Object> mappings = new HashMap<String, Object>();
 					mappings.put("untilDate", "${startDate}");
-					PeriodCohortIndicator ind = new PeriodCohortIndicator();
+					CohortIndicator ind = new CohortIndicator();
 					ind.setName("Cumulative " + program.getName() + " enrollment at start");
 					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
 					Context.getService(IndicatorService.class).saveIndicator(ind);
@@ -216,7 +213,7 @@ public class ReportUtil {
 						throw new IllegalArgumentException("Missing cohort def");
 					Map<String, Object> mappings = new HashMap<String, Object>();
 					mappings.put("untilDate", "${endDate}");
-					PeriodCohortIndicator ind = new PeriodCohortIndicator();
+					CohortIndicator ind = new CohortIndicator();
 					ind.setName("Cumulative " + program.getName() + " enrollment at end");
 					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
 					Context.getService(IndicatorService.class).saveIndicator(ind);
@@ -230,7 +227,7 @@ public class ReportUtil {
 					Map<String, Object> mappings = new HashMap<String, Object>();
 					mappings.put("sinceDate", "${startDate}");
 					mappings.put("untilDate", "${startDate}");
-					PeriodCohortIndicator ind = new PeriodCohortIndicator();
+					CohortIndicator ind = new CohortIndicator();
 					ind.setName("Current " + program.getName() + " enrollment at start");
 					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
 					Context.getService(IndicatorService.class).saveIndicator(ind);
@@ -244,7 +241,7 @@ public class ReportUtil {
 					Map<String, Object> mappings = new HashMap<String, Object>();
 					mappings.put("sinceDate", "${endDate}");
 					mappings.put("untilDate", "${endDate}");
-					PeriodCohortIndicator ind = new PeriodCohortIndicator();
+					CohortIndicator ind = new CohortIndicator();
 					ind.setName("Current " + program.getName() + " enrollment at end");
 					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
 					Context.getService(IndicatorService.class).saveIndicator(ind);

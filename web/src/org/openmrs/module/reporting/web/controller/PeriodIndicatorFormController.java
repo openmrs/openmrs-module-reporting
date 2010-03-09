@@ -13,7 +13,6 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
-import org.openmrs.module.reporting.indicator.PeriodCohortIndicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.propertyeditor.CohortDefinitionEditor;
 import org.openmrs.module.reporting.web.model.IndicatorForm;
@@ -135,8 +134,8 @@ public class PeriodIndicatorFormController {
 		// If indicator does not exist, we just create a new one
 		if (indicator != null ) { 
 			log.info("formBackingObject(): found indicator " + indicator);	
-			if (PeriodCohortIndicator.class.isAssignableFrom(indicator.getClass())) {
-				PeriodCohortIndicator cohortIndicator = (PeriodCohortIndicator)indicator;
+			if (CohortIndicator.class.isAssignableFrom(indicator.getClass())) {
+				CohortIndicator cohortIndicator = (CohortIndicator)indicator;
 				indicatorForm.setCohortIndicator(cohortIndicator);
 				if (cohortIndicator.getCohortDefinition() != null) { 
 					indicatorForm.setCohortDefinition(cohortIndicator.getCohortDefinition().getParameterizable());
@@ -151,7 +150,7 @@ public class PeriodIndicatorFormController {
 		else {			
 			log.info("formBackingObject(): creating new indicator ");		
 			if (indicatorForm.getCohortIndicator() == null)  { 
-				indicatorForm.setCohortIndicator(new PeriodCohortIndicator());
+				indicatorForm.setCohortIndicator(new CohortIndicator());
 			}
 		}		
 		return indicatorForm;

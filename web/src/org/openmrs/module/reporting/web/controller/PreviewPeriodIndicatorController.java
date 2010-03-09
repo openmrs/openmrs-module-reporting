@@ -13,9 +13,9 @@ import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
-import org.openmrs.module.reporting.indicator.PeriodCohortIndicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.web.model.IndicatorForm;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -69,11 +69,11 @@ public class PreviewPeriodIndicatorController {
 		// If indicator does not exist, we just create a new one
 		if (indicator != null) { 
 			//if (!indicator.getClass().isAssignableFrom(PeriodCohortIndicator.class)) 
-			form.setCohortIndicator((PeriodCohortIndicator)indicator);
+			form.setCohortIndicator((CohortIndicator)indicator);
 		} 
 		// Otherwise, we populate the form bean with the indicator
 		else {			
-			form.setCohortIndicator(new PeriodCohortIndicator());			
+			form.setCohortIndicator(new CohortIndicator());			
 		}		
 		return form;
 	}

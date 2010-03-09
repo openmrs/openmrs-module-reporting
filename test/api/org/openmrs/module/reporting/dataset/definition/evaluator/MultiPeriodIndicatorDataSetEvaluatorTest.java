@@ -21,13 +21,12 @@ import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDef
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataSetDefinition.Iteration;
-import org.openmrs.module.reporting.dataset.definition.evaluator.MultiPeriodIndicatorDataSetEvaluator;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
-import org.openmrs.module.reporting.indicator.PeriodCohortIndicator;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -48,7 +47,7 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		lessThanOne.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 		lessThanOne.setMaxAge(1);
 		
-		PeriodCohortIndicator lessThanOneAtStart = new PeriodCohortIndicator();
+		CohortIndicator lessThanOneAtStart = new CohortIndicator();
 		lessThanOneAtStart.setUuid(UUID.randomUUID().toString());
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("effectiveDate", "${startDate}");
@@ -60,7 +59,7 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		periodMappings.put("location", "${location}");
 		
 		CohortIndicatorDataSetDefinition def = new CohortIndicatorDataSetDefinition();
-		def.addColumn("1", "Indicator", new Mapped<PeriodCohortIndicator>(lessThanOneAtStart, periodMappings), "");
+		def.addColumn("1", "Indicator", new Mapped<CohortIndicator>(lessThanOneAtStart, periodMappings), "");
 		
 		MultiPeriodIndicatorDataSetDefinition multi = new MultiPeriodIndicatorDataSetDefinition(def);
 		// for every month in 2009, which is the year that patient 6 turns 1 year old. (Actually this

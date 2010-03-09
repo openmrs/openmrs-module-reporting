@@ -21,6 +21,7 @@ import org.openmrs.util.OpenmrsUtil;
  * 
  * This class was adapted from org.pih.StyleHelper in PIH-EMR.
  */
+@SuppressWarnings("unchecked")
 public class ExcelStyleHelper {
 
     HSSFWorkbook wb;
