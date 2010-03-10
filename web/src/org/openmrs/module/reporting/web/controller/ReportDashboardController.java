@@ -85,7 +85,7 @@ public class ReportDashboardController {
 				DataSetDefinition definition = (DataSetDefinition) mapDataSet.getDefinition();
 				DataSetColumn dataSetColumn = definition.getColumn(savedColumnKey);
 				CohortIndicatorAndDimensionResult result = (CohortIndicatorAndDimensionResult) mapDataSet.getData(dataSetColumn);	
-				Cohort selectedCohort = result.getCohort();
+				Cohort selectedCohort = result.getCohortIndicatorAndDimensionCohort();
 				
 				model.addAttribute("selectedColumn", dataSetColumn);
 				model.addAttribute("selectedCohort", selectedCohort);

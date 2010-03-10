@@ -1,6 +1,5 @@
 package org.openmrs.module.reporting.indicator.dimension;
 
-
 /**
  * A dimension category is a categorical breakdown of a dimension.  For instance, within the
  * GENDER dimension, there are three dimension categories (male, female, unknown) that cover

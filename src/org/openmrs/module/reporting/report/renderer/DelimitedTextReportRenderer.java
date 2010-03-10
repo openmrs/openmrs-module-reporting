@@ -125,8 +125,8 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 				if (colValue != null) { 
 					if (colValue instanceof Cohort) {
 						w.write(escape(Integer.toString(((Cohort) colValue).size())));
-					} else if (colValue instanceof IndicatorResult<?>) {
-						w.write(Double.toString(((IndicatorResult<?>) colValue).getValue().doubleValue()));
+					} else if (colValue instanceof IndicatorResult) {
+						w.write(Double.toString(((IndicatorResult) colValue).getValue().doubleValue()));
 					}
 					else {
 						w.write(escape(colValue.toString()));

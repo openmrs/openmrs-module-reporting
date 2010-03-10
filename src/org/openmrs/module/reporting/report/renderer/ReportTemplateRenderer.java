@@ -98,8 +98,8 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 				if (e.getValue() instanceof Cohort) {
 					replacementValue = new Integer(((Cohort) e.getValue()).size());
 				} 
-				else if (e.getValue() instanceof IndicatorResult<?>) {
-					replacementValue = new Double(((IndicatorResult<?>) e.getValue()).getValue().doubleValue());
+				else if (e.getValue() instanceof IndicatorResult) {
+					replacementValue = new Double(((IndicatorResult) e.getValue()).getValue().doubleValue());
 				}
 				else {
 					replacementValue = e.getValue().toString();

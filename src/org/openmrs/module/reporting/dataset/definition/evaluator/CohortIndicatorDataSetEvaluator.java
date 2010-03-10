@@ -1,9 +1,7 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -75,25 +73,25 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 			ColumnDefinition col = (ColumnDefinition) c;
 			if (!indicatorCalculationCache.containsKey(col.getIndicator())) {
 				CohortIndicatorResult result = (CohortIndicatorResult) is.evaluate(col.getIndicator(), context);
-				log.debug("Caching indicator: " + col.getIndicator() + " -> " + result.getCohortValues().size());
+				log.debug("Caching indicator: " + col.getIndicator());
 				indicatorCalculationCache.put(col.getIndicator(), result);
 			}
 		}
 		
-		// evaluate indicators
+		// Populate Data Set columns with Indicator and Dimension Results as defined
 		for (DataSetColumn c : dsd.getColumns()) {
 			ColumnDefinition col = (ColumnDefinition) c;
 			// get this indicator result from the cache
 			CohortIndicatorResult result = indicatorCalculationCache.get(col.getIndicator());
 			// get its value taking dimensions into account
 			CohortIndicatorAndDimensionResult resultWithDimensions = new CohortIndicatorAndDimensionResult(result, context);
-			List<Cohort> filters = new ArrayList<Cohort>();
+
 			if (col.getDimensionOptions() != null) {
 				for (Map.Entry<String, String> e : col.getDimensionOptions().entrySet()) {
 					log.debug("looking up dimension: " + e.getKey() + " = " + e.getValue());
-					Cohort temp = dimensionCalculationCache.get(e.getKey()).get(e.getValue());
-					resultWithDimensions.applyFilter(e.getKey(), temp);
-					filters.add(temp);
+					CohortDefinitionDimension dimension = dsd.getDimension(e.getKey()).getParameterizable();
+					Cohort dimensionCohort = dimensionCalculationCache.get(e.getKey()).get(e.getValue());
+					resultWithDimensions.addDimensionResult(dimension, dimensionCohort);
 				}
 			}
 			ret.addData(col, resultWithDimensions);

@@ -48,7 +48,7 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		for (DataSetRow row : ds) {
 			System.out.println("Row " + (++i));
 			for (Map.Entry<DataSetColumn, Object> col : row.getColumnValues().entrySet()) {
-				IndicatorResult<CohortIndicator> result = (IndicatorResult<CohortIndicator>) col.getValue();
+				IndicatorResult result = (IndicatorResult) col.getValue();
 				System.out.println(col.getKey().getDisplayName() + " -> " + result.getValue());
 			}
 		}

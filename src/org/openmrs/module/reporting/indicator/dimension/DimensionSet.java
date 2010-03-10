@@ -28,9 +28,11 @@ import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
  */
 public class DimensionSet<T extends Dimension> implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	//****** PROPERTIES ******
 
-    private Map<String, Mapped<T>> dimensions = new LinkedHashMap<String, Mapped<T>>();
+	private Map<String, Mapped<T>> dimensions = new LinkedHashMap<String, Mapped<T>>();
 	
 	//****** CONSTRUCTOR ******
 	

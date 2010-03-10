@@ -1,21 +1,12 @@
 package org.openmrs.module.reporting.util;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 
 /**
@@ -25,6 +16,20 @@ public class CohortUtil {
 	
 	protected static Log log = LogFactory.getLog(CohortUtil.class);
 
+	public static Cohort intersectNonNull(Cohort...cohorts) {
+		Cohort ret = null;
+		for (Cohort c : cohorts) {
+			if (c != null) {
+				if (ret == null) {
+					 ret = new Cohort(c.getMemberIds());
+				}
+				else {
+					ret = Cohort.intersect(ret, c);
+				}
+			}
+		}
+		return ObjectUtil.nvl(ret, new Cohort());
+	}
 	
 	/**
 	 * 

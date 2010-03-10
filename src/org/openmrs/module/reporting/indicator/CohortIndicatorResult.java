@@ -17,25 +17,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.indicator.CohortIndicator.IndicatorType;
 import org.openmrs.module.reporting.indicator.aggregation.AggregationUtil;
 import org.openmrs.module.reporting.indicator.aggregation.Aggregator;
 import org.openmrs.module.reporting.indicator.aggregation.CountAggregator;
-import org.openmrs.module.reporting.indicator.dimension.CohortDimension;
 
 /**
  * Cohort-based indicator
  */
-public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
+public class CohortIndicatorResult implements IndicatorResult {
 	
     private static final long serialVersionUID = 1L;
     
     //***** PROPERTIES *****
 
     private CohortIndicator indicator;
-    private Map<CohortDimension, String> dimensions;
     private EvaluationContext context;
-    private Map<Integer, Number> cohortValues = new HashMap<Integer, Number>();  // patient id -> logic value or 1
+    
+    private Cohort cohort;
+    private Cohort denominatorCohort;
+    private Map<Integer, Number> logicResults = new HashMap<Integer, Number>(); // patient id -> logic value
 
     //***** CONSTRUCTORS *****
     
@@ -48,60 +51,49 @@ public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
     
     //***** INSTANCE METHODS *****
     
-    public Number getValue() {
-		if (cohortValues == null)
-    		return null;
-    	Class<? extends Aggregator> aggregator = getIndicator().getAggregator();
-    	if (aggregator == null) {
-    		aggregator = CountAggregator.class;
+    public static Number getResultValue(CohortIndicatorResult cohortIndicatorResult, Cohort...filters) {
+    	
+    	IndicatorType type = cohortIndicatorResult.getDefinition().getType();
+    	Cohort numerator = cohortIndicatorResult.getCohort();
+    	Cohort denominator = cohortIndicatorResult.getDenominatorCohort();
+    	Map<Integer, Number> logicVals = new HashMap<Integer, Number>(cohortIndicatorResult.getLogicResults());
+    	
+    	// Reduce each of the result cohorts as needed based on the filter Cohorts
+    	if (filters != null) {
+	    	for (Cohort filter : filters) {
+	    		numerator = Cohort.intersect(numerator, filter);
+	    		if (type == IndicatorType.FRACTION) {
+	    			denominator = Cohort.intersect(denominator, filter);
+	    		}
+	    		else if (type == IndicatorType.LOGIC) {
+	    			logicVals.keySet().retainAll(filter.getMemberIds());
+	    		}
+	    	}
     	}
-    	return AggregationUtil.aggregate(cohortValues.values(), aggregator);
+    	
+    	// Return the appropriate result, given the IndicatorType
+    	if (type == IndicatorType.FRACTION) {
+    		int n = numerator.getSize();
+    		int d = denominator.getSize();
+    		return new Double(n/d);
+    	}
+    	else if (type == IndicatorType.LOGIC) {
+    		Class<? extends Aggregator> aggregator = cohortIndicatorResult.getDefinition().getAggregator();
+        	if (aggregator == null) {
+        		aggregator = CountAggregator.class;
+        	}
+        	return AggregationUtil.aggregate(logicVals.values(), aggregator);
+    	}
+    	else { // Assume IndicatorType.COUNT
+    		return numerator.getSize();
+    	}
     }
     
     /**
-     * Intended to be used when you are breaking this indicator result down by dimensions
-     * 
-     * @param filters
-     * @return
+     * @see IndicatorResult#getValue()
      */
-	public Number getValueForSubset(Cohort... filters) {
-		if (cohortValues == null)
-    		return null;
-		Class<? extends Aggregator> aggregator = getIndicator().getAggregator();
-    	if (aggregator == null) {
-    		aggregator = CountAggregator.class;
-    	}
-    	Map<Integer, Number> limitedValues = new HashMap<Integer, Number>(cohortValues);
-    	for (Cohort filter : filters) {
-    		limitedValues.keySet().retainAll(filter.getMemberIds());
-    	}
-    	return AggregationUtil.aggregate(limitedValues.values(), aggregator);
-    }
-
-    
-    public void addCohortValue(Integer memberId, Number value) {
-    	getCohortValues().put(memberId, value);
-    }
-    
-    public void addCohortDimension(CohortDimension dimension, String option, Cohort cohort) {
-    	getDimensions().put(dimension, option);
-    	getCohortValues().keySet().retainAll(cohort.getMemberIds());
-    }
-    
-    public Cohort getCohort() {
-    	if (cohortValues == null)
-    		return null;
-    	return new Cohort(getCohortValues().keySet());
-    }
-    
-    public Cohort getCohortForSubset(Cohort... filters) {
-    	if (cohortValues == null)
-    		return null;
-    	Cohort ret = new Cohort(getCohortValues().keySet());
-    	for (Cohort filter : filters) {
-    		ret = Cohort.intersect(ret, filter);
-    	}
-    	return ret;
+    public Number getValue() {
+    	return CohortIndicatorResult.getResultValue(this);
     }
     
 	/** 
@@ -151,37 +143,55 @@ public class CohortIndicatorResult implements IndicatorResult<CohortIndicator> {
 	}
 
 	/**
-	 * @return the dimensions
+	 * @return the cohort
 	 */
-	public Map<CohortDimension, String> getDimensions() {
-		if (dimensions == null) {
-			dimensions = new HashMap<CohortDimension, String>();
+	public Cohort getCohort() {
+		return cohort;
+	}
+
+	/**
+	 * @param cohort the cohort to set
+	 */
+	public void setCohort(Cohort cohort) {
+		this.cohort = cohort;
+	}
+
+	/**
+	 * @return the denominatorCohort
+	 */
+	public Cohort getDenominatorCohort() {
+		return denominatorCohort;
+	}
+
+	/**
+	 * @param denominatorCohort the denominatorCohort to set
+	 */
+	public void setDenominatorCohort(Cohort denominatorCohort) {
+		this.denominatorCohort = denominatorCohort;
+	}
+
+	/**
+	 * @return the logicResults
+	 */
+	public Map<Integer, Number> getLogicResults() {
+		if (logicResults == null) {
+			logicResults = new HashMap<Integer, Number>();
 		}
-		return dimensions;
+		return logicResults;
 	}
 
 	/**
-	 * @param dimensions the dimensions to set
+	 * @param logicResults the logicResults to set
 	 */
-	public void setDimensions(Map<CohortDimension, String> dimensions) {
-		this.dimensions = dimensions;
+	public void setLogicResults(Map<Integer, Number> logicResults) {
+		this.logicResults = logicResults;
 	}
 
 	/**
-	 * @return the cohortValues
+	 * @param patientId the patientId for which to add a logic result
+	 * @param logicResult the logic result to add
 	 */
-	public Map<Integer, Number> getCohortValues() {
-		if (cohortValues == null) {
-			cohortValues = new HashMap<Integer, Number>();
-		}
-		return cohortValues;
+	public void addLogicResult(Integer patientId, Number logicResult) {
+		getLogicResults().put(patientId, logicResult);
 	}
-
-	/**
-	 * @param cohortValues the cohortValues to set
-	 */
-	public void setCohortValues(Map<Integer, Number> cohortValues) {
-		this.cohortValues = cohortValues;
-	}
-
 }

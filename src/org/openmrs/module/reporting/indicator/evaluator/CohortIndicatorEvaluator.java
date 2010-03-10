@@ -51,39 +51,54 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 
     	CohortIndicator cid = (CohortIndicator) indicator;
     	
-    	CohortIndicatorResult ind = new CohortIndicatorResult();
-    	ind.setContext(context);
-    	ind.setIndicator(cid);
+    	CohortIndicatorResult result = new CohortIndicatorResult();
+    	result.setContext(context);
+    	result.setIndicator(cid);
 		
 		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
-		Cohort c = cds.evaluate(cid.getCohortDefinition(), context);
 		
-		// Ensure we are filtering on the base cohort
-		if (context.getBaseCohort() != null) {
-			c = Cohort.intersect(c, context.getBaseCohort());
+		// Determine Base Cohort from LocationFilter and EvaluationContext base cohort
+		Cohort baseCohort = context.getBaseCohort();
+		if (cid.getLocationFilter() != null) {
+			Cohort locationCohort = cds.evaluate(cid.getCohortDefinition(), context);
+			if (baseCohort == null) {
+				baseCohort = locationCohort;
+			}
+			else {
+				baseCohort = Cohort.intersect(baseCohort, locationCohort);
+			}
+		}
+		
+		// Definition Cohort / Numerator
+		Cohort cohort = cds.evaluate(cid.getCohortDefinition(), context);
+		if (baseCohort != null) {
+			cohort = Cohort.intersect(cohort, baseCohort);
+		}
+		result.setCohort(cohort);
+		
+		// Definition Denominator
+		if (cid.getDenominator() != null) {
+			Cohort denominatorCohort = cds.evaluate(cid.getDenominator(), context);
+			if (baseCohort != null) {
+				denominatorCohort = Cohort.intersect(denominatorCohort, baseCohort);
+			}
+			result.setDenominatorCohort(denominatorCohort);
 		}
 		
 		// Evaluate Logic Criteria
     	if (cid.getLogicExpression() != null) {
     		try {
     			LogicCriteria criteria = Context.getLogicService().parseString(cid.getLogicExpression());
-    			Map<Integer, Result> logicResults = Context.getLogicService().eval(c, criteria);
+    			Map<Integer, Result> logicResults = Context.getLogicService().eval(cohort, criteria);
     			for (Integer memberId : logicResults.keySet()) {
-    				ind.addCohortValue(memberId, logicResults.get(memberId).toNumber());
+    				result.addLogicResult(memberId, logicResults.get(memberId).toNumber());
     			}
     		}
     		catch(LogicException e) {
     			throw new APIException("Error evaluating logic criteria", e);
     		}
     	}
-    	// Or copy the evaluated cohort into the indicator
-    	else {
-    		if (c != null) { 
-	    		for (Integer memberId : c.getMemberIds()) {
-	    			ind.addCohortValue(memberId, 1);
-	    		}
-    		}
-    	}
-		return ind;
+
+		return result;
     }
 }

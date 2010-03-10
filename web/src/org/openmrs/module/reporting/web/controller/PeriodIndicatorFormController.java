@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -150,7 +151,10 @@ public class PeriodIndicatorFormController {
 		else {			
 			log.info("formBackingObject(): creating new indicator ");		
 			if (indicatorForm.getCohortIndicator() == null)  { 
-				indicatorForm.setCohortIndicator(new CohortIndicator());
+				CohortIndicator ci = new CohortIndicator();
+				ci.addParameter(ReportingConstants.START_DATE_PARAMETER);
+				ci.addParameter(ReportingConstants.END_DATE_PARAMETER);
+				indicatorForm.setCohortIndicator(ci);
 			}
 		}		
 		return indicatorForm;
