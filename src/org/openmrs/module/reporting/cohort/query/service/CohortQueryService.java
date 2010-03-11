@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CohortQueryService extends OpenmrsService {
 	public void setCohortQueryDAO(CohortQueryDAO dao);	
 	
+	public Cohort getPatientsWithGender(boolean includeMales, boolean includeFemales, boolean includeUnknownGender);
 	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate);
 
 	public Cohort getPatientsHavingProgramEnrollment(List<Program> programs, Date enrolledOnOrAfter, Date enrolledOnOrBefore, Date completedOnOrAfter, Date completedOnOrBefore);

@@ -44,6 +44,31 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		this.sessionFactory = sessionFactory;
 	}
 	
+	public Cohort getPatientsWithGender(boolean includeMales, boolean includeFemales, boolean includeUnknownGender) {
+		
+		if (!includeMales && !includeFemales && !includeUnknownGender) {
+			return new Cohort();
+		}
+		
+		String prefixTerm = "";
+		StringBuilder query = new StringBuilder("select patientId from Patient patient where patient.voided = false and ( ");
+		if (includeMales) {
+			query.append(" patient.gender = 'M' ");
+			prefixTerm = " or";
+		}
+		if (includeFemales) {
+			query.append(prefixTerm + " patient.gender = 'F'");
+			prefixTerm = " or";
+		}
+		if (includeUnknownGender) {
+			query.append(prefixTerm + " patient.gender is null or (patient.gender != 'M' and patient.gender != 'F')");
+		}
+		query.append(")");
+		Query q = sessionFactory.getCurrentSession().createQuery(query.toString());
+		q.setCacheMode(CacheMode.IGNORE);
+		return new Cohort(q.list());
+	}
+	
 	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate) {
 		
 		if (effectiveDate == null) {

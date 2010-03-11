@@ -87,6 +87,13 @@ public interface CohortDefinitionService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
     public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly);
+	
+	/**
+	 * @param tagName the tag name to look up
+	 * @return all CohortDefinitions that are tagged with the given tagName
+	 */
+	@Transactional(readOnly = true)
+	public List<CohortDefinition> getCohortDefinitionsByTag(String tagName);
 
 	/**
 	 * Persists a CohortDefinition, either as a save or update.

@@ -19,6 +19,7 @@ import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.aggregation.Aggregator;
+import org.openmrs.module.reporting.util.ParameterizableUtil;
 
 /**
  * Cohort-based indicator
@@ -152,6 +153,14 @@ public class CohortIndicator extends BaseIndicator {
     }
     
     /**
+     * @param cohortDefinition the cohortDefinition to set
+     */
+    public void setCohortDefinition(CohortDefinition cohortDefinition, String mappings) {
+    	Map<String, Object> m = ParameterizableUtil.createParameterMappings(mappings);
+    	setCohortDefinition(cohortDefinition, m);
+    }
+    
+    /**
 	 * @return the denominator
 	 */
 	public Mapped<? extends CohortDefinition> getDenominator() {
@@ -170,6 +179,14 @@ public class CohortIndicator extends BaseIndicator {
      */
     public void setDenominator(CohortDefinition denominator, Map<String, Object> mappings) {
     	this.denominator = new Mapped<CohortDefinition>(denominator, mappings);
+    }
+    
+    /**
+     * @param denominator the denominator to set
+     */
+    public void setDenominator(CohortDefinition denominator, String mappings) {
+    	Map<String, Object> m = ParameterizableUtil.createParameterMappings(mappings);
+    	setDenominator(denominator, m);
     }
 
 	/**
@@ -191,6 +208,14 @@ public class CohortIndicator extends BaseIndicator {
      */
     public void setLocationFilter(CohortDefinition locationFilter, Map<String, Object> mappings) {
     	this.locationFilter = new Mapped<CohortDefinition>(locationFilter, mappings);
+    }
+    
+    /**
+     * @param locationFilter the locationFilter to set
+     */
+    public void setLocationFilter(CohortDefinition locationFilter, String mappings) {
+    	Map<String, Object> m = ParameterizableUtil.createParameterMappings(mappings);
+    	setLocationFilter(locationFilter, m);
     }
 
 	/**

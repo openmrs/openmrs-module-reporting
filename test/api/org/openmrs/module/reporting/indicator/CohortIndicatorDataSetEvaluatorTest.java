@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -14,8 +13,6 @@ import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.indicator.CohortIndicator;
-import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -24,8 +21,10 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 
 	@Test
 	public void shouldEvaluteIndicatorWithNoParameters() throws Exception {
-		CohortDefinition female = new GenderCohortDefinition("F");
-		CohortDefinition male = new GenderCohortDefinition("M");
+		GenderCohortDefinition female = new GenderCohortDefinition();
+		female.setFemaleIncluded(true);
+		GenderCohortDefinition male = new GenderCohortDefinition();
+		male.setMaleIncluded(true);
 		
 		CohortDefinitionDimension gender = new CohortDefinitionDimension();
 		gender.addCohortDefinition("female", female, null);

@@ -80,12 +80,12 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 		
 		GenderCohortDefinition maleDef = new GenderCohortDefinition();
 		maleDef.setName("Male");
-		maleDef.setGender("M");
+		maleDef.setMaleIncluded(true);
 		cohortDefinitionService.saveCohortDefinition(maleDef);
 		
 		GenderCohortDefinition femaleDef = new GenderCohortDefinition();
 		femaleDef.setName("Female");
-		femaleDef.setGender("F");
+		femaleDef.setFemaleIncluded(true);
 		cohortDefinitionService.saveCohortDefinition(femaleDef);
 		
 		Parameter effDateParam = new Parameter("effectiveDate", "Effective Date", Date.class);

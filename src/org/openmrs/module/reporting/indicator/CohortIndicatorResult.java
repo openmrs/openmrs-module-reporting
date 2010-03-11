@@ -61,12 +61,14 @@ public class CohortIndicatorResult implements IndicatorResult {
     	// Reduce each of the result cohorts as needed based on the filter Cohorts
     	if (filters != null) {
 	    	for (Cohort filter : filters) {
-	    		numerator = Cohort.intersect(numerator, filter);
-	    		if (type == IndicatorType.FRACTION) {
-	    			denominator = Cohort.intersect(denominator, filter);
-	    		}
-	    		else if (type == IndicatorType.LOGIC) {
-	    			logicVals.keySet().retainAll(filter.getMemberIds());
+	    		if (filter != null) {
+		    		numerator = Cohort.intersect(numerator, filter);
+		    		if (type == IndicatorType.FRACTION) {
+		    			denominator = Cohort.intersect(denominator, filter);
+		    		}
+		    		else if (type == IndicatorType.LOGIC) {
+		    			logicVals.keySet().retainAll(filter.getMemberIds());
+		    		}
 	    		}
 	    	}
     	}

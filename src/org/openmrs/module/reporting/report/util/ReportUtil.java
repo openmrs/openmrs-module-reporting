@@ -31,15 +31,17 @@ public class ReportUtil {
 		List<InitialDataElement> ret = new ArrayList<InitialDataElement>();
 		ret.add(new InitialDataElement(CohortDefinition.class, "Female") {
 			public void apply() {
-				GenderCohortDefinition female = new GenderCohortDefinition("F");
+				GenderCohortDefinition female = new GenderCohortDefinition();
 				female.setName("Female");
+				female.setFemaleIncluded(true);
 				Context.getService(CohortDefinitionService.class).saveCohortDefinition(female);
 			}
 		});
 		ret.add(new InitialDataElement(CohortDefinition.class, "Male") {
 			public void apply() {
-				GenderCohortDefinition male = new GenderCohortDefinition("M");
+				GenderCohortDefinition male = new GenderCohortDefinition();
 				male.setName("Male");
+				male.setMaleIncluded(true);
 				Context.getService(CohortDefinitionService.class).saveCohortDefinition(male);
 			}
 		});

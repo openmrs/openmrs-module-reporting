@@ -17,6 +17,7 @@ public interface CohortQueryDAO {
 	
 	//public Cohort getPatientsInPrograms(List<Program> programs, Date startedAfter, Date startedBefore);
 	
+	public Cohort getPatientsWithGender(boolean includeMales, boolean includeFemales, boolean includeUnknownGender);
 	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate);
 	
     // Started or stopped programs in specified periods

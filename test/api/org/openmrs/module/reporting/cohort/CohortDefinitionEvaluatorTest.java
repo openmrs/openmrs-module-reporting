@@ -33,10 +33,11 @@ public class CohortDefinitionEvaluatorTest extends BaseContextSensitiveTest {
 	@Test
 	public void getHandlerForType_shouldReturnAnEmptyListIfNoClassesCanHandleThePassedType() throws Exception {
 		GenderCohortDefinition d = new GenderCohortDefinition();
-		d.setGender("M");
+		d.setMaleIncluded(true);
 		Cohort males = Context.getService(CohortDefinitionService.class).evaluate(d, new EvaluationContext());
 		System.out.println("Males: " + males.getSize());
-		d.setGender("F");
+		d = new GenderCohortDefinition();
+		d.setFemaleIncluded(true);
 		Cohort females = Context.getService(CohortDefinitionService.class).evaluate(d, new EvaluationContext());
 		System.out.println("Females: " + females.getSize());
 	}

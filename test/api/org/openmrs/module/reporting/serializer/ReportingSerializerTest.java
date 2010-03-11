@@ -48,7 +48,7 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		age.setMaxAge(15);
 		
 		GenderCohortDefinition gender = new GenderCohortDefinition();
-		gender.setGender("M");
+		gender.setMaleIncluded(true);
 		
 		CompoundCohortDefinition cd = new CompoundCohortDefinition();
 		cd.setOperator(BooleanOperator.AND);

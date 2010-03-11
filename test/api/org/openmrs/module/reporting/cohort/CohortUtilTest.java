@@ -64,7 +64,7 @@ public class CohortUtilTest extends BaseContextSensitiveTest {
 		// Create a search called "Male" 
 		GenderCohortDefinition maleFilter = new GenderCohortDefinition();
 		maleFilter.setName("Male");
-		maleFilter.setGender("M");
+		maleFilter.setMaleIncluded(true);
 		Context.getService(CohortDefinitionService.class).saveCohortDefinition(maleFilter);
 		
 		// Create a search called "EnrolledOnDate" with one parameter called untilDate
@@ -78,7 +78,7 @@ public class CohortUtilTest extends BaseContextSensitiveTest {
 		{
 			BaseCohortDefinition test = (BaseCohortDefinition) list.get(0);
 			Assert.assertTrue(test instanceof GenderCohortDefinition);
-			Assert.assertEquals(((GenderCohortDefinition) test).getGender(), "M");
+			Assert.assertTrue(((GenderCohortDefinition) test).isMaleIncluded());
 		}
 		assertEquals(list.get(1), PatientSetService.BooleanOperator.AND);
 		{

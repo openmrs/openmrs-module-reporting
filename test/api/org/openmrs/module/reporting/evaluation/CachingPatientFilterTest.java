@@ -44,10 +44,10 @@ public class CachingPatientFilterTest extends BaseContextSensitiveTest {
 		
 		GenderCohortDefinition maleFilter = 
 			new GenderCohortDefinition();
-		maleFilter.setGender("M");
+		maleFilter.setMaleIncluded(true);
 		GenderCohortDefinition femaleFilter = 
 			new GenderCohortDefinition();
-		femaleFilter.setGender("F");
+		femaleFilter.setFemaleIncluded(true);
 		
 		Caching caching = GenderCohortDefinition.class.getAnnotation(Caching.class);
 		assertTrue(caching != null && caching.strategy() != NoCachingStrategy.class);

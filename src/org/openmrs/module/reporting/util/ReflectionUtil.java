@@ -4,9 +4,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -112,19 +115,31 @@ public class ReflectionUtil {
 	
 	/**
 	 * Utility method which sets the value of a Field in an Object with the given value
-	 * 
-	 * @param	object
-	 * 					The object to update.
-	 * @param	field	
-	 * 					The field to update.
-	 * @param	value	
-	 * 					The value to set on the given object and field.
-	 * 
+	 * @param object the object to update.
+	 * @param field the field to update.
+	 * @param value the value to set on the given object and field.
 	 */
+    @SuppressWarnings("unchecked")
     public static void setPropertyValue(Object object, Field field, Object value) {
+    	
 		if (object != null && field != null) {
+			boolean getAndAdd = value != null && isCollection(field) && !(value instanceof Collection<?>);
 			try {
 				String baseName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+				if (getAndAdd) {
+					Method getMethod = object.getClass().getMethod("get"+baseName);
+					Collection<Object> collection = (Collection<Object>)getMethod.invoke(object);
+					if (collection == null) {
+						if (List.class.isAssignableFrom(field.getType())) {
+							collection = new ArrayList<Object>();
+						}
+						else {
+							collection = new HashSet<Object>();
+						}
+					}
+					collection.add(value);
+					value = collection;
+				}
 				Method setterMethod = object.getClass().getMethod("set"+baseName, field.getType());
 				setterMethod.invoke(object, value);
     		}

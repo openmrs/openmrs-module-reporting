@@ -183,13 +183,11 @@ public class ReportDashboardController {
     	if (genderCohort != null || ageCohort != null) {
     		selectedCohort = CohortUtil.limitCohort(Context.getPatientSetService().getAllPatients(), 238);    		
     		if (genderCohort != null && genderCohort.equals("male")) {
-	    		//cohortDefinition.addDefinition(new Mapped(new GenderCohortDefinition("M")))
 	    		tempCohort = getGenderCohort(evalContext, "M");
 	    		selectedCohort = Cohort.intersect(selectedCohort, tempCohort);
 	    		selectedCohorts.add("Males");
 	    	}
 	    	if (genderCohort != null && genderCohort.equals("female")) {
-	    		//cohortDefinition.addDefinition(new Mapped(new GenderCohortDefinition("F")))
 	    		tempCohort = getGenderCohort(evalContext, "F");
 	    		selectedCohort = Cohort.intersect(selectedCohort, tempCohort);
 	    		selectedCohorts.add("Females");
@@ -333,7 +331,8 @@ public class ReportDashboardController {
      */
     public Cohort getGenderCohort(EvaluationContext evaluationContext, String gender) {     	
 		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
-		genderCohortDefinition.setGender(gender);
+		genderCohortDefinition.setMaleIncluded("M".equals(gender));
+		genderCohortDefinition.setFemaleIncluded("F".equals(gender));
 		return Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, evaluationContext); 
     }
 

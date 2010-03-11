@@ -13,14 +13,12 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import java.util.Date;
-
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
@@ -37,17 +35,15 @@ public class GenderCohortDefinitionEvaluator implements CohortDefinitionEvaluato
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      * 
-     * @should return non voided patients
-     * @should return male patients when gender equals male
-     * @should return female patients when gender equals female 
-     * @should return patients with no gender when gender equals unknown 
-     * @should return all patients when gender equals empty string
-     * @should return all patients when gender is null
+     * @should return all non voided patients when all are included
+     * @should return male patients when males are included
+     * @should return female patients when females are included
+     * @should return patients with unknown gender when unknown are included
+     * @should return no patients when none are included
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	GenderCohortDefinition gcd = (GenderCohortDefinition) cohortDefinition;
-
-		PatientSetService pss = Context.getPatientSetService();
-		return pss.getPatientsByCharacteristics(gcd.getGender(), null, null, null, null, null, null, null);
+    	CohortQueryService cqs = Context.getService(CohortQueryService.class);
+    	return cqs.getPatientsWithGender(gcd.isMaleIncluded(), gcd.isFemaleIncluded(), gcd.isUnknownGenderIncluded());
     }
 }

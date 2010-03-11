@@ -41,9 +41,9 @@ public class CachingCohortDefinitionTest extends BaseContextSensitiveTest {
 		
 		GenderCohortDefinition maleFilter = 
 			new GenderCohortDefinition();
-		maleFilter.setGender("M");
+		maleFilter.setMaleIncluded(true);
 		GenderCohortDefinition femaleFilter = new GenderCohortDefinition();
-		femaleFilter.setGender("F");
+		femaleFilter.setFemaleIncluded(true);
 		ConfigurationPropertyCachingStrategy strategy = new ConfigurationPropertyCachingStrategy();
 		String maleKey = strategy.getCacheKey(maleFilter);
 		System.out.println(maleKey);

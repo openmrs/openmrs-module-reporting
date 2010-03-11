@@ -20,22 +20,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.evaluator.GenderCohortDefinitionEvaluator;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.util.DateUtil;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
  * This class tests the evaluation of an GenderCohortDefinition
- * 
- * TODO Cleanup by generating tests cases from the @shoulds with the OpenMRS module plugin.
  */
 public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -50,7 +44,7 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 	@Before
 	public void runBeforeAllTests() throws Exception {
 		initializeInMemoryDatabase();
-		executeDataSet("org/openmrs/module/include/ReportTestDataset.xml");
+		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
 		authenticate();	
 	}	
 	
@@ -58,12 +52,14 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 	 * @see GenderCohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
 	 */
 	@Test
-	@Verifies(value = "should return non voided patients", method = "evaluate(CohortDefinition, EvaluationContext)")
-	public void evaluate_shouldReturnNonVoidedPatients() throws Exception {
+	@Verifies(value = "should return all non voided patients when all are included", method = "evaluate(CohortDefinition, EvaluationContext)")
+	public void evaluate_shouldReturnAllNonVoidedPatientsWhenAllAreIncluded() throws Exception {
 		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
-		genderCohortDefinition.setGender(null);
+		genderCohortDefinition.setMaleIncluded(true);
+		genderCohortDefinition.setFemaleIncluded(true);
+		genderCohortDefinition.setUnknownGenderIncluded(true);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
-		Assert.assertEquals("Should contain 9 patients", 9, cohort.getSize());
+		Assert.assertEquals(9, cohort.getSize());
 		Assert.assertTrue("Should not include patient 999 whose record has been voided", !cohort.contains(999));
 	}
 
@@ -71,64 +67,47 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 	 * @see GenderCohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
 	 */
 	@Test
-	@Verifies(value = "should return all patients when gender is null", method = "evaluate(CohortDefinition, EvaluationContext)")
-	public void evaluate_shouldReturnAllPatientsWhenGenderIsNull() throws Exception {
+	@Verifies(value = "should return male patients when males are included", method = "evaluate(CohortDefinition, EvaluationContext)")
+	public void evaluate_shouldReturnMalePatientsWhenMalesAreIncluded() throws Exception {
 		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
-		genderCohortDefinition.setGender(null);
-		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
-		Assert.assertEquals("Should include 9 patient who has a null gender", 9, cohort.getSize());
-	}
-
-	/**
-	 * @see GenderCohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
-	 */
-	@Test
-	@Verifies(value = "should return male patients when gender equals male", method = "evaluate(CohortDefinition, EvaluationContext)")
-	public void evaluate_shouldReturnMalePatientsWhenGenderEqualsMale() throws Exception {
-		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
-		genderCohortDefinition.setGender("M");		
+		genderCohortDefinition.setMaleIncluded(true);		
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
 		log.warn("Cohort: " + cohort);
-		Assert.assertEquals("Should include 4 patients who are male", 4, cohort.getSize());
-	}
-
-	/**
-	 * @see GenderCohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
-	 */
-	@Test
-	@Verifies(value = "should return female patients when gender equals female", method = "evaluate(CohortDefinition, EvaluationContext)")
-	public void evaluate_shouldReturnFemalePatientsWhenGenderEqualsFemale() throws Exception {
-		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
-		genderCohortDefinition.setGender("F");		
-		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
-		log.warn("Cohort: " + cohort);
-		Assert.assertEquals("Should include 5 patients who are female", 5, cohort.getSize());
+		Assert.assertEquals(3, cohort.getSize());
 	}
 	
 	/**
 	 * @see GenderCohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
 	 */
 	@Test
-	@Verifies(value = "should return all patients when gender equals empty string", method = "evaluate(CohortDefinition, EvaluationContext)")
-	public void evaluate_shouldReturnAllPatientsWhenGenderEqualsEmptyString() throws Exception {
+	@Verifies(value = "should return female patients when females are included", method = "evaluate(CohortDefinition, EvaluationContext)")
+	public void evaluate_shouldReturnFemalePatientsWhenFemalesAreIncluded() throws Exception {
 		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
-		genderCohortDefinition.setGender("");		
+		genderCohortDefinition.setFemaleIncluded(true);	
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
+		log.warn("Cohort: " + cohort);
+		Assert.assertEquals(5, cohort.getSize());
+	}
+
+	@Test
+	@Verifies(value = "should return patients with unknown gender when unknown are included", method = "evaluate(CohortDefinition, EvaluationContext)")
+	public void evaluate_shouldReturnPatientsWithUnknownGenderWhenUnknownAreIncluded() throws Exception {
+		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
+		genderCohortDefinition.setUnknownGenderIncluded(true);	
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
+		log.warn("Cohort: " + cohort);
+		Assert.assertEquals(1, cohort.getSize());
+	}	
+	
+	/**
+	 * @see GenderCohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
+	 */
+	@Test
+	@Verifies(value = "@should return no patients when none are included", method = "evaluate(CohortDefinition, EvaluationContext)")
+	public void evaluate_shouldReturnNoPatientsWhenNoneAreIncluded() throws Exception {
+		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();		
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);		
 		log.warn("Cohort: " + cohort);
-		Assert.assertEquals("Should return 2 patient whose gender equals empty string", 2, cohort.getSize());
+		Assert.assertEquals(0, cohort.getSize());
 	}
-	
-	/**
-	 * @see GenderCohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
-	 */
-	@Test
-	@Verifies(value = "should return patients with an unknown gender when gender equals unknown", method = "evaluate(CohortDefinition, EvaluationContext)")
-	public void evaluate_shouldReturnPatientsWithUnknownGenderWhenGenderEqualsUnknown() throws Exception {
-		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
-		genderCohortDefinition.setGender("unknown");		
-		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
-		log.warn("Cohort: " + cohort);
-		Assert.assertEquals("Should return 3 patients whose gender is unknown", 2, cohort.getSize());		
-	}	
-
 }

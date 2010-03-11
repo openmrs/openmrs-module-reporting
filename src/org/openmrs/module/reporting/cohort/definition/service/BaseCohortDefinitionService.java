@@ -201,6 +201,14 @@ public class BaseCohortDefinitionService extends BaseOpenmrsService implements C
 	}
 
 	/**
+	 * TODO: Implement tags. Currently this returns all CohortDefinitions with names that contain the passed tag name.
+	 * @see CohortDefinitionService#getCohortDefinitionsByTag(String)
+	 */
+	public List<CohortDefinition> getCohortDefinitionsByTag(String tagName) {
+		return getCohortDefinitions(tagName, false);
+	}
+
+	/**
 	 * @see CohortDefinitionService#saveCohortDefinition(CohortDefinition)
 	 */
 	@Transactional

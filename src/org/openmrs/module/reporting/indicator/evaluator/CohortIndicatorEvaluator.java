@@ -60,7 +60,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 		// Determine Base Cohort from LocationFilter and EvaluationContext base cohort
 		Cohort baseCohort = context.getBaseCohort();
 		if (cid.getLocationFilter() != null) {
-			Cohort locationCohort = cds.evaluate(cid.getCohortDefinition(), context);
+			Cohort locationCohort = cds.evaluate(cid.getLocationFilter(), context);
 			if (baseCohort == null) {
 				baseCohort = locationCohort;
 			}

@@ -30,8 +30,12 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
     public void setCohortQueryDAO(CohortQueryDAO dao) {
         this.dao = dao;
     }
-    
-    public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate) {
+
+	public Cohort getPatientsWithGender(boolean includeMales, boolean includeFemales, boolean includeUnknownGender) {
+		return dao.getPatientsWithGender(includeMales, includeFemales, includeUnknownGender);
+	}
+
+	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate) {
     	return dao.getPatientsWithAgeRange(minAge, minAgeUnit, maxAge, maxAgeUnit, unknownAgeIncluded, effectiveDate);
     }
     

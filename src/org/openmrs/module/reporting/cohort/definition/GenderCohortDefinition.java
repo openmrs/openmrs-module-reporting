@@ -22,9 +22,13 @@ public class GenderCohortDefinition extends BaseCohortDefinition {
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty(required=false)
-	private String gender;
+	private boolean maleIncluded;
 	
-
+	@ConfigurationProperty(required=false)
+	private boolean femaleIncluded;
+	
+	@ConfigurationProperty(required=false)
+	private boolean unknownGenderIncluded;
 	
 	//***** CONSTRUCTORS *****
 
@@ -35,16 +39,6 @@ public class GenderCohortDefinition extends BaseCohortDefinition {
 		super();
 	}
 	
-	/**
-	 * Default Constructor
-	 */
-	public GenderCohortDefinition(String gender) {
-		super();
-		setGender(gender);
-	}
-	
-	
-	
 	//***** INSTANCE METHODS *****
 	
 	/**
@@ -52,36 +46,84 @@ public class GenderCohortDefinition extends BaseCohortDefinition {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();		
-		if (gender != null) {
-			if ("M".equalsIgnoreCase(gender)) { // TODO: Use an enumerated constant
-				buffer.append("Male");
-			} 
-			else {
-				buffer.append("Female");
-			}
-			buffer.append(" patients");
+		if (isMaleIncluded()) {
+			buffer.append("Male");
 		}
-		else {
-			buffer.append("All Patients");
+		if (isFemaleIncluded()) {
+			buffer.append((buffer.length() > 0 ? "," : "") + "Female");
 		}
-		
+		if (isUnknownGenderIncluded()) {
+			buffer.append((buffer.length() > 0 ? "," : "") + "Unknown Gender");
+		}
+		if (buffer.length() == 0) {
+			return "No Patients";
+		}
 		return buffer.toString();
 	}
 
 
 	//***** PROPERTY ACCESS *****
+
+	/**
+	 * @return the maleIncluded
+	 */
+	public boolean getMaleIncluded() {
+		return maleIncluded;
+	}
 	
-    /**
-     * @return the gender
-     */
-    public String getGender() {
-    	return gender;
-    }
+	/**
+	 * @return the maleIncluded
+	 */
+	public boolean isMaleIncluded() {
+		return maleIncluded;
+	}
+
+	/**
+	 * @param maleIncluded the maleIncluded to set
+	 */
+	public void setMaleIncluded(boolean maleIncluded) {
+		this.maleIncluded = maleIncluded;
+	}
+
+	/**
+	 * @return the femaleIncluded
+	 */
+	public boolean getFemaleIncluded() {
+		return femaleIncluded;
+	}
 	
-    /**
-     * @param gender the gender to set
-     */
-    public void setGender(String gender) {
-    	this.gender = gender;
-    }
+	/**
+	 * @return the femaleIncluded
+	 */
+	public boolean isFemaleIncluded() {
+		return femaleIncluded;
+	}
+
+	/**
+	 * @param femaleIncluded the femaleIncluded to set
+	 */
+	public void setFemaleIncluded(boolean femaleIncluded) {
+		this.femaleIncluded = femaleIncluded;
+	}
+
+	/**
+	 * @return the unknownGenderIncluded
+	 */
+	public boolean getUnknownGenderIncluded() {
+		return unknownGenderIncluded;
+	}
+	
+	/**
+	 * @return the unknownGenderIncluded
+	 */
+	public boolean isUnknownGenderIncluded() {
+		return unknownGenderIncluded;
+	}
+
+	/**
+	 * @param unknownGenderIncluded the unknownGenderIncluded to set
+	 */
+	public void setUnknownGenderIncluded(boolean unknownGenderIncluded) {
+		this.unknownGenderIncluded = unknownGenderIncluded;
+	}
 }
