@@ -743,7 +743,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		
 		// Create a list of clauses
 		if (stateIds != null && !stateIds.isEmpty())
-			sql.append(" and ps.state in (:programIds) ");
+			sql.append(" and ps.state in (:stateIds) ");
 		if (startedOnOrAfter != null)
 			sql.append(" and ps.start_date >= :startedOnOrAfter ");
 		if (startedOnOrBefore != null)
