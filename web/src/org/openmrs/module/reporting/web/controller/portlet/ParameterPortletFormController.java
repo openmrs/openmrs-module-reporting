@@ -1,6 +1,6 @@
 package org.openmrs.module.reporting.web.controller.portlet;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
