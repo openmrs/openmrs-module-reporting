@@ -70,9 +70,20 @@ public class PeriodIndicatorFormController {
 	 * @return	a list of cohort definitions
 	 */
 	@ModelAttribute("cohortDefinitions")
-    public Collection<CohortDefinition> populateCohortDefinitions() {
+    public Collection<CohortDefinition> populateAllCohortDefinitions() {
 		log.info("Populate cohort definitions");
         return Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false);
+    }
+	
+	/**
+	 * Populate the location cohort definitions that are available to this indicator.
+	 * 
+	 * @return	a list of cohort definitions
+	 */
+	@ModelAttribute("locationFilters")
+    public Collection<CohortDefinition> populateLocationFilters() {
+		log.info("Populate all location filters");
+        return Context.getService(CohortDefinitionService.class).getCohortDefinitions("location", false);
     }
 	
 	
@@ -93,18 +104,37 @@ public class PeriodIndicatorFormController {
 		CohortIndicator cohortIndicator = indicatorForm.getCohortIndicator();
 				
 		if (isSave) { 			
+			
 			// validate the parameter mapping
+			// TODO we actually need to validate the entire indicator 
 			new IndicatorFormValidator().validateParameterMapping(indicatorForm, bindingResult);
-
+			
+			// if there are errors return to the form
 			if (bindingResult.hasErrors()) 
 				return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
 			
-			// Assemble to cohort indicator
-			cohortIndicator.setCohortDefinition(
-					indicatorForm.getCohortDefinition(), 
-					indicatorForm.getParameterMapping());
+			// Assign the cohort definition and parameter mapping for the numerator
+			// TODO should validate above
+			if (indicatorForm.getCohortDefinition() != null) { 
+				cohortIndicator.setCohortDefinition(
+						indicatorForm.getCohortDefinition(), indicatorForm.getParameterMapping());
+			}
 			
+			// Assign the cohort definition and parameter mapping for the denominator
+			//cohortIndicator.setDenominator(
+			//		indicatorForm.getDenominatorCohortDefinition(), indicatorForm.getDenominatorParameterMapping());
+						
+			// Assign the location filter  
+			// TODO Should validate above
+			if (indicatorForm.getLocationFilter() != null) { 
+				cohortIndicator.setLocationFilter(
+						indicatorForm.getLocationFilter(), indicatorForm.getLocationFilterParameterMapping());
+			}
+			
+			// Save the cohort indicator definition to the database 
 			Context.getService(IndicatorService.class).saveIndicator(cohortIndicator);			
+
+			// Redirect to the close window page in order to close the modal dialog
 			return new ModelAndView("redirect:/module/reporting/closeWindow.htm");
 		}
 

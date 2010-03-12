@@ -49,10 +49,9 @@ public class IndicatorFormValidator implements Validator {
 		// errors, field, errorKey, defaultMessage
 		if (indicatorForm != null) { 
 			
-			List<Parameter> parameters = 
-				indicatorForm.getCohortDefinition().getParameters();
-			for(Parameter parameter : parameters) {
-				
+			List<Parameter> parameters = indicatorForm.getCohortDefinition().getParameters();
+			
+			for(Parameter parameter : parameters) {				
 				Object value = indicatorForm.getParameterMapping().get(parameter.getName());
 				log.info("value = '" + value + "'");
 				if (value == null || value.equals("")) { 

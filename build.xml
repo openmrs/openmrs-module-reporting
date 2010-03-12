@@ -6,7 +6,7 @@
 <!-- ** @author Justin Miranda                              ** -->
 <!-- ** @version 1.0                                        ** -->
 <!-- ********************************************************* -->
-<project name="Reporting Core Module" default="package-module">
+<project name="reporting" default="package-module">
 	
 	<!-- *********************************************************** -->
 	<!-- **                 BUILD PROPERTIES                      ** -->

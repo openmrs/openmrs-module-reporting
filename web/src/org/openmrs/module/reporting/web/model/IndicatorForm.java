@@ -29,7 +29,8 @@ public class IndicatorForm {
     // Basic Details 
     private String columnKey = null;
     private String displayName = null;
-    private String indicatorType = null;  // supports CohortDefinition or LogicQuery
+    private String indicatorType = null;  // count, fraction, custom
+    private String dateRangeType = null;  // snapshot vs period (or range)
 
     // Action 
     private String action = null;
@@ -43,17 +44,33 @@ public class IndicatorForm {
     private String reportUuid = null;
     private String cohortDefinitionUuid = null;
     private CohortIndicator cohortIndicator = null;
-    private CohortDefinition cohortDefinition = null;
+    private CohortDefinition cohortDefinition = null;    
     
     // Parameter to parameter mapping (for adding a child to parent)
     private Map<String, Object> parameterMapping = new HashMap<String, Object>();
 
     // Parameter to value mapping (for evaluating a parameterizable)  
     private Map<String, String> parameterValues = new HashMap<String, String>();
+
+    // Location filter 
+    private CohortDefinition locationFilter = null;
+
+    // Parameter to parameter mapping for the location cohort definition
+    private Map<String, Object> locationFilterParameterMapping = new HashMap<String, Object>();
+
+    // Parameter to value mapping (for evaluating a parameterizable)  
+    private Map<String, String> locationFilterParameterValues = new HashMap<String, String>();
+    
+
+    
     
     //***** CONSTRUCTORS *****
     public IndicatorForm() { }
 
+    
+    
+    // =====  Indicator Details  =====
+    
     public String getUuid() { 
     	return this.uuid;
     }
@@ -61,6 +78,23 @@ public class IndicatorForm {
     public void setUuid(String uuid) { 
     	this.uuid = uuid;
     }    
+
+    public String getReportUuid() {
+		return reportUuid;
+	}
+
+	public void setReportUuid(String reportUuid) {
+		this.reportUuid = reportUuid;
+	}	
+    
+
+	public String getCohortDefinitionUuid() {
+		return cohortDefinitionUuid;
+	}
+
+	public void setCohortDefinitionUuid(String cohortDefinitionUuid) {
+		this.cohortDefinitionUuid = cohortDefinitionUuid;
+	}
     
 	public String getAction() {
 		return action;
@@ -86,21 +120,31 @@ public class IndicatorForm {
 		this.displayName = displayName;
 	}
 
-	public String getAggregator() {
-		return aggregator;
+	public String getIndicatorType() {
+		return indicatorType;
 	}
 
-	public void setAggregator(String aggregator) {
-		this.aggregator = aggregator;
+	public void setIndicatorType(String indicatorType) {
+		this.indicatorType = indicatorType;
 	}
-
+	
 	public CohortIndicator getCohortIndicator() {
 		return cohortIndicator;
 	}
+	
+	// =====  Simple Count calculation  =====
 
 	public void setCohortIndicator(CohortIndicator cohortIndicator) {
 		this.cohortIndicator = cohortIndicator;
 	}
+	
+	public CohortDefinition getCohortDefinition() {
+		return cohortDefinition;
+	}
+
+	public void setCohortDefinition(CohortDefinition cohortDefinition) {
+		this.cohortDefinition = cohortDefinition;
+	}	
 
 	public Map<String, Object> getParameterMapping() {
 		return parameterMapping;
@@ -118,13 +162,8 @@ public class IndicatorForm {
 		this.parameterValues = parameterValues;
 	}
 
-	public String getIndicatorType() {
-		return indicatorType;
-	}
 
-	public void setIndicatorType(String indicatorType) {
-		this.indicatorType = indicatorType;
-	}
+	// =====  Logic Query calculation  =====
 
 	public String getLogicQuery() {
 		return logicQuery;
@@ -134,28 +173,39 @@ public class IndicatorForm {
 		this.logicQuery = logicQuery;
 	}
 
-	public CohortDefinition getCohortDefinition() {
-		return cohortDefinition;
+	public String getAggregator() {
+		return aggregator;
 	}
 
-	public void setCohortDefinition(CohortDefinition cohortDefinition) {
-		this.cohortDefinition = cohortDefinition;
+	public void setAggregator(String aggregator) {
+		this.aggregator = aggregator;
 	}
 
-	public String getCohortDefinitionUuid() {
-		return cohortDefinitionUuid;
+	// =====  Location Filter  =====
+	
+	public CohortDefinition getLocationFilter() {
+		return locationFilter;
 	}
 
-	public void setCohortDefinitionUuid(String cohortDefinitionUuid) {
-		this.cohortDefinitionUuid = cohortDefinitionUuid;
+	public void setLocationFilter(CohortDefinition locationFilter) {
+		this.locationFilter = locationFilter;
 	}
 
-	public String getReportUuid() {
-		return reportUuid;
+	public Map<String, Object> getLocationFilterParameterMapping() {
+		return locationFilterParameterMapping;
 	}
 
-	public void setReportUuid(String reportUuid) {
-		this.reportUuid = reportUuid;
+	public void setLocationFilterParameterMapping(Map<String, Object> locationFilterParameterMapping) {
+		this.locationFilterParameterMapping = locationFilterParameterMapping;
 	}
+		
+	public Map<String, String> getLocationFilterParameterValues() {
+		return locationFilterParameterValues;
+	}
+
+	public void setLocationFilterParameterValues(Map<String, String> locationFilterParameterValues) {
+		this.locationFilterParameterValues = locationFilterParameterValues;
+	}	
+
 	
 }
