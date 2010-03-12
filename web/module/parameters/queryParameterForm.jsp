@@ -97,8 +97,15 @@ $(document).ready(function() {
 								<c:forEach var="parameter" items="${parameterizable.parameters}">				
 									<li>
 										<label class="desc" for="${parameter.name}">${parameter.label}</label>
-										<div>											
-											<wgt:widget id="${parameter.name}" name="${parameter.name}" defaultValue="" type="${parameter.type.name}"/>	
+										<div>
+											<c:choose>
+												<c:when test="${parameter.collectionType != null}">
+													<wgt:widget id="${parameter.name}" name="${parameter.name}" type="${parameter.collectionType.name}" genericTypes="${parameter.type.name}"/>	
+												</c:when>
+												<c:otherwise>
+													<wgt:widget id="${parameter.name}" name="${parameter.name}" type="${parameter.type.name}"/>	
+												</c:otherwise>
+											</c:choose>
 										</div>
 									</li>						
 								</c:forEach>
