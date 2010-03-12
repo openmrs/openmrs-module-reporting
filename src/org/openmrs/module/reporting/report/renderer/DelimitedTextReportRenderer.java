@@ -122,11 +122,11 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 			for (DataSetColumn column : columns) {
 				Object colValue = row.getColumnValue(column);
 				w.write(getBeforeColumnDelimiter());
-				if (colValue != null) { 
+				if (colValue != null) {
 					if (colValue instanceof Cohort) {
 						w.write(escape(Integer.toString(((Cohort) colValue).size())));
 					} else if (colValue instanceof IndicatorResult) {
-						w.write(Double.toString(((IndicatorResult) colValue).getValue().doubleValue()));
+						w.write(((IndicatorResult) colValue).getValue().toString());
 					}
 					else {
 						w.write(escape(colValue.toString()));

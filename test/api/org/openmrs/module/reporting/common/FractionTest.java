@@ -30,6 +30,12 @@ public class FractionTest {
 	}
 	
 	@Test
+	public void shouldAllowZeroDenominator() { 
+		Fraction f = new Fraction(5,0);
+		Assert.assertEquals("5 / 0", f.toString());
+	}
+	
+	@Test
 	public void shouldReduceFraction() { 
 		Fraction f1 = new Fraction(21, 35);
 		Assert.assertEquals(21, f1.getNumerator());

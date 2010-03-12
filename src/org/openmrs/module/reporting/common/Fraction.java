@@ -34,9 +34,6 @@ public class Fraction extends Number implements Comparable<Fraction>, Serializab
 	 * Default Constructor
 	 */
 	public Fraction(int numerator, int denominator) {
-        if (denominator == 0) { // Validate Input
-        	throw new IllegalArgumentException("You cannot create a Fraction with a zero denominator");
-        }
 		this.numerator = numerator;
 		this.denominator = denominator;
 	}
@@ -82,6 +79,7 @@ public class Fraction extends Number implements Comparable<Fraction>, Serializab
 	 * @return this Fraction formatted as a percentage
 	 */
 	public String toPercentString(int decimalPlaces) {
+		if (denominator == 0) { return "N/A"; }
 		NumberFormat nf = NumberFormat.getPercentInstance();
 		nf.setMaximumFractionDigits(decimalPlaces);
 		return nf.format(doubleValue());
