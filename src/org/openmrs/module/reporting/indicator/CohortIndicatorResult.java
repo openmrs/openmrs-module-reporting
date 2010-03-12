@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.common.Fraction;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.indicator.CohortIndicator.IndicatorType;
@@ -77,7 +78,7 @@ public class CohortIndicatorResult implements IndicatorResult {
     	if (type == IndicatorType.FRACTION) {
     		int n = numerator.getSize();
     		int d = denominator.getSize();
-    		return new Double(n/d);
+    		return new Fraction(n, d);
     	}
     	else if (type == IndicatorType.LOGIC) {
     		Class<? extends Aggregator> aggregator = cohortIndicatorResult.getDefinition().getAggregator();
