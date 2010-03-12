@@ -14,8 +14,10 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import java.util.Date;
+import java.util.List;
 
 import org.openmrs.Cohort;
+import org.openmrs.EncounterType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
@@ -37,7 +39,7 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      * 
-     * @should return all patients with encounters if all arguments to cohort definition are null 
+     * @should return all patients with encounters if all arguments to cohort definition are empty 
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	EncounterCohortDefinition ed = (EncounterCohortDefinition) cohortDefinition;
@@ -47,7 +49,12 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
     	Date fromDate = ed.getCalculatedFromDate(context);
     	Date toDate = ed.getCalculatedToDate(context);
     	
-    	return pss.getPatientsHavingEncounters(ed.getEncounterTypeList(), ed.getLocation(), 
+    	// there was a bug in core before rev 12432 where passing an empty list for the first parameter would throw an exception
+    	List<EncounterType> encTypeList = ed.getEncounterTypeList();
+    	if (encTypeList != null && encTypeList.size() == 0)
+    		encTypeList = null;
+    	
+    	return pss.getPatientsHavingEncounters(encTypeList, ed.getLocation(), 
     										   ed.getForm(), fromDate, toDate, 
     										   ed.getAtLeastCount(), ed.getAtMostCount());
     }
