@@ -14,6 +14,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
+import org.openmrs.module.reporting.indicator.CohortIndicator.IndicatorType;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.propertyeditor.CohortDefinitionEditor;
 import org.openmrs.module.reporting.web.model.IndicatorForm;
@@ -60,7 +61,6 @@ public class PeriodIndicatorFormController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView setupForm(
 		@RequestParam(value = "uuid", required = false) String uuid) {
-		log.info("Setup form");
 		return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
 	}
 
@@ -71,7 +71,6 @@ public class PeriodIndicatorFormController {
 	 */
 	@ModelAttribute("cohortDefinitions")
     public Collection<CohortDefinition> populateAllCohortDefinitions() {
-		log.info("Populate cohort definitions");
         return Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false);
     }
 	
@@ -82,7 +81,6 @@ public class PeriodIndicatorFormController {
 	 */
 	@ModelAttribute("locationFilters")
     public Collection<CohortDefinition> populateLocationFilters() {
-		log.info("Populate all location filters");
         return Context.getService(CohortDefinitionService.class).getCohortDefinitions("location", false);
     }
 	
@@ -105,37 +103,74 @@ public class PeriodIndicatorFormController {
 				
 		if (isSave) { 			
 			
-			// validate the parameter mapping
-			// TODO we actually need to validate the entire indicator 
-			new IndicatorFormValidator().validateParameterMapping(indicatorForm, bindingResult);
+			log.info("Processing cohort indicator save");
 			
-			// if there are errors return to the form
-			if (bindingResult.hasErrors()) 
-				return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
+			IndicatorFormValidator validator = new IndicatorFormValidator();			
 			
-			// Assign the cohort definition and parameter mapping for the numerator
-			// TODO should validate above
-			if (indicatorForm.getCohortDefinition() != null) { 
+			if ("COUNT".equals(indicatorForm.getIndicatorType())) { 
+			
+				// form has not been completed yet
+				if (indicatorForm.getCohortDefinition() == null) 
+					return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
+				
+				// validate the count indicator
+				validator.validateCountIndicator(indicatorForm, bindingResult);
+
+				// if there are errors return to the form
+				if (bindingResult.hasErrors()) 
+					return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
+				
+				// if successful, set cohort definition on indicator
+				cohortIndicator.setType(IndicatorType.COUNT);
 				cohortIndicator.setCohortDefinition(
-						indicatorForm.getCohortDefinition(), indicatorForm.getParameterMapping());
-			}
+						indicatorForm.getCohortDefinition(), indicatorForm.getParameterMapping());				
+			} 
+			else if ("FRACTION".equals(indicatorForm.getIndicatorType())) { 
+
+				// form has not been completed yet
+				if (indicatorForm.getNumerator() == null || indicatorForm.getDenominator() == null) 
+					return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
+				
+				
+				// Validate the fractional indicator
+				validator.validateFractionIndicator(indicatorForm, bindingResult);
+
+				// if there are errors return to the form
+				if (bindingResult.hasErrors()) 
+					return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
+
+				// Set the indicatory type
+				cohortIndicator.setType(IndicatorType.FRACTION);
+
+				// Set the numerator and parameter mapping for the denominator
+				cohortIndicator.setCohortDefinition(
+						indicatorForm.getNumerator(), indicatorForm.getNumeratorParameterMapping());
+				
+				// Set the denominator and parameter mapping for the denominator
+				cohortIndicator.setDenominator(
+						indicatorForm.getDenominator(), indicatorForm.getDenominatorParameterMapping());				
+			}			
 			
-			// Assign the cohort definition and parameter mapping for the denominator
-			//cohortIndicator.setDenominator(
-			//		indicatorForm.getDenominatorCohortDefinition(), indicatorForm.getDenominatorParameterMapping());
-						
-			// Assign the location filter  
-			// TODO Should validate above
-			if (indicatorForm.getLocationFilter() != null) { 
+			// If specified, validate and set the location filter on the indicator	
+			if (indicatorForm.getLocationFilter() != null) { 				
+				
+				// validate the location filter
+				validator.validateLocationFilter(indicatorForm, bindingResult);
+
+				// if there are errors return to the form
+				if (bindingResult.hasErrors()) 
+					return new ModelAndView("/module/reporting/indicators/periodIndicatorForm");
+				
+				// if successful, set the location filter 
 				cohortIndicator.setLocationFilter(
 						indicatorForm.getLocationFilter(), indicatorForm.getLocationFilterParameterMapping());
-			}
+			}			
 			
-			// Save the cohort indicator definition to the database 
+			// Otherwise, we save the cohort indicator definition to the database 
 			Context.getService(IndicatorService.class).saveIndicator(cohortIndicator);			
 
 			// Redirect to the close window page in order to close the modal dialog
-			return new ModelAndView("redirect:/module/reporting/closeWindow.htm");
+			return new ModelAndView("redirect:/module/reporting/indicators/manageIndicators.form");
 		}
 
 		return this.setupForm(cohortIndicator.getUuid());
@@ -164,13 +199,36 @@ public class PeriodIndicatorFormController {
 		
 		// If indicator does not exist, we just create a new one
 		if (indicator != null ) { 
+			
+			
+			
 			log.info("formBackingObject(): found indicator " + indicator);	
 			if (CohortIndicator.class.isAssignableFrom(indicator.getClass())) {
+				
+				
 				CohortIndicator cohortIndicator = (CohortIndicator)indicator;
+				
+				indicatorForm.setIndicatorType(cohortIndicator.getType().toString());				
 				indicatorForm.setCohortIndicator(cohortIndicator);
-				if (cohortIndicator.getCohortDefinition() != null) { 
+				
+				if (cohortIndicator.getLocationFilter() != null) { 
+					indicatorForm.setLocationFilter(cohortIndicator.getLocationFilter().getParameterizable());
+					indicatorForm.setLocationFilterParameterMapping(cohortIndicator.getLocationFilter().getParameterMappings());
+				}
+				
+			
+				if ("COUNT".equals(indicatorForm.getIndicatorType())) { 
 					indicatorForm.setCohortDefinition(cohortIndicator.getCohortDefinition().getParameterizable());
 					indicatorForm.setParameterMapping(cohortIndicator.getCohortDefinition().getParameterMappings());
+				} 
+				else if ("FRACTIONAL".equals(indicatorForm.getIndicatorType())) { 
+					indicatorForm.setNumerator(cohortIndicator.getCohortDefinition().getParameterizable());
+					indicatorForm.setNumeratorParameterMapping(cohortIndicator.getCohortDefinition().getParameterMappings());
+					indicatorForm.setDenominator(cohortIndicator.getDenominator().getParameterizable());
+					indicatorForm.setDenominatorParameterMapping(cohortIndicator.getDenominator().getParameterMappings());				
+				} 
+				else { 
+					throw new APIException("Unsupported indicator type: " + indicatorForm.getIndicatorType());
 				}
 			}
 			
@@ -189,6 +247,7 @@ public class PeriodIndicatorFormController {
 		}		
 		return indicatorForm;
 	}	
+	
 }
 
 

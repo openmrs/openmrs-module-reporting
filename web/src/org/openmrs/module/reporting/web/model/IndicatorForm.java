@@ -29,29 +29,21 @@ public class IndicatorForm {
     // Basic Details 
     private String columnKey = null;
     private String displayName = null;
-    private String indicatorType = null;  // count, fraction, custom
+    private String indicatorType = "COUNT";  // count, fraction, custom
     private String dateRangeType = null;  // snapshot vs period (or range)
 
     // Action 
     private String action = null;
     
-    // Logic-based indicator  
-    private String logicQuery = null;
-    private String aggregator = null;
     
     // Cohort-based indicator
     private String uuid = null; 		
     private String reportUuid = null;
     private String cohortDefinitionUuid = null;
     private CohortIndicator cohortIndicator = null;
-    private CohortDefinition cohortDefinition = null;    
+
+    // == Location filter =====
     
-    // Parameter to parameter mapping (for adding a child to parent)
-    private Map<String, Object> parameterMapping = new HashMap<String, Object>();
-
-    // Parameter to value mapping (for evaluating a parameterizable)  
-    private Map<String, String> parameterValues = new HashMap<String, String>();
-
     // Location filter 
     private CohortDefinition locationFilter = null;
 
@@ -61,7 +53,29 @@ public class IndicatorForm {
     // Parameter to value mapping (for evaluating a parameterizable)  
     private Map<String, String> locationFilterParameterValues = new HashMap<String, String>();
     
-
+	// == LOGIC indicator type =====    
+    private String logicQuery = null;
+    private String aggregator = null;
+        
+    // == COUNT indicator type =====
+    // Simple cohort definition and parameter mapping
+    private CohortDefinition cohortDefinition = null;        
+    private Map<String, Object> parameterMapping = new HashMap<String, Object>();
+    private Map<String, String> parameterValues = new HashMap<String, String>();
+    
+    
+    // == FRACTION indicator type =====
+    // Numerator cohort definition and parameter mapping
+    private CohortDefinition numerator = null;      
+    private Map<String, Object> numeratorParameterMapping = new HashMap<String, Object>();
+    private Map<String, String> numeratorParameterValues = new HashMap<String, String>();
+    
+    // Denominator cohort definition and parameter mapping
+    private CohortDefinition denominator = null;        
+    private Map<String, Object> denominatorParameterMapping = new HashMap<String, Object>();
+    private Map<String, String> denominatorParameterValues = new HashMap<String, String>();
+    
+    
     
     
     //***** CONSTRUCTORS *****
@@ -132,7 +146,7 @@ public class IndicatorForm {
 		return cohortIndicator;
 	}
 	
-	// =====  Simple Count calculation  =====
+	// ===== COUNT calculation  =====
 
 	public void setCohortIndicator(CohortIndicator cohortIndicator) {
 		this.cohortIndicator = cohortIndicator;
@@ -162,8 +176,61 @@ public class IndicatorForm {
 		this.parameterValues = parameterValues;
 	}
 
+	
+	// =====  FRACTION calculation  =====
 
-	// =====  Logic Query calculation  =====
+	public CohortDefinition getNumerator() {
+		return numerator;
+	}
+
+	public void setNumerator(CohortDefinition numerator) {
+		this.numerator = numerator;
+	}
+
+	public Map<String, Object> getNumeratorParameterMapping() {
+		return numeratorParameterMapping;
+	}
+
+	public void setNumeratorParameterMapping(Map<String, Object> numeratorParameterMapping) {
+		this.numeratorParameterMapping = numeratorParameterMapping;
+	}
+
+	public Map<String, String> getNumeratorParameterValues() {
+		return numeratorParameterValues;
+	}
+
+	public void setNumeratorParameterValues(Map<String, String> numeratorParameterValues) {
+		this.numeratorParameterValues = numeratorParameterValues;
+	}
+
+	public CohortDefinition getDenominator() {
+		return denominator;
+	}
+
+	public void setDenominator(CohortDefinition denominator) {
+		this.denominator = denominator;
+	}
+
+	public Map<String, Object> getDenominatorParameterMapping() {
+		return denominatorParameterMapping;
+	}
+
+	public void setDenominatorParameterMapping(Map<String, Object> denominatorParameterMapping) {
+		this.denominatorParameterMapping = denominatorParameterMapping;
+	}
+
+	public Map<String, String> getDenominatorParameterValues() {
+		return denominatorParameterValues;
+	}
+
+	public void setDenominatorParameterValues(Map<String, String> denominatorParameterValues) {
+		this.denominatorParameterValues = denominatorParameterValues;
+	}
+
+	
+
+
+	// =====  LOGIC calculation  =====
 
 	public String getLogicQuery() {
 		return logicQuery;
