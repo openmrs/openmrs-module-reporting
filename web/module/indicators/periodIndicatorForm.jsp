@@ -187,7 +187,7 @@ $(document).ready(function() {
 																	
 									<img src="${fractionImage}" width="24" height="24" border="0" alt="period indicator" 
 										style="vertical-align:middle"/>
-									<span style="color: white;">FRACTIONAL</span>
+									<span style="color: white;">FRACTION</span>
 								</label>	
 							</div>																		
 							<div style="padding:10px">

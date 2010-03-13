@@ -73,7 +73,7 @@ public class IndicatorFormValidator implements Validator {
 	public void validateLocationFilter(IndicatorForm indicatorForm, Errors errors) { 		
 		List<Parameter> parameters = indicatorForm.getLocationFilter().getParameters();			
 		for(Parameter parameter : parameters) {				
-			Object value = indicatorForm.getParameterMapping().get(parameter.getName());
+			Object value = indicatorForm.getLocationFilterParameterMapping().get(parameter.getName());
 			if (value == null || value.equals("")) { 
 				ValidationUtils.rejectIfEmpty(errors, "locationFilterParameterMapping", "parameterMapping.required", "Must map all parameters on the location filter");
 			}				

@@ -221,7 +221,7 @@ public class PeriodIndicatorFormController {
 					indicatorForm.setCohortDefinition(cohortIndicator.getCohortDefinition().getParameterizable());
 					indicatorForm.setParameterMapping(cohortIndicator.getCohortDefinition().getParameterMappings());
 				} 
-				else if ("FRACTIONAL".equals(indicatorForm.getIndicatorType())) { 
+				else if ("FRACTION".equals(indicatorForm.getIndicatorType())) { 
 					indicatorForm.setNumerator(cohortIndicator.getCohortDefinition().getParameterizable());
 					indicatorForm.setNumeratorParameterMapping(cohortIndicator.getCohortDefinition().getParameterMappings());
 					indicatorForm.setDenominator(cohortIndicator.getDenominator().getParameterizable());
