@@ -75,7 +75,8 @@ public class IndicatorFormValidator implements Validator {
 		for(Parameter parameter : parameters) {				
 			Object value = indicatorForm.getLocationFilterParameterMapping().get(parameter.getName());
 			if (value == null || value.equals("")) { 
-				ValidationUtils.rejectIfEmpty(errors, "locationFilterParameterMapping", "parameterMapping.required", "Must map all parameters on the location filter");
+				errors.rejectValue("locationParameterMapping", "cohortIndicator.errors.parameterMapping.required", 
+						new Object[] { value }, "Must map each parameter on the location filter");					
 			}				
 		}			
 
@@ -101,8 +102,9 @@ public class IndicatorFormValidator implements Validator {
 			for(Parameter parameter : parameters) {				
 				Object value = indicatorForm.getParameterMapping().get(parameter.getName());
 				log.info("value = '" + value + "'");
-				if (value == null || value.equals("")) { 
-					ValidationUtils.rejectIfEmptyOrWhitespace(errors, "parameterMapping", "parameterMapping.required", "Must map all parameters on the simple indicator");
+				if (value == null || value.equals("")) { 					
+					errors.rejectValue("denominatorParameterMapping", "cohortIndicator.errors.parameterMapping.required", 
+							new Object[] { value }, "Must map each parameter on the count indicator");					
 				}				
 			}			
 		}
@@ -129,7 +131,8 @@ public class IndicatorFormValidator implements Validator {
 			Object value = indicatorForm.getNumeratorParameterMapping().get(parameter.getName());
 			log.info("value = '" + value + "'");
 			if (value == null || value.equals("")) { 
-				ValidationUtils.rejectIfEmpty(errors, "numeratorParameterMapping", "parameterMapping.required", "Must map all parameters on the numerator");
+				errors.rejectValue("numeratorParameterMapping", "cohortIndicator.errors.parameterMappingRequired", 
+						new Object[] { value }, "Must map each parameter on the numerator");
 			}				
 		}			
 		parameters = indicatorForm.getDenominator().getParameters();			
@@ -137,7 +140,8 @@ public class IndicatorFormValidator implements Validator {
 			Object value = indicatorForm.getDenominatorParameterMapping().get(parameter.getName());
 			log.info("value = '" + value + "'");
 			if (value == null || value.equals("")) { 
-				ValidationUtils.rejectIfEmpty(errors, "denominatorParameterMapping", "parameterMapping.required", "Must map each parameter on the denominator");
+				errors.rejectValue("denominatorParameterMapping", "cohortIndicator.errors.parameterMappingRequired", 
+						new Object[] { value }, "Must map each parameter on the denominator");
 			}				
 		}		
 	}
