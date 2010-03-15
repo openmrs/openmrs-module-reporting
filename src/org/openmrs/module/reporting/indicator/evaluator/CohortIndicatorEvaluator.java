@@ -69,21 +69,22 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 			}
 		}
 		
+		// Set Definition Denominator and further restrict base cohort
+		if (cid.getDenominator() != null) {
+			Cohort denominatorCohort = cds.evaluate(cid.getDenominator(), context);
+			if (baseCohort != null) {
+				denominatorCohort = Cohort.intersect(denominatorCohort, baseCohort);
+			}
+			baseCohort = new Cohort(denominatorCohort.getMemberIds());
+			result.setDenominatorCohort(denominatorCohort);
+		}
+		
 		// Definition Cohort / Numerator
 		Cohort cohort = cds.evaluate(cid.getCohortDefinition(), context);
 		if (baseCohort != null) {
 			cohort = Cohort.intersect(cohort, baseCohort);
 		}
 		result.setCohort(cohort);
-		
-		// Definition Denominator
-		if (cid.getDenominator() != null) {
-			Cohort denominatorCohort = cds.evaluate(cid.getDenominator(), context);
-			if (baseCohort != null) {
-				denominatorCohort = Cohort.intersect(denominatorCohort, baseCohort);
-			}
-			result.setDenominatorCohort(denominatorCohort);
-		}
 		
 		// Evaluate Logic Criteria
     	if (cid.getLogicExpression() != null) {
