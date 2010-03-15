@@ -1,5 +1,8 @@
-<%@ include file="/WEB-INF/template/include.jsp"%> 
+<%@ include file="../include.jsp"%> 
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
+
+
+<%@ taglib prefix="form" uri="/WEB-INF/view/module/reporting/resources/spring-form.tld" %>
 <%@ include file="../manage/localHeader.jsp"%>
 
 <!-- Form 
@@ -112,7 +115,7 @@ $(document).ready(function() {
 			
 			<td width="50%" valign="top" height="100%">
 			
-				<h5>Step 1. Choose your indicator type ...</h5>
+				<h5>Step 1. Build your indicator ...</h5>
 			
 				<ul>
 					<li>		
@@ -132,7 +135,7 @@ $(document).ready(function() {
 							
 <!-- Indicator Type  Simple -->
 												
-							<div style="padding:10px">					
+							<div style="padding:50px" align="center">					
 								<table border="0" cellpadding="5" cellspacing="5">
 									<tr>
 										<td width="50" align="center" valign="middle">
@@ -190,96 +193,81 @@ $(document).ready(function() {
 									<span style="color: white;">FRACTION</span>
 								</label>	
 							</div>																		
-							<div style="padding:10px">
-								<table border="0" cellpadding="5" cellspacing="5">
+							<div style="padding:50px" align="center">
+								<table border="0" cellpadding="1" cellspacing="1">
 									<tr>
-										<td width="50" align="center" valign="middle">
-											<b>N</b> 							
-										</td>
-										<td width="10"></td>
-										<td align="left">
-											<form:select id="select-numerator" path="numerator">										
-												<form:option value="" label="choose a numerator ..."/>
-									            <form:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
-											</form:select>		
+										<td align="center">
+											<div style="border: 1px dashed #ccc; padding: 25px">
+													
+												<form:select id="select-numerator" path="numerator">										
+													<form:option value="" label="choose a numerator ..."/>
+										            <form:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
+												</form:select>		
+												<c:if test="${indicatorForm.numerator!=null}">				
+													<div id="parameter-mapping-table">			
+														<table border="0" width="100%">		
+															<c:forEach var="parameter" items="${indicatorForm.numerator.parameters}">
+																<tr>
+																	<td>numerator.${parameter.name}</td>
+																	<td>																
+																		<c:url var="mappingImageUrl" value="/moduleResources/reporting/images/mapping.gif"/>
+																		<img src="${mappingImageUrl}" width="24" height="24" border="0" alt="maps to" style="vertical-align:middle"/>																																
+																	</td>
+																	<td>				
+																		<form:select path="numeratorParameterMapping[${parameter.name}]" multiple="false">										
+																			<form:option value="" label="choose a parameter ..."/>
+																            <form:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
+																		</form:select>					
+																	</td>
+																</tr>
+															</c:forEach>
+														</table>
+													</div>
+												</c:if>
+											</div>
+											
+											<label class="desc">Numerator</label>
+											
 										</td>
 									</tr>
 									<tr>
-										<td></td>
-										<td></td>
-										<td>																	
-											<c:if test="${indicatorForm.numerator!=null}">				
-												<div id="parameter-mapping-table">			
-													<table border="0" width="100%">		
-														<c:forEach var="parameter" items="${indicatorForm.numerator.parameters}">
-															<tr>
-																<td><label class="inline">${parameter.label}</label> </td>
-																<td>																
-																	<c:url var="mappingImageUrl" value="/moduleResources/reporting/images/mapping.gif"/>
-																	<img src="${mappingImageUrl}" width="24" height="24" border="0" alt="maps to" style="vertical-align:middle"/>																																
-																</td>
-																<td>				
-																	<form:select path="numeratorParameterMapping[${parameter.name}]" multiple="false">										
-																		<form:option value="" label="choose a parameter ..."/>
-															            <form:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
-																	</form:select>					
-																</td>
-															</tr>
-														</c:forEach>
-													</table>
-												</div>
-											</c:if>
-										</td>
-									</tr>
-
-
-
-									<tr>
-										<td width="50">
-											<hr/>
-										</td>
-										<td width="10"></td>
 										<td>
 											<hr/>
 										</td>
 									</tr>
 									<tr>
-										<td width="50" align="center" valign="middle">
-											<b>D</b> 
-										</td>
-										<td width="10"></td>
-										<td align="left">
-											<form:select id="select-denominator" path="denominator">										
-												<form:option value="" label="choose the denominator ..."/>
-									            <form:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
-											</form:select>		
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td></td>
-										<td>																	
-											<c:if test="${indicatorForm.denominator!=null}">				
-												<div id="parameter-mapping-table">			
-													<table border="0" width="100%">		
-														<c:forEach var="parameter" items="${indicatorForm.denominator.parameters}">
-															<tr>
-																<td><label class="inline">${parameter.label}</label> </td>
-																<td>
-																	<c:url var="mappingImageUrl" value="/moduleResources/reporting/images/mapping.gif"/>
-																	<img src="${mappingImageUrl}" width="24" height="24" border="0" alt="maps to" style="vertical-align:middle"/>																
-																</td>
-																<td>				
-																	<form:select path="denominatorParameterMapping[${parameter.name}]" multiple="false">										
-																		<form:option value="" label="choose a parameter ..."/>
-															            <form:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
-																	</form:select>					
-																</td>
-															</tr>
-														</c:forEach>
-													</table>
-												</div>
-											</c:if>
+										<td align="center">
+										
+											<label class="desc">Denominator</label>
+											<div style="border: 1px dashed #ccc; padding: 25px">
+												
+										
+												<form:select id="select-denominator" path="denominator">										
+													<form:option value="" label="choose the denominator ..."/>
+										            <form:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
+												</form:select>		
+												<c:if test="${indicatorForm.denominator!=null}">				
+													<div id="parameter-mapping-table">			
+														<table border="0" width="100%">		
+															<c:forEach var="parameter" items="${indicatorForm.denominator.parameters}">
+																<tr>
+																	<td>denominator.${parameter.name}</td>
+																	<td>
+																		<c:url var="mappingImageUrl" value="/moduleResources/reporting/images/mapping.gif"/>
+																		<img src="${mappingImageUrl}" width="24" height="24" border="0" alt="maps to" style="vertical-align:middle"/>																
+																	</td>
+																	<td>				
+																		<form:select path="denominatorParameterMapping[${parameter.name}]" multiple="false">										
+																			<form:option value="" label="choose a parameter ..."/>
+																            <form:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
+																		</form:select>					
+																	</td>
+																</tr>
+															</c:forEach>
+														</table>
+													</div>
+												</c:if>
+											</div>
 										</td>
 									</tr>
 								</table>		
@@ -298,7 +286,7 @@ $(document).ready(function() {
 									<span style="color: white;">LOGIC</span>
 								</label>	
 							</div>																		
-							<div style="padding:10px; color: #ccc;">
+							<div style="padding:50px; color: #ccc;">
 								<!-- needs to be implemented -->
 								e.g. Average CD4 Count of patients with visit in last month
 							</div>
@@ -311,7 +299,7 @@ $(document).ready(function() {
 <!--  Indicator details -->
 		
 			<td width="20%" valign="top">
-				<h5>Step 2. Enter details about the indicator ...</h5>						
+				<h5>Step 2. Save the indicator ...</h5>						
 			
 				<div style="padding:15px; background-color: #eee;">
 					<ul>								
