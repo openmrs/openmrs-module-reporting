@@ -749,9 +749,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (startedOnOrBefore != null)
 			sql.append(" and ps.start_date <= :startedOnOrBefore ");
 		if (endedOnOrAfter != null)
-			sql.append(" and pp.end_date >= :endedOnOrAfter ");
+			sql.append(" and ps.end_date >= :endedOnOrAfter ");
 		if (endedOnOrBefore != null)
-			sql.append(" and pp.end_date <= :endedOnOrBefore ");
+			sql.append(" and ps.end_date <= :endedOnOrBefore ");
 
 		sql.append(" group by pp.patient_id ");
 		log.debug("query: " + sql);
@@ -793,9 +793,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (stateIds != null && !stateIds.isEmpty())
 			sql.append(" and ps.state in (:stateIds) ");
 		if (onOrAfter != null)
-			sql.append(" and (ps.stop_date is null or pp.stop_date >= :onOrAfter) ");
+			sql.append(" and (ps.end_date is null or ps.end_date >= :onOrAfter) ");
 		if (onOrBefore != null)
-			sql.append(" and (pp.start_date is null or pp.start_date <= :onOrBefore) ");
+			sql.append(" and (ps.start_date is null or ps.start_date <= :onOrBefore) ");
 		
 		sql.append(" group by pp.patient_id ");
 		log.debug("query: " + sql);
