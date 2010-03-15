@@ -197,6 +197,10 @@ $(document).ready(function() {
 								<table border="0" cellpadding="1" cellspacing="1">
 									<tr>
 										<td align="center">
+										
+											<div style="width:100%; background-color: #D0E5F5; padding:5px;">
+												<label class="desc">Numerator</label>
+											</div>										
 											<div style="border: 1px dashed #ccc; padding: 25px">
 													
 												<form:select id="select-numerator" path="numerator">										
@@ -226,8 +230,6 @@ $(document).ready(function() {
 												</c:if>
 											</div>
 											
-											<label class="desc">Numerator</label>
-											
 										</td>
 									</tr>
 									<tr>
@@ -237,10 +239,11 @@ $(document).ready(function() {
 									</tr>
 									<tr>
 										<td align="center">
+											<div style="width:100%; background-color: #D0E5F5; padding:5px;">
+												<label class="desc">Denominator</label>
+											</div>
 										
-											<label class="desc">Denominator</label>
 											<div style="border: 1px dashed #ccc; padding: 25px">
-												
 										
 												<form:select id="select-denominator" path="denominator">										
 													<form:option value="" label="choose the denominator ..."/>
@@ -327,7 +330,7 @@ $(document).ready(function() {
 						</li>
 						<li>					
 							<c:url var="filterImageUrl" value="/moduleResources/reporting/images/filter.png"/>
-							<img src="${filterImageUrl}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>										
+							<img src="${filterImageUrl}" width="16" height="16" border="0" alt="period indicator" style="vertical-align:middle"/>										
 							<label class="inline" for="description">Location Filter</label> <i>(optional)</i><br/>
 							<div style="border: 1px #ccc dashed; padding: 15px;">
 								<form:select id="select-location-filter" path="locationFilter" cssStyle="width:80%;">
@@ -359,7 +362,7 @@ $(document).ready(function() {
 						</li>
 						<li>							
 							<c:url var="parameterImageUrl" value="/moduleResources/reporting/images/parameter.gif"/>
-							<img src="${parameterImageUrl}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>
+							<img src="${parameterImageUrl}" border="0" alt="period indicator" style="vertical-align:middle"/>
 							<label class="inline" for="parameters">Parameters</label>
 							<div style="padding-left:15px; border: 1px #ccc dashed;">
 								<ul>
