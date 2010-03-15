@@ -54,8 +54,17 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
     	if (encTypeList != null && encTypeList.size() == 0)
     		encTypeList = null;
     	
-    	return pss.getPatientsHavingEncounters(encTypeList, ed.getLocation(), 
+    	Cohort c = pss.getPatientsHavingEncounters(encTypeList, ed.getLocation(), 
     										   ed.getForm(), fromDate, toDate, 
     										   ed.getAtLeastCount(), ed.getAtMostCount());
+    	
+    	if (ed.isReturnInverse() == Boolean.TRUE) {
+    		Cohort baseCohort = context.getBaseCohort();
+    		if (baseCohort == null) {
+    			baseCohort = Context.getPatientSetService().getAllPatients();
+    		}
+    		return Cohort.subtract(baseCohort, c);
+    	}
+    	return c;
     }
 }

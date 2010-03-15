@@ -41,6 +41,9 @@ public class EncounterCohortDefinition extends DateRangeCohortDefinition {
 	
 	@ConfigurationProperty(required=false)
 	private Location location;
+	
+	@ConfigurationProperty(required=false)
+	private Boolean returnInverse = Boolean.FALSE;
 
 	//***** CONSTRUCTORS *****
 	
@@ -159,4 +162,25 @@ public class EncounterCohortDefinition extends DateRangeCohortDefinition {
     public void setLocation(Location location) {
     	this.location = location;
     }
+
+	/**
+	 * @return the returnInverse
+	 */
+	public Boolean isReturnInverse() {
+		return returnInverse;
+	}
+
+	/**
+	 * @return the returnInverse
+	 */
+	public Boolean getReturnInverse() {
+		return returnInverse;
+	}
+
+	/**
+	 * @param returnInverse the returnInverse to set
+	 */
+	public void setReturnInverse(Boolean returnInverse) {
+		this.returnInverse = returnInverse;
+	}
 }
