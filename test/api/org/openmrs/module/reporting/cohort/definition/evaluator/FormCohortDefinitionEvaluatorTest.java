@@ -14,7 +14,6 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import junit.framework.Assert;
 
@@ -33,7 +32,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  */
 public class FormCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
-	private Log log = LogFactory.getLog(this.getClass());
+	protected Log log = LogFactory.getLog(this.getClass());
 	
 	@Test
 	public void evaluate_shouldReturnPatientsWhoHadFormCompletedOnDate() throws Exception {

@@ -1,12 +1,9 @@
 package org.openmrs.module.reporting.report.renderer;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import org.junit.Test;
 import org.openmrs.api.APIException;
@@ -15,7 +12,6 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.renderer.SimpleHtmlReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.util.ParameterizableUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;

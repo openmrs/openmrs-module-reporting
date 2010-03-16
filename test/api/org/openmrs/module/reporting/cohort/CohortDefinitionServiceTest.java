@@ -33,7 +33,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest {
 
 	// Logger
-	private Log log = LogFactory.getLog(this.getClass());	
+	protected Log log = LogFactory.getLog(this.getClass());	
 	
 	// Serialized Object DAO
 	private SerializedObjectDAO dao = null;
@@ -86,7 +86,6 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 
 	@Test
 	public void shouldSaveCohortDefinitionUsingPersister() throws Exception { 		
-		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
 		GenderCohortDefinition cohortDefinition = new GenderCohortDefinition();		
 		cohortDefinition.setName("Testing");
 		CohortDefinition savedCohortDefinition = persister.saveCohortDefinition(cohortDefinition);		
@@ -95,7 +94,6 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 	
 	@Test
 	public void shouldSaveCohortDefinitionUsingDao() throws Exception { 		
-		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
 		GenderCohortDefinition cohortDefinition = new GenderCohortDefinition();		
 		cohortDefinition.setName("Testing");
 		CohortDefinition savedCohortDefinition = dao.saveObject(cohortDefinition);

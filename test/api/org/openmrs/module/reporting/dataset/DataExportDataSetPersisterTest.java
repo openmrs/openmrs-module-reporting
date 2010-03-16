@@ -35,6 +35,7 @@ import org.openmrs.test.SkipBaseSetup;
  * 
  */
 @SkipBaseSetup
+@SuppressWarnings("deprecation")
 public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTest {
 	
 	/** Logger */

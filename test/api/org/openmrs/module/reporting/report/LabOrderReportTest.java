@@ -16,21 +16,17 @@ package org.openmrs.module.reporting.report;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.LabEncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -39,8 +35,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  */
 public class LabOrderReportTest extends BaseModuleContextSensitiveTest {
 	
-	private Log log = LogFactory.getLog(getClass());
-	
+	protected Log log = LogFactory.getLog(getClass());
 	
 	/**
 	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()
@@ -74,9 +69,7 @@ public class LabOrderReportTest extends BaseModuleContextSensitiveTest {
 
 		// FIXME This should be done within the HQL
 		Date startDate = Context.getDateFormat().parse("04/01/2009");
-		Date endDate = Context.getDateFormat().parse("04/30/2009");
-		Location location = Context.getLocationService().getAllLocations().get(0);
-			
+		Date endDate = Context.getDateFormat().parse("04/30/2009");	
 			
 		Map<String,Object> parameterValues = new HashMap<String,Object>();
 		parameterValues.put("startDate", startDate);

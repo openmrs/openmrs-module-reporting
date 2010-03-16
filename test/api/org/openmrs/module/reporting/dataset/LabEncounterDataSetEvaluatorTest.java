@@ -13,11 +13,8 @@
  */
 package org.openmrs.module.reporting.dataset;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -25,13 +22,11 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.LabEncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
-import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -40,8 +35,7 @@ import org.openmrs.test.SkipBaseSetup;
  */
 public class LabEncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
-	private Log log = LogFactory.getLog(getClass());
-	
+	protected Log log = LogFactory.getLog(getClass());
 	
 	/**
 	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()

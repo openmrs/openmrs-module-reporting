@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -15,7 +16,6 @@ import org.openmrs.module.reporting.dataset.column.SimpleDataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetWrappingDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.JoinDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.evaluator.JoinDataSetDefinitionEvaluator;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
@@ -63,8 +63,9 @@ public class JoinDataSetDefinitionEvaluatorTest extends BaseModuleContextSensiti
         renderer.render(temp, null, System.out);
 
         int numRows = 0;
-        for (Object row : result) {
+        for (Iterator<DataSetRow> i = result.iterator(); i.hasNext();) {
             ++numRows;
+            i.next();
         }
         Assert.assertTrue("Wrong number of rown", numRows == 4);
     }

@@ -13,34 +13,15 @@
  */
 package org.openmrs.module.reporting.indicator;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.LocationCohortDefinition;
-import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.indicator.Indicator;
-import org.openmrs.module.reporting.indicator.IndicatorResult;
-import org.openmrs.module.reporting.indicator.aggregation.CountAggregator;
-import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
-import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
-import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.module.reporting.util.ParameterizableUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**

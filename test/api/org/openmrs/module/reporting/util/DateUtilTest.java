@@ -13,46 +13,22 @@
  */
 package org.openmrs.module.reporting.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpSession;
 
 import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
-import org.openmrs.PersonAddress;
-import org.openmrs.PersonName;
-import org.openmrs.User;
-import org.openmrs.api.context.Context;
-import org.openmrs.api.context.UserContext;
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.module.reporting.util.DateUtil;
-import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
-import org.openmrs.reporting.AbstractReportObject;
-import org.openmrs.reporting.ReportObjectService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
  * Testing the cohort definition persister.  
  */
 public class DateUtilTest {
-
-	// Logger
-	private Log log = LogFactory.getLog(this.getClass());
-
 	
+	protected Log log = LogFactory.getLog(this.getClass());
+
 	@Test
 	public void shouldReturnInTheFuture() { 
 		Calendar calendar = Calendar.getInstance();
@@ -61,7 +37,6 @@ public class DateUtilTest {
 		calendar.add(Calendar.SECOND, +1);		
 		Assert.assertEquals("in the future", DateUtil.getTimespan(now, calendar.getTime()));
 	}
-	
 	
 	@Test
 	public void shouldReturnOneSecondAgo() { 

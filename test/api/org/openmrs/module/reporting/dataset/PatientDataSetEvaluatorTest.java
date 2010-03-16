@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.reporting.dataset;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
@@ -26,14 +21,6 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicCriteria;
 import org.openmrs.logic.result.Result;
-import org.openmrs.module.reporting.dataset.column.LogicDataSetColumn;
-import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
-import org.openmrs.module.reporting.util.CohortUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -64,14 +51,11 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		if (useInMemoryDatabase()) { 
 			initializeInMemoryDatabase();
 			executeDataSet("org/openmrs/module/dataset/include/LabEncounterDataSetTest.xml");
-			//executeDataSet("org/openmrs/module/dataset/include/LabEncounterDataSet-concepts.xml");
 		}
 		authenticate();
 		
 	}
 
-	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldEvaluatePatientDataSet() throws Exception {
 

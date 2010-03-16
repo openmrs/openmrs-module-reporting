@@ -34,7 +34,7 @@ import org.openmrs.test.SkipBaseSetup;
 public class PatientDataSetDefinitionTest extends BaseModuleContextSensitiveTest {
 	
 	/** Logger */
-	private static Log log = LogFactory.getLog(PatientDataSetDefinitionTest.class);
+	protected static Log log = LogFactory.getLog(PatientDataSetDefinitionTest.class);
 	
 	/**
 	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()

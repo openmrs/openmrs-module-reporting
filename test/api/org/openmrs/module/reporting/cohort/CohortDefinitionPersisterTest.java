@@ -31,7 +31,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 public class CohortDefinitionPersisterTest extends BaseModuleContextSensitiveTest {
 
 	// Logger
-	private Log log = LogFactory.getLog(this.getClass());
+	protected Log log = LogFactory.getLog(this.getClass());
 	
 	private SerializedObjectDAO dao = null;
 	

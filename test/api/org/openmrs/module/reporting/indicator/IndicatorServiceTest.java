@@ -19,8 +19,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.indicator.CohortIndicator;
-import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -30,7 +28,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 public class IndicatorServiceTest extends BaseModuleContextSensitiveTest {
 
 	// Logger
-	private Log log = LogFactory.getLog(this.getClass());	
+	protected Log log = LogFactory.getLog(this.getClass());	
 	
 	@Before
 	public void runBeforeTest() throws Exception { 
