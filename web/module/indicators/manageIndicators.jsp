@@ -89,12 +89,14 @@ $(document).ready(function() {
 						<a href="<c:url value="/module/reporting/indicators/periodIndicator.form"/>">Create period indicator</a>
 					</span>
 				</li>
+				<!-- 
 				<li class="first">
 				 	<span id="snapshot-indicator-form">
 					 	<img src="${snapshotIndicatorImage}" width="24" height="24" border="0" alt="snapshot indicator" style="vertical-align:middle"/> 
 					 	<a href="javascript:void(0);"></a> Create snapshot indicator 
 					</span>
 				</li>
+				-->
 			</ul>
 		</div>
 
