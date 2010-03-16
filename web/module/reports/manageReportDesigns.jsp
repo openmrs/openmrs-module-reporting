@@ -12,7 +12,7 @@
 			"bFilter": true,
 			"bSort": true,
 			"bInfo": true,
-			"bAutoWidth": true
+			"bAutoWidth": false
 		} );
 
 		<c:forEach items="${reportDesigns}" var="design" varStatus="designStatus">

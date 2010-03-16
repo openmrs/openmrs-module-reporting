@@ -11,7 +11,7 @@
 			"bFilter": true,
 			"bSort": true,
 			"bInfo": true,
-			"bAutoWidth": true
+			"bAutoWidth": false
 		} );
 	} );
 </script>

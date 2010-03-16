@@ -11,7 +11,7 @@
 			"bFilter": true,
 			"bSort": true,
 			"bInfo": true,
-			"bAutoWidth": true,
+			"bAutoWidth": false,
 			"fnDrawCallback": function() {
 				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">
 					$("#cohort-${cohortDefinition.uuid}").click(function(event){ 
@@ -47,7 +47,7 @@
 		</c:forEach>
 		<form method="get" action="editCohortDefinition.form" style="display:inline">
 			or other:
-			<select name="type" style="font-size: 1.5em;">
+			<select name="type">
 				<option value="">&nbsp;</option>
 				<c:forEach items="${types}" var="type">
 					<c:if test="${customPages[type] == null}">

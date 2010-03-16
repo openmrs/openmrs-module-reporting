@@ -11,7 +11,7 @@ $(document).ready(function() {
 		"bFilter": true,
 		"bSort": true,
 		"bInfo": true,
-		"bAutoWidth": true,
+		"bAutoWidth": false,
 		"aoColumns": [{ "bSortable": true },
 		              { "bSortable": true },
 		      		  { "bSortable": true },
