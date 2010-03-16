@@ -106,15 +106,10 @@ $(document).ready(function() {
 			<table id="table-indicator-list" class="reporting-data-table display">
 				<thead>
 					<tr>
-						<th nowrap>Name</th>
-						<!-- 
-						<th>Cohort Definition</th>
-						<th>Parameters</th>
-						 -->
-						
-						<th nowrap>Created by</th>
-						<th nowrap>Last Modified</th>
 						<th nowrap>Actions</th>
+						<th nowrap>Name</th>
+						<th nowrap>Created by</th>
+						<th nowrap>Last Modified</th>					
 					</tr>
 				</thead>
 				<tbody>
@@ -143,6 +138,23 @@ $(document).ready(function() {
 							} );
 						</script>					
 						<tr>
+							<td align="center" width="5%" style="white-space:nowrap;">
+								<span style="padding-left: 10px;">
+									<a href="${editUrl}">
+										<img src="<c:url value='/images/edit.gif'/>" border="0" style="vertical-align:middle;"/>
+									</a>
+								</span>
+								<span style="padding-left: 10px;">
+									<a href="${pageContext.request.contextPath}/module/reporting/indicators/purgeIndicator.form?uuid=${indicator.uuid}">
+										<img src="<c:url value='/images/trash.gif'/>" border="0" style="vertical-align:middle;"/>
+									</a>
+								</span>
+								<span style="padding-left: 10px;">
+									<a href="javascript:void(0)" id="preview-indicator-${indicator.uuid}">
+										<img src="<c:url value='/images/play.gif'/>" border="0" style="vertical-align:middle;"/>
+									</a>
+								</span>
+							</td>
 							<td width="65%">
 								<c:url var="simpleIndicatorImage" value="/moduleResources/reporting/images/indicator-type-simple.png"/>
 								<c:url var="fractionIndicatorImage" value="/moduleResources/reporting/images/indicator-type-fraction.png"/>
@@ -165,23 +177,6 @@ $(document).ready(function() {
 							</td>
 							<td nowrap width="10%" align="center">
 								<rpt:timespan then="${indicator.dateCreated}"/>
-							</td>
-							<td align="center" width="5%" style="white-space:nowrap;">
-								<span style="padding-left: 10px;">
-									<a href="javascript:void(0)" id="preview-indicator-${indicator.uuid}">
-										<img src="<c:url value='/moduleResources/reporting/images/preview.png'/>" border="0" style="vertical-align:middle;"/>
-									</a>
-								</span>
-								<span style="padding-left: 10px;">
-									<a href="${editUrl}">
-										<img src="<c:url value='/images/edit.gif'/>" border="0" style="vertical-align:middle;"/>
-									</a>
-								</span>
-								<span style="padding-left: 10px;">
-									<a href="${pageContext.request.contextPath}/module/reporting/indicators/purgeIndicator.form?uuid=${indicator.uuid}">
-										<img src="<c:url value='/images/trash.gif'/>" border="0" style="vertical-align:middle;"/>
-									</a>
-								</span>
 							</td>
 						</tr>
 					</c:forEach>	

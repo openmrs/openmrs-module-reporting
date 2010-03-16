@@ -73,9 +73,11 @@ $(document).ready(function() {
 							<a href="${pageContext.request.contextPath}/module/reporting/datasets/viewDataSet.form?dataSetId=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">					
 								<img src="${pageContext.request.contextPath}/images/play.gif" alt="view" border="0"/>
 							</a> 
+							&nbsp;
 							<a href="${pageContext.request.contextPath}/module/reporting/datasets/editDataSet.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">				
 								<img src='<c:url value="/images/edit.gif"/>' alt="edit" border="0"/>
-							</a>		
+							</a>
+							&nbsp;	
 							<a href="${pageContext.request.contextPath}/module/reporting/datasets/removeDataSet.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">
 								<img src="${pageContext.request.contextPath}/images/trash.gif" alt="delete" border="0"/>					
 							</a> 
