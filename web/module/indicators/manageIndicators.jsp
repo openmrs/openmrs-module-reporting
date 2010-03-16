@@ -6,7 +6,7 @@
 $(document).ready(function() {
 	$('.reporting-data-table').dataTable( {
 		"bPaginate": true,
-		"iDisplayLength": 10,
+		"iDisplayLength": 25,
 		"bLengthChange": false,
 		"bFilter": true,
 		"bSort": true,
@@ -164,7 +164,7 @@ $(document).ready(function() {
 							<td nowrap width="10%" align="center">
 								<rpt:timespan then="${indicator.dateCreated}"/>
 							</td>
-							<td align="center" width="5%">
+							<td align="center" width="5%" style="white-space:nowrap;">
 								<span style="padding-left: 10px;">
 									<a href="javascript:void(0)" id="preview-indicator-${indicator.uuid}">
 										<img src="<c:url value='/moduleResources/reporting/images/preview.png'/>" border="0" style="vertical-align:middle;"/>
