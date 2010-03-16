@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.extension.html;
+package org.openmrs.module.reporting.web.extension;
 
 import org.openmrs.module.Extension;
 
