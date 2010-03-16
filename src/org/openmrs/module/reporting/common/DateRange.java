@@ -64,16 +64,22 @@ public class DateRange {
 	
 	/**
 	 * Returns a boolean indicating whether the passed Date is before the passed DateRange
+	 * @should return true if the passed date is before the date range
+	 * @should return false if the passed date is not before the passed date range
 	 */
 	public static boolean isBefore(DateRange dateRange, Date d) {
 		if (dateRange.getStartDate() != null) {
-			return d.before(dateRange.getStartDate());
+			int compVal = dateRange.isInclusiveOfStart() ? -1 : 0;
+			return d.compareTo(dateRange.getStartDate()) <= compVal;
 		}
 		return false;
 	}
 	
 	/**
 	 * Returns a boolean indicating whether the passed Date is within the passed DateRange
+	 * @should return false if the passed date is before the date range
+	 * @should return true if the passed date is within the passed date range
+	 * @should return false if the passed date is after the passed date range
 	 */
 	public static boolean isWithin(DateRange dateRange, Date d) {
 		return !isBefore(dateRange, d) && !isAfter(dateRange, d);
@@ -81,23 +87,54 @@ public class DateRange {
 	
 	/**
 	 * Returns a boolean indicating whether the passed Date is after the passed DateRange
+	 * @should return true if the passed date is after the date range
+	 * @should return false if the passed date is not after the passed date range
 	 */
 	public static boolean isAfter(DateRange dateRange, Date d) {
 		if (dateRange.getEndDate() != null) {
-			return d.after(dateRange.getEndDate());
+			int compVal = dateRange.isInclusiveOfEnd() ? 1 : 0;
+			return d.compareTo(dateRange.getEndDate()) >= compVal;
 		}
 		return false;
 	}
 	
 	/**
 	 * Returns the DateRange formatted in Interval Notation
+	 * @should return the passed date range formatted in interval notation
 	 */
 	public static String format(DateRange dateRange, String format, String nullReplacement) {
 		String sd = DateUtil.formatDate(dateRange.getStartDate(), format, nullReplacement);
 		String ed = DateUtil.formatDate(dateRange.getEndDate(), format, nullReplacement);
-		String prefix = dateRange.inclusiveOfStart ? "[" : "(";
-		String suffix = dateRange.inclusiveOfEnd ? "]" : ")";
+		String prefix = dateRange.isInclusiveOfStart() ? "[" : "(";
+		String suffix = dateRange.isInclusiveOfEnd() ? "]" : ")";
 		return prefix + sd + "," + ed + suffix;
+	}
+	
+	/**
+	 * Returns a new DateRange object based on the inputString interval notation
+	 * @param inputString the input to parse in interval notation eg. [2007-10-01,2008-09-30)
+	 * @param format the date format eg "yyyy-MM-dd"
+	 * @param nullString the string which represents a null value eg "*"
+	 * @return a new DateRange
+	 * @should return a new DateRange parsed from interval notation
+	 */
+	public static DateRange parse(String inputString, String format, String nullString) {
+		DateRange ret = new DateRange();
+		try {
+			String[] split = inputString.substring(1, inputString.length()-1).split(",");
+			ret.setInclusiveOfStart(inputString.charAt(0) == '[');
+			ret.setInclusiveOfEnd(inputString.charAt(inputString.length()-1) == ']');
+			if (!split[0].equals(nullString)) {
+				ret.setStartDate(DateUtil.parseDate(split[0], format));
+			}
+			if (!split[1].equals(nullString)) {
+				ret.setEndDate(DateUtil.parseDate(split[1], format));
+			}
+		}
+		catch (Exception e) {
+			throw new IllegalArgumentException("Cannot parse " + inputString + " into DateRange with format " + format);
+		}
+		return ret;
 	}
 	
 	//***********************

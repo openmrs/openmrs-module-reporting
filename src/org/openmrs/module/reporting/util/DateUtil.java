@@ -38,7 +38,7 @@ public class DateUtil {
 	public static Date getDateTime(int year, int mon, int day, int hr, int min, int sec, int ms) {
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.YEAR, year);
-		c.set(Calendar.MONTH, mon);
+		c.set(Calendar.MONTH, mon-1);
 		c.set(Calendar.DATE, day);
 		c.set(Calendar.HOUR_OF_DAY, hr);
 		c.set(Calendar.MINUTE, min);

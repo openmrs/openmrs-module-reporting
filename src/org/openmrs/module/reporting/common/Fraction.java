@@ -57,7 +57,7 @@ public class Fraction extends Number implements Comparable<Fraction>, Serializab
 	//***** STATIC METHODS *****
 	
 	/**
-	 * Returns the greatest common divisor between 2 numbers (Euclid's algorithm)
+	 * @should return the greatest common divisor between 2 numbers
 	 */
 	public static int gcd(int n1, int n2) {
 		if (n2 == 0) { return n1; }
@@ -67,7 +67,7 @@ public class Fraction extends Number implements Comparable<Fraction>, Serializab
 	//***** INSTANCE METHODS *****
 	
 	/**
-	 * Returns a new Fraction that represents the one with the greatest common divisor.
+	 * @should return a new fraction reduced to lowest form
 	 */
 	public Fraction reduce() {
 		int gcd = gcd(numerator, denominator);
@@ -77,6 +77,7 @@ public class Fraction extends Number implements Comparable<Fraction>, Serializab
 	/**
 	 * @param decimalPlaces the number of decimal points to include
 	 * @return this Fraction formatted as a percentage
+	 * @should return a percentage to the correct precision
 	 */
 	public String toPercentString(int decimalPlaces) {
 		if (denominator == 0) { return "N/A"; }
@@ -119,6 +120,7 @@ public class Fraction extends Number implements Comparable<Fraction>, Serializab
 	
 	/**
 	* @see Comparable#compareTo(Object)
+	* @should compare two fractions numerically
 	 */
 	public int compareTo(Fraction that) {
 		long n1 = this.numerator * that.denominator;
@@ -128,6 +130,7 @@ public class Fraction extends Number implements Comparable<Fraction>, Serializab
 
 	/**
 	* @see Object#equals(Object)
+	* @should return true if two fractions represent the same numerical value
 	*/
 	@Override
 	public boolean equals(Object that) {
@@ -149,6 +152,8 @@ public class Fraction extends Number implements Comparable<Fraction>, Serializab
 
 	/**
 	* @see Object#toString()
+	* @should return a string representation of the fraction
+	* @should allow representation of fractions with 0 denominators
 	*/
 	@Override
 	public String toString() {
