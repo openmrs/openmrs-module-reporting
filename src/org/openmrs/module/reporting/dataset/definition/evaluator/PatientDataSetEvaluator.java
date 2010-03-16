@@ -39,7 +39,7 @@ import org.openmrs.module.reporting.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.util.CohortUtil;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 
 /**
  * The logic that evaluates a {@link PatientDataSetDefinition} and produces an {@link DataSet}

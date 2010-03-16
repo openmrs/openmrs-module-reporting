@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.util;
+package org.openmrs.module.reporting.common;
 
 import java.util.Calendar;
 import java.util.Date;

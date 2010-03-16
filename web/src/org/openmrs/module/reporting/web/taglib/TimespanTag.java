@@ -21,7 +21,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.reporting.util.DateUtil;
+import org.openmrs.module.reporting.common.DateUtil;
 
 public class TimespanTag extends BodyTagSupport {
 	

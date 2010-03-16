@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.util;
+package org.openmrs.module.reporting.common;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

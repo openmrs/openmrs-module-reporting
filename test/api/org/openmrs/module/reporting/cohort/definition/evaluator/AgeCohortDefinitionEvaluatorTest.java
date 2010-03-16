@@ -19,8 +19,8 @@ import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
-import org.openmrs.module.reporting.util.DateUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**

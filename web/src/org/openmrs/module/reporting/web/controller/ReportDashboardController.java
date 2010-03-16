@@ -30,7 +30,7 @@ import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimens
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.module.reporting.util.CohortUtil;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

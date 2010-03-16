@@ -13,8 +13,8 @@
  */
 package org.openmrs.module.reporting.evaluation.parameter;
 
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.util.DateUtil;
 
 /**
  * Pre-defined parameters that are available for evaluation

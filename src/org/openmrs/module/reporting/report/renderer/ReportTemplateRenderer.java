@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
@@ -25,7 +26,6 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDefinition;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
-import org.openmrs.module.reporting.util.DateUtil;
 
 /**
  * Abstract super-class for all Renderer classes that render utilizing a ReportTemplate

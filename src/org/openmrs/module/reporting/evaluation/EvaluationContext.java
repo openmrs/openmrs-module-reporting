@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterConstants;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.util.CohortUtil;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 
 /**
  * The EvaluationContext provides the following capabilities: - A baseCohort, i.e. the universe of

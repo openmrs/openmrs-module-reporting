@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.util;
+package org.openmrs.module.reporting.cohort;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
  * A utility class for cohort

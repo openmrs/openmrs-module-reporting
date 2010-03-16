@@ -30,13 +30,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.DisplayLabel;
+import org.openmrs.module.reporting.common.ExcelUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
-import org.openmrs.module.reporting.util.ExcelUtil;
 
 /**
  * Report Renderer implementation that supports rendering to an Excel template

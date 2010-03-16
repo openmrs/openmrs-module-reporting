@@ -15,8 +15,6 @@ package org.openmrs.module.reporting.common;
 
 import java.util.Date;
 
-import org.openmrs.module.reporting.util.DateUtil;
-
 /**
  * Represents a Date Range that may or may not include end points
  */

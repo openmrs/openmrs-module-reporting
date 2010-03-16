@@ -1,7 +1,7 @@
 package org.openmrs.module.reporting.web.controller.portlet;
 
-import java.util.Date;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.util.ParameterizableUtil;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.util;
+package org.openmrs.module.reporting.common;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;

@@ -1,18 +1,10 @@
 package org.openmrs.module.reporting.web.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.module.reporting.util.ParameterizableUtil;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;

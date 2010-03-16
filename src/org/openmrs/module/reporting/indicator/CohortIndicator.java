@@ -18,8 +18,8 @@ import java.util.Map;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.aggregation.Aggregator;
-import org.openmrs.module.reporting.util.ParameterizableUtil;
 
 /**
  * Cohort-based indicator
