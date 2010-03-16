@@ -60,7 +60,7 @@ public class PatientDataSetDefinitionTest extends BaseModuleContextSensitiveTest
 		instance.setName("Test Patient Data Set");
 		instance.addLogicColumn(new LogicDataSetColumn("Test Column Name", String.class, "Test Logic Query"));
 		DataSetDefinition dataSetDefinition = 
-			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(instance);		
+			Context.getService(DataSetDefinitionService.class).saveDefinition(instance);		
 		Assert.assertEquals("should return 6 columns", 6, dataSetDefinition.getColumns().size());
 	}
 
@@ -74,7 +74,7 @@ public class PatientDataSetDefinitionTest extends BaseModuleContextSensitiveTest
 		
 		instance.removeLogicColumn("Test Column Name");
 		instance =  (PatientDataSetDefinition) 
-			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(instance);		
+			Context.getService(DataSetDefinitionService.class).saveDefinition(instance);		
 		Assert.assertEquals("should return 5 columns", 5, instance.getColumns().size());
 	}
 	

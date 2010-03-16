@@ -52,10 +52,10 @@ public class ManageIndicatorsController {
        	// Add all saved CohortDefinitions
     	CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
     	boolean retired = includeRetired != null && includeRetired.booleanValue();
-    	model.addAttribute("cohortDefinitions", cds.getAllCohortDefinitions(retired));
+    	model.addAttribute("cohortDefinitions", cds.getAllDefinitions(retired));
     	
     	// Add all available CohortDefinitions
-    	model.addAttribute("types", cds.getCohortDefinitionTypes());
+    	model.addAttribute("types", cds.getDefinitionTypes());
     }
     
     
@@ -75,7 +75,7 @@ public class ManageIndicatorsController {
     	// Get cohort definitions 
     	CohortDefinitionService cohortDefinitionService = Context.getService(CohortDefinitionService.class);
     	model.addAttribute("cohortDefinitions", 
-    			cohortDefinitionService.getAllCohortDefinitions(false));
+    			cohortDefinitionService.getAllDefinitions(false));
     	
     	
     	// Get indicator by UUID
@@ -134,12 +134,12 @@ public class ManageIndicatorsController {
     	// Find the selected cohort definition by UUID
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
     	log.info("Looking up cohort definition with uuid " + cohortDefinitionUuid);
-    	CohortDefinition cohortDefinition = service.getCohortDefinitionByUuid(cohortDefinitionUuid);
+    	CohortDefinition cohortDefinition = service.getDefinitionByUuid(cohortDefinitionUuid);
     	
     	// If we don't find the cohort definition by UUID, then we look it up by name
     	if (cohortDefinition == null) { 
 	    	List<CohortDefinition> cohortDefinitions = 
-	    		service.getCohortDefinitions(cohortDefinitionName, true);
+	    		service.getDefinitions(cohortDefinitionName, true);
     	
 	    	// Require cohort definition or logic criteria 
 	    	if (cohortDefinitions == null || cohortDefinitions.isEmpty()) { 

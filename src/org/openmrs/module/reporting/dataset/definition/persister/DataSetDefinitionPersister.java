@@ -56,6 +56,12 @@ public interface DataSetDefinitionPersister {
 	public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired);
 	
 	/**
+	 * @param includeRetired indicates whether to also include retired DataSetDefinitions in the count
+	 * @return the number of saved DataSetDefinitions
+	 */
+	public int getNumberOfDataSetDefinitions(boolean includeRetired);
+	
+	/**
 	 * Returns a List of {@link DataSetDefinition} whose name contains the passed name.
 	 * An empty list will be returned if there are none found. Search is case insensitive.
 	 * 

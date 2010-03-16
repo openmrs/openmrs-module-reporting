@@ -60,7 +60,7 @@ public class CohortDefinitionTest extends BaseModuleContextSensitiveTest {
 		CohortDefinitionService service = 
 			Context.getService(CohortDefinitionService.class);
 		
-		List<CohortDefinition> cohortDefinitions = service.getAllCohortDefinitions(false);
+		List<CohortDefinition> cohortDefinitions = service.getAllDefinitions(false);
 		log.info("cohort definitions: " + cohortDefinitions.size() );
 		
 		GenderCohortDefinition cohortDefinition = 
@@ -73,8 +73,8 @@ public class CohortDefinitionTest extends BaseModuleContextSensitiveTest {
 		log.info("User properties: " + user.getUserProperties());
 		cohortDefinition.setCreator(null);
 		cohortDefinition.setChangedBy(null);
-		service.saveCohortDefinition(cohortDefinition);		
-		cohortDefinitions = service.getAllCohortDefinitions(false);
+		service.saveDefinition(cohortDefinition);		
+		cohortDefinitions = service.getAllDefinitions(false);
 		
 		log.info("cohort definitions: " + cohortDefinitions.size() );
 	}

@@ -61,7 +61,7 @@ public class PeriodIndicatorReportUtil {
     }
 
 	private static void saveDataSetDefinition(PeriodIndicatorReportDefinition def) {
-		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(def.getIndicatorDataSetDefinition());
+		Context.getService(DataSetDefinitionService.class).saveDefinition(def.getIndicatorDataSetDefinition());
     }
 
 }

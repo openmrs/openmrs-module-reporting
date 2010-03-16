@@ -39,10 +39,10 @@ public class ParameterizableUtil {
 	public static Parameterizable getParameterizable(String uuid, Class<? extends Parameterizable> type) { 
 		
 		if (DataSetDefinition.class.isAssignableFrom(type)) {
-			return Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(uuid);			
+			return Context.getService(DataSetDefinitionService.class).getDefinitionByUuid(uuid);			
 		} 
 		else if (CohortDefinition.class.isAssignableFrom(type)) {
-			return Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(uuid);
+			return Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
 		}
 		else if (ReportDefinition.class.isAssignableFrom(type)) {
 			return Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);						
@@ -69,10 +69,10 @@ public class ParameterizableUtil {
 	public static Parameterizable saveParameterizable(Parameterizable parameterizable) { 
 
 		if (DataSetDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(DataSetDefinitionService.class).saveDataSetDefinition((DataSetDefinition)parameterizable);			
+			return Context.getService(DataSetDefinitionService.class).saveDefinition((DataSetDefinition)parameterizable);			
 		} 
 		else if (CohortDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(CohortDefinitionService.class).saveCohortDefinition((CohortDefinition)parameterizable);
+			return Context.getService(CohortDefinitionService.class).saveDefinition((CohortDefinition)parameterizable);
 		}
 		else if (ReportDefinition.class.isAssignableFrom(parameterizable.getClass())) {
 			return Context.getService(ReportService.class).saveReportDefinition((ReportDefinition)parameterizable);						

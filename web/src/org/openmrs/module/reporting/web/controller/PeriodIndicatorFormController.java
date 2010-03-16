@@ -71,7 +71,7 @@ public class PeriodIndicatorFormController {
 	 */
 	@ModelAttribute("cohortDefinitions")
     public Collection<CohortDefinition> populateAllCohortDefinitions() {
-        return Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false);
+        return Context.getService(CohortDefinitionService.class).getAllDefinitions(false);
     }
 	
 	/**
@@ -81,7 +81,7 @@ public class PeriodIndicatorFormController {
 	 */
 	@ModelAttribute("locationFilters")
     public Collection<CohortDefinition> populateLocationFilters() {
-        return Context.getService(CohortDefinitionService.class).getCohortDefinitions("location", false);
+        return Context.getService(CohortDefinitionService.class).getDefinitions("location", false);
     }
 	
 	

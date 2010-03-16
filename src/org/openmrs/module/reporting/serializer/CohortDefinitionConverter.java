@@ -3,7 +3,6 @@ package org.openmrs.module.reporting.serializer;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.serialization.xstream.converter.BaseShortConverter;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.ConverterLookup;
@@ -18,7 +17,7 @@ public class CohortDefinitionConverter extends ReportingShortConverter implement
 
 	@Override
 	public Object getByUUID(String uuid) {
-		return Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(uuid);
+		return Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
 	}
 	
 	public boolean canConvert(Class c) {

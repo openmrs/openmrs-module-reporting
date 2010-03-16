@@ -76,7 +76,16 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
     		dataSetDefinitions.add(new DataExportDataSetDefinition(dataExport));    		
     	}    	
     	return dataSetDefinitions;
-    }     
+    }    
+    
+	/**
+	 * @see DataSetDefinitionPersister#getNumberOfDataSetDefinitions(boolean)
+	 */
+	public int getNumberOfDataSetDefinitions(boolean includeRetired) {
+		ReportObjectService ros = Context.getService(ReportObjectService.class);
+	    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");
+	    return dataExports.size();
+	}
     
 	/**
      * @see DataSetDefinitionPersister#getDataSetDefinitions(String, boolean)

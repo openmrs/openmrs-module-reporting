@@ -17,7 +17,7 @@ public class DataSetDefinitionConverter extends ReportingShortConverter implemen
 
 	@Override
 	public Object getByUUID(String uuid) {
-		return Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(uuid);
+		return Context.getService(DataSetDefinitionService.class).getDefinitionByUuid(uuid);
 	}
 	
 	public boolean canConvert(Class c) {

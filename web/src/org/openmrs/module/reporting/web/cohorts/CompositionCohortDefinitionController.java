@@ -22,7 +22,7 @@ public class CompositionCohortDefinitionController {
 		if (uuid == null) {
 			model.addAttribute("definition", new CompositionCohortDefinition());
 		} else {
-			CohortDefinition def = Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(uuid);
+			CohortDefinition def = Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
 			if (def instanceof CompositionCohortDefinition) {
 				CompositionCohortDefinition definition = (CompositionCohortDefinition) def;
 				model.addAttribute("definition", definition);
@@ -35,10 +35,10 @@ public class CompositionCohortDefinitionController {
 	@RequestMapping("/module/reporting/cohorts/compositionCohortDefinitionSetComposition")
 	public String setComposition(@RequestParam("uuid") String uuid,
 	                           @RequestParam("compositionString") String compositionString) {
-		CohortDefinition def = Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(uuid);
+		CohortDefinition def = Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
 		CompositionCohortDefinition definition = (CompositionCohortDefinition) def;
 		definition.setCompositionString(compositionString);
-		Context.getService(CohortDefinitionService.class).saveCohortDefinition(definition);
+		Context.getService(CohortDefinitionService.class).saveDefinition(definition);
 		//return "redirect:compositionCohortDefinition.form?uuid=" + uuid;
 		return "redirect:manageCohortDefinitions.form";
 	}
@@ -55,7 +55,7 @@ public class CompositionCohortDefinitionController {
 	                              @RequestParam("name") String name,
 	                              @RequestParam(value="description", required=false) String description,
 	                              @RequestParam("copyFromUuid") String copyFromUuid) {
-		CohortDefinition def = Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(copyFromUuid);
+		CohortDefinition def = Context.getService(CohortDefinitionService.class).getDefinitionByUuid(copyFromUuid);
 		CompositionCohortDefinition from = (CompositionCohortDefinition) def;
 
 		CompositionCohortDefinition clone = new CompositionCohortDefinition();
@@ -66,7 +66,7 @@ public class CompositionCohortDefinitionController {
 		clone.setParameters(from.getParameters());
 		clone.setSearches(from.getSearches());
 		clone.setCompositionString(from.getCompositionString());
-		Context.getService(CohortDefinitionService.class).saveCohortDefinition(clone);
+		Context.getService(CohortDefinitionService.class).saveDefinition(clone);
 		request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Saved as a new copy", WebRequest.SCOPE_SESSION);
 		return "redirect:compositionCohortDefinition.form?uuid=" + clone.getUuid();
 	}

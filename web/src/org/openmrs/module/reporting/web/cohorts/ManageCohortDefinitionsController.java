@@ -59,7 +59,7 @@ public class ManageCohortDefinitionsController {
     	boolean retired = includeRetired != null && includeRetired.booleanValue();
     	
     	// Get all cohort definitions that are not static cohort definition
-    	List<CohortDefinition> cohortDefinitions = service.getAllCohortDefinitions(retired);
+    	List<CohortDefinition> cohortDefinitions = service.getAllDefinitions(retired);
     	for (Iterator<CohortDefinition> iter = cohortDefinitions.iterator(); iter.hasNext(); ) {
     		if (StaticCohortDefinition.class.isAssignableFrom(iter.next().getClass())) {
     			iter.remove();
@@ -69,7 +69,7 @@ public class ManageCohortDefinitionsController {
     	model.addAttribute("cohortDefinitions", cohortDefinitions);
     	
     	// Add all available cohort definition types 
-    	List<Class<? extends CohortDefinition>> types = service.getCohortDefinitionTypes();
+    	List<Class<? extends CohortDefinition>> types = service.getDefinitionTypes();
     	Collections.sort(types, new Comparator<Class<? extends CohortDefinition>>() {
     		public int compare(Class<? extends CohortDefinition> left, Class<? extends CohortDefinition> right) {
 	            return left.getSimpleName().compareTo(right.getSimpleName());
@@ -96,7 +96,7 @@ public class ManageCohortDefinitionsController {
     		ModelMap model) {
     	
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	CohortDefinition cd = service.getCohortDefinition(uuid, type);
+    	CohortDefinition cd = service.getDefinition(uuid, type);
      	model.addAttribute("cohortDefinition", cd);
      	model.addAttribute("configurationProperties", DefinitionUtil.getConfigurationProperties(cd));
 	
@@ -127,7 +127,7 @@ public class ManageCohortDefinitionsController {
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
     	    	
     	// Locate or create cohort definition
-    	CohortDefinition cohortDefinition = service.getCohortDefinition(uuid, type);
+    	CohortDefinition cohortDefinition = service.getDefinition(uuid, type);
     	cohortDefinition.setName(name);
     	cohortDefinition.setDescription(description);
     	cohortDefinition.getParameters().clear();
@@ -159,7 +159,7 @@ public class ManageCohortDefinitionsController {
     	}
     	
     	log.warn("Saving: " + cohortDefinition);
-    	Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);
+    	Context.getService(CohortDefinitionService.class).saveDefinition(cohortDefinition);
 
         return "redirect:/module/reporting/cohorts/manageCohortDefinitions.form";
     }
@@ -181,7 +181,7 @@ public class ManageCohortDefinitionsController {
     		ModelMap model) {
     	
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	CohortDefinition cohortDefinition = service.getCohortDefinition(uuid, type);
+    	CohortDefinition cohortDefinition = service.getDefinition(uuid, type);
      	
     	// Evaluate the cohort definition
     	EvaluationContext context = new EvaluationContext();
@@ -207,8 +207,8 @@ public class ManageCohortDefinitionsController {
     public String purgeCohortDefinition(@RequestParam(required=false, value="uuid") String uuid) {
     	CohortDefinitionService service = 
     		Context.getService(CohortDefinitionService.class);
-    	CohortDefinition cohortDefinition = service.getCohortDefinitionByUuid(uuid);
-    	service.purgeCohortDefinition(cohortDefinition);	
+    	CohortDefinition cohortDefinition = service.getDefinitionByUuid(uuid);
+    	service.purgeDefinition(cohortDefinition);	
         return "redirect:/module/reporting/cohorts/manageCohortDefinitions.form";
     }    
     

@@ -20,31 +20,31 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
-import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.evaluator.DataSetEvaluator;
 import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefinitionPersister;
+import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
+import org.openmrs.module.reporting.definition.service.DefinitionService;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 /**
  * Default implementation of the DataSetDefinitionService.
  */
 @Transactional
-public class BaseDataSetDefinitionService extends BaseOpenmrsService implements DataSetDefinitionService {
+public class BaseDataSetDefinitionService extends BaseDefinitionService<DataSetDefinition> implements DataSetDefinitionService {
 
-	/** Logger */
 	protected Log log = LogFactory.getLog(this.getClass());
-		
-    /**
-     * 
-     */
-    public List<Class<? extends DataSetDefinition>> getDataSetDefinitionTypes() { 
+	
+	/**
+	 * @see DefinitionService#getDefinitionTypes()
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Class<? extends DataSetDefinition>> getDefinitionTypes() {
 		List<Class<? extends DataSetDefinition>> ret = new ArrayList<Class<? extends DataSetDefinition>>();
 		for (DataSetEvaluator e : HandlerUtil.getHandlersForType(DataSetEvaluator.class, null)) {
 			Handler handlerAnnotation = e.getClass().getAnnotation(Handler.class);
@@ -58,105 +58,76 @@ public class BaseDataSetDefinitionService extends BaseOpenmrsService implements 
 			}
 		}
 		return ret;
-	}    
-    
-	/**
-	 * Returns the DataSetDefinitionPersister for the passed DataSetDefinition
-	 * @param definition
-	 * @return the DataSetDefinitionPersister for the passed DataSetDefinition
-	 * @throws APIException if no matching persister is found
-	 */
-	protected DataSetDefinitionPersister getPersister(Class<? extends DataSetDefinition> definition) {
-		DataSetDefinitionPersister persister = HandlerUtil.getPreferredHandler(DataSetDefinitionPersister.class, definition);
-		if (persister == null) {
-			throw new APIException("No DataSetDefinitionPersister found for <" + definition + ">");
-		}
-		return persister;
 	}
-
-	/** 
-	 * @see DataSetDefinitionService#getDataSetDefinition(Class, Integer)
+	
+	/**
+	 * @see DefinitionService#getDefinition(Class, Integer)
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DataSetDefinition> T getDataSetDefinition(Class<T> type, Integer id) throws APIException {		
-		DataSetDefinitionPersister persister = getPersister(type);
-		log.info("Persister: " + persister.getClass().getName());
-		return (T) persister.getDataSetDefinition(id);
+	public <D extends DataSetDefinition> D getDefinition(Class<D> type, Integer id) throws APIException {
+		return (D) getPersister(type).getDataSetDefinition(id);
 	}
-
-	/** 
-	 * @see DataSetDefinitionService#getDataSetDefinitionByUuid(String)
+	
+	/**
+	 * @see DefinitionService#getDefinitionByUuid(String)
 	 */
-	public DataSetDefinition getDataSetDefinitionByUuid(String uuid) throws APIException {
-		for (DataSetDefinitionPersister p : HandlerUtil.getHandlersForType(DataSetDefinitionPersister.class, null)) {
-			DataSetDefinition datasetDefinition = p.getDataSetDefinitionByUuid(uuid);
-			if (datasetDefinition != null) {
-				return datasetDefinition;
+	public DataSetDefinition getDefinitionByUuid(String uuid) throws APIException {
+		for (DataSetDefinitionPersister p : getAllPersisters()) {
+			DataSetDefinition cd = p.getDataSetDefinitionByUuid(uuid);
+			if (cd != null) {
+				return cd;
 			}
 		}
 		return null;
 	}
-
+	
 	/**
-	 * @see DataSetDefinitionService#getDataSetDefinition(String, Class<? extends DataSetDefinition>)
+	 * @see DefinitionService#getAllDefinitions(boolean)
 	 */
-    public DataSetDefinition getDataSetDefinition(String uuid, Class<? extends DataSetDefinition> type) {
-    	DataSetDefinition datasetDefinition = null;
-    	if (StringUtils.hasText(uuid)) {
-    		DataSetDefinitionService cds = Context.getService(DataSetDefinitionService.class);
-    		datasetDefinition = cds.getDataSetDefinitionByUuid(uuid);
-    	}
-    	else if (type != null) {
-     		try {
-     			datasetDefinition = type.newInstance();
-    		}
-    		catch (Exception e) {
-    			throw new IllegalArgumentException("Unable to instantiate a DataSetDefinition of type: " + type);
-    		}
-    	}
-    	else {
-    		throw new IllegalArgumentException("You must supply either a uuid or a type");
-    	}
-    	return datasetDefinition;
-    }		
-	
-	
-	/** 
-	 * @see DataSetDefinitionService#getAllDataSetDefinitions(boolean)
-	 */
-	public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {
+	public List<DataSetDefinition> getAllDefinitions(boolean includeRetired) {
 		List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
-		for (DataSetDefinitionPersister persister : HandlerUtil.getHandlersForType(DataSetDefinitionPersister.class, null)) {
-			log.info("Persister: " + persister.getClass().getName());			
-			if (persister != null) { 
-				ret.addAll(persister.getAllDataSetDefinitions(includeRetired));
-			}
+		for (DataSetDefinitionPersister p : getAllPersisters()) {
+			ret.addAll(p.getAllDataSetDefinitions(includeRetired));
 		}
 		return ret;
 	}
-
-	/** 
-	 * @see DataSetDefinitionService#getDataSetDefinitionByName(String, boolean)
+	
+	/**
+	 * @see DefinitionService#getNumberOfDefinitions(boolean)
 	 */
-	public List<DataSetDefinition> getDataSetDefinitions(String name, boolean exactMatchOnly) {
+	public int getNumberOfDefinitions(boolean includeRetired) {
+		int i = 0;
+		for (DataSetDefinitionPersister p : getAllPersisters()) {
+			i += p.getNumberOfDataSetDefinitions(includeRetired);
+		}
+		return i;
+	}
+
+	/**
+	 * @see DefinitionService#getDefinitions(String, boolean)
+	 */
+	public List<DataSetDefinition> getDefinitions(String name, boolean exactMatchOnly) {
 		List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
-		for (DataSetDefinitionPersister p : HandlerUtil.getHandlersForType(DataSetDefinitionPersister.class, null)) {
+		for (DataSetDefinitionPersister p : getAllPersisters()) {
 			ret.addAll(p.getDataSetDefinitions(name, exactMatchOnly));
 		}
 		return ret;
 	}
 
 	/**
-	 * @see DataSetDefinitionService#saveDataSetDefinition(DataSetDefinition)
+	 * @see DefinitionService#saveDefinition(Definition)
 	 */
-	public DataSetDefinition saveDataSetDefinition(DataSetDefinition definition) throws APIException {
-		return getPersister(definition.getClass()).saveDataSetDefinition(definition);
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public <D extends DataSetDefinition> D saveDefinition(D definition) throws APIException {
+		log.debug("Saving cohort definition: " + definition + " of type " + definition.getClass());
+		return (D)getPersister(definition.getClass()).saveDataSetDefinition(definition);
 	}
-
-	/** 
-	 * @see DataSetDefinitionService#purgeDataSetDefinition(DataSetDefinition)
+	
+	/**
+	 * @see DefinitionService#purgeDefinition(Definition)
 	 */
-	public void purgeDataSetDefinition(DataSetDefinition definition) {
+	public void purgeDefinition(DataSetDefinition definition) {
 		getPersister(definition.getClass()).purgeDataSetDefinition(definition);
 	}
 	
@@ -174,8 +145,29 @@ public class BaseDataSetDefinitionService extends BaseOpenmrsService implements 
 	/** 
 	 * @see DataSetDefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext evalContext) throws APIException {
-		EvaluationContext childContext = EvaluationContext.cloneForChild(evalContext, definition);
-		return evaluate(definition.getParameterizable(), childContext);
+	@Override
+	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws APIException {
+		return (DataSet) super.evaluate(definition, context);
+	}
+	
+	/**
+	 * Returns the DataSetDefinitionPersister for the passed DataSetDefinition
+	 * @param definition
+	 * @return the DataSetDefinitionPersister for the passed DataSetDefinition
+	 * @throws APIException if no matching persister is found
+	 */
+	protected DataSetDefinitionPersister getPersister(Class<? extends DataSetDefinition> definition) {
+		DataSetDefinitionPersister persister = HandlerUtil.getPreferredHandler(DataSetDefinitionPersister.class, definition);
+		if (persister == null) {
+			throw new APIException("No DataSetDefinitionPersister found for <" + definition + ">");
+		}
+		return persister;
+	}
+	
+	/**
+	 * @return all DataSetDefinitionPersisters
+	 */
+	protected List<DataSetDefinitionPersister> getAllPersisters() {	
+		return HandlerUtil.getHandlersForType(DataSetDefinitionPersister.class, null);
 	}
 }

@@ -71,7 +71,7 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 		cohortDefinition.setName("Testing");
 		User admin = Context.getUserService().getUser(1);
 		cohortDefinition.setCreator(admin);
-		CohortDefinition savedCohortDefinition = service.saveCohortDefinition(cohortDefinition);		
+		CohortDefinition savedCohortDefinition = service.saveDefinition(cohortDefinition);		
 		Assert.assertTrue(savedCohortDefinition.getId()!=null);
 	}
 	
@@ -80,7 +80,7 @@ public class CohortDefinitionServiceTest extends BaseModuleContextSensitiveTest 
 		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
 		GenderCohortDefinition cohortDefinition = new GenderCohortDefinition();		
 		cohortDefinition.setName("Testing");
-		CohortDefinition savedCohortDefinition = service.saveCohortDefinition(cohortDefinition);		
+		CohortDefinition savedCohortDefinition = service.saveDefinition(cohortDefinition);		
 		Assert.assertTrue(savedCohortDefinition.getId()!=null);
 	}
 

@@ -71,7 +71,7 @@ public class CohortDefinitionFormController {
 		if (bindingResult.hasErrors()) {
 			return setupForm();
 		}
-		Context.getService(CohortDefinitionService.class).saveCohortDefinition(cohortDefinition);
+		Context.getService(CohortDefinitionService.class).saveDefinition(cohortDefinition);
 		return new ModelAndView("redirect:/module/reporting/manageCohortDefinitions.list");
 
 	}
@@ -91,7 +91,7 @@ public class CohortDefinitionFormController {
 		log.info("UUID=" + uuid + ", className=" + className);
 		
 		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);		
-		CohortDefinition cohortDefinition = service.getCohortDefinitionByUuid(uuid);
+		CohortDefinition cohortDefinition = service.getDefinitionByUuid(uuid);
 		
 		if (cohortDefinition == null) { 		
 			try { 

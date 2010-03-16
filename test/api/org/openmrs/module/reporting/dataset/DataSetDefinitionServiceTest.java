@@ -60,7 +60,7 @@ public class DataSetDefinitionServiceTest extends BaseModuleContextSensitiveTest
 	@Test
 	public void shouldGetAllDataSetDefinitions() throws Exception { 
 		List<DataSetDefinition> definitions = 
-			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false);
+			Context.getService(DataSetDefinitionService.class).getAllDefinitions(false);
 				
 		log.info("size: " + definitions.size());
 	}
@@ -74,11 +74,11 @@ public class DataSetDefinitionServiceTest extends BaseModuleContextSensitiveTest
 		
 		// Save the new dataset 
 		DataSetDefinition savedDataset = 
-			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(newDataset);
+			Context.getService(DataSetDefinitionService.class).saveDefinition(newDataset);
 		
 		// Retrieve the newly saved dataset from the database
 		DataSetDefinition foundDataset = 
-			Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(savedDataset.getUuid());
+			Context.getService(DataSetDefinitionService.class).getDefinitionByUuid(savedDataset.getUuid());
 
 		Assert.assertNotNull("Should have a UUID ", savedDataset.getUuid());
 		Assert.assertNotNull("Should find the saved dataset definition by UUID " + savedDataset.getUuid(), foundDataset);
@@ -95,15 +95,15 @@ public class DataSetDefinitionServiceTest extends BaseModuleContextSensitiveTest
 		
 		// Save the new dataset 
 		DataSetDefinition savedDataset = 
-			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(newDataset);
+			Context.getService(DataSetDefinitionService.class).saveDefinition(newDataset);
 		
 		// Retrieve the newly saved dataset from the database
 		DataSetDefinition foundDataset = 
-			Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(savedDataset.getUuid());
+			Context.getService(DataSetDefinitionService.class).getDefinitionByUuid(savedDataset.getUuid());
 		
 		// Resave the retrieved dataset
 		DataSetDefinition resavedDataset = 
-			Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(foundDataset);
+			Context.getService(DataSetDefinitionService.class).saveDefinition(foundDataset);
 		
 		Assert.assertNotNull("Should not be null", resavedDataset);		
 	}	

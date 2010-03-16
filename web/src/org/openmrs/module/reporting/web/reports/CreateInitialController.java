@@ -32,7 +32,7 @@ public class CreateInitialController {
 	@RequestMapping(method=RequestMethod.GET)
 	public void showOptions(ModelMap model) {
 		Set<String> alreadyNames = new HashSet<String>();
-		for (CohortDefinition def : Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(true)) {
+		for (CohortDefinition def : Context.getService(CohortDefinitionService.class).getAllDefinitions(true)) {
 			alreadyNames.add(CohortDefinition.class.getName() + " " + def.getName());
 		}
 		for (Dimension def : Context.getService(IndicatorService.class).getAllDimensions(true)) {

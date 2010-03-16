@@ -70,7 +70,7 @@ public class DataExportDataSetEvaluatorTest extends BaseModuleContextSensitiveTe
 		EvaluationContext evalContext = new EvaluationContext();
 		DataSetDefinitionService dsds = Context.getService(DataSetDefinitionService.class);
 		
-		DataExportDataSetDefinition dataSetDefinition = dsds.getDataSetDefinition(DataExportDataSetDefinition.class, new Integer(45));
+		DataExportDataSetDefinition dataSetDefinition = dsds.getDefinition(DataExportDataSetDefinition.class, new Integer(45));
 		
 		DataSet dataSet = dsds.evaluate(dataSetDefinition, evalContext);
 	

@@ -34,7 +34,7 @@ public class ReportUtil {
 				GenderCohortDefinition female = new GenderCohortDefinition();
 				female.setName("Female");
 				female.setFemaleIncluded(true);
-				Context.getService(CohortDefinitionService.class).saveCohortDefinition(female);
+				Context.getService(CohortDefinitionService.class).saveDefinition(female);
 			}
 		});
 		ret.add(new InitialDataElement(CohortDefinition.class, "Male") {
@@ -42,7 +42,7 @@ public class ReportUtil {
 				GenderCohortDefinition male = new GenderCohortDefinition();
 				male.setName("Male");
 				male.setMaleIncluded(true);
-				Context.getService(CohortDefinitionService.class).saveCohortDefinition(male);
+				Context.getService(CohortDefinitionService.class).saveDefinition(male);
 			}
 		});
 		ret.add(new InitialDataElement(CohortDefinition.class, "Age Range on Date") {
@@ -52,7 +52,7 @@ public class ReportUtil {
 				age.addParameter(new Parameter("maxAge", "maxAge", Integer.class));
 				age.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 				age.setName("Age Range on Date");
-				Context.getService(CohortDefinitionService.class).saveCohortDefinition(age);
+				Context.getService(CohortDefinitionService.class).saveDefinition(age);
 			}
 		});
 		ret.add(new InitialDataElement(CohortDefinition.class, "Child on Date") {
@@ -61,7 +61,7 @@ public class ReportUtil {
 				age.setMaxAge(14);
 				age.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 				age.setName("Child on Date");
-				Context.getService(CohortDefinitionService.class).saveCohortDefinition(age);
+				Context.getService(CohortDefinitionService.class).saveDefinition(age);
 			}
 		});
 		ret.add(new InitialDataElement(CohortDefinition.class, "Adult on Date") {
@@ -70,7 +70,7 @@ public class ReportUtil {
 				age.setMinAge(15);
 				age.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 				age.setName("Adult on Date");
-				Context.getService(CohortDefinitionService.class).saveCohortDefinition(age);
+				Context.getService(CohortDefinitionService.class).saveDefinition(age);
 			}
 		});
 		for (final Program program : Context.getProgramWorkflowService().getAllPrograms()) {
@@ -80,7 +80,7 @@ public class ReportUtil {
 					def.setPrograms(Collections.singletonList(program));
 					def.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 					def.setName("Ever in " + program.getName() + " Before Date");
-					Context.getService(CohortDefinitionService.class).saveCohortDefinition(def);
+					Context.getService(CohortDefinitionService.class).saveDefinition(def);
 				}
 			});
 			ret.add(new InitialDataElement(CohortDefinition.class, "In " + program.getName() + " Between Dates") {
@@ -90,7 +90,7 @@ public class ReportUtil {
 					def.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 					def.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 					def.setName("In " + program.getName() + " Between Dates");
-					Context.getService(CohortDefinitionService.class).saveCohortDefinition(def);
+					Context.getService(CohortDefinitionService.class).saveDefinition(def);
 				}
 			});
 		}
@@ -108,7 +108,7 @@ public class ReportUtil {
 								def.addParameter(new Parameter("sinceDate", "sinceDate", Date.class));
 								def.addParameter(new Parameter("untilDate", "untilDate", Date.class));
 								def.setName("Taking any " + drugSet.getBestName(Context.getLocale()) + " Between Dates");
-								Context.getService(CohortDefinitionService.class).saveCohortDefinition(def);
+								Context.getService(CohortDefinitionService.class).saveDefinition(def);
 							}
 						});
 					}
@@ -118,7 +118,7 @@ public class ReportUtil {
 		/*
 		ret.add(new InitialDataElement(CohortDefinition.class, "") {
 			public void apply() {
-				Context.getService(CohortDefinitionService.class).saveCohortDefinition(def);
+				Context.getService(CohortDefinitionService.class).saveDefinition(def);
 			}
 		});
 		*/
@@ -257,7 +257,7 @@ public class ReportUtil {
 
 	private static CohortDefinition getCohortDefinition(String name) {
 		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-		for (CohortDefinition def : service.getCohortDefinitions(name, true)) {
+		for (CohortDefinition def : service.getDefinitions(name, true)) {
 			return def;
 		}
 		return null;

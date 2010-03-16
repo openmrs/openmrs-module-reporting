@@ -64,13 +64,13 @@ public class ManageDatasetsController {
     	// Get all data set definitions
     	try {         	
         	boolean retired = includeRetired != null && includeRetired.booleanValue();
-    		datasetDefinitions = service.getAllDataSetDefinitions(retired);
+    		datasetDefinitions = service.getAllDefinitions(retired);
     	} 
     	catch (Exception e) { 
     		log.error("Could not fetch dataset definitions", e);
     	}
     	
-    	model.addAttribute("types", service.getDataSetDefinitionTypes());    	
+    	model.addAttribute("types", service.getDefinitionTypes());    	
     	model.addAttribute("dataSetDefinitions", datasetDefinitions);
     }
     
@@ -122,7 +122,7 @@ public class ManageDatasetsController {
     		getDataSetDefinition(uuid, type, id);
     	
     	if (dataSetDefinition != null) 
-    		Context.getService(DataSetDefinitionService.class).purgeDataSetDefinition(dataSetDefinition);
+    		Context.getService(DataSetDefinitionService.class).purgeDefinition(dataSetDefinition);
     		    	
     	return "redirect:/module/reporting/datasets/manageDataSets.list";    	    	
     }
@@ -144,7 +144,7 @@ public class ManageDatasetsController {
     	if (dataSetDefinition instanceof PatientDataSetDefinition) { 
     		PatientDataSetDefinition instance = (PatientDataSetDefinition) dataSetDefinition;
     		instance.addLogicColumn(new LogicDataSetColumn(columnName, String.class, logicQuery));
-    		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(instance);
+    		Context.getService(DataSetDefinitionService.class).saveDefinition(instance);
     	}    	   
     	
     	return "redirect:/module/reporting/datasets/editDataSet.form?uuid=" + uuid;
@@ -167,7 +167,7 @@ public class ManageDatasetsController {
     	if (dataSetDefinition instanceof SqlDataSetDefinition) { 
     		SqlDataSetDefinition instance = (SqlDataSetDefinition) dataSetDefinition;
     		instance.setSqlQuery(sqlQuery);
-    		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(instance);
+    		Context.getService(DataSetDefinitionService.class).saveDefinition(instance);
     	}    	   
     	
     	return "redirect:/module/reporting/datasets/editDataSet.form?uuid=" + uuid;
@@ -196,7 +196,7 @@ public class ManageDatasetsController {
     	if (dataSetDefinition instanceof DataExportDataSetDefinition) { 
     		DataExportDataSetDefinition instance = (DataExportDataSetDefinition) dataSetDefinition;
     		instance.getDataExportReportObject().addConceptColumn(columnName, modifier, modifierNum, conceptId.toString(), extras);
-    		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(instance);
+    		Context.getService(DataSetDefinitionService.class).saveDefinition(instance);
     	}
     	else if (dataSetDefinition instanceof PatientDataSetDefinition) {
     		throw new DataSetException("Patient Data Set Definition does not currently support additional columns");
@@ -218,7 +218,7 @@ public class ManageDatasetsController {
     		PatientDataSetDefinition instance = 
     			(PatientDataSetDefinition) dataSetDefinition;
     		instance.removeLogicColumn(columnKey);
-    		Context.getService(DataSetDefinitionService.class).saveDataSetDefinition(dataSetDefinition);
+    		Context.getService(DataSetDefinitionService.class).saveDefinition(dataSetDefinition);
     	}
 
     	
@@ -242,10 +242,10 @@ public class ManageDatasetsController {
     		ModelMap model) {
     	
     	DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
-    	DataSetDefinition dataSetDefinition = service.getDataSetDefinition(uuid, type);
+    	DataSetDefinition dataSetDefinition = service.getDefinition(uuid, type);
     	
     	dataSetDefinition.setName("(untitled dataset definition)");
-    	dataSetDefinition = service.saveDataSetDefinition(dataSetDefinition);
+    	dataSetDefinition = service.saveDefinition(dataSetDefinition);
     	
      	model.addAttribute("dataSetDefinition", dataSetDefinition);
      	     	
@@ -274,7 +274,7 @@ public class ManageDatasetsController {
     ) {
     	
     	DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
-    	DataSetDefinition dataSetDefinition = service.getDataSetDefinition(uuid, type);
+    	DataSetDefinition dataSetDefinition = service.getDefinition(uuid, type);
     	dataSetDefinition.setName(name);
     	dataSetDefinition.setDescription(description);
     	
@@ -286,7 +286,7 @@ public class ManageDatasetsController {
 			ReflectionUtil.setPropertyValue(dataSetDefinition, p.getField(), valToSet);
     	}
     	
-    	dataSetDefinition = service.saveDataSetDefinition(dataSetDefinition);
+    	dataSetDefinition = service.saveDefinition(dataSetDefinition);
     	return "redirect:/module/reporting/datasets/manageDataSets.list";
     }
     
@@ -325,7 +325,7 @@ public class ManageDatasetsController {
     		
     		model.addAttribute("cohort", cohort);
 	    	model.addAttribute("cohortDefinition", 
-	    			Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(cohortId));    		    	
+	    			Context.getService(CohortDefinitionService.class).getDefinitionByUuid(cohortId));    		    	
 
 	    	// If we don't have a cohort yet, just get all patients
 	    	if (cohort == null || cohortId.equals("0")) 
@@ -351,11 +351,11 @@ public class ManageDatasetsController {
     	
     	// Add all cohort definition to the request (allow user to choose)
     	model.addAttribute("cohortDefinitions", 
-    			Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false)); 
+    			Context.getService(CohortDefinitionService.class).getAllDefinitions(false)); 
 
     	// Add all dataset definition to the request (allow user to choose)
     	model.addAttribute("dataSetDefinitions", 
-    			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false)); 
+    			Context.getService(DataSetDefinitionService.class).getAllDefinitions(false)); 
     	
     	
         return "/module/reporting/datasets/datasetViewer";
@@ -453,7 +453,7 @@ public class ManageDatasetsController {
     	DataSetDefinition dataSetDefinition = null;
     	if (uuid != null) { 
 			log.info("Retrieving dataset definition by uuid " + uuid);
-    		dataSetDefinition = service.getDataSetDefinitionByUuid(uuid);    	
+    		dataSetDefinition = service.getDefinitionByUuid(uuid);    	
     	}
 
     	
@@ -466,7 +466,7 @@ public class ManageDatasetsController {
 				if (className != null) { 
 					Class<? extends DataSetDefinition> type = 
 						(Class<? extends DataSetDefinition>) Context.loadClass(className);
-					dataSetDefinition = service.getDataSetDefinition(type, id); 
+					dataSetDefinition = service.getDefinition(type, id); 
 				}
 			} 
 			catch (ClassNotFoundException e) {
@@ -494,7 +494,7 @@ public class ManageDatasetsController {
     	CohortDefinition cohortDefinition = null;    	
     	if (StringUtils.isNotEmpty(uuid)) { 
     		cohortDefinition = 
-    			Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(uuid);
+    			Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
     		if (cohortDefinition != null) {
     			cohort = 
     				Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);

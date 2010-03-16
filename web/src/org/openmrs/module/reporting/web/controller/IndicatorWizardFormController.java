@@ -76,7 +76,7 @@ public class IndicatorWizardFormController extends AbstractWizardFormController 
 			String selectedUuid = indicatorForm.getCohortDefinitionUuid();		
 			if (indicatorForm.getCohortDefinition()==null && selectedUuid!=null) { 
 				CohortDefinition cohortDefinition = 
-					Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(selectedUuid);			
+					Context.getService(CohortDefinitionService.class).getDefinitionByUuid(selectedUuid);			
 				indicatorForm.setCohortDefinition(cohortDefinition);
 			}
 			
@@ -112,7 +112,7 @@ public class IndicatorWizardFormController extends AbstractWizardFormController 
     	// Add cohort definitions  		
 		Map<String, Object> model = new HashMap<String, Object>();
     	model.put("cohortDefinitions", 
-    			Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));			
+    			Context.getService(CohortDefinitionService.class).getAllDefinitions(false));			
     	
     	
     	

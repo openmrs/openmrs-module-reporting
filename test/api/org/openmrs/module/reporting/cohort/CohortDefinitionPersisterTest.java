@@ -53,7 +53,7 @@ public class CohortDefinitionPersisterTest extends BaseModuleContextSensitiveTes
 		cohortDefinition.setName("Testing");		
 
 		// Save cohort definition
-		CohortDefinition savedCohortDefinition = service.saveCohortDefinition(cohortDefinition);		
+		CohortDefinition savedCohortDefinition = service.saveDefinition(cohortDefinition);		
 
 		// Make sure there's an ID
 		Assert.assertTrue(savedCohortDefinition.getId()!=null);

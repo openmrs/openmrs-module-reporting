@@ -60,7 +60,7 @@ public class DataExportDataSetDefinitionTest extends BaseModuleContextSensitiveT
 	@Test
 	public void shouldGetAllDataSetDefinitions() throws Exception { 
 		List<DataSetDefinition> definitions = 
-			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false);
+			Context.getService(DataSetDefinitionService.class).getAllDefinitions(false);
 				
 		for (DataSetDefinition definition : definitions) { 
 			log.info("Data set definition: " + definition.getName());

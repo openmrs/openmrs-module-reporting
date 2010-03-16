@@ -33,7 +33,7 @@ public class CohortDefinitionEditor extends PropertyEditorSupport {
 		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
 		if (StringUtils.hasText(text)) {
 			try {
-				setValue(cds.getCohortDefinitionByUuid(text));
+				setValue(cds.getDefinitionByUuid(text));
 			}
 			catch (Exception ex) {
 				log.error("Error setting text" + text, ex);

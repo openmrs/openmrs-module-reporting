@@ -70,7 +70,7 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		age.addParameter(new Parameter("onDate", "On Date", Date.class));
 		age.setMaxAge(15);
 		age.setName("Age on Date");
-		Context.getService(CohortDefinitionService.class).saveCohortDefinition(age);
+		Context.getService(CohortDefinitionService.class).saveDefinition(age);
 		System.out.println("age cohort definition saved as " + age.getUuid());
 		
 		CohortIndicator ind = new CohortIndicator();
@@ -81,9 +81,9 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		System.out.println(xml);
 		
 		// now edit the age cohort definition to make sure the indicator has a reference to it, and not a copy
-		CohortDefinition reloaded = Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(age.getUuid());
+		CohortDefinition reloaded = Context.getService(CohortDefinitionService.class).getDefinitionByUuid(age.getUuid());
 		reloaded.setName("Name has changed");
-		Context.getService(CohortDefinitionService.class).saveCohortDefinition(reloaded);
+		Context.getService(CohortDefinitionService.class).saveDefinition(reloaded);
 		
 		Indicator out = new ReportingSerializer().deserialize(xml, Indicator.class);
 		Assert.assertTrue(out instanceof CohortIndicator);

@@ -33,7 +33,7 @@ public class CohortDefinitionHandler extends CodedHandler {
 	 */
 	@Override
 	public void populateOptions(WidgetConfig config, CodedWidget widget) {
-		for (CohortDefinition d : Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false)) {
+		for (CohortDefinition d : Context.getService(CohortDefinitionService.class).getAllDefinitions(false)) {
 			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
 		}
 	}
@@ -43,6 +43,6 @@ public class CohortDefinitionHandler extends CodedHandler {
 	 */
 	@Override
 	public Object parse(String input, Class<?> type) {
-		return Context.getService(CohortDefinitionService.class).getCohortDefinitionByUuid(input);
+		return Context.getService(CohortDefinitionService.class).getDefinitionByUuid(input);
 	}
 }

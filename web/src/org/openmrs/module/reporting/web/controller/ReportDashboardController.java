@@ -96,7 +96,7 @@ public class ReportDashboardController {
 				if (applyDataSetId != null) {
 					try {
 						
-						dsd = Context.getService(DataSetDefinitionService.class).getDataSetDefinition(applyDataSetId, null);
+						dsd = Context.getService(DataSetDefinitionService.class).getDefinition(applyDataSetId, null);
 						
 					} catch (Exception ex) { 
 						log.error("exception getting dataset definition", ex);				
@@ -119,7 +119,7 @@ public class ReportDashboardController {
 		}
     	// Add all dataset definition to the request (allow user to choose)
     	model.addAttribute("dataSetDefinitions", 
-    			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false)); 			
+    			Context.getService(DataSetDefinitionService.class).getAllDefinitions(false)); 			
 		
     	return "/module/reporting/dashboard/cohortDataSetDashboard";
     	
@@ -263,9 +263,9 @@ public class ReportDashboardController {
     	    	
     	// Get all reporting objects
     	model.addAttribute("cohortDefinitions", 
-    			Context.getService(CohortDefinitionService.class).getAllCohortDefinitions(false));
+    			Context.getService(CohortDefinitionService.class).getAllDefinitions(false));
     	model.addAttribute("datasetDefinitions", 
-    			Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false));
+    			Context.getService(DataSetDefinitionService.class).getAllDefinitions(false));
     	model.addAttribute("indicators", 
     			Context.getService(IndicatorService.class).getAllIndicators(false));
     	model.addAttribute("reportDefinitions", 

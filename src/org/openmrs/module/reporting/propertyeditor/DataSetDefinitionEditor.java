@@ -33,7 +33,7 @@ public class DataSetDefinitionEditor extends PropertyEditorSupport {
 		DataSetDefinitionService cds = Context.getService(DataSetDefinitionService.class);
 		if (StringUtils.hasText(text)) {
 			try {
-				setValue(cds.getDataSetDefinitionByUuid(text));
+				setValue(cds.getDefinitionByUuid(text));
 			}
 			catch (Exception ex) {
 				log.error("Error setting text" + text, ex);

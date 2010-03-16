@@ -81,12 +81,12 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 		GenderCohortDefinition maleDef = new GenderCohortDefinition();
 		maleDef.setName("Male");
 		maleDef.setMaleIncluded(true);
-		cohortDefinitionService.saveCohortDefinition(maleDef);
+		cohortDefinitionService.saveDefinition(maleDef);
 		
 		GenderCohortDefinition femaleDef = new GenderCohortDefinition();
 		femaleDef.setName("Female");
 		femaleDef.setFemaleIncluded(true);
-		cohortDefinitionService.saveCohortDefinition(femaleDef);
+		cohortDefinitionService.saveDefinition(femaleDef);
 		
 		Parameter effDateParam = new Parameter("effectiveDate", "Effective Date", Date.class);
 		
@@ -94,13 +94,13 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 		adultOnDate.setName("AdultOnDate");
 		adultOnDate.setMinAge(15);
 		adultOnDate.addParameter(effDateParam);
-		cohortDefinitionService.saveCohortDefinition(adultOnDate);
+		cohortDefinitionService.saveDefinition(adultOnDate);
 		
 		AgeCohortDefinition childOnDate = new AgeCohortDefinition();
 		childOnDate.setName("ChildOnDate");
 		childOnDate.setMaxAge(14);
 		childOnDate.addParameter(effDateParam);
-		cohortDefinitionService.saveCohortDefinition(childOnDate);
+		cohortDefinitionService.saveDefinition(childOnDate);
 
 		CohortDataSetDefinition genderDef = new CohortDataSetDefinition();
 		genderDef.setName("gender");

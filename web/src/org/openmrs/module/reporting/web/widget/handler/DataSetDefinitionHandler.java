@@ -33,7 +33,7 @@ public class DataSetDefinitionHandler extends CodedHandler {
 	 */
 	@Override
 	public void populateOptions(WidgetConfig config, CodedWidget widget) {
-		for (DataSetDefinition d : Context.getService(DataSetDefinitionService.class).getAllDataSetDefinitions(false)) {
+		for (DataSetDefinition d : Context.getService(DataSetDefinitionService.class).getAllDefinitions(false)) {
 			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
 		}
 	}
@@ -43,6 +43,6 @@ public class DataSetDefinitionHandler extends CodedHandler {
 	 */
 	@Override
 	public Object parse(String input, Class<?> type) {
-		return Context.getService(DataSetDefinitionService.class).getDataSetDefinitionByUuid(input);
+		return Context.getService(DataSetDefinitionService.class).getDefinitionByUuid(input);
 	}
 }
