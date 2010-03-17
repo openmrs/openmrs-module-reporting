@@ -23,6 +23,7 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
+import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 
 public class ReportUtil {
@@ -133,7 +134,7 @@ public class ReportUtil {
 			    gender.setName("Gender");
 			    gender.addCohortDefinition("female", female, null);
 			    gender.addCohortDefinition("male", male, null);
-			    Context.getService(IndicatorService.class).saveDimension(gender);
+			    Context.getService(DimensionService.class).saveDefinition(gender);
 			}
 		});
 		try {
@@ -155,7 +156,7 @@ public class ReportUtil {
 								CohortIndicator ind = new CohortIndicator();
 								ind.setName("On " + drugSet.getBestName(Context.getLocale()) + " During Period");
 								ind.setCohortDefinition(new Mapped<CohortDefinition>(cd, mappings));
-								Context.getService(IndicatorService.class).saveIndicator(ind);
+								Context.getService(IndicatorService.class).saveDefinition(ind);
 							}
 						});
 						ret.add(new InitialDataElement(Indicator.class, "On " + drugSet.getBestName(Context.getLocale()) + " At Start of Period") {
@@ -171,7 +172,7 @@ public class ReportUtil {
 								CohortIndicator ind = new CohortIndicator();
 								ind.setName("On " + drugSet.getBestName(Context.getLocale()) + " At Start of Period");
 								ind.setCohortDefinition(new Mapped<CohortDefinition>(cd, mappings));
-								Context.getService(IndicatorService.class).saveIndicator(ind);
+								Context.getService(IndicatorService.class).saveDefinition(ind);
 							}
 						});
 						ret.add(new InitialDataElement(Indicator.class, "On " + drugSet.getBestName(Context.getLocale()) + " At End of Period") {
@@ -187,7 +188,7 @@ public class ReportUtil {
 								CohortIndicator ind = new CohortIndicator();
 								ind.setName("On " + drugSet.getBestName(Context.getLocale()) + " At End of Period");
 								ind.setCohortDefinition(new Mapped<CohortDefinition>(cd, mappings));
-								Context.getService(IndicatorService.class).saveIndicator(ind);
+								Context.getService(IndicatorService.class).saveDefinition(ind);
 							}
 						});
 					}
@@ -205,7 +206,7 @@ public class ReportUtil {
 					CohortIndicator ind = new CohortIndicator();
 					ind.setName("Cumulative " + program.getName() + " enrollment at start");
 					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
-					Context.getService(IndicatorService.class).saveIndicator(ind);
+					Context.getService(IndicatorService.class).saveDefinition(ind);
 				}
 			});
 			ret.add(new InitialDataElement(Indicator.class, "Cumulative " + program.getName() + " enrollment at end") {
@@ -218,7 +219,7 @@ public class ReportUtil {
 					CohortIndicator ind = new CohortIndicator();
 					ind.setName("Cumulative " + program.getName() + " enrollment at end");
 					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
-					Context.getService(IndicatorService.class).saveIndicator(ind);
+					Context.getService(IndicatorService.class).saveDefinition(ind);
 				}
 			});		
 			ret.add(new InitialDataElement(Indicator.class, "Current " + program.getName() + " enrollment at start") {
@@ -232,7 +233,7 @@ public class ReportUtil {
 					CohortIndicator ind = new CohortIndicator();
 					ind.setName("Current " + program.getName() + " enrollment at start");
 					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
-					Context.getService(IndicatorService.class).saveIndicator(ind);
+					Context.getService(IndicatorService.class).saveDefinition(ind);
 				}
 			});
 			ret.add(new InitialDataElement(Indicator.class, "Current " + program.getName() + " enrollment at end") {
@@ -246,7 +247,7 @@ public class ReportUtil {
 					CohortIndicator ind = new CohortIndicator();
 					ind.setName("Current " + program.getName() + " enrollment at end");
 					ind.setCohortDefinition(new Mapped<CohortDefinition>(inProg, mappings));
-					Context.getService(IndicatorService.class).saveIndicator(ind);
+					Context.getService(IndicatorService.class).saveDefinition(ind);
 				}
 			});
 

@@ -23,7 +23,7 @@ public class IndicatorInfoController {
 	public void showIndicatorInfo(ModelMap model,
 	                              @RequestParam("uuid") String uuid,
 	                              @RequestParam("location") Location location) {
-		model.addAttribute("indicator", Context.getService(IndicatorService.class).getIndicatorByUuid(uuid));
+		model.addAttribute("indicator", Context.getService(IndicatorService.class).getDefinitionByUuid(uuid));
 		model.addAttribute("location", location);
 	}
 	

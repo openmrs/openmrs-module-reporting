@@ -33,7 +33,7 @@ public class IndicatorEditor extends PropertyEditorSupport {
 		IndicatorService cds = Context.getService(IndicatorService.class);
 		if (StringUtils.hasText(text)) {
 			try {
-				setValue(cds.getIndicatorByUuid(text));
+				setValue(cds.getDefinitionByUuid(text));
 			}
 			catch (Exception ex) {
 				log.error("Error setting text" + text, ex);

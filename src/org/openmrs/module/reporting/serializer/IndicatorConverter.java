@@ -17,7 +17,7 @@ public class IndicatorConverter extends ReportingShortConverter implements Conve
 
 	@Override
 	public Object getByUUID(String uuid) {
-		return Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+		return Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
 	}
 	
 	public boolean canConvert(Class c) {

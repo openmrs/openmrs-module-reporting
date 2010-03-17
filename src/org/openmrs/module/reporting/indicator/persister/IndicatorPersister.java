@@ -56,6 +56,12 @@ public interface IndicatorPersister {
 	public List<Indicator> getAllIndicators(boolean includeRetired);
 	
 	/**
+	 * @param includeRetired indicates whether to also include retired Indicators in the count
+	 * @return the number of saved Indicators
+	 */
+	public int getNumberOfIndicators(boolean includeRetired);
+	
+	/**
 	 * Returns a List of {@link Indicator} whose name contains the passed name.
 	 * An empty list will be returned if there are none found. Search is case insensitive.
 	 * 

@@ -33,7 +33,7 @@ public class ManageIndicatorsController {
     		ModelMap model) {
     	 	
     	List<Indicator> indicators = 
-    		Context.getService(IndicatorService.class).getAllIndicators(false);
+    		Context.getService(IndicatorService.class).getAllDefinitions(false);
 
     	model.addAttribute("indicators", indicators);
     }
@@ -80,7 +80,7 @@ public class ManageIndicatorsController {
     	
     	// Get indicator by UUID
     	Indicator indicator = 
-    		Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+    		Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
     	
      	model.addAttribute("indicator", indicator);
         return "/module/reporting/indicators/indicatorEditor";
@@ -119,7 +119,7 @@ public class ManageIndicatorsController {
     	
     	// Find indicator, if one already exists
     	CohortIndicator indicator = (CohortIndicator)
-    		Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+    		Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
     	
     	// Create a new indicator if one does not exist
     	if (indicator == null) { 
@@ -153,7 +153,7 @@ public class ManageIndicatorsController {
     	indicator.setCohortDefinition(cohortDefinition, "");
     	
     	// Save the indicator to the database
-    	Context.getService(IndicatorService.class).saveIndicator(indicator);
+    	Context.getService(IndicatorService.class).saveDefinition(indicator);
 
     	// When a cohort definition is selected, there's an implicit form submit
     	// We want users to be redirected to the form in this case.
@@ -178,12 +178,12 @@ public class ManageIndicatorsController {
     	log.info("Looking up indicator by uuid " + uuid);
 
     	Indicator indicator =
-    		Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+    		Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
     	
     	log.info("Indicator: " + indicator);
     	if (indicator != null) {     		
     		log.info("Purging indicator: " + indicator);
-    		Context.getService(IndicatorService.class).purgeIndicator(indicator);
+    		Context.getService(IndicatorService.class).purgeDefinition(indicator);
     	}     	
     	
         return "redirect:/module/reporting/indicators/manageIndicators.form";

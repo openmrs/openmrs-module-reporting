@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.indicator.persister;
+package org.openmrs.module.reporting.indicator.dimension.persister;
 
 import java.util.List;
 
@@ -41,6 +41,12 @@ public interface DimensionPersister {
 	 * @should get all dimensions not including retired
 	 */
 	public List<Dimension> getAllDimensions(boolean includeRetired);
+	
+	/**
+	 * @param includeRetired indicates whether to also include retired Dimensions in the count
+	 * @return the number of saved Dimensions
+	 */
+	public int getNumberOfDimensions(boolean includeRetired);
 	
 	/**
 	 * Returns a List of {@link Dimension} whose name contains the passed name.

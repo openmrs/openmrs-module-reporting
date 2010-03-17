@@ -48,7 +48,7 @@ public class IndicatorTest extends BaseModuleContextSensitiveTest {
 	public void evaluateIndicator() throws Exception { 
 		
 		String uuid = "79e204e8-0360-4058-9966-072f371b5e6c"; 
-		Indicator indicator = Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+		Indicator indicator = Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
 		log.info("indicator = " + indicator);
 		
 		//Map<String, Object> parameterValues = new HashMap<String, Object>();

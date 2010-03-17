@@ -1,9 +1,10 @@
-package org.openmrs.module.reporting.indicator.persister;
+package org.openmrs.module.reporting.indicator.dimension.persister;
 
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefinitionPersister;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
 
@@ -52,6 +53,13 @@ public class SerializedDimensionPersister implements DimensionPersister {
 	 */
 	public List<Dimension> getAllDimensions(boolean includeRetired) {
 		return getService().getAllDefinitions(Dimension.class, includeRetired);
+	}
+	
+	/**
+	 * @see DataSetDefinitionPersister#getNumberOfDimensions(boolean)
+	 */
+	public int getNumberOfDimensions(boolean includeRetired) {
+    	return getService().getNumberOfDefinitions(Dimension.class, includeRetired);
 	}
 	
 	/**

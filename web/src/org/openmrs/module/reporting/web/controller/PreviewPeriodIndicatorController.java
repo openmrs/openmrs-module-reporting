@@ -63,7 +63,7 @@ public class PreviewPeriodIndicatorController {
 		
 		IndicatorForm form = new IndicatorForm();
 	
-		Indicator indicator = Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+		Indicator indicator = Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
 		log.info("indicator = " + indicator);
 
 		// If indicator does not exist, we just create a new one

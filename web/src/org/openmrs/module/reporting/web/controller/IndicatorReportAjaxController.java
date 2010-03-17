@@ -67,7 +67,7 @@ public class IndicatorReportAjaxController {
 		try { 
 			EvaluationContext context = new EvaluationContext();			
 			CohortIndicator indicator = 
-				(CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+				(CohortIndicator) Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
 			IndicatorResult result = Context.getService(IndicatorService.class).evaluate(indicator, context);
 	
 			response.getWriter().write(result.getValue().toString());		
@@ -94,7 +94,7 @@ public class IndicatorReportAjaxController {
 			context.addParameterValue("location", new Location());
 			
 			CohortIndicator indicator = 
-				(CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+				(CohortIndicator) Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
 			IndicatorResult result = Context.getService(IndicatorService.class).evaluate(indicator, context);
 	
 			response.getWriter().write(result.getValue().toString());		

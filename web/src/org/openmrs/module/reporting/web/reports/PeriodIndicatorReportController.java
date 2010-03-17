@@ -33,7 +33,7 @@ public class PeriodIndicatorReportController {
 	
 	@ModelAttribute("indicators")
 	public List<Indicator> getIndicators() {
-		return Context.getService(IndicatorService.class).getAllIndicators(false);
+		return Context.getService(IndicatorService.class).getAllDefinitions(false);
 	}
 
 	@RequestMapping("/module/reporting/reports/periodIndicatorReport")

@@ -61,7 +61,7 @@ public class IndicatorHistoryController {
 	@RequestMapping("/module/reporting/indicators/indicatorHistoryOptions")
 	public void showOptionsForm(ModelMap model) {
 		model.addAttribute("locations", Context.getLocationService().getAllLocations());
-		model.addAttribute("indicators", Context.getService(IndicatorService.class).getAllIndicators(false));
+		model.addAttribute("indicators", Context.getService(IndicatorService.class).getAllDefinitions(false));
 	}
 	
 	

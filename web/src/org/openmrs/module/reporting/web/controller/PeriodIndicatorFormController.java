@@ -167,7 +167,7 @@ public class PeriodIndicatorFormController {
 			}			
 			
 			// Otherwise, we save the cohort indicator definition to the database 
-			Context.getService(IndicatorService.class).saveIndicator(cohortIndicator);			
+			Context.getService(IndicatorService.class).saveDefinition(cohortIndicator);			
 
 			// Redirect to the close window page in order to close the modal dialog
 			return new ModelAndView("redirect:/module/reporting/indicators/manageIndicators.form");
@@ -193,7 +193,7 @@ public class PeriodIndicatorFormController {
 		log.info("Lookup indicator by UUID: " + uuid);
 		IndicatorForm indicatorForm = new IndicatorForm();
 		Indicator indicator = 
-			Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);
+			Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
 
 		log.info("Found indicator: " + indicator);
 		

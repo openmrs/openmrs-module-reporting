@@ -76,7 +76,7 @@ public class IndicatorParameterFormController {
 		log.info("cohort definition: " + cohortIndicator.getCohortDefinition());
 		log.info("parameters: " + cohortIndicator.getParameters());
 
-		Context.getService(IndicatorService.class).saveIndicator(cohortIndicator);
+		Context.getService(IndicatorService.class).saveDefinition(cohortIndicator);
 		return new ModelAndView("redirect:/module/reporting/editIndicator.form#indicator-advanced-tab");
 	}
 	
@@ -95,7 +95,7 @@ public class IndicatorParameterFormController {
 		IndicatorService service = Context.getService(IndicatorService.class);
 		
 		IndicatorParameterBean indicatorParameter = new IndicatorParameterBean();
-		CohortIndicator cohortIndicator = (CohortIndicator) service.getIndicatorByUuid(uuid);
+		CohortIndicator cohortIndicator = (CohortIndicator) service.getDefinitionByUuid(uuid);
 
 		
 		if (cohortIndicator == null) { 

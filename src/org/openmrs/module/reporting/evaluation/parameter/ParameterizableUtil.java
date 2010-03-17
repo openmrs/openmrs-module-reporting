@@ -19,10 +19,9 @@ import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
+import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.report.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
@@ -48,10 +47,10 @@ public class ParameterizableUtil {
 			return Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);						
 		}
 		else if (Indicator.class.isAssignableFrom(type)) {
-			return Context.getService(IndicatorService.class).getIndicatorByUuid(uuid);	
+			return Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);	
 		}
 		else if (Dimension.class.isAssignableFrom(type)) {
-			return Context.getService(IndicatorService.class).getDimensionByUuid(uuid);
+			return Context.getService(DimensionService.class).getDefinitionByUuid(uuid);
 		}
 		else { 
 			throw new APIException("Unable to save parameterizable type " + type);
@@ -78,10 +77,10 @@ public class ParameterizableUtil {
 			return Context.getService(ReportService.class).saveReportDefinition((ReportDefinition)parameterizable);						
 		}
 		else if (Indicator.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(IndicatorService.class).saveIndicator((Indicator)parameterizable);	
+			return Context.getService(IndicatorService.class).saveDefinition((Indicator)parameterizable);	
 		}
 		else if (Dimension.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(IndicatorService.class).saveDimension((Dimension) parameterizable);
+			return Context.getService(DimensionService.class).saveDefinition((Dimension) parameterizable);
 		}
 		else { 
 			throw new APIException("Unable to save parameterizable type " + parameterizable.getClass());

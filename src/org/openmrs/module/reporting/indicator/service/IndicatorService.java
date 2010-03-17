@@ -13,105 +13,29 @@
  */
 package org.openmrs.module.reporting.indicator.service;
 
-import java.util.List;
-
-import org.openmrs.api.APIException;
-import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.reporting.definition.service.DefinitionService;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
-import org.openmrs.module.reporting.indicator.dimension.Dimension;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Contains methods pertaining to creating/updating/deleting/retiring/registering/evaluating
- * Indicators and Dimensions.<br/>
+ * Contains methods pertaining to creating/updating/deleting/retiring/registering/evaluating Indicators
  */
 @Transactional
-public interface IndicatorService extends OpenmrsService {
-	
-	public Indicator saveIndicator(Indicator indicator) throws APIException;
-	
-	public void purgeIndicator(Indicator indicator) throws APIException;
-
-	@Transactional(readOnly = true)
-	public Indicator getIndicatorByUuid(String uuid) throws APIException;
-	
-	@Transactional(readOnly = true)
-	public List<Indicator> getAllIndicators(boolean includeRetired);
-	
-	@Transactional(readOnly = true)
-	public List<Indicator> getIndicators(String name, boolean exactMatchOnly);
+public interface IndicatorService extends DefinitionService<Indicator> {
 	
 	/**
-	 * Returns an IndicatorResult for the given Indicator and EvaluationContext
-	 * @param indicator
-	 * @param context
-	 * @return IndicatorResult for the given Indicator and EvaluationContext
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
 	public IndicatorResult evaluate(Indicator indicator, EvaluationContext context);
 	
 	/**
-	 * Returns an IndicatorResult for the given Mapped<Indicator> and EvaluationContext
-	 * @param indicator
-	 * @param context
-	 * @return IndicatorResult for the given Mapped<Indicator> and EvaluationContext
+	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
 	public IndicatorResult evaluate(Mapped<? extends Indicator> indicator, EvaluationContext context);
-
-	@Transactional(readOnly = true)
-	public List<Class<? extends Dimension>> getDimensionTypes();
-	
-	/**
-	 * Gets a dimension given its type and primary key
-	 * 
-	 * @param <T>
-	 * @param type
-	 * @param id
-	 * @return
-	 * @throws APIException
-	 */
-	@Transactional(readOnly = true)
-	public <T extends Dimension> T getDimension(Class<T> type, Integer id) throws APIException;
-	
-	/**
-	 * Gets a dimension given its UUID
-	 * 
-	 * @param uuid
-	 * @return
-	 * @throws APIException
-	 */
-	@Transactional(readOnly=true)
-	public Dimension getDimensionByUuid(String uuid) throws APIException;
-	
-	/**
-	 * Gets all dimensions (possibly including retired ones)
-	 * 
-	 * @param includeRetired
-	 * @return
-	 * @throws APIException
-	 */
-	@Transactional(readOnly = true)
-	public List<Dimension> getAllDimensions(boolean includeRetired) throws APIException;
-	
-	/**
-	 * Persists a dimension (either as a save or an update)
-	 * 
-	 * @param dimension
-	 * @return
-	 * @throws APIException
-	 */
-	@Transactional
-	public Dimension saveDimension(Dimension dimension) throws APIException;
-	
-	/**
-	 * Deletes a dimension from the database
-	 * 
-	 * @param dimension
-	 */
-	@Transactional
-	public void purgeDimension(Dimension dimension);
 }

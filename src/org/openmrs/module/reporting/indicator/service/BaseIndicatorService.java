@@ -18,15 +18,16 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
+import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
+import org.openmrs.module.reporting.definition.service.DefinitionService;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
-import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
-import org.openmrs.module.reporting.indicator.dimension.Dimension;
 import org.openmrs.module.reporting.indicator.evaluator.IndicatorEvaluator;
-import org.openmrs.module.reporting.indicator.persister.DimensionPersister;
 import org.openmrs.module.reporting.indicator.persister.IndicatorPersister;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,177 +36,134 @@ import org.springframework.transaction.annotation.Transactional;
  * Base Implementation of IndicatorService
  */
 @Transactional
-public class BaseIndicatorService implements IndicatorService {
-	
-	//***** PROPERTIES *****
+public class BaseIndicatorService extends BaseDefinitionService<Indicator> implements IndicatorService {
 
-	private static Log log = LogFactory.getLog(BaseIndicatorService.class);
+	protected static Log log = LogFactory.getLog(BaseIndicatorService.class);
 	
 	/**
-	 * Public constructor
+	 * @see DefinitionService#getDefinitionTypes()
 	 */
-	public BaseIndicatorService() { }
-	
-	//***** CALLBACKS *****
-
-	public void onShutdown() { }
-
-	public void onStartup() { }
-	
-	
-	//***** SERVICE METHODS *****
-
-	protected IndicatorPersister getPersister(Class<? extends Indicator> definition) {
-		IndicatorPersister persister = HandlerUtil.getPreferredHandler(IndicatorPersister.class, definition);
-		if (persister == null) {
-			throw new APIException("No IndicatorPersister found for <" + definition + ">");
-		}
-		return persister;
-	}	
-	
-	/**
-	 * @see IndicatorService#saveIndicator(Indicator)
-	 */
-	public Indicator saveIndicator(Indicator indicator) throws APIException { 		
-		return getPersister(indicator.getClass()).saveIndicator(indicator);
-	}
-	
-	/**
-	 * @see IndicatorService#saveIndicator(String)
-	 */
-	public void purgeIndicator(Indicator indicator) throws APIException { 
-		getPersister(indicator.getClass()).purgeIndicator(indicator);
-	}
-	
-	/** 
-	 * @see IndicatorService#getIndicatorUuid(String)
-	 */
-	public Indicator getIndicatorByUuid(String uuid) throws APIException {		
-		for (IndicatorPersister persister : HandlerUtil.getHandlersForType(IndicatorPersister.class, null)) {
-			Indicator indicator = persister.getIndicatorByUuid(uuid);
-			if (indicator != null) {
-				return indicator;
-			}
-		}
-		return null;		
-	}
-
-	/** 
-	 * @see IndicatorService#getAllIndicators(boolean)
-	 */
-	public List<Indicator> getAllIndicators(boolean includeRetired) {
-
-		List<Indicator> indicators = new ArrayList<Indicator>();
-		for (IndicatorPersister persister : HandlerUtil.getHandlersForType(IndicatorPersister.class, null)) {
-			if (persister != null) { 
-				indicators.addAll(persister.getAllIndicators(includeRetired));
-			}
-		}
-		return indicators;
-	}
-
-	/** 
-	 * @see IndicatorService#getIndicatorByName(String, boolean)
-	 */
-	public List<Indicator> getIndicators(String name, boolean exactMatchOnly) {
-		List<Indicator> indicators = new ArrayList<Indicator>();
-		for (IndicatorPersister persister : HandlerUtil.getHandlersForType(IndicatorPersister.class, null)) {
-			indicators.addAll(persister.getIndicators(name, exactMatchOnly));
-		}
-		return indicators;
-	}	
-	
-	
-	/** 
-	 * @see IndicatorService#evaluate(Indicator, EvaluationContext)
-	 */
-	public IndicatorResult evaluate(Indicator indicator, EvaluationContext context) {
-		IndicatorEvaluator evaluator = HandlerUtil.getPreferredHandler(IndicatorEvaluator.class, indicator.getClass());
-		return evaluator.evaluate(indicator, context);
-	}
-	
-	/** 
-	 * @see IndicatorService#evaluate(Mapped, EvaluationContext)
-	 */
-	public IndicatorResult evaluate(Mapped<? extends Indicator> indicator, EvaluationContext context) {
-		EvaluationContext childContext = EvaluationContext.cloneForChild(context, indicator);
-		return evaluate(indicator.getParameterizable(), childContext);
-	}
-
-
-	/**
-	 * Returns the DimensionPersister for the passed Dimension
-	 * @param dimension
-	 * @return the DimensionPersister for the passed Dimension
-	 * @throws APIException if no matching persister is found
-	 */
-	protected DimensionPersister getDimensionPersister(Class<? extends Dimension> dimension) {
-		DimensionPersister persister = HandlerUtil.getPreferredHandler(DimensionPersister.class, dimension);
-		if (persister == null) {
-			throw new APIException("No DimensionPersister found for <" + dimension + ">");
-		}
-		return persister;
-	}
-	
-	/**
-	 * @see org.openmrs.module.reporting.indicator.dimension.service.DimensionService#getAllDimensions(boolean)
-	 */
-	public List<Dimension> getAllDimensions(boolean includeRetired) throws APIException {
-		List<Dimension> ret = new ArrayList<Dimension>();
-		for (DimensionPersister persister : HandlerUtil.getHandlersForType(DimensionPersister.class, null)) {
-			if (log.isDebugEnabled())
-				log.debug("Persister: " + persister.getClass().getName());			
-			if (persister != null) { 
-				ret.addAll(persister.getAllDimensions(includeRetired));
+	@SuppressWarnings("unchecked")
+	public List<Class<? extends Indicator>> getDefinitionTypes() {
+		List<Class<? extends Indicator>> ret = new ArrayList<Class<? extends Indicator>>();
+		for (IndicatorEvaluator e : HandlerUtil.getHandlersForType(IndicatorEvaluator.class, null)) {
+			Handler handlerAnnotation = e.getClass().getAnnotation(Handler.class);
+			if (handlerAnnotation != null) {
+				Class<?>[] types = handlerAnnotation.supports();
+				if (types != null) {
+					for (Class<?> type : types) {
+						ret.add((Class<? extends Indicator>) type);
+					}
+				}
 			}
 		}
 		return ret;
 	}
 	
 	/**
-	 * @see org.openmrs.module.reporting.indicator.dimension.service.DimensionService#getDimension(java.lang.Class, java.lang.Integer)
+	 * @see DefinitionService#getDefinition(Class, Integer)
 	 */
-	public <T extends Dimension> T getDimension(Class<T> type, Integer id) throws APIException {
-		DimensionPersister persister = getDimensionPersister(type);
-		if (log.isDebugEnabled()) {
-			log.debug("Persister: " + persister.getClass().getName());
-		}
-		return (T) persister.getDimension(id);
+	@SuppressWarnings("unchecked")
+	public <D extends Indicator> D getDefinition(Class<D> type, Integer id) throws APIException {
+		return (D) getPersister(type).getIndicator(id);
 	}
 	
 	/**
-	 * @see org.openmrs.module.reporting.indicator.dimension.service.DimensionService#getDimensionByUuid(java.lang.String)
+	 * @see DefinitionService#getDefinitionByUuid(String)
 	 */
-	public Dimension getDimensionByUuid(String uuid) throws APIException {
-		for (DimensionPersister p : HandlerUtil.getHandlersForType(DimensionPersister.class, null)) {
-			Dimension dimension = p.getDimensionByUuid(uuid);
-			if (dimension != null) {
-				return dimension;
+	public Indicator getDefinitionByUuid(String uuid) throws APIException {
+		for (IndicatorPersister p : getAllPersisters()) {
+			Indicator cd = p.getIndicatorByUuid(uuid);
+			if (cd != null) {
+				return cd;
 			}
 		}
 		return null;
 	}
 	
 	/**
-	 * @see org.openmrs.module.reporting.indicator.dimension.service.DimensionService#getDimensionTypes()
+	 * @see DefinitionService#getAllDefinitions(boolean)
 	 */
-	public List<Class<? extends Dimension>> getDimensionTypes() {
-		List<Class<? extends Dimension>> ret = new ArrayList<Class<? extends Dimension>>();
-		ret.add(CohortDefinitionDimension.class);
+	public List<Indicator> getAllDefinitions(boolean includeRetired) {
+		List<Indicator> ret = new ArrayList<Indicator>();
+		for (IndicatorPersister p : getAllPersisters()) {
+			ret.addAll(p.getAllIndicators(includeRetired));
+		}
 		return ret;
 	}
 	
 	/**
-	 * @see org.openmrs.module.reporting.indicator.dimension.service.DimensionService#purgeDimension(org.openmrs.module.reporting.indicator.dimension.Dimension)
+	 * @see DefinitionService#getNumberOfDefinitions(boolean)
 	 */
-	public void purgeDimension(Dimension dimension) {
-		getDimensionPersister(dimension.getClass()).purgeDimension(dimension);
+	public int getNumberOfDefinitions(boolean includeRetired) {
+		int i = 0;
+		for (IndicatorPersister p : getAllPersisters()) {
+			i += p.getNumberOfIndicators(includeRetired);
+		}
+		return i;
+	}
+
+	/**
+	 * @see DefinitionService#getDefinitions(String, boolean)
+	 */
+	public List<Indicator> getDefinitions(String name, boolean exactMatchOnly) {
+		List<Indicator> ret = new ArrayList<Indicator>();
+		for (IndicatorPersister p : getAllPersisters()) {
+			ret.addAll(p.getIndicators(name, exactMatchOnly));
+		}
+		return ret;
+	}
+
+	/**
+	 * @see DefinitionService#saveDefinition(Definition)
+	 */
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public <D extends Indicator> D saveDefinition(D definition) throws APIException {
+		log.debug("Saving cohort definition: " + definition + " of type " + definition.getClass());
+		return (D)getPersister(definition.getClass()).saveIndicator(definition);
 	}
 	
 	/**
-	 * @see org.openmrs.module.reporting.indicator.dimension.service.DimensionService#saveDimension(org.openmrs.module.reporting.indicator.dimension.Dimension)
+	 * @see DefinitionService#purgeDefinition(Definition)
 	 */
-	public Dimension saveDimension(Dimension dimension) throws APIException {
-		return getDimensionPersister(dimension.getClass()).saveDimension(dimension);
+	public void purgeDefinition(Indicator definition) {
+		getPersister(definition.getClass()).purgeIndicator(definition);
+	}
+	
+	/** 
+	 * @see IndicatorService#evaluate(Indicator, EvaluationContext)
+	 */
+	public IndicatorResult evaluate(Indicator definition, EvaluationContext context) {
+		IndicatorEvaluator evaluator = HandlerUtil.getPreferredHandler(IndicatorEvaluator.class, definition.getClass());
+		return evaluator.evaluate(definition, context);
+	}
+	
+	/** 
+	 * @see IndicatorService#evaluate(Mapped, EvaluationContext)
+	 */
+	public IndicatorResult evaluate(Mapped<? extends Indicator> definition, EvaluationContext context) {
+		return (IndicatorResult) super.evaluate(definition, context);
+	}
+	
+	/**
+	 * Returns the IndicatorPersister for the passed Indicator
+	 * @param definition the Indicator to persist
+	 * @return the IndicatorPersister for the passed Indicator
+	 * @throws APIException if no matching persister is found
+	 */
+	protected IndicatorPersister getPersister(Class<? extends Indicator> definition) {
+		IndicatorPersister persister = HandlerUtil.getPreferredHandler(IndicatorPersister.class, definition);
+		if (persister == null) {
+			throw new APIException("No IndicatorPersister found for <" + definition + ">");
+		}
+		return persister;
+	}
+	
+	/**
+	 * @return all IndicatorPersisters
+	 */
+	protected List<IndicatorPersister> getAllPersisters() {	
+		return HandlerUtil.getHandlersForType(IndicatorPersister.class, null);
 	}
 }

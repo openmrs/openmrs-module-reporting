@@ -2,7 +2,7 @@ package org.openmrs.module.reporting.web.dimensions;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
-import org.openmrs.module.reporting.indicator.service.IndicatorService;
+import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +16,8 @@ public class EditCohortDefinitionDimensionController {
     		@RequestParam(required=false, value="uuid") String uuid,
     		ModelMap model) {
 
-		IndicatorService service = Context.getService(IndicatorService.class);
-		CohortDefinitionDimension dim = (CohortDefinitionDimension) service.getDimensionByUuid(uuid);
+		DimensionService service = Context.getService(DimensionService.class);
+		CohortDefinitionDimension dim = (CohortDefinitionDimension) service.getDefinitionByUuid(uuid);
 		model.addAttribute("dimension", dim);
 	}
 
@@ -26,10 +26,10 @@ public class EditCohortDefinitionDimensionController {
     		@RequestParam("uuid") String uuid,
     		@RequestParam("key") String keyToRemove) {
 
-		IndicatorService service = Context.getService(IndicatorService.class);
-		CohortDefinitionDimension dim = (CohortDefinitionDimension) service.getDimensionByUuid(uuid);
+		DimensionService service = Context.getService(DimensionService.class);
+		CohortDefinitionDimension dim = (CohortDefinitionDimension) service.getDefinitionByUuid(uuid);
 		dim.getCohortDefinitions().remove(keyToRemove);
-		service.saveDimension(dim);
+		service.saveDefinition(dim);
 		
 		return "redirect:editCohortDefinitionDimension.form?uuid=" + uuid;
 	}

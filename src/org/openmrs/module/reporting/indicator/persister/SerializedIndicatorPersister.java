@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefinitionPersister;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 import org.openmrs.module.reporting.indicator.Indicator;
 
@@ -67,6 +68,13 @@ public class SerializedIndicatorPersister implements IndicatorPersister {
     public List<Indicator> getAllIndicators(boolean includeRetired) {
     	return getService().getAllDefinitions(Indicator.class, includeRetired);
     }
+    
+	/**
+	 * @see DataSetDefinitionPersister#getNumberOfDataSetDefinitions(boolean)
+	 */
+	public int getNumberOfIndicators(boolean includeRetired) {
+    	return getService().getNumberOfDefinitions(Indicator.class, includeRetired);
+	}
 
 	/**
      * @see IndicatorPersister#getIndicatorByName(String, boolean)

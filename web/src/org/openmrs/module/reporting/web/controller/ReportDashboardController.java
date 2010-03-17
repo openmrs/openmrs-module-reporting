@@ -267,7 +267,7 @@ public class ReportDashboardController {
     	model.addAttribute("datasetDefinitions", 
     			Context.getService(DataSetDefinitionService.class).getAllDefinitions(false));
     	model.addAttribute("indicators", 
-    			Context.getService(IndicatorService.class).getAllIndicators(false));
+    			Context.getService(IndicatorService.class).getAllDefinitions(false));
     	model.addAttribute("reportDefinitions", 
     			Context.getService(ReportService.class).getReportDefinitions());
     	model.addAttribute("reportRenderers", 

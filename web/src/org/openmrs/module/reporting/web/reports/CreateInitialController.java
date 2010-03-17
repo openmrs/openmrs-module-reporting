@@ -11,6 +11,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
+import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.module.reporting.report.util.ReportUtil.InitialDataElement;
@@ -35,10 +36,10 @@ public class CreateInitialController {
 		for (CohortDefinition def : Context.getService(CohortDefinitionService.class).getAllDefinitions(true)) {
 			alreadyNames.add(CohortDefinition.class.getName() + " " + def.getName());
 		}
-		for (Dimension def : Context.getService(IndicatorService.class).getAllDimensions(true)) {
+		for (Dimension def : Context.getService(DimensionService.class).getAllDefinitions(true)) {
 			alreadyNames.add(Dimension.class.getName() + " " + def.getName());
 		}
-		for (Indicator def : Context.getService(IndicatorService.class).getAllIndicators(true)) {
+		for (Indicator def : Context.getService(IndicatorService.class).getAllDefinitions(true)) {
 			alreadyNames.add(Indicator.class.getName() + " " + def.getName());
 		}
 		

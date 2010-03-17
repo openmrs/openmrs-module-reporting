@@ -2,7 +2,7 @@ package org.openmrs.module.reporting.serializer;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
-import org.openmrs.module.reporting.indicator.service.IndicatorService;
+import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.ConverterLookup;
@@ -17,7 +17,7 @@ public class DimensionConverter extends ReportingShortConverter implements Conve
 
 	@Override
 	public Object getByUUID(String uuid) {
-		return Context.getService(IndicatorService.class).getDimensionByUuid(uuid);
+		return Context.getService(DimensionService.class).getDefinitionByUuid(uuid);
 	}
 	
 	public boolean canConvert(Class c) {

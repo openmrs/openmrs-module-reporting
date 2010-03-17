@@ -1,7 +1,6 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -9,8 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -21,9 +18,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
-import org.openmrs.module.reporting.indicator.dimension.CohortDimension;
+import org.openmrs.module.reporting.indicator.dimension.CohortDimensionResult;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
-import org.openmrs.module.reporting.indicator.dimension.Dimension;
+import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 
 /**
@@ -52,6 +49,7 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		}
 		
 		IndicatorService is = Context.getService(IndicatorService.class);
+		DimensionService ds = Context.getService(DimensionService.class);
 		
 		MapDataSet ret = new MapDataSet(dataSetDefinition, context);
 		ret.setName(dataSetDefinition.getName());
@@ -62,9 +60,8 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		Map<String, Map<String, Cohort>> dimensionCalculationCache = new HashMap<String, Map<String, Cohort>>();
 		for (Map.Entry<String, Mapped<CohortDefinitionDimension>> e : dsd.getDimensions().entrySet()) {
 			String dimensionKey = e.getKey();
-			EvaluationContext ec = EvaluationContext.cloneForChild(context, e.getValue());
-			Map<String, Cohort> eval = evaluateDimension(context.getBaseCohort(), e.getValue().getParameterizable(), ec);
-			dimensionCalculationCache.put(dimensionKey, eval);
+			CohortDimensionResult dim = (CohortDimensionResult)ds.evaluate(e.getValue(), context);
+			dimensionCalculationCache.put(dimensionKey, dim.getOptionCohorts());
 		}
 		
 		// evaluate unique indicators
@@ -100,45 +97,6 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		return ret;
 	}
 
-	/**
-	 * Evaluates a Dimension with the inputCohort as a basis
-	 */
-	protected Map<String, Cohort> evaluateDimension(Cohort inputCohort, CohortDimension dimension, EvaluationContext context) {
-	
-		Cohort totalDimensions = new Cohort();
-		Map<String, Cohort> cohorts = new LinkedHashMap<String, Cohort>();
-		for (String key : dimension.getOptionKeys()) {
-			Cohort currentCohort = evaluateDimension(inputCohort, dimension, key, context);
-			cohorts.put(key, currentCohort);
-			totalDimensions = Cohort.union(totalDimensions, currentCohort);
-		}
-		cohorts.put(Dimension.UNCLASSIFIED, Cohort.subtract(inputCohort, totalDimensions));
-		
-		return cohorts;
-	}
-	
-	/**
-	 * Evaluates the passed dimension option with the inputCohort as a basis
-	 */
-	protected Cohort evaluateDimension(Cohort inputCohort, CohortDimension dimension, String option, EvaluationContext context) {
-		
-		log.debug("Evaluating dimension: " + dimension + "." + option + "(" + context.getParameterValues() + ")");
-	
-		CohortDefinitionDimension d = (CohortDefinitionDimension) dimension;
-		if (Dimension.UNCLASSIFIED.equalsIgnoreCase(option)) {
-			Map<String, Cohort> allCohorts = evaluateDimension(inputCohort, dimension, context);
-			return allCohorts.get(Dimension.UNCLASSIFIED);
-		}
-		
-		Mapped<CohortDefinition> mappedDef = d.getCohortDefinition(option);
-		if (mappedDef == null) {
-			throw new IllegalArgumentException("No CohortDefinition dimension option found for option: " + option);
-		}
-		Cohort found = Context.getService(CohortDefinitionService.class).evaluate(mappedDef, context);
-		if (found == null) {
-			return new Cohort();
-		}
-		return Cohort.intersect(inputCohort, found);
-	}
+
 	
 }

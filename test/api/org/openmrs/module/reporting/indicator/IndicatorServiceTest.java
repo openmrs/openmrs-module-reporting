@@ -40,7 +40,7 @@ public class IndicatorServiceTest extends BaseModuleContextSensitiveTest {
 		IndicatorService service = Context.getService(IndicatorService.class);
 		CohortIndicator cohortIndicator = new CohortIndicator();		
 		cohortIndicator.setName("Testing");
-		Indicator savedIndicator = service.saveIndicator(cohortIndicator);		
+		Indicator savedIndicator = service.saveDefinition(cohortIndicator);		
 		Assert.assertTrue(savedIndicator.getId()!=null);
 	}
 	
