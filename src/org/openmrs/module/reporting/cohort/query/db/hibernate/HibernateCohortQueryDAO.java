@@ -4,22 +4,20 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.CacheMode;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Expression;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
-import org.openmrs.Patient;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -81,9 +79,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			maxAgeUnit = DurationUnit.YEARS;
 		}
 		
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Patient.class);
-		criteria.add(Expression.eq("voided", false));
-
+		String sql = "select t.patient_id from patient t, person p where t.patient_id = p.person_id and t.voided = false and ";
+		Map<String, Date> paramsToSet = new HashMap<String, Date>();
+		
 		Date maxBirthFromAge = effectiveDate;
 		if (minAge != null) {
 			Calendar cal = Calendar.getInstance();
@@ -91,7 +89,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			cal.add(minAgeUnit.getCalendarField(), -minAgeUnit.getFieldQuantity()*minAge);
 			maxBirthFromAge = cal.getTime();
 		}
-		Criterion c = Expression.le("birthdate", maxBirthFromAge);
+		
+		String c = "p.birthdate <= :maxBirthFromAge";
+		paramsToSet.put("maxBirthFromAge", maxBirthFromAge);
 		
 		Date minBirthFromAge = null;
 		if (maxAge != null) {
@@ -99,17 +99,24 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			cal.setTime(effectiveDate);
 			cal.add(maxAgeUnit.getCalendarField(), -(maxAgeUnit.getFieldQuantity()*maxAge + 1));
 			minBirthFromAge = cal.getTime();
-			c = Expression.and(c, Expression.ge("birthdate", minBirthFromAge));
+			c = "(" + c + " and p.birthdate >= :minBirthFromAge)";
+			paramsToSet.put("minBirthFromAge", minBirthFromAge);
 		}
 			
 		if (unknownAgeIncluded) {
-			criteria.add(Expression.or(Expression.isNull("birthdate"), c));
+			c = "(p.birthdate is null or " + c + ")";
 		}
-		else {
-			criteria.add(c);
+		
+		sql += c;
+		
+		log.debug("Executing: " + sql + " with params: " + paramsToSet);
+		
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		for (Map.Entry<String, Date> entry : paramsToSet.entrySet()) {
+			query.setDate(entry.getKey(), entry.getValue());
 		}
-
-		return new Cohort(criteria.list());
+		
+		return new Cohort(query.list());
 	}
 
 	
