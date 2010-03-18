@@ -16,7 +16,7 @@ package org.openmrs.module.reporting.report.renderer;
 import java.util.Collection;
 
 import org.openmrs.module.reporting.common.MessageUtil;
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * Base Abstract implementation of a ReportRenderer.

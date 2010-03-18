@@ -9,10 +9,10 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.propertyeditor.IndicatorEditor;
-import org.openmrs.module.reporting.report.PeriodIndicatorReportDefinition;
 import org.openmrs.module.reporting.report.PeriodIndicatorReportUtil;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -42,7 +42,7 @@ public class PeriodIndicatorReportController {
 		if (uuid == null) {
 			model.addAttribute("report", new PeriodIndicatorReportDefinition());
 		} else {
-			ReportDefinition def = Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
+			ReportDefinition def = Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 			if (def instanceof PeriodIndicatorReportDefinition) {
 				PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) def;
 				PeriodIndicatorReportUtil.ensureDataSetDefinition(report);
@@ -61,7 +61,7 @@ public class PeriodIndicatorReportController {
 	                        @RequestParam("indicator") Indicator indicator,
 	                        WebRequest request) {
 		
-		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
+		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 		
 		// special code because I don't think I can do a RequestParam for: Map<String, String> dimensionOptions
 		Map<String, String> dimensionOptions = new HashMap<String, String>();
@@ -85,7 +85,7 @@ public class PeriodIndicatorReportController {
 	public String removeColumn(@RequestParam("uuid") String uuid,
 	                           @RequestParam("key") String key) {
 		
-		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
+		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 		PeriodIndicatorReportUtil.removeColumn(report, key);
 		
 		return "redirect:periodIndicatorReport.form?uuid=" + uuid;

@@ -18,7 +18,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * Takes a ReportDefinition and renders it.

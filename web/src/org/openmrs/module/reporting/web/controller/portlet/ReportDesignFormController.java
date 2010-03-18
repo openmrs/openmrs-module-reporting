@@ -15,6 +15,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.HandlerUtil;
@@ -61,7 +62,7 @@ public class ReportDesignFormController {
 		}
 		design.setName(name);
 		design.setDescription(description);
-		design.setReportDefinition(rs.getReportDefinitionByUuid(reportDefinitionUuid));
+		design.setReportDefinition(Context.getService(ReportDefinitionService.class).getDefinitionByUuid(reportDefinitionUuid));
     	design.setRendererType(rendererType);
     	
     	WidgetHandler propHandler = HandlerUtil.getPreferredHandler(WidgetHandler.class, Properties.class);

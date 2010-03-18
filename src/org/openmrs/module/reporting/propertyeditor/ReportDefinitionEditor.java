@@ -18,8 +18,8 @@ import java.beans.PropertyEditorSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.springframework.util.StringUtils;
 
 public class ReportDefinitionEditor extends PropertyEditorSupport {
@@ -29,10 +29,10 @@ public class ReportDefinitionEditor extends PropertyEditorSupport {
 	public ReportDefinitionEditor() { }
 	
 	public void setAsText(String text) throws IllegalArgumentException {
-		ReportService rs = Context.getService(ReportService.class);
+		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
 		if (StringUtils.hasText(text)) {
 			try {
-				setValue(rs.getReportDefinitionByUuid(text));
+				setValue(rs.getDefinitionByUuid(text));
 			}
 			catch (Exception ex) {
 				log.error("Error setting text" + text, ex);

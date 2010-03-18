@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.web.renderers;
 
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.InteractiveReportRenderer;
 
 

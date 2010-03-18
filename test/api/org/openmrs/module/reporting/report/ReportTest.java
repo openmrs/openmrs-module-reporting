@@ -28,8 +28,9 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
-import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -72,7 +73,7 @@ public class ReportTest extends BaseModuleContextSensitiveTest {
 		ec.addParameterValue("report.startDate", ymd.parse("1980-01-01"));
 		ec.addParameterValue("report.endDate", ymd.parse("2008-01-01"));
 		
-		ReportService rs = (ReportService) Context.getService(ReportService.class);
+		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
 		ReportData data = rs.evaluate(report, ec);
 
 		CsvReportRenderer renderer = new CsvReportRenderer();

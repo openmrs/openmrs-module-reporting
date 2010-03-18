@@ -29,6 +29,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -269,7 +270,7 @@ public class ReportDashboardController {
     	model.addAttribute("indicators", 
     			Context.getService(IndicatorService.class).getAllDefinitions(false));
     	model.addAttribute("reportDefinitions", 
-    			Context.getService(ReportService.class).getReportDefinitions());
+    			Context.getService(ReportDefinitionService.class).getAllDefinitions(false));
     	model.addAttribute("reportRenderers", 
     			Context.getService(ReportService.class).getReportRenderers());
     	

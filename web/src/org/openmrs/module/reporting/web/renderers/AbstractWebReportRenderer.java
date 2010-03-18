@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingException;
 
 /**

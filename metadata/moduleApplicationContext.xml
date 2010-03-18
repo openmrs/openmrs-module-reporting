@@ -29,7 +29,7 @@
 				<value>org.openmrs.module.reporting.indicator.dimension.Dimension</value>
 				<value>org.openmrs.module.reporting.cohort.definition.CohortDefinition</value>
 				<value>org.openmrs.module.reporting.dataset.definition.DataSetDefinition</value>
-				<value>org.openmrs.module.reporting.report.ReportDefinition</value>
+				<value>org.openmrs.module.reporting.report.definition.ReportDefinition</value>
 			</list>
 		</property>
 	</bean>	
@@ -47,6 +47,26 @@
 							<property name="dao"><ref bean="serializedObjectDAO"/></property>
 							<property name="serializer"><ref bean="reportingSerializer"/></property>
 						</bean>
+					</property>
+					<property name="preInterceptors">
+						<ref bean="serviceInterceptors" />
+					</property>
+					<property name="transactionAttributeSource">
+						<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+					</property>
+				</bean>		
+			</list>
+		</property>
+	</bean>
+	
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list merge="true">
+				<value>org.openmrs.module.reporting.report.definition.service.ReportDefinitionService</value> 
+				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+					<property name="transactionManager"><ref bean="transactionManager"/></property>
+					<property name="target">
+						<bean class="org.openmrs.module.reporting.report.definition.service.BaseReportDefinitionService"></bean>
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors" />

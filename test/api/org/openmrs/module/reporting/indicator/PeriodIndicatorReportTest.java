@@ -11,10 +11,10 @@ import org.openmrs.module.reporting.cohort.definition.LocationCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator.IndicatorType;
-import org.openmrs.module.reporting.report.PeriodIndicatorReportDefinition;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
-import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 
@@ -52,7 +52,7 @@ public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
 		numberOfMales.setLocationFilter(atSite, "locations=${location}");
 		report.addIndicator("1.A", "Number of Males", numberOfMales);
 		
-		ReportService rs = (ReportService) Context.getService(ReportService.class);
+		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
 		for (Location l : Context.getLocationService().getAllLocations()) {
 			EvaluationContext context = new EvaluationContext();
 			context.addParameterValue("location", l);
@@ -94,7 +94,7 @@ public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
 		percentMales.setLocationFilter(atSite, "locations=${location}");
 		report.addIndicator("1.A", "Percent of Males", percentMales);
 		
-		ReportService rs = (ReportService) Context.getService(ReportService.class);
+		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
 		for (Location l : Context.getLocationService().getAllLocations()) {
 			EvaluationContext context = new EvaluationContext();
 			context.addParameterValue("location", l);

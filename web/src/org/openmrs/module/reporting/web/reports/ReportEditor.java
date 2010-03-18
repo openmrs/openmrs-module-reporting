@@ -6,8 +6,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.report.ReportDefinition;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,11 +33,11 @@ public class ReportEditor {
 		    		@RequestParam(required=false, value="uuid") String uuid,
 		            @RequestParam(required=false, value="type") Class<? extends ReportDefinition> type) {
     	
-    	ReportService rs = Context.getService(ReportService.class);
-    	ReportDefinition r = rs.getReportDefinition(uuid, type);
+    	ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
+    	ReportDefinition r = rs.getDefinition(uuid, type);
     	model.addAttribute("report", r);
     	if (StringUtils.isNotEmpty(uuid)) {
-	    	List<ReportDesign> designs = rs.getReportDesigns(r, null, false);
+	    	List<ReportDesign> designs = Context.getService(ReportService.class).getReportDesigns(r, null, false);
 	    	model.addAttribute("designs", designs);
     	}
     }

@@ -1,38 +1,24 @@
 package org.openmrs.module.reporting.web.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
-import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.definition.JoinDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.LabEncounterDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
-import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
-import org.openmrs.module.reporting.report.service.ReportService;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -78,11 +64,8 @@ public class ManageReportController {
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
     	
-    	List<ReportDefinition> reportSchemas = 
-    		Context.getService(ReportService.class).getReportDefinitions();
-
+    	List<ReportDefinition> reportSchemas = getReportService().getAllDefinitions(includeRetired);
     	model.addAttribute("reportSchemas", reportSchemas);
-    	
         return "/module/reporting/reports/reportManager";
     }
     
@@ -97,12 +80,9 @@ public class ManageReportController {
     public String editReportDefinition(
     		@RequestParam(required=false, value="uuid") String uuid,
     		ModelMap model) {
-		ReportService reportService = 
-			Context.getService(ReportService.class);
-    	
-    	List<ReportDefinition> reportSchemas = reportService.getReportDefinitions();
-    	
-    	ReportDefinition reportSchema = reportService.getReportDefinitionByUuid(uuid);
+
+    	List<ReportDefinition> reportSchemas = getReportService().getAllDefinitions(false);
+    	ReportDefinition reportSchema = getReportService().getDefinitionByUuid(uuid);
     	
     	model.addAttribute("reportSchema", reportSchema);    	
     	model.addAttribute("reportSchemas", reportSchemas);
@@ -124,13 +104,11 @@ public class ManageReportController {
     		HttpServletRequest request,
     		HttpServletResponse response,
     		ModelMap model) throws Exception {
-    	
-		ReportService reportService = (ReportService) Context.getService(ReportService.class);
-		
-		ReportDefinition reportSchema = null;
+
+    	ReportDefinition reportSchema = null;
 		// Will return the first instance of a report
 		if (uuid != null) { 
-			reportSchema = reportService.getReportDefinitionByUuid(uuid);				
+			reportSchema = getReportService().getDefinitionByUuid(uuid);				
 		}
 		
 		if (reportSchema == null) { 
@@ -155,7 +133,7 @@ public class ManageReportController {
 			evalContext.addParameterValue("report.startDate", Context.getDateFormat().parse("1980-01-01"));
 			evalContext.addParameterValue("report.endDate", Context.getDateFormat().parse("2008-01-01"));
 			
-			ReportData reportData = reportService.evaluate(reportSchema, evalContext);
+			ReportData reportData = getReportService().evaluate(reportSchema, evalContext);
 	
 			ReportRenderer renderer = null;
 			if ("csv".equalsIgnoreCase(renderType)) { 
@@ -190,15 +168,12 @@ public class ManageReportController {
 			HttpServletResponse response,
 			@RequestParam(required=false, value="uuid") String uuid) {
 
-    	log.info("Evaluating report schema with uuid " + uuid);
-		ReportService service = Context.getService(ReportService.class);		
-		ReportDefinition reportSchema = service.getReportDefinitionByUuid(uuid);
-		
+    	log.info("Evaluating report schema with uuid " + uuid);		
+		ReportDefinition reportSchema = getReportService().getDefinitionByUuid(uuid);
 		
 		if (reportSchema != null) { 						
 			log.info("Report schema " + reportSchema);
-			ReportData reportData = 
-				service.evaluate(reportSchema, new EvaluationContext());
+			ReportData reportData = getReportService().evaluate(reportSchema, new EvaluationContext());
 
 			
 			log.info("Report datasets: " + reportData.getDataSets());
@@ -228,12 +203,7 @@ public class ManageReportController {
     @RequestMapping("/module/reporting/purgeReport")
     public String purgeCohortDefinition(@RequestParam(required=false, value="uuid") String uuid) {
 
-    	ReportService reportService = 
-    		Context.getService(ReportService.class);
-    	
-    	reportService.
-    		deleteReportDefinition(reportService.getReportDefinitionByUuid(uuid));	
-    	
+    	getReportService().purgeDefinition(getReportService().getDefinitionByUuid(uuid));	
     	return "redirect:/module/reporting/reports/manageReports.form";
     }        
     
@@ -254,10 +224,8 @@ public class ManageReportController {
      */
     @RequestMapping("/module/reporting/editIndicatorReport")
     public String editIndicatorReport(ModelMap model) {
-    	
-		ReportService reportService = (ReportService) Context.getService(ReportService.class);
 
-		ReportDefinition reportSchema = reportService.getReportDefinition(2);
+    	ReportDefinition reportSchema = getReportService().getDefinition(2);
 		
 		// actions (save, delete) 
 		
@@ -283,20 +251,17 @@ public class ManageReportController {
     		HttpServletResponse response,
     		ModelMap model) throws Exception {
 
-    	
-		ReportService reportService = (ReportService) Context.getService(ReportService.class);
-
     	// If the user has submitted the form, we render it as a CSV
     	if (action != null && action.equals("render")) { 
 	
 			// Will return the first instance of a report
-			ReportDefinition reportSchema = reportService.getReportDefinition(1);
+			ReportDefinition reportSchema = getReportService().getDefinition(1);
 
 			EvaluationContext ec = new EvaluationContext();
 			ec.addParameterValue("report.startDate", Context.getDateFormat().parse("1980-01-01"));
 			ec.addParameterValue("report.endDate", Context.getDateFormat().parse("2008-01-01"));
 			
-			ReportData reportData = reportService.evaluate(reportSchema, ec);
+			ReportData reportData = getReportService().evaluate(reportSchema, ec);
 	
 			CsvReportRenderer renderer = new CsvReportRenderer();
 			response.setContentType("text/csv");
@@ -306,7 +271,7 @@ public class ManageReportController {
     	}    
 
     	// Otherwise we need to show the report form 		
-		ReportDefinition reportSchema = reportService.getReportDefinition(1);
+		ReportDefinition reportSchema = getReportService().getDefinition(1);
     	model.addAttribute("reportSchema", reportSchema);
     	
     	// TODO eventually this should be a single reportViewer JSP
@@ -326,14 +291,12 @@ public class ManageReportController {
     		HttpServletResponse response,
     		ModelMap model) throws Exception { 
     	
-		ReportService reportService = (ReportService) Context.getService(ReportService.class);
-    	
     	// Show user the form 
 		if (action != null && action.equals("render")) {
 			EvaluationContext context = new EvaluationContext();
 			CsvReportRenderer renderer = new CsvReportRenderer();
 			
-			ReportDefinition reportSchema = reportService.getReportDefinition(2);
+			ReportDefinition reportSchema = getReportService().getDefinition(2);
 			
 			context = new EvaluationContext();
 			context.addParameterValue("report.location", Context.getLocationService().getLocation(26));
@@ -346,7 +309,7 @@ public class ManageReportController {
 			//context.addParameterValue("report.location", Context.getLocationService().getLocation(29));
 			//context.addParameterValue("report.reportDate", Context.getDateFormat().parse("2008-01-01"));
 			
-			ReportData reportData = Context.getService(ReportService.class).evaluate(reportSchema, context);
+			ReportData reportData = getReportService().evaluate(reportSchema, context);
 			response.setContentType("text/csv");
 			response.setHeader("Content-Disposition", "attachment; filename=\"indicator-report.csv\"");  
 			renderer.render(reportData, null, response.getOutputStream());		
@@ -354,9 +317,13 @@ public class ManageReportController {
 				
 		}
 
-		ReportDefinition reportSchema = reportService.getReportDefinition(2);
+		ReportDefinition reportSchema = getReportService().getDefinition(2);
 		model.addAttribute("reportSchema", reportSchema);
     	return "/module/reporting/reports/indicatorReportViewer";
 		
+    }
+    
+    protected ReportDefinitionService getReportService() {
+    	return Context.getService(ReportDefinitionService.class);
     }
 }

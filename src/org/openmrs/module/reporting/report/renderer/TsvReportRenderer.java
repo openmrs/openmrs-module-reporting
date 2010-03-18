@@ -15,7 +15,7 @@ package org.openmrs.module.reporting.report.renderer;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.DisplayLabel;
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * Implementation of a ReportRenderer that renders ReportData to a TSV file

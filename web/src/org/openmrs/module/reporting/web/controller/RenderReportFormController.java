@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDefinition;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.IndicatorReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
@@ -69,7 +69,7 @@ public class RenderReportFormController {
 			@RequestParam(value = "format", required=false) String format) throws Exception {
 					
 		ReportDefinition reportDefinition = 
-			Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
+			Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 		
 		ModelAndView model = new ModelAndView("/module/reporting/reports/renderReportForm");
 	

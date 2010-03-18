@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 
 /**

@@ -30,9 +30,9 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
-import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -65,7 +65,7 @@ public class CohortCrossTabDataSetTest extends BaseModuleContextSensitiveTest {
 	public void shouldTest() throws Exception {
 		
 		CohortDefinitionService cohortDefinitionService = Context.getService(CohortDefinitionService.class);
-		ReportService reportService = Context.getService(ReportService.class);
+		ReportDefinitionService reportService = Context.getService(ReportDefinitionService.class);
 		
 		initializeInMemoryDatabase();
 		executeDataSet("org/openmrs/report/include/ReportTests-patients.xml");

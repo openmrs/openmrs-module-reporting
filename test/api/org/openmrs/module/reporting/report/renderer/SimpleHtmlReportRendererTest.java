@@ -12,8 +12,8 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -35,7 +35,7 @@ public class SimpleHtmlReportRendererTest extends BaseModuleContextSensitiveTest
         PatientDataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
         ReportDefinition reportDefinition = new ReportDefinition();
         reportDefinition.addDataSetDefinition(dataSetDefinition, ParameterizableUtil.createParameterMappings(""));
-        ReportData reportData = Context.getService(ReportService.class).evaluate(reportDefinition, evalContext);
+        ReportData reportData = Context.getService(ReportDefinitionService.class).evaluate(reportDefinition, evalContext);
         
         // Render the report data as HTML
         String filename = "deleteMe.html";

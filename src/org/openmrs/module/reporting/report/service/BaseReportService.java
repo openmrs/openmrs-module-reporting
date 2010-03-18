@@ -27,19 +27,15 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.cohort.definition.util.CohortFilter;
 import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDefinition;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.InteractiveReportRenderer;
 import org.openmrs.module.reporting.report.renderer.RenderingException;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
@@ -54,7 +50,6 @@ import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.util.StringUtils;
 
 /**
  * Base Implementation of the ReportService API
@@ -91,70 +86,6 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	}
 
 	/**
-	 * @see ReportService#saveReportDefinition(ReportDefinition)
-	 */
-	public ReportDefinition saveReportDefinition(ReportDefinition reportDefinition) throws APIException {
-		return getService().saveDefinition(reportDefinition);
-	}
-	
-	/**
-	 * @see ReportService#getReportDefinition(Integer)
-	 */
-	public ReportDefinition getReportDefinition(Integer reportDefinitionId) throws APIException {
-		return getService().getDefinition(ReportDefinition.class, reportDefinitionId);
-	}
-
-	/**
-	 * @see ReportService#getReportDefinitionByUuid(String)
-	 */
-	public ReportDefinition getReportDefinitionByUuid(String uuid) throws APIException {
-		return getService().getDefinitionByUuid(ReportDefinition.class, uuid);
-	}
-	
-	/**
-	 * @see ReportService#getReportDefinition(String, Class)
-	 */
-    public ReportDefinition getReportDefinition(String uuid, Class<? extends ReportDefinition> type) {
-    	ReportDefinition r = null;
-    	if (StringUtils.hasText(uuid)) {
-        	r = Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
-    	}
-    	else if (type != null) {
-     		try {
-    			r = type.newInstance();
-    		}
-    		catch (Exception e) {
-    			throw new IllegalArgumentException("Unable to instantiate a ReportDefinition of type: " + type);
-    		}
-    	}
-    	else {
-    		throw new IllegalArgumentException("You must supply either a uuid or a type");
-    	}
-    	return r;
-    }
-	
-	/**
-	 * @see ReportService#getReportDefinitions()
-	 */
-	public List<ReportDefinition> getReportDefinitions() throws APIException {
-		return getReportDefinitions(false);
-	}
-	
-	/**
-	 * @see ReportService#getReportDefinitions(boolean)
-	 */
-	public List<ReportDefinition> getReportDefinitions(boolean includeRetired) throws APIException {
-		return getService().getAllDefinitions(ReportDefinition.class, includeRetired);
-	}
-	
-	/**
-	 * @see ReportService#deleteReportDefinition(ReportDefinition)
-	 */
-	public void deleteReportDefinition(ReportDefinition reportDefinition) {
-		getService().purgeDefinition(reportDefinition);
-	}
-
-	/**
 	 * @see ReportService#getReportRenderers()
 	 */
 	public Collection<ReportRenderer> getReportRenderers() {
@@ -183,36 +114,6 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 		}
 		
 		return null;
-	}
-	
-	
-	/**
-	 * @see ReportService#evaluate(ReportDefinition, Cohort, EvaluationContext)
-	 */
-	@SuppressWarnings("unchecked")
-	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext evalContext) {
-		
-		log.debug("Evaluating report: " + reportDefinition + "(" + evalContext.getParameterValues() + ")");
-		
-		ReportData ret = new ReportData();
-		Map<String, DataSet> data = new HashMap<String, DataSet>();
-		ret.setDataSets(data);
-		ret.setDefinition(reportDefinition);
-		ret.setContext(evalContext);
-		
-		Cohort baseCohort = CohortFilter.filter(evalContext, reportDefinition.getBaseCohortDefinition());
-		
-		DataSetDefinitionService dss = Context.getService(DataSetDefinitionService.class);
-		if (reportDefinition.getDataSetDefinitions() != null) {
-			for (String key : reportDefinition.getDataSetDefinitions().keySet()) {
-				Mapped<? extends DataSetDefinition> pd = reportDefinition.getDataSetDefinitions().get(key);
-				EvaluationContext childEc = EvaluationContext.cloneForChild(evalContext, pd);
-				childEc.setBaseCohort(baseCohort);
-				data.put(key, dss.evaluate(pd.getParameterizable(), childEc));
-			}
-		}
-		
-		return ret;
 	}
 	
 	/**
@@ -321,7 +222,8 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 			ec.setBaseCohort(baseCohort);
 		}
 		
-		ReportData rawData = evaluate(request.getReportDefinition(), ec);
+		ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+		ReportData rawData = rds.evaluate(request.getReportDefinition(), ec);
 		
 		ret.rawDataEvaluated(rawData);
 		

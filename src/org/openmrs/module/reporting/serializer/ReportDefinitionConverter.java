@@ -1,8 +1,8 @@
 package org.openmrs.module.reporting.serializer;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.ConverterLookup;
@@ -17,7 +17,7 @@ public class ReportDefinitionConverter extends ReportingShortConverter implement
 
 	@Override
 	public Object getByUUID(String uuid) {
-		return Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);
+		return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 	}
 	
 	public boolean canConvert(Class c) {

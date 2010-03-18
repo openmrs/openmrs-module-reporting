@@ -27,14 +27,14 @@ import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.SimpleHtmlReportRenderer;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.openmrs.module.reporting.report.renderer.XmlReportRenderer;
-import org.openmrs.module.reporting.report.service.ReportService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -408,7 +408,7 @@ public class ManageDatasetsController {
 	    	// Evaluate dataset report
 	    	ReportDefinition reportDefinition = new ReportDefinition();
 	    	reportDefinition.addDataSetDefinition(dataSetDefinition.getName(), dataSetDefinition, null);
-	    	ReportData reportData = Context.getService(ReportService.class).evaluate(reportDefinition, context);
+	    	ReportData reportData = Context.getService(ReportDefinitionService.class).evaluate(reportDefinition, context);
 
 	    	// Step 5 
 	    	// Render using one of the given formats

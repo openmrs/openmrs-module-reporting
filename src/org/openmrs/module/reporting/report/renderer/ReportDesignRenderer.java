@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.service.ReportService;
 

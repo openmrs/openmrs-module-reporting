@@ -12,8 +12,8 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,7 +36,7 @@ public class IndicatorReportAjaxController {
 				String [] propertyColonUuid = id.split(":");
 				if (propertyColonUuid.length == 2) { 
 					ReportDefinition reportDefinition = 
-						Context.getService(ReportService.class).getReportDefinitionByUuid(propertyColonUuid[1]);				
+						Context.getService(ReportDefinitionService.class).getDefinitionByUuid(propertyColonUuid[1]);				
 					if ("name".equalsIgnoreCase(propertyColonUuid[0])) { 
 						log.warn("update report name: " + value);
 						reportDefinition.setName(value);
@@ -46,7 +46,7 @@ public class IndicatorReportAjaxController {
 						reportDefinition.setDescription(value);
 					}
 					log.warn("save report definition: ");
-					Context.getService(ReportService.class).saveReportDefinition(reportDefinition);
+					Context.getService(ReportDefinitionService.class).saveDefinition(reportDefinition);
 				}
 			}
 			response.getWriter().write(value);

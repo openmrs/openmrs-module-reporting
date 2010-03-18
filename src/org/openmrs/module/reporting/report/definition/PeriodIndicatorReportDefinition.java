@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.report;
+package org.openmrs.module.reporting.report.definition;
 
 import java.util.HashMap;
 import java.util.Map;

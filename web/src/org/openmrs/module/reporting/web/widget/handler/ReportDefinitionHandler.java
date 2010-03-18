@@ -19,8 +19,8 @@ import org.openmrs.module.htmlwidgets.web.WidgetConfig;
 import org.openmrs.module.htmlwidgets.web.handler.CodedHandler;
 import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
 import org.openmrs.module.htmlwidgets.web.html.Option;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 
 /**
  * FieldGenHandler for Enumerated Types
@@ -33,7 +33,7 @@ public class ReportDefinitionHandler extends CodedHandler {
 	 */
 	@Override
 	public void populateOptions(WidgetConfig config, CodedWidget widget) {
-		for (ReportDefinition d : Context.getService(ReportService.class).getReportDefinitions(false)) {
+		for (ReportDefinition d : Context.getService(ReportDefinitionService.class).getAllDefinitions(false)) {
 			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
 		}
 	}
@@ -43,6 +43,6 @@ public class ReportDefinitionHandler extends CodedHandler {
 	 */
 	@Override
 	public Object parse(String input, Class<?> type) {
-		return Context.getService(ReportService.class).getReportDefinitionByUuid(input);
+		return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(input);
 	}
 }

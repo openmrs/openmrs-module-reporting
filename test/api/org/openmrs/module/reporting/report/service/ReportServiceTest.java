@@ -7,12 +7,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.report.Report;
-import org.openmrs.module.reporting.report.ReportDefinition;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
-import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.web.renderers.IndicatorReportWebRenderer;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -22,10 +22,10 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void shouldSaveReportDefinition() throws Exception { 		
-		ReportService service = Context.getService(ReportService.class);
+		ReportDefinitionService service = Context.getService(ReportDefinitionService.class);
 		ReportDefinition reportDefinition = new ReportDefinition();		
 		reportDefinition.setName("Testing");
-		ReportDefinition savedReportDefinition = service.saveReportDefinition(reportDefinition);		
+		ReportDefinition savedReportDefinition = service.saveDefinition(reportDefinition);		
 		Assert.assertTrue(savedReportDefinition.getId()!=null);
 	}
 

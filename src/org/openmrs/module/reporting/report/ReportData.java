@@ -18,6 +18,7 @@ import java.util.Map;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * Report Data obtained from evaluating a ReportDefinition with a given EvaluationContext.

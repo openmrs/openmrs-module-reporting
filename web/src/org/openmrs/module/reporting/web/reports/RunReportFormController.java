@@ -32,8 +32,9 @@ import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.Report;
-import org.openmrs.module.reporting.report.ReportDefinition;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.RenderingException;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
@@ -95,11 +96,12 @@ public class RunReportFormController extends SimpleFormController implements Val
 	protected Object formBackingObject(HttpServletRequest request) throws Exception {
 		CommandObject command = new CommandObject();
 		if (Context.isAuthenticated()) {
+			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
 			ReportService reportService = Context.getService(ReportService.class);
 			if (StringUtils.hasText(request.getParameter("copyRequest"))) {
 				ReportRequest req = reportService.getReportRequestByUuid(request.getParameter("copyRequest"));
 				// avoid lazy init exceptions
-				command.setReportDefinition(reportService.getReportDefinitionByUuid(req.getReportDefinition().getUuid()));
+				command.setReportDefinition(rds.getDefinitionByUuid(req.getReportDefinition().getUuid()));
 				for (Map.Entry<String, Object> param : req.getParameterValues().entrySet()) {
 					Object val = param.getValue();
 					String valString;
@@ -115,7 +117,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 				command.setSelectedRenderer(req.getRenderingMode().getRenderer().getClass().getName() + "!" + req.getRenderingMode().getArgument());
 			} else {
 				String uuid = request.getParameter("reportId");
-				ReportDefinition reportDefinition = reportService.getReportDefinitionByUuid(uuid);
+				ReportDefinition reportDefinition = rds.getDefinitionByUuid(uuid);
 				command.setReportDefinition(reportDefinition);
 			}
 			command.setRenderingModes(reportService.getRenderingModes(command.getReportDefinition()));

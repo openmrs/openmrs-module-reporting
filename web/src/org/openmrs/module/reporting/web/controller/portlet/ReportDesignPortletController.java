@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.OpenmrsClassLoader;
 
@@ -37,7 +38,7 @@ public class ReportDesignPortletController extends ReportingPortletController {
 		else {
 			design = new ReportDesign();
 			if (StringUtils.isNotEmpty(reportDefinitionUuid)) {
-				design.setReportDefinition(rs.getReportDefinitionByUuid(reportDefinitionUuid));
+				design.setReportDefinition(Context.getService(ReportDefinitionService.class).getDefinitionByUuid(reportDefinitionUuid));
 			}
 		}
 		model.put("design", design);

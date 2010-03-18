@@ -23,8 +23,8 @@ import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
 import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 
 
 public class ParameterizableUtil {
@@ -44,7 +44,7 @@ public class ParameterizableUtil {
 			return Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
 		}
 		else if (ReportDefinition.class.isAssignableFrom(type)) {
-			return Context.getService(ReportService.class).getReportDefinitionByUuid(uuid);						
+			return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);						
 		}
 		else if (Indicator.class.isAssignableFrom(type)) {
 			return Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);	
@@ -74,7 +74,7 @@ public class ParameterizableUtil {
 			return Context.getService(CohortDefinitionService.class).saveDefinition((CohortDefinition)parameterizable);
 		}
 		else if (ReportDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(ReportService.class).saveReportDefinition((ReportDefinition)parameterizable);						
+			return Context.getService(ReportDefinitionService.class).saveDefinition((ReportDefinition)parameterizable);						
 		}
 		else if (Indicator.class.isAssignableFrom(parameterizable.getClass())) {
 			return Context.getService(IndicatorService.class).saveDefinition((Indicator)parameterizable);	
@@ -109,7 +109,7 @@ public class ParameterizableUtil {
 						(CohortDefinition)parameterizable, context);
 			}
 			else if (ReportDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-				return Context.getService(ReportService.class).evaluate(
+				return Context.getService(ReportDefinitionService.class).evaluate(
 						(ReportDefinition)parameterizable, context);						
 			}
 			else if (Indicator.class.isAssignableFrom(parameterizable.getClass())) {

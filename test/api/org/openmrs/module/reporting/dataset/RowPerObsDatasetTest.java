@@ -29,9 +29,9 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.dataset.definition.ObsDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
-import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
@@ -81,7 +81,7 @@ public class RowPerObsDatasetTest extends BaseModuleContextSensitiveTest {
 		rs.setName("Testing row-per-obs");
 		rs.setDescription("Tesing RowPerObsDataSet*");
 		rs.addDataSetDefinition("test", definition, null);		
-		ReportData data = Context.getService(ReportService.class).evaluate(rs, evalContext);
+		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rs, evalContext);
 		
 		ByteArrayOutputStream out = null;
 		try {

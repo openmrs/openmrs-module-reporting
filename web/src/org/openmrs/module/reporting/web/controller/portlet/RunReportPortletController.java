@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.service.ReportService;
 
 
@@ -17,7 +18,7 @@ public class RunReportPortletController extends ReportingPortletController {
     protected void populateModel(HttpServletRequest request, Map<String, Object> model) {
 	    super.populateModel(request, model);
 	    if (model.get("reportDefinitions") == null) {
-	    	model.put("reportDefinitions", Context.getService(ReportService.class).getReportDefinitions());
+	    	model.put("reportDefinitions", Context.getService(ReportDefinitionService.class).getAllDefinitions(false));
 	    }
 
 	    if (model.get("lastReportRuns") == null) {

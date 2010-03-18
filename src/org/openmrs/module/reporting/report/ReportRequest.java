@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.openmrs.User;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.util.OpenmrsUtil;
 

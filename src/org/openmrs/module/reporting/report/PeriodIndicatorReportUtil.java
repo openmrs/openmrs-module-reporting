@@ -8,7 +8,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 
 
 /**
@@ -57,7 +59,7 @@ public class PeriodIndicatorReportUtil {
 	// ==== PRIVATE ====
 	
 	private static void saveReportDefinition(ReportDefinition def) {
-	    Context.getService(ReportService.class).saveReportDefinition(def);
+	    Context.getService(ReportDefinitionService.class).saveDefinition(def);
     }
 
 	private static void saveDataSetDefinition(PeriodIndicatorReportDefinition def) {

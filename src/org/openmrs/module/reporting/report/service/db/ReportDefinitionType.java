@@ -22,8 +22,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.report.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 
 /**
  *  A report definition type
@@ -35,7 +35,7 @@ public class ReportDefinitionType implements UserType {
 	 */
 	public Object assemble(Serializable cached, Object owner) throws HibernateException {
 		Integer id = (Integer) cached;
-		return Context.getService(ReportService.class).getReportDefinition(id);
+		return Context.getService(ReportDefinitionService.class).getDefinition(id);
 	}
 
 	/** 
@@ -84,7 +84,7 @@ public class ReportDefinitionType implements UserType {
 		if (id == null) {
 			return null;
 		}
-		return Context.getService(ReportService.class).getReportDefinition(id);
+		return Context.getService(ReportDefinitionService.class).getDefinition(id);
 	}
 
 	/** 
