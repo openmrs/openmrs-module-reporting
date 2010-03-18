@@ -23,14 +23,24 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Base Implementation of the ReportService API
  */
+@Transactional
+@Service
 public class BaseReportDefinitionService extends BaseDefinitionService<ReportDefinition> implements ReportDefinitionService {
 
 	protected static Log log = LogFactory.getLog(BaseReportDefinitionService.class);
+	
+	/**
+	 * @see DefinitionService#getDefinitionType()
+	 */
+	public Class<ReportDefinition> getDefinitionType() {
+		return ReportDefinition.class;
+	}
 	
 	/**
 	 * @see DefinitionService#getDefinitionTypes()

@@ -30,6 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 public interface DefinitionService<T extends Definition> extends OpenmrsService {
 	
 	/**
+	 * @return the Definition class that this service manages
+	 */
+	public Class<T> getDefinitionType();
+	
+	/**
 	 * @return a List of all Definition classes that are available for evaluation
 	 */
 	public List<Class<? extends T>> getDefinitionTypes();

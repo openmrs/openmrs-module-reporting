@@ -30,15 +30,24 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.util.HandlerUtil;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Default implementation of the DataSetDefinitionService.
  */
 @Transactional
+@Service
 public class BaseDataSetDefinitionService extends BaseDefinitionService<DataSetDefinition> implements DataSetDefinitionService {
 
 	protected Log log = LogFactory.getLog(this.getClass());
+	
+	/**
+	 * @see DefinitionService#getDefinitionType()
+	 */
+	public Class<DataSetDefinition> getDefinitionType() {
+		return DataSetDefinition.class;
+	}
 	
 	/**
 	 * @see DefinitionService#getDefinitionTypes()

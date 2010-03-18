@@ -42,15 +42,24 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.util.HandlerUtil;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  *  Base Implementation of the CohortDefinitionService API
  */
 @Transactional
+@Service
 public class BaseCohortDefinitionService extends BaseDefinitionService<CohortDefinition> implements CohortDefinitionService {
 	
 	private static Log log = LogFactory.getLog(BaseCohortDefinitionService.class);
+
+	/**
+	 * @see DefinitionService#getDefinitionType()
+	 */
+	public Class<CohortDefinition> getDefinitionType() {
+		return CohortDefinition.class;
+	}
 
 	/**
 	 * @see DefinitionService#getDefinitionTypes()

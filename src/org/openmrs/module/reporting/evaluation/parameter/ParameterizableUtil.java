@@ -12,109 +12,46 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ReflectionUtil;
-import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.reporting.definition.DefinitionContext;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.indicator.Indicator;
-import org.openmrs.module.reporting.indicator.dimension.Dimension;
-import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
-import org.openmrs.module.reporting.indicator.service.IndicatorService;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 
 
 public class ParameterizableUtil {
 
 	/**
 	 * Retrieves a parameterizable with the given uuid and parameterizable class.
-	 * 
-	 * @param uuid
-	 * @return
 	 */
-	public static Parameterizable getParameterizable(String uuid, Class<? extends Parameterizable> type) { 
-		
-		if (DataSetDefinition.class.isAssignableFrom(type)) {
-			return Context.getService(DataSetDefinitionService.class).getDefinitionByUuid(uuid);			
-		} 
-		else if (CohortDefinition.class.isAssignableFrom(type)) {
-			return Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
+	@SuppressWarnings("unchecked")
+	public static Parameterizable getParameterizable(String uuid, Class<? extends Parameterizable> type) { 		
+		if (!Definition.class.isAssignableFrom(type)) {
+			throw new APIException("Unable to get parameterizable of type " + type);
 		}
-		else if (ReportDefinition.class.isAssignableFrom(type)) {
-			return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);						
-		}
-		else if (Indicator.class.isAssignableFrom(type)) {
-			return Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);	
-		}
-		else if (Dimension.class.isAssignableFrom(type)) {
-			return Context.getService(DimensionService.class).getDefinitionByUuid(uuid);
-		}
-		else { 
-			throw new APIException("Unable to save parameterizable type " + type);
-		}		
+		Class<? extends Definition> c = (Class<? extends Definition>)type;
+		return DefinitionContext.getDefinitionByUuid(c, uuid);	
 	}
-
-	
 
 	/**
 	 * Saves the given parameterizable.
-	 * 
-	 * @param parameterizable
-	 * @return
 	 */
 	public static Parameterizable saveParameterizable(Parameterizable parameterizable) { 
-
-		if (DataSetDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(DataSetDefinitionService.class).saveDefinition((DataSetDefinition)parameterizable);			
-		} 
-		else if (CohortDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(CohortDefinitionService.class).saveDefinition((CohortDefinition)parameterizable);
+		if (parameterizable instanceof Definition) {
+			return (Parameterizable) DefinitionContext.saveDefinition((Definition)parameterizable);
 		}
-		else if (ReportDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(ReportDefinitionService.class).saveDefinition((ReportDefinition)parameterizable);						
+		else {
+			throw new APIException("Unable to save parameterizable of type " + parameterizable.getClass());
 		}
-		else if (Indicator.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(IndicatorService.class).saveDefinition((Indicator)parameterizable);	
-		}
-		else if (Dimension.class.isAssignableFrom(parameterizable.getClass())) {
-			return Context.getService(DimensionService.class).saveDefinition((Dimension) parameterizable);
-		}
-		else { 
-			throw new APIException("Unable to save parameterizable type " + parameterizable.getClass());
-		}
-		//return parameterizable;
 	}
-	
 
-	
 	/**
-	 * Saves the given parameterizable.
-	 * 
-	 * @param parameterizable
-	 * @return
+	 * Evaluates the given parameterizable.
 	 */
 	public static Object evaluateParameterizable(Parameterizable parameterizable, EvaluationContext context) { 
 		Object result = null;
-		
-		if (parameterizable != null) { 
-			if (DataSetDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-				return Context.getService(DataSetDefinitionService.class).evaluate(
-						(DataSetDefinition)parameterizable, context);			
-			} 
-			else if (CohortDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-				return Context.getService(CohortDefinitionService.class).evaluate(
-						(CohortDefinition)parameterizable, context);
-			}
-			else if (ReportDefinition.class.isAssignableFrom(parameterizable.getClass())) {
-				return Context.getService(ReportDefinitionService.class).evaluate(
-						(ReportDefinition)parameterizable, context);						
-			}
-			else if (Indicator.class.isAssignableFrom(parameterizable.getClass())) {
-				return Context.getService(IndicatorService.class).evaluate(
-						(Indicator)parameterizable, context);	
+		if (parameterizable != null) {
+			if (parameterizable instanceof Definition) {
+				result = DefinitionContext.evaluate((Definition)parameterizable, context);
 			}
 			else { 
 				throw new APIException("Unable to evaluate parameterizable of type <" + parameterizable.getClass().getName() + ">");
@@ -122,7 +59,6 @@ public class ParameterizableUtil {
 		}
 		return result;
 	}
-	
 	
 	/**
 	 * Utility method which will return the underlying Parameterizable type from a class property

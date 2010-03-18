@@ -29,15 +29,24 @@ import org.openmrs.module.reporting.indicator.dimension.Dimension;
 import org.openmrs.module.reporting.indicator.dimension.evaluator.DimensionEvaluator;
 import org.openmrs.module.reporting.indicator.dimension.persister.DimensionPersister;
 import org.openmrs.util.HandlerUtil;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Base Implementation of DimensionService
  */
 @Transactional
+@Service
 public class BaseDimensionService extends BaseDefinitionService<Dimension> implements DimensionService {
 
 	protected static Log log = LogFactory.getLog(BaseDimensionService.class);
+	
+	/**
+	 * @see DefinitionService#getDefinitionType()
+	 */
+	public Class<Dimension> getDefinitionType() {
+		return Dimension.class;
+	}
 	
 	/**
 	 * @see DefinitionService#getDefinitionTypes()

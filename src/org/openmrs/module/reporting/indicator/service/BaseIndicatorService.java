@@ -30,15 +30,24 @@ import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.indicator.evaluator.IndicatorEvaluator;
 import org.openmrs.module.reporting.indicator.persister.IndicatorPersister;
 import org.openmrs.util.HandlerUtil;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Base Implementation of IndicatorService
  */
 @Transactional
+@Service
 public class BaseIndicatorService extends BaseDefinitionService<Indicator> implements IndicatorService {
 
 	protected static Log log = LogFactory.getLog(BaseIndicatorService.class);
+	
+	/**
+	 * @see DefinitionService#getDefinitionType()
+	 */
+	public Class<Indicator> getDefinitionType() {
+		return Indicator.class;
+	}
 	
 	/**
 	 * @see DefinitionService#getDefinitionTypes()
