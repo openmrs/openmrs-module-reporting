@@ -139,8 +139,10 @@ public class QueryParameterFormController {
 			@RequestParam(value = "uuid", required=false) String uuid,
 			@RequestParam(value = "type", required=false) Class<Parameterizable> type) {
 		
-		
-		return ParameterizableUtil.getParameterizable(uuid, type);
+		if (type == null || uuid == null)
+			return null;
+		else
+			return ParameterizableUtil.getParameterizable(uuid, type);
 
 	}
 	
