@@ -98,7 +98,7 @@
 
 										<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
 											<td valign="top" nowrap="true">
-												${p.field.name}
+												${p.displayName}
 												<c:if test="${p.required}"><span style="color:red;">*</span></c:if>
 											</td>
 											<td style="vertical-align:top;">

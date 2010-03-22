@@ -20,6 +20,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
+import org.openmrs.module.reporting.common.MessageUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.Property;
@@ -67,7 +69,11 @@ public class DefinitionUtil {
     			// If it is annotated to accept parameters, then retrieve values for Parameter
     			if (ann != null) {
     				Object value = ReflectionUtil.getPropertyValue(classInstance, f.getName());
-    				Property p = new Property(f, value, ann.required());
+    				String displayName = MessageUtil.translateOrReturn(ann.value());
+    				if (ObjectUtil.isNull(displayName)) {
+    					displayName = f.getName();
+    				}
+    				Property p = new Property(f, value, ann.required(), displayName, ann.group());
     				log.debug("Adding: " + p);
     				ret.add(p);
     			}

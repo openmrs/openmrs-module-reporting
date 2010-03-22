@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 /**
  * Represents a value that may be used to configure a CohortDefinition instance.
  * Typically such a property will be constructed through introspection of
- * objects that contain the {@link Property} annotation.
+ * objects that contain the {@link ConfigurationProperty} annotation.
  * 
  * @see Property
  * @see EvaluationContext
@@ -48,6 +48,8 @@ public class Property implements Serializable {
 	 * If true, indicates that this property is required
 	 */
 	private Boolean required = false;
+	private String displayName;
+	private String group;
 	
 	//***********************
 	// CONSTRUCTORS
@@ -63,12 +65,16 @@ public class Property implements Serializable {
 	 * @param field The field
 	 * @param value The configured value for this property
 	 * @param required The flag indicating whether a value is required
+	 * @param displayName the display name
+	 * @param group the group
 	 */
-	public Property(Field field, Object value, Boolean required) {
+	public Property(Field field, Object value, Boolean required, String displayName, String group) {
 		super();
 		setField(field);
 		setValue(value);
 		setRequired(required);
+		setDisplayName(displayName);
+		setGroup(group);
 	}
 	
 	//***********************
@@ -152,5 +158,33 @@ public class Property implements Serializable {
 	 */
 	public void setRequired(Boolean required) {
 		this.required = required;
+	}
+
+	/**
+	 * @return the displayName
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	/**
+	 * @param displayName the displayName to set
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	/**
+	 * @return the group
+	 */
+	public String getGroup() {
+		return group;
+	}
+
+	/**
+	 * @param group the group to set
+	 */
+	public void setGroup(String group) {
+		this.group = group;
 	}
 }

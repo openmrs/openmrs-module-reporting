@@ -21,13 +21,13 @@ public class GenderCohortDefinition extends BaseCohortDefinition {
     
 	//***** PROPERTIES *****
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty("reporting.genderCohortDefinition.maleIncluded")
 	private boolean maleIncluded;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty("reporting.genderCohortDefinition.femaleIncluded")
 	private boolean femaleIncluded;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty("reporting.genderCohortDefinition.unknownIncluded")
 	private boolean unknownGenderIncluded;
 	
 	//***** CONSTRUCTORS *****
