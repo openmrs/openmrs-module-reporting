@@ -30,12 +30,9 @@ import java.lang.annotation.Target;
 public @interface DisplayLabel {
 	
 	/**
-	 * If specified, will first try to resolve the message with the given code
+	 * The value specified can be either a message code or an actual message string.
+	 * The system will first try to find a matching localized message code, and if that
+	 * doesn't exist it will return the value
 	 */
-	public String labelCode() default "";
-	
-	/**
-	 * If no suitable labelCode is returned, return this as default
-	 */
-	public String labelDefault() default "";
+	public String value();
 }

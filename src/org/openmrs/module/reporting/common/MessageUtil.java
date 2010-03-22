@@ -21,17 +21,12 @@ public class MessageUtil {
 	 */
 	public static String getDisplayLabel(Class<?> clazz) {
 		DisplayLabel ann = clazz.getAnnotation(DisplayLabel.class);
-		if (ann != null) {
-			String label = null;
-			if (ann.labelCode() != null) {
-				label = Context.getMessageSourceService().getMessage(ann.labelCode());
-				if (StringUtils.isNotEmpty(label)) {
-					return label;
-				}
+		if (ann != null && StringUtils.isNotEmpty(ann.value())) {
+			String translation = Context.getMessageSourceService().getMessage(ann.value());
+			if (StringUtils.isNotEmpty(translation)) {
+				return translation;
 			}
-			if (StringUtils.isNotEmpty(ann.labelDefault())) {
-				return ann.labelDefault();
-			}
+			return ann.value();
 		}
 		return clazz.getName();
 	}

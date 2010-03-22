@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  * Implementation of a ReportRenderer that renders ReportData to a TSV file
  */
 @Handler
-@DisplayLabel(labelDefault="TSV")
+@DisplayLabel("TSV")
 public class TsvReportRenderer extends DelimitedTextReportRenderer {
 	
 	/**

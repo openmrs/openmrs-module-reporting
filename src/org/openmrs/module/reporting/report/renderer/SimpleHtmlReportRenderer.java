@@ -34,7 +34,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  * A Default Renderer Implementation that aims to support all ReportDefinitions
  */
 @Handler
-@DisplayLabel(labelDefault="Simple Html")
+@DisplayLabel("Simple Html")
 public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 
 	/**

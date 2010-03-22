@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  * Implementation of a ReportRenderer that renders ReportData to a CSV file
  */
 @Handler
-@DisplayLabel(labelDefault="CSV")
+@DisplayLabel("CSV")
 public class CsvReportRenderer extends DelimitedTextReportRenderer {
 	
 	/**
