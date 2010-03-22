@@ -35,4 +35,17 @@ public @interface ConfigurationProperty {
 	 * populated prior to Evaluation of the object
 	 */
 	public boolean required() default false;
+	
+	/**
+	 * Optional text which can be set as a description for this property.  
+	 * This can be either a message code or a simple string.
+	 * The intention is for this to allow user interfaces to provide better information for users as to what this
+	 * configuration property represents.
+	 */
+	public String value() default "";
+	
+	/**
+	 * Optional grouping category which can be used to organize related ConfigurationProperties together.
+	 */
+	public String group() default "";
 }
