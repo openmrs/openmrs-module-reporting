@@ -88,7 +88,7 @@
 						<li>
 							<c:forEach items="${groupedProperties}" var="entry" varStatus="entryStatus">
 								<fieldset>
-									<legend>${entry.key}</legend>
+									<c:if test="${!empty entry.key}"><legend>${entry.key}</legend></c:if>
 									<table id="cohort-definition-property-table">
 										<c:forEach items="${entry.value}" var="p" varStatus="varStatus">
 	

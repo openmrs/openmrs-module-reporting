@@ -13,21 +13,23 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
+@Localized("reporting.GenderCohortDefinition")
 public class GenderCohortDefinition extends BaseCohortDefinition {
 
     private static final long serialVersionUID = 1L;
     
 	//***** PROPERTIES *****
 	
-	@ConfigurationProperty
+	@ConfigurationProperty(group="genders")
 	private boolean maleIncluded;
 	
-	@ConfigurationProperty
+	@ConfigurationProperty(group="genders")
 	private boolean femaleIncluded;
 	
-	@ConfigurationProperty
+	@ConfigurationProperty(group="genders")
 	private boolean unknownGenderIncluded;
 	
 	//***** CONSTRUCTORS *****

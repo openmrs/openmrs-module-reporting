@@ -17,28 +17,30 @@ import java.util.Date;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DurationUnit;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
+@Localized("reporting.AgeCohortDefinition")
 public class AgeCohortDefinition extends BaseCohortDefinition {
 
     private static final long serialVersionUID = 1L;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="ageGroup")
 	private Integer minAge;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="ageGroup")
 	private DurationUnit minAgeUnit = DurationUnit.YEARS;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="ageGroup")
 	private Integer maxAge;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="ageGroup")
 	private DurationUnit maxAgeUnit = DurationUnit.YEARS;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty
 	private boolean unknownAgeIncluded = false;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty
 	private Date effectiveDate;
 	
 	//***** CONSTRUCTORS *****
