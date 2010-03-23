@@ -47,6 +47,7 @@
 	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
 	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
 	label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
+	#cohort-definition-property-table td { font-size: small; }
 </style>
 
 <div id="page">
@@ -70,54 +71,53 @@
 					<ul>				
 						<li>
 							<label class="desc" for="name">Name</label>
-							<input type="text" id="name"  tabindex="2" name="name" value="${cohortDefinition.name}" size="30"/>
+							<input type="text" id="name"  tabindex="2" name="name" value="${cohortDefinition.name}" size="50"/>
 						</li>
 						<li>
 							<label class="desc" for="description">Description</label>
-							<textarea id="description" class="field text short" cols="30" rows="10" tabindex="3" name="description">${cohortDefinition.description}</textarea>
+							<textarea id="description" class="field text short" cols="50" rows="10" tabindex="3" name="description">${cohortDefinition.description}</textarea>
 						</li>
 						<li>
 							<label class="desc" for="type">Type</label>
-							<spring:message code="reporting.${cohortDefinition.class.name}.name" />
+							<rpt:displayLabel type="${cohortDefinition.class.name}"/>
 						</li>
 					</ul>
 				</td>
 				<td valign="top" width="100%">
 					<ul>
 						<li>
-							<label class="desc">Properties</label>
-							<table id="cohort-definition-property-table" class="display">
-								<thead>
-									<tr>
-										<th align="left">Name</th>
-										<th align="left" width="100%">Type</th>
-									</tr>	
-								</thead>
-								<tbody>
-									<c:forEach items="${configurationProperties}" var="p" varStatus="varStatus">
-
-										<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
-											<td valign="top" nowrap="true">
-												${p.displayName}
-												<c:if test="${p.required}"><span style="color:red;">*</span></c:if>
-											</td>
-											<td style="vertical-align:top;">
-												<select id="selectValue${p.field.name}" name="parameter.${p.field.name}.allowAtEvaluation">
-													<option value=""></option>
-													<option value="f">Fixed value</option>
-													<option value="t">Parameter</option>
-												</select>
-												<span id="dynamicValue${p.field.name}" style="display:none;">
-													labeled: <input type="text" id="paramLabel${p.field.name}" name="parameter.${p.field.name}.label" size="30"/>
-												</span>
-												<span id="fixedValue${p.field.name}" style="display:none;">: 
-													<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
-												</span>
-											</td>
-										</tr>
-									</c:forEach>
-								</tbody>
-							</table>
+							<c:forEach items="${groupedProperties}" var="entry" varStatus="entryStatus">
+								<fieldset>
+									<legend>${entry.key}</legend>
+									<table id="cohort-definition-property-table">
+										<c:forEach items="${entry.value}" var="p" varStatus="varStatus">
+	
+											<tr>
+												<td valign="top" nowrap="true">
+													${p.displayName}
+													<c:if test="${p.required}"><span style="color:red;">*</span></c:if>
+												</td>
+												<td style="vertical-align:top;">
+													<select id="selectValue${p.field.name}" name="parameter.${p.field.name}.allowAtEvaluation">
+														<option value=""></option>
+														<option value="f">Fixed value</option>
+														<option value="t">Parameter</option>
+													</select>
+												</td>
+												<td style="vertical-align:top; width:100%;">
+													<span id="dynamicValue${p.field.name}" style="display:none;">
+														labeled: <input type="text" id="paramLabel${p.field.name}" name="parameter.${p.field.name}.label" size="30"/>
+													</span>
+													<span id="fixedValue${p.field.name}" style="display:none;">
+														<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
+													</span>
+												</td>
+											</tr>
+										</c:forEach>
+									</table>
+								</fieldset>
+								<br/>
+							</c:forEach>
 						</li>
 						<li>					
 							<div align="center">				

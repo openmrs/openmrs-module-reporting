@@ -4,60 +4,64 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Program;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * Query for whether the patient enrolled in or completed any of the specified programs in a date range
  */
+@Localized("reporting.ProgramEnrollmentCohortDefinition")
 public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
 
 	private static final long serialVersionUID = 1L;
 	
-	@ConfigurationProperty(required=true)
+	@ConfigurationProperty(required=true, group="programsGroup")
 	private List<Program> programs;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="enrollmentDate")
 	private Date enrolledOnOrAfter;
 
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="enrollmentDate")
 	private Date enrolledOnOrBefore;
 
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="completionDate")
 	private Date completedOnOrAfter;
 
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="completionDate")
 	private Date completedOnOrBefore;
 	
 	/**
 	 * Default constructor
 	 */
-	public ProgramEnrollmentCohortDefinition() {
-	}
+	public ProgramEnrollmentCohortDefinition() { }
 
-	
 	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
 		StringBuilder ret = new StringBuilder();
 		ret.append("Patients ");
-		if (enrolledOnOrAfter != null)
+		if (enrolledOnOrAfter != null) {
 			ret.append("who enrolled on or after " + enrolledOnOrAfter + " ");
-		if (enrolledOnOrBefore != null)
+		}
+		if (enrolledOnOrBefore != null) {
 			ret.append("who enrolled on or before " + enrolledOnOrBefore+ " ");
-		if (completedOnOrAfter != null)
+		}
+		if (completedOnOrAfter != null) {
 			ret.append("who completed on or after " + completedOnOrAfter + " ");
-		if (completedOnOrBefore != null)
+		}
+		if (completedOnOrBefore != null) {
 			ret.append("who completed on or before " + completedOnOrBefore + " ");
+		}
 			
 		if (programs != null && programs.size() > 0) {
 			ret.append(" in ");
-			for (Program p : programs)
+			for (Program p : programs) {
 				ret.append(p.getName() + " ");
+			}
 		}		
 		return ret.toString();
 	}
-	
 	
     /**
      * @return the programs
@@ -66,14 +70,12 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
     	return programs;
     }
 
-	
     /**
      * @param programs the programs to set
      */
     public void setPrograms(List<Program> programs) {
     	this.programs = programs;
     }
-
 	
     /**
      * @return the enrolledOnOrAfter
@@ -81,7 +83,6 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
     public Date getEnrolledOnOrAfter() {
     	return enrolledOnOrAfter;
     }
-
 	
     /**
      * @param enrolledOnOrAfter the enrolledOnOrAfter to set
@@ -89,7 +90,6 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
     public void setEnrolledOnOrAfter(Date enrolledOnOrAfter) {
     	this.enrolledOnOrAfter = enrolledOnOrAfter;
     }
-
 	
     /**
      * @return the enrolledOnOrBefore
@@ -97,7 +97,6 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
     public Date getEnrolledOnOrBefore() {
     	return enrolledOnOrBefore;
     }
-
 	
     /**
      * @param enrolledOnOrBefore the enrolledOnOrBefore to set
@@ -105,7 +104,6 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
     public void setEnrolledOnOrBefore(Date enrolledOnOrBefore) {
     	this.enrolledOnOrBefore = enrolledOnOrBefore;
     }
-
 	
     /**
      * @return the completedOnOrAfter
@@ -114,7 +112,6 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
     	return completedOnOrAfter;
     }
 
-	
     /**
      * @param completedOnOrAfter the completedOnOrAfter to set
      */
@@ -122,7 +119,6 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
     	this.completedOnOrAfter = completedOnOrAfter;
     }
 
-	
     /**
      * @return the completedOnOrBefore
      */
@@ -130,13 +126,10 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
     	return completedOnOrBefore;
     }
 
-	
     /**
      * @param completedOnOrBefore the completedOnOrBefore to set
      */
     public void setCompletedOnOrBefore(Date completedOnOrBefore) {
     	this.completedOnOrBefore = completedOnOrBefore;
-    }
-
-    
+    }    
 }

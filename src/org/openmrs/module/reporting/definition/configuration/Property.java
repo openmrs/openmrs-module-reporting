@@ -48,7 +48,15 @@ public class Property implements Serializable {
 	 * If true, indicates that this property is required
 	 */
 	private Boolean required = false;
+	
+	/**
+	 * The display name
+	 */
 	private String displayName;
+	
+	/**
+	 * The group
+	 */
 	private String group;
 	
 	//***********************

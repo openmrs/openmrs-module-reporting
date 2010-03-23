@@ -12,7 +12,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.common.DisplayLabel;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.column.DataSetColumn;
@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  * Report renderer that produces an Excel pre-2007 workbook with one sheet per dataset in the report.
  */
 @Handler
-@DisplayLabel("XLS (Excel 97-2003)")
+@Localized("XLS (Excel 97-2003)")
 public class XlsReportRenderer extends AbstractReportRenderer {
 
     /**

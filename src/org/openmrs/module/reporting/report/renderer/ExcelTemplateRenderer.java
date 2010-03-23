@@ -29,7 +29,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.common.DisplayLabel;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ExcelUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -42,7 +42,7 @@ import org.openmrs.module.reporting.report.ReportDesignResource;
  * Report Renderer implementation that supports rendering to an Excel template
  */
 @Handler
-@DisplayLabel("Excel Template")
+@Localized("Excel Template")
 public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	
 	private Log log = LogFactory.getLog(this.getClass());

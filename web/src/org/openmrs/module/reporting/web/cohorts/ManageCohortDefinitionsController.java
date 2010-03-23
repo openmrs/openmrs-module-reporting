@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.web.cohorts;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -98,7 +99,19 @@ public class ManageCohortDefinitionsController {
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
     	CohortDefinition cd = service.getDefinition(uuid, type);
      	model.addAttribute("cohortDefinition", cd);
-     	model.addAttribute("configurationProperties", DefinitionUtil.getConfigurationProperties(cd));
+
+     	List<Property> properties = DefinitionUtil.getConfigurationProperties(cd);
+     	model.addAttribute("configurationProperties", properties);
+     	Map<String, List<Property>> groups = new LinkedHashMap<String, List<Property>>();
+     	for (Property p : properties) {
+     		List<Property> l = groups.get(p.getGroup());
+     		if (l == null) {
+     			l = new ArrayList<Property>();
+     			groups.put(p.getGroup(), l);
+     		}
+     		l.add(p);
+     	}
+     	model.addAttribute("groupedProperties", groups);
 	
         return "/module/reporting/cohorts/cohortDefinitionEditor";
     }

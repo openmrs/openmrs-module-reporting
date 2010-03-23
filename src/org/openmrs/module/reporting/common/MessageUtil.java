@@ -1,10 +1,8 @@
 package org.openmrs.module.reporting.common;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.common.DisplayLabel;
 
 /**
  * A utility class for common messaging and localization methods
@@ -14,28 +12,6 @@ public class MessageUtil {
 	protected static Log log = LogFactory.getLog(MessageUtil.class);
 	
 	/**
-	 * Return a display label for the passed class, as configured through the {@link DisplayLabel} annotation
-	 * If no annotation is found, or the defaults resolve to null or empty String, return the full class name
-	 * @param clazz
-	 * @return
-	 */
-	public static String getDisplayLabel(Class<?> clazz) {
-		DisplayLabel ann = clazz.getAnnotation(DisplayLabel.class);
-		if (ann != null && StringUtils.isNotEmpty(ann.value())) {
-			return translateOrReturn(ann.value());
-		}
-		return clazz.getName();
-	}
-	
-	public static String translateOrReturn(String s) {
-		String translation = translate(s);
-		if (StringUtils.isNotEmpty(translation)) {
-			return translation;
-		}
-		return s;
-	}
-	
-	/**
 	 * Return the translation for the given key
 	 * @param s the key to lookup
 	 * @return the translation of the given key
@@ -43,4 +19,30 @@ public class MessageUtil {
 	public static String translate(String s) {
     	return Context.getMessageSourceService().getMessage(s);
     }
+	
+	/**
+	 * Return the translation for the given key
+	 * Returns the replacement value if no suitable translation is found
+	 */
+	public static String translate(String s, String replacement) {
+		if (ObjectUtil.notNull(s)) {
+			String t = translate(s);
+			if (ObjectUtil.notNull(t) && !ObjectUtil.areEqualStr(s, t)) {
+				return t;
+			}
+		}
+		return replacement;
+	}
+	
+	/**
+	 * Utility Method to return a display label for a class annotated as Localized
+	 */
+	public static String getDisplayLabel(Class<?> c) {
+		String label = c.getSimpleName();
+		Localized l = c.getAnnotation(Localized.class);
+		if (l != null && ObjectUtil.notNull(l.value())) {
+			label = MessageUtil.translate(l.value(), label);
+		}
+		return label;
+	}
 }

@@ -21,18 +21,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used to indicate the display label of a particular Type
+ * Annotation used to indicate that a class and it's properties can be Localized
  */
 @Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface DisplayLabel {
+public @interface Localized {
 	
 	/**
-	 * The value specified can be either a message code or an actual message string.
-	 * The system will first try to find a matching localized message code, and if that
-	 * doesn't exist it will return the value
+	 * The value here should be the prefix used in message.properties
 	 */
-	public String value();
+	public String value() default "";
 }

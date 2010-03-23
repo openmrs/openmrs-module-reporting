@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
@@ -62,6 +63,12 @@ public class DefinitionUtil {
     	if (classToCheck != null) {
     		log.debug("In class: " + classToCheck.getName());
     		
+    		String prefix = null;
+    		Localized l = classToCheck.getAnnotation(Localized.class);
+    		if (l != null) {
+    			prefix = l.value() + ".";
+    		}
+
     		// Iterate across all of the declared fields in the passed class
 	    	for (Field f : classToCheck.getDeclaredFields()) {
     			ConfigurationProperty ann = f.getAnnotation(ConfigurationProperty.class);
@@ -69,11 +76,34 @@ public class DefinitionUtil {
     			// If it is annotated to accept parameters, then retrieve values for Parameter
     			if (ann != null) {
     				Object value = ReflectionUtil.getPropertyValue(classInstance, f.getName());
-    				String displayName = MessageUtil.translateOrReturn(ann.value());
-    				if (ObjectUtil.isNull(displayName)) {
-    					displayName = f.getName();
+    				
+    				// By default, show the property name, within a blank group, for each field
+    				String displayName = f.getName();
+    				String groupName = "";
+    				
+    				// If the ConfigurationProperty specifies the property text, use it
+    				if (ObjectUtil.notNull(ann.value())) {
+    					displayName = MessageUtil.translate(ann.value());
     				}
-    				Property p = new Property(f, value, ann.required(), displayName, ann.group());
+    				else {
+    					// Otherwise, try to imply the text from convention
+    					if (prefix != null) {
+        					displayName = MessageUtil.translate(prefix + f.getName(), displayName);
+    					}
+    				}
+    				
+    				// If the group is specified, then set the groupName by default to it and try to translate
+					if (ObjectUtil.notNull(ann.group())) {
+						groupName = ann.group();
+						if (prefix != null) {
+							groupName = MessageUtil.translate(prefix + ann.group(), groupName);
+						}
+						if (ObjectUtil.isNull(groupName)) {
+							groupName = MessageUtil.translate(ann.group(), groupName);
+						}
+					}
+
+    				Property p = new Property(f, value, ann.required(), displayName, groupName);
     				log.debug("Adding: " + p);
     				ret.add(p);
     			}

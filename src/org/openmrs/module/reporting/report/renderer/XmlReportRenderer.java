@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.common.DisplayLabel;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.column.DataSetColumn;
@@ -34,7 +34,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  * ReportRenderer that renders to a delimited text file
  */
 @Handler
-@DisplayLabel("XML")
+@Localized("XML")
 public class XmlReportRenderer extends AbstractReportRenderer {
 	
 	/**
