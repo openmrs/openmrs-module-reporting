@@ -1,7 +1,5 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import java.util.Date;
-
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -18,6 +16,14 @@ public class NumericObsCohortDefinitionEvaluator implements CohortDefinitionEval
 	
 	public NumericObsCohortDefinitionEvaluator() { } 
 	
+	/**
+	 * @see org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator#evaluate(org.openmrs.module.reporting.cohort.definition.CohortDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * 
+	 * @should get patients with any obs of a specified concept
+	 * @should test any with many properties specified
+	 * @should test avg with many properties specified
+	 * @should test last with many properties specified 
+	 */
 	public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
 		NumericObsCohortDefinition cd = (NumericObsCohortDefinition) cohortDefinition;
 		

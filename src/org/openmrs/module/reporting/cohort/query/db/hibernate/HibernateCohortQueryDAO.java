@@ -833,26 +833,34 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
 		List<Integer> locationIds = null;
 		if (locationList != null && locationList.size() > 0) {
+			locationIds = new ArrayList<Integer>();
 			for (Location l : locationList)
 				locationIds.add(l.getId());
 		}
 		
 		List<Integer> encounterTypeIds = null;
 		if (encounterTypeList != null && encounterTypeList.size() > 0) {
+			encounterTypeIds = new ArrayList<Integer>();
 			for (EncounterType t : encounterTypeList)
 				encounterTypeIds.add(t.getId());
 		}
 		
-		String dateSql = "";
-		String dateSqlForSubquery = "";
+		String dateAndLocationSql = "";
+		String dateAndLocationSqlForSubquery = "";
 		if (onOrAfter != null) {
-			dateSql += " and o.obs_datetime >= :onOrAfter ";
-			dateSqlForSubquery += " and obs_datetime >= :onOrAfter ";
+			dateAndLocationSql += " and o.obs_datetime >= :onOrAfter ";
+			dateAndLocationSqlForSubquery += " and obs_datetime >= :onOrAfter ";
 		}
 		if (onOrBefore != null) {
-			dateSql += " and o.obs_datetime <= :onOrBefore ";
-			dateSqlForSubquery += " and obs_datetime <= :onOrBefore ";
+			dateAndLocationSql += " and o.obs_datetime <= :onOrBefore ";
+			dateAndLocationSqlForSubquery += " and obs_datetime <= :onOrBefore ";
 		}
+		if (locationIds != null) {
+			dateAndLocationSql += " and o.location_id in (:locationIds) ";
+			dateAndLocationSqlForSubquery += " and location_id in (:locationIds) ";
+		}
+		if (encounterTypeIds != null)
+			throw new RuntimeException("encounter types not yet handled in getPatientsHavingNumericObs"); // should probably go with date and location, not with value
 		
 		boolean doSqlAggregation = timeModifier == TimeModifier.MIN || timeModifier == TimeModifier.MAX || timeModifier == TimeModifier.AVG;
 		boolean doInvert = timeModifier == TimeModifier.NO;
@@ -867,10 +875,6 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			valueClauses.add(valueSql + modifier1.getSqlRepresentation() + " :value1 ");
 		if (value2 != null)
 			valueClauses.add(valueSql + modifier2.getSqlRepresentation() + " :value2 ");
-		if (locationIds != null)
-			valueClauses.add(" o.location in (:locationIds) ");
-		if (encounterTypeIds != null)
-			throw new RuntimeException("encounter types not yet handled in getPatientsHavingNumericObs");
 		
 		StringBuilder sql = new StringBuilder();
 
@@ -878,7 +882,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			sql.append(" select distinct o.person_id from obs o where o.voided = false ");
 			if (questionConceptId != null)
 				sql.append(" and concept_id = :questionConceptId ");
-			sql.append(dateSql);
+			sql.append(dateAndLocationSql);
 
 		} else if (timeModifier == TimeModifier.FIRST || timeModifier == TimeModifier.LAST) {
 			boolean isFirst = timeModifier == PatientSetService.TimeModifier.FIRST;
@@ -886,14 +890,14 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			sql.append(" select distinct o.person_id ");
 			sql.append(" from obs o ");
 			sql.append(" inner join ( ");
-			sql.append("    select person_id, " + (isFirst ? "MIN" : "MAX") + "(obs_datetime) as obs_datetime ");
-			sql.append("    from obs where voided = false and concept_id = :questionConceptId " + dateSqlForSubquery + " group by person_id ");
-			sql.append(" ) subq on o.person_id = subq.person_id and o.obs_datetime = subq.obs_datetime ");
+			sql.append("    select person_id, " + (isFirst ? "MIN" : "MAX") + "(obs_datetime) as odt ");
+			sql.append("    from obs where voided = false and concept_id = :questionConceptId " + dateAndLocationSqlForSubquery + " group by person_id ");
+			sql.append(" ) subq on o.person_id = subq.person_id and o.obs_datetime = subq.odt ");
 			sql.append(" where o.voided = false and o.concept_id = :questionConceptId ");
 
 		} else if (doSqlAggregation) {
 			sql.append(" select distinct o.person_id ");
-			sql.append(" from obs o where o.voided = false and concept_id = :questionConceptId " + dateSql );
+			sql.append(" from obs o where o.voided = false and concept_id = :questionConceptId " + dateAndLocationSql );
 			sql.append(" group by o.person_id ");
 			
 		} else {
@@ -910,7 +914,6 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		}
 		
 		log.debug("sql: " + sql);
-		System.out.println("sql = " + sql);
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
 		query.setCacheMode(CacheMode.IGNORE);
 		
