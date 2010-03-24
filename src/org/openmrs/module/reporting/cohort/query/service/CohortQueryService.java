@@ -7,10 +7,12 @@ import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
@@ -36,5 +38,30 @@ public interface CohortQueryService extends OpenmrsService {
 
 	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
             PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
+
+	/**
+	 * Gets patients having numeric obs that match a complicated query 
+	 * 
+	 * @param timeModifier
+	 * @param question
+	 * @param groupingConcept
+	 * @param onOrAfter
+	 * @param onOrBefore
+	 * @param locationList
+	 * @param encounterTypeList
+	 * @param modifier1
+	 * @param value1
+	 * @param modifier2
+	 * @param value2
+	 * @return cohort of patients with matching obs
+	 * 
+	 * @should get patients with any obs of a specified concept
+	 * @should get patients whose first obs of a specified concept is in a range
+	 * @should get patients whose maximum obs of a specified concept is equals to a specified value
+	 */
+	public Cohort getPatientsHavingNumericObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+                                              Date onOrAfter, Date onOrBefore, List<Location> locationList,
+                                              List<EncounterType> encounterTypeList, Modifier modifier1, Double value1,
+                                              Modifier modifier2, Double value2);
 
 }

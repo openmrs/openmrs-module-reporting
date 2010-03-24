@@ -63,6 +63,13 @@ public class DefinitionUtil {
     	if (classToCheck != null) {
     		log.debug("In class: " + classToCheck.getName());
     		
+			// If this class extends another class, then inspect all inherited field values as well
+	    	Class superclass = classToCheck.getSuperclass();
+	    	if (superclass != null) {
+	    		log.debug("Checking superclass: " + superclass);
+	    		ret.addAll(getConfigurationProperties(superclass, classInstance));
+	    	}
+    		
     		String prefix = null;
     		Localized l = classToCheck.getAnnotation(Localized.class);
     		if (l != null) {
@@ -107,13 +114,6 @@ public class DefinitionUtil {
     				log.debug("Adding: " + p);
     				ret.add(p);
     			}
-	    	}
-	    	
-			// If this class extends another class, then inspect all inherited field values as well
-	    	Class superclass = classToCheck.getSuperclass();
-	    	if (superclass != null) {
-	    		log.debug("Checking superclass: " + superclass);
-	    		ret.addAll(getConfigurationProperties(superclass, classInstance));
 	    	}
     	}
     	return ret;

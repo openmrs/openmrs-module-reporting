@@ -11,9 +11,11 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptSet;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
+import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -110,6 +112,18 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	 */
 	public Cohort getPatientsInStates(List<ProgramWorkflowState> states, Date onOrAfter, Date onOrBefore) {
 		return dao.getPatientsInStates(states, onOrAfter, onOrBefore);
+    }
+
+	public Cohort getPatientsHavingNumericObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+                                              Date onOrAfter, Date onOrBefore, List<Location> locationList,
+                                              List<EncounterType> encounterTypeList, Modifier modifier1, Double value1,
+                                              Modifier modifier2, Double value2) {
+	    return dao.getPatientsHavingNumericObs(
+	    	timeModifier, question, groupingConcept,
+	    	onOrAfter, onOrBefore,
+	    	locationList, encounterTypeList,
+	    	modifier1, value1,
+	    	modifier2, value2);
     }
 
 

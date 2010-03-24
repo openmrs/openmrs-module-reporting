@@ -4,11 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
+import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.reporting.common.DurationUnit;
@@ -35,6 +38,10 @@ public interface CohortQueryDAO {
     // Patients having certain observations 
 	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
             PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
+	public Cohort getPatientsHavingNumericObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+                                              Date onOrAfter, Date onOrBefore, List<Location> locationList,
+                                              List<EncounterType> encounterTypeList, Modifier modifier1, Double value1,
+                                              Modifier modifier2, Double value2);
 	
 	// Patients who were in a Program on the specified date or range
 	public Cohort getPatientsInProgram(List<Program> programs, Date onOrAfter, Date onOrBefore);

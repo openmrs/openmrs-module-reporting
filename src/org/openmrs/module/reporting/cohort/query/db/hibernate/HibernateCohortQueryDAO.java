@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -816,6 +818,123 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (onOrBefore != null)
 			query.setDate("onOrBefore", onOrBefore);
 		return new Cohort(query.list()); 
+    }
+
+	public Cohort getPatientsHavingNumericObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+                                              Date onOrAfter, Date onOrBefore,
+                                              List<Location> locationList, List<EncounterType> encounterTypeList,
+                                              Modifier modifier1, Double value1,
+                                              Modifier modifier2, Double value2) {
+
+		Integer questionConceptId = question == null ? null : question.getId();
+		Integer groupingConceptId = groupingConcept == null ? null : groupingConcept.getId();
+		if (groupingConceptId != null)
+			throw new RuntimeException("grouping concept not yet implemented");
+
+		List<Integer> locationIds = null;
+		if (locationList != null && locationList.size() > 0) {
+			for (Location l : locationList)
+				locationIds.add(l.getId());
+		}
+		
+		List<Integer> encounterTypeIds = null;
+		if (encounterTypeList != null && encounterTypeList.size() > 0) {
+			for (EncounterType t : encounterTypeList)
+				encounterTypeIds.add(t.getId());
+		}
+		
+		String dateSql = "";
+		String dateSqlForSubquery = "";
+		if (onOrAfter != null) {
+			dateSql += " and o.obs_datetime >= :onOrAfter ";
+			dateSqlForSubquery += " and obs_datetime >= :onOrAfter ";
+		}
+		if (onOrBefore != null) {
+			dateSql += " and o.obs_datetime <= :onOrBefore ";
+			dateSqlForSubquery += " and obs_datetime <= :onOrBefore ";
+		}
+		
+		boolean doSqlAggregation = timeModifier == TimeModifier.MIN || timeModifier == TimeModifier.MAX || timeModifier == TimeModifier.AVG;
+		boolean doInvert = timeModifier == TimeModifier.NO;
+
+		String valueSql = " o.value_numeric ";
+		if (doSqlAggregation) {
+			valueSql = " " + timeModifier.toString() + "(" + valueSql + ") ";
+		}
+		
+		List<String> valueClauses = new ArrayList<String>();
+		if (value1 != null)
+			valueClauses.add(valueSql + modifier1.getSqlRepresentation() + " :value1 ");
+		if (value2 != null)
+			valueClauses.add(valueSql + modifier2.getSqlRepresentation() + " :value2 ");
+		if (locationIds != null)
+			valueClauses.add(" o.location in (:locationIds) ");
+		if (encounterTypeIds != null)
+			throw new RuntimeException("encounter types not yet handled in getPatientsHavingNumericObs");
+		
+		StringBuilder sql = new StringBuilder();
+
+		if (timeModifier == TimeModifier.ANY || timeModifier == TimeModifier.NO) {
+			sql.append(" select distinct o.person_id from obs o where o.voided = false ");
+			if (questionConceptId != null)
+				sql.append(" and concept_id = :questionConceptId ");
+			sql.append(dateSql);
+
+		} else if (timeModifier == TimeModifier.FIRST || timeModifier == TimeModifier.LAST) {
+			boolean isFirst = timeModifier == PatientSetService.TimeModifier.FIRST;
+			
+			sql.append(" select distinct o.person_id ");
+			sql.append(" from obs o ");
+			sql.append(" inner join ( ");
+			sql.append("    select person_id, " + (isFirst ? "MIN" : "MAX") + "(obs_datetime) as obs_datetime ");
+			sql.append("    from obs where voided = false and concept_id = :questionConceptId " + dateSqlForSubquery + " group by person_id ");
+			sql.append(" ) subq on o.person_id = subq.person_id and o.obs_datetime = subq.obs_datetime ");
+			sql.append(" where o.voided = false and o.concept_id = :questionConceptId ");
+
+		} else if (doSqlAggregation) {
+			sql.append(" select distinct o.person_id ");
+			sql.append(" from obs o where o.voided = false and concept_id = :questionConceptId " + dateSql );
+			sql.append(" group by o.person_id ");
+			
+		} else {
+			throw new IllegalArgumentException("TimeModifier '" + timeModifier + "' not recognized");
+		}
+		
+		if (valueClauses.size() > 0) {
+			sql.append(doSqlAggregation ? " having " : " and ");
+			for (Iterator<String> i = valueClauses.iterator(); i.hasNext(); ) {
+				sql.append(i.next());
+				if (i.hasNext())
+					sql.append(" and ");
+			}
+		}
+		
+		log.debug("sql: " + sql);
+		System.out.println("sql = " + sql);
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
+		query.setCacheMode(CacheMode.IGNORE);
+		
+		if (questionConceptId != null)
+			query.setInteger("questionConceptId", questionConceptId);
+		if (value1 != null)
+			query.setDouble("value1", value1);
+		if (value2 != null)
+			query.setDouble("value2", value2);
+		if (onOrAfter != null)
+			query.setDate("onOrAfter", onOrAfter);
+		if (onOrBefore != null)
+			query.setDate("onOrBefore", onOrBefore);
+		if (locationList != null)
+			query.setParameterList("locationIds", locationIds);
+		
+		Cohort ret;
+		if (doInvert) {
+			ret = Context.getPatientSetService().getAllPatients();
+			ret.getMemberIds().removeAll(query.list());
+		} else {
+			ret = new Cohort(query.list());
+		}
+		return ret;
     }
 
 }
