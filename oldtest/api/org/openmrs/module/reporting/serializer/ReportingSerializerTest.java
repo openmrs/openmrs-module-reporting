@@ -5,14 +5,11 @@ import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.api.PatientSetService.BooleanOperator;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompoundCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -50,10 +47,8 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		GenderCohortDefinition gender = new GenderCohortDefinition();
 		gender.setMaleIncluded(true);
 		
-		CompoundCohortDefinition cd = new CompoundCohortDefinition();
-		cd.setOperator(BooleanOperator.AND);
-		cd.addDefinition(new Mapped<CohortDefinition>(age, ParameterizableUtil.createParameterMappings("onDate=07/08/2009")));
-		cd.addDefinition(new Mapped<CohortDefinition>(gender, null));
+		AgeCohortDefinition cd = new AgeCohortDefinition();
+		cd.setMinAge(15);
 		
 		String xml = new ReportingSerializer().serialize(cd);
 		System.out.println(xml);

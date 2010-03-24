@@ -17,9 +17,9 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.api.PatientSetService.BooleanOperator;
-import org.openmrs.module.reporting.cohort.definition.CompoundCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
+import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
 
@@ -33,15 +33,12 @@ public class ParameterUtilTest {
 	 */
 	@Test
 	public void shouldHaveAllAnnotatedFieldsAsParameters() throws Exception {		
-		CompoundCohortDefinition def = new CompoundCohortDefinition();
+		AgeCohortDefinition def = new AgeCohortDefinition();
 		List<Property> props = DefinitionUtil.getConfigurationProperties(def);
-		Assert.assertEquals(2, props.size());
+		Assert.assertEquals(6, props.size());
 		for (Property p : props) {
-			if (p.getField().getName().equals("operator")) {
-				Assert.assertEquals(BooleanOperator.AND, p.getValue());
-			}
-			else if (p.getField().getName().equals("definitions")) {
-				Assert.assertTrue(p.getRequired());
+			if (p.getField().getName().equals("minAgeUnit")) {
+				Assert.assertEquals(DurationUnit.YEARS, p.getValue());
 			}
 		}
 	}
