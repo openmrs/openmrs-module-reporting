@@ -17,30 +17,32 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * Query for whether the patient started or ended any of the specified states in a date range
  */
+@Localized("reporting.PatientStateCohortDefinition")
 public class PatientStateCohortDefinition extends BaseCohortDefinition {
 
     private static final long serialVersionUID = 1L;
     
 	//***** PROPERTIES *****
 		
-	@ConfigurationProperty(required=true)
+	@ConfigurationProperty(required=true, group="statesGroup")
 	private List<ProgramWorkflowState> states;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="startedDate")
 	private Date startedOnOrAfter;
 
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="startedDate")
 	private Date startedOnOrBefore;
 
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="endedDate")
 	private Date endedOnOrAfter;
 
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="endedDate")
 	private Date endedOnOrBefore;
 
 	//***** CONSTRUCTORS *****

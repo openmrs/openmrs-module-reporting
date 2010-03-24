@@ -15,12 +15,13 @@ package org.openmrs.module.reporting.cohort.definition;
 
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  *  Simple CohortDefinition to restrict to a Static Cohort
  */
-
+@Localized("reporting.StaticCohortDefinition")
 public class StaticCohortDefinition extends BaseCohortDefinition {
 
     private static final long serialVersionUID = 1L;

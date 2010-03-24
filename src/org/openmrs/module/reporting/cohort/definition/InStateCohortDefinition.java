@@ -3,28 +3,29 @@ package org.openmrs.module.reporting.cohort.definition;
 import java.util.Date;
 import java.util.List;
 
-import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * Query for whether the patient was in a state on a date or date range
  * (Using onDate is equivalent to setting onOrAfter==onOrBefore, but may be more efficient and readable
  */
+@Localized("reporting.InStateCohortDefinition")
 public class InStateCohortDefinition extends BaseCohortDefinition {
 
 	private static final long serialVersionUID = 1L;
 
-	@ConfigurationProperty(required=true)
+	@ConfigurationProperty(required=true, group="statesGroup")
 	private List<ProgramWorkflowState> states;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="dateRangeGroup")
 	private Date onOrAfter;
 
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="dateRangeGroup")
 	private Date onOrBefore;
 
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="onDateGroup")
 	private Date onDate;
 
 	/**
