@@ -822,11 +822,14 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		return new Cohort(query.list()); 
     }
 
-	public Cohort getPatientsHavingNumericObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingRangedObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.api.PatientSetService.Modifier, java.lang.Double, org.openmrs.api.PatientSetService.Modifier, java.lang.Double)
+	 */
+	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore,
                                               List<Location> locationList, List<EncounterType> encounterTypeList,
-                                              Modifier modifier1, Double value1,
-                                              Modifier modifier2, Double value2) {
+                                              Modifier modifier1, Object value1,
+                                              Modifier modifier2, Object value2) {
 
 		Integer questionConceptId = question == null ? null : question.getId();
 		Integer groupingConceptId = groupingConcept == null ? null : groupingConcept.getId();
@@ -856,7 +859,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		boolean doSqlAggregation = timeModifier == TimeModifier.MIN || timeModifier == TimeModifier.MAX || timeModifier == TimeModifier.AVG;
 		boolean doInvert = timeModifier == TimeModifier.NO;
 
-		String valueSql = " o.value_numeric ";
+		String valueSql = (value1 != null && value1 instanceof Number) ? " o.value_numeric " : " o.value_datetime ";
 		if (doSqlAggregation) {
 			valueSql = " " + timeModifier.toString() + "(" + valueSql + ") ";
 		}
@@ -910,10 +913,18 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		
 		if (questionConceptId != null)
 			query.setInteger("questionConceptId", questionConceptId);
-		if (value1 != null)
-			query.setDouble("value1", value1);
-		if (value2 != null)
-			query.setDouble("value2", value2);
+		if (value1 != null) {
+			if (value1 instanceof Number)
+				query.setDouble("value1", ((Number) value1).doubleValue());
+			else
+				query.setDate("value1", (Date) value1);
+		}
+		if (value2 != null) {
+			if (value2 instanceof Number)
+				query.setDouble("value2", ((Number) value2).doubleValue());
+			else
+				query.setDate("value2", (Date) value2);
+		}
 		if (onOrAfter != null)
 			query.setDate("onOrAfter", onOrAfter);
 		if (onOrBefore != null)

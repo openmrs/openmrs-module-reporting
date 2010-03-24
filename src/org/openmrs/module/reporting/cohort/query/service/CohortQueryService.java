@@ -41,7 +41,7 @@ public interface CohortQueryService extends OpenmrsService {
             PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
 
 	/**
-	 * Gets patients having numeric obs that match a complicated query 
+	 * Gets patients having ranged (i.e. Numeric or Date/Time) obs that match a complicated query.
 	 * 
 	 * @param timeModifier
 	 * @param question
@@ -51,7 +51,7 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @param locationList
 	 * @param encounterTypeList
 	 * @param modifier1
-	 * @param value1
+	 * @param value1 if non-null this value controls whether the query looks at value_numeric or value_datetime
 	 * @param modifier2
 	 * @param value2
 	 * @return cohort of patients with matching obs
@@ -60,10 +60,10 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @should get patients whose first obs of a specified concept is in a range
 	 * @should get patients whose maximum obs of a specified concept is equals to a specified value
 	 */
-	public Cohort getPatientsHavingNumericObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
-                                              List<EncounterType> encounterTypeList, Modifier modifier1, Double value1,
-                                              Modifier modifier2, Double value2);
+                                              List<EncounterType> encounterTypeList, Modifier modifier1, Object value1,
+                                              Modifier modifier2, Object value2);
 
 	/**
 	 * Gets patients having encounters with the following characteristics

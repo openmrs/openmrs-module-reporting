@@ -116,13 +116,13 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
     }
 
 	/**
-	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingNumericObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.api.PatientSetService.Modifier, java.lang.Double, org.openmrs.api.PatientSetService.Modifier, java.lang.Double)
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingRangedObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.api.PatientSetService.Modifier, java.lang.Double, org.openmrs.api.PatientSetService.Modifier, java.lang.Double)
 	 */
-	public Cohort getPatientsHavingNumericObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
-                                              List<EncounterType> encounterTypeList, Modifier modifier1, Double value1,
-                                              Modifier modifier2, Double value2) {
-	    return dao.getPatientsHavingNumericObs(
+                                              List<EncounterType> encounterTypeList, Modifier modifier1, Object value1,
+                                              Modifier modifier2, Object value2) {
+	    return dao.getPatientsHavingRangedObs(
 	    	timeModifier, question, groupingConcept,
 	    	onOrAfter, onOrBefore,
 	    	locationList, encounterTypeList,
