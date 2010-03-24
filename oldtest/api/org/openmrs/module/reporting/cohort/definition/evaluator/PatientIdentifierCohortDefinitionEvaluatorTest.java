@@ -23,8 +23,8 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.definition.PatientIdentifierCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.cohort.definition.toreview.PatientIdentifierCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 

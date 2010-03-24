@@ -18,7 +18,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.toreview.DrugOrderCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;

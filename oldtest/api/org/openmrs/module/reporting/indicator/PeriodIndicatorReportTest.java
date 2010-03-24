@@ -7,7 +7,7 @@ import org.openmrs.api.PatientSetService.PatientLocationMethod;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.LocationCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.toreview.LocationCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator.IndicatorType;
