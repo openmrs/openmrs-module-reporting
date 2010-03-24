@@ -39,7 +39,7 @@
 				</td>
 				<td width="50%">
 					<openmrs:portlet url="mappedProperty" id="locationFilter" moduleId="reporting" 
-					 parameters="type=${indicator.class.name}|uuid=${indicator.uuid}|property=locationFilter|label=Location Filter" />
+					 parameters="type=${indicator.class.name}|uuid=${indicator.uuid}|property=locationFilter|label=Location Filter|tag=Location" />
 
 					<c:choose>
 					
@@ -57,6 +57,9 @@
 						
 							<openmrs:portlet url="mappedProperty" id="cohortDefinition" moduleId="reporting" 
 							parameters="type=${indicator.class.name}|uuid=${indicator.uuid}|property=cohortDefinition|label=Cohort Definition" />
+							
+							<openmrs:portlet url="baseCohortIndicator" id="logicExpression" moduleId="reporting" 
+							parameters="uuid=${indicator.uuid}|label=Logic Expression|subfields=logic" />			
 							
 						</c:when>
 						<c:otherwise>

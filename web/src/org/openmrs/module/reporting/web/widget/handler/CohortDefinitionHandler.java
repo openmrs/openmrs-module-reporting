@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.web.widget.handler;
 
+import java.util.List;
+
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetConfig;
@@ -33,7 +35,15 @@ public class CohortDefinitionHandler extends CodedHandler {
 	 */
 	@Override
 	public void populateOptions(WidgetConfig config, CodedWidget widget) {
-		for (CohortDefinition d : Context.getService(CohortDefinitionService.class).getAllDefinitions(false)) {
+		List<CohortDefinition> l = null;
+		String tag = config.getAttributeValue("tag", null);
+		if (tag != null) {
+			l = Context.getService(CohortDefinitionService.class).getDefinitionsByTag(tag);
+		}
+		else {
+			l = Context.getService(CohortDefinitionService.class).getAllDefinitions(false);
+		}
+		for (CohortDefinition d : l) {
 			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
 		}
 	}

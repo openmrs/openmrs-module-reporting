@@ -25,7 +25,16 @@ public class BaseCohortIndicatorPortletController extends ReportingPortletContro
 
 		String uuid = (String)model.get("uuid");
     	if (StringUtils.isNotEmpty(uuid)) {
-    		model.put("indicator", Context.getService(IndicatorService.class).getDefinitionByUuid(uuid));
+    		CohortIndicator indicator = (CohortIndicator) Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
+    		model.put("indicator", indicator);
+    		if (indicator.getAggregator() != null) {
+    			try {
+    				model.put("aggregatorName", indicator.getAggregator().newInstance().getName());
+    			}
+    			catch (Exception e) {
+    				model.put("aggregatorName", indicator.getAggregator().getSimpleName());
+    			}
+    		}
     	}
     	else {
     		CohortIndicator indicator = new CohortIndicator();

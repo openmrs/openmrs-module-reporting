@@ -15,10 +15,13 @@ package org.openmrs.module.reporting.indicator.aggregation;
 
 import java.util.Collection;
 
+import org.openmrs.annotation.Handler;
+
 /**
  * Returns the number of objects in the passed List,
  * or 0 if the passed list is null
  */
+@Handler
 public class CountAggregator implements Aggregator {
 	
 	public CountAggregator() {}

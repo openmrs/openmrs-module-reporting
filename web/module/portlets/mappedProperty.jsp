@@ -65,7 +65,7 @@
 				</c:choose>
 				<tr>
 					<td>${model.mappedType.simpleName}:</td>
-					<td><wgt:widget id="parameterizableSelector${model.id}" name="mappedUuid" type="${model.mappedType.name}" defaultValue="${model.mappedObj}"/></td>
+					<td><wgt:widget id="parameterizableSelector${model.id}" name="mappedUuid" type="${model.mappedType.name}" defaultValue="${model.mappedObj}" attributes="tag=${model.tag}"/></td>
 				</tr>
 			</table>		 
 			
@@ -136,7 +136,7 @@
 				$('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
-						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|currentKey=${model.currentKey}|mode=edit"/>',
+						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|currentKey=${model.currentKey}|tag=${model.tag}|mode=edit"/>',
 						successCallback: function() { window.location.reload(true); }
 					});
 				});

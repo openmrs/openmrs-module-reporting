@@ -16,12 +16,15 @@ package org.openmrs.module.reporting.indicator.aggregation;
 import java.util.Collection;
 import java.util.List;
 
+import org.openmrs.annotation.Handler;
+
 /**
  * Returns the Minimum value of the passed objects, throwing a RuntimeException if the 
  * passed list is null or non-numeric.
  * TODO: How do we handle nulls here?
  * TODO: Can we delegate this computation to a well-tested 3rd party library?
  */
+@Handler
 public class MinAggregator implements Aggregator {
 	
 	public MinAggregator() {}

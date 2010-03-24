@@ -17,10 +17,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.openmrs.annotation.Handler;
+
 /**
  * Returns the number of distinct objects in the passed List,
  * as determined by Set equality, or 0 if the passed list is null
  */
+@Handler
 public class DistinctAggregator implements Aggregator {
 	
 	public DistinctAggregator() {}
