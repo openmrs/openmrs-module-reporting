@@ -105,6 +105,9 @@ public class ParameterizableUtil {
 				if (genericType instanceof ParameterizedType) {
 					genericType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 				}
+				if (genericType instanceof WildcardType) {
+					genericType = ((WildcardType)genericType).getUpperBounds()[0];
+				}
 				mappedType = (Class<? extends Parameterizable>) genericType;
 			}
 			catch (Exception e) {

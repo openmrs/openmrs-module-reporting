@@ -18,30 +18,6 @@ $(document).ready(function() {
 		              { "bSortable": false }]
 	} );			
 
-	
-	/*
-	// TODO Move away from the modal dialog and back to a separate page approach
-	$("#period-indicator-form").click(function(event){ 
-		showReportingDialog({ 
-			title: 'Add a new period indicator',
-			url: '<c:url value="/module/reporting/indicators/periodIndicator.form"/>',
-			successCallback: function() { 
-				window.location.reload(true);
-			} 
-		});
-	});
-	// TODO Move away from the modal dialog and back to a separate page approach
-	$("#snapshot-indicator-form").click(function(event){ 
-		showReportingDialog({ 
-			title: 'Add a new snapshot indicator',
-			url: '<c:url value="/module/reporting/indicators/snapshotIndicator.form"/>',
-			successCallback: function() { 
-				window.location.reload(true);
-			} 
-		});
-	});
-	*/
-	
 	$("#cohort-indicator-wizard-form").click(function(event){ 
 		showReportingDialog({ 
 			title: 'Add cohort indicator',
@@ -86,21 +62,11 @@ $(document).ready(function() {
 				<li class="first">
 				 	<span id="period-indicator-form">
 						<img src="${periodIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>				
-						<a href="<c:url value="/module/reporting/indicators/periodIndicator.form"/>">Create period indicator</a>
+						<a href="<c:url value="/module/reporting/indicators/editCohortIndicator.form"/>">Create Cohort Indicator</a>
 					</span>
 				</li>
-				<!-- 
-				<li class="first">
-				 	<span id="snapshot-indicator-form">
-					 	<img src="${snapshotIndicatorImage}" width="24" height="24" border="0" alt="snapshot indicator" style="vertical-align:middle"/> 
-					 	<a href="javascript:void(0);"></a> Create snapshot indicator 
-					</span>
-				</li>
-				-->
 			</ul>
 		</div>
-
-
 
 		<div id="main">		
 			<table id="table-indicator-list" class="reporting-data-table display">
@@ -117,7 +83,7 @@ $(document).ready(function() {
 						<c:set var="editUrl">
 							<c:choose>
 								<c:when test="${indicator.class.simpleName == 'CohortIndicator'}">
-									${pageContext.request.contextPath}/module/reporting/indicators/periodIndicator.form?uuid=${indicator.uuid}
+									${pageContext.request.contextPath}/module/reporting/indicators/editCohortIndicator.form?uuid=${indicator.uuid}
 								</c:when>
 								<c:otherwise>
 									${pageContext.request.contextPath}/module/reporting/indicators/editIndicator.form?uuid=${indicator.uuid}
