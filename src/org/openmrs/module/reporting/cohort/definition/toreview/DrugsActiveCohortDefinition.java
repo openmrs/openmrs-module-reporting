@@ -11,19 +11,20 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition;
+package org.openmrs.module.reporting.cohort.definition.toreview;
 
 import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * 
  */
-public class DrugsStartedCohortDefinition extends BaseCohortDefinition {
+public class DrugsActiveCohortDefinition extends BaseCohortDefinition {
 
     private static final long serialVersionUID = 1L;
     
@@ -39,17 +40,14 @@ public class DrugsStartedCohortDefinition extends BaseCohortDefinition {
 	private List<Drug> excludeDrugs;	
 	
 	@ConfigurationProperty(required=false)
-	private Date startedOnOrAfter;
-
-	@ConfigurationProperty(required=false)
-	private Date startedOnOrBefore;
+	private Date asOfDate;
 
 	//***** CONSTRUCTORS *****
 
 	/**
 	 * Default constructor
 	 */
-	public DrugsStartedCohortDefinition() {
+	public DrugsActiveCohortDefinition() {
 		super();
 	}
 	
@@ -91,21 +89,12 @@ public class DrugsStartedCohortDefinition extends BaseCohortDefinition {
 		this.excludeDrugs = excludeDrugs;
 	}
     
-	public Date getStartedOnOrAfter() {
-		return startedOnOrAfter;
+	public Date getAsOfDate() {
+		return asOfDate;
 	}
 
-	public void setStartedOnOrAfter(Date startedOnOrAfter) {
-		this.startedOnOrAfter = startedOnOrAfter;
+	public void setAsOfDate(Date asOfDate) {
+		this.asOfDate = asOfDate;
 	}
-
-	public Date getStartedOnOrBefore() {
-		return startedOnOrBefore;
-	}
-
-	public void setStartedOnOrBefore(Date startedOnOrBefore) {
-		this.startedOnOrBefore = startedOnOrBefore;
-	}
-	
     
 }

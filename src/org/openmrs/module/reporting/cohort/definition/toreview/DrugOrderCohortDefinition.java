@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition;
+package org.openmrs.module.reporting.cohort.definition.toreview;
 
 import java.util.ArrayList;
 import java.util.HashSet;

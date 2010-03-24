@@ -11,11 +11,12 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition;
+package org.openmrs.module.reporting.cohort.definition.toreview;
 
 import java.util.List;
 
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 public class PatientIdentifierCohortDefinition extends BaseCohortDefinition {

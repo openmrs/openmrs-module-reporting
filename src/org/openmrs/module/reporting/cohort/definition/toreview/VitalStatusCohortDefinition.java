@@ -11,12 +11,13 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition;
+package org.openmrs.module.reporting.cohort.definition.toreview;
 
 import java.text.DateFormat;
 import java.util.Date;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 public class VitalStatusCohortDefinition extends BaseCohortDefinition {

@@ -17,8 +17,8 @@ import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.DrugsActiveCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.DrugsStartedCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.toreview.DrugsActiveCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.toreview.DrugsStartedCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 

@@ -11,53 +11,57 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition;
+package org.openmrs.module.reporting.cohort.definition.toreview;
 
+import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
-/**
- * Filter Implementation using Logic
- */
-public class LogicCohortDefinition extends BaseCohortDefinition {
-	
-	private static final long serialVersionUID = 1L;
-	
-	//***** PROPERTIES *****
-	
-	@ConfigurationProperty(required=true)
-	private String criteria;
+public class SqlCohortDefinition extends BaseCohortDefinition {
 
-	//***** CONSTRUCTORS *****
+    private static final long serialVersionUID = 1L;
 	
+	@ConfigurationProperty(required=false)
+	private String sqlQuery;
+	
+	//***** CONSTRUCTORS *****
+
 	/**
-	 * Default constructor
+	 * Default Constructor
 	 */
-	public LogicCohortDefinition() {
+	public SqlCohortDefinition() {
 		super();
 	}
 	
+	public SqlCohortDefinition(String sqlQuery) { 
+		super();
+		this.sqlQuery = sqlQuery;
+
+	}
+	
 	//***** INSTANCE METHODS *****
+	
+	public String getSqlQuery() {
+		return sqlQuery;
+	}
+
+	public void setSqlQuery(String sqlQuery) {
+		this.sqlQuery = sqlQuery;
+	}
+
+	
 	
 	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return criteria == null ? "criteria==NULL" : criteria.toString();
+		StringBuffer buffer = new StringBuffer("");
+		if (sqlQuery != null) { 
+			buffer.append(sqlQuery);
+		}		
+		return buffer.toString();
 	}
 
-	//***** PROPERTY ACCESS *****
-	
-    /**
-     * @return the criteria
-     */
-    public String getCriteria() {
-    	return criteria;
-    }
-	
-    /**
-     * @param criteria the criteria to set
-     */
-    public void setCriteria(String criteria) {
-    	this.criteria = criteria;
-    }
+
+
+  
 }

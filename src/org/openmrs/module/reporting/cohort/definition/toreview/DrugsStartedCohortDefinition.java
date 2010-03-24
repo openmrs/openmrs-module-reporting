@@ -11,41 +11,46 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition;
+package org.openmrs.module.reporting.cohort.definition.toreview;
 
 import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * 
  */
-public class DrugsCompletedCohortDefinition extends BaseCohortDefinition {
+public class DrugsStartedCohortDefinition extends BaseCohortDefinition {
 
     private static final long serialVersionUID = 1L;
     
 	//***** PROPERTIES *****
+
 	@ConfigurationProperty(required=false)
 	private List<Concept> drugSets;
-		
+
 	@ConfigurationProperty(required=false)
 	private List<Drug> drugs;
 
 	@ConfigurationProperty(required=false)
-	private Date completedOnOrAfter;
+	private List<Drug> excludeDrugs;	
+	
+	@ConfigurationProperty(required=false)
+	private Date startedOnOrAfter;
 
 	@ConfigurationProperty(required=false)
-	private Date completedOnOrBefore;
+	private Date startedOnOrBefore;
 
 	//***** CONSTRUCTORS *****
 
 	/**
 	 * Default constructor
 	 */
-	public DrugsCompletedCohortDefinition() {
+	public DrugsStartedCohortDefinition() {
 		super();
 	}
 	
@@ -63,42 +68,45 @@ public class DrugsCompletedCohortDefinition extends BaseCohortDefinition {
 
 	//***** PROPERTY ACCESS *****
 	
-    /**
-     * @return the program
-     */
     public List<Drug> getDrugs() {
     	return drugs;
     }
-
-    /**
-     * @param program the program to set
-     */
+    
     public void setDrugs(List<Drug> drugs) {
     	this.drugs = drugs;
     }
-
+    
 	public List<Concept> getDrugSets() {
 		return drugSets;
 	}
 
 	public void setDrugSets(List<Concept> drugSets) {
 		this.drugSets = drugSets;
-	}    
+	}
+
+	public List<Drug> getExcludeDrugs() {
+		return excludeDrugs;
+	}
+
+	public void setExcludeDrugs(List<Drug> excludeDrugs) {
+		this.excludeDrugs = excludeDrugs;
+	}
     
-	public Date getCompletedOnOrAfter() {
-		return completedOnOrAfter;
+	public Date getStartedOnOrAfter() {
+		return startedOnOrAfter;
 	}
 
-	public void setCompletedOnOrAfter(Date completedOnOrAfter) {
-		this.completedOnOrAfter = completedOnOrAfter;
+	public void setStartedOnOrAfter(Date startedOnOrAfter) {
+		this.startedOnOrAfter = startedOnOrAfter;
 	}
 
-	public Date getCompletedOnOrBefore() {
-		return completedOnOrBefore;
+	public Date getStartedOnOrBefore() {
+		return startedOnOrBefore;
 	}
 
-	public void setCompletedOnOrBefore(Date completedOnOrBefore) {
-		this.completedOnOrBefore = completedOnOrBefore;
-	}    
+	public void setStartedOnOrBefore(Date startedOnOrBefore) {
+		this.startedOnOrBefore = startedOnOrBefore;
+	}
+	
     
 }

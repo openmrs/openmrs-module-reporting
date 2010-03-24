@@ -22,7 +22,7 @@ import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.toreview.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**

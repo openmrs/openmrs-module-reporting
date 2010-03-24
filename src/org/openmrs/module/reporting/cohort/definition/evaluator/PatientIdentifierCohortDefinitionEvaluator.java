@@ -23,8 +23,8 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.PatientIdentifierCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.toreview.EncounterCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.toreview.PatientIdentifierCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**

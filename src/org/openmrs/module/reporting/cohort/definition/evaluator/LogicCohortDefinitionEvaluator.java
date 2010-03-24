@@ -22,7 +22,7 @@ import org.openmrs.logic.LogicCriteria;
 import org.openmrs.logic.LogicException;
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.LogicCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.toreview.LogicCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**

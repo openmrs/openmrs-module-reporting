@@ -23,7 +23,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.FormCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.toreview.FormCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**

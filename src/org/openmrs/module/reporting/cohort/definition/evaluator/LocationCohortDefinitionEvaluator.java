@@ -19,7 +19,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientSetService.PatientLocationMethod;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.LocationCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.toreview.LocationCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**

@@ -17,8 +17,8 @@ import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.InverseCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.cohort.definition.toreview.InverseCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
