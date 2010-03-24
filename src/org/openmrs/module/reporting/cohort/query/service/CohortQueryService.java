@@ -7,6 +7,7 @@ import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
@@ -63,5 +64,21 @@ public interface CohortQueryService extends OpenmrsService {
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
                                               List<EncounterType> encounterTypeList, Modifier modifier1, Double value1,
                                               Modifier modifier2, Double value2);
+
+	/**
+	 * Gets patients having encounters with the following characteristics
+	 * 
+	 * @param onOrAfter
+	 * @param onOrBefore
+	 * @param locationList
+	 * @param encounterTypeList
+	 * @param formList
+	 * @param atLeastCount
+	 * @param atMostCount
+	 * @return cohort of patients matching the query
+	 */
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, List<Location> locationList,
+                                              List<EncounterType> encounterTypeList, List<Form> formList,
+                                              Integer atLeastCount, Integer atMostCount);
 
 }

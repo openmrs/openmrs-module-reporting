@@ -13,17 +13,14 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.toreview.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.toreview.PatientIdentifierCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 

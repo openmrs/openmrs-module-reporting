@@ -11,6 +11,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptSet;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
@@ -114,6 +115,9 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 		return dao.getPatientsInStates(states, onOrAfter, onOrBefore);
     }
 
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingNumericObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.api.PatientSetService.Modifier, java.lang.Double, org.openmrs.api.PatientSetService.Modifier, java.lang.Double)
+	 */
 	public Cohort getPatientsHavingNumericObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
                                               List<EncounterType> encounterTypeList, Modifier modifier1, Double value1,
@@ -126,7 +130,15 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	    	modifier2, value2);
     }
 
-
-	
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer)
+	 */
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
+	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
+                                              Integer atLeastCount, Integer atMostCount) {
+	    return dao.getPatientsHavingEncounters(onOrAfter, onOrBefore,
+	    	locationList, encounterTypeList, formList,
+	    	atLeastCount, atMostCount);
+    }
     
 }

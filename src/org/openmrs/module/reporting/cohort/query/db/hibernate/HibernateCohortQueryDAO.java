@@ -19,7 +19,9 @@ import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -831,19 +833,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (groupingConceptId != null)
 			throw new RuntimeException("grouping concept not yet implemented");
 
-		List<Integer> locationIds = null;
-		if (locationList != null && locationList.size() > 0) {
-			locationIds = new ArrayList<Integer>();
-			for (Location l : locationList)
-				locationIds.add(l.getId());
-		}
-		
-		List<Integer> encounterTypeIds = null;
-		if (encounterTypeList != null && encounterTypeList.size() > 0) {
-			encounterTypeIds = new ArrayList<Integer>();
-			for (EncounterType t : encounterTypeList)
-				encounterTypeIds.add(t.getId());
-		}
+		List<Integer> locationIds = openmrsObjectIdListHelper(locationList);
+		List<Integer> encounterTypeIds = openmrsObjectIdListHelper(encounterTypeList);
 		
 		String dateAndLocationSql = "";
 		String dateAndLocationSqlForSubquery = "";
@@ -937,6 +928,77 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		} else {
 			ret = new Cohort(query.list());
 		}
+		return ret;
+    }
+
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
+	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
+                                              Integer atLeastCount, Integer atMostCount) {
+
+		List<Integer> encTypeIds = openmrsObjectIdListHelper(encounterTypeList);
+		List<Integer> locationIds = openmrsObjectIdListHelper(locationList);
+		List<Integer> formIds = openmrsObjectIdListHelper(formList);
+		
+		List<String> whereClauses = new ArrayList<String>();
+		whereClauses.add("e.voided = false");
+		if (encTypeIds != null)
+			whereClauses.add("e.encounter_type in (:encTypeIds)");
+		if (locationIds != null)
+			whereClauses.add("e.location_id in (:locationIds)");
+		if (formIds != null)
+			whereClauses.add("e.form_id in (:formIds)");
+		if (onOrAfter != null)
+			whereClauses.add("e.encounter_datetime >= :onOrAfter");
+		if (onOrBefore != null)
+			whereClauses.add("e.encounter_datetime <= :onOrBefore");
+		List<String> havingClauses = new ArrayList<String>();
+		if (atLeastCount != null)
+			havingClauses.add("count(*) >= :atLeastCount");
+		if (atMostCount != null)
+			havingClauses.add("count(*) >= :atMostCount");
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(" select e.patient_id from encounter e ");
+		for (ListIterator<String> i = whereClauses.listIterator(); i.hasNext();) {
+			sb.append(i.nextIndex() == 0 ? " where " : " and ");
+			sb.append(i.next());
+		}
+		sb.append(" group by e.patient_id ");
+		for (ListIterator<String> i = havingClauses.listIterator(); i.hasNext();) {
+			sb.append(i.nextIndex() == 0 ? " having " : " and ");
+			sb.append(i.next());
+		}
+		log.debug("query: " + sb);
+		
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sb.toString());
+		if (encTypeIds != null)
+			query.setParameterList("encTypeIds", encTypeIds);
+		if (locationIds != null)
+			query.setParameterList("locationIds", locationIds);
+		if (formIds != null)
+			query.setParameterList("formIds", formIds);
+		if (onOrAfter != null)
+			query.setDate("onOrAfter", onOrAfter);
+		if (onOrBefore != null)
+			query.setDate("onOrBefore", onOrBefore);
+		if (atLeastCount != null)
+			query.setInteger("atLeastCount", atLeastCount);
+		if (atMostCount != null)
+			query.setInteger("atMostCount", atMostCount);
+		
+		return new Cohort(query.list());
+    }
+
+	/**
+	 * @param list
+	 * @return null if passed null or an empty list, otherwise returns a list of the ids of the OpenmrsObjects in list
+	 */
+	private List<Integer> openmrsObjectIdListHelper(List<? extends OpenmrsObject> list) {
+		if (list == null || list.size() == 0)
+			return null;
+		List<Integer> ret = new ArrayList<Integer>();
+		for (OpenmrsObject o : list)
+			ret.add(o.getId());
 		return ret;
     }
 

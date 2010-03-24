@@ -11,38 +11,46 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition.toreview;
+package org.openmrs.module.reporting.cohort.definition;
 
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
 
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
-public class EncounterCohortDefinition extends DateRangeCohortDefinition {
+@Localized("reporting.EncounterCohortDefinition")
+public class EncounterCohortDefinition extends BaseCohortDefinition {
 	
 	private static final long serialVersionUID = 1L;
 	
 	//***** PROPERTIES *****
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(group="when")
+	private Date onOrAfter;
+
+	@ConfigurationProperty(group="when")
+	private Date onOrBefore;
+	
+	@ConfigurationProperty(required=false, group="which")
+	private List<Location> locationList;
+	
+	@ConfigurationProperty(required=false, group="which")
 	private List<EncounterType> encounterTypeList;
 	
-	@ConfigurationProperty(required=false)
-	private Form form;
+	@ConfigurationProperty(required=false, group="which")
+	private List<Form> formList;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required=false, group="howMany")
 	private Integer atLeastCount;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required=false, group="howMany")
 	private Integer atMostCount;
 	
-	@ConfigurationProperty(required=false)
-	private Location location;
-	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required=false, group="other")
 	private Boolean returnInverse = Boolean.FALSE;
 
 	//***** CONSTRUCTORS *****
@@ -62,33 +70,23 @@ public class EncounterCohortDefinition extends DateRangeCohortDefinition {
 	public String toString() {
 		
 		StringBuffer ret = new StringBuffer();
-		ret.append("Patients with ");
-		if (atLeastCount != null || atMostCount != null) {
-			if (atLeastCount != null) {
-				ret.append("at least " + atLeastCount + " ");
-			}
-			if (atMostCount != null) {
-				ret.append("at most " + atMostCount + " ");
-			}
-		}
-		else {
-			ret.append("any ");
-		}
-		if (encounterTypeList != null) {
-			ret.append("[");
-			for (Iterator<EncounterType> i = encounterTypeList.iterator(); i.hasNext();) {
-				ret.append(" " + i.next().getName() + (i.hasNext() ? " , " : ""));
-			}
-			ret.append(" ] ");
-		}
-		ret.append("encounters ");
-		if (form != null) {
-			ret.append("from form " + form.getName() + " ");
-		}
-		if (location != null) {
-			ret.append("at " + location.getName() + " ");
-		}
-		ret.append(getDateRangeDescription());
+		ret.append("Patients with encounters");
+		if (onOrAfter != null)
+			ret.append(" on or after " + onOrAfter);
+		if (onOrBefore != null)
+			ret.append(" on or before " + onOrBefore);
+		if (locationList != null)
+			ret.append(" at " + locationList);
+		if (encounterTypeList != null)
+			ret.append(" of type " + encounterTypeList);
+		if (formList != null)
+			ret.append(" from form " + formList);
+		if (atLeastCount != null)
+			ret.append(" at least " + atLeastCount);
+		if (atMostCount != null)
+			ret.append(" at most " + atMostCount);
+		if (returnInverse != null)
+			ret.append(" AND INVERT THIS");
 		return ret.toString();
 	}
 
@@ -105,20 +103,6 @@ public class EncounterCohortDefinition extends DateRangeCohortDefinition {
      */
     public void setEncounterTypeList(List<EncounterType> encounterTypeList) {
     	this.encounterTypeList = encounterTypeList;
-    }
-
-    /**
-     * @return the form
-     */
-    public Form getForm() {
-    	return form;
-    }
-
-    /**
-     * @param form the form to set
-     */
-    public void setForm(Form form) {
-    	this.form = form;
     }
 	
     /**
@@ -149,20 +133,6 @@ public class EncounterCohortDefinition extends DateRangeCohortDefinition {
     	this.atMostCount = atMostCount;
     }
 
-    /**
-     * @return the location
-     */
-    public Location getLocation() {
-    	return location;
-    }
-
-    /**
-     * @param location the location to set
-     */
-    public void setLocation(Location location) {
-    	this.location = location;
-    }
-
 	/**
 	 * @return the returnInverse
 	 */
@@ -183,4 +153,61 @@ public class EncounterCohortDefinition extends DateRangeCohortDefinition {
 	public void setReturnInverse(Boolean returnInverse) {
 		this.returnInverse = returnInverse;
 	}
+	
+    /**
+     * @return the onOrAfter
+     */
+    public Date getOnOrAfter() {
+    	return onOrAfter;
+    }
+	
+    /**
+     * @param onOrAfter the onOrAfter to set
+     */
+    public void setOnOrAfter(Date onOrAfter) {
+    	this.onOrAfter = onOrAfter;
+    }
+	
+    /**
+     * @return the onOrBefore
+     */
+    public Date getOnOrBefore() {
+    	return onOrBefore;
+    }
+	
+    /**
+     * @param onOrBefore the onOrBefore to set
+     */
+    public void setOnOrBefore(Date onOrBefore) {
+    	this.onOrBefore = onOrBefore;
+    }
+	
+    /**
+     * @return the locationList
+     */
+    public List<Location> getLocationList() {
+    	return locationList;
+    }
+
+    /**
+     * @param locationList the locationList to set
+     */
+    public void setLocationList(List<Location> locationList) {
+    	this.locationList = locationList;
+    }
+	
+    /**
+     * @return the formList
+     */
+    public List<Form> getFormList() {
+    	return formList;
+    }
+	
+    /**
+     * @param formList the formList to set
+     */
+    public void setFormList(List<Form> formList) {
+    	this.formList = formList;
+    }
+	
 }

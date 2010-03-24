@@ -13,16 +13,12 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.Cohort;
-import org.openmrs.EncounterType;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.toreview.EncounterCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
+import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
@@ -39,26 +35,19 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      * 
-     * @should return all patients with encounters if all arguments to cohort definition are empty 
+     * @should return all patients with encounters if all arguments to cohort definition are empty
+     * @should return correct patients when all non grouping parameters are set
+     * @should return correct patients when all parameters are set 
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	EncounterCohortDefinition ed = (EncounterCohortDefinition) cohortDefinition;
-		
-		PatientSetService pss = Context.getPatientSetService();
-
-    	Date fromDate = ed.getCalculatedFromDate(context);
-    	Date toDate = ed.getCalculatedToDate(context);
+    	EncounterCohortDefinition cd = (EncounterCohortDefinition) cohortDefinition;
     	
-    	// there was a bug in core before rev 12432 where passing an empty list for the first parameter would throw an exception
-    	List<EncounterType> encTypeList = ed.getEncounterTypeList();
-    	if (encTypeList != null && encTypeList.size() == 0)
-    		encTypeList = null;
-    	
-    	Cohort c = pss.getPatientsHavingEncounters(encTypeList, ed.getLocation(), 
-    										   ed.getForm(), fromDate, toDate, 
-    										   ed.getAtLeastCount(), ed.getAtMostCount());
-    	
-    	if (ed.isReturnInverse() == Boolean.TRUE) {
+    	Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingEncounters(
+    		cd.getOnOrAfter(), cd.getOnOrBefore(),
+    		cd.getLocationList(), cd.getEncounterTypeList(), cd.getFormList(),
+    		cd.getAtLeastCount(), cd.getAtMostCount());
+		   	
+    	if (cd.isReturnInverse() == Boolean.TRUE) {
     		Cohort baseCohort = context.getBaseCohort();
     		if (baseCohort == null) {
     			baseCohort = Context.getPatientSetService().getAllPatients();
