@@ -924,7 +924,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.setDate("onOrAfter", onOrAfter);
 		if (onOrBefore != null)
 			query.setDate("onOrBefore", onOrBefore);
-		if (locationList != null)
+		if (locationIds != null)
 			query.setParameterList("locationIds", locationIds);
 		
 		Cohort ret;
