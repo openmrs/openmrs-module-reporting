@@ -16,13 +16,13 @@ import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
-import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
+import org.openmrs.module.reporting.common.RangeComparator;
 
 public class CohortQueryServiceImpl  extends BaseOpenmrsService implements CohortQueryService {
 
@@ -116,18 +116,18 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
     }
 
 	/**
-	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingRangedObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.api.PatientSetService.Modifier, java.lang.Double, org.openmrs.api.PatientSetService.Modifier, java.lang.Double)
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingRangedObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.RangeComparator, java.lang.Object, org.openmrs.module.reporting.common.RangeComparator, java.lang.Object)
 	 */
 	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
-                                              List<EncounterType> encounterTypeList, Modifier modifier1, Object value1,
-                                              Modifier modifier2, Object value2) {
+                                              List<EncounterType> encounterTypeList, RangeComparator operator1, Object value1,
+                                              RangeComparator operator2, Object value2) {
 	    return dao.getPatientsHavingRangedObs(
 	    	timeModifier, question, groupingConcept,
 	    	onOrAfter, onOrBefore,
 	    	locationList, encounterTypeList,
-	    	modifier1, value1,
-	    	modifier2, value2);
+	    	operator1, value1,
+	    	operator2, value2);
     }
 
 	/**

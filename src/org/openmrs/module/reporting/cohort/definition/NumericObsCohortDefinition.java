@@ -1,7 +1,7 @@
 package org.openmrs.module.reporting.cohort.definition;
 
-import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 @Localized("reporting.NumericObsCohortDefinition")
@@ -10,34 +10,18 @@ public class NumericObsCohortDefinition extends BaseObsCohortDefinition {
 	private static final long serialVersionUID = 1L;
 	
 	@ConfigurationProperty(group="constraint1")
-	Modifier modifier1;
+	RangeComparator operator1;
 	
 	@ConfigurationProperty(group="constraint1")
 	Double value1;
 	
 	@ConfigurationProperty(group="constraint2")
-	Modifier modifier2;
+	RangeComparator operator2;
 	
 	@ConfigurationProperty(group="constraint2")
 	Double value2;
 
-	
-    /**
-     * @return the modifier1
-     */
-    public Modifier getModifier1() {
-    	return modifier1;
-    }
-
-	
-    /**
-     * @param modifier1 the modifier1 to set
-     */
-    public void setModifier1(Modifier modifier1) {
-    	this.modifier1 = modifier1;
-    }
-
-	
+		
     /**
      * @return the value1
      */
@@ -55,22 +39,6 @@ public class NumericObsCohortDefinition extends BaseObsCohortDefinition {
 
 	
     /**
-     * @return the modifier2
-     */
-    public Modifier getModifier2() {
-    	return modifier2;
-    }
-
-	
-    /**
-     * @param modifier2 the modifier2 to set
-     */
-    public void setModifier2(Modifier modifier2) {
-    	this.modifier2 = modifier2;
-    }
-
-	
-    /**
      * @return the value2
      */
     public Double getValue2() {
@@ -83,6 +51,41 @@ public class NumericObsCohortDefinition extends BaseObsCohortDefinition {
      */
     public void setValue2(Double value2) {
     	this.value2 = value2;
+    }
+
+
+    /**
+     * @return the operator1
+     */
+    public RangeComparator getOperator1() {
+    	return operator1;
+    }
+
+
+	
+    /**
+     * @param operator1 the operator1 to set
+     */
+    public void setOperator1(RangeComparator operator1) {
+    	this.operator1 = operator1;
+    }
+
+
+	
+    /**
+     * @return the operator2
+     */
+    public RangeComparator getOperator2() {
+    	return operator2;
+    }
+
+
+	
+    /**
+     * @param operator2 the operator2 to set
+     */
+    public void setOperator2(RangeComparator operator2) {
+    	this.operator2 = operator2;
     }
 
 

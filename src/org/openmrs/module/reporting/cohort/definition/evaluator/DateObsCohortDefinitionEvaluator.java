@@ -29,8 +29,8 @@ public class DateObsCohortDefinitionEvaluator implements CohortDefinitionEvaluat
 			cd.getTimeModifier(), cd.getQuestion(), cd.getGroupingConcept(),
 			cd.getOnOrAfter(), cd.getOnOrBefore(),
 			cd.getLocationList(), cd.getEncounterTypeList(),
-			cd.getModifier1(), cd.getValue1(),
-			cd.getModifier2(), cd.getValue2());
+			cd.getOperator1(), cd.getValue1(),
+			cd.getOperator2(), cd.getValue2());
 	}
 	
 }

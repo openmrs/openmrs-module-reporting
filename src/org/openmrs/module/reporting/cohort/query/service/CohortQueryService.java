@@ -12,16 +12,19 @@ import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
+import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.util.OpenmrsConstants;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+@Transactional(readOnly=true)
 public interface CohortQueryService extends OpenmrsService {
+	
 	public void setCohortQueryDAO(CohortQueryDAO dao);	
 	
 	public Cohort getPatientsWithGender(boolean includeMales, boolean includeFemales, boolean includeUnknownGender);
@@ -50,9 +53,9 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @param onOrBefore
 	 * @param locationList
 	 * @param encounterTypeList
-	 * @param modifier1
+	 * @param operator1
 	 * @param value1 if non-null this value controls whether the query looks at value_numeric or value_datetime
-	 * @param modifier2
+	 * @param operator2
 	 * @param value2
 	 * @return cohort of patients with matching obs
 	 * 
@@ -62,8 +65,8 @@ public interface CohortQueryService extends OpenmrsService {
 	 */
 	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
-                                              List<EncounterType> encounterTypeList, Modifier modifier1, Object value1,
-                                              Modifier modifier2, Object value2);
+                                              List<EncounterType> encounterTypeList, RangeComparator operator1, Object value1,
+                                              RangeComparator operator2, Object value2);
 
 	/**
 	 * Gets patients having encounters with the following characteristics

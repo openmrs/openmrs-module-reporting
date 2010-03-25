@@ -9,6 +9,7 @@ import org.openmrs.Concept;
 import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -42,7 +43,7 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
     @Verifies(value = "should get patients whose first obs of a specified concept is in a range", method = "getPatientsHavingNumericObs(TimeModifier,Concept,Concept,Date,Date,List<QLocation;>,List<QEncounterType;>,Modifier,Double,Modifier,Double)")
     public void getPatientsHavingNumericObs_shouldGetPatientsWhoseFirstObsOfASpecifiedConceptIsInARange() throws Exception {
     	CohortQueryService service = Context.getService(CohortQueryService.class);
-		Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.FIRST, new Concept(5089), null, null, null, null, null, Modifier.GREATER_THAN, 50d, Modifier.LESS_EQUAL, 80d);
+		Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.FIRST, new Concept(5089), null, null, null, null, null, RangeComparator.GREATER_THAN, 50d, RangeComparator.LESS_EQUAL, 80d);
 		Assert.assertEquals(1, cohort.size());
 		Assert.assertTrue(cohort.contains(21));
     }
@@ -55,7 +56,7 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
     @Verifies(value = "should get patients whose maximum obs of a specified concept is equals to a specified value", method = "getPatientsHavingNumericObs(TimeModifier,Concept,Concept,Date,Date,List<QLocation;>,List<QEncounterType;>,Modifier,Double,Modifier,Double)")
     public void getPatientsHavingNumericObs_shouldGetPatientsWhoseMaximumObsOfASpecifiedConceptIsEqualsToASpecifiedValue() throws Exception {
     	CohortQueryService service = Context.getService(CohortQueryService.class);
-		Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.MAX, new Concept(5089), null, null, null, null, null, Modifier.EQUAL, 180d, null, null);
+		Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.MAX, new Concept(5089), null, null, null, null, null, RangeComparator.EQUAL, 180d, null, null);
 		Assert.assertEquals(1, cohort.size());
 		Assert.assertTrue(cohort.contains(20));
     }

@@ -32,6 +32,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
+import org.openmrs.module.reporting.common.RangeComparator;
 
 public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
@@ -823,13 +824,13 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
     }
 
 	/**
-	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingRangedObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.api.PatientSetService.Modifier, java.lang.Double, org.openmrs.api.PatientSetService.Modifier, java.lang.Double)
+	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingRangedObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.RangeComparator, java.lang.Object, org.openmrs.module.reporting.common.RangeComparator, java.lang.Object)
 	 */
 	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore,
                                               List<Location> locationList, List<EncounterType> encounterTypeList,
-                                              Modifier modifier1, Object value1,
-                                              Modifier modifier2, Object value2) {
+                                              RangeComparator operator1, Object value1,
+                                              RangeComparator operator2, Object value2) {
 
 		Integer questionConceptId = question == null ? null : question.getId();
 		Integer groupingConceptId = groupingConcept == null ? null : groupingConcept.getId();
@@ -866,9 +867,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		
 		List<String> valueClauses = new ArrayList<String>();
 		if (value1 != null)
-			valueClauses.add(valueSql + modifier1.getSqlRepresentation() + " :value1 ");
+			valueClauses.add(valueSql + operator1.getSqlRepresentation() + " :value1 ");
 		if (value2 != null)
-			valueClauses.add(valueSql + modifier2.getSqlRepresentation() + " :value2 ");
+			valueClauses.add(valueSql + operator2.getSqlRepresentation() + " :value2 ");
 		
 		StringBuilder sql = new StringBuilder();
 
