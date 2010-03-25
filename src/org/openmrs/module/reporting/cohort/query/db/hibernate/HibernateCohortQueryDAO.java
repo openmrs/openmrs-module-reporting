@@ -33,6 +33,7 @@ import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.common.SetComparator;
 
 public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
@@ -831,6 +832,34 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
                                               List<Location> locationList, List<EncounterType> encounterTypeList,
                                               RangeComparator operator1, Object value1,
                                               RangeComparator operator2, Object value2) {
+		
+		return getPatientsHavingObs(timeModifier, question, groupingConcept, onOrAfter, onOrBefore, locationList, encounterTypeList, operator1, value1, operator2, value2, null, null);
+	}
+	
+	/**
+	 * Encapsulates the common logic between getPatientsHavingRangedObs and getPatientsHavingDiscreteObs
+	 * 
+	 * @param timeModifier
+	 * @param question
+	 * @param groupingConcept
+	 * @param onOrAfter
+	 * @param onOrBefore
+	 * @param locationList
+	 * @param encounterTypeList
+	 * @param operator1
+	 * @param value1
+	 * @param operator2
+	 * @param value2
+	 * @param setOperator
+	 * @param valueList
+	 * @return
+	 */
+	private Cohort getPatientsHavingObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+	                                    Date onOrAfter, Date onOrBefore,
+	                                    List<Location> locationList, List<EncounterType> encounterTypeList,
+	                                    RangeComparator operator1, Object value1,
+	                                    RangeComparator operator2, Object value2,
+	                                    SetComparator setOperator, List<? extends Object> valueList) {
 
 		Integer questionConceptId = question == null ? null : question.getId();
 		Integer groupingConceptId = groupingConcept == null ? null : groupingConcept.getId();
@@ -860,16 +889,45 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		boolean doSqlAggregation = timeModifier == TimeModifier.MIN || timeModifier == TimeModifier.MAX || timeModifier == TimeModifier.AVG;
 		boolean doInvert = timeModifier == TimeModifier.NO;
 
-		String valueSql = (value1 != null && value1 instanceof Number) ? " o.value_numeric " : " o.value_datetime ";
+		String valueSql = null;
+		List<String> valueClauses = new ArrayList<String>();
+		List<Object> valueListForQuery = null;
+
+		if (value1 != null || value2 != null) {
+			valueSql = (value1 != null && value1 instanceof Number) ? " o.value_numeric " : " o.value_datetime ";
+		} else if (valueList != null && valueList.size() > 0) {
+			valueListForQuery = new ArrayList<Object>();
+			if (valueList.get(0) instanceof String) {
+				valueSql = " o.value_text ";
+				for (Object o : valueList)
+					valueListForQuery.add(o);
+			} else { 
+				valueSql = " o.value_coded ";
+				for (Object o : valueList) {
+					if (o instanceof Concept)
+						valueListForQuery.add(((Concept) o).getConceptId());
+					else if (o instanceof Number)
+						valueListForQuery.add(((Number) o).intValue());
+					else
+						throw new IllegalArgumentException("Don't know how to handle " + o.getClass() + " in valueList");
+				}
+			}
+		}
+		
 		if (doSqlAggregation) {
 			valueSql = " " + timeModifier.toString() + "(" + valueSql + ") ";
 		}
-		
-		List<String> valueClauses = new ArrayList<String>();
-		if (value1 != null)
-			valueClauses.add(valueSql + operator1.getSqlRepresentation() + " :value1 ");
-		if (value2 != null)
-			valueClauses.add(valueSql + operator2.getSqlRepresentation() + " :value2 ");
+
+		if (value1 != null || value2 != null) {
+			if (value1 != null) {
+				valueClauses.add(valueSql + operator1.getSqlRepresentation() + " :value1 ");
+			}
+			if (value2 != null) {
+				valueClauses.add(valueSql + operator2.getSqlRepresentation() + " :value2 ");
+			}
+		} else if (valueList != null && valueList.size() > 0) {
+			valueClauses.add(valueSql + setOperator.getSqlRepresentation() + " (:valueList) ");
+		}
 		
 		StringBuilder sql = new StringBuilder();
 
@@ -926,6 +984,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			else
 				query.setDate("value2", (Date) value2);
 		}
+		if (valueListForQuery != null) {
+			query.setParameterList("valueList", valueListForQuery);
+		}
 		if (onOrAfter != null)
 			query.setDate("onOrAfter", onOrAfter);
 		if (onOrBefore != null)
@@ -943,6 +1004,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		return ret;
     }
 
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer)
+	 */
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount) {
@@ -1012,6 +1076,21 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		for (OpenmrsObject o : list)
 			ret.add(o.getId());
 		return ret;
+    }
+
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingDiscreteObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.SetComparator, java.util.List)
+	 */
+	public Cohort getPatientsHavingDiscreteObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
+                                               List<EncounterType> encounterTypeList, SetComparator operator,
+                                               List<? extends Object> valueList) {
+	    return getPatientsHavingObs(timeModifier, question, groupingConcept,
+	    	onOrAfter, onOrBefore,
+	    	locationList, encounterTypeList,
+	    	null, null,
+	    	null, null,
+	    	operator, valueList);
     }
 
 }

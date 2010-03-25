@@ -16,6 +16,7 @@ import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.common.SetComparator;
 
 public interface CohortQueryDAO {
 	
@@ -43,6 +44,10 @@ public interface CohortQueryDAO {
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
                                               List<EncounterType> encounterTypeList, RangeComparator operator1, Object value1,
                                               RangeComparator operator2, Object value2);
+	public Cohort getPatientsHavingDiscreteObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
+                                               List<EncounterType> encounterTypeList, SetComparator operator,
+                                               List<? extends Object> valueList);
 	
 	// Patients who were in a Program on the specified date or range
 	public Cohort getPatientsInProgram(List<Program> programs, Date onOrAfter, Date onOrBefore);

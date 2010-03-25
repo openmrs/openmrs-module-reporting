@@ -19,6 +19,7 @@ import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +68,25 @@ public interface CohortQueryService extends OpenmrsService {
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
                                               List<EncounterType> encounterTypeList, RangeComparator operator1, Object value1,
                                               RangeComparator operator2, Object value2);
-
+	
+	/**
+	 * Gets patients having discrete (i.e. Text or Coded) obs that match a complicated query.
+	 * 
+	 * @param timeModifier
+	 * @param question
+	 * @param groupingConcept
+	 * @param onOrAfter
+	 * @param onOrBefore
+	 * @param locationList
+	 * @param encounterTypeList
+	 * @param operator
+	 * @param valueList if non-null the first value in this list controls whether the query looks at value_text or value_coded
+	 * @return cohort of patients with matching obs
+	 */
+	public Cohort getPatientsHavingDiscreteObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
+	                                           Date onOrAfter, Date onOrBefore, List<Location> locationList,
+	                                           List<EncounterType> encounterTypeList, SetComparator operator,
+	                                           List<? extends Object> valueList);
 	/**
 	 * Gets patients having encounters with the following characteristics
 	 * 
