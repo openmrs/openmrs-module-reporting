@@ -128,6 +128,9 @@ public class DateUtil {
 	 * @param now
 	 * @param then
 	 * @return	a string that represents the timespan between two dates
+	 * 
+	 * @should correctly handle daylight savings time
+	 * @should say one month ago even though february is short
 	 */
 	public static String getTimespan(Date now, Date then, boolean showAgoWord) {
 
@@ -137,6 +140,15 @@ public class DateUtil {
 		
 		// Time span between two dates (in seconds)
 		long delta = (now.getTime() - then.getTime()) / MILLISECOND;
+		
+		// do some adjustments for that fact that (1) February is short, and there's a <30 check below, and (2) Daylight Savings Time exists 
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		long dstOffsetDifference = cal.get(Calendar.DST_OFFSET);
+		cal.setTime(then);
+		boolean wasFebruary = cal.get(Calendar.MONTH) == Calendar.FEBRUARY;
+		dstOffsetDifference -= cal.get(Calendar.DST_OFFSET);
+		delta += dstOffsetDifference / MILLISECOND;
 		
 		String suffix = showAgoWord ? " ago" : "";
 
@@ -161,7 +173,7 @@ public class DateUtil {
 		if (delta < 48 * HOUR && showAgoWord) {
 			return "yesterday";
 		}
-		if (delta < 30 * DAY) {
+		if (delta < 30 * DAY && !wasFebruary) {
 			return (delta / DAY) + " days" + suffix;
 		}
 		if (delta < 12 * MONTH) {
