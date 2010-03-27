@@ -13,9 +13,13 @@
  */
 package org.openmrs.module.reporting;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.openmrs.Location;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 /**
@@ -50,4 +54,17 @@ public class ReportingConstants {
 	public static final Parameter END_DATE_PARAMETER = new Parameter("endDate", "End date", Date.class);
 	public static final Parameter LOCATION_PARAMETER = new Parameter("location", "Location", Location.class);
 	
+	
+	// Semi-Constants defined through global properties
+	
+	public static final List<PatientIdentifierType> GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES() {
+		String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.preferredIdentifierTypes");
+		List<PatientIdentifierType> pits = new ArrayList<PatientIdentifierType>();
+		if (propertyValue != null) {
+			for (String s : propertyValue.split("\\|")) {
+				pits.add(Context.getPatientService().getPatientIdentifierTypeByName(s));
+			}
+		}
+		return pits;
+	}
 }

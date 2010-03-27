@@ -13,63 +13,54 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.module.reporting.dataset.column.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.reporting.dataset.column.SimpleDataSetColumn;
-import org.openmrs.module.reporting.dataset.definition.evaluator.PatientDataSetEvaluator;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
- * Definition of a dataset that produces one-row-per-patient table. 
- * @see PatientDataSetEvaluator
+ * Definition of a dataset that produces a basic one-row-per-patient table. 
+ * @see BasicPatientDataSetEvaluator
  */
-public class PatientDataSetDefinition extends BaseDataSetDefinition {
+public class SimplePatientDataSetDefinition extends BaseDataSetDefinition {
 
-	// Serial version UID
 	private static final long serialVersionUID = 6405583324151111487L;
 	
-    // ***** FIXED COLUMNS *****
-	public transient static DataSetColumn PATIENT_ID = new SimpleDataSetColumn("patientId", Integer.class);
-	public transient static DataSetColumn FAMILY_NAME = new SimpleDataSetColumn("family_name", String.class);
-	public transient static DataSetColumn GIVEN_NAME = new SimpleDataSetColumn("given_name", String.class);
-	public transient static DataSetColumn AGE = new SimpleDataSetColumn("age", Integer.class);
-	public transient static DataSetColumn GENDER = new SimpleDataSetColumn("gender", String.class);
+	//**** PROPERTIES *****
 	
-	//***** PROPERTIES ******
+	@ConfigurationProperty
+	public List<String> patientProperties;
+	
+	@ConfigurationProperty
 	public List<PersonAttributeType> personAttributeTypes;
+	
+	@ConfigurationProperty
 	public List<PatientIdentifierType> identifierTypes;
+	
+	@ConfigurationProperty
 	public List<ProgramWorkflow> programWorkflows;
-
-	//***** MORE COLUMNS ******
-	public Map<String, LogicDataSetColumn> logicColumns = new HashMap<String,LogicDataSetColumn>(); 
 	
 	/**
 	 * Constructor
 	 */
-	public PatientDataSetDefinition() {
+	public SimplePatientDataSetDefinition() {
 		super();
 	}
 	
 	/**
-	 * Public constructor
-	 * 
-	 * @param name
-	 * @param description
-	 * @param questions
+	 * Public constructor with name and description
 	 */
-	public PatientDataSetDefinition(String name, String description) {
-		this();
-		this.setName(name);
-		this.setDescription(description);
+	public SimplePatientDataSetDefinition(String name, String description) {
+		super(name, description);
 	}
 	
 	//****** INSTANCE METHODS ******
@@ -79,47 +70,52 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	public List<DataSetColumn> getColumns() {
 		List<DataSetColumn> columns = new LinkedList<DataSetColumn>();
-		columns.addAll(Arrays.asList(PATIENT_ID, FAMILY_NAME, GIVEN_NAME, AGE, GENDER));
-		
-		try { 
-			for (PatientIdentifierType t : getIdentifierTypes()) {
-				columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
+		for (PatientIdentifierType t : getIdentifierTypes()) {
+			columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
+		}
+		for (String s : getPatientProperties()) {
+			try {
+				Method m = Patient.class.getMethod("get" + StringUtils.capitalize(s), new Class[] {});
+				columns.add(new SimpleDataSetColumn(s, s, m.getReturnType()));
 			}
-			for (PersonAttributeType t : getPersonAttributeTypes()) {
-				columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
+			catch (Exception e) {
+				log.error("Unable to get patient property for dataset: " + s, e);
 			}
-			for (ProgramWorkflow t : getProgramWorkflows()) {
-				columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
-			}
-			for (LogicDataSetColumn column : getLogicColumns().values()) { 
-				columns.add(column);
-			}
-	
-		} catch (Exception e) { 			
-			log.error("Unable to get columns for dataset ", e);			
+		}
+		for (PersonAttributeType t : getPersonAttributeTypes()) {
+			columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
+		}
+		for (ProgramWorkflow t : getProgramWorkflows()) {
+			columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
 		}
 		return columns;
 	}
 	
-	public Map<String, LogicDataSetColumn> getLogicColumns() { 
-		return this.logicColumns;
+	//****** PROPERTY ACCESS ******
+
+	/**
+	 * @return the patientProperties
+	 */
+	public List<String> getPatientProperties() {
+		if (patientProperties == null) {
+			patientProperties = new ArrayList<String>();
+		}
+		return patientProperties;
 	}
 
-	public void setLogicColumns(Map<String, LogicDataSetColumn> logicColumns) {
-		this.logicColumns = logicColumns;
+	/**
+	 * @param patientProperties the patientProperties to set
+	 */
+	public void setPatientProperties(List<String> patientProperties) {
+		this.patientProperties = patientProperties;
 	}
 	
-	public void addLogicColumn(LogicDataSetColumn column) { 
-		logicColumns.put(column.getColumnKey(), column);
+	/**
+	 * @param property the property to add
+	 */
+	public void addPatientProperty(String property) {
+		getPatientProperties().add(property);
 	}
-	
-	public void removeLogicColumn(String columnKey) { 
-		logicColumns.remove(columnKey);
-	}
-	
-	
-	
-	//****** PROPERTY ACCESS ******
 
 	/**
 	 * @return the personAttributeTypes
@@ -134,9 +130,16 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * @param personAttributeTypes the personAttributeTypes to set
 	 */
-	public void setPersonAttributeTypes(
-			List<PersonAttributeType> personAttributeTypes) {
+	public void setPersonAttributeTypes(List<PersonAttributeType> personAttributeTypes) {
 		this.personAttributeTypes = personAttributeTypes;
+	}
+	
+	/**
+	 * 
+	 * @param personAttributeType to add
+	 */
+	public void addPersonAttributeType(PersonAttributeType personAttributeType) {
+		getPersonAttributeTypes().add(personAttributeType);
 	}
 
 	/**
@@ -154,6 +157,13 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	public void setIdentifierTypes(List<PatientIdentifierType> identifierTypes) {
 		this.identifierTypes = identifierTypes;
+	}
+	
+	/**
+	 * @param identifierType to add
+	 */
+	public void addIdentifierType(PatientIdentifierType identifierType) {
+		getIdentifierTypes().add(identifierType);
 	}
 
 	/**
@@ -173,4 +183,10 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 		this.programWorkflows = programWorkflows;
 	}
 	
+	/**
+	 * @param programWorkflow to add
+	 */
+	public void addProgramWorkflow(ProgramWorkflow programWorkflow) {
+		getProgramWorkflows().add(programWorkflow);
+	}
 }

@@ -17,26 +17,18 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.PersonAttributeType;
-import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.column.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.LogicDataSetColumn;
 import org.openmrs.module.reporting.dataset.column.SimpleDataSetColumn;
-import org.openmrs.module.reporting.dataset.definition.evaluator.PatientDataSetEvaluator;
+import org.openmrs.module.reporting.dataset.definition.evaluator.SqlDataSetEvaluator;
 import org.openmrs.util.DatabaseUpdater;
 
 /**
- * Definition of a dataset that produces one-row-per-patient table. 
- * @see PatientDataSetEvaluator
+ * Definition of a SQL DataSet
+ * @see SqlDataSetEvaluator
  */
 public class SqlDataSetDefinition extends BaseDataSetDefinition {
 

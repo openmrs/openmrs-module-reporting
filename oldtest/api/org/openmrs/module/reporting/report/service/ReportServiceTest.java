@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -51,7 +51,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should render the report if a plain renderer is specified", method = "runReport(ReportRequest)")
 	public void runReport_shouldRenderTheReportIfAPlainRendererIsSpecified() throws Exception {
 		ReportDefinition def = new ReportDefinition();
-		DataSetDefinition dsd = new PatientDataSetDefinition();
+		DataSetDefinition dsd = new SqlDataSetDefinition();
 		def.addDataSetDefinition("patients", dsd, null);
 		ReportRenderer renderer = new TsvReportRenderer();
 		ReportRequest request = new ReportRequest(def, null, null, new RenderingMode(renderer, "TSV", null, 100), null);

@@ -9,9 +9,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.column.DataSetColumn;
-import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.evaluator.JoinDataSetDefinitionEvaluator;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -19,14 +17,8 @@ import org.openmrs.test.Verifies;
 
 public class SqlDataSetDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 
-	
-	
 	private static Log log = LogFactory.getLog(SqlDataSetDefinitionEvaluatorTest.class);
-	
-	
-    /**
-     * @see {@link JoinDataSetDefinitionEvaluator#evaluate(DataSetDefinition,EvaluationContext)}
-     */
+
 	@Test
     @Verifies(value = "should join two plain datasets correctly", method = "evaluate(DataSetDefinition,EvaluationContext)")
     public void evaluate_shouldJoinTwoPlainDatasetsCorrectly() throws Exception {

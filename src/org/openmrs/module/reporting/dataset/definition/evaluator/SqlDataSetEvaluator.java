@@ -34,14 +34,13 @@ import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.util.DatabaseUpdater;
 
 /**
- * The logic that evaluates a {@link PatientDataSetDefinition} and produces an {@link DataSet}
- * @see PatientDataSetDefinition
+ * The logic that evaluates a {@link SqlDataSetDefinition} and produces an {@link DataSet}
+ * @see SqlDataSetDefinition
  */
 @Handler(supports={SqlDataSetDefinition.class})
 public class SqlDataSetEvaluator implements DataSetEvaluator {

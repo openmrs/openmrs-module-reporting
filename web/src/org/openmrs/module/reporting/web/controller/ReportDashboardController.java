@@ -12,9 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
@@ -23,7 +25,7 @@ import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
@@ -31,7 +33,6 @@ import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -96,16 +97,28 @@ public class ReportDashboardController {
 				DataSetDefinition dsd = null;
 				if (applyDataSetId != null) {
 					try {
-						
 						dsd = Context.getService(DataSetDefinitionService.class).getDefinition(applyDataSetId, null);
-						
 					} catch (Exception ex) { 
 						log.error("exception getting dataset definition", ex);				
 					}
 				}
 				
-				if (dsd == null) 
-					dsd = new PatientDataSetDefinition();
+				if (dsd == null) {
+					SimplePatientDataSetDefinition d = new SimplePatientDataSetDefinition();
+					List<PatientIdentifierType> types = ReportingConstants.GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES();
+					if (types.isEmpty()) {
+						d.addPatientProperty("patientId");
+					}
+					else {
+						d.setIdentifierTypes(types);
+					}
+					System.out.println("Id Types: " + types);
+					d.addPatientProperty("givenName");
+					d.addPatientProperty("familyName");
+					d.addPatientProperty("age");
+					d.addPatientProperty("gender");
+					dsd = d;
+				}
 				
 				EvaluationContext evalContext = new EvaluationContext();
 				if (limit != null && limit > 0) 

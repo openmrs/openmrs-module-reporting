@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import org.junit.Test;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportData;
@@ -32,7 +32,7 @@ public class SimpleHtmlReportRendererTest extends BaseModuleContextSensitiveTest
 
     	// Create and evaluate a report definition
     	EvaluationContext evalContext = new EvaluationContext();
-        PatientDataSetDefinition dataSetDefinition = new PatientDataSetDefinition();
+        SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
         ReportDefinition reportDefinition = new ReportDefinition();
         reportDefinition.addDataSetDefinition(dataSetDefinition, ParameterizableUtil.createParameterMappings(""));
         ReportData reportData = Context.getService(ReportDefinitionService.class).evaluate(reportDefinition, evalContext);

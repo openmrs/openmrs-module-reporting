@@ -13,10 +13,12 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -29,31 +31,28 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.logic.LogicCriteria;
-import org.openmrs.logic.result.Result;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.column.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.LogicDataSetColumn;
+import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.cohort.CohortUtil;
 
 /**
- * The logic that evaluates a {@link PatientDataSetDefinition} and produces an {@link DataSet}
- * @see PatientDataSetDefinition
+ * The logic that evaluates a {@link SimplePatientDataSetDefinition} and produces an {@link DataSet}
+ * @see SimplePatientDataSetDefinition
  */
-@Handler(supports={PatientDataSetDefinition.class})
-public class PatientDataSetEvaluator implements DataSetEvaluator {
+@Handler(supports={SimplePatientDataSetDefinition.class})
+public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
 	/**
 	 * Public constructor
 	 */
-	public PatientDataSetEvaluator() { }
+	public SimplePatientDataSetEvaluator() { }
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
@@ -61,7 +60,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
-		PatientDataSetDefinition definition = (PatientDataSetDefinition) dataSetDefinition;
+		SimplePatientDataSetDefinition definition = (SimplePatientDataSetDefinition) dataSetDefinition;
 		
 		Cohort cohort = context.getBaseCohort();
 
@@ -74,9 +73,6 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 
 		// Get a list of patients based on the cohort members
 		List<Patient> patients = Context.getPatientSetService().getPatients(cohort.getMemberIds());
-
-		
-		Map<String, LogicResultHolder> logicResultMap = new HashMap<String, LogicResultHolder>();
 		
 		// Pre-calculate the program states
 		Map<ProgramWorkflow, Map<Integer, PatientState>> states = new HashMap<ProgramWorkflow, Map<Integer, PatientState>>();
@@ -86,11 +82,17 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		
 		for (Patient p : patients) {			
 			DataSetRow row = new DataSetRow();
-			row.addColumnValue(PatientDataSetDefinition.PATIENT_ID, p.getPatientId());			
-			row.addColumnValue(PatientDataSetDefinition.GIVEN_NAME, p.getGivenName());
-			row.addColumnValue(PatientDataSetDefinition.FAMILY_NAME, p.getFamilyName());
-			row.addColumnValue(PatientDataSetDefinition.GENDER, p.getGender());	
-			row.addColumnValue(PatientDataSetDefinition.AGE, p.getAge());
+			for (String s : definition.getPatientProperties()) {
+				try {
+					DataSetColumn c = definition.getColumn(s);
+					Method m = Patient.class.getMethod("get" + StringUtils.capitalize(s), new Class[] {});
+					Object o = m.invoke(p, new Object[] {});
+					row.addColumnValue(c, o);
+				}
+				catch (Exception e) {
+					log.error("Unable to get property " + s + " on patient for dataset", e);
+				}
+			}
 			
 			for (PatientIdentifierType t : definition.getIdentifierTypes()) {
 				DataSetColumn c = definition.getColumn(t.getName());
@@ -109,86 +111,8 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 				PatientState ps = states.get(t).get(p.getPatientId());
 				row.addColumnValue(c, (ps == null || !ps.getActive()) ? null : ps.getState().getName());
 			}
-			
-			for (LogicDataSetColumn column : definition.getLogicColumns().values()) { 
-				Result result = null;
-				Object value = null;
-				try { 
-					String token = column.getLogicQuery();
-					//Rule rule = new ReferenceRule("obs." + token);
-					//Context.getLogicService().addRule(token, rule);
-					Map<Integer,Result> results = null;
-					if (logicResultMap != null) { 												
-						LogicResultHolder holder = logicResultMap.get(token);
-						if (holder == null) { 						
-							LogicCriteria criteria = new LogicCriteria(token).last();
-							results = Context.getLogicService().eval(cohort, criteria);	
-							holder = new LogicResultHolder(token, criteria, results, true);
-							logicResultMap.put(token, holder);
-						} else { 
-							results = holder.getResults();
-						}
-					}					
-					result = results.get(p.getPatientId());
-					
-					value = result.toString();
-				} catch (Exception e) { 
-					value = new String("logic error: " + e.getMessage());
-				}
-				row.addColumnValue(column, value);
-			}
 			dataSet.addRow(row);
 		}
 		return dataSet;
 	}
-	
-	
-	class LogicResultHolder { 
-	
-		private String token;
-		private Boolean evaluated;
-		private LogicCriteria criteria;
-		private Map<Integer, Result> results;
-		
-		public LogicResultHolder(String token, LogicCriteria criteria, Map<Integer,Result> results, Boolean evaluated) { 
-			this.token = token;
-			this.criteria = criteria;
-			this.results = results;
-			this.evaluated = evaluated;			
-		}
-		
-		
-		public String getToken() { 
-			return this.token;
-		}
-		
-		public void setToken(String token) { 
-			this.token = token;
-		}
-		
-		public Boolean getEvaluated() {
-			return evaluated;
-		}
-		public void setEvaluated(Boolean evaluated) {
-			this.evaluated = evaluated;
-		}
-		public LogicCriteria getCriteria() {
-			return criteria;
-		}
-		public void setCriteria(LogicCriteria criteria) {
-			this.criteria = criteria;
-		}
-		public Map<Integer, Result> getResults() {
-			return results;
-		}
-		public void setResults(Map<Integer, Result> results) {
-			this.results = results;
-		}
-
-		
-		
-	
-	
-	}
-	
 }

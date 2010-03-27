@@ -13,11 +13,7 @@ import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.column.SimpleDataSetColumn;
-import org.openmrs.module.reporting.dataset.definition.DataSetWrappingDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.evaluator.DataSetWrappingDataSetEvaluator;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.openmrs.test.Verifies;
 
 public class XlsReportRendererTest {
@@ -39,7 +35,7 @@ public class XlsReportRendererTest {
         ds2.addRow(makeRowHelper("patient_id", 123, "encounter_id", 2, "encounter_date", ymd.parse("2009-04-11")));
         ds2.addRow(makeRowHelper("patient_id", 123, "encounter_id", 3, "encounter_date", ymd.parse("2009-05-10")));
         
-        // need to actually make sure these dataset point back to their implied definitions.
+        /* need to actually make sure these dataset point back to their implied definitions.
         {
             EvaluationContext ec = new EvaluationContext();
             DataSetWrappingDataSetDefinition def1 = new DataSetWrappingDataSetDefinition(ds1);
@@ -48,7 +44,7 @@ public class XlsReportRendererTest {
             eval.evaluate(def1, ec);
             eval.evaluate(def2, ec);
         }
-
+		*/
         ReportData data = new ReportData();
         data.setDataSets(new LinkedHashMap<String, DataSet>());
         data.getDataSets().put("patients", ds1);
