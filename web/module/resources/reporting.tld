@@ -170,6 +170,28 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+	</tag>
+	
+	<tag>
+		<description>Iterates over Collections, Arrays, Maps, and Iterables</description>
+		<name>forEach</name>
+		<tag-class>org.openmrs.module.reporting.web.taglib.ForEachTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>items</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>	
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>varStatus</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>	
 
 </taglib>

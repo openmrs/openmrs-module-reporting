@@ -60,7 +60,7 @@
 				series.push({ label: "${col.indicator.parameterizable.name}", data: [] });
 			</c:if>
 		</c:forEach>
-		<c:forEach var="row" items="${dataSet.iterator}">
+		<rpt:forEach var="row" items="${dataSet}">
 			<c:set var="startDate" value="${row.columnValuesByKey['startDate'].time}"/>
 			<c:set var="ind" value="0"/>
 			<c:forEach var="column" items="${row.columnValues}">
@@ -69,7 +69,7 @@
 					<c:set var="ind" value="${ind + 1}"/>
 				</c:if>
 			</c:forEach>
-		</c:forEach>
+		</rpt:forEach>
 		
 		var options = {
 			xaxis: { mode: "time" },

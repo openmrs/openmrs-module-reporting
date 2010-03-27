@@ -49,14 +49,6 @@ public class MapDataSet implements DataSet {
 	public Iterator<DataSetRow> iterator() {
 		return Collections.singleton(data).iterator();
 	}
-
-	/**
-	 * Convenience method for JSTL method.  
-	 * TODO This will be removed once we get a decent solution for the dataset iterator solution.  
-	 */
-	public Iterator<DataSetRow> getIterator() {
-		return iterator();
-	}
 	
 	/**
      * Adds a Data Element to this DataSet
@@ -69,16 +61,16 @@ public class MapDataSet implements DataSet {
     
 	/**
      * Adds a Data Element to this DataSet
-     * @param key - The column key to add this element to
+     * @param columnName - The column name to add this element to
      * @param dataElement - The data to add
      */
-    public void addData(String columnKey, Object dataElement) {
-    	DataSetColumn c = definition.getColumn(columnKey);
+    public void addData(String columnName, Object dataElement) {
+    	DataSetColumn c = definition.getColumn(columnName);
     	if (c != null) {
     		data.addColumnValue(c, dataElement);
     	}
     	else {
-    		throw new IllegalArgumentException("Column with key <" + columnKey + "> is not valid.");
+    		throw new IllegalArgumentException("Column with name <" + columnName + "> is not valid.");
     	}
     }
 

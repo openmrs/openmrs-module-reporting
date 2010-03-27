@@ -49,14 +49,6 @@ public class SimpleDataSet implements DataSet {
         return getRows().iterator();
     }
     
-	/**
-	 * Convenience method for JSTL method.  
-	 * TODO This will be removed once we get a decent solution for the dataset iterator solution.  
-	 */
-	public Iterator<DataSetRow> getIterator() {
-		return iterator();
-	}
-    
     // *************
     // PROPERTY ACCESS
     // *************

@@ -57,5 +57,6 @@
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/xerces/resolver.jar"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/xerces/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/xerces/xml-apis.jar"/>
+	<classpathentry kind="lib" path="lib-common/jstl-1.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

@@ -25,7 +25,7 @@
 		<div align="center">
 			<c:forEach var="dataSetMapEntry" items="${__openmrs_report_data.dataSets}">
 				<table cellpadding="2" style="border: 1px solid black;">					
-					<c:forEach var="dataSetRow" items="${dataSetMapEntry.value.iterator}" varStatus="varStatus">
+					<rpt:forEach var="dataSetRow" items="${dataSetMapEntry.value}" varStatus="varStatus">
 						<c:if test="${varStatus.first}">
 							<tr>
 								<th colspan="4" align="center" style="background-color: #8FABC7">
@@ -59,7 +59,7 @@
 									</td>
 								</tr>
 							</c:forEach>
-					</c:forEach>
+					</rpt:forEach>
 					<tfoot>
 						<tr >
 							<c:set var="now" value="<%=new java.util.Date()%>" />

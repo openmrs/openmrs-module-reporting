@@ -30,12 +30,9 @@ import org.openmrs.module.reporting.evaluation.Evaluated;
 public interface DataSet extends Evaluated<DataSetDefinition>, Iterable<DataSetRow> {
 	
 	/**
-	 * Each iteration of this iterator returns a Map<DataSetColumn, T>.
+	 * Each iteration of this iterator returns a DataSetRow
 	 * @return an iterator over the rows in this dataset.
 	 * @see Iterable#iterator()
 	 */
-	public Iterator<DataSetRow> iterator();
-	
-	public Iterator<DataSetRow> getIterator(); // TODO: Deal with these duplicate methods
-	
+	public Iterator<DataSetRow> iterator();	
 }
