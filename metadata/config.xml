@@ -46,6 +46,11 @@
 		<description>Reports that are not explicitly saved are deleted automatically when they are this many hours old. (Values less than or equal to zero means do not delete automatically)</description>
 	</globalProperty>
 	
+	<globalProperty>
+		<property>reporting.preferredIdentifierTypes</property>
+		<defaultValue></defaultValue>
+		<description>Pipe-separated list of patient identifier type names, which should be displayed on default patient datasets</description>
+	</globalProperty>
 	
 	<!--  Message Properties -->
 	<messages>
