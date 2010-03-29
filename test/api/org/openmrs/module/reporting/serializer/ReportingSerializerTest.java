@@ -31,6 +31,7 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		cd.setMaxAge(15);
 		String xml = new ReportingSerializer().serialize(cd);
 		System.out.println(xml);
+		// TODO assert something
 	}
 
 	/**
@@ -52,6 +53,7 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		
 		String xml = new ReportingSerializer().serialize(cd);
 		System.out.println(xml);
+		// TODO assert something
     }
     
 	/**

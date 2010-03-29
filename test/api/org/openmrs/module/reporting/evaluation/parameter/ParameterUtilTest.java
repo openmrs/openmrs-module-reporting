@@ -22,11 +22,12 @@ import org.openmrs.module.reporting.cohort.definition.toreview.DrugOrderCohortDe
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
  * Tests the ParameterUtil methods
  */
-public class ParameterUtilTest {
+public class ParameterUtilTest extends BaseModuleContextSensitiveTest {
 	
 	/**
 	 * Tests that fields annotated as {@link EvalProperty} are added as Parameters

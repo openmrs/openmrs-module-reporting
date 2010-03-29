@@ -19,7 +19,6 @@ import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
@@ -29,30 +28,15 @@ import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefiniti
 import org.openmrs.reporting.ReportObjectService;
 import org.openmrs.reporting.export.DataExportReportObject;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.test.SkipBaseSetup;
 
 /**
- * 
+ * TODO: create data exports in code such that the tests pass 
  */
-@SkipBaseSetup
 @SuppressWarnings("deprecation")
 public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTest {
 	
 	/** Logger */
 	private static Log log = LogFactory.getLog(DataExportDataSetPersisterTest.class);
-	
-	/**
-	 * Runs the basic stuff since we have SkipBaseSetup on the whole class
-	 * 
-	 * @throws Exception
-	 */
-	@Before
-	public void runBeforeEachTest() throws Exception {
-		initializeInMemoryDatabase();
-		executeDataSet("org/openmrs/module/dataset/include/ReportTests-reportObjects.xml");
-		authenticate();
-	}
-	
 
 	/**
 	 * Tests whether a class registered with this persister can be handled.

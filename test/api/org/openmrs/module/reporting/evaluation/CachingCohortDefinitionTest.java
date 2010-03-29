@@ -13,48 +13,44 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.caching.Caching;
-import org.openmrs.module.reporting.evaluation.caching.CachingStrategy;
-import org.openmrs.module.reporting.evaluation.caching.NoCachingStrategy;
 import org.openmrs.test.BaseContextSensitiveTest;
 
 /**
  *
  */
-public class CachingPatientFilterTest extends BaseContextSensitiveTest {
+public class CachingCohortDefinitionTest extends BaseContextSensitiveTest {
+	
+	@Before
+	public void setup() throws Exception {
+		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
+	}
 	
 	@Test
-	public void shouldCachingPatientFilter() throws Exception {
-		initializeInMemoryDatabase();
-		executeDataSet("org/openmrs/module/evaluation/include/PatientFilterTest.xml");
-		authenticate();
-		
+	public void shouldCacheCohortDefinition() throws Exception {
 		EvaluationContext ec = new EvaluationContext();
 		
 		GenderCohortDefinition maleFilter = 
 			new GenderCohortDefinition();
 		maleFilter.setMaleIncluded(true);
-		GenderCohortDefinition femaleFilter = 
-			new GenderCohortDefinition();
+		GenderCohortDefinition femaleFilter = new GenderCohortDefinition();
 		femaleFilter.setFemaleIncluded(true);
-		
-		Caching caching = GenderCohortDefinition.class.getAnnotation(Caching.class);
-		assertTrue(caching != null && caching.strategy() != NoCachingStrategy.class);
-		
-		CachingStrategy strategy = caching.strategy().newInstance();
+		ConfigurationPropertyCachingStrategy strategy = new ConfigurationPropertyCachingStrategy();
 		String maleKey = strategy.getCacheKey(maleFilter);
-		String femaleKey = strategy.getCacheKey(maleFilter);
+		System.out.println(maleKey);
+		String femaleKey = strategy.getCacheKey(femaleFilter);
+		System.out.println(femaleKey);
 		
 		assertNull("Cache should not have male filter yet", ec.getFromCache(maleKey));
 		
@@ -62,7 +58,8 @@ public class CachingPatientFilterTest extends BaseContextSensitiveTest {
 		assertNotNull("Cache should have male filter now", ec.getFromCache(maleKey));
 		assertNull("Cache should not have female filter", ec.getFromCache(femaleKey));
 
-		Cohort malesAgain = Context.getService(CohortDefinitionService.class).evaluate(maleFilter, ec);
+		Cohort malesAgain = 
+			Context.getService(CohortDefinitionService.class).evaluate(maleFilter, ec);
 		assertEquals("Uncached and cached runs should be equals", males.size(), malesAgain.size());
 		ec.setBaseCohort(males);
 		assertEquals("Cache should have been automatically cleared", 0, ec.getCache().size());

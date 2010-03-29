@@ -1,14 +1,14 @@
 package org.openmrs.module.reporting.indicator;
 
 import java.util.Collections;
-import java.util.Map;
 
+import junit.framework.Assert;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
@@ -19,6 +19,11 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 
+	@Before
+	public void setup() throws Exception {
+		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
+	}
+	
 	@Test
 	public void shouldEvaluteIndicatorWithNoParameters() throws Exception {
 		GenderCohortDefinition female = new GenderCohortDefinition();
@@ -31,7 +36,7 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		gender.addCohortDefinition("male", male, null);
 		
 		InProgramCohortDefinition inProgram = new InProgramCohortDefinition();
-		inProgram.setPrograms(Collections.singletonList(Context.getProgramWorkflowService().getProgram(1)));
+		inProgram.setPrograms(Collections.singletonList(Context.getProgramWorkflowService().getProgram(2)));
 
 		CohortIndicator ind = CohortIndicator.newCountIndicator("In HIV Program", new Mapped<InProgramCohortDefinition>(inProgram, null), null);
 		
@@ -43,14 +48,9 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		
 		MapDataSet ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		
-		int i = 0;
-		for (DataSetRow row : ds) {
-			System.out.println("Row " + (++i));
-			for (Map.Entry<DataSetColumn, Object> col : row.getColumnValues().entrySet()) {
-				IndicatorResult result = (IndicatorResult) col.getValue();
-				System.out.println(col.getKey().getDisplayName() + " -> " + result.getValue());
-			}
-		}
+		Assert.assertEquals(2, ds.getData().getColumnValue("1"));
+		Assert.assertEquals(1, ds.getData().getColumnValue("1.a"));
+		Assert.assertEquals(1, ds.getData().getColumnValue("1.b"));
 	}
 	
 }
