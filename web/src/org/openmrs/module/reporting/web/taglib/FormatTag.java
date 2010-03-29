@@ -237,7 +237,7 @@ public class FormatTag extends TagSupport {
 	    if (!(dataSet instanceof MapDataSet)) {
 	    	sb.append("<tr>");
 		    for (DataSetColumn col : cols) {
-		    	sb.append("<th>" + col.getDisplayName() + "</th>");
+		    	sb.append("<th>" + col.getLabel() + "</th>");
 		    }
 		    sb.append("</tr>");
 	    }
@@ -248,7 +248,7 @@ public class FormatTag extends TagSupport {
 	    	DataSetRow row = map.getData();
 	    	for (DataSetColumn col : cols) {
 	    		sb.append("<tr><th>")
-	    			.append(col.getDisplayName())
+	    			.append(col.getLabel())
 	    			.append("</th><td>")
 	    			.append(formatHelper(row.getColumnValue(col)))
 	    			.append("</td></tr>");

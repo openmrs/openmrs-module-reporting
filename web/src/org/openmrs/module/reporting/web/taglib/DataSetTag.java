@@ -66,7 +66,7 @@ public class DataSetTag extends BodyTagSupport {
 				for (DataSetColumn column : columns) { 
 					if (headerCount++<7) { 
 						pageContext.getOut().write("<th>");
-						pageContext.getOut().write(column.getDisplayName());
+						pageContext.getOut().write(column.getLabel());
 						pageContext.getOut().write("</th>");
 					}
 					

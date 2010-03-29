@@ -42,7 +42,7 @@ public class SimpleDataSet implements DataSet {
     public void addRow(DataSetRow row) {
         getRows().add(row);
         for (DataSetColumn c : row.getColumnValues().keySet()) {
-        	if (getColumnList().getColumn(c.getColumnKey()) == null) {
+        	if (getColumnList().getColumn(c.getName()) == null) {
         		getColumnList().addColumn(c);
         	}
         }

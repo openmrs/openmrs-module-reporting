@@ -56,7 +56,7 @@
 	<script type="text/javascript">
 		var series = [];
 		<c:forEach var="col" items="${dataSet.definition.columns}">
-			<c:if test="${col.columnKey != 'startDate' && col.columnKey != 'endDate' && col.columnKey != 'location'}">
+			<c:if test="${col.name != 'startDate' && col.name != 'endDate' && col.name != 'location'}">
 				series.push({ label: "${col.indicator.parameterizable.name}", data: [] });
 			</c:if>
 		</c:forEach>
@@ -64,7 +64,7 @@
 			<c:set var="startDate" value="${row.columnValuesByKey['startDate'].time}"/>
 			<c:set var="ind" value="0"/>
 			<c:forEach var="column" items="${row.columnValues}">
-				<c:if test="${column.key.columnKey != 'startDate' && column.key.columnKey != 'endDate' && column.key.columnKey != 'location'}">
+				<c:if test="${column.key.name != 'startDate' && column.key.name != 'endDate' && column.key.name != 'location'}">
 					series[${ind}].data.push([ ${startDate} , ${column.value.value} ]);
 					<c:set var="ind" value="${ind + 1}"/>
 				</c:if>

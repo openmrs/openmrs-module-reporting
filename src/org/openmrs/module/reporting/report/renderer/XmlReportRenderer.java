@@ -73,7 +73,7 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 			w.write("\t\t<row>");
 			for (DataSetColumn column : columns) {			
 				Object colValue = row.getColumnValue(column);
-				w.write("<" + column.getDisplayName() + ">");
+				w.write("<" + column.getLabel() + ">");
 				if (colValue != null) { 
 					if (colValue instanceof Cohort) {
 						w.write(Integer.toString(((Cohort) colValue).size()));
@@ -82,7 +82,7 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 						w.write(colValue.toString());
 					}
 				}
-				w.write("</" + column.getDisplayName() + ">");
+				w.write("</" + column.getLabel() + ">");
 			}
 			w.write("</row>\n");
 		}		

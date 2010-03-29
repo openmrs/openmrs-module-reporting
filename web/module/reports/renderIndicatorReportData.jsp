@@ -38,12 +38,12 @@
 								<!-- 
 								 <c:url var="url" value="/module/reporting/dashboard/manageCohortDashboard.form?cohort=none&indicator=${dataSetCol.key.indicator.parameterizable.uuid}"/>
 								-->
-								<c:url var="url"  value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetKey=${dataSetMapEntry.key}&savedColumnKey=${dataSetCol.key.columnKey}"/>
+								<c:url var="url"  value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetKey=${dataSetMapEntry.key}&savedColumnKey=${dataSetCol.key.name}"/>
 									<td align="left">
-										${dataSetCol.key.columnKey}
+										${dataSetCol.key.name}
 									</td>
 									<td align="left">
-										${dataSetCol.key.displayName}
+										${dataSetCol.key.label}
 									</td>
 									<td align="center" class="value" width="1%" nowrap>
 										<c:set var="result" value="${dataSetCol.value}"/>

@@ -63,7 +63,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	public void removeColumn(String key) {
 		for (Iterator<ColumnDefinition> i = columns.iterator(); i.hasNext(); ) {
-			if (i.next().getColumnKey().equals(key)) {
+			if (i.next().getName().equals(key)) {
 				i.remove();
 			}
 		}
@@ -107,8 +107,8 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 		private Mapped<? extends CohortIndicator> indicator;
 		private Map<String, String> dimensionOptions;
 		
-		public ColumnDefinition(String columnKey, String displayName, Mapped<? extends CohortIndicator> indicator, Map<String, String> dimensionOptions) {
-			super(columnKey, displayName, null, Object.class);
+		public ColumnDefinition(String name, String label, Mapped<? extends CohortIndicator> indicator, Map<String, String> dimensionOptions) {
+			super(name, label, Object.class);
 			this.indicator = indicator;
 			this.dimensionOptions = dimensionOptions;
 		}

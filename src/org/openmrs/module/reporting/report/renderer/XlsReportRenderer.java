@@ -63,7 +63,7 @@ public class XlsReportRenderer extends AbstractReportRenderer {
             
             // Display top header
             for (DataSetColumn column : columnList) {
-            	helper.addCell(column.getDisplayName(), styleHelper.getStyle("bold,border=bottom"));
+            	helper.addCell(column.getLabel(), styleHelper.getStyle("bold,border=bottom"));
             }
             for (DataSetRow row : dataset ) {
                 helper.nextRow();

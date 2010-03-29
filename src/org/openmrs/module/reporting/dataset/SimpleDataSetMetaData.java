@@ -39,11 +39,11 @@ public class SimpleDataSetMetaData implements DataSetMetaData {
 	}
 	
 	/**
-	 * @return the column whose column key matches the passed String
+	 * @return the column whose column name matches the passed String
 	 */
-	public DataSetColumn getColumn(String columnKey) {
+	public DataSetColumn getColumn(String columnName) {
 		for (DataSetColumn column : getColumns()) {
-			if (column.getColumnKey().equals(columnKey)) {
+			if (column.getName().equals(columnName)) {
 				return column;
 			}
 		}

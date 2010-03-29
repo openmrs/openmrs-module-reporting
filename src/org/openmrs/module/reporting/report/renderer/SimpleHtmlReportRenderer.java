@@ -80,7 +80,7 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 			w.write("<h4>" + key + "</h4>");
 			w.write("<table id=\"simple-html-dataset-" + key + "\" class=\"display simple-html-dataset\"><tr>");
 			for (DataSetColumn column : columns) {
-				w.write("<th>"+column.getColumnKey()+"</th>");
+				w.write("<th>"+column.getName()+"</th>");
 			}
 			w.write("</tr>");
 
@@ -88,7 +88,7 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 				w.write("<tr>");
 				for (DataSetColumn column : columns) {
 					w.write("<td>");
-					Object colValue = row.getColumnValue(column.getColumnKey());
+					Object colValue = row.getColumnValue(column.getName());
 					if (colValue != null) {
 						if (colValue instanceof Cohort) {
 							w.write(Integer.toString(((Cohort) colValue).size()));

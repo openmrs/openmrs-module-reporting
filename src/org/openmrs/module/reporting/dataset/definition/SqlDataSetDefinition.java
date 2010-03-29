@@ -82,10 +82,9 @@ public class SqlDataSetDefinition extends BaseDataSetDefinition {
 			ResultSetMetaData rsmd = resultSet.getMetaData();
 			for (int i=1; i<=rsmd.getColumnCount();i++) {
 				DataSetColumn column = new DataSetColumn();
-				column.setColumnKey(rsmd.getColumnName(i));
+				column.setName(rsmd.getColumnName(i));
 				column.setDataType(Context.loadClass(rsmd.getColumnClassName(i)));
-				column.setDisplayName(rsmd.getColumnLabel(i));
-				column.setDescription(rsmd.toString());				
+				column.setLabel(rsmd.getColumnLabel(i));		
 				columns.add(column);				
 			}			
 		} catch (Exception e) { 

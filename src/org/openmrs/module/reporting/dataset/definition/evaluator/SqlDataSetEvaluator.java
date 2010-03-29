@@ -93,7 +93,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 
 				DataSetRow dataSetRow = new DataSetRow();
 				for (DataSetColumn column : columns) { 
-					String value = resultSet.getString(column.getColumnKey());
+					String value = resultSet.getString(column.getName());
 					dataSetRow.addColumnValue(column, value);
 				}					
 				dataSet.addRow(dataSetRow);

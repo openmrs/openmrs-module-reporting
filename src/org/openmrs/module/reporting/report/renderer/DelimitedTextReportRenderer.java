@@ -111,7 +111,7 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 		w.write(getBeforeRowDelimiter());
 		for (DataSetColumn column : columns) {
 			w.write(getBeforeColumnDelimiter());
-			w.write(escape(column.getColumnKey()));
+			w.write(escape(column.getName()));
 			w.write(getAfterColumnDelimiter());
 		}
 		w.write(getAfterRowDelimiter());

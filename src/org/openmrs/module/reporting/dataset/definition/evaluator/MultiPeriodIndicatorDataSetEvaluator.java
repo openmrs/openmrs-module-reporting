@@ -50,8 +50,8 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 	private void copyIntoDataSet(SimpleDataSet ret, MapDataSet ds, MultiPeriodIndicatorDataSetDefinition definition, EvaluationContext ec) {
 	    DataSetRow row = new DataSetRow();
 	    for (DataSetColumn column : definition.getColumns()) {
-	    	if (keysToCopy.contains(column.getColumnKey())) {
-	    		row.addColumnValue(column, ec.getParameterValue(column.getColumnKey()));
+	    	if (keysToCopy.contains(column.getName())) {
+	    		row.addColumnValue(column, ec.getParameterValue(column.getName()));
 	    	} else {
 	    		row.addColumnValue(column, ds.getData(column));
 	    	}

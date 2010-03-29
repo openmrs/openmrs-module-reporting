@@ -30,7 +30,7 @@ public interface DataSetMetaData {
 	/**
 	 * @return the column whose column key matches the passed String
 	 */
-	public DataSetColumn getColumn(String columnKey);
+	public DataSetColumn getColumn(String columnName);
 	
 	/**
 	 * @return a List of all columns

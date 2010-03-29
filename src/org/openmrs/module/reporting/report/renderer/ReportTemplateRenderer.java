@@ -105,9 +105,9 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 					replacementValue = e.getValue().toString();
 				}
 			}
-			data.put(dataSetName + "." + e.getKey().getColumnKey(), replacementValue);
+			data.put(dataSetName + "." + e.getKey().getName(), replacementValue);
 			if (reportData.getDataSets().size() == 1) {
-				data.put(e.getKey().getColumnKey(), replacementValue);
+				data.put(e.getKey().getName(), replacementValue);
 			}
 		}
 

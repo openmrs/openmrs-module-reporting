@@ -95,7 +95,7 @@
 										<tr>
 											<c:forEach items="${dsd.value.parameterizable.columns}" var="column" varStatus="colStatus">
 												<c:if test="${colStatus.count < 7}">
-													<th style="border-bottom:1px solid black;">${column.columnKey}</th>
+													<th style="border-bottom:1px solid black;">${column.name}</th>
 												</c:if>
 												<c:if test="${colStatus.count == 7}">
 													<th style="border-bottom:1px solid black;">...</th>

@@ -89,7 +89,7 @@ $(document).ready(function() {
 									<div id="dataset-columns-${dsd.uuid}" style="display:none;">
 										<ul>
 											<c:forEach var="column" items="${dsd.columns}" varStatus="varStatus">
-												<li>${column.displayName}</li>
+												<li>${column.label}</li>
 											</c:forEach>
 										</ul>
 									</div>
@@ -158,7 +158,7 @@ $(document).ready(function() {
 								<tr>
 									<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="varStatus">				
 										<th>
-											${column.displayName}
+											${column.label}
 										</th>
 									</c:forEach>
 								</tr>

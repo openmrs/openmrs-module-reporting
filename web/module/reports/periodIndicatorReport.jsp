@@ -187,8 +187,8 @@
 									<tbody>
 										<c:forEach var="col" items="${report.indicatorDataSetDefinition.columns}">
 											<tr>
-												<td>${col.columnKey}</td>
-												<td>${col.displayName}</td>
+												<td>${col.name}</td>
+												<td>${col.label}</td>
 												<td>${col.indicator.parameterizable.name}</td>
 												<td>
 													<c:forEach var="dimOpt" items="${col.dimensionOptions}">
@@ -196,7 +196,7 @@
 													</c:forEach>
 												</td>
 												<td>
-													<a href="periodIndicatorReportRemoveColumn.form?key=${col.columnKey}&uuid=${report.uuid}">
+													<a href="periodIndicatorReportRemoveColumn.form?key=${col.name}&uuid=${report.uuid}">
 														<img src='<c:url value="/images/trash.gif"/>' border="0"/>
 													</a>
 												</td>

@@ -44,13 +44,12 @@ public class DataSetRow {
 	}
 	
 	/**
-	 * Retrieves the value for the row given the passed column key
-	 * @param columnKey
-	 * @param value
+	 * Retrieves the value for the row given the passed column name
+	 * @param columnName
 	 */
-	public Object getColumnValue(String columnKey) {
+	public Object getColumnValue(String columnName) {
 		for (Map.Entry<DataSetColumn, Object> e : getColumnValues().entrySet()) {
-			if (e.getKey().getColumnKey().equals(columnKey)) {
+			if (e.getKey().getName().equals(columnName)) {
 				return e.getValue();
 			}
 		}
@@ -80,7 +79,7 @@ public class DataSetRow {
 			return ret;
 		}
 		for (Map.Entry<DataSetColumn, Object> e : columnValues.entrySet()) {
-	        ret.put(e.getKey().getColumnKey(), e.getValue());
+	        ret.put(e.getKey().getName(), e.getValue());
         }
 		return ret;
 	}
@@ -95,7 +94,7 @@ public class DataSetRow {
 		StringBuilder sb = new StringBuilder();
 		for (Iterator<DataSetColumn> i = getColumnValues().keySet().iterator(); i.hasNext();) {
 			DataSetColumn c = i.next();
-			sb.append(c.getColumnKey() + "=" + getColumnValue(c) + (i.hasNext() ? ", " : ""));
+			sb.append(c.getName() + "=" + getColumnValue(c) + (i.hasNext() ? ", " : ""));
 		}
 		return sb.toString();
 	}

@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.dataset;
 import java.io.Serializable;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
  * A DataSetColumn is a generic way to store the information that
@@ -27,9 +28,8 @@ public class DataSetColumn implements Comparable<DataSetColumn>, Serializable {
 
 	//***** PROPERTIES *****
 	
-	private String columnKey;
-	private String displayName;
-	private String description;
+	private String name;
+	private String label;
 	private Class<?> dataType;
 	
 	//***** CONSTRUCTORS *****
@@ -42,19 +42,11 @@ public class DataSetColumn implements Comparable<DataSetColumn>, Serializable {
 	/**
 	 * Constructor to populate all properties
 	 */
-	public DataSetColumn(String columnKey, String displayName, String description, Class<?> dataType) {
+	public DataSetColumn(String name, String label, Class<?> dataType) {
 		this();
-		this.columnKey = columnKey;
-		this.displayName = displayName;
-		this.description = description;
+		this.name = name;
+		this.label = label;
 		this.dataType = dataType;
-	}
-	
-	/**
-	 * Constructor to populate key, name, type
-	 */
-	public DataSetColumn(String columnKey, String displayName, Class<?> dataType) {
-		this(columnKey, displayName, null, dataType);
 	}
 	
 	//***** INSTANCE METHODS *****
@@ -64,7 +56,7 @@ public class DataSetColumn implements Comparable<DataSetColumn>, Serializable {
      */
     @Override
     public String toString() {
-    	return getColumnKey() + " " + getDisplayName();
+    	return ObjectUtil.nvl(getLabel(), getName());
     }
 
 	/**
@@ -74,7 +66,7 @@ public class DataSetColumn implements Comparable<DataSetColumn>, Serializable {
     public boolean equals(Object obj) {
    		if (obj instanceof DataSetColumn) {
    			DataSetColumn col = (DataSetColumn) obj;
-			if (StringUtils.equals(this.getColumnKey(), col.getColumnKey())) {
+			if (StringUtils.equals(this.getName(), col.getName())) {
 				return true;
 			}
 		}
@@ -87,7 +79,7 @@ public class DataSetColumn implements Comparable<DataSetColumn>, Serializable {
     @Override
     public int hashCode() {
 		int hash = 7;
-		hash = 31 * hash + (this.getColumnKey() == null ? 0 : this.getColumnKey().hashCode());
+		hash = 31 * hash + (this.getName() == null ? 0 : this.getName().hashCode());
 		return hash;
     }
 
@@ -95,51 +87,37 @@ public class DataSetColumn implements Comparable<DataSetColumn>, Serializable {
      * @see Comparable#compareTo(Object)
      */
 	public int compareTo(DataSetColumn other) {		
-		return this.getDisplayName().compareTo(other.getDisplayName());		
+		return this.toString().compareTo(other.toString());		
 	}
 	
 	//****** PROPERTY ACCESS ******
 
 	/**
-	 * @return the columnKey
+	 * @return the name
 	 */
-	public String getColumnKey() {
-		return columnKey;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * @param columnKey the columnKey to set
+	 * @param name the name to set
 	 */
-	public void setColumnKey(String columnKey) {
-		this.columnKey = columnKey;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
-	 * @return the displayName
+	 * @return the label
 	 */
-	public String getDisplayName() {
-		return displayName;
+	public String getLabel() {
+		return label;
 	}
 
 	/**
-	 * @param displayName the displayName to set
+	 * @param label the label to set
 	 */
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	/**

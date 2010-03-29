@@ -127,7 +127,7 @@ $(function() {
 								<tr>
 									<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="varStatus">				
 										<th>
-											${column.displayName}
+											${column.label}
 										</th>
 									</c:forEach>
 								</tr>

@@ -108,77 +108,37 @@ $(document).ready(function() {
 					</ul>
 				</td>
 				<td>
-					<c:choose>
-						<c:when test="${dataSetDefinition.class.name == 'org.openmrs.module.reporting.dataset.definition.SerializedObjectDataSetDefinition'}">
-							<li>
-								<label class="desc">Properties</label>
-								<table id="dataset-definition-property-table" class="display">
-									<thead>
-										<tr>
-											<th align="left">Name</th>
-											<th align="left" width="100%">Type</th>
-										</tr>	
-									</thead>
-									<tbody>
-										<c:forEach items="${configurationProperties}" var="p" varStatus="varStatus">
-											<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
-												<td valign="top" nowrap="true">
-													${p.field.name}
-													<c:if test="${p.required}"><span style="color:red;">*</span></c:if>
-												</td>
-												<td style="vertical-align:top;">
-													<c:choose>
-														<c:when test="${p.field.name == 'serializedData'}">
-															<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${dataSetDefinition}" property="${p.field.name}" attributes="rows=20|cols=80"/>
-														</c:when>
-														<c:otherwise>
-															<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${dataSetDefinition}" property="${p.field.name}" attributes="size=80"/>
-														</c:otherwise>
-													</c:choose>
-												</td>
-											</tr>
-										</c:forEach>
-									</tbody>
-								</table>
-							</li>
-						</c:when>
-						<c:otherwise>
-							<li>
-								<div id="datasetColumns">
-									<h1>Dataset Columns</h1>
-									<table id="dataset-column-table" class="display">
-										<thead>
-											<tr>
-												<th>Remove</th>
-												<th>Column Key</th>
-												<th>Display Name</th>
-												<th>Data Type</th>
-											</tr>
-										</thead>
-										<tbody>					
-											<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="status">				
-												<tr>
-													<c:url var="removeColumnUrl" value="/module/reporting/datasets/removeColumn.form?uuid=${dataSetDefinition.uuid}&columnKey=${column.columnKey}"/>												
-													<td width="1%" align="center">
-														<a href="${removeColumnUrl}"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
-													</td>
-													<td>${column.columnKey}</td>
-													<td>${column.displayName}</td>
-													<td>${column.dataType}</td>
-												</tr>
-											</c:forEach>
-										</tbody>
-										<tfoot>
-											<tr>
-												<td colspan="4"><a href="#" id="add-column-button">New Column</a></td>											
-											</tr>
-										</tfoot>
-									</table>
-								</div>
-								<div align="left"></div>
-							</li>
-						</c:otherwise>
-					</c:choose>
+					<li>
+						<label class="desc">Properties</label>
+						<table id="dataset-definition-property-table" class="display">
+							<thead>
+								<tr>
+									<th align="left">Name</th>
+									<th align="left" width="100%">Type</th>
+								</tr>	
+							</thead>
+							<tbody>
+								<c:forEach items="${configurationProperties}" var="p" varStatus="varStatus">
+									<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
+										<td valign="top" nowrap="true">
+											${p.field.name}
+											<c:if test="${p.required}"><span style="color:red;">*</span></c:if>
+										</td>
+										<td style="vertical-align:top;">
+											<c:choose>
+												<c:when test="${p.field.name == 'serializedData'}">
+													<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${dataSetDefinition}" property="${p.field.name}" attributes="rows=20|cols=80"/>
+												</c:when>
+												<c:otherwise>
+													<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${dataSetDefinition}" property="${p.field.name}" attributes="size=80"/>
+												</c:otherwise>
+											</c:choose>
+										</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</li>
 				</td>
 			</tr>
 			<tr>

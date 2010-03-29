@@ -102,13 +102,13 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 			w.write("<table id=\"indicator-report-dataset-" + dataSetKey +"\" class=\"display indicator-report-dataset\">");
 			for (DataSetColumn column : columns) {
 				w.write("<tr>");
-				w.write("<td>"+column.getColumnKey()+"</td>");
-				w.write("<td>"+column.getDisplayName()+"</td>");
+				w.write("<td>"+column.getName()+"</td>");
+				w.write("<td>"+column.getLabel()+"</td>");
 								
 				// Wondering if you can even do this ... iterate over a dataset multiple times (once for each column?)
 				// If not, then we need to get the actual dataset data (i.e. MapDataSet).
 				for (DataSetRow row : dataset) {
-					Object cellValue = row.getColumnValue(column.getColumnKey());	
+					Object cellValue = row.getColumnValue(column.getName());	
 					if (cellValue instanceof CohortIndicatorAndDimensionResult) { 
 						CohortIndicatorAndDimensionResult result = (CohortIndicatorAndDimensionResult) cellValue;
 						w.write("<td>" + ((cellValue != null) ? result.getValue() : "n/a") + "</td>");					
