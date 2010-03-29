@@ -14,6 +14,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -26,7 +27,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
-import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
+import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -48,6 +49,8 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		lessThanOne.setMaxAge(1);
 		
 		CohortIndicator lessThanOneAtStart = new CohortIndicator();
+		lessThanOneAtStart.addParameter(ReportingConstants.START_DATE_PARAMETER);
+		lessThanOneAtStart.addParameter(ReportingConstants.END_DATE_PARAMETER);
 		lessThanOneAtStart.setUuid(UUID.randomUUID().toString());
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("effectiveDate", "${startDate}");
@@ -83,9 +86,9 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		for (DataSetRow row : result) {
 			System.out.println("Row: " + row);
 			if (((Date) row.getColumnValue("startDate")).compareTo(june1) < 0) {
-				Assert.assertEquals("Should be 1 before June", 1d, ((CohortIndicatorResult) row.getColumnValue("1")).getValue().doubleValue());
+				Assert.assertEquals("Should be 1 before June", 1d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue());
 			} else {
-				Assert.assertEquals("Should be 0 after June", 0d, ((CohortIndicatorResult) row.getColumnValue("1")).getValue().doubleValue());
+				Assert.assertEquals("Should be 0 after June", 0d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue());
 			}
 		}
 	}
