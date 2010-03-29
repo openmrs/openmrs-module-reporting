@@ -14,7 +14,7 @@ public class SimpleDataSet implements DataSet {
     
     private DataSetDefinition definition;
     private EvaluationContext context;
-    private SimpleDataSetMetaData columnList;
+    private SimpleDataSetMetaData columnList = new SimpleDataSetMetaData();
     private List<DataSetRow> rows;
     
     // *************

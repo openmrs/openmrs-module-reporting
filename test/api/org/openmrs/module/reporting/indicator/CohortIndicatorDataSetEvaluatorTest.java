@@ -48,9 +48,9 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		
 		MapDataSet ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		
-		Assert.assertEquals(2, ds.getData().getColumnValue("1"));
-		Assert.assertEquals(1, ds.getData().getColumnValue("1.a"));
-		Assert.assertEquals(1, ds.getData().getColumnValue("1.b"));
+		Assert.assertEquals(2, ((IndicatorResult) ds.getData().getColumnValue("1")).getValue().intValue());
+		Assert.assertEquals(1, ((IndicatorResult) ds.getData().getColumnValue("1.a")).getValue().intValue());
+		Assert.assertEquals(1, ((IndicatorResult) ds.getData().getColumnValue("1.b")).getValue().intValue());
 	}
 	
 }
