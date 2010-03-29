@@ -43,10 +43,8 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 	 */
 	@Before
 	public void runBeforeAllTests() throws Exception {
-		initializeInMemoryDatabase();
 		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
-		authenticate();	
-	}	
+	}
 	
 	/**
 	 * @see GenderCohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
