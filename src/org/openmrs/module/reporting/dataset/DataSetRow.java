@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 
 /**
  * Represents one row of data in a {@link DataSet}

@@ -34,5 +34,10 @@ public interface DataSet extends Evaluated<DataSetDefinition>, Iterable<DataSetR
 	 * @return an iterator over the rows in this dataset.
 	 * @see Iterable#iterator()
 	 */
-	public Iterator<DataSetRow> iterator();	
+	public Iterator<DataSetRow> iterator();
+	
+	/**
+	 * @return the {@link DataSetMetaData} which contains information about the columns in this DataSet
+	 */
+	public DataSetMetaData getMetaData();
 }

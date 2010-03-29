@@ -25,8 +25,8 @@ import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
@@ -64,7 +64,7 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 		Writer w = new PrintWriter(out);
 		
 		DataSet dataset = results.getDataSets().values().iterator().next();	
-		List<DataSetColumn> columns = dataset.getDefinition().getColumns();
+		List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 		
 		w.write("<?xml version=\"1.0\"?>\n");
 		w.write("<dataset>\n");

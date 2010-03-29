@@ -19,8 +19,8 @@ import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;

@@ -13,13 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.SimpleDataSetColumn;
 import org.openmrs.reporting.export.DataExportReportObject;
-import org.openmrs.reporting.export.ExportColumn;
 
 /**
  * Definition of a dataset that produces one-row-per-obs. Output might look like: 
@@ -30,6 +24,7 @@ import org.openmrs.reporting.export.ExportColumn;
  * 
  * @see DataExportDataSet
  */
+@SuppressWarnings("deprecation")
 public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	
 	/* Serial version UID */
@@ -50,21 +45,7 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	public DataExportDataSetDefinition(DataExportReportObject dataExport) { 
 		this.dataExport = dataExport;
 	}
-	
-	/**
-	 * @see DataSetDefinition#getColumns()
-	 */
-    public List<DataSetColumn> getColumns() {
-		List<DataSetColumn> columns = new ArrayList<DataSetColumn>();
-		for (ExportColumn exportColumn : dataExport.getColumns()) {
-			String colName = exportColumn.getColumnName();
-			// TODO: Add and retrieve dataType from ExportColumn
-			columns.add(new SimpleDataSetColumn(colName, colName, String.class));
-		}
-		return columns;
-	}
 
-    
 	public String getUuid() { 
 		return dataExport.getUuid();
 	}

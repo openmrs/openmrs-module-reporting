@@ -22,8 +22,8 @@ import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
@@ -84,15 +84,15 @@ public class ReportDashboardController {
 			if (e.getKey().equals(savedDataSetKey)) { 
 				
 				MapDataSet mapDataSet = (MapDataSet) e.getValue();
-				DataSetDefinition definition = (DataSetDefinition) mapDataSet.getDefinition();
-				DataSetColumn dataSetColumn = definition.getColumn(savedColumnKey);
+				
+				DataSetColumn dataSetColumn = mapDataSet.getColumnList().getColumn(savedColumnKey);
 				CohortIndicatorAndDimensionResult result = (CohortIndicatorAndDimensionResult) mapDataSet.getData(dataSetColumn);	
 				Cohort selectedCohort = result.getCohortIndicatorAndDimensionCohort();
 				
 				model.addAttribute("selectedColumn", dataSetColumn);
 				model.addAttribute("selectedCohort", selectedCohort);
-				model.addAttribute("patients", Context.getPatientSetService().getPatients(selectedCohort.getMemberIds()));		
-				
+				model.addAttribute("patients", Context.getPatientSetService().getPatients(selectedCohort.getMemberIds()));	
+
 				// Evaluate the default patient dataset definition
 				DataSetDefinition dsd = null;
 				if (applyDataSetId != null) {

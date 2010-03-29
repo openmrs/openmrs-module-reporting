@@ -13,18 +13,12 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.ProgramWorkflow;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.SimpleDataSetColumn;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
@@ -61,34 +55,6 @@ public class SimplePatientDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	public SimplePatientDataSetDefinition(String name, String description) {
 		super(name, description);
-	}
-	
-	//****** INSTANCE METHODS ******
-	
-	/** 
-	 * @see DataSetDefinition#getColumns()
-	 */
-	public List<DataSetColumn> getColumns() {
-		List<DataSetColumn> columns = new LinkedList<DataSetColumn>();
-		for (PatientIdentifierType t : getIdentifierTypes()) {
-			columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
-		}
-		for (String s : getPatientProperties()) {
-			try {
-				Method m = Patient.class.getMethod("get" + StringUtils.capitalize(s), new Class[] {});
-				columns.add(new SimpleDataSetColumn(s, s, m.getReturnType()));
-			}
-			catch (Exception e) {
-				log.error("Unable to get patient property for dataset: " + s, e);
-			}
-		}
-		for (PersonAttributeType t : getPersonAttributeTypes()) {
-			columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
-		}
-		for (ProgramWorkflow t : getProgramWorkflows()) {
-			columns.add(new SimpleDataSetColumn(t.getName(), t.getName(), String.class));
-		}
-		return columns;
 	}
 	
 	//****** PROPERTY ACCESS ******

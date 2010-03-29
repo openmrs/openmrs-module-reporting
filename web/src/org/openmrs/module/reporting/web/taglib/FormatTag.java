@@ -20,9 +20,9 @@ import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.MapDataSet;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.report.ReportData;
 import org.springframework.util.StringUtils;
 
@@ -229,7 +229,7 @@ public class FormatTag extends TagSupport {
 	 */
 	private void printDataSet(StringBuilder sb, String title, DataSet dataSet) {
 	    sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
-	    List<DataSetColumn> cols = dataSet.getDefinition().getColumns();
+	    List<DataSetColumn> cols = dataSet.getMetaData().getColumns();
 	    sb.append("<thead>");
 	    if (StringUtils.hasText(title)) {
 	    	sb.append("<tr bgcolor=\"#f0f0f0\"><th colspan=\"" + cols.size() + "\">" + title + "</th></tr>");

@@ -22,8 +22,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 
 public class DataSetTag extends BodyTagSupport {
 	
@@ -56,7 +56,7 @@ public class DataSetTag extends BodyTagSupport {
 			
 			
 			if (dataSet != null) { 
-				List<DataSetColumn> columns = dataSet.getDefinition().getColumns();
+				List<DataSetColumn> columns = dataSet.getMetaData().getColumns();
 						
 				pageContext.getOut().write("<table id=\"" + id + "\" class=\"" + cssClass + "\">");
 				pageContext.getOut().write("<thead>");
@@ -71,7 +71,7 @@ public class DataSetTag extends BodyTagSupport {
 					}
 					
 				}
-				if (dataSet.getDefinition().getColumns().size() > 7 ) { 
+				if (dataSet.getMetaData().getColumns().size() > 7 ) { 
 					pageContext.getOut().write("<th>Showing " + headerCount + " out of " + columns.size() + " columns</th>");
 				}
 				
@@ -91,7 +91,7 @@ public class DataSetTag extends BodyTagSupport {
 							pageContext.getOut().write("</td>");
 						}
 					}
-					if (dataSet.getDefinition().getColumns().size() > 7 ) { 
+					if (dataSet.getMetaData().getColumns().size() > 7 ) { 
 						pageContext.getOut().write("<td>...</td>");
 					}	
 					pageContext.getOut().write("</tr>");

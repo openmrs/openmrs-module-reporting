@@ -6,8 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.SimpleDataSetColumn;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
@@ -101,7 +100,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
     	this.columns = columns;
     }
 
-	public class ColumnDefinition extends SimpleDataSetColumn {
+	public class ColumnDefinition extends DataSetColumn {
 
         private static final long serialVersionUID = 1L;
         

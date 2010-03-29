@@ -14,8 +14,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
@@ -59,7 +59,7 @@ public class XlsReportRenderer extends AbstractReportRenderer {
             DataSet dataset = e.getValue();
             HSSFSheet sheet = wb.createSheet(ExcelSheetHelper.fixSheetName(e.getKey()));
             ExcelSheetHelper helper = new ExcelSheetHelper(sheet);
-            List<DataSetColumn> columnList = dataset.getDefinition().getColumns();
+            List<DataSetColumn> columnList = dataset.getMetaData().getColumns();
             
             // Display top header
             for (DataSetColumn column : columnList) {

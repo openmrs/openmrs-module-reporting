@@ -33,9 +33,9 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -82,10 +82,15 @@ public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 		
 		for (Patient p : patients) {			
 			DataSetRow row = new DataSetRow();
+			for (PatientIdentifierType t : definition.getIdentifierTypes()) {
+				DataSetColumn c = new DataSetColumn(t.getName(), t.getName(), String.class);
+				PatientIdentifier id = p.getPatientIdentifier(t);
+				row.addColumnValue(c, id == null ? null : id.getIdentifier());
+			}
 			for (String s : definition.getPatientProperties()) {
 				try {
-					DataSetColumn c = definition.getColumn(s);
 					Method m = Patient.class.getMethod("get" + StringUtils.capitalize(s), new Class[] {});
+					DataSetColumn c = new DataSetColumn(s, s, m.getReturnType());
 					Object o = m.invoke(p, new Object[] {});
 					row.addColumnValue(c, o);
 				}
@@ -93,21 +98,14 @@ public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 					log.error("Unable to get property " + s + " on patient for dataset", e);
 				}
 			}
-			
-			for (PatientIdentifierType t : definition.getIdentifierTypes()) {
-				DataSetColumn c = definition.getColumn(t.getName());
-				PatientIdentifier id = p.getPatientIdentifier(t);
-				row.addColumnValue(c, id == null ? null : id.getIdentifier());
-			}
-			
 			for (PersonAttributeType t : definition.getPersonAttributeTypes()) {
-				DataSetColumn c = definition.getColumn(t.getName());
+				DataSetColumn c = new DataSetColumn(t.getName(), t.getName(), String.class);
 				PersonAttribute att = p.getAttribute(t);
 				row.addColumnValue(c, att == null ? null : att.getHydratedObject());
 			}
 			
 			for (ProgramWorkflow t : definition.getProgramWorkflows()) {
-				DataSetColumn c = definition.getColumn(t.getName());
+				DataSetColumn c = new DataSetColumn(t.getName(), t.getName(), String.class);
 				PatientState ps = states.get(t).get(p.getPatientId());
 				row.addColumnValue(c, (ps == null || !ps.getActive()) ? null : ps.getState().getName());
 			}

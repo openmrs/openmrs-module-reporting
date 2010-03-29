@@ -25,8 +25,8 @@ import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
@@ -76,7 +76,7 @@ public class SimpleHtmlReportRenderer extends AbstractReportRenderer {
 		w.write("<body>");
 		for (String key : results.getDataSets().keySet()) {
 			DataSet dataset = results.getDataSets().get(key);
-			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
+			List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 			w.write("<h4>" + key + "</h4>");
 			w.write("<table id=\"simple-html-dataset-" + key + "\" class=\"display simple-html-dataset\"><tr>");
 			for (DataSetColumn column : columns) {

@@ -6,10 +6,10 @@ import java.util.List;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataSetDefinition.Iteration;
@@ -53,7 +53,7 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 	    	if (keysToCopy.contains(column.getColumnKey())) {
 	    		row.addColumnValue(column, ec.getParameterValue(column.getColumnKey()));
 	    	} else {
-	    		row.addColumnValue(column, ds.getData().getColumnValue(column));
+	    		row.addColumnValue(column, ds.getData(column));
 	    	}
 	    }
     	ret.addRow(row);

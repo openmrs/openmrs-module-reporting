@@ -8,8 +8,8 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition.ColumnDefinition;
@@ -41,6 +41,8 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 	 */
 	public MapDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
+		CohortIndicatorDataSetDefinition dsd = (CohortIndicatorDataSetDefinition) dataSetDefinition;
+		
 		if (context == null) {
 			context = new EvaluationContext();
 		}
@@ -52,10 +54,8 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		DimensionService ds = Context.getService(DimensionService.class);
 		
 		MapDataSet ret = new MapDataSet(dataSetDefinition, context);
-		ret.setName(dataSetDefinition.getName());
-		
-		CohortIndicatorDataSetDefinition dsd = (CohortIndicatorDataSetDefinition) dataSetDefinition;
-		
+		ret.getColumnList().setColumns(dsd.getColumns());
+
 		// evaluate all dimension options
 		Map<String, Map<String, Cohort>> dimensionCalculationCache = new HashMap<String, Map<String, Cohort>>();
 		for (Map.Entry<String, Mapped<CohortDefinitionDimension>> e : dsd.getDimensions().entrySet()) {
@@ -96,7 +96,4 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		
 		return ret;
 	}
-
-
-	
 }

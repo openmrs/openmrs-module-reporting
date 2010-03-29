@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -74,7 +73,7 @@ public class DataExportDataSetEvaluatorTest extends BaseModuleContextSensitiveTe
 		
 		DataSet dataSet = dsds.evaluate(dataSetDefinition, evalContext);
 	
-		for (DataSetColumn column : dataSet.getDefinition().getColumns()) { 
+		for (DataSetColumn column : dataSet.getMetaData().getColumns()) { 
 			log.info("column: " + column.getColumnKey() + " " + column.getDataType());		
 		}
 		Assert.fail("Need to add test conditions");

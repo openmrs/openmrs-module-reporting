@@ -25,8 +25,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -105,7 +105,7 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 		Writer w = new PrintWriter(out);
 		DataSet dataset = results.getDataSets().values().iterator().next();
 		
-		List<DataSetColumn> columns = dataset.getDefinition().getColumns();
+		List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 		
 		// header row
 		w.write(getBeforeRowDelimiter());

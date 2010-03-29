@@ -10,9 +10,9 @@ import java.util.LinkedHashMap;
 
 import org.junit.Test;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.module.reporting.dataset.column.SimpleDataSetColumn;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.test.Verifies;
 
@@ -63,7 +63,7 @@ public class XlsReportRendererTest {
     private DataSetRow makeRowHelper(Object... o) {
     	DataSetRow ret = new DataSetRow();
         for (int i = 0; i < o.length; i += 2) {
-            ret.addColumnValue(new SimpleDataSetColumn((String) o[i]), o[i + 1]);
+            ret.addColumnValue(new DataSetColumn((String) o[i], (String) o[i], Object.class), o[i + 1]);
         }
         return ret;
     }

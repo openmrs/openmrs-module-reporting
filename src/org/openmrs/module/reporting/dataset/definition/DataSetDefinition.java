@@ -13,10 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
-import java.util.List;
-
 import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.evaluator.DataSetEvaluator;
 import org.openmrs.module.reporting.evaluation.Definition;
 
@@ -29,17 +26,5 @@ import org.openmrs.module.reporting.evaluation.Definition;
  * @see DataSet
  */
 public interface DataSetDefinition extends Definition {
-        
-	/**
-	 * Gets a list of dataset columns.
-	 * @return
-	 */
-	public List<DataSetColumn> getColumns();
-	
-	/**
-	 * Returns the {@link DataSetColumn} defined by the passed column key
-	 * @param columnKey
-	 * @return
-	 */
-	public DataSetColumn getColumn(String columnKey);
+
 }	

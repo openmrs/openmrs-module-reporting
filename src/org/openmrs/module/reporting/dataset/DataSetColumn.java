@@ -11,64 +11,56 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column;
+package org.openmrs.module.reporting.dataset;
+
+import java.io.Serializable;
 
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Simple Implementation of a DataSetColumn
+ * A DataSetColumn is a generic way to store the information that
+ * makes up a column in a DataSet.
  */
-public class SimpleDataSetColumn implements DataSetColumn {
+public class DataSetColumn implements Comparable<DataSetColumn>, Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Properties
-	 */
+	//***** PROPERTIES *****
+	
 	private String columnKey;
 	private String displayName;
 	private String description;
 	private Class<?> dataType;
 	
+	//***** CONSTRUCTORS *****
+	
 	/**
 	 * Default Constructor
 	 */
-	public SimpleDataSetColumn() { } 
+	public DataSetColumn() { } 
 	
 	/**
 	 * Constructor to populate all properties
 	 */
-	public SimpleDataSetColumn(String columnKey, String displayName, String description, Class<?> dataType) {
+	public DataSetColumn(String columnKey, String displayName, String description, Class<?> dataType) {
+		this();
 		this.columnKey = columnKey;
 		this.displayName = displayName;
 		this.description = description;
 		this.dataType = dataType;
 	}
-
-	/**
-	 * Constructor to populate all properties, using the same description as key,
-	 * and setting the Class to Object
-	 */
-	public SimpleDataSetColumn(String key) { 
-		this(key, key, key, Object.class);
-	}
 	
 	/**
-	 * Constructor to populate all properties, using the same name and description as key
+	 * Constructor to populate key, name, type
 	 */
-	public SimpleDataSetColumn(String key, Class<?> dataType) {
-		this(key, key, key, dataType);
+	public DataSetColumn(String columnKey, String displayName, Class<?> dataType) {
+		this(columnKey, displayName, null, dataType);
 	}
 	
-	/**
-	 * Constructor to populate all properties using the same name as key
-	 */
-	public SimpleDataSetColumn(String key, String description, Class<?> dataType) {
-		this(key, key, description, dataType);
-	}
+	//***** INSTANCE METHODS *****
 
 	/**
-     * @see java.lang.Object#toString()
+     * @see Object#toString()
      */
     @Override
     public String toString() {
@@ -76,7 +68,7 @@ public class SimpleDataSetColumn implements DataSetColumn {
     }
 
 	/**
-     * @see java.lang.Object#equals(java.lang.Object)
+     * @see Object#equals(Object)
      */
     @Override
     public boolean equals(Object obj) {
@@ -90,7 +82,7 @@ public class SimpleDataSetColumn implements DataSetColumn {
     }
 
 	/**
-     * @see java.lang.Object#hashCode()
+     * @see Object#hashCode()
      */
     @Override
     public int hashCode() {

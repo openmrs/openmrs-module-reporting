@@ -6,8 +6,7 @@ import java.util.List;
 
 import org.openmrs.Location;
 import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.SimpleDataSetColumn;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 
 
 /**
@@ -38,10 +37,10 @@ public class MultiPeriodIndicatorDataSetDefinition extends BaseDataSetDefinition
 
 	public List<DataSetColumn> getColumns() {
 		List<DataSetColumn> ret = new ArrayList<DataSetColumn>();
-		ret.add(new SimpleDataSetColumn("startDate", "Start Date", null, Date.class));
-		ret.add(new SimpleDataSetColumn("endDate", "End Date", null, Date.class));
-		ret.add(new SimpleDataSetColumn("location", "Location", null, Location.class));
-		//ret.add(new SimpleDataSetColumn("evaluationContext", "Evaluation Context", null, EvaluationContext.class));
+		ret.add(new DataSetColumn("startDate", "Start Date", null, Date.class));
+		ret.add(new DataSetColumn("endDate", "End Date", null, Date.class));
+		ret.add(new DataSetColumn("location", "Location", null, Location.class));
+		//ret.add(new DataSetColumn("evaluationContext", "Evaluation Context", null, EvaluationContext.class));
 		ret.addAll(baseDefinition.getColumns());
 		return ret;
     }

@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 
 /**
@@ -50,20 +49,6 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
 		this.setDescription(description);
 	}
 
-	/** 
-	 * @see DataSetDefinition#getColumn(String)
-	 */
-	public DataSetColumn getColumn(String columnKey) {
-		for (DataSetColumn c : getColumns()) {
-			if (c.getColumnKey().equals(columnKey)) {
-				return c;
-			}
-		}
-		return null;
-	}
-	
-	
-	
 	//***** INSTANCE METHODS *****
 
 	/** @see Object#equals(Object) */

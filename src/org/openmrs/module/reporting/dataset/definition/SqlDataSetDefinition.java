@@ -21,8 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.SimpleDataSetColumn;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.evaluator.SqlDataSetEvaluator;
 import org.openmrs.util.DatabaseUpdater;
 
@@ -82,7 +81,7 @@ public class SqlDataSetDefinition extends BaseDataSetDefinition {
 			
 			ResultSetMetaData rsmd = resultSet.getMetaData();
 			for (int i=1; i<=rsmd.getColumnCount();i++) {
-				SimpleDataSetColumn column = new SimpleDataSetColumn();
+				DataSetColumn column = new DataSetColumn();
 				column.setColumnKey(rsmd.getColumnName(i));
 				column.setDataType(Context.loadClass(rsmd.getColumnClassName(i)));
 				column.setDisplayName(rsmd.getColumnLabel(i));

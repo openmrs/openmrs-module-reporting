@@ -25,8 +25,8 @@ import java.util.Map;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.column.DataSetColumn;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -83,7 +83,7 @@ public class IndicatorReportRenderer extends AbstractReportRenderer {
 
 			
 			//MapDataSet mapDataSet = (MapDataSet) dataset;
-			List<DataSetColumn> columns = dataset.getDefinition().getColumns();
+			List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 			w.write("<h1>" + results.getDefinition().getName() + "</h1>");			
 			w.write("<span>" + results.getDefinition().getDescription() + "</span>");			
 			w.write("<ul>");

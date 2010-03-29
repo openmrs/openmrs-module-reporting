@@ -14,11 +14,14 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
@@ -34,6 +37,7 @@ import org.openmrs.util.OpenmrsUtil;
  * @see DataSet
  */
 @Handler(supports={DataExportDataSetDefinition.class})
+@SuppressWarnings("deprecation")
 public class DataExportDataSetEvaluator implements DataSetEvaluator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
@@ -64,6 +68,12 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
 	
 			// Get column names 
 			String [] columns = rows[0].split("\\t");
+			Map<String, DataSetColumn> cols = new HashMap<String, DataSetColumn>();
+			for (String s : columns) {
+				DataSetColumn c = new DataSetColumn(s, s, String.class);
+				cols.put(s, c);
+				dataSet.getColumnList().addColumn(c);
+			}
 	
 			// Iterate over remaining rows
 			for (int i=1; i<rows.length;i++) { 
@@ -71,7 +81,7 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
 				String [] cells = rows[i].split("\\t");
 				for (int j=0; j<cells.length; j++) { 	
 					log.error("column=" + columns[j] + " value=" + cells[j]);
-					row.addColumnValue(definition.getColumn(columns[j]), cells[j]);
+					row.addColumnValue(cols.get(columns[j]), cells[j]);
 				}
 				dataSet.addRow(row);	
 			}
