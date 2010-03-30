@@ -8,6 +8,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
+import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 
 /**
  * A wrapper around a POI HSSFSheet that lets you interact via
@@ -96,7 +97,10 @@ public class ExcelSheetHelper {
             cell.setCellValue((Boolean) cellValue);
         } else if (cellValue instanceof CohortIndicatorResult) {
         	cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
-            cell.setCellValue((Integer) ((CohortIndicatorResult) cellValue).getValue());
+            cell.setCellValue(((CohortIndicatorResult) cellValue).getValue().doubleValue());
+        } else if (cellValue instanceof CohortIndicatorAndDimensionResult) {
+        	cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
+            cell.setCellValue(((CohortIndicatorAndDimensionResult) cellValue).getValue().doubleValue());
         } else {
             throw new RuntimeException("Do not know how to handle: " + cellValue.getClass());
         }

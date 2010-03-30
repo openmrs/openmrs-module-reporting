@@ -101,7 +101,7 @@ public class ReportHistoryController {
 	}
 	
 	@RequestMapping("/module/reporting/reports/reportHistoryOpen")
-	public ModelAndView openFromHistory(@RequestParam("uuid") String uuid,
+	public String openFromHistory(@RequestParam("uuid") String uuid,
 	                            HttpServletResponse response,
 	                            WebRequest request,
 	                            ModelMap model) throws IOException {
@@ -115,12 +115,11 @@ public class ReportHistoryController {
 				String url = ((WebReportRenderer) rm.getRenderer()).getLinkUrl(report.getRequest().getReportDefinition());
 				if (!url.startsWith("/"))
 					url = "/" + url;
-				url = request.getContextPath() + url;
 				request.setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, url, WebRequest.SCOPE_SESSION);
-				return new ModelAndView(new RedirectView(url));
+				return "redirect:" + url;
 			} else {
 				model.addAttribute("report", report);
-				return new ModelAndView("/module/reporting/reports/reportHistoryOpen", model);
+				return "/module/reporting/reports/reportHistoryOpen";
 			}
 		} catch (APIException ex) {
 			if (ex.getMessage().startsWith("The persisted Report file is missing")) {
@@ -129,7 +128,7 @@ public class ReportHistoryController {
 				log.error("Unexpected exception", ex);
 				request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, ex.getMessage(), WebRequest.SCOPE_SESSION);
 			}
-			return new ModelAndView(new RedirectView("/module/reporting/reports/reportHistory.form"));
+			return "redirect:/module/reporting/reports/reportHistory.form";
 		}
 	}
 	

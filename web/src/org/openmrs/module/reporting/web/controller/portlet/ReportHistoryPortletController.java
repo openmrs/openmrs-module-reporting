@@ -31,7 +31,8 @@ public class ReportHistoryPortletController extends ReportingPortletController {
 		Map<ReportRequest, String> shortNames = new HashMap<ReportRequest, String>();
 		Map<ReportRequest, Boolean> isWebRenderer = new HashMap<ReportRequest, Boolean>();
 		for (ReportRequest r : complete) {
-			if (r.getRenderingMode().getRenderer() instanceof WebReportRenderer) {
+			if (r.getRenderingMode() != null && r.getRenderingMode().getRenderer() != null
+					&& r.getRenderingMode().getRenderer() instanceof WebReportRenderer) {
 				shortNames.put(r, "Web");
 				isWebRenderer.put(r, true);
 			} else {
