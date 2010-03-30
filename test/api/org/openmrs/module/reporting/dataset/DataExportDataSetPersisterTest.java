@@ -44,8 +44,7 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 	public void setupInitialData() {
 		{
 			DataExportReportObject ro = new DataExportReportObject();
-			ro.setName("Test 1");
-			ro.setUuid("e3f05ec6-3c1b-11df-8f16-001e378eb67e");
+			ro.setName("Test Last Weight");
 			ro.setDescription("Description 1");
 			ro.addSimpleColumn("patientId", "patientId");
 			ro.addConceptColumn("weight", "LAST", 1, "5089", null);
@@ -53,7 +52,7 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 		}
 		{
 			DataExportReportObject ro = new DataExportReportObject();
-			ro.setName("Test 2");
+			ro.setName("Test CD4");
 			ro.setDescription("Description 2");
 			ro.addSimpleColumn("patientId", "patientId");
 			ro.addConceptColumn("cd4", "LAST", 1, "5497", null);
@@ -61,7 +60,7 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 		}
 		{
 			DataExportReportObject ro = new DataExportReportObject();
-			ro.setName("Test 3");
+			ro.setName("Test Name");
 			ro.setDescription("Description 3");
 			ro.addSimpleColumn("patientId", "patientId");
 			ro.addSimpleColumn("name", "personName");
@@ -69,7 +68,7 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 		}
 		{
 			DataExportReportObject ro = new DataExportReportObject();
-			ro.setName("Test 4");
+			ro.setName("Test First 3 Weights");
 			ro.setDescription("Description 4");
 			ro.addSimpleColumn("patientId", "patientId");
 			ro.addConceptColumn("weight", "FIRST", 3, "5089", null);
@@ -77,7 +76,7 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 		}
 		{
 			DataExportReportObject ro = new DataExportReportObject();
-			ro.setName("Test 5");
+			ro.setName("Test Gender");
 			ro.setDescription("Description 5");
 			ro.addSimpleColumn("patientId", "patientId");
 			ro.addSimpleColumn("gender", "patient.gender");
@@ -162,35 +161,20 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 	public void shouldReturnDataSetDefinitionIfNameMatches() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
 		List<DataSetDefinition> def = 
-			persister.getDataSetDefinitions("HIV Program Data", true);
+			persister.getDataSetDefinitions("Test First 3 Weights", true);
 		Assert.assertEquals(1, def.size()); 		
 	}
 
 	@Test
-	public void shouldCreateNewDataSetDefinition() throws Exception { 
-		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		DataExportReportObject dataExport = (DataExportReportObject)
-			Context.getService(ReportObjectService.class).getReportObject(45);
-		dataExport.setReportObjectId(null);
-		dataExport.setName("My Data Set Definition");
-		DataSetDefinition datasetDefinition = new DataExportDataSetDefinition(dataExport);		
-		datasetDefinition = persister.saveDataSetDefinition(datasetDefinition);
-		DataSetDefinition def = 
-			persister.getDataSetDefinition(45);
-		log.info("newly created dataset definition: " + def.getId());
-		Assert.assertNotNull("Should create new dataset definition", def.getId()); 	
-	}
-	@Test
 	public void shouldUpdateExistingDataSetDefinition() throws Exception { 
-
-		DataSetDefinitionPersister persister = 
-			new DataExportDataSetDefinitionPersister();
+		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
 		// Save an existing data set definition
-		DataSetDefinition datasetDefinition = persister.getDataSetDefinition(45);
+		DataSetDefinition datasetDefinition = persister.getDataSetDefinitions("Test First 3 Weights", true).get(0);
+		int idBefore = datasetDefinition.getId();
 		datasetDefinition.setName("My Data Set Definition");
 		datasetDefinition = persister.saveDataSetDefinition(datasetDefinition);
-		datasetDefinition = persister.getDataSetDefinition(45);
-		Assert.assertEquals("Should have same ID as before save", new Integer(45), datasetDefinition.getId());
+		datasetDefinition = persister.getDataSetDefinition(idBefore);
+		Assert.assertEquals("Should have same ID as before save", new Integer(idBefore), datasetDefinition.getId());
 		Assert.assertEquals("Should have new name", "My Data Set Definition", datasetDefinition.getName());
 
 	}
