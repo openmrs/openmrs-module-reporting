@@ -2,22 +2,24 @@ package org.openmrs.module.reporting.cohort.definition;
 
 import java.util.List;
 
+import org.openmrs.Concept;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
-@Localized("reporting.TextObsCohortDefinition")
-public class TextObsCohortDefinition extends BaseObsCohortDefinition {
-
+@Localized("reporting.CodedObsCohortDefinition")
+public class CodedObsCohortDefinition extends BaseObsCohortDefinition {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@ConfigurationProperty(group="constraint")
 	SetComparator operator;
 	
 	@ConfigurationProperty(group="constraint")
-	List<String> valueList;
+	List<Concept> valueList;
+	
+	public CodedObsCohortDefinition() { }
 
-	public TextObsCohortDefinition() { }
 	
     /**
      * @return the operator
@@ -38,7 +40,7 @@ public class TextObsCohortDefinition extends BaseObsCohortDefinition {
     /**
      * @return the valueList
      */
-    public List<String> getValueList() {
+    public List<Concept> getValueList() {
     	return valueList;
     }
 
@@ -46,9 +48,8 @@ public class TextObsCohortDefinition extends BaseObsCohortDefinition {
     /**
      * @param valueList the valueList to set
      */
-    public void setValueList(List<String> valueList) {
+    public void setValueList(List<Concept> valueList) {
     	this.valueList = valueList;
     }
-	
-	
+
 }

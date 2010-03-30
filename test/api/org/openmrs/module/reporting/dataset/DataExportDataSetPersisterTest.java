@@ -204,10 +204,11 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 		DataSetDefinitionPersister persister = 
 			new DataExportDataSetDefinitionPersister();
 		DataSetDefinition beforePurge = 
-			persister.getDataSetDefinition(new Integer(45));
+			persister.getDataSetDefinitions("Test First 3 Weights", true).get(0);
+		int idBefore = beforePurge.getId();
 		persister.purgeDataSetDefinition(beforePurge);
 		DataSetDefinition afterPurge = 
-			persister.getDataSetDefinition(new Integer(45));
+			persister.getDataSetDefinition(idBefore);
 		Assert.assertNull(afterPurge);
 	}
 	
