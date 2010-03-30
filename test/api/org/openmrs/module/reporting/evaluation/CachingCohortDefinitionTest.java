@@ -24,13 +24,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
  *
  */
-public class CachingCohortDefinitionTest extends BaseContextSensitiveTest {
+public class CachingCohortDefinitionTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
 	public void setup() throws Exception {

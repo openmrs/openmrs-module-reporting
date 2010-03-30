@@ -16,10 +16,10 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
-public class DateObsCohortDefinitionEvaluatorTest extends BaseContextSensitiveTest {
+public class DateObsCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	/**
 	 * @see {@link DateObsCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
