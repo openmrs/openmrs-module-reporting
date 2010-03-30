@@ -13,11 +13,9 @@
  */
 package org.openmrs.module.reporting.dataset;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 
 /**
  * Represents one row of data in a {@link DataSet}
@@ -63,25 +61,6 @@ public class DataSetRow {
 	 */
 	public void addColumnValue(DataSetColumn column, Object value) {
 		getColumnValues().put(column, value);
-	}
-	
-	/**
-	 * Returns a map from key to value.
-	 * 
-	 * Normally you would use {@link #getColumnValues()} but this version is useful if you need
-	 * to use the returned map in JSTL for example. 
-	 * 
-	 * @return
-	 */
-	public Map<String, Object> getColumnValuesByKey() {
-		Map<String, Object> ret = new HashMap<String, Object>();
-		if (columnValues == null) {
-			return ret;
-		}
-		for (Map.Entry<DataSetColumn, Object> e : columnValues.entrySet()) {
-	        ret.put(e.getKey().getName(), e.getValue());
-        }
-		return ret;
 	}
 	
 	//****** PROPERTY ACCESS ******

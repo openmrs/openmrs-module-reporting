@@ -14,7 +14,7 @@ public class SimpleDataSet implements DataSet {
     
     private DataSetDefinition definition;
     private EvaluationContext context;
-    private SimpleDataSetMetaData columnList = new SimpleDataSetMetaData();
+    private SimpleDataSetMetaData metaData = new SimpleDataSetMetaData();
     private List<DataSetRow> rows;
     
     // *************
@@ -42,8 +42,8 @@ public class SimpleDataSet implements DataSet {
     public void addRow(DataSetRow row) {
         getRows().add(row);
         for (DataSetColumn c : row.getColumnValues().keySet()) {
-        	if (getColumnList().getColumn(c.getName()) == null) {
-        		getColumnList().addColumn(c);
+        	if (getMetaData().getColumn(c.getName()) == null) {
+        		getMetaData().addColumn(c);
         	}
         }
     }
@@ -54,13 +54,6 @@ public class SimpleDataSet implements DataSet {
     public Iterator<DataSetRow> iterator() {
         return getRows().iterator();
     }
-    
-	/**
-	 * @see DataSet#getMetaData()
-	 */
-	public DataSetMetaData getMetaData() {
-		return getColumnList();
-	}
 
     // *************
     // PROPERTY ACCESS
@@ -95,17 +88,17 @@ public class SimpleDataSet implements DataSet {
 	}
 
 	/**
-	 * @return the columnList
+	 * @return the metaData
 	 */
-	public SimpleDataSetMetaData getColumnList() {
-		return columnList;
+	public SimpleDataSetMetaData getMetaData() {
+		return metaData;
 	}
 
 	/**
-	 * @param columnList the columnList to set
+	 * @param metaData the metaData to set
 	 */
-	public void setColumnList(SimpleDataSetMetaData columnList) {
-		this.columnList = columnList;
+	public void setMetaData(SimpleDataSetMetaData metaData) {
+		this.metaData = metaData;
 	}
 
 	/**

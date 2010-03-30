@@ -67,7 +67,7 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
 	 */
 	@Override
 	public int hashCode() {
-		return (getUuid() == null ? 0 : 31 * getUuid().hashCode());
+		return (getUuid() == null ? super.hashCode() : 31 * getUuid().hashCode());
 	}
 	
 	/**

@@ -27,11 +27,14 @@ import org.openmrs.reporting.export.DataExportReportObject;
 @SuppressWarnings("deprecation")
 public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	
-	/* Serial version UID */
     private static final long serialVersionUID = -2572061676651616176L;
 	
-	/* Data export object */
+    //***** PROPERTIES *****
+    
 	private DataExportReportObject dataExport;
+	
+	//***** CONSTRUCTORS *****
+	
 	/**
 	 * Default public constructor 
 	 */
@@ -40,55 +43,59 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	}
 	
 	/**
-	 *  Public constructor
+	 *  Full constructor
 	 */
 	public DataExportDataSetDefinition(DataExportReportObject dataExport) { 
 		this.dataExport = dataExport;
 	}
+	
+	//***** INSTANCE METHODS *****
 
-	public String getUuid() { 
-		return dataExport.getUuid();
+    /**
+	 * @see BaseDataSetDefinition#getId()
+	 */
+	@Override
+	public Integer getId() {
+		return getDataExport().getId();
 	}
 	
-	public void setUuid(String uuid) { 
-		this.dataExport.setUuid(uuid);
+	/**
+	 * @see BaseOpenmrsObject#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return getDataExport().getUuid();
 	}
 	
-    
-    /**
-	 * @see DataSetDefinition#getId()
-     */
-    public Integer getId() { 
-    	return dataExport.getReportObjectId();  	
-    }    
-    
-    /**
-	 * @see DataSetDefinition#getName()
-     */
-    public String getName() { 
-    	return dataExport.getName();    	
-    }
+	/**
+	 * @see BaseOpenmrsMetadata#getName()
+	 */
+	@Override
+	public String getName() {
+		return getDataExport().getName();
+	}
 
-    /**
-	 * @see DataSetDefinition#getDescription()
-     */
-    public String getDescription() { 
-    	return dataExport.getDescription();    	
-    }
+	/**
+	 * @see BaseOpenmrsMetadata#getDescription()
+	 */
+	@Override
+	public String getDescription() {
+		return getDataExport().getDescription();
+	}
+	
+	//***** PROPERTY ACCESS *****
 
-    /**
-     * Returns the data export object that backs this dataset definition.
-     * @return	the data export object that backs this dataset definition
-     */
-    public DataExportReportObject getDataExportReportObject() {
-    	return dataExport;
-    }
-    
-    /**
-     * Sets the data export model.
-     * @param dataExport
-     */
-    public void setDataExportReportObject(DataExportReportObject dataExport) { 
-    	this.dataExport = dataExport;
-    }    
+	/**
+	 * @return the dataExport
+	 */
+	public DataExportReportObject getDataExport() {
+		return dataExport;
+	}
+
+	/**
+	 * @param dataExport the dataExport to set
+	 */
+	public void setDataExport(DataExportReportObject dataExport) {
+		this.dataExport = dataExport;
+	}
 }

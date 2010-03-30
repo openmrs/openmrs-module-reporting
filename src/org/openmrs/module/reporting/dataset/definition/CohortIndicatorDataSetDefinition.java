@@ -25,66 +25,25 @@ import org.openmrs.util.OpenmrsUtil;
  */
 public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	
+	//***** PROPERTIES *****
+	
 	Map<String, Mapped<CohortDefinitionDimension>> dimensions = new HashMap<String, Mapped<CohortDefinitionDimension>>();
-	List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
+	List<CohortIndicatorAndDimensionColumn> columns = new ArrayList<CohortIndicatorAndDimensionColumn>();
+	
+	//***** CONSTRUCTORS *****
 	
 	public CohortIndicatorDataSetDefinition() {
 		super();
 	}
+
+	//***** PROPERTY ACCESS AND INSTANCE METHODS
 	
-	public List<DataSetColumn> getColumns() {
-		return new ArrayList<DataSetColumn>(columns);
-	}
-	
+    /**
+	 * @return the dimensions
+	 */
 	public Map<String, Mapped<CohortDefinitionDimension>> getDimensions() {
 		return dimensions;
 	}
-	
-	public void addDimension(String dimensionKey, Mapped<CohortDefinitionDimension> dimension) {
-		dimensions.put(dimensionKey, dimension);
-	}
-	
-	public void addDimension(String dimensionKey, CohortDefinitionDimension dimension, Map<String, Object> parameterMappings) {
-		addDimension(dimensionKey, new Mapped<CohortDefinitionDimension>(dimension, parameterMappings));
-	}
-	
-	public void removeDimension(String dimensionKey) {
-		dimensions.remove(dimensionKey);
-	}
-	
-	public void addColumn(String key, String displayName, Mapped<? extends CohortIndicator> indicator, Map<String, String> dimensionOptions) {
-		columns.add(new ColumnDefinition(key, displayName, indicator, dimensionOptions));
-	}
-	
-	/**
-	 * Removes a column by its key
-	 * 
-	 * @param key
-	 */
-	public void removeColumn(String key) {
-		for (Iterator<ColumnDefinition> i = columns.iterator(); i.hasNext(); ) {
-			if (i.next().getName().equals(key)) {
-				i.remove();
-			}
-		}
-	}
-	
-	/**
-	 * 
-	 * Auto generated method comment
-	 * 
-	 * @param key
-	 * @param displayName
-	 * @param indicator
-	 * @param dimensionOptions something like gender=male|age=adult, where gender and age are keys into 'dimensions'
-	 */
-	public void addColumn(String key, String displayName, Mapped<? extends CohortIndicator> indicator, String dimensionOptions) {
-		addColumn(key, displayName, indicator, OpenmrsUtil.parseParameterList(dimensionOptions));
-	}
-	
-	public Mapped<CohortDefinitionDimension> getDimension(String key) {
-	    return dimensions.get(key);
-    }
 	
     /**
      * @param dimensions the dimensions to set
@@ -92,26 +51,98 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
     public void setDimensions(Map<String, Mapped<CohortDefinitionDimension>> dimensions) {
     	this.dimensions = dimensions;
     }
+    
+	/**
+	 * Adds a Mapped<Dimension> referenced by the given key
+	 */
+	public void addDimension(String dimensionKey, Mapped<CohortDefinitionDimension> dimension) {
+		dimensions.put(dimensionKey, dimension);
+	}
+	
+	/**
+	 * Adds a Dimension referenced by the given key, dimension, and parameter mappings
+	 */
+	public void addDimension(String dimensionKey, CohortDefinitionDimension dimension, Map<String, Object> parameterMappings) {
+		addDimension(dimensionKey, new Mapped<CohortDefinitionDimension>(dimension, parameterMappings));
+	}
+	
+	/**
+	 * @return the Mapped<CohortDefinitionDimension> with the given key
+	 */
+	public Mapped<CohortDefinitionDimension> getDimension(String key) {
+	    return dimensions.get(key);
+    }
+	
+	/**
+	 * Removes a Dimension with the given key
+	 */
+	public void removeDimension(String dimensionKey) {
+		dimensions.remove(dimensionKey);
+	}
 
     /**
+	 * @return the columns
+	 */
+	public List<CohortIndicatorAndDimensionColumn> getColumns() {
+		return columns;
+	}
+
+	/**
      * @param columns the columns to set
      */
-    public void setColumns(List<ColumnDefinition> columns) {
+    public void setColumns(List<CohortIndicatorAndDimensionColumn> columns) {
     	this.columns = columns;
     }
+    
+    /**
+     * Adds a Column with the given properties
+     */
+	public void addColumn(String name, String label, Mapped<? extends CohortIndicator> indicator, Map<String, String> dimensionOptions) {
+		columns.add(new CohortIndicatorAndDimensionColumn(name, label, indicator, dimensionOptions));
+	}
+	
+    /**
+     * Removes a column with the given name
+     */
+	public void removeColumn(String columnName) {
+		for (Iterator<CohortIndicatorAndDimensionColumn> i = columns.iterator(); i.hasNext(); ) {
+			if (i.next().getName().equals(columnName)) {
+				i.remove();
+			}
+		}
+	}
+	
+	/**
+	 * Adds a Column with the given properties
+	 * @param dimensionOptions something like gender=male|age=adult, where gender and age are keys into 'dimensions'
+	 */
+	public void addColumn(String name, String label, Mapped<? extends CohortIndicator> indicator, String dimensionOptions) {
+		addColumn(name, label, indicator, OpenmrsUtil.parseParameterList(dimensionOptions));
+	}
+    
+    //***** INNER CLASSES *****
 
-	public class ColumnDefinition extends DataSetColumn {
+    /**
+     * Column Definition which encapsulates information about the indicator and dimensions chosen for each column
+     */
+	public class CohortIndicatorAndDimensionColumn extends DataSetColumn {
 
         private static final long serialVersionUID = 1L;
+        
+        //***** PROPERTIES *****
         
 		private Mapped<? extends CohortIndicator> indicator;
 		private Map<String, String> dimensionOptions;
 		
-		public ColumnDefinition(String name, String label, Mapped<? extends CohortIndicator> indicator, Map<String, String> dimensionOptions) {
+		//***** CONSTRUCTORS *****
+		
+		public CohortIndicatorAndDimensionColumn(String name, String label, Mapped<? extends CohortIndicator> indicator, Map<String, String> dimensionOptions) {
 			super(name, label, Object.class);
 			this.indicator = indicator;
 			this.dimensionOptions = dimensionOptions;
 		}
+		
+		//***** PROPERTY ACCESS *****
 
         /**
          * @return the indicator
@@ -125,8 +156,6 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
          */
         public Map<String, String> getDimensionOptions() {
         	return dimensionOptions;
-        }
-        		
+        }		
 	}
-	
 }

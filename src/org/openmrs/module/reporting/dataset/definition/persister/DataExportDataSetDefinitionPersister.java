@@ -29,6 +29,7 @@ import org.openmrs.reporting.export.DataExportReportObject;
  * Class which manages persistence of a DataExportDataSetDefinition using legacy tables
  */
 @Handler(supports={DataExportDataSetDefinition.class}, order=50)
+@SuppressWarnings("deprecation")
 public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPersister {
 		
 	/**
@@ -49,15 +50,10 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
 	 * @see DataSetDefinitionPersister#getDataSetDefinitionByUuid(String)
 	 */
 	public DataSetDefinition getDataSetDefinitionByUuid(String uuid) {	
-		// As a temporary hack, infer uuid from Class + id for saved DataSetDefinitions
     	for(DataSetDefinition dsd : getAllDataSetDefinitions(false)) {
-    		if (dsd.getUuid() != null && dsd.getUuid().equals(uuid))
+    		if (dsd.getUuid() != null && dsd.getUuid().equals(uuid)) {
     			return dsd;
-    		/*
-    		String inferredUuid = dsd.getClass() + ":" + dsd.getId();
-    		if (inferredUuid.equalsIgnoreCase(uuid)) {
-    			return dsd;
-    		}*/
+    		}
     	}
     	return null;
 	}
@@ -113,16 +109,10 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
      * @see DataSetDefinitionPersister#saveDataSetDefinition(DataSetDefinition)
      */
     public DataSetDefinition saveDataSetDefinition(DataSetDefinition dataSetDefinition) {
-
     	DataExportDataSetDefinition dsd = (DataExportDataSetDefinition) dataSetDefinition;
-    	
-    	// Save the data export to the database 
-    	DataExportReportObject dataExport = 
-    		(DataExportReportObject) Context.getService(ReportObjectService.class).saveReportObject(
-    				dsd.getDataExportReportObject());
-    	
-    	dsd.setDataExportReportObject(dataExport);
-		
+    	ReportObjectService ros = Context.getService(ReportObjectService.class);
+    	DataExportReportObject dataExport = (DataExportReportObject) ros.saveReportObject(dsd.getDataExport());
+    	dsd.setDataExport(dataExport);
 		return dsd;
     }
 
@@ -131,6 +121,6 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
      */
     public void purgeDataSetDefinition(DataSetDefinition dataSetDefinition) {
     	DataExportDataSetDefinition dsd = (DataExportDataSetDefinition) dataSetDefinition;
-    	Context.getService(ReportObjectService.class).purgeReportObject(dsd.getDataExportReportObject());    	
+    	Context.getService(ReportObjectService.class).purgeReportObject(dsd.getDataExport());    	
     }
 }

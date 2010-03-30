@@ -65,11 +65,13 @@ public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 		Cohort cohort = context.getBaseCohort();
 
 		// By default, get all patients
-		if (cohort == null)
+		if (cohort == null) {
 			cohort = Context.getPatientSetService().getAllPatients();
+		}
 					
-		if (context.getLimit() != null)
+		if (context.getLimit() != null) {
 			CohortUtil.limitCohort(cohort, context.getLimit());
+		}
 
 		// Get a list of patients based on the cohort members
 		List<Patient> patients = Context.getPatientSetService().getPatients(cohort.getMemberIds());

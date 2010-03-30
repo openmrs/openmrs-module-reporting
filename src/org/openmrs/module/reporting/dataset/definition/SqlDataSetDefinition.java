@@ -13,17 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.definition.evaluator.SqlDataSetEvaluator;
-import org.openmrs.util.DatabaseUpdater;
 
 /**
  * Definition of a SQL DataSet
@@ -31,10 +21,13 @@ import org.openmrs.util.DatabaseUpdater;
  */
 public class SqlDataSetDefinition extends BaseDataSetDefinition {
 
-	// Serial version UID
 	private static final long serialVersionUID = 6405583324151111487L;
 
+	//***** PROPERTIES *****
+	
 	private String sqlQuery;
+	
+	//***** CONSTRUCTORS *****
 	
 	/**
 	 * Constructor
@@ -57,47 +50,19 @@ public class SqlDataSetDefinition extends BaseDataSetDefinition {
 		this.setSqlQuery(sqlQuery);
 	}
 
+	//***** PROPERTY ACCESS *****
+	
+	/**
+	 * @return the sqlQuery
+	 */
 	public String getSqlQuery() {
 		return sqlQuery;
 	}
 
+	/**
+	 * @param sqlQuery the sqlQuery to set
+	 */
 	public void setSqlQuery(String sqlQuery) {
 		this.sqlQuery = sqlQuery;
-	}
-
-	public List<DataSetColumn> getColumns()  {
-
-		List<DataSetColumn> columns = new LinkedList<DataSetColumn>();
-		Connection connection = null;
-		try { 
-		
-			connection = DatabaseUpdater.getConnection();
-			ResultSet resultSet = null;
-			Statement statement = connection.createStatement();
-			boolean result = statement.execute(sqlQuery);
-			if (result) { 
-				resultSet = statement.getResultSet();
-			}
-			
-			ResultSetMetaData rsmd = resultSet.getMetaData();
-			for (int i=1; i<=rsmd.getColumnCount();i++) {
-				DataSetColumn column = new DataSetColumn();
-				column.setName(rsmd.getColumnName(i));
-				column.setDataType(Context.loadClass(rsmd.getColumnClassName(i)));
-				column.setLabel(rsmd.getColumnLabel(i));		
-				columns.add(column);				
-			}			
-		} catch (Exception e) { 
-			log.error("Error while getting connection ", e);			
-		} finally { 
-			try { 
-				if (connection != null) 
-					connection.close();
-			} catch (Exception e) { log.error("Error while closing connection", e); } 			
-		}
-		return columns;
-	}
-	
-
-	
+	}	
 }

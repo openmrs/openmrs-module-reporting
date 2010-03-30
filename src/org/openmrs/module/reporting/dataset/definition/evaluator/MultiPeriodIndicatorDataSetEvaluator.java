@@ -22,41 +22,36 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 	public MultiPeriodIndicatorDataSetEvaluator() { }
 	
 	/**
-	 * @see org.openmrs.module.reporting.dataset.definition.evaluator.DataSetEvaluator#evaluate(org.openmrs.module.reporting.dataset.definition.DataSetDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
-	 * 
-	 * @should evaluate a data set definition
+	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
+		
 		if (evalContext == null) {
 			evalContext = new EvaluationContext();
 		}
+		List<String> keysToCopy = Arrays.asList(new String[] { "startDate", "endDate", "location" });
 		
 		MultiPeriodIndicatorDataSetDefinition dsd = (MultiPeriodIndicatorDataSetDefinition) dataSetDefinition;
 		SimpleDataSet ret = new SimpleDataSet(dsd, evalContext);
+		
 		for (Iteration iter : dsd.getIterations()) {
 			EvaluationContext ec = EvaluationContext.clone(evalContext);
 			ec.addParameterValue("startDate", iter.getStartDate());
 			ec.addParameterValue("endDate", iter.getEndDate());
 			ec.addParameterValue("location", iter.getLocation());
 			MapDataSet ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd.getBaseDefinition(), ec);
-			copyIntoDataSet(ret, ds, dsd, ec);
+		    DataSetRow row = new DataSetRow();
+		    for (DataSetColumn column : dsd.getColumns()) {
+		    	if (keysToCopy.contains(column.getName())) {
+		    		row.addColumnValue(column, ec.getParameterValue(column.getName()));
+		    	} 
+		    	else {
+		    		row.addColumnValue(column, ds.getData(column));
+		    	}
+		    }
+	    	ret.addRow(row);
 		}
 		
 		return ret;
 	}
-	
-	private List<String> keysToCopy = Arrays.asList(new String[] { "startDate", "endDate", "location" });
-
-	private void copyIntoDataSet(SimpleDataSet ret, MapDataSet ds, MultiPeriodIndicatorDataSetDefinition definition, EvaluationContext ec) {
-	    DataSetRow row = new DataSetRow();
-	    for (DataSetColumn column : definition.getColumns()) {
-	    	if (keysToCopy.contains(column.getName())) {
-	    		row.addColumnValue(column, ec.getParameterValue(column.getName()));
-	    	} else {
-	    		row.addColumnValue(column, ds.getData(column));
-	    	}
-	    }
-    	ret.addRow(row);
-    }
-	
 }

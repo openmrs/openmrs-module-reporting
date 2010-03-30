@@ -15,19 +15,15 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
-import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.logic.LogicCriteria;
-import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -52,14 +48,15 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 	 */
 	public SqlDataSetEvaluator() { }
 	
-	
+	/**
+	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
+	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
 		if (dataSetDefinition instanceof SqlDataSetDefinition) { 
 			return evaluate((SqlDataSetDefinition)dataSetDefinition, evalContext);			
 		} 
-		throw new APIException("JdbcDataSetEvaluator cannot evaluate dataset definition of type" + dataSetDefinition.getClass().getName());
+		throw new APIException("SqlDataSetDefinition cannot evaluate dataset definition of type" + dataSetDefinition.getClass().getName());
 	}
-	
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
@@ -70,16 +67,14 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 		
 		// By default, get all patients
 		Cohort cohort = context.getBaseCohort();
-		if (cohort == null)
+		if (cohort == null) {
 			cohort = Context.getPatientSetService().getAllPatients();
+		}
 					
-		if (context.getLimit() != null)
+		if (context.getLimit() != null) {
 			CohortUtil.limitCohort(cohort, context.getLimit());
+		}
 
-		// Get a list of patients based on the cohort members
-		List<Patient> patients = Context.getPatientSetService().getPatients(cohort.getMemberIds());
-
-		List<DataSetColumn> columns = dataSetDefinition.getColumns();
 		Connection connection = null;
 		try { 		
 			connection = DatabaseUpdater.getConnection();
@@ -89,72 +84,48 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 			if (result) { 
 				resultSet = statement.getResultSet();
 			}
-			while(resultSet.next()) { 
-
+			
+			int patientIdColumnIndex = -1;
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			for (int i=1; i<=rsmd.getColumnCount();i++) {
+				DataSetColumn column = new DataSetColumn();
+				column.setName(rsmd.getColumnName(i));
+				column.setDataType(Context.loadClass(rsmd.getColumnClassName(i)));
+				column.setLabel(rsmd.getColumnLabel(i));
+				dataSet.getMetaData().addColumn(column);
+				if ("patientId".equals(rsmd.getColumnName(i))) {
+					patientIdColumnIndex = i;
+				}
+			}	
+			
+			while (resultSet.next()) {
+				// Limit the DataSet to only patient in the base cohort, if there exists a column named "patientId"
+				if (patientIdColumnIndex > 0) {
+					Integer patientId = resultSet.getInt(patientIdColumnIndex);
+					if (!cohort.contains(patientId)) {
+						continue;
+					}
+				}
 				DataSetRow dataSetRow = new DataSetRow();
-				for (DataSetColumn column : columns) { 
-					String value = resultSet.getString(column.getName());
-					dataSetRow.addColumnValue(column, value);
+				for (DataSetColumn column : dataSet.getMetaData().getColumns()) {
+					dataSetRow.addColumnValue(column, resultSet.getObject(column.getName()));
 				}					
 				dataSet.addRow(dataSetRow);
 			}			
-		} catch (Exception e) { 
+		} 
+		catch (Exception e) { 
 			log.error("Error while getting connection ", e);			
-		} finally { 
+		} 
+		finally { 
 			try { 
-				if (connection != null) 
+				if (connection != null) {
 					connection.close();
-			} catch (Exception e) { log.error("Error while closing connection", e); } 			
+				}
+			} 
+			catch (Exception e) { 
+				log.error("Error while closing connection", e); 
+			} 			
 		}
 		return dataSet;
-
 	}
-	
-	
-	class LogicResultHolder { 
-	
-		private String token;
-		private Boolean evaluated;
-		private LogicCriteria criteria;
-		private Map<Integer, Result> results;
-		
-		public LogicResultHolder(String token, LogicCriteria criteria, Map<Integer,Result> results, Boolean evaluated) { 
-			this.token = token;
-			this.criteria = criteria;
-			this.results = results;
-			this.evaluated = evaluated;			
-		}
-		
-		
-		public String getToken() { 
-			return this.token;
-		}
-		
-		public void setToken(String token) { 
-			this.token = token;
-		}
-		
-		public Boolean getEvaluated() {
-			return evaluated;
-		}
-		public void setEvaluated(Boolean evaluated) {
-			this.evaluated = evaluated;
-		}
-		public LogicCriteria getCriteria() {
-			return criteria;
-		}
-		public void setCriteria(LogicCriteria criteria) {
-			this.criteria = criteria;
-		}
-		public Map<Integer, Result> getResults() {
-			return results;
-		}
-		public void setResults(Map<Integer, Result> results) {
-			this.results = results;
-		}
-	
-	}
-
-
-	
 }

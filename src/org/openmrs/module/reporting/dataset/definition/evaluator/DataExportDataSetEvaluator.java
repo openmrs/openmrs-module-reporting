@@ -55,10 +55,10 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
 		SimpleDataSet dataSet = new SimpleDataSet(definition, context);
 		try {
 			DataExportDataSetDefinition dataExportDefinition = (DataExportDataSetDefinition) definition;
-			DataExportReportObject dataExport = dataExportDefinition.getDataExportReportObject();
+			DataExportReportObject dataExport = dataExportDefinition.getDataExport();
 			DataExportUtil.generateExport(dataExport, context.getBaseCohort(), null);
 			
-			File dataFile = DataExportUtil.getGeneratedFile(dataExportDefinition.getDataExportReportObject());			
+			File dataFile = DataExportUtil.getGeneratedFile(dataExportDefinition.getDataExport());			
 			log.error("getting data export data set for data export " + dataFile.getAbsolutePath());
 
 			// Get contents as a string 
@@ -72,7 +72,7 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
 			for (String s : columns) {
 				DataSetColumn c = new DataSetColumn(s, s, String.class);
 				cols.put(s, c);
-				dataSet.getColumnList().addColumn(c);
+				dataSet.getMetaData().addColumn(c);
 			}
 	
 			// Iterate over remaining rows

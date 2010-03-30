@@ -12,7 +12,7 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition.ColumnDefinition;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition.CohortIndicatorAndDimensionColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -54,8 +54,10 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		DimensionService ds = Context.getService(DimensionService.class);
 		
 		MapDataSet ret = new MapDataSet(dataSetDefinition, context);
-		ret.getColumnList().setColumns(dsd.getColumns());
-
+		for (DataSetColumn dsc : dsd.getColumns()) {
+			ret.getMetaData().addColumn(dsc);
+		}
+		
 		// evaluate all dimension options
 		Map<String, Map<String, Cohort>> dimensionCalculationCache = new HashMap<String, Map<String, Cohort>>();
 		for (Map.Entry<String, Mapped<CohortDefinitionDimension>> e : dsd.getDimensions().entrySet()) {
@@ -67,7 +69,7 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		// evaluate unique indicators
 		Map<Mapped<? extends CohortIndicator>, CohortIndicatorResult> indicatorCalculationCache = new HashMap<Mapped<? extends CohortIndicator>, CohortIndicatorResult>();
 		for (DataSetColumn c : dsd.getColumns()) {
-			ColumnDefinition col = (ColumnDefinition) c;
+			CohortIndicatorAndDimensionColumn col = (CohortIndicatorAndDimensionColumn) c;
 			if (!indicatorCalculationCache.containsKey(col.getIndicator())) {
 				CohortIndicatorResult result = (CohortIndicatorResult) is.evaluate(col.getIndicator(), context);
 				log.debug("Caching indicator: " + col.getIndicator());
@@ -77,7 +79,7 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		
 		// Populate Data Set columns with Indicator and Dimension Results as defined
 		for (DataSetColumn c : dsd.getColumns()) {
-			ColumnDefinition col = (ColumnDefinition) c;
+			CohortIndicatorAndDimensionColumn col = (CohortIndicatorAndDimensionColumn) c;
 			// get this indicator result from the cache
 			CohortIndicatorResult result = indicatorCalculationCache.get(col.getIndicator());
 			// get its value taking dimensions into account
