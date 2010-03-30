@@ -38,9 +38,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Service
-public class BaseIndicatorService extends BaseDefinitionService<Indicator> implements IndicatorService {
+public class IndicatorServiceImpl extends BaseDefinitionService<Indicator> implements IndicatorService {
 
-	protected static Log log = LogFactory.getLog(BaseIndicatorService.class);
+	protected static Log log = LogFactory.getLog(IndicatorServiceImpl.class);
 	
 	/**
 	 * @see DefinitionService#getDefinitionType()

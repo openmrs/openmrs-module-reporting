@@ -31,14 +31,14 @@ import org.springframework.transaction.annotation.Transactional;
  *  Base Implementation of the ReportingService API
  */
 @Transactional
-public class BaseSerializedDefinitionService extends BaseOpenmrsService implements SerializedDefinitionService {
+public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implements SerializedDefinitionService {
 	
-	protected static Log log = LogFactory.getLog(BaseSerializedDefinitionService.class);
+	protected static Log log = LogFactory.getLog(SerializedDefinitionServiceImpl.class);
 	
     //****************
     // Constructor
     //****************
-	private BaseSerializedDefinitionService() { }
+	private SerializedDefinitionServiceImpl() { }
 	
     //****************
     // Properties

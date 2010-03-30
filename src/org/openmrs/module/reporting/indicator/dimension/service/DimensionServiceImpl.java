@@ -37,9 +37,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Service
-public class BaseDimensionService extends BaseDefinitionService<Dimension> implements DimensionService {
+public class DimensionServiceImpl extends BaseDefinitionService<Dimension> implements DimensionService {
 
-	protected static Log log = LogFactory.getLog(BaseDimensionService.class);
+	protected static Log log = LogFactory.getLog(DimensionServiceImpl.class);
 	
 	/**
 	 * @see DefinitionService#getDefinitionType()

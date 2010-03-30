@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Service
-public class BaseDataSetDefinitionService extends BaseDefinitionService<DataSetDefinition> implements DataSetDefinitionService {
+public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetDefinition> implements DataSetDefinitionService {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 	

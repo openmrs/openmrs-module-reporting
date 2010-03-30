@@ -54,7 +54,7 @@ import org.springframework.core.task.TaskExecutor;
 /**
  * Base Implementation of the ReportService API
  */
-public class BaseReportService extends BaseOpenmrsService implements ReportService {
+public class ReportServiceImpl extends BaseOpenmrsService implements ReportService {
 
 	private final static String REPORT_RESULTS_DIR = "REPORT_RESULTS";
 
@@ -76,7 +76,7 @@ public class BaseReportService extends BaseOpenmrsService implements ReportServi
 	/**
 	 * Default constructor
 	 */
-	public BaseReportService() { }
+	public ReportServiceImpl() { }
 	
 	/**
 	 * Utility method that returns the SerializedDefinitionService

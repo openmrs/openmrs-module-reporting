@@ -31,9 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Service
-public class BaseReportDefinitionService extends BaseDefinitionService<ReportDefinition> implements ReportDefinitionService {
+public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDefinition> implements ReportDefinitionService {
 
-	protected static Log log = LogFactory.getLog(BaseReportDefinitionService.class);
+	protected static Log log = LogFactory.getLog(ReportDefinitionServiceImpl.class);
 	
 	/**
 	 * @see DefinitionService#getDefinitionType()

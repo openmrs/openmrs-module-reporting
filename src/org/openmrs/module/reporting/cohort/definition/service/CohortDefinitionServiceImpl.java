@@ -50,9 +50,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Service
-public class BaseCohortDefinitionService extends BaseDefinitionService<CohortDefinition> implements CohortDefinitionService {
+public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDefinition> implements CohortDefinitionService {
 	
-	private static Log log = LogFactory.getLog(BaseCohortDefinitionService.class);
+	private static Log log = LogFactory.getLog(CohortDefinitionServiceImpl.class);
 
 	/**
 	 * @see DefinitionService#getDefinitionType()
