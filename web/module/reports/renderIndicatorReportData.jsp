@@ -35,9 +35,9 @@
 						</c:if>
 							<c:forEach var="dataSetCol" items="${dataSetRow.columnValues}">
 								<tr>
-								<!-- 
+								<%-- 
 								 <c:url var="url" value="/module/reporting/dashboard/manageCohortDashboard.form?cohort=none&indicator=${dataSetCol.key.indicator.parameterizable.uuid}"/>
-								-->
+								--%>
 								<c:url var="url"  value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetKey=${dataSetMapEntry.key}&savedColumnKey=${dataSetCol.key.name}"/>
 									<td align="left">
 										${dataSetCol.key.name}
@@ -49,6 +49,7 @@
 										<c:set var="result" value="${dataSetCol.value}"/>
 										<a style="text-decoration: underline" href="${url}">${result.value}</a>
 									</td>
+									<%--
 									<td align="center">
 										<c:catch var="exception">
 											<c:set var="infoUrl" value="${pageContext.request.contextPath}/module/reporting/indicators/indicatorInfo.form?uuid=${result.definition.uuid}&location=${result.context.parameterValues['location'].locationId}"/>
@@ -57,6 +58,7 @@
 											</a>
 										</c:catch>
 									</td>
+									 --%>
 								</tr>
 							</c:forEach>
 					</rpt:forEach>
