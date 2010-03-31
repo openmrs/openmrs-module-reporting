@@ -6,7 +6,7 @@ package org.openmrs.module.reporting.query.definition;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 
 /**
- * 
+ * Base Implementation of QueryDefinition
  */
 public class BaseQueryDefinition extends BaseDefinition implements QueryDefinition {
 
@@ -29,26 +29,23 @@ public class BaseQueryDefinition extends BaseDefinition implements QueryDefiniti
 	}
 	
 	/**
-	 * @see org.openmrs.module.reporting.query.definition.QueryDefinition#getQueryString()
+	 * @see QueryDefinition#getQueryString()
 	 */
 	public String getQueryString() {
 		return queryString;
 	}
 
 	/**
-	 * @see org.openmrs.OpenmrsObject#getId()
+	 * @see OpenmrsObject#getId()
 	 */
 	public Integer getId() {
 		return id;
 	}
 
 	/**
-	 * @see org.openmrs.OpenmrsObject#setId(java.lang.Integer)
+	 * @see OpenmrsObject#setId(Integer)
 	 */
-	@Override
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
-	
 }
