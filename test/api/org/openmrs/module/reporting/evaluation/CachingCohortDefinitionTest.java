@@ -26,9 +26,6 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-/**
- *
- */
 public class CachingCohortDefinitionTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
@@ -38,29 +35,28 @@ public class CachingCohortDefinitionTest extends BaseModuleContextSensitiveTest 
 	
 	@Test
 	public void shouldCacheCohortDefinition() throws Exception {
+		
 		EvaluationContext ec = new EvaluationContext();
 		
-		GenderCohortDefinition maleFilter = 
-			new GenderCohortDefinition();
-		maleFilter.setMaleIncluded(true);
-		GenderCohortDefinition femaleFilter = new GenderCohortDefinition();
-		femaleFilter.setFemaleIncluded(true);
+		GenderCohortDefinition males = new GenderCohortDefinition();
+		males.setMaleIncluded(true);
+		
+		GenderCohortDefinition females = new GenderCohortDefinition();
+		females.setFemaleIncluded(true);
+		
 		ConfigurationPropertyCachingStrategy strategy = new ConfigurationPropertyCachingStrategy();
-		String maleKey = strategy.getCacheKey(maleFilter);
-		System.out.println(maleKey);
-		String femaleKey = strategy.getCacheKey(femaleFilter);
-		System.out.println(femaleKey);
-		
+		String maleKey = strategy.getCacheKey(males);
+		String femaleKey = strategy.getCacheKey(females);
 		assertNull("Cache should not have male filter yet", ec.getFromCache(maleKey));
-		
-		Cohort males = Context.getService(CohortDefinitionService.class).evaluate(maleFilter, ec);		
+
+		Cohort maleCohort = Context.getService(CohortDefinitionService.class).evaluate(males, ec);		
 		assertNotNull("Cache should have male filter now", ec.getFromCache(maleKey));
 		assertNull("Cache should not have female filter", ec.getFromCache(femaleKey));
 
-		Cohort malesAgain = 
-			Context.getService(CohortDefinitionService.class).evaluate(maleFilter, ec);
-		assertEquals("Uncached and cached runs should be equals", males.size(), malesAgain.size());
-		ec.setBaseCohort(males);
+		Cohort malesAgain = Context.getService(CohortDefinitionService.class).evaluate(males, ec);
+		assertEquals("Uncached and cached runs should be equals", maleCohort.size(), malesAgain.size());
+		
+		ec.setBaseCohort(maleCohort);
 		assertEquals("Cache should have been automatically cleared", 0, ec.getCache().size());
 	}
 	

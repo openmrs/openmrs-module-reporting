@@ -248,8 +248,9 @@ public class EvaluationContext {
 	 * @return the baseCohort
 	 */
 	public Cohort getBaseCohort() {
-		if (getLimit() != null && getLimit() > 0)
+		if (getLimit() != null && getLimit() > 0) {
 			return CohortUtil.limitCohort(baseCohort, getLimit());
+		}
 		return baseCohort;
 	}
 	
@@ -257,6 +258,7 @@ public class EvaluationContext {
 	 * @param the baseCohort
 	 */
 	public void setBaseCohort(Cohort baseCohort) {
+		clearCache();
 		this.baseCohort = baseCohort;
 	}
 
@@ -271,6 +273,7 @@ public class EvaluationContext {
 	 * @param the 
 	 */
 	public void setLimit(Integer limit) {
+		clearCache();
 		this.limit = limit;
 	}
 
