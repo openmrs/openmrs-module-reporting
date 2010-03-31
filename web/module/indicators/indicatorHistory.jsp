@@ -5,7 +5,8 @@
 
 <openmrs:htmlInclude file="/moduleResources/reporting/scripts/flot/jquery.flot.js"/>
 
-<h2>
+<!-- Commenting this out for now because the blank indicator created by the HTML widget is messing it up
+  <h2>
 	<c:choose>
 		<c:when test="${fn:length(query.indicators) == 1}">
 			${query.indicators[0].name}
@@ -15,9 +16,20 @@
 		</c:otherwise>
 	</c:choose>
 </h2>
+-->
 
-<div style="float: right; border: 1px black solid; padding: 20px">
-	
+<h2>History of Indicators</h2>
+
+<!--  only float the options on the right if we are displaying a graph -->
+<c:choose>
+	<c:when test="${dataSet != null}">
+		<div style="float: right; border: 1px black solid; padding: 20px">
+	</c:when>
+	<c:otherwise>
+		<div style="border: 1px black solid; padding: 20px">
+	</c:otherwise>
+</c:choose>
+
 	<form:form method="get" commandName="query" action="indicatorHistory.form">
 	
 	<table>
@@ -61,7 +73,7 @@
 		</tr>
 	</table>
 
-</form:form>
+	</form:form>
 	
 </div>
 
