@@ -4,7 +4,7 @@
 	<!-- Base Module Properties -->
 	<id>reporting</id>
 	<name>Reporting</name>
-	<version>0.4.0.2</version>
+	<version>0.4.0.3</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>Core reporting API and services</description>
@@ -23,12 +23,16 @@
 		<class>@MODULE_PACKAGE@.web.extension.RunAdminListExt</class>
 	</extension>
 	<extension>
-		<point>org.openmrs.module.reporting.run.localheader</point>
-		<class>@MODULE_PACKAGE@.web.extension.RunAdminListExt</class>
+		<point>org.openmrs.admin.list</point>
+		<class>@MODULE_PACKAGE@.web.extension.ManageAdminListExt</class>
 	</extension>
 	<extension>
 		<point>org.openmrs.admin.list</point>
-		<class>@MODULE_PACKAGE@.web.extension.ManageAdminListExt</class>
+		<class>@MODULE_PACKAGE@.web.extension.ConfigAdminListExt</class>
+	</extension>
+	<extension>
+		<point>org.openmrs.module.reporting.run.localheader</point>
+		<class>@MODULE_PACKAGE@.web.extension.RunAdminListExt</class>
 	</extension>
 	<extension>
 		<point>org.openmrs.module.reporting.manage.localheader</point>

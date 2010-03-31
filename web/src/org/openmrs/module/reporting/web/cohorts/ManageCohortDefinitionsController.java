@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.StaticCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.cohort.definition.toreview.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
@@ -39,9 +40,10 @@ public class ManageCohortDefinitionsController {
 	
 	@ModelAttribute("customPages")
 	public Map<Class<? extends CohortDefinition>, String> getCustomPages() {
-		Map<Class<? extends CohortDefinition>, String> ret = new LinkedHashMap<Class<? extends CohortDefinition>, String>();
-		ret.put(CompositionCohortDefinition.class, "compositionCohortDefinition.form");
-		return ret;
+		Map<Class<? extends CohortDefinition>, String> customPages = new LinkedHashMap<Class<? extends CohortDefinition>, String>();
+		customPages.put(CompositionCohortDefinition.class, "compositionCohortDefinition.form");
+		customPages.put(SqlCohortDefinition.class, "sqlCohortDefinition.form");
+		return customPages;
 	}
 	
 	/**

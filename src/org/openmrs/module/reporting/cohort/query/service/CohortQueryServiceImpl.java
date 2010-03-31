@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.cohort.query.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,6 +14,7 @@ import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -24,6 +26,7 @@ import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 public class CohortQueryServiceImpl  extends BaseOpenmrsService implements CohortQueryService {
 
@@ -164,4 +167,25 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	    return dao.getPatientsHavingBirthAndDeath(bornOnOrAfter, bornOnOrBefore, diedOnOrAfter, diedOnOrBefore);
     }
     
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingPersonAttributes(org.openmrs.PersonAttributeType, java.util.List)
+	 */
+	public Cohort getPatientsHavingPersonAttributes(PersonAttributeType attribute, List<String> values) {
+		return dao.getPatientsHavingPersonAttributes(attribute, values);
+	}
+
+	/**
+	 * 
+	 */
+	public Cohort executeSqlQuery(String sqlQuery, Map<String,Object> paramMap) {
+		return dao.executeSqlQuery(sqlQuery, paramMap);
+	}
+	
+	/**
+	 * 
+	 */
+	public List<Parameter> parseSqlQuery(String sqlQuery) { 
+		return dao.parseSqlQuery(sqlQuery);
+	}
+
 }

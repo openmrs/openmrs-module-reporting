@@ -9,10 +9,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.CacheMode;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.Cohort;
@@ -22,6 +25,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -34,6 +38,8 @@ import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 
 public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
@@ -1003,7 +1009,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		}
 		return ret;
     }
-
+	
 	/**
 	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer)
 	 */
@@ -1064,19 +1070,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		
 		return new Cohort(query.list());
     }
-
-	/**
-	 * @param list
-	 * @return null if passed null or an empty list, otherwise returns a list of the ids of the OpenmrsObjects in list
-	 */
-	private List<Integer> openmrsObjectIdListHelper(List<? extends OpenmrsObject> list) {
-		if (list == null || list.size() == 0)
-			return null;
-		List<Integer> ret = new ArrayList<Integer>();
-		for (OpenmrsObject o : list)
-			ret.add(o.getId());
-		return ret;
-    }
+	
 
 	/**
 	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingDiscreteObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.SetComparator, java.util.List)
@@ -1092,6 +1086,141 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	    	null, null,
 	    	operator, valueList);
     }
+
+	/**
+	 * TODO Move this to a reporting utility class or to core. 
+	 * @param list
+	 * @return null if passed null or an empty list, otherwise returns a list of the ids of the OpenmrsObjects in list
+	 */
+	private List<Integer> openmrsObjectIdListHelper(List<? extends OpenmrsObject> list) {
+		if (list == null || list.size() == 0)
+			return null;
+		List<Integer> ret = new ArrayList<Integer>();
+		for (OpenmrsObject o : list)
+			ret.add(o.getId());
+		return ret;
+    }
+    	
+	
+	/**
+	 * @param attribute
+	 * @param values
+	 * @return
+	 */
+	public Cohort getPatientsHavingPersonAttributes(PersonAttributeType attributeType, List<String> values) {
+		
+		StringBuilder sqlQuery = new StringBuilder();
+		
+		sqlQuery.append("SELECT patient.patient_id ");
+		sqlQuery.append("FROM person_attribute ");
+		sqlQuery.append("INNER JOIN patient ON patient.patient_id = person_attribute.person_id ");
+		sqlQuery.append("INNER JOIN person ON person.person_id = person_attribute.person_id ");
+		sqlQuery.append("WHERE person_attribute.voided = false ");
+		sqlQuery.append("AND person.voided = false "); 
+		sqlQuery.append("AND patient.voided = false ");
+		
+		if (attributeType != null)
+			sqlQuery.append(" AND person_attribute.person_attribute_type_id = :attributeType ");	// EQUALITY
+			
+		if (values != null && !values.isEmpty()) { 			
+			// Use the EQUALITY operator if there's only one attribute type ID.
+			if (values.size() == 1) { 
+				sqlQuery.append(" AND person_attribute.value = :value");
+			}
+			// Otherwise, use the IN operator for a list of attribute type IDs.
+			else { 
+				sqlQuery.append(" AND person_attribute.value in (:values) ");
+			}
+		}
+		
+		// Only return one row per patient
+		sqlQuery.append(" GROUP BY patient.patient_id ");
+		
+		log.info("query: " + sqlQuery);
+				
+		// Create hibernate query 
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery.toString());
+
+		// Set attribute type parameter
+		if (attributeType != null) 
+			query.setInteger("attributeType", attributeType.getPersonAttributeTypeId());
+		
+		// Set values parameter
+		if (values != null && !values.isEmpty()) { 	
+			if (values.size() == 1) {	// improve performance by using equality when there's only only 
+				query.setString("value", values.get(0));
+			} 
+			else if (!values.isEmpty()) {
+				query.setParameterList("values", values);
+			} 
+		}			
+		// Execute query and return cohort 
+		return new Cohort(query.list());
+	}	
+	
+	
+	/**
+	 * Executes a SQL query 
+	 * 
+	 * @param sqlQuery
+	 * @param parameterValues 
+	 * @return
+	 */
+	public Cohort executeSqlQuery(String sqlQuery, Map<String, Object> paramMap) { 
+		List results = null;
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery.toString());
+		//query.setCacheMode(CacheMode.IGNORE);		// TODO figure out what this does before using it
+
+		// Simplest approach to bind parameters 
+		// TODO Need to be able to support all types of objects (including openmrs objects)
+		
+		
+		// TODO Figure out why I'm running into the error ("No Dialect mapping for JDBC type: 16")
+		try { 
+			for(String paramName : paramMap.keySet()) { 
+				Object paramValue = paramMap.get(paramName);
+				String stringValue = new String(paramValue.toString());	// need to do this 
+				query.setString(paramName, stringValue);
+			}	
+			// Need to make sure that the results is a single column, not an m-tuple
+			results = query.list();		
+		} catch (HibernateException e) { 
+			throw new ParameterException("Unable to execute SQL query [" + sqlQuery + "] with the parameters [" + paramMap + "] provided.", e);
+		}
+		return new Cohort(results);
+	}
+
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#parseSqlQuery(java.lang.String)
+	 */
+	public List<Parameter> parseSqlQuery(String sqlQuery) {
+		
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		
+		// Simple regular expression parser 
+		//
+		// Must support:  
+		//   column = :paramName
+		//   column = :paramName2		
+		//
+		// Should support: 
+		//   column = :paramName::java.lang.Date
+		//   column = :paramName2::datetime
+		// 
+		Pattern pattern = Pattern.compile("\\:\\w+\\b");
+		Matcher matcher = pattern.matcher(sqlQuery);
+
+		while (matcher.find()) {			
+			// Need to strip off the colon (":")
+			String parameterName = matcher.group().substring(1);			
+			Parameter parameter = new Parameter();			
+			parameter.setName(parameterName);
+			parameter.setLabel("Choose a " + parameterName);
+			parameter.setType(String.class);	// TODO Need to be able to support more data types!
+			parameters.add(parameter);
+		}		
+		return parameters;
+	}
 
 	/**
 	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingBirthAndDeath(java.util.Date, java.util.Date, java.util.Date, java.util.Date)

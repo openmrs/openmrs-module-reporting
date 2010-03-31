@@ -1,5 +1,13 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
 
+<style>
+div.metadataForm { padding-bottom: 20px; } 
+div.metadataField { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
+div.metadataField label { line-height:100%; margin:0; padding:0 12px 3px 0; border:none; color:#222; font-weight:bold; }
+div.metadataField label.desc { display:block; }
+div.metadataField label.inline { display:inline; }
+</style>
+
 <c:choose>
 
 	<c:when test="${model.mode == 'edit'}">
@@ -26,10 +34,6 @@
 		
 			});
 		</script>
-		<style>
-			div.metadataField { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
-			div.metadataField label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
-		</style>
 		
 		<form id="baseParameterizableEditorForm" method="post" action="${pageContext.request.contextPath}/module/reporting/reports/saveBaseParameterizable.form">
 			<input type="hidden" name="uuid" value="${model.uuid}"/>
@@ -39,7 +43,11 @@
 				<div class="metadataField">
 					<label class="desc" for="name">Name</label>
 					<input type="text" id="name" tabindex="1" name="name" value="${model.obj.name}" size="50"/>
-				</div>
+				</div>				
+				<div class="metadataField">
+					<label class="desc" for="type">Type</label>
+					${model.obj.class.simpleName}			
+				</div>				
 				<div class="metadataField">
 					<label class="desc" for="description">Description</label>			
 					<textarea id="description" cols="80" rows="10" tabindex="2" name="description">${model.obj.description}</textarea>
@@ -73,13 +81,28 @@
 				<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
 			</b>
 			<div class="box">
-				<div style="padding-bottom:5px;">
-					<b>Name:&nbsp;&nbsp;</b>${model.obj.name}
+				<div class="metadataForm">
+					<div class="metadataField">
+						<label class="inline">Name:</label>${model.obj.name}
+					</div>
+					<div class="metadataField">
+						<label class="inline" for="type">Query Type:</label>
+						${model.obj.class.simpleName}			
+					</div>				
+					<div class="metadataField">
+						<c:choose>
+							<label class="inline">Description:</label>
+							<c:when test="${!empty model.obj.description}">
+								${model.obj.description}
+							</c:when>
+							<c:otherwise>
+								<i>none</i>							
+							</c:otherwise>
+						</c:choose>
+					</div>
 				</div>
-				<b>Description:&nbsp;&nbsp;</b>${model.obj.description}
 			</div>
-		</div>
-		
+		</div>			
 	</c:otherwise>
 	
 </c:choose>

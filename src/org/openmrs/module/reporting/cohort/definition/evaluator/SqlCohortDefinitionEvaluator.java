@@ -17,13 +17,13 @@ import java.util.List;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.AdministrationService;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.toreview.SqlCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 
 /**
  * Evaluates a sql query and returns a cohort
@@ -39,23 +39,25 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-
+    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext) {
     	Cohort cohort = new Cohort();
-    	SqlCohortDefinition scd = (SqlCohortDefinition) cohortDefinition;
-    	List<List<Object>> resultSet = 
-    		Context.getAdministrationService().executeSQL(scd.getSqlQuery(), true);
+    	SqlCohortDefinition sqlCohortDefinition = (SqlCohortDefinition) cohortDefinition;    	
 
-    	if (resultSet != null) { 
-	    	for (List<Object> rowSet : resultSet) { 
-	    		if (rowSet != null && !rowSet.isEmpty()) {	    			
-	    			// Sanity check to make sure we're adding integers
-	    			if (rowSet.get(0) instanceof Integer) { 
-	    				cohort.addMember((Integer)rowSet.get(0));
-	    			}
-	    		}
-	    	}
+    	CohortQueryService service = Context.getService(CohortQueryService.class);
+    	
+    	// Pre-process the query to make sure the user has specified all parameters 
+    	// required to execute the query
+    	List<Parameter> parameters = service.parseSqlQuery(sqlCohortDefinition.getQueryDefinition().getQueryString());
+    	for (Parameter parameter : parameters) { 
+    		Object parameterValue = evaluationContext.getParameterValue(parameter.getName());
+    		if (parameterValue == null) 
+    			throw new ParameterException("Must specify a value for the parameter [" +  parameter.getName() + "]");    		
     	}
+    	
+    	// Execute query if all parameters have been specified
+    	cohort =
+    		service.executeSqlQuery(sqlCohortDefinition.getQueryDefinition().getQueryString(), evaluationContext.getParameterValues());
+    		
     	return cohort;
     }
 }

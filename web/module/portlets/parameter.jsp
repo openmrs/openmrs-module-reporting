@@ -110,10 +110,16 @@
 			} );
 		</script>
 		
-		<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
-			<b class="boxHeader">${model.label}</b>
-			
+		<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>			
+			<b class="boxHeader" style="font-weight:bold; text-align:right;">
+				<span style="float:left;">${model.label}</span>
+				<a style="color:lightyellow; font-weight:bold;" href="#" id="${model.portletUUID}AddLink">[+] Add</a>
+			</b>			
 			<div class="box">
+				<div align="center" style="padding:10px;">
+				<c:if test="${empty model.obj.parameters}">
+					<span ><spring:message code="reporting.Report.parameters.empty"/></span>
+				</c:if>
 				<c:if test="${!empty model.obj.parameters}">
 					<table width="100%" style="margin-bottom:5px;">
 						<tr>
@@ -141,7 +147,6 @@
 						</c:forEach>
 					</table>
 				</c:if>
-				<a style="font-weight:bold;" href="#" id="${model.portletUUID}AddLink">[+] Add</a>
 			</div>
 		</div>
 		

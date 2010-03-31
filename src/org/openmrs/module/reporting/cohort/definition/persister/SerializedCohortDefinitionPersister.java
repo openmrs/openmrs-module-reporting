@@ -37,7 +37,7 @@ public class SerializedCohortDefinitionPersister implements CohortDefinitionPers
     //****************
     // Constructor
     //****************
-	private SerializedCohortDefinitionPersister() { }
+	protected SerializedCohortDefinitionPersister() { }
 	
     //****************
     // Instance methods

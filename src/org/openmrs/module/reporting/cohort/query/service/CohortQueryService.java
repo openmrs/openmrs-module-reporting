@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.cohort.query.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
@@ -9,10 +10,10 @@ import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
-import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.impl.PatientSetServiceImpl;
@@ -20,7 +21,7 @@ import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.util.OpenmrsConstants;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly=true)
@@ -102,6 +103,43 @@ public interface CohortQueryService extends OpenmrsService {
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, List<Location> locationList,
                                               List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount);
+	
+	
+	/**
+	 * Get patients having person attributes of a particular type or that contain certain values.  
+	 * 
+	 * @should get patients with an attribute of given attribute type
+	 * @should get patients with an attribute of given attribute type and containing given values
+	 * @should get patients with an attribute containing given values  
+	 * 
+	 * @param attribute
+	 * @param values
+	 * @return	cohort of patients matching the query
+	 */
+	public Cohort getPatientsHavingPersonAttributes(PersonAttributeType attributeType, List<String> values);
+	
+	/**
+	 * Get patients that match the given query.  
+	 * 
+	 * TODO The query string should actually be a bean that encapsulates all types of queries (SQL, HQL, MDX).
+	 * 
+	 * @should return patients that match given query 
+	 * @should return empty cohort when query is null
+	 * 
+	 * @param query	the query string to be executed - this might be sql, hql, etc (with parameters)
+	 * @return	cohort of patients matching the query
+	 */
+	public Cohort executeSqlQuery(String sqlQuery, Map<String,Object> paramMap); 
+	
+	
+	/**
+	 * Should probably return a Query object with parameters attached.  
+	 * 
+	 * @param sqlQuery
+	 * @return
+	 */
+	public List<Parameter> parseSqlQuery(String sqlQuery);
+	
 
 	/**
 	 * Gets patients who were born or died in a particular date range

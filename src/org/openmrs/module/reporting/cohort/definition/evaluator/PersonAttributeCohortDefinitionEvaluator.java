@@ -15,10 +15,10 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.toreview.PersonAttributeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefinition;
+import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
@@ -36,9 +36,10 @@ public class PersonAttributeCohortDefinitionEvaluator implements CohortDefinitio
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	PersonAttributeCohortDefinition d = (PersonAttributeCohortDefinition) cohortDefinition;
+    	PersonAttributeCohortDefinition pacd = 
+    		(PersonAttributeCohortDefinition) cohortDefinition;
 		
-    	PatientSetService pss = Context.getPatientSetService();
-		return pss.getPatientsHavingPersonAttribute(d.getAttribute(), d.getValue());
+    	return Context.getService(CohortQueryService.class).getPatientsHavingPersonAttributes(
+    			pacd.getAttributeType(), pacd.getValues());
     }
 }

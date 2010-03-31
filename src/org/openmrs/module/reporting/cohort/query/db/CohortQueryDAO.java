@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.cohort.query.db;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
@@ -9,6 +10,7 @@ import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
@@ -17,6 +19,7 @@ import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 public interface CohortQueryDAO {
 	
@@ -40,10 +43,12 @@ public interface CohortQueryDAO {
     // Patients having certain observations 
 	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
             PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
+	
 	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
                                               List<EncounterType> encounterTypeList, RangeComparator operator1, Object value1,
                                               RangeComparator operator2, Object value2);
+	
 	public Cohort getPatientsHavingDiscreteObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                                Date onOrAfter, Date onOrBefore, List<Location> locationList,
                                                List<EncounterType> encounterTypeList, SetComparator operator,
@@ -66,5 +71,15 @@ public interface CohortQueryDAO {
 	// Patients based on birth and death dates
 	public Cohort getPatientsHavingBirthAndDeath(Date bornOnOrAfter, Date bornOnOrBefore,
 	                                             Date diedOnOrAfter, Date diedOnOrBefore);
+
+	// Patients having person attributes with given attribute and/or containing
+	// given values
+	public Cohort getPatientsHavingPersonAttributes(PersonAttributeType attribute, List<String> values);
+	
+	// Execute sql query 
+	public Cohort executeSqlQuery(String sqlQuery, Map<String,Object> paramMap);
+	
+	// Pre-process the sql query to get parameters
+	public List<Parameter> parseSqlQuery(String sqlQuery);
 
 }

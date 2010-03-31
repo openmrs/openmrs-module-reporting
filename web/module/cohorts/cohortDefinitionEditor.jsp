@@ -46,8 +46,14 @@
 <style>
 	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
 	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
-	label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
-	#cohort-definition-property-table td { font-size: small; }
+	label { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; font-weight:bold; }
+	label.desc { display:block; }
+	label.inline { display:inline; }
+	input[type="text"] { padding: 2px; font-size: 1em; } 
+	textarea { padding: 2px; font-size: 1em; } 
+	legend { padding: 1em; } 
+	fieldset { padding: 1em; } 
+	
 </style>
 
 <div id="page">
@@ -55,7 +61,7 @@
 	<h1>
 		<c:choose>
 			<c:when test="${empty cohortDefinition.uuid}">
-				Unsaved Cohort Definition
+				(unsaved <rpt:displayLabel type="${cohortDefinition.class.name}"/>)
 			</c:when>
 			<c:otherwise>${cohortDefinition.name}</c:otherwise>
 		</c:choose>
@@ -70,23 +76,25 @@
 				<td valign="top">
 					<ul>				
 						<li>
+							<label class="inline" for="type">Type</label>
+							<rpt:displayLabel type="${cohortDefinition.class.name}"/>
+						</li>
+						<li>
 							<label class="desc" for="name">Name</label>
 							<input type="text" id="name"  tabindex="2" name="name" value="${cohortDefinition.name}" size="50"/>
 						</li>
 						<li>
 							<label class="desc" for="description">Description</label>
-							<textarea id="description" class="field text short" cols="50" rows="10" tabindex="3" name="description">${cohortDefinition.description}</textarea>
-						</li>
-						<li>
-							<label class="desc" for="type">Type</label>
-							<rpt:displayLabel type="${cohortDefinition.class.name}"/>
+							<textarea id="description" class="field text short" cols="50" rows="6" tabindex="3" name="description">${cohortDefinition.description}</textarea>
 						</li>
 					</ul>
 				</td>
 				<td valign="top" width="100%">
 					<ul>
 						<li>
-							<c:forEach items="${groupedProperties}" var="entry" varStatus="entryStatus">
+						
+							<label class="desc" for="name">Properties</label>
+							<c:forEach var="entry" items="${groupedProperties}" varStatus="entryStatus">
 								<fieldset>
 									<c:if test="${!empty entry.key}"><legend>${entry.key}</legend></c:if>
 									<table id="cohort-definition-property-table">
@@ -106,7 +114,7 @@
 												</td>
 												<td style="vertical-align:top; width:100%;">
 													<span id="dynamicValue${p.field.name}" style="display:none;">
-														labeled: <input type="text" id="paramLabel${p.field.name}" name="parameter.${p.field.name}.label" size="30"/>
+														label as <input type="text" id="paramLabel${p.field.name}" name="parameter.${p.field.name}.label" size="30"/>
 													</span>
 													<span id="fixedValue${p.field.name}" style="display:none;">
 														<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
