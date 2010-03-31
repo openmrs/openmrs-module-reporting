@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -121,6 +122,6 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
      */
     public void purgeDataSetDefinition(DataSetDefinition dataSetDefinition) {
     	DataExportDataSetDefinition dsd = (DataExportDataSetDefinition) dataSetDefinition;
-    	Context.getService(ReportObjectService.class).purgeReportObject(dsd.getDataExport());    	
+    	Context.getService(AdministrationService.class).deleteReportObject(dsd.getDataExport().getId()); 	
     }
 }

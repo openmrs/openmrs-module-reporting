@@ -20,7 +20,6 @@ import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
@@ -37,8 +36,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 @SuppressWarnings("deprecation")
 public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTest {
 	
-	/** Logger */
-	private static Log log = LogFactory.getLog(DataExportDataSetPersisterTest.class);
+	protected static Log log = LogFactory.getLog(DataExportDataSetPersisterTest.class);
 
 	@Before
 	public void setupInitialData() {
@@ -92,30 +90,6 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 		DataSetDefinition def = persister.getDataSetDefinition(1);
 		Assert.assertNotNull("Should return dataset definition if exists", def); 		
 	}
-
-	/**
-	 * Tests whether a class registered with this persister can be handled.
-	 * 
-	 * TODO This should be handled by the Handler annotation.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	@Ignore
-	public void shouldHandleRegisteredClass() throws Exception { 
-		Assert.fail("Not implemented");		
-	}
-	
-	/**
-	 * TODO This should be handled by the Handler annotation.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	@Ignore
-	public void shouldNotHandleUnregisteredClass() throws Exception { 
-		Assert.fail("Not implemented");		
-	}
 	
 	/**
 	 * Tests whether the persister returns all dataset definitions.
@@ -165,66 +139,32 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 		Assert.assertEquals(1, def.size()); 		
 	}
 
-	@Test
-	public void shouldUpdateExistingDataSetDefinition() throws Exception { 
+	@Test(expected=UnsupportedOperationException.class)
+	public void shouldNotBeAbleToModifyUnderlyingDataExport() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		// Save an existing data set definition
 		DataSetDefinition datasetDefinition = persister.getDataSetDefinitions("Test First 3 Weights", true).get(0);
-		int idBefore = datasetDefinition.getId();
 		datasetDefinition.setName("My Data Set Definition");
-		datasetDefinition = persister.saveDataSetDefinition(datasetDefinition);
-		datasetDefinition = persister.getDataSetDefinition(idBefore);
-		Assert.assertEquals("Should have same ID as before save", new Integer(idBefore), datasetDefinition.getId());
-		Assert.assertEquals("Should have new name", "My Data Set Definition", datasetDefinition.getName());
-
 	}
+	
 	@Test
 	public void shouldSetIdentifierAfterSave() throws Exception { 
-		DataSetDefinitionPersister persister = 
-			new DataExportDataSetDefinitionPersister();
-		DataExportReportObject dataExport = (DataExportReportObject)
-			Context.getService(ReportObjectService.class).getReportObject(45);
+		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
+		DataExportReportObject dataExport = (DataExportReportObject) Context.getService(ReportObjectService.class).getReportObject(45);
 		dataExport.setReportObjectId(null);
 		dataExport.setName("My Data Set Definition");
 		// Save an existing data set definition
-		DataSetDefinition datasetDefinition = 
-			new DataExportDataSetDefinition(dataExport);		
+		DataSetDefinition datasetDefinition = new DataExportDataSetDefinition(dataExport);		
 		datasetDefinition = persister.saveDataSetDefinition(datasetDefinition);
-		
 		Assert.assertNotNull("Should set identifier after saving dataset definition", datasetDefinition.getId());
-
 	}
 
-	/**
-	 * 
-	 * @throws Exception
-	 */
 	@Test
 	public void shouldRemoveDataSetDefintion() throws Exception { 
-		DataSetDefinitionPersister persister = 
-			new DataExportDataSetDefinitionPersister();
-		DataSetDefinition beforePurge = 
-			persister.getDataSetDefinitions("Test First 3 Weights", true).get(0);
+		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
+		DataSetDefinition beforePurge = persister.getDataSetDefinitions("Test First 3 Weights", true).get(0);
 		int idBefore = beforePurge.getId();
 		persister.purgeDataSetDefinition(beforePurge);
-		DataSetDefinition afterPurge = 
-			persister.getDataSetDefinition(idBefore);
+		DataSetDefinition afterPurge = persister.getDataSetDefinition(idBefore);
 		Assert.assertNull(afterPurge);
 	}
-	
-	
-	/**
-	 * org.hibernate.NonUniqueObjectException: 
-	 * a different object with the same identifier value was already associated with the session: 
-	 * [org.openmrs.reporting.ReportObjectWrapper#45]
-	 * 
-	 * Auto generated method comment
-	 *
-	 */
-	public void shouldNotThrowNonUniqueObjectException() { 
-		Assert.fail("Not sure how to implement this test, but purging causes this exception to be thrown");
-		
-	}
-	
-
 }
