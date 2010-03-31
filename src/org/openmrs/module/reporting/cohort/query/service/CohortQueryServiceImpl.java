@@ -155,5 +155,13 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	    	locationList, encounterTypeList,
 	    	operator, valueList);
     }
+
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingBirthAndDeath(java.util.Date, java.util.Date, java.util.Date, java.util.Date)
+	 */
+	public Cohort getPatientsHavingBirthAndDeath(Date bornOnOrAfter, Date bornOnOrBefore,
+	                                             Date diedOnOrAfter, Date diedOnOrBefore) {
+	    return dao.getPatientsHavingBirthAndDeath(bornOnOrAfter, bornOnOrBefore, diedOnOrAfter, diedOnOrBefore);
+    }
     
 }

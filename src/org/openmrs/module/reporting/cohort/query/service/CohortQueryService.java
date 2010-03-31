@@ -103,4 +103,16 @@ public interface CohortQueryService extends OpenmrsService {
                                               List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount);
 
+	/**
+	 * Gets patients who were born or died in a particular date range
+	 * 
+	 * @param bornOnOrAfter
+	 * @param bornOnOrBefore
+	 * @param diedOnOrAfter
+	 * @param diedOnOrBefore
+	 * @return
+	 */
+	public Cohort getPatientsHavingBirthAndDeath(Date bornOnOrAfter, Date bornOnOrBefore,
+	                                             Date diedOnOrAfter, Date diedOnOrBefore);
+
 }

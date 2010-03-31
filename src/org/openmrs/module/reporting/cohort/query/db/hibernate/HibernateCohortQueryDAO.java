@@ -1093,4 +1093,38 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	    	operator, valueList);
     }
 
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingBirthAndDeath(java.util.Date, java.util.Date, java.util.Date, java.util.Date)
+	 */
+	public Cohort getPatientsHavingBirthAndDeath(Date bornOnOrAfter, Date bornOnOrBefore,
+	                                             Date diedOnOrAfter, Date diedOnOrBefore) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" select patient_id ");
+		sql.append(" from patient pat ");
+		sql.append(" inner join person per on pat.patient_id = per.person_id ");
+		sql.append(" where pat.voided = false and per.voided = false ");
+		if (bornOnOrAfter != null)
+			sql.append(" and birthdate >= :bornOnOrAfter ");
+		if (bornOnOrBefore != null)
+			sql.append(" and birthdate <= :bornOnOrBefore ");
+		if (diedOnOrAfter != null)
+			sql.append(" and death_date >= :diedOnOrAfter ");
+		if (diedOnOrBefore != null)
+			sql.append(" and death_date <= :diedOnOrBefore ");
+
+		Query q = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
+		q.setCacheMode(CacheMode.IGNORE);
+
+		if (bornOnOrAfter != null)
+			q.setDate("bornOnOrAfter", bornOnOrAfter);
+		if (bornOnOrBefore != null)
+			q.setDate("bornOnOrBefore", bornOnOrBefore);
+		if (diedOnOrAfter != null)
+			q.setDate("diedOnOrAfter", diedOnOrAfter);
+		if (diedOnOrBefore != null)
+			q.setDate("diedOnOrBefore", diedOnOrBefore);
+		
+		return new Cohort(q.list());
+    }
+
 }

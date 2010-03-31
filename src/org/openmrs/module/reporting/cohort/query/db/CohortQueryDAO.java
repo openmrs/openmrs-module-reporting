@@ -63,4 +63,8 @@ public interface CohortQueryDAO {
                                               List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount);
 
+	// Patients based on birth and death dates
+	public Cohort getPatientsHavingBirthAndDeath(Date bornOnOrAfter, Date bornOnOrBefore,
+	                                             Date diedOnOrAfter, Date diedOnOrBefore);
+
 }
