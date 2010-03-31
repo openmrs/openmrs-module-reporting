@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.report;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +51,9 @@ public class ReportRequest implements Comparable<ReportRequest> {
 	private boolean saved = false;
 	private List<String> labels;
 	private Priority priority = Priority.NORMAL;
+	
+	// once the request is completed keep a pointer to the resulting file (unless a WebRenderer was chosen)
+	private File renderedOutput;
 	
 	
 	public ReportRequest() {
@@ -265,6 +269,22 @@ public class ReportRequest implements Comparable<ReportRequest> {
      */
     public void setLabels(List<String> labels) {
     	this.labels = labels;
+    }
+
+	
+    /**
+     * @return the renderedOutput
+     */
+    public File getRenderedOutput() {
+    	return renderedOutput;
+    }
+
+	
+    /**
+     * @param renderedOutput the renderedOutput to set
+     */
+    public void setRenderedOutput(File renderedOutput) {
+    	this.renderedOutput = renderedOutput;
     }
 
 }

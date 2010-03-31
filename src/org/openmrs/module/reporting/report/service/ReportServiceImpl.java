@@ -1,8 +1,11 @@
 package org.openmrs.module.reporting.report.service;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -204,6 +207,10 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see org.openmrs.module.reporting.report.service.ReportService#runReport(org.openmrs.module.reporting.report.ReportRequest)
 	 */
 	public Report runReport(ReportRequest request) {
+		// Note: at some point we were saving the completed Report to disk. We stopped doing this
+		// for the moment because deserializing it via xstream was painfully slow, but some of
+		// the code here may be leftover from that.
+		
 		// TODO: move this somewhere so it starts automatically
 		ensureDeleteOldReportsTask();
 		
@@ -227,6 +234,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		
 		ret.rawDataEvaluated(rawData);
 		
+		File renderedFile = null;
 		if (request.getRenderingMode() != null) {
 			if (!(request.getRenderingMode().getRenderer() instanceof InteractiveReportRenderer)) {
 				try {
@@ -238,6 +246,11 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		            	rm.getRenderer().getFilename(request.getReportDefinition(), rm.getArgument()),
 		            	rm.getRenderer().getRenderedContentType(request.getReportDefinition(), rm.getArgument()),
 		            	out.toByteArray());
+		            
+		            // now save the rendered output to a file
+		            File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+		    	    renderedFile = new File(dir, request.getUuid() + ".rendered." + ret.getRenderedFilename());
+		            OpenmrsUtil.copyFile(new ByteArrayInputStream(ret.getRenderedOutput()), new BufferedOutputStream(new FileOutputStream(renderedFile)));
 	            }
 	            catch (RenderingException e) {
 		            log.error("Failed to Render ReportData", e);
@@ -249,8 +262,11 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	            }
 			}
 		}
-
-		saveReportToFile(ret);
+		
+		if (renderedFile != null) {
+			request.setRenderedOutput(renderedFile);
+			saveReportRequest(request);
+		}
 		addToHistory(request);
 		return ret;
     }
