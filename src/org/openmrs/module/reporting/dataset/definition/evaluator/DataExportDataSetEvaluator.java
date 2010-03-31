@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -53,14 +54,14 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
      */
 	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) {
 		
+		context = ObjectUtil.nvl(context, new EvaluationContext());
 		SimpleDataSet dataSet = new SimpleDataSet(definition, context);
 		try {
 			DataExportDataSetDefinition dataExportDefinition = (DataExportDataSetDefinition) definition;
 			DataExportReportObject dataExport = dataExportDefinition.getDataExport();
 			DataExportUtil.generateExport(dataExport, context.getBaseCohort(), null);
 			
-			File dataFile = DataExportUtil.getGeneratedFile(dataExportDefinition.getDataExport());			
-			log.error("getting data export data set for data export " + dataFile.getAbsolutePath());
+			File dataFile = DataExportUtil.getGeneratedFile(dataExportDefinition.getDataExport());
 
 			// Get contents as a string 
 			// TODO Test whether this is faster than another approach
@@ -81,12 +82,10 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
 				DataSetRow row = new DataSetRow();
 				String [] cells = rows[i].split("\\t");
 				for (int j=0; j<cells.length; j++) { 	
-					log.error("column=" + columns[j] + " value=" + cells[j]);
 					row.addColumnValue(cols.get(columns[j]), cells[j]);
 				}
 				dataSet.addRow(row);	
 			}
-			log.info("Dataset: " + dataSet);
 		} 
 		catch (Exception e) {
 			log.error("An error occurred while generating a data export.", e);

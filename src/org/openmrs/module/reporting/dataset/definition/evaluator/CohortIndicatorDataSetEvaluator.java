@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -43,10 +44,8 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 	public MapDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		CohortIndicatorDataSetDefinition dsd = (CohortIndicatorDataSetDefinition) dataSetDefinition;
-		
-		if (context == null) {
-			context = new EvaluationContext();
-		}
+
+		context = ObjectUtil.nvl(context, new EvaluationContext());
 		if (context.getBaseCohort() == null || context.getBaseCohort().isEmpty()) {
 			context.setBaseCohort(Context.getPatientSetService().getAllPatients());
 		}

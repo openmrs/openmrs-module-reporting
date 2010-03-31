@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -25,18 +26,19 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 * @should evaluate a MultiPeriodIndicatorDataSetDefinition
 	 */
-	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
-		if (evalContext == null) {
-			evalContext = new EvaluationContext();
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+		if (context == null) {
+			context = new EvaluationContext();
 		}
 		List<String> keysToCopy = Arrays.asList(new String[] { "startDate", "endDate", "location" });
 		
 		MultiPeriodIndicatorDataSetDefinition dsd = (MultiPeriodIndicatorDataSetDefinition) dataSetDefinition;
-		SimpleDataSet ret = new SimpleDataSet(dsd, evalContext);
+		SimpleDataSet ret = new SimpleDataSet(dsd, context);
 		
 		for (Iteration iter : dsd.getIterations()) {
-			EvaluationContext ec = EvaluationContext.clone(evalContext);
+			EvaluationContext ec = EvaluationContext.clone(context);
 			ec.addParameterValue("startDate", iter.getStartDate());
 			ec.addParameterValue("endDate", iter.getEndDate());
 			ec.addParameterValue("location", iter.getLocation());
