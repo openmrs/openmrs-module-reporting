@@ -125,7 +125,7 @@ $(function() {
 						<table id="dataset-preview-table" class="display">
 							<thead>
 								<tr>
-									<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="varStatus">				
+									<c:forEach var="column" items="${dataSet.metaData.columns}" varStatus="varStatus">				
 										<th>
 											${column.label}
 										</th>
@@ -136,7 +136,7 @@ $(function() {
 									<c:forEach var="dataSetRow" items="${dataSet.rows}" varStatus="varStatus">
 										<tr>
 										
-											<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="varStatus">				
+											<c:forEach var="column" items="${dataSet.metaData.columns}" varStatus="varStatus">				
 												<td>
 													${dataSetRow.columnValues[column]}
 												</td>

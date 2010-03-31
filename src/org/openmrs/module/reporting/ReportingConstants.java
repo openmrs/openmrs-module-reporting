@@ -21,6 +21,7 @@ import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.util.StringUtils;
 
 /**
  * Constants required by this module
@@ -60,9 +61,11 @@ public class ReportingConstants {
 	public static final List<PatientIdentifierType> GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES() {
 		String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.preferredIdentifierTypes");
 		List<PatientIdentifierType> pits = new ArrayList<PatientIdentifierType>();
-		if (propertyValue != null) {
+		if (StringUtils.hasText(propertyValue)) {
 			for (String s : propertyValue.split("\\|")) {
-				pits.add(Context.getPatientService().getPatientIdentifierTypeByName(s));
+				PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierTypeByName(s);
+				if (pit != null)
+					pits.add(pit);
 			}
 		}
 		return pits;
