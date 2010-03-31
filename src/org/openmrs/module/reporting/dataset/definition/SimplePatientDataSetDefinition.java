@@ -22,12 +22,12 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
- * This is a basic example of how one might implement a row-per-Patient DataSetDefinition
+ * This is a simple example of how one might implement a row-per-Patient DataSetDefinition
  * There are no guarantees that this class will be backwards compatible, or exist in a future
  * release, so should be used with caution
- * @see ExamplePatientDataSetEvaluator
+ * @see SimplePatientDataSetEvaluator
  */
-public class ExamplePatientDataSetDefinition extends BaseDataSetDefinition {
+public class SimplePatientDataSetDefinition extends BaseDataSetDefinition {
 
 	private static final long serialVersionUID = 6405583324151111487L;
 	
@@ -48,14 +48,14 @@ public class ExamplePatientDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * Constructor
 	 */
-	public ExamplePatientDataSetDefinition() {
+	public SimplePatientDataSetDefinition() {
 		super();
 	}
 	
 	/**
 	 * Public constructor with name and description
 	 */
-	public ExamplePatientDataSetDefinition(String name, String description) {
+	public SimplePatientDataSetDefinition(String name, String description) {
 		super(name, description);
 	}
 	

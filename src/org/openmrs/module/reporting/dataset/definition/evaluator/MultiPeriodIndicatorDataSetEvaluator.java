@@ -23,6 +23,7 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
+	 * @should evaluate a MultiPeriodIndicatorDataSetDefinition
 	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
 		

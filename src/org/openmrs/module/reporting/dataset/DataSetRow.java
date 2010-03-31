@@ -48,7 +48,7 @@ public class DataSetRow {
 	 */
 	public Object getColumnValue(String columnName) {
 		for (Map.Entry<DataSetColumn, Object> e : getColumnValues().entrySet()) {
-			if (e.getKey().getName().equals(columnName)) {
+			if (e.getKey().getName().equalsIgnoreCase(columnName)) {
 				return e.getValue();
 			}
 		}

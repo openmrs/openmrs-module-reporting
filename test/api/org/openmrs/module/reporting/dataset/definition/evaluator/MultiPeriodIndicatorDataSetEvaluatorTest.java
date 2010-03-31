@@ -1,6 +1,5 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,14 +31,13 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
-	
+
 	/**
 	 * @see {@link MultiPeriodIndicatorDataSetEvaluator#evaluate(DataSetDefinition,EvaluationContext)}
-	 * 
 	 */
 	@Test
-	@Verifies(value = "should evaluate a data set definition", method = "evaluate(DataSetDefinition,EvaluationContext)")
-	public void evaluate_shouldEvaluateADataSetDefinition() throws Exception {
+	@Verifies(value = "should evaluate a MultiPeriodIndicatorDataSetDefinition", method = "evaluate(DataSetDefinition,EvaluationContext)")
+	public void evaluate_shouldEvaluateAMultiPeriodIndicatorDataSetDefinition() throws Exception {
 		// patient 6's birthdate is 2007-05-27 in the standard test dataset
 		DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 		Assert.assertEquals(ymd.parse("2007-05-27"), Context.getPatientService().getPatient(6).getBirthdate());
@@ -84,7 +82,6 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		DataSet result = Context.getService(DataSetDefinitionService.class).evaluate(multi, null);
 		Date june1 = ymd.parse("2009-06-01");
 		for (DataSetRow row : result) {
-			System.out.println("Row: " + row);
 			if (((Date) row.getColumnValue("startDate")).compareTo(june1) < 0) {
 				Assert.assertEquals("Should be 1 before June", 1d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue());
 			} else {

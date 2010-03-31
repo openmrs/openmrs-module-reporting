@@ -38,6 +38,7 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
+	 * @should evaluate a CohortIndicatorDataSetDefinition
 	 */
 	public MapDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		

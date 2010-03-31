@@ -24,6 +24,7 @@ import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.CohortUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -49,8 +50,11 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
+	 * @should evaluate a SQLDataSetDefinition
 	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+		
+		context = ObjectUtil.nvl(context, new EvaluationContext());
 		
 		SqlDataSetDefinition sqlDsd = (SqlDataSetDefinition) dataSetDefinition;
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);

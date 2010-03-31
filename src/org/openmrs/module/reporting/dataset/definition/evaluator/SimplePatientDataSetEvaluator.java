@@ -36,31 +36,32 @@ import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.module.reporting.dataset.definition.ExamplePatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
- * The logic that evaluates a {@link ExamplePatientDataSetDefinition} and produces an {@link DataSet}
- * @see ExamplePatientDataSetDefinition
+ * The logic that evaluates a {@link SimplePatientDataSetDefinition} and produces an {@link DataSet}
+ * @see SimplePatientDataSetDefinition
  */
-@Handler(supports={ExamplePatientDataSetDefinition.class})
-public class ExamplePatientDataSetEvaluator implements DataSetEvaluator {
+@Handler(supports={SimplePatientDataSetDefinition.class})
+public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
 	/**
 	 * Public constructor
 	 */
-	public ExamplePatientDataSetEvaluator() { }
+	public SimplePatientDataSetEvaluator() { }
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
+	 * @should evaluate a ExamplePatientDataSetDefinition
 	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
-		ExamplePatientDataSetDefinition definition = (ExamplePatientDataSetDefinition) dataSetDefinition;
+		SimplePatientDataSetDefinition definition = (SimplePatientDataSetDefinition) dataSetDefinition;
 		
 		Cohort cohort = context.getBaseCohort();
 
