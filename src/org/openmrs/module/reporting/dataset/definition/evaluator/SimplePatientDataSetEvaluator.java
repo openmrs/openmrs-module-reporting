@@ -32,6 +32,7 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.CohortUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -56,13 +57,14 @@ public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
-	 * @should evaluate a ExamplePatientDataSetDefinition
+	 * @should evaluate a SimplePatientDataSetDefinition
 	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 		SimplePatientDataSetDefinition definition = (SimplePatientDataSetDefinition) dataSetDefinition;
 		
+		context = ObjectUtil.nvl(context, new EvaluationContext());
 		Cohort cohort = context.getBaseCohort();
 
 		// By default, get all patients
