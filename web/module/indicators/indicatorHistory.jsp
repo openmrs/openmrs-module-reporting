@@ -20,10 +20,10 @@
 
 <h2>History of Indicators</h2>
 
-<!--  only float the options on the right if we are displaying a graph -->
+<!--  move the options form to the  right if we are displaying a graph -->
 <c:choose>
 	<c:when test="${dataSet != null}">
-		<div style="float: right; border: 1px black solid; padding: 20px">
+		<div style="position:absolute; left:700px; border: 1px black solid; padding: 20px">
 	</c:when>
 	<c:otherwise>
 		<div style="border: 1px black solid; padding: 20px">
