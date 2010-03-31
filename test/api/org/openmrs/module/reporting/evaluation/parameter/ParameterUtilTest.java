@@ -18,7 +18,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.toreview.DrugOrderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
@@ -49,8 +49,7 @@ public class ParameterUtilTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void shouldHaveAllInheritedAnnotatedFieldsAsParameters() throws Exception {		
-		DrugOrderCohortDefinition def = new DrugOrderCohortDefinition();
-		System.out.println(DefinitionUtil.getConfigurationProperties(def));
-		Assert.assertEquals(9, DefinitionUtil.getConfigurationProperties(def).size());
+		NumericObsCohortDefinition def = new NumericObsCohortDefinition();
+		Assert.assertEquals(11, DefinitionUtil.getConfigurationProperties(def).size());
 	}
 }

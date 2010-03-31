@@ -9,14 +9,12 @@ import java.util.Map;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService.GroupMethod;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.cohort.definition.toreview.DrugOrderCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -95,34 +93,6 @@ public class ReportUtil {
 				}
 			});
 		}
-		try {
-			String temp = Context.getAdministrationService().getGlobalProperty("dashboard.regimen.displayDrugSetIds");
-			if (temp != null) {
-				for (String name : temp.split(",")) {
-					final Concept drugSet = Context.getConceptService().getConcept(name);
-					if (drugSet != null) {
-						ret.add(new InitialDataElement(CohortDefinition.class, "Taking any " + drugSet.getBestName(Context.getLocale()) + " Between Dates") {
-							public void apply() {
-								DrugOrderCohortDefinition def = new DrugOrderCohortDefinition();
-								def.setAnyOrAll(GroupMethod.ANY);
-								def.setDrugSets(Collections.singletonList(drugSet));
-								def.addParameter(new Parameter("sinceDate", "sinceDate", Date.class));
-								def.addParameter(new Parameter("untilDate", "untilDate", Date.class));
-								def.setName("Taking any " + drugSet.getBestName(Context.getLocale()) + " Between Dates");
-								Context.getService(CohortDefinitionService.class).saveDefinition(def);
-							}
-						});
-					}
-				}
-			}
-		} catch (Exception ex) { }
-		/*
-		ret.add(new InitialDataElement(CohortDefinition.class, "") {
-			public void apply() {
-				Context.getService(CohortDefinitionService.class).saveDefinition(def);
-			}
-		});
-		*/
 		ret.add(new InitialDataElement(Dimension.class, "Gender") {
 			public void apply() {
 				CohortDefinition female = getCohortDefinition("Female");

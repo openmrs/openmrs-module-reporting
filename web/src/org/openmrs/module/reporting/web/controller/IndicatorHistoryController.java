@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataSetDefinition;
@@ -15,7 +16,6 @@ import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinition
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
-import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
 import org.openmrs.module.reporting.propertyeditor.IndicatorEditor;
 import org.openmrs.propertyeditor.LocationEditor;
@@ -90,8 +90,7 @@ public class IndicatorHistoryController {
 			for (Indicator ind : query.getIndicators()) {
 		
 				// hack to remove any empty indicators created by List HTML Widget
-				if (ind != null && ind.getUuid() != null && !ind.getUuid().isEmpty()){
-				
+				if (ind != null && ObjectUtil.notNull(ind.getUuid())) {			
 					try {
 						CohortIndicator indicator = (CohortIndicator) ind;
 						indDSD.addColumn(
