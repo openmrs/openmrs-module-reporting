@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
+import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.BaseOpenmrsObject;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.reporting.export.DataExportReportObject;
 
 /**
@@ -25,6 +28,7 @@ import org.openmrs.reporting.export.DataExportReportObject;
  * @see DataExportDataSet
  */
 @SuppressWarnings("deprecation")
+@Localized("reporting.DataExportDataSetDefinition")
 public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	
     private static final long serialVersionUID = -2572061676651616176L;
@@ -56,7 +60,7 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	@Override
 	public Integer getId() {
-		return getDataExport().getId();
+		return (getDataExport() == null ? null : getDataExport().getId());
 	}
 	
 	/**
@@ -64,7 +68,7 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	@Override
 	public String getUuid() {
-		return getDataExport().getUuid();
+		return (getDataExport() == null ? null : getDataExport().getUuid());
 	}
 	
 	/**
@@ -72,7 +76,7 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	@Override
 	public String getName() {
-		return getDataExport().getName();
+		return (getDataExport() == null ? null : getDataExport().getName());
 	}
 
 	/**
@@ -80,7 +84,7 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	@Override
 	public String getDescription() {
-		return getDataExport().getDescription();
+		return (getDataExport() == null ? null : getDataExport().getDescription());
 	}
 	
 	//***** PROPERTY ACCESS *****

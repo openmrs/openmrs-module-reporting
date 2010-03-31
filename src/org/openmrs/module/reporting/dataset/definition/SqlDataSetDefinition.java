@@ -13,18 +13,22 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.definition.evaluator.SqlDataSetEvaluator;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * Definition of a SQL DataSet
  * @see SqlDataSetEvaluator
  */
+@Localized("reporting.SqlDataSetDefinition")
 public class SqlDataSetDefinition extends BaseDataSetDefinition {
 
 	private static final long serialVersionUID = 6405583324151111487L;
 
 	//***** PROPERTIES *****
 	
+	@ConfigurationProperty(required=true)
 	private String sqlQuery;
 	
 	//***** CONSTRUCTORS *****

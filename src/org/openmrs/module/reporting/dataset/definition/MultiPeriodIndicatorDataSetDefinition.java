@@ -18,32 +18,50 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
  */
 public class MultiPeriodIndicatorDataSetDefinition extends BaseDataSetDefinition implements DataSetDefinition {
 	
-	private CohortIndicatorDataSetDefinition baseDefinition;
+	//***** PROPERTIES *****
 	
+	private CohortIndicatorDataSetDefinition baseDefinition;
 	private List<Iteration> iterations;
 	
+	//***** CONSTRUCTORS *****
+	
+	/**
+	 * Default Constructor
+	 */
 	public MultiPeriodIndicatorDataSetDefinition() {
 		iterations = new ArrayList<Iteration>();
 	}
 	
+	/**
+	 * Base Constructor
+	 */
 	public MultiPeriodIndicatorDataSetDefinition(CohortIndicatorDataSetDefinition baseDefinition) {
 		this();
 		this.baseDefinition = baseDefinition;
 	}
 	
+	//***** INSTANCE METHODS *****
+	
+	/**
+	 * Add a new Iteration
+	 */
 	public void addIteration(Iteration iteration) {
 		iterations.add(iteration);
 	}
 
+	/**
+	 * @return all the Columns for this DataSetDefinition
+	 */
 	public List<DataSetColumn> getColumns() {
 		List<DataSetColumn> ret = new ArrayList<DataSetColumn>();
 		ret.add(new DataSetColumn("startDate", "Start Date", Date.class));
 		ret.add(new DataSetColumn("endDate", "End Date", Date.class));
 		ret.add(new DataSetColumn("location", "Location", Location.class));
-		//ret.add(new DataSetColumn("evaluationContext", "Evaluation Context", null, EvaluationContext.class));
 		ret.addAll(baseDefinition.getColumns());
 		return ret;
     }
+	
+	//***** PROPERTY ACCESS *****
 	
     /**
      * @return the baseDefinition
@@ -72,6 +90,8 @@ public class MultiPeriodIndicatorDataSetDefinition extends BaseDataSetDefinition
     public void setIterations(List<Iteration> iterations) {
     	this.iterations = iterations;
     }
+    
+    //***** INNER CLASS *****
 
 	/**
 	 * This represents one pass running the underlying data set definition
@@ -112,8 +132,6 @@ public class MultiPeriodIndicatorDataSetDefinition extends BaseDataSetDefinition
 
         public void setLocation(Location location) {
         	this.location = location;
-        }
-		
+        }	
 	}
-	
 }

@@ -27,30 +27,16 @@ $(document).ready(function() {
 	<div id="container">
 
 		<h1>Dataset Manager</h1>
-		<%--
-		<spring:message code="reporting.manage.createNew"/>:
-		<c:forEach var="createLink" items="${types}">
-			<form style="display: inline" action="../newDataset.form">
-				<input type="hidden" name="type" value="${createLink.name}"/>
-				<input type="submit" value="${createLink.simpleName}"/>
-			</form>
-		</c:forEach>
-		--%>
 
 		<div id="inline-list">	
 			<p>	
 				<ul>
 					<li class="last">
-						<form method="get" action="${pageContext.request.contextPath}/module/reporting/datasets/newDataSet.form" style="display:inline">					
-							<strong>Create a New Dataset:</strong>
-							<select name="type">
-								<option value="">&nbsp;</option>
-								<c:forEach items="${types}" var="type">
-									<option value="${type.name}">${type.simpleName}</option>
-								</c:forEach>
-							</select>
-							<input type="submit" value="Create"/>					
-						</form>		
+						<strong>Create a New Dataset:</strong>
+						<c:forEach items="${types}" var="t">
+							&nbsp;&nbsp;
+							<input type="button" value="<rpt:displayLabel type="${t.type.name}"/>" onclick="document.location.href='${pageContext.request.contextPath}${t.createPage}';">
+						</c:forEach>
 					</li>
 				</ul>
 			</p>			
@@ -67,40 +53,48 @@ $(document).ready(function() {
 			</thead>
 			
 			<tbody>
-				<c:forEach items="${dataSetDefinitions}" var="dataset" varStatus="status">
+				<c:forEach items="${dataSetDefinitions}" var="d" varStatus="status">
 					<tr>
 						<td>
-							<a href="${pageContext.request.contextPath}/module/reporting/datasets/viewDataSet.form?dataSetId=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">					
+							<a href="${pageContext.request.contextPath}/module/reporting/datasets/viewDataSet.form?dataSetId=${d.definition.uuid}&id=${d.definition.id}&type=${d.type.name}">					
 								<img src="${pageContext.request.contextPath}/images/play.gif" alt="view" border="0"/>
 							</a> 
 							&nbsp;
-							<a href="${pageContext.request.contextPath}/module/reporting/datasets/editDataSet.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">				
-								<img src='<c:url value="/images/edit.gif"/>' alt="edit" border="0"/>
-							</a>
+							<c:choose>
+								<c:when test="${!empty d.editPage}">
+									<a href="${pageContext.request.contextPath}${d.editPage}">				
+										<img src='<c:url value="/images/edit.gif"/>' alt="edit" border="0"/>
+									</a>
+								</c:when>
+								<c:otherwise>
+									&nbsp;&nbsp;&nbsp;
+								</c:otherwise>
+							</c:choose>
 							&nbsp;	
-							<a href="${pageContext.request.contextPath}/module/reporting/datasets/removeDataSet.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}">
+							<a href="${pageContext.request.contextPath}/module/reporting/datasets/removeDataSet.form?uuid=${d.definition.uuid}&type=${d.type.name}">
 								<img src="${pageContext.request.contextPath}/images/trash.gif" alt="delete" border="0"/>					
 							</a> 
 						</td>
 						<td>
-							<a href="${pageContext.request.contextPath}/module/reporting/datasets/editDataSet.form?uuid=${dataset.uuid}&id=${dataset.id}&type=${dataset.class.name}&action=edit">				
-								${dataset.name}
+							<a href="${pageContext.request.contextPath}${d.editPage}">				
+								${d.definition.name}
 							</a>
 						</td>
 						<td>
-							${dataset.creator}
+							${d.definition.creator}
 						</td>
 						<td>
-							<c:if test="${dateset.dateCreated!=null}">
-								<rpt:timespan then="${dataset.dateCreated}"/>
+							<c:if test="${d.definition.dateCreated!=null}">
+								<rpt:timespan then="${d.definition.dateCreated}"/>
 							</c:if>
 						</td>
 					</tr>
 				</c:forEach>	
 			</tbody>
 		</table>
+		<br/>
 	</div>
-
+	<br/>
 </div>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

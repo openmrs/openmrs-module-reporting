@@ -36,23 +36,23 @@ import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.ExamplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
- * The logic that evaluates a {@link SimplePatientDataSetDefinition} and produces an {@link DataSet}
- * @see SimplePatientDataSetDefinition
+ * The logic that evaluates a {@link ExamplePatientDataSetDefinition} and produces an {@link DataSet}
+ * @see ExamplePatientDataSetDefinition
  */
-@Handler(supports={SimplePatientDataSetDefinition.class})
-public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
+@Handler(supports={ExamplePatientDataSetDefinition.class})
+public class ExamplePatientDataSetEvaluator implements DataSetEvaluator {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
 	/**
 	 * Public constructor
 	 */
-	public SimplePatientDataSetEvaluator() { }
+	public ExamplePatientDataSetEvaluator() { }
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
@@ -60,7 +60,7 @@ public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
-		SimplePatientDataSetDefinition definition = (SimplePatientDataSetDefinition) dataSetDefinition;
+		ExamplePatientDataSetDefinition definition = (ExamplePatientDataSetDefinition) dataSetDefinition;
 		
 		Cohort cohort = context.getBaseCohort();
 
@@ -107,7 +107,8 @@ public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 			}
 			
 			for (ProgramWorkflow t : definition.getProgramWorkflows()) {
-				DataSetColumn c = new DataSetColumn(t.getName(), t.getName(), String.class);
+				String name = (t.getName() == null ? t.getConcept().getDisplayString() : t.getName());
+				DataSetColumn c = new DataSetColumn(name, name, String.class);
 				PatientState ps = states.get(t).get(p.getPatientId());
 				row.addColumnValue(c, (ps == null || !ps.getActive()) ? null : ps.getState().getName());
 			}

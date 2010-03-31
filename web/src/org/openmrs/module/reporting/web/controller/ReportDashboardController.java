@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.ExamplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
@@ -104,7 +104,7 @@ public class ReportDashboardController {
 				}
 				
 				if (dsd == null) {
-					SimplePatientDataSetDefinition d = new SimplePatientDataSetDefinition();
+					ExamplePatientDataSetDefinition d = new ExamplePatientDataSetDefinition();
 					List<PatientIdentifierType> types = ReportingConstants.GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES();
 					if (types.isEmpty()) {
 						d.addPatientProperty("patientId");

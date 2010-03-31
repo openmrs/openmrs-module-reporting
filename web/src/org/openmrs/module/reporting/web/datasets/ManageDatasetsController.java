@@ -1,7 +1,10 @@
 package org.openmrs.module.reporting.web.datasets;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,15 +15,20 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
+import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
@@ -39,7 +47,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ManageDatasetsController {
 
 	protected Log log = LogFactory.getLog(this.getClass());
-		
+
 	/**
 	 * Returns a list of datasets to manage
 	 */
@@ -48,19 +56,34 @@ public class ManageDatasetsController {
     						   @RequestParam(required=false, value="includeRetired") Boolean includeRetired) {
     	
     	DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
-    	List<DataSetDefinition> datasetDefinitions = new ArrayList<DataSetDefinition>();
+    	boolean allowDataExport = (ModuleFactory.getStartedModuleById("reportingcompatibility") != null);
     	
+		List<ManagedDataSet> managedTypes = new ArrayList<ManagedDataSet>();
+		List<ManagedDataSet> managedDefinitions = new ArrayList<ManagedDataSet>();
+
+		managedTypes.add(new ConfigurationPropertyManagedDataSet(SqlDataSetDefinition.class));
+		if (allowDataExport) {
+			managedTypes.add(new DataExportManagedDataSet());
+		}
+    	model.addAttribute("types", managedTypes);    
+
     	// Get all data set definitions
     	try {         	
         	boolean retired = includeRetired != null && includeRetired.booleanValue();
-    		datasetDefinitions = service.getAllDefinitions(retired);
+    		for (DataSetDefinition dsd : service.getAllDefinitions(retired)) {
+    			if (dsd instanceof DataExportDataSetDefinition) {
+    				managedDefinitions.add(new DataExportManagedDataSet(dsd));
+    			}
+    			else if (dsd instanceof SqlDataSetDefinition) {
+    				managedDefinitions.add(new ConfigurationPropertyManagedDataSet(dsd));
+    			}
+    		}
     	} 
     	catch (Exception e) { 
     		log.error("Could not fetch dataset definitions", e);
     	}
-    	
-    	model.addAttribute("types", service.getDefinitionTypes());    	
-    	model.addAttribute("dataSetDefinitions", datasetDefinitions);
+
+    	model.addAttribute("dataSetDefinitions", managedDefinitions);
     }
     
     /**
@@ -83,17 +106,30 @@ public class ManageDatasetsController {
      */
 	@RequestMapping("/module/reporting/datasets/editDataSet")
     public String editDataSet(
-    		@RequestParam(required=false, value="id") Integer id,
     		@RequestParam(required=false, value="uuid") String uuid,
-            @RequestParam(required=false, value="type") String type,
+            @RequestParam(required=false, value="type") Class<? extends DataSetDefinition> type,
             @RequestParam(required=false, value="cohortSize") Integer cohortSize,
             @RequestParam(required=false, value="action") String action,
     		ModelMap model) {
-
-    	DataSetDefinition dataSetDefinition = getDataSetDefinition(uuid, type, id);	
-    	model.addAttribute("dataSetDefinition", dataSetDefinition);
-    	model.addAttribute("configurationProperties", DefinitionUtil.getConfigurationProperties(dataSetDefinition));
-        return "/module/reporting/datasets/datasetEditor";
+	
+		DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
+		DataSetDefinition dsd = service.getDefinition(uuid, type);
+	 	model.addAttribute("dataSetDefinition", dsd);
+	
+	 	List<Property> properties = DefinitionUtil.getConfigurationProperties(dsd);
+	 	model.addAttribute("configurationProperties", properties);
+	 	Map<String, List<Property>> groups = new LinkedHashMap<String, List<Property>>();
+	 	for (Property p : properties) {
+	 		List<Property> l = groups.get(p.getGroup());
+	 		if (l == null) {
+	 			l = new ArrayList<Property>();
+	 			groups.put(p.getGroup(), l);
+	 		}
+	 		l.add(p);
+	 	}
+	 	model.addAttribute("groupedProperties", groups);
+	
+	    return "/module/reporting/datasets/datasetEditor";
     }
     
 	/**
@@ -111,32 +147,13 @@ public class ManageDatasetsController {
     		Context.getService(DataSetDefinitionService.class).purgeDefinition(dataSetDefinition);
     	}
     	return "redirect:/module/reporting/datasets/manageDataSets.list";    	    	
-    }
-    
-    /**
-     * Retrieve an existing dataset or create a new dataset given the type.
-     */
-    @RequestMapping("/module/reporting/datasets/newDataSet")
-    public String newDataSet(
-    		@RequestParam(required=false, value="uuid") String uuid,
-            @RequestParam(required=false, value="type") Class<? extends DataSetDefinition> type,
-    		ModelMap model) {
-    	
-    	DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
-    	DataSetDefinition dataSetDefinition = service.getDefinition(uuid, type);
-    	
-    	dataSetDefinition.setName("(untitled dataset definition)");
-    	dataSetDefinition = service.saveDefinition(dataSetDefinition);
-    	
-     	model.addAttribute("dataSetDefinition", dataSetDefinition);
-     	     	
-        return "/module/reporting/datasets/datasetEditor";
-    }    
+    } 
     
     /**
      * Save DataSetDefinition
      */
     @RequestMapping("/module/reporting/datasets/saveDataSet")
+    @SuppressWarnings("unchecked")
     public String saveDataSet(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends DataSetDefinition> type,
@@ -150,17 +167,38 @@ public class ManageDatasetsController {
     	DataSetDefinition dataSetDefinition = service.getDefinition(uuid, type);
     	dataSetDefinition.setName(name);
     	dataSetDefinition.setDescription(description);
+    	dataSetDefinition.getParameters().clear();
     	
     	for (Property p : DefinitionUtil.getConfigurationProperties(dataSetDefinition)) {
     		String fieldName = p.getField().getName();
     		String prefix = "parameter." + fieldName;
     		String valParamName =  prefix + ".value"; 
+    		boolean isParameter = "t".equals(request.getParameter(prefix+".allowAtEvaluation"));
+    		
     		Object valToSet = WidgetUtil.getFromRequest(request, valParamName, p.getField());
-			ReflectionUtil.setPropertyValue(dataSetDefinition, p.getField(), valToSet);
+    		
+    		Class<? extends Collection<?>> collectionType = null;
+    		Class<?> fieldType = p.getField().getType();   		
+			if (ReflectionUtil.isCollection(p.getField())) {
+				collectionType = (Class<? extends Collection<?>>)p.getField().getType();
+				fieldType = (Class<?>)ReflectionUtil.getGenericTypes(p.getField())[0];
+			}
+			
+			if (isParameter) {
+				ReflectionUtil.setPropertyValue(dataSetDefinition, p.getField(), null);
+				String paramLabel = ObjectUtil.nvlStr(request.getParameter(prefix + ".label"), fieldName);
+				Parameter param = new Parameter(fieldName, paramLabel, fieldType, collectionType, valToSet);
+				dataSetDefinition.addParameter(param);
+			}
+			else {
+				ReflectionUtil.setPropertyValue(dataSetDefinition, p.getField(), valToSet);
+			}
     	}
     	
-    	dataSetDefinition = service.saveDefinition(dataSetDefinition);
-    	return "redirect:/module/reporting/datasets/manageDataSets.list";
+    	log.debug("Saving: " + dataSetDefinition);
+    	Context.getService(DataSetDefinitionService.class).saveDefinition(dataSetDefinition);
+
+        return "redirect:/module/reporting/datasets/manageDataSets.form";
     }
     
     
@@ -354,4 +392,56 @@ public class ManageDatasetsController {
     	}     		    	
     	return cohort;
     } 
+    
+    //***** INNER CLASSES USED TO RETURN INFORMATION ABOUT EACH SUPPORTED DATASET
+    
+	public abstract class ManagedDataSet {
+		
+		private Class<? extends DataSetDefinition> type;
+		private DataSetDefinition definition;
+		
+		public ManagedDataSet(Class<? extends DataSetDefinition> type) { 
+			this.type = type; 
+		}
+		
+		public ManagedDataSet(DataSetDefinition definition) { 
+			this.type = definition.getClass(); 
+			this.definition = definition;
+		}
+		
+		public Class<? extends DataSetDefinition> getType() {
+			return type;
+		}
+		
+		public DataSetDefinition getDefinition() {
+			return definition;
+		}
+		
+		public abstract String getCreatePage();
+		public abstract String getEditPage();
+	}
+	
+	public class ConfigurationPropertyManagedDataSet extends ManagedDataSet {
+		public ConfigurationPropertyManagedDataSet(Class<? extends DataSetDefinition> type) { super(type); }	
+		public ConfigurationPropertyManagedDataSet(DataSetDefinition definition)  { super(definition); }
+		public String getCreatePage() { return "/module/reporting/datasets/editDataSet.form?type=" + getType().getName() ; }
+		public String getEditPage() { return getCreatePage() + "&uuid=" + getDefinition().getUuid(); }
+	}
+	
+	public class DataExportManagedDataSet extends ManagedDataSet {
+		public DataExportManagedDataSet() { super(DataExportDataSetDefinition.class); }
+		public DataExportManagedDataSet(DataSetDefinition definition)  { super(definition); }
+		public String getCreatePage() { 
+			if (ModuleFactory.getStartedModuleById("reportingcompatibility") != null) {
+				return "/admin/reports/dataExport.form";
+			}
+			return null;
+		}
+		public String getEditPage() {
+			if (ModuleFactory.getStartedModuleById("reportingcompatibility") != null) {
+				return getCreatePage() + "?dataExportId=" + getDefinition().getId();
+			}
+			return null;
+		}
+	}
 }

@@ -82,21 +82,6 @@ $(document).ready(function() {
 							</select>						
 						</span>
 
-						<!--  Eventually this will be used to show columns for selected dataset -->
-						<span>
-							<c:forEach var="dsd" items="${dataSetDefinitions}">											
-								<c:if test="${!empty dsd.columns}">					
-									<div id="dataset-columns-${dsd.uuid}" style="display:none;">
-										<ul>
-											<c:forEach var="column" items="${dsd.columns}" varStatus="varStatus">
-												<li>${column.label}</li>
-											</c:forEach>
-										</ul>
-									</div>
-								</c:if>
-							</c:forEach>						
-						</span>
-
 						<span>					
 							<select id="limit" name="limit">
 								<option <c:if test="${param.limit=='0'}">selected</c:if> value="">Show me all records (this may take awhile)</option>
@@ -156,7 +141,7 @@ $(document).ready(function() {
 						<table id="dataset-preview-table" class="display">
 							<thead>
 								<tr>
-									<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="varStatus">				
+									<c:forEach var="column" items="${dataSet.metaData.columns}" varStatus="varStatus">				
 										<th>
 											${column.label}
 										</th>
@@ -167,7 +152,7 @@ $(document).ready(function() {
 									<c:forEach var="dataSetRow" items="${dataSet.rows}" varStatus="varStatus">
 										<tr>
 										
-											<c:forEach var="column" items="${dataSetDefinition.columns}" varStatus="varStatus">				
+											<c:forEach var="column" items="${dataSet.metaData.columns}" varStatus="varStatus">				
 												<td>
 													${dataSetRow.columnValues[column]}
 												</td>

@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -51,18 +50,9 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) {
-		if (dataSetDefinition instanceof SqlDataSetDefinition) { 
-			return evaluate((SqlDataSetDefinition)dataSetDefinition, evalContext);			
-		} 
-		throw new APIException("SqlDataSetDefinition cannot evaluate dataset definition of type" + dataSetDefinition.getClass().getName());
-	}
-	
-	/**
-	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
-	 */
-	public DataSet evaluate(SqlDataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
+		SqlDataSetDefinition sqlDsd = (SqlDataSetDefinition) dataSetDefinition;
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 		
 		// By default, get all patients
@@ -80,7 +70,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 			connection = DatabaseUpdater.getConnection();
 			ResultSet resultSet = null;
 			Statement statement = connection.createStatement();
-			boolean result = statement.execute(dataSetDefinition.getSqlQuery());
+			boolean result = statement.execute(sqlDsd.getSqlQuery());
 			if (result) { 
 				resultSet = statement.getResultSet();
 			}
@@ -93,7 +83,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 				column.setDataType(Context.loadClass(rsmd.getColumnClassName(i)));
 				column.setLabel(rsmd.getColumnLabel(i));
 				dataSet.getMetaData().addColumn(column);
-				if ("patientId".equals(rsmd.getColumnName(i))) {
+				if ("patient_id".equals(rsmd.getColumnName(i))) {
 					patientIdColumnIndex = i;
 				}
 			}	
@@ -114,7 +104,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 			}			
 		} 
 		catch (Exception e) { 
-			log.error("Error while getting connection ", e);			
+			throw new RuntimeException(e);			
 		} 
 		finally { 
 			try { 
