@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -98,6 +99,14 @@ public class CohortIndicatorAndDimensionResult implements IndicatorResult {
 	public Number getValue() {
 		return CohortIndicatorResult.getResultValue(cohortIndicatorResult, calculateDimensionCohort());
     }
+	
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return ObjectUtil.nvlStr(getValue(), "");
+	}
 	
 	//***** PROPERTY ACCESS *****
 

@@ -79,9 +79,17 @@ public class MapDataSet extends SimpleDataSet {
     	return getRows().get(0).getColumnValue(column);
     }
     
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getData().toString();
+	}
+    
     //****** PROPERTY ACCESS ******
 
-    /**
+	/**
 	 * @return the definition
 	 */
 	public DataSetDefinition getDefinition() {
