@@ -5,11 +5,10 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
-import org.openmrs.api.PatientSetService.PatientLocationMethod;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.toreview.LocationCohortDefinition;
 import org.openmrs.module.reporting.common.Fraction;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -18,7 +17,6 @@ import org.openmrs.module.reporting.indicator.CohortIndicator.IndicatorType;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 
@@ -38,17 +36,16 @@ public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
 		males.setName("Males");
 		males.setMaleIncluded(true);
 		
-		LocationCohortDefinition atSite = new LocationCohortDefinition();
+		EncounterCohortDefinition atSite = new EncounterCohortDefinition();
 		atSite.setName("At Site");
-		atSite.setCalculationMethod(PatientLocationMethod.ANY_ENCOUNTER);
-		atSite.addParameter(new Parameter("locations", "List of Locations", Location.class));
+		atSite.addParameter(new Parameter("locationList", "List of Locations", Location.class));
 		
 		CohortIndicator numberOfMales = new CohortIndicator("Males");
 		numberOfMales.addParameter(ReportingConstants.START_DATE_PARAMETER);
 		numberOfMales.addParameter(ReportingConstants.END_DATE_PARAMETER);
 		numberOfMales.addParameter(ReportingConstants.LOCATION_PARAMETER);
 		numberOfMales.setCohortDefinition(males, "");
-		numberOfMales.setLocationFilter(atSite, "locations=${location}");
+		numberOfMales.setLocationFilter(atSite, "locationList=${location}");
 		report.addIndicator("1.A", "Number of Males", numberOfMales);
 
 		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
@@ -75,10 +72,9 @@ public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
 		all.setFemaleIncluded(true);
 		all.setUnknownGenderIncluded(true);
 		
-		LocationCohortDefinition atSite = new LocationCohortDefinition();
+		EncounterCohortDefinition atSite = new EncounterCohortDefinition();
 		atSite.setName("At Site");
-		atSite.setCalculationMethod(PatientLocationMethod.ANY_ENCOUNTER);
-		atSite.addParameter(new Parameter("locations", "List of Locations", Location.class));
+		atSite.addParameter(new Parameter("locationList", "List of Locations", Location.class));
 		
 		CohortIndicator percentMales = new CohortIndicator("Males");
 		percentMales.setType(IndicatorType.FRACTION);
@@ -87,7 +83,7 @@ public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
 		percentMales.addParameter(ReportingConstants.LOCATION_PARAMETER);
 		percentMales.setCohortDefinition(males, "");
 		percentMales.setDenominator(all, "");
-		percentMales.setLocationFilter(atSite, "locations=${location}");
+		percentMales.setLocationFilter(atSite, "locationList=${location}");
 		report.addIndicator("1.A", "Percent of Males", percentMales);
 		
 		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
