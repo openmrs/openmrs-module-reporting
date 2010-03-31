@@ -28,7 +28,7 @@ public class RunAdminListExt extends AdministrationSectionExt {
 		//map.put("module/reporting/run/runReport.list", "reporting.runReport.title");
 		map.put("module/reporting/dashboard/index.form", "reporting.runReport.title");
 		map.put("module/reporting/reports/reportHistory.form", "reporting.reportHistory.title");
-		map.put("module/reporting/indicators/indicatorHistoryOptions.form", "reporting.indicatorHistory.title");
+		map.put("module/reporting/indicators/indicatorHistory.form", "reporting.indicatorHistory.title");
 		map.put("module/reporting/datasets/viewDataSet.form", "reporting.dataSetViewer.title");
 		map.put("module/reporting/reports/manageReports.form", "reporting.manage.title");
 		return map;

@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @Controller
 @SessionAttributes("query")
 public class IndicatorHistoryController {
-
+	
     @InitBinder
     public void initBinder(WebDataBinder binder) { 
     	binder.registerCustomEditor(Location.class, new LocationEditor());
@@ -51,22 +51,11 @@ public class IndicatorHistoryController {
 			query.setIndicators(indicators);
 		return query;
 	}
-
+	
 	
 	/**
-	 * The full options form. Minor options changes can be done from the results page
 	 * 
-	 * @param model
-	 */
-	@RequestMapping("/module/reporting/indicators/indicatorHistoryOptions")
-	public void showOptionsForm(ModelMap model) {
-		model.addAttribute("locations", Context.getLocationService().getAllLocations());
-		model.addAttribute("indicators", Context.getService(IndicatorService.class).getAllDefinitions(false));
-	}
-	
-	
-	/**
-	 * This actually does the calculations
+	 * Main controller--displays the options form and the results
 	 * 
 	 * @param model
 	 * @param query
@@ -74,14 +63,16 @@ public class IndicatorHistoryController {
 	@RequestMapping("/module/reporting/indicators/indicatorHistory")
 	public String getIndicatorHistory(ModelMap model,
 	                                @ModelAttribute("query") Query query) {
-		if (query.getIndicators() == null || query.getIndicators().size() == 0) {
-			return "redirect:indicatorHistoryOptions.form";
-		}
-		//CohortIndicator indicator = (CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid(query.getIndicatorUuid());
+		
+		model.addAttribute("locations", Context.getLocationService().getAllLocations());
+		
+		// only process if a query has been submitted
+		if (query.getIndicators() != null && query.getIndicators().size() != 0) {
+	
+			//CohortIndicator indicator = (CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid(query.getIndicatorUuid());
 
-		// determine which periods to do this for
-		List<Iteration> iterations = new ArrayList<Iteration>();
-		{
+			// determine which periods to do this for
+			List<Iteration> iterations = new ArrayList<Iteration>();
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.DAY_OF_MONTH, 1);
 			cal.set(Calendar.SECOND, 0);
@@ -94,26 +85,32 @@ public class IndicatorHistoryController {
 				Date startOfMonth = cal.getTime();
 				iterations.add(new MultiPeriodIndicatorDataSetDefinition.Iteration(startOfMonth, endOfMonth, query.getLocation()));
 			}
-		}
 			
-		CohortIndicatorDataSetDefinition indDSD = new CohortIndicatorDataSetDefinition();
-		for (Indicator ind : query.getIndicators()) {
-			try {
-				CohortIndicator indicator = (CohortIndicator) ind;
-				indDSD.addColumn(
-					indicator.getUuid(),
-					indicator.getName(),
-					new Mapped<CohortIndicator>(indicator, IndicatorUtil.getDefaultParameterMappings()),
-					"");
-			} catch (ClassCastException ex) {
-				throw new RuntimeException("This feature only works for Cohort Indicators");
-			}
-		}
-		MultiPeriodIndicatorDataSetDefinition dsd = new MultiPeriodIndicatorDataSetDefinition(indDSD);
-		dsd.setIterations(iterations);
+			CohortIndicatorDataSetDefinition indDSD = new CohortIndicatorDataSetDefinition();
+			for (Indicator ind : query.getIndicators()) {
 		
-		DataSet ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
-		model.addAttribute("dataSet", ds);
+				// hack to remove any empty indicators created by List HTML Widget
+				if (ind != null && ind.getUuid() != null && !ind.getUuid().isEmpty()){
+				
+					try {
+						CohortIndicator indicator = (CohortIndicator) ind;
+						indDSD.addColumn(
+							indicator.getUuid(),
+							indicator.getName(),
+							new Mapped<CohortIndicator>(indicator, IndicatorUtil.getDefaultParameterMappings()),
+						"");
+					} catch (ClassCastException ex) {
+						throw new RuntimeException("This feature only works for Cohort Indicators");
+					}
+				}
+			}
+			
+			MultiPeriodIndicatorDataSetDefinition dsd = new MultiPeriodIndicatorDataSetDefinition(indDSD);
+			dsd.setIterations(iterations);
+		
+			DataSet ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
+			model.addAttribute("dataSet", ds);
+		}
 		return null;
 	}
 

@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<openmrs:require privilege="View Reports" otherwise="/login.htm" redirect="/module/reporting/indicators/indicatorHistoryOptions.form" />
+<openmrs:require privilege="View Reports" otherwise="/login.htm" redirect="/module/reporting/indicators/indicatorHistory.form" />
 <%@ include file="../run/localHeader.jsp"%>
 
 <openmrs:htmlInclude file="/moduleResources/reporting/scripts/flot/jquery.flot.js"/>
@@ -17,42 +17,67 @@
 </h2>
 
 <div style="float: right; border: 1px black solid; padding: 20px">
-	<form:form method="get" commandName="query" action="indicatorHistoryOptions.form">
-		<form:hidden path="location"/>
-		<form:hidden path="lastMonths"/>
-		<c:forEach var="ind" items="${query.indicators}">
-			<input type="hidden" name="indicators" value="${ind.uuid}"/>
-		</c:forEach>
-		<input type="submit" value="Change Options"/>
-	</form:form>
+	
+	<form:form method="get" commandName="query" action="indicatorHistory.form">
+	
 	<table>
 		<tr>
-			<td align="right">Location:</td>
-			<td>${query.location.name}</td>
+			<td align="right">
+				Where?
+			</td>
+			<td>
+				<form:select path="location">
+					<form:option value=""/>
+					<form:options items="${locations}" itemLabel="name" itemValue="locationId"/>
+				</form:select>
+			</td>
 		</tr>
 		<tr>
-			<td align="right">Indicators:</td>
-			<td><div id="indicatorHistoryLegend"></div></td>
+			<td align="right">
+				When?
+			</td>
+			<td>
+				<form:select path="lastMonths">
+					<form:option value="6">Last 6 months</form:option>
+					<form:option value="12">Last 12 months</form:option>
+					<form:option value="24">Last 24 months</form:option>
+				</form:select>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td align="right">
+				Which<br/>Indicators?
+			</td>
+			<td>
+				<wgt:widget id="indicators" name="indicators" type="java.util.List" genericTypes="org.openmrs.module.reporting.indicator.Indicator" defaultValue="${query.indicators}"/>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<br/>
+				<input type="submit" value="Calculate"/>
+			</td>
 		</tr>
 	</table>
+
+</form:form>
+	
 </div>
 
 <div id="indicatorHistoryGraph" style="margin: 20px; width: 640px; height: 400px"></div>
 
-<form:form method="get" action="indicatorHistory.form" commandName="query">
-	<form:hidden path="location"/>
-	<c:forEach var="ind" items="${query.indicators}">
-		<input type="hidden" name="indicators" value="${ind.uuid}"/>
-	</c:forEach>
-	When?
-	<form:select path="lastMonths" onchange="submit()">
-		<form:option value="6">Last 6 months</form:option>
-		<form:option value="12">Last 12 months</form:option>
-		<form:option value="24">Last 24 months</form:option>
-	</form:select>
-</form:form>
-
 <c:if test="${dataSet != null}">
+
+<div style="margin: 20px;">
+<table>
+	<tr>
+		<td align="right" valign="top">Indicators:</td>
+		<td><div id="indicatorHistoryLegend"></div></td>
+	</tr>
+</table>
+</div>
+
 	<script type="text/javascript">
 		var series = [];
 		<c:forEach var="col" items="${dataSet.definition.columns}">
