@@ -58,12 +58,12 @@
 						<input type="hidden" name="uuid" value="${report.uuid}"/>
 						<table>
 							<tr>
-								<td>Key</td>
-								<td><input type="text" name="key"/></td>
+								<td>Indicator Number</td>
+								<td><input size="6" maxlength="10" type="text" name="key"/></td>
 							</tr>
 							<tr>
-								<td>Display Name</td>
-								<td><input type="text" name="displayName"/></td>
+								<td>Label</td>
+								<td><input size="40" type="text" name="displayName"/></td>
 							</tr>
 							<tr>
 								<td>Indicator</td>
@@ -177,8 +177,8 @@
 								<table id="column-table">
 									<thead>
 										<tr>
-											<th>Key</th>
-											<th>Display Name</th>
+											<th>Ind. #</th>
+											<th>Label</th>
 											<th>Indicator</th>
 											<th>Dimensions</th>
 											<th>&nbsp;</th>
