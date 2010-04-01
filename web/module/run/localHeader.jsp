@@ -36,9 +36,10 @@
 					</li>
 				</c:forEach>
 				
+			<!--  Cohort Dashboard not active in first release
 				<li class="last">
 					<a href='<c:url value="/module/reporting/dashboard/manageCohortDashboard.form"/>'>Cohort Dashboard</a>
-				</li>				
+				</li>  -->				
 				
 				
 			</ul>
