@@ -113,13 +113,15 @@ $(function() {
 </style>
  -->
 
+<openmrs:portlet url="currentReportHeader" moduleId="reporting"/>
+
 <div id="page" style="display:block;">
 	<div id="container">
 		<div id="portal">
 			<div id="cohortResultsColumn">				
-				<div>
-					<b>${selectedColumn.label}</b>
-				
+				<div>				
+					<h3>${selectedColumn.label}</h3>
+					
 					<c:if test="${!empty dataSet}">
 
 						<table id="dataset-preview-table" class="display">
