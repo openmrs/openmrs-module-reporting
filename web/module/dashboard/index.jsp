@@ -4,12 +4,18 @@
 
 <%@ include file="../run/localHeader.jsp"%>
 
-	<div style="float: left">
-		<openmrs:portlet url="savedReports" moduleId="reporting"/>
-		<openmrs:portlet url="reportHistory" moduleId="reporting"/>
-	</div>
-	<div style="float: left">
-		<openmrs:portlet url="runReport" moduleId="reporting"/>
+	<div>
+		<table>
+			<tr>
+				<td valign="top">
+				<openmrs:portlet url="savedReports" moduleId="reporting"/>
+				<openmrs:portlet url="reportHistory" moduleId="reporting"/>
+				</td>
+				<td valign="top">
+				<openmrs:portlet url="runReport" moduleId="reporting"/>
+				</td>
+			</tr>
+		</table>
 	</div>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>
