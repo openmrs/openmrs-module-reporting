@@ -118,8 +118,8 @@ $(function() {
 		<div id="portal">
 			<div id="cohortResultsColumn">				
 				<div>
-					<b>${selectedColumn}</b>
-
+					<b>${selectedColumn.label}</b>
+				
 					<c:if test="${!empty dataSet}">
 
 						<table id="dataset-preview-table" class="display">
@@ -138,7 +138,9 @@ $(function() {
 										
 											<c:forEach var="column" items="${dataSet.metaData.columns}" varStatus="varStatus">				
 												<td>
+													<c:if test="${column.label == 'patientId'}"><a href="${pageContext.request.contextPath}/patientDashboard.form?patientId=${dataSetRow.columnValues[column]}"></c:if>
 													${dataSetRow.columnValues[column]}
+													<c:if test="${column.label == 'patientId'}"></a></c:if>
 												</td>
 											</c:forEach>										
 										</tr>
