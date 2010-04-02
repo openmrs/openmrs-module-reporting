@@ -21,6 +21,8 @@ import org.openmrs.module.reporting.propertyeditor.IndicatorEditor;
 import org.openmrs.propertyeditor.LocationEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -87,10 +89,18 @@ public class IndicatorHistoryController {
 			}
 			
 			CohortIndicatorDataSetDefinition indDSD = new CohortIndicatorDataSetDefinition();
-			for (Indicator ind : query.getIndicators()) {
-		
+			for (Indicator ind : query.getIndicators()) {				
+				
 				// hack to remove any empty indicators created by List HTML Widget
 				if (ind != null && ObjectUtil.notNull(ind.getUuid())) {			
+					
+					// quick hack error check, could be improved
+					if(ind.getParameter("startDate") == null || ind.getParameter("endDate") == null){
+						model.addAttribute("error", "Only indicators with start and end date parameters can be plotted");
+						return null;
+					}
+						
+					
 					try {
 						CohortIndicator indicator = (CohortIndicator) ind;
 						indDSD.addColumn(

@@ -29,7 +29,7 @@
 		<div style="border: 1px black solid; padding: 20px">
 	</c:otherwise>
 </c:choose>
-
+	<c:if test="${error != null}"><span class="error">${error}</span></c:if>  <!-- quick hack error check -->
 	<form:form method="get" commandName="query" action="indicatorHistory.form">
 	
 	<table>
