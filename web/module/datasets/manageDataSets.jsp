@@ -70,15 +70,17 @@ $(document).ready(function() {
 									&nbsp;&nbsp;&nbsp;
 								</c:otherwise>
 							</c:choose>
-							&nbsp;	
+							&nbsp;
 							<a href="${pageContext.request.contextPath}/module/reporting/datasets/removeDataSet.form?uuid=${d.definition.uuid}&type=${d.type.name}">
 								<img src="${pageContext.request.contextPath}/images/trash.gif" alt="delete" border="0"/>					
 							</a> 
 						</td>
 						<td>
-							<a href="${pageContext.request.contextPath}${d.editPage}">				
+							<c:if test="${!empty d.editPage}">
+								<a href="${pageContext.request.contextPath}${d.editPage}">	
+							</c:if>	
 								${d.definition.name}
-							</a>
+							<c:if test="${!empty d.editPage}"></a></c:if>
 						</td>
 						<td>
 							${d.definition.creator}
