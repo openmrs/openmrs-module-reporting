@@ -120,7 +120,7 @@ $(function() {
 		<div id="portal">
 			<div id="cohortResultsColumn">				
 				<div>				
-					<h3>${selectedColumn.label}</h3>
+					<h3>${selectedColumn.name}: ${selectedColumn.label} (${fn:length(dataSet.rows)} <spring:message code="Patient.header"/>)</h3>
 					
 					<c:if test="${!empty dataSet}">
 
