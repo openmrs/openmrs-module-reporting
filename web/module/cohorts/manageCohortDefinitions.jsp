@@ -68,12 +68,14 @@
 				<tr>
 					<th align="center" width="1%">Actions</th>
 					<th>Name</th>
-					<th>Description</th>
+					<th>Type</th>
 					<th>Creator</th>
 					<th>Created</th>
 				</tr>
 			</thead>
 			<tbody>
+				${customPages}
+			
 				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">				
 
 					<c:choose>
@@ -90,8 +92,7 @@
 							&nbsp;
 							<a href="${editUrl}"><img src="<c:url value='/images/edit.gif'/>" border="0"/></a>
 							&nbsp;
-							<a href="javascript:confirmDelete('${cohortDefinition.name}','${cohortDefinition.uuid}');">
-								<img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
+							<a href="javascript:confirmDelete('${cohortDefinition.name}','${cohortDefinition.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
 							&nbsp;
 							<a href="javascript:void(0);" id="cohort-${cohortDefinition.uuid}"><img src="<c:url value='/images/play.gif'/>" border="0"/></a>
 						</td>
@@ -100,8 +101,8 @@
 								${cohortDefinition.name}
 							</a>
 						</td>
-						<td>
-							${cohortDefinition.description}
+						<td width="10%">
+							${cohortDefinition.class.simpleName}
 						</td>
 						<td width="5%" nowrap="nowrap">
 							${cohortDefinition.creator}
