@@ -82,13 +82,14 @@
 					</c:choose>
 				
 					<tr>
-						<td align="left" nowrap>
+						<td align="left" nowrap="nowrap">
 							&nbsp;
 							<a href="${editUrl}"><img src="<c:url value='/images/edit.gif'/>" border="0"/></a>
 							&nbsp;
-							<a href="javascript:confirmDelete('${cohortDefinition.name}','${cohortDefinition.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
+							<a href="javascript:confirmDelete('${cohortDefinition.name}','${cohortDefinition.uuid}');">
+								<img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
 							&nbsp;
-							<a href="javascript:void(0);" id="cohort-${cohortDefinition.uuid}" <img src="<c:url value='/images/play.gif'/>" border="0"/></a>
+							<a href="javascript:void(0);" id="cohort-${cohortDefinition.uuid}"><img src="<c:url value='/images/play.gif'/>" border="0"/></a>
 						</td>
 						<td>
 							<a href="${editUrl}">
@@ -98,19 +99,20 @@
 						<td>
 							${cohortDefinition.description}
 						</td>
-						<td width="5%" nowrap>
+						<td width="5%" nowrap="nowrap">
 							${cohortDefinition.creator}
 						</td>
-						<td width="5%" nowrap>
+						<td width="5%" nowrap="nowrap">
 							<rpt:timespan then="${cohortDefinition.dateCreated}"/>
 						</td>
 					</tr>
 				</c:forEach>	
 			</tbody>
 		</table>
-
 	</div>
-
 </div>
+
+<!-- RPT-371: Simple fix for footer creep issue -->
+<div style="clear:both"></div>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>
