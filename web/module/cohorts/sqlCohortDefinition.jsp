@@ -17,6 +17,7 @@ textarea {
 	/*border: 1px solid #008000;*/
 	border: 1px solid #008000; /* 1px dashed #D1C7AC */
 	padding: 2px; 
+	margin: 2px;
 	font-size: 1.2em;
 	font-family: "Courier New";
 	border-left: 4px solid #3366FF;
@@ -100,12 +101,10 @@ img#play { vertical-align: middle; margin: 0; }
 	
 						
 						<td width="66%">
-							<div style="margin: 0.5em; padding-bottom:0.5em; padding-top:0.5em;"> <!--  .portlet -->
+							<div style="margin: 0; padding-bottom:0.5em; padding-top:0.5em;"> <!--  .portlet -->
 								<b class="boxHeader">SQL Query</b>
 								<div class="box" style="padding: 15px; margin: ">
-
-									
-									<label class="desc">SQL Query Editor</label>									
+									<label class="desc">SQL Query Editor</label>
 									<form method="post" action="sqlCohortDefinitionAssignQueryString.form">
 										<input type="hidden" name="uuid" value="${definition.uuid}"/>
 										<textarea id="editBox" rows="10" cols="50" id="queryString" name="queryString">${definition.queryDefinition.queryString}</textarea>
@@ -117,7 +116,6 @@ img#play { vertical-align: middle; margin: 0; }
 										</span>
 									</form>
 
-									<hr/>
 
 									<label class="desc">SQL Query Preview</label>
 									<div>
