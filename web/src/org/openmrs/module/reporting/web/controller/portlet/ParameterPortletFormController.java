@@ -99,6 +99,7 @@ public class ParameterPortletFormController {
     	if (returnUrl.startsWith(pathToRemove)) {
     		returnUrl = returnUrl.substring(pathToRemove.length());
     	}
+    	returnUrl = returnUrl.replace("=uuid", "=" + parentUuid);
     	
     	return "redirect:"+returnUrl;
     }
