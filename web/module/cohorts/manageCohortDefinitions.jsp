@@ -74,8 +74,6 @@
 				</tr>
 			</thead>
 			<tbody>
-				${customPages}
-			
 				<c:forEach items="${cohortDefinitions}" var="cohortDefinition" varStatus="status">				
 
 					<c:choose>
