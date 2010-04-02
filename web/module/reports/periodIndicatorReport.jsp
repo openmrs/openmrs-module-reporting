@@ -170,7 +170,7 @@
 
 							<b class="boxHeader" style="text-align: right">
 								<span style="float:left">
-									Columns
+									Indicators
 								</span>
 								<a href="javascript:void(0)" class="addColumnButton"><spring:message code="general.add"/></a>
 							</b>
