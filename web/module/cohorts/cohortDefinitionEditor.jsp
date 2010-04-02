@@ -10,6 +10,16 @@
 			window.location.href='<c:url value="/module/reporting/cohorts/manageCohortDefinitions.form"/>';
 		});
 
+		$("#previewButton").click(function(event){ 
+			showReportingDialog({ 
+				title: 'Preview <rpt:displayLabel type="${cohortDefinition.class.name}"/>', 
+				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}',
+				successCallback: function() { 
+					window.location = window.location; //.reload(true);
+				} 
+			});
+		});
+
 		<c:forEach items="${cohortDefinition.parameters}" var="cdparam">
 			$('#selectValue${cdparam.name}').val('t');
 			$('#paramLabel${cdparam.name}').val('${cdparam.label}');
@@ -131,7 +141,8 @@
 							<div align="center">				
 								<input id="save-button" type="submit" value="Save" tabindex="7" />
 								<input id="cancel-button" name="cancel" type="button" value="Cancel"/>
-							</div>					
+								<input id="previewButton" name="preview" type="button" value="Preview"/>
+							</div>
 						</li>
 					</ul>
 				</td>
