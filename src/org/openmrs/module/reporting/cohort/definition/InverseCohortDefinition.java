@@ -11,12 +11,13 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition.toreview;
+package org.openmrs.module.reporting.cohort.definition;
 
-import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import java.util.List;
+
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 public class InverseCohortDefinition extends BaseCohortDefinition {
 	
@@ -32,13 +33,9 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	/**
      * Takes a Mapped<CohortDefinition> and returns <Mapped<NOT CohortDefinition>>
      * The inverted cohort definition will have the same parameters as the original cohort definition.
-     * 
-     * @param original
-     * @return
      */
 	public static Mapped<InverseCohortDefinition> invert(Mapped<? extends CohortDefinition> original) {
 	    InverseCohortDefinition inv = new InverseCohortDefinition(original.getParameterizable());
-	    inv.setParameters(original.getParameterizable().getParameters());
 	    Mapped<InverseCohortDefinition> ret = new Mapped<InverseCohortDefinition>(inv, original.getParameterMappings());
 	    return ret;
     }
@@ -48,22 +45,77 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
     /**
      * Default constructor
      */
-	public InverseCohortDefinition() {
-		super();
-	}
+	public InverseCohortDefinition() { }
 	
     /**
-     * Full constructor
+     * Default constructor
      */
 	public InverseCohortDefinition(CohortDefinition baseDefinition) {
-		this();
 		this.baseDefinition = baseDefinition;
 	}
 	
 	//***** INSTANCE METHODS *****
+	
+	   /**
+	 * @see BaseDefinition#addParameter(Parameter)
+	 */
+	@Override
+	public void addParameter(Parameter parameter) {
+		getBaseDefinition().addParameter(parameter);
+	}
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see BaseDefinition#addParameters(List)
+	 */
+	@Override
+	public void addParameters(List<Parameter> parameters) {
+		getBaseDefinition().getParameters().addAll(parameters);
+	}
+
+	/**
+	 * @see BaseDefinition#getParameter(String)
+	 */
+	@Override
+	public Parameter getParameter(String name) {
+		return getBaseDefinition().getParameter(name);
+	}
+
+	/**
+	 * @see BaseDefinition#getParameters()
+	 */
+	@Override
+	public List<Parameter> getParameters() {
+		return getBaseDefinition().getParameters();
+	}
+
+	/**
+	 * @see BaseDefinition#removeParameter(Parameter)
+	 */
+	@Override
+	public void removeParameter(Parameter parameter) {
+		getBaseDefinition().removeParameter(parameter);
+	}
+
+	/**
+	 * @see BaseDefinition#removeParameter(String)
+	 */
+	@Override
+	public void removeParameter(String parameterName) {
+		getBaseDefinition().removeParameter(parameterName);
+	}
+
+	/**
+	 * @see BaseDefinition#setParameters(List)
+	 */
+	@Override
+	public void setParameters(List<Parameter> parameters) {
+		getBaseDefinition().getParameters().clear();
+		addParameters(parameters);
+	}
+	
+
+	/**
+	 * @see Object#toString()
 	 */
 	public String toString() {
 		CohortDefinition filter = getBaseDefinition();
@@ -71,8 +123,8 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	}
 
 	//***** PROPERTY ACCESS *****
-	
-    /**
+
+	/**
      * @return the baseDefinition
      */
     public CohortDefinition getBaseDefinition() {
