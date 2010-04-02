@@ -13,17 +13,15 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
-import java.util.ArrayList;
-
-import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.definition.QueryDefinition;
 import org.openmrs.module.reporting.query.definition.SqlQueryDefinition;
 
 /**
- * 
+ * SQL-based Cohort Definition
  */
+@Localized("reporting.SqlCohortDefinition")
 public class SqlCohortDefinition extends BaseCohortDefinition {
 
     private static final long serialVersionUID = 1L;

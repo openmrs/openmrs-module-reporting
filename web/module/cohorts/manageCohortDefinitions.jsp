@@ -26,6 +26,11 @@
 				</c:forEach>
 			}
 		});
+
+		$("#createButton").click(function(event){ 
+			document.location.href = $("#createTypeSelector").val();
+		});
+		
 	});
 
 	function confirmDelete(name, uuid) {
@@ -39,24 +44,23 @@
 
 	<div id="container">
 	
-		<h1>Cohort Definitions</h1>
+		<h1>Cohort Queries</h1>
 	
 		<spring:message code="reporting.manage.createNew"/>:
-		<c:forEach var="p" items="${customPages}">
-			<button onClick="window.location = '${p.value}';">${p.key.simpleName}</button>
-		</c:forEach>
-		<form method="get" action="editCohortDefinition.form" style="display:inline">
-			or other:
-			<select name="type">
-				<option value="">&nbsp;</option>
-				<c:forEach items="${types}" var="type">
-					<c:if test="${customPages[type] == null}">
-						<option value="${type.name}">${type.simpleName}</option>
-					</c:if>
-				</c:forEach>
-			</select>
-			<input type="submit" value="Create"/>
-		</form>
+		<select name="type" id="createTypeSelector">
+			<option value="">&nbsp;</option>
+			<c:forEach items="${types}" var="type">
+				<c:choose>
+					<c:when test="${customPages[type] == null}">
+						<option value="editCohortDefinition.form?type=${type.name}"><rpt:displayLabel type="${type.name}"/></option>
+					</c:when>
+					<c:otherwise>
+						<option value="${customPages[type]}"><rpt:displayLabel type="${type.name}"/></option>
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+		</select>
+		<input type="button" id="createButton" value="Create"/>
 		
 		<br/>
 		<table class="reporting-data-table display" >

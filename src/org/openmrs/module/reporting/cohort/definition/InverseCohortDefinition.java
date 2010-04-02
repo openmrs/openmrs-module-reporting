@@ -15,10 +15,15 @@ package org.openmrs.module.reporting.cohort.definition;
 
 import java.util.List;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
+/**
+ * Represents all patients not in a wrapped Cohort Definition
+ */
+@Localized("reporting.InverseCohortDefinition")
 public class InverseCohortDefinition extends BaseCohortDefinition {
 	
     private static final long serialVersionUID = 1L;
