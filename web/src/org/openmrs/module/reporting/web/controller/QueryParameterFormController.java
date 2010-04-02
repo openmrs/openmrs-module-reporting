@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -24,12 +25,10 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/module/reporting/parameters/queryParameter")
 public class QueryParameterFormController {
 
 	/* Logger */
@@ -43,34 +42,12 @@ public class QueryParameterFormController {
     @InitBinder
     public void initBinder(WebDataBinder binder) { 
     	binder.registerCustomEditor(Date.class, new CustomDateEditor(Context.getDateFormat(), true)); 
-    }    
-	
-	
-    /**
-     * Shows the form.  This method is called after the formBackingObject()
-     * method below.
-     * 
-     * @return	the form model and view
-     */
-	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView setupForm(HttpServletRequest request) {
-		// Remove results on new requests
-		request.getSession().removeAttribute("results");		
-		ModelAndView model = 
-			new ModelAndView("/module/reporting/parameters/queryParameterForm");
-		
-		
-		return model; 
-	}	
+    }
 	
 	/**
-	 * Processes the form when a user submits.  
-	 * 
-	 * @param cohortDefinition
-	 * @param bindingResult
-	 * @return
+	 * Processes the form when a user submits.
 	 */	
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping("/module/reporting/parameters/queryParameter")
 	public ModelAndView processForm(
 			HttpServletRequest request,	
 			HttpServletResponse response,	
@@ -81,49 +58,62 @@ public class QueryParameterFormController {
 			@RequestParam(value = "successView", required=false) String successView,
 			@ModelAttribute("parameterizable") Parameterizable parameterizable, 
 			BindingResult bindingResult) throws Exception {
-					
-		Object results = null;
-		ModelAndView model = new ModelAndView();
-
-		if ( parameterizable == null ) 
-			parameterizable = ParameterizableUtil.getParameterizable(uuid, type);		
-			
-		if (parameterizable != null) {			
-			EvaluationContext evaluationContext = new EvaluationContext();
-			
-			Map<String, Object> parameterValues = new HashMap<String, Object>();
-			if (parameterizable != null && parameterizable.getParameters() != null) { 
-				for (Parameter p : parameterizable.getParameters()) {
-					Object paramVal = WidgetUtil.getFromRequest(request, p.getName(), p.getType(), p.getCollectionType());
-					parameterValues.put(p.getName(), paramVal);								
-				}
-			}
-
-			// Set parameter values
-			evaluationContext.setParameterValues(parameterValues);		
-
-			model.addObject("evaluationContext", evaluationContext);
-			try { 
-				// Evaluate the parameterizable and populate the model
-				results = ParameterizableUtil.evaluateParameterizable(parameterizable, evaluationContext);						
-				//model.addObject("results", results);
-				request.getSession().setAttribute("results", results);
-				
-				// Use the success view if it's given, default view otherwise
-				//successView = (!StringUtils.isEmpty(successView)) ? successView : defaultView;
-				//successView += "?uuid=" + parameterizable.getUuid() + "&type=" + type + "&format=" + format; 
-				model.setViewName("/module/reporting/parameters/queryParameterForm");
-				
-			} 
-			catch(ParameterException e) { 
-				log.error("unable to evaluate report: ", e);
-				request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "Unable to evaluate report: " + e.getMessage());
-				setupForm(request);
-			}								
-		}		
 		
-		log.info("Returning model with view " + model.getViewName() + " and map " + model.getModelMap());
-		return model;
+		if ( parameterizable == null ) {
+			parameterizable = ParameterizableUtil.getParameterizable(uuid, type);
+		}
+		
+		if (parameterizable.getParameters().isEmpty() && StringUtils.isEmpty(action)) {
+			action = "preview";
+		}
+		
+		if (StringUtils.isEmpty(action)) {
+			request.getSession().removeAttribute("results");
+			return new ModelAndView("/module/reporting/parameters/queryParameterForm");
+		}
+		else {
+		
+			Object results = null;
+			ModelAndView model = new ModelAndView();		
+				
+			if (parameterizable != null) {			
+				EvaluationContext evaluationContext = new EvaluationContext();
+				
+				Map<String, Object> parameterValues = new HashMap<String, Object>();
+				if (parameterizable != null && parameterizable.getParameters() != null) { 
+					for (Parameter p : parameterizable.getParameters()) {
+						Object paramVal = WidgetUtil.getFromRequest(request, p.getName(), p.getType(), p.getCollectionType());
+						parameterValues.put(p.getName(), paramVal);								
+					}
+				}
+	
+				// Set parameter values
+				evaluationContext.setParameterValues(parameterValues);		
+	
+				model.addObject("evaluationContext", evaluationContext);
+				try { 
+					// Evaluate the parameterizable and populate the model
+					results = ParameterizableUtil.evaluateParameterizable(parameterizable, evaluationContext);						
+					//model.addObject("results", results);
+					request.getSession().setAttribute("results", results);
+					
+					// Use the success view if it's given, default view otherwise
+					//successView = (!StringUtils.isEmpty(successView)) ? successView : defaultView;
+					//successView += "?uuid=" + parameterizable.getUuid() + "&type=" + type + "&format=" + format; 
+					model.setViewName("/module/reporting/parameters/queryParameterForm");
+					
+				} 
+				catch (ParameterException e) { 
+					log.error("unable to evaluate report: ", e);
+					request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "Unable to evaluate report: " + e.getMessage());
+					request.getSession().removeAttribute("results");
+					return new ModelAndView("/module/reporting/parameters/queryParameterForm");
+				}								
+			}		
+			
+			log.info("Returning model with view " + model.getViewName() + " and map " + model.getModelMap());
+			return model;
+		}
 	}
 	
 	/**
