@@ -46,7 +46,7 @@ public interface CohortQueryService extends OpenmrsService {
             PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
 
 	/**
-	 * Gets patients having ranged (i.e. Numeric or Date/Time) obs that match a complicated query.
+	 * Get patients having ranged (i.e. Numeric or Date/Time) obs that match a complicated query.
 	 * 
 	 * @param timeModifier
 	 * @param question
@@ -71,7 +71,7 @@ public interface CohortQueryService extends OpenmrsService {
                                               RangeComparator operator2, Object value2);
 	
 	/**
-	 * Gets patients having discrete (i.e. Text or Coded) obs that match a complicated query.
+	 * Get patients having discrete (i.e. Text or Coded) obs that match a complicated query.
 	 * 
 	 * @param timeModifier
 	 * @param question
@@ -89,7 +89,7 @@ public interface CohortQueryService extends OpenmrsService {
 	                                           List<EncounterType> encounterTypeList, SetComparator operator,
 	                                           List<? extends Object> valueList);
 	/**
-	 * Gets patients having encounters with the following characteristics
+	 * Get patients having encounters with the following characteristics
 	 * 
 	 * @param onOrAfter
 	 * @param onOrBefore
@@ -117,32 +117,41 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @return	cohort of patients matching the query
 	 */
 	public Cohort getPatientsHavingPersonAttributes(PersonAttributeType attributeType, List<String> values);
-	
+		
 	/**
-	 * Get patients that match the given query.  
+	 * Executes the given sql query string.  This method will substitute  
+	 * parameter values from the given parameter map into the named parameter
+	 * placeholders in the query.
+
+	 * TODO The query string should actually be a bean that encapsulates any
+	 * type of query (SQL, HQL, MDX).  The execute query method would actually 
+	 * delegate to handlers (parser, validator, executor), similar to the 
+	 * way most of our reporting objects are handled by a persister, evaluator 
+	 * handlers.
 	 * 
-	 * TODO The query string should actually be a bean that encapsulates all types of queries (SQL, HQL, MDX).
+	 * @should return null when given sqlQuery returns no results
+	 * @should return a not-null cohort when returns results
+	 * @should throw error when given sqlQuery is invalid
 	 * 
-	 * @should return patients that match given query 
-	 * @should return empty cohort when query is null
-	 * 
-	 * @param query	the query string to be executed - this might be sql, hql, etc (with parameters)
-	 * @return	cohort of patients matching the query
+	 * @param sqlQuery	a sql query string to be executed 
+	 * @param paramMap 	a map of parameter values indexed by the string parameter name
+	 * @return	a {@link Cohort} of patients matching the given sqlQuery
 	 */
 	public Cohort executeSqlQuery(String sqlQuery, Map<String,Object> paramMap); 
 	
-	
 	/**
-	 * Should probably return a Query object with parameters attached.  
+	 * Get named parameters from the given sql query.  This method will return
+	 * a list of {@link Parameter}s that have been created based on any named 
+	 * parameters (e.g. "patient_id = :patientId") that have been found within 
+	 * the given sql query.
 	 * 
-	 * @param sqlQuery
-	 * @return
+	 * @param sqlQuery	the sql query string to be executed
+	 * @return	a List of {@link Parameter}s 
 	 */
-	public List<Parameter> parseSqlQuery(String sqlQuery);
+	public List<Parameter> getNamedParameters(String sqlQuery);
 	
-
 	/**
-	 * Gets patients who were born or died in a particular date range
+	 * Get patients who were born or died in a particular date range
 	 * 
 	 * @param bornOnOrAfter
 	 * @param bornOnOrBefore

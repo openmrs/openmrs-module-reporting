@@ -1,11 +1,15 @@
 package org.openmrs.module.reporting.web.cohorts;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.definition.SqlQueryDefinition;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
@@ -47,13 +51,19 @@ public class SqlCohortDefinitionController {
 		SqlCohortDefinition definition = (SqlCohortDefinition) def;
 		definition.setQueryDefinition(new SqlQueryDefinition(queryString));
 		
+		// Add all new named parameters to the definition before saving.
+		List<Parameter> parameters =  
+			Context.getService(CohortQueryService.class).getNamedParameters(queryString);
+		for (Parameter parameter : parameters) {
+			if (definition.getParameter(parameter.getName()) == null)
+				definition.addParameter(parameter);
+		}
+
+		// Save the sql cohort definition
 		Context.getService(CohortDefinitionService.class).saveDefinition(definition);
-		httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "reporting.SqlCohortDefinition.success");
+		httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "reporting.SqlCohortDefinition.saved");
 		httpSession.setAttribute(WebConstants.OPENMRS_MSG_ARGS, queryString);				
-		webRequest.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "The SQL query [" + queryString + "] has been saved!", 
-				WebRequest.SCOPE_SESSION);
 		return "redirect:sqlCohortDefinition.form?uuid=" + uuid;
-		//return "redirect:manageCohortDefinitions.form";
 	}
 	
 	/**

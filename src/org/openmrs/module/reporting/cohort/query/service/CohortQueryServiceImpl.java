@@ -175,17 +175,17 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	}
 
 	/**
-	 * 
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#executeSqlQuery(java.lang.String, java.util.Map)
 	 */
 	public Cohort executeSqlQuery(String sqlQuery, Map<String,Object> paramMap) {
 		return dao.executeSqlQuery(sqlQuery, paramMap);
 	}
 	
 	/**
-	 * 
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getNamedParameters(java.lang.String)
 	 */
-	public List<Parameter> parseSqlQuery(String sqlQuery) { 
-		return dao.parseSqlQuery(sqlQuery);
+	public List<Parameter> getNamedParameters(String sqlQuery) { 
+		return dao.getNamedParameters(sqlQuery);
 	}
 
 }

@@ -74,12 +74,14 @@ public interface CohortQueryDAO {
 
 	// Patients having person attributes with given attribute and/or containing
 	// given values
-	public Cohort getPatientsHavingPersonAttributes(PersonAttributeType attribute, List<String> values);
 	
-	// Execute sql query 
+	/**
+	 * 
+	 */
+	public Cohort getPatientsHavingPersonAttributes(PersonAttributeType attribute, List<String> values);
+
 	public Cohort executeSqlQuery(String sqlQuery, Map<String,Object> paramMap);
 	
-	// Pre-process the sql query to get parameters
-	public List<Parameter> parseSqlQuery(String sqlQuery);
+	public List<Parameter> getNamedParameters(String sqlQuery);
 
 }

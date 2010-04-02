@@ -5,30 +5,30 @@
 <c:set var="pageUrl" value="/module/reporting/cohorts/sqlCohortDefinition.form?uuid=uuid"/>
 
 <style>
-input, button { 
+input["submit"], button { 
 	font-size: 0.9em; 
 	vertical-align:middle; 
 	/*border:none;*/ 
 	padding:0px;
 	width:100px;
 }
-
-textarea { 
-	/*border: 1px solid #008000;*/
-	border: 1px solid #008000; /* 1px dashed #D1C7AC */
-	padding: 2px; 
+input["text"], textarea { 
 	margin: 2px;
+	padding: 2px; 
+	border: 1px solid #008000;
+	font-size: 1.2em;
+} 
+textarea#previewBox { 
+	width: 100%;
+	font-family: "Courier New";
+	border-left: 4px solid #3366FF;
+	background-color: #dcdcdc;	
+}
+textarea#editBox { 
 	font-size: 1.2em;
 	font-family: "Courier New";
 	border-left: 4px solid #3366FF;
 	width: 100%;
-} 
-
-#previewBox { 
- background-color: #dcdcdc;	
-} 
-
-#editBox { 
 	background-color : #99FFCC; 
 }
 
@@ -83,7 +83,7 @@ img#play { vertical-align: middle; margin: 0; }
 		
 				<table cellspacing="10" cellpadding="10">
 					<tr valign="top">
-						<td width="34%">	
+						<td width="25%">	
 			
 							<openmrs:portlet 
 								id="baseMetadata" 
@@ -100,14 +100,16 @@ img#play { vertical-align: middle; margin: 0; }
 						
 	
 						
-						<td width="66%">
-							<div style="margin: 0; padding-bottom:0.5em; padding-top:0.5em;"> <!--  .portlet -->
+						<td width="75%">
+						
+							<!-- Using .portlet style -->
+							<div style="margin: 0.1em; padding-bottom:0.5em; padding-top:0.5em; width: 60%"> 
 								<b class="boxHeader">SQL Query</b>
 								<div class="box" style="padding: 15px; margin: ">
 									<label class="desc">SQL Query Editor</label>
 									<form method="post" action="sqlCohortDefinitionAssignQueryString.form">
 										<input type="hidden" name="uuid" value="${definition.uuid}"/>
-										<textarea id="editBox" rows="10" cols="50" id="queryString" name="queryString">${definition.queryDefinition.queryString}</textarea>
+										<textarea id="editBox" rows="5" cols="50" id="queryString" name="queryString">${definition.queryDefinition.queryString}</textarea>
 										<br/>
 										<span>
 											<input type="submit" value="Save"/>
@@ -120,10 +122,12 @@ img#play { vertical-align: middle; margin: 0; }
 									<label class="desc">SQL Query Preview</label>
 									<div>
 										<textarea id="previewBox" rows="6" cols="50" disabled="true">${definition.queryDefinition.queryString}</textarea>
-										<button id="previewButton"><img id="play" src='<c:url value="/images/play.gif"/>' border="0"/>&nbsp;&nbsp;Preview</button>
+										<span style="float: right">
+											<button id="previewButton"><img id="play" src='<c:url value="/images/play.gif"/>' border="0"/>&nbsp;&nbsp;Preview</button>
+										</span>
+										<strong>IMPORTANT:</strong> 
+										<i>Users should test all SQL queries (in their favorite SQL client) before attempting to preview them here.</i>  
 									</div>									
-
-
 								</div>	
 							</div>
 						</td>
