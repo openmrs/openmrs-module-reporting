@@ -141,7 +141,9 @@
 							<div align="center">				
 								<input id="save-button" type="submit" value="Save" tabindex="7" />
 								<input id="cancel-button" name="cancel" type="button" value="Cancel"/>
-								<input id="previewButton" name="preview" type="button" value="Preview"/>
+								<c:if test="${!empty cohortDefinition.uuid}">
+									<input id="previewButton" name="preview" type="button" value="Preview"/>
+								</c:if>
 							</div>
 						</li>
 					</ul>
