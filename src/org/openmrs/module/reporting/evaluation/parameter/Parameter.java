@@ -142,6 +142,15 @@ public class Parameter implements Serializable {
 	public int hashCode() {
 		return (name == null ? 0 : 31 * name.toUpperCase().hashCode());
 	}
+	
+	/**
+	 * Returns the label, if specified, otherwise returns the name.
+	 * 
+	 * @return
+	 */
+	public String getLabelOrName() {
+		return StringUtils.isNotBlank(label) ? label : name;
+	}
     
 	//***********************
 	// PROPERTY ACCESS

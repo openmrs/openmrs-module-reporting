@@ -74,7 +74,7 @@
 					<c:forEach var="p" items="${model.mappedObj.parameters}" varStatus="varstatus">
 						<tr>
 							<td  valign="top" align="right">
-								${p.name}:&nbsp;
+								${p.labelOrName}:&nbsp;
 							</td>
 							<td valign="top">
 								<c:choose>
