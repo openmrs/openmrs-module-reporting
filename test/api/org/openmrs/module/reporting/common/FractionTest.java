@@ -91,7 +91,7 @@ public class FractionTest {
 	@Verifies(value = "should return a string representation of the fraction", method = "toString()")
 	public void toString_shouldReturnAStringRepresentationOfTheFraction() throws Exception {
 		Fraction f1 = new Fraction(32, 62);
-		Assert.assertEquals("32 / 62", f1.toString());
+		Assert.assertEquals("51.6% (32 / 62)", f1.toString());
 	}
 
 
@@ -102,6 +102,6 @@ public class FractionTest {
 	@Verifies(value = "should allow representation of fractions with 0 denominators", method = "toString()")
 	public void toString_shouldAllowRepresentationOfFractionsWith0Denominators() throws Exception {
 		Fraction f = new Fraction(5,0);
-		Assert.assertEquals("5 / 0", f.toString());
+		Assert.assertEquals("N/A (5 / 0)", f.toString());
 	}
 }

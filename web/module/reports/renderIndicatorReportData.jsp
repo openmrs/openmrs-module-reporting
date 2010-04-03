@@ -18,7 +18,7 @@
 	#wrapper { margin-top: 50px; }
 </style>
 
-<openmrs:portlet url="currentReportHeader" moduleId="reporting"/>
+<openmrs:portlet url="currentReportHeader" moduleId="reporting" parameters="showDiscardButton=true"/>
 
 <div id="page">
 	<div id="container">

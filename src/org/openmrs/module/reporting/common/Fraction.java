@@ -157,6 +157,6 @@ public class Fraction extends Number implements Comparable<Fraction>, Serializab
 	*/
 	@Override
 	public String toString() {
-		return numerator + " / " + denominator;
+		return toPercentString(1) + " (" + numerator + " / " + denominator + ")";
 	}
 }

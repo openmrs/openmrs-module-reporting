@@ -219,6 +219,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		request.setRequestedBy(Context.getAuthenticatedUser());
 		Report ret = new Report(request);
 		
+		saveReportRequest(request);
+		
 		ret.startEvaluating();
 		
 		EvaluationContext ec = new EvaluationContext();
