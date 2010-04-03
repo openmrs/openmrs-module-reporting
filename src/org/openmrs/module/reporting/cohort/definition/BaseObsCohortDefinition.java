@@ -22,7 +22,8 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(required=true, group="questionGroup")
 	private Concept question;
 	
-	@ConfigurationProperty(required=true, group="questionGroup")
+	// temporarily comment this out since it's not yet implemented
+	//@ConfigurationProperty(required=true, group="questionGroup")
 	private Concept groupingConcept;
 	
 	@ConfigurationProperty(group="obsDatetimeGroup")
