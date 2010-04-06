@@ -48,7 +48,7 @@
 			<c:when test="${report.uuid == null}">
 				<b class="boxHeader">Create New Report</b>
 				<div class="box">
-					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.report.ReportDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageReports.form|successUrl=reportEditor.form?type=org.openmrs.module.reporting.report.ReportDefinition&uuid=uuid" />
+					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.report.definition.ReportDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageReports.form|successUrl=reportEditor.form?type=org.openmrs.module.reporting.report.definition.ReportDefinition&uuid=uuid" />
 				</div>
 			</c:when>
 			
