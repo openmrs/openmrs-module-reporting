@@ -70,12 +70,12 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	}
 	
 	/**
-	 * Returns the string which postfixes a key to replace in the template document
+	 * Returns the string which suffixes a key to replace in the template document
 	 * @param design
 	 * @return
 	 */
 	public String getExpressionPostfix(ReportDesign design) {
-		return design.getPropertyValue("expressionPostfix", "#");
+		return design.getPropertyValue("expressionSuffix", "#");
 	}
 	
 	/**
