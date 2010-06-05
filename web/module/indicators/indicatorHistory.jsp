@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
 <openmrs:require privilege="View Reports" otherwise="/login.htm" redirect="/module/reporting/indicators/indicatorHistory.form" />
 <%@ include file="../run/localHeader.jsp"%>
 
@@ -30,7 +30,7 @@
 	</c:otherwise>
 </c:choose>
 	<c:if test="${error != null}"><span class="error">${error}</span></c:if>  <!-- quick hack error check -->
-	<form:form method="get" commandName="query" action="indicatorHistory.form">
+	<springform:form method="get" commandName="query" action="indicatorHistory.form">
 	
 	<table>
 		<tr>
@@ -38,10 +38,10 @@
 				Where?
 			</td>
 			<td>
-				<form:select path="location">
-					<form:option value=""/>
-					<form:options items="${locations}" itemLabel="name" itemValue="locationId"/>
-				</form:select>
+				<springform:select path="location">
+					<springform:option value=""/>
+					<springform:options items="${locations}" itemLabel="name" itemValue="locationId"/>
+				</springform:select>
 			</td>
 		</tr>
 		<tr>
@@ -49,11 +49,11 @@
 				When?
 			</td>
 			<td>
-				<form:select path="lastMonths">
-					<form:option value="6">Last 6 months</form:option>
-					<form:option value="12">Last 12 months</form:option>
-					<form:option value="24">Last 24 months</form:option>
-				</form:select>
+				<springform:select path="lastMonths">
+					<springform:option value="6">Last 6 months</springform:option>
+					<springform:option value="12">Last 12 months</springform:option>
+					<springform:option value="24">Last 24 months</springform:option>
+				</springform:select>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -73,7 +73,7 @@
 		</tr>
 	</table>
 
-	</form:form>
+	</springform:form>
 	
 </div>
 

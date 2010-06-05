@@ -1,6 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp"%> 
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ include file="../localHeaderMinimal.jsp"%>
 <%@ include file="../dialogSupport.jsp"%>
 

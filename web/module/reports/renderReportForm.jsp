@@ -3,7 +3,7 @@
 <%@ include file="../dialogSupport.jsp"%>
 
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
 
 
 <%--<%@ include file="/WEB-INF/view/module/reporting/include.jsp"%> --%>
@@ -83,7 +83,7 @@ $(document).ready(function() {
 										<font color="red"> 
 											<h3><u>Please correct the following errors</u></h3>   
 											
-											<form:errors path="parameterizable"></form:errors>
+											<springform:errors path="parameterizable"></springform:errors>
 										</font>  
 									</div>
 								</li>

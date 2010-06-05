@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%> 
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
 <%@ include file="../localHeaderMinimal.jsp"%>
 <%@ include file="../dialogSupport.jsp"%>
 
@@ -54,7 +54,7 @@ $(document).ready(function() {
 			<span><h2>${indicatorForm.cohortIndicator.name}</h2></span>
 
 			<c:url var="postUrl" value='/module/reporting/indicators/previewPeriodIndicator.form'/>
-			<form:form id="preview-indicator-form" commandName="indicatorForm" action="${postUrl}" method="POST">
+			<springform:form id="preview-indicator-form" commandName="indicatorForm" action="${postUrl}" method="POST">
 			
 				<input type="hidden" name="uuid" value="${indicatorForm.cohortIndicator.uuid}"/>
 			
@@ -100,7 +100,7 @@ $(document).ready(function() {
 						</span>
 					</li>
 				</ul>										
-			</form:form>
+			</springform:form>
 
 		</div>		
 		<div class="buttonBar" align="center">						

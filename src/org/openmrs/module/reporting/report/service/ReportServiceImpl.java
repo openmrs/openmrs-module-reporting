@@ -50,6 +50,7 @@ import org.openmrs.scheduler.TaskDefinition;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.serialization.SerializationException;
 import org.openmrs.util.HandlerUtil;
+import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
@@ -539,22 +540,27 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * Makes sure there's a scheduled task registered to DeleteOldReports
 	 */
 	private void ensureDeleteOldReportsTask() {
-	    TaskDefinition task = Context.getSchedulerService().getTaskByName(DELETE_OLD_REPORTS_TASK_NAME);
-	    if (task == null) {
-	    	task = new TaskDefinition();
-			task.setTaskClass("org.openmrs.module.reporting.report.service.DeleteOldReportsTask");
-			task.setRepeatInterval(60 * 60l); // hourly
-			task.setStartOnStartup(true);
-			task.setStartTime(null); // to induce immediate execution
-			task.setName(DELETE_OLD_REPORTS_TASK_NAME);
-			task.setDescription("Deletes reports that have not been saved and are older than the age specified in the global property.");
-			try {
-	            Context.getSchedulerService().scheduleTask(task);
-            }
-            catch (SchedulerException e) {
-	            log.warn("Failed to schedule Delete Old Reports task. Old reports will not be automatically deleted", e);
-            }
-	    }
+		try {
+			Context.addProxyPrivilege(OpenmrsConstants.PRIV_MANAGE_SCHEDULER);
+		    TaskDefinition task = Context.getSchedulerService().getTaskByName(DELETE_OLD_REPORTS_TASK_NAME);
+		    if (task == null) {
+		    	task = new TaskDefinition();
+				task.setTaskClass("org.openmrs.module.reporting.report.service.DeleteOldReportsTask");
+				task.setRepeatInterval(60 * 60l); // hourly
+				task.setStartOnStartup(true);
+				task.setStartTime(null); // to induce immediate execution
+				task.setName(DELETE_OLD_REPORTS_TASK_NAME);
+				task.setDescription("Deletes reports that have not been saved and are older than the age specified in the global property.");
+				try {
+		            Context.getSchedulerService().scheduleTask(task);
+	            }
+	            catch (SchedulerException e) {
+		            log.warn("Failed to schedule Delete Old Reports task. Old reports will not be automatically deleted", e);
+	            }
+		    }
+		} finally {
+			Context.removeProxyPrivilege(OpenmrsConstants.PRIV_MANAGE_SCHEDULER);
+		}
     }
 
 }

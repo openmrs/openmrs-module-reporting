@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
 <%@ include file="../localHeader.jsp"%>
 
 
@@ -85,7 +85,7 @@ $(document).ready(function() {
 			
 	
 			<div id="indicator-dataset-basic-tab">			
-				<form:form id="saveForm" commandName="datasetDefinition" method="POST">
+				<springform:form id="saveForm" commandName="datasetDefinition" method="POST">
 				<!-- <form method="post" action="saveCohortDefinition.form"> -->			
 					<ul>				
 						<li>
@@ -107,14 +107,14 @@ $(document).ready(function() {
 							<div>
 								${datasetDefinition.class.simpleName}
 								<!-- <input type="hidden" name="type" value="${datasetDefinition.class.name}" tabindex="1" />  -->
-								<form:hidden path="class.name" />							
+								<springform:hidden path="class.name" />							
 								
 							</div>
 						</li>
 						<li>
 							<label class="desc" for="name">Name</label>			
 							<div>
-								<form:input path="name" tabindex="1" cssClass="field text medium" />							
+								<springform:input path="name" tabindex="1" cssClass="field text medium" />							
 								<!--  
 								<input type="text" 
 										class="field text medium" 
@@ -129,7 +129,7 @@ $(document).ready(function() {
 						<li>
 							<label class="desc" for="description">Description</label>			
 							<div>
-								<form:textarea path="description" tabindex="2" cssClass="field text medium" cols="80"/> 
+								<springform:textarea path="description" tabindex="2" cssClass="field text medium" cols="80"/> 
 								<!--  	
 									<textarea id="description" 
 											class="field text short"  tabindex="3"
@@ -144,18 +144,18 @@ $(document).ready(function() {
 							</div>					
 						</li>
 					</ul>				
-				</form:form>
+				</springform:form>
 			</div>
 	
 			<div id="indicator-dataset-advanced-tab">			
 	
 				<h2>Parameters</h2>
-				<form:form id="saveForm" commandName="datasetDefinition" method="POST">
+				<springform:form id="saveForm" commandName="datasetDefinition" method="POST">
 					<ul>
 						<li>
 							<label class="desc" for="description">Description</label>
 							<input type="hidden" name="action" value="addParameters"/>
-							<form:hidden path="uuid"/>
+							<springform:hidden path="uuid"/>
 								<c:forEach var="indicator" items="${indicators}">					
 									<p>
 										<input type="checkbox" name="indicatorUuid" value="${indicator.uuid}"/>					
@@ -180,18 +180,18 @@ $(document).ready(function() {
 							</div>					
 						</li>
 					</ul>
-				</form:form>
+				</springform:form>
 	
 	
 	
 				<h2>Available Indicators</h2>
-				<form:form id="saveForm" commandName="datasetDefinition" method="POST">
+				<springform:form id="saveForm" commandName="datasetDefinition" method="POST">
 					<ul>
 						<li>
 							<label class="desc" for="description">Description</label>			
 	
 							<input type="hidden" name="action" value="addIndicators"/>
-							<form:hidden path="uuid"/>
+							<springform:hidden path="uuid"/>
 								<c:forEach var="indicator" items="${indicators}">					
 									<p>
 										<input type="checkbox" name="indicatorUuid" value="${indicator.uuid}"/>					
@@ -214,7 +214,7 @@ $(document).ready(function() {
 							</div>					
 						</li>
 					</ul>
-				</form:form>
+				</springform:form>
 			</div>
 			
 	
@@ -223,8 +223,8 @@ $(document).ready(function() {
 				<c:choose>
 				
 					<c:when test="${!empty datasetDefinition.uuid}">
-						<form:form id="saveForm" commandName="datasetDefinition" method="POST">
-							<form:hidden path="uuid" />	
+						<springform:form id="saveForm" commandName="datasetDefinition" method="POST">
+							<springform:hidden path="uuid" />	
 							<ul>				
 								<li>
 									<div>
@@ -251,7 +251,7 @@ $(document).ready(function() {
 								</li>
 							</ul>				
 							
-						</form:form>
+						</springform:form>
 					</c:when>
 					<c:otherwise>
 						Please create your report first.

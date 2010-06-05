@@ -2,7 +2,7 @@
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 
 
-<%@ taglib prefix="form" uri="/WEB-INF/view/module/reporting/resources/spring-form.tld" %>
+<%@ taglib prefix="springform" uri="/WEB-INF/view/module/reporting/resources/spring-form.tld" %>
 <%@ include file="../manage/localHeader.jsp"%>
 
 <!-- Form 
@@ -93,7 +93,7 @@ $(document).ready(function() {
 		
 		<div id="main">		
 			<c:url var="postUrl" value='/module/reporting/indicators/periodIndicator.form'/>
-			<form:form id="indicator-form" commandName="indicatorForm" action="${postUrl}" method="POST">
+			<springform:form id="indicator-form" commandName="indicatorForm" action="${postUrl}" method="POST">
 			
 				<input type="hidden" name="action" value="save"/>
 
@@ -125,7 +125,7 @@ $(document).ready(function() {
 								<c:url var="countImage" value="/moduleResources/reporting/images/indicator-type-simple.png"/>
 								<label class="desc" for="cohortDefinition">
 									
-									<form:radiobutton path="indicatorType" value="COUNT" id="count-indicator-type-radio" />
+									<springform:radiobutton path="indicatorType" value="COUNT" id="count-indicator-type-radio" />
 									
 									<img src="${countImage}" width="24" height="24" border="0" alt="period indicator" 
 										style="vertical-align:middle"/>
@@ -143,10 +143,10 @@ $(document).ready(function() {
 										</td>
 										<td width="10"></td>
 										<td>
-											<form:select id="select-cohort-definition" path="cohortDefinition">										
-												<form:option value="" label="choose a cohort definition ..."/>
-									            <form:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
-											</form:select>
+											<springform:select id="select-cohort-definition" path="cohortDefinition">										
+												<springform:option value="" label="choose a cohort definition ..."/>
+									            <springform:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
+											</springform:select>
 										</td>
 									</tr>
 									<tr>
@@ -164,10 +164,10 @@ $(document).ready(function() {
 																	<img src="${mappingImageUrl}" width="24" height="24" border="0" alt="maps to" style="vertical-align:middle"/>																
 																</td>
 																<td>				
-																	<form:select path="parameterMapping[${parameter.name}]" multiple="false">										
-																		<form:option value="" label="choose a parameter ..."/>
-															            <form:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
-																	</form:select>					
+																	<springform:select path="parameterMapping[${parameter.name}]" multiple="false">										
+																		<springform:option value="" label="choose a parameter ..."/>
+															            <springform:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
+																	</springform:select>					
 																</td>
 															</tr>
 														</c:forEach>
@@ -186,7 +186,7 @@ $(document).ready(function() {
 								<c:url var="fractionImage" value="/moduleResources/reporting/images/indicator-type-fraction.png"/>
 								<label class="desc" for="numerator">
 								
-									<form:radiobutton path="indicatorType" value="FRACTION" id="fraction-indicator-type-radio" />
+									<springform:radiobutton path="indicatorType" value="FRACTION" id="fraction-indicator-type-radio" />
 																	
 									<img src="${fractionImage}" width="24" height="24" border="0" alt="period indicator" 
 										style="vertical-align:middle"/>
@@ -203,10 +203,10 @@ $(document).ready(function() {
 											</div>										
 											<div style="border: 1px dashed #ccc; padding: 25px">
 													
-												<form:select id="select-numerator" path="numerator">										
-													<form:option value="" label="choose a numerator ..."/>
-										            <form:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
-												</form:select>		
+												<springform:select id="select-numerator" path="numerator">										
+													<springform:option value="" label="choose a numerator ..."/>
+										            <springform:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
+												</springform:select>		
 												<c:if test="${indicatorForm.numerator!=null}">				
 													<div id="parameter-mapping-table">			
 														<table border="0" width="100%">		
@@ -218,10 +218,10 @@ $(document).ready(function() {
 																		<img src="${mappingImageUrl}" width="24" height="24" border="0" alt="maps to" style="vertical-align:middle"/>																																
 																	</td>
 																	<td>				
-																		<form:select path="numeratorParameterMapping[${parameter.name}]" multiple="false">										
-																			<form:option value="" label="choose a parameter ..."/>
-																            <form:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
-																		</form:select>					
+																		<springform:select path="numeratorParameterMapping[${parameter.name}]" multiple="false">										
+																			<springform:option value="" label="choose a parameter ..."/>
+																            <springform:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
+																		</springform:select>					
 																	</td>
 																</tr>
 															</c:forEach>
@@ -245,10 +245,10 @@ $(document).ready(function() {
 										
 											<div style="border: 1px dashed #ccc; padding: 25px">
 										
-												<form:select id="select-denominator" path="denominator">										
-													<form:option value="" label="choose the denominator ..."/>
-										            <form:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
-												</form:select>		
+												<springform:select id="select-denominator" path="denominator">										
+													<springform:option value="" label="choose the denominator ..."/>
+										            <springform:options items="${cohortDefinitions}" itemValue="uuid" itemLabel="name"/>
+												</springform:select>		
 												<c:if test="${indicatorForm.denominator!=null}">				
 													<div id="parameter-mapping-table">			
 														<table border="0" width="100%">		
@@ -260,10 +260,10 @@ $(document).ready(function() {
 																		<img src="${mappingImageUrl}" width="24" height="24" border="0" alt="maps to" style="vertical-align:middle"/>																
 																	</td>
 																	<td>				
-																		<form:select path="denominatorParameterMapping[${parameter.name}]" multiple="false">										
-																			<form:option value="" label="choose a parameter ..."/>
-																            <form:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
-																		</form:select>					
+																		<springform:select path="denominatorParameterMapping[${parameter.name}]" multiple="false">										
+																			<springform:option value="" label="choose a parameter ..."/>
+																            <springform:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
+																		</springform:select>					
 																	</td>
 																</tr>
 															</c:forEach>
@@ -282,7 +282,7 @@ $(document).ready(function() {
 								<c:url var="customImage" value="/moduleResources/reporting/images/indicator-type-custom.png"/>
 								<label class="desc" for="cohortDefinition">
 								
-									<form:radiobutton path="indicatorType" value="LOGIC" id="logic-indicator-type-radio" />
+									<springform:radiobutton path="indicatorType" value="LOGIC" id="logic-indicator-type-radio" />
 								
 									<img src="${customImage}" width="24" height="24" border="0" alt="period indicator" 
 										style="vertical-align:middle"/>
@@ -311,21 +311,21 @@ $(document).ready(function() {
 								<label class="desc" for="uuid">ID</label>
 								<div>
 									${indicatorForm.cohortIndicator.uuid}
-									<form:hidden path="cohortIndicator.id"/>
-									<form:hidden path="cohortIndicator.uuid"/>
+									<springform:hidden path="cohortIndicator.id"/>
+									<springform:hidden path="cohortIndicator.uuid"/>
 								</div>
 							</li>		
 						</c:if>
 						<li>
 							<label class="desc" for="name">Indicator name</label>
 							<div>
-								<form:input path="cohortIndicator.name" cssClass="field text large" size="40"/>														
+								<springform:input path="cohortIndicator.name" cssClass="field text large" size="40"/>														
 							</div>
 						</li>		
 						<li>		
 							<label class="desc" for="description">Describe what is being measured</label>
 							<div>
-								<form:textarea path="cohortIndicator.description" cssClass="field text large" cols="40"/>
+								<springform:textarea path="cohortIndicator.description" cssClass="field text large" cols="40"/>
 							</div>					
 						</li>
 						<li>					
@@ -333,10 +333,10 @@ $(document).ready(function() {
 							<img src="${filterImageUrl}" width="16" height="16" border="0" alt="period indicator" style="vertical-align:middle"/>										
 							<label class="inline" for="description">Location Filter</label> <i>(optional)</i><br/>
 							<div style="border: 1px #ccc dashed; padding: 15px;">
-								<form:select id="select-location-filter" path="locationFilter" cssStyle="width:80%;">
-									<form:option value="" label="none"/>
-						            <form:options items="${locationFilters}" itemValue="uuid" itemLabel="name"/>
-								</form:select>							
+								<springform:select id="select-location-filter" path="locationFilter" cssStyle="width:80%;">
+									<springform:option value="" label="none"/>
+						            <springform:options items="${locationFilters}" itemValue="uuid" itemLabel="name"/>
+								</springform:select>							
 								<c:if test="${indicatorForm.locationFilter!=null}">											
 									<div id="location-filter-parameter-mapping-table">			
 										<table border="0" style="width:80%;">								
@@ -348,10 +348,10 @@ $(document).ready(function() {
 														<img src="${mappingImageUrl}" width="24" height="24" border="0" alt="maps to" style="vertical-align:middle"/>													
 													</td>
 													<td>				
-														<form:select path="locationFilterParameterMapping[${parameter.name}]" multiple="false">										
-															<form:option value="" label="choose a parameter ..."/>
-												            <form:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
-														</form:select>					
+														<springform:select path="locationFilterParameterMapping[${parameter.name}]" multiple="false">										
+															<springform:option value="" label="choose a parameter ..."/>
+												            <springform:options items="${indicatorForm.cohortIndicator.parameters}" itemValue="expression" itemLabel="name"/>
+														</springform:select>					
 													</td>
 												</tr>
 											</c:forEach>
@@ -387,7 +387,7 @@ $(document).ready(function() {
 			
 				</tr>
 			</table>
-		</form:form>
+		</springform:form>
 		</div><!-- main -->
 	</div><!-- container -->
 </div><!-- page -->

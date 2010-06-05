@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%> 
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
 <%@ include file="../localHeaderMinimal.jsp"%>
 <%@ include file="../dialogSupport.jsp"%>
 
@@ -43,7 +43,7 @@ input, select, textarea, label, button { font-size: 2em; }
 	<div id="container">
 		<div id="wrapper">	
 			<c:url var="postUrl" value='/module/reporting/indicators/managePeriodIndicator.form'/>
-			<form:form id="saveIndicatorForm" commandName="indicatorForm" action="${postUrl}" method="POST">
+			<springform:form id="saveIndicatorForm" commandName="indicatorForm" action="${postUrl}" method="POST">
 				<!-- hidden form fields from URL--> 
 
 				<input type="hidden" name="reportUuid" value="${param.reportUuid}"/> 
@@ -67,28 +67,28 @@ input, select, textarea, label, button { font-size: 2em; }
 					<li>		
 						<label class="desc" for="indicator">Indicator</label>
 						<div>
-							<form:select path="uuid">										
-								<form:option value="" label="Select an indicator"/>
-					            <form:options items="${indicators}" itemValue="uuid" itemLabel="name"/>
-							</form:select>
+							<springform:select path="uuid">										
+								<springform:option value="" label="Select an indicator"/>
+					            <springform:options items="${indicators}" itemValue="uuid" itemLabel="name"/>
+							</springform:select>
 						</div>					
 					</li>							
 					<li>
 						<label class="desc" for="name">Indicator Key</label>
 						<div>
-							<form:input path="columnKey" tabindex="1" cssClass="field text small" size="10"/>														
+							<springform:input path="columnKey" tabindex="1" cssClass="field text small" size="10"/>														
 						</div>
 						<span class="small"><em>(ex. "1.a")</em></span>
 					</li>		
 					<li>		
 						<label class="desc" for="displayName">Display Name</label>						
 						<div>
-							<form:input path="displayName" tabindex="1" cssClass="field text medium" size="30"/>														
+							<springform:input path="displayName" tabindex="1" cssClass="field text medium" size="30"/>														
 						</div>					
 						<span class="small"><em>(ex. "Enrolled in HIV Program between dates")</em></span>
 					</li>							
 				</ul>						
-			</form:form>
+			</springform:form>
 		</div>
 			
 		<div id="buttonbar">

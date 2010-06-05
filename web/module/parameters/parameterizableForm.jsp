@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
 <%@ include file="../localHeader.jsp"%>
 <!-- Form -->
 <link type="text/css" href="${pageContext.request.contextPath}/moduleResources/reporting/css/wufoo/structure.css" rel="stylesheet"/>
@@ -90,7 +90,7 @@ $j(document).ready(function() {
 	
 		<div id="cohort-definition-basic-tab">
 			
-			<form:form id="saveForm" commandName="parameterizable" method="POST">
+			<springform:form id="saveForm" commandName="parameterizable" method="POST">
 				<ul>				
 					<li>
 						<label class="desc" for="uuid">ID</label>				
@@ -111,7 +111,7 @@ $j(document).ready(function() {
 						<div>
 							${parameterizable.class.simpleName}
 							<!-- <input type="hidden" name="type" value="${parameterizable.class.name}" tabindex="1" />  -->
-							<form:hidden path="class.name" />							
+							<springform:hidden path="class.name" />							
 							
 						</div>
 					</li>
@@ -124,13 +124,13 @@ $j(document).ready(function() {
 					<li>
 						<label class="desc" for="name">Name</label>			
 						<div>
-							<form:input path="name" tabindex="1" cssClass="field text medium"/>														
+							<springform:input path="name" tabindex="1" cssClass="field text medium"/>														
 						</div>
 					</li>
 					<li>
 						<label class="desc" for="description">Description</label>			
 						<div>
-							<form:textarea path="description" tabindex="2" cols="70" cssClass="field text long"/> 
+							<springform:textarea path="description" tabindex="2" cols="70" cssClass="field text long"/> 
 						</div>
 					</li>
 	
@@ -155,13 +155,13 @@ $j(document).ready(function() {
 											<td>${p.name}</td>
 											<td>${p.defaultValue}</td>
 											<td>					
-												<form:input path="${p.name}" tabindex="${(varStatus.index*5)+1}"/>
+												<springform:input path="${p.name}" tabindex="${(varStatus.index*5)+1}"/>
 											</td>
 											<td>
-												<form:checkbox path="parameters[${varStatus.index}].required" tabindex="${(varStatus.index*5)+2}" />
+												<springform:checkbox path="parameters[${varStatus.index}].required" tabindex="${(varStatus.index*5)+2}" />
 											</td>
 											<td>
-												<form:checkbox path="parameters[${varStatus.index}].allowUserInput" tabindex="${(varStatus.index*5)+2}" />
+												<springform:checkbox path="parameters[${varStatus.index}].allowUserInput" tabindex="${(varStatus.index*5)+2}" />
 											</td>
 										</tr>
 									</c:forEach>
@@ -204,10 +204,10 @@ $j(document).ready(function() {
 						</div>					
 					</li>
 				</ul>				
-			</form:form>
+			</springform:form>
 		</div>
 		<div id="cohort-definition-preview-tab">
-			<form:form id="saveForm" commandName="parameterizable" method="POST">
+			<springform:form id="saveForm" commandName="parameterizable" method="POST">
 			<!-- <form method="post" action="saveCohortDefinition.form"> -->			
 				<ul>				
 					<li>
@@ -222,7 +222,7 @@ $j(document).ready(function() {
 						</div>					
 					</li>
 				</ul>
-			</form:form>
+			</springform:form>
 		</div>
 		
 	</div>	

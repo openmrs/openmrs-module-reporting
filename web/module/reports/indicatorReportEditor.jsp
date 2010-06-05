@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
 <%@ include file="../localHeader.jsp"%>
 
 
@@ -133,7 +133,7 @@ $(document).ready(function() {
             </ul>
 		
 			<div id="report-schema-basic-tab">			
-				<form:form id="saveForm" commandName="indicatorReport" method="POST">						
+				<springform:form id="saveForm" commandName="indicatorReport" method="POST">						
 
 					<c:if test="${empty indicatorReport.reportDefinition.uuid}">
 						<ul>
@@ -141,13 +141,13 @@ $(document).ready(function() {
 							
 								<label class="desc" for="name">Name</label>	
 								<div>								
-									<form:input path="reportDefinition.name" tabindex="1" cssClass="field text medium" size="100"/>								
+									<springform:input path="reportDefinition.name" tabindex="1" cssClass="field text medium" size="100"/>								
 								</div>
 							</li>
 							<li>
 								<label class="desc" for="description">Description</label>	
 								<div>
-									<form:textarea path="reportDefinition.description" tabindex="2" cssClass="field text medium" cols="120"/> 
+									<springform:textarea path="reportDefinition.description" tabindex="2" cssClass="field text medium" cols="120"/> 
 								</div>
 							</li>
 
@@ -222,7 +222,7 @@ $(document).ready(function() {
 							</li>
 						</ul>
 					</c:if>
-				</form:form>
+				</springform:form>
 			</div>
 	
 	
@@ -235,7 +235,7 @@ $(document).ready(function() {
 					Design your report by adding new indicators below.
 				</p>
 				
-				<form:form id="saveForm" commandName="indicatorReport.reportDefinition" method="POST">						
+				<springform:form id="saveForm" commandName="indicatorReport.reportDefinition" method="POST">						
 					<ul>
 						<li>
 							<label class="desc" for="description">Selected indicators</label>	
@@ -281,7 +281,7 @@ $(document).ready(function() {
 							</div>					
 						</li>
 					</ul>
-				</form:form>
+				</springform:form>
 			</div>
 			
 			<!-- report-schema-preview-tab -->

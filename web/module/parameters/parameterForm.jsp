@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%> 
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
 <%@ include file="../localHeaderMinimal.jsp"%>
 <%@ include file="../dialogSupport.jsp"%>
 
@@ -130,7 +130,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 
 
 			<c:url var="formAction" value='/module/reporting/parameters/parameter.form'/>
-			<form:form id="saveParameterForm" commandName="parameter" action="parameter.form" method="POST">
+			<springform:form id="saveParameterForm" commandName="parameter" action="parameter.form" method="POST">
 					<ul>								
 						
 						<spring:hasBindErrors name="parameter">  
@@ -150,12 +150,12 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 						<li>
 							<label class="desc" for="type">Type</label>			
 							<div>
-								<form:select path="collectionType">										
-									<form:option value="" label="None"/>
-						            <form:options items="${supportedCollectionTypes}" itemValue="value" itemLabel="labelText"/>
-								</form:select>
+								<springform:select path="collectionType">										
+									<springform:option value="" label="None"/>
+						            <springform:options items="${supportedCollectionTypes}" itemValue="value" itemLabel="labelText"/>
+								</springform:select>
 
-								<form:select path="type"										
+								<springform:select path="type"										
 									itemLabel="labelText"
 									itemValue="value"
 									items="${supportedTypes}"/>	
@@ -164,19 +164,19 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 						<li>
 							<label class="desc" for="name">Name</label>			
 							<div>
-								<form:input path="name" tabindex="1" cssClass="field text medium"/>														
+								<springform:input path="name" tabindex="1" cssClass="field text medium"/>														
 							</div>
 						</li>
 						<li>
 							<label class="desc" for="label">Label</label>			
 							<div>
-								<form:input path="label" tabindex="1" cssClass="field text medium"/>														
+								<springform:input path="label" tabindex="1" cssClass="field text medium"/>														
 							</div>
 						</li>
 						<li>
 							<label class="desc" for="defaultValue">Default Value</label>			
 							<div>
-								<form:input path="defaultValue" tabindex="1" cssClass="field text medium"/>														
+								<springform:input path="defaultValue" tabindex="1" cssClass="field text medium"/>														
 							</div>
 						</li>
 		
@@ -203,7 +203,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 						</li>
 					</ul>				
 
-			</form:form>
+			</springform:form>
 -->
 
 
