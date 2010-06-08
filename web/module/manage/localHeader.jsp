@@ -1,13 +1,6 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
-<%-- Since OpenMRS 1.7 jquery is included in no-conflict mode by header.jsp. We need to negate that --%>
-<script type="text/javascript">
-	if ($j != null) {
-		$ = $j;
-	}
-</script>
-
 <%@ include file="/WEB-INF/view/module/reporting/dialogSupport.jsp" %>
 
 <script type="text/javascript">
