@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="index.htm" />
+<openmrs:require privilege="Manage Data Set Definitions" otherwise="/login.htm" redirect="index.htm" />
 <%@ include file="../localHeader.jsp"%>
 <html>
 <head>

@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Indicators" otherwise="/login.htm" redirect="/module/reporting/indicators/editPeriodIndicator.form" />
+<openmrs:require privilege="Manage Indicator Definitions" otherwise="/login.htm" redirect="/module/reporting/indicators/editPeriodIndicator.form" />
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script>					

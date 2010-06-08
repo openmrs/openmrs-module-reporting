@@ -1,5 +1,5 @@
 <%@ include file="../manage/localHeader.jsp"%>
-<openmrs:require privilege="Manage Indicators" otherwise="/login.htm" redirect="/module/reporting/indicators/manageDimensions.form" />
+<openmrs:require privilege="Manage Dimension Definitions" otherwise="/login.htm" redirect="/module/reporting/indicators/manageDimensions.form" />
 
 <c:url value="/module/reporting/indicators/editCohortDefinitionDimension.form" var="pageUrl">
 	<c:param name="uuid" value="${dimension.uuid}" />

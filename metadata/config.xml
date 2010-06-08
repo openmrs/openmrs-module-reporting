@@ -4,7 +4,7 @@
 	<!-- Base Module Properties -->
 	<id>reporting</id>
 	<name>Reporting</name>
-	<version>0.4.1.2</version>
+	<version>0.4.1.3</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>
@@ -48,6 +48,35 @@
 		<class>@MODULE_PACKAGE@.web.extension.GutterListExt</class>
 	</extension>
 	
+	<!-- Privileges -->
+	<privilege>
+		<name>Manage Reports</name>
+		<description>Base privilege for add/edit/delete reporting definitions. This gives access to the administrative menus, but you need to grant additional privileges to manage each specific type of reporting definition</description>
+	</privilege>
+	<privilege>
+		<name>Manage Report Definitions</name>
+		<description>Add/Edit/Remove Report Definitions</description>
+	</privilege>
+	<privilege>
+		<name>Manage Data Set Definitions</name>
+		<description>Add/Edit/Remove Data Set Definitions</description>
+	</privilege>
+	<privilege>
+		<name>Manage Indicator Definitions</name>
+		<description>Add/Edit/Remove Indicator Definitions</description>
+	</privilege>
+	<privilege>
+		<name>Manage Dimension Definitions</name>
+		<description>Add/Edit/Remove Dimension Definitions</description>
+	</privilege>
+	<privilege>
+		<name>Manage Cohort Definitions</name>
+		<description>Add/Edit/Remove Cohort Definitions</description>
+	</privilege>
+	<privilege>
+		<name>Manage Report Designs</name>
+		<description>Add/Edit/Remove Report Designs</description>
+	</privilege>
 	<!-- Global Properties -->
 	<globalProperty>
 		<property>report.deleteReportsAgeInHours</property> <!-- Must start with `moduleId.` -->

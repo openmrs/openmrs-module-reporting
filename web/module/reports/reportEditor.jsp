@@ -1,5 +1,5 @@
 <%@ include file="../manage/localHeader.jsp"%>
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/reports/manageReports.list" />
+<openmrs:require privilege="Manage Report Definitions" otherwise="/login.htm" redirect="/module/reporting/reports/manageReports.list" />
 
 <c:url value="/module/reporting/reports/reportEditor.form" var="pageUrl">
 	<c:param name="uuid" value="${report.uuid}" />

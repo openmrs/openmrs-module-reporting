@@ -1,5 +1,5 @@
 <%@ include file="../include.jsp"%> 
-<openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
+<openmrs:require privilege="Manage Indicator Definitions" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 
 
 <%@ taglib prefix="springform" uri="/WEB-INF/view/module/reporting/resources/spring-form.tld" %>
