@@ -105,8 +105,8 @@
 											<select name="mappedValue_${p.name}">
 												<option value="" <c:if test="${model.mappedParams[p.name] == null}">selected</c:if>>Choose...</option>
 												<c:forEach var="parentParam" items="${model.allowedParams[p.name]}">
-													<option value="${parentParam}" <c:if test="${model.mappedParams[p.name] == parentParam}">selected</c:if>>
-														${parentParam}
+													<option value="${parentParam.key}" <c:if test="${model.mappedParams[p.name] == parentParam.key}">selected</c:if>>
+														${parentParam.value}
 													</option>
 												</c:forEach>
 											</select>
