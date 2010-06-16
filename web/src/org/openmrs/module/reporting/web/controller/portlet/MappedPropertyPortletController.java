@@ -2,10 +2,8 @@ package org.openmrs.module.reporting.web.controller.portlet;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -79,16 +77,16 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 	       	Map<String, String> mappedParams = new HashMap<String, String>();
 	       	Map<String, String> complexParams = new HashMap<String, String>();
 	       	Map<String, String> fixedParams = new HashMap<String, String>();
-	       	Map<String, Set<String>> allowedParams = new HashMap<String, Set<String>>();
+	       	Map<String, Map<String, String>> allowedParams = new HashMap<String, Map<String, String>>();
        	
 	       	if (mappedObj != null) {
 				for (Parameter p : mappedObj.getParameters()) {
 					Object mappedObjVal = mappings.get(p.getName());
 					
-					Set<String> allowed  = new HashSet<String>();
+					Map<String, String> allowed  = new HashMap<String, String>();
 					for (Parameter parentParam : obj.getParameters()) {
 						if (p.getType() == parentParam.getType()) {
-							allowed.add(parentParam.getName());
+							allowed.put(parentParam.getName(), parentParam.getLabelOrName());
 						}
 					}
 					allowedParams.put(p.getName(), allowed);
