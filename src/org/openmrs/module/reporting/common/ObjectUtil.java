@@ -11,9 +11,9 @@ public class ObjectUtil {
 	/**
 	 * Returns a String representation of the passed Map
 	 */
-    public static String toString(Map<Object, Object> m, String sep) {
+    public static String toString(Map<?, ?> m, String sep) {
 		StringBuffer sb = new StringBuffer();
-		for (Map.Entry<Object, Object> e : m.entrySet()) {
+		for (Map.Entry<?, ?> e : m.entrySet()) {
 			if (sb.length() > 0) {
 				sb.append(sep);
 			}

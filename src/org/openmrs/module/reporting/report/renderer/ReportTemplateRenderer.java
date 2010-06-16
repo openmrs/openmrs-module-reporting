@@ -23,9 +23,9 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * Abstract super-class for all Renderer classes that render utilizing a ReportTemplate
@@ -74,7 +74,7 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	 * @param design
 	 * @return
 	 */
-	public String getExpressionPostfix(ReportDesign design) {
+	public String getExpressionSuffix(ReportDesign design) {
 		return design.getPropertyValue("expressionSuffix", "#");
 	}
 	

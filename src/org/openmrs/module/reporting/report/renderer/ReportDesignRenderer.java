@@ -33,7 +33,7 @@ public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
 	 */
 	public Collection<RenderingMode> getRenderingModes(ReportDefinition definition) {
 		List<RenderingMode> ret = new ArrayList<RenderingMode>();
-		List<ReportDesign> designs = Context.getService(ReportService.class).getReportDesigns(definition, null, false);
+		List<ReportDesign> designs = Context.getService(ReportService.class).getReportDesigns(definition, getClass(), false);
 		for (ReportDesign d : designs) {
 			ret.add(new RenderingMode(this, d.getName(), d.getUuid(), 100));
 		}

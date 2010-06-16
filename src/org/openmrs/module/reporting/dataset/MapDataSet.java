@@ -54,6 +54,7 @@ public class MapDataSet extends SimpleDataSet {
     		row = getRows().get(0);
     	}
     	row.addColumnValue(column, dataElement);
+    	getMetaData().addColumn(column);
     }
     
 	/**

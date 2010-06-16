@@ -73,7 +73,7 @@ public class HibernateReportDAO implements ReportDAO {
 			crit.add(Expression.eq("reportDefinition", reportDefinition));
 		}
 		if (rendererType != null) {
-			crit.add(Expression.eq("rendererType", rendererType.getName()));
+			crit.add(Expression.eq("rendererType", rendererType));
 		}
 		if (includeRetired == false) {
 			crit.add(Expression.eq("retired", false));

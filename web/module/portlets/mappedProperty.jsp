@@ -11,7 +11,11 @@
 		
 				$('#parameterizableSelector${model.id}').change(function(event){
 					var currVal = $(this).val();
-					var newKey = $('#${model.id}NewKey').val();
+					var newKeyObj = $('#${model.id}NewKey').val();
+					var newKey = '';
+					if (newKeyObj) {
+						newKey = newKeyObj;
+					}
 					if (currVal != '') {
 						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|currentKey=${model.currentKey}|newKey='+newKey+'|mode=edit|mappedUuid='+currVal+'"/>';
 					}
@@ -60,7 +64,7 @@
 						</tr>
 					</c:when>
 					<c:otherwise>
-						<input type="hidden" name="newKey" value="${model.newKey}"/>
+						<input type="hidden" name="newKey" value="${model.currentKey}"/>
 					</c:otherwise>
 				</c:choose>
 				<tr>
@@ -205,7 +209,7 @@
 													<c:forEach items="${model.mappedObj.parameters}" var="p">
 														<tr>
 															<td align="right">&nbsp;&nbsp;${p.name}</td>
-															<td align="left">--&gt;</td>
+															<td align="left" nowrap>--&gt;</td>
 															<td align="left" width="100%">
 																<c:choose>
 																	<c:when test="${model.mappings[p.name] == null}">

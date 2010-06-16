@@ -84,7 +84,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			Map<String, Object> replacements = getReplacementData(reportData, design, dataSetEntry.getKey(), dataSetRow);
 			
 			String prefix = getExpressionPrefix(design);
-			String postfix = getExpressionPostfix(design);
+			String postfix = getExpressionSuffix(design);
 			
 			for (Iterator<HSSFRow> rowIter = sheet.rowIterator(); rowIter.hasNext();) {
 				HSSFRow row = rowIter.next();

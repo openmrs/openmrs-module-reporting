@@ -30,7 +30,7 @@ public class PeriodIndicatorReportUtil {
 	public static void removeDimension(PeriodIndicatorReportDefinition def, String key) {
 		ensureDataSetDefinition(def);
 		def.getIndicatorDataSetDefinition().removeDimension(key);
-		saveReportDefinition(def);
+		saveDataSetDefinition(def);
 	}
 	
 	

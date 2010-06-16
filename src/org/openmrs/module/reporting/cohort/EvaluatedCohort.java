@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.cohort;
 
+import java.util.HashSet;
+
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
@@ -49,7 +51,7 @@ public class EvaluatedCohort extends Cohort implements Evaluated<CohortDefinitio
 	 * Full Constructor
 	 */
 	public EvaluatedCohort(Cohort c, CohortDefinition definition, EvaluationContext context) {
-		super(c.getMemberIds());
+		super(c == null ? new HashSet<Integer>() : c.getMemberIds());
 		this.definition = definition;
 		this.context = context;
 	}

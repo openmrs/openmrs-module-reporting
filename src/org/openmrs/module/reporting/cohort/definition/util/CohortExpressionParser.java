@@ -194,7 +194,19 @@ public class CohortExpressionParser {
 				}
 			} else {
 				if (invertTheNext) {
-					i.set(InverseCohortDefinition.invert((Mapped<CohortDefinition>) o));
+					if (o instanceof Cohort && !i.hasNext()) {
+						Cohort baseCohort = context.getBaseCohort();
+						if (baseCohort == null) {
+							baseCohort = Context.getPatientSetService().getAllPatients();
+						}
+						return Cohort.subtract(baseCohort, ((Cohort)o));
+					}
+					else if (o instanceof Mapped) {
+						i.set(InverseCohortDefinition.invert((Mapped<CohortDefinition>) o));
+					}
+					else {
+						throw new RuntimeException("There is no method implemented for inverting a " + o.getClass());
+					}
 					invertTheNext = false;
 				}
 			}
