@@ -76,7 +76,7 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 	       	
 	       	Map<String, String> mappedParams = new HashMap<String, String>();
 	       	Map<String, String> complexParams = new HashMap<String, String>();
-	       	Map<String, String> fixedParams = new HashMap<String, String>();
+	       	Map<String, Object> fixedParams = new HashMap<String, Object>();
 	       	Map<String, Map<String, String>> allowedParams = new HashMap<String, Map<String, String>>();
        	
 	       	if (mappedObj != null) {
@@ -102,9 +102,9 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 								complexParams.put(p.getName(), mappedVal);
 							}
 						}
-						else {
-							fixedParams.put(p.getName(), mappedVal);
-						}
+					}
+					else {
+						fixedParams.put(p.getName(), mappedObjVal);
 					}
 				}
 	       	}
