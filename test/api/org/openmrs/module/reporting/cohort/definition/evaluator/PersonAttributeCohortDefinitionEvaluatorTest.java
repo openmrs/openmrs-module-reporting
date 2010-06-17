@@ -1,14 +1,14 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -19,21 +19,9 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
- * 
+ * Tests the PersonAttributeCohortDefinitionEvaluator
  */
 public class PersonAttributeCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
-
-	/**
-	 * Logger
-	 */
-	protected final Log log = LogFactory.getLog(getClass());
-	
-	/**
-	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()
-	 */
-	public Boolean useInMemoryDatabase() {
-		return true;
-	}
 
 	/**
 	 * 
@@ -95,5 +83,19 @@ public class PersonAttributeCohortDefinitionEvaluatorTest extends BaseModuleCont
 		Assert.assertTrue(cohort.contains(8));
 	}
 
-
+	/**
+	 * @see {@link PersonAttributeCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should get patients having attributes with concept attribute values", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldGetPatientsHavingAttributesWithLocationAttributeValues() throws Exception {
+		PersonAttributeCohortDefinition pacd = new PersonAttributeCohortDefinition();
+		pacd.setAttributeType(Context.getPersonService().getPersonAttributeTypeByName("Civil Status"));
+		List<Concept> civilStatuses = new ArrayList<Concept>();
+		civilStatuses.add(Context.getConceptService().getConceptByName("MARRIED"));
+		pacd.setValueConcepts(civilStatuses);		
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(pacd, null);		
+		Assert.assertEquals(1, cohort.size());
+		Assert.assertTrue(cohort.contains(8));
+	}
 }

@@ -15,6 +15,8 @@ package org.openmrs.module.reporting.cohort.definition;
 
 import java.util.List;
 
+import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -41,7 +43,20 @@ public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
      */    
     @ConfigurationProperty(group="attributeValuesGroup")
 	private List<String> values;
-      
+    
+    /**
+     * Configuration group that allows you to match 
+     * on the person attribute value.
+     */    
+    @ConfigurationProperty(group="attributeValuesGroup")
+	private List<Concept> valueConcepts;
+    
+    /**
+     * Configuration group that allows you to match 
+     * on the person attribute value.
+     */    
+    @ConfigurationProperty(group="attributeValuesGroup")
+	private List<Location> valueLocations;
     
 	//***** CONSTRUCTORS *****
 	
@@ -59,15 +74,23 @@ public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
      */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		/*
 		sb.append("Patients with ");
-		sb.append(attribute != null ? attribute.getName() : " any attribute");
+		sb.append(attributeType != null ? attributeType.getName() : " any attribute");
 		if (values != null) {
 			sb.append(" in the set of (");
 			sb.append(values);
 			sb.append(")");
 		}
-		*/
+		if (valueConcepts != null) {
+			sb.append(" in the set of (");
+			sb.append(valueConcepts);
+			sb.append(")");
+		}
+		if (valueLocations != null) {
+			sb.append(" in the set of (");
+			sb.append(valueLocations);
+			sb.append(")");
+		}
 		return sb.toString();
 	}
 
@@ -98,6 +121,32 @@ public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
 	public void setValues(List<String> values) {
 		this.values = values;
 	}
-	
-	
+
+	/**
+	 * @return the valueConcepts
+	 */
+	public List<Concept> getValueConcepts() {
+		return valueConcepts;
+	}
+
+	/**
+	 * @param valueConcepts the valueConcepts to set
+	 */
+	public void setValueConcepts(List<Concept> valueConcepts) {
+		this.valueConcepts = valueConcepts;
+	}
+
+	/**
+	 * @return the valueLocations
+	 */
+	public List<Location> getValueLocations() {
+		return valueLocations;
+	}
+
+	/**
+	 * @param valueLocations the valueLocations to set
+	 */
+	public void setValueLocations(List<Location> valueLocations) {
+		this.valueLocations = valueLocations;
+	}
 }

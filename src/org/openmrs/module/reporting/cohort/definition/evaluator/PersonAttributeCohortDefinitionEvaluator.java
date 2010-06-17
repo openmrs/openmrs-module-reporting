@@ -13,7 +13,12 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -36,10 +41,25 @@ public class PersonAttributeCohortDefinitionEvaluator implements CohortDefinitio
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	PersonAttributeCohortDefinition pacd = 
-    		(PersonAttributeCohortDefinition) cohortDefinition;
+    	
+    	PersonAttributeCohortDefinition pacd = (PersonAttributeCohortDefinition) cohortDefinition;
+		List<String> values = new ArrayList<String>();
 		
-    	return Context.getService(CohortQueryService.class).getPatientsHavingPersonAttributes(
-    			pacd.getAttributeType(), pacd.getValues());
+		if (pacd.getValues() != null) {
+			values.addAll(pacd.getValues());
+		}
+		if (pacd.getValueConcepts() != null) {
+			for (Concept c : pacd.getValueConcepts()) {
+				values.add(c.serialize());
+			}
+		}
+		if (pacd.getValueLocations() != null) {
+			for (Location l : pacd.getValueLocations()) {
+				values.add(l.serialize());
+			}
+		}
+    	
+		CohortQueryService cqs = Context.getService(CohortQueryService.class);
+    	return cqs.getPatientsHavingPersonAttributes(pacd.getAttributeType(), values);
     }
 }
