@@ -39,8 +39,7 @@ public class CompositionCohortDefinitionController {
 		CompositionCohortDefinition definition = (CompositionCohortDefinition) def;
 		definition.setCompositionString(compositionString);
 		Context.getService(CohortDefinitionService.class).saveDefinition(definition);
-		//return "redirect:compositionCohortDefinition.form?uuid=" + uuid;
-		return "redirect:manageCohortDefinitions.form";
+		return "redirect:/module/reporting/definition/manageDefinitions.form?type="+CohortDefinition.class.getName();
 	}
 	
 	/**

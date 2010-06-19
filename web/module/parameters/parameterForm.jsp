@@ -12,12 +12,6 @@
 <script type="text/javascript" charset="utf-8">
 
 $(document).ready(function() {
-	/*
-	$('#cancel-button').click(function(event){
-		// Redirect to the listing page
-		event.preventDefault();
-		window.location.href='<c:url value="/module/reporting/manageCohortDefinitions.list"/>';
-	});*/
 
 	$('#cancel-parameter-button').click(function(event){
 		closeReportingDialog(false);

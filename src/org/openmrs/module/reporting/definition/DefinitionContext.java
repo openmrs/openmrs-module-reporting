@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.definition;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -75,6 +76,33 @@ public class DefinitionContext {
 	public static <T extends Definition> T saveDefinition(T definition) {
 		Class<T> c = (Class<T>)definition.getClass();
 		return getDefinitionService(c).saveDefinition(definition);
+	}
+	
+	/**
+	 * Purges a Definition by uuid for the given type
+	 */
+	public static <T extends Definition> void purgeDefinition(Class<T> definitionType, String uuid) {
+		getDefinitionService(definitionType).purgeDefinition(getDefinitionByUuid(definitionType, uuid));
+	}
+
+	/**
+	 * Retires a Definition
+	 */
+	public static void retireDefinition(Definition definition) {
+		definition.setRetired(true);
+		definition.setRetiredBy(Context.getAuthenticatedUser());
+		definition.setDateRetired(new Date());
+		saveDefinition(definition);
+	}
+
+	/**
+	 * Restores a previously retired Definition
+	 */
+	public static void unretireDefinition(Definition definition) {
+		definition.setRetired(false);
+		definition.setRetiredBy(null);
+		definition.setDateRetired(null);
+		saveDefinition(definition);
 	}
 	
 	/**

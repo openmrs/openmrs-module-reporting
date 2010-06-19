@@ -2,9 +2,6 @@ package org.openmrs.module.reporting.web.cohorts;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +14,6 @@ import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.StaticCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
@@ -29,7 +23,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -37,50 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ManageCohortDefinitionsController {
 	
 	protected static Log log = LogFactory.getLog(ManageCohortDefinitionsController.class);
-	
-	@ModelAttribute("customPages")
-	public Map<Class<? extends CohortDefinition>, String> getCustomPages() {
-		Map<Class<? extends CohortDefinition>, String> customPages = new LinkedHashMap<Class<? extends CohortDefinition>, String>();
-		customPages.put(CompositionCohortDefinition.class, "compositionCohortDefinition.form");
-		customPages.put(SqlCohortDefinition.class, "sqlCohortDefinition.form");
-		return customPages;
-	}
-	
-	/**
-	 * Lists the cohort definitions.
-	 * 
-	 * @param includeRetired
-	 * @param model
-	 * @return
-	 */
-    @RequestMapping("/module/reporting/cohorts/manageCohortDefinitions")
-    public void manageCohortDefinitions(
-    		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
-    		ModelMap model) {
-    	// Add all saved CohortDefinitions
-    	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	boolean retired = includeRetired != null && includeRetired.booleanValue();
-    	
-    	// Get all cohort definitions that are not static cohort definition
-    	List<CohortDefinition> cohortDefinitions = service.getAllDefinitions(retired);
-    	for (Iterator<CohortDefinition> iter = cohortDefinitions.iterator(); iter.hasNext(); ) {
-    		if (StaticCohortDefinition.class.isAssignableFrom(iter.next().getClass())) {
-    			iter.remove();
-    		}
-    	}
-
-    	model.addAttribute("cohortDefinitions", cohortDefinitions);
-    	
-    	// Add all available cohort definition types 
-    	List<Class<? extends CohortDefinition>> types = service.getDefinitionTypes();
-    	Collections.sort(types, new Comparator<Class<? extends CohortDefinition>>() {
-    		public int compare(Class<? extends CohortDefinition> left, Class<? extends CohortDefinition> right) {
-	            return left.getSimpleName().compareTo(right.getSimpleName());
-            }
-    	});
-    	model.addAttribute("types", types);
-    }
-    
     
     /**
      * Basically acts as the formBackingObject() method for saving a 
@@ -176,7 +125,7 @@ public class ManageCohortDefinitionsController {
     	log.warn("Saving: " + cohortDefinition);
     	Context.getService(CohortDefinitionService.class).saveDefinition(cohortDefinition);
 
-        return "redirect:/module/reporting/cohorts/manageCohortDefinitions.form";
+        return "redirect:/module/reporting/definition/manageDefinitions.form?type="+CohortDefinition.class.getName();
     }
 
     
@@ -207,25 +156,5 @@ public class ManageCohortDefinitionsController {
      	model.addAttribute("cohortDefinition", cohortDefinition);
      	
         return "/module/reporting/cohorts/cohortDefinitionEvaluator";
-    }    
-    
-    
-    /**
-     * Purges the cohort definition represented by the given uuid.
-     * 
-     * @param uuid
-     * 		a universally unique identifier used to identify the cohort definition.
-     * @return	
-     * 		the name or URL that represents the view
-     */
-    @RequestMapping("/module/reporting/cohorts/purgeCohortDefinition")
-    public String purgeCohortDefinition(@RequestParam(required=false, value="uuid") String uuid) {
-    	CohortDefinitionService service = 
-    		Context.getService(CohortDefinitionService.class);
-    	CohortDefinition cohortDefinition = service.getDefinitionByUuid(uuid);
-    	service.purgeDefinition(cohortDefinition);	
-        return "redirect:/module/reporting/cohorts/manageCohortDefinitions.form";
-    }    
-    
-
+    }
 }

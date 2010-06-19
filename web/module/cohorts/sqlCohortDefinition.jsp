@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/cohorts/manageCohortDefinitions.form" />
+<openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition" />
 <%@ include file="../manage/localHeader.jsp"%>
 
 <c:set var="pageUrl" value="/module/reporting/cohorts/sqlCohortDefinition.form?uuid=uuid"/>
@@ -66,7 +66,7 @@ img#play { vertical-align: middle; margin: 0; }
 		
 				<b class="boxHeader">SQL Cohort Query</b>
 				<div class="box">
-					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageCohortDefinitions.form|successUrl=${pageUrl}" />
+					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition|successUrl=${pageUrl}" />
 				</div>
 				
 			</c:when>		
@@ -114,7 +114,7 @@ img#play { vertical-align: middle; margin: 0; }
 										<span>
 											<input type="submit" value="Save"/>
 											<button id="saveAsButton">Save As ...</button>
-											<input id="closeButton" type="button" value="Close" onClick="window.location='manageCohortDefinitions.form';"/>
+											<input id="closeButton" type="button" value="Close" onClick="window.location='/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition';"/>
 										</span>
 									</form>
 

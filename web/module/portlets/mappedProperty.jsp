@@ -157,7 +157,7 @@
 		<c:choose>
 		
 			<c:when test="${model.mode == 'add'}">
-				<a style="font-weight:bold;" href="#" id="${model.id}EditLink">[+] Add</a>
+				<a style="font-weight:bold;" href="#" id="${model.id}EditLink">[+] ${model.label}</a>
 			</c:when>
 			
 			<c:otherwise>

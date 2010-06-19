@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/cohorts/manageCohortDefinitions.form" />
+<openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition" />
 <%@ include file="../manage/localHeader.jsp"%>
 
 <%-- 
@@ -14,7 +14,7 @@
 
 		<b class="boxHeader">Create Composition Cohort Definition</b>
 		<div class="box">
-			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageCohortDefinitions.form|successUrl=${pageUrl}" />
+			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition|successUrl=${pageUrl}" />
 		</div>
 		
 	</c:when>		
@@ -71,7 +71,7 @@
 					<textarea rows="3" cols="50" id="compositionString" name="compositionString">${definition.compositionString}</textarea>
 					<br/>
 					<input type="submit" value="Save"/>
-					<input type="button" value="Close" onClick="window.location='manageCohortDefinitions.form';"/>
+					<input type="button" value="Close" onClick="window.location='/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition';"/>
 					
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					

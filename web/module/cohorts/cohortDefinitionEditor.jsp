@@ -1,5 +1,5 @@
 <%@ include file="../manage/localHeader.jsp"%>
-<openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/cohorts/manageCohortDefinitions.form" />			
+<openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition" />			
 
 <script type="text/javascript" charset="utf-8">
 
@@ -7,7 +7,7 @@
 	
 		// Redirect to listing page
 		$('#cancel-button').click(function(event){
-			window.location.href='<c:url value="/module/reporting/cohorts/manageCohortDefinitions.form"/>';
+			window.location.href='<c:url value="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition"/>';
 		});
 
 		$("#previewButton").click(function(event){ 

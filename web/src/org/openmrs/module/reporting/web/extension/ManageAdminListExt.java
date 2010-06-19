@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.web.extension;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.Extension;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
 
@@ -27,7 +28,7 @@ public class ManageAdminListExt extends AdministrationSectionExt {
 		map.put("module/reporting/datasets/manageDataSets.form", "reporting.manageDataSets.title");
 		map.put("module/reporting/indicators/manageIndicators.form", "reporting.manageIndicators.title");
 		map.put("module/reporting/indicators/manageDimensions.form", "reporting.manageDimensions.title");
-		map.put("module/reporting/cohorts/manageCohortDefinitions.form", "reporting.manageCohortDefinitions.title");
+		map.put("module/reporting/definition/manageDefinitions.form?type="+CohortDefinition.class.getName(), "reporting.manageCohortDefinitions.title");
 		map.put("module/reporting/reports/manageReportDesigns.form", "reporting.manageReportDesigns.title");
 		return map;
 	}
