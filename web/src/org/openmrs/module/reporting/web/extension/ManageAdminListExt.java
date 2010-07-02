@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.Extension;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
 
@@ -25,7 +26,7 @@ public class ManageAdminListExt extends AdministrationSectionExt {
 		// Using linked hash map to keep order of links
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		map.put("module/reporting/reports/manageReports.form", "reporting.manageReports.title");
-		map.put("module/reporting/datasets/manageDataSets.form", "reporting.manageDataSets.title");
+		map.put("module/reporting/definition/manageDefinitions.form?type="+DataSetDefinition.class.getName(), "reporting.manageDataSets.title");
 		map.put("module/reporting/indicators/manageIndicators.form", "reporting.manageIndicators.title");
 		map.put("module/reporting/indicators/manageDimensions.form", "reporting.manageDimensions.title");
 		map.put("module/reporting/definition/manageDefinitions.form?type="+CohortDefinition.class.getName(), "reporting.manageCohortDefinitions.title");

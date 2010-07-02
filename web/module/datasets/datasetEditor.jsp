@@ -1,5 +1,5 @@
 <%@ include file="../manage/localHeader.jsp"%>
-<openmrs:require privilege="Manage DataSet Definitions" otherwise="/login.htm" redirect="/module/reporting/datasets/manageDataSets.form" />			
+<openmrs:require privilege="Manage DataSet Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition" />			
 
 <script type="text/javascript" charset="utf-8">
 
@@ -7,7 +7,7 @@
 	
 		// Redirect to listing page
 		$('#cancel-button').click(function(event){
-			window.location.href='<c:url value="/module/reporting/datasets/manageDataSets.form"/>';
+			window.location.href='<c:url value="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition"/>';
 		});
 
 		<c:forEach items="${dataSetDefinition.parameters}" var="cdparam">

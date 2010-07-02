@@ -15,15 +15,12 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
-import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
@@ -48,44 +45,6 @@ public class ManageDatasetsController {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
-	/**
-	 * Returns a list of datasets to manage
-	 */
-    @RequestMapping("/module/reporting/datasets/manageDataSets")
-    public void manageDataSets(ModelMap model,
-    						   @RequestParam(required=false, value="includeRetired") Boolean includeRetired) {
-    	
-    	DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
-    	boolean allowDataExport = (ModuleFactory.getStartedModuleById("reportingcompatibility") != null);
-    	
-		List<ManagedDataSet> managedTypes = new ArrayList<ManagedDataSet>();
-		List<ManagedDataSet> managedDefinitions = new ArrayList<ManagedDataSet>();
-
-		managedTypes.add(new ConfigurationPropertyManagedDataSet(SqlDataSetDefinition.class));
-		if (allowDataExport) {
-			managedTypes.add(new DataExportManagedDataSet());
-		}
-    	model.addAttribute("types", managedTypes);    
-
-    	// Get all data set definitions
-    	try {         	
-        	boolean retired = includeRetired != null && includeRetired.booleanValue();
-    		for (DataSetDefinition dsd : service.getAllDefinitions(retired)) {
-    			if (dsd instanceof DataExportDataSetDefinition) {
-    				managedDefinitions.add(new DataExportManagedDataSet(dsd));
-    			}
-    			else if (dsd instanceof SqlDataSetDefinition) {
-    				managedDefinitions.add(new ConfigurationPropertyManagedDataSet(dsd));
-    			}
-    		}
-    	} 
-    	catch (Exception e) { 
-    		log.error("Could not fetch dataset definitions", e);
-    	}
-
-    	model.addAttribute("dataSetDefinitions", managedDefinitions);
-    }
-    
     /**
      * Shows a dataset definition given a uuid (or an id and class name). 
      * 
@@ -146,7 +105,7 @@ public class ManageDatasetsController {
     	if (dataSetDefinition != null) {
     		Context.getService(DataSetDefinitionService.class).purgeDefinition(dataSetDefinition);
     	}
-    	return "redirect:/module/reporting/datasets/manageDataSets.list";    	    	
+    	return "redirect:/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition";    	    	
     } 
     
     /**
@@ -198,7 +157,7 @@ public class ManageDatasetsController {
     	log.debug("Saving: " + dataSetDefinition);
     	Context.getService(DataSetDefinitionService.class).saveDefinition(dataSetDefinition);
 
-        return "redirect:/module/reporting/datasets/manageDataSets.form";
+        return "redirect:/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition";
     }
     
     
@@ -392,56 +351,4 @@ public class ManageDatasetsController {
     	}     		    	
     	return cohort;
     } 
-    
-    //***** INNER CLASSES USED TO RETURN INFORMATION ABOUT EACH SUPPORTED DATASET
-    
-	public abstract class ManagedDataSet {
-		
-		private Class<? extends DataSetDefinition> type;
-		private DataSetDefinition definition;
-		
-		public ManagedDataSet(Class<? extends DataSetDefinition> type) { 
-			this.type = type; 
-		}
-		
-		public ManagedDataSet(DataSetDefinition definition) { 
-			this.type = definition.getClass(); 
-			this.definition = definition;
-		}
-		
-		public Class<? extends DataSetDefinition> getType() {
-			return type;
-		}
-		
-		public DataSetDefinition getDefinition() {
-			return definition;
-		}
-		
-		public abstract String getCreatePage();
-		public abstract String getEditPage();
-	}
-	
-	public class ConfigurationPropertyManagedDataSet extends ManagedDataSet {
-		public ConfigurationPropertyManagedDataSet(Class<? extends DataSetDefinition> type) { super(type); }	
-		public ConfigurationPropertyManagedDataSet(DataSetDefinition definition)  { super(definition); }
-		public String getCreatePage() { return "/module/reporting/datasets/editDataSet.form?type=" + getType().getName() ; }
-		public String getEditPage() { return getCreatePage() + "&uuid=" + getDefinition().getUuid(); }
-	}
-	
-	public class DataExportManagedDataSet extends ManagedDataSet {
-		public DataExportManagedDataSet() { super(DataExportDataSetDefinition.class); }
-		public DataExportManagedDataSet(DataSetDefinition definition)  { super(definition); }
-		public String getCreatePage() { 
-			if (ModuleFactory.getStartedModuleById("reportingcompatibility") != null) {
-				return "/admin/reports/dataExport.form";
-			}
-			return null;
-		}
-		public String getEditPage() {
-			if (ModuleFactory.getStartedModuleById("reportingcompatibility") != null) {
-				return getCreatePage() + "?dataExportId=" + getDefinition().getId();
-			}
-			return null;
-		}
-	}
 }

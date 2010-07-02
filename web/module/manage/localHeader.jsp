@@ -12,7 +12,7 @@
 		<openmrs:hasPrivilege privilege="${extension.requiredPrivilege}">
 			<ul id="menu">
 				<c:forEach items="${extension.links}" var="link" varStatus="status">
-					<c:set var="linkSelected" value="${fn:contains(pageContext.request.requestURI, fn:substringBefore(link.key, '.'))}"/>
+					<c:set var="linkSelected" value="${fn:contains(pageContext.request.requestURI, link.key)}"/>
 					<li class="<c:if test="${status.index == 0}">first</c:if> <c:if test="${linkSelected}">active</c:if>">
 						<c:choose>
 							<c:when test="${fn:startsWith(link.key, 'module/')}">
