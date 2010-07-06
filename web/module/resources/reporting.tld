@@ -193,5 +193,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>	
+	
+	<function>
+		<name>instanceOf</name>
+		<function-class>org.openmrs.module.reporting.web.taglib.Functions</function-class>
+		<function-signature>boolean instanceOf(java.lang.Object, java.lang.String)</function-signature>
+	</function>
 
 </taglib>

@@ -137,11 +137,13 @@ $(function() {
 							<tbody>						
 									<c:forEach var="dataSetRow" items="${dataSet.rows}" varStatus="varStatus">
 										<tr>
-											<c:forEach var="column" items="${dataSet.metaData.columns}" varStatus="varStatus">				
-												<c:choose>
-													<c:when test="${column.label == 'patientId'}"><a href="${pageContext.request.contextPath}/patientDashboard.form?patientId=${dataSetRow.columnValues[column]}"><td>${dataSetRow.columnValues[column]}</td></a></c:when>
-													<c:otherwise><td>${dataSetRow.columnValues[column]}</td></c:otherwise>
-												</c:choose>
+											<c:forEach var="column" items="${dataSet.metaData.columns}" varStatus="varStatus">
+												<td>			
+													<c:choose>
+														<c:when test="${column.label == 'patientId'}"><a href="${pageContext.request.contextPath}/patientDashboard.form?patientId=${dataSetRow.columnValues[column]}">${dataSetRow.columnValues[column]}</a></c:when>
+														<c:otherwise>${dataSetRow.columnValues[column]}</c:otherwise>
+													</c:choose>
+												</td>
 											</c:forEach>										
 										</tr>
 									</c:forEach>

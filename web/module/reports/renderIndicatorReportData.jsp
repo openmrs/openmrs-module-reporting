@@ -24,43 +24,33 @@
 	<div id="container">
 		<div align="center">
 			<c:forEach var="dataSetMapEntry" items="${__openmrs_report_data.dataSets}">
-				<table cellpadding="2" style="border: 1px solid black;">					
+				<table cellpadding="2" style="border: 1px solid black; width:100%;">
+					<tr>
+						<th colspan="4" align="center" style="background-color: #8FABC7">
+							<span style="color:white;">${dataSetMapEntry.value.definition.name}</span>
+						</th>
+					</tr>			
 					<rpt:forEach var="dataSetRow" items="${dataSetMapEntry.value}" varStatus="varStatus">
-						<c:if test="${varStatus.first}">
+						<c:forEach var="dataSetCol" items="${dataSetRow.columnValues}">
 							<tr>
-								<th colspan="4" align="center" style="background-color: #8FABC7">
-									<span style="color: white;">${dataSetMapEntry.value.definition.name}</span>
-								</th>
-							</tr>
-						</c:if>
-							<c:forEach var="dataSetCol" items="${dataSetRow.columnValues}">
-								<tr>
-								<%-- 
-								 <c:url var="url" value="/module/reporting/dashboard/manageCohortDashboard.form?cohort=none&indicator=${dataSetCol.key.indicator.parameterizable.uuid}"/>
-								--%>
 								<c:url var="url"  value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetKey=${dataSetMapEntry.key}&savedColumnKey=${dataSetCol.key.name}"/>
-									<td align="left">
-										${dataSetCol.key.name}
-									</td>
-									<td align="left">
-										${dataSetCol.key.label}
-									</td>
-									<td align="center" class="value" width="1%" nowrap>
-										<c:set var="result" value="${dataSetCol.value}"/>
-										<a style="text-decoration: underline" href="${url}">${result.value}</a>
-									</td>
-									<%--
-									<td align="center">
-										<c:catch var="exception">
-											<c:set var="infoUrl" value="${pageContext.request.contextPath}/module/reporting/indicators/indicatorInfo.form?uuid=${result.definition.uuid}&location=${result.context.parameterValues['location'].locationId}"/>
-											<a href="#" onClick="showReportingDialog({ title: 'Indicator Info', url: '${infoUrl}' });">
-												<img src="${pageContext.request.contextPath}/images/info.gif" border="0"/>
-											</a>
-										</c:catch>
-									</td>
-									 --%>
-								</tr>
-							</c:forEach>
+								<td align="left">
+									${dataSetCol.key.name}
+								</td>
+								<td align="left">
+									${dataSetCol.key.label}
+								</td>
+								<td align="center" class="value" width="1%" nowrap>
+									<a style="text-decoration: underline" href="${url}">
+										<c:choose>
+											<c:when test="${rpt:instanceOf(dataSetCol.value, 'org.openmrs.module.reporting.indicator.Indicator')}">${dataSetCol.value.value}</c:when>
+											<c:when test="${rpt:instanceOf(dataSetCol.value, 'org.openmrs.Cohort')}">${dataSetCol.value.size}</c:when>
+											<c:otherwise>${dataSetCol.value}</c:otherwise>
+										</c:choose>
+									</a>
+								</td>
+							</tr>
+						</c:forEach>
 					</rpt:forEach>
 					<tfoot>
 						<tr >

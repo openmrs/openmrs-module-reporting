@@ -17,11 +17,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.junit.Test;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 
 /**
  *
@@ -33,17 +30,17 @@ public class EvaluationContextTest {
 	@Test
 	public void shouldEvaluateExpression() throws Exception {
 
-		assertEquals(evaluate("${report.d1}", Date.class), df.parse("2007-01-10 10:30:17:000"));
-		assertEquals(evaluate("${report.d1-15d}", Date.class), df.parse("2006-12-26 10:30:17:000"));
-		assertEquals(evaluate("${report.d1+3w}", Date.class), df.parse("2007-01-31 10:30:17:000"));
-		assertEquals(evaluate("${report.d1-12m}", Date.class), df.parse("2006-01-10 10:30:17:000"));
-		assertEquals(evaluate("${report.d1-1y}", Date.class), df.parse("2006-01-10 10:30:17:000"));
-		assertEquals(evaluate("${report.d1+37d}", Date.class), df.parse("2007-02-16 10:30:17:000"));
-		assertEquals(evaluate("${report.d1-10w}", Date.class), df.parse("2006-11-01 10:30:17:000"));
-		assertEquals(evaluate("${report.gender}", String.class), "male");
-		assertEquals(evaluate("report.gender", String.class), "report.gender");
-		assertEquals(evaluate("hello ${report.gender} person", String.class), "hello male person");
-		assertEquals(evaluate("From ${report.d1|yyyy-MM-dd} to ${report.d1+3w|yyyy-MM-dd} for ${report.gender}s", String.class), 
+		assertEquals(evaluate("${report.d1}"), df.parse("2007-01-10 10:30:17:000"));
+		assertEquals(evaluate("${report.d1-15d}"), df.parse("2006-12-26 10:30:17:000"));
+		assertEquals(evaluate("${report.d1+3w}"), df.parse("2007-01-31 10:30:17:000"));
+		assertEquals(evaluate("${report.d1-12m}"), df.parse("2006-01-10 10:30:17:000"));
+		assertEquals(evaluate("${report.d1-1y}"), df.parse("2006-01-10 10:30:17:000"));
+		assertEquals(evaluate("${report.d1+37d}"), df.parse("2007-02-16 10:30:17:000"));
+		assertEquals(evaluate("${report.d1-10w}"), df.parse("2006-11-01 10:30:17:000"));
+		assertEquals(evaluate("${report.gender}"), "male");
+		assertEquals(evaluate("report.gender"), "report.gender");
+		assertEquals(evaluate("hello ${report.gender} person"), "hello male person");
+		assertEquals(evaluate("From ${report.d1|yyyy-MM-dd} to ${report.d1+3w|yyyy-MM-dd} for ${report.gender}s"), 
 							   "From 2007-01-10 to 2007-01-31 for males");
 	}
 	
@@ -52,11 +49,11 @@ public class EvaluationContextTest {
 		
 		EvaluationContext context = new EvaluationContext(df.parse("2007-01-17 10:30:17:123"));
 
-		assertEquals(evaluate("${now}", Date.class, context), context.getEvaluationDate());
-		assertEquals(evaluate("${start_of_today}", Date.class, context), df.parse("2007-01-17 00:00:00:000"));
-		assertEquals(evaluate("${end_of_today}", Date.class, context), df.parse("2007-01-17 23:59:59:999"));
-		assertEquals(evaluate("${start_of_last_month}", Date.class, context), df.parse("2006-12-01 00:00:00:000"));
-		assertEquals(evaluate("${end_of_last_month}", Date.class, context), df.parse("2006-12-31 23:59:59:999"));
+		assertEquals(evaluate("${now}", context), context.getEvaluationDate());
+		assertEquals(evaluate("${start_of_today}", context), df.parse("2007-01-17 00:00:00:000"));
+		assertEquals(evaluate("${end_of_today}", context), df.parse("2007-01-17 23:59:59:999"));
+		assertEquals(evaluate("${start_of_last_month}", context), df.parse("2006-12-01 00:00:00:000"));
+		assertEquals(evaluate("${end_of_last_month}", context), df.parse("2006-12-31 23:59:59:999"));
 	}
 	
 	/**
@@ -67,10 +64,10 @@ public class EvaluationContextTest {
 	 * @return
 	 * @throws Exception
 	 */
-	public Object evaluate(String expression, Class<?> type, EvaluationContext context) throws Exception {
+	public Object evaluate(String expression, EvaluationContext context) throws Exception {
 		context.addParameterValue("report.d1", df.parse("2007-01-10 10:30:17:000"));
 		context.addParameterValue("report.gender", "male");
-		return EvaluationUtil.evaluateExpression(expression, context, type);
+		return EvaluationUtil.evaluateExpression(expression, context);
 	}
 	
 	/**
@@ -80,8 +77,8 @@ public class EvaluationContextTest {
 	 * @return
 	 * @throws Exception
 	 */
-	public Object evaluate(String expression, Class<?> type) throws Exception {
-		return evaluate(expression, type, new EvaluationContext());
+	public Object evaluate(String expression) throws Exception {
+		return evaluate(expression, new EvaluationContext());
 	}
 	
 }

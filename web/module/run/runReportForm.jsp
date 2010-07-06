@@ -32,10 +32,6 @@
 		                    </td>
 		                    <td>
 								<wgt:widget id="${status.expression}" name="${status.expression}" type="${parameter.type.name}" property="${status.expression}" defaultValue="${status.value}"/>
-		                    
-			                    <%-- 
-		                    	<openmrs:fieldGen type="${parameter.type.name}" formFieldName="${status.expression}" val="${status.value}"/>
-		                    	--%>
 		                        <c:if test="${status.errorMessage != ''}">
 		                            <span class="error">${status.errorMessage}</span>
 		                        </c:if>

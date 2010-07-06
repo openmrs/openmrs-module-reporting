@@ -46,7 +46,7 @@
 			}
 		</script>
 
-		<table><tr valign="top">
+		<table width="100%"><tr valign="top">
 		<td width="34%">	
 	
 			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${definition.class.name}|uuid=${definition.uuid}|label=Basic Details" />
@@ -68,7 +68,7 @@
 			<div class="box">
 				<form method="post" action="compositionCohortDefinitionSetComposition.form">
 					<input type="hidden" name="uuid" value="${definition.uuid}"/>
-					<textarea rows="3" cols="50" id="compositionString" name="compositionString">${definition.compositionString}</textarea>
+					<textarea id="compositionString" name="compositionString">${definition.compositionString}</textarea>
 					<br/>
 					<input type="submit" value="Save"/>
 					<input type="button" value="Close" onClick="window.location='/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition';"/>

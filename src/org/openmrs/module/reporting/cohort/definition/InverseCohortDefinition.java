@@ -124,7 +124,7 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	 */
 	public String toString() {
 		CohortDefinition filter = getBaseDefinition();
-		return "NOT " + (filter == null ? "?" : filter.getDescription());
+		return "NOT " + (filter == null ? "?" : filter.toString());
 	}
 
 	//***** PROPERTY ACCESS *****

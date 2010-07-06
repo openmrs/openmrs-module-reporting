@@ -21,11 +21,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  */
 public class MapDataSet extends SimpleDataSet {
 	
-	//****** PROPERTIES ******
-	
-	private DataSetDefinition definition;
-	private EvaluationContext context;
-	
 	//****** CONSTRUCTORS ******
 	
     /**
@@ -86,35 +81,5 @@ public class MapDataSet extends SimpleDataSet {
 	@Override
 	public String toString() {
 		return getData().toString();
-	}
-    
-    //****** PROPERTY ACCESS ******
-
-	/**
-	 * @return the definition
-	 */
-	public DataSetDefinition getDefinition() {
-		return definition;
-	}
-
-	/**
-	 * @param definition the definition to set
-	 */
-	public void setDefinition(DataSetDefinition definition) {
-		this.definition = definition;
-	}
-
-	/**
-	 * @return the context
-	 */
-	public EvaluationContext getContext() {
-		return context;
-	}
-
-	/**
-	 * @param context the context to set
-	 */
-	public void setContext(EvaluationContext context) {
-		this.context = context;
 	}
 }

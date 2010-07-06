@@ -61,8 +61,8 @@ public class EvaluationUtil {
 	/**
 	 * @see EvaluationUtil#evaluateExpression(String, Map<String, Object>, Class)
 	 */
-	public static Object evaluateExpression(String expression, EvaluationContext context, Class<?> type) throws ParameterException {
-		return evaluateExpression(expression, context.getParameterValues(), type);
+	public static Object evaluateExpression(String expression, EvaluationContext context) throws ParameterException {
+		return evaluateExpression(expression, context.getParameterValues());
 	}
 	
 	/**
@@ -92,13 +92,13 @@ public class EvaluationUtil {
 	 * @return value for given expression, as an <code>Object</code>
 	 * @throws ParameterException
 	 */
-	public static Object evaluateExpression(String expression, Map<String, Object> parameters, Class<?> type) throws ParameterException {
-		return evaluateExpression(expression, parameters, type, EXPRESSION_START, EXPRESSION_END);
+	public static Object evaluateExpression(String expression, Map<String, Object> parameters) throws ParameterException {
+		return evaluateExpression(expression, parameters, EXPRESSION_START, EXPRESSION_END);
 	}
 
 	/**
 	 */
-	public static Object evaluateExpression(String expression, Map<String, Object> parameters, Class<?> type, 
+	public static Object evaluateExpression(String expression, Map<String, Object> parameters, 
 						 					String expressionPrefix, String expressionPostfix) throws ParameterException {
 
 		while (expression != null) {
@@ -110,7 +110,7 @@ public class EvaluationUtil {
 			if (startIndex != -1 && endIndex != -1) {
 				
 				String e = expression.substring(startIndex + expressionPrefix.length(), endIndex);
-				Object replacement = evaluateParameterExpression(e, parameters, type);
+				Object replacement = evaluateParameterExpression(e, parameters);
 				
 				if (startIndex == 0 && endIndex == expression.length()-1) {
 					return replacement;
@@ -153,7 +153,7 @@ public class EvaluationUtil {
 	 * @return value for given expression, as an <code>Object</code>
 	 * @throws ParameterException
 	 */
-	public static Object evaluateParameterExpression(String expression, Map<String, Object> parameters, Class<?> type) throws ParameterException {
+	public static Object evaluateParameterExpression(String expression, Map<String, Object> parameters) throws ParameterException {
 		
 		log.info("evaluateParameterExpression(): " + expression);
 

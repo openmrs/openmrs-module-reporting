@@ -86,11 +86,19 @@ public class ReportDashboardController {
 				MapDataSet mapDataSet = (MapDataSet) e.getValue();
 				
 				DataSetColumn dataSetColumn = mapDataSet.getMetaData().getColumn(savedColumnKey);
-				CohortIndicatorAndDimensionResult result = (CohortIndicatorAndDimensionResult) mapDataSet.getData(dataSetColumn);	
-				Cohort selectedCohort = result.getCohortIndicatorAndDimensionCohort();
-				
 				model.addAttribute("selectedColumn", dataSetColumn);
+				
+				Object result = mapDataSet.getData(dataSetColumn);
+				Cohort selectedCohort = null;
+				if (result instanceof CohortIndicatorAndDimensionResult) {
+					CohortIndicatorAndDimensionResult cidr = (CohortIndicatorAndDimensionResult) mapDataSet.getData(dataSetColumn);
+					selectedCohort = cidr.getCohortIndicatorAndDimensionCohort();
+				}
+				else if (result instanceof Cohort) {
+					selectedCohort = (Cohort) result;
+				}
 				model.addAttribute("selectedCohort", selectedCohort);
+				
 				model.addAttribute("patients", Context.getPatientSetService().getPatients(selectedCohort.getMemberIds()));	
 
 				// Evaluate the default patient dataset definition

@@ -14,27 +14,19 @@
 package org.openmrs.module.reporting.web.controller.mapping;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.CohortDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.Definition;
 
 /**
  * Handler that determines what pages are redirected for creating and editing DataSetDefinitions
  */
-@Handler(supports=DataExportDataSetDefinition.class, order=50)
-public class DataExportDataSetDefinitionMappingHandler extends DefinitionMappingHandler {
+@Handler(supports=CohortDataSetDefinition.class, order=50)
+public class CohortDataSetDefinitionMappingHandler extends DefinitionMappingHandler {
 	
 	/**
 	 * @see DefinitionMappingHandler#getCreateUrl(Class)
 	 */
 	public String getCreateUrl(Class<? extends Definition> type) {
-		return "/admin/reports/dataExport.form";
-	}
-
-	/**
-	 * @see DefinitionMappingHandler#getEditUrl(Definition)
-	 */
-	@Override
-	public String getEditUrl(Definition definition) {
-		return getCreateUrl(definition.getClass()) + "?dataExportId=" + definition.getId();
+		return "/module/reporting/datasets/cohortDatasetEditor.form?type="+type.getName();
 	}
 }

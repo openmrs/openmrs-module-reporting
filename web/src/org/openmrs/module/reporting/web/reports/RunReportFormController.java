@@ -29,6 +29,7 @@ import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.Report;
@@ -78,8 +79,8 @@ public class RunReportFormController extends SimpleFormController implements Val
 				}
 			}
 			
-			for (Map.Entry<String, String> e : command.getUserEnteredParams().entrySet()) {
-				if (StringUtils.hasText(e.getValue()))
+			for (Map.Entry<String, Object> e : command.getUserEnteredParams().entrySet()) {
+				if (ObjectUtil.notNull(e.getValue()))
 					requiredParams.remove(e.getKey());
 			}
 			if (requiredParams.size() > 0) {
@@ -103,16 +104,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 				// avoid lazy init exceptions
 				command.setReportDefinition(rds.getDefinitionByUuid(req.getReportDefinition().getUuid()));
 				for (Map.Entry<String, Object> param : req.getParameterValues().entrySet()) {
-					Object val = param.getValue();
-					String valString;
-					if (val instanceof Date) {
-						valString = Context.getDateFormat().format((Date) val);
-					} else if (val instanceof OpenmrsObject) {
-						valString = ((OpenmrsObject) val).getUuid();
-					} else {
-						valString = val.toString();
-					}
-					command.getUserEnteredParams().put(param.getKey(), valString);
+					command.getUserEnteredParams().put(param.getKey(), param.getValue());
 				}
 				command.setSelectedRenderer(req.getRenderingMode().getRenderer().getClass().getName() + "!" + req.getRenderingMode().getArgument());
 			} else {
@@ -137,13 +129,10 @@ public class RunReportFormController extends SimpleFormController implements Val
 		if (reportDefinition.getParameters() != null) {
 			for (Parameter parameter : reportDefinition.getParameters()) {
 				if (command.getUserEnteredParams() != null) {
-					String valString = command.getUserEnteredParams().get(parameter.getName());
-					Object value;
-					if (StringUtils.hasText(valString)) {
+					Object value = command.getUserEnteredParams().get(parameter.getName());
+					if (ObjectUtil.notNull(value)) {
 						try {
-							value = WidgetUtil.parseInput(valString, parameter.getType());
-							
-							//value = OpenmrsUtil.parse(valString, parameter.getType());
+							value = WidgetUtil.parseInput(value.toString(), parameter.getType());
 							evalContext.addParameterValue(parameter.getName(), value);
 						}
 						catch (Exception ex) {
@@ -173,11 +162,10 @@ public class RunReportFormController extends SimpleFormController implements Val
 		if (reportDefinition.getParameters() != null) {
 			for (Parameter parameter : reportDefinition.getParameters()) {
 				if (command.getUserEnteredParams() != null) {
-					String valString = command.getUserEnteredParams().get(parameter.getName());
-					Object value;
-					if (StringUtils.hasText(valString)) {
+					Object value = command.getUserEnteredParams().get(parameter.getName());
+					if (ObjectUtil.notNull(value)) {
 						try {
-							value = WidgetUtil.parseInput(valString, parameter.getType());
+							value = WidgetUtil.parseInput(value.toString(), parameter.getType());
 							params.put(parameter.getName(), value);
 						}
 						catch (Exception ex) {
@@ -221,12 +209,12 @@ public class RunReportFormController extends SimpleFormController implements Val
 	public class CommandObject {
 		
 		private ReportDefinition reportDefinition;		
-		private Map<String, String> userEnteredParams;		
+		private Map<String, Object> userEnteredParams;		
 		private List<RenderingMode> renderingModes;		
 		private String selectedRenderer; // as RendererClass!Arg
 		
 		public CommandObject() {
-			userEnteredParams = new LinkedHashMap<String, String>();
+			userEnteredParams = new LinkedHashMap<String, Object>();
 		}
 		
 		public RenderingMode getSelectedMode() throws ClassNotFoundException {
@@ -269,11 +257,11 @@ public class RunReportFormController extends SimpleFormController implements Val
 			this.selectedRenderer = selectedRenderer;
 		}
 		
-		public Map<String, String> getUserEnteredParams() {
+		public Map<String, Object> getUserEnteredParams() {
 			return userEnteredParams;
 		}
 		
-		public void setUserEnteredParams(Map<String, String> userEnteredParams) {
+		public void setUserEnteredParams(Map<String, Object> userEnteredParams) {
 			this.userEnteredParams = userEnteredParams;
 		}
 	}	

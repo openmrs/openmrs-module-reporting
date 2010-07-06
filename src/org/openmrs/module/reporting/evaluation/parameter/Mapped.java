@@ -84,7 +84,7 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 			String s = parameterizable.getDescription();
 			if (StringUtils.isNotEmpty(s)) {
 				try {
-					Object evaluated = EvaluationUtil.evaluateExpression(s, getParameterMappings(), String.class);
+					Object evaluated = EvaluationUtil.evaluateExpression(s, getParameterMappings());
 					if (evaluated != null) {
 						s = evaluated.toString();
 					}

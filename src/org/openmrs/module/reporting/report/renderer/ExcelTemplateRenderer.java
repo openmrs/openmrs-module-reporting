@@ -92,7 +92,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 					HSSFCell cell = cellIter.next();
 			    	String contents = ExcelUtil.getCellContentsAsString(cell);
 			    	if (StringUtils.isNotEmpty(contents)) {
-			    		Object newContent = EvaluationUtil.evaluateExpression(contents, replacements, Object.class, prefix, postfix);
+			    		Object newContent = EvaluationUtil.evaluateExpression(contents, replacements, prefix, postfix);
 			    		ExcelUtil.setCellContents(styleHelper, cell, newContent);
 			    	}
 				}

@@ -128,7 +128,7 @@ public class EvaluationContext {
 			}
 			Object paramVal = child.getParameterMappings().get(paramName);
 			if (paramVal instanceof String) {
-				paramVal = EvaluationUtil.evaluateExpression(paramVal.toString(), initialContext, parameter.getType());
+				paramVal = EvaluationUtil.evaluateExpression(paramVal.toString(), initialContext);
 			}
 			ec.addParameterValue(paramName, paramVal);
 		}
