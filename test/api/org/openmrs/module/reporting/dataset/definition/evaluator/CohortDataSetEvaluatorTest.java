@@ -76,13 +76,13 @@ public class CohortDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		CohortDataSetDefinition d = new CohortDataSetDefinition();
 		d.addParameter(ReportingConstants.END_DATE_PARAMETER);
 		
-		d.addRow(new Mapped<CohortDefinition>(males, null));
-		d.addRow(new Mapped<CohortDefinition>(females, null));
-		d.addRow(new Mapped<CohortDefinition>(unknownGender, null));
+		d.addRow("male", new Mapped<CohortDefinition>(males, null));
+		d.addRow("female", new Mapped<CohortDefinition>(females, null));
+		d.addRow("unknown", new Mapped<CohortDefinition>(unknownGender, null));
 		
-		d.addColumn(new Mapped<CohortDefinition>(adultsOnDate, ParameterizableUtil.createParameterMappings("effectiveDate=${endDate}")));
-		d.addColumn(new Mapped<CohortDefinition>(childrenOnDate, ParameterizableUtil.createParameterMappings("effectiveDate=${endDate}")));
-		d.addColumn(new Mapped<CohortDefinition>(unknownAge, null));
+		d.addColumn("adult", new Mapped<CohortDefinition>(adultsOnDate, ParameterizableUtil.createParameterMappings("effectiveDate=${endDate}")));
+		d.addColumn("child", new Mapped<CohortDefinition>(childrenOnDate, ParameterizableUtil.createParameterMappings("effectiveDate=${endDate}")));
+		d.addColumn("unknown", new Mapped<CohortDefinition>(unknownAge, null));
 		
 		EvaluationContext context = new EvaluationContext();
 		context.addParameterValue(ReportingConstants.END_DATE_PARAMETER.getName(), DateUtil.getDateTime(2000, 1, 1));

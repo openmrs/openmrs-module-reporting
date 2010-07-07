@@ -14,10 +14,13 @@
 package org.openmrs.module.reporting.dataset.definition;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.definition.evaluator.CohortDataSetEvaluator;
@@ -33,8 +36,8 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	
 	private static final long serialVersionUID = -658417752199413012L;
 
-	private List<Mapped<? extends CohortDefinition>> rows;
-	private List<Mapped<? extends CohortDefinition>> columns;
+	private Map<String, Mapped<? extends CohortDefinition>> rows;
+	private Map<String, Mapped<? extends CohortDefinition>> columns;
 	
 	/**
 	 * Default constructor
@@ -48,26 +51,25 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 		List<CohortDataSetColumn> c = new ArrayList<CohortDataSetColumn>();
 		if (getRows().isEmpty()) {
 			int colNum = 1;
-			for (Mapped<? extends CohortDefinition> def : getColumns()) {
-				c.add(new CohortDataSetColumn(""+colNum, def.getParameterizable().getName(), Cohort.class, null, def));
+			for (String colName : getColumns().keySet()) {
+				c.add(new CohortDataSetColumn(""+colNum, Cohort.class, null, colName, null, getColumns().get(colName)));
 				colNum++;
 			}
 		}
 		if (getColumns().isEmpty()) {
 			int rowNum = 1;
-			for (Mapped<? extends CohortDefinition> def : getRows()) {
-				c.add(new CohortDataSetColumn(""+rowNum, def.getParameterizable().getName(), Cohort.class, def, null));
+			for (String rowName : getRows().keySet()) {
+				c.add(new CohortDataSetColumn(""+rowNum, Cohort.class, rowName, null, getRows().get(rowName), null));
 				rowNum++;
 			}
 		}
 		if (!getRows().isEmpty() && !getColumns().isEmpty()) {
 			int rowNum = 1;
-			for (Mapped<? extends CohortDefinition> rowDef : getRows()) {
+			for (String rowName : getRows().keySet()) {
 				int colNum = 1;
-				for (Mapped<? extends CohortDefinition> colDef : getColumns()) {
+				for (String colName : getColumns().keySet()) {
 					String key = rowNum + "." + colNum;
-					String label = rowDef.getParameterizable().getName() + " - " + colDef.getParameterizable().getName();
-					c.add(new CohortDataSetColumn(key, label, Cohort.class, rowDef, colDef));
+					c.add(new CohortDataSetColumn(key, Cohort.class, rowName, colName, getRows().get(rowName), getColumns().get(colName)));
 					colNum++;
 				}
 				rowNum++;
@@ -79,9 +81,9 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * @return the rows
 	 */
-	public List<Mapped<? extends CohortDefinition>> getRows() {
+	public Map<String, Mapped<? extends CohortDefinition>> getRows() {
 		if (rows == null) {
-			rows = new ArrayList<Mapped<? extends CohortDefinition>>();
+			rows = new LinkedHashMap<String, Mapped<? extends CohortDefinition>>();
 		}
 		return rows;
 	}
@@ -89,23 +91,23 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * @param rows the rows to set
 	 */
-	public void setRows(List<Mapped<? extends CohortDefinition>> rows) {
+	public void setRows(Map<String, Mapped<? extends CohortDefinition>> rows) {
 		this.rows = rows;
 	}
 	
 	/**
 	 * @param row to add
 	 */
-	public void addRow(Mapped<? extends CohortDefinition> row) {
-		getRows().add(row);
+	public void addRow(String rowName, Mapped<? extends CohortDefinition> row) {
+		getRows().put(rowName, row);
 	}
 
 	/**
 	 * @return the columns
 	 */
-	public List<Mapped<? extends CohortDefinition>> getColumns() {
+	public Map<String, Mapped<? extends CohortDefinition>> getColumns() {
 		if (columns == null) {
-			columns = new ArrayList<Mapped<? extends CohortDefinition>>();
+			columns = new LinkedHashMap<String, Mapped<? extends CohortDefinition>>();
 		}
 		return columns;
 	}
@@ -113,15 +115,15 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * @param columns the columns to set
 	 */
-	public void setColumns(List<Mapped<? extends CohortDefinition>> columns) {
+	public void setColumns(Map<String, Mapped<? extends CohortDefinition>> columns) {
 		this.columns = columns;
 	}
 	
 	/**
 	 * @param column to add
 	 */
-	public void addColumn(Mapped<? extends CohortDefinition> column) {
-		getColumns().add(column);
+	public void addColumn(String columnName, Mapped<? extends CohortDefinition> column) {
+		getColumns().put(columnName, column);
 	}
 	
 	/**
@@ -132,6 +134,8 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 		private static final long serialVersionUID = 1L;
 		
 		//***** PROPERTIES *****
+		private String rowName;
+		private String columnName;
 		private Mapped<? extends CohortDefinition> rowDefinition;
 		private Mapped<? extends CohortDefinition> columnDefinition;
 		
@@ -145,12 +149,50 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 		/**
 		 * Full Constructor
 		 */
-		public CohortDataSetColumn(String name, String label, Class<?> dataType, 
+		public CohortDataSetColumn(String name, Class<?> dataType, String rowName, String columnName,
 								   Mapped<? extends CohortDefinition> rowDefinition, 
 								   Mapped<? extends CohortDefinition> columnDefinition) {
-			super(name, label, dataType);
+			super(name, name, dataType);
+			String label = "";
+			if (ObjectUtil.notNull(rowName)) {
+				label += rowName;
+			}
+			if (ObjectUtil.notNull(columnName)) {
+				label += (ObjectUtil.notNull(rowName) ? " - " : "") + columnName;
+			}
+			setLabel(label);
+			this.rowName = rowName;
+			this.columnName = columnName;
 			this.rowDefinition = rowDefinition;
 			this.columnDefinition = columnDefinition;
+		}
+
+		/**
+		 * @return the rowName
+		 */
+		public String getRowName() {
+			return rowName;
+		}
+
+		/**
+		 * @param rowName the rowName to set
+		 */
+		public void setRowName(String rowName) {
+			this.rowName = rowName;
+		}
+
+		/**
+		 * @return the columnName
+		 */
+		public String getColumnName() {
+			return columnName;
+		}
+
+		/**
+		 * @param columnName the columnName to set
+		 */
+		public void setColumnName(String columnName) {
+			this.columnName = columnName;
 		}
 
 		/**

@@ -48,28 +48,28 @@
 								<c:if test="${!empty dsd.columns}">
 									<tr>
 										<c:if test="${!empty dsd.rows}"><td>&nbsp;</td></c:if>									
-										<c:forEach items="${dsd.columns}" var="column" varStatus="columnStatus">
+										<c:forEach items="${dsd.columns}" var="columnEntry" varStatus="columnStatus">
 											<td>
 												<openmrs:portlet url="mappedProperty" id="column${columnStatus.index}" moduleId="reporting" 
-															parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|property=columns|currentKey=${columnStatus.index}|label=${column.parameterizable.name}|parentUrl=${pageUrl}|viewId=dsdView${columnStatus.index}|headerClass=columnHeader" />
+															parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|property=columns|currentKey=${columnEntry.key}|label=${columnEntry.key}|parentUrl=${pageUrl}|viewId=dsdView${columnStatus.index}|headerClass=columnHeader" />
 											</td>
 										</c:forEach>
 									</tr>
 								</c:if>
 								<c:if test="${empty dsd.rows}">
 									<tr>
-										<c:forEach items="${dsd.columns}" var="column" varStatus="columnStatus">
+										<c:forEach items="${dsd.columns}" var="columnEntry" varStatus="columnStatus">
 											<td align="center" style="font-weight:bold; color:blue;" nowrap>${columnStatus.count}</td>
 										</c:forEach>
 									</tr>
 								</c:if>
-								<c:forEach items="${dsd.rows}" var="row" varStatus="rowStatus">
+								<c:forEach items="${dsd.rows}" var="rowEntry" varStatus="rowStatus">
 									<tr>
 										<td nowrap>
 											<openmrs:portlet url="mappedProperty" id="row${rowStatus.index}" moduleId="reporting" 
-														 	parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|property=rows|currentKey=${rowStatus.index}|label=${row.parameterizable.name}|parentUrl=${pageUrl}|viewId=dsdView${rowStatus.index}|headerClass=rowHeader" />
+														 	parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|property=rows|currentKey=${rowEntry.key}|label=${rowEntry.key}|parentUrl=${pageUrl}|viewId=dsdView${rowStatus.index}|headerClass=rowHeader" />
 										</td>
-										<c:forEach items="${dsd.columns}" var="column" varStatus="columnStatus">
+										<c:forEach items="${dsd.columns}" var="columnEntry" varStatus="columnStatus">
 											<td align="center" style="font-weight:bold; color:blue;" nowrap>${rowStatus.count}.${columnStatus.count}</td>
 										</c:forEach>
 										<c:if test="${empty dsd.columns}">

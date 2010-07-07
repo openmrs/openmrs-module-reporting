@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.report.definition;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.openmrs.Cohort;
@@ -22,6 +22,7 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.service.ReportService;
 
 /**
@@ -42,7 +43,7 @@ public class ReportDefinition extends BaseDefinition {
 	
 	private Integer id;
 	private Mapped<CohortDefinition> baseCohortDefinition;
-	private Map<String, Mapped<? extends DataSetDefinition>> dataSetDefinitions = new HashMap<String, Mapped<? extends DataSetDefinition>>();
+	private Map<String, Mapped<? extends DataSetDefinition>> dataSetDefinitions;
 	
 	//***********************
 	// CONSTRUCTORS
@@ -63,7 +64,7 @@ public class ReportDefinition extends BaseDefinition {
 	 * 		false	If report definition has no dataset definitions. 
 	 */
 	public boolean hasDataSetDefinitions() { 
-		return dataSetDefinitions != null && !dataSetDefinitions.isEmpty();
+		return !getDataSetDefinitions().isEmpty();
 	}
 	
 	/**
@@ -84,13 +85,8 @@ public class ReportDefinition extends BaseDefinition {
 	 * @param definition the Mapped<DataSetDefinition> to add
 	 */
 	public void addDataSetDefinition(String key, Mapped<? extends DataSetDefinition> definition) {
-		if (dataSetDefinitions == null) {
-			dataSetDefinitions = new HashMap<String, Mapped<? extends DataSetDefinition>>();
-		}
-		dataSetDefinitions.put(key, definition);
+		getDataSetDefinitions().put(key, definition);
 	}
-	
-	
 	
 	/** @see Object#equals(Object) */
 	public boolean equals(Object obj) {
@@ -162,6 +158,9 @@ public class ReportDefinition extends BaseDefinition {
 	 * @return the dataSetDefinitions
 	 */
 	public Map<String, Mapped<? extends DataSetDefinition>> getDataSetDefinitions() {
+		if (dataSetDefinitions == null) {
+			dataSetDefinitions = new LinkedHashMap<String, Mapped<? extends DataSetDefinition>>();
+		}
 		return dataSetDefinitions;
 	}
 

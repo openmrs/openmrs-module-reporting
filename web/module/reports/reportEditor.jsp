@@ -92,23 +92,34 @@
 								<div style="display:none; width:100%" id="dsdView${dsdStatus.index}">
 									<table style="font-size:smaller; color:grey; border:1px solid black;">
 										<tr><th colspan="7">${dsd.value.parameterizable.name}</th></tr>
-										<tr>
-											<c:forEach items="${dsd.value.parameterizable.columns}" var="column" varStatus="colStatus">
-												<c:if test="${colStatus.count < 7}">
-													<th style="border-bottom:1px solid black;">${column}</th>
+										<c:if test="${rpt:instanceOf(dsd.value.parameterizable, 'org.openmrs.module.reporting.dataset.definition.CohortDataSetDefinition')}">
+											<tr>
+												<c:if test="${!empty dsd.value.parameterizable.rows}">
+													<th>&nbsp;</th>
 												</c:if>
-												<c:if test="${colStatus.count == 7}">
-													<th style="border-bottom:1px solid black;">...</th>
-												</c:if>
-											</c:forEach>
-										</tr>
-										<tr>
-											<c:forEach items="${dsd.value.parameterizable.columns}" var="column" varStatus="colStatus">
-												<c:if test="${colStatus.count <= 7}">
-													<td align="center">...</td>
-												</c:if>
-											</c:forEach>
-										</tr>
+												<c:forEach items="${dsd.value.parameterizable.columns}" var="columnEntry" varStatus="colStatus">
+													<th style="border-bottom:1px solid black;">${columnEntry.key}</th>
+												</c:forEach>
+											</tr>
+											<c:choose>
+												<c:when test="${empty dsd.value.parameterizable.rows}">
+													<c:forEach items="${dsd.value.parameterizable.columns}" var="columnEntry" varStatus="colStatus">
+														<td style="border-bottom:1px solid black;">...</td>
+													</c:forEach>
+												</c:when>
+												<c:otherwise>
+													<c:forEach items="${dsd.value.parameterizable.rows}" var="rowEntry" varStatus="rowStatus">
+														<tr>
+															<th>${rowEntry.key}</th>
+															<c:forEach items="${dsd.value.parameterizable.columns}" var="columnEntry" varStatus="colStatus">
+																<td style="border-bottom:1px solid black;">...</td>
+															</c:forEach>
+														</tr>
+													</c:forEach>
+												</c:otherwise>
+											</c:choose>
+
+										</c:if>
 									</table>
 								</div>
 							</c:forEach>
