@@ -136,7 +136,7 @@
 												<td>${dim.value.parameterizable.name}</td>
 												<td>
 													<a href="periodIndicatorReportRemoveDimension.form?key=${dim.key}&uuid=${report.uuid}">
-														<img src='<c:url value="/images/trash.gif"/>' border="0"/>
+														<img src='<c:url value="/images/trash.gif"/>' border="0" onclick="return confirm('<spring:message code="reporting.Report.periodIndicatorReport.cascadedeletewarning" />')"/>
 													</a>
 												</td>
 											</tr>

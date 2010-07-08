@@ -49,7 +49,7 @@ public class PeriodIndicatorReportController {
 				model.addAttribute("report", report);
 			} else {
 				throw new RuntimeException("This report is not of the right class");
-			} 
+			}
 		}
 	}
 
@@ -87,6 +87,16 @@ public class PeriodIndicatorReportController {
 		
 		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 		PeriodIndicatorReportUtil.removeColumn(report, key);
+		
+		return "redirect:periodIndicatorReport.form?uuid=" + uuid;
+	}
+	
+	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveDimension")
+	public String removeDimension(@RequestParam("uuid") String uuid,
+	                              @RequestParam("key") String key) {
+		
+		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
+		PeriodIndicatorReportUtil.removeDimension(report, key);
 		
 		return "redirect:periodIndicatorReport.form?uuid=" + uuid;
 	}

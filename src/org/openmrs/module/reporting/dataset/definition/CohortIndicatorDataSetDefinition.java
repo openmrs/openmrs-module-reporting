@@ -77,6 +77,14 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	 * Removes a Dimension with the given key
 	 */
 	public void removeDimension(String dimensionKey) {
+		List<CohortIndicatorAndDimensionColumn> listToRemove = new ArrayList<CohortIndicatorAndDimensionColumn>();
+		for(CohortIndicatorAndDimensionColumn c : columns) {
+			Map<String, String> dimOpts = c.getDimensionOptions();
+			if (dimOpts.keySet().contains(dimensionKey)) {
+				listToRemove.add(c);
+			}
+		}
+		columns.removeAll(listToRemove);
 		dimensions.remove(dimensionKey);
 	}
 
