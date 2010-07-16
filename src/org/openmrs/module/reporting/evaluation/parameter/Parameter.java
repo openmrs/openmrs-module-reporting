@@ -29,6 +29,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  * @see Parameterizable
  * @see EvaluationContext
  */
+@SuppressWarnings("unchecked")
 public class Parameter implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -56,7 +57,7 @@ public class Parameter implements Serializable {
 	/**
 	 * If this parameter can have multiple values specified, this is the underlying Collection type
 	 */
-	private Class<? extends Collection<?>> collectionType;
+	private Class<? extends Collection> collectionType;
 
 	/**
 	 * The default value given to this parameter.
@@ -81,12 +82,12 @@ public class Parameter implements Serializable {
 	 * @param defaultValue The value to fill in if nothing provided by the user
 	 */
 	public Parameter(String name, String label, Class<?> type, 
-					 Class<? extends Collection<?>> collectionType, Object defaultValue) {
+					 Class<? extends Collection> collectionType, Object defaultValue) {
 		super();
 		setName(name);
 		setLabel(label);
 		setType(type);
-		setCollectionType(collectionType);
+		//setCollectionType(collectionType);
 		setDefaultValue(defaultValue);
 	}
 	
@@ -212,14 +213,14 @@ public class Parameter implements Serializable {
 	/**
 	 * @return the collectionType
 	 */
-	public Class<? extends Collection<?>> getCollectionType() {
+	public Class<? extends Collection> getCollectionType() {
 		return collectionType;
 	}
 
 	/**
 	 * @param collectionType the collectionType to set
 	 */
-	public void setCollectionType(Class<? extends Collection<?>> collectionType) {
+	public void setCollectionType(Class<? extends Collection> collectionType) {
 		this.collectionType = collectionType;
 	}
 

@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
- * Evaluates a sql query and returns a cohort
+ * Evaluates a SQL query and returns a Cohort
  */
 @Handler(supports={SqlCohortDefinition.class})
 public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
@@ -35,14 +35,13 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext) {
-    	Cohort cohort = new Cohort();
+    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	SqlCohortDefinition sqlCohortDefinition = (SqlCohortDefinition) cohortDefinition;    	
-
-    	cohort = Context.getService(CohortQueryService.class).executeSqlQuery(
-    			sqlCohortDefinition.getQueryDefinition().getQueryString(), 
-    			evaluationContext.getParameterValues());
-    		
-    	return cohort;
+    	String query = sqlCohortDefinition.getQueryDefinition().getQueryString();
+    	Cohort c = Context.getService(CohortQueryService.class).executeSqlQuery(query, context.getParameterValues());
+    	if (context.getBaseCohort() != null) {
+    		c = Cohort.intersect(c, context.getBaseCohort());
+    	}
+    	return c;
     }
 }

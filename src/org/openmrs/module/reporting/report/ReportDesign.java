@@ -158,6 +158,9 @@ public class ReportDesign extends BaseOpenmrsMetadata  {
 	 * @return the properties
 	 */
 	public Properties getProperties() {
+		if (properties == null) {
+			properties = new Properties();
+		}
 		return properties;
 	}
 

@@ -64,22 +64,6 @@ public class SqlCohortDefinition extends BaseCohortDefinition {
 	}	
 	
 	/**
-	 * @return the user-defined SQL query 
-	public String getSqlQuery() {
-		return queryDefinition.getQueryString();
-	}
-	 */
-
-	/**
-	 * 
-	 * @param sqlQuery
-	public void setSqlQuery(String sqlQuery) {
-		this.queryDefinition = new SqlQueryDefinition(sqlQuery);
-		this.setParameters(new ArrayList<Parameter>());	// need to reset the 
-	}
-	 */
-	
-	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {

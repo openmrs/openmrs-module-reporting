@@ -50,29 +50,21 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	public List<CohortDataSetColumn> getDataSetColumns() {
 		List<CohortDataSetColumn> c = new ArrayList<CohortDataSetColumn>();
 		if (getRows().isEmpty()) {
-			int colNum = 1;
 			for (String colName : getColumns().keySet()) {
-				c.add(new CohortDataSetColumn(""+colNum, Cohort.class, null, colName, null, getColumns().get(colName)));
-				colNum++;
+				c.add(new CohortDataSetColumn(colName, Cohort.class, null, colName, null, getColumns().get(colName)));
 			}
 		}
 		if (getColumns().isEmpty()) {
-			int rowNum = 1;
 			for (String rowName : getRows().keySet()) {
-				c.add(new CohortDataSetColumn(""+rowNum, Cohort.class, rowName, null, getRows().get(rowName), null));
-				rowNum++;
+				c.add(new CohortDataSetColumn(rowName, Cohort.class, rowName, null, getRows().get(rowName), null));
 			}
 		}
 		if (!getRows().isEmpty() && !getColumns().isEmpty()) {
-			int rowNum = 1;
 			for (String rowName : getRows().keySet()) {
-				int colNum = 1;
 				for (String colName : getColumns().keySet()) {
-					String key = rowNum + "." + colNum;
+					String key = rowName + "." + colName;
 					c.add(new CohortDataSetColumn(key, Cohort.class, rowName, colName, getRows().get(rowName), getColumns().get(colName)));
-					colNum++;
 				}
-				rowNum++;
 			}
 		}
 		return c;
@@ -101,6 +93,13 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	public void addRow(String rowName, Mapped<? extends CohortDefinition> row) {
 		getRows().put(rowName, row);
 	}
+	
+	/**
+	 * @param row to add
+	 */
+	public void addRow(String rowName, CohortDefinition row, Map<String, Object> mappings) {
+		getRows().put(rowName, new Mapped<CohortDefinition>(row, mappings));
+	}
 
 	/**
 	 * @return the columns
@@ -124,6 +123,13 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	public void addColumn(String columnName, Mapped<? extends CohortDefinition> column) {
 		getColumns().put(columnName, column);
+	}
+	
+	/**
+	 * @param column to add
+	 */
+	public void addColumn(String columnName, CohortDefinition column, Map<String, Object> mappings) {
+		getColumns().put(columnName, new Mapped<CohortDefinition>(column, mappings));
 	}
 	
 	/**
