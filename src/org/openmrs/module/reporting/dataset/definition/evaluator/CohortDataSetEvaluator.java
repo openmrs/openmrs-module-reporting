@@ -49,7 +49,7 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		if (context.getBaseCohort() == null || context.getBaseCohort().isEmpty()) {
+		if (context.getBaseCohort() == null) {
 			context.setBaseCohort(Context.getPatientSetService().getAllPatients());
 		}
 		
