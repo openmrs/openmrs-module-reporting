@@ -1,20 +1,15 @@
 package org.openmrs.module.reporting.cohort.definition.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.evaluator.SqlCohortDefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.definition.SqlQueryDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -45,9 +40,8 @@ public class BaseCohortDefinitionServiceTest extends BaseModuleContextSensitiveT
 		String name = "new name";
 		String sqlQuery = "SELECT distinct patient_id FROM patient WHERE patient_id = :patientId";
 		
-		SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+		SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(sqlQuery);
 		sqlCohortDefinition.setName(name);
-		sqlCohortDefinition.setQueryDefinition(new SqlQueryDefinition(sqlQuery));
 		
 		 sqlCohortDefinition = 
 			Context.getService(CohortDefinitionService.class).saveDefinition(sqlCohortDefinition);
@@ -63,7 +57,7 @@ public class BaseCohortDefinitionServiceTest extends BaseModuleContextSensitiveT
 		Assert.assertNotNull(savedCohortDefinition);
 		Assert.assertEquals(savedCohortDefinition.getName(), name);
 		Assert.assertEquals(savedCohortDefinition.getClass(), SqlCohortDefinition.class);		
-		Assert.assertEquals(savedSqlCohortDefinition.getQueryDefinition().getQueryString(), sqlQuery);
+		Assert.assertEquals(savedSqlCohortDefinition.getQuery(), sqlQuery);
 		
 	}
 

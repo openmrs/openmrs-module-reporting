@@ -36,9 +36,9 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	SqlCohortDefinition sqlCohortDefinition = (SqlCohortDefinition) cohortDefinition;    	
-    	String query = sqlCohortDefinition.getQueryDefinition().getQueryString();
-    	Cohort c = Context.getService(CohortQueryService.class).executeSqlQuery(query, context.getParameterValues());
+    	SqlCohortDefinition sqlCohortDefinition = (SqlCohortDefinition) cohortDefinition;
+    	CohortQueryService cqs = Context.getService(CohortQueryService.class);
+    	Cohort c = cqs.executeSqlQuery(sqlCohortDefinition.getQuery(), context.getParameterValues());
     	if (context.getBaseCohort() != null) {
     		c = Cohort.intersect(c, context.getBaseCohort());
     	}

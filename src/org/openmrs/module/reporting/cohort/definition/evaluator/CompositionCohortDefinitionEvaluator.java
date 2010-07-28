@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import java.util.List;
-
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -38,8 +36,6 @@ public class CompositionCohortDefinitionEvaluator implements CohortDefinitionEva
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	CompositionCohortDefinition composition = (CompositionCohortDefinition) cohortDefinition;
-    	
-		List<Object> tokens = CohortExpressionParser.parseIntoTokens(composition.getCompositionString());
-		return CohortExpressionParser.evaluate(tokens, composition, context);
+		return CohortExpressionParser.evaluate(composition, context);
     }
 }

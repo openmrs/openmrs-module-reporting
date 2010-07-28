@@ -14,9 +14,8 @@
 package org.openmrs.module.reporting.cohort.definition;
 
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.query.definition.QueryDefinition;
-import org.openmrs.module.reporting.query.definition.SqlQueryDefinition;
 
 /**
  * SQL-based Cohort Definition
@@ -27,7 +26,7 @@ public class SqlCohortDefinition extends BaseCohortDefinition {
     private static final long serialVersionUID = 1L;
 	
 	@ConfigurationProperty(required=true)
-	private QueryDefinition queryDefinition;
+	private String query;
 	
 	//***** CONSTRUCTORS *****
 
@@ -42,37 +41,33 @@ public class SqlCohortDefinition extends BaseCohortDefinition {
 	 * 
 	 * @param sqlQuery
 	 */
-	public SqlCohortDefinition(String sqlQuery) { 
-		super();
-		this.queryDefinition = new SqlQueryDefinition(sqlQuery);
+	public SqlCohortDefinition(String query) { 
+		this.query = query;
 	}
 
 	//***** INSTANCE METHODS *****
-
-	/**
-	 * @return the queryDefinition
-	 */
-	public QueryDefinition getQueryDefinition() {
-		return queryDefinition;
-	}
-
-	/**
-	 * @param queryDefinition the queryDefinition to set
-	 */
-	public void setQueryDefinition(QueryDefinition queryDefinition) {
-		this.queryDefinition = queryDefinition;
-	}	
 	
 	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer("SQL Cohort Query: [");
-		if (queryDefinition != null && queryDefinition.getQueryString() != null) { 
-			buffer.append(queryDefinition.getQueryString());
-		}		
-		buffer.append("]");
-		return buffer.toString();
+		return "SQL Cohort Query: [" + ObjectUtil.nvlStr(query, "") + "]";
 	}
-  
+	
+	//***** PROPERTY ACCESS *****
+
+	/**
+	 * @return the query
+	 */
+	public String getQuery() {
+		return query;
+	}
+
+	/**
+	 * @param query the query to set
+	 */
+	public void setQuery(String query) {
+		this.query = query;
+	}
+ 
 }

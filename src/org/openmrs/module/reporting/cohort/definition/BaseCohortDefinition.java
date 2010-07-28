@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
@@ -46,7 +47,7 @@ public abstract class BaseCohortDefinition extends BaseDefinition implements Coh
 	 */
 	@Override
 	public String toString() {
-		return getName();
+		return ObjectUtil.nvlStr(getName(), getClass().getSimpleName());
 	}
 	
     //***** Property Access *****

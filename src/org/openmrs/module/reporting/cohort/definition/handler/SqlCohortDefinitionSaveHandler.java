@@ -19,48 +19,38 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openmrs.Patient;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.User;
 import org.openmrs.aop.RequiredDataAdvice;
-import org.openmrs.api.handler.RequiredDataHandler;
 import org.openmrs.api.handler.SaveHandler;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 /**
- * This class deals with {@link Patient} objects when they are saved via a save*
- * method in an Openmrs Service. This handler is automatically called by the
- * {@link RequiredDataAdvice} AOP class. <br/>
- * 
- * @see RequiredDataHandler
- * @see SaveHandler
- * @see Patient
- * @since 1.5
+ * This class deals with {@link SqlCohortDefinition} objects when they are saved via a save*
+ * method in an OpenMRS Service. This handler is automatically called by the
+ * {@link RequiredDataAdvice} AOP class.
  */
 public class SqlCohortDefinitionSaveHandler implements SaveHandler<SqlCohortDefinition> {
 
 	/**
-	 * @see org.openmrs.api.handler.SaveHandler#handle(org.openmrs.OpenmrsObject,
-	 *      org.openmrs.User, java.util.Date, java.lang.String)
+	 * @see SaveHandler#handle(OpenmrsObject, User, Date, String)
 	 */
-	public void handle(SqlCohortDefinition sqlCohortDefinition, User creator,
-			Date dateCreated, String other) {
-		// TODO Need to do this more intelligently 
+	public void handle(SqlCohortDefinition sqlCohortDefinition, User creator, Date dateCreated, String other) {
 		if (sqlCohortDefinition != null) {
 		
 			// Find all named parameters 
-			List<Parameter> parameters = 
-				findNamedParameters(sqlCohortDefinition.getQueryDefinition().getQueryString());
+			List<Parameter> parameters = findNamedParameters(sqlCohortDefinition.getQuery());
 			
 			// For now, just add any newly discovered named parameters
 			for (Parameter parameter : parameters) {
 				Parameter existingParameter = sqlCohortDefinition.getParameter(parameter.getName());
-				if (existingParameter == null) 
+				if (existingParameter == null) {
 					sqlCohortDefinition.addParameter(parameter);
+				}
 			}
 		}
 	}
-	
 	
 	/**
 	 * TODO Move to a utility class
@@ -91,7 +81,5 @@ public class SqlCohortDefinitionSaveHandler implements SaveHandler<SqlCohortDefi
 			parameters.add(parameter);
 		}		
 		return parameters;
-	}	
-	
-	
+	}
 }

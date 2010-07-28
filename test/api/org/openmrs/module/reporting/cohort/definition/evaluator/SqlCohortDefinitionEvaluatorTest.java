@@ -17,7 +17,6 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.definition.SqlQueryDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -52,8 +51,7 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		
 		EvaluationContext evaluationContext = new EvaluationContext();
 		evaluationContext.setParameterValues(parameterValues);
-		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition();
-		cohortDefinition.setQueryDefinition(new SqlQueryDefinition(sqlQuery));
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);		
 
 		Assert.assertEquals(1, cohort.size());
@@ -72,8 +70,7 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		
 		EvaluationContext evaluationContext = new EvaluationContext();
 		evaluationContext.setParameterValues(parameterValues);
-		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition();
-		cohortDefinition.setQueryDefinition(new SqlQueryDefinition(sqlQuery));
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
 		
 		Assert.assertEquals(1, cohort.size());
@@ -92,8 +89,7 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 
 		EvaluationContext evaluationContext = new EvaluationContext();
 		evaluationContext.setParameterValues(parameterValues);
-		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition();
-		cohortDefinition.setQueryDefinition(new SqlQueryDefinition(sqlQuery));
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
 
 		Assert.assertEquals(1, cohort.size());
@@ -116,8 +112,7 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 
 		EvaluationContext evaluationContext = new EvaluationContext();
 		evaluationContext.setParameterValues(parameterValues);
-		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition();
-		cohortDefinition.setQueryDefinition(new SqlQueryDefinition(sqlQuery));
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);		
 		
 		Assert.assertEquals(1, cohort.size());
@@ -138,8 +133,7 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		
 		EvaluationContext evaluationContext = new EvaluationContext();
 		evaluationContext.setParameterValues(parameterValues);
-		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition();
-		cohortDefinition.setQueryDefinition(new SqlQueryDefinition(sqlQuery));
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);		
 
 		Assert.assertEquals(1, cohort.size());
@@ -160,8 +154,7 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		
 		EvaluationContext evaluationContext = new EvaluationContext();
 		evaluationContext.setParameterValues(parameterValues);
-		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition();
-		cohortDefinition.setQueryDefinition(new SqlQueryDefinition(sqlQuery));
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);		
 
 		Assert.assertEquals(1, cohort.size());

@@ -109,7 +109,7 @@ img#play { vertical-align: middle; margin: 0; }
 									<label class="desc">SQL Query Editor</label>
 									<form method="post" action="sqlCohortDefinitionAssignQueryString.form">
 										<input type="hidden" name="uuid" value="${definition.uuid}"/>
-										<textarea id="editBox" rows="5" cols="50" id="queryString" name="queryString">${definition.queryDefinition.queryString}</textarea>
+										<textarea id="editBox" rows="5" cols="50" id="queryString" name="queryString">${definition.query}</textarea>
 										<br/>
 										<span>
 											<input type="submit" value="Save"/>
@@ -121,7 +121,7 @@ img#play { vertical-align: middle; margin: 0; }
 
 									<label class="desc">SQL Query Preview</label>
 									<div>
-										<textarea id="previewBox" rows="6" cols="50" disabled="true">${definition.queryDefinition.queryString}</textarea>
+										<textarea id="previewBox" rows="6" cols="50" disabled="true">${definition.query}</textarea>
 										<span style="float: right">
 											<button id="previewButton"><img id="play" src='<c:url value="/images/play.gif"/>' border="0"/>&nbsp;&nbsp;Preview</button>
 										</span>

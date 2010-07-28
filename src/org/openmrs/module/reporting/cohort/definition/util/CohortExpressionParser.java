@@ -17,12 +17,9 @@ import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Stack;
-import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,8 +29,6 @@ import org.openmrs.api.PatientSetService.BooleanOperator;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.InverseCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.history.CohortDefinitionHistory;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -46,12 +41,12 @@ public class CohortExpressionParser {
 	
 	protected static final Log log = LogFactory.getLog(CohortExpressionParser.class);
 	
-	private static List<String> andWords = Arrays.asList("and","intersection","*");
-	private static List<String> orWords = Arrays.asList("or","union","+");
-	private static List<String> notWords = Arrays.asList("not","!");
-	private static List<Character> openParenthesesWords = Arrays.asList('(','[','{');
-	private static List<Character> closeParenthesesWords = Arrays.asList(')',']','}');
-	private static List<Character> characterWords = Arrays.asList('+','!','(','[','{',')',']','}');
+	private static final List<String> andWords = Arrays.asList("and","intersection","*");
+	private static final List<String> orWords = Arrays.asList("or","union","+");
+	private static final List<String> notWords = Arrays.asList("not","!");
+	private static final List<Character> openParenthesesWords = Arrays.asList('(','[','{');
+	private static final List<Character> closeParenthesesWords = Arrays.asList(')',']','}');
+	private static final List<Character> characterWords = Arrays.asList('+','!','(','[','{',')',']','}');
 	
 	public static boolean supports(Class<?> type) {
 		return getSupportedTypes().contains(type);
@@ -67,142 +62,76 @@ public class CohortExpressionParser {
 	}
 	
 	/**
-	 * Recursively traverse the List<Object> phrase to produce a (possibly nested) CompoundCohortDefinition
-	 * If another List<Object> is found in the list, recursively evaluate it in place
-	 * If anything in this list is a number, replace it with the relevant filter from the history
-	 * @param phrase
-	 * @param history
-	 * @param context
-	 * @return CohortDefinition
+	 * @return the Cohort evaluated from the passed CompositionCohortDefinition and EvaluationContext
 	 */
-	@SuppressWarnings("unchecked")
-	public static CohortDefinition evaluate(List<Object> phrase, CohortDefinitionHistory history) {
-		log.debug("Starting with " + phrase);
-		List<Object> use = new ArrayList<Object>();
-		for (Object o : phrase) {
-			if (o instanceof List) {
-				use.add(evaluate((List<Object>) o, history));
-			}
-			else if (o instanceof Integer) {
-				use.add(history.getSearchHistory().get((Integer) o - 1));
-			}
-			else {
-				use.add(o);
-			}
-		}
-		
-		// base case. All elements are CohortDefinition or BooleanOperator.
-		log.debug("Base case with " + use);
-		
-		// first, replace all [..., NOT, CohortDefinition, ...] with [ ..., InvertedCohortDefinition, ...]
-		boolean invertTheNext = false;
-		for (ListIterator<Object> i = use.listIterator(); i.hasNext();) {
-			Object o = i.next();
-			if (o instanceof BooleanOperator) {
-				if ((BooleanOperator) o == BooleanOperator.NOT) {
-					i.remove();
-					invertTheNext = !invertTheNext;
-				} else {
-					if (invertTheNext) 
-						throw new RuntimeException("Can't have NOT AND. Test() should have failed");
-				}
-			} else {
-				if (invertTheNext) {
-					i.set(new InverseCohortDefinition((CohortDefinition) o));
-					invertTheNext = false;
-				}
-			}
-		}
-		
-		log.debug("Finished with NOTs: " + use);
-		
-		// Now all we have left are CohortDefinition, AND, OR
-		// eventually go with left-to-right precedence, and we can combine runs of the same operator into a single one
-		//     1 AND 2 AND 3 -> AND(1, 2, 3)
-		//     1 AND 2 OR 3 -> OR(AND(1, 2), 3)
-		// for now a hack so we take the last operator in the run, and apply that to all filters
-		//     for example 1 AND 2 OR 3 -> OR(1, 2, 3)
-		if (use.size() == 1) {
-			return (CohortDefinition) use.get(0);
-		}
-		
-		BooleanOperator bo = BooleanOperator.AND;
-		List<CohortDefinition> args = new ArrayList<CohortDefinition>();
-		for (Object o : use) {
-			if (o instanceof BooleanOperator) {
-				bo = (BooleanOperator) o;
-			}
-			else {
-				args.add((CohortDefinition) o);
-			}
-			if (args.size() == 2) {
-				CohortDefinition pf = null; // TODO: fix this new CompoundCohortDefinition(bo, args); 
-				args = new ArrayList<CohortDefinition>();
-				args.add(pf);
-			}
-		}
-		
-		if (args.size() != 1) {
-			throw new IllegalArgumentException("Unable to parse expression. Parsed " + phrase + " to " + args);
-		}
-		return (CohortDefinition)args.get(0);
+	public static Cohort evaluate(CompositionCohortDefinition composition, EvaluationContext context) {
+		List<Object> tokens = CohortExpressionParser.parseIntoTokens(composition.getCompositionString());
+		return CohortExpressionParser.evaluate(tokens, composition, context);
 	}
-	
 	
 	/**
 	 * Recursively traverse the List<Object> phrase to produce a (possibly nested) CompoundCohortDefinition
 	 * If another List<Object> is found in the list, recursively evaluate it in place
 	 * If anything in this list is a key into searches, replace it with the relevant filter from searches
-	 * @param phrase
-	 * @param searches
-	 * @param context
-	 * @return Cohort
 	 */
 	@SuppressWarnings("unchecked")
-	public static Cohort evaluate(List<Object> phrase, CompositionCohortDefinition composition, EvaluationContext context) {
-		log.debug("Starting with " + phrase);
+	public static Cohort evaluate(List<Object> tokens, CompositionCohortDefinition composition, EvaluationContext context) {
+		
+		log.debug("Evaluating: " + tokens + " for searches: " + composition.getSearches());
 		List<Object> use = new ArrayList<Object>();
-		for (Object o : phrase) {
+		for (Object o : tokens) {
+			log.debug("Checking token: " + o);
 			if (o instanceof List) {
-				use.add(evaluate((List<Object>) o, composition, context));
+				log.debug("This is a list, evaluate it as a group...");
+				Cohort result = evaluate((List<Object>) o, composition, context);
+				log.debug(o + " evaluated to: " + result.size());
+				use.add(result);
 			}
-			else if (o instanceof String) {
-				use.add(composition.getSearches().get((String) o));
-			}
-			else if (o instanceof Integer) { 
-				use.add(composition.getSearches().get(o.toString()));
+			else if (o instanceof String || o instanceof Integer) {
+				log.debug("This refers to a Search, try to find it...");
+				Mapped<CohortDefinition> cd = composition.getSearches().get(o.toString());
+				log.debug("Found search: " + cd);
+				Cohort result = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+				log.debug("This evaluated to: " + result.size());
+				use.add(result);
 			}
 			else {
+				log.debug("This refers to an operator: " + o);
 				use.add(o);
 			}
 		}
+		log.debug("Converted tokens to Cohorts and Operators: " + use);
 		
-		// base case. All elements are CohortDefinition or BooleanOperator.
-		log.debug("Base case with " + use);
-		
-		// first, replace all [..., NOT, CohortDefinition, ...] with [ ..., InvertedCohortDefinition, ...]
+		log.debug("Inverting all [..., NOT, Cohort, ...] combinations");
 		boolean invertTheNext = false;
 		for (ListIterator<Object> i = use.listIterator(); i.hasNext();) {
 			Object o = i.next();
+			log.debug("Looking at element: " + o);
 			if (o instanceof BooleanOperator) {
 				if ((BooleanOperator) o == BooleanOperator.NOT) {
 					i.remove();
 					invertTheNext = !invertTheNext;
+					log.debug("This is a NOT, so removing it and invert the next = " + invertTheNext);
 				} else {
-					if (invertTheNext) 
-						throw new RuntimeException("Can't have NOT AND. Test() should have failed");
+					if (invertTheNext) {
+						throw new RuntimeException("Invalid expression string, cannot have a NOT followed by an AND");
+					}
 				}
-			} else {
+			} 
+			else {
 				if (invertTheNext) {
-					if (o instanceof Cohort && !i.hasNext()) {
+					log.debug("Need to invert this...");
+					if (o instanceof Cohort) {
 						Cohort baseCohort = context.getBaseCohort();
+						Cohort currentCohort = (Cohort)o;
 						if (baseCohort == null) {
 							baseCohort = Context.getPatientSetService().getAllPatients();
 						}
-						return Cohort.subtract(baseCohort, ((Cohort)o));
-					}
-					else if (o instanceof Mapped) {
-						i.set(InverseCohortDefinition.invert((Mapped<CohortDefinition>) o));
+						log.debug("Originally a Cohort of size " + currentCohort.size());
+						log.debug("With base Cohort of size " + baseCohort.size());
+						Cohort invertedCohort = Cohort.subtract(baseCohort, currentCohort);
+						log.debug("Makes a new Cohort is of size " + baseCohort.size());
+						i.set(invertedCohort);
 					}
 					else {
 						throw new RuntimeException("There is no method implemented for inverting a " + o.getClass());
@@ -211,43 +140,42 @@ public class CohortExpressionParser {
 				}
 			}
 		}
+		log.debug("NOT conversion complete.  Now have: " + use);
 		
-		log.debug("Finished with NOTs: " + use);
-		
-		// Now all we have left are CohortDefinition, AND, OR
-		// eventually go with left-to-right precedence, and we can combine runs of the same operator into a single one
-		//     1 AND 2 AND 3 -> AND(1, 2, 3)
-		//     1 AND 2 OR 3 -> OR(AND(1, 2), 3)
-		// for now a hack so we take the last operator in the run, and apply that to all filters
-		//     for example 1 AND 2 OR 3 -> OR(1, 2, 3)
-		if (use.size() == 1) {
-			return Context.getService(CohortDefinitionService.class).evaluate((Mapped<CohortDefinition>) use.get(0), context);
-		}
-		
-		BooleanOperator bo = BooleanOperator.AND;
-		List<Cohort> args = new ArrayList<Cohort>();
+		log.debug("Iterating across all Cohorts and Operators...");
+		Cohort ret = null;
+		BooleanOperator operator = BooleanOperator.AND;
 		for (Object o : use) {
 			if (o instanceof BooleanOperator) {
-				bo = (BooleanOperator) o;
+				operator = (BooleanOperator)o;
+				log.debug("New operator: " + operator);
 			}
 			else if (o instanceof Cohort) {
-				// straight pass-through
-				args.add((Cohort) o);
-			} else {
-				args.add(Context.getService(CohortDefinitionService.class).evaluate((Mapped<CohortDefinition>) o, context));
+				Cohort c = (Cohort)o;
+				log.debug("Found Cohort: " + c.getSize());
+				if (ret == null) {
+					ret = c;
+					log.debug("Setting this as starting Cohort for return.");
+				}
+				else {
+					if (operator == BooleanOperator.AND) {
+						ret = Cohort.intersect(ret, c);
+						log.debug("AND this in to get: " + ret.getSize());
+					}
+					else if (operator == BooleanOperator.OR) {
+						ret = Cohort.union(ret, c);
+						log.debug("OR this in to get: " + ret.getSize());
+					}
+					else {
+						throw new RuntimeException("Unable to handle BooleanOperator: " + operator);
+					}
+				}
+			}
+			else {
+				throw new RuntimeException("Can only handle Cohorts and Operators.  Unable to handle class: " + o.getClass());
 			}
 		}
-		
-		Cohort ret = null;
-		for (Cohort cohort : args) {
-			if (ret == null) {
-				ret = cohort;
-			} else if (bo == BooleanOperator.AND) {
-				ret = Cohort.intersect(ret, cohort);
-			} else {
-				ret = Cohort.union(ret, cohort);
-			}
-		}
+		log.debug("Done.  Returning: " + ret.getSize());
 		return ret;
 	}
 	
@@ -341,154 +269,5 @@ public class CohortExpressionParser {
 		}
 		return currentLine;
 	}
-	
-	/**
-	 * @return Whether this search requires a history against which to evaluate it
-	 */
-	@SuppressWarnings("unchecked")
-	protected static boolean requiresHistory(List<Object> list) {
-		for (Object o : list) {
-			if (o instanceof Integer) {
-				return true;
-			}
-			else if (o instanceof List) {
-				if (requiresHistory((List) o)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static List<Object> preprocessTokens(List<Object> tokens, CohortDefinitionHistory history) {
 
-		if (history == null && requiresHistory(tokens)) {
-			throw new IllegalArgumentException("You can't evaluate this search without a history");
-		}
-		
-		List<Object> ret = new ArrayList<Object>();
-		
-		for (Object o : tokens) {
-			if (!supports(o.getClass())) {
-				throw new RuntimeException("Unable to handle: " + o.getClass());
-			} 
-			if (o instanceof List) {
-				ret.add(preprocessTokens((List) o, history));
-			}
-			else if (o instanceof Integer) {
-				ret.add(history.getSearchHistory().get((Integer) o - 1));
-			}
-			else {
-				ret.add(o);
-			}
-		}
-		return ret;
-	}
-	
-	/**
-	 * TODO:  THIS WAS TAKEN FROM COHORTUTIL.  NEED TO SEE HOW IT FITS WITH REST OF CODE AND WHETHER
-	 * IT CAN BE CONSOLODATED, AND THE APPROACH WE WANT TO TAKE
-	 * I CHANGED THIS TO USE PATIENT FILTERS INSTEAD OF PATIENT SEARCHES.
-	 * I ALSO CHANGED IT SUCH THAT YOU CAN EITHER TRY TO LOAD A FILTER BY NAME, OR BY CLASS.  ONLY
-	 * FILTERS LOADED BY CLASS CAN HAVE PARAMETERS SET ON THEM.  ONCE AN INSTANTIATED FILTER EXISTS
-	 * THE WAY TO CHANGE PARAMETER VALUES AT RUNTIME IS TO USE AN EVALUATION CONTEXT, SO WE ARE NOT
-	 * MODIFYING THE UNDERLYING PARAMETER VALUES OF THE CohortDefinition CLASS.
-	 * 
-	 * Parses an input string like: [Male] and [Adult] and
-	 * [EnrolledInHivOnDate|program="1"|untilDate="${report.startDate}"] Names between brackets are
-	 * treated as saved PatientSearch objects with that name. Parameter values for those loaded
-	 * searches are specified after a | The following are handled like they would be in a cohort
-	 * builder composition search: ( ) and or not
-	 * 
-	 * @param spec
-	 * @return A CohortDefinition (currently always a PatientSearch) parsed from the spec string.
-	 */
-	public static CohortDefinition parse(String spec) {
-		List<Object> tokens = new ArrayList<Object>();
-		{
-			StringBuilder thisElement = null;
-			for (int i = 0; i < spec.length(); ++i) {
-				char c = spec.charAt(i);
-				switch (c) {
-					case '(':
-					case ')':
-						if (thisElement != null) {
-							tokens.add(thisElement.toString().trim());
-							thisElement = null;
-						}
-						tokens.add("" + c);
-						break;
-					case ' ':
-					case '\t':
-					case '\n':
-						if (thisElement != null)
-							thisElement.append(c);
-						break;
-					case '[':
-						if (thisElement != null)
-							tokens.add(thisElement.toString().trim());
-						thisElement = new StringBuilder();
-						thisElement.append(c);
-						break;
-					default:
-						if (thisElement == null)
-							thisElement = new StringBuilder();
-						thisElement.append(c);
-						if (c == ']') {
-							tokens.add(thisElement.toString().trim());
-							thisElement = null;
-						}
-						break;
-				}
-			}
-			if (thisElement != null)
-				tokens.add(thisElement.toString().trim());
-		}
-		for (ListIterator<Object> i = tokens.listIterator(); i.hasNext();) {
-			Object o = i.next();
-			if (o instanceof String) {
-				String s = (String) o;
-				if (s.startsWith("[") && s.endsWith("]")) {
-					s = s.substring(1, s.length() - 1);
-					String name = null;
-					Map<String, String> paramValues = new HashMap<String, String>();
-					StringTokenizer st = new StringTokenizer(s, "|");
-					while (st.hasMoreTokens()) {
-						String t = st.nextToken();
-						if (name == null) {
-							name = t;
-						} else {
-							int ind = t.indexOf('=');
-							if (ind < 0)
-								throw new IllegalArgumentException("The fragment '" + t + "' in " + s + " has no =");
-							paramValues.put(t.substring(0, ind), t.substring(ind + 1));
-						}
-					}
-					if (name == null) {
-						throw new IllegalArgumentException("Could not find a filter name in " + s);
-					}
-					/* TODO: The commented section below needs fixing...
-					CohortDefinition filter = null; // TODO: Fix this...Context.getReportService().getCohortDefinitionByName(name);
-					if (filter == null) {
-						try {
-							Class<?> type = Context.loadClass(name);
-							filter = (CohortDefinition) type.newInstance();
-							for (Map.Entry<String, String> e : paramValues.entrySet()) {
-								boolean isExpression = EvaluationUtil.isExpression(e.getValue());
-								// TODO: Fix this: filter.addParameter(new Parameter());
-							}
-						}
-						catch (Exception e) {
-							throw new IllegalArgumentException("Unable to load filter named: " + name);
-						}
-					}
-					*/
-				}
-			}
-		}
-		
-		List<Object> tokenList = CohortExpressionParser.parseIntoTokens(tokens);
-		return CohortExpressionParser.evaluate(tokenList, null);
-	}
 }

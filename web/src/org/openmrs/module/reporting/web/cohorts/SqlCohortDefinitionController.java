@@ -10,7 +10,6 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.query.definition.SqlQueryDefinition;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,9 +25,7 @@ public class SqlCohortDefinitionController {
 	                     @RequestParam(value="uuid", required=false) String uuid,
 	                     @RequestParam(value="copyFromUuid", required=false) String copyFromUuid) {
 		if (uuid == null) {			
-			SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-			sqlCohortDefinition.setQueryDefinition(
-					new SqlQueryDefinition("SELECT patient_id FROM patient WHERE patient.voided = false"));
+			SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition("SELECT patient_id FROM patient WHERE patient.voided = false");
 			model.addAttribute("definition", sqlCohortDefinition);			
 		} else {
 			CohortDefinition def = Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
@@ -49,7 +46,7 @@ public class SqlCohortDefinitionController {
 	        @RequestParam("queryString") String queryString) {
 		CohortDefinition def = Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
 		SqlCohortDefinition definition = (SqlCohortDefinition) def;
-		definition.setQueryDefinition(new SqlQueryDefinition(queryString));
+		definition.setQuery(queryString);
 		
 		// Add all new named parameters to the definition before saving.
 		List<Parameter> parameters =  
@@ -87,7 +84,7 @@ public class SqlCohortDefinitionController {
 		clone.setName(name);
 		clone.setDescription(description);
 		clone.setParameters(from.getParameters());
-		clone.setQueryDefinition(from.getQueryDefinition());
+		clone.setQuery(from.getQuery());
 		Context.getService(CohortDefinitionService.class).saveDefinition(clone);
 		request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Saved as a new copy", WebRequest.SCOPE_SESSION);
 		return "redirect:sqlCohortDefinition.form?uuid=" + clone.getUuid();

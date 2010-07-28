@@ -50,6 +50,7 @@ public class ParameterUtilTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void shouldHaveAllInheritedAnnotatedFieldsAsParameters() throws Exception {		
 		NumericObsCohortDefinition def = new NumericObsCohortDefinition();
-		Assert.assertEquals(11, DefinitionUtil.getConfigurationProperties(def).size());
+		// NOTE: This should be changed to 11 when groupingConcept field is implemented
+		Assert.assertEquals(10, DefinitionUtil.getConfigurationProperties(def).size());
 	}
 }
