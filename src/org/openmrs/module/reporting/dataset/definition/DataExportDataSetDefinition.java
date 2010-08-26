@@ -19,12 +19,8 @@ import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.reporting.export.DataExportReportObject;
 
 /**
- * Definition of a dataset that produces one-row-per-obs. Output might look like: 
- * 
- * patientId, question, questionConceptId, answer, answerConceptId, obsDatetime, encounterId 
- * 123, "WEIGHT (KG)", 5089, 70, null, "2007-05-23", 2345 
- * 123, "OCCUPATION", 987, "STUDENT", 988, "2008-01-30", 2658
- * 
+ * Definition of a dataset that runs a Data Export (of the sort created in the reportingcompatibility
+ * module.
  * @see DataExportDataSet
  */
 @SuppressWarnings("deprecation")
