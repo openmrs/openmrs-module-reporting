@@ -90,8 +90,8 @@ div.metadataField label.inline { display:inline; }
 						${model.obj.class.simpleName}			
 					</div>				
 					<div class="metadataField">
+						<label class="inline">Description:</label>
 						<c:choose>
-							<label class="inline">Description:</label>
 							<c:when test="${!empty model.obj.description}">
 								${model.obj.description}
 							</c:when>
