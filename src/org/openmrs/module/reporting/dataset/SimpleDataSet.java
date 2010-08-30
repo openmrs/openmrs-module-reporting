@@ -8,7 +8,7 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
- * A DataSet backed by an ArrayList, with a HashMap for each row.
+ * A basic implementation of a DataSet.
  */
 public class SimpleDataSet implements DataSet {
     

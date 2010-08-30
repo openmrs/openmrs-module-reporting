@@ -129,7 +129,10 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 						w.write(((IndicatorResult) colValue).getValue().toString());
 					}
 					else {
-						w.write(escape(colValue.toString()));
+						// this check is because a logic EmptyResult .toString() -> null
+						String temp = escape(colValue.toString());
+						if (temp != null)
+							w.write(temp);
 					}
 				}
 				w.write(getAfterColumnDelimiter());

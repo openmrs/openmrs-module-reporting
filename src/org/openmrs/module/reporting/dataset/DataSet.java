@@ -20,12 +20,11 @@ import org.openmrs.module.reporting.dataset.definition.evaluator.DataSetEvaluato
 import org.openmrs.module.reporting.evaluation.Evaluated;
 
 /**
- * Implementations of this interface describe the metadata that can be evaluated to produce a {@link DataSet}. 
- * This is one of three interfaces that work together to define and evaluate an OpenMRS DataSet. 
- * An implementation of {@link DataSetEvaluator} transforms one or more implementations of {@link DataSetDefinition}
- * to produce a specific type of {@link DataSet}.
+ * Implementations of this interface are the result you get of evaluating a {@link DataSetDefinition}
+ * with a {@link DataSetEvaluator}.
+ * A simple data set allows you to get an iterator over its rows, and to get metadata about its columns. 
  * @see DataSetDefinition
- * @see DataSet
+ * @see DataSetEvaluator
  */
 public interface DataSet extends Evaluated<DataSetDefinition>, Iterable<DataSetRow> {
 	

@@ -18,7 +18,6 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.List;
 
-import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingException;
@@ -27,9 +26,19 @@ import org.openmrs.module.reporting.report.renderer.RenderingException;
  * An abstract Web Renderer implementation that stubs all render methods.
  */
 public abstract class AbstractWebReportRenderer implements WebReportRenderer {
-	
-	public boolean canRender(ReportDefinition reportDefinition) {
-		return true;
+		
+	/**
+     * @see org.openmrs.report.ReportRenderer#getRenderedContentType(org.openmrs.report.ReportDefinition, java.lang.String)
+     */
+    public String getRenderedContentType(ReportDefinition reportDefinition, String argument) {
+    	return "text/html";
+    }
+
+	/**
+	 * @see org.openmrs.report.ReportRenderer#getFilename(org.openmrs.report.ReportDefinition)
+	 */
+	public String getFilename(ReportDefinition schema, String argument) {
+		return schema.getName() + ".html";
 	}
 
 	public List<String> getDisplayColumns() { return null; }	

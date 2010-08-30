@@ -20,7 +20,6 @@ import java.util.Map;
 
 /**
  * Represents one row of data in a {@link DataSet}
- * This can be parameterized such that each column value matches the parameterized type
  */
 public class DataSetRow {
 

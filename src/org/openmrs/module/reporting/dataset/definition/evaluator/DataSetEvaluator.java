@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -34,5 +35,5 @@ public interface DataSetEvaluator {
 	 * @param inputCohortencounter_datetime
 	 * @return the evaluated <code>DataSet</code>
 	 */
-	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext);
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws ReportingException;
 }

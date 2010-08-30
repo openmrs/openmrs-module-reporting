@@ -17,15 +17,30 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 
 /**
- * A Default Renderer Implementation that aims to support all ReportDefinitions
+ * A renderer that displays an indicator report in an interactive fashion
  */
 @Handler
 public class IndicatorReportWebRenderer extends AbstractWebReportRenderer {
-	
+
+	/**
+     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#canRender(org.openmrs.module.reporting.report.definition.ReportDefinition)
+     */
+    @Override
+    public boolean canRender(ReportDefinition reportDefinition) {
+    	for (Mapped<? extends DataSetDefinition> def : reportDefinition.getDataSetDefinitions().values()) {
+	    	if (def.getParameterizable() instanceof CohortIndicatorDataSetDefinition)
+	    		return true;
+	    }
+	    return false;
+    }
+
 	/**
      * @see org.openmrs.report.ReportRenderer#getLabel()
      */
@@ -34,30 +49,16 @@ public class IndicatorReportWebRenderer extends AbstractWebReportRenderer {
     }
 
 	/**
-     * @see org.openmrs.report.ReportRenderer#getRenderedContentType(org.openmrs.report.ReportDefinition, java.lang.String)
-     */
-    public String getRenderedContentType(ReportDefinition reportDefinition, String argument) {
-    	return "text/html";
-    }
-
-	/**
 	 * @see org.openmrs.report.ReportRenderer#getLinkUrl(org.openmrs.report.ReportDefinition)
 	 */
 	public String getLinkUrl(ReportDefinition reportDefinition) {
 		return "module/reporting/reports/renderIndicatorReportData.form";
 	}
-	
-	/**
-	 * @see org.openmrs.report.ReportRenderer#getFilename(org.openmrs.report.ReportDefinition)
-	 */
-	public String getFilename(ReportDefinition schema, String argument) {
-		return schema.getName() + ".html";
-	}
-	
+		
 	/**
 	 * @see org.openmrs.report.ReportRenderer#getRenderingModes(org.openmrs.report.ReportDefinition)
 	 */
 	public Collection<RenderingMode> getRenderingModes(ReportDefinition schema) {
-		return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MAX_VALUE));
+		return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MAX_VALUE - 10));
 	}
 }

@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.report.util;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -15,6 +16,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -23,6 +25,9 @@ import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimensio
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
 import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
+import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
+import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
 public class ReportUtil {
 	
@@ -275,6 +280,17 @@ public class ReportUtil {
         	return clazz.equals(other.clazz) && name.equals(other.name);
         }
 		
+	}
+
+
+	public static String toCsv(DataSet dataset) throws Exception {
+		ReportRenderer rr = new CsvReportRenderer();
+		ReportData rd = new ReportData();
+		rd.setDataSets(new HashMap<String, DataSet>());
+		rd.getDataSets().put("dataset", dataset);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+        rr.render(rd, null, out);
+		return out.toString();
 	}
 
 }
