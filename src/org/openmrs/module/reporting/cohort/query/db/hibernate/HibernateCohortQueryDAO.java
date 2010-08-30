@@ -1294,7 +1294,11 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 				// OpenmrsObject (e.g. Location)
 				else if (OpenmrsObject.class.isAssignableFrom(paramValue.getClass())) { 					
 					query.setInteger(paramName, ((OpenmrsObject) paramValue).getId());
-				}				
+				}	
+				// Date
+				else if (Date.class.isAssignableFrom(paramValue.getClass())) { 					
+					query.setDate(paramName, (Date) paramValue);
+				}
 				// List<OpenmrsObject> (e.g. List<Location>)
 				else if (List.class.isAssignableFrom(paramValue.getClass())) { 
 					// If first element in the list is an OpenmrsObject
