@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.dataset.definition;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openmrs.logic.result.Result;
@@ -51,8 +52,8 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
 	 * @param label
 	 * @param logic
 	 */
-	public void addColumn(String name, String label, String logic) {
-		getColumns().add(new Column(name, label, logic));
+	public void addColumn(String name, String label, String logic, String format) {
+		getColumns().add(new Column(name, label, logic, format));
 	}
 	
 	
@@ -90,10 +91,12 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
     public class Column extends DataSetColumn {
 		private static final long serialVersionUID = 1L;
 		private String logic;
+		private String format;
 			
-        public Column(String name, String label, String logic) {
+        public Column(String name, String label, String logic, String format) {
 	        super(name, label, Result.class);
 	        this.logic = logic;
+	        this.format = format;
         }
 		
         /**
@@ -109,7 +112,75 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
         public void setLogic(String logic) {
         	this.logic = logic;
         }
+
+        /**
+         * @return the format
+         */
+        public String getFormat() {
+        	return format;
+        }
+
+        /**
+         * @param format the format to set
+         */
+        public void setFormat(String format) {
+        	this.format = format;
+        }
+        
+        /**
+         * @return a formatter that can be used to format cells in this column
+         */
+        public ColumnFormatter getFormatter() {
+        	if ("date".equals(format))
+        		return new DateFormatter();
+        	else if ("boolean".equals(format))
+        		return new BooleanFormatter("X", "");
+       		return new ValueFormatter();
+        }
         
 	}
+    
+    
+    // helper classes for formatting columns
+    public interface ColumnFormatter {
+    	public Object format(Result input);
+    }
+    
+    public class ValueFormatter implements ColumnFormatter {
+    	@Override
+    	public Object format(Result input) {
+    	    return input;
+    	}
+    }
+    
+    public class DateFormatter implements ColumnFormatter {
+    	@Override
+    	public Object format(Result input) {
+    		if (input.isEmpty()) {
+    			return null;
+    		} else if (input.size() == 1) {
+    			return input.getResultDate();
+    		} else {
+    			List<Date> ret = new ArrayList<Date>();
+    			for (Result result : input) {
+    				ret.add(result.getResultDate());
+    			}
+    			return ret;
+    		}
+    	}
+    }
+    
+    public class BooleanFormatter implements ColumnFormatter {
+    	String ifTrue;
+    	String ifFalse;
+    	public BooleanFormatter(String ifTrue, String ifFalse) {
+    		this.ifTrue = ifTrue;
+    		this.ifFalse = ifFalse;
+    	}
+    	@Override
+    	public Object format(Result input) {
+    		return input.toBoolean() ? ifTrue : ifFalse;
+    	}
+    }
 
 }

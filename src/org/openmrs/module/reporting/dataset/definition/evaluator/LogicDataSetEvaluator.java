@@ -31,6 +31,7 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PageableDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.Column;
+import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.ColumnFormatter;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
@@ -57,7 +58,19 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 		LogicDataSetDefinition def = (LogicDataSetDefinition) definition;
 	    Cohort cohort = new Cohort(patientIds);
 	    
-	    // map from patientId to one result per column
+	    List<ColumnFormatter> columnFormatters = new ArrayList<ColumnFormatter>();
+	    for (Column col : def.getColumns()) {
+	    	columnFormatters.add(col.getFormatter());
+	    }
+	    
+	    // Note that we cannot import or reference LogicCriteria in this class because it was
+	    // changed from a Class to an Interface in OpenMRS 1.6, so building the module while
+	    // referencing the 1.5.x branch, and trying to run in the 1.6.x branch gives an
+	    // IncompatibleClassChangeException. (We don't want to branch this module into
+	    // 1.5.x-compatible versus 1.6.x-and-later versions if we can help it.
+	    
+	    // Run the rules one by one for the specified cohort
+	    // (Map from patientId to one result per column)
 		Map<Integer, List<Result>> results = new LinkedHashMap<Integer, List<Result>>();
 		for (Column col : def.getColumns()) {
 			try {
@@ -84,7 +97,7 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 			for (int i = 0; i < def.getColumns().size(); ++i) {
 				Column col = def.getColumns().get(i);
 				Result result = forPatient.get(i);
-				row.addColumnValue(col, result);
+				row.addColumnValue(col, columnFormatters.get(i).format(result));
 			}
 			ret.add(row);
 		}

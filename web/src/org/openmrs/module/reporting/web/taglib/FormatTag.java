@@ -2,7 +2,9 @@ package org.openmrs.module.reporting.web.taglib;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,8 @@ import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.logic.result.EmptyResult;
+import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -68,32 +72,11 @@ public class FormatTag extends TagSupport {
 	private DataSet dataSet;
 	
 	private Cohort cohort;
-		
+			
 	public int doStartTag() {
 		StringBuilder sb = new StringBuilder();
 		if (object != null) {
-			if (object instanceof Date)
-				date = (Date) object;
-			else if (object instanceof Concept)
-				concept = (Concept) object;
-			else if (object instanceof Obs)
-				obsValue = (Obs) object;
-			else if (object instanceof User)
-				user = (User) object;
-			else if (object instanceof Encounter)
-				encounter = (Encounter) object;
-			else if (object instanceof EncounterType)
-				encounterType = (EncounterType) object;
-			else if (object instanceof Location)
-				location = (Location) object;
-			else if (object instanceof ReportData)
-				reportData = (ReportData) object;
-			else if (object instanceof DataSet)
-				dataSet = (DataSet) object;
-			else if (object instanceof Cohort)
-				cohort = (Cohort) object;
-			else
-				string = "" + object;
+			printObject(sb, object);
 		}
 		
 		if (date != null)
@@ -102,12 +85,11 @@ public class FormatTag extends TagSupport {
 		if (conceptId != null)
 			concept = Context.getConceptService().getConcept(conceptId);
 		if (concept != null) {
-			if (concept.getName() != null)
-				sb.append(concept.getName().getName());
+			printConcept(sb, concept);
 		}
 		
 		if (obsValue != null)
-			sb.append(obsValue.getValueAsString(Context.getLocale()));
+			printObsValue(sb, obsValue);
 		
 		if (userId != null)
 			user = Context.getUserService().getUser(userId);
@@ -117,13 +99,7 @@ public class FormatTag extends TagSupport {
 		if (encounterId != null)
 			encounter = Context.getEncounterService().getEncounter(encounterId);
 		if (encounter != null) {
-			printEncounterType(sb, encounter.getEncounterType());
-			sb.append(" @");
-			printLocation(sb, encounter.getLocation());
-			sb.append(" | ");
-			printDate(sb, encounter.getEncounterDatetime());
-			sb.append(" | ");
-			printUser(sb, encounter.getProvider());
+			printEncounter(sb, encounter);
 		}
 		
 		if (encounterTypeId != null)
@@ -164,7 +140,59 @@ public class FormatTag extends TagSupport {
 		}
 		return SKIP_BODY;
 	}
-	
+
+	/**
+	 * Formats anything and prints it to sb. (Delegates to other methods here
+	 * @param sb
+	 * @param o
+	 */
+	private void printObject(StringBuilder sb, Object o) {
+		if (o instanceof Result) {
+			printResult(sb, (Result) o);
+		} else if (o instanceof Collection) {
+			for (Iterator<?> i = ((Collection) o).iterator(); i.hasNext(); ) {
+				printObject(sb, i.next());
+				if (i.hasNext())
+					sb.append(", ");
+			}
+		} else if (o instanceof Date) {
+			printDate(sb, (Date) o);
+		} else if (o instanceof Concept) {
+			printConcept(sb, (Concept) o);
+		} else if (o instanceof Obs) {
+			printObsValue(sb, (Obs) o);
+		} else if (o instanceof User) {
+			printUser(sb, (User) o);
+		} else if (o instanceof Encounter) {
+			printEncounter(sb, (Encounter) o);
+		} else if (o instanceof EncounterType) {
+			printEncounterType(sb, (EncounterType) o);
+		} else if (o instanceof Location) {
+			printLocation(sb, (Location) o);
+		} else if (o instanceof ReportData) {
+			printReportData(sb, (ReportData) o);
+		} else if (o instanceof DataSet) {
+			printDataSet(sb, null, (DataSet) o);
+		} else if (o instanceof Cohort) {
+			printCohort(sb, (Cohort) o);
+		} else {
+			sb.append("" + o);
+		}
+	}
+
+	private void printResult(StringBuilder sb, Result result) {
+	    if (result instanceof EmptyResult)
+	    	return;
+	    if (result.size() < 1) { // for some reason single results seem to have size 0
+	    	sb.append(result.toString());
+	    } else {
+	    	for (Iterator<Result> i = result.iterator(); i.hasNext(); ) {
+	    		sb.append(i.next().toString());
+	    		if (i.hasNext())
+	    			sb.append(", ");
+	    	}
+	    }
+    }
 
 	/**
      * formats a date and prints it to sb
@@ -282,6 +310,26 @@ public class FormatTag extends TagSupport {
 				sb.append(" (evaluated from a " + eval.getDefinition().getClass().getSimpleName() + ")");
 		}
     }
+	
+	private void printObsValue(StringBuilder sb, Obs obsValue) {
+		sb.append(obsValue.getValueAsString(Context.getLocale()));
+    }
+
+	private void printConcept(StringBuilder sb, Concept concept) {
+		if (concept.getName() != null)
+			sb.append(concept.getName().getName());
+    }
+
+	private void printEncounter(StringBuilder sb, Encounter encounter) {
+		printEncounterType(sb, encounter.getEncounterType());
+		sb.append(" @");
+		printLocation(sb, encounter.getLocation());
+		sb.append(" | ");
+		printDate(sb, encounter.getEncounterDatetime());
+		sb.append(" | ");
+		printUser(sb, encounter.getProvider());
+    }
+
 
 	private String formatHelper(Object o) {
 		if (o == null)

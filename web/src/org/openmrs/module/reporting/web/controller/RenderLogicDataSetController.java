@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class RenderLogicDataSetController {
 
 	@RequestMapping("module/reporting/reports/renderLogicDataSet")
-	public void showReport(Model model,
+	public String showReport(Model model,
 	                       HttpSession session,
 	                       @RequestParam(required=false, value="start") Integer start,
 	                       @RequestParam(required=false, value="size") Integer size) {
@@ -37,16 +37,27 @@ public class RenderLogicDataSetController {
 			size = 25;
 
 		String renderArg = (String) session.getAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT);
-		ReportData data = (ReportData) session.getAttribute(ReportingConstants.OPENMRS_REPORT_DATA);
+		ReportData data = null;
+		try {
+			data = (ReportData) session.getAttribute(ReportingConstants.OPENMRS_REPORT_DATA);
+		} catch (ClassCastException ex) {
+			// pass
+		}
+		if (data == null)
+			return "redirect:../dashboard/index.form";
+
 		LazyPageableDataSet dataSet = (LazyPageableDataSet) data.getDataSets().get(renderArg);
 		
-		int startOfLast = dataSet.getCohortSize() - dataSet.getCohortSize() % size; 
+		int cohortSize = dataSet.getCohortSize();
+		int startOfLast = cohortSize - cohortSize % size; 
 
 		model.addAttribute("columns", dataSet.getMetaData());
 		model.addAttribute("rows", dataSet.rowsForCohortSubset(start, size));
 		model.addAttribute("start", start);
 		model.addAttribute("size", size);
 		model.addAttribute("startOfLast", startOfLast);
+		model.addAttribute("cohortSize", cohortSize);
+		return null;
 	}
 	
 }

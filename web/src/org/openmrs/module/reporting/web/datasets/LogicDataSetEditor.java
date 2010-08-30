@@ -66,8 +66,9 @@ public class LogicDataSetEditor {
 			String columnName = request.getParameterValues("columnName")[i];
 			String columnLabel = request.getParameterValues("columnLabel")[i];
 			String columnLogic = request.getParameterValues("columnLogic")[i];
+			String columnFormat = request.getParameterValues("columnFormat")[i];
 			if (!StringUtils.isBlank(columnName) && !StringUtils.isBlank(columnLogic))
-				definition.addColumn(columnName, columnLabel, columnLogic);
+				definition.addColumn(columnName, columnLabel, columnLogic, columnFormat);
 		}
 		
 		svc.saveDefinition(definition);

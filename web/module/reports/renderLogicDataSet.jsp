@@ -20,7 +20,7 @@
 	</c:if>
 	&nbsp;&nbsp;&nbsp;&nbsp;
 	
-	<b>Showing ${start + 1} to ${start + fn:length(rows)}</b>
+	Showing <b>${start + 1}</b> to <b>${start + fn:length(rows)}</b> of ${cohortSize}
 	
 	&nbsp;&nbsp;&nbsp;&nbsp;
 	<c:if test="${fn:length(rows) == size}">
@@ -52,7 +52,7 @@
 		<c:forEach var="row" items="${rows}">
 			<tr>
 				<c:forEach var="cell" items="${row.columnValues}">
-					<td>${cell.value}</td>
+					<td><rpt:format object="${cell.value}"/></td>
 				</c:forEach>
 			</tr>
 		</c:forEach>

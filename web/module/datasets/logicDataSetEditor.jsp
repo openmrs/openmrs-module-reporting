@@ -55,6 +55,7 @@
 								<th>Name</th>
 								<th>Label</th>
 								<th>Logic</th>
+								<th>Format</th>
 							</tr>
 						</thead>
 						<tbody class="sortable-content">
@@ -64,6 +65,13 @@
 									<td><input type="text" name="columnName" value="<spring:message javaScriptEscape='true' text='${col.name}'/>"/></td>
 									<td><input type="text" name="columnLabel" value="<spring:message javaScriptEscape='true' text='${col.label}'/>"/></td>
 									<td><input class="suggestTokens" type="text" name="columnLogic" value="<spring:message javaScriptEscape='true' text='${col.logic}'/>" size="50"/></td>
+									<td>
+										<select name="columnFormat">
+											<option value="">Value</option>
+											<option value="date" <c:if test="${col.format == 'date'}">selected="true"</c:if>>Date</option>
+											<option value="boolean" <c:if test="${col.format == 'boolean'}">selected="true"</c:if>>Boolean (X)</option>
+										</select>
+									</td>
 								</tr>
 							</c:forEach>
 							<c:forEach begin="1" end="5">
@@ -72,6 +80,13 @@
 									<td><input type="text" name="columnName" /></td>
 									<td><input type="text" name="columnLabel" /></td>
 									<td><input class="suggestTokens" type="text" name="columnLogic" size="50"/></td>
+									<td>
+										<select name="columnFormat">
+											<option value="">Value</option>
+											<option value="date">Date</option>
+											<option value="boolean">Boolean (X)</option>
+										</select>
+									</td>
 								</tr>
 							</c:forEach>
 						</tbody>

@@ -41,9 +41,9 @@ public class LogicDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
     	ls.addRule("CD4", ls.getRule("%%obs.CD4 COUNT"));
     	
     	LogicDataSetDefinition def = new LogicDataSetDefinition();
-    	def.addColumn("gender", "Gender", "gender");
-    	def.addColumn("birthdate", "Birth Date", "birthdate");
-    	def.addColumn("cd4", "CD4 Count", "CD4");
+    	def.addColumn("gender", "Gender", "gender", null);
+    	def.addColumn("birthdate", "Birth Date", "birthdate", null);
+    	def.addColumn("cd4", "CD4 Count", "CD4", null);
     	
     	DataSet result = Context.getService(DataSetDefinitionService.class).evaluate(def, evalContext);
     	String csv = ReportUtil.toCsv(result);
