@@ -22,6 +22,7 @@ import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicException;
+import org.openmrs.logic.LogicService;
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -55,6 +56,7 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 	@Override
 	public List<DataSetRow> evaluatePartial(PageableDataSetDefinition definition, EvaluationContext context,
 	                                        List<Integer> patientIds) {
+		LogicService logicService = Context.getLogicService();
 		LogicDataSetDefinition def = (LogicDataSetDefinition) definition;
 	    Cohort cohort = new Cohort(patientIds);
 	    
@@ -67,14 +69,15 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 	    // changed from a Class to an Interface in OpenMRS 1.6, so building the module while
 	    // referencing the 1.5.x branch, and trying to run in the 1.6.x branch gives an
 	    // IncompatibleClassChangeException. (We don't want to branch this module into
-	    // 1.5.x-compatible versus 1.6.x-and-later versions if we can help it.
+	    // 1.5.x-compatible versus 1.6.x-and-later versions if we can help it.) So we will
+	    // run the rules one-by-one rather than creating a List<LogicCriteria>.
 	    
-	    // Run the rules one by one for the specified cohort
 	    // (Map from patientId to one result per column)
 		Map<Integer, List<Result>> results = new LinkedHashMap<Integer, List<Result>>();
 		for (Column col : def.getColumns()) {
 			try {
-				Map<Integer, Result> temp = Context.getLogicService().eval(cohort, col.getLogic());
+				// implicitly parse the String to a LogicCriteria in this line
+				Map<Integer, Result> temp = logicService.eval(cohort, logicService.parseString(col.getLogic()));
 				for (Map.Entry<Integer, Result> e : temp.entrySet()) {
 					List<Result> forPatient = results.get(e.getKey());
 					if (forPatient == null) {

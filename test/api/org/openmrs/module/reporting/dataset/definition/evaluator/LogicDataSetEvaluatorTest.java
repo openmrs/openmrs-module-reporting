@@ -43,11 +43,11 @@ public class LogicDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
     	LogicDataSetDefinition def = new LogicDataSetDefinition();
     	def.addColumn("gender", "Gender", "gender", null);
     	def.addColumn("birthdate", "Birth Date", "birthdate", null);
-    	def.addColumn("cd4", "CD4 Count", "CD4", null);
+    	def.addColumn("cd4", "Last CD4", "last CD4", null);
     	
     	DataSet result = Context.getService(DataSetDefinitionService.class).evaluate(def, evalContext);
     	String csv = ReportUtil.toCsv(result);
-    	Assert.assertEquals("\"gender\",\"birthdate\",\"cd4\",\n\"F\",\"25/08/1976\",\"150.0,175.0\",\n\"F\",\"08/02/1925\",\"45.0\",\n\"M\",\"08/06/1959\",\"48.0,50.0\",\n", csv);
+    	Assert.assertEquals("\"gender\",\"birthdate\",\"cd4\",\n\"F\",\"25/08/1976\",\"175.0\",\n\"F\",\"08/02/1925\",\"45.0\",\n\"M\",\"08/06/1959\",\"50.0\",\n", csv);
     }
 
 }
