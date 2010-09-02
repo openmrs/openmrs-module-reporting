@@ -37,7 +37,6 @@ public class LogicReportWebRenderer extends AbstractWebReportRenderer {
 	/**
 	 * @see ReportRenderer#canRender(ReportDefinition)
 	 */
-	@Override
 	public boolean canRender(ReportDefinition reportDefinition) {
 		// if there's at least one LogicDataSetDefinition we can render
 	    for (Mapped<? extends DataSetDefinition> def : reportDefinition.getDataSetDefinitions().values()) {
@@ -50,7 +49,6 @@ public class LogicReportWebRenderer extends AbstractWebReportRenderer {
 	/**
 	 * @see WebReportRenderer#getLinkUrl(ReportDefinition)
 	 */
-	@Override
 	public String getLinkUrl(ReportDefinition reportDefinition) {
 		return "module/reporting/reports/renderLogicDataSet.form";
 	}
@@ -58,7 +56,6 @@ public class LogicReportWebRenderer extends AbstractWebReportRenderer {
 	/**
 	 * @see ReportRenderer#getRenderingModes(ReportDefinition)
 	 */
-	@Override
 	public Collection<RenderingMode> getRenderingModes(ReportDefinition definition) {
 		List<DataSetDefinition> matchingDefs = new ArrayList<DataSetDefinition>();
 		int numMatching = 0;

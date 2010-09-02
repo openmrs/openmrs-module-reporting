@@ -62,7 +62,6 @@ public class LazyPageableDataSet implements PageableDataSet {
 	/**
 	 * @see PageableDataSet#rowsForCohortSubset(int, int)
 	 */
-	@Override
 	public List<DataSetRow> rowsForCohortSubset(int start, int size) {
 		// TODO add a maximum number of patients to be evaluated at a time, which will keep memory consumption down
 		int end = start + size;
@@ -75,7 +74,6 @@ public class LazyPageableDataSet implements PageableDataSet {
 	/**
 	 * @see DataSet#iterator()
 	 */
-	@Override
 	public Iterator<DataSetRow> iterator() {
 		return rowsForCohortSubset(0, -1).iterator();
 	}
@@ -84,7 +82,6 @@ public class LazyPageableDataSet implements PageableDataSet {
 	/**
 	 * @see DataSet#getMetaData()
 	 */
-	@Override
 	public DataSetMetaData getMetaData() {
 		return dataSetMetadata;
 	}
@@ -92,7 +89,6 @@ public class LazyPageableDataSet implements PageableDataSet {
 	/**
 	 * @see DataSet#getContext()
 	 */
-	@Override
 	public EvaluationContext getContext() {
 		return context;
 	}
@@ -100,7 +96,6 @@ public class LazyPageableDataSet implements PageableDataSet {
 	/**
 	 * @see DataSet#getDefinition()
 	 */
-	@Override
 	public DataSetDefinition getDefinition() {
 		return definition;
 	}

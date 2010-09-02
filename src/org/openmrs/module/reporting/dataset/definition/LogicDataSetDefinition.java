@@ -76,7 +76,6 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
     /**
      * @see PageableDataSetDefinition#getDataSetMetadata()
      */
-	@Override
     public DataSetMetaData getDataSetMetadata() {
 		SimpleDataSetMetaData ret = new SimpleDataSetMetaData();
 		for (Column col : getColumns()) {
@@ -147,14 +146,12 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
     }
     
     public class ValueFormatter implements ColumnFormatter {
-    	@Override
     	public Object format(Result input) {
     	    return input;
     	}
     }
     
     public class DateFormatter implements ColumnFormatter {
-    	@Override
     	public Object format(Result input) {
     		if (input.isEmpty()) {
     			return null;
@@ -177,7 +174,6 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
     		this.ifTrue = ifTrue;
     		this.ifFalse = ifFalse;
     	}
-    	@Override
     	public Object format(Result input) {
     		return input.toBoolean() ? ifTrue : ifFalse;
     	}

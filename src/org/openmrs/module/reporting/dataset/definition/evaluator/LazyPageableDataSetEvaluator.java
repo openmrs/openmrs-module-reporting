@@ -35,7 +35,6 @@ public interface LazyPageableDataSetEvaluator extends DataSetEvaluator {
 	public List<DataSetRow> evaluatePartial(PageableDataSetDefinition definition, EvaluationContext context,
 											List<Integer> patientIds);
 
-	@Override
 	public PageableDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws ReportingException;
 	
 }

@@ -44,7 +44,6 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	@Override
 	public PageableDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws ReportingException {
 		LogicDataSetDefinition def = (LogicDataSetDefinition) dataSetDefinition;
 		return new LazyPageableDataSet(this, evalContext, def);
@@ -53,7 +52,6 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 	/**
 	 * @see LazyPageableDataSetEvaluator#evaluatePartial(PageableDataSetDefinition, EvaluationContext, List)
 	 */
-	@Override
 	public List<DataSetRow> evaluatePartial(PageableDataSetDefinition definition, EvaluationContext context,
 	                                        List<Integer> patientIds) {
 		LogicService logicService = Context.getLogicService();

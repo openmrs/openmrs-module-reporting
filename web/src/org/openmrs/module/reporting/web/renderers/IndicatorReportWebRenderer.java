@@ -32,7 +32,6 @@ public class IndicatorReportWebRenderer extends AbstractWebReportRenderer {
 	/**
      * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#canRender(org.openmrs.module.reporting.report.definition.ReportDefinition)
      */
-    @Override
     public boolean canRender(ReportDefinition reportDefinition) {
     	for (Mapped<? extends DataSetDefinition> def : reportDefinition.getDataSetDefinitions().values()) {
 	    	if (def.getParameterizable() instanceof CohortIndicatorDataSetDefinition)
