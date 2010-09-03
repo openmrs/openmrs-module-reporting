@@ -1,14 +1,17 @@
 package org.openmrs.module.reporting.serializer;
 
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -31,6 +34,21 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		cd.setMaxAge(15);
 		String xml = new ReportingSerializer().serialize(cd);
 		System.out.println(xml);
+		// TODO assert something
+	}
+	
+	/**
+	 * @see {@link ReportingSerializer#ReportingSerializer()}
+	 * 
+	 */
+	@Test
+	@Verifies(value = "should serialize workflow state by uuid", method = "ReportingSerializer()")
+	@SuppressWarnings("deprecation")
+	public void ReportingSerializer_shouldSerializeWorkflowStateByUuid() throws Exception {
+		PatientStateCohortDefinition pscd = new PatientStateCohortDefinition();
+		ProgramWorkflowState pw = Context.getProgramWorkflowService().getState(2);
+		pscd.setStates(Arrays.asList(pw));
+		System.out.println(new ReportingSerializer().serialize(pscd));
 		// TODO assert something
 	}
 
