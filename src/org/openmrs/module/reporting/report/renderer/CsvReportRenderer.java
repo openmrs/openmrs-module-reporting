@@ -15,7 +15,6 @@ package org.openmrs.module.reporting.report.renderer;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * Implementation of a ReportRenderer that renders ReportData to a CSV file
@@ -35,40 +34,11 @@ public class CsvReportRenderer extends DelimitedTextReportRenderer {
 	public String getFilenameExtension() {
 		return "csv";
 	}
-	
-	/**
-	 * @see DelimitedTextReportRenderer#getBeforeColumnDelimiter()
-	 */
-	public String getBeforeColumnDelimiter() {
-		return "\"";
-	}
-	
+
 	/**
 	 * @see DelimitedTextReportRenderer#getAfterColumnDelimiter()
 	 */
 	public String getAfterColumnDelimiter() {
 		return "\",";
 	}
-	
-	/**
-	 * @see DelimitedTextReportRenderer#getBeforeRowDelimiter()
-	 */
-	public String getBeforeRowDelimiter() {
-		return "";
-	}
-	
-	/**
-	 * @see DelimitedTextReportRenderer#getAfterRowDelimiter()
-	 */
-	public String getAfterRowDelimiter() {
-		return "\n";
-	}
-	
-	/**
-	 * @see org.openmrs.report.ReportRenderer#getRenderedContentType(ReportDefinition, String)
-	 */
-	public String getRenderedContentType(ReportDefinition model, String argument) {
-		return "text/csv";
-	}
-	
 }

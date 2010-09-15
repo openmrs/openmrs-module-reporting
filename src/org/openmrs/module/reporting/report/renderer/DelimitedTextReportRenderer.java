@@ -44,24 +44,37 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 	public abstract String getFilenameExtension();
 	
 	/**
-	 * @return the delimiter that occurs before each column
-	 */
-	public abstract String getBeforeColumnDelimiter();
-	
-	/**
 	 * @return the delimiter that occurs after each column
 	 */
 	public abstract String getAfterColumnDelimiter();
 	
 	/**
-	 * @return the delimiter that occurs before each row
+	 * @see org.openmrs.report.ReportRenderer#getRenderedContentType(ReportDefinition, String)
 	 */
-	public abstract String getBeforeRowDelimiter();
+	public String getRenderedContentType(ReportDefinition model, String argument) {
+		return "text/" + getFilenameExtension();
+	}
 	
 	/**
-	 * @return the delimiter that occurs after each row
+	 * @see DelimitedTextReportRenderer#getBeforeColumnDelimiter()
 	 */
-	public abstract String getAfterRowDelimiter();
+	public String getBeforeColumnDelimiter() {
+		return "\"";
+	}
+	
+	/**
+	 * @see DelimitedTextReportRenderer#getBeforeRowDelimiter()
+	 */
+	public String getBeforeRowDelimiter() {
+		return "";
+	}
+	
+	/**
+	 * @see DelimitedTextReportRenderer#getAfterRowDelimiter()
+	 */
+	public String getAfterRowDelimiter() {
+		return "\n";
+	}
 	
 	/**
 	 * Convenience method used to escape a string of text.
