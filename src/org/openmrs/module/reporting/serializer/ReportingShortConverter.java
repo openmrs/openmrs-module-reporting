@@ -8,6 +8,7 @@ import org.openmrs.module.serialization.xstream.converter.CustomCGLIBEnhancedCon
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.ConverterLookup;
 import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
@@ -40,4 +41,12 @@ public abstract class ReportingShortConverter extends BaseShortConverter {
 		}
 	}
 	
+	@Override
+	protected boolean needsFullDeserialization(HierarchicalStreamReader reader) {
+		String uuid = reader.getAttribute("uuid");
+		if (uuid == null)
+			return true;
+		else
+			return super.needsFullDeserialization(reader);
+	}
 }
