@@ -3,48 +3,55 @@
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
-$(document).ready(function() {
-	$('.reporting-data-table').dataTable( {
-		"bPaginate": true,
-		"iDisplayLength": 25,
-		"bLengthChange": false,
-		"bFilter": true,
-		"bSort": true,
-		"bInfo": true,
-		"bAutoWidth": false,
-		"aoColumns": [{ "bSortable": true },
-		              { "bSortable": true },
-		      		  { "bSortable": true },
-		              { "bSortable": false }]
-	} );			
-
-	$("#cohort-indicator-wizard-form").click(function(event){ 
-		showReportingDialog({ 
-			title: 'Add cohort indicator',
-			url: '<c:url value="/module/reporting/indicators/indicatorWizard.form"/>',
-			successCallback: function() { 
-				window.location.reload(true);
-			} 
-		});
-	});	
-
-} );
+	$(document).ready(function() {
+		$('.reporting-data-table').dataTable( {
+			"bPaginate": true,
+			"iDisplayLength": 25,
+			"bLengthChange": false,
+			"bFilter": true,
+			"bSort": true,
+			"bInfo": true,
+			"bAutoWidth": false,
+			"aoColumns": [{ "bSortable": true },
+			              { "bSortable": true },
+			      		  { "bSortable": true },
+			              { "bSortable": false }]
+		} );			
+	
+		$("#cohort-indicator-wizard-form").click(function(event){ 
+			showReportingDialog({ 
+				title: 'Add cohort indicator',
+				url: '<c:url value="/module/reporting/indicators/indicatorWizard.form"/>',
+				successCallback: function() { 
+					window.location.reload(true);
+				} 
+			});
+		});	
+	
+	} );
+	
+	function confirmDelete(name, uuid) {
+		if (confirm("Are you sure you want to delete " + name + "?")) {
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/indicators/purgeIndicator.form?uuid=' + uuid;
+		}
+	}
 </script>
+
 <style>
-#navigation ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-#navigation menu li {
-	float:left;
-	line-height:2.3em;
-	padding-left:.75em;
-	color:#777;
-}
-#main { 
-	padding-bottom: 100px;
-}
+	#navigation ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	#navigation menu li {
+		float:left;
+		line-height:2.3em;
+		padding-left:.75em;
+		color:#777;
+	}
+	#main { 
+		padding-bottom: 100px;
+	}
 </style>
 
 
@@ -111,9 +118,7 @@ $(document).ready(function() {
 									</a>
 								</span>
 								<span style="padding-left: 10px;">
-									<a href="${pageContext.request.contextPath}/module/reporting/indicators/purgeIndicator.form?uuid=${indicator.uuid}">
-										<img src="<c:url value='/images/trash.gif'/>" border="0" style="vertical-align:middle;"/>
-									</a>
+									<a href="javascript:confirmDelete('${indicator.name}','${indicator.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0" style="vertical-align:middle;" /></a>
 								</span>
 								<span style="padding-left: 10px;">
 									<a href="javascript:void(0)" id="preview-indicator-${indicator.uuid}">

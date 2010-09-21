@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
@@ -27,6 +28,7 @@ import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
 /**
  * Represents a Dimension of an Indicator based on CohortDefinitions
  */
+@Localized("reporting.CohortDefinitionDimension")
 public class CohortDefinitionDimension extends BaseDefinition implements CohortDimension {
 
 	private static final long serialVersionUID = 192837748L;

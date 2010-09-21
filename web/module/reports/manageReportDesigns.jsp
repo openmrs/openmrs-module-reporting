@@ -24,7 +24,7 @@
 				});
 			});
 			$('#${design.uuid}DesignRemoveLink').click(function(event){					
-				if (confirm('Please confirm you wish to permanantly delete <b>${design.name}</b>')) {
+				if (confirm('Please confirm you wish to permanantly delete ${design.name}')) {
 					document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportDesign.form?uuid=${design.uuid}';
 				}
 			});

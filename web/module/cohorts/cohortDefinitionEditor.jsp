@@ -40,6 +40,7 @@
 					$('#fixedValue${p.field.name}').show();
 				}
 				else {
+					$('#${p.field.name}').val('');
 					$('#fixedValue${p.field.name}').hide();
 				}
 			});

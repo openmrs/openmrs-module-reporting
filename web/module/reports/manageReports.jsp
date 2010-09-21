@@ -4,6 +4,7 @@
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
+		
 		$(".reporting-data-table").dataTable( {
 			"bPaginate": true,
 			"iDisplayLength": 25,
@@ -13,12 +14,41 @@
 			"bInfo": true,
 			"bAutoWidth": false
 		} );
-	} );
-</script>
-<style>
-.small { font-size: x-small; }
-</style>
 
+		<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
+			$("#preview-report-${reportDefinition.uuid}").click(function(event){ 
+				showReportingDialog({ 
+					title: 'Run Report', 
+					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition.class.name}',
+					successCallback: function() { 
+						window.location = window.location; //.reload(true);
+					} 
+				});
+			});
+	
+			$("#render-report-${reportDefinition.uuid}").click(function(event){ 
+				showReportingDialog({ 
+					title: 'Run Report', 
+					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition.class.name}&format=indicator&successView=redirect:/module/reporting/reports/renderReport.form',
+					successCallback: function() { 
+						window.location = window.location; //.reload(true);
+					} 
+				});
+			});	
+		</c:forEach>
+	} );
+
+	function confirmDelete(name, uuid) {
+		if (confirm("Are you sure you want to delete " + name + "?")) {
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=' + uuid;
+		}
+	}
+
+</script>
+
+<style>
+	.small { font-size: x-small; }
+</style>
 
 <div id="page">
 	<div id="container">
@@ -57,36 +87,7 @@
 								${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}
 							</c:otherwise>							
 						</c:choose>
-					</c:set>						
-
-
-<script>					
-$(document).ready(function() {
-	$("#preview-report-${reportDefinition.uuid}").click(function(event){ 
-		showReportingDialog({ 
-			title: 'Run Report', 
-			url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition.class.name}',
-			successCallback: function() { 
-				window.location = window.location; //.reload(true);
-			} 
-		});
-	});
-} );
-</script>	
-<script>					
-$(document).ready(function() {
-	$("#render-report-${reportDefinition.uuid}").click(function(event){ 
-		showReportingDialog({ 
-			title: 'Run Report', 
-			url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition.class.name}&format=indicator&successView=redirect:/module/reporting/reports/renderReport.form',
-			successCallback: function() { 
-				window.location = window.location; //.reload(true);
-			} 
-		});
-	});
-} );
-</script>	
-
+					</c:set>
 
 					<tr>
 						<td width="20%" nowrap="">
@@ -111,9 +112,7 @@ $(document).ready(function() {
 							<rpt:timespan then="${reportDefinition.dateCreated}"/>
 						</td>
 						<td width="1%" align="center">
-							<a href="${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=${reportDefinition.uuid}">
-								<img src='<c:url value="/images/trash.gif"/>' border="0"/>							
-							</a>
+							<a href="javascript:confirmDelete('${reportDefinition.name}','${reportDefinition.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
 						</td>
 					</tr>
 				</c:forEach>	

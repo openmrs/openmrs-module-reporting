@@ -32,9 +32,6 @@ $(document).ready(function() {
 	* { margin: 0; }
 	#container { height: 95%; border: 1px }
 	#wrapper { min-height: 100%; height: auto !important; height:100%; margin: 0 auto -4em; }
-	.button { margin: 5px; width: 10%; } 
-	.buttonBar { height: 4em; background-color: #eee; vertical-align: middle; text-align:center; margin-top:12px;}
-	/*input, select, textarea, label, button, span { font-size: 2em; }*/ 
 	form ul { margin:0; padding:0; list-style-type:none; width:100%; }
 	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
 	fieldset { padding: 25px; margin:25px; }
@@ -59,13 +56,8 @@ $(document).ready(function() {
 		<div id="wrapper">
 			<table height="100%">
 				<tr valign="top">
-					<td style="padding-right: 1em" width="50%">
-						<h1>${parameterizable.name}</h1>
-						<h4>${parameterizable.description}</h4>
-						
-						
-						<%-- <c:url var="postUrl" value='/module/reporting/reports/renderReport.form'/>--%>
-						<%-- <c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>--%>
+					<td style="padding-right: 1em">
+						<h4>${parameterizable.name}</h4>
 						<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
 						<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
 							<input type="hidden" name="action" value="preview"/>
@@ -79,20 +71,13 @@ $(document).ready(function() {
 									<li>
 										<div class="errors"> 
 											<font color="red"> 
-												<h3><u>Please correct the following errors</u></h3>   
-												
+												<b><u>Please correct the following errors</u></b>   
 												<springform:errors path="parameterizable"></springform:errors>
 											</font>  
 										</div>
 									</li>
 								</spring:hasBindErrors>
 							</ul>	
-							<div>			
-								<c:if test="${empty parameterizable.parameters}">
-									${parameterizable.name} does not have any parameters.  
-									Click 'Run' to evaluate based on this objects properties.
-								</c:if> 
-							</div>
 							<ul>									
 								<c:forEach var="parameter" items="${parameterizable.parameters}">				
 									<li>
@@ -100,43 +85,30 @@ $(document).ready(function() {
 										<div>
 											<c:choose>
 												<c:when test="${parameter.collectionType != null}">
-													<wgt:widget id="${parameter.name}" name="${parameter.name}" type="${parameter.collectionType.name}" genericTypes="${parameter.type.name}"/>	
+													<wgt:widget id="${parameter.name}" name="${parameter.name}" type="${parameter.collectionType.name}" genericTypes="${parameter.type.name}" defaultValue="${evaluationContext.parameterValues[parameter.name]}"/>	
 												</c:when>
 												<c:otherwise>
-													<wgt:widget id="${parameter.name}" name="${parameter.name}" type="${parameter.type.name}"/>	
+													<wgt:widget id="${parameter.name}" name="${parameter.name}" type="${parameter.type.name}" defaultValue="${evaluationContext.parameterValues[parameter.name]}"/>	
 												</c:otherwise>
 											</c:choose>
 										</div>
 									</li>						
 								</c:forEach>
 							</ul>
+							<input class="button" id="preview-parameterizable-button" type="button" value="Run" />
+							<input class="button" id="cancel-button" type="button" value="Cancel"/>	
 						</form>	
 					</td>
 					
 					<c:if test="${!empty results}">
 						<td style="padding-left: 1em; border-left: 1px #e0e0e0 solid">
-							<h1>Evaluation Result</h1>
-							<h4>Parameters:</h4>
-							<c:forEach var="parameter" items="${evaluationContext.parameterValues}">				
-								${parameter.key} = 
-								<c:choose>
-									<c:when test="${empty parameter.value}">none</c:when>
-									<c:otherwise>${parameter.value}</c:otherwise>
-								</c:choose>
-								<br/>
-							</c:forEach>
-							
-							<h4>Results:</h4>
+							<h4>Evaluation Result</h4>
 							<rpt:format object="${results}"/>
 						</td>
 					</c:if>
 				</tr>
 			</table>
-		</div>
-		<div class="buttonBar" align="left">						
-			<input class="button" id="preview-parameterizable-button" type="button" value="Run" />
-			<input class="button" id="cancel-button" type="button" value="Cancel"/>								
-		</div>					
+		</div>				
 	</div>	
 </div>
 

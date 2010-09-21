@@ -13,7 +13,26 @@
 			"bInfo": true,
 			"bAutoWidth": false
 		} );
+
+		<c:forEach items="${dimensions}" var="dimension" varStatus="status">	
+			$("#preview-${dimension.uuid}").click(function(event){ 
+				showReportingDialog({ 
+					title: 'Preview Dimension', 
+					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dimension.uuid}&type=${dimension.class.name}',
+					successCallback: function() { 
+						window.location = window.location; //.reload(true);
+					} 
+				});
+			});
+		</c:forEach>
 	} );
+
+	function confirmDelete(name, uuid) {
+		if (confirm("Are you sure you want to delete " + name + "?")) {
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/indicators/purgeDimension.form?uuid=' + uuid;
+		}
+	}
+	
 </script>
 
 <div id="page">
@@ -53,9 +72,12 @@
 							</c:forEach>
 						</td>
 						<td width="1%" align="center">
-							<a href="purgeDimension.form?uuid=${dimension.uuid}">
-								<img src='<c:url value="/images/trash.gif"/>' border="0"/>							
-							</a>
+							<a href="javascript:confirmDelete('${dimension.name}','${dimension.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
+							<span style="padding-left: 10px;">
+								<a href="javascript:void(0)" id="preview-${dimension.uuid}">
+									<img src="<c:url value='/images/play.gif'/>" border="0" style="vertical-align:middle;"/>
+								</a>
+							</span>
 						</td>
 					</tr>
 				</c:forEach>	

@@ -22,11 +22,11 @@ import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.result.EmptyResult;
 import org.openmrs.logic.result.Result;
-import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.MapDataSet;
+import org.openmrs.module.reporting.indicator.dimension.CohortDimensionResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.springframework.util.StringUtils;
 
@@ -175,6 +175,8 @@ public class FormatTag extends TagSupport {
 			printDataSet(sb, null, (DataSet) o);
 		} else if (o instanceof Cohort) {
 			printCohort(sb, (Cohort) o);
+		} else if (o instanceof CohortDimensionResult) {
+			printCohortDimensionResult(sb, (CohortDimensionResult) o);
 		} else {
 			sb.append("" + o);
 		}
@@ -275,7 +277,7 @@ public class FormatTag extends TagSupport {
 	    	MapDataSet map = (MapDataSet) dataSet;
 	    	DataSetRow row = map.getData();
 	    	for (DataSetColumn col : cols) {
-	    		sb.append("<tr><th>")
+	    		sb.append("<tr><th align=\"left\">")
 	    			.append(col.getLabel())
 	    			.append("</th><td>")
 	    			.append(formatHelper(row.getColumnValue(col)))
@@ -295,20 +297,30 @@ public class FormatTag extends TagSupport {
     }
 	
 	/**
+	 * Formats a DataSet and prints it to sb
+	 * 
+	 * @param sb
+	 * @param title
+	 * @param dataSet
+	 */
+	private void printCohortDimensionResult(StringBuilder sb, CohortDimensionResult result) {
+		sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
+		for (Map.Entry<String, Cohort> e : result.getOptionCohorts().entrySet()) {
+			sb.append("<tr><th align=\"left\">" + e.getKey() + "</th><td>");
+			printCohort(sb, e.getValue());
+			sb.append("</td></tr>");
+		}
+		sb.append("</table>");
+    }
+	
+	/**
 	 * formats a cohort to sb
 	 * 
 	 * @param sb
 	 * @param cohort
 	 */
 	private void printCohort(StringBuilder sb, Cohort cohort) {
-		sb.append("Cohort of " + cohort.size() + " patients");
-		if (cohort instanceof EvaluatedCohort) {
-			EvaluatedCohort eval = (EvaluatedCohort) cohort;
-			if (StringUtils.hasText(eval.getDefinition().getName()))
-				sb.append(" (evaluated from " + eval.getDefinition().getName() + ")");
-			else
-				sb.append(" (evaluated from a " + eval.getDefinition().getClass().getSimpleName() + ")");
-		}
+		sb.append(cohort.size() + " patients");
     }
 	
 	private void printObsValue(StringBuilder sb, Obs obsValue) {
@@ -332,8 +344,12 @@ public class FormatTag extends TagSupport {
 
 
 	private String formatHelper(Object o) {
-		if (o == null)
+		if (o == null) {
 			return "";
+		}
+		else if (o instanceof Cohort) {
+			return ((Cohort)o).getSize() + " patients";
+		}
 	    try {
 	    	Method method = o.getClass().getMethod("getValue");
 	    	return method.invoke(o).toString();

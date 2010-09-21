@@ -13,6 +13,16 @@
 			window.location.href='<c:url value="/module/reporting/indicators/editCohortDefinitionDimension.form"/>';
 		});
 
+		$("#previewButton").click(function(event){ 
+			showReportingDialog({ 
+				title: 'Preview <rpt:displayLabel type="${dimension.class.name}"/>', 
+				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dimension.uuid}&type=${dimension.class.name}',
+				successCallback: function() { 
+					window.location = window.location; //.reload(true);
+				} 
+			});
+		});
+
 		$('#options-table').dataTable({
 			"bPaginate": false,
 			"bLengthChange": false,
@@ -46,6 +56,8 @@
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dimension.class.name}|uuid=${dimension.uuid}|size=380|label=Basic Details" />
 							<br/>
 							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dimension.class.name}|uuid=${dimension.uuid}|label=Parameters|parentUrl=${pageUrl}" />
+							<br/>
+							<input id="previewButton" name="preview" type="button" value="Preview"/>
 						</td>
 						<td valign="top" width="100%">
 							<b class="boxHeader">Options</b>

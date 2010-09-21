@@ -73,7 +73,10 @@ public class SimpleDataSetMetaData implements DataSetMetaData {
 	 * @param column the column to add
 	 */
 	public void addColumn(DataSetColumn column) {
-		getColumns().add(column);
+		DataSetColumn existing = getColumn(column.getName());
+		if (existing == null) {
+			getColumns().add(column);
+		}
 	}
 	
 	/**
