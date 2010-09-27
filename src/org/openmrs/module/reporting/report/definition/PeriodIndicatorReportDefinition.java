@@ -25,14 +25,10 @@ public class PeriodIndicatorReportDefinition extends ReportDefinition {
 	
 	public PeriodIndicatorReportDefinition() {
 		super();
-
 		// add parameters for startDate, endDate, and location
 		addParameter(ReportingConstants.START_DATE_PARAMETER);
 		addParameter(ReportingConstants.END_DATE_PARAMETER);
 		addParameter(ReportingConstants.LOCATION_PARAMETER);
-		
-		// a single CohortIndicatorDataSetDefinition
-		setupDataSetDefinition();
 	}
 	
 	
