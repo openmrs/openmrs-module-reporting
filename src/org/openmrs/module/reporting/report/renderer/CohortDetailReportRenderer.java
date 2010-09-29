@@ -41,6 +41,7 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -106,9 +107,11 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 		ReportDesignResource resource = design.getResourceByName("designFile");
 		Map<String, String> parameterValues = new LinkedHashMap<String, String>();
 		for (Map.Entry<String, Object> e : results.getContext().getParameterValues().entrySet()) {
-			String name = results.getDefinition().getParameter(e.getKey()).getLabelOrName();
-			String value = (e.getValue() instanceof Date ? Context.getDateFormat().format((Date)e.getValue()) : e.getValue().toString());
-			parameterValues.put(name, value);
+			Parameter p = results.getDefinition().getParameter(e.getKey());
+			if (p != null) {
+				String value = (e.getValue() instanceof Date ? Context.getDateFormat().format((Date)e.getValue()) : e.getValue().toString());
+				parameterValues.put(p.getLabelOrName(), value);
+			}
 		}
 		
 		// Collect all available Cohorts by key

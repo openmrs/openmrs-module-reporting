@@ -74,6 +74,14 @@ public class ReportDesign extends BaseOpenmrsMetadata  {
 	}
 	
 	/**
+	 * Adds a ReportDesignResource
+	 * @param resource the ReportDesignResource to add
+	 */
+	public void addResource(ReportDesignResource resource) {
+		getResources().add(resource);
+	}
+	
+	/**
 	 * Returns the property value given the passed name
 	 */
 	public String getPropertyValue(String name, String defaultValue) {

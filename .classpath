@@ -26,7 +26,7 @@
 	<classpathentry kind="lib" path="lib-common/slf4j-api-1.5.6.jar"/>
 	<classpathentry kind="lib" path="lib-common/slf4j-log4j12-1.5.6.jar"/>
 	<classpathentry kind="lib" path="lib-common/spring-test.jar"/>
-	<classpathentry kind="lib" path="lib-common/spring-webmvc.jar"/>
+	<classpathentry kind="lib" path="lib-common/spring-webmvc.jar" sourcepath="/home/mseaton/.m2/repository/org/springframework/spring-webmvc/2.5.6/spring-webmvc-2.5.6-sources.jar"/>
 	<classpathentry kind="lib" path="lib-common/velocity-1.6-beta1.jar"/>
 	<classpathentry kind="lib" path="lib-common/xmlunit-1.2.jar"/>
 	<classpathentry kind="lib" path="lib-common/jsp-api.jar"/>
@@ -57,5 +57,6 @@
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/xerces/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib-common/jstl-1.1.jar"/>
 	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.2.11623-dev.jar" sourcepath="/openmrs-1.5.x"/>
+	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/commons-io/commons-io-1.4.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
