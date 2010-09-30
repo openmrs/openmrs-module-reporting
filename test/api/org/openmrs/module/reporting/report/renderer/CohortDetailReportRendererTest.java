@@ -13,14 +13,17 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.InputStream;
+import java.io.FileOutputStream;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -31,8 +34,8 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.util.OpenmrsClassLoader;
 
 /**
  * Supports rendering a series of Cohorts with particular datasets
@@ -41,6 +44,8 @@ public class CohortDetailReportRendererTest extends BaseModuleContextSensitiveTe
 
 	@Test
 	public void shouldRenderIndicatorsWithDifferentDatasets() throws Exception {
+		
+		// We first set up a report with 2 indicators, numbered 1 and 2
 		
 		GenderCohortDefinition males = new GenderCohortDefinition();
 		males.setName("Males");
@@ -62,22 +67,46 @@ public class CohortDetailReportRendererTest extends BaseModuleContextSensitiveTe
 		report.addIndicator("1", "Number of Males", numberOfMales);
 		report.addIndicator("2", "Number of Females", numberOfFemales);
 		
+		// Then, we construct a Map from indicator number to DataSetDefinition we wish to use to view it's underlying Cohort
+		
+		Map<String, Mapped<? extends DataSetDefinition>> m = new HashMap<String, Mapped<? extends DataSetDefinition>>();
+		
+		SimplePatientDataSetDefinition maleView = new SimplePatientDataSetDefinition();
+		maleView.addPatientProperty("patientId");
+		maleView.addIdentifierType(Context.getPatientService().getPatientIdentifierType(1));
+		maleView.addIdentifierType(Context.getPatientService().getPatientIdentifierType(2));
+		m.put("1", new Mapped<DataSetDefinition>(maleView, null));
+		
+		SimplePatientDataSetDefinition femaleView = new SimplePatientDataSetDefinition();
+		femaleView.addPatientProperty("patientId");
+		femaleView.addPatientProperty("age");
+		femaleView.addPatientProperty("gender");
+		m.put("2", new Mapped<DataSetDefinition>(femaleView, null));
+		
+		// Next, we set up the ReportDesign and ReportDesignResource files for the renderer
+		
+		ReportingSerializer serializer = new ReportingSerializer();
+		String designXml = serializer.serialize(m);
+		
 		final ReportDesign design = new ReportDesign();
 		design.setName("TestDesign");
 		design.setReportDefinition(report);
 		design.setRendererType(CohortDetailReportRenderer.class);
 		
 		ReportDesignResource resource = new ReportDesignResource();
-		resource.setName("designFile");
-		InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream("org/openmrs/module/reporting/report/renderer/CohortDetailReportRendererResource.xml");
-		resource.setContents(IOUtils.toByteArray(is));
+		resource.setName("designFile");  // Note: You must name your resource exactly like this for it to work
+		resource.setContents(designXml.getBytes());
 		design.addResource(resource);
 
+		// For now, we need this little magic to simulate what would happen if this were all stored in the database via the UI
+		
 		CohortDetailReportRenderer renderer = new CohortDetailReportRenderer() {
 			public ReportDesign getDesign(String argument) {
 				return design;
 			}
 		};
+		
+		// We construct an EvaluationContext (in this case the parameters aren't used, but included here for reference)
 		
 		EvaluationContext context = new EvaluationContext();
 		context.addParameterValue("startDate", new Date());
@@ -86,7 +115,16 @@ public class CohortDetailReportRendererTest extends BaseModuleContextSensitiveTe
 
 		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
 		ReportData data = rs.evaluate(report, context);
-		renderer.render(data, "xxx:yyy", System.out);
+		
+		// We demonstrate here how we can use this renderer to output to HTML
+		FileOutputStream fos = new FileOutputStream("/tmp/test.html"); // You will need to change this if you have no /tmp directory
+		renderer.render(data, "xxx:html", fos);
+		fos.close();
+		
+		// We demonstrate here how we can use this renderer to output to Excel
+		fos = new FileOutputStream("/tmp/test.xls"); // You will need to change this if you have no /tmp directory
+		renderer.render(data, "xxx:xls", fos);
+		fos.close();
 	}
 
 }
