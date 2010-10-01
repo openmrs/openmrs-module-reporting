@@ -13,10 +13,12 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
@@ -66,6 +68,9 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	 */
 	@Override
 	public void addParameter(Parameter parameter) {
+		if (baseDefinition == null) {
+			throw new RuntimeException("You cannot add a parameter to an InverseCohortDefinition until you set the baseDefinition");
+		}
 		getBaseDefinition().addParameter(parameter);
 	}
 
@@ -74,6 +79,9 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	 */
 	@Override
 	public void addParameters(List<Parameter> parameters) {
+		if (baseDefinition == null) {
+			throw new RuntimeException("You cannot add a parameter to an InverseCohortDefinition until you set the baseDefinition");
+		}
 		getBaseDefinition().getParameters().addAll(parameters);
 	}
 
@@ -82,6 +90,9 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	 */
 	@Override
 	public Parameter getParameter(String name) {
+		if (baseDefinition == null) {
+			return null;
+		}
 		return getBaseDefinition().getParameter(name);
 	}
 
@@ -90,6 +101,9 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	 */
 	@Override
 	public List<Parameter> getParameters() {
+		if (baseDefinition == null) {
+			return new ArrayList<Parameter>();
+		}
 		return getBaseDefinition().getParameters();
 	}
 
@@ -98,7 +112,9 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	 */
 	@Override
 	public void removeParameter(Parameter parameter) {
-		getBaseDefinition().removeParameter(parameter);
+		if (baseDefinition != null) {
+			getBaseDefinition().removeParameter(parameter);
+		}
 	}
 
 	/**
@@ -106,7 +122,9 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	 */
 	@Override
 	public void removeParameter(String parameterName) {
-		getBaseDefinition().removeParameter(parameterName);
+		if (baseDefinition != null) {
+			getBaseDefinition().removeParameter(parameterName);
+		}
 	}
 
 	/**
@@ -114,7 +132,9 @@ public class InverseCohortDefinition extends BaseCohortDefinition {
 	 */
 	@Override
 	public void setParameters(List<Parameter> parameters) {
-		getBaseDefinition().getParameters().clear();
+		if (baseDefinition != null) {
+			getBaseDefinition().getParameters().clear();
+		}
 		addParameters(parameters);
 	}
 	
