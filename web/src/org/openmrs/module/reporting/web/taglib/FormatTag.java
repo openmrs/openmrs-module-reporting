@@ -18,6 +18,7 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
+import org.openmrs.Person;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.result.EmptyResult;
@@ -234,6 +235,16 @@ public class FormatTag extends TagSupport {
      */
     private void printUser(StringBuilder sb, User u) {
     	sb.append(u.getPersonName());
+    }
+    
+    /**
+     * formats a user and prints it to sb
+     * 
+     * @param sb
+     * @param u
+     */
+    private void printUser(StringBuilder sb, Person u) {
+        sb.append(u.getPersonName());
     }
     
 	/**
