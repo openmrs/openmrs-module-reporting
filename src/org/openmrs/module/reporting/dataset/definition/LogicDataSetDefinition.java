@@ -15,7 +15,9 @@ package org.openmrs.module.reporting.dataset.definition;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -24,7 +26,6 @@ import org.openmrs.module.reporting.dataset.SimpleDataSetMetaData;
 
 /**
  * A data set definition where each column is a logic expression
- * TODO specify how to render each cell (value, datetime, or boolean)
  */
 public class LogicDataSetDefinition extends BaseDataSetDefinition implements PageableDataSetDefinition {
 	
@@ -134,6 +135,8 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
         		return new DateFormatter();
         	else if ("boolean".equals(format))
         		return new BooleanFormatter("X", "");
+        	else if (format.contains(":"))
+        		return new DecodeFormatter(format);
        		return new ValueFormatter();
         }
         
@@ -177,6 +180,36 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
     	public Object format(Result input) {
     		return input.toBoolean() ? ifTrue : ifFalse;
     	}
+    }
+    
+    public class DecodeFormatter implements ColumnFormatter {
+    	Map<String, String> decodings;
+    	/**
+    	 * @param format like "opt1:value1;opt2:value2;defaultVal"
+    	 */
+    	public DecodeFormatter(String format) {
+    		decodings = new HashMap<String, String>();
+    		for (String s : format.split(";")) {
+    			String key = null;
+    			String val;
+    			if (s.contains(":")) {
+    				String[] keyAndVal = s.split(":");
+    				key = keyAndVal[0];
+    				val = keyAndVal[1];
+    			} else {
+    				val = s;
+    			}
+    			decodings.put(key, val);
+    		}
+    	}
+		@Override
+        public Object format(Result input) {
+	        String inputString = input.toString();
+	        String ret = decodings.get(inputString);
+	        if (ret == null)
+	        	ret = inputString;
+	        return ret;
+        }
     }
 
 }

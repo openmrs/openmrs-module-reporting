@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.Column;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
