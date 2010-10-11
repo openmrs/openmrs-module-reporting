@@ -1312,6 +1312,10 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 								objectListHelper((List<Object>) paramValue));
 					}
 				}
+				// java.util.Date and subclasses
+				else if (paramValue instanceof Date) {
+					query.setDate(paramName, (Date) paramValue);
+				}
 				// String, Integer, et al (this might break since this is a catch all for all other classes)
 				else { 
 					query.setString(paramName, new String(paramValue.toString()));	// need to create new string for some reason

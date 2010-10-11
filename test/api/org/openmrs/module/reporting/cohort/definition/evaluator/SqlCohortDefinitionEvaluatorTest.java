@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,7 +102,7 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 	 * @see {@link SqlCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
 	 */
 	@Test
-	@Verifies(value = "should support patient parameter", method = "evaluate(CohortDefinition,EvaluationContext)")
+	@Verifies(value = "should support integer list parameter", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldSupportIntegerListParameter() throws Exception { 	
 		
 		String sqlQuery = "SELECT distinct patient_id FROM patient WHERE patient_id IN (:patientIdList)";
@@ -160,5 +161,27 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		Assert.assertEquals(1, cohort.size());
 		Assert.assertTrue(cohort.contains(6));
 	}
+
+
+	/**
+     * @see {@link SqlCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+     * 
+     */
+    @Test
+    @Verifies(value = "should support date parameter", method = "evaluate(CohortDefinition,EvaluationContext)")
+    public void evaluate_shouldSupportDateParameter() throws Exception {
+		String sqlQuery = "SELECT distinct patient_id FROM encounter WHERE encounter_datetime < :date";
+		Map<String, Object> parameterValues = new HashMap<String, Object>();
+		parameterValues.put("date", new SimpleDateFormat("yyyy-MM-dd").parse("2008-08-18"));
+		
+		EvaluationContext evaluationContext = new EvaluationContext();
+		evaluationContext.setParameterValues(parameterValues);
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);		
+
+		Assert.assertEquals(1, cohort.size());
+		Assert.assertTrue(cohort.contains(7));
+    }
+
 	
 }
