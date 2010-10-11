@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class RenderLogicDataSetController {
 
-	@RequestMapping("module/reporting/reports/renderLogicDataSet")
+	@RequestMapping("/module/reporting/reports/renderLogicDataSet")
 	public String showReport(Model model,
 	                       HttpSession session,
 	                       @RequestParam(required=false, value="start") Integer start,
