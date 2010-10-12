@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset;
 
-import java.util.List;
+import java.util.Iterator;
 
 import org.openmrs.module.reporting.dataset.definition.PageableDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.evaluator.DataSetEvaluator;
@@ -26,7 +26,6 @@ import org.openmrs.module.reporting.dataset.definition.evaluator.DataSetEvaluato
 public interface PageableDataSet extends DataSet {
 	
 	/**
-	 * TODO determine whether this should return a List<DataSetRow> or an Iterator<DataSetRow>.
 	 * Gets the rows in this dataset that correspond to a subset of the patients in
 	 * the input cohort. If this is a row-per-patient data set, then this method will
 	 * typically return 'size' rows, but for non-row-per-patient data sets, the
@@ -37,6 +36,6 @@ public interface PageableDataSet extends DataSet {
 	 * @return an iterator over the specified subset of the input cohort. If there are
 	 * fewer than 'size' patients left from 'start' then fewer rows will be returned. 
 	 */
-	List<DataSetRow> rowsForCohortSubset(int start, int size);
+	Iterator<DataSetRow> rowsForCohortSubset(int start, int size);
 
 }

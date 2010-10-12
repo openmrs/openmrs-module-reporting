@@ -131,12 +131,14 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
          * @return a formatter that can be used to format cells in this column
          */
         public ColumnFormatter getFormatter() {
-        	if ("date".equals(format))
-        		return new DateFormatter();
-        	else if ("boolean".equals(format))
-        		return new BooleanFormatter("X", "");
-        	else if (format.contains(":"))
-        		return new DecodeFormatter(format);
+        	if (format != null) {
+        		if ("date".equals(format))
+	        		return new DateFormatter();
+	        	else if ("boolean".equals(format))
+	        		return new BooleanFormatter("X", "");
+	        	else if (format.contains(":"))
+	        		return new DecodeFormatter(format);
+        	}
        		return new ValueFormatter();
         }
         
@@ -202,7 +204,6 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
     			decodings.put(key, val);
     		}
     	}
-		@Override
         public Object format(Result input) {
 	        String inputString = input.toString();
 	        String ret = decodings.get(inputString);

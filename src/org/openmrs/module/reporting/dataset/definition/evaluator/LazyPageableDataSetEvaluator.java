@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.openmrs.module.reporting.ReportingException;
@@ -24,15 +25,13 @@ import org.openmrs.module.reporting.dataset.definition.PageableDataSetDefinition
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
- * TODO: should I find a way to remove this and turn LazyPageableDataSet into an abstract class?
- * 
  * This subinterface defines the methods needed to allow an evaluator to be wrapped in a
  * {@link LazyPageableDataSet}, making it easy to implement the evaluator for many
  * {@link PageableDataSetDefinition}s.
  */
 public interface LazyPageableDataSetEvaluator extends DataSetEvaluator {
 
-	public List<DataSetRow> evaluatePartial(PageableDataSetDefinition definition, EvaluationContext context,
+	public Iterator<DataSetRow> evaluatePartial(PageableDataSetDefinition definition, EvaluationContext context,
 											List<Integer> patientIds);
 
 	public PageableDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws ReportingException;

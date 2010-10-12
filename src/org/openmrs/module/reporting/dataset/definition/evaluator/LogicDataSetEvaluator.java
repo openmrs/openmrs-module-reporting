@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,13 +47,15 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 	 */
 	public PageableDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws ReportingException {
 		LogicDataSetDefinition def = (LogicDataSetDefinition) dataSetDefinition;
-		return new LazyPageableDataSet(this, evalContext, def);
+		LazyPageableDataSet ret = new LazyPageableDataSet(this, evalContext, def);
+		//TODO profile with different values for this: ret.setMaximumPatientsToEvaluate(250);
+		return ret;
 	}
 
 	/**
 	 * @see LazyPageableDataSetEvaluator#evaluatePartial(PageableDataSetDefinition, EvaluationContext, List)
 	 */
-	public List<DataSetRow> evaluatePartial(PageableDataSetDefinition definition, EvaluationContext context,
+	public Iterator<DataSetRow> evaluatePartial(PageableDataSetDefinition definition, EvaluationContext context,
 	                                        List<Integer> patientIds) {
 		LogicService logicService = Context.getLogicService();
 		LogicDataSetDefinition def = (LogicDataSetDefinition) definition;
@@ -103,7 +106,7 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 			ret.add(row);
 		}
 		
-		return ret;
+		return ret.iterator();
 	}
 	
 }
