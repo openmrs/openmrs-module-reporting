@@ -87,7 +87,7 @@ public class Parameter implements Serializable {
 		setName(name);
 		setLabel(label);
 		setType(type);
-		//setCollectionType(collectionType);
+		setCollectionType(collectionType);
 		setDefaultValue(defaultValue);
 	}
 	
