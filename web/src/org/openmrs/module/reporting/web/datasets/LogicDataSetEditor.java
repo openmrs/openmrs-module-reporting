@@ -59,7 +59,7 @@ public class LogicDataSetEditor {
 		definition.setName(name);
 		definition.setDescription(description);
 
-		definition.clearColumns();		
+		definition.clearColumns();
 		int numColumns = request.getParameterValues("columnLogic").length;
 		for (int i = 0; i < numColumns; ++i) {
 			String columnName = request.getParameterValues("columnName")[i];

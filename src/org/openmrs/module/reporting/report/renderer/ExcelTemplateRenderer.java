@@ -84,7 +84,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			Map<String, Object> replacements = getReplacementData(reportData, design, dataSetEntry.getKey(), dataSetRow);
 			
 			String prefix = getExpressionPrefix(design);
-			String postfix = getExpressionSuffix(design);
+			String suffix = getExpressionSuffix(design);
 			
 			for (Iterator<HSSFRow> rowIter = sheet.rowIterator(); rowIter.hasNext();) {
 				HSSFRow row = rowIter.next();
@@ -92,7 +92,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 					HSSFCell cell = cellIter.next();
 			    	String contents = ExcelUtil.getCellContentsAsString(cell);
 			    	if (StringUtils.isNotEmpty(contents)) {
-			    		Object newContent = EvaluationUtil.evaluateExpression(contents, replacements, prefix, postfix);
+			    		Object newContent = EvaluationUtil.evaluateExpression(contents, replacements, prefix, suffix);
 			    		ExcelUtil.setCellContents(styleHelper, cell, newContent);
 			    	}
 				}
