@@ -14,14 +14,14 @@
 package org.openmrs.module.reporting.web.controller.mapping;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.dataset.definition.CohortDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.Definition;
 
 /**
  * Handler that determines what pages are redirected for creating and editing DataSetDefinitions
  */
-@Handler(supports=CohortDataSetDefinition.class, order=50)
-public class CohortDataSetDefinitionMappingHandler extends DefinitionMappingHandler {
+@Handler(supports=CohortCrossTabDataSetDefinition.class, order=50)
+public class CohortCrossTabDataSetDefinitionMappingHandler extends DefinitionMappingHandler {
 	
 	/**
 	 * @see DefinitionMappingHandler#getCreateUrl(Class)

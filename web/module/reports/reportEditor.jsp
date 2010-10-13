@@ -92,7 +92,7 @@
 								<div style="display:none; width:100%" id="dsdView${dsdStatus.index}">
 									<table style="font-size:smaller; color:grey; border:1px solid black;">
 										<tr><th colspan="7">${dsd.value.parameterizable.name}</th></tr>
-										<c:if test="${rpt:instanceOf(dsd.value.parameterizable, 'org.openmrs.module.reporting.dataset.definition.CohortDataSetDefinition')}">
+										<c:if test="${rpt:instanceOf(dsd.value.parameterizable, 'org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition')}">
 											<tr>
 												<c:if test="${!empty dsd.value.parameterizable.rows}">
 													<th>&nbsp;</th>

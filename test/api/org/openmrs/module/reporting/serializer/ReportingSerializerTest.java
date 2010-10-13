@@ -1,8 +1,8 @@
 package org.openmrs.module.reporting.serializer;
 
-
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		cd.setMaxAge(15);
 		String xml = new ReportingSerializer().serialize(cd);
 		System.out.println(xml);
-		// TODO assert something
+		Assert.assertNotNull(xml);
 	}
 	
 	/**
@@ -46,10 +46,12 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 	@SuppressWarnings("deprecation")
 	public void ReportingSerializer_shouldSerializeWorkflowStateByUuid() throws Exception {
 		PatientStateCohortDefinition pscd = new PatientStateCohortDefinition();
-		ProgramWorkflowState pw = Context.getProgramWorkflowService().getState(2);
-		pscd.setStates(Arrays.asList(pw));
-		System.out.println(new ReportingSerializer().serialize(pscd));
-		// TODO assert something
+		ProgramWorkflowState pws = Context.getProgramWorkflowService().getState(2);
+		List<ProgramWorkflowState> states = new ArrayList<ProgramWorkflowState>();
+		states.add(pws);
+		pscd.setStates(states);
+		String xml = new ReportingSerializer().serialize(pscd);
+		Assert.assertTrue(xml.contains("<programWorkflowState id=\"4\" uuid=\"e938129e-248a-482a-acea-f85127251472\"/>"));
 	}
 
 	/**
@@ -71,7 +73,7 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		
 		String xml = new ReportingSerializer().serialize(cd);
 		System.out.println(xml);
-		// TODO assert something
+		Assert.assertNotNull(xml);
     }
     
 	/**

@@ -22,18 +22,18 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.MapDataSet;
-import org.openmrs.module.reporting.dataset.definition.CohortDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.CohortDataSetDefinition.CohortDataSetColumn;
+import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition.CohortDataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
- * The logic that evaluates a {@link CohortDataSetDefinition} and produces a {@link MapDataSet}
+ * The logic that evaluates a {@link CohortCrossTabDataSetDefinition} and produces a {@link MapDataSet}
  * 
- * @see CohortDataSetDefinition
+ * @see CohortCrossTabDataSetDefinition
  * @see MapDataSet
  */
-@Handler(supports={CohortDataSetDefinition.class})
+@Handler(supports={CohortCrossTabDataSetDefinition.class})
 public class CohortDataSetEvaluator implements DataSetEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
@@ -55,7 +55,7 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 		
 		MapDataSet data = new MapDataSet(dataSetDefinition, context);
 
-		CohortDataSetDefinition dsd = (CohortDataSetDefinition) dataSetDefinition;		
+		CohortCrossTabDataSetDefinition dsd = (CohortCrossTabDataSetDefinition) dataSetDefinition;		
 		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
 		
 		for (CohortDataSetColumn col : dsd.getDataSetColumns()) {

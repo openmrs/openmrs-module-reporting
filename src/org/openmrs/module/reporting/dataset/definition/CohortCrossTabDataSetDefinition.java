@@ -32,7 +32,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
  * @see MapDataSet
  * @see CohortDataSetEvaluator
  */
-public class CohortDataSetDefinition extends BaseDataSetDefinition {
+public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 	
 	private static final long serialVersionUID = -658417752199413012L;
 
@@ -42,7 +42,7 @@ public class CohortDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * Default constructor
 	 */
-	public CohortDataSetDefinition() { }
+	public CohortCrossTabDataSetDefinition() { }
 	
 	/**
 	 * @return DataSetColumns constructed from rows and column definitions

@@ -15,15 +15,19 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import java.util.Date;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.dataset.definition.CohortDataSetDefinition;
+import org.openmrs.module.reporting.dataset.MapDataSet;
+import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -32,14 +36,13 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
  * Tests the evaluation of a CohortDataSetEvaluator
  */
-public class CohortDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class CohortCrossTabDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
 	public void setup() throws Exception {
@@ -50,7 +53,7 @@ public class CohortDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	 * @see {@link CohortDataSetEvaluator#evaluate(DataSetDefinition,EvaluationContext)}
 	 */
 	@Test
-	@Verifies(value = "should evaluate a CohortDataSetDefinition", method = "evaluate(DataSetDefinition,EvaluationContext)")
+	@Verifies(value = "should evaluate a CohortCrossTabDataSetDefinition", method = "evaluate(DataSetDefinition,EvaluationContext)")
 	public void evaluate_shouldEvaluateACohortIndicatorDataSetDefinition() throws Exception {
 		
 		AgeCohortDefinition childrenOnDate = new AgeCohortDefinition();
@@ -73,7 +76,7 @@ public class CohortDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		GenderCohortDefinition unknownGender = new GenderCohortDefinition();
 		unknownGender.setUnknownGenderIncluded(true);
 		
-		CohortDataSetDefinition d = new CohortDataSetDefinition();
+		CohortCrossTabDataSetDefinition d = new CohortCrossTabDataSetDefinition();
 		d.addParameter(ReportingConstants.END_DATE_PARAMETER);
 		
 		d.addRow("male", new Mapped<CohortDefinition>(males, null));
@@ -92,9 +95,17 @@ public class CohortDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		report.addDataSetDefinition(d, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		
 		ReportData results = Context.getService(ReportDefinitionService.class).evaluate(report, context);
+		MapDataSet ds = (MapDataSet)results.getDataSets().values().iterator().next();
 		
-		CsvReportRenderer renderer = new CsvReportRenderer();
-		renderer.render(results, null, System.out);
+		Assert.assertEquals(2, ((Cohort)ds.getData(ds.getMetaData().getColumn("male.adult"))).size());
+		Assert.assertEquals(0, ((Cohort)ds.getData(ds.getMetaData().getColumn("male.child"))).size());
+		Assert.assertEquals(3, ((Cohort)ds.getData(ds.getMetaData().getColumn("male.unknown"))).size());
+		Assert.assertEquals(2, ((Cohort)ds.getData(ds.getMetaData().getColumn("female.adult"))).size());
+		Assert.assertEquals(1, ((Cohort)ds.getData(ds.getMetaData().getColumn("female.child"))).size());
+		Assert.assertEquals(5, ((Cohort)ds.getData(ds.getMetaData().getColumn("female.unknown"))).size());
+		Assert.assertEquals(0, ((Cohort)ds.getData(ds.getMetaData().getColumn("unknown.adult"))).size());
+		Assert.assertEquals(0, ((Cohort)ds.getData(ds.getMetaData().getColumn("unknown.child"))).size());
+		Assert.assertEquals(1, ((Cohort)ds.getData(ds.getMetaData().getColumn("unknown.unknown"))).size());
 	}
 	
 }
