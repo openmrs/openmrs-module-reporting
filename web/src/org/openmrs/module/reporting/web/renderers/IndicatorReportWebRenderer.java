@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -34,8 +35,12 @@ public class IndicatorReportWebRenderer extends AbstractWebReportRenderer {
      */
     public boolean canRender(ReportDefinition reportDefinition) {
     	for (Mapped<? extends DataSetDefinition> def : reportDefinition.getDataSetDefinitions().values()) {
-	    	if (def.getParameterizable() instanceof CohortIndicatorDataSetDefinition)
+	    	if (def.getParameterizable() instanceof CohortIndicatorDataSetDefinition) {
 	    		return true;
+	    	}
+	    	if (def.getParameterizable() instanceof CohortCrossTabDataSetDefinition) {
+	    		return true;
+	    	}	    	
 	    }
 	    return false;
     }

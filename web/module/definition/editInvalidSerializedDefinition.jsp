@@ -22,6 +22,10 @@
 			);
 		});
 
+		$('#cancel-button').click(function(event){
+			document.location.href='invalidSerializedDefinitions.form';
+		});
+		
 		$('#resultDialog').dialog({
 			autoOpen: false,
 			draggable: false,
