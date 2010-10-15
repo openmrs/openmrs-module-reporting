@@ -90,6 +90,13 @@ public interface SerializedDefinitionService extends OpenmrsService {
 	 * @return the SerializedObject with this uuid
 	 */
     public SerializedObject getSerializedDefinitionByUuid(String uuid);
+    
+    /**
+     * Returns all invalid SerializedObject Definitions, regardless of type
+     * @param includeRetired indicates whether to also include retired Definitions in the count
+     * @return the SerializedObjects that cannot be deserialized
+     */
+    public List<SerializedObject> getInvalidDefinitions(boolean includeRetired);
 	
 	/**
 	 * @param definitionType the type of Definition

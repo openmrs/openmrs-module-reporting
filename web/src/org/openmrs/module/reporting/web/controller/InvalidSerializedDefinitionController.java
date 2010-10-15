@@ -1,8 +1,8 @@
 package org.openmrs.module.reporting.web.controller;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -12,10 +12,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
-import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.definition.converter.ConverterUtil;
+import org.openmrs.module.reporting.definition.converter.DefinitionConverter;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.serialization.OpenmrsSerializer;
+import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,18 +33,23 @@ public class InvalidSerializedDefinitionController {
      * View Invalid Serialized Definition Page
      */
     @RequestMapping("/module/reporting/definition/invalidSerializedDefinitions")
-    public void invalidSerializedDefinitions(
-            @RequestParam(required=false, value="type") Class<? extends Definition> type,
-    		ModelMap model) {
+    public void invalidSerializedDefinitions(ModelMap model) {
     	
     	SerializedDefinitionService service = Context.getService(SerializedDefinitionService.class);
-    	model.addAttribute("type", type);
-    	List<SerializedObject> sds = new ArrayList<SerializedObject>();
-    	if (ObjectUtil.notNull(type)) {
-    		sds = service.getInvalidDefinitions(type, true);
+    	Map<SerializedObject, Class<? extends DefinitionConverter>> m = new LinkedHashMap<SerializedObject, Class<? extends DefinitionConverter>>();
+
+    	for (SerializedObject so : service.getInvalidDefinitions(true)) {
+    		m.put(so, null);
     	}
-    	model.addAttribute("serializedDefinitions", sds);
-    	model.addAttribute("supportedTypes", service.getSupportedDefinitionTypes());
+    	
+    	ConverterUtil.refreshConversionStatus();
+    	for (DefinitionConverter c : HandlerUtil.getHandlersForType(DefinitionConverter.class, null)) {
+    		for (SerializedObject o : c.getInvalidDefinitions()) {
+    			m.put(o, c.getClass());
+    		}
+    	}
+
+    	model.addAttribute("serializedDefinitions", m);
     }
     
     /**
@@ -117,6 +124,19 @@ public class InvalidSerializedDefinitionController {
     public String purgeSerializedDefinition(@RequestParam(required=true, value="uuid") String uuid) {
     	SerializedDefinitionService sds = Context.getService(SerializedDefinitionService.class);
     	sds.purgeDefinition(uuid);
+        return "redirect:/module/reporting/definition/invalidSerializedDefinitions.form";
+    } 
+    
+    /**
+     * Converts the definition represented by the given uuid using the given converter
+    */
+    @RequestMapping("/module/reporting/definition/convertDefinition")
+    public String convertDefinition(@RequestParam(required=true, value="uuid") String uuid,
+    								@RequestParam(required=true, value="converter") Class<? extends DefinitionConverter> converter) throws Exception {
+    	SerializedDefinitionService sds = Context.getService(SerializedDefinitionService.class);
+    	SerializedObject so = sds.getSerializedDefinitionByUuid(uuid);
+    	DefinitionConverter c = converter.newInstance();
+    	c.convertDefinition(so);
         return "redirect:/module/reporting/definition/invalidSerializedDefinitions.form";
     }  
 }

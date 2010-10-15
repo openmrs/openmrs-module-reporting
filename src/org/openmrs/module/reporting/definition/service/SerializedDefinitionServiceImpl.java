@@ -139,6 +139,17 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     }
     
     /**
+     * @see SerializedDefinitionService#getInvalidDefinitions(boolean)
+     */
+    public List<SerializedObject> getInvalidDefinitions(boolean includeRetired) {
+    	List<SerializedObject> ret = new ArrayList<SerializedObject>();
+    	for (Class<Definition> clazz : getSupportedDefinitionTypes()) {
+    		ret.addAll(getInvalidDefinitions(clazz, includeRetired));
+    	}
+    	return ret;
+    }
+    
+    /**
      * @see SerializedDefinitionService#getInvalidDefinitions(Class, boolean)
      */
     public <T extends Definition> List<SerializedObject> getInvalidDefinitions(Class<T> definitionType, boolean includeRetired) {

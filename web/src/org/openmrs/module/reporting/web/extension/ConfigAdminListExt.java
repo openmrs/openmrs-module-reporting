@@ -24,7 +24,6 @@ public class ConfigAdminListExt extends AdministrationSectionExt {
 		// Using linked hash map to keep order of links
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		map.put("module/reporting/reports/createInitial.form", "reporting.createInitialQueries.title");
-		map.put("module/reporting/definition/invalidSerializedDefinitions.form", "reporting.fixInvalidDefinitions.title");
 		return map;
 	}
 	

@@ -12,6 +12,10 @@
 
 	<logger name="org.hibernate.tool.hbm2ddl">
 		<level value="FATAL"/>
+	</logger>
+	
+	<logger name="org.openmrs.module.reporting.definition.converter">
+		<level value="INFO"/>
 	</logger>	
 	
 	<root>
