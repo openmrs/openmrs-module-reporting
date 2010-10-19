@@ -88,7 +88,6 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	public Map<String, Object> getReplacementData(ReportData reportData, ReportDesign design, String dataSetName, DataSetRow row) {
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.putAll(reportData.getContext().getParameterValues());
 		
 		// Add row to replacement data
 		for (Object entry : row.getColumnValues().entrySet()) {
@@ -109,6 +108,22 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 			if (reportData.getDataSets().size() == 1) {
 				data.put(e.getKey().getName(), replacementValue);
 			}
+		}
+		
+		// Add all parameter values as replacement data
+		for (Map.Entry<String, Object> entry : reportData.getContext().getParameterValues().entrySet()) {
+			if (!data.containsKey(entry.getKey())) {
+				data.put(entry.getKey(), entry.getValue());
+			}
+			data.put("parameter:" + entry.getKey(), entry.getValue());
+		}
+		
+		// Add all design properties as replacement data
+		for (Map.Entry<Object, Object> entry : design.getProperties().entrySet()) {
+			if (!data.containsKey(entry.getKey().toString())) {
+				data.put(entry.getKey().toString(), entry.getValue());
+			}
+			data.put("property:" + entry.getKey(), entry.getValue());
 		}
 
 		return data;
