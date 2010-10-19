@@ -13,9 +13,14 @@
  */
  package org.openmrs.module.reporting.web.controller;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.LazyPageableDataSet;
 import org.openmrs.module.reporting.report.ReportData;
 import org.springframework.stereotype.Controller;
@@ -52,12 +57,21 @@ public class RenderLogicDataSetController {
 		int startOfLast = cohortSize - cohortSize % size; 
 
 		model.addAttribute("columns", dataSet.getMetaData());
-		model.addAttribute("rows", dataSet.rowsForCohortSubset(start, size));
+		// the c:forEach tag is supposed to handle an iterator as its 'items', but that doesn't seem
+		// to work, so I'm converting this to a List instead
+		model.addAttribute("rows", iteratorToList(dataSet.rowsForCohortSubset(start, size)));
 		model.addAttribute("start", start);
 		model.addAttribute("size", size);
 		model.addAttribute("startOfLast", startOfLast);
 		model.addAttribute("cohortSize", cohortSize);
 		return null;
 	}
+
+	private List<DataSetRow> iteratorToList(Iterator<DataSetRow> iterator) {
+	    List<DataSetRow> ret = new ArrayList<DataSetRow>();
+	    while (iterator.hasNext())
+	    	ret.add(iterator.next());
+	    return ret;
+    }
 	
 }
