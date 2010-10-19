@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.Cohort;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -115,16 +116,16 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 			if (!data.containsKey(entry.getKey())) {
 				data.put(entry.getKey(), entry.getValue());
 			}
-			data.put("parameter:" + entry.getKey(), entry.getValue());
+			data.put("parameter." + entry.getKey(), entry.getValue());
 		}
 		
 		// Add all design properties as replacement data
 		for (Map.Entry<Object, Object> entry : design.getProperties().entrySet()) {
-			if (!data.containsKey(entry.getKey().toString())) {
-				data.put(entry.getKey().toString(), entry.getValue());
-			}
-			data.put("property:" + entry.getKey(), entry.getValue());
+			data.put("property." + entry.getKey(), entry.getValue());
 		}
+		
+		data.put("context.generatedBy", Context.getUserContext().getAuthenticatedUser().getPersonName().toString());
+		data.put("context.generationDate", new Date());
 
 		return data;
 	}
