@@ -8,6 +8,10 @@
 <!-- ********************************************************* -->
 <project name="reporting" default="package-module">
 	
+	<tstamp>
+		<format property="timestamp" pattern="MMM dd yyyy hh:mm aa" />
+	</tstamp>
+	
 	<!-- *********************************************************** -->
 	<!-- **                 BUILD PROPERTIES                      ** -->
 	<!-- *********************************************************** -->
@@ -204,6 +208,29 @@
 				<exclude name="test/**/*" />
 			</fileset>
 		</jar>
+	</target>
+	
+	<target name="javadoc" description="packages documentation into /dist/javadoc/" depends="init">
+		<delete dir="dist/javadoc" />
+		<javadoc packagenames="org.openmrs.*" destdir="dist/javadoc" classpathref="classpath" 
+			author="true" version="true" 
+			windowtitle="${module.name} module"
+			bottom="${module.name} version: ${module.version}. Generated ${timestamp}.">
+			
+			<tag name="should" scope="all" description="Expected behavior: " />
+			<packageset dir="src" defaultexcludes="yes">
+				<include name="org/openmrs/**" />
+				<exclude name="**/.svn" />
+			</packageset>
+			<packageset dir="web/src" defaultexcludes="yes">
+				<include name="org/openmrs/**" />
+				<exclude name="**/.svn" />
+			</packageset>
+		</javadoc>
+		
+		<property name="outputfile" value="dist/javadoc-${module.id}-${module.version}.zip"></property>
+		<delete file="${outputfile}" />
+		<zip destfile="${outputfile}" basedir="dist/javadoc" includes="**/*" />
 	</target>
 
 </project>
