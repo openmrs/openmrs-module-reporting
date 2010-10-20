@@ -168,7 +168,7 @@
 						<c:when test="${empty model.headerClass}">
 							<b class="boxHeader" style="font-weight:bold; text-align:right;">
 								<span style="float:left;">${model.label}</span>
-								<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
+								<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit Mappings</a>
 								<c:if test="${model.currentKey != null}">
 									&nbsp;|&nbsp;
 									<a style="color:lightyellow;" href="#" id="${model.id}RemoveLink">Delete</a>
@@ -179,7 +179,7 @@
 							<span class="${model.headerClass}" id="${model.id}Header">
 								<span id="${model.id}HeaderLabel" style="font-weight:bold;">${model.label}</span>&nbsp;&nbsp;&nbsp;
 								<span id="${model.id}HeaderLinks">
-									<a href="#" id="${model.id}EditLink">Edit</a>
+									<a href="#" id="${model.id}EditLink">Edit Mappings</a>
 									<c:if test="${model.currentKey != null}">&nbsp;|&nbsp;
 										<a href="#" id="${model.id}RemoveLink">Delete</a>
 									</c:if>
