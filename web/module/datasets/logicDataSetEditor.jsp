@@ -11,7 +11,15 @@
 		});
 		$('#sortable tbody.sortable-content').sortable();
 		$('#sortable tbody.sortable-content').disableSelection();
-		$('.suggestTokens').autocomplete(tokens);
+		$('.suggestTokens').autocomplete(tokens, {
+			formatResult: function(row) {
+				var data = row[0];
+				if (data.indexOf(' ') >= 0)
+					return '"' + data + '"';
+				else
+					return data;
+			}
+		});
 	});
 </script>
 
@@ -62,9 +70,9 @@
 							<c:forEach var="col" items="${definition.columns}">
 								<tr>
 									<td><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></td>
-									<td><input type="text" name="columnName" value="<spring:message javaScriptEscape='true' text='${col.name}'/>"/></td>
-									<td><input type="text" name="columnLabel" value="<spring:message javaScriptEscape='true' text='${col.label}'/>"/></td>
-									<td><input class="suggestTokens" type="text" name="columnLogic" value="<spring:message javaScriptEscape='true' text='${col.logic}'/>" size="50"/></td>
+									<td><input type="text" name="columnName" value="<spring:message htmlEscape='true' text='${col.name}'/>"/></td>
+									<td><input type="text" name="columnLabel" value="<spring:message htmlEscape='true' text='${col.label}'/>"/></td>
+									<td><input class="suggestTokens" type="text" name="columnLogic" value="<spring:message htmlEscape='true' text='${col.logic}'/>" size="50"/></td>
 									<td>
 										<select name="columnFormat">
 											<option value="">Value</option>
