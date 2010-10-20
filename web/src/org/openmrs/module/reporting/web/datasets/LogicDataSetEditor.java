@@ -15,13 +15,16 @@
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.Column;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -42,8 +45,18 @@ public class LogicDataSetEditor {
 		
 		List<String> tokens = new ArrayList<String>(Context.getLogicService().getTokens());
 		Collections.sort(tokens);
+		
+		Map<Column, Exception> logicErrors = new HashMap<Column, Exception>();
+		for (Column col : definition.getColumns()) {
+			try {
+				Context.getLogicService().parseString(col.getLogic());
+			} catch (Exception ex) {
+				logicErrors.put(col, ex);
+			}
+		}
 
 		model.addAttribute("definition", definition);
+		model.addAttribute("logicErrors", logicErrors);
 		model.addAttribute("tokens", tokens);
 	}
 	
@@ -69,6 +82,8 @@ public class LogicDataSetEditor {
 			if (!StringUtils.isBlank(columnName) && !StringUtils.isBlank(columnLogic))
 				definition.addColumn(columnName, columnLabel, columnLogic, columnFormat);
 		}
+		
+		// TODO validate the definition, and return an errors
 		
 		svc.saveDefinition(definition);
 		

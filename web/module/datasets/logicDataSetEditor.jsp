@@ -72,7 +72,13 @@
 									<td><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></td>
 									<td><input type="text" name="columnName" value="<spring:message htmlEscape='true' text='${col.name}'/>"/></td>
 									<td><input type="text" name="columnLabel" value="<spring:message htmlEscape='true' text='${col.label}'/>"/></td>
-									<td><input class="suggestTokens" type="text" name="columnLogic" value="<spring:message htmlEscape='true' text='${col.logic}'/>" size="50"/></td>
+									<td>
+										<input class="suggestTokens" type="text" name="columnLogic" value="<spring:message htmlEscape='true' text='${col.logic}'/>" size="50"/>
+										<c:if test="${not empty logicErrors[col]}">
+											<br/>
+											<span class="error">${logicErrors[col].message}</span>
+										</c:if>
+									</td>
 									<td>
 										<select name="columnFormat">
 											<option value="">Value</option>

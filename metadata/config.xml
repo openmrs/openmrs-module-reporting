@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module configVersion="1.0">
+<module configVersion="1.1">
 	
 	<!-- Base Module Properties -->
 	<id>reporting</id>
 	<name>Reporting</name>
-	<version>0.4.2</version>
+	<version>0.5</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>
@@ -20,6 +20,7 @@
 	<require_modules>
 	   	<require_module>org.openmrs.module.serialization.xstream</require_module>
 	   	<require_module>org.openmrs.module.htmlwidgets</require_module>
+	   	<require_module version="0.4.1">org.openmrs.logic</require_module>
 	</require_modules>
 
 	<!-- Extensions -->
