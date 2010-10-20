@@ -45,6 +45,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly=true)
 	public Class<DataSetDefinition> getDefinitionType() {
 		return DataSetDefinition.class;
 	}
@@ -53,6 +54,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	 * @see DefinitionService#getDefinitionTypes()
 	 */
 	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
 	public List<Class<? extends DataSetDefinition>> getDefinitionTypes() {
 		List<Class<? extends DataSetDefinition>> ret = new ArrayList<Class<? extends DataSetDefinition>>();
 		for (DataSetEvaluator e : HandlerUtil.getHandlersForType(DataSetEvaluator.class, null)) {
@@ -73,6 +75,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	 * @see DefinitionService#getDefinition(Class, Integer)
 	 */
 	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
 	public <D extends DataSetDefinition> D getDefinition(Class<D> type, Integer id) throws APIException {
 		return (D) getPersister(type).getDataSetDefinition(id);
 	}
@@ -80,6 +83,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	/**
 	 * @see DefinitionService#getDefinitionByUuid(String)
 	 */
+	@Transactional(readOnly=true)
 	public DataSetDefinition getDefinitionByUuid(String uuid) throws APIException {
 		for (DataSetDefinitionPersister p : getAllPersisters()) {
 			DataSetDefinition cd = p.getDataSetDefinitionByUuid(uuid);
@@ -93,6 +97,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	/**
 	 * @see DefinitionService#getAllDefinitions(boolean)
 	 */
+	@Transactional(readOnly=true)
 	public List<DataSetDefinition> getAllDefinitions(boolean includeRetired) {
 		List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
 		for (DataSetDefinitionPersister p : getAllPersisters()) {
@@ -104,6 +109,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	/**
 	 * @see DefinitionService#getNumberOfDefinitions(boolean)
 	 */
+	@Transactional(readOnly=true)
 	public int getNumberOfDefinitions(boolean includeRetired) {
 		int i = 0;
 		for (DataSetDefinitionPersister p : getAllPersisters()) {
@@ -115,6 +121,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	/**
 	 * @see DefinitionService#getDefinitions(String, boolean)
 	 */
+	@Transactional(readOnly=true)
 	public List<DataSetDefinition> getDefinitions(String name, boolean exactMatchOnly) {
 		List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
 		for (DataSetDefinitionPersister p : getAllPersisters()) {
@@ -143,6 +150,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	/**
 	 * @see DataSetDefinitionService#evaluate(DataSetDefinition, EvaluationContext)
 	 */
+	@Transactional(readOnly=true)
 	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws APIException {
 		DataSetEvaluator evaluator = HandlerUtil.getPreferredHandler(DataSetEvaluator.class, definition.getClass());
 		if (evaluator == null) {
@@ -154,6 +162,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	/** 
 	 * @see DataSetDefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
+	@Transactional(readOnly=true)
 	@Override
 	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws APIException {
 		return (DataSet) super.evaluate(definition, context);

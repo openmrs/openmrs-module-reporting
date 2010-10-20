@@ -37,6 +37,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	/**
 	 * @see DefinitionService#getDefinition(String, Class)
 	 */
+	@Transactional(readOnly = true)
 	public T getDefinition(String uuid, Class<? extends T> type) {
 	   	T ret = null;
     	if (StringUtils.hasText(uuid)) {
@@ -61,6 +62,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * Default implementation is to consider a Definition to contain a tag if the tag is part of the Definition name
 	 * @see DefinitionService#getDefinitionsByTag(String)
 	 */
+	@Transactional(readOnly = true)
 	public List<T> getDefinitionsByTag(String tagName) {
 		return getDefinitions(tagName, false);
 	}
@@ -68,6 +70,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	/**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
+	@Transactional(readOnly = true)
 	public Evaluated<T> evaluate(Mapped<? extends T> definition, EvaluationContext context) throws APIException {
 		EvaluationContext childContext = EvaluationContext.cloneForChild(context, definition);
 		log.debug("Evaluating: " + definition.getParameterizable() + "(" + context.getParameterValues() + ")");
