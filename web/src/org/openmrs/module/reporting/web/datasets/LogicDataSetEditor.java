@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.LogicUtil;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.Column;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
@@ -49,7 +50,7 @@ public class LogicDataSetEditor {
 		Map<Column, Exception> logicErrors = new HashMap<Column, Exception>();
 		for (Column col : definition.getColumns()) {
 			try {
-				Context.getLogicService().parseString(col.getLogic());
+				LogicUtil.parse(col.getLogic());
 			} catch (Exception ex) {
 				logicErrors.put(col, ex);
 			}

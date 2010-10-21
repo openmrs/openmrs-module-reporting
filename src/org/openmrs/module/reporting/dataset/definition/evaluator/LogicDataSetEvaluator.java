@@ -26,6 +26,7 @@ import org.openmrs.logic.LogicException;
 import org.openmrs.logic.LogicService;
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.ReportingException;
+import org.openmrs.module.reporting.common.LogicUtil;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.LazyPageableDataSet;
 import org.openmrs.module.reporting.dataset.PageableDataSet;
@@ -78,7 +79,7 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 		for (Column col : def.getColumns()) {
 			try {
 				// implicitly parse the String to a LogicCriteria in this line
-				Map<Integer, Result> temp = logicService.eval(cohort, logicService.parseString(col.getLogic()));
+				Map<Integer, Result> temp = logicService.eval(cohort, LogicUtil.parse(col.getLogic()));
 				for (Map.Entry<Integer, Result> e : temp.entrySet()) {
 					List<Result> forPatient = results.get(e.getKey());
 					if (forPatient == null) {
