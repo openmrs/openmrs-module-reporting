@@ -48,6 +48,17 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 	 */
 	public PageableDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws ReportingException {
 		LogicDataSetDefinition def = (LogicDataSetDefinition) dataSetDefinition;
+
+		// test the logic expressions in the definition, so if any of them are broken we fail here
+		// rather than returning a LazyPageableDataSet that will fail on every partial evaluation
+		for (Column col : def.getColumns()) {
+			try {
+				LogicUtil.parse(col.getLogic());
+			} catch (LogicException ex) {
+				throw new ReportingException("Error parsing logic: " + col.getLogic(), ex);
+			}
+		}
+		
 		LazyPageableDataSet ret = new LazyPageableDataSet(this, evalContext, def);
 		//TODO profile with different values for this: ret.setMaximumPatientsToEvaluate(250);
 		return ret;
