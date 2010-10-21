@@ -20,7 +20,7 @@
 	<require_modules>
 	   	<require_module>org.openmrs.module.serialization.xstream</require_module>
 	   	<require_module>org.openmrs.module.htmlwidgets</require_module>
-	   	<require_module version="0.4.1">org.openmrs.logic</require_module>
+	   	<!-- <require_module version="0.4.1">org.openmrs.logic</require_module>  -->
 	</require_modules>
 
 	<!-- Extensions -->
