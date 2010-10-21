@@ -31,6 +31,7 @@ public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
 	public void shouldEvaluteIndicatorForLocation() throws Exception {
 		
 		PeriodIndicatorReportDefinition report = new PeriodIndicatorReportDefinition();
+		report.setupDataSetDefinition();
 		
 		GenderCohortDefinition males = new GenderCohortDefinition();
 		males.setName("Males");
@@ -61,6 +62,7 @@ public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
 	public void shouldEvaluteFractionalIndicators() throws Exception {
 		
 		PeriodIndicatorReportDefinition report = new PeriodIndicatorReportDefinition();
+		report.setupDataSetDefinition();
 		
 		GenderCohortDefinition males = new GenderCohortDefinition();
 		males.setName("Males");
