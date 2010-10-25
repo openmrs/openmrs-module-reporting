@@ -846,6 +846,31 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	/**
 	 * Encapsulates the common logic between getPatientsHavingRangedObs and getPatientsHavingDiscreteObs
 	 * 
+	 * The arguments passed in fall into two types:
+	 * <ol>
+	 *     <li>arguments that limit which obs we will look at</li>
+	 *     <ul>
+	 *         <li>timeModifier</li>
+	 *         <li>question</li>
+	 *         <li>groupingConcept</li>
+	 *         <li>onOrAfter</li>
+	 *         <li>onOrBefore</li>
+	 *         <li>locationList</li>
+	 *         <li>encounterTypeList</li>
+	 *         <li></li>
+	 *         <li></li>
+	 *     </ul>
+	 *     <li>arguments that the obs values must match after being limited by the above arguments</li>
+	 *     <ul>
+	 *         <li>operator1</li>
+	 *         <li>value1</li>
+	 *         <li>operator2</li>
+	 *         <li>value2</li>
+	 *         <li>setOperator</li>
+	 *         <li>valueList</li>
+	 *     </ul>
+	 * </ol> 
+	 * 
 	 * @param timeModifier
 	 * @param question
 	 * @param groupingConcept
@@ -876,7 +901,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		List<Integer> locationIds = openmrsObjectIdListHelper(locationList);
 		List<Integer> encounterTypeIds = openmrsObjectIdListHelper(encounterTypeList);
 		
-		String dateAndLocationSql = "";
+		boolean joinOnEncounter = encounterTypeIds != null;
+		String dateAndLocationSql = ""; // TODO rename to include encounterType
 		String dateAndLocationSqlForSubquery = "";
 		if (onOrAfter != null) {
 			dateAndLocationSql += " and o.obs_datetime >= :onOrAfter ";
@@ -890,8 +916,10 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			dateAndLocationSql += " and o.location_id in (:locationIds) ";
 			dateAndLocationSqlForSubquery += " and location_id in (:locationIds) ";
 		}
-		if (encounterTypeIds != null)
-			throw new RuntimeException("encounter types not yet handled in getPatientsHavingNumericObs"); // should probably go with date and location, not with value
+		if (encounterTypeIds != null) {
+			dateAndLocationSql += " and e.encounter_type in (:encounterTypeIds) ";
+			dateAndLocationSqlForSubquery += " and encounter_type in (:encounterTypeIds) ";
+		}
 		
 		boolean doSqlAggregation = timeModifier == TimeModifier.MIN || timeModifier == TimeModifier.MAX || timeModifier == TimeModifier.AVG;
 		boolean doInvert = timeModifier == TimeModifier.NO;
@@ -939,7 +967,11 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		StringBuilder sql = new StringBuilder();
 
 		if (timeModifier == TimeModifier.ANY || timeModifier == TimeModifier.NO) {
-			sql.append(" select distinct o.person_id from obs o where o.voided = false ");
+			sql.append(" select distinct o.person_id from obs o ");
+			if (joinOnEncounter) {
+				sql.append(" inner join encounter e on o.encounter_id = e.encounter_id ");
+			}
+			sql.append(" where o.voided = false ");
 			if (questionConceptId != null)
 				sql.append(" and concept_id = :questionConceptId ");
 			sql.append(dateAndLocationSql);
@@ -949,15 +981,23 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			
 			sql.append(" select distinct o.person_id ");
 			sql.append(" from obs o ");
+			if (joinOnEncounter)
+				sql.append(" inner join encounter e on o.encounter_id = e.encounter_id ");
 			sql.append(" inner join ( ");
 			sql.append("    select person_id, " + (isFirst ? "MIN" : "MAX") + "(obs_datetime) as odt ");
-			sql.append("    from obs where voided = false and concept_id = :questionConceptId " + dateAndLocationSqlForSubquery + " group by person_id ");
+			sql.append("    from obs ");
+			if (joinOnEncounter)
+				sql.append(" inner join encounter on obs.encounter_id = encounter.encounter_id ");
+			sql.append("             where voided = false and concept_id = :questionConceptId " + dateAndLocationSqlForSubquery + " group by person_id ");
 			sql.append(" ) subq on o.person_id = subq.person_id and o.obs_datetime = subq.odt ");
 			sql.append(" where o.voided = false and o.concept_id = :questionConceptId ");
 
 		} else if (doSqlAggregation) {
 			sql.append(" select distinct o.person_id ");
-			sql.append(" from obs o where o.voided = false and concept_id = :questionConceptId " + dateAndLocationSql );
+			sql.append(" from obs o ");
+			if (joinOnEncounter)
+				sql.append(" inner join encounter e on o.encounter_id = e.encounter_id ");
+			sql.append(" where o.voided = false and concept_id = :questionConceptId " + dateAndLocationSql );
 			sql.append(" group by o.person_id ");
 			
 		} else {
@@ -1000,6 +1040,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.setDate("onOrBefore", onOrBefore);
 		if (locationIds != null)
 			query.setParameterList("locationIds", locationIds);
+		if (encounterTypeIds != null)
+			query.setParameterList("encounterTypeIds", encounterTypeIds);
 		
 		Cohort ret;
 		if (doInvert) {

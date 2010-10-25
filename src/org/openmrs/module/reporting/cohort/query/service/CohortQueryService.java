@@ -63,7 +63,10 @@ public interface CohortQueryService extends OpenmrsService {
 	 * 
 	 * @should get patients with any obs of a specified concept
 	 * @should get patients whose first obs of a specified concept is in a range
-	 * @should get patients whose maximum obs of a specified concept is equals to a specified value
+	 * @should get patients whose maximum obs of a specified concept is equal to a specified value
+	 * @should get patients with any obs of a specified concept in a specified encounter type
+	 * @should get patients whose first obs of a specified concept in a specified encounter type is in a range
+	 * @should get patients whose maximum obs of a specified concept in a specified encounter type is equals to a specified value
 	 */
 	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
