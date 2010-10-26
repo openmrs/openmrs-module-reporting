@@ -1,7 +1,10 @@
 package org.openmrs.module.reporting.cohort.query.service;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -10,6 +13,7 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.RangeComparator;
@@ -31,11 +35,7 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
 	public void getPatientsHavingRangedObs_shouldGetPatientsWithAnyObsOfASpecifiedConcept() throws Exception {
 		CohortQueryService service = Context.getService(CohortQueryService.class);
 		Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.ANY, new Concept(5089), null, null, null, null, null, null, null, null, null);
-		Assert.assertEquals(4, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
-		Assert.assertTrue(cohort.contains(20));
-		Assert.assertTrue(cohort.contains(21));
-		Assert.assertTrue(cohort.contains(22));
+		assertCohort(cohort, 7, 20, 21, 22);
 	}
 
 	/**
@@ -46,8 +46,7 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
     public void getPatientsHavingRangedObs_shouldGetPatientsWhoseFirstObsOfASpecifiedConceptIsInARange() throws Exception {
     	CohortQueryService service = Context.getService(CohortQueryService.class);
 		Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.FIRST, new Concept(5089), null, null, null, null, null, RangeComparator.GREATER_THAN, 50d, RangeComparator.LESS_EQUAL, 80d);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(21));
+		assertCohort(cohort, 21);
     }
 
 	/**
@@ -58,8 +57,7 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
     public void getPatientsHavingRangedObs_shouldGetPatientsWhoseMaximumObsOfASpecifiedConceptIsEqualToASpecifiedValue() throws Exception {
     	CohortQueryService service = Context.getService(CohortQueryService.class);
 		Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.MAX, new Concept(5089), null, null, null, null, null, RangeComparator.EQUAL, 180d, null, null);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(20));
+		assertCohort(cohort, 20);
     }
 
 	/**
@@ -71,8 +69,7 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
     	CohortQueryService service = Context.getService(CohortQueryService.class);
     	List<EncounterType> encTypeList = Collections.singletonList(new EncounterType(1));
 		Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.ANY, new Concept(5089), null, null, null, null, encTypeList, null, null, null, null);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		assertCohort(cohort, 7);
     }
 
 	/**
@@ -85,13 +82,11 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
     	
     	List<EncounterType> encTypeList = Collections.singletonList(new EncounterType(1));
 		Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.FIRST, new Concept(5089), null, null, null, null, encTypeList, RangeComparator.GREATER_THAN, 54d, RangeComparator.LESS_EQUAL, 56d);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		assertCohort(cohort, 7);
 		
 		encTypeList = Collections.singletonList(new EncounterType(2));
 		cohort = service.getPatientsHavingRangedObs(TimeModifier.FIRST, new Concept(5089), null, null, null, null, encTypeList, RangeComparator.GREATER_THAN, 49d, RangeComparator.LESS_EQUAL, 51d);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		assertCohort(cohort, 7);
     }
 
 	/**
@@ -104,13 +99,52 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
     	
     	List<EncounterType> encTypeList = Collections.singletonList(new EncounterType(1));
 		Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.MAX, new Concept(5089), null, null, null, null, encTypeList, RangeComparator.EQUAL, 61d, null, null);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		assertCohort(cohort, 7);
 		
 		encTypeList = Collections.singletonList(new EncounterType(2));
 		cohort = service.getPatientsHavingRangedObs(TimeModifier.MAX, new Concept(5089), null, null, null, null, encTypeList, RangeComparator.EQUAL, 50d, null, null);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		assertCohort(cohort, 7);
+    }
+
+	/**
+     * @see {@link CohortQueryService#getPatientsHavingRangedObs(TimeModifier,Concept,Concept,Date,Date,List<Location>,List<EncounterType>,RangeComparator,Object,RangeComparator,Object)}
+     */
+    @Test
+    @Verifies(value = "should get patients with a query with all parameters", method = "getPatientsHavingRangedObs(TimeModifier,Concept,Concept,Date,Date,List<Location>,List<EncounterType>,RangeComparator,Object,RangeComparator,Object)")
+    public void getPatientsHavingRangedObs_shouldGetPatientsWithAQueryWithAllParameters() throws Exception {
+    	CohortQueryService service = Context.getService(CohortQueryService.class);
+    	List<EncounterType> encTypeList = Collections.singletonList(new EncounterType(6));
+    	List<Location> locationList = Collections.singletonList(new Location(2));
+    	Concept concept = new Concept(5089);
+    	Date onOrAfter = new SimpleDateFormat("yyyy-MM-dd").parse("2009-08-01");
+    	Date onOrBefore = new SimpleDateFormat("yyyy-MM-dd").parse("2009-09-30");
+    	// TODO test grouping concept
+
+    	Cohort cohort = service.getPatientsHavingRangedObs(TimeModifier.ANY, concept, null, onOrAfter, onOrBefore, locationList, encTypeList, RangeComparator.GREATER_THAN, 175d, RangeComparator.LESS_THAN, 185d);
+    	assertCohort(cohort, 20, 22);
+    	
+    	cohort = service.getPatientsHavingRangedObs(TimeModifier.FIRST, concept, null, onOrAfter, onOrBefore, locationList, encTypeList, RangeComparator.GREATER_THAN, 175d, RangeComparator.LESS_THAN, 185d);
+    	assertCohort(cohort, 20, 22);
+    	
+    	cohort = service.getPatientsHavingRangedObs(TimeModifier.LAST, concept, null, onOrAfter, onOrBefore, locationList, encTypeList, RangeComparator.GREATER_THAN, 175d, RangeComparator.LESS_THAN, 185d);
+    	assertCohort(cohort, 20);
+    	
+    	cohort = service.getPatientsHavingRangedObs(TimeModifier.MAX, concept, null, onOrAfter, onOrBefore, locationList, encTypeList, RangeComparator.GREATER_THAN, 175d, RangeComparator.LESS_THAN, 185d);
+    	assertCohort(cohort, 20);
+    	
+    	cohort = service.getPatientsHavingRangedObs(TimeModifier.NO, concept, null, onOrAfter, onOrBefore, locationList, encTypeList, RangeComparator.GREATER_THAN, 175d, RangeComparator.LESS_THAN, 185d);
+    	assertCohort(cohort, 2, 6, 7, 8, 21, 23, 24);
+    }
+
+    /**
+     * Asserts that the passed in cohort has exactly the specified member ids
+     * @param cohort
+     * @param memberIds
+     */
+	private void assertCohort(Cohort cohort, Integer... memberIds) {
+	    Assert.assertEquals("Cohort was supposed to be: " + Arrays.asList(memberIds) + " but was instead: " + cohort.getCommaSeparatedPatientIds(), memberIds.length, cohort.size());
+	    for (Integer memberId : memberIds)
+	    	Assert.assertTrue("Cohort does not contain patient " + memberId, cohort.contains(memberId));
     }
 
 }

@@ -906,19 +906,19 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		String dateAndLocationSqlForSubquery = "";
 		if (onOrAfter != null) {
 			dateAndLocationSql += " and o.obs_datetime >= :onOrAfter ";
-			dateAndLocationSqlForSubquery += " and obs_datetime >= :onOrAfter ";
+			dateAndLocationSqlForSubquery += " and obs.obs_datetime >= :onOrAfter ";
 		}
 		if (onOrBefore != null) {
 			dateAndLocationSql += " and o.obs_datetime <= :onOrBefore ";
-			dateAndLocationSqlForSubquery += " and obs_datetime <= :onOrBefore ";
+			dateAndLocationSqlForSubquery += " and obs.obs_datetime <= :onOrBefore ";
 		}
 		if (locationIds != null) {
 			dateAndLocationSql += " and o.location_id in (:locationIds) ";
-			dateAndLocationSqlForSubquery += " and location_id in (:locationIds) ";
+			dateAndLocationSqlForSubquery += " and obs.location_id in (:locationIds) ";
 		}
 		if (encounterTypeIds != null) {
 			dateAndLocationSql += " and e.encounter_type in (:encounterTypeIds) ";
-			dateAndLocationSqlForSubquery += " and encounter_type in (:encounterTypeIds) ";
+			dateAndLocationSqlForSubquery += " and encounter.encounter_type in (:encounterTypeIds) ";
 		}
 		
 		boolean doSqlAggregation = timeModifier == TimeModifier.MIN || timeModifier == TimeModifier.MAX || timeModifier == TimeModifier.AVG;
@@ -988,7 +988,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			sql.append("    from obs ");
 			if (joinOnEncounter)
 				sql.append(" inner join encounter on obs.encounter_id = encounter.encounter_id ");
-			sql.append("             where voided = false and concept_id = :questionConceptId " + dateAndLocationSqlForSubquery + " group by person_id ");
+			sql.append("             where obs.voided = false and obs.concept_id = :questionConceptId " + dateAndLocationSqlForSubquery + " group by person_id ");
 			sql.append(" ) subq on o.person_id = subq.person_id and o.obs_datetime = subq.odt ");
 			sql.append(" where o.voided = false and o.concept_id = :questionConceptId ");
 
