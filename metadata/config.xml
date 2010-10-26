@@ -4,7 +4,7 @@
 	<!-- Base Module Properties -->
 	<id>reporting</id>
 	<name>Reporting</name>
-	<version>0.5</version>
+	<version>0.5.1</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>
@@ -19,7 +19,7 @@
 
 	<require_modules>
 	   	<require_module>org.openmrs.module.serialization.xstream</require_module>
-	   	<require_module>org.openmrs.module.htmlwidgets</require_module>
+	   	<require_module version="1.5.6">org.openmrs.module.htmlwidgets</require_module>
 	   	<!-- <require_module version="0.4.1">org.openmrs.logic</require_module>  -->
 	</require_modules>
 
