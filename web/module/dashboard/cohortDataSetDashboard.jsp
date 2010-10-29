@@ -51,37 +51,6 @@ $(function() {
 	$('#cohort-tabs').tabs();
 	$('#cohort-tabs').show();	
 
-	var api = new jGCharts.Api(); 
-	$('<img>').attr('src', api.make({
-			data : [[0], [${children.size}], [${adults.size}]],  
-			axis_labels : ['Infants','Children','Adults'], 
-			type : 'p'//default bvg 
-	})).appendTo("#summary");
-
-	/*
-	$('<img>').attr('src', api.make({
-		data : [[${females.size}],[${males.size}]],  
-		axis_labels : ['Females','Males'], 
-		type : 'p'//default bvg 
-	})).appendTo("#summary");	
-	*/
-	
-	/*
-	$('<img>').attr('src', api.make({
-			data : [	
-				<c:forEach var="entry" items="${programCohortMap}" varStatus="varstatus">
-					[${entry.value.size}]<c:if test="${!varstatus.last}">,</c:if>				                                    				
-				</c:forEach>
-			],  
-			axis_labels : [	
-			   	<c:forEach var="entry" items="${programCohortMap}" varStatus="varstatus">
-					'${entry.key.name}'<c:if test="${!varstatus.last}">,</c:if>	
-				</c:forEach>
-			],				
-			size : '350x225',
-			type : 'p'//default bvg 
-	})).appendTo("#summary");
-	*/
 	$('#cohort-details-table').dataTable(
 			 {
 				"iDisplayLength": 5,				 

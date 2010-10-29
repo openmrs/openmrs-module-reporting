@@ -18,8 +18,6 @@ $(function() {
 	$('#cohort-breakdown-tabs').tabs();
 	$('#cohort-breakdown-tabs').show();	
 
-
-
 	$(".column").sortable({
 		connectWith: '.column'
 	});
@@ -76,43 +74,6 @@ $(function() {
 
 	
 	$("#accordion").accordion();
-
-
-	var api = new jGCharts.Api(); 
-	$('<img>').attr('src', api.make({
-			data : [[${females.size}],[${males.size}]],  
-			axis_labels : ['Females','Males'], 
-			type : 'p'//default bvg 
-	})) 
-	.appendTo("#genderBarChart");
-	
-	var api = new jGCharts.Api(); 
-	$('<img>').attr('src', api.make({
-			data : [[${adults.size}], [${children.size}]],  
-			axis_labels : ['Adults','Children'], 
-			type : 'p'//default bvg 
-	})) 
-	.appendTo("#ageBarChart");
-
-	var api = new jGCharts.Api(); 
-	$('<img>').attr('src', api.make({
-			data : [	
-				<c:forEach var="entry" items="${programCohortMap}" varStatus="varstatus">
-					[${entry.value.size}]<c:if test="${!varstatus.last}">,</c:if>				                                    				
-				</c:forEach>
-			],  
-			axis_labels : [	
-			   	<c:forEach var="entry" items="${programCohortMap}" varStatus="varstatus">
-					'${entry.key.name}'<c:if test="${!varstatus.last}">,</c:if>	
-				</c:forEach>
-			],				
-			size : '350x225',
-			type : 'p'//default bvg 
-	})) 
-	.appendTo("#programBarChart");
-	
-
-	
 });
 </script>
 
