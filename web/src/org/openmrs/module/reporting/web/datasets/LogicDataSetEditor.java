@@ -59,6 +59,7 @@ public class LogicDataSetEditor {
 		model.addAttribute("definition", definition);
 		model.addAttribute("logicErrors", logicErrors);
 		model.addAttribute("tokens", tokens);
+		model.addAttribute("conceptNameTags", Context.getConceptService().getAllConceptNameTags());
 	}
 	
 	@RequestMapping("/module/reporting/datasets/logicDataSetEditorSave")

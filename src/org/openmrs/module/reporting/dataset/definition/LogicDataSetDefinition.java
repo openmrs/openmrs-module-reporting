@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetMetaData;
@@ -33,11 +35,9 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
 	
 	private List<Column> columns = new ArrayList<Column>();
 	
-	
 	public LogicDataSetDefinition() {
 		super();
 	}
-	
 	
 	/**
 	 * Deletes all columns
@@ -73,8 +73,7 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
     	this.columns = columns;
     }
 
-
-    /**
+	/**
      * @see PageableDataSetDefinition#getDataSetMetadata()
      */
     public DataSetMetaData getDataSetMetadata() {
@@ -132,22 +131,51 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
          */
         public ColumnFormatter getFormatter() {
         	if (format != null) {
-        		if ("date".equals(format))
+        		if ("date".equals(format)) {
 	        		return new DateFormatter();
-	        	else if ("boolean".equals(format))
+        		}
+	        	else if ("boolean".equals(format)) {
 	        		return new BooleanFormatter("X", "");
-	        	else if (format.contains(":"))
+	        	}
+	        	else if (format.startsWith("concept:")) {
+	        		return new ConceptFormatter(format);
+	        	}
+	        	else if (format.contains(":")) {
 	        		return new DecodeFormatter(format);
+	        	}
         	}
        		return new ValueFormatter();
         }
         
 	}
     
-    
     // helper classes for formatting columns
     public interface ColumnFormatter {
     	public Object format(Result input);
+    }
+    
+    public class ConceptFormatter implements ColumnFormatter {
+    	private String format;
+    	public ConceptFormatter(String format) {
+    		this.format = format;
+    	}
+    	public Object format(Result input) {
+    		try {
+	    		if (input != null && input.toConcept() != null && format != null) {
+	    			Concept c = input.toConcept();
+	    			String nameTag = format.split(":")[1];
+    				for (ConceptName cn : c.getNames()) {
+    					if (cn.hasTag(nameTag)) {
+    						return cn.getName();
+    					}
+    				}
+	    		}
+    		}
+    		catch (Exception e) {
+    			log.warn("Unable to format column as a Concept with format: " + format);
+    		}
+    	    return input;
+    	}
     }
     
     public class ValueFormatter implements ColumnFormatter {

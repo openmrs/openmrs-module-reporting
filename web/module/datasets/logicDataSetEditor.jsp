@@ -84,6 +84,10 @@
 											<option value="">Value</option>
 											<option value="date" <c:if test="${col.format == 'date'}">selected="true"</c:if>>Date</option>
 											<option value="boolean" <c:if test="${col.format == 'boolean'}">selected="true"</c:if>>Boolean (X)</option>
+											<c:forEach items="${conceptNameTags}" var="tag">
+												<c:set var="formatValue" value="concept:${tag.tag}"/>
+												<option value="${formatValue}" <c:if test="${col.format == formatValue}">selected="true"</c:if>>Concept (${tag.tag})</option>
+											</c:forEach>
 										</select>
 									</td>
 								</tr>
@@ -99,6 +103,9 @@
 											<option value="">Value</option>
 											<option value="date">Date</option>
 											<option value="boolean">Boolean (X)</option>
+											<c:forEach items="${conceptNameTags}" var="tag">
+												<option value="concept:${tag.tag}">Concept (${tag.tag})</option>
+											</c:forEach>
 										</select>
 									</td>
 								</tr>
