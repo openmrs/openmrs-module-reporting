@@ -2,6 +2,31 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <c:set var="__openmrs_hide_report_link" value="true"/>
 <%@ include file="../run/localHeader.jsp"%>
+
+
+
+<script type="text/javascript" src="reporting/web/resources/scripts/jquery/jquery-1.3.2.min.js"></script>        
+<style type="text/css">
+    .alt { background-color: #EEE; }
+    .hover { background-color: #DED; }
+    .althover { background-color: #EFE; }        
+</style>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$('tr:even').addClass('alt');
+	$('tr:even').hover(
+			function(){$(this).addClass('hover')},
+			function(){$(this).removeClass('hover')}
+	);	
+	$('tr:odd').hover(
+			function(){$(this).addClass('althover')},
+			function(){$(this).removeClass('althover')}
+	);
+});
+</script>
+
+
 <%--
   This page assumes a ReportData object in the session as the attribute '__openmrs_report_data'
 --%>
