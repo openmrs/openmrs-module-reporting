@@ -146,6 +146,17 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
     }
 
 	/**
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer, org.openmrs.User)
+	 */
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
+	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
+                                              Integer atLeastCount, Integer atMostCount, User createdBy) {
+	    return dao.getPatientsHavingEncounters(onOrAfter, onOrBefore,
+	    	locationList, encounterTypeList, formList,
+	    	atLeastCount, atMostCount, createdBy);
+    }
+
+	/**
 	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingDiscreteObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.SetComparator, java.util.List)
 	 */
 	public Cohort getPatientsHavingDiscreteObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,

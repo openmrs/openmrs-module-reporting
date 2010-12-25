@@ -108,6 +108,23 @@ public interface CohortQueryService extends OpenmrsService {
                                               List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount);
 	
+	/**
+	 * Get patients having encounters with the following characteristics
+	 * 
+	 * @param onOrAfter
+	 * @param onOrBefore
+	 * @param locationList
+	 * @param encounterTypeList
+	 * @param formList
+	 * @param atLeastCount
+	 * @param atMostCount
+	 * @param createdBy
+	 * @return cohort of patients matching the query
+	 */
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, List<Location> locationList,
+                                              List<EncounterType> encounterTypeList, List<Form> formList,
+                                              Integer atLeastCount, Integer atMostCount, User createdBy);
+	
 	
 	/**
 	 * Get patients having person attributes of a particular type or that contain certain values.  

@@ -19,6 +19,7 @@ import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.User;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
@@ -52,6 +53,9 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty(required=false, group="other")
 	private Boolean returnInverse = Boolean.FALSE;
+	
+	@ConfigurationProperty(required=false, group="other")
+	private User createdBy;
 
 	//***** CONSTRUCTORS *****
 	
@@ -85,8 +89,10 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 			ret.append(" at least " + atLeastCount);
 		if (atMostCount != null)
 			ret.append(" at most " + atMostCount);
-		if (returnInverse != null)
+		if (returnInverse != null && returnInverse.booleanValue())
 			ret.append(" AND INVERT THIS");
+		if (createdBy != null)
+			ret.append(" created by " + createdBy);
 		return ret.toString();
 	}
 
@@ -209,5 +215,13 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
     public void setFormList(List<Form> formList) {
     	this.formList = formList;
     }
+
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User creator) {
+		this.createdBy = creator;
+	}
 	
 }

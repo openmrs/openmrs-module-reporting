@@ -45,7 +45,7 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
     	Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingEncounters(
     		cd.getOnOrAfter(), cd.getOnOrBefore(),
     		cd.getLocationList(), cd.getEncounterTypeList(), cd.getFormList(),
-    		cd.getAtLeastCount(), cd.getAtMostCount());
+    		cd.getAtLeastCount(), cd.getAtMostCount(), cd.getCreatedBy());
 		   	
     	if (cd.isReturnInverse() == Boolean.TRUE) {
     		Cohort baseCohort = context.getBaseCohort();

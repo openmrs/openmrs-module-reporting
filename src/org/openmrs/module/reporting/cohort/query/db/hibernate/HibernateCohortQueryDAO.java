@@ -1059,7 +1059,15 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount) {
+		return getPatientsHavingEncounters(onOrAfter, onOrBefore, locationList, encounterTypeList, formList, atLeastCount, atMostCount, null);
+	}
 
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer, org.openmrs.User)
+	 */
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
+	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
+                                              Integer atLeastCount, Integer atMostCount, User createdBy) {
 		List<Integer> encTypeIds = openmrsObjectIdListHelper(encounterTypeList);
 		List<Integer> locationIds = openmrsObjectIdListHelper(locationList);
 		List<Integer> formIds = openmrsObjectIdListHelper(formList);
@@ -1076,6 +1084,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			whereClauses.add("e.encounter_datetime >= :onOrAfter");
 		if (onOrBefore != null)
 			whereClauses.add("e.encounter_datetime <= :onOrBefore");
+		if (createdBy != null)
+			whereClauses.add("e.creator = :createdBy");
 		List<String> havingClauses = new ArrayList<String>();
 		if (atLeastCount != null)
 			havingClauses.add("count(*) >= :atLeastCount");
@@ -1110,6 +1120,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.setInteger("atLeastCount", atLeastCount);
 		if (atMostCount != null)
 			query.setInteger("atMostCount", atMostCount);
+		if (createdBy != null)
+			query.setInteger("createdBy", createdBy.getId());
 		
 		return new Cohort(query.list());
     }
