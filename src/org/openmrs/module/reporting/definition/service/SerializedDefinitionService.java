@@ -18,7 +18,9 @@ import java.util.List;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.db.SerializedObject;
+import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -49,6 +51,13 @@ public interface SerializedDefinitionService extends OpenmrsService {
 	 * @return all definitions
 	 */
 	public <T extends Definition> List<T> getAllDefinitions(Class<T> definitionType, boolean includeRetired);
+
+	/**
+	 * @param definitionType
+	 * @param includeRetired
+	 * @return lightweight summaries of all definitions of the specified class
+	 */
+	public <T extends Definition> List<DefinitionSummary> getAllDefinitionSummaries(Class<T> definitionType, boolean includeRetired);
 	
 	/**
 	 * @param includeRetired indicates whether to also include retired Definitions in the count
@@ -110,4 +119,5 @@ public interface SerializedDefinitionService extends OpenmrsService {
 	 * @return the SerializedObject
 	 */
     public void saveSerializedDefinition(SerializedObject serializedDefinition);
+
 }

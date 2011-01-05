@@ -14,6 +14,7 @@ import org.openmrs.module.reporting.cohort.definition.util.CohortFilter;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
@@ -78,6 +79,10 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	 */
 	public List<ReportDefinition> getAllDefinitions(boolean includeRetired) {
 		return getService().getAllDefinitions(ReportDefinition.class, includeRetired);
+	}
+	
+	public List<DefinitionSummary> getAllDefinitionSummaries(boolean includeRetired) {
+	    return getService().getAllDefinitionSummaries(ReportDefinition.class, includeRetired);
 	}
 	
 	/**

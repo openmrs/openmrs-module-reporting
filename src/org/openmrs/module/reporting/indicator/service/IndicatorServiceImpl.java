@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
+import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
@@ -175,4 +176,5 @@ public class IndicatorServiceImpl extends BaseDefinitionService<Indicator> imple
 	protected List<IndicatorPersister> getAllPersisters() {	
 		return HandlerUtil.getHandlersForType(IndicatorPersister.class, null);
 	}
+
 }

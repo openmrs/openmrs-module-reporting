@@ -23,6 +23,7 @@ import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.cohort.definition.persister.CohortDefinitionPersister;
+import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,6 +135,18 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
         	catch (Exception e) {
         		log.warn("Unable to deserialize Definition: " + so, e);
         	}
+    	}
+    	return ret;
+    }
+    
+    /**
+     * @see SerializedDefinitionService#getAllDefinitionSummaries(Class, boolean)
+     */
+    public <T extends Definition> List<DefinitionSummary> getAllDefinitionSummaries(Class<T> definitionType,
+                                                                                    boolean includeRetired) {
+    	List<DefinitionSummary> ret = new ArrayList<DefinitionSummary>();
+    	for (SerializedObject so : dao.getAllSerializedObjects(definitionType, includeRetired)) {
+    		ret.add(new DefinitionSummary(so));
     	}
     	return ret;
     }

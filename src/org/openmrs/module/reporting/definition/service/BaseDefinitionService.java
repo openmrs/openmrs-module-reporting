@@ -13,12 +13,14 @@
  */
 package org.openmrs.module.reporting.definition.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -27,7 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 /**
- *  Base Implementation of the DefinitionService API
+ *  Base Implementation of the DefinitionService API.
+ *  Note that any subclasses that want {@link #getAllDefinitionSummaries(boolean)} to perform well need to override it.
  */
 @Transactional
 public abstract class BaseDefinitionService<T extends Definition> extends BaseOpenmrsService implements DefinitionService<T> {
@@ -75,5 +78,18 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 		EvaluationContext childContext = EvaluationContext.cloneForChild(context, definition);
 		log.debug("Evaluating: " + definition.getParameterizable() + "(" + context.getParameterValues() + ")");
 		return evaluate(definition.getParameterizable(), childContext);
+	}
+
+	/**
+	 * Note that this base implementation is no more efficient than just calling {@link #getAllDefinitions(boolean)}
+	 * it should really be overridden in any subclasses that intend to use this functionality.
+	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#getAllDefinitionSummaries(boolean)
+	 */
+	public List<DefinitionSummary> getAllDefinitionSummaries(boolean includeRetired) {
+		List<DefinitionSummary> ret = new ArrayList<DefinitionSummary>();
+	    for (T def : getAllDefinitions(includeRetired)) {
+	    	ret.add(new DefinitionSummary(def));
+	    }
+	    return ret;
 	}
 }

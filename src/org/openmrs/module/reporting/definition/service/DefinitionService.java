@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -71,6 +72,13 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 */
 	@Transactional(readOnly = true)
 	public List<T> getAllDefinitions(boolean includeRetired);
+	
+	/**
+	 * @param includeRetired
+	 * @return lightweight summaries for all definitions managed by this service
+	 */
+	@Transactional(readOnly= true)
+	public List<DefinitionSummary> getAllDefinitionSummaries(boolean includeRetired);
 	
 	/**
 	 * @param includeRetired indicates whether to also include retired Definitions in the count

@@ -42,7 +42,7 @@
 				</td>
 			</c:if>
 			<td class="small" width="100px" align="right">
-				<c:set var="lastRun" value="${model.lastReportRuns[r]}"/>
+				<c:set var="lastRun" value="${model.lastReportRuns[r.uuid]}"/>
 				<c:if test="${lastRun != null}">
 					<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistoryOpen.form?uuid=${lastRun.uuid}">(view last run)</a>
 				</c:if>
