@@ -58,6 +58,6 @@
 	<classpathentry kind="lib" path="lib-common/jstl-1.1.jar"/>
 	<classpathentry kind="lib" path="lib-common/openmrs-api-1.5.2.11623-dev.jar" sourcepath="/openmrs-1.5.x"/>
 	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/commons-io/commons-io-1.4.jar"/>
-	<classpathentry kind="lib" path="lib-common/serialization.xstream-0.2.4.jar"/>
+	<classpathentry kind="lib" path="lib-common/serialization.xstream-0.2.5.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
