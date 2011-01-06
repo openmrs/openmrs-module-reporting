@@ -14,12 +14,12 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	$('tr:even').addClass('alt');
-	$('tr:even').hover(
+	$('.dataset tr:even').addClass('alt');
+	$('.dataset tr:even').hover(
 			function(){$(this).addClass('hover')},
 			function(){$(this).removeClass('hover')}
 	);	
-	$('tr:odd').hover(
+	$('.dataset tr:odd').hover(
 			function(){$(this).addClass('althover')},
 			function(){$(this).removeClass('althover')}
 	);
@@ -49,7 +49,7 @@ $(document).ready(function(){
 	<div id="container">
 		<div align="center">
 			<c:forEach var="dataSetMapEntry" items="${__openmrs_report_data.dataSets}">
-				<table cellpadding="2" style="border: 1px solid black; width:100%;">
+				<table class="dataset" cellpadding="2" style="border: 1px solid black; width:100%;">
 					<tr>
 						<th colspan="4" align="center" style="background-color: #8FABC7">
 							<span style="color:white;">${dataSetMapEntry.value.definition.name}</span>
