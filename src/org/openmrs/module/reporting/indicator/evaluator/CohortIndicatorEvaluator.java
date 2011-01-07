@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.indicator.evaluator;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -90,6 +91,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
     	if (cid.getLogicExpression() != null) {
     		try {
     			LogicCriteria criteria = Context.getLogicService().parseString(cid.getLogicExpression());
+    			maybeSetIndexDate(criteria, context);
     			Map<Integer, Result> logicResults = Context.getLogicService().eval(cohort, criteria);
     			for (Integer memberId : logicResults.keySet()) {
     				result.addLogicResult(memberId, logicResults.get(memberId).toNumber());
@@ -101,5 +103,30 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
     	}
 
 		return result;
+    }
+
+	/**
+     * If context has a parameter called (in order) any of [indexDate, date, endDate, startDate] then
+     * the logic criteria's index date will be set to the value of that parameter.
+     * 
+     * Note that criteria should be a LogicCriteria. I'm using reflection so this code works on both 1.5
+     * (where LogicCriteria is a class) and 1.6+ (where it's an interface)
+     * 
+     * @param criteria
+     * @param context
+     */
+    private static String[] possibilities = new String[] { "indexDate", "date", "endDate", "startDate" };
+    private void maybeSetIndexDate(Object criteria, EvaluationContext context) {
+    	for (String p : possibilities) {
+    		if (context.containsParameter(p)) {
+    			Date date = (Date) context.getParameterValue(p);
+    			try {
+    				criteria.getClass().getMethod("asOf", Date.class).invoke(criteria, date);
+    			} catch (Exception ex) {
+    				throw new RuntimeException(ex);
+    			}
+    			return;
+    		}
+    	}
     }
 }
