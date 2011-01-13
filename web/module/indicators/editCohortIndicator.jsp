@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Indicator Definitions" otherwise="/login.htm" redirect="/module/reporting/indicators/editPeriodIndicator.form" />
+<openmrs:require privilege="Manage Indicator Definitions" otherwise="/login.htm" redirect="/module/reporting/indicators/editCohortIndicator.form" />
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script>					
@@ -16,7 +16,7 @@
 	} );
 </script>
 
-<c:set var="pageUrl" value="/module/reporting/indicators/editPeriodIndicator.form?uuid=uuid"/>
+<c:set var="pageUrl" value="/module/reporting/indicators/editCohortIndicator.form?uuid=uuid"/>
 
 <c:choose>
 	<c:when test="${indicator.uuid == null}">
