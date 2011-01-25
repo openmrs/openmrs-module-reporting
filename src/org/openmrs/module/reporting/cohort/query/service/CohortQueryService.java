@@ -183,4 +183,16 @@ public interface CohortQueryService extends OpenmrsService {
 	public Cohort getPatientsHavingBirthAndDeath(Date bornOnOrAfter, Date bornOnOrBefore,
 	                                             Date diedOnOrAfter, Date diedOnOrBefore);
 
+	/**
+     * Returns a cohort of patients who "pass" a logic expression. (Depends on Logic's Result.toBoolean,
+     * which basically means that empty results, and the boolean value false are "failure", and anything
+     * else "passes".) 
+     * 
+     * @param logic
+     * @param parameterValues
+     * @param baseCohort if not null, only look at patients in this cohort
+     * @return
+     */
+    public Cohort executeLogicQuery(String logicExpression, Map<String, Object> parameterValues, Cohort baseCohort);
+
 }

@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.cohort.query.service;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,8 @@ import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.api.impl.PatientSetServiceImpl;
+import org.openmrs.logic.LogicService;
+import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
@@ -192,6 +195,60 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 		return dao.executeSqlQuery(sqlQuery, paramMap);
 	}
 	
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#executeLogicQuery(java.lang.String, java.util.Map, org.openmrs.Cohort)
+	 */
+	public Cohort executeLogicQuery(String logicExpression, Map<String, Object> parameters, Cohort baseCohort) {
+		if (baseCohort == null)
+			baseCohort = Context.getPatientSetService().getAllPatients();
+		
+	    LogicService logicService = Context.getLogicService();
+	    /*
+	     * The following code should read:
+	     *     LogicCriteria lc = logicService.parse(logicExpression);
+	     *     Map<Integer, Result> results = logicService.eval(baseCohort, lc, parameters);
+	     * But I have to write it in this hacky way for 1.5.x compatibility, because
+	     *  * LogicService.parse wasn't introduced until 1.6
+	     *  * LogicCriteria is a class in 1.5.x and an interface in 1.6+
+	     * If we ever stop supporting 1.5.x in the reporting module, remove the hack below
+	     */
+	    Object logicCriteria = logicService.parseString(logicExpression);
+	    Method evalMethod = findLogicEvalMethodForCohortLogicCriteriaAndParams();
+	    Map<Integer, Result> results = null;
+	    try {
+	    	results = (Map<Integer, Result>) evalMethod.invoke(logicService, baseCohort, logicCriteria, parameters);
+	    } catch (Exception ex) {
+	    	throw new RuntimeException(ex);
+	    }
+	    // END HACKY CODE
+	    Cohort ret = new Cohort();
+	    for (Map.Entry<Integer, Result> e : results.entrySet())
+	    	if (e.getValue().toBoolean())
+	    		ret.addMember(e.getKey());
+	    return ret;
+	}
+	
+	/**
+	 * Helper because I need to avoid explicitly naming the LogicCriteria class, since it breaks things to
+	 * compile against that (class) in 1.5, since it becomes an interface in 1.6
+     * @return the LogicService.eval(Cohort, LogicCriteria, Map) method
+     */
+    private Method findLogicEvalMethodForCohortLogicCriteriaAndParams() {
+	    for (Method m : LogicService.class.getMethods()) {
+	    	Class<?>[] paramTypes = m.getParameterTypes();
+	    	if (paramTypes.length != 3)
+	    		continue;
+	    	if (!paramTypes[0].equals(Cohort.class))
+	    		continue;
+	    	if (!paramTypes[2].equals(Map.class))
+	    		continue;
+	    	if (!paramTypes[1].getName().equals("org.openmrs.logic.LogicCriteria"))
+	    		continue;
+	    	return m;
+	    }
+	    throw new RuntimeException("couldn't find LogicService.eval(Cohort, LogicCriteria, Map) method");
+    }
+
 	/**
 	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getNamedParameters(java.lang.String)
 	 */
