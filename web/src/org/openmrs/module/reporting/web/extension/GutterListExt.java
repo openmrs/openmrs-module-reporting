@@ -1,13 +1,9 @@
 package org.openmrs.module.reporting.web.extension;
 
-import org.openmrs.module.Extension;
+import org.openmrs.module.web.extension.LinkExt;
 
-public class GutterListExt extends Extension {
 
-	@Override
-	public MEDIA_TYPE getMediaType() {
-		return Extension.MEDIA_TYPE.html;
-	}
+public class GutterListExt extends LinkExt {
 
 	public String getLabel() {
 		return "reporting.title";
