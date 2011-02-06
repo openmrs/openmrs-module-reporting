@@ -19,6 +19,7 @@ import java.util.List;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.ProgramWorkflow;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
@@ -27,22 +28,23 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
  * release, so should be used with caution
  * @see SimplePatientDataSetEvaluator
  */
+@Localized("reporting.SimplePatientDataSetDefinition")
 public class SimplePatientDataSetDefinition extends BaseDataSetDefinition {
 
 	private static final long serialVersionUID = 6405583324151111487L;
 	
 	//**** PROPERTIES *****
 	
-	@ConfigurationProperty
+	@ConfigurationProperty(group="properties")
 	public List<String> patientProperties;
 	
-	@ConfigurationProperty
+	@ConfigurationProperty(group="properties")
 	public List<PersonAttributeType> personAttributeTypes;
 	
-	@ConfigurationProperty
+	@ConfigurationProperty(group="properties")
 	public List<PatientIdentifierType> identifierTypes;
 	
-	@ConfigurationProperty
+	@ConfigurationProperty(group="properties")
 	public List<ProgramWorkflow> programWorkflows;
 	
 	/**

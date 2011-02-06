@@ -69,6 +69,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			log.debug("New Workbook Constructed");
 			
 			HSSFSheet sheet = wb.getSheetAt(0);
+			sheet.setForceFormulaRecalculation(true);
 			
 			// TODO: Implement more complex logic around multiple sheets for multiple rows / multiple datasets
 			if (reportData.getDataSets().size() != 1) {
