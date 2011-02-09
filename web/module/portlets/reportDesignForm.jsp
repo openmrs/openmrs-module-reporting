@@ -1,7 +1,12 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
-<c:if test="${model.dialog != 'false'}">
-	<%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
-</c:if>
+<c:choose>
+    <c:when test="${model.dialog != 'false'}">
+	   <%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
+	</c:when>
+	<c:otherwise>
+	   <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
+	</c:otherwise>
+</c:choose>
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {

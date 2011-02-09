@@ -2,7 +2,6 @@
 <openmrs:require privilege="Manage Reports" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
 
-<%--<%@ include file="/WEB-INF/view/module/reporting/include.jsp"%> --%>
 <c:if test="${model.dialog != 'false'}">
 <%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
 </c:if>
