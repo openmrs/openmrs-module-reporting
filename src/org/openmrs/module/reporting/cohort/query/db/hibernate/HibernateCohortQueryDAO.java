@@ -967,7 +967,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		StringBuilder sql = new StringBuilder();
 
 		if (timeModifier == TimeModifier.ANY || timeModifier == TimeModifier.NO) {
-			sql.append(" select distinct o.person_id from obs o ");
+			sql.append(" select o.person_id from obs o ");
 			if (joinOnEncounter) {
 				sql.append(" inner join encounter e on o.encounter_id = e.encounter_id ");
 			}
@@ -979,7 +979,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		} else if (timeModifier == TimeModifier.FIRST || timeModifier == TimeModifier.LAST) {
 			boolean isFirst = timeModifier == PatientSetService.TimeModifier.FIRST;
 			
-			sql.append(" select distinct o.person_id ");
+			sql.append(" select o.person_id ");
 			sql.append(" from obs o ");
 			if (joinOnEncounter)
 				sql.append(" inner join encounter e on o.encounter_id = e.encounter_id ");
@@ -993,7 +993,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			sql.append(" where o.voided = false and o.concept_id = :questionConceptId ");
 
 		} else if (doSqlAggregation) {
-			sql.append(" select distinct o.person_id ");
+			sql.append(" select o.person_id ");
 			sql.append(" from obs o ");
 			if (joinOnEncounter)
 				sql.append(" inner join encounter e on o.encounter_id = e.encounter_id ");
