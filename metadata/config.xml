@@ -4,7 +4,7 @@
 	<!-- Base Module Properties -->
 	<id>reporting</id>
 	<name>Reporting</name>
-	<version>0.5.2.1</version>
+	<version>0.5.3.1</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>
