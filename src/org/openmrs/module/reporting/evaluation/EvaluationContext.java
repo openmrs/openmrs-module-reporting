@@ -89,7 +89,7 @@ public class EvaluationContext {
 		this.setLimit(context.getLimit());
 		this.setCache(context.getCache());
 		this.setBaseCohort(context.getBaseCohort());
-		this.setParameterValues(context.getParameterValues());
+		this.getParameterValues().putAll(context.getParameterValues());
 	}
 	
 	// *******************
@@ -119,7 +119,6 @@ public class EvaluationContext {
 			throw new APIException("The specified report could not be evaluated because one of its components has been removed from the database");
 		
 		EvaluationContext ec = EvaluationContext.clone(initialContext);
-		ec.setParameterValues(new HashMap<String, Object>());
 			
 		for (String paramName : child.getParameterMappings().keySet()) {
 			Parameter parameter = child.getParameterizable().getParameter(paramName);
@@ -138,6 +137,20 @@ public class EvaluationContext {
 	// *******************
 	// INSTANCE METHODS 
 	// *******************
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("EvaluationContext[evaluationDate="+evaluationDate);
+		for (Map.Entry<String, Object> e : getParameterValues().entrySet()) {
+			sb.append("," + e.getKey() + "->" + e.getValue() + " (" + e.getValue().getClass().getSimpleName() + ")");
+		}
+		sb.append("]");
+		return sb.toString();
+	}	
 	
 	/**
 	 * Get the cache property

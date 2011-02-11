@@ -37,8 +37,21 @@ public class CohortDefinitionDimension extends BaseDefinition implements CohortD
 	
 	private Integer id;
 	private Map<String, Mapped<CohortDefinition>> cohortDefinitions;
+	
+	
     
     /**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		if (getName() != null & getOptionKeys() != null) {
+			return getName() + " " + getOptionKeys();
+		}
+		return super.toString();
+	}
+
+	/**
      * @see Dimension#getOptionKeys()
      */
     public List<String> getOptionKeys() {
