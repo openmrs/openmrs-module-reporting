@@ -173,7 +173,7 @@ public class DateUtil {
 		if (delta < 48 * HOUR && showAgoWord) {
 			return "yesterday";
 		}
-		if (delta < 30 * DAY && !wasFebruary) {
+		if ((delta < 28 * DAY) || (delta < 30 * DAY && !wasFebruary)) {
 			return (delta / DAY) + " days" + suffix;
 		}
 		if (delta < 12 * MONTH) {
