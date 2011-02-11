@@ -102,7 +102,7 @@
 		
 		<!-- Copy module metadata -->
 		<copy todir="build/">
-			<fileset dir="metadata/" includes="**/*" />
+			<fileset dir="metadata/" includes="**/*" excludes="log4j.xml" />
 			<filterset refid="variables.to.replace" />
 		</copy>
 		
