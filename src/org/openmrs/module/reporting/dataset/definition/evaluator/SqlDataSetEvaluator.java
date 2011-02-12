@@ -14,9 +14,9 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,17 +32,18 @@ import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
 
 /**
  * The logic that evaluates a {@link SqlDataSetDefinition} and produces an {@link DataSet}
  * @see SqlDataSetDefinition
  */
-@Handler(supports={SqlDataSetDefinition.class})
+@Handler(supports = { SqlDataSetDefinition.class })
 public class SqlDataSetEvaluator implements DataSetEvaluator {
-
+	
 	protected Log log = LogFactory.getLog(this.getClass());
-
+	
 	/**
 	 * Public constructor
 	 */
@@ -51,6 +52,8 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 * @should evaluate a SQLDataSetDefinition
+	 * @should evaluate a SQLDataSetDefinition with parameters
+	 * @should evaluate a SQLDataSetDefinition with in statement
 	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
@@ -64,24 +67,25 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 		if (cohort == null) {
 			cohort = Context.getPatientSetService().getAllPatients();
 		}
-					
+		
 		if (context.getLimit() != null) {
 			CohortUtil.limitCohort(cohort, context.getLimit());
 		}
-
+		
 		Connection connection = null;
-		try { 		
+		try {
 			connection = DatabaseUpdater.getConnection();
 			ResultSet resultSet = null;
-			Statement statement = connection.createStatement();
-			boolean result = statement.execute(sqlDsd.getSqlQuery());
-			if (result) { 
+			
+			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlDsd.getSqlQuery(), context.getParameterValues());
+			boolean result = statement.execute();
+			if (result) {
 				resultSet = statement.getResultSet();
 			}
 			
 			int patientIdColumnIndex = -1;
 			ResultSetMetaData rsmd = resultSet.getMetaData();
-			for (int i=1; i<=rsmd.getColumnCount();i++) {
+			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
 				DataSetColumn column = new DataSetColumn();
 				column.setName(rsmd.getColumnName(i));
 				column.setDataType(Context.loadClass(rsmd.getColumnClassName(i)));
@@ -90,7 +94,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 				if ("patient_id".equals(rsmd.getColumnName(i))) {
 					patientIdColumnIndex = i;
 				}
-			}	
+			}
 			
 			while (resultSet.next()) {
 				// Limit the DataSet to only patient in the base cohort, if there exists a column named "patientId"
@@ -103,22 +107,22 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 				DataSetRow dataSetRow = new DataSetRow();
 				for (DataSetColumn column : dataSet.getMetaData().getColumns()) {
 					dataSetRow.addColumnValue(column, resultSet.getObject(column.getName()));
-				}					
+				}
 				dataSet.addRow(dataSetRow);
-			}			
-		} 
-		catch (Exception e) { 
-			throw new RuntimeException(e);			
-		} 
-		finally { 
-			try { 
+			}
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		finally {
+			try {
 				if (connection != null) {
 					connection.close();
 				}
-			} 
-			catch (Exception e) { 
-				log.error("Error while closing connection", e); 
-			} 			
+			}
+			catch (Exception e) {
+				log.error("Error while closing connection", e);
+			}
 		}
 		return dataSet;
 	}

@@ -41,6 +41,7 @@ import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
+import org.openmrs.module.reporting.report.util.SqlUtils;
 
 public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
@@ -898,8 +899,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (groupingConceptId != null)
 			throw new RuntimeException("grouping concept not yet implemented");
 
-		List<Integer> locationIds = openmrsObjectIdListHelper(locationList);
-		List<Integer> encounterTypeIds = openmrsObjectIdListHelper(encounterTypeList);
+		List<Integer> locationIds = SqlUtils.openmrsObjectIdListHelper(locationList);
+		List<Integer> encounterTypeIds = SqlUtils.openmrsObjectIdListHelper(encounterTypeList);
 		
 		boolean joinOnEncounter = encounterTypeIds != null;
 		String dateAndLocationSql = ""; // TODO rename to include encounterType
@@ -1068,9 +1069,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount, User createdBy) {
-		List<Integer> encTypeIds = openmrsObjectIdListHelper(encounterTypeList);
-		List<Integer> locationIds = openmrsObjectIdListHelper(locationList);
-		List<Integer> formIds = openmrsObjectIdListHelper(formList);
+		List<Integer> encTypeIds = SqlUtils.openmrsObjectIdListHelper(encounterTypeList);
+		List<Integer> locationIds = SqlUtils.openmrsObjectIdListHelper(locationList);
+		List<Integer> formIds = SqlUtils.openmrsObjectIdListHelper(formList);
 		
 		List<String> whereClauses = new ArrayList<String>();
 		whereClauses.add("e.voided = false");
@@ -1142,37 +1143,6 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	    	operator, valueList);
     }
 
-	/**
-	 * TODO Move this to a reporting utility class or to core. 
-	 * 
-	 * @param list	a list of OpenmrsObjects
-	 * @return null if passed null or an empty list, otherwise returns a list of the ids of the OpenmrsObjects in list
-	 */
-	private List<Integer> openmrsObjectIdListHelper(List<? extends OpenmrsObject> list) {
-		if (list == null || list.size() == 0) return null;
-		List<Integer> ret = new ArrayList<Integer>();
-		for (OpenmrsObject o : list)
-			ret.add(o.getId());
-		return ret;
-    }
-	
-	/**
-	 * TODO Move this to a reporting utility class or to core. 
-	 * 
-	 * @param list	a list of Objects
-	 * @return null if passed null or an empty list, otherwise returns a list of Object.toString()
-	 */
-	private List<String> objectListHelper(List<? extends Object> list) {
-		if (list == null || list.size() == 0) return null;		
-		List<String> results = new ArrayList<String>();
-		for (Object object : list)
-			results.add(object.toString());
-		
-		return results;
-    }	
-	
-    	
-	
 	/**
 	 * @see {@link CohortQueryDAO#getPatientsHavingPersonAttributes(PersonAttributeType, List)}
 	 */
@@ -1354,12 +1324,12 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 					// If first element in the list is an OpenmrsObject
 					if (OpenmrsObject.class.isAssignableFrom(((List) paramValue).get(0).getClass())) { 
 						query.setParameterList(paramName, 
-								openmrsObjectIdListHelper((List<OpenmrsObject>) paramValue));
+								SqlUtils.openmrsObjectIdListHelper((List<OpenmrsObject>) paramValue));
 					}
 					// a List of Strings, Integers?
 					else { 
 						query.setParameterList(paramName, 
-								objectListHelper((List<Object>) paramValue));
+								SqlUtils.objectListHelper((List<Object>) paramValue));
 					}
 				}
 				// java.util.Date and subclasses
