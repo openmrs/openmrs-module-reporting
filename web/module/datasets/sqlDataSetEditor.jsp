@@ -62,9 +62,9 @@ img#play { vertical-align: middle; margin: 0; }
 		<c:choose>
 			<c:when test="${definition.uuid == null}">
 		
-				<b class="boxHeader">SQL Cohort Query</b>
+				<b class="boxHeader">SQL Data Set</b>
 				<div class="box">
-					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition|successUrl=${pageUrl}" />
+					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition|successUrl=${pageUrl}" />
 				</div>
 				
 			</c:when>		
