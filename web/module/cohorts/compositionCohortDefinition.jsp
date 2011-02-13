@@ -2,11 +2,10 @@
 <openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition" />
 <%@ include file="../manage/localHeader.jsp"%>
 
-<%-- 
-<c:url value="/module/reporting/cohorts/compositionCohortDefinition.form" var="pageUrl">
+<c:url value="/module/reporting/cohorts/compositionCohortDefinition.form" var="pageUrlWithUuid">
 	<c:param name="uuid" value="${definition.uuid}" />
 </c:url>
---%>
+
 <c:set var="pageUrl" value="/module/reporting/cohorts/compositionCohortDefinition.form?uuid=uuid"/>
 
 <c:choose>
@@ -86,7 +85,7 @@
 			
 				<c:forEach items="${definition.searches}" var="h">
 					<openmrs:portlet url="mappedProperty" id="search${h.key}" moduleId="reporting" 
-						parameters="type=${definition.class.name}|uuid=${definition.uuid}|property=searches|currentKey=${h.key}|label=${h.key}|parentUrl=${pageUrl}" />
+						parameters="type=${definition.class.name}|uuid=${definition.uuid}|property=searches|currentKey=${h.key}|label=${h.key}|parentUrl=${pageUrlWithUuid}" />
 				</c:forEach>
 			
 				<openmrs:portlet url="mappedProperty" id="newSearch" moduleId="reporting" 
