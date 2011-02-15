@@ -1,9 +1,11 @@
 <%@ include file="../manage/localHeader.jsp"%>
 <openmrs:require privilege="Manage DataSet Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition" />
 
-<c:url value="/module/reporting/datasets/sqlDataSetEditor.form" var="pageUrl">
+<c:url value="/module/reporting/datasets/sqlDataSetEditor.form" var="pageUrlWithUuid">
 	<c:param name="uuid" value="${dsd.uuid}" />
 </c:url>
+
+<c:set var="pageUrl" value="/module/reporting/datasets/sqlDataSetEditor.form?uuid=uuid"/>
 
 <style>
 input["submit"], button { 
@@ -93,7 +95,7 @@ img#play { vertical-align: middle; margin: 0; }
 								id="newParameter" 
 								url="parameter" 
 								moduleId="reporting" 
-								parameters="type=${definition.class.name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrl}" />								
+								parameters="type=${definition.class.name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrlWithUuid}" />								
 						</td>
 						
 	

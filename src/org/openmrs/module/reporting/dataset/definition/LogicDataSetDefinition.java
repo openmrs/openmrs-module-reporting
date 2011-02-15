@@ -22,6 +22,7 @@ import java.util.Map;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.logic.result.Result;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetMetaData;
 import org.openmrs.module.reporting.dataset.SimpleDataSetMetaData;
@@ -29,6 +30,7 @@ import org.openmrs.module.reporting.dataset.SimpleDataSetMetaData;
 /**
  * A data set definition where each column is a logic expression
  */
+@Localized("reporting.LogicDataSetDefinition")
 public class LogicDataSetDefinition extends BaseDataSetDefinition implements PageableDataSetDefinition {
 	
 	private static final long serialVersionUID = 1L;

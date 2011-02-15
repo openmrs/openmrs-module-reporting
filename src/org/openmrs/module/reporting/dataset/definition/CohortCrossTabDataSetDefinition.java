@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
@@ -32,6 +33,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
  * @see MapDataSet
  * @see CohortDataSetEvaluator
  */
+@Localized("reporting.CohortCrossTabDataSetDefinition")
 public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 	
 	private static final long serialVersionUID = -658417752199413012L;

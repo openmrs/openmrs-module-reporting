@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -19,6 +20,7 @@ import org.openmrs.util.OpenmrsUtil;
  * @see CohortIndicatorDataSetDefinition
  * @see PeriodIndicatorReportUtil
  */
+@Localized("reporting.PeriodIndicatorReportDefinition")
 public class PeriodIndicatorReportDefinition extends ReportDefinition {
 	
 	public static final String DEFAULT_DATASET_KEY = "defaultDataSet";

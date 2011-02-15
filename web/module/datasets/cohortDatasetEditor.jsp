@@ -33,7 +33,7 @@
 		
 				<table style="font-size:small;">
 					<tr>
-						<td valign="top">
+						<td valign="top" nowrap>
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|size=380|label=Basic Details" />
 							<br/>
 							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|label=Parameters|parentUrl=${pageUrl}" />
@@ -59,7 +59,7 @@
 								<c:if test="${empty dsd.rows}">
 									<tr>
 										<c:forEach items="${dsd.columns}" var="columnEntry" varStatus="columnStatus">
-											<td align="center" style="font-weight:bold; color:blue;" nowrap>${columnStatus.count}</td>
+											<td align="center" style="font-weight:bold; color:blue;" nowrap>${columnEntry.key}</td>
 										</c:forEach>
 									</tr>
 								</c:if>
@@ -70,10 +70,10 @@
 														 	parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|property=rows|currentKey=${rowEntry.key}|label=${rowEntry.key}|parentUrl=${pageUrl}|viewId=dsdView${rowStatus.index}|headerClass=rowHeader" />
 										</td>
 										<c:forEach items="${dsd.columns}" var="columnEntry" varStatus="columnStatus">
-											<td align="center" style="font-weight:bold; color:blue;" nowrap>${rowStatus.count}.${columnStatus.count}</td>
+											<td align="center" style="font-weight:bold; color:blue;" nowrap>${rowEntry.key}.${columnEntry.key}</td>
 										</c:forEach>
 										<c:if test="${empty dsd.columns}">
-											<td align="center" style="font-weight:bold; color:blue;" nowrap>${rowStatus.count}</td>
+											<td align="center" style="font-weight:bold; color:blue;" nowrap>${rowEntry.key}</td>
 										</c:if>
 									</tr>
 								</c:forEach>

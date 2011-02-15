@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Location;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 
@@ -16,6 +17,7 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
  * for each iteration. Each row of the DataSet is the result you'd get from evaluating the wrapped
  * DataSetDefinition on one startDate/endDate/location triplet, 
  */
+@Localized("reporting.MultiPeriodIndicatorDataSetDefinition")
 public class MultiPeriodIndicatorDataSetDefinition extends BaseDataSetDefinition implements DataSetDefinition {
 	
 	//***** PROPERTIES *****

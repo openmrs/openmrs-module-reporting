@@ -47,7 +47,7 @@ div.metadataField label.inline { display:inline; }
 				</div>				
 				<div class="metadataField">
 					<label class="desc" for="type">Type</label>
-					${model.obj.class.simpleName}			
+					<rpt:displayLabel type="${model.obj.class.name}"/>			
 				</div>				
 				<div class="metadataField">
 					<label class="desc" for="description">Description</label>			
@@ -88,7 +88,7 @@ div.metadataField label.inline { display:inline; }
 					</div>
 					<div class="metadataField">
 						<label class="inline" for="type">Query Type:</label>
-						${model.obj.class.simpleName}			
+						<rpt:displayLabel type="${model.obj.class.name}"/>			
 					</div>				
 					<div class="metadataField">
 						<label class="inline">Description:</label>

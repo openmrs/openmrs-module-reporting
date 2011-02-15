@@ -78,7 +78,9 @@ public class MappedPropertyPortletFormController {
     	    		else {
     	    			paramValue = "${"+value[0]+"}";
     	    		}
-    	    		m.addParameterMapping(p.getName(), paramValue);
+    	    		if (paramValue != null) {
+    	    			m.addParameterMapping(p.getName(), paramValue);
+    	    		}
         		}
         	}
 		}

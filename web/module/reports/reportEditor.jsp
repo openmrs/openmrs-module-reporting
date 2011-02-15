@@ -56,7 +56,7 @@
 		
 				<table style="font-size:small;">
 					<tr>
-						<td valign="top">
+						<td valign="top" nowrap>
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|size=380|label=Basic Details" />
 							<br/>
 							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|label=Parameters|parentUrl=${pageUrl}" />

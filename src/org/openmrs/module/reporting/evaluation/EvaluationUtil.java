@@ -99,13 +99,13 @@ public class EvaluationUtil {
 	/**
 	 */
 	public static Object evaluateExpression(String expression, Map<String, Object> parameters, 
-						 					String expressionPrefix, String expressionPostfix) throws ParameterException {
+						 					String expressionPrefix, String expressionSuffix) throws ParameterException {
 
 		while (expression != null) {
 			String newExpression = expression;
 			
 			int startIndex = expression.indexOf(expressionPrefix);
-			int endIndex = expression.indexOf(expressionPostfix, startIndex+1);
+			int endIndex = expression.indexOf(expressionSuffix, startIndex+1);
 			StringBuilder sb = new StringBuilder();
 			if (startIndex != -1 && endIndex != -1) {
 				
@@ -118,7 +118,7 @@ public class EvaluationUtil {
 				
 				sb.append(expression.substring(0, startIndex));
 				sb.append(replacement.toString());
-				sb.append(expression.substring(endIndex + expressionPostfix.length()));
+				sb.append(expression.substring(endIndex + expressionSuffix.length()));
 				newExpression = sb.toString();
 			}
 			

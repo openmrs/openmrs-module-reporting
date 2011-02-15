@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -23,6 +24,7 @@ import org.openmrs.util.OpenmrsUtil;
  *   2.b. Newly Enrolled in HIV Program during Period (gender=Male, age=Adult)
  * </pre>
  */
+@Localized("reporting.CohortIndicatorDataSetDefinition")
 public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	
 	//***** PROPERTIES *****
@@ -143,6 +145,8 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 		private Map<String, String> dimensionOptions;
 		
 		//***** CONSTRUCTORS *****
+		
+		public CohortIndicatorAndDimensionColumn() {}
 		
 		public CohortIndicatorAndDimensionColumn(String name, String label, Mapped<? extends CohortIndicator> indicator, Map<String, String> dimensionOptions) {
 			super(name, label, Object.class);

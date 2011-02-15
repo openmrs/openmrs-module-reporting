@@ -77,8 +77,8 @@
 			</div>
 			<hr style="color:blue;"/>
 			<div style="width:100%; text-align:left;">
-				<input type="button" id="cancelButton" class="ui-button ui-state-default ui-corner-all" value="Cancel"/>
 				<input type="button" id="submitButton" class="ui-button ui-state-default ui-corner-all" value="Submit"/>
+				<input type="button" id="cancelButton" class="ui-button ui-state-default ui-corner-all" value="Cancel"/>
 			</div>
 		</form>
 	</c:when>
@@ -131,7 +131,7 @@
 						</tr>
 						<c:forEach items="${model.obj.parameters}" var="p" varStatus="paramStatus">
 							<tr>
-								<td nowrap><a href="#" id="${model.portletUUID}EditLink${paramStatus.index}">${p.name}</a></td>
+								<td nowrap>${p.name}</td>
 								<td width="100%">${p.label}</td>
 								<td nowrap>
 									<c:choose>
@@ -143,7 +143,16 @@
 										</c:otherwise>
 									</c:choose>
 								</td>
-								<td nowrap align="center"><a href="#" id="${model.portletUUID}RemoveLink${paramStatus.index}"><img src='<c:url value="/images/trash.gif"/>' border="0"/></a></td>
+								<td nowrap align="center">
+									&nbsp;
+									<a href="#" id="${model.portletUUID}EditLink${paramStatus.index}">
+										<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+									</a>
+									&nbsp;
+									<a href="#" id="${model.portletUUID}RemoveLink${paramStatus.index}">
+										<img src='<c:url value="/images/trash.gif"/>' border="0"/>
+									</a>
+								</td>
 							</tr>
 						</c:forEach>
 					</table>
