@@ -83,8 +83,8 @@
 			<b class="boxHeader">Searches to combine</b>
 			<div class="box" style="border: none">
 			
-				<c:forEach items="${definition.searches}" var="h">
-					<openmrs:portlet url="mappedProperty" id="search${h.key}" moduleId="reporting" 
+				<c:forEach items="${definition.searches}" var="h" varStatus="hStatus">
+					<openmrs:portlet url="mappedProperty" id="search${hStatus.index}" moduleId="reporting" 
 						parameters="type=${definition.class.name}|uuid=${definition.uuid}|property=searches|currentKey=${h.key}|label=${h.key}|parentUrl=${pageUrlWithUuid}" />
 				</c:forEach>
 			
