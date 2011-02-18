@@ -1,5 +1,5 @@
 <%@ include file="../manage/localHeader.jsp"%>
-<openmrs:require privilege="Manage DataSet Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition" />			
+<openmrs:require privilege="Manage Data Set Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition" />			
 
 <script type="text/javascript" charset="utf-8">
 
