@@ -21,12 +21,27 @@
 							show: null,
 							width: '90%',
 							modal: true,
-							title: 'Add another column'											
+							title: 'Save column'											
 						});
-						$('#cancelDialogButton').click(function() { $('#addColumnDialog').dialog('close') });
-						$('.addColumnButton').click(function() { $('#addColumnDialog').dialog('open') });
+						
+						$('.addColumnButton').click(function() { 
+							$('#indexField').val('');
+							$('#keyField').val('');
+							$('#labelField').val('');
+							$('#indicatorField').val('');
+							<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
+								$('#dimensionOption_${dimStatus.index}').val('');
+							</c:forEach>
+							$('#addColumnDialog').dialog('open').title(); 
+						});
+						
+						$('#cancelDialogButton').click(function() {
+							$('#addColumnDialog').dialog('close'); 
+						});
+						
 						$('#column-table').dataTable({
-							"bPaginate": false,
+							"bPaginate": true,
+							"iDisplayLength": 15,
 							"bLengthChange": false,
 							"bFilter": false,
 							"bSort": false,
@@ -50,30 +65,65 @@
 						$('#closeButton').click(function(event) {
 							window.location = 'manageReports.form';
 						}).height(32);
+						
+						<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
+							$("#${model.portletUUID}EditDimLink${dimStatus.index}").click(function(event){ 
+								showReportingDialog({
+									title: 'Dimension: ${dim.key}',
+									url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${report.indicatorDataSetDefinition.class.name}|uuid=${report.indicatorDataSetDefinition.uuid}|property=dimensions|currentKey=${dim.key}|mode=edit"/>',
+									successCallback: function() { window.location.reload(true); }
+								});
+							});
+						</c:forEach>
+						
+						<c:forEach var="col" varStatus="colStatus" items="${report.indicatorDataSetDefinition.columns}">
+						
+							$('#editIndicator${colStatus.index}').click(function() { 
+								$('#indexField').val('${colStatus.index}');
+								$('#keyField').val('${col.name}');
+								$('#labelField').val('${col.label}');
+								$('#indicatorField').val('${col.indicator.parameterizable.uuid}');
+								<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
+									$('#dimensionOption_${dimStatus.index}').val('${col.dimensionOptions[dim.key]}');
+								</c:forEach>
+								$('#addColumnDialog').dialog('open');
+							});
+						
+							$("#deleteIndicator${colStatus.index}").click(function(event){
+								if (confirm("Are you sure you wish to remove column: ${col.name}?")) {
+									document.location.href="periodIndicatorReportRemoveColumn.form?key=${col.name}&uuid=${report.uuid}";
+								}
+							});
+							
+						</c:forEach>
 					} ); 
 				</script>
 			
 				<div id="addColumnDialog" style="display: none">
-					<form method="post" action="periodIndicatorReportAddColumn.form">
+					<form method="post" action="periodIndicatorReportSaveColumn.form">
 						<input type="hidden" name="uuid" value="${report.uuid}"/>
+						<input type="hidden" id="indexField" name="index" value=""/>
 						<table>
 							<tr>
 								<td>Indicator Number</td>
-								<td><input size="6" maxlength="10" type="text" name="key"/></td>
+								<td><input id="keyField" size="30" maxlength="10" type="text" name="key"/></td>
 							</tr>
 							<tr>
 								<td>Label</td>
-								<td><input size="40" type="text" name="displayName"/></td>
+								<td><input id="labelField" size="60" type="text" name="displayName"/></td>
 							</tr>
 							<tr>
 								<td>Indicator</td>
 								<td>
-									<select name="indicator">
+									<select id="indicatorField" name="indicator">
 										<option value=""></option>
 										<c:forEach var="ind" items="${indicators}">
 											<option value="${ind.uuid}">${ind.name}</option>
 										</c:forEach>
 									</select>
+									<span style="font-size:small; text-decoration:italics; padding-left:10px;">
+										<spring:message code="reporting.Report.periodIndicatorReport.indicatorMessage"/>
+									</span>
 								</td>
 							</tr>
 							<c:if test="${fn:length(report.indicatorDataSetDefinition.dimensions) > 0}">
@@ -81,13 +131,13 @@
 									<td>Dimensions</td>
 									<td>
 										<table>
-											<c:forEach var="dim" items="${report.indicatorDataSetDefinition.dimensions}">
+											<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
 												<tr>
 													<td align="right">
 														${dim.key}:
 													</td>
 													<td>
-														<select name="dimensionOption_${dim.key}">
+														<select id="dimensionOption_${dimStatus.index}" name="dimensionOption_${dim.key}">
 															<option value="">all</option>
 															<c:forEach var="dimOpt" items="${dim.value.parameterizable.cohortDefinitions}">
 																<option value="${dimOpt.key}">${dimOpt.key}</option>
@@ -103,7 +153,7 @@
 							</c:if>
 							<tr>
 								<td colspan="2" align="center">
-									<input type="submit" value="<spring:message code="general.add"/>"/>
+									<input type="submit" value="<spring:message code="general.save"/>"/>
 									<input type="button" id="cancelDialogButton" value="<spring:message code="general.cancel"/>"/>
 								</td>
 							</tr>
@@ -111,30 +161,33 @@
 					</form>
 				</div>
 			
+				
 				<table>
 					<tr valign="top">
-						<td>
-
+						<td width="30%">
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|size=380|label=Basic Details" />
-			
 							<br/>
-							
 							<b class="boxHeader">Dimensions</b>
 							<div class="box">
 								<table id="dimensions-table">
 									<thead>
 										<tr>
 											<th>Key</th>
-											<th>Display Name</th>
+											<th>Dimension</th>
 											<th>&nbsp;</th>
 										</tr>
 									</thead>
 									<tbody>
-										<c:forEach var="dim" items="${report.indicatorDataSetDefinition.dimensions}">
+										<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
 											<tr>
-												<td>${dim.key}</td>
-												<td>${dim.value.parameterizable.name}</td>
-												<td>
+												<td nowrap>${dim.key}</td>
+												<td width="100%">${dim.value.parameterizable.name}</td>
+												<td nowrap>
+													&nbsp;
+													<a href="#" id="${model.portletUUID}EditDimLink${dimStatus.index}">
+														<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+													</a>
+													&nbsp;
 													<a href="periodIndicatorReportRemoveDimension.form?key=${dim.key}&uuid=${report.uuid}">
 														<img src='<c:url value="/images/trash.gif"/>' border="0" onclick="return confirm('<spring:message code="reporting.Report.periodIndicatorReport.cascadedeletewarning" />')"/>
 													</a>
@@ -146,7 +199,7 @@
 										<tr>
 											<td colspan="3">
 												<openmrs:portlet url="mappedProperty" id="newDim" moduleId="reporting" 
-															 parameters="type=${report.indicatorDataSetDefinition.class.name}|uuid=${report.indicatorDataSetDefinition.uuid}|property=dimensions|mode=add|label=New Dimension" />
+															 parameters="type=${report.indicatorDataSetDefinition.class.name}|uuid=${report.indicatorDataSetDefinition.uuid}|property=dimensions|mode=add|label=Add Dimension" />
 											</td>
 										</tr>
 									</tfoot>
@@ -167,14 +220,14 @@
 							</button>
 						</td>
 						<td>
-
 							<b class="boxHeader" style="text-align: right">
 								<span style="float:left">
 									Indicators
 								</span>
 								<a href="javascript:void(0)" class="addColumnButton"><spring:message code="general.add"/></a>
 							</b>
-								<table id="column-table">
+							<div class="box">
+								<table id="column-table" width="100%">
 									<thead>
 										<tr>
 											<th>Ind. #</th>
@@ -185,7 +238,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<c:forEach var="col" items="${report.indicatorDataSetDefinition.columns}">
+										<c:forEach var="col" varStatus="colStatus" items="${report.indicatorDataSetDefinition.columns}">
 											<tr>
 												<td>${col.name}</td>
 												<td>${col.label}</td>
@@ -196,14 +249,21 @@
 													</c:forEach>
 												</td>
 												<td>
-													<a href="periodIndicatorReportRemoveColumn.form?key=${col.name}&uuid=${report.uuid}">
+													&nbsp;
+													<a href="#" id="editIndicator${colStatus.index}">
+														<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+													</a>
+													&nbsp;
+													<a href="#" id="deleteIndicator${colStatus.index}">
 														<img src='<c:url value="/images/trash.gif"/>' border="0"/>
 													</a>
+													&nbsp;
 												</td>
 											</tr>
 										</c:forEach>
 									</tbody>
 								</table>
+							</div>
 						</td>
 					</tr>
 				</table>

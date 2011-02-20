@@ -18,7 +18,7 @@
 						newKey = newKeyObj;
 					}
 					if (currVal != '') {
-						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|currentKey=${model.currentKey}|newKey='+newKey+'|mode=edit|mappedUuid='+currVal+'"/>';
+						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|currentKey=${model.currentKey}|newKey='+newKey+'|mode=edit|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|mappedUuid='+currVal+'"/>';
 					}
 					else {
 						$("#mapParameterSection${model.id}").html('');
@@ -42,6 +42,17 @@
 				});
 		
 				$('#mapParametersFormSubmitButton_${model.id}').click(function(event){
+					var existingKeys = [<c:forEach items="${model.existingKeys}" var="c" varStatus="cStat">'${c}'<c:if test="${!cStat.last}">,</c:if></c:forEach>];
+					var initialKey = '${model.currentKey}';
+					var newKey = $('#${model.id}NewKey').val();
+					if (initialKey != newKey) {
+						for (var i=0; i<existingKeys.length; i++) {
+							if (existingKeys[i] == newKey) {
+								alert('That ${model.keyLabel} is already in use, please choose another.')
+								return false;
+							}
+						}
+					}
 					$('#mapParametersForm${model.id}').submit();
 				});
 		
@@ -49,7 +60,7 @@
 		</script>
 		
 		<br/>
-		
+
 		<form id="mapParametersForm${model.id}" method="post" action="reports/saveMappedProperty.form">
 			<input type="hidden" name="type" value="${model.type}"/>
 			<input type="hidden" name="uuid" value="${model.uuid}"/>
@@ -60,7 +71,7 @@
 				<c:choose>
 					<c:when test="${model.multiType == 'map'}">
 						<tr>
-							<td>Key</td>
+							<td>${model.keyLabel}: </td>
 							<td><input type="text" size="20" id="${model.id}NewKey" name="newKey" value="${model.newKey == null ? model.currentKey : model.newKey}"/></td>
 						</tr>
 					</c:when>
@@ -69,7 +80,7 @@
 					</c:otherwise>
 				</c:choose>
 				<tr>
-					<td>${model.mappedType.simpleName}:</td>
+					<td>${model.typeLabel}: </td>
 					<td><wgt:widget id="parameterizableSelector${model.id}" name="mappedUuid" type="${model.mappedType.name}" defaultValue="${model.mappedObj}" attributes="tag=${model.tag}"/></td>
 				</tr>
 			</table>		 
@@ -141,7 +152,7 @@
 				$('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
-						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|currentKey=${model.currentKey}|tag=${model.tag}|mode=edit"/>',
+						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|currentKey=${model.currentKey}|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|tag=${model.tag}|mode=edit"/>',
 						successCallback: function() { window.location.reload(true); }
 					});
 				});

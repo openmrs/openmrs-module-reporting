@@ -2,11 +2,10 @@
 <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
 <style>
-div.metadataForm { padding-bottom: 20px; } 
-div.metadataField { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
-div.metadataField label { line-height:100%; margin:0; padding:0 12px 3px 0; border:none; color:#222; font-weight:bold; }
-div.metadataField label.desc { display:block; }
-div.metadataField label.inline { display:inline; }
+	div.metadataField { display:block; margin:0; padding:2px 2px 2px 2px; clear:both; color:#444; }
+	div.metadataField label { line-height:100%; margin:0; padding:0 12px 3px 0; border:none; color:#222; font-weight:bold; }
+	div.metadataField label.desc { display:block; }
+	div.metadataField label.inline { display:inline; }
 </style>
 
 <c:choose>

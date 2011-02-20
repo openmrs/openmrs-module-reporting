@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.dataset.definition;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,9 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	 * @return the dimensions
 	 */
 	public Map<String, Mapped<CohortDefinitionDimension>> getDimensions() {
+		if (dimensions == null) {
+			dimensions = new LinkedHashMap<String, Mapped<CohortDefinitionDimension>>();
+		}
 		return dimensions;
 	}
 	
@@ -58,7 +62,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	 * Adds a Mapped<Dimension> referenced by the given key
 	 */
 	public void addDimension(String dimensionKey, Mapped<CohortDefinitionDimension> dimension) {
-		dimensions.put(dimensionKey, dimension);
+		getDimensions().put(dimensionKey, dimension);
 	}
 	
 	/**
@@ -72,7 +76,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	 * @return the Mapped<CohortDefinitionDimension> with the given key
 	 */
 	public Mapped<CohortDefinitionDimension> getDimension(String key) {
-	    return dimensions.get(key);
+	    return getDimensions().get(key);
     }
 	
 	/**
@@ -80,20 +84,23 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	public void removeDimension(String dimensionKey) {
 		List<CohortIndicatorAndDimensionColumn> listToRemove = new ArrayList<CohortIndicatorAndDimensionColumn>();
-		for(CohortIndicatorAndDimensionColumn c : columns) {
+		for(CohortIndicatorAndDimensionColumn c : getColumns()) {
 			Map<String, String> dimOpts = c.getDimensionOptions();
 			if (dimOpts.keySet().contains(dimensionKey)) {
 				listToRemove.add(c);
 			}
 		}
-		columns.removeAll(listToRemove);
-		dimensions.remove(dimensionKey);
+		getColumns().removeAll(listToRemove);
+		getDimensions().remove(dimensionKey);
 	}
 
     /**
 	 * @return the columns
 	 */
 	public List<CohortIndicatorAndDimensionColumn> getColumns() {
+		if (columns == null) {
+			columns = new ArrayList<CohortIndicatorAndDimensionColumn>();
+		}
 		return columns;
 	}
 
@@ -105,17 +112,24 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
     }
     
     /**
+     * Adds a Column 
+     */
+	public void addColumn(CohortIndicatorAndDimensionColumn column) {
+		getColumns().add(column);
+	}
+    
+    /**
      * Adds a Column with the given properties
      */
 	public void addColumn(String name, String label, Mapped<? extends CohortIndicator> indicator, Map<String, String> dimensionOptions) {
-		columns.add(new CohortIndicatorAndDimensionColumn(name, label, indicator, dimensionOptions));
+		getColumns().add(new CohortIndicatorAndDimensionColumn(name, label, indicator, dimensionOptions));
 	}
 	
     /**
      * Removes a column with the given name
      */
 	public void removeColumn(String columnName) {
-		for (Iterator<CohortIndicatorAndDimensionColumn> i = columns.iterator(); i.hasNext(); ) {
+		for (Iterator<CohortIndicatorAndDimensionColumn> i = getColumns().iterator(); i.hasNext(); ) {
 			if (i.next().getName().equals(columnName)) {
 				i.remove();
 			}
@@ -135,7 +149,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
     /**
      * Column Definition which encapsulates information about the indicator and dimensions chosen for each column
      */
-	public class CohortIndicatorAndDimensionColumn extends DataSetColumn {
+	public class CohortIndicatorAndDimensionColumn extends DataSetColumn implements Cloneable {
 
         private static final long serialVersionUID = 1L;
         
@@ -154,20 +168,48 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 			this.dimensionOptions = dimensionOptions;
 		}
 		
+        /**
+		 * @see java.lang.Object#clone()
+		 */
+		@Override
+		public Object clone() throws CloneNotSupportedException {
+			CohortIndicatorAndDimensionColumn c = new CohortIndicatorAndDimensionColumn();
+			c.setName(this.getName());
+			c.setLabel(this.getLabel());
+			c.setDataType(this.getDataType());
+			c.setIndicator(this.getIndicator());
+			c.setDimensionOptions(this.getDimensionOptions());
+			return c;
+		}
+		
 		//***** PROPERTY ACCESS *****
 
-        /**
+		/**
          * @return the indicator
          */
         public Mapped<? extends CohortIndicator> getIndicator() {
         	return indicator;
-        }
+        }  
 		
         /**
+		 * @param indicator the indicator to set
+		 */
+		public void setIndicator(Mapped<? extends CohortIndicator> indicator) {
+			this.indicator = indicator;
+		}
+
+		/**
          * @return the dimensionOptions
          */
         public Map<String, String> getDimensionOptions() {
         	return dimensionOptions;
-        }		
+        }
+
+		/**
+		 * @param dimensionOptions the dimensionOptions to set
+		 */
+		public void setDimensionOptions(Map<String, String> dimensionOptions) {
+			this.dimensionOptions = dimensionOptions;
+		}
 	}
 }

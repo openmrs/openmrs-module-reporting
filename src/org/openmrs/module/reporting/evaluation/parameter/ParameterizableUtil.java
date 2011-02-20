@@ -16,6 +16,7 @@ import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 
 
 public class ParameterizableUtil {
@@ -167,6 +168,9 @@ public class ParameterizableUtil {
 		return null;
 	}	
 	
+	/**
+	 * @return a Map from String->String from the passed paramString
+	 */
 	public static Map<String, Object> createParameterMappings(String paramString) {
 		Map<String, Object> m = new HashMap<String, Object>();
 		if (paramString != null) {
@@ -184,5 +188,62 @@ public class ParameterizableUtil {
 			}
 		}
 		return m;
+	}
+	
+	/**
+	 * @return a Map, where the entries are the names of each child parameter, and the values are all compatible parent parameters.
+	 * The values are organized as a Map where each key is a parent parameter name and each value is a parent parameter Label
+	 */
+	public static Map<String, Map<String, String>> getAllowedMappings(Parameterizable parent, Parameterizable child) {
+		Map<String, Map<String, String>> ret = new HashMap<String, Map<String, String>>();
+       	if (child != null) {
+			for (Parameter p : child.getParameters()) {
+				Map<String, String> allowed  = new HashMap<String, String>();
+				for (Parameter parentParam : parent.getParameters()) {
+					if (p.getType() == parentParam.getType()) {
+						allowed.put(parentParam.getName(), parentParam.getLabelOrName());
+					}
+				}
+				ret.put(p.getName(), allowed);
+			}
+       	}
+       	return ret;
+	}
+	
+	/**
+	 * @return a Map, where the entries are the categorizations, and the values are the names and values of the child parameters per category
+	 */
+	public static Map<String, Map<String, Object>> getCategorizedMappings(Parameterizable parent, Parameterizable child, Map<String, Object> mappings) {
+		Map<String, Map<String, Object>> ret = new HashMap<String, Map<String, Object>>();
+		
+       	Map<String, Object> mappedParams = new HashMap<String, Object>();
+       	Map<String, Object> complexParams = new HashMap<String, Object>();
+       	Map<String, Object> fixedParams = new HashMap<String, Object>();
+       	
+       	if (child != null) {
+			for (Parameter p : child.getParameters()) {
+				Object mappedObjVal = mappings.get(p.getName());
+				if (mappedObjVal != null && mappedObjVal instanceof String) {
+					String mappedVal = (String) mappedObjVal;
+					if (EvaluationUtil.isExpression(mappedVal)) {
+						mappedVal = EvaluationUtil.stripExpression(mappedVal);
+						if (parent.getParameter(mappedVal) != null) {
+							mappedParams.put(p.getName(), mappedVal);
+						}
+						else {
+							complexParams.put(p.getName(), mappedVal);
+						}
+					}
+				}
+				else {
+					fixedParams.put(p.getName(), mappedObjVal);
+				}
+			}
+       	}
+		ret.put("mappedParams", mappedParams);
+		ret.put("complexParams", complexParams);
+		ret.put("fixedParams", fixedParams);
+		
+		return ret;
 	}
 }

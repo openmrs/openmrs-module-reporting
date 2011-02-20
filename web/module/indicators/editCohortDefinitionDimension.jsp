@@ -22,7 +22,17 @@
 				} 
 			});
 		});
-
+		
+		<c:forEach var="cd" varStatus="cdStatus" items="${dimension.cohortDefinitions}">
+			$("#${model.portletUUID}EditDimLink${cdStatus.index}").click(function(event){ 
+				showReportingDialog({
+					title: 'Dimension Option: ${cd.key}',
+					url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${dimension.class.name}|uuid=${dimension.uuid}|property=cohortDefinitions|currentKey=${cd.key}|mode=edit"/>',
+					successCallback: function() { window.location.reload(true); }
+				});
+			});
+		</c:forEach>
+		
 		$('#options-table').dataTable({
 			"bPaginate": false,
 			"bLengthChange": false,
@@ -52,7 +62,7 @@
 		
 				<table style="font-size:small;">
 					<tr>
-						<td valign="top">
+						<td valign="top" nowrap>
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dimension.class.name}|uuid=${dimension.uuid}|size=380|label=Basic Details" />
 							<br/>
 							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dimension.class.name}|uuid=${dimension.uuid}|label=Parameters|parentUrl=${pageUrl}" />
@@ -71,11 +81,16 @@
 										</tr>
 									</thead>
 									<tbody>
-										<c:forEach var="cd" items="${dimension.cohortDefinitions}">
+										<c:forEach var="cd" varStatus="cdStatus" items="${dimension.cohortDefinitions}">
 											<tr>
-												<td>${cd.key}</td>
+												<td nowrap>${cd.key}</td>
 												<td>${cd.value.parameterizable.name}</td>
-												<td>
+												<td nowrap>
+													&nbsp;
+													<a href="#" id="${model.portletUUID}EditDimLink${cdStatus.index}">
+														<img src='<c:url value="/images/edit.gif"/>' border="0"/>
+													</a>
+													&nbsp;
 													<a href="editCohortDefinitionDimensionRemoveOption.form?key=${cd.key}&uuid=${dimension.uuid}">
 														<img src='<c:url value="/images/trash.gif"/>' border="0"/>
 													</a>

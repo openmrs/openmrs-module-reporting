@@ -21,6 +21,7 @@
     	<property name="order"><value>50</value></property>
     	<property name="mappings">
             <props>
+           		<prop key="**/cohortIndicatorAndDimensionSpecification.portlet">cohortIndicatorAndDimensionSpecificationPortletController</prop>
             	<prop key="**/baseCohortIndicator.portlet">baseCohortIndicatorPortletController</prop>
             	<prop key="**/mappedProperty.portlet">mappedPropertyPortletController</prop>
             	<prop key="**/baseMetadata.portlet">parameterizablePortletController</prop>
@@ -42,6 +43,7 @@
 		<property name="validator" ref="indicatorFormValidator"/>
 	</bean>
 	
+	<bean id="cohortIndicatorAndDimensionSpecificationPortletController" class="org.openmrs.module.reporting.web.controller.portlet.CohortIndicatorAndDimensionSpecificationPortletController" />
 	<bean id="baseCohortIndicatorPortletController" class="org.openmrs.module.reporting.web.controller.portlet.BaseCohortIndicatorPortletController" />
 	<bean id="parameterizablePortletController" class="org.openmrs.module.reporting.web.controller.portlet.ParameterizablePortletController" />
 	<bean id="mappedPropertyPortletController" class="org.openmrs.module.reporting.web.controller.portlet.MappedPropertyPortletController" />

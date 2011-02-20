@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -45,6 +46,12 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 			}
 			else if (Map.class.isAssignableFrom(fieldType)) {
 				model.put("multiType", "map");
+				if (obj != null) {
+					Object propertyValue = ReflectionUtil.getPropertyValue(obj, property);
+					if (propertyValue != null && propertyValue instanceof Map) {
+						model.put("existingKeys", ((Map<?, ?>)propertyValue).keySet());
+					}
+				}
 			}
 		}
 		
@@ -113,5 +120,10 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 			model.put("complexParams", complexParams);
 			model.put("fixedParams", fixedParams);
 		}
+		
+		// Handle customizations for look and feel
+		
+		model.put("keyLabel", ObjectUtil.nvlStr(model.get("keyLabel"), "Key"));
+		model.put("typeLabel", ObjectUtil.nvlStr(model.get("typeLabel"), mappedType.getSimpleName()));
 	}
 }
