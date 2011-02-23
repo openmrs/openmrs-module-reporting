@@ -57,6 +57,12 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(required=false, group="other")
 	private User createdBy;
 
+	@ConfigurationProperty(required=false, group="other")
+	private Date createdOnOrBefore;
+	
+	@ConfigurationProperty(required=false, group="other")
+	private Date createdOnOrAfter;
+	
 	//***** CONSTRUCTORS *****
 	
 	/**
@@ -216,6 +222,7 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
     	this.formList = formList;
     }
 
+    // purposely ignored javadoc, let me (cneumann) know if they are mandatory
 	public User getCreatedBy() {
 		return createdBy;
 	}
@@ -223,5 +230,21 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 	public void setCreatedBy(User creator) {
 		this.createdBy = creator;
 	}
-	
+
+	public Date getCreatedOnOrBefore() {
+		return createdOnOrBefore;
+	}
+
+	public void setCreatedOnOrBefore(Date createdOnOrBefore) {
+		this.createdOnOrBefore = createdOnOrBefore;
+	}
+
+	public Date getCreatedOnOrAfter() {
+		return createdOnOrAfter;
+	}
+
+	public void setCreatedOnOrAfter(Date createdOnOrAfter) {
+		this.createdOnOrAfter = createdOnOrAfter;
+	}
+
 }

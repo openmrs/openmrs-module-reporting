@@ -119,11 +119,13 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @param atLeastCount
 	 * @param atMostCount
 	 * @param createdBy
+	 * @param createdOnOrAfter 
+	 * @param createdOnOrBefore 
 	 * @return cohort of patients matching the query
 	 */
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, List<Location> locationList,
                                               List<EncounterType> encounterTypeList, List<Form> formList,
-                                              Integer atLeastCount, Integer atMostCount, User createdBy);
+                                              Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore);
 	
 	
 	/**

@@ -153,10 +153,10 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	 */
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
-                                              Integer atLeastCount, Integer atMostCount, User createdBy) {
+                                              Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore) {
 	    return dao.getPatientsHavingEncounters(onOrAfter, onOrBefore,
 	    	locationList, encounterTypeList, formList,
-	    	atLeastCount, atMostCount, createdBy);
+	    	atLeastCount, atMostCount, createdBy, createdOnOrAfter, createdOnOrBefore);
     }
 
 	/**

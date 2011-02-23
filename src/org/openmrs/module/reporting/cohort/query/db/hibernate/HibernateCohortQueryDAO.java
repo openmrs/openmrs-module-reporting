@@ -1060,7 +1060,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount) {
-		return getPatientsHavingEncounters(onOrAfter, onOrBefore, locationList, encounterTypeList, formList, atLeastCount, atMostCount, null);
+		return getPatientsHavingEncounters(onOrAfter, onOrBefore, locationList, encounterTypeList, formList, atLeastCount, atMostCount, null, null, null);
 	}
 
 	/**
@@ -1068,7 +1068,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	 */
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
-                                              Integer atLeastCount, Integer atMostCount, User createdBy) {
+                                              Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore) {
 		List<Integer> encTypeIds = SqlUtils.openmrsObjectIdListHelper(encounterTypeList);
 		List<Integer> locationIds = SqlUtils.openmrsObjectIdListHelper(locationList);
 		List<Integer> formIds = SqlUtils.openmrsObjectIdListHelper(formList);
@@ -1087,6 +1087,10 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			whereClauses.add("e.encounter_datetime <= :onOrBefore");
 		if (createdBy != null)
 			whereClauses.add("e.creator = :createdBy");
+		if (createdOnOrAfter != null)
+			whereClauses.add("e.date_created >= :createdOnOrAfter");
+		if (createdOnOrBefore != null)
+			whereClauses.add("e.date_created <= :createdOnOrBefore");
 		List<String> havingClauses = new ArrayList<String>();
 		if (atLeastCount != null)
 			havingClauses.add("count(*) >= :atLeastCount");
@@ -1123,6 +1127,15 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.setInteger("atMostCount", atMostCount);
 		if (createdBy != null)
 			query.setInteger("createdBy", createdBy.getId());
+		if (createdOnOrAfter != null)
+			query.setDate("createdOnOrAfter", createdOnOrAfter);
+		if (createdOnOrBefore != null) {
+			// make sure that mapping of dates (UI) to datetimes (SQL) makes sense
+			Calendar c = Calendar.getInstance();
+			c.setTime(createdOnOrBefore);
+			c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
+			query.setDate("createdOnOrBefore", c.getTime());
+		}
 		
 		return new Cohort(query.list());
     }
