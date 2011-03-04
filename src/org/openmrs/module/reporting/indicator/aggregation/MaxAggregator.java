@@ -35,7 +35,7 @@ public class MaxAggregator implements Aggregator {
 	
 	public Number compute(Collection<Number> values) {
 		if (values == null || values.isEmpty()) {
-			throw new RuntimeException("Unable to compute a mean value of a null or empty collection");
+			throw new RuntimeException("Unable to compute a max value of a null or empty collection");
 		}
 		List<Number> valueList = AggregationUtil.sortNumbers(values, true);
 		return valueList.get(valueList.size()-1);

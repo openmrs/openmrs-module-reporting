@@ -38,8 +38,18 @@ public class MedianAggregator implements Aggregator {
 		if (values == null) {
 			throw new RuntimeException("Unable to compute a median value of a null collection");
 		}
+		if (values.size() == 0) {
+		    return Double.valueOf(Double.valueOf(0)/0);
+		}
 		List<Number> valueList = AggregationUtil.sortNumbers(values, true);
-		return valueList.get(valueList.size()/2);
+		if (valueList.size() % 2 == 1) {
+		    return valueList.get(valueList.size()/2);
+		} 
+		else {
+		    Number lowerMiddle = valueList.get( valueList.size()/2 );
+            Number upperMiddle = valueList.get( valueList.size()/2 - 1 );
+            return (Number) ((lowerMiddle.doubleValue() + upperMiddle.doubleValue()) / 2);
+		}
 	}
 	
 

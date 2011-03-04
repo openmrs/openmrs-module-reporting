@@ -105,10 +105,13 @@ public class QueryParameterFormController {
 	
 				model.addObject("evaluationContext", evaluationContext);
 				try { 
+					long startTime = System.currentTimeMillis();
 					// Evaluate the parameterizable and populate the model
 					results = ParameterizableUtil.evaluateParameterizable(parameterizable, evaluationContext);						
 					//model.addObject("results", results);
 					request.getSession().setAttribute("results", results);
+					long executionTime = System.currentTimeMillis() - startTime;
+					model.addObject("executionTime", new Double(executionTime/1000));
 					
 					// Use the success view if it's given, default view otherwise
 					//successView = (!StringUtils.isEmpty(successView)) ? successView : defaultView;
