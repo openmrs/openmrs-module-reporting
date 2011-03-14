@@ -114,7 +114,7 @@ public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 				DataSetColumn c = new DataSetColumn(name, name, String.class);
 				PatientState ps = states.get(t).get(p.getPatientId());
 				
-				row.addColumnValue(c, (ps == null || !ps.getActive() || ps.getState().getConcept() == null) ? null : ps.getState().getConcept().getDisplayString() == null ? ps.getState().getConcept().getName() : ps.getState().getConcept().getDisplayString());
+				row.addColumnValue(c, (ps == null || !ps.getActive()) ? null : ps.getState().getConcept() == null ? ps.getState().toString() : ps.getState().getConcept().getDisplayString());
 			}
 			dataSet.addRow(row);
 		}
