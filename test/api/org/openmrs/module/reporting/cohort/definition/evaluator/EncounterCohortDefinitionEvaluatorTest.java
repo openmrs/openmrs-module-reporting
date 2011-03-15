@@ -87,5 +87,29 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
         Assert.assertTrue(c.contains(22));
     }
 	
+	/**
+     * @see {@link EncounterCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+     */
+    @Test
+    @Verifies(value = "should return correct patients when creation date parameters are set", method = "evaluate(CohortDefinition,EvaluationContext)")
+    public void evaluate_shouldReturnCorrectPatientsWhenCreationDateParametersAreSet() throws Exception {
+    	
+    	// If parameter dates have no time components, they should return all encounters on that date
+    	{
+	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+	        cd.setCreatedOnOrAfter(DateUtil.getDateTime(2008, 8, 19));
+	        cd.setCreatedOnOrBefore(DateUtil.getDateTime(2008, 8, 19));
+	        Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+	        Assert.assertEquals(6, c.size());
+    	}
 
+    	// If parameter dates do have time components, they should return all encounters between the specific datetimes
+    	{
+	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+	        cd.setCreatedOnOrAfter(DateUtil.getDateTime(2008, 8, 19, 11, 30, 0, 0));
+	        cd.setCreatedOnOrBefore(DateUtil.getDateTime(2008, 8, 19, 14, 30, 0, 0));
+	        Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+	        Assert.assertEquals(3, c.size());
+    	}
+    }
 }

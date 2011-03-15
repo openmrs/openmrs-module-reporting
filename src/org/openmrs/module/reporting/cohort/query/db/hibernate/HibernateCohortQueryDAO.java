@@ -36,6 +36,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -1118,9 +1119,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (formIds != null)
 			query.setParameterList("formIds", formIds);
 		if (onOrAfter != null)
-			query.setDate("onOrAfter", onOrAfter);
+			query.setTimestamp("onOrAfter", onOrAfter);
 		if (onOrBefore != null)
-			query.setDate("onOrBefore", onOrBefore);
+			query.setTimestamp("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(onOrBefore));
 		if (atLeastCount != null)
 			query.setInteger("atLeastCount", atLeastCount);
 		if (atMostCount != null)
@@ -1128,13 +1129,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (createdBy != null)
 			query.setInteger("createdBy", createdBy.getId());
 		if (createdOnOrAfter != null)
-			query.setDate("createdOnOrAfter", createdOnOrAfter);
+			query.setTimestamp("createdOnOrAfter", createdOnOrAfter);
 		if (createdOnOrBefore != null) {
-			// make sure that mapping of dates (UI) to datetimes (SQL) makes sense
-			Calendar c = Calendar.getInstance();
-			c.setTime(createdOnOrBefore);
-			c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
-			query.setDate("createdOnOrBefore", c.getTime());
+			query.setTimestamp("createdOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(createdOnOrBefore));
 		}
 		
 		return new Cohort(query.list());

@@ -222,29 +222,45 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
     	this.formList = formList;
     }
 
-    // purposely ignored javadoc, let me (cneumann) know if they are mandatory
+	/**
+	 * @return the createdBy
+	 */
 	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(User creator) {
-		this.createdBy = creator;
+	/**
+	 * @param createdBy the createdBy to set
+	 */
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
 	}
 
+	/**
+	 * @return the createdOnOrBefore
+	 */
 	public Date getCreatedOnOrBefore() {
 		return createdOnOrBefore;
 	}
 
+	/**
+	 * @param createdOnOrBefore the createdOnOrBefore to set
+	 */
 	public void setCreatedOnOrBefore(Date createdOnOrBefore) {
 		this.createdOnOrBefore = createdOnOrBefore;
 	}
 
+	/**
+	 * @return the createdOnOrAfter
+	 */
 	public Date getCreatedOnOrAfter() {
 		return createdOnOrAfter;
 	}
 
+	/**
+	 * @param createdOnOrAfter the createdOnOrAfter to set
+	 */
 	public void setCreatedOnOrAfter(Date createdOnOrAfter) {
 		this.createdOnOrAfter = createdOnOrAfter;
 	}
-
 }

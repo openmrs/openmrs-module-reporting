@@ -73,6 +73,20 @@ public class DateUtil {
 	public static Date getEndOfDay(Date d) {
 		return getDateTime(d, 23, 59, 59, 999);
 	}
+	
+	/**
+	 * Returns the last second of the day if the hour/minute/second/ms of the passed date are all zero,
+	 * otherwise just returns the passed date
+	 */
+	public static Date getEndOfDayIfTimeExcluded(Date d) {
+		if (d != null) {
+			Date startOfDay = getStartOfDay(d);
+			if (d.compareTo(startOfDay) == 0) {
+				return getEndOfDay(d);
+			}
+		}
+		return d;
+	}
 
 	/**
 	 * Returns a date that represents the very beginning of the passed date

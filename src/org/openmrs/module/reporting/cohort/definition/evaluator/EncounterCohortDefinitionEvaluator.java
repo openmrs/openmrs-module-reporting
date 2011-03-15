@@ -38,6 +38,7 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
      * @should return all patients with encounters if all arguments to cohort definition are empty
      * @should return correct patients when all non grouping parameters are set
      * @should return correct patients when all parameters are set 
+     * @should return correct patients when creation date parameters are set
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	EncounterCohortDefinition cd = (EncounterCohortDefinition) cohortDefinition;
