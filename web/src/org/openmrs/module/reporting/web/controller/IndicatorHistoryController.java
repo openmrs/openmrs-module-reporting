@@ -19,10 +19,9 @@ import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
 import org.openmrs.module.reporting.propertyeditor.IndicatorEditor;
 import org.openmrs.propertyeditor.LocationEditor;
+import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -38,6 +37,7 @@ public class IndicatorHistoryController {
     public void initBinder(WebDataBinder binder) { 
     	binder.registerCustomEditor(Location.class, new LocationEditor());
     	binder.registerCustomEditor(Indicator.class, new IndicatorEditor());
+    	binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
     }
     
 	@ModelAttribute("query")
