@@ -19,13 +19,18 @@ public class DelimitedKeyComparator implements Comparator<String> {
 	// *******************
 	// Properties
 	// *******************
-	private Pattern mRegex = java.util.regex.Pattern.compile("[\\.\\-]");
+	private Pattern mRegex = java.util.regex.Pattern.compile("[\\.\\-\\_]");
 	public void setRegex(Pattern pRegex) {mRegex = pRegex;}
 	public Pattern getRegex() {return mRegex;}
 
 	// *******************
 	// Instance methods
 	// *******************
+	
+	/**
+	 * @see Comparator#compare(Object, Object)
+	 * @should compare two strings
+	 */
 	public int compare(String s1, String s2) {
 		
 		if (s1 == s2) {return 0;}

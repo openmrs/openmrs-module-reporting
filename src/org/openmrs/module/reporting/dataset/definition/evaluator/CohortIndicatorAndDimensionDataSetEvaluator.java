@@ -71,10 +71,9 @@ public class CohortIndicatorAndDimensionDataSetEvaluator implements DataSetEvalu
 
 				if (combination != null) {
 					for (String option : combination.split(",")) {
-						
 						String[] dimOpt = option.split("=");
-						column.setName(column.getName() + "." + dimOpt[1]);
-						column.setLabel(column.getLabel() + (column.getLabel().equals(spec.getLabel()) ? " - " : ", ") + dimOpt[1]);
+						column.setName(column.getName() + "." + option);
+						column.setLabel(column.getLabel() + (column.getLabel().equals(spec.getLabel()) ? " (" : ", ") + dimOpt[0] + " - " + dimOpt[1]);
 	
 						Mapped<CohortDefinitionDimension> dimension = dsd.getDimension(dimOpt[0]);
 						CohortDimensionResult dimensionResult = (CohortDimensionResult)ds.evaluate(dimension, context);
@@ -82,6 +81,7 @@ public class CohortIndicatorAndDimensionDataSetEvaluator implements DataSetEvalu
 						
 						resultWithDimensions.addDimensionResult(dimension.getParameterizable(), dimensionCohort);
 					}
+					column.setLabel(column.getLabel() + ")");
 				}
 
 				ret.addData(column, resultWithDimensions);

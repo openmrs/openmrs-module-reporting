@@ -133,7 +133,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
 		cdsd.removeSpecification(index);
 		DefinitionContext.getDataSetDefinitionService().saveDefinition(cdsd);
 		
-		return "redirect:cohortIndicatorAndDimensionDatasetEditor.form?dsdUuid=" + dsdUuid;
+		return "redirect:cohortIndicatorAndDimensionDatasetEditor.form?uuid=" + dsdUuid;
 	}
 	
 	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionRemoveDimension")
