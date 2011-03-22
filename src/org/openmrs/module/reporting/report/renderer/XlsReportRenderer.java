@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  * Report renderer that produces an Excel pre-2007 workbook with one sheet per dataset in the report.
  */
 @Handler
-@Localized("XLS (Excel 97-2003)")
+@Localized("reporting.XlsReportRenderer")
 public class XlsReportRenderer extends AbstractReportRenderer {
 
     /**

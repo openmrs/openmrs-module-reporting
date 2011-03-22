@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -35,7 +36,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  * A Default Renderer Implementation that aims to support all ReportDefinitions
  */
 //@Handler
-//@DisplayLabel(labelDefault="Indicator Report")
+@Localized("reporting.IndicatorReportRenderer")
 public class IndicatorReportRenderer extends AbstractReportRenderer {
 
 	/**

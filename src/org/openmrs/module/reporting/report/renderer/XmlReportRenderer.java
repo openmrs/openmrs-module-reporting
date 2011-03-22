@@ -34,7 +34,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  * ReportRenderer that renders to a delimited text file
  */
 @Handler
-@Localized("XML")
+@Localized("reporting.XmlReportRenderer")
 public class XmlReportRenderer extends AbstractReportRenderer {
 	
 	/**

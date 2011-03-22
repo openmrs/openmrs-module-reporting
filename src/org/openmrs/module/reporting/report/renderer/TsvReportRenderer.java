@@ -20,7 +20,7 @@ import org.openmrs.module.reporting.common.Localized;
  * Implementation of a ReportRenderer that renders ReportData to a TSV file
  */
 @Handler
-@Localized("TSV")
+@Localized("reporting.TsvReportRenderer")
 public class TsvReportRenderer extends DelimitedTextReportRenderer {
 	
 	/**

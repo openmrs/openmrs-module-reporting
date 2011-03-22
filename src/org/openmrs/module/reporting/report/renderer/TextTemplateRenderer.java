@@ -34,7 +34,7 @@ import org.openmrs.module.reporting.report.ReportDesignResource;
  * Report Renderer implementation that supports rendering to an Excel template
  */
 @Handler
-@Localized("Text Template")
+@Localized("reporting.TextTemplateRenderer")
 public class TextTemplateRenderer extends ReportTemplateRenderer {
 	
 	private Log log = LogFactory.getLog(this.getClass());

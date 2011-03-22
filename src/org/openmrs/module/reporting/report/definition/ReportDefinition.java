@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -33,6 +34,7 @@ import org.openmrs.module.reporting.report.service.ReportService;
  * 
  * @see {@link ReportService#evaluate(ReportDefinition, Cohort, EvaluationContext)}
  */
+@Localized("reporting.ReportDefinition")
 public class ReportDefinition extends BaseDefinition {
 	
 	private static final long serialVersionUID = 1L;

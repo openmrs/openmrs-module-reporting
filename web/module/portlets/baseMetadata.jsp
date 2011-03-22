@@ -43,11 +43,13 @@
 				<div class="metadataField">
 					<label class="desc" for="name">Name</label>
 					<input type="text" id="name" tabindex="1" name="name" value="${model.obj.name}" size="50"/>
-				</div>				
-				<div class="metadataField">
-					<label class="desc" for="type">Type</label>
-					<rpt:displayLabel type="${model.obj.class.name}"/>			
-				</div>				
+				</div>
+				<c:if test="${!empty model.obj}">
+					<div class="metadataField">
+						<label class="desc" for="type">Type</label>
+						<rpt:displayLabel type="${model.obj.class.name}"/>			
+					</div>
+				</c:if>		
 				<div class="metadataField">
 					<label class="desc" for="description">Description</label>			
 					<textarea id="description" cols="80" rows="10" tabindex="2" name="description">${model.obj.description}</textarea>

@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.aggregation.Aggregator;
@@ -24,6 +25,7 @@ import org.openmrs.module.reporting.indicator.aggregation.Aggregator;
 /**
  * Cohort-based indicator
  */
+@Localized("reporting.CohortIndicator")
 public class CohortIndicator extends BaseIndicator {
 	
     private static final long serialVersionUID = 1L;

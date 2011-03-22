@@ -64,7 +64,7 @@
 						</td>
 						<td>${design.description}</td>
 						<td width="20%">${design.reportDefinition.name}</td>
-						<td width="20%">${design.rendererType.simpleName}</td>
+						<td width="20%"><rpt:displayLabel type="${design.rendererType.name}"/></td>
 						<td width="5%" align="center"><a id="${design.uuid}DesignRemoveLink" href="#">
 							<img src='<c:url value="/images/trash.gif"/>' border="0"/>
 						</a></td>

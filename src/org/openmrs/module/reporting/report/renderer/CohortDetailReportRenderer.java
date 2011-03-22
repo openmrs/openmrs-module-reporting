@@ -32,6 +32,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -55,6 +56,7 @@ import org.openmrs.serialization.SerializationException;
  * Supports rendering a series of Cohorts with particular datasets
  */
 @Handler
+@Localized("reporting.CohortDetailReportRenderer")
 public class CohortDetailReportRenderer extends ReportDesignRenderer {
 	
 	/**

@@ -63,11 +63,11 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Type</th>
 					<th>Description</th>
-					<th>Author</th>
+					<th>Type</th>
+					<th>Creator</th>
 					<th>Created</th>
-					<th>Remove</th>
+					<th align="center" width="1%">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -77,12 +77,6 @@
 							<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
 								${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReport.form?uuid=${reportDefinition.uuid}
 							</c:when>
-							<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
-								${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReportEditor.form?uuid=${reportDefinition.uuid}
-							</c:when>
-							<c:when test="${reportDefinition.class.simpleName == 'IndicatorReportDefinition'}">
-								${pageContext.request.contextPath}/module/reporting/reports/indicatorReportEditor.form?uuid=${reportDefinition.uuid}
-							</c:when>
 							<c:otherwise>
 								${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=${reportDefinition.uuid}
 							</c:otherwise>							
@@ -91,19 +85,15 @@
 
 					<tr>
 						<td width="20%" nowrap="">
-							<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?reportId=${reportDefinition.uuid}">
-								<img src='<c:url value="/images/play.gif"/>' align="absmiddle" border="0"/>
-							</a>							
-							&nbsp;
 							<a href="${editUrl}">
 								${reportDefinition.name}
 							</a>
 						</td>
-						<td width="10%" nowrap="">
-							${reportDefinition.class.simpleName}
-						</td>
 						<td width="20%">
 							${reportDefinition.description}
+						</td>
+						<td width="10%" nowrap="">
+							<rpt:displayLabel type="${reportDefinition.class.name}"/>
 						</td>
 						<td width="5%" nowrap>
 							${reportDefinition.creator}
@@ -111,8 +101,15 @@
 						<td width="5%" nowrap>
 							<rpt:timespan then="${reportDefinition.dateCreated}"/>
 						</td>
-						<td width="1%" align="center">
+						<td width="1%" align="center" nowrap>
+							&nbsp;
+							<a href="${editUrl}"><img src="<c:url value='/images/edit.gif'/>" border="0"/></a>
+							&nbsp;
 							<a href="javascript:confirmDelete('${reportDefinition.name}','${reportDefinition.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
+							&nbsp;
+							<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?reportId=${reportDefinition.uuid}">
+								<img src='<c:url value="/images/play.gif"/>' align="absmiddle" border="0"/>
+							</a>	
 						</td>
 					</tr>
 				</c:forEach>	
