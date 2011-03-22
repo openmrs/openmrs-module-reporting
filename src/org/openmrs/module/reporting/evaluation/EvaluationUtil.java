@@ -35,7 +35,7 @@ public class EvaluationUtil {
 	public static final String EXPRESSION_START = "${";
 	public static final String EXPRESSION_END = "}";
 	public static final String FORMAT_SEPARATOR = "\\|";
-	public static final Pattern DATE_OPERATION_PATTERN = Pattern.compile("([\\w\\W]*)([+-])(\\d{1,})([dwmy])");
+	public static final Pattern DATE_OPERATION_PATTERN = Pattern.compile("([\\w\\W]*)([+-])(\\d{1,})([hdwmy])");
 	
 	/**
 	 * Returns true if the passed String is an expression that is capable of being evaluated
@@ -179,7 +179,7 @@ public class EvaluationUtil {
 				int num = ("-".equals(matcher.group(2)) ? -1 : 1) * Integer.parseInt(matcher.group(3));
 				String fld = matcher.group(4).toLowerCase();
 				num = "w".equals(fld) ? num * 7 : num;
-				int field = "m".equals(fld) ? Calendar.MONTH : "y".equals(fld) ? Calendar.YEAR : Calendar.DATE;
+				int field = "h".equals(fld) ? Calendar.HOUR : "m".equals(fld) ? Calendar.MONTH : "y".equals(fld) ? Calendar.YEAR : Calendar.DATE;
 					
 				Calendar cal = Calendar.getInstance();
 				cal.setTime((Date) paramVal);
