@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,12 +24,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportRequest;
@@ -102,8 +102,8 @@ public class RunReportFormController extends SimpleFormController implements Val
 			if (StringUtils.hasText(request.getParameter("copyRequest"))) {
 				ReportRequest req = reportService.getReportRequestByUuid(request.getParameter("copyRequest"));
 				// avoid lazy init exceptions
-				command.setReportDefinition(rds.getDefinitionByUuid(req.getReportDefinition().getUuid()));
-				for (Map.Entry<String, Object> param : req.getParameterValues().entrySet()) {
+				command.setReportDefinition(rds.getDefinitionByUuid(req.getReportDefinition().getParameterizable().getUuid()));
+				for (Map.Entry<String, Object> param : req.getReportDefinition().getParameterMappings().entrySet()) {
 					command.getUserEnteredParams().put(param.getKey(), param.getValue());
 				}
 				command.setSelectedRenderer(req.getRenderingMode().getRenderer().getClass().getName() + "!" + req.getRenderingMode().getArgument());
@@ -176,8 +176,14 @@ public class RunReportFormController extends SimpleFormController implements Val
 			}
 		}
 		
-		ReportRequest run = new ReportRequest(reportDefinition, null, params, command.getSelectedMode(), ReportRequest.Priority.HIGHEST);
-		Report report = reportService.runReport(run);
+		ReportRequest run = new ReportRequest(new Mapped<ReportDefinition>(reportDefinition, params), null, command.getSelectedMode(), ReportRequest.Priority.HIGHEST);
+		Report report;
+		try {
+			report = reportService.runReport(run);
+		} catch (EvaluationException ex) {
+			errors.rejectValue("reportDefinition", null, formatEvaluationError(ex));
+			return showForm(request, response, errors);
+		}
 		
 		// If we're supposed to use a web report renderer, then we just redirect to the appropriate URL 
 		if (renderer instanceof WebReportRenderer) {
@@ -206,6 +212,15 @@ public class RunReportFormController extends SimpleFormController implements Val
 	}
 	
 		
+	private String formatEvaluationError(Exception ex) {
+		if (ex == null) {
+			return "";
+		} else {
+			return ex.getMessage().replaceAll("\\n", "<br/>");
+		}
+    }
+
+
 	public class CommandObject {
 		
 		private ReportDefinition reportDefinition;		

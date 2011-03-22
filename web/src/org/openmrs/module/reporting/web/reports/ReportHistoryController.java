@@ -53,7 +53,7 @@ public class ReportHistoryController {
 				shortNames.put(r, "Web");
 				isWebRenderer.put(r, true);
 			} else {
-				String filename = r.getRenderingMode().getRenderer().getFilename(r.getReportDefinition(),
+				String filename = r.getRenderingMode().getRenderer().getFilename(r.getReportDefinition().getParameterizable(),
 				    r.getRenderingMode().getArgument());
 				try {
 					filename = filename.substring(filename.lastIndexOf('.') + 1);
@@ -130,7 +130,7 @@ public class ReportHistoryController {
 				String url = ((WebReportRenderer) rm.getRenderer()).getLinkUrl(report.getRequest().getReportDefinition());
 				if (!url.startsWith("/"))
 					url = "/" + url;
-				request.setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, url, WebRequest.SCOPE_SESSION);
+				request.setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, urcausel, WebRequest.SCOPE_SESSION);
 				return "redirect:" + url;
 			} else {
 				model.addAttribute("report", report);
@@ -167,7 +167,7 @@ public class ReportHistoryController {
 		String filename = fn.replace(" ", "_");
 		RenderingMode rm = req.getRenderingMode();
 		
-		response.setContentType(rm.getRenderer().getRenderedContentType(req.getReportDefinition(), rm.getArgument()));
+		response.setContentType(rm.getRenderer().getRenderedContentType(req.getReportDefinition().getParameterizable(), rm.getArgument()));
 		response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 		response.setHeader("Pragma", "no-cache");
 
