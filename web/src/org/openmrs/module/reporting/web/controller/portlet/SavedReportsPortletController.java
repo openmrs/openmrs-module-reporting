@@ -35,7 +35,7 @@ public class SavedReportsPortletController extends ReportingPortletController {
 				shortNames.put(r, "Web");
 				isWebRenderer.put(r, true);
 			} else {
-				String filename = r.getRenderingMode().getRenderer().getFilename(r.getReportDefinition(),
+				String filename = r.getRenderingMode().getRenderer().getFilename(r.getReportDefinition().getParameterizable(),
 				    r.getRenderingMode().getArgument());
 				try {
 					filename = filename.substring(filename.lastIndexOf('.') + 1);

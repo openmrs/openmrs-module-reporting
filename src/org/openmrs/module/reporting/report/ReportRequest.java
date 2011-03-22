@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.openmrs.User;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.util.OpenmrsUtil;
@@ -42,9 +43,8 @@ public class ReportRequest implements Comparable<ReportRequest> {
 	}
 
 	private String uuid;
-	private CohortDefinition baseCohort; //optional
-	private ReportDefinition reportDefinition;
-	private Map<String, Object> parameterValues;
+	private Mapped<CohortDefinition> baseCohort; //optional
+	private Mapped<ReportDefinition> reportDefinition;
 	private RenderingMode renderingMode;
 	private User requestedBy;
 	private Date requestDate;
@@ -60,12 +60,11 @@ public class ReportRequest implements Comparable<ReportRequest> {
 	}
 
 	
-	public ReportRequest(ReportDefinition reportDefinition, CohortDefinition baseCohort, Map<String, Object> parameterValues,
-        RenderingMode renderingMode, Priority priority) {
+	public ReportRequest(Mapped<ReportDefinition> reportDefinition, Mapped<CohortDefinition> baseCohort,
+	                     RenderingMode renderingMode, Priority priority) {
 	    super();
 	    this.reportDefinition = reportDefinition;
 	    this.baseCohort = baseCohort;
-	    this.parameterValues = parameterValues;
 	    this.renderingMode = renderingMode;
 	    this.priority = priority;
     }
@@ -116,7 +115,7 @@ public class ReportRequest implements Comparable<ReportRequest> {
 	/**
      * @return the reportDefinition
      */
-    public ReportDefinition getReportDefinition() {
+    public Mapped<ReportDefinition> getReportDefinition() {
     	return reportDefinition;
     }
 
@@ -124,27 +123,11 @@ public class ReportRequest implements Comparable<ReportRequest> {
     /**
      * @param reportDefinition the reportDefinition to set
      */
-    public void setReportDefinition(ReportDefinition reportDefinition) {
+    public void setReportDefinition(Mapped<ReportDefinition> reportDefinition) {
     	this.reportDefinition = reportDefinition;
     }
 
 	
-    /**
-     * @return the parameterValues
-     */
-    public Map<String, Object> getParameterValues() {
-    	return parameterValues;
-    }
-
-	
-    /**
-     * @param parameterValues the parameterValues to set
-     */
-    public void setParameterValues(Map<String, Object> parameterValues) {
-    	this.parameterValues = parameterValues;
-    }
-	
-    
     /**
      * @return the renderingMode
      */
@@ -227,7 +210,7 @@ public class ReportRequest implements Comparable<ReportRequest> {
     /**
      * @return the baseCohort
      */
-    public CohortDefinition getBaseCohort() {
+    public Mapped<CohortDefinition> getBaseCohort() {
     	return baseCohort;
     }
 
@@ -235,7 +218,7 @@ public class ReportRequest implements Comparable<ReportRequest> {
     /**
      * @param baseCohort the baseCohort to set
      */
-    public void setBaseCohort(CohortDefinition baseCohort) {
+    public void setBaseCohort(Mapped<CohortDefinition> baseCohort) {
     	this.baseCohort = baseCohort;
     }
 

@@ -227,7 +227,6 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		ret.startEvaluating();
 		
 		EvaluationContext ec = new EvaluationContext();
-		ec.setParameterValues(request.getParameterValues());
 
 		if (request.getBaseCohort() != null) {
 			Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(request.getBaseCohort(), ec);
@@ -248,8 +247,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		            rm.getRenderer().render(rawData, rm.getArgument(), out);
 		            
 		            ret.outputRendered(
-		            	rm.getRenderer().getFilename(request.getReportDefinition(), rm.getArgument()),
-		            	rm.getRenderer().getRenderedContentType(request.getReportDefinition(), rm.getArgument()),
+		            	rm.getRenderer().getFilename(request.getReportDefinition().getParameterizable(), rm.getArgument()),
+		            	rm.getRenderer().getRenderedContentType(request.getReportDefinition().getParameterizable(), rm.getArgument()),
 		            	out.toByteArray());
 		            
 		            // now save the rendered output to a file
@@ -505,7 +504,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public Map<ReportDefinition, ReportRequest> getLastReportRequestsByReport() {
 	    Map<ReportDefinition, ReportRequest> ret = new HashMap<ReportDefinition, ReportRequest>();
 	    for (ReportRequest req : getReportRequestHistory())
-	    	ret.put(req.getReportDefinition(), req);
+	    	ret.put(req.getReportDefinition().getParameterizable(), req);
 	    return ret;
     }
 

@@ -37,7 +37,7 @@ public class ReportHistoryPortletController extends ReportingPortletController {
 				isWebRenderer.put(r, true);
 			} else {
 				try {
-					String filename = r.getRenderingMode().getRenderer().getFilename(r.getReportDefinition(),
+					String filename = r.getRenderingMode().getRenderer().getFilename(r.getReportDefinition().getParameterizable(),
 					    r.getRenderingMode().getArgument());
 					filename = filename.substring(filename.lastIndexOf('.') + 1);
 					filename = filename.toUpperCase();

@@ -53,11 +53,11 @@
 			</c:choose>
 			<tr valign="baseline">
 				<td>
-					${r.reportDefinition.name}
+					${r.reportDefinition.parameterizable.name}
 				</td>
 				<td>
 					<table class="small">
-						<c:forEach var="p" items="${r.parameterValues}">
+						<c:forEach var="p" items="${r.reportDefinition.parameterMappings}">
 							<tr>
 								<td>${p.key}:</td>
 								<td><rpt:format object="${p.value}"/></td>

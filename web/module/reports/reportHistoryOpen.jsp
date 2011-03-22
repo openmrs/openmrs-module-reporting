@@ -9,11 +9,11 @@
 <c:url var="iconFilename" value="/images/file.gif"/>
 
 <h1>
-	${request.reportDefinition.name}
+	${request.reportDefinition.parameterizable.name}
 </h1>
 
 <table>
-	<c:forEach var="p" items="${request.parameterValues}">
+	<c:forEach var="p" items="${request.reportDefinition.parameterMappings}">
 		<tr>
 			<td align="right" class="faded">${p.key}:</td>
 			<td><rpt:format object="${p.value}"/></td>

@@ -9,12 +9,12 @@
 	<h1><b><big>${report.reportDefinition.name}</big></b></h1>
 	<h2><i>${report.reportDefinition.description}</i></h2>
 	
-	<spring:hasBindErrors name="reportFromXml">
+	<spring:hasBindErrors name="report">
 		<br /><br/>		
 		<spring:message code="fix.error"/>
 		<div class="error">
 			<c:forEach items="${errors.allErrors}" var="error">
-				<spring:message code="${error.code}" text="${error.code}"/><br/>
+				<spring:message code="${error.code}" text="${error.defaultMessage}"/><br/>
 			</c:forEach>
 		</div>
 		<br />	
