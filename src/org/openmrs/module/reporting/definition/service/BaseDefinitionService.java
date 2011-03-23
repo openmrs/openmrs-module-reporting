@@ -18,12 +18,13 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -74,7 +75,9 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public Evaluated<T> evaluate(Mapped<? extends T> definition, EvaluationContext context) throws APIException {
+	public Evaluated<T> evaluate(Mapped<? extends T> definition, EvaluationContext context) throws EvaluationException {
+		if (definition == null || definition.getParameterizable() == null)
+			throw new MissingDependencyException();
 		EvaluationContext childContext = EvaluationContext.cloneForChild(context, definition);
 		log.debug("Evaluating: " + definition.getParameterizable() + "(" + context.getParameterValues() + ")");
 		return evaluate(definition.getParameterizable(), childContext);

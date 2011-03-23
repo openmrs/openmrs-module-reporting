@@ -13,13 +13,14 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
- * Implementations of this interface describe the metadata that can be evaluated to produce a {@link DataSet}. 
+ * Implementations of this interface can evaluate a particular subclass of {@link DataSetDefinition} and produce
+ * a {@link DataSet}. 
  * This is one of three interfaces that work together to define and evaluate an OpenMRS DataSet. 
  * An implementation of {@link DataSetEvaluator} transforms one or more implementations of {@link DataSetDefinition}
  * to produce a specific type of {@link DataSet}.
@@ -35,5 +36,5 @@ public interface DataSetEvaluator {
 	 * @param inputCohortencounter_datetime
 	 * @return the evaluated <code>DataSet</code>
 	 */
-	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws ReportingException;
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws EvaluationException;
 }

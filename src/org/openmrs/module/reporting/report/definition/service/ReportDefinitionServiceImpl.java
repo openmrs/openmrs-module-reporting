@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
@@ -118,7 +119,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	 * @see ReportDefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
 	@Override
-	public ReportData evaluate(Mapped<? extends ReportDefinition> definition, EvaluationContext context) throws APIException {
+	public ReportData evaluate(Mapped<? extends ReportDefinition> definition, EvaluationContext context) throws EvaluationException {
 		return (ReportData) super.evaluate(definition, context);
 	}
 	
@@ -126,7 +127,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	 * @see ReportDefinitionService#evaluate(ReportDefinition, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
-	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext evalContext) {
+	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext evalContext) throws EvaluationException {
 		
 		log.debug("Evaluating report: " + reportDefinition + "(" + evalContext.getParameterValues() + ")");
 		
@@ -136,7 +137,12 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 		ret.setDefinition(reportDefinition);
 		ret.setContext(evalContext);
 		
-		Cohort baseCohort = CohortFilter.filter(evalContext, reportDefinition.getBaseCohortDefinition());
+		Cohort baseCohort;
+		try {
+			baseCohort = CohortFilter.filter(evalContext, reportDefinition.getBaseCohortDefinition());
+		} catch (EvaluationException ex) {
+			throw new EvaluationException("baseCohort", ex);
+		}
 		
 		DataSetDefinitionService dss = Context.getService(DataSetDefinitionService.class);
 		Map<String, Mapped<? extends DataSetDefinition>> dsds = reportDefinition.getDataSetDefinitions();
@@ -145,7 +151,11 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 				Mapped<? extends DataSetDefinition> pd = dsds.get(key);
 				EvaluationContext childEc = EvaluationContext.cloneForChild(evalContext, pd);
 				childEc.setBaseCohort(baseCohort);
-				data.put(key, dss.evaluate(pd.getParameterizable(), childEc));
+				try {
+					data.put(key, dss.evaluate(pd.getParameterizable(), childEc));
+				} catch (EvaluationException ex) {
+					throw new EvaluationException("data set '" + key + "'", ex);
+				}
 			}
 		}
 		

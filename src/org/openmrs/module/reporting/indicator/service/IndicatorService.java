@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.indicator.service;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
@@ -31,11 +32,11 @@ public interface IndicatorService extends DefinitionService<Indicator> {
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public IndicatorResult evaluate(Indicator indicator, EvaluationContext context);
+	public IndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public IndicatorResult evaluate(Mapped<? extends Indicator> indicator, EvaluationContext context);
+	public IndicatorResult evaluate(Mapped<? extends Indicator> indicator, EvaluationContext context) throws EvaluationException;
 }

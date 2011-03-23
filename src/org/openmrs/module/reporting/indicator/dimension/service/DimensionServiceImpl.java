@@ -25,6 +25,7 @@ import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
 import org.openmrs.module.reporting.indicator.dimension.evaluator.DimensionEvaluator;
 import org.openmrs.module.reporting.indicator.dimension.persister.DimensionPersister;
@@ -142,7 +143,7 @@ public class DimensionServiceImpl extends BaseDefinitionService<Dimension> imple
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	public Evaluated<Dimension> evaluate(Dimension definition, EvaluationContext context) throws APIException {
+	public Evaluated<Dimension> evaluate(Dimension definition, EvaluationContext context) throws EvaluationException {
 		DimensionEvaluator evaluator = HandlerUtil.getPreferredHandler(DimensionEvaluator.class, definition.getClass());
 		return evaluator.evaluate(definition, context);
 	}

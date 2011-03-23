@@ -25,6 +25,7 @@ import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinition
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -163,6 +164,7 @@ public class ManageDatasetsController {
     
     /**
      * View Data Set
+     * @throws EvaluationException 
      */
 	@RequestMapping("/module/reporting/datasets/viewDataSet")
     public String viewDataset(
@@ -173,7 +175,7 @@ public class ManageDatasetsController {
             @RequestParam(required=false, value="indicatorId") String indicatorId,
             @RequestParam(required=false, value="limit") Integer limit,
     		ModelMap model
-     	) {
+     	) throws EvaluationException {
 
 	    	
     	// Step 1 
@@ -335,8 +337,9 @@ public class ManageDatasetsController {
     /**
      * Evaluates a cohort 
      * TODO Move to service layer 
+     * @throws EvaluationException 
      */
-    public Cohort evaluateCohort(String uuid) {
+    public Cohort evaluateCohort(String uuid) throws EvaluationException {
     	EvaluationContext evaluationContext = new EvaluationContext();
 		Cohort cohort = Context.getPatientSetService().getAllPatients();
 		evaluationContext.setBaseCohort(cohort);
@@ -345,8 +348,12 @@ public class ManageDatasetsController {
     		cohortDefinition = 
     			Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
     		if (cohortDefinition != null) {
-    			cohort = 
-    				Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
+    			try {
+	    			cohort = 
+	    				Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
+    			} catch (EvaluationException ex) {
+    				throw new EvaluationException("cohort");
+    			}
     		}
     	}     		    	
     	return cohort;

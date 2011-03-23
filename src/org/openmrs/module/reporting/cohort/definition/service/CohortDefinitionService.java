@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.cohort.definition.history.CohortDefinitionSe
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,12 +33,12 @@ public interface CohortDefinitionService extends DefinitionService<CohortDefinit
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws APIException;
+	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
-	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws APIException;
+	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException;
 	
 	//******* TODO: DO WE REMOVE EVERYTHING BELOW HERE? (MS 3/16/10) ******
 	

@@ -21,6 +21,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.reporting.indicator.dimension.CohortDimension;
@@ -41,9 +42,10 @@ public class CohortDimensionEvaluator implements DimensionEvaluator {
 	public CohortDimensionEvaluator() {}
 
 	/**
+	 * @throws EvaluationException 
 	 * @see DimensionEvaluator#evaluate(Dimension, EvaluationContext)
 	 */
-	public CohortDimensionResult evaluate(Dimension dimension, EvaluationContext context) {
+	public CohortDimensionResult evaluate(Dimension dimension, EvaluationContext context) throws EvaluationException {
 		
 		CohortDimension cd = (CohortDimension)dimension;
 		CohortDimensionResult result = new CohortDimensionResult(cd, context);
@@ -55,7 +57,12 @@ public class CohortDimensionEvaluator implements DimensionEvaluator {
 		
 		Cohort totalDimensions = new Cohort();
 		for (String key : dimension.getOptionKeys()) {
-			Cohort currentCohort = evaluateDimensionOption(cd, key, context);
+			Cohort currentCohort;
+			try {
+				currentCohort = evaluateDimensionOption(cd, key, context);
+			} catch (EvaluationException ex) { 
+				throw new EvaluationException("dimension option: " + key);
+			}
 			result.addOptionCohort(key, currentCohort);
 			totalDimensions = Cohort.union(totalDimensions, currentCohort);
 		}
@@ -66,8 +73,9 @@ public class CohortDimensionEvaluator implements DimensionEvaluator {
 	
 	/**
 	 * Evaluates the passed dimension option with the inputCohort as a basis
+	 * @throws EvaluationException 
 	 */
-	public Cohort evaluateDimensionOption(CohortDimension dimension, String option, EvaluationContext context) {
+	public Cohort evaluateDimensionOption(CohortDimension dimension, String option, EvaluationContext context) throws EvaluationException {
 		
 		log.debug("Evaluating dimension: " + dimension + "." + option + "(" + context.getParameterValues() + ")");
 	

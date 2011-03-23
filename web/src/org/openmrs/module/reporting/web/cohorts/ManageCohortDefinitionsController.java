@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -137,12 +138,13 @@ public class ManageCohortDefinitionsController {
      * @param returnUrl
      * @param model
      * @return
+     * @throws EvaluationException 
      */
     @RequestMapping("/module/reporting/cohorts/evaluateCohortDefinition")
     public String evaluateCohortDefinition(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends CohortDefinition> type,
-    		ModelMap model) {
+    		ModelMap model) throws EvaluationException {
     	
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
     	CohortDefinition cohortDefinition = service.getDefinition(uuid, type);

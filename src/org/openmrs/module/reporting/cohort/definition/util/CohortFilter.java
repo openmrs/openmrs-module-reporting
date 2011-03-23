@@ -18,6 +18,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 /**
@@ -32,8 +33,9 @@ public class CohortFilter {
 	 * @param context - The EvaluationContext to utilize
 	 * @param definitions - The CohortDefinitions to evaluate
 	 * @return - The intersection of the Cohorts produced by each evaluated CohortDefinitions
+	 * @throws EvaluationException if any of the passed definitions could not be evaluated
 	 */
-	public static Cohort filter(EvaluationContext context, Mapped<CohortDefinition>... definitions) {
+	public static Cohort filter(EvaluationContext context, Mapped<CohortDefinition>... definitions) throws EvaluationException {
 		Cohort ret = context.getBaseCohort();
 		if (definitions != null) {
 			for (Mapped<CohortDefinition> d : definitions) {

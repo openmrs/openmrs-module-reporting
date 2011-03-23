@@ -19,6 +19,8 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.util.CohortExpressionParser;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 
 /**
  * Evaluates an CompositionCohortDefinition and produces a Cohort
@@ -32,10 +34,16 @@ public class CompositionCohortDefinitionEvaluator implements CohortDefinitionEva
 	public CompositionCohortDefinitionEvaluator() {}
 
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @throws EvaluationException 
+	 * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
     	CompositionCohortDefinition composition = (CompositionCohortDefinition) cohortDefinition;
-		return CohortExpressionParser.evaluate(composition, context);
+    	try {
+    		return CohortExpressionParser.evaluate(composition, context);
+    	} catch (MissingDependencyException ex) {
+    		String name = composition.getName() != null ? composition.getName() : composition.getCompositionString();
+    		throw new EvaluationException("sub-query '" + ex.getPropertyThatFailed() + "' of composition '" + name + "'", ex);
+    	}
     }
 }

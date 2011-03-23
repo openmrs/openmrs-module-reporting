@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
@@ -124,7 +125,12 @@ public class QueryParameterFormController {
 					request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "Unable to evaluate report: " + e.getMessage());
 					request.getSession().removeAttribute("results");
 					return new ModelAndView("/module/reporting/parameters/queryParameterForm");
-				}								
+				}
+				catch (MissingDependencyException ex) {
+					request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "Missing dependency: " + ex.getMessage());
+					request.getSession().removeAttribute("results");
+					return new ModelAndView("/module/reporting/parameters/queryParameterForm");
+				}
 			}		
 			
 			log.info("Returning model with view " + model.getViewName() + " and map " + model.getModelMap());

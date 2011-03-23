@@ -26,6 +26,7 @@ import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefi
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition.CohortDataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * The logic that evaluates a {@link CohortCrossTabDataSetDefinition} and produces a {@link MapDataSet}
@@ -44,9 +45,10 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 	public CohortDataSetEvaluator() { }
 	
 	/**
+	 * @throws EvaluationException 
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		if (context.getBaseCohort() == null) {
@@ -59,8 +61,18 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
 		
 		for (CohortDataSetColumn col : dsd.getDataSetColumns()) {
-			Cohort rowCohort = (col.getRowDefinition() == null ? context.getBaseCohort() : cds.evaluate(col.getRowDefinition(), context));
-			Cohort colCohort = (col.getColumnDefinition() == null ? context.getBaseCohort() : cds.evaluate(col.getColumnDefinition(), context));
+			Cohort rowCohort;
+			try {
+				rowCohort = (col.getRowDefinition() == null ? context.getBaseCohort() : cds.evaluate(col.getRowDefinition(), context));
+			} catch (EvaluationException ex) {
+				throw new EvaluationException("row definition for row=" + col.getRowName() + " , col=" + col.getColumnName());
+			}
+			Cohort colCohort;
+			try {
+				colCohort = (col.getColumnDefinition() == null ? context.getBaseCohort() : cds.evaluate(col.getColumnDefinition(), context));
+			} catch (EvaluationException ex) {
+				throw new EvaluationException("column definition for row=" + col.getRowName() + " , col=" + col.getColumnName());
+			}
 			Cohort c = Cohort.intersect(rowCohort, colCohort);
 			data.addData(col, c);
 		}

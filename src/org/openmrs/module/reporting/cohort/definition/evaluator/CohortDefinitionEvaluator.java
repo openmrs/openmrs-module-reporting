@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * This interfaces provides the functionality to evaluate a CohortDefinition and return a Cohort.
@@ -28,6 +29,6 @@ public interface CohortDefinitionEvaluator {
 	 * @param context context to use during evaluation
 	 * @return the cohort of all patients who meet the definition now
 	 */
-	public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context);
+	public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException;
 	
 }

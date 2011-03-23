@@ -26,6 +26,7 @@ import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
@@ -110,7 +111,7 @@ public class DefinitionContext {
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Definition> Evaluated<T> evaluate(Mapped<? extends T> definition, EvaluationContext context) {
+	public static <T extends Definition> Evaluated<T> evaluate(Mapped<? extends T> definition, EvaluationContext context) throws EvaluationException {
 		Class<T> c = (Class<T>)definition.getClass();
 		return getDefinitionService(c).evaluate(definition, context);
 	}
@@ -120,7 +121,7 @@ public class DefinitionContext {
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Definition> Evaluated<T> evaluate(T definition, EvaluationContext context) {
+	public static <T extends Definition> Evaluated<T> evaluate(T definition, EvaluationContext context) throws EvaluationException {
 		Class<T> c = (Class<T>)definition.getClass();
 		return getDefinitionService(c).evaluate(definition, context);
 	}

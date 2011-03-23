@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.cohort.definition.InverseCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * Evaluates an InverseCohortDefinition and produces a Cohort
@@ -34,15 +35,21 @@ public class InverseCohortDefinitionEvaluator implements CohortDefinitionEvaluat
 	public InverseCohortDefinitionEvaluator() {}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @throws EvaluationException 
+	 * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      * @should return all patients who are not in the inner cohort definition
      * @should successfully use the context base cohort
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
     	InverseCohortDefinition icd = (InverseCohortDefinition) cohortDefinition;
     	context = ObjectUtil.nvl(context, new EvaluationContext());
     	Cohort allPatients = ObjectUtil.nvl(context.getBaseCohort(), Context.getPatientSetService().getAllPatients());
-		Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(icd.getBaseDefinition(), context);
+    	Cohort baseCohort;
+    	try {
+    		baseCohort = Context.getService(CohortDefinitionService.class).evaluate(icd.getBaseDefinition(), context);
+    	} catch (EvaluationException ex) {
+    		throw new EvaluationException("base cohort");
+    	}
 		return Cohort.subtract(allPatients, baseCohort);
     }
 }

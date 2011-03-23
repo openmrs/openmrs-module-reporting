@@ -31,6 +31,8 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 /**
@@ -63,8 +65,9 @@ public class CohortExpressionParser {
 	
 	/**
 	 * @return the Cohort evaluated from the passed CompositionCohortDefinition and EvaluationContext
+	 * @throws EvaluationException
 	 */
-	public static Cohort evaluate(CompositionCohortDefinition composition, EvaluationContext context) {
+	public static Cohort evaluate(CompositionCohortDefinition composition, EvaluationContext context) throws EvaluationException {
 		List<Object> tokens = CohortExpressionParser.parseIntoTokens(composition.getCompositionString());
 		return CohortExpressionParser.evaluate(tokens, composition, context);
 	}
@@ -73,9 +76,10 @@ public class CohortExpressionParser {
 	 * Recursively traverse the List<Object> phrase to produce a (possibly nested) CompoundCohortDefinition
 	 * If another List<Object> is found in the list, recursively evaluate it in place
 	 * If anything in this list is a key into searches, replace it with the relevant filter from searches
+	 * @throws EvaluationException 
 	 */
 	@SuppressWarnings("unchecked")
-	public static Cohort evaluate(List<Object> tokens, CompositionCohortDefinition composition, EvaluationContext context) {
+	public static Cohort evaluate(List<Object> tokens, CompositionCohortDefinition composition, EvaluationContext context) throws EvaluationException {
 		
 		log.debug("Evaluating: " + tokens + " for searches: " + composition.getSearches());
 		List<Object> use = new ArrayList<Object>();
@@ -90,8 +94,16 @@ public class CohortExpressionParser {
 			else if (o instanceof String || o instanceof Integer) {
 				log.debug("This refers to a Search, try to find it...");
 				Mapped<CohortDefinition> cd = composition.getSearches().get(o.toString());
+				if (cd == null || cd.getParameterizable() == null) {
+					throw new MissingDependencyException(o.toString());
+				}
 				log.debug("Found search: " + cd);
-				Cohort result = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+				Cohort result;
+				try {
+					result = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+				} catch (EvaluationException ex) {
+					throw new EvaluationException(o.toString());
+				}
 				log.debug("This evaluated to: " + result.size());
 				use.add(result);
 			}

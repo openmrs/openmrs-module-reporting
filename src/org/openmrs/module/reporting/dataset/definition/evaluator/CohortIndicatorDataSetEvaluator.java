@@ -15,6 +15,7 @@ import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDef
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition.CohortIndicatorAndDimensionColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
@@ -38,10 +39,11 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 	public CohortIndicatorDataSetEvaluator() { }
 	
 	/**
+	 * @throws EvaluationException 
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 * @should evaluate a CohortIndicatorDataSetDefinition
 	 */
-	public MapDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public MapDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 		
 		CohortIndicatorDataSetDefinition dsd = (CohortIndicatorDataSetDefinition) dataSetDefinition;
 
@@ -62,8 +64,12 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		Map<String, Map<String, Cohort>> dimensionCalculationCache = new HashMap<String, Map<String, Cohort>>();
 		for (Map.Entry<String, Mapped<CohortDefinitionDimension>> e : dsd.getDimensions().entrySet()) {
 			String dimensionKey = e.getKey();
-			CohortDimensionResult dim = (CohortDimensionResult)ds.evaluate(e.getValue(), context);
-			dimensionCalculationCache.put(dimensionKey, dim.getOptionCohorts());
+			try {
+				CohortDimensionResult dim = (CohortDimensionResult)ds.evaluate(e.getValue(), context);
+				dimensionCalculationCache.put(dimensionKey, dim.getOptionCohorts());
+			} catch (EvaluationException ex) {
+				throw new EvaluationException("dimension " + dimensionKey, ex);
+			}
 		}
 		
 		// evaluate unique indicators
@@ -71,9 +77,13 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		for (DataSetColumn c : dsd.getColumns()) {
 			CohortIndicatorAndDimensionColumn col = (CohortIndicatorAndDimensionColumn) c;
 			if (!indicatorCalculationCache.containsKey(col.getIndicator())) {
-				CohortIndicatorResult result = (CohortIndicatorResult) is.evaluate(col.getIndicator(), context);
-				log.debug("Caching indicator: " + col.getIndicator());
-				indicatorCalculationCache.put(col.getIndicator(), result);
+				try {
+					CohortIndicatorResult result = (CohortIndicatorResult) is.evaluate(col.getIndicator(), context);
+					log.debug("Caching indicator: " + col.getIndicator());
+					indicatorCalculationCache.put(col.getIndicator(), result);
+				} catch (EvaluationException ex) {
+					throw new EvaluationException("indicator for column " + col.getLabel() + " (" + col.getName() + ")", ex);
+				}
 			}
 		}
 		

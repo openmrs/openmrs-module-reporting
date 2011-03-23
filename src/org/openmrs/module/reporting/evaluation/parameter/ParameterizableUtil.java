@@ -16,6 +16,7 @@ import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 
 
@@ -48,7 +49,7 @@ public class ParameterizableUtil {
 	/**
 	 * Evaluates the given parameterizable.
 	 */
-	public static Object evaluateParameterizable(Parameterizable parameterizable, EvaluationContext context) { 
+	public static Object evaluateParameterizable(Parameterizable parameterizable, EvaluationContext context) throws EvaluationException { 
 		Object result = null;
 		if (parameterizable != null) {
 			if (parameterizable instanceof Definition) {

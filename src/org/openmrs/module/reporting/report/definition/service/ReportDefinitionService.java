@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.report.definition.service;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -36,12 +37,12 @@ public interface ReportDefinitionService extends DefinitionService<ReportDefinit
 	 * This method evaluates a ReportDefinition object for the given EvaluationContext and returns a ReportData
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext context);
+	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * This method evaluates a ReportDefinition object for the given EvaluationContext and returns a ReportData
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	public ReportData evaluate(Mapped<? extends ReportDefinition> reportDefinition, EvaluationContext context);
+	public ReportData evaluate(Mapped<? extends ReportDefinition> reportDefinition, EvaluationContext context) throws EvaluationException;
 }
 

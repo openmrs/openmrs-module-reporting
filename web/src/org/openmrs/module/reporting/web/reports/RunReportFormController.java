@@ -29,6 +29,7 @@ import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.Report;
@@ -176,7 +177,13 @@ public class RunReportFormController extends SimpleFormController implements Val
 		}
 		
 		ReportRequest run = new ReportRequest(new Mapped<ReportDefinition>(reportDefinition, params), null, command.getSelectedMode(), ReportRequest.Priority.HIGHEST);
-		Report report = reportService.runReport(run);
+		Report report;
+		try {
+			report = reportService.runReport(run);
+		} catch (EvaluationException ex) {
+			errors.rejectValue("reportDefinition", null, formatEvaluationError(ex));
+			return showForm(request, response, errors);
+		}
 		
 		// If we're supposed to use a web report renderer, then we just redirect to the appropriate URL 
 		if (renderer instanceof WebReportRenderer) {
@@ -203,6 +210,15 @@ public class RunReportFormController extends SimpleFormController implements Val
 		}
 		return null;
 	}
+
+	
+	private String formatEvaluationError(Exception ex) {
+		if (ex == null) {
+			return "";
+		} else {
+			return ex.getMessage().replaceAll("\\n", "<br/>");
+		}
+    }
 	
 
 	public class CommandObject {

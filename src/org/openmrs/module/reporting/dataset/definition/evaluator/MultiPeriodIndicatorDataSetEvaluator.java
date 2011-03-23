@@ -16,6 +16,7 @@ import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataS
 import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataSetDefinition.Iteration;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 @Handler(supports={MultiPeriodIndicatorDataSetDefinition.class})
 public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
@@ -23,10 +24,11 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 	public MultiPeriodIndicatorDataSetEvaluator() { }
 	
 	/**
+	 * @throws EvaluationException 
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 * @should evaluate a MultiPeriodIndicatorDataSetDefinition
 	 */
-	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		if (context == null) {
@@ -42,7 +44,12 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 			ec.addParameterValue("startDate", iter.getStartDate());
 			ec.addParameterValue("endDate", iter.getEndDate());
 			ec.addParameterValue("location", iter.getLocation());
-			MapDataSet ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd.getBaseDefinition(), ec);
+			MapDataSet ds;
+			try {
+				ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd.getBaseDefinition(), ec);
+			} catch (EvaluationException ex) {
+				throw new EvaluationException("baseDefinition");
+			}
 		    DataSetRow row = new DataSetRow();
 		    for (DataSetColumn column : dsd.getColumns()) {
 		    	if (keysToCopy.contains(column.getName())) {

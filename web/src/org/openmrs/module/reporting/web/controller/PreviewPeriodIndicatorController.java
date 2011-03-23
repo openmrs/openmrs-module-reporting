@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -97,11 +98,12 @@ public class PreviewPeriodIndicatorController {
 	 * @param cohortDefinition
 	 * @param bindingResult
 	 * @return
+	 * @throws EvaluationException 
 	 */
 	@RequestMapping(value="/module/reporting/indicators/previewPeriodIndicator",method = RequestMethod.POST)
 	public ModelAndView processForm(
 		@ModelAttribute("indicatorForm") IndicatorForm form,
-		BindingResult bindingResult) {
+		BindingResult bindingResult) throws EvaluationException {
 		
 		log.info("POST /module/reporting/indicators/previewPeriodIndicator");
 		

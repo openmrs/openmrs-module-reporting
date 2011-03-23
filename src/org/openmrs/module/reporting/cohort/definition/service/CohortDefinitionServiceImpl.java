@@ -35,6 +35,7 @@ import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.evaluation.caching.CachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.NoCachingStrategy;
@@ -165,7 +166,7 @@ public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDef
      * @see CohortDefinitionEvaluator#evaluate(EvaluationContext)
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws APIException {
+	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws EvaluationException {
 		
 		// Retrieve CohortDefinitionEvaluator which can evaluate this CohortDefinition
 		CohortDefinitionEvaluator evaluator = HandlerUtil.getPreferredHandler(CohortDefinitionEvaluator.class, definition.getClass());
@@ -218,7 +219,7 @@ public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDef
 	 * @see BaseDefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
 	@Override
-	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws APIException {
+	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException {
 		return (EvaluatedCohort)super.evaluate(definition, context);
 	}
 

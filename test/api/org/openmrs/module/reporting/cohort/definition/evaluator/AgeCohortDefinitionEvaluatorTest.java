@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -74,8 +75,9 @@ public class AgeCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 	 * @param unknown
 	 * @param ymdEffectiveDate
 	 * @param ageUnits
+	 * @throws EvaluationException 
 	 */
-	private void testAgeRange(int numPats, Integer minAge, Integer maxAge, boolean unknown, String ymdEffectiveDate, DurationUnit ageUnits) {
+	private void testAgeRange(int numPats, Integer minAge, Integer maxAge, boolean unknown, String ymdEffectiveDate, DurationUnit ageUnits) throws EvaluationException {
 		AgeCohortDefinition acd = new AgeCohortDefinition();
 		acd.setMinAge(minAge);
 		acd.setMaxAge(maxAge);

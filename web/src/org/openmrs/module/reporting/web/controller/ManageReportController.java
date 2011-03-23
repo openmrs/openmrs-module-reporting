@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -166,7 +167,7 @@ public class ManageReportController {
     @RequestMapping("/module/reporting/evaluateReport")	
 	public void evaluateReport(
 			HttpServletResponse response,
-			@RequestParam(required=false, value="uuid") String uuid) {
+			@RequestParam(required=false, value="uuid") String uuid) throws EvaluationException {
 
     	log.info("Evaluating report schema with uuid " + uuid);		
 		ReportDefinition reportSchema = getReportService().getDefinitionByUuid(uuid);

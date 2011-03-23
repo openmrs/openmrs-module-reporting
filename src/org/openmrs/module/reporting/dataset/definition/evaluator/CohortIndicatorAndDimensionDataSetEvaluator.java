@@ -14,6 +14,7 @@ import org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensi
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensionDataSetDefinition.CohortIndicatorAndDimensionSpecification;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
@@ -37,10 +38,11 @@ public class CohortIndicatorAndDimensionDataSetEvaluator implements DataSetEvalu
 	public CohortIndicatorAndDimensionDataSetEvaluator() { }
 	
 	/**
+	 * @throws EvaluationException 
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 * @should evaluate a CohortIndicatorDataSetDefinition
 	 */
-	public MapDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public MapDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 		
 		CohortIndicatorAndDimensionDataSetDefinition dsd = (CohortIndicatorAndDimensionDataSetDefinition) dataSetDefinition;
 		MapDataSet ret = new MapDataSet(dataSetDefinition, context);
@@ -62,7 +64,12 @@ public class CohortIndicatorAndDimensionDataSetEvaluator implements DataSetEvalu
 			for (String combination : combinations) {
 				
 				// First evaluate the indicator and create the result object
-				CohortIndicatorResult result = (CohortIndicatorResult) is.evaluate(spec.getIndicator(), context);
+				CohortIndicatorResult result;
+				try {
+					result = (CohortIndicatorResult) is.evaluate(spec.getIndicator(), context);
+				} catch (EvaluationException ex) {
+					throw new EvaluationException("indicator " + spec.getLabel() + " (" + spec.getIndicatorNumber() + ")");
+				}
 				log.debug("Evaluated Indicator: " + spec.getLabel() + " = " + result.getValue());
 				CohortIndicatorAndDimensionResult resultWithDimensions = new CohortIndicatorAndDimensionResult(result, context);
 				
@@ -76,10 +83,14 @@ public class CohortIndicatorAndDimensionDataSetEvaluator implements DataSetEvalu
 						column.setLabel(column.getLabel() + (column.getLabel().equals(spec.getLabel()) ? " (" : ", ") + dimOpt[0] + " - " + dimOpt[1]);
 	
 						Mapped<CohortDefinitionDimension> dimension = dsd.getDimension(dimOpt[0]);
-						CohortDimensionResult dimensionResult = (CohortDimensionResult)ds.evaluate(dimension, context);
-						Cohort dimensionCohort = dimensionResult.getCohort(dimOpt[1]);
-						
-						resultWithDimensions.addDimensionResult(dimension.getParameterizable(), dimensionCohort);
+						try { 
+							CohortDimensionResult dimensionResult = (CohortDimensionResult)ds.evaluate(dimension, context);
+							Cohort dimensionCohort = dimensionResult.getCohort(dimOpt[1]);
+							
+							resultWithDimensions.addDimensionResult(dimension.getParameterizable(), dimensionCohort);
+						} catch (EvaluationException ex) {
+							throw new EvaluationException("dimension " + option);
+						}
 					}
 					column.setLabel(column.getLabel() + ")");
 				}

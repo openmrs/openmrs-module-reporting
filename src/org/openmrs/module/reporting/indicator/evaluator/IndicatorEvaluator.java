@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.indicator.evaluator;
 
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 
@@ -28,7 +29,7 @@ public interface IndicatorEvaluator {
 	 * @param context context to use during evaluation
 	 * @return an IndicatorResult representing the Indicator evaluation result
 	 */
-	public IndicatorResult evaluate(Indicator indicator, EvaluationContext context);
+	public IndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException;
 		
 }
 

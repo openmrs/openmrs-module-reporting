@@ -13,6 +13,7 @@ import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDef
 import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataSetDefinition.Iteration;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
@@ -61,10 +62,11 @@ public class IndicatorHistoryController {
 	 * 
 	 * @param model
 	 * @param query
+	 * @throws EvaluationException 
 	 */
 	@RequestMapping("/module/reporting/indicators/indicatorHistory")
 	public String getIndicatorHistory(ModelMap model,
-	                                @ModelAttribute("query") Query query) {
+	                                @ModelAttribute("query") Query query) throws EvaluationException {
 		
 		model.addAttribute("locations", Context.getLocationService().getAllLocations());
 		

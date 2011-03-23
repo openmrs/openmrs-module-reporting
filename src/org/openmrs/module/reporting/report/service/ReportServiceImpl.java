@@ -33,6 +33,7 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -207,9 +208,10 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	
 	/**
 	 * This implementation runs this request directly, it does not queue it.
+	 * @throws EvaluationException
 	 * @see org.openmrs.module.reporting.report.service.ReportService#runReport(org.openmrs.module.reporting.report.ReportRequest)
 	 */
-	public Report runReport(ReportRequest request) {
+	public Report runReport(ReportRequest request) throws EvaluationException {
 		// Note: at some point we were saving the completed Report to disk. We stopped doing this
 		// for the moment because deserializing it via xstream was painfully slow, but some of
 		// the code here may be leftover from that.
@@ -229,11 +231,16 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		EvaluationContext ec = new EvaluationContext();
 
 		if (request.getBaseCohort() != null) {
-			Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(request.getBaseCohort(), ec);
-			ec.setBaseCohort(baseCohort);
+			try {
+				Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(request.getBaseCohort(), ec);
+				ec.setBaseCohort(baseCohort);
+			} catch (EvaluationException ex) {
+				throw new EvaluationException("baseCohort");
+			}
 		}
 		
 		ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+		// any EvaluationException thrown by the next line can bubble up. wrapping it won't provide useful information
 		ReportData rawData = rds.evaluate(request.getReportDefinition(), ec);
 		
 		ret.rawDataEvaluated(rawData);

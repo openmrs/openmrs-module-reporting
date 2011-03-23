@@ -41,6 +41,7 @@ import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
@@ -99,6 +100,7 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 	}
 
 	/**
+	 * @throws  
 	 * @see ReportRenderer#render(ReportData, String, OutputStream)
 	 */
 	@SuppressWarnings("unchecked")
@@ -165,8 +167,12 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 				else {
 					ctx.setBaseCohort(Cohort.intersect(ctx.getBaseCohort(), c));
 				}
-				DataSet ds = svc.evaluate(e.getValue(), ctx);
-				datasets.put(e.getKey(), ds);
+				try {
+					DataSet ds = svc.evaluate(e.getValue(), ctx);
+					datasets.put(e.getKey(), ds);
+				} catch (EvaluationException ex) {
+					throw new RenderingException("Error evaluating dataset " + e.getKey(), new EvaluationException("dataset: " + e.getKey()));
+				}
 			}
 		}
 		

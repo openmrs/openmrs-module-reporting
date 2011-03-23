@@ -20,6 +20,7 @@ import java.util.Map;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportRequest;
@@ -147,13 +148,14 @@ public interface ReportService extends OpenmrsService {
 	 * 
 	 * @param request
 	 * @return the result of running the report.
+	 * @throws EvaluationException if the report could not be evaluated
 	 * 
 	 * @should set uuid on the request
 	 * @should render the report if a plain renderer is specified
 	 * @should not render the report if a web renderer is specified
 	 */
 	@Transactional(readOnly = true)
-	public Report runReport(ReportRequest request);
+	public Report runReport(ReportRequest request) throws EvaluationException;
 	
 	
 	/**

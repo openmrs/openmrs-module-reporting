@@ -15,10 +15,11 @@ package org.openmrs.module.reporting.indicator.dimension.evaluator;
 
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
 
 /**
- * This interfaces provides the functionality to evaluate an Indicator and return a result.
+ * This interfaces provides the functionality to evaluate a dimension and return a result.
  */
 public interface DimensionEvaluator {
 	
@@ -28,7 +29,7 @@ public interface DimensionEvaluator {
 	 * @param context context to use during evaluation
 	 * @return an Evaluated<Dimension> representing the Dimension evaluation result
 	 */
-	public Evaluated<Dimension> evaluate(Dimension dimension, EvaluationContext context);
+	public Evaluated<Dimension> evaluate(Dimension dimension, EvaluationContext context) throws EvaluationException;
 		
 }
 

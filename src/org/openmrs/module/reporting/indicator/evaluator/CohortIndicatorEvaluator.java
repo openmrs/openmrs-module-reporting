@@ -27,6 +27,7 @@ import org.openmrs.logic.LogicException;
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
 import org.openmrs.module.reporting.indicator.Indicator;
@@ -48,7 +49,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 	/**
      * @see IndicatorEvaluator#evaluate(Indicator, EvaluationContext)
      */
-    public IndicatorResult evaluate(Indicator indicator, EvaluationContext context) {
+    public IndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException {
 
     	CohortIndicator cid = (CohortIndicator) indicator;
     	
@@ -61,31 +62,44 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 		// Determine Base Cohort from LocationFilter and EvaluationContext base cohort
 		Cohort baseCohort = context.getBaseCohort();
 		if (cid.getLocationFilter() != null) {
-			Cohort locationCohort = cds.evaluate(cid.getLocationFilter(), context);
-			if (baseCohort == null) {
-				baseCohort = locationCohort;
-			}
-			else {
-				baseCohort = Cohort.intersect(baseCohort, locationCohort);
+			try {
+				Cohort locationCohort = cds.evaluate(cid.getLocationFilter(), context);
+				if (baseCohort == null) {
+					baseCohort = locationCohort;
+				}
+				else {
+					baseCohort = Cohort.intersect(baseCohort, locationCohort);
+				}
+			} catch (EvaluationException ex) {
+				throw new EvaluationException("locationFilter", ex);
 			}
 		}
 		
 		// Set Definition Denominator and further restrict base cohort
 		if (cid.getDenominator() != null) {
-			Cohort denominatorCohort = cds.evaluate(cid.getDenominator(), context);
-			if (baseCohort != null) {
-				denominatorCohort = Cohort.intersect(denominatorCohort, baseCohort);
+			try {
+				Cohort denominatorCohort = cds.evaluate(cid.getDenominator(), context);
+				if (baseCohort != null) {
+					denominatorCohort = Cohort.intersect(denominatorCohort, baseCohort);
+				}
+				baseCohort = new Cohort(denominatorCohort.getMemberIds());
+				result.setDenominatorCohort(denominatorCohort);
+			} catch (EvaluationException ex) {
+				throw new EvaluationException("denominator", ex);
 			}
-			baseCohort = new Cohort(denominatorCohort.getMemberIds());
-			result.setDenominatorCohort(denominatorCohort);
 		}
 		
 		// Definition Cohort / Numerator
-		Cohort cohort = cds.evaluate(cid.getCohortDefinition(), context);
-		if (baseCohort != null) {
-			cohort = Cohort.intersect(cohort, baseCohort);
+		Cohort cohort;
+		try {
+			cohort = cds.evaluate(cid.getCohortDefinition(), context);
+			if (baseCohort != null) {
+				cohort = Cohort.intersect(cohort, baseCohort);
+			}
+			result.setCohort(cohort);
+		} catch (EvaluationException ex) {
+			throw new EvaluationException("numerator/cohort", ex);
 		}
-		result.setCohort(cohort);
 		
 		// Evaluate Logic Criteria
     	if (cid.getLogicExpression() != null) {
@@ -98,7 +112,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
     			}
     		}
     		catch(LogicException e) {
-    			throw new APIException("Error evaluating logic criteria", e);
+    			throw new EvaluationException("logic expression: " + cid.getLogicExpression(), e);
     		}
     	}
 

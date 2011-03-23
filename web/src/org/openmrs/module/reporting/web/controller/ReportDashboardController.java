@@ -28,6 +28,7 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.report.ReportData;
@@ -67,6 +68,7 @@ public class ReportDashboardController {
      * @param cohort
      * @param model
      * @return
+     * @throws EvaluationException 
      */
     @RequestMapping("/module/reporting/dashboard/viewCohortDataSet")
     public String viewCohortDataSet(
@@ -75,7 +77,7 @@ public class ReportDashboardController {
     		@RequestParam(required=false, value="applyDataSetId") String applyDataSetId,
     		@RequestParam(required=false, value="limit") Integer limit,
     		HttpServletRequest request,
-    		ModelMap model) { 
+    		ModelMap model) throws EvaluationException { 
     	    
     	
 		ReportData reportData = (ReportData) request.getSession().getAttribute(ReportingConstants.OPENMRS_REPORT_DATA);
@@ -153,6 +155,7 @@ public class ReportDashboardController {
      * @param cohort
      * @param model
      * @return
+     * @throws EvaluationException 
      */
     @RequestMapping("/module/reporting/dashboard/manageCohortDashboard")
     public String manageCohortDashboard(
@@ -162,7 +165,7 @@ public class ReportDashboardController {
     		@RequestParam(required=false, value="locationCohort") String locationCohort,
     		@RequestParam(required=false, value="programCohort") String programCohort,
     		
-    		ModelMap model) { 
+    		ModelMap model) throws EvaluationException { 
     	
     	Cohort selectedCohort = new Cohort();
     	//Cohort selectedCohort = Context.getPatientSetService().getAllPatients();
@@ -279,9 +282,10 @@ public class ReportDashboardController {
      * 
      * @param model
      * @return
+     * @throws EvaluationException 
      */
     //@RequestMapping("/module/reporting/dashboard/manageDashboard")
-    public String manageDashboard(ModelMap model) {
+    public String manageDashboard(ModelMap model) throws EvaluationException {
     	    	
     	// Get all reporting objects
     	model.addAttribute("cohortDefinitions", 
@@ -337,8 +341,9 @@ public class ReportDashboardController {
      * @param evaluationContext
      * @param program
      * @return
+     * @throws EvaluationException 
      */
-    public Cohort getProgramStateCohort(EvaluationContext evaluationContext, Program program) { 
+    public Cohort getProgramStateCohort(EvaluationContext evaluationContext, Program program) throws EvaluationException { 
     	ProgramEnrollmentCohortDefinition programStateCohortDefinition = new ProgramEnrollmentCohortDefinition();    	
     	programStateCohortDefinition.setPrograms(Collections.singletonList(program));
     	return Context.getService(CohortDefinitionService.class).evaluate(programStateCohortDefinition, evaluationContext);     	
@@ -350,8 +355,9 @@ public class ReportDashboardController {
      * @param evaluationContext
      * @param program
      * @return
+     * @throws EvaluationException 
      */
-    public Cohort getGenderCohort(EvaluationContext evaluationContext, String gender) {     	
+    public Cohort getGenderCohort(EvaluationContext evaluationContext, String gender) throws EvaluationException {     	
 		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();
 		genderCohortDefinition.setMaleIncluded("M".equals(gender));
 		genderCohortDefinition.setFemaleIncluded("F".equals(gender));
@@ -366,8 +372,9 @@ public class ReportDashboardController {
      * @param maxAge
      * @param effectiveDate
      * @return
+     * @throws EvaluationException 
      */
-    public Cohort getAgeCohort(EvaluationContext evaluationContext, Integer minAge, Integer maxAge, Date effectiveDate) {     	
+    public Cohort getAgeCohort(EvaluationContext evaluationContext, Integer minAge, Integer maxAge, Date effectiveDate) throws EvaluationException {     	
     	AgeCohortDefinition ageCohortDefinition = new AgeCohortDefinition();
     	ageCohortDefinition.setMinAge(minAge);
     	ageCohortDefinition.setMaxAge(maxAge);

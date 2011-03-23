@@ -25,6 +25,7 @@ import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
@@ -144,15 +145,19 @@ public class IndicatorServiceImpl extends BaseDefinitionService<Indicator> imple
 	/** 
 	 * @see IndicatorService#evaluate(Indicator, EvaluationContext)
 	 */
-	public IndicatorResult evaluate(Indicator definition, EvaluationContext context) {
-		IndicatorEvaluator evaluator = HandlerUtil.getPreferredHandler(IndicatorEvaluator.class, definition.getClass());
-		return evaluator.evaluate(definition, context);
+	public IndicatorResult evaluate(Indicator definition, EvaluationContext context) throws EvaluationException {
+		try {
+			IndicatorEvaluator evaluator = HandlerUtil.getPreferredHandler(IndicatorEvaluator.class, definition.getClass());
+			return evaluator.evaluate(definition, context);
+		} catch (EvaluationException ex) {
+			throw new EvaluationException(definition.getName(), ex);
+		}
 	}
 	
 	/** 
 	 * @see IndicatorService#evaluate(Mapped, EvaluationContext)
 	 */
-	public IndicatorResult evaluate(Mapped<? extends Indicator> definition, EvaluationContext context) {
+	public IndicatorResult evaluate(Mapped<? extends Indicator> definition, EvaluationContext context) throws EvaluationException {
 		return (IndicatorResult) super.evaluate(definition, context);
 	}
 	

@@ -28,6 +28,7 @@ import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.stereotype.Service;
@@ -151,7 +152,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	 * @see DataSetDefinitionService#evaluate(DataSetDefinition, EvaluationContext)
 	 */
 	@Transactional(readOnly=true)
-	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws APIException {
+	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws EvaluationException {
 		DataSetEvaluator evaluator = HandlerUtil.getPreferredHandler(DataSetEvaluator.class, definition.getClass());
 		if (evaluator == null) {
 			throw new APIException("No DataSetEvaluator found for (" + definition.getClass() + ") " + definition.getName());
@@ -164,7 +165,7 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	 */
 	@Transactional(readOnly=true)
 	@Override
-	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws APIException {
+	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws EvaluationException {
 		return (DataSet) super.evaluate(definition, context);
 	}
 	

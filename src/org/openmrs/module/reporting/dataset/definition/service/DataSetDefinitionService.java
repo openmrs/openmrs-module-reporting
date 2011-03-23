@@ -13,12 +13,12 @@
  */
 package org.openmrs.module.reporting.dataset.definition.service;
 
-import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +31,10 @@ public interface DataSetDefinitionService extends DefinitionService<DataSetDefin
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws APIException;
+	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
-	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws APIException;
+	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws EvaluationException;
 }
