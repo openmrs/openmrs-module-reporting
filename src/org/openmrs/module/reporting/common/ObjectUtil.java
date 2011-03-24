@@ -197,4 +197,13 @@ public class ObjectUtil {
 		}
 		return sb.toString();
 	}
+	
+	/**
+	 * Utility method to add an Object to a List if another passed Object is not null
+	 */
+	public static <T> void addIfNotNull(Collection<T> listToAddTo, T itemToAddToList, Object objectToCheckIfNull) {
+		if (objectToCheckIfNull != null) {
+			listToAddTo.add(itemToAddToList);
+		}
+	}
 }

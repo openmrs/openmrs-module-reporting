@@ -18,6 +18,7 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
+import org.openmrs.module.reporting.common.CollectionModifier;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -123,7 +124,7 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @param createdOnOrBefore 
 	 * @return cohort of patients matching the query
 	 */
-	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, List<Location> locationList,
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, CollectionModifier whichModifier, List<Location> locationList,
                                               List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore);
 	

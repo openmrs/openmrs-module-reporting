@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Assert;
@@ -14,7 +15,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.CollectionModifier;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
@@ -58,12 +61,10 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
  	   cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 19));
  	   cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 19));
  	   Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
- 	   Assert.assertEquals(5, c.size());
+ 	   Assert.assertEquals(3, c.size());
  	   Assert.assertTrue(c.contains(20));
  	   Assert.assertTrue(c.contains(21));
- 	   Assert.assertTrue(c.contains(22));
  	   Assert.assertTrue(c.contains(23));
- 	   Assert.assertTrue(c.contains(24));
     }
 
 	/**
@@ -79,12 +80,13 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
         cd.setLocationList(Collections.singletonList(new Location(2)));
         cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 19));
         cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 19));
-        cd.setAtLeastCount(2);
-        cd.setAtMostCount(2);
+        cd.setAtLeastCount(1);
+        cd.setAtMostCount(1);
         Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-        Assert.assertEquals(2, c.size());
+        Assert.assertEquals(3, c.size());
+        Assert.assertTrue(c.contains(20));
         Assert.assertTrue(c.contains(21));
-        Assert.assertTrue(c.contains(22));
+        Assert.assertTrue(c.contains(23));
     }
 	
 	/**
@@ -110,6 +112,81 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	        cd.setCreatedOnOrBefore(DateUtil.getDateTime(2008, 8, 19, 14, 30, 0, 0));
 	        Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 	        Assert.assertEquals(3, c.size());
+    	}
+    }
+    
+	/**
+     * @see {@link EncounterCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+     */
+    @Test
+    @Verifies(value = "should return correct patients when which modifier parameters are set", method = "evaluate(CohortDefinition,EvaluationContext)")
+    public void evaluate_shouldReturnCorrectPatientsWhenWhichModifierParametersAreSet() throws Exception {
+
+    	EvaluationContext context = new EvaluationContext();
+
+    	// None use case
+    	{
+	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
+	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
+	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
+	        Assert.assertEquals(3, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+    	}
+    	
+    	// Any use case
+    	{
+	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+	        cd.setWhichModifier(CollectionModifier.ANY);
+	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
+	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
+	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
+	        Assert.assertEquals(3, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+    	}
+    	
+    	// First use case
+    	{
+	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+	        cd.setWhichModifier(CollectionModifier.FIRST);
+	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
+	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
+	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
+	        Assert.assertEquals(3, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+    	}
+    	{
+	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+	        cd.setWhichModifier(CollectionModifier.FIRST);
+	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
+	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 9, 1));
+	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 9, 30));
+	        Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+    	}
+    	
+    	// Last use case
+    	{
+	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+	        cd.setWhichModifier(CollectionModifier.LAST);
+	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
+	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
+	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
+	        Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+    	}
+    	{
+	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+	        cd.setWhichModifier(CollectionModifier.LAST);
+	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
+	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 9, 1));
+	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 9, 30));
+	        Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+    	}
+    	
+    	// Last use case
+    	{
+	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+	        cd.setWhichModifier(CollectionModifier.LAST);
+	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
+	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
+	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
+	        Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
     	}
     }
 }

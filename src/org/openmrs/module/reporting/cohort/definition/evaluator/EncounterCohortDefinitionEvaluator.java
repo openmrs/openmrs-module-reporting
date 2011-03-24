@@ -39,14 +39,16 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
      * @should return correct patients when all non grouping parameters are set
      * @should return correct patients when all parameters are set 
      * @should return correct patients when creation date parameters are set
+     * @should return correct patients when which modifier parameters are set
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	EncounterCohortDefinition cd = (EncounterCohortDefinition) cohortDefinition;
     	
     	Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingEncounters(
-    		cd.getOnOrAfter(), cd.getOnOrBefore(),
+    		cd.getOnOrAfter(), cd.getOnOrBefore(), cd.getWhichModifier(),
     		cd.getLocationList(), cd.getEncounterTypeList(), cd.getFormList(),
-    		cd.getAtLeastCount(), cd.getAtMostCount(), cd.getCreatedBy(), cd.getCreatedOnOrAfter(), cd.getCreatedOnOrBefore());
+    		cd.getAtLeastCount(), cd.getAtMostCount(), 
+    		cd.getCreatedBy(), cd.getCreatedOnOrAfter(), cd.getCreatedOnOrBefore());
 		   	
     	if (cd.isReturnInverse() == Boolean.TRUE) {
     		Cohort baseCohort = context.getBaseCohort();

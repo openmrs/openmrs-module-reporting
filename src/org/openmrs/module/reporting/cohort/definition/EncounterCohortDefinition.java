@@ -20,6 +20,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.User;
+import org.openmrs.module.reporting.common.CollectionModifier;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
@@ -30,37 +31,40 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 	
 	//***** PROPERTIES *****
 	
+	@ConfigurationProperty(group="which")
+	private CollectionModifier whichModifier = CollectionModifier.ANY;
+	
+	@ConfigurationProperty(group="which")
+	private List<EncounterType> encounterTypeList;
+	
+	@ConfigurationProperty(group="which")
+	private List<Form> formList;
+	
+	@ConfigurationProperty(group="which")
+	private List<Location> locationList;
+	
 	@ConfigurationProperty(group="when")
 	private Date onOrAfter;
 
 	@ConfigurationProperty(group="when")
 	private Date onOrBefore;
 	
-	@ConfigurationProperty(required=false, group="which")
-	private List<Location> locationList;
-	
-	@ConfigurationProperty(required=false, group="which")
-	private List<EncounterType> encounterTypeList;
-	
-	@ConfigurationProperty(required=false, group="which")
-	private List<Form> formList;
-	
-	@ConfigurationProperty(required=false, group="howMany")
+	@ConfigurationProperty(group="howMany")
 	private Integer atLeastCount;
 	
-	@ConfigurationProperty(required=false, group="howMany")
+	@ConfigurationProperty(group="howMany")
 	private Integer atMostCount;
 	
-	@ConfigurationProperty(required=false, group="other")
+	@ConfigurationProperty(group="other")
 	private Boolean returnInverse = Boolean.FALSE;
 	
-	@ConfigurationProperty(required=false, group="other")
+	@ConfigurationProperty(group="other")
 	private User createdBy;
 
-	@ConfigurationProperty(required=false, group="other")
+	@ConfigurationProperty(group="other")
 	private Date createdOnOrBefore;
 	
-	@ConfigurationProperty(required=false, group="other")
+	@ConfigurationProperty(group="other")
 	private Date createdOnOrAfter;
 	
 	//***** CONSTRUCTORS *****
@@ -85,6 +89,8 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 			ret.append(" on or after " + onOrAfter);
 		if (onOrBefore != null)
 			ret.append(" on or before " + onOrBefore);
+		if (whichModifier != null && whichModifier != CollectionModifier.ANY)
+			ret.append(" where the " + whichModifier + " was ");
 		if (locationList != null)
 			ret.append(" at " + locationList);
 		if (encounterTypeList != null)
@@ -102,8 +108,21 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 		return ret.toString();
 	}
 
-	
-    /**
+	/**
+	 * @return the whichModifier
+	 */
+	public CollectionModifier getWhichModifier() {
+		return whichModifier;
+	}
+
+	/**
+	 * @param whichModifier the whichModifier to set
+	 */
+	public void setWhichModifier(CollectionModifier whichModifier) {
+		this.whichModifier = whichModifier;
+	}
+
+	/**
      * @return the encounterTypeList
      */
     public List<EncounterType> getEncounterTypeList() {

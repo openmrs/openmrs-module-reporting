@@ -36,8 +36,10 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
+import org.openmrs.module.reporting.common.CollectionModifier;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -1061,55 +1063,67 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount) {
-		return getPatientsHavingEncounters(onOrAfter, onOrBefore, locationList, encounterTypeList, formList, atLeastCount, atMostCount, null, null, null);
+		return getPatientsHavingEncounters(onOrAfter, onOrBefore, null, locationList, encounterTypeList, formList, atLeastCount, atMostCount, null, null, null);
 	}
 
 	/**
 	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer, org.openmrs.User)
 	 */
-	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, CollectionModifier whichModifier, 
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore) {
 		List<Integer> encTypeIds = SqlUtils.openmrsObjectIdListHelper(encounterTypeList);
 		List<Integer> locationIds = SqlUtils.openmrsObjectIdListHelper(locationList);
 		List<Integer> formIds = SqlUtils.openmrsObjectIdListHelper(formList);
 		
-		List<String> whereClauses = new ArrayList<String>();
-		whereClauses.add("e.voided = false");
-		if (encTypeIds != null)
-			whereClauses.add("e.encounter_type in (:encTypeIds)");
-		if (locationIds != null)
-			whereClauses.add("e.location_id in (:locationIds)");
-		if (formIds != null)
-			whereClauses.add("e.form_id in (:formIds)");
-		if (onOrAfter != null)
-			whereClauses.add("e.encounter_datetime >= :onOrAfter");
-		if (onOrBefore != null)
-			whereClauses.add("e.encounter_datetime <= :onOrBefore");
-		if (createdBy != null)
-			whereClauses.add("e.creator = :createdBy");
-		if (createdOnOrAfter != null)
-			whereClauses.add("e.date_created >= :createdOnOrAfter");
-		if (createdOnOrBefore != null)
-			whereClauses.add("e.date_created <= :createdOnOrBefore");
+		// These clauses are applicable both in the overall query and in the subquery, if applicable
+		// CollectionModifiers qualify the properties EncounterType, Form, and Location
+		List<String> whichClauses = new ArrayList<String>();
+		whichClauses.add("voided = false");
+		ObjectUtil.addIfNotNull(whichClauses, "encounter_type in (:encTypeIds)", encTypeIds);
+		ObjectUtil.addIfNotNull(whichClauses, "location_id in (:locationIds)", locationIds);
+		ObjectUtil.addIfNotNull(whichClauses, "form_id in (:formIds)", formIds);
+		
+		// These clauses are only applicable in the overall query
+		List<String> whereClauses = new ArrayList<String>(whichClauses);
+		ObjectUtil.addIfNotNull(whereClauses, "encounter_datetime >= :onOrAfter", onOrAfter);
+		ObjectUtil.addIfNotNull(whereClauses, "encounter_datetime <= :onOrBefore", onOrBefore);
+		ObjectUtil.addIfNotNull(whereClauses, "creator = :createdBy", createdBy);
+		ObjectUtil.addIfNotNull(whereClauses, "date_created >= :createdOnOrAfter", createdOnOrAfter);
+		ObjectUtil.addIfNotNull(whereClauses, "date_created <= :createdOnOrBefore", createdOnOrBefore);
+		
 		List<String> havingClauses = new ArrayList<String>();
-		if (atLeastCount != null)
-			havingClauses.add("count(*) >= :atLeastCount");
-		if (atMostCount != null)
-			havingClauses.add("count(*) >= :atMostCount");
+		ObjectUtil.addIfNotNull(havingClauses, "count(*) >= :atLeastCount", atLeastCount);
+		ObjectUtil.addIfNotNull(havingClauses, "count(*) <= :atMostCount", atMostCount);
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(" select e.patient_id from encounter e ");
+		
+		if (whichModifier == CollectionModifier.FIRST || whichModifier == CollectionModifier.LAST) {
+			boolean isFirst = whichModifier == CollectionModifier.FIRST;
+			
+			sb.append(" inner join ( ");
+			sb.append("    select patient_id, " + (isFirst ? "MIN" : "MAX") + "(encounter_datetime) as edt ");
+			sb.append("    from encounter ");
+			for (ListIterator<String> i = whichClauses.listIterator(); i.hasNext();) {
+				sb.append(i.nextIndex() == 0 ? " where " : " and ");
+				sb.append("encounter." + i.next());
+			}
+			sb.append(" group by encounter.patient_id ");
+			sb.append(" ) subq on e.patient_id = subq.patient_id and e.encounter_datetime = subq.edt ");
+	
+		}
 		for (ListIterator<String> i = whereClauses.listIterator(); i.hasNext();) {
 			sb.append(i.nextIndex() == 0 ? " where " : " and ");
-			sb.append(i.next());
+			sb.append("e." + i.next());
 		}
 		sb.append(" group by e.patient_id ");
 		for (ListIterator<String> i = havingClauses.listIterator(); i.hasNext();) {
 			sb.append(i.nextIndex() == 0 ? " having " : " and ");
 			sb.append(i.next());
 		}
-		log.debug("query: " + sb);
+
+		log.error("query: " + sb);
 		
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sb.toString());
 		if (encTypeIds != null)
@@ -1130,9 +1144,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.setInteger("createdBy", createdBy.getId());
 		if (createdOnOrAfter != null)
 			query.setTimestamp("createdOnOrAfter", createdOnOrAfter);
-		if (createdOnOrBefore != null) {
+		if (createdOnOrBefore != null)
 			query.setTimestamp("createdOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(createdOnOrBefore));
-		}
 		
 		return new Cohort(query.list());
     }
