@@ -20,6 +20,7 @@ import java.util.Vector;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.reporting.AbstractReportObject;
@@ -62,16 +63,18 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
 	/**
      * @see DataSetDefinitionPersister#getAllDataSetDefinitions(boolean)
      */
-    public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {	    
-    	// Get all data exports in the system
-	    ReportObjectService ros = Context.getService(ReportObjectService.class);
-	    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");    	
+    public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {
     	List <DataSetDefinition> dataSetDefinitions = new Vector<DataSetDefinition>();
-    	for (AbstractReportObject obj : dataExports) { 
-    		DataExportReportObject dataExport = (DataExportReportObject) obj;
-    		dataExport.setUuid(obj.getUuid());	// hack to get uuids into data exports
-    		dataSetDefinitions.add(new DataExportDataSetDefinition(dataExport));    		
-    	}    	
+    	if (ModuleFactory.getStartedModulesMap().containsKey("reportingcompatibility")) {
+		    ReportObjectService ros = Context.getService(ReportObjectService.class);
+		    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");    	
+	    	
+	    	for (AbstractReportObject obj : dataExports) { 
+	    		DataExportReportObject dataExport = (DataExportReportObject) obj;
+	    		dataExport.setUuid(obj.getUuid());	// hack to get uuids into data exports
+	    		dataSetDefinitions.add(new DataExportDataSetDefinition(dataExport));    		
+	    	}   
+    	}
     	return dataSetDefinitions;
     }    
     
@@ -79,9 +82,12 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
 	 * @see DataSetDefinitionPersister#getNumberOfDataSetDefinitions(boolean)
 	 */
 	public int getNumberOfDataSetDefinitions(boolean includeRetired) {
-		ReportObjectService ros = Context.getService(ReportObjectService.class);
-	    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");
-	    return dataExports.size();
+		if (ModuleFactory.getStartedModulesMap().containsKey("reportingcompatibility")) {
+			ReportObjectService ros = Context.getService(ReportObjectService.class);
+		    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");
+		    return dataExports.size();
+		}
+		return 0;
 	}
     
 	/**

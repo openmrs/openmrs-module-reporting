@@ -8,10 +8,8 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.web.controller.mapping.DefinitionMappingHandler;
@@ -56,10 +54,6 @@ public class ManageDefinitionsController {
     		}
     		l.add(d);
     		defsByType.put(d.getClass(), l);
-    	}
-    	
-    	if (!ModuleFactory.getStartedModulesMap().containsKey("reportingcompatibility")) {
-    		defsByType.remove(DataExportDataSetDefinition.class);
     	}
     	
     	model.addAttribute("type", type);
