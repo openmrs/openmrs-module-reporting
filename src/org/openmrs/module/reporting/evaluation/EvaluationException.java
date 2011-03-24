@@ -27,7 +27,9 @@ public class EvaluationException extends Exception {
 	@Override
     public String getMessage() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Failed to evaluate " + propertyThatFailed);
+        sb.append("Failed to evaluate");
+        if (propertyThatFailed != null)
+        	sb.append(" " + propertyThatFailed);
         if (getCause() != null)
         	sb.append(" because:\n" + getCause().getMessage());
         return sb.toString();
