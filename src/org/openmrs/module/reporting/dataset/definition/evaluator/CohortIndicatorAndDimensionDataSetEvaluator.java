@@ -67,7 +67,7 @@ public class CohortIndicatorAndDimensionDataSetEvaluator implements DataSetEvalu
 				CohortIndicatorResult result;
 				try {
 					result = (CohortIndicatorResult) is.evaluate(spec.getIndicator(), context);
-				} catch (EvaluationException ex) {
+				} catch (Exception ex) {
 					throw new EvaluationException("indicator " + spec.getLabel() + " (" + spec.getIndicatorNumber() + ")");
 				}
 				log.debug("Evaluated Indicator: " + spec.getLabel() + " = " + result.getValue());
@@ -88,8 +88,8 @@ public class CohortIndicatorAndDimensionDataSetEvaluator implements DataSetEvalu
 							Cohort dimensionCohort = dimensionResult.getCohort(dimOpt[1]);
 							
 							resultWithDimensions.addDimensionResult(dimension.getParameterizable(), dimensionCohort);
-						} catch (EvaluationException ex) {
-							throw new EvaluationException("dimension " + option);
+						} catch (Exception ex) {
+							throw new EvaluationException("dimension " + option, ex);
 						}
 					}
 					column.setLabel(column.getLabel() + ")");

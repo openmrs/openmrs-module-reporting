@@ -180,7 +180,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 		Report report;
 		try {
 			report = reportService.runReport(run);
-		} catch (EvaluationException ex) {
+		} catch (Exception ex) {
 			errors.rejectValue("reportDefinition", null, formatEvaluationError(ex));
 			return showForm(request, response, errors);
 		}

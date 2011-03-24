@@ -101,8 +101,8 @@ public class CohortExpressionParser {
 				Cohort result;
 				try {
 					result = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-				} catch (EvaluationException ex) {
-					throw new EvaluationException(o.toString());
+				} catch (Exception ex) {
+					throw new EvaluationException(o.toString(), ex);
 				}
 				log.debug("This evaluated to: " + result.size());
 				use.add(result);

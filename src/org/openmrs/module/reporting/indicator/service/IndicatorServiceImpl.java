@@ -149,7 +149,7 @@ public class IndicatorServiceImpl extends BaseDefinitionService<Indicator> imple
 		try {
 			IndicatorEvaluator evaluator = HandlerUtil.getPreferredHandler(IndicatorEvaluator.class, definition.getClass());
 			return evaluator.evaluate(definition, context);
-		} catch (EvaluationException ex) {
+		} catch (Exception ex) {
 			throw new EvaluationException(definition.getName(), ex);
 		}
 	}

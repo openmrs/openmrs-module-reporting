@@ -67,7 +67,7 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 			try {
 				CohortDimensionResult dim = (CohortDimensionResult)ds.evaluate(e.getValue(), context);
 				dimensionCalculationCache.put(dimensionKey, dim.getOptionCohorts());
-			} catch (EvaluationException ex) {
+			} catch (Exception ex) {
 				throw new EvaluationException("dimension " + dimensionKey, ex);
 			}
 		}
@@ -81,7 +81,7 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 					CohortIndicatorResult result = (CohortIndicatorResult) is.evaluate(col.getIndicator(), context);
 					log.debug("Caching indicator: " + col.getIndicator());
 					indicatorCalculationCache.put(col.getIndicator(), result);
-				} catch (EvaluationException ex) {
+				} catch (Exception ex) {
 					throw new EvaluationException("indicator for column " + col.getLabel() + " (" + col.getName() + ")", ex);
 				}
 			}

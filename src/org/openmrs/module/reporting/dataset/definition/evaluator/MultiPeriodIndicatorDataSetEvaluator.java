@@ -47,8 +47,8 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 			MapDataSet ds;
 			try {
 				ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd.getBaseDefinition(), ec);
-			} catch (EvaluationException ex) {
-				throw new EvaluationException("baseDefinition");
+			} catch (Exception ex) {
+				throw new EvaluationException("baseDefinition", ex);
 			}
 		    DataSetRow row = new DataSetRow();
 		    for (DataSetColumn column : dsd.getColumns()) {

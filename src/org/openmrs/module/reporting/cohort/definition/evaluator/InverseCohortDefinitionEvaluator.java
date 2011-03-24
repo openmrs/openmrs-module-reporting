@@ -47,8 +47,8 @@ public class InverseCohortDefinitionEvaluator implements CohortDefinitionEvaluat
     	Cohort baseCohort;
     	try {
     		baseCohort = Context.getService(CohortDefinitionService.class).evaluate(icd.getBaseDefinition(), context);
-    	} catch (EvaluationException ex) {
-    		throw new EvaluationException("base cohort");
+    	} catch (Exception ex) {
+    		throw new EvaluationException("base cohort", ex);
     	}
 		return Cohort.subtract(allPatients, baseCohort);
     }

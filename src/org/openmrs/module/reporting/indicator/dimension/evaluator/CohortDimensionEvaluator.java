@@ -60,8 +60,8 @@ public class CohortDimensionEvaluator implements DimensionEvaluator {
 			Cohort currentCohort;
 			try {
 				currentCohort = evaluateDimensionOption(cd, key, context);
-			} catch (EvaluationException ex) { 
-				throw new EvaluationException("dimension option: " + key);
+			} catch (Exception ex) { 
+				throw new EvaluationException("dimension option: " + key, ex);
 			}
 			result.addOptionCohort(key, currentCohort);
 			totalDimensions = Cohort.union(totalDimensions, currentCohort);

@@ -351,8 +351,8 @@ public class ManageDatasetsController {
     			try {
 	    			cohort = 
 	    				Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
-    			} catch (EvaluationException ex) {
-    				throw new EvaluationException("cohort");
+    			} catch (Exception ex) {
+    				throw new EvaluationException("cohort", ex);
     			}
     		}
     	}     		    	

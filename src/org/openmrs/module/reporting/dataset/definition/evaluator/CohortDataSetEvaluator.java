@@ -64,14 +64,14 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 			Cohort rowCohort;
 			try {
 				rowCohort = (col.getRowDefinition() == null ? context.getBaseCohort() : cds.evaluate(col.getRowDefinition(), context));
-			} catch (EvaluationException ex) {
-				throw new EvaluationException("row definition for row=" + col.getRowName() + " , col=" + col.getColumnName());
+			} catch (Exception ex) {
+				throw new EvaluationException("row definition for row=" + col.getRowName() + " , col=" + col.getColumnName(), ex);
 			}
 			Cohort colCohort;
 			try {
 				colCohort = (col.getColumnDefinition() == null ? context.getBaseCohort() : cds.evaluate(col.getColumnDefinition(), context));
-			} catch (EvaluationException ex) {
-				throw new EvaluationException("column definition for row=" + col.getRowName() + " , col=" + col.getColumnName());
+			} catch (Exception ex) {
+				throw new EvaluationException("column definition for row=" + col.getRowName() + " , col=" + col.getColumnName(), ex);
 			}
 			Cohort c = Cohort.intersect(rowCohort, colCohort);
 			data.addData(col, c);

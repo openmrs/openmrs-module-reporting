@@ -140,7 +140,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 		Cohort baseCohort;
 		try {
 			baseCohort = CohortFilter.filter(evalContext, reportDefinition.getBaseCohortDefinition());
-		} catch (EvaluationException ex) {
+		} catch (Exception ex) {
 			throw new EvaluationException("baseCohort", ex);
 		}
 		
@@ -153,7 +153,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 				childEc.setBaseCohort(baseCohort);
 				try {
 					data.put(key, dss.evaluate(pd.getParameterizable(), childEc));
-				} catch (EvaluationException ex) {
+				} catch (Exception ex) {
 					throw new EvaluationException("data set '" + key + "'", ex);
 				}
 			}

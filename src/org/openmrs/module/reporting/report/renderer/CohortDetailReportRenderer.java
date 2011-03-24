@@ -170,8 +170,8 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 				try {
 					DataSet ds = svc.evaluate(e.getValue(), ctx);
 					datasets.put(e.getKey(), ds);
-				} catch (EvaluationException ex) {
-					throw new RenderingException("Error evaluating dataset " + e.getKey(), new EvaluationException("dataset: " + e.getKey()));
+				} catch (Exception ex) {
+					throw new RenderingException("Error evaluating dataset " + e.getKey(), new EvaluationException("dataset: " + e.getKey(), ex));
 				}
 			}
 		}

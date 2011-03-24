@@ -70,7 +70,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 				else {
 					baseCohort = Cohort.intersect(baseCohort, locationCohort);
 				}
-			} catch (EvaluationException ex) {
+			} catch (Exception ex) {
 				throw new EvaluationException("locationFilter", ex);
 			}
 		}
@@ -84,7 +84,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 				}
 				baseCohort = new Cohort(denominatorCohort.getMemberIds());
 				result.setDenominatorCohort(denominatorCohort);
-			} catch (EvaluationException ex) {
+			} catch (Exception ex) {
 				throw new EvaluationException("denominator", ex);
 			}
 		}
@@ -97,7 +97,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 				cohort = Cohort.intersect(cohort, baseCohort);
 			}
 			result.setCohort(cohort);
-		} catch (EvaluationException ex) {
+		} catch (Exception ex) {
 			throw new EvaluationException("numerator/cohort", ex);
 		}
 		

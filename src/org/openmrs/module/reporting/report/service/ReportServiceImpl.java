@@ -234,8 +234,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			try {
 				Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(request.getBaseCohort(), ec);
 				ec.setBaseCohort(baseCohort);
-			} catch (EvaluationException ex) {
-				throw new EvaluationException("baseCohort");
+			} catch (Exception ex) {
+				throw new EvaluationException("baseCohort", ex);
 			}
 		}
 		
