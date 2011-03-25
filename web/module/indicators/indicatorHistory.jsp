@@ -33,7 +33,7 @@
 			<td align="right">
 				Where?
 			</td>
-			<td>
+			<td colspan="2">
 				<springform:select path="location">
 					<springform:option value=""/>
 					<springform:options items="${locations}" itemLabel="name" itemValue="locationId"/>
@@ -41,28 +41,32 @@
 			</td>
 		</tr>
 		<tr>
+			<td></td><td>Start date</td><td>End date</td>
+		</tr>
+		<tr>
 			<td align="right">
-				When?
+				Date Range?
 			</td>
 			<td>
-				<springform:select path="lastMonths">
-					<springform:option value="6">Last 6 months</springform:option>
-					<springform:option value="12">Last 12 months</springform:option>
-					<springform:option value="24">Last 24 months</springform:option>
-				</springform:select>
+				<wgt:widget id="startDate" name="startDate" type="java.util.Date" defaultValue="${query.startDate}" />
+				<springform:errors path="startDate" cssClass="error" />
+			</td>
+			<td>
+				<wgt:widget id="endDate" name="endDate" type="java.util.Date" defaultValue="${query.endDate}" />
+				<springform:errors path="endDate" cssClass="error" />
 			</td>
 		</tr>
 		<tr valign="top">
 			<td align="right">
-				Which<br/>Indicators?
+				Which Indicators?
 			</td>
-			<td>
+			<td colspan="2">
 				<wgt:widget id="indicators" name="indicators" type="java.util.List" genericTypes="org.openmrs.module.reporting.indicator.Indicator" defaultValue="${query.indicators}"/>
 			</td>
 		</tr>
 		<tr>
 			<td></td>
-			<td>
+			<td colspan="2">
 				<br/>
 				<input type="submit" value="Calculate"/>
 			</td>

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -23,6 +24,7 @@ import org.openmrs.propertyeditor.LocationEditor;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,83 +36,116 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes("query")
 public class IndicatorHistoryController {
 	
-    @InitBinder
-    public void initBinder(WebDataBinder binder) { 
-    	binder.registerCustomEditor(Location.class, new LocationEditor());
-    	binder.registerCustomEditor(Indicator.class, new IndicatorEditor());
-    	binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
-    }
-    
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(Location.class, new LocationEditor());
+		binder.registerCustomEditor(Indicator.class, new IndicatorEditor());
+		binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
+	}
+	
 	@ModelAttribute("query")
-	public Query formBackingObject(@RequestParam(value="lastMonths", required=false) Integer lastMonths,
-	                               @RequestParam(value="location", required=false) Location location,
-	                               @RequestParam(value="indicators", required=false) List<Indicator> indicators) {
+	public Query formBackingObject(@RequestParam(value = "startDate", required = false) Date startDate,
+	                               @RequestParam(value = "endDate", required = false) Date endDate,
+	                               @RequestParam(value = "location", required = false) Location location,
+	                               @RequestParam(value = "indicators", required = false) List<Indicator> indicators) {
 		Query query = new Query();
-		if (lastMonths != null)
-			query.setLastMonths(lastMonths);
+		
+		if (startDate != null)
+			query.setStartDate(startDate);
+		if (endDate != null)
+			query.setEndDate(endDate);
 		if (location != null)
 			query.setLocation(location);
-		if (indicators != null )
+		if (indicators != null)
 			query.setIndicators(indicators);
 		return query;
 	}
 	
-	
 	/**
-	 * 
 	 * Main controller--displays the options form and the results
 	 * 
 	 * @param model
 	 * @param query
-	 * @throws EvaluationException 
+	 * @param result
+	 * @throws EvaluationException
 	 */
 	@RequestMapping("/module/reporting/indicators/indicatorHistory")
-	public String getIndicatorHistory(ModelMap model,
-	                                @ModelAttribute("query") Query query) throws EvaluationException {
+	public String getIndicatorHistory(ModelMap model, @ModelAttribute("query") Query query, BindingResult result)
+	                                                                                                             throws EvaluationException {
 		
 		model.addAttribute("locations", Context.getLocationService().getAllLocations());
 		
 		// only process if a query has been submitted
-		if (query.getIndicators() != null && query.getIndicators().size() != 0) {
-	
+		
+		if (CollectionUtils.isNotEmpty(query.getIndicators())) {
+			if (query.getStartDate() == null) {
+				result.rejectValue("startDate", "reporting.startDate.required", "Start date is required");
+				return null;
+			} else if (query.getEndDate() == null) {
+				result.rejectValue("endDate", "reporting.endDate.required", "End date is required");
+				return null;
+			} else if (query.getStartDate().after(query.getEndDate())) {
+				model.addAttribute(
+				    "error",
+				    Context.getMessageSourceService().getMessage("reporting.startDate.after.endDate", null,
+				        "Start date cannot be after end date", Context.getLocale()));
+				return null;
+			}
+			
 			//CohortIndicator indicator = (CohortIndicator) Context.getService(IndicatorService.class).getIndicatorByUuid(query.getIndicatorUuid());
-
+			
 			// determine which periods to do this for
 			List<Iteration> iterations = new ArrayList<Iteration>();
 			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-			cal.set(Calendar.SECOND, 0);
+			
+			cal.setTime(query.getStartDate());
+			
+			//set the start time to midnight
+			cal.set(Calendar.HOUR_OF_DAY, 0);
 			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.HOUR, 0);
-			for (int i = 0; i < query.getLastMonths(); ++i) {
-				cal.add(Calendar.DAY_OF_MONTH, -1);
-				Date endOfMonth = cal.getTime();
-				cal.set(Calendar.DAY_OF_MONTH, 1);
-				Date startOfMonth = cal.getTime();
-				iterations.add(new MultiPeriodIndicatorDataSetDefinition.Iteration(startOfMonth, endOfMonth, query.getLocation()));
-			}
+			
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			
+			Date startOfPeriod;
+			Date endOfPeriod;
+			do {
+				startOfPeriod = cal.getTime();
+				//get only the remaining days in the current month if startDate wasn't at the start of the month
+				//otherwise it will always run from beginning to end of the current month
+				cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DATE));
+				if (cal.getTime().after(query.getEndDate())) {
+					endOfPeriod = query.getEndDate();
+					
+				}
+				cal.add(Calendar.DAY_OF_MONTH, 1);
+				cal.add(Calendar.MILLISECOND, -1);
+				endOfPeriod = cal.getTime();
+				
+				iterations.add(new MultiPeriodIndicatorDataSetDefinition.Iteration(startOfPeriod, endOfPeriod, query
+				        .getLocation()));
+				cal.add(Calendar.MILLISECOND, 1);
+			} while (endOfPeriod.before(query.getEndDate()));
 			
 			CohortIndicatorDataSetDefinition indDSD = new CohortIndicatorDataSetDefinition();
-			for (Indicator ind : query.getIndicators()) {				
+			for (Indicator ind : query.getIndicators()) {
 				
 				// hack to remove any empty indicators created by List HTML Widget
-				if (ind != null && ObjectUtil.notNull(ind.getUuid())) {			
+				if (ind != null && ObjectUtil.notNull(ind.getUuid())) {
 					
 					// quick hack error check, could be improved
-					if(ind.getParameter("startDate") == null || ind.getParameter("endDate") == null){
+					if (ind.getParameter("startDate") == null || ind.getParameter("endDate") == null) {
 						model.addAttribute("error", "Only indicators with start and end date parameters can be plotted");
 						return null;
 					}
-						
 					
 					try {
 						CohortIndicator indicator = (CohortIndicator) ind;
-						indDSD.addColumn(
-							indicator.getUuid(),
-							indicator.getName(),
-							new Mapped<CohortIndicator>(indicator, IndicatorUtil.getDefaultParameterMappings()),
-						"");
-					} catch (ClassCastException ex) {
+						
+						indDSD.addColumn(indicator.getUuid(), indicator.getName(), new Mapped<CohortIndicator>(indicator,
+						        IndicatorUtil.getDefaultParameterMappings()), "");
+					}
+					catch (ClassCastException ex) {
 						throw new RuntimeException("This feature only works for Cohort Indicators");
 					}
 				}
@@ -118,43 +153,56 @@ public class IndicatorHistoryController {
 			
 			MultiPeriodIndicatorDataSetDefinition dsd = new MultiPeriodIndicatorDataSetDefinition(indDSD);
 			dsd.setIterations(iterations);
-		
+			
 			DataSet ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 			model.addAttribute("dataSet", ds);
 		}
 		return null;
 	}
-
+	
 	public class Query {
-		private Integer lastMonths = 6;
+		
 		private Location location;
+		
 		private List<Indicator> indicators;
-
-		public Query() { }
-
-		public Integer getLastMonths() {
-        	return lastMonths;
-        }
 		
-        public void setLastMonths(Integer lastMonths) {
-        	this.lastMonths = lastMonths;
-        }
+		private Date startDate = null;
 		
-        public Location getLocation() {
-        	return location;
-        }
+		private Date endDate = null;
 		
-        public void setLocation(Location location) {
-        	this.location = location;
-        }
+		public Query() {
+		}
 		
-        public List<Indicator> getIndicators() {
-        	return indicators;
-        }
+		public Location getLocation() {
+			return location;
+		}
 		
-        public void setIndicators(List<Indicator> indicators) {
-        	this.indicators = indicators;
-        }
+		public void setLocation(Location location) {
+			this.location = location;
+		}
 		
+		public List<Indicator> getIndicators() {
+			return indicators;
+		}
+		
+		public void setIndicators(List<Indicator> indicators) {
+			this.indicators = indicators;
+		}
+		
+		public Date getStartDate() {
+			return startDate;
+		}
+		
+		public void setStartDate(Date startDate) {
+			this.startDate = startDate;
+		}
+		
+		public Date getEndDate() {
+			return endDate;
+		}
+		
+		public void setEndDate(Date endDate) {
+			this.endDate = endDate;
+		}
 	}
 }
