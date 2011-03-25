@@ -68,6 +68,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 			cohort = Context.getPatientSetService().getAllPatients();
 		}
 		
+		// why is the base cohort limited here?  Won't this cause issues with matching patients further down? 
 		if (context.getLimit() != null) {
 			CohortUtil.limitCohort(cohort, context.getLimit());
 		}
@@ -77,7 +78,18 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 			connection = DatabaseUpdater.getConnection();
 			ResultSet resultSet = null;
 			
-			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlDsd.getSqlQuery(), context.getParameterValues());
+			String sqlQuery = sqlDsd.getSqlQuery();
+			
+			// if the user asked for only a subset, append a "limit" clause to the query so that 
+			// the query runs faster in the database
+			if (context.getLimit() != null && !sqlQuery.contains(" limit ")) {
+				if (sqlQuery.endsWith(";"))
+					sqlQuery = sqlQuery.substring(0, sqlQuery.length() - 1);
+				// this is safe to simply append because limit is always the last clause in queries
+				sqlQuery += " limit " + context.getLimit();
+			}
+			
+			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery, context.getParameterValues());
 			boolean result = statement.execute();
 			if (result) {
 				resultSet = statement.getResultSet();
