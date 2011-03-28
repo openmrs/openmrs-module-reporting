@@ -67,12 +67,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 		if (cohort == null) {
 			cohort = Context.getPatientSetService().getAllPatients();
 		}
-		
-		// why is the base cohort limited here?  Won't this cause issues with matching patients further down? 
-		if (context.getLimit() != null) {
-			CohortUtil.limitCohort(cohort, context.getLimit());
-		}
-		
+				
 		Connection connection = null;
 		try {
 			connection = DatabaseUpdater.getConnection();
