@@ -22,16 +22,21 @@ import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.validator.CohortDefinitionValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Controller
+@SessionAttributes({"cohortDefinition", "configurationProperties", "groupedProperties"})
 public class ManageCohortDefinitionsController {
 	
 	protected static Log log = LogFactory.getLog(ManageCohortDefinitionsController.class);
-    
+	
     /**
      * Basically acts as the formBackingObject() method for saving a 
      * cohort definition.
@@ -86,13 +91,11 @@ public class ManageCohortDefinitionsController {
             @RequestParam(required=true, value="name") String name,
             @RequestParam(required=false, value="description") String description,
             HttpServletRequest request,
+            @ModelAttribute("cohortDefinition") CohortDefinition cohortDefinition,
+            BindingResult bindingResult,
     		ModelMap model
     ) {
     	
-    	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	    	
-    	// Locate or create cohort definition
-    	CohortDefinition cohortDefinition = service.getDefinition(uuid, type);
     	cohortDefinition.setName(name);
     	cohortDefinition.setDescription(description);
     	cohortDefinition.getParameters().clear();
@@ -122,6 +125,13 @@ public class ManageCohortDefinitionsController {
 				ReflectionUtil.setPropertyValue(cohortDefinition, p.getField(), valToSet);
 			}
     	}
+    	
+    	new CohortDefinitionValidator().validate(cohortDefinition, bindingResult);
+    	if(bindingResult.hasErrors())
+    		return "/module/reporting/cohorts/cohortDefinitionEditor";
+    	
+    	if("".equals(cohortDefinition.getUuid()))
+    		cohortDefinition.setUuid(null);
     	
     	log.warn("Saving: " + cohortDefinition);
     	Context.getService(CohortDefinitionService.class).saveDefinition(cohortDefinition);

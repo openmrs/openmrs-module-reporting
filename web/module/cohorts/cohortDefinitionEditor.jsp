@@ -44,12 +44,13 @@
 					$('#fixedValue${p.field.name}').hide();
 				}
 			});
+			
 			if ($('#${p.field.name}').val() != '') {
 				$('#selectValue${p.field.name}').val('f');
 				$('#fixedValue${p.field.name}').show();
 			}
-		</c:forEach>
 
+		</c:forEach>
 	} );
 
 </script>
@@ -93,6 +94,11 @@
 						<li>
 							<label class="desc" for="name">Name</label>
 							<input type="text" id="name"  tabindex="2" name="name" value="${cohortDefinition.name}" size="50"/>
+							<spring:bind path="cohortDefinition.name">
+								<c:if test="${status.errorMessage != ''}">
+									<span style="vertical-align:top;" class="error">${status.errorMessage}</span>
+								</c:if>
+							</spring:bind>
 						</li>
 						<li>
 							<label class="desc" for="description">Description</label>
@@ -130,6 +136,11 @@
 													<span id="fixedValue${p.field.name}" style="display:none;">
 														<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
 													</span>
+													<spring:bind path="cohortDefinition.${p.field.name}">
+														<c:if test="${status.errorMessage != ''}">
+															<span style="vertical-align:top;" class="error">${status.errorMessage}</span>
+														</c:if>
+													</spring:bind>
 												</td>
 											</tr>
 										</c:forEach>

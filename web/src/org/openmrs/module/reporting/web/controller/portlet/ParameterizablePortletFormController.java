@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,13 @@ public class ParameterizablePortletFormController {
     		@RequestParam(required=true, value="name") String name,
     		@RequestParam(required=true, value="description") String description){
     	
+    	String successUrl = request.getParameter("successUrl");
+    	
+    	if(StringUtils.isEmpty(name)){
+    		request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "Name cannot be empty");
+    		return "redirect:"+successUrl.replace("?uuid=uuid", "");
+    	}
+    	
     	Parameterizable p = null;
     	if (StringUtils.isNotEmpty(uuid)) {
     		p = ParameterizableUtil.getParameterizable(uuid, type);
@@ -49,7 +57,6 @@ public class ParameterizablePortletFormController {
     	p.setDescription(description);
     	p = ParameterizableUtil.saveParameterizable(p);
     	
-    	String successUrl = request.getParameter("successUrl");
     	if (StringUtils.isNotEmpty(successUrl)) {
     		successUrl = "redirect:"+successUrl.replace("=uuid", "=" + p.getUuid());
     		return successUrl;

@@ -223,4 +223,12 @@
 		</property>
 	</bean>
 	
+	<bean class="org.openmrs.validator.ValidateUtil">
+		<property name="validators">
+			<list>
+				<bean class="org.openmrs.module.reporting.validator.CohortDefinitionValidator"/>
+			</list>
+		</property>
+	</bean>
+	
 </beans>

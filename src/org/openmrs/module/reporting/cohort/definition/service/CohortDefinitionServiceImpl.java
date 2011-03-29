@@ -26,6 +26,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.LogicCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.reporting.cohort.definition.history.CohortDefinitionSearchHistory;
 import org.openmrs.module.reporting.cohort.definition.persister.CohortDefinitionPersister;
@@ -43,6 +44,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.util.HandlerUtil;
+import org.openmrs.validator.ValidateUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,6 +144,11 @@ public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDef
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public <D extends CohortDefinition> D saveDefinition(D definition) throws APIException {
+		
+		//We would like to validate definitions before saving them, but currently the UI workflow 
+		//sometimes saves definitions with just a name and description before displaying them for editing.
+		//ValidateUtil.validate(definition);
+		
 		log.debug("Saving cohort definition: " + definition + " of type " + definition.getClass());
 		return (D)getPersister(definition.getClass()).saveCohortDefinition(definition);
 	}
