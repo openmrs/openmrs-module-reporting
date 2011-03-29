@@ -50,7 +50,7 @@
 						<spring:bind path="selectedRenderer">
 				            <select name="${status.expression}">
 				                <c:forEach var="renderingMode" items="${report.renderingModes}">
-				                	<c:set var="thisVal" value="${renderingMode.renderer.class.name}!${renderingMode.argument}"/>
+				                	<c:set var="thisVal" value="${renderingMode.descriptor}"/>
 				                    <option
 				                        <c:if test="${status.value == thisVal}"> selected</c:if>
 				                        value="${thisVal}">${renderingMode.label}

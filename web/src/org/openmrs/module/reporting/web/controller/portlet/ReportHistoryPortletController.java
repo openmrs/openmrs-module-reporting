@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.web.controller.portlet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,14 @@ public class ReportHistoryPortletController extends ReportingPortletController {
 	    	    
 		List<ReportRequest> complete = new ArrayList<ReportRequest>(Context.getService(ReportService.class)
 		        .getCompletedReportRequests());
+		
+		// if the caller specifies includeSaved=false, don't include saved reports
+		if ("false".equals(model.get("includeSaved"))) {
+			for (Iterator<ReportRequest> i = complete.iterator(); i.hasNext(); ) {
+				if (i.next().isSaved())
+					i.remove();
+			}
+		}
 		Collections.reverse(complete);
 		model.put("completedRequests", complete);
 		

@@ -150,3 +150,12 @@ function navigateParent(url) {
 		window.parent.navigateParent(url);
 	}
 }
+
+function jqUiDecoration() {
+	$(".portlet").addClass("ui-widget ui-corner-all")
+		.find(".portlet-header")
+			.addClass("ui-widget-header ui-corner-top")
+			.end()
+		.find(".portlet-content")
+			.addClass("ui-widget-content ui-corner-bottom");
+}

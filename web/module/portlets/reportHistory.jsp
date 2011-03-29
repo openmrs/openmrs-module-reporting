@@ -8,9 +8,13 @@
 		showDecoration -> (boolean, default true) whether or not to show this in a decorated box.
 --%>
 
+<c:set var="title" value="${model.title}"/>
 <c:set var="howManyRows" value="${model.howManyRows}"/>
 <c:set var="showAllLink" value="${model.showAllLink}"/>
 <c:set var="showDecoration" value="${model.showDecoration}"/>
+<c:if test="${title == null}">
+    <c:set var="title" value="Recent Reports"/>
+</c:if>
 <c:if test="${howManyRows == null}">
 	<c:set var="howManyRows" value="10"/>
 </c:if>
@@ -24,7 +28,7 @@
 <c:if test="${showDecoration}">
 	<div class="portlet">
 		<div class="portlet-header">
-			Recent Reports
+			${ title }
 		</div>
 		<div class="portlet-content">
 </c:if>

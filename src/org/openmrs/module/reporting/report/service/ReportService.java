@@ -273,6 +273,22 @@ public interface ReportService extends OpenmrsService {
 	 * {@link ReportingConstants#GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS}
 	 */
 	public void deleteOldReportRequests();
+
+	/**
+	 * If there are any reports queued to be run, and we aren't running the maximum number of
+	 * parallel reports, then start running the next queued report.
+	 */
+	public void maybeRunNextQueuedReport();
+		
+	/**
+	 * @return an unmodifiable view of the reports currently being run
+	 */
+	public Collection<ReportRequest> getInProgress();
+
+	/**
+	 * Makes sure that the tasks for DeleteOldReports and RunQueuedReports are scheduled
+	 */
+	public void ensureScheduledTasksRunning();
 	
 }
 

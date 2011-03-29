@@ -74,6 +74,12 @@ public class FormatTag extends TagSupport {
 	
 	private Cohort cohort;
 			
+	public static String format(Object object) {
+		StringBuilder sb = new StringBuilder();
+		new FormatTag().printObject(sb, object);
+		return sb.toString();
+	}
+	
 	public int doStartTag() {
 		StringBuilder sb = new StringBuilder();
 		if (object != null) {

@@ -23,6 +23,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.definition.DefinitionContext;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 
@@ -72,6 +74,14 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	// INSTANCE METHODS
 	//***********************
 
+	public void refresh() {
+		if (this.parameterizable != null && this.parameterizable instanceof Definition) {
+			Definition def = (Definition) this.parameterizable;
+			def = DefinitionContext.getDefinitionByUuid(def.getClass(), def.getUuid());
+			this.parameterizable = (T) def; 
+		}
+	}
+	
 	/**
 	 * Returns a description that fills in any parameter names in the description
 	 * of the {@link Parameterizable}, with values from the populated mappings.  For example, 

@@ -106,7 +106,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 				for (Map.Entry<String, Object> param : req.getReportDefinition().getParameterMappings().entrySet()) {
 					command.getUserEnteredParams().put(param.getKey(), param.getValue());
 				}
-				command.setSelectedRenderer(req.getRenderingMode().getRenderer().getClass().getName() + "!" + req.getRenderingMode().getArgument());
+				command.setSelectedRenderer(req.getRenderingMode().getDescriptor());
 			} else {
 				String uuid = request.getParameter("reportId");
 				ReportDefinition reportDefinition = rds.getDefinitionByUuid(uuid);

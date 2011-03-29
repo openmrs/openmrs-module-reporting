@@ -44,6 +44,7 @@ public class ReportingConstants {
 	
 	public static final String GLOBAL_PROPERTY_REPORT_XML_MACROS = "report.xmlMacros";
 	public static final String GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS = "report.deleteReportsAgeInHours";
+	public static final String GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN = "report.maximumSimultaneousReportsToRun";
 	
 	public static final String OPENMRS_REPORT_DATA = "__openmrs_report_data";
 	public static final String OPENMRS_REPORT_ARGUMENT = "__openmrs_report_argument";

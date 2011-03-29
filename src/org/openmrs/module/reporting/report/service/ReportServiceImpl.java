@@ -17,8 +17,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
 
@@ -72,8 +76,17 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	// Data access object
 	private ReportDAO reportDAO;
 	
+	// queue of reports waiting to be run
+	private Queue<ReportRequest> queue = new PriorityQueue<ReportRequest>();
+
+	// reports that are currently being run
+	private Set<ReportRequest> inProgress = new LinkedHashSet<ReportRequest>();
+	
 	// history of run reports
 	private List<ReportRequest> reportRequestHistory;
+	
+	// Name of the task to run queued reports
+	public static final String RUN_QUEUED_REPORTS_TASK_NAME = "Run Queued Reports";
 	
 	// Name of the task to delete old reports
 	public static final String DELETE_OLD_REPORTS_TASK_NAME = "Delete Old Reports";
@@ -203,7 +216,12 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see org.openmrs.module.reporting.report.service.ReportService#queueReport(org.openmrs.module.reporting.report.ReportRequest)
 	 */
 	public ReportRequest queueReport(ReportRequest request) {
-	    throw new APIException("Not Yet Implemented");
+		queue.add(request);
+
+		// TODO: move this somewhere so it starts automatically
+		ensureScheduledTasksRunning();
+		
+		return request;
     }
 	
 	/**
@@ -217,7 +235,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		// the code here may be leftover from that.
 		
 		// TODO: move this somewhere so it starts automatically
-		ensureDeleteOldReportsTask();
+		ensureScheduledTasksRunning();
 		
 		request.setUuid(UUID.randomUUID().toString());
 		request.setRequestDate(new Date());
@@ -293,8 +311,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see org.openmrs.module.reporting.report.service.ReportService#getQueuedReportRequests()
 	 */
 	public List<ReportRequest> getQueuedReportRequests() {
-		// TODO implement this
-	    return Collections.emptyList();
+		return Collections.unmodifiableList(new ArrayList<ReportRequest>(queue));
     }
 
 	/**
@@ -545,22 +562,43 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
     }
 	
 	/**
-	 * Makes sure there's a scheduled task registered to DeleteOldReports
+	 * @see org.openmrs.module.reporting.report.service.ReportService#ensureScheduledTasksRunning()
 	 */
-	private void ensureDeleteOldReportsTask() {
+	public void ensureScheduledTasksRunning() {
 		try {
 			Context.addProxyPrivilege(OpenmrsConstants.PRIV_MANAGE_SCHEDULER);
-		    TaskDefinition task = Context.getSchedulerService().getTaskByName(DELETE_OLD_REPORTS_TASK_NAME);
-		    if (task == null) {
-		    	task = new TaskDefinition();
-				task.setTaskClass("org.openmrs.module.reporting.report.service.DeleteOldReportsTask");
-				task.setRepeatInterval(60 * 60l); // hourly
-				task.setStartOnStartup(true);
-				task.setStartTime(null); // to induce immediate execution
-				task.setName(DELETE_OLD_REPORTS_TASK_NAME);
-				task.setDescription("Deletes reports that have not been saved and are older than the age specified in the global property.");
+			TaskDefinition runTask = Context.getSchedulerService().getTaskByName(RUN_QUEUED_REPORTS_TASK_NAME);
+			try {
+				if (runTask == null) {
+					runTask = new TaskDefinition();
+					runTask.setTaskClass("org.openmrs.module.reporting.report.service.RunQueuedReportsTask");
+					runTask.setRepeatInterval(60l); // once per minute
+					runTask.setStartOnStartup(true);
+					runTask.setStartTime(null); // to induce immediate execution
+					runTask.setName(RUN_QUEUED_REPORTS_TASK_NAME);
+					runTask.setDescription("Runs queued reports. (If you stop this task, scheduled reports will not run.");
+					Context.getSchedulerService().saveTask(runTask);
+					Context.getSchedulerService().scheduleTask(runTask);
+				} else {
+					if (!runTask.getStarted()) {
+						Context.getSchedulerService().scheduleTask(runTask);
+					}
+				}
+			} catch (SchedulerException ex) {
+				throw new APIException("Failed to schedule task to run queued reports", ex);
+			}
+
+		    TaskDefinition deleteTask = Context.getSchedulerService().getTaskByName(DELETE_OLD_REPORTS_TASK_NAME);
+		    if (deleteTask == null) {
+		    	deleteTask = new TaskDefinition();
+				deleteTask.setTaskClass("org.openmrs.module.reporting.report.service.DeleteOldReportsTask");
+				deleteTask.setRepeatInterval(60 * 60l); // hourly
+				deleteTask.setStartOnStartup(true);
+				deleteTask.setStartTime(null); // to induce immediate execution
+				deleteTask.setName(DELETE_OLD_REPORTS_TASK_NAME);
+				deleteTask.setDescription("Deletes reports that have not been saved and are older than the age specified in the global property.");
 				try {
-		            Context.getSchedulerService().scheduleTask(task);
+		            Context.getSchedulerService().scheduleTask(deleteTask);
 	            }
 	            catch (SchedulerException e) {
 		            log.warn("Failed to schedule Delete Old Reports task. Old reports will not be automatically deleted", e);
@@ -570,5 +608,38 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			Context.removeProxyPrivilege(OpenmrsConstants.PRIV_MANAGE_SCHEDULER);
 		}
     }
-
+	
+	/**
+	 * @see org.openmrs.module.reporting.report.service.ReportService#maybeRunNextQueuedReport()
+	 */
+	public void maybeRunNextQueuedReport() {
+	    if (queue.size() == 0)
+	    	return;
+	    
+	    int maxAtATime = Integer.valueOf(Context.getAdministrationService().getGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN, "1"));
+	    if (inProgress.size() >= maxAtATime)
+	    	return;
+	    
+	    ReportRequest next = queue.remove();
+	    try {
+	    	inProgress.add(next);
+	    	next.getReportDefinition().refresh();
+	    	if (next.getBaseCohort() != null)
+	    		next.getBaseCohort().refresh();
+	    	Report result = runReport(next);
+	    }
+        catch (Exception ex) {
+	        log.error("Failed to run queued report", ex);
+        } finally {
+        	inProgress.remove(next);
+	    }
+	}
+	
+	/**
+	 * @see org.openmrs.module.reporting.report.service.ReportService#getInProgress()
+	 */
+	public Collection<ReportRequest> getInProgress() {
+	    return Collections.unmodifiableSet(inProgress);
+    }
+	
 }

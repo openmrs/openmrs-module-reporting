@@ -44,7 +44,7 @@
 				<td <c:if test="${!iterstatus.last}"> style="border-bottom: 1px #c0c0c0 solid; white-space: nowrap;" </c:if>>
 					<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistoryOpen.form?uuid=${r.uuid}">
 						<img src='<c:url value="${openImageFilename}"/>' border="0" width="16" height="16"/>
-						${r.reportDefinition.name}
+						${r.reportDefinition.parameterizable.name}
 					</a>
 					<br/>
 					<c:if test="${fn:length(r.labels)>0}">
@@ -60,7 +60,7 @@
 				</td>
 				<td <c:if test="${!iterstatus.last}"> style="border-bottom: 1px #c0c0c0 solid; white-space: nowrap;" </c:if>>
 					<table class="small" cellspacing="0" cellpadding="0">
-						<c:forEach var="p" items="${r.parameterValues}">
+						<c:forEach var="p" items="${r.reportDefinition.parameterMappings}">
 							<tr valign="top">
 								<td class="faded" align="right">
 									${p.key}:

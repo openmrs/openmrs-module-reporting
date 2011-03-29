@@ -93,5 +93,15 @@ public class RenderingMode implements Comparable<RenderingMode> {
 			temp = other.label.compareTo(label);
 		return temp;
 	}
+
+	/**
+	 * @return the renderer's classname, followed by !argument (if the argument is specified)
+	 */
+	public String getDescriptor() {
+		String ret = getRenderer().getClass().getName();
+		if (getArgument() != null)
+			ret += "!" + getArgument();
+		return ret;
+    }
 	
 }
