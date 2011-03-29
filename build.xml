@@ -195,8 +195,11 @@
 	</target>
 	
 	<target name="deploy-web-jetty" depends="package-module" description="Copy web files to webapp">
-		<copy todir="/home/djazayeri/workspace35/openmrs-trunk/webapp/src/main/webapp/WEB-INF/view/module/${module.id}">
-			<fileset dir="web/module" includes="**/*" />
+		<copy todir="/home/djazayeri/workspace36/openmrs-trunk/webapp/src/main/webapp/WEB-INF/view/module/${module.id}">
+			<fileset dir="web/module" includes="**/*" excludes="web/module/tags/*"/>
+		</copy>
+		<copy todir="/home/djazayeri/workspace36/openmrs-trunk/webapp/src/main/webapp/WEB-INF/tags/module/${module.id}">
+			<fileset dir="web/module/tags" includes="**/*"/>
 		</copy>
 	</target>
 		
