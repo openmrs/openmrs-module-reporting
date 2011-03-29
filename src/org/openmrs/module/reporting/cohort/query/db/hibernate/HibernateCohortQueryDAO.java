@@ -1123,7 +1123,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			sb.append(i.next());
 		}
 
-		log.error("query: " + sb);
+		log.debug("query: " + sb);
 		
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sb.toString());
 		if (encTypeIds != null)
