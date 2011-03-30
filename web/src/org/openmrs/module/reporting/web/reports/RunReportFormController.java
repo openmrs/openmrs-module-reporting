@@ -27,11 +27,12 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.propertyeditor.MappedEditor;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -47,6 +48,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -61,6 +63,14 @@ import org.springframework.web.servlet.view.RedirectView;
 public class RunReportFormController extends SimpleFormController implements Validator {
 
 	private transient Log log = LogFactory.getLog(this.getClass());
+	
+	/**
+	 * @see BaseCommandController#initBinder(HttpServletRequest, ServletRequestDataBinder)
+	 */
+	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+		super.initBinder(request, binder);
+		binder.registerCustomEditor(Mapped.class, new MappedEditor());
+	}
 	
 	@SuppressWarnings("unchecked")
 	public boolean supports(Class c) {
@@ -176,7 +186,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 			}
 		}
 		
-		ReportRequest run = new ReportRequest(new Mapped<ReportDefinition>(reportDefinition, params), null, command.getSelectedMode(), ReportRequest.Priority.HIGHEST);
+		ReportRequest run = new ReportRequest(new Mapped<ReportDefinition>(reportDefinition, params), command.getBaseCohort(), command.getSelectedMode(), ReportRequest.Priority.HIGHEST);
 		Report report;
 		try {
 			report = reportService.runReport(run);
@@ -223,7 +233,8 @@ public class RunReportFormController extends SimpleFormController implements Val
 
 	public class CommandObject {
 		
-		private ReportDefinition reportDefinition;		
+		private ReportDefinition reportDefinition;
+		private Mapped<CohortDefinition> baseCohort;
 		private Map<String, Object> userEnteredParams;		
 		private List<RenderingMode> renderingModes;		
 		private String selectedRenderer; // as RendererClass!Arg
@@ -263,7 +274,15 @@ public class RunReportFormController extends SimpleFormController implements Val
 		public void setReportDefinition(ReportDefinition reportDefinition) {
 			this.reportDefinition = reportDefinition;
 		}
-		
+
+		public Mapped<CohortDefinition> getBaseCohort() {
+			return baseCohort;
+		}
+
+		public void setBaseCohort(Mapped<CohortDefinition> baseCohort) {
+			this.baseCohort = baseCohort;
+		}
+
 		public String getSelectedRenderer() {
 			return selectedRenderer;
 		}

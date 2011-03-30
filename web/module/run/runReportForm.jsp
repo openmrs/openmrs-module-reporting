@@ -60,6 +60,14 @@
 				        </spring:bind>
 					</td>		
 				</tr>
+	            <tr valign="top">
+	                <td align="right"><spring:message code="reporting.Report.run.optionalFilterCohort"/>:</td>
+	                <td>
+	                    <rptTag:mappedPropertyForObject id="baseCohort"
+	                        formFieldName="baseCohort" object="${ report }"
+	                        propertyName="baseCohort" label="Optional Filter Cohort"/>
+	                </td>
+	            </tr>
 				<tr><td>&nbsp;</td></tr>			
 				<tr>
 					<td></td>
