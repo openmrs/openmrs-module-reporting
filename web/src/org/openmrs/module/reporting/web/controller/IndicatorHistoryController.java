@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -99,21 +100,14 @@ public class IndicatorHistoryController {
 			Calendar cal = Calendar.getInstance();
 			
 			cal.setTime(query.getStartDate());
-			
-			//set the start time to midnight
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-			
 			Date startOfPeriod;
 			Date endOfPeriod;
 			do {
-				startOfPeriod = cal.getTime();
+				startOfPeriod = DateUtil.getStartOfDay(cal.getTime());
 				//get only the remaining days in the current month if startDate wasn't at the start of the month
 				//otherwise it will always run from beginning to end of the current month
 				cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DATE));
+				//in case the starDate and endDate are within the same month, we shouldn't go past endDate
 				if (cal.getTime().after(query.getEndDate())) {
 					endOfPeriod = query.getEndDate();
 					
