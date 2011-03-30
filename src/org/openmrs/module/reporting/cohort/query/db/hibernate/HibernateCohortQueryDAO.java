@@ -36,7 +36,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
-import org.openmrs.module.reporting.common.CollectionModifier;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -1069,7 +1069,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	/**
 	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer, org.openmrs.User)
 	 */
-	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, CollectionModifier whichModifier, 
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, TimeQualifier timeQualifier, 
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore) {
 		List<Integer> encTypeIds = SqlUtils.openmrsObjectIdListHelper(encounterTypeList);
@@ -1099,8 +1099,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" select e.patient_id from encounter e ");
 		
-		if (whichModifier == CollectionModifier.FIRST || whichModifier == CollectionModifier.LAST) {
-			boolean isFirst = whichModifier == CollectionModifier.FIRST;
+		if (timeQualifier == TimeQualifier.FIRST || timeQualifier == TimeQualifier.LAST) {
+			boolean isFirst = timeQualifier == TimeQualifier.FIRST;
 			
 			sb.append(" inner join ( ");
 			sb.append("    select patient_id, " + (isFirst ? "MIN" : "MAX") + "(encounter_datetime) as edt ");

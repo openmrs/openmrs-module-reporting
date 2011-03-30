@@ -17,6 +17,6 @@ package org.openmrs.module.reporting.common;
  * This enum is meant to represent the discrete modifiers which can be used to check
  * on values that may be returned in a List or other collection
  */
-public enum CollectionModifier {
+public enum TimeQualifier {
 	ANY, FIRST, LAST
 }

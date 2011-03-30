@@ -15,7 +15,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.common.CollectionModifier;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -119,12 +119,12 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
      * @see {@link EncounterCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
      */
     @Test
-    @Verifies(value = "should return correct patients when which modifier parameters are set", method = "evaluate(CohortDefinition,EvaluationContext)")
-    public void evaluate_shouldReturnCorrectPatientsWhenWhichModifierParametersAreSet() throws Exception {
+    @Verifies(value = "should return correct patients when time qualifier parameters are set", method = "evaluate(CohortDefinition,EvaluationContext)")
+    public void evaluate_shouldReturnCorrectPatientsWhenTimeQualifierParametersAreSet() throws Exception {
 
     	EvaluationContext context = new EvaluationContext();
 
-    	// None use case
+    	// None specified use case
     	{
 	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
 	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
@@ -136,7 +136,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
     	// Any use case
     	{
 	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
-	        cd.setWhichModifier(CollectionModifier.ANY);
+	        cd.setTimeQualifier(TimeQualifier.ANY);
 	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
 	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
@@ -146,7 +146,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
     	// First use case
     	{
 	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
-	        cd.setWhichModifier(CollectionModifier.FIRST);
+	        cd.setTimeQualifier(TimeQualifier.FIRST);
 	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
 	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
@@ -154,7 +154,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
     	}
     	{
 	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
-	        cd.setWhichModifier(CollectionModifier.FIRST);
+	        cd.setTimeQualifier(TimeQualifier.FIRST);
 	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 9, 1));
 	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 9, 30));
@@ -164,7 +164,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
     	// Last use case
     	{
 	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
-	        cd.setWhichModifier(CollectionModifier.LAST);
+	        cd.setTimeQualifier(TimeQualifier.LAST);
 	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
 	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
@@ -172,20 +172,10 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
     	}
     	{
 	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
-	        cd.setWhichModifier(CollectionModifier.LAST);
+	        cd.setTimeQualifier(TimeQualifier.LAST);
 	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 9, 1));
 	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 9, 30));
-	        Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
-    	}
-    	
-    	// Last use case
-    	{
-	        EncounterCohortDefinition cd = new EncounterCohortDefinition();
-	        cd.setWhichModifier(CollectionModifier.LAST);
-	        cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
-	        cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
-	        cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
 	        Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
     	}
     }

@@ -20,7 +20,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.User;
-import org.openmrs.module.reporting.common.CollectionModifier;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
@@ -32,7 +32,7 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty(group="which")
-	private CollectionModifier whichModifier = CollectionModifier.ANY;
+	private TimeQualifier timeQualifier = TimeQualifier.ANY;
 	
 	@ConfigurationProperty(group="which")
 	private List<EncounterType> encounterTypeList;
@@ -89,8 +89,8 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 			ret.append(" on or after " + onOrAfter);
 		if (onOrBefore != null)
 			ret.append(" on or before " + onOrBefore);
-		if (whichModifier != null && whichModifier != CollectionModifier.ANY)
-			ret.append(" where the " + whichModifier + " was ");
+		if (timeQualifier != null && timeQualifier != TimeQualifier.ANY)
+			ret.append(" where the " + timeQualifier + " was ");
 		if (locationList != null)
 			ret.append(" at " + locationList);
 		if (encounterTypeList != null)
@@ -109,17 +109,17 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 	}
 
 	/**
-	 * @return the whichModifier
+	 * @return the timeQualifier
 	 */
-	public CollectionModifier getWhichModifier() {
-		return whichModifier;
+	public TimeQualifier getTimeQualifier() {
+		return timeQualifier;
 	}
 
 	/**
-	 * @param whichModifier the whichModifier to set
+	 * @param timeQualifier the timeQualifier to set
 	 */
-	public void setWhichModifier(CollectionModifier whichModifier) {
-		this.whichModifier = whichModifier;
+	public void setTimeQualifier(TimeQualifier timeQualifier) {
+		this.timeQualifier = timeQualifier;
 	}
 
 	/**
