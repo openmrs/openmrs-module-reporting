@@ -34,10 +34,6 @@
 		<class>@MODULE_PACKAGE@.web.extension.ManageAdminListExt</class>
 	</extension>
 	<extension>
-		<point>org.openmrs.admin.list</point>
-		<class>@MODULE_PACKAGE@.web.extension.ConfigAdminListExt</class>
-	</extension>
-	<extension>
 		<point>org.openmrs.module.reporting.run.localheader</point>
 		<class>@MODULE_PACKAGE@.web.extension.RunAdminListExt</class>
 	</extension>
