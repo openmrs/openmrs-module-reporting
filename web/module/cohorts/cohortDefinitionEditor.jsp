@@ -45,7 +45,7 @@
 				}
 			});
 			
-			if ($('#${p.field.name}').val() != '') {
+			if ($('#${p.field.name}').val() && $('#${p.field.name}').val() != '') {
 				$('#selectValue${p.field.name}').val('f');
 				$('#fixedValue${p.field.name}').show();
 			}
