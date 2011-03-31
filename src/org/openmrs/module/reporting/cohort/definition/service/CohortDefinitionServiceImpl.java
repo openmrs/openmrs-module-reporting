@@ -24,6 +24,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObjectDAO;
+import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.LogicCohortDefinition;
@@ -206,6 +207,9 @@ public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDef
 						c = evaluator.evaluate(clonedDefinition, context);
 						context.addToCache(cacheKey, c);
 					}
+				}
+				catch (IllegalDatabaseAccessException ie) {
+					throw ie;
 				}
 				catch (Exception e) {
 					log.warn("An error occurred while attempting to access the cache.", e);

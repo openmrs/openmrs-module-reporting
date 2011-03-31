@@ -28,7 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.Cohort;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
-
+import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 /**
  * Provides access to a variety of common SQL functionality
  */
@@ -47,6 +47,9 @@ public class SqlUtils {
     public static PreparedStatement prepareStatement(Connection connection, String query, Map<String, Object> paramMap) throws SQLException {
 		
 		PreparedStatement statement;
+		if (!isSelectQuery(query)) {
+			throw new IllegalDatabaseAccessException();
+		}
 		boolean containParams = query.indexOf(":") > 0;
 		if (containParams) {
 			
@@ -209,4 +212,24 @@ public class SqlUtils {
 		
 		return results;
 	}
+
+    /**
+     * Used to  check if a  query is a  select  query or if it is a  update/insert/delete/drop or select into  query.
+     * This is used to prevent queries that tries to perform  database  modifications
+     */
+    public static boolean isSelectQuery(String query) {
+
+        String queryInLowerCase = query.toLowerCase().trim();
+
+        if (!query.toLowerCase().trim().startsWith("select")) {
+            return false;
+        } else {
+            String selectInto = queryInLowerCase.substring("select ".length(), queryInLowerCase.indexOf(" from "));
+            if ((selectInto != null && selectInto.contains(" into ")))
+                return false;
+        }
+        return true;
+
+    }
+
 }

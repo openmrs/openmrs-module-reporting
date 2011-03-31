@@ -14,10 +14,12 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -183,5 +185,15 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		Assert.assertTrue(cohort.contains(7));
     }
 
-	
+   /**
+     * @see {@link SqlCohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)}
+     */
+    @Test(expected = IllegalDatabaseAccessException.class)
+    @Verifies(value = "should protect SQL Query Against database modifications", method = "evaluate(CohortDefinition , EvaluationContext)")
+    public void shouldProtectSqlQueryAgainstDatabaseModifications() throws EvaluationException {
+        String query = "update person set gender='F'";
+        SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(query);
+        EvaluationContext evaluationContext = new EvaluationContext();
+        Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
+    }
 }

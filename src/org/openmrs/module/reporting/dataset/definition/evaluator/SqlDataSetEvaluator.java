@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.CohortUtil;
+import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -54,6 +54,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 	 * @should evaluate a SQLDataSetDefinition
 	 * @should evaluate a SQLDataSetDefinition with parameters
 	 * @should evaluate a SQLDataSetDefinition with in statement
+	 * @should protect SQL Query Against database modifications
 	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
@@ -72,7 +73,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 		try {
 			connection = DatabaseUpdater.getConnection();
 			ResultSet resultSet = null;
-			
+
 			String sqlQuery = sqlDsd.getSqlQuery();
 			
 			// if the user asked for only a subset, append a "limit" clause to the query so that 
@@ -117,6 +118,9 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 				}
 				dataSet.addRow(dataSetRow);
 			}
+		}
+		catch (IllegalDatabaseAccessException ie) {
+			throw ie;
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);

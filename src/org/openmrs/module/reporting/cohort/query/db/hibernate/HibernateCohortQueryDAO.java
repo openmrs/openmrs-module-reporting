@@ -34,6 +34,7 @@ import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
+import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -1387,7 +1388,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		// TODO We need to implement a validation framework within the reporting module
 		if (sqlQuery == null || sqlQuery.equals("")) 
 			throw new ReportingException("SQL query string is required");
-		
+		if (!SqlUtils.isSelectQuery(sqlQuery)) {
+			throw new IllegalDatabaseAccessException();
+		}
     	// TODO Should have specified all parameters required to execute the query
     	List<Parameter> parameters = getNamedParameters(sqlQuery);    	
     	for (Parameter parameter : parameters) { 
@@ -1401,8 +1404,6 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		// TODO Should not allow use of 'select *'
 		
 		// TODO Should allow use of 'select distinct column'
-		
-		// TODO Should not allow sql injection 'insert', 'delete', 'drop', 'update'
 		
 		// TODO Should execute explain plan to make sure 
 		// FIXME This might be a bad idea if the query does not perform well so 

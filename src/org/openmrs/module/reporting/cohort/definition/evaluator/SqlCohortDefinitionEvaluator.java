@@ -42,6 +42,7 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
      * @should support patient list parameter
      * @should support cohort parameter
      * @should support date parameter
+     * @should should protect SQL Query Against database modifications
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	SqlCohortDefinition sqlCohortDefinition = (SqlCohortDefinition) cohortDefinition;

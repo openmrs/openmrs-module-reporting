@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.Date;
 
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
@@ -15,8 +15,10 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
 
 public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -79,4 +81,19 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("F", firstRow.getColumnValue("gender"));
 		Assert.assertEquals(DateUtil.getDateTime(1997, 7, 8), firstRow.getColumnValue("birthdate"));
 	}
+
+	/**
+	 * @see {@link SqlDataSetEvaluator#evaluate(DataSetDefinition,EvaluationContext)}
+	 */
+	@Test(expected=IllegalDatabaseAccessException.class)
+    @Verifies(value = "should protect SQL Query Against database modifications", method = "evaluate(DataSetDefinition,EvaluationContext)")
+    public void evaluate_shouldProtectSQLQueryAgainstDatabaseModifications() throws EvaluationException {
+        SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
+        EvaluationContext context = new EvaluationContext(new Date());
+        String query = "update person set gender='F'";
+        dataSetDefinition.setSqlQuery(query);
+        DataSetDefinitionService service = (DataSetDefinitionService) Context.getService(DataSetDefinitionService.class);
+        service.evaluate(dataSetDefinition, context);
+    }
+
 }
