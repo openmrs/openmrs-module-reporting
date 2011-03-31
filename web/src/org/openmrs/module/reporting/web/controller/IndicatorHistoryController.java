@@ -79,17 +79,23 @@ public class IndicatorHistoryController {
 		// only process if a query has been submitted
 		
 		if (CollectionUtils.isNotEmpty(query.getIndicators())) {
+			Calendar cal = Calendar.getInstance();
 			if (query.getStartDate() == null) {
 				result.rejectValue("startDate", "reporting.startDate.required", "Start date is required");
+				return null;
+			} else if (query.getStartDate().after(cal.getTime())) {
+				result.rejectValue("startDate", "reporting.error.startDateInFuture",
+				    "The Start date shouldn't be in the future");
 				return null;
 			} else if (query.getEndDate() == null) {
 				result.rejectValue("endDate", "reporting.endDate.required", "End date is required");
 				return null;
+			} else if (query.getEndDate().after(cal.getTime())) {
+				result.rejectValue("endDate", "reporting.error.endDateInFuture", "The End date shouldn't be in the future");
+				return null;
 			} else if (query.getStartDate().after(query.getEndDate())) {
-				model.addAttribute(
-				    "error",
-				    Context.getMessageSourceService().getMessage("reporting.startDate.after.endDate", null,
-				        "Start date cannot be after end date", Context.getLocale()));
+				result.rejectValue("endDate", "reporting.error.endDateBeforeStartDate",
+				    "End date cannot be before Start date");
 				return null;
 			}
 			
@@ -97,29 +103,33 @@ public class IndicatorHistoryController {
 			
 			// determine which periods to do this for
 			List<Iteration> iterations = new ArrayList<Iteration>();
-			Calendar cal = Calendar.getInstance();
 			
 			cal.setTime(query.getStartDate());
+			//the report should run till midnight of the specified range
+			query.setEndDate(DateUtil.getEndOfDay(query.getEndDate()));
 			Date startOfPeriod;
 			Date endOfPeriod;
+			
 			do {
 				startOfPeriod = DateUtil.getStartOfDay(cal.getTime());
+				
 				//get only the remaining days in the current month if startDate wasn't at the start of the month
 				//otherwise it will always run from beginning to end of the current month
-				cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DATE));
+				cal.setTime(DateUtil.getEndOfMonth(cal.getTime()));
+				
 				//in case the starDate and endDate are within the same month, we shouldn't go past endDate
-				if (cal.getTime().after(query.getEndDate())) {
-					endOfPeriod = query.getEndDate();
-					
-				}
-				cal.add(Calendar.DAY_OF_MONTH, 1);
-				cal.add(Calendar.MILLISECOND, -1);
-				endOfPeriod = cal.getTime();
+				if (cal.getTime().after(query.getEndDate()))
+					cal.setTime(query.getEndDate());
+				
+				endOfPeriod = DateUtil.getEndOfDay(cal.getTime());
 				
 				iterations.add(new MultiPeriodIndicatorDataSetDefinition.Iteration(startOfPeriod, endOfPeriod, query
 				        .getLocation()));
+				cal.setTime(endOfPeriod);
+				
+				//go to the next day which actually sends us to the next month
 				cal.add(Calendar.MILLISECOND, 1);
-			} while (endOfPeriod.before(query.getEndDate()));
+			} while (cal.getTime().before(query.getEndDate()));
 			
 			CohortIndicatorDataSetDefinition indDSD = new CohortIndicatorDataSetDefinition();
 			for (Indicator ind : query.getIndicators()) {
