@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
- package org.openmrs.module.reporting.web.datasets;
+package org.openmrs.module.reporting.web.datasets;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,14 +19,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
+import org.openmrs.logic.LogicException;
 import org.openmrs.module.reporting.common.LogicUtil;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.Column;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.util.OpenmrsConstants;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,8 +45,7 @@ public class LogicDataSetEditor {
 	Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping("/module/reporting/datasets/logicDataSetEditor")
-	public void showDataset(ModelMap model,
-	    		    		@RequestParam(required=false, value="uuid") String uuid) {
+	public void showDataset(ModelMap model, @RequestParam(required = false, value = "uuid") String uuid) {
 		DataSetDefinitionService svc = Context.getService(DataSetDefinitionService.class);
 		LogicDataSetDefinition definition = (LogicDataSetDefinition) svc.getDefinition(uuid, LogicDataSetDefinition.class);
 		
@@ -51,11 +56,12 @@ public class LogicDataSetEditor {
 		for (Column col : definition.getColumns()) {
 			try {
 				LogicUtil.parse(col.getLogic());
-			} catch (Exception ex) {
+			}
+			catch (Exception ex) {
 				logicErrors.put(col, ex);
 			}
 		}
-
+		
 		model.addAttribute("definition", definition);
 		model.addAttribute("logicErrors", logicErrors);
 		model.addAttribute("tokens", tokens);
@@ -63,17 +69,17 @@ public class LogicDataSetEditor {
 	}
 	
 	@RequestMapping("/module/reporting/datasets/logicDataSetEditorSave")
-	public String saveLogicDataset(@RequestParam(required=false, value="uuid") String uuid,
-	                               @RequestParam(required=false, value="name") String name,
-	                               @RequestParam(required=false, value="description") String description,
+	public String saveLogicDataset(ModelMap model, @RequestParam(required = false, value = "uuid") String uuid,
+	                               @RequestParam(required = false, value = "name") String name,
+	                               @RequestParam(required = false, value = "description") String description,
 	                               WebRequest request) {
 		DataSetDefinitionService svc = Context.getService(DataSetDefinitionService.class);
-		LogicDataSetDefinition definition = uuid == null ? new LogicDataSetDefinition() :
-				(LogicDataSetDefinition) svc.getDefinition(uuid, LogicDataSetDefinition.class);
+		LogicDataSetDefinition definition = uuid == null ? new LogicDataSetDefinition() : (LogicDataSetDefinition) svc
+		        .getDefinition(uuid, LogicDataSetDefinition.class);
 		
 		definition.setName(name);
 		definition.setDescription(description);
-
+		
 		definition.clearColumns();
 		int numColumns = request.getParameterValues("columnLogic").length;
 		for (int i = 0; i < numColumns; ++i) {
@@ -85,11 +91,48 @@ public class LogicDataSetEditor {
 				definition.addColumn(columnName, columnLabel, columnLogic, columnFormat);
 		}
 		
-		// TODO validate the definition, and return an errors
+		Integer testPatientId = null;
+		try {
+			Context.addProxyPrivilege(OpenmrsConstants.PRIV_SQL_LEVEL_ACCESS);
+			List<List<Object>> results = Context.getAdministrationService().executeSQL(
+			    "select min(patient_id) from patient", true);
+			if (CollectionUtils.isNotEmpty(results) && CollectionUtils.isNotEmpty(results.get(0)))
+				testPatientId = Integer.parseInt(results.get(0).get(0).toString());
+		}
+		finally {
+			Context.removeProxyPrivilege(OpenmrsConstants.PRIV_SQL_LEVEL_ACCESS);
+		}
 		
-		svc.saveDefinition(definition);
+		if (testPatientId != null) {
+			boolean foundInvalidExpression = false;
+			ArrayList<String> invalidTokens = null;
+			EvaluationContext evaluationContext = new EvaluationContext();
+			Cohort cohort = new Cohort();
+			cohort.addMember(testPatientId);
+			evaluationContext.setBaseCohort(cohort);
+			
+			for (Column col : definition.getColumns()) {
+				try {
+					Context.getLogicService().eval(cohort, col.getLogic());
+				}
+				catch (LogicException ex) {
+					foundInvalidExpression = true;
+					if (invalidTokens == null)
+						invalidTokens = new ArrayList<String>();
+					invalidTokens.add(col.getLogic());
+				}
+			}
+			
+			if (foundInvalidExpression) {
+				String dynamicText = (invalidTokens.size() == 1) ? "value is" : "values are";
+				request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "The following logic expression " + dynamicText
+				        + " invalid: " + StringUtils.join(invalidTokens, ", "), WebRequest.SCOPE_SESSION);
+			} else
+				svc.saveDefinition(definition);
+			
+		} else
+			request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "reporting.noPatientData", WebRequest.SCOPE_SESSION);
 		
 		return "redirect:logicDataSetEditor.form?uuid=" + definition.getUuid();
 	}
-
 }
