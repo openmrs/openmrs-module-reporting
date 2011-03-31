@@ -39,6 +39,8 @@ public class EvaluationContextTest {
 		assertEquals(evaluate("${report.d1-10w}"), df.parse("2006-11-01 10:30:17:000"));
 		assertEquals(evaluate("${report.d1+3h}"), df.parse("2007-01-10 13:30:17:000"));
 		assertEquals(evaluate("${report.d1+36h}"), df.parse("2007-01-11 22:30:17:000"));
+		assertEquals(evaluate("${report.d1-1m-1w}"), df.parse("2006-12-3 10:30:17:000"));
+		assertEquals(evaluate("${report.d1+36m-10w+24h}"), df.parse("2009-11-02 10:30:17:000"));
 		assertEquals(evaluate("${report.gender}"), "male");
 		assertEquals(evaluate("report.gender"), "report.gender");
 		assertEquals(evaluate("hello ${report.gender} person"), "hello male person");

@@ -18,8 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +33,6 @@ public class EvaluationUtil {
 	public static final String EXPRESSION_START = "${";
 	public static final String EXPRESSION_END = "}";
 	public static final String FORMAT_SEPARATOR = "\\|";
-	public static final Pattern DATE_OPERATION_PATTERN = Pattern.compile("([\\w\\W]*)([+-])(\\d{1,})([hdwmy])");
 	
 	/**
 	 * Returns true if the passed String is an expression that is capable of being evaluated
@@ -163,30 +160,31 @@ public class EvaluationUtil {
 		
 		// First try to handle Date operations
 		try {
-			Matcher matcher = DATE_OPERATION_PATTERN.matcher(paramAndFormat[0]);
-			while (matcher.find()) {
-				
-				log.debug("Found date expression of: " + matcher.group(0));
-				String parameterName = matcher.group(1);
+			String dateStr = paramAndFormat[0];
+			String[] split = dateStr.split("[+-]");
+			if (split.length > 1) {
+				String parameterName = split[0].trim();
 				Object paramVal = parameters.get(parameterName);
-				
-				if (paramVal == null) {
-					throw new ParameterException("Unable to find matching parameter value (" + paramVal + ") for parameter " + parameterName);
-				} else if (!(paramVal instanceof Date)) { 
-					throw new ParameterException("Invalid class for parameter value " + paramVal + ", expected: " + Date.class + ", actual: " + paramVal.getClass().getName());
-				}
 	
-				int num = ("-".equals(matcher.group(2)) ? -1 : 1) * Integer.parseInt(matcher.group(3));
-				String fld = matcher.group(4).toLowerCase();
-				num = "w".equals(fld) ? num * 7 : num;
-				int field = "h".equals(fld) ? Calendar.HOUR : "m".equals(fld) ? Calendar.MONTH : "y".equals(fld) ? Calendar.YEAR : Calendar.DATE;
-					
-				Calendar cal = Calendar.getInstance();
-				cal.setTime((Date) paramVal);
-				cal.add(field, num);
-					
-				paramValueToFormat = cal.getTime();
-				log.debug("Calculated date of: " + paramValueToFormat);
+				if (paramVal == null || !(paramVal instanceof Date)) {
+					log.warn("Expression appears to be a Date operation expression, but the parameter value is actually " + paramVal == null ? "null" : paramVal.getClass());
+				}
+				else {
+					Calendar cal = Calendar.getInstance();
+					cal.setTime((Date)paramVal);
+					int runningLength = split[0].length();
+					for (int i=1; i<split.length; i++) {
+						int multiplier = dateStr.charAt(runningLength) == '-' ? -1 : 1;
+						int num = multiplier * Integer.parseInt(split[i].substring(0, split[i].length()-1));
+						String fld = split[i].substring(split[i].length()-1, split[i].length()).toLowerCase();
+						num *= "w".equals(fld) ? 7 : 1;
+						int field = "h".equals(fld) ? Calendar.HOUR : "m".equals(fld) ? Calendar.MONTH : "y".equals(fld) ? Calendar.YEAR : Calendar.DATE;
+						cal.add(field, num);
+						runningLength += split[i].length() + 1;
+					}
+					paramValueToFormat = cal.getTime();
+					log.debug("Calculated date of: " + paramValueToFormat);
+				}
 			}
 		}
 		catch (Exception e) {
