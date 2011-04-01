@@ -19,19 +19,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicException;
 import org.openmrs.module.reporting.common.LogicUtil;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.Column;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -91,31 +87,12 @@ public class LogicDataSetEditor {
 				definition.addColumn(columnName, columnLabel, columnLogic, columnFormat);
 		}
 		
-		Integer testPatientId = null;
 		try {
-			Context.addProxyPrivilege(OpenmrsConstants.PRIV_SQL_LEVEL_ACCESS);
-			List<List<Object>> results = Context.getAdministrationService().executeSQL(
-			    "select min(patient_id) from patient", true);
-			if (CollectionUtils.isNotEmpty(results) && CollectionUtils.isNotEmpty(results.get(0)))
-				testPatientId = Integer.parseInt(results.get(0).get(0).toString());
-		}
-		finally {
-			Context.removeProxyPrivilege(OpenmrsConstants.PRIV_SQL_LEVEL_ACCESS);
-		}
-		
-		if (testPatientId != null) {
 			boolean foundInvalidExpression = false;
 			ArrayList<String> invalidTokens = null;
-			EvaluationContext evaluationContext = new EvaluationContext();
-			Cohort cohort = new Cohort();
-			cohort.addMember(testPatientId);
-			evaluationContext.setBaseCohort(cohort);
-			
+			//validate each logic expression
 			for (Column col : definition.getColumns()) {
-				try {
-					Context.getLogicService().eval(cohort, col.getLogic());
-				}
-				catch (LogicException ex) {
+				if (!LogicUtil.isValidLogicExpression(col.getLogic())) {
 					foundInvalidExpression = true;
 					if (invalidTokens == null)
 						invalidTokens = new ArrayList<String>();
@@ -130,8 +107,11 @@ public class LogicDataSetEditor {
 			} else
 				svc.saveDefinition(definition);
 			
-		} else
-			request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "reporting.noPatientData", WebRequest.SCOPE_SESSION);
+		}
+		catch (LogicException e) {
+			request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, e.getMessage(), WebRequest.SCOPE_SESSION);
+			log.error(e.getMessage(), e);
+		}
 		
 		return "redirect:logicDataSetEditor.form?uuid=" + definition.getUuid();
 	}
