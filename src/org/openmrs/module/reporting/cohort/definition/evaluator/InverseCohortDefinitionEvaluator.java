@@ -22,6 +22,7 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 
 /**
  * Evaluates an InverseCohortDefinition and produces a Cohort
@@ -42,6 +43,8 @@ public class InverseCohortDefinitionEvaluator implements CohortDefinitionEvaluat
      */
     public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
     	InverseCohortDefinition icd = (InverseCohortDefinition) cohortDefinition;
+    	if (icd.getBaseDefinition() == null)
+    		throw new MissingDependencyException("baseDefinition");
     	context = ObjectUtil.nvl(context, new EvaluationContext());
     	Cohort allPatients = ObjectUtil.nvl(context.getBaseCohort(), Context.getPatientSetService().getAllPatients());
     	Cohort baseCohort;
