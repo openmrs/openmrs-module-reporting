@@ -33,11 +33,13 @@ public interface CohortDefinitionService extends DefinitionService<CohortDefinit
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
+	@Transactional(readOnly = true)
 	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
+	@Transactional(readOnly = true)
 	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException;
 	
 	//******* TODO: DO WE REMOVE EVERYTHING BELOW HERE? (MS 3/16/10) ******

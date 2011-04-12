@@ -31,18 +31,21 @@ public interface ReportDefinitionService extends DefinitionService<ReportDefinit
 	/**
 	 * Retrieve a ReportDefinition by id primary key
 	 */
+	@Transactional(readOnly = true)
 	public ReportDefinition getDefinition(Integer id);
 	
 	/**
 	 * This method evaluates a ReportDefinition object for the given EvaluationContext and returns a ReportData
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
+	@Transactional(readOnly = true)
 	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * This method evaluates a ReportDefinition object for the given EvaluationContext and returns a ReportData
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
+	@Transactional(readOnly = true)
 	public ReportData evaluate(Mapped<? extends ReportDefinition> reportDefinition, EvaluationContext context) throws EvaluationException;
 }
 

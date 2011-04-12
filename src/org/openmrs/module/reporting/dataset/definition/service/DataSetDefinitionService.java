@@ -31,10 +31,12 @@ public interface DataSetDefinitionService extends DefinitionService<DataSetDefin
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
+	@Transactional(readOnly = true)
 	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
+	@Transactional(readOnly = true)
 	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws EvaluationException;
 }
