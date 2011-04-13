@@ -25,7 +25,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Controller
+// I don't think this was ever completed, and I've created another AjaxController bean
+// @Controller
 public class AjaxController {
 
 	protected static Log log = LogFactory.getLog(AjaxController.class);

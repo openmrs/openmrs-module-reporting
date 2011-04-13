@@ -53,9 +53,22 @@ public class RunReportTask extends AbstractTask {
 	 */
 	@Override
 	public void execute() {
-		// TODO make this work pre-1.7 i.e. when not run in a daemon thread
-		ReportRequest request = new ReportRequest(getReportDefinition(), getBaseCohort(), getRenderingMode(), getPriority());
-		Context.getService(ReportService.class).queueReport(request);
+		if (!isExecuting()) {
+			isExecuting = true;
+			try {
+				Context.openSession();
+				if (!Context.isAuthenticated()) {
+					authenticate();
+				}
+
+				ReportRequest request = new ReportRequest(getReportDefinition(), getBaseCohort(), getRenderingMode(), getPriority());
+				Context.getService(ReportService.class).queueReport(request);
+			} finally {
+				if (Context.isSessionOpen())
+					Context.closeSession();
+				isExecuting = false;
+			}
+		}
 	}
 
 	

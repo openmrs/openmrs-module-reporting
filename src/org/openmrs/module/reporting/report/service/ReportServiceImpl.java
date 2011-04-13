@@ -50,6 +50,7 @@ import org.openmrs.module.reporting.report.renderer.RenderingException;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.db.ReportDAO;
+import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.TaskDefinition;
@@ -572,7 +573,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			try {
 				if (runTask == null) {
 					runTask = new TaskDefinition();
-					runTask.setTaskClass("org.openmrs.module.reporting.report.service.RunQueuedReportsTask");
+					runTask.setUuid(UUID.randomUUID().toString());
+					runTask.setTaskClass(RunQueuedReportsTask.class.getName());
 					runTask.setRepeatInterval(60l); // once per minute
 					runTask.setStartOnStartup(true);
 					runTask.setStartTime(null); // to induce immediate execution
@@ -592,7 +594,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		    TaskDefinition deleteTask = Context.getSchedulerService().getTaskByName(DELETE_OLD_REPORTS_TASK_NAME);
 		    if (deleteTask == null) {
 		    	deleteTask = new TaskDefinition();
-				deleteTask.setTaskClass("org.openmrs.module.reporting.report.service.DeleteOldReportsTask");
+		    	deleteTask.setUuid(UUID.randomUUID().toString());
+				deleteTask.setTaskClass(DeleteOldReportsTask.class.getName());
 				deleteTask.setRepeatInterval(60 * 60l); // hourly
 				deleteTask.setStartOnStartup(true);
 				deleteTask.setStartTime(null); // to induce immediate execution
