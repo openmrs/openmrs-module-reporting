@@ -283,7 +283,7 @@ public interface ReportService extends OpenmrsService {
 	/**
 	 * @return an unmodifiable view of the reports currently being run
 	 */
-	public Collection<ReportRequest> getInProgress();
+	public Collection<ReportRequest> getReportsCurrentlyRunning();
 
 	/**
 	 * Makes sure that the tasks for DeleteOldReports and RunQueuedReports are scheduled

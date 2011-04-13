@@ -15,7 +15,7 @@ function updateRenderingModes(mappedReportDefinition) {
 function updateRenderingModesByReportDefinitionUuid(uuid, selectedModeDescriptor) {
 	$('#renderingMode').empty();
 	if (uuid) {
-	    $.getJSON('${ pageContext.request.contextPath }/module/reporting/widget/getRenderingModes.form?reportDefinitionUuid=' + uuid, function(data) {
+	    $.getJSON('${ pageContext.request.contextPath }/module/reporting/ajax/getRenderingModes.form?reportDefinitionUuid=' + uuid, function(data) {
 	    	var str = "<option value=\"\"></option>";
             for (var i = 0; i < data.length; ++i) {
             	var descriptor = data[i].descriptor;

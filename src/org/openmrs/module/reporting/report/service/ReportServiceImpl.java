@@ -20,11 +20,11 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +38,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -77,7 +78,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	private ReportDAO reportDAO;
 	
 	// queue of reports waiting to be run
-	private Queue<ReportRequest> queue = new PriorityQueue<ReportRequest>();
+	private Queue<ReportRequest> queue = new PriorityBlockingQueue<ReportRequest>();
 
 	// reports that are currently being run
 	private Set<ReportRequest> inProgress = new LinkedHashSet<ReportRequest>();
@@ -623,9 +624,9 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	    ReportRequest next = queue.remove();
 	    try {
 	    	inProgress.add(next);
-	    	next.getReportDefinition().refresh();
+	    	ParameterizableUtil.refreshMappedDefinition(next.getReportDefinition());
 	    	if (next.getBaseCohort() != null)
-	    		next.getBaseCohort().refresh();
+	    		ParameterizableUtil.refreshMappedDefinition(next.getBaseCohort());
 	    	Report result = runReport(next);
 	    }
         catch (Exception ex) {
@@ -636,9 +637,9 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#getInProgress()
+	 * @see org.openmrs.module.reporting.report.service.ReportService#getReportsCurrentlyRunning()
 	 */
-	public Collection<ReportRequest> getInProgress() {
+	public Collection<ReportRequest> getReportsCurrentlyRunning() {
 	    return Collections.unmodifiableSet(inProgress);
     }
 	

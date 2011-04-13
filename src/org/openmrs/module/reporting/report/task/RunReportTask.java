@@ -22,22 +22,35 @@ import org.openmrs.serialization.SerializationException;
  */
 public class RunReportTask extends AbstractTask {
 
+	/**
+	 * @return the {@link TaskDefinition} backing this task
+	 */
 	public TaskDefinition getTaskDefinition() {
 		if (taskDefinition.getName() == null && getReportDefinition() != null)
 			taskDefinition.setName(getDefaultTaskName());
 		taskDefinition.setTaskClass(getClass().getName());
 		return taskDefinition;
 	}
-	
+
+	/**
+	 * TODO include the parameters in here somehow
+	 * @return a default name for this task
+	 */
 	private String getDefaultTaskName() {
 		return "Run " + getReportDefinition().getParameterizable().getName() + " Task";
     }
 
+    /**
+     * @see org.openmrs.scheduler.tasks.AbstractTask#initialize(org.openmrs.scheduler.TaskDefinition)
+     */
     @Override
 	public void initialize(TaskDefinition taskDefinition) {
 		this.taskDefinition = taskDefinition;
 	}
 	
+	/**
+	 * @see org.openmrs.scheduler.tasks.AbstractTask#execute()
+	 */
 	@Override
 	public void execute() {
 		// TODO make this work pre-1.7 i.e. when not run in a daemon thread
@@ -46,6 +59,12 @@ public class RunReportTask extends AbstractTask {
 	}
 
 	
+    /**
+     * Convenience method to get a property that has been stored in serialized form in the underlying
+     * {@link TaskDefinition}
+     * @param property
+     * @return
+     */
     private Object getSerializedProperty(String property) {
     	String serialized = taskDefinition.getProperty(property);
     	if (StringUtils.isEmpty(serialized))
@@ -58,6 +77,12 @@ public class RunReportTask extends AbstractTask {
         }
     }
 
+    /**
+     * Convenience method to store a serialized version of the given property in the underlying
+     * {@link TaskDefinition}
+     * @param property
+     * @param value
+     */
     private void setSerializedProperty(String property, Object value) {
     	if (value == null || "".equals(value)) {
     		taskDefinition.setProperty(property, null);

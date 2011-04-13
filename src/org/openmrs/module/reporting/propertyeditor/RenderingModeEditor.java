@@ -2,18 +2,19 @@ package org.openmrs.module.reporting.propertyeditor;
 
 import java.beans.PropertyEditorSupport;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 
-
+/**
+ * Converts between a {@link RenderingMode} and a String representation.
+ */
 public class RenderingModeEditor extends PropertyEditorSupport {
 	
-	private Log log = LogFactory.getLog(this.getClass());
-	
+	/**
+	 * @see java.beans.PropertyEditorSupport#setAsText(java.lang.String)
+	 */
 	@Override
 	public void setAsText(String text) throws IllegalArgumentException {
 		String renderClass = text;
@@ -34,6 +35,9 @@ public class RenderingModeEditor extends PropertyEditorSupport {
 		}
 	}
 	
+	/**
+	 * @see java.beans.PropertyEditorSupport#getAsText()
+	 */
 	@Override
 	public String getAsText() {
 	    RenderingMode ret = (RenderingMode) getValue();

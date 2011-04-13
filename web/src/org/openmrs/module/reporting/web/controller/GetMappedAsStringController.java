@@ -1,20 +1,13 @@
-package org.openmrs.module.reporting.web.widget;
+package org.openmrs.module.reporting.web.controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
@@ -22,11 +15,6 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.propertyeditor.MappedEditor;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.renderer.InteractiveReportRenderer;
-import org.openmrs.module.reporting.report.renderer.RenderingMode;
-import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.module.reporting.web.taglib.FormatTag;
 import org.openmrs.module.reporting.web.util.AjaxUtil;
 import org.openmrs.util.OpenmrsUtil;
@@ -36,31 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class MappedPropertyAjax {
-	
-	@RequestMapping("/module/reporting/widget/getRenderingModes")
-	public String getRenderingModes(Model model,
-	                                @RequestParam("reportDefinitionUuid") String reportUuid,
-	                                @RequestParam(value="includeInteractiveRenderers", required=false) Boolean includeInteractive,
-	                                @RequestParam(value="includeFileRenderers", required=false) Boolean includeFile) throws Exception {
-		if (includeInteractive == null)
-			includeInteractive = false;
-		if (includeFile == null)
-			includeFile = true;
-		ReportDefinition rd = DefinitionContext.getDefinitionByUuid(ReportDefinition.class, reportUuid);
-		List<RenderingMode> modes = Context.getService(ReportService.class).getRenderingModes(rd);
-		if (!includeInteractive || !includeFile) {
-			for (Iterator<RenderingMode> i = modes.iterator(); i.hasNext(); ) {
-				RenderingMode mode = i.next();
-				boolean isInteractive = mode.getRenderer() instanceof InteractiveReportRenderer;
-				if ( (!includeInteractive && isInteractive) || (!includeFile && !isInteractive) ) {
-					i.remove();
-				}
-			}
-		}
-		model.addAttribute("json", AjaxUtil.toJson(modes));
-		return "/module/reporting/json";
-	}
+public class GetMappedAsStringController {
 
 	@RequestMapping("/module/reporting/widget/getMappedAsString")
 	public void getMappedAsString(Model model,
@@ -128,5 +92,5 @@ public class MappedPropertyAjax {
 			}
 		}
 	}
-	
+
 }

@@ -247,4 +247,20 @@ public class ParameterizableUtil {
 		
 		return ret;
 	}
+
+	/**
+	 * Refreshes this {@link Mapped} with a version of the definition re-fetched from the
+	 * {@link DefinitionContext} by uuid.
+	 * (Use this method if you have a Mapped definition from one hibernate session that you need to
+	 * use in another session.
+	 * @param mapped
+	 */
+	public static <Def extends Definition> void refreshMappedDefinition(Mapped<Def> mapped) {
+		if (mapped.getParameterizable() != null) {
+			Def def = mapped.getParameterizable();
+			def = (Def) DefinitionContext.getDefinitionByUuid(def.getClass(), def.getUuid());
+			mapped.setParameterizable(def);
+		}
+	}
+
 }
