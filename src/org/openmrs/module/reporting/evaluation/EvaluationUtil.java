@@ -152,7 +152,7 @@ public class EvaluationUtil {
 	 */
 	public static Object evaluateParameterExpression(String expression, Map<String, Object> parameters) throws ParameterException {
 		
-		log.info("evaluateParameterExpression(): " + expression);
+		log.debug("evaluateParameterExpression(): " + expression);
 
 		log.debug("Starting expression: " + expression);
 		String[] paramAndFormat = expression.split(FORMAT_SEPARATOR, 2);
