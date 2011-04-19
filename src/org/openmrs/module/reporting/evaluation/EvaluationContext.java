@@ -45,7 +45,7 @@ public class EvaluationContext {
 	// *******************
 	
 	// Set a limit on the number of rows to evaluate 
-	private Integer limit = new Integer(0);
+	private Integer limit;
 	
 	// Base cohort to use for evaluation
 	private Cohort baseCohort;
