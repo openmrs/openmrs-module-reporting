@@ -59,7 +59,7 @@ public class ReportDefinitionType implements UserType {
 	 * @see UserType#equals(Object, Object)
 	 */
 	public boolean equals(Object x, Object y) throws HibernateException {
-		return x.equals(y);
+		return x != null && x.equals(y);
 	}
 
 	/** 
