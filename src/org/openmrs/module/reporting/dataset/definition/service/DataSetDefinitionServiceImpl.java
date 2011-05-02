@@ -20,16 +20,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.evaluator.DataSetEvaluator;
 import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefinitionPersister;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -157,7 +161,18 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 		if (evaluator == null) {
 			throw new APIException("No DataSetEvaluator found for (" + definition.getClass() + ") " + definition.getName());
 		}
-		return evaluator.evaluate(definition, context);
+		
+		// Clone DataSetDefinition and set all properties from the Parameters in the EvaluationContext
+		DataSetDefinition clonedDefinition = DefinitionUtil.clone(definition);
+		for (Parameter p : clonedDefinition.getParameters()) {
+			Object value = p.getDefaultValue();
+			if (context != null && context.containsParameter(p.getName())) {
+				value = context.getParameterValue(p.getName());
+			}
+			ReflectionUtil.setPropertyValue(clonedDefinition, p.getName(), value);
+		}
+		
+		return evaluator.evaluate(clonedDefinition, context);
 	}
 	
 	/** 
