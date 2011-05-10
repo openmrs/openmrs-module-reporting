@@ -206,4 +206,27 @@ public class ObjectUtil {
 			listToAddTo.add(itemToAddToList);
 		}
 	}
+	
+	/**
+	 * Utility method to trim a string without knowing whether it needs trimming beforehand
+	 */
+	public static String trimStringIfNeeded(String value, Integer maxLength) {
+		if (maxLength != null && value.length() > maxLength) {
+			return value.substring(0, maxLength);
+		} else {
+			return value;
+		}
+	}
+	
+	/**
+	 * Utility method to verify a string's length without knowing whether it is null or not
+	 */
+	public static String verifyStringLength(String value, Integer maxLength) {
+		if (maxLength != null && value.length() > maxLength) {
+			throw new RuntimeException(
+					"Maximum width for column with value '"+value+"' has been exceeded by "+ (value.length()-maxLength)+" characters.");
+		} else {
+			return value;
+		}
+	}
 }
