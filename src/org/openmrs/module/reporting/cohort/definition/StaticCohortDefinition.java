@@ -85,9 +85,7 @@ public class StaticCohortDefinition extends BaseCohortDefinition {
 	 */
 	@Override
 	public void setUuid(String uuid) {
-		if(cohort != null){
-			cohort.setUuid(uuid);
-		}
+		cohort.setUuid(uuid);
 	}
 
 	/**
@@ -102,9 +100,7 @@ public class StaticCohortDefinition extends BaseCohortDefinition {
      */
     @Override
     public void setName(String name) {
-    	if(cohort != null){
-    		cohort.setName(name);
-    	}
+    	cohort.setName(name);
     }
     
 	/**
@@ -119,9 +115,7 @@ public class StaticCohortDefinition extends BaseCohortDefinition {
      */
     @Override
     public void setDescription(String description) {
-    	if(cohort != null){
-    		cohort.setDescription(description);
-    	}
+    	cohort.setDescription(description);
     }
 
     /**

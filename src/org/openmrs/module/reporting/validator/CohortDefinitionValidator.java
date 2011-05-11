@@ -1,16 +1,15 @@
 package org.openmrs.module.reporting.validator;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -58,21 +57,18 @@ public class CohortDefinitionValidator implements Validator {
 
 					Object value = p.getValue();
 					if (value == null) {
-						Parameter parameter = cohortDefinition.getParameter(fieldName);
-						if (parameter != null) {
-							value = parameter.getLabel();
-						}
+						value = cohortDefinition.getParameter(fieldName);
 					}
 					
-					if (value == null)
+					if (ObjectUtil.isNull(value)) {
 						errors.rejectValue(fieldName, errorMessageCode);
-					else if (value instanceof String && !StringUtils.hasText(value.toString()))
-						errors.rejectValue(fieldName, errorMessageCode);
-					else if (List.class.isAssignableFrom(value.getClass())) {
-						if (((List) value).size() == 0) {
+					}
+					else if (Collection.class.isAssignableFrom(value.getClass())) {
+						if (((Collection) value).size() == 0) {
 							errors.rejectValue(fieldName, errorMessageCode);
 						}
-					} else if (Map.class.isAssignableFrom(value.getClass())) {
+					} 
+					else if (Map.class.isAssignableFrom(value.getClass())) {
 						if (((Map) value).size() == 0) {
 							errors.rejectValue(fieldName, errorMessageCode);
 						}

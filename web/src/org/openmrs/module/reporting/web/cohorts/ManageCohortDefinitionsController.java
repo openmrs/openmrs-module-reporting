@@ -29,70 +29,35 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Controller
-@SessionAttributes({ "cohortDefinition", "configurationProperties", "groupedProperties" })
 public class ManageCohortDefinitionsController {
 	
 	protected static Log log = LogFactory.getLog(ManageCohortDefinitionsController.class);
 	
+    @ModelAttribute("cohortDefinition")
+    public CohortDefinition getCohortDefinition(@RequestParam(required = false, value = "uuid") String uuid,
+    											@RequestParam(required = false, value = "type") Class<? extends CohortDefinition> type) {
+		return Context.getService(CohortDefinitionService.class).getDefinition(uuid, type);
+    }
+	
 	/**
-	 * Basically acts as the formBackingObject() method for saving a cohort definition.
-	 * 
-	 * @param uuid
-	 * @param type
-	 * @param returnUrl
-	 * @param model
-	 * @return
+	 * Basically acts as the formBackingObject() method for saving a CohortDefinition.
 	 */
 	@RequestMapping("/module/reporting/cohorts/editCohortDefinition")
-	public String editCohortDefinition(@RequestParam(required = false, value = "uuid") String uuid,
-	                                   @RequestParam(required = false, value = "type") Class<? extends CohortDefinition> type,
-	                                   ModelMap model) {
-		
-		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-		CohortDefinition cd = service.getDefinition(uuid, type);
-		model.addAttribute("cohortDefinition", cd);
-		
-		List<Property> properties = DefinitionUtil.getConfigurationProperties(cd);
-		model.addAttribute("configurationProperties", properties);
-		Map<String, List<Property>> groups = new LinkedHashMap<String, List<Property>>();
-		for (Property p : properties) {
-			List<Property> l = groups.get(p.getGroup());
-			if (l == null) {
-				l = new ArrayList<Property>();
-				groups.put(p.getGroup(), l);
-			}
-			l.add(p);
-		}
-		model.addAttribute("groupedProperties", groups);
-		
+	public String editCohortDefinition(ModelMap model, @ModelAttribute("cohortDefinition") CohortDefinition cohortDefinition) {
+		addPropertiesToModel(model, cohortDefinition);
 		return "/module/reporting/cohorts/cohortDefinitionEditor";
 	}
 	
 	/**
 	 * Saves a cohort definition.
-	 * 
-	 * @param uuid
-	 * @param type
-	 * @param name
-	 * @param description
-	 * @param model
-	 * @return
 	 */
 	@RequestMapping("/module/reporting/cohorts/saveCohortDefinition")
 	@SuppressWarnings("unchecked")
-	public String saveCohortDefinition(@RequestParam(required = false, value = "uuid") String uuid,
-	                                   @RequestParam(required = false, value = "type") Class<? extends CohortDefinition> type,
-	                                   @RequestParam(required = true, value = "name") String name,
-	                                   @RequestParam(required = false, value = "description") String description,
-	                                   HttpServletRequest request,
-	                                   @ModelAttribute("cohortDefinition") CohortDefinition cohortDefinition,
-	                                   BindingResult bindingResult, ModelMap model) {
+	public String saveCohortDefinition(@ModelAttribute("cohortDefinition") CohortDefinition cohortDefinition,
+            						   BindingResult bindingResult, ModelMap model, HttpServletRequest request) {
 		
-		cohortDefinition.setName(name);
-		cohortDefinition.setDescription(description);
 		cohortDefinition.getParameters().clear();
 		for (Property p : DefinitionUtil.getConfigurationProperties(cohortDefinition)) {
 			String fieldName = p.getField().getName();
@@ -127,16 +92,18 @@ public class ManageCohortDefinitionsController {
 				bindingResult.rejectValue(fieldName, "reporting.error.invalidNumber", "Only integers are allowed");
 			}
 		}
-		
-		if (bindingResult.hasErrors())
-			return "/module/reporting/cohorts/cohortDefinitionEditor";
-		
+	
 		new CohortDefinitionValidator().validate(cohortDefinition, bindingResult);
-		if (bindingResult.hasErrors())
-			return "/module/reporting/cohorts/cohortDefinitionEditor";
 		
-		if ("".equals(cohortDefinition.getUuid()))
+		if (bindingResult.hasErrors()) {
+			addPropertiesToModel(model, cohortDefinition);
+			model.addAttribute("errors", bindingResult);
+			return "/module/reporting/cohorts/cohortDefinitionEditor";
+		}
+		
+		if ("".equals(cohortDefinition.getUuid())) {
 			cohortDefinition.setUuid(null);
+		}
 		
 		log.warn("Saving: " + cohortDefinition);
 		Context.getService(CohortDefinitionService.class).saveDefinition(cohortDefinition);
@@ -171,5 +138,20 @@ public class ManageCohortDefinitionsController {
 		model.addAttribute("cohortDefinition", cohortDefinition);
 		
 		return "/module/reporting/cohorts/cohortDefinitionEvaluator";
+	}
+	
+	private void addPropertiesToModel(ModelMap model, CohortDefinition cohortDefinition) {
+		List<Property> properties = DefinitionUtil.getConfigurationProperties(cohortDefinition);
+		model.addAttribute("configurationProperties", properties);
+		Map<String, List<Property>> groups = new LinkedHashMap<String, List<Property>>();
+		for (Property p : properties) {
+			List<Property> l = groups.get(p.getGroup());
+			if (l == null) {
+				l = new ArrayList<Property>();
+				groups.put(p.getGroup(), l);
+			}
+			l.add(p);
+		}
+		model.addAttribute("groupedProperties", groups);
 	}
 }

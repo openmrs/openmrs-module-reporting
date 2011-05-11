@@ -1,4 +1,6 @@
 <%@ include file="../manage/localHeader.jsp"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
+
 <openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition" />			
 
 <script type="text/javascript" charset="utf-8">
@@ -40,15 +42,17 @@
 					$('#fixedValue${p.field.name}').show();
 				}
 				else {
-					$('#${p.field.name}').val('');
+					$("#fixedValue${p.field.name} [id^='${p.field.name}']").val('');
 					$('#fixedValue${p.field.name}').hide();
 				}
 			});
 			
-			if ($('#${p.field.name}').val() && $('#${p.field.name}').val() != '') {
-				$('#selectValue${p.field.name}').val('f');
-				$('#fixedValue${p.field.name}').show();
-			}
+			$("#fixedValue${p.field.name} [id^='${p.field.name}']").each(function() {
+				if ($(this).val() && $(this).val != '') {
+					$('#selectValue${p.field.name}').val('f');
+					$('#fixedValue${p.field.name}').show();
+				}
+			});
 
 		</c:forEach>
 	} );
@@ -72,14 +76,14 @@
 
 	<h1>
 		<c:choose>
-			<c:when test="${empty cohortDefinition.uuid}">
+			<c:when test="${empty cohortDefinition.uuid || empty cohortDefinition.name}">
 				(unsaved <rpt:displayLabel type="${cohortDefinition.class.name}"/>)
 			</c:when>
 			<c:otherwise>${cohortDefinition.name}</c:otherwise>
 		</c:choose>
 	</h1>
 
-	<form method="post" action="saveCohortDefinition.form">
+	<springform:form method="post" commandName="cohortDefinition" action="saveCohortDefinition.form">
 		<input type="hidden" name="uuid" value="${cohortDefinition.uuid}"/>
 		<input type="hidden" name="type" value="${cohortDefinition.class.name}"/>
 
@@ -93,16 +97,12 @@
 						</li>
 						<li>
 							<label class="desc" for="name">Name</label>
-							<input type="text" id="name"  tabindex="2" name="name" value="${cohortDefinition.name}" size="50"/>
-							<spring:bind path="cohortDefinition.name">
-								<c:if test="${status.errorMessage != ''}">
-									<span style="vertical-align:top;" class="error">${status.errorMessage}</span>
-								</c:if>
-							</spring:bind>
+			                <springform:input path="name" size="50" tabindex="2"/> 
+			                <br/><springform:errors path="name" cssClass="error"/>
 						</li>
 						<li>
 							<label class="desc" for="description">Description</label>
-							<textarea id="description" class="field text short" cols="50" rows="6" tabindex="3" name="description">${cohortDefinition.description}</textarea>
+							<springform:textarea path="description" cols="50" rows="6" tabindex="3"/>
 						</li>
 					</ul>
 				</td>
@@ -136,7 +136,7 @@
 													<span id="fixedValue${p.field.name}" style="display:none;">
 														<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
 													</span>
-													<spring:bind path="cohortDefinition.${p.field.name}">
+													<spring:bind path="${p.field.name}">
 														<c:if test="${status.errorMessage != ''}">
 															<span style="vertical-align:top;" class="error">${status.errorMessage}</span>
 														</c:if>
@@ -162,7 +162,7 @@
 				</td>
 			</tr>
 		</table>
-	</form>
+	</springform:form>
 </div>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

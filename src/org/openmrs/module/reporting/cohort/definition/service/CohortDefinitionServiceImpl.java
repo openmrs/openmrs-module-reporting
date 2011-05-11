@@ -27,7 +27,6 @@ import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.LogicCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.reporting.cohort.definition.history.CohortDefinitionSearchHistory;
 import org.openmrs.module.reporting.cohort.definition.persister.CohortDefinitionPersister;
@@ -45,7 +44,6 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.util.HandlerUtil;
-import org.openmrs.validator.ValidateUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
