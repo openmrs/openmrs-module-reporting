@@ -24,13 +24,13 @@ public class GenderCohortDefinition extends BaseCohortDefinition {
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty(group="genders")
-	private boolean maleIncluded;
+	private Boolean maleIncluded = Boolean.FALSE;
 	
 	@ConfigurationProperty(group="genders")
-	private boolean femaleIncluded;
+	private Boolean femaleIncluded = Boolean.FALSE;
 	
 	@ConfigurationProperty(group="genders")
-	private boolean unknownGenderIncluded;
+	private Boolean unknownGenderIncluded = Boolean.FALSE;
 	
 	//***** CONSTRUCTORS *****
 
@@ -48,13 +48,13 @@ public class GenderCohortDefinition extends BaseCohortDefinition {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();		
-		if (isMaleIncluded()) {
+		if (isMaleIncluded() == Boolean.TRUE) {
 			buffer.append("Male");
 		}
-		if (isFemaleIncluded()) {
+		if (isFemaleIncluded() == Boolean.TRUE) {
 			buffer.append((buffer.length() > 0 ? "," : "") + "Female");
 		}
-		if (isUnknownGenderIncluded()) {
+		if (isUnknownGenderIncluded() == Boolean.TRUE) {
 			buffer.append((buffer.length() > 0 ? "," : "") + "Unknown Gender");
 		}
 		if (buffer.length() == 0) {
@@ -69,63 +69,63 @@ public class GenderCohortDefinition extends BaseCohortDefinition {
 	/**
 	 * @return the maleIncluded
 	 */
-	public boolean getMaleIncluded() {
+	public Boolean getMaleIncluded() {
 		return maleIncluded;
 	}
 	
 	/**
 	 * @return the maleIncluded
 	 */
-	public boolean isMaleIncluded() {
+	public Boolean isMaleIncluded() {
 		return maleIncluded;
 	}
 
 	/**
 	 * @param maleIncluded the maleIncluded to set
 	 */
-	public void setMaleIncluded(boolean maleIncluded) {
+	public void setMaleIncluded(Boolean maleIncluded) {
 		this.maleIncluded = maleIncluded;
 	}
 
 	/**
 	 * @return the femaleIncluded
 	 */
-	public boolean getFemaleIncluded() {
+	public Boolean getFemaleIncluded() {
 		return femaleIncluded;
 	}
 	
 	/**
 	 * @return the femaleIncluded
 	 */
-	public boolean isFemaleIncluded() {
+	public Boolean isFemaleIncluded() {
 		return femaleIncluded;
 	}
 
 	/**
 	 * @param femaleIncluded the femaleIncluded to set
 	 */
-	public void setFemaleIncluded(boolean femaleIncluded) {
+	public void setFemaleIncluded(Boolean femaleIncluded) {
 		this.femaleIncluded = femaleIncluded;
 	}
 
 	/**
 	 * @return the unknownGenderIncluded
 	 */
-	public boolean getUnknownGenderIncluded() {
+	public Boolean getUnknownGenderIncluded() {
 		return unknownGenderIncluded;
 	}
 	
 	/**
 	 * @return the unknownGenderIncluded
 	 */
-	public boolean isUnknownGenderIncluded() {
+	public Boolean isUnknownGenderIncluded() {
 		return unknownGenderIncluded;
 	}
 
 	/**
 	 * @param unknownGenderIncluded the unknownGenderIncluded to set
 	 */
-	public void setUnknownGenderIncluded(boolean unknownGenderIncluded) {
+	public void setUnknownGenderIncluded(Boolean unknownGenderIncluded) {
 		this.unknownGenderIncluded = unknownGenderIncluded;
 	}
 }
