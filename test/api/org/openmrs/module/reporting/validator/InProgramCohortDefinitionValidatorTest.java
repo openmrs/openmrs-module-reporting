@@ -57,6 +57,7 @@ public class InProgramCohortDefinitionValidatorTest  extends BaseModuleContextSe
 		programs.add(new Program());
 		
 		InProgramCohortDefinition inProgramCohortDefinition = new InProgramCohortDefinition();
+		inProgramCohortDefinition.setName("Test CD");
 		inProgramCohortDefinition.setPrograms(programs);
 		
 		Errors errors = new BindException(inProgramCohortDefinition, "cohortDefinition");

@@ -57,6 +57,7 @@ public class ProgramEnrollmentCohortDefinitionValidatorTest extends BaseModuleCo
 		programs.add(new Program());
 		
 		ProgramEnrollmentCohortDefinition programEnrollmentCohortDefinition = new ProgramEnrollmentCohortDefinition();
+		programEnrollmentCohortDefinition.setName("Test CD");
 		programEnrollmentCohortDefinition.setPrograms(programs);
 		
 		Errors errors = new BindException(programEnrollmentCohortDefinition, "cohortDefinition");

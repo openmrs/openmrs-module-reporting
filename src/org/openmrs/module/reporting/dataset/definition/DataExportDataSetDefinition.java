@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.dataset.definition;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.reporting.export.DataExportReportObject;
 
 /**
@@ -31,6 +32,7 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	
     //***** PROPERTIES *****
     
+    @ConfigurationProperty
 	private DataExportReportObject dataExport;
 	
 	//***** CONSTRUCTORS *****

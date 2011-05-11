@@ -61,6 +61,7 @@ public class PatientStateCohortDefinitionValidatorTest extends BaseModuleContext
 		states.add(programWorkflowState);
 		
 		PatientStateCohortDefinition patientStateCohortDefinition = new PatientStateCohortDefinition();
+		patientStateCohortDefinition.setName("Test CD");
 		patientStateCohortDefinition.setStates(states);
 		
 		Errors errors = new BindException(patientStateCohortDefinition, "cohortDefinition");

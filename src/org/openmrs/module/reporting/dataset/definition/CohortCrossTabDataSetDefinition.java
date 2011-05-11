@@ -25,6 +25,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.definition.evaluator.CohortDataSetEvaluator;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 /**
@@ -38,7 +39,10 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 	
 	private static final long serialVersionUID = -658417752199413012L;
 
+	@ConfigurationProperty
 	private Map<String, Mapped<? extends CohortDefinition>> rows;
+	
+	@ConfigurationProperty
 	private Map<String, Mapped<? extends CohortDefinition>> columns;
 	
 	/**

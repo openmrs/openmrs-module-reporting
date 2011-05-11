@@ -36,6 +36,7 @@ public class InverseCohortDefinitionValidatorTest extends BaseModuleContextSensi
 	@Verifies(value = "should pass validation if all fields are correct", method = "validate(Object,Errors)")
 	public void validate_shouldPassValidationIfAllFieldsAreCorrect() throws Exception {
 		InverseCohortDefinition inverseCohortDefinition = new InverseCohortDefinition();
+		inverseCohortDefinition.setName("Test CD");
 		inverseCohortDefinition.setBaseDefinition(new SqlCohortDefinition());
 		
 		Errors errors = new BindException(inverseCohortDefinition, "cohortDefinition");

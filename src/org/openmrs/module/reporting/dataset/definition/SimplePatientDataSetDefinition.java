@@ -36,16 +36,16 @@ public class SimplePatientDataSetDefinition extends BaseDataSetDefinition {
 	//**** PROPERTIES *****
 	
 	@ConfigurationProperty(group="properties")
-	public List<String> patientProperties;
+	private List<String> patientProperties;
 	
 	@ConfigurationProperty(group="properties")
-	public List<PersonAttributeType> personAttributeTypes;
+	private List<PersonAttributeType> personAttributeTypes;
 	
 	@ConfigurationProperty(group="properties")
-	public List<PatientIdentifierType> identifierTypes;
+	private List<PatientIdentifierType> identifierTypes;
 	
 	@ConfigurationProperty(group="properties")
-	public List<ProgramWorkflow> programWorkflows;
+	private List<ProgramWorkflow> programWorkflows;
 	
 	/**
 	 * Constructor

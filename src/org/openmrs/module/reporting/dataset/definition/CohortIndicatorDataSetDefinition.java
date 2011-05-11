@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
@@ -30,7 +31,10 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	
 	//***** PROPERTIES *****
 	
+	@ConfigurationProperty
 	Map<String, Mapped<CohortDefinitionDimension>> dimensions = new HashMap<String, Mapped<CohortDefinitionDimension>>();
+	
+	@ConfigurationProperty
 	List<CohortIndicatorAndDimensionColumn> columns = new ArrayList<CohortIndicatorAndDimensionColumn>();
 	
 	//***** CONSTRUCTORS *****

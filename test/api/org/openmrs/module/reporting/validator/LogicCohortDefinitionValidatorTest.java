@@ -50,6 +50,7 @@ public class LogicCohortDefinitionValidatorTest extends BaseModuleContextSensiti
 	@Verifies(value = "should pass validation if all fields are correct", method = "validate(Object,Errors)")
 	public void validate_shouldPassValidationIfAllFieldsAreCorrect() throws Exception {
 		LogicCohortDefinition logicCohortDefinition = new LogicCohortDefinition();
+		logicCohortDefinition.setName("Test CD");
 		logicCohortDefinition.setLogic("Some Value");
 		
 		Errors errors = new BindException(logicCohortDefinition, "cohortDefinition");

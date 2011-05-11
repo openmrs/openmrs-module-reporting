@@ -20,6 +20,7 @@ import org.openmrs.Cohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -44,7 +45,11 @@ public class ReportDefinition extends BaseDefinition {
 	//***********************
 	
 	private Integer id;
+	
+	@ConfigurationProperty
 	private Mapped<CohortDefinition> baseCohortDefinition;
+	
+	@ConfigurationProperty
 	private Map<String, Mapped<? extends DataSetDefinition>> dataSetDefinitions;
 	
 	//***********************

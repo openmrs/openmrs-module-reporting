@@ -26,6 +26,7 @@ import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetMetaData;
 import org.openmrs.module.reporting.dataset.SimpleDataSetMetaData;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * A data set definition where each column is a logic expression
@@ -35,6 +36,7 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
 	
 	private static final long serialVersionUID = 1L;
 	
+	@ConfigurationProperty
 	private List<Column> columns = new ArrayList<Column>();
 	
 	public LogicDataSetDefinition() {

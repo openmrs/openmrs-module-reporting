@@ -50,6 +50,7 @@ public class SqlCohortDefinitionValidatorTest  extends BaseModuleContextSensitiv
 	@Verifies(value = "should pass validation if all fields are correct", method = "validate(Object,Errors)")
 	public void validate_shouldPassValidationIfAllFieldsAreCorrect() throws Exception {
 		SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+		sqlCohortDefinition.setName("Test CD");
 		sqlCohortDefinition.setQuery("Some Query");
 		
 		Errors errors = new BindException(sqlCohortDefinition, "cohortDefinition");

@@ -57,6 +57,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 	@Verifies(value = "should pass validation if all fields are correct", method = "validate(Object,Errors)")
 	public void validate_shouldPassValidationIfAllFieldsAreCorrectForCodedObsCohortDefinition() throws Exception {
 		CodedObsCohortDefinition codedObsCohortDefinition = new CodedObsCohortDefinition();
+		codedObsCohortDefinition.setName("Test CD");
 		codedObsCohortDefinition.setTimeModifier(TimeModifier.ANY);
 		codedObsCohortDefinition.setQuestion(new Concept(10));
 		
@@ -105,6 +106,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 	@Verifies(value = "should pass validation if all fields are correct", method = "validate(Object,Errors)")
 	public void validate_shouldPassValidationIfAllFieldsAreCorrectForDateObsCohortDefinition() throws Exception {
 		DateObsCohortDefinition dateObsCohortDefinition = new DateObsCohortDefinition();
+		dateObsCohortDefinition.setName("Test CD");
 		dateObsCohortDefinition.setTimeModifier(TimeModifier.ANY);
 		dateObsCohortDefinition.setQuestion(new Concept(10));
 		
@@ -153,6 +155,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 	@Verifies(value = "should pass validation if all fields are correct", method = "validate(Object,Errors)")
 	public void validate_shouldPassValidationIfAllFieldsAreCorrectForNumericObsCohortDefinition() throws Exception {
 		NumericObsCohortDefinition numericObsCohortDefinition = new NumericObsCohortDefinition();
+		numericObsCohortDefinition.setName("Test CD");
 		numericObsCohortDefinition.setTimeModifier(TimeModifier.ANY);
 		numericObsCohortDefinition.setQuestion(new Concept(10));
 		
@@ -201,6 +204,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 	@Verifies(value = "should pass validation if all fields are correct", method = "validate(Object,Errors)")
 	public void validate_shouldPassValidationIfAllFieldsAreCorrectForTextObsCohortDefinition() throws Exception {
 		TextObsCohortDefinition textObsCohortDefinition = new TextObsCohortDefinition();
+		textObsCohortDefinition.setName("Test CD");
 		textObsCohortDefinition.setTimeModifier(TimeModifier.ANY);
 		textObsCohortDefinition.setQuestion(new Concept(10));
 		

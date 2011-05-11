@@ -94,9 +94,10 @@ public class CompositionCohortDefinitionValidatorTest  extends BaseModuleContext
 	@Verifies(value = "should pass validation if all fields are correct", method = "validate(Object,Errors)")
 	public void validate_shouldPassValidationIfAllFieldsAreCorrect() throws Exception {
 		HashMap<String, Mapped<CohortDefinition>> searches = new HashMap<String, Mapped<CohortDefinition>>();
-		searches.put("Some Key", new Mapped());
+		searches.put("Some Key", new Mapped<CohortDefinition>());
 		
 		CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+		compositionCohortDefinition.setName("Test CD");
 		compositionCohortDefinition.setSearches(searches);
 		compositionCohortDefinition.setCompositionString("Some Composition String");
 		

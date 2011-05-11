@@ -18,6 +18,7 @@ import java.util.Map;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.aggregation.Aggregator;
@@ -39,11 +40,22 @@ public class CohortIndicator extends BaseIndicator {
     
     //***** PROPERTIES *****
     
+    @ConfigurationProperty
     private IndicatorType type = IndicatorType.COUNT;
+    
+    @ConfigurationProperty
     private Mapped<? extends CohortDefinition> cohortDefinition;
+    
+    @ConfigurationProperty
     private Mapped<? extends CohortDefinition> denominator;
+    
+    @ConfigurationProperty
     private Mapped<? extends CohortDefinition> locationFilter;
+    
+    @ConfigurationProperty
     private Class<? extends Aggregator> aggregator;
+    
+    @ConfigurationProperty
     private String logicExpression;
 
     //***** CONSTRUCTORS *****

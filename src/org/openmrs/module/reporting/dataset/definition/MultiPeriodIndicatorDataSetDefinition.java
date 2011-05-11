@@ -8,6 +8,7 @@ import org.openmrs.Location;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 
 /**
@@ -22,7 +23,10 @@ public class MultiPeriodIndicatorDataSetDefinition extends BaseDataSetDefinition
 	
 	//***** PROPERTIES *****
 	
+	@ConfigurationProperty
 	private CohortIndicatorDataSetDefinition baseDefinition;
+	
+	@ConfigurationProperty
 	private List<Iteration> iterations;
 	
 	//***** CONSTRUCTORS *****
