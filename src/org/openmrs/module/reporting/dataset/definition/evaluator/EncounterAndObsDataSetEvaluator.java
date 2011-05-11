@@ -410,8 +410,8 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 		// superclass is not Person
 		String providerName = EMPTY;
 		try {
-			Method m = Encounter.class.getMethod("getProvider", null);
-			Object o = m.invoke(encounter, null);
+			Method m = Encounter.class.getMethod("getProvider", (Class<?>)null);
+			Object o = m.invoke(encounter, (Object[])null);
 			if (o instanceof Person) {
 				providerName = ((Person) o).getPersonName().toString();
 			} else if (o instanceof User) {
