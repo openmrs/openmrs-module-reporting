@@ -95,7 +95,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 			ResultSetMetaData rsmd = resultSet.getMetaData();
 			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
 				DataSetColumn column = new DataSetColumn();
-				column.setName(rsmd.getColumnName(i));
+				column.setName(rsmd.getColumnLabel(i));
 				column.setDataType(Context.loadClass(rsmd.getColumnClassName(i)));
 				column.setLabel(rsmd.getColumnLabel(i));
 				dataSet.getMetaData().addColumn(column);
