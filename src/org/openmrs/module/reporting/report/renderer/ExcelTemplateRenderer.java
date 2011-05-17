@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -71,18 +72,19 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			HSSFSheet sheet = wb.getSheetAt(0);
 			sheet.setForceFormulaRecalculation(true);
 			
-			// TODO: Implement more complex logic around multiple sheets for multiple rows / multiple datasets
-			if (reportData.getDataSets().size() != 1) {
-				throw new RuntimeException("Currently only one dataset is supported.");
-			}
-			Iterator<Map.Entry<String, DataSet>> datSetEntryIterator = reportData.getDataSets().entrySet().iterator();
-			Map.Entry<String, DataSet> dataSetEntry = datSetEntryIterator.next();
-			DataSetRow dataSetRow = (DataSetRow)dataSetEntry.getValue().iterator().next();
-			if (datSetEntryIterator.hasNext()) {
-				throw new RuntimeException("Currently only one dataset with one row is supported.");
-			}
+			// TODO: Implement more complex logic around repeating columns/rows for datasets with more than one row or multiple datasets
 			
-			Map<String, Object> replacements = getReplacementData(reportData, design, dataSetEntry.getKey(), dataSetRow);
+			Map<String, Object> replacements = new HashMap<String, Object>();
+			for (String dsName : reportData.getDataSets().keySet()) {
+				DataSet ds = reportData.getDataSets().get(dsName);
+				int num = 0;
+				for (DataSetRow row : ds) {
+					if (num++ > 0) {
+						throw new RuntimeException("Currently only datasets with one row are supported.");
+					}
+					replacements.putAll(getReplacementData(reportData, design, dsName, row));
+				}
+			}
 			
 			String prefix = getExpressionPrefix(design);
 			String suffix = getExpressionSuffix(design);
