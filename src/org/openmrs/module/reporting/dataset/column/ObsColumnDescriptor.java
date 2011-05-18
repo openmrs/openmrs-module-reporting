@@ -15,7 +15,10 @@ package org.openmrs.module.reporting.dataset.column;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.openmrs.Concept;
+import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.EncounterAndObsDataSetDefinition;
 
@@ -28,6 +31,28 @@ public class ObsColumnDescriptor implements Comparable<ObsColumnDescriptor> {
 
 	private List<Concept> conceptHeirarchy;
 	private List<Integer> conceptOccurrenceHeirarchy;
+	
+	public ObsColumnDescriptor() {
+		super();
+	}
+	
+	public ObsColumnDescriptor(Obs o, Map<Obs, Integer> fieldMap) {
+		if (o != null)
+			do {
+				int occurrence = -1;
+
+				if (fieldMap.get(o) != null) {
+					occurrence = fieldMap.get(o);
+				}
+				
+				if (occurrence == -1) {
+					occurrence = 1;
+				}
+
+				this.addConceptToHeirarchy(o.getConcept(), occurrence);
+				o = o.getObsGroup();
+			} while (o != null);
+	}
 
 	/**Adds the Concept and occurrence number for one obs group level
 	 * 

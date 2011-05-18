@@ -6,7 +6,6 @@
 	<classpathentry kind="src" path="test/web"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="metadata"/>
-	<classpathentry kind="lib" path="dist"/>
 	<classpathentry kind="lib" path="lib-common/spring-2.5.6.jar" sourcepath="/openmrs-source/spring-2.5.1-src.zip"/>
 	<classpathentry kind="lib" path="lib-common/asm-1.5.3.jar"/>
 	<classpathentry kind="lib" path="lib-common/c3p0-0.9.1.jar"/>

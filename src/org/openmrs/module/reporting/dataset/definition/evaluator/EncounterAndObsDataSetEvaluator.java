@@ -175,7 +175,7 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 					
 					// construct the column header based on parents and their
 					// occurrence number at a given level
-					ObsColumnDescriptor obsKey = buildColumnHeader(obs, fieldMap);
+					ObsColumnDescriptor obsKey = new ObsColumnDescriptor(obs, fieldMap);
 
 					// link obs column header to obs itself
 					obsInEncounter.put(obsKey, obs);
@@ -254,37 +254,6 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 		}
 
 		return fieldMap;
-	}
-
-	/**
-	 * Column headers are built from getting the Concept and occurrence number
-	 * associated with a given observation from the field map. This column
-	 * header information is stored in an ObsColumnDescriptor object.
-	 * 
-	 * @param o
-	 * @param fieldMap
-	 * @return ObsColumnDescriptor
-	 */
-	public static ObsColumnDescriptor buildColumnHeader(Obs o, Map<Obs, Integer> fieldMap) {
-
-		ObsColumnDescriptor obsKey = new ObsColumnDescriptor();
-
-		if (o != null)
-			do {
-				int occurrence = -1;
-
-				if (fieldMap.get(o) != null) {
-					occurrence = fieldMap.get(o);
-				}
-				
-				if (occurrence == -1) {
-					occurrence = 1;
-				}
-
-				obsKey.addConceptToHeirarchy(o.getConcept(), occurrence);
-				o = o.getObsGroup();
-			} while (o != null);
-		return obsKey;
 	}
 	
 	/**

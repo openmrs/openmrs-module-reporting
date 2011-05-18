@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
+
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -101,7 +103,7 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 			List<String> obsValues = new ArrayList<String>();
 			for(DataSetColumn dsc : row.getColumnValues().keySet()) {
 				String obsValue = row.getColumnValue(dsc).toString();
-				if(obsValue != "") {
+				if(StringUtils.isNotEmpty(obsValue)) {
 					obsValues.add(obsValue);
 				}
 			}
@@ -110,7 +112,7 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 				Concept obsCodedValue = obs.getValueCoded();
 				String obsNonCodedValue = obs.getValueAsString(Context.getLocale());
 				
-				if((obsCodedValue != null && !obsCodedValue.equals("")) || (obsNonCodedValue != null && !obsNonCodedValue.equals(""))) {
+				if((obsCodedValue != null) || (obsNonCodedValue != null && StringUtils.isNotEmpty(obsNonCodedValue))) {
 					if(obsCodedValue != null && obsValues.contains(obsCodedValue.toString())) {
 						boolean obsRemoved = obsValues.remove(obsCodedValue.toString());
 						boolean obsDateRemoved = obsValues.remove(Context.getDateFormat().format(obs.getObsDatetime()));
@@ -196,7 +198,7 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 				Concept obsCodedValue = obs.getValueCoded();
 				String obsNonCodedValue = obs.getValueAsString(Context.getLocale());
 				
-				if((obsCodedValue != null && !obsCodedValue.equals("")) || (obsNonCodedValue != null && !obsNonCodedValue.equals(""))) {
+				if((obsCodedValue != null) || (obsNonCodedValue != null && StringUtils.isNotEmpty(obsNonCodedValue))) {
 					if(obsCodedValue != null && obsValues.contains(obsCodedValue.toString())) {
 						boolean obsRemoved = obsValues.remove(obsCodedValue.toString());
 						
@@ -917,5 +919,29 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 			Assert.assertEquals(ObjectUtil.trimStringIfNeeded(e.getProvider().getPersonName().toString(), maxColumnHeaderWidth), ObjectUtil.trimStringIfNeeded(row.getColumnValue("PROVIDER").toString(), maxColumnHeaderWidth));
 			Assert.assertEquals(ObjectUtil.trimStringIfNeeded(e.getPatientId().toString(), maxColumnHeaderWidth), ObjectUtil.trimStringIfNeeded(row.getColumnValue("INTERNAL_PATIENT_ID").toString(), maxColumnHeaderWidth));
 		}
+	}
+	
+	/**
+	 * @see {@link EncounterAndObsDataSetEvaluator#evaluate(DataSetDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should evaluate an EncounterAndObsDataSetDefinition with an empty BaseCohort", method = "evaluate(DataSetDefinition,EvaluationContext)")
+	public void evaluate_shouldEvaluateAnEncounterAndObsDataSetDefinitionWithEmptyBaseCohort() throws Exception {
+		executeDataSet(XML_ENCOUNTER_DATASET);
+		
+		Cohort died = new Cohort();
+		
+		EvaluationContext ec = new EvaluationContext();
+		ec.setBaseCohort(died);
+		
+		EncounterAndObsDataSetDefinition d = new EncounterAndObsDataSetDefinition();
+		
+		EncounterType adultInitial = new EncounterType(10);
+		d.setEncounterTypes(Collections.singletonList(adultInitial));
+		Integer maxColumnHeaderWidth = d.getMaxColumnHeaderWidth();
+		
+		SimpleDataSet result = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, ec);		
+		
+		Assert.assertEquals(0, result.getRows().size());
 	}
 }
