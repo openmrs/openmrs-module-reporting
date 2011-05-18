@@ -116,12 +116,12 @@ public class ReportHistoryController {
 			linkUrl = webRenderer.getLinkUrl(req.getReportDefinition().getParameterizable());
 			if (linkUrl != null) {
 				ReportData reportData = getReportService().loadReportData(req);
-			
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, reportData);
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument());
-				linkUrl = request.getContextPath() + (linkUrl.startsWith("/") ? "" : "/") + linkUrl;
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, linkUrl);
-				
+				if (reportData != null) {
+					request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, reportData);
+					request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument());
+					linkUrl = request.getContextPath() + (linkUrl.startsWith("/") ? "" : "/") + linkUrl;
+					request.getSession().setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, linkUrl);
+				}
 			}
 		}
 		return new ModelAndView(new RedirectView(linkUrl));
@@ -134,41 +134,16 @@ public class ReportHistoryController {
 
 		String filename = rm.getRenderer().getFilename(req.getReportDefinition().getParameterizable(), rm.getArgument()).replace(" ", "_");
 		response.setContentType(rm.getRenderer().getRenderedContentType(req.getReportDefinition().getParameterizable(), rm.getArgument()));
-		response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-		response.setHeader("Pragma", "no-cache");
 		byte[] data = getReportService().loadRenderedOutput(req);
-		IOUtils.write(data, response.getOutputStream());
 		
-		/* this is commented out because we are no longer persisting the Report.
-		 * NEED TO ADD THIS BACK IN MOST LIKELY
-		try {
-			Report report = Context.getService(ReportService.class).getReportByUuid(uuid);
-			if (report.getRequest().getRenderingMode().getRenderer() instanceof WebReportRenderer) {
-				RenderingMode rm = report.getRequest().getRenderingMode();
-				request.setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, report.getRawData(), WebRequest.SCOPE_SESSION);
-				request.setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument(), WebRequest.SCOPE_SESSION);
-				
-				String url = ((WebReportRenderer) rm.getRenderer()).getLinkUrl(report.getRequest().getReportDefinition());
-				if (!url.startsWith("/"))
-					url = "/" + url;
-				request.setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, urcausel, WebRequest.SCOPE_SESSION);
-				return "redirect:" + url;
-			} else {
-				model.addAttribute("report", report);
-				return "/module/reporting/reports/reportHistoryOpen";
-			}
-		} catch (APIException ex) {
-			if (ex.getMessage().startsWith("The persisted Report file is missing")) {
-				request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "The saved file is still being written. Try again in a few minutes", WebRequest.SCOPE_SESSION);
-			} else {
-				log.error("Unexpected exception", ex);
-				request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, ex.getMessage(), WebRequest.SCOPE_SESSION);
-			}
-			return "redirect:/module/reporting/reports/reportHistory.form";
+		if (data != null) {
+			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+			response.setHeader("Pragma", "no-cache");
+			IOUtils.write(data, response.getOutputStream());
 		}
-		*/
-		
-
+		else {
+			response.getWriter().write("There was an error retrieving the report");
+		}
 	}
 	
 	private ReportService getReportService() {

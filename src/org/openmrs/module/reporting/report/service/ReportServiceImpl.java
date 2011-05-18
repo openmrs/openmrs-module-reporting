@@ -23,7 +23,6 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -347,7 +346,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * Loads the ReportData previously generated Report for the given ReportRequest, first checking the cache
 	 */
 	public ReportData loadReportData(ReportRequest request) {
-		log.info("Loading ReportData for ReportRequest");
+		log.debug("Loading ReportData for ReportRequest");
 		Report report = reportCache.get(request);
 		if (report != null) {
 			return report.getReportData();
@@ -357,19 +356,20 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			String s = FileUtils.readFileToString(getReportDataFile(request), "UTF-8");
 			ReportData reportData = Context.getSerializationService().deserialize(s, ReportData.class, ReportingSerializer.class);
 			long t2 = System.currentTimeMillis();
-			log.debug("Loaded and Deserialized ReportData from file in " + (int)((t2-t1)/1000) + " seconds");
+			log.info("Loaded and Deserialized ReportData from file in " + (int)((t2-t1)/1000) + " seconds");
 			return reportData;
 		}
 		catch (Exception e) {
-			throw new ReportingException("Unable to load ReportData for ReportRequest", e);
+			log.warn("Failed to load ReportData from disk for request " + request + " due to " + e.getMessage());
 		}
+		return null;
 	}
 	
 	/**
 	 * Loads the Rendered Output for a previously generated Report for the given ReportRequest, first checking the cache
 	 */
 	public byte[] loadRenderedOutput(ReportRequest request) {
-		log.info("Loading Rendered Output for ReportRequest");
+		log.debug("Loading Rendered Output for ReportRequest");
 		Report report = reportCache.get(request);
 		if (report != null) {
 			return report.getRenderedOutput();
@@ -378,21 +378,23 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			return FileUtils.readFileToByteArray(getReportOutputFile(request));
 		}
 		catch (Exception e) {
-			throw new ReportingException("Unable to load Rendered Output for ReportRequest", e);
+			log.warn("Failed to load Rendered Output from disk for request " + request + " due to " + e.getMessage());
 		}
+		return null;
 	}
 	
 	/**
 	 * Loads the Error message for a previously generated Report for the given ReportRequest
 	 */
 	public String loadReportError(ReportRequest request) {
-		log.info("Loading Report Error Output for ReportRequest");
+		log.debug("Loading Report Error Output for ReportRequest");
 		try {
 			return FileUtils.readFileToString(getReportErrorFile(request));
 		}
 		catch (Exception e) {
-			throw new ReportingException("Unable to load Error for ReportRequest", e);
+			log.warn("Failed to load Report Error from disk for request " + request + " due to " + e.getMessage());
 		}
+		return null;
 	}
 	
 	/**
@@ -402,15 +404,10 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		log.info("Loading Report for ReportRequest");
 		Report report = reportCache.get(request);
 		if (report == null) {
-			try {
-				report = new Report(request);
-				report.setReportData(loadReportData(request));
-				report.setRenderedOutput(loadRenderedOutput(request));
-				cacheReport(report);
-			}
-			catch (Exception e) {
-				throw new ReportingException("Unable to load Report for ReportRequest", e);
-			}
+			report = new Report(request);
+			report.setReportData(loadReportData(request));
+			report.setRenderedOutput(loadRenderedOutput(request));
+			cacheReport(report);
 		}
 		return report;
 	}
