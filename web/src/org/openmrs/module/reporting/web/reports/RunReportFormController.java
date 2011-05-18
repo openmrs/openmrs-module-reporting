@@ -50,6 +50,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -72,7 +73,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 		binder.registerCustomEditor(Mapped.class, new MappedEditor());
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public boolean supports(Class c) {
 		return c == CommandObject.class;
 	}
@@ -187,11 +188,10 @@ public class RunReportFormController extends SimpleFormController implements Val
 		}
 		
 		ReportRequest run = new ReportRequest(new Mapped<ReportDefinition>(reportDefinition, params), command.getBaseCohort(), command.getSelectedMode(), ReportRequest.Priority.HIGHEST);
-		Report report;
-		try {
-			report = reportService.runReport(run);
-		} catch (Exception ex) {
-			errors.rejectValue("reportDefinition", null, formatEvaluationError(ex));
+		Report report = reportService.runReport(run);
+
+		if (report.getErrorMessage() != null) {
+			errors.rejectValue("reportDefinition", null, report.getErrorMessage().replaceAll("\\n", "<br/>"));
 			return showForm(request, response, errors);
 		}
 		
@@ -199,7 +199,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 		if (renderer instanceof WebReportRenderer) {
 			WebReportRenderer webRenderer = (WebReportRenderer) renderer;
 			if (webRenderer.getLinkUrl(reportDefinition) != null) {
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, report.getRawData());
+				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, report.getReportData());
 				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, renderArg);
 				String url = webRenderer.getLinkUrl(reportDefinition);
 				if (!url.startsWith("/"))
@@ -220,16 +220,6 @@ public class RunReportFormController extends SimpleFormController implements Val
 		}
 		return null;
 	}
-
-	
-	private String formatEvaluationError(Exception ex) {
-		if (ex == null) {
-			return "";
-		} else {
-			return ex.getMessage().replaceAll("\\n", "<br/>");
-		}
-    }
-	
 
 	public class CommandObject {
 		

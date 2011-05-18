@@ -1,6 +1,5 @@
 package org.openmrs.module.reporting.web.controller.portlet;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 
@@ -22,9 +22,8 @@ public class SavedReportsPortletController extends ReportingPortletController {
     @Override
     protected void populateModel(HttpServletRequest request, Map<String, Object> model) {
 	    super.populateModel(request, model);
-	    	    
-		List<ReportRequest> saved = new ArrayList<ReportRequest>(Context.getService(ReportService.class)
-		        .getSavedReportRequests());
+
+		List<ReportRequest> saved = Context.getService(ReportService.class).getReportRequests(null, null, null, Status.SAVED);
 		Collections.reverse(saved);
 		model.put("savedRequests", saved);
 		

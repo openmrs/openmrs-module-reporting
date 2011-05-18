@@ -78,4 +78,36 @@
 		</sql>
 	</diff>
 	
+	<diff>
+		<version>0.2.0</version>
+		<author>Michael Seaton</author>
+		<date>May 12th 2011</date>
+		<description>
+			Create tables to persist a report request and save reports
+		</description>
+		<sql>
+			CREATE TABLE IF NOT EXISTS `reporting_report_request` (
+			  `id` int(11) NOT NULL auto_increment,
+			  `uuid` char(38) NOT NULL,
+			  `base_cohort_uuid` char(38),
+			  `base_cohort_parameters` text,
+			  `report_definition_uuid` char(38) NOT NULL,
+			  `report_definition_parameters` text,
+			  `renderer_type` varchar(255) NOT NULL,
+			  `renderer_argument` varchar(255),
+			  `requested_by` int(11) NOT NULL default '0',
+			  `request_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
+			  `priority` varchar(255) NOT NULL,
+			  `status` varchar(255) NOT NULL,
+			  `evaluation_start_datetime` datetime,
+			  `evaluation_complete_datetime` datetime,
+			  `render_complete_datetime` datetime,
+			  `description` varchar(1000),
+			  PRIMARY KEY  (`id`),
+			  KEY `requested_by for reporting_report_request` (`requested_by`),
+			  CONSTRAINT `requested_by for reporting_report_request` FOREIGN KEY (`requested_by`) REFERENCES `users` (`user_id`)
+			) 
+			ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		</sql>
+	</diff>	
 </sqldiff>

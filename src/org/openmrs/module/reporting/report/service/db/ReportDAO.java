@@ -13,25 +13,25 @@
  */
 package org.openmrs.module.reporting.report.service.db;
 
+import java.util.Date;
 import java.util.List;
 
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.Status;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * ReportService Database Access Interface
  */
-@Transactional
 public interface ReportDAO {
 	
 	/**
 	 * @param uuid
 	 * @return the ReportDesign with the given uuid
 	 */
-	@Transactional(readOnly = true)
 	public ReportDesign getReportDesignByUuid(String uuid) throws DAOException;
 	
 	/**
@@ -40,7 +40,6 @@ public interface ReportDAO {
 	 * @return the matching {@link ReportDesign} object
 	 * @throws DAOException
 	 */
-	@Transactional(readOnly = true)
 	public ReportDesign getReportDesign(Integer id) throws DAOException;
 		
 	/**
@@ -50,7 +49,6 @@ public interface ReportDAO {
 	 * @return a List<ReportDesign> object containing all of the {@link ReportDesign}s
 	 * @throws DAOException
 	 */
-	@Transactional(readOnly = true)
 	public List<ReportDesign> getReportDesigns(ReportDefinition reportDefinition, Class<? extends ReportRenderer> rendererType, 
 											   boolean includeRetired) throws DAOException;
 	
@@ -70,5 +68,29 @@ public interface ReportDAO {
 	 * @throws DAOException
 	 */
 	public void purgeReportDesign(ReportDesign reportDesign);
-}
+	
+	/**
+	 * Saves a {@link ReportRequest} to the database and returns it
+	 */
+	public ReportRequest saveReportRequest(ReportRequest request);
 
+	/**
+	 * @return the {@link ReportRequest} with the passed id
+	 */
+	public ReportRequest getReportRequest(Integer id);
+
+	/**
+	 * @return the {@link ReportRequest} with the passed uuid
+	 */
+	public ReportRequest getReportRequestByUuid(String uuid);
+	
+	/**
+	 * @return all {@link ReportRequest} in the system that match the passed parameters
+	 */
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
+
+	/**
+	 * Deletes the passed {@link ReportRequest}
+	 */
+	public void purgeReportRequest(ReportRequest request);
+}

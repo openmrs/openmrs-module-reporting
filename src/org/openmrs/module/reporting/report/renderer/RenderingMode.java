@@ -24,24 +24,25 @@ package org.openmrs.module.reporting.report.renderer;
  */
 public class RenderingMode implements Comparable<RenderingMode> {
 	
+	//***** PROPERTIES *****
+	
 	private ReportRenderer renderer;
-	
 	private String label;
-	
 	private String argument;
-	
 	private Integer sortWeight;
 	
+	//***** CONSTRUCTORS *****
+	
+	/**
+	 * Default Constructor
+	 */
 	public RenderingMode() {
 		argument = "";
 		sortWeight = 0;
 	}
 	
 	/**
-	 * @param renderer
-	 * @param label
-	 * @param argument
-	 * @param sortWeight
+	 * Full Constructor
 	 */
 	public RenderingMode(ReportRenderer renderer, String label, String argument, Integer sortWeight) {
 		this.renderer = renderer;
@@ -50,37 +51,7 @@ public class RenderingMode implements Comparable<RenderingMode> {
 		this.sortWeight = sortWeight;
 	}
 	
-	public ReportRenderer getRenderer() {
-		return renderer;
-	}
-	
-	public void setRenderer(ReportRenderer renderer) {
-		this.renderer = renderer;
-	}
-	
-	public String getArgument() {
-		return argument;
-	}
-	
-	public void setArgument(String argument) {
-		this.argument = argument;
-	}
-	
-	public String getLabel() {
-		return label;
-	}
-	
-	public void setLabel(String label) {
-		this.label = label;
-	}
-	
-	public Integer getSortWeight() {
-		return sortWeight;
-	}
-	
-	public void setSortWeight(Integer sortWeight) {
-		this.sortWeight = sortWeight;
-	}
+	//***** INSTANCE METHODS *****
 	
 	/**
 	 * Higher sortWeight comes first
@@ -89,8 +60,9 @@ public class RenderingMode implements Comparable<RenderingMode> {
 	 */
 	public int compareTo(RenderingMode other) {
 		int temp = other.sortWeight.compareTo(sortWeight);
-		if (temp == 0)
+		if (temp == 0) {
 			temp = other.label.compareTo(label);
+		}
 		return temp;
 	}
 
@@ -99,9 +71,92 @@ public class RenderingMode implements Comparable<RenderingMode> {
 	 */
 	public String getDescriptor() {
 		String ret = getRenderer().getClass().getName();
-		if (getArgument() != null)
+		if (getArgument() != null) {
 			ret += "!" + getArgument();
+		}
 		return ret;
     }
+
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getDescriptor();
+	}
+
+	/**
+	 * @see Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		RenderingMode that = (RenderingMode)obj;
+		return this.getDescriptor().equals(that.getDescriptor());
+	}
 	
+	//***** PROPERTY ACCESS *****
+
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return getDescriptor().hashCode();
+	}
+
+	/**
+	 * @return the renderer
+	 */
+	public ReportRenderer getRenderer() {
+		return renderer;
+	}
+
+	/**
+	 * @param renderer the renderer to set
+	 */
+	public void setRenderer(ReportRenderer renderer) {
+		this.renderer = renderer;
+	}
+
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param label the label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * @return the argument
+	 */
+	public String getArgument() {
+		return argument;
+	}
+
+	/**
+	 * @param argument the argument to set
+	 */
+	public void setArgument(String argument) {
+		this.argument = argument;
+	}
+
+	/**
+	 * @return the sortWeight
+	 */
+	public Integer getSortWeight() {
+		return sortWeight;
+	}
+
+	/**
+	 * @param sortWeight the sortWeight to set
+	 */
+	public void setSortWeight(Integer sortWeight) {
+		this.sortWeight = sortWeight;
+	}
 }

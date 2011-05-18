@@ -44,7 +44,6 @@ public class ReportingConstants {
 	
 	public static final String GLOBAL_PROPERTY_REPORT_XML_MACROS = "report.xmlMacros";
 	public static final String GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS = "report.deleteReportsAgeInHours";
-	public static final String GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN = "report.maximumSimultaneousReportsToRun";
 	
 	public static final String OPENMRS_REPORT_DATA = "__openmrs_report_data";
 	public static final String OPENMRS_REPORT_ARGUMENT = "__openmrs_report_argument";
@@ -70,5 +69,31 @@ public class ReportingConstants {
 			}
 		}
 		return pits;
+	}
+	
+	public static final int GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN() {
+		String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.maxReportsToRun");
+		if (StringUtils.hasText(propertyValue)) {
+			try {
+				return Integer.parseInt(propertyValue);
+			}
+			catch (Exception e) {
+				// Do nothing
+			}
+		}
+		return 2;
+	}
+	
+	public static final int GLOBAL_PROPERTY_MAX_CACHED_REPORTS() {
+		String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.maxCachedReports");
+		if (StringUtils.hasText(propertyValue)) {
+			try {
+				return Integer.parseInt(propertyValue);
+			}
+			catch (Exception e) {
+				// Do nothing
+			}
+		}
+		return 10;
 	}
 }

@@ -1,31 +1,21 @@
 package org.openmrs.module.reporting.report.service;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
-import java.util.concurrent.PriorityBlockingQueue;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -33,9 +23,8 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -43,10 +32,11 @@ import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
+import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.InteractiveReportRenderer;
-import org.openmrs.module.reporting.report.renderer.RenderingException;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.db.ReportDAO;
@@ -54,69 +44,82 @@ import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.TaskDefinition;
-import org.openmrs.serialization.OpenmrsSerializer;
-import org.openmrs.serialization.SerializationException;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.core.task.TaskExecutor;
 
 /**
  * Base Implementation of the ReportService API
  */
 public class ReportServiceImpl extends BaseOpenmrsService implements ReportService {
 
-	private final static String REPORT_RESULTS_DIR = "REPORT_RESULTS";
-
-	private static final String REPORT_REQUEST_FILE_EXTENSION = ".request";
-	private static final String REPORT_RESULTS_FILE_EXTENSION = ".report";
+	private static final String REPORT_RESULTS_DIR = "REPORT_RESULTS";
+	
+	public static final String RUN_QUEUED_REPORTS_TASK_NAME = "Run Queued Reports"; // Name of the task to run queued reports
+	public static final String DELETE_OLD_REPORTS_TASK_NAME = "Delete Old Reports"; // Name of the task to delete old reports
 	
 	// Logger
 	private transient Log log = LogFactory.getLog(this.getClass());
 
-	// Data access object
+	// Private variables
 	private ReportDAO reportDAO;
-	
-	// queue of reports waiting to be run
-	private Queue<ReportRequest> queue = new PriorityBlockingQueue<ReportRequest>();
-
-	// reports that are currently being run
-	private Set<ReportRequest> inProgress = new LinkedHashSet<ReportRequest>();
-	
-	// history of run reports
-	private List<ReportRequest> reportRequestHistory;
-	
-	// Name of the task to run queued reports
-	public static final String RUN_QUEUED_REPORTS_TASK_NAME = "Run Queued Reports";
-	
-	// Name of the task to delete old reports
-	public static final String DELETE_OLD_REPORTS_TASK_NAME = "Delete Old Reports";
+	private Map<ReportRequest, Report> reportCache = new LinkedHashMap<ReportRequest, Report>();
 		
 	/**
 	 * Default constructor
 	 */
 	public ReportServiceImpl() { }
 	
-	/**
-	 * Utility method that returns the SerializedDefinitionService
+	//****** REPORT RENDERERS AND DESIGNS *****
+
+	/** 
+	 * @see ReportService#getReportDesignByUuid(String)
 	 */
-	public SerializedDefinitionService getService() {
-		return Context.getService(SerializedDefinitionService.class);
+	public ReportDesign getReportDesignByUuid(String uuid) throws APIException {
+		return reportDAO.getReportDesignByUuid(uuid);
+	}
+	
+	/** 
+	 * @see ReportService#getReportDesign(Integer)
+	 */
+	public ReportDesign getReportDesign(Integer id) throws APIException {
+		return reportDAO.getReportDesign(id);
+	}
+	
+	/** 
+	 * @see ReportService#getAllReportDesigns(boolean)
+	 */
+	public List<ReportDesign> getAllReportDesigns(boolean includeRetired) {
+		return reportDAO.getReportDesigns(null, null, includeRetired);
 	}
 
+	/** 
+	 * @see ReportService#getAllReportDesigns(Integer, boolean)
+	 */
+	public List<ReportDesign> getReportDesigns(ReportDefinition reportDefinition, Class<? extends ReportRenderer> rendererType, 
+											   boolean includeRetired) throws APIException {
+		return reportDAO.getReportDesigns(reportDefinition, rendererType, includeRetired);
+	}
+
+	/** 
+	 * @see ReportService#saveReportDesign(ReportDesign)
+	 */
+	public ReportDesign saveReportDesign(ReportDesign reportDesign) throws APIException {
+		return reportDAO.saveReportDesign(reportDesign);
+	}
+
+	/** 
+	 * @see ReportService#purgeReportDesign(ReportDesign)
+	 */
+	public void purgeReportDesign(ReportDesign reportDesign) {
+		reportDAO.purgeReportDesign(reportDesign);
+	}
+	
 	/**
 	 * @see ReportService#getReportRenderers()
 	 */
 	public Collection<ReportRenderer> getReportRenderers() {
 		return HandlerUtil.getHandlersForType(ReportRenderer.class, null);
-	}
-
-	/**
-	 * @see ReportService#getPreferredReportRenderer()
-	 */
-	public ReportRenderer getPreferredReportRenderer(Class<Object> supportedType) {
-		return HandlerUtil.getPreferredHandler(ReportRenderer.class, supportedType);
 	}
 	
 	/**
@@ -137,6 +140,13 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
+	 * @see ReportService#getPreferredReportRenderer()
+	 */
+	public ReportRenderer getPreferredReportRenderer(Class<Object> supportedType) {
+		return HandlerUtil.getPreferredHandler(ReportRenderer.class, supportedType);
+	}
+
+	/**
 	 * @see ReportService#getRenderingModes(ReportDefinition)
 	 */
 	public List<RenderingMode> getRenderingModes(ReportDefinition reportDefinition) {
@@ -154,417 +164,259 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		}
 		return renderingModes;
 	}
-
-	/** 
-	 * @see ReportService#getAllReportDesigns(boolean)
-	 */
-	public List<ReportDesign> getAllReportDesigns(boolean includeRetired) {
-		return reportDAO.getReportDesigns(null, null, includeRetired);
-	}
-
-	/** 
-	 * @see ReportService#getAllReportDesigns(Integer, boolean)
-	 */
-	public List<ReportDesign> getReportDesigns(ReportDefinition reportDefinition, Class<? extends ReportRenderer> rendererType, 
-											   boolean includeRetired) throws APIException {
-		return reportDAO.getReportDesigns(reportDefinition, rendererType, includeRetired);
-	}
-
-	/** 
-	 * @see ReportService#getReportDesign(Integer)
-	 */
-	public ReportDesign getReportDesign(Integer id) throws APIException {
-		return reportDAO.getReportDesign(id);
-	}
-
-	/** 
-	 * @see ReportService#getReportDesignByUuid(String)
-	 */
-	public ReportDesign getReportDesignByUuid(String uuid) throws APIException {
-		return reportDAO.getReportDesignByUuid(uuid);
-	}
-
-	/** 
-	 * @see ReportService#purgeReportDesign(ReportDesign)
-	 */
-	public void purgeReportDesign(ReportDesign reportDesign) {
-		reportDAO.purgeReportDesign(reportDesign);
-	}
-
-	/** 
-	 * @see ReportService#saveReportDesign(ReportDesign)
-	 */
-	public ReportDesign saveReportDesign(ReportDesign reportDesign) throws APIException {
-		return reportDAO.saveReportDesign(reportDesign);
-	}
 	
-	//***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the reportDAO
-	 */
-	public ReportDAO getReportDAO() {
-		return reportDAO;
-	}
-
-	/**
-	 * @param reportDAO the reportDAO to set
-	 */
-	public void setReportDAO(ReportDAO reportDAO) {
-		this.reportDAO = reportDAO;
-	}
-
-	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#queueReport(org.openmrs.module.reporting.report.ReportRequest)
-	 */
-	public ReportRequest queueReport(ReportRequest request) {
-		queue.add(request);
-
-		// TODO: move this somewhere so it starts automatically
-		ensureScheduledTasksRunning();
-		
-		return request;
-    }
+	//****** REPORT REQUESTS *****
 	
 	/**
-	 * This implementation runs this request directly, it does not queue it.
-	 * @throws EvaluationException
-	 * @see org.openmrs.module.reporting.report.service.ReportService#runReport(org.openmrs.module.reporting.report.ReportRequest)
+	 * @see ReportService#saveReportRequest(ReportRequest)
 	 */
-	public Report runReport(ReportRequest request) throws EvaluationException {
-		// Note: at some point we were saving the completed Report to disk. We stopped doing this
-		// for the moment because deserializing it via xstream was painfully slow, but some of
-		// the code here may be leftover from that.
-		
-		// TODO: move this somewhere so it starts automatically
-		ensureScheduledTasksRunning();
-		
-		request.setUuid(UUID.randomUUID().toString());
-		request.setRequestDate(new Date());
-		request.setRequestedBy(Context.getAuthenticatedUser());
-		Report ret = new Report(request);
-		
-		saveReportRequest(request);
-		
-		ret.startEvaluating();
-		
-		EvaluationContext ec = new EvaluationContext();
-
-		if (request.getBaseCohort() != null) {
-			try {
-				Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(request.getBaseCohort(), ec);
-				ec.setBaseCohort(baseCohort);
-			} catch (Exception ex) {
-				throw new EvaluationException("baseCohort", ex);
-			}
-		}
-		
-		ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-		// any EvaluationException thrown by the next line can bubble up. wrapping it won't provide useful information
-		ReportData rawData = rds.evaluate(request.getReportDefinition(), ec);
-		
-		ret.rawDataEvaluated(rawData);
-		
-		File renderedFile = null;
-		if (request.getRenderingMode() != null) {
-			if (!(request.getRenderingMode().getRenderer() instanceof InteractiveReportRenderer)) {
-				try {
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					RenderingMode rm = request.getRenderingMode();
-		            rm.getRenderer().render(rawData, rm.getArgument(), out);
-		            
-		            ret.outputRendered(
-		            	rm.getRenderer().getFilename(request.getReportDefinition().getParameterizable(), rm.getArgument()),
-		            	rm.getRenderer().getRenderedContentType(request.getReportDefinition().getParameterizable(), rm.getArgument()),
-		            	out.toByteArray());
-		            
-		            // now save the rendered output to a file
-		            File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-		    	    renderedFile = new File(dir, request.getUuid() + ".rendered." + ret.getRenderedFilename());
-		            OpenmrsUtil.copyFile(new ByteArrayInputStream(ret.getRenderedOutput()), new BufferedOutputStream(new FileOutputStream(renderedFile)));
-	            }
-	            catch (RenderingException e) {
-		            log.error("Failed to Render ReportData", e);
-		            throw new APIException(e);
-	            }
-	            catch (IOException e) {
-		            log.error("Failed to write rendered data to stream", e);
-		            throw new APIException(e);
-	            }
-			}
-		}
-		
-		if (renderedFile != null) {
-			request.setRenderedOutput(renderedFile);
-			saveReportRequest(request);
-		}
-		addToHistory(request);
-		return ret;
-    }
-	
-	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#getCompletedReportRequests()
-	 */
-	public List<ReportRequest> getCompletedReportRequests() {
-	    return Collections.unmodifiableList(getReportRequestHistory());
-    }
+	public ReportRequest saveReportRequest(ReportRequest request) {
+		return reportDAO.saveReportRequest(request);
+	}
 
 	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#getQueuedReportRequests()
+	 * @see ReportService#getReportRequest(Integer)
 	 */
-	public List<ReportRequest> getQueuedReportRequests() {
-		return Collections.unmodifiableList(new ArrayList<ReportRequest>(queue));
-    }
+	public ReportRequest getReportRequest(Integer id) {
+		return reportDAO.getReportRequest(id);
+	}
 
 	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#getReport(org.openmrs.module.reporting.report.ReportRequest)
-	 */
-	public Report getReport(ReportRequest request) {
-		try {
-			return loadReportFromFile(request.getUuid());
-		} catch (Exception ex) {
-			return null;
-		}
-    }
-
-	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#getSavedReportRequests()
-	 */
-	public List<ReportRequest> getSavedReportRequests() {
-	    List<ReportRequest> ret = new ArrayList<ReportRequest>();
-	    for (ReportRequest req : getReportRequestHistory()) {
-	    	if (req.isSaved())
-	    		ret.add(req);
-	    }
-	    return ret;
-    }
-
-	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#archiveReportRequest(org.openmrs.module.reporting.report.ReportRequest)
-	 */
-	public void archiveReportRequest(ReportRequest request) {
-	    request.setSaved(true);
-	    saveReportRequest(request);
-    }
-
-	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#addToHistory(org.openmrs.module.reporting.report.ReportRequest)
-	 */
-	public void addToHistory(ReportRequest request) {
-	    getReportRequestHistory().add(request);
-    }
-
-	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#deleteReportRequest(java.lang.String)
-	 */
-	public void deleteFromHistory(String uuid) {
-	    for (Iterator<ReportRequest> i = getReportRequestHistory().iterator(); i.hasNext(); ) {
-	    	ReportRequest rr = i.next();
-	    	if (uuid.equals(rr.getUuid())) {
-	    		i.remove();
-	    		deleteSavedReportFile(rr);
-	    	}
-	    }
-    }
-	
-	
-	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#getReportRequestByUuid(java.lang.String)
+	 * @see ReportService#getReportRequestByUuid(String)
 	 */
 	public ReportRequest getReportRequestByUuid(String uuid) {
-	    for (ReportRequest request : getReportRequestHistory()) {
-	    	if (request.getUuid().equals(uuid))
-	    		return request;
-	    }
-	    return null;
-    }
-	
-	
-	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#saveReportRequest(org.openmrs.module.reporting.report.ReportRequest)
-	 */
-	public void saveReportRequest(ReportRequest request) {
-	    //Report report = loadReportFromFile(request.getUuid());
-	    //report.setRequest(request);
-	    //saveReportToFile(report);
-		saveToFileHelper(request, request.getUuid() + ".request");
-    }
-	
+		return reportDAO.getReportRequestByUuid(uuid);
+	}
 
 	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#getReportByUuid(java.lang.String)
+	 * @see ReportService#getReportRequests(ReportDefinition, Date, Date, Status)
 	 */
-	public Report getReportByUuid(String uuid) {
-	    return loadReportFromFile(uuid);
-    }
-	
-	
-	private List<ReportRequest> getReportRequestHistory() {
-	    if (reportRequestHistory == null) {
-	    	rebuildReportRequestHistory();
-	    }
-	    return reportRequestHistory;
-    }
-	
-	private TaskExecutor executor;
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses) {
+		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
+	}
 
-	private void saveReportToFile(final Report report) {
-		if (executor == null)
-			executor = new SimpleAsyncTaskExecutor();
-		saveToFileHelper(report.getRequest(), report.getRequest().getUuid() + ".request");
-		executor.execute(new Runnable() {
-			public void run() {
-				Context.openSession();
-				try {
-					saveToFileHelper(report, report.getRequest().getUuid() + ".report");
-				} finally {
-					Context.closeSession();
-				}
-            }
-		});
+	/**
+	 * @see ReportService#purgeReportRequest(ReportRequest)
+	 */
+	public void purgeReportRequest(ReportRequest request) {
+		reportDAO.purgeReportRequest(request);
+		reportCache.remove(request);
+		FileUtils.deleteQuietly(getReportDataFile(request));
+		FileUtils.deleteQuietly(getReportErrorFile(request));
+		FileUtils.deleteQuietly(getReportOutputFile(request));
 	}
 	
-	private ReportRequest loadRequestFromFile(String requestUuid) {
-		log.info("Loading saved report request: " + requestUuid);
-		OpenmrsSerializer serializer = Context.getSerializationService().getSerializer(ReportingSerializer.class);
+	//***** REPORTS *****
+	
+	/**
+	 * @see ReportService#getReportDataFile(ReportRequest)
+	 */
+	public File getReportDataFile(ReportRequest request) {
 		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-		File file = new File(dir, requestUuid + REPORT_REQUEST_FILE_EXTENSION);
-		if (!file.exists()) {
-			throw new APIException("The persisted Report Request file is missing: " + file.getAbsolutePath());
-		}
-		BufferedReader r = null;
-		try {
-			r = new BufferedReader(new FileReader(file));
-			StringBuilder sb = new StringBuilder();
-			for (String s = r.readLine(); s != null; s = r.readLine()) {
-				sb.append(s);
-			}
-			return serializer.deserialize(sb.toString(), ReportRequest.class);
-		}
-        catch (Exception ex) {
-	        throw new APIException("Failed to load file: " + file.getAbsolutePath(), ex);
-        } finally {
-			try {
-				r.close();
-            } catch (IOException e) { }
-		}
+		return new File(dir, request.getUuid() + ".reportdata");
 	}
 	
-	private Report loadReportFromFile(String requestUuid) {
-		log.info("Loading saved report: " + requestUuid);
-		OpenmrsSerializer serializer = Context.getSerializationService().getSerializer(ReportingSerializer.class);
+	/**
+	 * @see ReportService#getReportErrorFile(ReportRequest)
+	 */
+	public File getReportErrorFile(ReportRequest request) {
 		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-		File file = new File(dir, requestUuid + REPORT_RESULTS_FILE_EXTENSION);
-		if (!file.exists()) {
-			throw new APIException("The persisted Report file is missing: " + file.getAbsolutePath());
-		}
-		BufferedReader r = null;
-		try {
-			r = new BufferedReader(new FileReader(file));
-			StringBuilder sb = new StringBuilder();
-			for (String s = r.readLine(); s != null; s = r.readLine()) {
-				sb.append(s);
-			}
-			return serializer.deserialize(sb.toString(), Report.class);
-		}
-        catch (Exception ex) {
-	        throw new APIException("Failed to load file: " + file.getAbsolutePath(), ex);
-        } finally {
-			try {
-				r.close();
-            } catch (IOException e) { }
-		}
+		return new File(dir, request.getUuid() + ".reporterror");
 	}
 	
-	private void deleteSavedReportFile(ReportRequest request) {
+	/**
+	 * @see ReportService#getReportOutputFile(ReportRequest)
+	 */
+	public File getReportOutputFile(ReportRequest request) {
 		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-		for (File file : dir.listFiles()) {
-			if (file.getName().startsWith(request.getUuid()))
-				file.delete();
-		}
-    }
+		return new File(dir, request.getUuid() + ".reportoutput");
+	}
 	
-	private void rebuildReportRequestHistory() {
-		log.info("Rebuilding Report Request History...");
-		Vector<ReportRequest> history = new Vector<ReportRequest>();
-		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-		for (File file : dir.listFiles()) {
-			if (!file.getName().endsWith(REPORT_RESULTS_FILE_EXTENSION)) {
-				continue;
-			}
-			String uuid = file.getName().substring(0, file.getName().indexOf("."));
-			ReportRequest request = loadRequestFromFile(uuid);
-			history.add(request);
-		}
-		Collections.sort(history, new Comparator<ReportRequest>() {
-			public int compare(ReportRequest left, ReportRequest right) {
-	            return left.getRequestDate().compareTo(right.getRequestDate());
-            }
-		});
-		log.info("...Done Rebuilding Report Request History");
-		reportRequestHistory = history;
-    }
-
-	private void saveToFileHelper(Object object, String filename) {
-		log.info("Saving to: " + filename);
-		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-	    File file = new File(dir, filename);
-	    if (file.exists()) {
-	    	file.delete();
-	    }
-	    try {
-	    	OpenmrsSerializer serializer = Context.getSerializationService().getSerializer(ReportingSerializer.class);
-	    	PrintWriter wr = new PrintWriter(new FileWriter(file));
-	    	wr.write(serializer.serialize(object));
-	    	wr.close();
-	    } catch (IOException ex) {
-	    	throw new APIException("Error writing data file", ex);
-	    } catch (SerializationException e) {
-	        throw new APIException("Error serializing");
-        }
-    }
-
 	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#getLastReportRequestsByReport()
+	 * @see ReportService#queueReport(ReportRequest)
 	 */
-	public Map<ReportDefinition, ReportRequest> getLastReportRequestsByReport() {
-	    Map<ReportDefinition, ReportRequest> ret = new HashMap<ReportDefinition, ReportRequest>();
-	    for (ReportRequest req : getReportRequestHistory())
-	    	ret.put(req.getReportDefinition().getParameterizable(), req);
-	    return ret;
-    }
-
+	public ReportRequest queueReport(ReportRequest request) {
+		ensureScheduledTasksRunning();
+		return Context.getService(ReportService.class).saveReportRequest(request);
+	}
+	
 	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#deleteOldReportRequests()
+	 * @see ReportService#runReport(ReportRequest)
 	 */
-	public void deleteOldReportRequests() {
-		int ageInHoursToDelete = 72;
-		try {
-			ageInHoursToDelete = Integer.parseInt(Context.getAdministrationService().getGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS));
-		} catch (Exception ex) {
-			log.warn("Illegal value for " + ReportingConstants.GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS + " global property. Using default value of 72.", ex);
-		}
-		if (ageInHoursToDelete <= 0)
-			return;
+	public Report runReport(ReportRequest request) throws EvaluationException {
 		
-		List<String> uuidsToDelete = new ArrayList<String>();
-		Date now = new Date();
-		for (ReportRequest req : getReportRequestHistory()) {
-			if (!req.isSaved() && DateUtil.getHoursBetween(req.getRequestDate(), now) >= ageInHoursToDelete) {
-				uuidsToDelete.add(req.getUuid());
+		// Set the status to processing and save the request
+		request.setStatus(Status.PROCESSING);
+		request.setEvaluateStartDatetime(new Date());
+		log.info("Processing started for report request: " + request);
+		
+		// Construct a new report object to return
+		Report report = new Report(request);
+		boolean hasRenderedOutput = false;
+		
+		try {
+			// Create a new Evaluation Context, setting the base cohort from the request
+			EvaluationContext context = new EvaluationContext();
+			if (request.getBaseCohort() != null) {
+				try {
+					Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(request.getBaseCohort(), context);
+					context.setBaseCohort(baseCohort);
+					log.info("Evaluated the baseCohort to : " + baseCohort.size() + " patients");
+				} 
+				catch (Exception ex) {
+					throw new EvaluationException("baseCohort", ex);
+				}
+			}
+		
+			// Evaluate the Report Definition, any EvaluationException thrown by the next line can bubble up; wrapping it won't provide useful information
+			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+			ReportData reportData = rds.evaluate(request.getReportDefinition(), context);
+			report.setReportData(reportData);
+			request.setEvaluateCompleteDatetime(new Date());
+			log.info("Evaluated the report into a ReportData successfully");
+			
+			// Render the Report if appropriate
+			if (request.getRenderingMode() != null) {
+				ReportRenderer renderer = request.getRenderingMode().getRenderer();
+				String argument = request.getRenderingMode().getArgument();
+				if (!(renderer instanceof InteractiveReportRenderer)) {
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+		            renderer.render(reportData, argument, out);
+		            report.setRenderedOutput(out.toByteArray());
+		            request.setRenderCompleteDatetime(new Date());
+		            log.info("Evaluated the report into a Rendered Output successfully");
+		            hasRenderedOutput = true;
+	            }
+			}
+			request.setStatus(Status.COMPLETED);
+		}
+		catch (Throwable t) {
+			request.setStatus(Status.FAILED);
+			report.setErrorMessage(t.getMessage());
+			PrintWriter writer = null;
+			try {
+				File errorFile = getReportErrorFile(request);
+				writer = new PrintWriter(errorFile);
+				t.printStackTrace(writer);
+	            log.info("Wrote a Report Error to disk");
+			}
+			catch (Exception e) {
+				log.warn("Unable to log reporting error to file.", e);
+			}
+			finally {
+				IOUtils.closeQuietly(writer);
 			}
 		}
-		for (String uuid : uuidsToDelete) {
+			
+		// Cache the report
+		cacheReport(report);
+
+		// Serialize the raw data to file
+		try {
+			String serializedData = Context.getSerializationService().serialize(report.getReportData(), ReportingSerializer.class);
+			FileUtils.writeStringToFile(getReportDataFile(request), serializedData, "UTF-8");
+			log.info("Persisted the ReportData to disk");
+		}
+		catch (Exception e) {
+			log.warn("An error occurred writing report data to disk", e);
+		}
+		
+		// Write the output to file
+		if (hasRenderedOutput) {
 			try {
-				deleteFromHistory(uuid);
-			} catch (Exception ex) {
-				log.warn("Error deleting old request " + uuid, ex);
+				FileUtils.writeByteArrayToFile(getReportOutputFile(request), report.getRenderedOutput());
+				log.info("Persisted the ReportData to disk");
 			}
-		}		
-    }
+			catch (Exception e) {
+				log.warn("An error occurred writing report data to disk", e);
+			}
+		}
+		request = Context.getService(ReportService.class).saveReportRequest(request);
+		return report;
+	}
+	
 	
 	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#ensureScheduledTasksRunning()
+	 * @see ReportService#getCachedReports()
+	 */
+	public Map<ReportRequest, Report> getCachedReports() {
+		return new LinkedHashMap<ReportRequest, Report>(reportCache);
+	}
+	
+	/**
+	 * Loads the ReportData previously generated Report for the given ReportRequest, first checking the cache
+	 */
+	public ReportData loadReportData(ReportRequest request) {
+		log.info("Loading ReportData for ReportRequest");
+		Report report = reportCache.get(request);
+		if (report != null) {
+			return report.getReportData();
+		}
+		try {
+			long t1 = System.currentTimeMillis();
+			String s = FileUtils.readFileToString(getReportDataFile(request), "UTF-8");
+			ReportData reportData = Context.getSerializationService().deserialize(s, ReportData.class, ReportingSerializer.class);
+			long t2 = System.currentTimeMillis();
+			log.debug("Loaded and Deserialized ReportData from file in " + (int)((t2-t1)/1000) + " seconds");
+			return reportData;
+		}
+		catch (Exception e) {
+			throw new ReportingException("Unable to load ReportData for ReportRequest", e);
+		}
+	}
+	
+	/**
+	 * Loads the Rendered Output for a previously generated Report for the given ReportRequest, first checking the cache
+	 */
+	public byte[] loadRenderedOutput(ReportRequest request) {
+		log.info("Loading Rendered Output for ReportRequest");
+		Report report = reportCache.get(request);
+		if (report != null) {
+			return report.getRenderedOutput();
+		}
+		try {
+			return FileUtils.readFileToByteArray(getReportOutputFile(request));
+		}
+		catch (Exception e) {
+			throw new ReportingException("Unable to load Rendered Output for ReportRequest", e);
+		}
+	}
+	
+	/**
+	 * Loads the Error message for a previously generated Report for the given ReportRequest
+	 */
+	public String loadReportError(ReportRequest request) {
+		log.info("Loading Report Error Output for ReportRequest");
+		try {
+			return FileUtils.readFileToString(getReportErrorFile(request));
+		}
+		catch (Exception e) {
+			throw new ReportingException("Unable to load Error for ReportRequest", e);
+		}
+	}
+	
+	/**
+	 * Loads a previously generated Report for the given ReportRequest, first checking the cache
+	 */
+	public Report loadReport(ReportRequest request) {
+		log.info("Loading Report for ReportRequest");
+		Report report = reportCache.get(request);
+		if (report == null) {
+			try {
+				report = new Report(request);
+				report.setReportData(loadReportData(request));
+				report.setRenderedOutput(loadRenderedOutput(request));
+				cacheReport(report);
+			}
+			catch (Exception e) {
+				throw new ReportingException("Unable to load Report for ReportRequest", e);
+			}
+		}
+		return report;
+	}
+	
+	/**
+	 * @see ReportService#ensureScheduledTasksRunning()
 	 */
 	public void ensureScheduledTasksRunning() {
 		try {
@@ -614,36 +466,88 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
     }
 	
 	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#maybeRunNextQueuedReport()
+	 * @see ReportService#deleteOldReportRequests()
+	 */
+	public void deleteOldReportRequests() {
+		int ageInHoursToDelete = 72;
+		try {
+			ageInHoursToDelete = Integer.parseInt(Context.getAdministrationService().getGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS));
+		} 
+		catch (Exception ex) {
+			log.warn("Illegal value for " + ReportingConstants.GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS + " global property. Using default value of 72.", ex);
+		}
+		if (ageInHoursToDelete <= 0) {
+			return;
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.HOUR, -1*ageInHoursToDelete);
+		for (ReportRequest request : getReportRequests(null, null, cal.getTime(), Status.COMPLETED,Status.FAILED)) {
+			purgeReportRequest(request);
+		}
+    }
+
+	/**
+	 * @see ReportService#maybeRunNextQueuedReport()
 	 */
 	public void maybeRunNextQueuedReport() {
-	    if (queue.size() == 0)
-	    	return;
-	    
-	    int maxAtATime = Integer.valueOf(Context.getAdministrationService().getGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN, "1"));
-	    if (inProgress.size() >= maxAtATime)
-	    	return;
-	    
-	    ReportRequest next = queue.remove();
-	    try {
-	    	inProgress.add(next);
-	    	ParameterizableUtil.refreshMappedDefinition(next.getReportDefinition());
-	    	if (next.getBaseCohort() != null)
-	    		ParameterizableUtil.refreshMappedDefinition(next.getBaseCohort());
-	    	Report result = runReport(next);
+		
+		List<ReportRequest> inProgress = getReportRequests(null, null, null, Status.PROCESSING);
+		int maxAtATime = ReportingConstants.GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN();
+		if (inProgress.size() >= maxAtATime) {
+			return;
+		}
+
+		List<ReportRequest> l = getReportRequests(null, null, null, Status.REQUESTED);
+		if (l.isEmpty()) {
+			return;
+		}
+		
+		Collections.sort(l, new PriorityComparator());
+		ReportRequest requestToRun = l.get(0);
+		try {
+	    	ParameterizableUtil.refreshMappedDefinition(requestToRun.getReportDefinition());
+	    	if (requestToRun.getBaseCohort() != null) {
+	    		ParameterizableUtil.refreshMappedDefinition(requestToRun.getBaseCohort());
+	    	}
+	    	runReport(requestToRun);
 	    }
         catch (Exception ex) {
 	        log.error("Failed to run queued report", ex);
-        } finally {
-        	inProgress.remove(next);
-	    }
+        }
 	}
 	
-	/**
-	 * @see org.openmrs.module.reporting.report.service.ReportService#getReportsCurrentlyRunning()
-	 */
-	public Collection<ReportRequest> getReportsCurrentlyRunning() {
-	    return Collections.unmodifiableSet(inProgress);
-    }
+	//***** PRIVATE UTILITY METHODS *****
 	
+	/**
+	 * @param report the Report to cache
+	 */
+	private synchronized void cacheReport(Report report) {
+		try {
+			if (reportCache.size() >= ReportingConstants.GLOBAL_PROPERTY_MAX_CACHED_REPORTS()) {
+				Iterator<ReportRequest> i = reportCache.keySet().iterator();
+				i.next();
+				i.remove();
+			}
+			reportCache.put(report.getRequest(), report);
+		}
+		catch (Exception e) {
+			log.warn("Error caching Report", e);
+		}
+	}
+	
+	//***** PROPERTY ACCESS *****
+
+	/**
+	 * @return the reportDAO
+	 */
+	public ReportDAO getReportDAO() {
+		return reportDAO;
+	}
+
+	/**
+	 * @param reportDAO the reportDAO to set
+	 */
+	public void setReportDAO(ReportDAO reportDAO) {
+		this.reportDAO = reportDAO;
+	}
 }

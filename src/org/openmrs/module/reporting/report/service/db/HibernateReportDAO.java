@@ -13,22 +13,24 @@
  */
 package org.openmrs.module.reporting.report.service.db;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.Status;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * ReportService Database Access Interface
  */
-@Transactional
 public class HibernateReportDAO implements ReportDAO {
 	
 	//***** PROPERTIES *****
@@ -40,7 +42,6 @@ public class HibernateReportDAO implements ReportDAO {
 	 * @param uuid
 	 * @return the ReportDesign with the given uuid
 	 */
-	@Transactional(readOnly = true)
 	public ReportDesign getReportDesignByUuid(String uuid) throws DAOException {
 		Query q = sessionFactory.getCurrentSession().createQuery("from ReportDesign r where r.uuid = :uuid");
 		return (ReportDesign) q.setString("uuid", uuid).uniqueResult();
@@ -52,7 +53,6 @@ public class HibernateReportDAO implements ReportDAO {
 	 * @return the matching {@link ReportDesign} object
 	 * @throws DAOException
 	 */
-	@Transactional(readOnly = true)
 	public ReportDesign getReportDesign(Integer id) throws DAOException {
 		return (ReportDesign) sessionFactory.getCurrentSession().get(ReportDesign.class, id);
 	}
@@ -64,7 +64,6 @@ public class HibernateReportDAO implements ReportDAO {
 	 * @return a List<ReportDesign> object containing all of the {@link ReportDesign}s
 	 * @throws DAOException
 	 */
-	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	public List<ReportDesign> getReportDesigns(ReportDefinition reportDefinition, Class<? extends ReportRenderer> rendererType, 
 											   boolean includeRetired) throws DAOException {
@@ -103,8 +102,59 @@ public class HibernateReportDAO implements ReportDAO {
 		sessionFactory.getCurrentSession().delete(reportDesign);
 	}
 	
-	//***** PROPERTY ACCESS *****
+	/**
+	 * @see ReportDAO#saveReportRequest(ReportRequest)
+	 */
+	public ReportRequest saveReportRequest(ReportRequest request) {
+		sessionFactory.getCurrentSession().saveOrUpdate(request);
+		return request;
+	}
+
+	/**
+	 * @see ReportDAO#getReportRequest(java.lang.Integer)
+	 */
+	public ReportRequest getReportRequest(Integer id) {
+		return (ReportRequest) sessionFactory.getCurrentSession().get(ReportRequest.class, id);
+	}
+
+	/**
+	 * @see ReportDAO#getReportRequestByUuid(java.lang.String)
+	 */
+	public ReportRequest getReportRequestByUuid(String uuid) {
+		Query q = sessionFactory.getCurrentSession().createQuery("from ReportRequest r where r.uuid = :uuid");
+		return (ReportRequest) q.setString("uuid", uuid).uniqueResult();
+	}
+
+	/**
+	 * @see ReportDAO#getReportRequests(definition.ReportDefinition, Date, Date, Status)
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses) {
+		Criteria c = sessionFactory.getCurrentSession().createCriteria(ReportRequest.class);
+		if (reportDefinition != null) {
+			c.createCriteria("reportDefinition").add(Restrictions.eq("definition", reportDefinition));
+		}
+		if (requestOnOrAfter != null) {
+			c.add(Restrictions.ge("requestDate", requestOnOrAfter));
+		}
+		if (requestOnOrBefore != null) {
+			c.add(Restrictions.le("requestDate", requestOnOrBefore));
+		}
+		if (statuses != null) {
+			c.add(Restrictions.in("status", statuses));
+		}
+		return c.list();
+	}
 	
+	/**
+	 * @see ReportDAO#purgeReportRequest(ReportRequest)
+	 */
+	public void purgeReportRequest(ReportRequest request) {
+		sessionFactory.getCurrentSession().delete(request);
+	}
+	
+	//***** PROPERTY ACCESS *****
+
 	/**
 	 * @return the sessionFactory
 	 */

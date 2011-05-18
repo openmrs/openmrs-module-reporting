@@ -21,14 +21,21 @@
 	</c:forEach>
 </table>
 
-<c:if test="${not empty downloadFilename}">
+<c:if test="${!empty action}">
 	<div style="clear: left; float: left; margin-right: 2em; text-align: center;">
-		<button onClick="window.location='reportHistoryDownload.form?uuid=${request.uuid}';">
-			<h4>Download</h4>
-			<img src="${iconFilename}" border="0" width="64" height="64"/>
-		</button>
+		<c:if test="${action == 'download'}">
+			<button onClick="window.location='reportHistoryDownload.form?uuid=${request.uuid}';">
+				Download
+				<img src="${iconFilename}" border="0" width="64" height="64"/>
+			</button>
+		</c:if>
+		<c:if test="${action == 'view'}">
+			<button onClick="window.location='reportHistoryView.form?uuid=${request.uuid}';">
+				View
+				<img src="${iconFilename}" border="0" width="64" height="64"/>
+			</button>
+		</c:if>
 		<br/>
-		${downloadFilename}
 		<table>
 			<tr class="faded">
 				<td align="right">Run by:</td>

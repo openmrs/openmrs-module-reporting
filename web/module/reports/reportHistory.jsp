@@ -36,7 +36,7 @@
 			<th>Parameters</th>
 			<th>Open</th>
 			<th>Run</th>
-			<th>Labels</th>
+			<th>Description</th>
 			<th width="0"></th>
 			<th width="0"></th>
 		</tr>
@@ -79,25 +79,11 @@
 					</small>
 				</td>
 				<td>
-					<form method="post" action="reportHistoryAddLabel.form">
-						<c:forEach var="label" items="${r.labels}" varStatus="status">
-							<span class="report-label">
-								${label}
-								<a href="reportHistoryRemoveLabel.form?uuid=${r.uuid}&label=${label}">[x]</a>
-							</span>
-						</c:forEach>
-						<br/>
-						<span class="small">
-							Add:
-						</span>
-						<input type="text" size="6" name="label"/>
-						<input class="small" type="submit" value="+"/>
-						<input type="hidden" name="uuid" value="${r.uuid}"/>
-					</form>
+					${r.description}
 				</td>
 				<td>
 					<c:choose>
-						<c:when test="${r.saved}">
+						<c:when test="${r.status == 'SAVED'}">
 							<img src='<c:url value="/images/checkmark.png"/>' border="0"/>
 						</c:when>
 						<c:otherwise>

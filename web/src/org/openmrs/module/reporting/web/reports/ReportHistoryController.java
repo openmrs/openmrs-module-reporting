@@ -1,33 +1,34 @@
 package org.openmrs.module.reporting.web.reports;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.report.Report;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
-import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
-import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class ReportHistoryController {
@@ -37,10 +38,8 @@ public class ReportHistoryController {
 	
 	@RequestMapping("/module/reporting/reports/reportHistory")
 	public void showReportHistory(ModelMap model) {
-		List<ReportRequest> complete = new ArrayList<ReportRequest>(Context.getService(ReportService.class)
-		        .getCompletedReportRequests());
-		List<ReportRequest> queue = new ArrayList<ReportRequest>(Context.getService(ReportService.class)
-		        .getQueuedReportRequests());
+		List<ReportRequest> complete = getReportService().getReportRequests(null, null, null, Status.COMPLETED, Status.FAILED, Status.SAVED);
+		List<ReportRequest> queue = getReportService().getReportRequests(null, null, null, Status.REQUESTED);
 		Collections.reverse(complete);
 		Collections.reverse(queue);
 		model.addAttribute("complete", complete);
@@ -70,56 +69,78 @@ public class ReportHistoryController {
 	
 	@RequestMapping("/module/reporting/reports/reportHistoryDelete")
 	public String deleteFromHistory(@RequestParam("uuid") String uuid) {
-		Context.getService(ReportService.class).deleteFromHistory(uuid);
+		ReportService rs = Context.getService(ReportService.class);
+		ReportRequest request = rs.getReportRequestByUuid(uuid);
+		rs.purgeReportRequest(request);
 		return "redirect:reportHistory.form";
 	}
 	
 	@RequestMapping("/module/reporting/reports/reportHistorySave")
-	public String saveHistoryElement(@RequestParam("uuid") String uuid) {
-		ReportService service = Context.getService(ReportService.class);
-		ReportRequest req = service.getReportRequestByUuid(uuid);
-		if (req != null)
-			service.archiveReportRequest(req);
-		return "redirect:reportHistory.form";
-	}
-	
-	@RequestMapping("/module/reporting/reports/reportHistoryAddLabel")
-	public String addLabel(@RequestParam("uuid") String uuid, @RequestParam("label") String label) {
-		ReportService service = Context.getService(ReportService.class);
-		ReportRequest req = service.getReportRequestByUuid(uuid);
-		req.addLabel(label);
-		service.saveReportRequest(req);
-		return "redirect:reportHistory.form";
-	}
-	
-	@RequestMapping("/module/reporting/reports/reportHistoryRemoveLabel")
-	public String removeLabel(@RequestParam("uuid") String uuid, @RequestParam("label") String label) {
-		ReportService service = Context.getService(ReportService.class);
-		ReportRequest req = service.getReportRequestByUuid(uuid);
-		req.removeLabel(label);
-		service.saveReportRequest(req);
+	public String saveHistoryElement(@RequestParam("uuid") String uuid, @RequestParam(value="description", required=false) String description) {
+		ReportService rs = Context.getService(ReportService.class);
+		ReportRequest req = rs.getReportRequestByUuid(uuid);
+		req.setStatus(Status.SAVED);
+		req.setDescription(description);
+		rs.saveReportRequest(req);
 		return "redirect:reportHistory.form";
 	}
 	
 	@RequestMapping("/module/reporting/reports/reportHistoryOpen")
-	public String openFromHistory(@RequestParam("uuid") String uuid,
-	                            HttpServletResponse response,
-	                            WebRequest request,
-	                            ModelMap model) throws IOException {
-		ReportRequest req = Context.getService(ReportService.class).getReportRequestByUuid(uuid);
+	public String openFromHistory(@RequestParam("uuid") String uuid, HttpServletResponse response, WebRequest request, ModelMap model) throws IOException {
+		ReportService rs = Context.getService(ReportService.class);
+		ReportRequest req = rs.getReportRequestByUuid(uuid);
 		if (req == null) {
 			log.warn("Cannot load report request " + uuid);
 			request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "Cannot load report request", WebRequest.SCOPE_SESSION);
 			return "redirect:/module/reporting/reports/reportHistory.form";
 		}
-		
 		model.addAttribute("request", req);
-		if (req.getRenderedOutput() != null) {
-			model.addAttribute("downloadFilename", originalRenderedFilename(req));
+		File reportOutputFile = rs.getReportOutputFile(req);
+		if (reportOutputFile.exists()) {
+			model.addAttribute("action", "download");
+		}
+		File reportDataFile = rs.getReportDataFile(req);
+		if (reportDataFile.exists() && req.getRenderingMode().getRenderer() instanceof WebReportRenderer) {
+			model.addAttribute("action", "view");
 		}
 		return "/module/reporting/reports/reportHistoryOpen";
+	}
+	
+	@RequestMapping("/module/reporting/reports/reportHistoryView")
+	public ModelAndView viewFromHistory(@RequestParam("uuid") String uuid, HttpServletResponse response, HttpServletRequest request) throws IOException {
+		ReportRequest req = getReportService().getReportRequestByUuid(uuid);
+		RenderingMode rm = req.getRenderingMode();
+		String linkUrl = "/module/reporting/reports/reportHistoryOpen";
+		if (rm.getRenderer() instanceof WebReportRenderer) {
+			WebReportRenderer webRenderer = (WebReportRenderer) rm.getRenderer();
+			linkUrl = webRenderer.getLinkUrl(req.getReportDefinition().getParameterizable());
+			if (linkUrl != null) {
+				ReportData reportData = getReportService().loadReportData(req);
 			
+				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, reportData);
+				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument());
+				linkUrl = request.getContextPath() + (linkUrl.startsWith("/") ? "" : "/") + linkUrl;
+				request.getSession().setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, linkUrl);
+				
+			}
+		}
+		return new ModelAndView(new RedirectView(linkUrl));
+	}
+
+	@RequestMapping("/module/reporting/reports/reportHistoryDownload")
+	public void downloadFromHistory(@RequestParam("uuid") String uuid, HttpServletResponse response, HttpServletRequest request) throws IOException {
+		ReportRequest req = getReportService().getReportRequestByUuid(uuid);
+		RenderingMode rm = req.getRenderingMode();
+
+		String filename = rm.getRenderer().getFilename(req.getReportDefinition().getParameterizable(), rm.getArgument()).replace(" ", "_");
+		response.setContentType(rm.getRenderer().getRenderedContentType(req.getReportDefinition().getParameterizable(), rm.getArgument()));
+		response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+		response.setHeader("Pragma", "no-cache");
+		byte[] data = getReportService().loadRenderedOutput(req);
+		IOUtils.write(data, response.getOutputStream());
+		
 		/* this is commented out because we are no longer persisting the Report.
+		 * NEED TO ADD THIS BACK IN MOST LIKELY
 		try {
 			Report report = Context.getService(ReportService.class).getReportByUuid(uuid);
 			if (report.getRequest().getRenderingMode().getRenderer() instanceof WebReportRenderer) {
@@ -146,45 +167,11 @@ public class ReportHistoryController {
 			return "redirect:/module/reporting/reports/reportHistory.form";
 		}
 		*/
+		
+
 	}
 	
-	private String originalRenderedFilename(ReportRequest req) {
-		String fn = req.getRenderedOutput().getName();
-		// this is {UUID}.rendered.{origFilename}
-		int ind = fn.indexOf(".rendered.");
-		fn = fn.substring(ind + ".rendered.".length());
-		return fn;
-    }
-
-	@RequestMapping("/module/reporting/reports/reportHistoryDownload")
-	public void downloadFromHistory(@RequestParam("uuid") String uuid,
-	                            HttpServletResponse response,
-	                            WebRequest request) throws IOException {
-		ReportRequest req = Context.getService(ReportService.class).getReportRequestByUuid(uuid);
-		if (req.getRenderedOutput() == null)
-			throw new RuntimeException("We have no saved output for this request");
-		String fn = originalRenderedFilename(req);
-		String filename = fn.replace(" ", "_");
-		RenderingMode rm = req.getRenderingMode();
-		
-		response.setContentType(rm.getRenderer().getRenderedContentType(req.getReportDefinition().getParameterizable(), rm.getArgument()));
-		response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-		response.setHeader("Pragma", "no-cache");
-
-		OpenmrsUtil.copyFile(
-			new BufferedInputStream(new FileInputStream(req.getRenderedOutput())),
-			response.getOutputStream());
-		
-		/* we are no longer persisting Reports, just the request
-		Report report = Context.getService(ReportService.class).getReportByUuid(uuid);
-		if (report.getRenderedFilename() == null) {
-			throw new RuntimeException("This report doesn't have a rendered filename");
-		}
-		String filename = report.getRenderedFilename().replace(" ", "_");
-		response.setContentType(report.getRenderedContentType());
-		response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-		response.setHeader("Pragma", "no-cache");
-		response.getOutputStream().write(report.getRenderedOutput());
-		*/
+	private ReportService getReportService() {
+		return Context.getService(ReportService.class);
 	}
 }

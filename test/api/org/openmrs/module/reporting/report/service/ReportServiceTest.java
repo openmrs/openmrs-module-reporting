@@ -8,6 +8,7 @@ import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.Priority;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
@@ -37,7 +38,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should set uuid on the request", method = "runReport(ReportRequest)")
 	public void runReport_shouldSetUuidOnTheRequest() throws Exception {
 		ReportDefinition def = new ReportDefinition();
-		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, null, null);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, null, Priority.NORMAL);
 		Assert.assertNull(request.getUuid());
 		Context.getService(ReportService.class).runReport(request);
 		Assert.assertNotNull(request.getUuid());
@@ -55,9 +56,9 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		dsd.setSqlQuery("select count(*) from patient");
 		def.addDataSetDefinition("patients", dsd, null);
 		ReportRenderer renderer = new TsvReportRenderer();
-		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), null);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), Priority.NORMAL);
 		Report result = Context.getService(ReportService.class).runReport(request);
-		Assert.assertNotNull(result.getRawData());
+		Assert.assertNotNull(result.getReportData());
 		Assert.assertNotNull(result.getRenderedOutput());
 	}
 	
@@ -70,9 +71,9 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	public void runReport_shouldNotRenderTheReportIfAWebRendererIsSpecified() throws Exception {
 		ReportDefinition def = new ReportDefinition();
 		WebReportRenderer renderer = new IndicatorReportWebRenderer(); 
-		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "Web", null, 100), null);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "Web", null, 100), Priority.NORMAL);
 		Report result = Context.getService(ReportService.class).runReport(request);
-		Assert.assertNotNull(result.getRawData());
+		Assert.assertNotNull(result.getReportData());
 		Assert.assertNull(result.getRenderedOutput());
 	}
 }

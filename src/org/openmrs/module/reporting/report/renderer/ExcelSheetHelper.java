@@ -7,6 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.openmrs.Cohort;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 
@@ -83,27 +84,35 @@ public class ExcelSheetHelper {
         HSSFCell cell;
         if (cellValue == null) {
             cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_BLANK);
-        } else if (cellValue instanceof Number) {
+        } 
+        else if (cellValue instanceof Number) {
             cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
             cell.setCellValue(((Number) cellValue).doubleValue());
-        } else if (cellValue instanceof Date) {
+        } 
+        else if (cellValue instanceof Date) {
             cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
             cell.setCellValue((Date) cellValue);
-        } else if (cellValue instanceof String) {
-            cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_STRING);
-            cell.setCellValue(new HSSFRichTextString((String) cellValue));
-        } else if (cellValue instanceof Boolean) {
+        }
+        else if (cellValue instanceof Boolean) {
             cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_BOOLEAN);
             cell.setCellValue((Boolean) cellValue);
-        } else if (cellValue instanceof CohortIndicatorResult) {
+        } 
+        else if (cellValue instanceof Cohort) {
+        	cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
+            cell.setCellValue(((Cohort) cellValue).getSize());
+        } 
+        else if (cellValue instanceof CohortIndicatorResult) {
         	cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
             cell.setCellValue(((CohortIndicatorResult) cellValue).getValue().doubleValue());
-        } else if (cellValue instanceof CohortIndicatorAndDimensionResult) {
+        } 
+        else if (cellValue instanceof CohortIndicatorAndDimensionResult) {
         	cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
             cell.setCellValue(((CohortIndicatorAndDimensionResult) cellValue).getValue().doubleValue());
-        } else {
-            throw new RuntimeException("Do not know how to handle: " + cellValue.getClass());
-        }
+        } 
+        else {
+            cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_STRING);
+            cell.setCellValue(new HSSFRichTextString(cellValue.toString()));
+        } 
         if (style != null) {
             cell.setCellStyle(style);
         }

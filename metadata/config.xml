@@ -77,10 +77,20 @@
 	</privilege>
 	<!-- Global Properties -->
 	<globalProperty>
-		<property>report.deleteReportsAgeInHours</property> <!-- Must start with `moduleId.` -->
+		<property>report.deleteReportsAgeInHours</property>
 		<defaultValue>72</defaultValue>
 		<description>Reports that are not explicitly saved are deleted automatically when they are this many hours old. (Values less than or equal to zero means do not delete automatically)</description>
 	</globalProperty>
+	<globalProperty>
+		<property>reporting.maxReportsToRun</property>
+		<defaultValue>1</defaultValue>
+		<description>The maximum number of reports that should be processed at any one time</description>
+	</globalProperty>	
+	<globalProperty>
+		<property>reporting.maxCachedReports</property>
+		<defaultValue>10</defaultValue>
+		<description>The maximum number of reports whose underlying data and output should be kept in the cache at any one time</description>
+	</globalProperty>	
 	
 	<globalProperty>
 		<property>reporting.preferredIdentifierTypes</property>
@@ -97,6 +107,7 @@
 	<!-- Hibernate Mappings -->
 	<mappingFiles>
 		ReportDesign.hbm.xml
+		ReportRequest.hbm.xml
 	</mappingFiles>	
 
 </module>

@@ -50,14 +50,12 @@
 					${r.reportDefinition.parameterizable.name}
 				</a>
 				<br/>
-				<c:if test="${fn:length(r.labels)>0}">
+				<c:if test="${r.description != null}">
 					<span class="small">
 						<span class="faded">
-							Labels:
+							Description:
 						</span>
-						<c:forEach var="label" items="${r.labels}" varStatus="status">
-							${label}<c:if test="${!status.last}">,</c:if>
-						</c:forEach>
+						${r.description}
 					</span>
 				</c:if>
 			</td>
