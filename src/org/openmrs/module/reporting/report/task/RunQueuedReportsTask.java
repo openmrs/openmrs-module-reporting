@@ -1,6 +1,14 @@
 package org.openmrs.module.reporting.report.task;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
+import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.scheduler.tasks.AbstractTask;
 
@@ -21,13 +29,32 @@ public class RunQueuedReportsTask extends AbstractTask {
 				if (!Context.isAuthenticated()) {
 					authenticate();
 				}
-				Context.getService(ReportService.class).maybeRunNextQueuedReport();
-			} finally {
-				if (Context.isSessionOpen())
+				
+				ReportService rs = Context.getService(ReportService.class);
+				List<ReportRequest> inProgress = rs.getReportRequests(null, null, null, Status.PROCESSING);
+				int maxAtATime = ReportingConstants.GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN();
+				if (inProgress.size() >= maxAtATime) {
+					return;
+				}
+				List<ReportRequest> l = rs.getReportRequests(null, null, null, Status.REQUESTED);
+				if (l.isEmpty()) {
+					return;
+				}
+				
+				Collections.sort(l, new PriorityComparator());
+				ReportRequest requestToRun = l.get(0);
+		    	ParameterizableUtil.refreshMappedDefinition(requestToRun.getReportDefinition());
+		    	if (requestToRun.getBaseCohort() != null) {
+		    		ParameterizableUtil.refreshMappedDefinition(requestToRun.getBaseCohort());
+		    	}
+		    	rs.runReport(requestToRun);
+			} 
+			finally {
+				if (Context.isSessionOpen()) {
 					Context.closeSession();
+				}
 				isExecuting = false;
 			}
 		}
 	}
-	
 }

@@ -26,12 +26,10 @@ import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportRequest;
-import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
@@ -242,7 +240,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	/**
 	 * @see ReportService#runReport(ReportRequest)
 	 */
-	public Report runReport(ReportRequest request) throws EvaluationException {
+	public Report runReport(ReportRequest request) {
 		
 		// Set the status to processing and save the request
 		request.setStatus(Status.PROCESSING);
@@ -482,36 +480,6 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			purgeReportRequest(request);
 		}
     }
-
-	/**
-	 * @see ReportService#maybeRunNextQueuedReport()
-	 */
-	public void maybeRunNextQueuedReport() {
-		
-		List<ReportRequest> inProgress = getReportRequests(null, null, null, Status.PROCESSING);
-		int maxAtATime = ReportingConstants.GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN();
-		if (inProgress.size() >= maxAtATime) {
-			return;
-		}
-
-		List<ReportRequest> l = getReportRequests(null, null, null, Status.REQUESTED);
-		if (l.isEmpty()) {
-			return;
-		}
-		
-		Collections.sort(l, new PriorityComparator());
-		ReportRequest requestToRun = l.get(0);
-		try {
-	    	ParameterizableUtil.refreshMappedDefinition(requestToRun.getReportDefinition());
-	    	if (requestToRun.getBaseCohort() != null) {
-	    		ParameterizableUtil.refreshMappedDefinition(requestToRun.getBaseCohort());
-	    	}
-	    	runReport(requestToRun);
-	    }
-        catch (Exception ex) {
-	        log.error("Failed to run queued report", ex);
-        }
-	}
 	
 	//***** PRIVATE UTILITY METHODS *****
 	
