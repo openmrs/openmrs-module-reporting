@@ -1198,7 +1198,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		// Only return one row per patient
 		sqlQuery.append(" GROUP BY patient.patient_id ");
 		
-		log.info("query: " + sqlQuery);
+		log.debug("query: " + sqlQuery);
 				
 		// Create hibernate query 
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery.toString());

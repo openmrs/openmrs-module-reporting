@@ -327,7 +327,7 @@ public class ReportDashboardController {
 		Map<Program, Cohort> programCohortMap = new HashMap<Program, Cohort>();
 		for (Program program : programs) {
 			Cohort cohort = getProgramStateCohort(evaluationContext, program);
-			log.info("Program: " + program.getName() + " " + cohort.getSize());
+			log.debug("Program: " + program.getName() + " " + cohort.getSize());
 			programCohortMap.put(program, cohort);
 		}
 		model.addAttribute("programCohortMap", programCohortMap);

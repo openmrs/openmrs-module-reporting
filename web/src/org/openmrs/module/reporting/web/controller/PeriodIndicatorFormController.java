@@ -103,7 +103,7 @@ public class PeriodIndicatorFormController {
 				
 		if (isSave) { 			
 			
-			log.info("Processing cohort indicator save");
+			log.debug("Processing cohort indicator save");
 			
 			IndicatorFormValidator validator = new IndicatorFormValidator();			
 			
@@ -188,21 +188,21 @@ public class PeriodIndicatorFormController {
 	public IndicatorForm populateFormBackingObject(	
 			@RequestParam(value = "uuid", required=false) String uuid) { 
 
-		log.info("formBackingObject(): ");		
+		log.debug("formBackingObject(): ");		
 		
-		log.info("Lookup indicator by UUID: " + uuid);
+		log.debug("Lookup indicator by UUID: " + uuid);
 		IndicatorForm indicatorForm = new IndicatorForm();
 		Indicator indicator = 
 			Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
 
-		log.info("Found indicator: " + indicator);
+		log.debug("Found indicator: " + indicator);
 		
 		// If indicator does not exist, we just create a new one
 		if (indicator != null ) { 
 			
 			
 			
-			log.info("formBackingObject(): found indicator " + indicator);	
+			log.debug("formBackingObject(): found indicator " + indicator);	
 			if (CohortIndicator.class.isAssignableFrom(indicator.getClass())) {
 				
 				
@@ -237,7 +237,7 @@ public class PeriodIndicatorFormController {
 		} 
 		// Otherwise, we populate the form bean with the indicator
 		else {			
-			log.info("formBackingObject(): creating new indicator ");		
+			log.debug("formBackingObject(): creating new indicator ");		
 			if (indicatorForm.getCohortIndicator() == null)  { 
 				CohortIndicator ci = new CohortIndicator();
 				ci.addParameter(ReportingConstants.START_DATE_PARAMETER);

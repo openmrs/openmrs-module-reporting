@@ -24,6 +24,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.Timer;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.Report;
@@ -242,6 +243,9 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	public Report runReport(ReportRequest request) {
 		
+		// Start up a timer to check performance
+		Timer timer = Timer.start();
+		
 		// Set the status to processing and save the request
 		request.setStatus(Status.PROCESSING);
 		request.setEvaluateStartDatetime(new Date());
@@ -258,7 +262,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				try {
 					Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(request.getBaseCohort(), context);
 					context.setBaseCohort(baseCohort);
-					log.info("Evaluated the baseCohort to : " + baseCohort.size() + " patients");
+					log.info(timer.logInterval("Evaluated the baseCohort to : " + baseCohort.size() + " patients"));
 				} 
 				catch (Exception ex) {
 					throw new EvaluationException("baseCohort", ex);
@@ -270,7 +274,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			ReportData reportData = rds.evaluate(request.getReportDefinition(), context);
 			report.setReportData(reportData);
 			request.setEvaluateCompleteDatetime(new Date());
-			log.info("Evaluated the report into a ReportData successfully");
+			log.info(timer.logInterval("Evaluated the report into a ReportData successfully"));
 			
 			// Render the Report if appropriate
 			if (request.getRenderingMode() != null) {
@@ -281,7 +285,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		            renderer.render(reportData, argument, out);
 		            report.setRenderedOutput(out.toByteArray());
 		            request.setRenderCompleteDatetime(new Date());
-		            log.info("Evaluated the report into a Rendered Output successfully");
+		            log.info(timer.logInterval("Evaluated the report into a Rendered Output successfully"));
 		            hasRenderedOutput = true;
 	            }
 			}
@@ -295,7 +299,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				File errorFile = getReportErrorFile(request);
 				writer = new PrintWriter(errorFile);
 				t.printStackTrace(writer);
-	            log.info("Wrote a Report Error to disk");
+	            log.info(timer.logInterval("Wrote a Report Error to disk"));
 			}
 			catch (Exception e) {
 				log.warn("Unable to log reporting error to file.", e);
@@ -311,8 +315,9 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		// Serialize the raw data to file
 		try {
 			String serializedData = Context.getSerializationService().serialize(report.getReportData(), ReportingSerializer.class);
+			log.info(timer.logInterval("Serialized the ReportData"));
 			FileUtils.writeStringToFile(getReportDataFile(request), serializedData, "UTF-8");
-			log.info("Persisted the ReportData to disk");
+			log.info(timer.logInterval("Persisted the ReportData to Disk"));
 		}
 		catch (Exception e) {
 			log.warn("An error occurred writing report data to disk", e);
@@ -322,13 +327,14 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		if (hasRenderedOutput) {
 			try {
 				FileUtils.writeByteArrayToFile(getReportOutputFile(request), report.getRenderedOutput());
-				log.info("Persisted the ReportData to disk");
+				log.info(timer.logInterval("Persisted the Report Output to disk"));
 			}
 			catch (Exception e) {
 				log.warn("An error occurred writing report data to disk", e);
 			}
 		}
 		request = Context.getService(ReportService.class).saveReportRequest(request);
+		log.info(timer.logInterval("Completed Running the Report"));
 		return report;
 	}
 	

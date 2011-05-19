@@ -59,12 +59,12 @@ public class IndicatorWizardFormController extends AbstractWizardFormController 
 	
 
 	protected Object formBackingObject(HttpServletRequest request) throws ModelAndViewDefiningException {
-		log.info("formBackingObject");
+		log.debug("formBackingObject");
 		return new IndicatorForm();
 	}
 
 	protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors, int page) {
-		log.info("onBindAndValidate(): " + page);
+		log.debug("onBindAndValidate(): " + page);
 		
 		// Step 2 - select a cohort definition
 		if (page == 1) { 
@@ -107,7 +107,7 @@ public class IndicatorWizardFormController extends AbstractWizardFormController 
 	}
 
 	protected Map<String,Object> referenceData(HttpServletRequest request, int page) {
-		log.info("referenceData(): " + page);
+		log.debug("referenceData(): " + page);
 
     	// Add cohort definitions  		
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -122,7 +122,7 @@ public class IndicatorWizardFormController extends AbstractWizardFormController 
 
 
 	protected void validatePage(Object command, Errors errors, int page) {
-		log.info("validatePage(): " + page);
+		log.debug("validatePage(): " + page);
 
 		// TODO When validators have been written, we can uncomment the following code
 		//IndicatorForm indicatorForm = (IndicatorForm) command;
@@ -147,7 +147,7 @@ public class IndicatorWizardFormController extends AbstractWizardFormController 
 
 	protected ModelAndView processFinish(
 			HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) {
-		log.info("processFinish()");
+		log.debug("processFinish()");
 		
 		IndicatorForm indicatorForm = (IndicatorForm) command;
 		CohortIndicator cohortIndicator = indicatorForm.getCohortIndicator();

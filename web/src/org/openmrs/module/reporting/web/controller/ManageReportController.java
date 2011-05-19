@@ -122,7 +122,7 @@ public class ManageReportController {
 			
 			EvaluationContext evalContext = new EvaluationContext();
 			for (Parameter param : reportSchema.getParameters() ) { 
-				log.info("Setting parameter " + param.getName() + " of class " + param.getType() + " = " + request.getParameter(param.getName()) );
+				log.debug("Setting parameter " + param.getName() + " of class " + param.getType() + " = " + request.getParameter(param.getName()) );
 				String paramValue = request.getParameter(param.getName());
 				// TODO Need to convert from string to object
 				// TODO Parameter needs a data type property
@@ -169,15 +169,15 @@ public class ManageReportController {
 			HttpServletResponse response,
 			@RequestParam(required=false, value="uuid") String uuid) throws EvaluationException {
 
-    	log.info("Evaluating report schema with uuid " + uuid);		
+    	log.debug("Evaluating report schema with uuid " + uuid);		
 		ReportDefinition reportSchema = getReportService().getDefinitionByUuid(uuid);
 		
 		if (reportSchema != null) { 						
-			log.info("Report schema " + reportSchema);
+			log.debug("Report schema " + reportSchema);
 			ReportData reportData = getReportService().evaluate(reportSchema, new EvaluationContext());
 
 			
-			log.info("Report datasets: " + reportData.getDataSets());
+			log.debug("Report datasets: " + reportData.getDataSets());
 			try { 
 				response.setContentType("text/csv");
 				response.setHeader("Content-Disposition", "attachment; filename=\"report.csv\"");				

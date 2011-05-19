@@ -33,13 +33,13 @@ public class IndicatorParameterFormController {
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView showForm() {		
-		log.info("showForm()");
+		log.debug("showForm()");
 		return new ModelAndView("/module/reporting/indicators/indicatorParameterEditor");
 	}	
 
 	@ModelAttribute
 	public void referenceData(ModelMap model){ 
-		log.info("referenceData()");
+		log.debug("referenceData()");
 	}	
 	
 	
@@ -49,7 +49,7 @@ public class IndicatorParameterFormController {
 			@ModelAttribute("indicatorParameter") IndicatorParameterBean indicatorParameter,
 			BindingResult bindingResult) {
 		
-		log.info("Processing form ..." + indicatorParameter.getCohortIndicator().getUuid());
+		log.debug("Processing form ..." + indicatorParameter.getCohortIndicator().getUuid());
 		
 		//parameter.setAllowUserInput(allowUserInput);
 		//parameter.setTyp(type);
@@ -60,8 +60,8 @@ public class IndicatorParameterFormController {
 
 		
 		if (bindingResult.hasErrors()) {
-			log.info("There are " + bindingResult.getErrorCount() + " errors in the form");
-			log.info("\t" + bindingResult);
+			log.debug("There are " + bindingResult.getErrorCount() + " errors in the form");
+			log.debug("\t" + bindingResult);
 			return showForm();
 		}
 		CohortIndicator cohortIndicator = indicatorParameter.getCohortIndicator();
@@ -69,12 +69,12 @@ public class IndicatorParameterFormController {
 		
 		cohortIndicator.addParameter(parameter);
 		
-		log.info("Added parameter: " + parameter.getName() + " to " + cohortIndicator.getUuid());
+		log.debug("Added parameter: " + parameter.getName() + " to " + cohortIndicator.getUuid());
 		
-		log.info("name: " + cohortIndicator.getName());
-		log.info("description: " + cohortIndicator.getDescription());
-		log.info("cohort definition: " + cohortIndicator.getCohortDefinition());
-		log.info("parameters: " + cohortIndicator.getParameters());
+		log.debug("name: " + cohortIndicator.getName());
+		log.debug("description: " + cohortIndicator.getDescription());
+		log.debug("cohort definition: " + cohortIndicator.getCohortDefinition());
+		log.debug("parameters: " + cohortIndicator.getParameters());
 
 		Context.getService(IndicatorService.class).saveDefinition(cohortIndicator);
 		return new ModelAndView("redirect:/module/reporting/editIndicator.form#indicator-advanced-tab");
@@ -90,7 +90,7 @@ public class IndicatorParameterFormController {
 	@ModelAttribute("indicatorParameter")
 	public IndicatorParameterBean formBackingObject(
 			@RequestParam(value = "uuid", required=false) String uuid) {	
-		log.info("formBackingObject() " + uuid);
+		log.debug("formBackingObject() " + uuid);
 		
 		IndicatorService service = Context.getService(IndicatorService.class);
 		
@@ -99,14 +99,14 @@ public class IndicatorParameterFormController {
 
 		
 		if (cohortIndicator == null) { 
-			log.info("Creating new cohort indicator");
+			log.debug("Creating new cohort indicator");
 			cohortIndicator = new CohortIndicator();
 		} else { 
-			log.info("Found cohort indicator with uuid " + uuid);
+			log.debug("Found cohort indicator with uuid " + uuid);
 		}
 		indicatorParameter.setCohortIndicator(cohortIndicator);
 		indicatorParameter.setParameter(new Parameter());
-		log.info("Indicator: " + cohortIndicator);
+		log.debug("Indicator: " + cohortIndicator);
 		
 		return indicatorParameter;
 	}

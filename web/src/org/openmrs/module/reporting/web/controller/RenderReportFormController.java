@@ -101,7 +101,7 @@ public class RenderReportFormController {
 			if (reportData != null) { 	
 				String filename = reportDefinition.getName() + "." + format;
 				
-				log.info("Rendering report data as " + format + " file named " + filename);		
+				log.debug("Rendering report data as " + format + " file named " + filename);		
 				
 				for (ReportDesign d : Context.getService(ReportService.class).getReportDesigns(reportDefinition, null, false)) {
 					ReportRenderer r = d.getRendererType().newInstance();

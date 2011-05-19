@@ -65,7 +65,7 @@ public class PreviewPeriodIndicatorController {
 		IndicatorForm form = new IndicatorForm();
 	
 		Indicator indicator = Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
-		log.info("indicator = " + indicator);
+		log.debug("indicator = " + indicator);
 
 		// If indicator does not exist, we just create a new one
 		if (indicator != null) { 
@@ -105,7 +105,7 @@ public class PreviewPeriodIndicatorController {
 		@ModelAttribute("indicatorForm") IndicatorForm form,
 		BindingResult bindingResult) throws EvaluationException {
 		
-		log.info("POST /module/reporting/indicators/previewPeriodIndicator");
+		log.debug("POST /module/reporting/indicators/previewPeriodIndicator");
 		
 		if (bindingResult.hasErrors()) {
 			return showForm();
@@ -114,7 +114,7 @@ public class PreviewPeriodIndicatorController {
 		ModelAndView model = new ModelAndView("/module/reporting/indicators/previewPeriodIndicator");
 
 		if (form != null) { 
-			log.info("Evaluating period indicator ");
+			log.debug("Evaluating period indicator ");
 			EvaluationContext context = new EvaluationContext();
 			
 			Map<String, Object> parameterValues = 
@@ -124,7 +124,7 @@ public class PreviewPeriodIndicatorController {
 			IndicatorResult indicatorResult = 
 				Context.getService(IndicatorService.class).evaluate(form.getCohortIndicator(), context);
 
-			log.info("indicatorResult: " + indicatorResult);		
+			log.debug("indicatorResult: " + indicatorResult);		
 			model.addObject("indicatorResult", indicatorResult);
 			
 		}			

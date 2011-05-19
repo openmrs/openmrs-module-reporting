@@ -191,7 +191,7 @@ public class ManageDatasetsController {
 	    if (cohortId != null && dataSetId != null) { 
     		Cohort cohort = evaluateCohort(cohortId);
 	    	    		
-    		log.info("evaluated cohort: " + cohort.size());
+    		log.debug("evaluated cohort: " + cohort.size());
     		
     		model.addAttribute("cohort", cohort);
 	    	model.addAttribute("cohortDefinition", 
@@ -207,7 +207,7 @@ public class ManageDatasetsController {
 	    	context.setLimit(limit);
 	    	context.setBaseCohort(cohort);	 
 	    	
-    		log.info("just before dataset evaluation: " + context.getBaseCohort().size());
+    		log.debug("just before dataset evaluation: " + context.getBaseCohort().size());
 
     		// Step 4 Evaluate the dataset
 	    	model.addAttribute("dataSet", 
@@ -310,12 +310,12 @@ public class ManageDatasetsController {
     	
     	DataSetDefinition dataSetDefinition = null;
     	if (uuid != null) { 
-			log.info("Retrieving dataset definition by uuid " + uuid);
+			log.debug("Retrieving dataset definition by uuid " + uuid);
     		dataSetDefinition = service.getDefinitionByUuid(uuid);    	
     	}
 
     	
-    	log.info("Dataset definition: " + dataSetDefinition);
+    	log.debug("Dataset definition: " + dataSetDefinition);
 
     	// FIXME This is used because we current cannot use UUIDs to locate data export dataset definitions
     	// If we cannot find the dataset by uuid or if no uuid was specified, then try to retrieve it by ID

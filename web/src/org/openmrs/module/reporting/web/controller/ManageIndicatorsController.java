@@ -133,7 +133,7 @@ public class ManageIndicatorsController {
     	
     	// Find the selected cohort definition by UUID
     	CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    	log.info("Looking up cohort definition with uuid " + cohortDefinitionUuid);
+    	log.debug("Looking up cohort definition with uuid " + cohortDefinitionUuid);
     	CohortDefinition cohortDefinition = service.getDefinitionByUuid(cohortDefinitionUuid);
     	
     	// If we don't find the cohort definition by UUID, then we look it up by name
@@ -147,7 +147,7 @@ public class ManageIndicatorsController {
 	    	}    	
 	    	cohortDefinition = cohortDefinitions.get(0);
     	}
-    	log.info("Setting cohort definition: " + cohortDefinition);
+    	log.debug("Setting cohort definition: " + cohortDefinition);
     	
     	// TODO We need to map the indicator 
     	indicator.setCohortDefinition(cohortDefinition, "");
@@ -175,14 +175,14 @@ public class ManageIndicatorsController {
     public String saveIndicator(
     		@RequestParam(required=false, value="uuid") String uuid) {
     	
-    	log.info("Looking up indicator by uuid " + uuid);
+    	log.debug("Looking up indicator by uuid " + uuid);
 
     	Indicator indicator =
     		Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
     	
-    	log.info("Indicator: " + indicator);
+    	log.debug("Indicator: " + indicator);
     	if (indicator != null) {     		
-    		log.info("Purging indicator: " + indicator);
+    		log.debug("Purging indicator: " + indicator);
     		Context.getService(IndicatorService.class).purgeDefinition(indicator);
     	}     	
     	

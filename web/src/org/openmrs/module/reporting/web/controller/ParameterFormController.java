@@ -82,7 +82,7 @@ public class ParameterFormController {
 			return setupForm();
 		}
 
-		log.info("Action: " + action);
+		log.debug("Action: " + action);
 		
 		Parameterizable parameterizable = 
 			ParameterizableUtil.getParameterizable(uuid, type);		

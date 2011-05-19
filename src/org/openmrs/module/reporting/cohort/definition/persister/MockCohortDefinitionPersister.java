@@ -19,16 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 
 /**
  * This class returns CohortDefinitions that are persisted in memory.
  */
 public class MockCohortDefinitionPersister implements CohortDefinitionPersister {
-
-	private Log log = LogFactory.getLog(this.getClass());
 	
 	// Keep track of the primary keys handed out
 	Integer primaryKeySequence = new Integer(1);	
@@ -76,8 +72,6 @@ public class MockCohortDefinitionPersister implements CohortDefinitionPersister 
      * @see CohortDefinitionPersister#saveCohortDefinition(CohortDefinition)
      */
     public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {
-
-    	log.info("Saving cohort definition " + cohortDefinition.getUuid());
     	
     	// Remove the existing cohort definition
     	if (getCohortDefinitionByUuid(cohortDefinition.getUuid())!=null) { 
@@ -103,7 +97,6 @@ public class MockCohortDefinitionPersister implements CohortDefinitionPersister 
      * @see CohortDefinitionPersister#purgeCohortDefinition(CohortDefinition)
      */
     public void purgeCohortDefinition(CohortDefinition cohortDefinition) {    	
-    	log.info("Purging cohort definitions by uuid: " + cohortDefinition.getUuid());
     	indexById.remove(cohortDefinition.getId());
     	indexByUuid.remove(cohortDefinition.getUuid());
     	cohortDefinitions.remove(cohortDefinition);    	

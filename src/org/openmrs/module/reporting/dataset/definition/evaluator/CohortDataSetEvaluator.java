@@ -51,28 +51,33 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		if (context.getBaseCohort() == null) {
-			context.setBaseCohort(Context.getPatientSetService().getAllPatients());
-		}
-		
 		MapDataSet data = new MapDataSet(dataSetDefinition, context);
 
 		CohortCrossTabDataSetDefinition dsd = (CohortCrossTabDataSetDefinition) dataSetDefinition;		
 		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
 		
 		for (CohortDataSetColumn col : dsd.getDataSetColumns()) {
+			
 			Cohort rowCohort;
 			try {
 				rowCohort = (col.getRowDefinition() == null ? context.getBaseCohort() : cds.evaluate(col.getRowDefinition(), context));
 			} catch (Exception ex) {
 				throw new EvaluationException("row definition for row=" + col.getRowName() + " , col=" + col.getColumnName(), ex);
 			}
+			if (rowCohort == null) {
+				rowCohort = Context.getPatientSetService().getAllPatients();
+			}
+			
 			Cohort colCohort;
 			try {
 				colCohort = (col.getColumnDefinition() == null ? context.getBaseCohort() : cds.evaluate(col.getColumnDefinition(), context));
 			} catch (Exception ex) {
 				throw new EvaluationException("column definition for row=" + col.getRowName() + " , col=" + col.getColumnName(), ex);
 			}
+			if (colCohort == null) {
+				colCohort = Context.getPatientSetService().getAllPatients();
+			}
+			
 			Cohort c = Cohort.intersect(rowCohort, colCohort);
 			data.addData(col, c);
 		}

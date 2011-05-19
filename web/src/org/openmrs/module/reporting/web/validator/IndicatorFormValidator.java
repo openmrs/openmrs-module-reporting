@@ -101,7 +101,7 @@ public class IndicatorFormValidator implements Validator {
 			List<Parameter> parameters = indicatorForm.getCohortDefinition().getParameters();			
 			for(Parameter parameter : parameters) {				
 				Object value = indicatorForm.getParameterMapping().get(parameter.getName());
-				log.info("value = '" + value + "'");
+				log.debug("value = '" + value + "'");
 				if (value == null || value.equals("")) { 					
 					errors.rejectValue("denominatorParameterMapping", "cohortIndicator.errors.parameterMapping.required", 
 							new Object[] { value }, "Must map each parameter on the count indicator");					
@@ -129,7 +129,7 @@ public class IndicatorFormValidator implements Validator {
 		List<Parameter> parameters = indicatorForm.getNumerator().getParameters();			
 		for(Parameter parameter : parameters) {				
 			Object value = indicatorForm.getNumeratorParameterMapping().get(parameter.getName());
-			log.info("value = '" + value + "'");
+			log.debug("value = '" + value + "'");
 			if (value == null || value.equals("")) { 
 				errors.rejectValue("numeratorParameterMapping", "cohortIndicator.errors.parameterMappingRequired", 
 						new Object[] { value }, "Must map each parameter on the numerator");
@@ -138,7 +138,7 @@ public class IndicatorFormValidator implements Validator {
 		parameters = indicatorForm.getDenominator().getParameters();			
 		for(Parameter parameter : parameters) {				
 			Object value = indicatorForm.getDenominatorParameterMapping().get(parameter.getName());
-			log.info("value = '" + value + "'");
+			log.debug("value = '" + value + "'");
 			if (value == null || value.equals("")) { 
 				errors.rejectValue("denominatorParameterMapping", "cohortIndicator.errors.parameterMappingRequired", 
 						new Object[] { value }, "Must map each parameter on the denominator");

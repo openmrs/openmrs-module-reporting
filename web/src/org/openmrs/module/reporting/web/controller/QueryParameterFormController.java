@@ -133,7 +133,7 @@ public class QueryParameterFormController {
 				}
 			}		
 			
-			log.info("Returning model with view " + model.getViewName() + " and map " + model.getModelMap());
+			log.debug("Returning model with view " + model.getViewName() + " and map " + model.getModelMap());
 			return model;
 		}
 	}
