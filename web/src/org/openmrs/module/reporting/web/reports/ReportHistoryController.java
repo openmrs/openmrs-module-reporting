@@ -103,6 +103,11 @@ public class ReportHistoryController {
 		if (reportDataFile.exists() && req.getRenderingMode().getRenderer() instanceof WebReportRenderer) {
 			model.addAttribute("action", "view");
 		}
+		File reportErrorFile = rs.getReportErrorFile(req);
+		if (reportErrorFile.exists() && req.getStatus() == Status.FAILED) {
+			String errorDetails = rs.loadReportError(req);
+			model.addAttribute("errorDetails", errorDetails);
+		}
 		return "/module/reporting/reports/reportHistoryOpen";
 	}
 	

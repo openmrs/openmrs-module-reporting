@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.web.controller.portlet;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +24,15 @@ public class ReportHistoryPortletController extends ReportingPortletController {
     protected void populateModel(HttpServletRequest request, Map<String, Object> model) {
 	    super.populateModel(request, model);
 	    ReportService rs = Context.getService(ReportService.class);
-	    Status[] statuses = new Status[] {Status.COMPLETED, Status.FAILED, Status.SAVED};
-	    if ("false".equals(model.get("includeSaved"))) {
-	    	statuses = new Status[] {Status.COMPLETED, Status.FAILED};
+	    List<Status> statuses = new ArrayList<Status>();
+	    statuses.add(Status.COMPLETED);
+	    if (!"false".equals(model.get("includeSaved"))) {
+	    	statuses.add(Status.SAVED);
 	    }
-		List<ReportRequest> complete = rs.getReportRequests(null, null, null, statuses);
+	    if ("true".equals(model.get("includeFailed"))) {
+	    	statuses.add(Status.FAILED);
+	    }
+		List<ReportRequest> complete = rs.getReportRequests(null, null, null, statuses.toArray(new Status[]{}));
 		Collections.reverse(complete);
 		model.put("completedRequests", complete);
 		

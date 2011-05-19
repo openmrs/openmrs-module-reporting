@@ -8,12 +8,15 @@
 		<table>
 			<tr>
 				<td valign="top">
-				<openmrs:portlet url="savedReports" moduleId="reporting"/>
-				<openmrs:portlet url="reportHistory" moduleId="reporting" parameters="includeSaved=false|title=Unsaved Reports"/>
+					<openmrs:portlet url="savedReports" moduleId="reporting"/>
+					<openmrs:portlet url="reportHistory" moduleId="reporting" parameters="includeSaved=false|includeError=false|title=Unsaved Reports"/>
 				</td>
 				<td valign="top">
-				<openmrs:portlet url="runReport" moduleId="reporting"/>
-				<openmrs:portlet url="queuedReports" moduleId="reporting"/>
+					<openmrs:portlet url="runReport" moduleId="reporting"/>
+					<openmrs:portlet url="queuedReports" moduleId="reporting"/>
+				</td>
+				<td valign="top">
+					<openmrs:portlet url="errorReports" moduleId="reporting"/>
 				</td>
 			</tr>
 		</table>

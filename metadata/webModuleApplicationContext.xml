@@ -28,6 +28,7 @@
             	<prop key="**/parameter.portlet">parameterPortletController</prop>
             	<prop key="**/reportDesignForm.portlet">reportDesignPortletController</prop>
             	<prop key="**/reportHistory.portlet">reportHistoryPortletController</prop>
+            	<prop key="**/errorReports.portlet">errorReportsPortletController</prop>
             	<prop key="**/savedReports.portlet">savedReportsPortletController</prop>
             	<prop key="**/queuedReports.portlet">queuedReportsPortletController</prop>
             	<prop key="**/runReport.portlet">runReportPortletController</prop>
@@ -51,6 +52,7 @@
 	<bean id="parameterPortletController" class="org.openmrs.module.reporting.web.controller.portlet.ParameterPortletController" />
 	<bean id="reportDesignPortletController" class="org.openmrs.module.reporting.web.controller.portlet.ReportDesignPortletController" />
 	<bean id="reportHistoryPortletController" class="org.openmrs.module.reporting.web.controller.portlet.ReportHistoryPortletController" />
+	<bean id="errorReportsPortletController" class="org.openmrs.module.reporting.web.controller.portlet.ErrorReportsPortletController" />
 	<bean id="savedReportsPortletController" class="org.openmrs.module.reporting.web.controller.portlet.SavedReportsPortletController" />
 	<bean id="queuedReportsPortletController" class="org.openmrs.module.reporting.web.controller.portlet.QueuedReportsPortletController" />
 	<bean id="runReportPortletController" class="org.openmrs.module.reporting.web.controller.portlet.RunReportPortletController" />

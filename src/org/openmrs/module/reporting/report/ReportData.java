@@ -25,18 +25,28 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  */
 public class ReportData implements Evaluated<ReportDefinition> {
 	
+	//***** PROPERTIES *****
+	
 	private ReportDefinition definition;
-	
 	private EvaluationContext context;
-	
 	private Map<String, DataSet> dataSets;
 	
-	public ReportData() { }
+	//***** CONSTRUCTORS *****
+	
+	public ReportData() { }	
 
+	//***** PROPERTY ACCESS *****
+
+	/**
+	 * @return the dataSets
+	 */
 	public Map<String, DataSet> getDataSets() {
 		return dataSets;
 	}
-	
+
+	/**
+	 * @param dataSets the dataSets to set
+	 */
 	public void setDataSets(Map<String, DataSet> dataSets) {
 		this.dataSets = dataSets;
 	}

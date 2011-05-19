@@ -67,9 +67,16 @@
  				</td>
 				<td valign="middle">
 					<button onClick="window.location='reportHistoryOpen.form?uuid=${r.uuid}';">
-						<img src='<c:url value="${openImageFilename}"/>' border="0" width="32" height="32"/>
-						<br/>
-						${shortNames[r]}
+						<c:choose>
+							<c:when test="${r.status == 'FAILED'}">
+								<img src='<c:url value="/images/error.gif"/>' border="0" width="16" height="16"/>
+							</c:when>
+							<c:otherwise>
+								<img src='<c:url value="${openImageFilename}"/>' border="0" width="16" height="16"/>
+								<br/>
+								${shortNames[r]}
+							</c:otherwise>
+						</c:choose>
 					</button>
 				</td>
 				<td>
