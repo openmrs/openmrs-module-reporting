@@ -14,6 +14,8 @@
 package org.openmrs.module.reporting.definition.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -148,6 +150,11 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     	for (SerializedObject so : dao.getAllSerializedObjects(definitionType, includeRetired)) {
     		ret.add(new DefinitionSummary(so));
     	}
+    	Collections.sort(ret, new Comparator<DefinitionSummary>() {
+			public int compare(DefinitionSummary o1, DefinitionSummary o2) {
+				return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
+			}
+    	});
     	return ret;
     }
     

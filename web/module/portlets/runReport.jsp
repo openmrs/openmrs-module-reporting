@@ -32,7 +32,7 @@
 <table cellspacing="0" cellpadding="2">
 	<c:forEach var="r" items="${model.reportDefinitions}" varStatus="status">
 		<tr>
-			<td>
+			<td width="100%">
 				<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?reportId=${r.uuid}">
 					${r.name}
 				</a>
@@ -42,24 +42,6 @@
 					${r.description}
 				</td>
 			</c:if>
-			<td class="small" width="100%" align="left" style="padding-left:10px; padding-top:10px;">
-				<c:set var="foundCacheEntry" value="f"/>
-				<c:forEach items="${model.cachedReports}" var="cacheEntry">
-					<c:if test="${cacheEntry.key.reportDefinition.parameterizable.uuid == r.uuid}">
-						<c:set var="foundCacheEntry" value="t"/>
-						<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistoryOpen.form?uuid=${cacheEntry.key.uuid}">
-							Run by ${cacheEntry.key.requestedBy} on <openmrs:formatDate date="${cacheEntry.key.requestDate}" type="long"/> with parameters: 
-							<c:forEach var="p" items="${cacheEntry.key.reportDefinition.parameterMappings}" varStatus="pStatus">
-								${p.key}: <rpt:format object="${p.value}"/>${pStatus.last ? '' : ', '}
-							</c:forEach>
-							<br/><br/>
-						</a>
-					</c:if>
-				</c:forEach>
-				<c:if test="${foundCacheEntry == f}">
-					None available
-				</c:if>
-			</td>
 		</tr>
 	</c:forEach>
 </table>
