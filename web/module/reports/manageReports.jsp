@@ -84,15 +84,13 @@
 					</c:set>
 
 					<tr>
-						<td width="20%" nowrap="">
-							<a href="${editUrl}">
-								${reportDefinition.name}
-							</a>
+						<td width="20%" nowrap>
+							${reportDefinition.name}
 						</td>
 						<td width="20%">
 							${reportDefinition.description}
 						</td>
-						<td width="10%" nowrap="">
+						<td width="10%" nowrap>
 							<rpt:displayLabel type="${reportDefinition.class.name}"/>
 						</td>
 						<td width="5%" nowrap>
