@@ -39,6 +39,7 @@ import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.db.ReportDAO;
 import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
+import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.TaskDefinition;
@@ -211,7 +212,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	public File getReportDataFile(ReportRequest request) {
 		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
-		return new File(dir, request.getUuid() + ".reportdata");
+		return new File(dir, request.getUuid() + ".reportdata.gz");
 	}
 	
 	/**
@@ -340,7 +341,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		}
 		try {
 			long t1 = System.currentTimeMillis();
-			String s = FileUtils.readFileToString(getReportDataFile(request), "UTF-8");
+			String s = ReportUtil.readStringFromFile(getReportDataFile(request));
 			ReportData reportData = Context.getSerializationService().deserialize(s, ReportData.class, ReportingSerializer.class);
 			long t2 = System.currentTimeMillis();
 			log.info("Loaded and Deserialized ReportData from file in " + (int)((t2-t1)/1000) + " seconds");
@@ -362,7 +363,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			return report.getRenderedOutput();
 		}
 		try {
-			return FileUtils.readFileToByteArray(getReportOutputFile(request));
+			return ReportUtil.readByteArrayFromFile(getReportOutputFile(request));
 		}
 		catch (Exception e) {
 			log.warn("Failed to load Rendered Output from disk for request " + request + " due to " + e.getMessage());
@@ -376,7 +377,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public String loadReportError(ReportRequest request) {
 		log.debug("Loading Report Error Output for ReportRequest");
 		try {
-			return FileUtils.readFileToString(getReportErrorFile(request));
+			return ReportUtil.readStringFromFile(getReportErrorFile(request));
 		}
 		catch (Exception e) {
 			log.warn("Failed to load Report Error from disk for request " + request + " due to " + e.getMessage());
@@ -500,7 +501,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		try {
 			String serializedData = Context.getSerializationService().serialize(report.getReportData(), ReportingSerializer.class);
 			log.info(timer.logInterval("Serialized the ReportData"));
-			FileUtils.writeStringToFile(getReportDataFile(report.getRequest()), serializedData, "UTF-8");
+			ReportUtil.writeStringToFile(getReportDataFile(report.getRequest()), serializedData);
 			log.info(timer.logInterval("Persisted the report data to disk"));
 		}
 		catch (Exception e) {
@@ -510,7 +511,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		// Write the output to file
 		if (report.getRenderedOutput() != null) {
 			try {
-				FileUtils.writeByteArrayToFile(getReportOutputFile(report.getRequest()), report.getRenderedOutput());
+				ReportUtil.writeByteArrayToFile(getReportOutputFile(report.getRequest()), report.getRenderedOutput());
 				log.info(timer.logInterval("Persisted the report output to disk"));
 			}
 			catch (Exception e) {
@@ -521,7 +522,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		// Write the error to file
 		if (report.getErrorMessage() != null) {
 			try {
-				FileUtils.writeStringToFile(getReportErrorFile(report.getRequest()), report.getErrorMessage());
+				ReportUtil.writeStringToFile(getReportErrorFile(report.getRequest()), report.getErrorMessage());
 				log.info(timer.logInterval("Persisted the report error to disk"));
 			}
 			catch (Exception e) {
