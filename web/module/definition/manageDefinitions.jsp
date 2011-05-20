@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form" />
+<openmrs:require anyPrivilege="Manage Cohort Definitions,Manage Data Set Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form" />
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
