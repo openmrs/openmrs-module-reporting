@@ -93,11 +93,15 @@
 						<c:when test="${r.status == 'SAVED'}">
 							<img src='<c:url value="/images/checkmark.png"/>' border="0"/>
 						</c:when>
-						<c:otherwise>
+						<c:when test="${fn:contains(cached, r)}">
 							<a href="reportHistorySave.form?uuid=${r.uuid}"><img src='<c:url value="/images/save.gif"/>' border="0"/></a>
+						</c:when>
+						<c:otherwise>
+							&nbsp;
 						</c:otherwise>
 					</c:choose>
-				</td>				<td>
+				</td>				
+				<td>
 					<a href="reportHistoryDelete.form?uuid=${r.uuid}"><img src='<c:url value="/images/trash.gif"/>' border="0"/></a>
 				</td>
 			</tr>

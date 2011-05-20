@@ -45,6 +45,7 @@ public class ReportHistoryController {
 		Collections.reverse(queue);
 		model.addAttribute("complete", complete);
 		model.addAttribute("queue", queue);
+		model.addAttribute("cached", getReportService().getCachedReports().keySet());
 		
 		Map<ReportRequest, String> shortNames = new HashMap<ReportRequest, String>();
 		Map<ReportRequest, Boolean> isWebRenderer = new HashMap<ReportRequest, Boolean>();
@@ -79,12 +80,22 @@ public class ReportHistoryController {
 	@RequestMapping("/module/reporting/reports/reportHistorySave")
 	public String saveHistoryElement(@RequestParam("uuid") String uuid, @RequestParam(value="description", required=false) String description) {
 		ReportService rs = Context.getService(ReportService.class);
-		for (ReportRequest request : rs.getCachedReports().keySet()) {
-			if (request.getUuid().equals(uuid)) {
-				Report report = rs.getCachedReports().get(request);
-				rs.saveReport(report, description);
+		boolean saved = false;
+		try {
+			for (ReportRequest request : rs.getCachedReports().keySet()) {
+				if (request.getUuid().equals(uuid)) {
+					Report report = rs.getCachedReports().get(request);
+					rs.saveReport(report, description);
+					saved = true;
+				}
 			}
 		}
+		catch (Exception e) {
+			// Do nothing
+		}
+		
+		// TODO: Alert the user that saving failed
+		
 		return "redirect:reportHistory.form";
 	}
 	
@@ -99,17 +110,22 @@ public class ReportHistoryController {
 		}
 		model.addAttribute("request", req);
 		File reportOutputFile = rs.getReportOutputFile(req);
-		if (reportOutputFile.exists()) {
+		Report cachedReport = rs.getCachedReports().get(req);
+		if (reportOutputFile.exists() || (cachedReport != null && cachedReport.getRenderedOutput() != null)) {
 			model.addAttribute("action", "download");
 		}
 		File reportDataFile = rs.getReportDataFile(req);
-		if (reportDataFile.exists() && req.getRenderingMode().getRenderer() instanceof WebReportRenderer) {
-			model.addAttribute("action", "view");
+		if (req.getRenderingMode().getRenderer() instanceof WebReportRenderer) {
+			if (reportDataFile.exists() || (cachedReport != null && cachedReport.getReportData() != null)) {
+				model.addAttribute("action", "view");
+			}
 		}
 		File reportErrorFile = rs.getReportErrorFile(req);
-		if (reportErrorFile.exists() && req.getStatus() == Status.FAILED) {
-			String errorDetails = rs.loadReportError(req);
-			model.addAttribute("errorDetails", errorDetails);
+		if (req.getStatus() == Status.FAILED) {
+			if (reportErrorFile.exists() || (cachedReport != null && cachedReport.getErrorMessage() != null)) {
+				String errorDetails = rs.loadReportError(req);
+				model.addAttribute("errorDetails", errorDetails);
+			}
 		}
 		return "/module/reporting/reports/reportHistoryOpen";
 	}

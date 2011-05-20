@@ -23,6 +23,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.Timer;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -243,12 +244,17 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see ReportService#saveReport(Report, String)
 	 */
 	public Report saveReport(Report report, String description) {
-		persistReportToDisk(report);
-		ReportRequest request = report.getRequest();
-		request.setStatus(Status.SAVED);
-		request.setDescription(description);
-		Context.getService(ReportService.class).saveReportRequest(request);
-		return report;
+		boolean isPersisted = persistReportToDisk(report);
+		if (isPersisted) {
+			ReportRequest request = report.getRequest();
+			request.setStatus(Status.SAVED);
+			request.setDescription(description);
+			Context.getService(ReportService.class).saveReportRequest(request);
+			return report;
+		}
+		else {
+			throw new ReportingException("Unable to save Report due to error saving Report to disk");
+		}
 	}
 	
 	/**
@@ -492,9 +498,11 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	
 	/**
 	 * Saves the passed Report to disk within 3 separate files containing report data, output, and errors
+	 * @return true if the report was successfully persisted to disk, false otherwise
 	 */
-	protected void persistReportToDisk(Report report) {
+	protected boolean persistReportToDisk(Report report) {
 		
+		boolean success = true;
 		Timer timer = Timer.start();
 		
 		// Serialize the raw data to file
@@ -505,6 +513,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			log.info(timer.logInterval("Persisted the report data to disk"));
 		}
 		catch (Exception e) {
+			success = false;
 			log.warn("An error occurred writing report data to disk", e);
 		}
 		
@@ -515,6 +524,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				log.info(timer.logInterval("Persisted the report output to disk"));
 			}
 			catch (Exception e) {
+				success = false;
 				log.warn("An error occurred writing report output to disk", e);
 			}
 		}
@@ -526,9 +536,12 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				log.info(timer.logInterval("Persisted the report error to disk"));
 			}
 			catch (Exception e) {
+				success = false;
 				log.warn("An error occurred writing report error to disk", e);
 			}
 		}
+		
+		return success;
 	}
 	
 	//***** PROPERTY ACCESS *****
