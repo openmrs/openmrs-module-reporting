@@ -56,7 +56,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  * 
  * @see EncounterAndObsDataSetDefinition
  */
-@Handler(supports = { EncounterAndObsDataSetDefinition.class })
+//@Handler(supports = { EncounterAndObsDataSetDefinition.class })  This is explicitly commented out because we are not ready to release and suppor this yet
 public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 
 	protected static final Log log = LogFactory.getLog(EncounterAndObsDataSetEvaluator.class);
