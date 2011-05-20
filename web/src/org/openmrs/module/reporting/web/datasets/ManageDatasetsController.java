@@ -167,7 +167,7 @@ public class ManageDatasetsController {
      * @throws EvaluationException 
      */
 	@RequestMapping("/module/reporting/datasets/viewDataSet")
-    public String viewDataset(
+    public void viewDataset(
     		@RequestParam(required=false, value="id") Integer id,
             @RequestParam(required=false, value="type") String type,
             @RequestParam(required=false, value="cohortId") String cohortId,
@@ -226,9 +226,6 @@ public class ManageDatasetsController {
     	// Add all dataset definition to the request (allow user to choose)
     	model.addAttribute("dataSetDefinitions", 
     			Context.getService(DataSetDefinitionService.class).getAllDefinitions(false)); 
-    	
-    	
-        return "/module/reporting/datasets/datasetViewer";
     }    
     
     /**
