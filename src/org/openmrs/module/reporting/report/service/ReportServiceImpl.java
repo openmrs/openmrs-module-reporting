@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.report.service;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +16,6 @@ import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -239,6 +239,18 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
+	 * @see ReportService#saveReport(Report, String)
+	 */
+	public Report saveReport(Report report, String description) {
+		persistReportToDisk(report);
+		ReportRequest request = report.getRequest();
+		request.setStatus(Status.SAVED);
+		request.setDescription(description);
+		Context.getService(ReportService.class).saveReportRequest(request);
+		return report;
+	}
+	
+	/**
 	 * @see ReportService#runReport(ReportRequest)
 	 */
 	public Report runReport(ReportRequest request) {
@@ -253,8 +265,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		
 		// Construct a new report object to return
 		Report report = new Report(request);
-		boolean hasRenderedOutput = false;
-		
+
 		try {
 			// Create a new Evaluation Context, setting the base cohort from the request
 			EvaluationContext context = new EvaluationContext();
@@ -286,59 +297,31 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		            report.setRenderedOutput(out.toByteArray());
 		            request.setRenderCompleteDatetime(new Date());
 		            log.info(timer.logInterval("Evaluated the report into a Rendered Output successfully"));
-		            hasRenderedOutput = true;
 	            }
 			}
 			request.setStatus(Status.COMPLETED);
 		}
 		catch (Throwable t) {
 			request.setStatus(Status.FAILED);
-			report.setErrorMessage(t.getMessage());
-			PrintWriter writer = null;
 			try {
-				File errorFile = getReportErrorFile(request);
-				writer = new PrintWriter(errorFile);
-				t.printStackTrace(writer);
-	            log.info(timer.logInterval("Wrote a Report Error to disk"));
+				StringWriter sw = new StringWriter();
+				t.printStackTrace(new PrintWriter(sw));
+				report.setErrorMessage(sw.toString());
+	            log.info(timer.logInterval("Recorded a Report Error"));
 			}
 			catch (Exception e) {
 				log.warn("Unable to log reporting error to file.", e);
-			}
-			finally {
-				IOUtils.closeQuietly(writer);
 			}
 		}
 			
 		// Cache the report
 		cacheReport(report);
 
-		// Serialize the raw data to file
-		try {
-			String serializedData = Context.getSerializationService().serialize(report.getReportData(), ReportingSerializer.class);
-			log.info(timer.logInterval("Serialized the ReportData"));
-			FileUtils.writeStringToFile(getReportDataFile(request), serializedData, "UTF-8");
-			log.info(timer.logInterval("Persisted the ReportData to Disk"));
-		}
-		catch (Exception e) {
-			log.warn("An error occurred writing report data to disk", e);
-		}
-		
-		// Write the output to file
-		if (hasRenderedOutput) {
-			try {
-				FileUtils.writeByteArrayToFile(getReportOutputFile(request), report.getRenderedOutput());
-				log.info(timer.logInterval("Persisted the Report Output to disk"));
-			}
-			catch (Exception e) {
-				log.warn("An error occurred writing report data to disk", e);
-			}
-		}
-		request = Context.getService(ReportService.class).saveReportRequest(request);
+		Context.getService(ReportService.class).saveReportRequest(request);
 		log.info(timer.logInterval("Completed Running the Report"));
 		return report;
 	}
-	
-	
+	 
 	/**
 	 * @see ReportService#getCachedReports()
 	 */
@@ -492,7 +475,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	/**
 	 * @param report the Report to cache
 	 */
-	private synchronized void cacheReport(Report report) {
+	protected synchronized void cacheReport(Report report) {
 		try {
 			if (reportCache.size() >= ReportingConstants.GLOBAL_PROPERTY_MAX_CACHED_REPORTS()) {
 				Iterator<ReportRequest> i = reportCache.keySet().iterator();
@@ -503,6 +486,47 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		}
 		catch (Exception e) {
 			log.warn("Error caching Report", e);
+		}
+	}
+	
+	/**
+	 * Saves the passed Report to disk within 3 separate files containing report data, output, and errors
+	 */
+	protected void persistReportToDisk(Report report) {
+		
+		Timer timer = Timer.start();
+		
+		// Serialize the raw data to file
+		try {
+			String serializedData = Context.getSerializationService().serialize(report.getReportData(), ReportingSerializer.class);
+			log.info(timer.logInterval("Serialized the ReportData"));
+			FileUtils.writeStringToFile(getReportDataFile(report.getRequest()), serializedData, "UTF-8");
+			log.info(timer.logInterval("Persisted the report data to disk"));
+		}
+		catch (Exception e) {
+			log.warn("An error occurred writing report data to disk", e);
+		}
+		
+		// Write the output to file
+		if (report.getRenderedOutput() != null) {
+			try {
+				FileUtils.writeByteArrayToFile(getReportOutputFile(report.getRequest()), report.getRenderedOutput());
+				log.info(timer.logInterval("Persisted the report output to disk"));
+			}
+			catch (Exception e) {
+				log.warn("An error occurred writing report output to disk", e);
+			}
+		}
+		
+		// Write the error to file
+		if (report.getErrorMessage() != null) {
+			try {
+				FileUtils.writeStringToFile(getReportErrorFile(report.getRequest()), report.getErrorMessage());
+				log.info(timer.logInterval("Persisted the report error to disk"));
+			}
+			catch (Exception e) {
+				log.warn("An error occurred writing report error to disk", e);
+			}
 		}
 	}
 	

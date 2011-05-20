@@ -6,6 +6,7 @@ import java.util.List;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
@@ -47,7 +48,8 @@ public class RunQueuedReportsTask extends AbstractTask {
 		    	if (requestToRun.getBaseCohort() != null) {
 		    		ParameterizableUtil.refreshMappedDefinition(requestToRun.getBaseCohort());
 		    	}
-		    	rs.runReport(requestToRun);
+		    	Report report = rs.runReport(requestToRun);
+		    	rs.saveReport(report, null);
 			} 
 			finally {
 				if (Context.isSessionOpen()) {

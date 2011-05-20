@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
@@ -78,10 +79,12 @@ public class ReportHistoryController {
 	@RequestMapping("/module/reporting/reports/reportHistorySave")
 	public String saveHistoryElement(@RequestParam("uuid") String uuid, @RequestParam(value="description", required=false) String description) {
 		ReportService rs = Context.getService(ReportService.class);
-		ReportRequest req = rs.getReportRequestByUuid(uuid);
-		req.setStatus(Status.SAVED);
-		req.setDescription(description);
-		rs.saveReportRequest(req);
+		for (ReportRequest request : rs.getCachedReports().keySet()) {
+			if (request.getUuid().equals(uuid)) {
+				Report report = rs.getCachedReports().get(request);
+				rs.saveReport(report, description);
+			}
+		}
 		return "redirect:reportHistory.form";
 	}
 	

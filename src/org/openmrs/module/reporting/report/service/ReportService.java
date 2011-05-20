@@ -194,6 +194,12 @@ public interface ReportService extends OpenmrsService {
 	public ReportRequest queueReport(ReportRequest request);
 	
 	/**
+	 * Saves a Report, including the underlying report data, optionally providing a description
+	 */
+	@Transactional
+	public Report saveReport(Report report, String description);
+	
+	/**
 	 * Loads the ReportData previously generated Report for the given ReportRequest, first checking the cache
 	 */
 	@Transactional(readOnly = true)
