@@ -15,7 +15,7 @@ package org.openmrs.module.reporting.report.renderer;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,7 +61,7 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 	 */
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
 		
-		Writer w = new PrintWriter(out);
+		Writer w = new OutputStreamWriter(out,"UTF-8");
 		
 		DataSet dataset = results.getDataSets().values().iterator().next();	
 		List<DataSetColumn> columns = dataset.getMetaData().getColumns();

@@ -15,7 +15,8 @@ package org.openmrs.module.reporting.report.renderer;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +51,8 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 		
 		log.debug("Attempting to render report with TextTemplateRenderer");
 
-		PrintWriter pw = null;
+		Writer pw = null;
+		
 		try {
 			ReportDesign design = getDesign(argument);
 			ReportDesignResource r = getTemplate(design);
@@ -72,7 +74,7 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 			String suffix = getExpressionSuffix(design);
 			
 			String templateContents = new String(r.getContents(), "UTF-8");
-			pw = new PrintWriter(out);
+			pw = new OutputStreamWriter(out,"UTF-8");
 			pw.write(EvaluationUtil.evaluateExpression(templateContents, replacements, prefix, suffix).toString());
 		}
 		catch (Exception e) {

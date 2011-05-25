@@ -15,7 +15,7 @@ package org.openmrs.module.reporting.report.renderer;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -218,7 +218,7 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 	        wb.write(out);
 		}
 		else {
-			Writer w = new PrintWriter(out);
+			Writer w = new OutputStreamWriter(out,"UTF-8");
 			
 			// First output the name, description, and parameters of the report
 			w.write("<h4>" + results.getDefinition().getName() + "</h4>");		
