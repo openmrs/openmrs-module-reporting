@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Cohort;
@@ -224,8 +226,11 @@ public class SqlUtils {
         if (!query.toLowerCase().trim().startsWith("select")) {
             return false;
         } else {
-            String selectInto = queryInLowerCase.substring("select ".length(), queryInLowerCase.indexOf(" from "));
-            if ((selectInto != null && selectInto.contains(" into ")))
+        	// make sure this isn't a "select into"
+        	Matcher matcher = Pattern.compile("\\sfrom\\s").matcher(queryInLowerCase);  // matches "from" with whitespace character on either side
+        	matcher.find();
+            String selectInto = queryInLowerCase.substring("select ".length(), matcher.start());
+            if ((selectInto != null && selectInto.matches("\\sinto\\s")))   // matches "into" with whitespace character on either side
                 return false;
         }
         return true;
