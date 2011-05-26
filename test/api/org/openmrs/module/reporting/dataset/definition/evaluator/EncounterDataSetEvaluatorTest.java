@@ -24,6 +24,7 @@ import junit.framework.Assert;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
@@ -53,6 +54,7 @@ import org.openmrs.test.Verifies;
  * Tests the evaluation of an EncounterAndObsDataSetEvaluator
  */
 @SkipBaseSetup
+@Ignore
 public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
     
     protected static final String XML_BASE_DATASET = "org/openmrs/module/reporting/include/EncounterAndObsTestBaseDataset.xml";

@@ -39,7 +39,6 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	public void runReport_shouldSetUuidOnTheRequest() throws Exception {
 		ReportDefinition def = new ReportDefinition();
 		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, null, Priority.NORMAL);
-		Assert.assertNull(request.getUuid());
 		Context.getService(ReportService.class).runReport(request);
 		Assert.assertNotNull(request.getUuid());
 	}
