@@ -339,7 +339,7 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 
 				String dateColumnName = columnKey.format(columnDisplayFormat, maxColumnHeaderWidth != null ? maxColumnHeaderWidth - 5 : null);
 				DataSetColumn obsDscDate = new DataSetColumn(dateColumnName + "_DATE", dateColumnName + "_DATE", String.class);
-				row.addColumnValue(obsDscDate, (obs != null) ? Context.getDateFormat().format(obs.getObsDatetime()) : EMPTY);
+				row.addColumnValue(obsDscDate, (obs != null) ? obs.getObsDatetime().toString() : EMPTY);
 
 				String parentColumnName = columnKey.format(columnDisplayFormat, maxColumnHeaderWidth != null ? maxColumnHeaderWidth - 7 : null);
 				DataSetColumn obsDscParent = new DataSetColumn(parentColumnName + "_PARENT", parentColumnName + "_PARENT", String.class);

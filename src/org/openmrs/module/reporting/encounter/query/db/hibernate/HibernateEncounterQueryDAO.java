@@ -14,12 +14,10 @@
 package org.openmrs.module.reporting.encounter.query.db.hibernate;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Expression;
@@ -75,9 +73,9 @@ public class HibernateEncounterQueryDAO implements EncounterQueryDAO {
 			return new ArrayList<Encounter>();
 		} else {
 
-			// default query
+			// default query			
 			Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Encounter.class);
-
+			
 			// this "where clause" is only necessary if patients were passed in
 			if (cohort != null)
 				criteria.add(Restrictions.in("patientId", cohort.getMemberIds()));
@@ -102,6 +100,8 @@ public class HibernateEncounterQueryDAO implements EncounterQueryDAO {
 			else
 				criteria.addOrder(org.hibernate.criterion.Order.asc("encounterDatetime"));
 
+			criteria.createCriteria("patient").add(Restrictions.eq("voided", false));
+			
 			return criteria.list();
 		}
 	}

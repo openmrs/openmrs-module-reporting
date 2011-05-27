@@ -117,7 +117,7 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 				if((obsCodedValue != null) || (obsNonCodedValue != null && StringUtils.isNotEmpty(obsNonCodedValue))) {
 					if(obsCodedValue != null && obsValues.contains(obsCodedValue.toString())) {
 						boolean obsRemoved = obsValues.remove(obsCodedValue.toString());
-						boolean obsDateRemoved = obsValues.remove(Context.getDateFormat().format(obs.getObsDatetime()));
+						boolean obsDateRemoved = obsValues.remove(obs.getObsDatetime().toString());
 						boolean obsGroupRemoved = false;
 						if(obs.getObsGroup() != null) {
 							obsGroupRemoved = obsValues.remove(obs.getObsGroup().getId().toString());
@@ -127,7 +127,7 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 						Assert.assertTrue(obsRemoved && obsDateRemoved && obsGroupRemoved);
 					} else if(obsValues.contains(obsNonCodedValue)) {
 						boolean obsRemoved = obsValues.remove(obsNonCodedValue);
-						boolean obsDateRemoved = obsValues.remove(Context.getDateFormat().format(obs.getObsDatetime()));
+						boolean obsDateRemoved = obsValues.remove(obs.getObsDatetime().toString());
 						boolean obsGroupRemoved = false;
 						if(obs.getObsGroup() != null) {
 							obsGroupRemoved = obsValues.remove(obs.getObsGroup().getId().toString());
@@ -229,7 +229,7 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 					
 					boolean obsDateRemoved = false;
 					if(obs.getObsDatetime() != null) {
-						obsDateRemoved = obsValues.remove(Context.getDateFormat().format(obs.getObsDatetime()));
+						obsDateRemoved = obsValues.remove(obs.getObsDatetime().toString());
 					} else {
 						obsDateRemoved = true;
 					}
