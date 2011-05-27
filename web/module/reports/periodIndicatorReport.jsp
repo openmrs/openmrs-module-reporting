@@ -39,15 +39,6 @@
 							$('#addColumnDialog').dialog('close'); 
 						});
 						
-						$('#column-table').dataTable({
-							"bPaginate": true,
-							"iDisplayLength": 15,
-							"bLengthChange": false,
-							"bFilter": false,
-							"bSort": false,
-							"bInfo": false,
-							"bAutoWidth": false
-						} );
 						$('#dimensions-table').dataTable({
 							"bPaginate": false,
 							"bLengthChange": false,
@@ -96,6 +87,16 @@
 							});
 							
 						</c:forEach>
+						
+						$('#column-table').dataTable({
+							"bPaginate": true,
+							"iDisplayLength": 15,
+							"bLengthChange": false,
+							"bFilter": false,
+							"bSort": false,
+							"bInfo": false,
+							"bAutoWidth": false
+						} );
 					} ); 
 				</script>
 			
