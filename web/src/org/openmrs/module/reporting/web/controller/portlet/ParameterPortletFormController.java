@@ -2,12 +2,15 @@ package org.openmrs.module.reporting.web.controller.portlet;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
+import org.openmrs.module.htmlwidgets.web.WidgetUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -40,6 +43,7 @@ public class ParameterPortletFormController {
             @RequestParam(required=true, value="parameterType") Class<?> parameterType,
             @RequestParam(required=false, value="label") String label,
             @RequestParam(required=false, value="collectionType") Class<? extends Collection<?>> collectionType,
+            @RequestParam(required=false, value="widgetConfiguration") String widgetConfiguration,
             @RequestParam(required=false, value="shortcut") String shortcut
             	) {
     	
@@ -67,7 +71,13 @@ public class ParameterPortletFormController {
     	}
     	
     	Parameterizable parent = ParameterizableUtil.getParameterizable(parentUuid, parentType);
-    	Parameter p = new Parameter(newName, label, parameterType, collectionType, null);
+    	
+    	Properties widgetConfig = null;
+    	if (ObjectUtil.notNull(widgetConfiguration)) {
+    		widgetConfig = WidgetUtil.parseInput(widgetConfiguration, Properties.class);
+    	}
+    	
+    	Parameter p = new Parameter(newName, label, parameterType, collectionType, null, widgetConfig);
     	
     	if (StringUtils.hasText(currentName)) {
     		int index = parent.getParameters().indexOf(parent.getParameter(currentName));

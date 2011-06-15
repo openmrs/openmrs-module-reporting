@@ -25,6 +25,12 @@
 		<c:forEach items="${cohortDefinition.parameters}" var="cdparam">
 			$('#selectValue${cdparam.name}').val('t');
 			$('#paramLabel${cdparam.name}').val('${cdparam.label}');
+			<c:if test="${cdparam.widgetConfiguration != null}">
+				<c:forEach items="${cdparam.widgetConfiguration}" var="configParam">
+					$('#paramConfigOptions${cdparam.name}').append('${configParam.key}=${configParam.value}\n');
+				</c:forEach>
+				$('#configureParameterSection${cdparam.name}').show();
+			</c:if>
 			$('#dynamicValue${cdparam.name}').show();
 		</c:forEach>
 
@@ -53,7 +59,10 @@
 					$('#fixedValue${p.field.name}').show();
 				}
 			});
-
+			
+			$("#configureParameter${p.field.name}").click(function(event){
+				$('#configureParameterSection${p.field.name}').toggle();
+			});
 		</c:forEach>
 	} );
 
@@ -132,6 +141,12 @@
 												<td style="vertical-align:top; width:100%;">
 													<span id="dynamicValue${p.field.name}" style="display:none;">
 														label as <input type="text" id="paramLabel${p.field.name}" name="parameter.${p.field.name}.label" size="30"/>
+														<span>
+															<a href="#" id="configureParameter${p.field.name}">advanced configuration</a>
+															<div id="configureParameterSection${p.field.name}" style="display:none;">
+																<textarea id="paramConfigOptions${p.field.name}" name="parameter.${p.field.name}.widgetConfiguration" cols="50" rows="3"></textarea>
+															</div>
+														</span>
 													</span>
 													<span id="fixedValue${p.field.name}" style="display:none;">
 														<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>

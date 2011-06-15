@@ -4,7 +4,7 @@
 	<!-- Base Module Properties -->
 	<id>reporting</id>
 	<name>Reporting</name>
-	<version>0.6.1</version>
+	<version>0.6.2.DEV</version>
 	<package>org.openmrs.module.@MODULE_ID@</package>
 	<author>Partners In Health</author>
 	<description>
@@ -20,7 +20,7 @@
 	<require_modules>
 		<!-- really requires 0.1.8.3+ or 0.2.5+ of serialization.xstream, but there's no way to declare this -->
 	   	<require_module>org.openmrs.module.serialization.xstream</require_module>
-	   	<require_module version="1.5.6">org.openmrs.module.htmlwidgets</require_module>
+	   	<require_module version="1.5.6.2">org.openmrs.module.htmlwidgets</require_module>
 	   	<!-- <require_module version="0.4.1">org.openmrs.logic</require_module>  -->
 	</require_modules>
 

@@ -84,10 +84,10 @@ $(document).ready(function() {
 										<div>
 											<c:choose>
 												<c:when test="${parameter.collectionType != null}">
-													<wgt:widget id="${parameter.name}" name="${parameter.name}" type="${parameter.collectionType.name}" genericTypes="${parameter.type.name}" defaultValue="${evaluationContext.parameterValues[parameter.name]}"/>	
+													<wgt:widget id="${parameter.name}" name="${parameter.name}" type="${parameter.collectionType.name}" genericTypes="${parameter.type.name}" defaultValue="${evaluationContext.parameterValues[parameter.name]}" attributes="${parameter.widgetConfigurationAsString}"/>	
 												</c:when>
 												<c:otherwise>
-													<wgt:widget id="${parameter.name}" name="${parameter.name}" type="${parameter.type.name}" defaultValue="${evaluationContext.parameterValues[parameter.name]}"/>	
+													<wgt:widget id="${parameter.name}" name="${parameter.name}" type="${parameter.type.name}" defaultValue="${evaluationContext.parameterValues[parameter.name]}" attributes="${parameter.widgetConfigurationAsString}"/>	
 												</c:otherwise>
 											</c:choose>
 										</div>

@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.evaluation.parameter;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -29,7 +30,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  * @see Parameterizable
  * @see EvaluationContext
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class Parameter implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -64,6 +65,11 @@ public class Parameter implements Serializable {
 	 */
 	private Object defaultValue;
 	
+	/**
+	 * Configuration properties that will be sent to the widgets to control how they are configured and displayed
+	 */
+	private Properties widgetConfiguration;
+	
 	//***********************
 	// CONSTRUCTORS
 	//***********************
@@ -80,15 +86,30 @@ public class Parameter implements Serializable {
 	 * @param type The data type of this parameter
 	 * @param collectionType Indicates whether this parameter can have multiple values in a Collection
 	 * @param defaultValue The value to fill in if nothing provided by the user
+	 * @param widgetConfiguration The widgetConfiguration to be applied to this parameter
 	 */
 	public Parameter(String name, String label, Class<?> type, 
-					 Class<? extends Collection> collectionType, Object defaultValue) {
+					 Class<? extends Collection> collectionType, Object defaultValue, Properties widgetConfiguration) {
 		super();
 		setName(name);
 		setLabel(label);
 		setType(type);
 		setCollectionType(collectionType);
 		setDefaultValue(defaultValue);
+		setWidgetConfiguration(widgetConfiguration);
+	}
+	
+	/**
+	 * Initialize this Parameter with the given values
+	 * @param name The defined descriptive name
+	 * @param label The label to display to the user if value is needed
+	 * @param type The data type of this parameter
+	 * @param collectionType Indicates whether this parameter can have multiple values in a Collection
+	 * @param defaultValue The value to fill in if nothing provided by the user
+	 */
+	public Parameter(String name, String label, Class<?> type, 
+					 Class<? extends Collection> collectionType, Object defaultValue) {
+		this(name, label, type, collectionType, defaultValue, null);
 	}
 	
 	/**
@@ -99,7 +120,19 @@ public class Parameter implements Serializable {
 	 * @param type The data type of this parameter
 	 */
 	public Parameter(String name, String label, Class<?> type) {
-		this(name, label, type, null, null);
+		this(name, label, type, null, null, null);
+	}
+	
+	/**
+	 * Initialize this Parameter with the given values
+	 * 
+	 * @param name The defined descriptive name
+	 * @param label The label to display to the user if value is needed
+	 * @param type The data type of this parameter
+	 * @param widgetConfiguration The widgetConfiguration to be applied to this parameter
+	 */
+	public Parameter(String name, String label, Class<?> type, Properties widgetConfiguration) {
+		this(name, label, type, null, null, widgetConfiguration);
 	}
 	
 	//***********************
@@ -121,6 +154,10 @@ public class Parameter implements Serializable {
     		sb.append(">");
     	}
     	sb.append(",defaultValue="+defaultValue+">");
+    	if (widgetConfiguration != null) {
+    		sb.append("widgetConfiguration=");
+    		sb.append(getWidgetConfigurationAsString());
+    	}
     	return sb.toString();
     }
     
@@ -236,5 +273,36 @@ public class Parameter implements Serializable {
 	 */
 	public void setDefaultValue(Object defaultValue) {
 		this.defaultValue = defaultValue;
+	}
+
+	/**
+	 * @return the widgetConfiguration
+	 */
+	public Properties getWidgetConfiguration() {
+		return widgetConfiguration;
+	}
+	
+	/**
+	 * @return the widgetConfiguration as a pipe delimited list of key value pairs
+	 */
+	public String getWidgetConfigurationAsString() {
+		StringBuilder sb = new StringBuilder();
+		if (widgetConfiguration != null) {
+			int i = 0;
+			for(Object o: widgetConfiguration.keySet()) {
+				if(i++ > 0) {
+					sb.append("|");
+				}
+				sb.append(o.toString() + "=" + widgetConfiguration.get(o));
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * @param widgetConfiguration the widgetConfiguration to set
+	 */
+	public void setWidgetConfiguration(Properties widgetConfiguration) {
+		this.widgetConfiguration = widgetConfiguration;
 	}
 }

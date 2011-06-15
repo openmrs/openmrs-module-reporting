@@ -74,6 +74,10 @@
 					<label class="desc" for="label">Label</label>			
 					<textarea id="label" cols="50" rows="2" tabindex="2" name="label">${model.parameter.label}</textarea>
 				</div>
+				<div class="metadataField">
+					<label class="desc" for="widgetConfiguration">Advanced Configuration</label>			
+					<textarea id="widgetConfiguration" cols="50" rows="5" tabindex="2" name="widgetConfiguration">${model.parameter.widgetConfiguration}</textarea>
+				</div>
 			</div>
 			<hr style="color:blue;"/>
 			<div style="width:100%; text-align:left;">

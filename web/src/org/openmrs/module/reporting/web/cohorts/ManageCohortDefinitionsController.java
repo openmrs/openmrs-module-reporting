@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -82,7 +83,8 @@ public class ManageCohortDefinitionsController {
 						fieldType = ReflectionUtil.getWrapperMap().get(fieldType.getName());
 					}
 					String paramLabel = ObjectUtil.nvlStr(request.getParameter(prefix + ".label"), fieldName);
-					Parameter param = new Parameter(fieldName, paramLabel, fieldType, collectionType, valToSet);
+					Properties widgetConfig = (Properties)WidgetUtil.getFromRequest(request, prefix+".widgetConfiguration", Properties.class, (Class)null);
+					Parameter param = new Parameter(fieldName, paramLabel, fieldType, collectionType, valToSet, widgetConfig);
 					cohortDefinition.addParameter(param);
 				} else {
 					ReflectionUtil.setPropertyValue(cohortDefinition, p.getField(), valToSet);
