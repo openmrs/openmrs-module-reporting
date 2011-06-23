@@ -10,19 +10,24 @@
 	<h2><i>${report.reportDefinition.description}</i></h2>
 	
 	<spring:hasBindErrors name="report">
-		<br /><br/>		
 		<spring:message code="fix.error"/>
-		<div class="error">
-			<c:forEach items="${errors.allErrors}" var="error">
-				<spring:message code="${error.code}" text="${error.defaultMessage}"/><br/>
-			</c:forEach>
-		</div>
-		<br />	
+		<c:if test="${not empty errors.globalErrors}">
+			<div class="error">
+				<c:forEach items="${errors.globalErrors}" var="error">
+					<spring:message code="${error.code}" text="${error.defaultMessage}"/><br/>
+				</c:forEach>
+			</div>
+		</c:if>
 	</spring:hasBindErrors>
-	<br/>	
-	<form method="post">
 		
-		<spring:nestedPath path="report">
+	<spring:nestedPath path="report">
+		<spring:bind path="reportDefinition">
+			<c:if test="${not empty status.errorMessage}">
+				<span class="error">${status.errorMessage}</span>
+			</c:if>
+		</spring:bind>
+
+		<form method="post">
 			<table>
 				<c:forEach var="parameter" items="${report.reportDefinition.parameters}">
 	                <tr>
@@ -32,18 +37,13 @@
 		                    </td>
 		                    <td>
 								<wgt:widget id="${status.expression}" name="${status.expression}" type="${parameter.type.name}" property="${status.expression}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>
-		                        <c:if test="${status.errorMessage != ''}">
+		                        <c:if test="${not empty status.errorMessage}">
 		                            <span class="error">${status.errorMessage}</span>
 		                        </c:if>
 		                    </td>
 			            </spring:bind>
 	                </tr>
 	            </c:forEach>
-	            <spring:bind path="userEnteredParams">
-			        <c:if test="${status.errorMessage != ''}">
-			            <span class="error">${status.errorMessage}</span>
-			        </c:if>
-	            </spring:bind>
 				<tr>				
 					<td align="right"><spring:message code="reporting.Report.run.outputFormat"/>:</td>					
 					<td>
@@ -57,7 +57,10 @@
 				                    </option>
 				                </c:forEach>
 				            </select>
-				        </spring:bind>
+							<c:if test="${not empty status.errorMessage}">
+								<span class="error">${status.errorMessage}</span>
+							</c:if>
+						</spring:bind>
 					</td>		
 				</tr>
 	            <tr valign="top">
@@ -76,8 +79,9 @@
 	        		</td>
 	        	</tr>
 	        </table>
-		</spring:nestedPath>
-	</form>
+		</form>
+	</spring:nestedPath>
+		
 </div>
 </div>
 </div>

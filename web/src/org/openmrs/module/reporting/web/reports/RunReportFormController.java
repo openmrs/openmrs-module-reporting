@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.reports;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 	
 	public void validate(Object commandObject, Errors errors) {
 		CommandObject command = (CommandObject) commandObject;
-		ValidationUtils.rejectIfEmpty(errors, "reportDefinition", "Missing reportId or report not found");
+		ValidationUtils.rejectIfEmpty(errors, "reportDefinition", "reporting.Report.run.error.missingReportID");
 		if (command.getReportDefinition() != null) {
 			ReportDefinition reportDefinition = command.getReportDefinition();
 			Set<String> requiredParams = new HashSet<String>();
@@ -95,13 +96,17 @@ public class RunReportFormController extends SimpleFormController implements Val
 					requiredParams.remove(e.getKey());
 			}
 			if (requiredParams.size() > 0) {
-				errors.rejectValue("userEnteredParams", "Enter all parameter values");
+				for (Iterator<String> iterator = requiredParams.iterator(); iterator.hasNext();) {
+					String parameterName = (String) iterator.next();
+					errors.rejectValue("userEnteredParams[" + parameterName + "]", "error.required",
+					    new Object[] { "This parameter" }, "{0} is required");
+				}
 			}
 			
 			if (reportDefinition.getDataSetDefinitions() == null || reportDefinition.getDataSetDefinitions().size() == 0)
-				errors.rejectValue("reportDefinition", "A report definition must declare some data set definitions");
+				errors.reject("reporting.Report.run.error.definitionNotDeclared");
 		}
-		ValidationUtils.rejectIfEmpty(errors, "selectedRenderer", "Pick a renderer");
+		ValidationUtils.rejectIfEmpty(errors, "selectedRenderer", "reporting.Report.run.error.noRendererSelected");
 	}
 	
 	@Override
@@ -147,7 +152,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 							evalContext.addParameterValue(parameter.getName(), value);
 						}
 						catch (Exception ex) {
-							errors.rejectValue("userEnteredParams", parameter.getLabel() + ": " + ex.getMessage());
+							errors.rejectValue("userEnteredParams[" + parameter.getName() + "]",  ex.getMessage());
 						}
 					}
 				}
