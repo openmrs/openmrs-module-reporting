@@ -63,14 +63,18 @@
 						</spring:bind>
 					</td>		
 				</tr>
-	            <tr valign="top">
-	                <td align="right"><spring:message code="reporting.Report.run.optionalFilterCohort"/>:</td>
-	                <td>
-	                    <rptTag:mappedPropertyForObject id="baseCohort"
-	                        formFieldName="baseCohort" object="${ report }"
-	                        propertyName="baseCohort" label="Optional Filter Cohort"/>
-	                </td>
-	            </tr>
+				<openmrs:globalProperty var="mode" key="reporting.runReportCohortFilterMode" defaultValue="showIfNull"/>
+				<c:set var="showCohortFilter" value="${mode == 'hide' ? false : (mode == 'show' ? true : report.reportDefinition.baseCohortDefinition == null)}"/>
+				<c:if test="${showCohortFilter}">
+		            <tr valign="top">
+		                <td align="right"><spring:message code="reporting.Report.run.optionalFilterCohort"/>:</td>
+		                <td>
+		                    <rptTag:mappedPropertyForObject id="baseCohort"
+		                        formFieldName="baseCohort" object="${ report }"
+		                        propertyName="baseCohort" label="Optional Filter Cohort"/>
+		                </td>
+		            </tr>
+	            </c:if>
 				<tr><td>&nbsp;</td></tr>			
 				<tr>
 					<td></td>

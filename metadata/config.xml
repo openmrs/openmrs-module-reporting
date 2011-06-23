@@ -97,6 +97,11 @@
 		<defaultValue></defaultValue>
 		<description>Pipe-separated list of patient identifier type names, which should be displayed on default patient datasets</description>
 	</globalProperty>
+	<globalProperty>
+		<property>reporting.runReportCohortFilterMode</property>
+		<defaultValue>showIfNull</defaultValue>
+		<description>Supports the values hide,showIfNull,show which determine whether the cohort selector should be available in the run report page</description>
+	</globalProperty>	
 	
 	<!--  Message Properties -->
 	<messages>
