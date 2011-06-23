@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 
 /**
@@ -195,8 +196,13 @@ public class EvaluationUtil {
 		// If this is not a Date operation, handle generally
 		if (paramValueToFormat == null) {
 			paramValueToFormat = parameters.get(paramAndFormat[0]);
-			if (paramValueToFormat == null) {
-				return expression;			
+			if (ObjectUtil.isNull(paramValueToFormat)) {
+				if (parameters.containsKey(paramAndFormat[0])) {
+					return paramValueToFormat;
+				}
+				else {
+					return expression;
+				}
 			}
 			log.debug("Evaluated to: " + paramValueToFormat);
 		}

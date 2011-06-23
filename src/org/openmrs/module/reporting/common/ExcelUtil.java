@@ -1,9 +1,11 @@
 package org.openmrs.module.reporting.common;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.openmrs.module.reporting.report.renderer.ExcelStyleHelper;
 
 /**
@@ -85,5 +87,43 @@ public class ExcelUtil {
 			return;
 		}
 		return;
+	}
+	
+	/**
+	 * @return a String, based on the passed String, which is suitable for use as a sheet title
+	 */
+	public static String formatSheetTitle(String s) {
+		s = ObjectUtil.nvlStr(s, "Sheet");
+		s = (s.length() > 30 ? s.substring(0, 30) : s);
+		return s;
+	}
+	
+	/**
+	 * @return a String, based on the passed String, which is suitable for use as a sheet title, ensuring that
+	 * it is not in the set of used titles passed in
+	 */
+	public static String formatSheetTitle(String s, Set<String> usedTitles) {
+		s = formatSheetTitle(s);
+		if (usedTitles.contains(s)) {
+			s = s.length() > 27 ? s.substring(0, 27) : s;
+			for (int i=1; ; i++) {
+				String attempt = s + "-" + i;
+				if (!usedTitles.contains(attempt)) {
+					return attempt;
+				}
+			}
+		}
+		return s;
+	}
+	
+	public static String formatRow(HSSFRow row) {
+		StringBuilder sb = new StringBuilder();
+		if (row != null) {
+			for (int i=0; i<row.getPhysicalNumberOfCells(); i++) {
+				HSSFCell cell = row.getCell(i);
+				sb.append((i == 0 ? "" : ", ") + (cell == null ? "" : cell.toString()));
+			}
+		}
+		return sb.toString();
 	}
 }

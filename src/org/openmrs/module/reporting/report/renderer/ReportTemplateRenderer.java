@@ -15,11 +15,13 @@ package org.openmrs.module.reporting.report.renderer;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
@@ -80,6 +82,45 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	}
 	
 	/**
+	 * Constructs a Map from String to Object of all data than can be used as replacements within an entire template
+	 * This includes all parameters, design properties, context values, and data for any datasets that have only a single row
+	 * @return Map from String to Object of all data than can be used as replacements in the template
+	 */
+	public Map<String, Object> getBaseReplacementData(ReportData reportData, ReportDesign design) {
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		// Add data set values if there is only a single row in the dataset
+		for (String dsName : reportData.getDataSets().keySet()) {
+			DataSet ds = reportData.getDataSets().get(dsName);
+			Iterator<DataSetRow> rowIter = ds.iterator();
+			DataSetRow firstRow = rowIter.next();
+			if (!rowIter.hasNext()) {
+				data.putAll(getReplacementData(reportData, design, dsName, firstRow));
+			}
+		}
+		
+		// Add all parameter values as replacement data
+		for (Map.Entry<String, Object> entry : reportData.getContext().getParameterValues().entrySet()) {
+			if (!data.containsKey(entry.getKey())) {
+				data.put(entry.getKey(), entry.getValue());
+			}
+			data.put("parameter." + entry.getKey(), entry.getValue());
+		}
+		
+		// Add all design properties as replacement data
+		for (Map.Entry<Object, Object> entry : design.getProperties().entrySet()) {
+			data.put("property." + entry.getKey(), entry.getValue());
+		}
+		
+		// Add context values as replacement data
+		data.put("context.generatedBy", Context.getUserContext().getAuthenticatedUser().getPersonName().toString());
+		data.put("context.generationDate", new Date());
+
+		return data;
+	}
+	
+	/**
 	 * Constructs a Map from String to Object of all data than can be used as replacements for the given data set row
 	 * @param reportData
 	 * @param template
@@ -100,6 +141,9 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 				} 
 				else if (e.getValue() instanceof IndicatorResult) {
 					replacementValue = new Double(((IndicatorResult) e.getValue()).getValue().doubleValue());
+				}
+				else if (e.getValue() instanceof Date) {
+					replacementValue = e.getValue();
 				}
 				else {
 					replacementValue = e.getValue().toString();
