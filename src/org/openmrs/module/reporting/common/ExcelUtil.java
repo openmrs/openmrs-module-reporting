@@ -56,7 +56,7 @@ public class ExcelUtil {
 				return;
 			}
 			
-			String cellValueString = cellValue.toString();
+			String cellValueString = ObjectUtil.format(cellValue);
 			try {
 				if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
 					cell.setCellValue(Boolean.valueOf(cellValueString).booleanValue());

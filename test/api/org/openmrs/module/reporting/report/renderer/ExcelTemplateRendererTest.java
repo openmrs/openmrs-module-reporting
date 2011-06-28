@@ -19,12 +19,14 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
@@ -53,6 +55,7 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		
 		ReportDefinition report = new ReportDefinition();
 		report.setName("Test Report");
+		report.addParameter(new Parameter("programState", "Which program state?", ProgramWorkflowState.class));
 		
 		CohortCrossTabDataSetDefinition genderDsd = new CohortCrossTabDataSetDefinition();
 		genderDsd.addColumn("males", males, null);
@@ -83,11 +86,8 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		design.setRendererType(ExcelTemplateRenderer.class);
 		
 		Properties props = new Properties();
-		props.put("repeatSheet1Row2", "allPatients,3");
-		props.put("repeatSheet2Row9", "femalePatients");
-		props.put("repeatSheet2Column4", "malePatients");
-		props.put("repeatSheet3", "allPatients");
-		
+		props.put("repeatingSections", "sheet:1,row:6-8,dataset:allPatients | sheet:2,row:9,dataset:femalePatients | sheet:2,column:4,dataset:malePatients | sheet:3,dataset:allPatients");
+
 		design.setProperties(props);
 		
 		ReportDesignResource resource = new ReportDesignResource();
@@ -108,6 +108,7 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		// We construct an EvaluationContext (in this case the parameters aren't used, but included here for reference)
 		
 		EvaluationContext context = new EvaluationContext();
+		context.addParameterValue("programState", Context.getProgramWorkflowService().getStateByUuid("92584cdc-6a20-4c84-a659-e035e45d36b0"));
 		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
 		ReportData data = rs.evaluate(report, context);
 		

@@ -67,6 +67,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			log.debug("Attempting to render report with ExcelTemplateRenderer");
 			ReportDesign design = getDesign(argument);
 			HSSFWorkbook wb = getExcelTemplate(design);
+			Map<String, String> repeatSections = getRepeatingSections(design);
 
 			// Put together base set of replacements.  Any dataSet with only one row is included.
 			Map<String, Object> replacements = getBaseReplacementData(reportData, design);
@@ -82,18 +83,15 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				HSSFSheet currentSheet = wb.getSheetAt(sheetNum);
 				String originalSheetName = wb.getSheetName(sheetNum);
 				
-				String dataSetName = getRepeatingSheetProperty(sheetNum, design);
+				String dataSetName = getRepeatingSheetProperty(sheetNum, repeatSections);
 				if (dataSetName != null) {
 					
-					DataSet repeatingSheetDataSet = reportData.getDataSets().get(dataSetName);
+					DataSet repeatingSheetDataSet = getDataSet(reportData, dataSetName);
 					int dataSetRowNum = 0;
 					for (Iterator<DataSetRow> rowIterator = repeatingSheetDataSet.iterator(); rowIterator.hasNext();) {
 						DataSetRow dataSetRow = rowIterator.next();
 						dataSetRowNum++;
-						
-						Map<String, Object> newReplacements = new HashMap<String, Object>(replacements);
-						newReplacements.putAll(getReplacementData(reportData, design, dataSetName, dataSetRow));
-						
+						Map<String, Object> newReplacements = getReplacementData(replacements, reportData, design, dataSetName, dataSetRow, dataSetRowNum);
 						HSSFSheet newSheet = (dataSetRowNum == 1 ? currentSheet : wb.cloneSheet(sheetNum));
 						sheetsToAdd.add(new SheetToAdd(newSheet, sheetNum, originalSheetName, newReplacements));
 					}
@@ -105,7 +103,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			
 			// Then iterate across all of these and add them in
 			for (int i=0; i<sheetsToAdd.size(); i++) {
-				addSheet(wb, sheetsToAdd.get(i), usedSheetNames, reportData, design);
+				addSheet(wb, sheetsToAdd.get(i), usedSheetNames, reportData, design, repeatSections);
 			}
 
 			wb.write(out);
@@ -118,7 +116,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	/**
 	 * Clone the sheet at the passed index and replace values as needed
 	 */
-	public HSSFSheet addSheet(HSSFWorkbook wb, SheetToAdd sheetToAdd, Set<String> usedSheetNames, ReportData reportData, ReportDesign design) {
+	public HSSFSheet addSheet(HSSFWorkbook wb, SheetToAdd sheetToAdd, Set<String> usedSheetNames, ReportData reportData, ReportDesign design, Map<String, String> repeatSections) {
 
 		String prefix = getExpressionPrefix(design);
 		String suffix = getExpressionSuffix(design);
@@ -141,18 +139,19 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			
 		int totalRows = sheet.getPhysicalNumberOfRows();
 		int rowsFound = 0;
-		for (int rowNum=0; rowsFound < totalRows; rowNum++) {
+		for (int rowNum=0; rowsFound < totalRows && rowNum < 5000; rowNum++) {  // check for < 5000 is a hack to prevent infinite loops in edge cases
 			HSSFRow currentRow = sheet.getRow(rowNum);
 			log.debug("Handling row: " + ExcelUtil.formatRow(currentRow));
 			if (currentRow != null) {
 				rowsFound++;
 			}
 			// If we find that the row that we are on is a repeating row, then add the appropriate number of rows to clone
-			String repeatingRowProperty = getRepeatingRowProperty(sheetToAdd.getOriginalSheetNum(), rowNum, design);
+			String repeatingRowProperty = getRepeatingRowProperty(sheetToAdd.getOriginalSheetNum(), rowNum, repeatSections);
 			if (repeatingRowProperty != null) {
 				String[] dataSetSpanSplit = repeatingRowProperty.split(",");
 				String dataSetName = dataSetSpanSplit[0];
-				DataSet dataSet = reportData.getDataSets().get(dataSetName);
+				DataSet dataSet = getDataSet(reportData, dataSetName);
+				
 				int numRowsToRepeat = 1;
 				if (dataSetSpanSplit.length == 2) {
 					numRowsToRepeat = Integer.parseInt(dataSetSpanSplit[1]);
@@ -165,15 +164,11 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 						if (repeatNum == 0 && row != null && row != currentRow) {
 							rowsFound++;
 						}
-						
-						Map<String, Object> newReplacements = new HashMap<String, Object>(sheetToAdd.getReplacementData());
-						newReplacements.putAll(getReplacementData(reportData, design, dataSetName, dataSetRow));
-						
-						// Add the repeated row to the list
+						repeatNum++;
+						Map<String, Object> newReplacements = getReplacementData(sheetToAdd.getReplacementData(), reportData, design, dataSetName, dataSetRow, repeatNum);
 						rowsToAdd.add(new RowToAdd(row, newReplacements));
 						log.debug("Adding " + ExcelUtil.formatRow(row) + " with dataSetRow: " + dataSetRow);
 					}
-					repeatNum++;
 				}
 				rowNum += numRowsToRepeat;
 			}
@@ -187,7 +182,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		for (int i=0; i<rowsToAdd.size(); i++) {
 			RowToAdd rowToAdd = rowsToAdd.get(i);
 			if (rowToAdd.getRowToClone() != null && rowToAdd.getRowToClone().cellIterator() != null) {
-				HSSFRow addedRow = addRow(wb, sheetToAdd, rowToAdd, i, reportData, design);
+				HSSFRow addedRow = addRow(wb, sheetToAdd, rowToAdd, i, reportData, design, repeatSections);
 				log.debug("Wrote row " + i + ": " + ExcelUtil.formatRow(addedRow));
 			}
 		}
@@ -198,7 +193,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	/**
 	 * Adds in a Row to the given Sheet
 	 */
-	public HSSFRow addRow(HSSFWorkbook wb, SheetToAdd sheetToAdd, RowToAdd rowToAdd, int rowIndex, ReportData reportData, ReportDesign design) {
+	public HSSFRow addRow(HSSFWorkbook wb, SheetToAdd sheetToAdd, RowToAdd rowToAdd, int rowIndex, ReportData reportData, ReportDesign design, Map<String, String> repeatSections) {
 		
 		// Create a new row and copy over style attributes from the row to add
 		HSSFRow newRow = sheetToAdd.getSheet().createRow(rowIndex);
@@ -221,11 +216,11 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				cellsFound++;
 			}
 			// If we find that the cell that we are on is a repeating cell, then add the appropriate number of cells to clone
-			String repeatingColumnProperty = getRepeatingColumnProperty(sheetToAdd.getOriginalSheetNum(), cellNum, design);
+			String repeatingColumnProperty = getRepeatingColumnProperty(sheetToAdd.getOriginalSheetNum(), cellNum, repeatSections);
 			if (repeatingColumnProperty != null) {
 				String[] dataSetSpanSplit = repeatingColumnProperty.split(",");
 				String dataSetName = dataSetSpanSplit[0];
-				DataSet dataSet = reportData.getDataSets().get(dataSetName);
+				DataSet dataSet = getDataSet(reportData, dataSetName);
 				int numCellsToRepeat = 1;
 				if (dataSetSpanSplit.length == 2) {
 					numCellsToRepeat = Integer.parseInt(dataSetSpanSplit[1]);
@@ -239,14 +234,11 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 						if (repeatNum == 0 && cell != null && cell != currentCell) {
 							cellsFound++;
 						}
-						
-						Map<String, Object> newReplacements = new HashMap<String, Object>(rowToAdd.getReplacementData());
-						newReplacements.putAll(getReplacementData(reportData, design, dataSetName, dataSetRow));
-						
+						repeatNum++;
+						Map<String, Object> newReplacements = getReplacementData(rowToAdd.getReplacementData(), reportData, design, dataSetName, dataSetRow, repeatNum);
 						cellsToAdd.add(new CellToAdd(cell, newReplacements));
 						log.debug("Adding " + cell + " with dataSetRow: " + dataSetRow);
 					}
-					repeatNum++;
 				}
 				cellNum += numCellsToRepeat;
 			}
@@ -296,29 +288,102 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			IOUtils.closeQuietly(is);
 		}
 	}
+
+	/**
+	 * @return a Map of String to String that can be used to find repeating sections
+	 * This converts a user design property in the format:
+	 * sheet:3,dataset:allPatients | sheet:1,row:6-8,dataset:allPatients | sheet:2,column:4,dataset:malePatients
+	 * into a Map which can be quickly accessed as each row / column combination is accessed during processing
+	 */
+	protected Map<String, String> getRepeatingSections(ReportDesign design) {
+		Map<String, String> m = new HashMap<String, String>();
+		String propertyValue = design.getPropertyValue("repeatingSections", null);
+		if (propertyValue != null) {
+			for (String sectionConfig : propertyValue.split("\\|")) {
+				try {
+					Integer sheetNum = null;
+					Integer rowNum = null;
+					Integer columnNum = null;
+					Integer spanNum = null;
+					String dataSetName = null;
+					for (String sectionComponent : sectionConfig.split(",")) {
+						String[] keyValue = sectionComponent.split("\\:");
+						String key = keyValue[0].trim().toLowerCase();
+						String[] valueSplit = keyValue[1].trim().split("\\-");
+						String lowerBound = valueSplit[0].trim();
+						String upperBound = valueSplit.length == 1 ? lowerBound : valueSplit[1].trim();
+						if ("sheet".equals(key)) {
+							sheetNum = Integer.parseInt(lowerBound);
+						}
+						else if ("row".equals(key)) {
+							rowNum = Integer.parseInt(lowerBound);
+							spanNum = Integer.parseInt(upperBound) - rowNum + 1;
+						}
+						else if ("column".equals(key)) {
+							columnNum = Integer.parseInt(lowerBound);
+							spanNum = Integer.parseInt(upperBound) - columnNum + 1;
+						}
+						else if ("dataset".equals(key)) {
+							dataSetName = lowerBound;
+						}
+					}
+					String key = "repeatSheet"+sheetNum + (rowNum != null ? "Row"+rowNum : "") + (columnNum != null ? "Column"+columnNum : "");
+					String value = dataSetName + (spanNum != null ? ","+spanNum : "");
+					m.put(key, value);
+				}
+				catch (Exception e) {
+					log.warn("Error in configuration of repeating sections of ExcelTemplateRenderer.  Please check your configuration.", e);
+				}
+			}
+		}
+		return m;
+	}
 	
 	/**
 	 * @return if the sheet with the passed number (1-indexed) is repeating, returns the dataset name to use
 	 * for example:  repeatSheet0=myIndicatorDataSet would indicate that sheet 0 should be repeated for each row in the dataset
 	 */
-	public String getRepeatingSheetProperty(int sheetNumber, ReportDesign design) {
-		return design.getPropertyValue("repeatSheet" + (int)(sheetNumber+1), null);
+	protected String getRepeatingSheetProperty(int sheetNumber, Map<String, String> repeatingSections) {
+		return repeatingSections.get("repeatSheet" + (int)(sheetNumber+1));
 	}
 	
 	/**
 	 * @return if the row with the passed number (1-indexed) is repeating, returns the dataset name to use, optionally with a span
 	 * for example:  repeatSheet0Row7=myPatientDataSet,2 would indicate that rows 7 and 8 in sheet 0 should be repeated for each row in the dataset
 	 */
-	public String getRepeatingRowProperty(int sheetNumber, int rowNumber, ReportDesign design) {
-		return design.getPropertyValue("repeatSheet" + (int)(sheetNumber+1) + "Row" + (int)(rowNumber+1), null);
+	protected String getRepeatingRowProperty(int sheetNumber, int rowNumber, Map<String, String> repeatingSections) {
+		return repeatingSections.get("repeatSheet" + (int)(sheetNumber+1) + "Row" + (int)(rowNumber+1));
 	}
 	
 	/**
 	 * @return if the column with the passed number (1-indexed) is repeating, returns the dataset name to use, optionally with a span
 	 * for example:  repeatSheet0Column5=myPatientDataSet,2 would indicate that columns 5 and 6 in sheet 0 should be repeated for each row in the dataset
 	 */
-	public String getRepeatingColumnProperty(int sheetNumber, int columnNumber, ReportDesign design) {
-		return design.getPropertyValue("repeatSheet" + (int)(sheetNumber+1) + "Column" + (int)(columnNumber+1), null);
+	protected String getRepeatingColumnProperty(int sheetNumber, int columnNumber, Map<String, String> repeatingSections) {
+		return repeatingSections.get("repeatSheet" + (int)(sheetNumber+1) + "Column" + (int)(columnNumber+1));
+	}
+	
+	/**
+	 * @return the DataSet with the passed name in the passed ReportData, throwing an Exception if one does not exist
+	 */
+	public DataSet getDataSet(ReportData reportData, String dataSetName) {
+		DataSet ds = reportData.getDataSets().get(dataSetName);
+		if (ds == null) {
+			throw new RenderingException("Invalid Report Design Configuration.  There is no Data Set named " + dataSetName + " in this Report Definition");
+		}
+		return ds;
+	}
+	
+	/**
+	 * @return a new Map with the original map values cloned and new values inserted as appropriate from the passed DataSetRow
+	 */
+	public Map<String, Object> getReplacementData(Map<String, Object> replacements, ReportData reportData, ReportDesign design, 
+												  String dataSetName, DataSetRow dataSetRow, Integer dataSetRowNum) {
+	
+		Map<String, Object> newReplacements = new HashMap<String, Object>(replacements);
+		newReplacements.putAll(getReplacementData(reportData, design, dataSetName, dataSetRow));
+		newReplacements.put(dataSetName + SEPARATOR + ROW_CONTEXT_PREFIX + SEPARATOR + INDEX, dataSetRowNum);
+		return newReplacements;
 	}
 	
 	/**

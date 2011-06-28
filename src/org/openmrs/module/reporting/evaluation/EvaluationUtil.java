@@ -115,7 +115,7 @@ public class EvaluationUtil {
 				}
 				
 				sb.append(expression.substring(0, startIndex));
-				sb.append(replacement.toString());
+				sb.append(ObjectUtil.format(replacement));
 				sb.append(expression.substring(endIndex + expressionSuffix.length()));
 				newExpression = sb.toString();
 			}
@@ -193,19 +193,16 @@ public class EvaluationUtil {
 			throw new ParameterException("Error parsing dates in expression: " + paramAndFormat[0]);
 		}
 		
-		// If this is not a Date operation, handle generally
-		if (paramValueToFormat == null) {
-			paramValueToFormat = parameters.get(paramAndFormat[0]);
-			if (ObjectUtil.isNull(paramValueToFormat)) {
-				if (parameters.containsKey(paramAndFormat[0])) {
-					return paramValueToFormat;
-				}
-				else {
-					return expression;
-				}
+		paramValueToFormat = ObjectUtil.nvl(paramValueToFormat, parameters.get(paramAndFormat[0]));
+		if (ObjectUtil.isNull(paramValueToFormat)) {
+			if (parameters.containsKey(paramAndFormat[0])) {
+				return paramValueToFormat;
 			}
-			log.debug("Evaluated to: " + paramValueToFormat);
+			else {
+				return expression;
+			}
 		}
+		log.debug("Evaluated to: " + paramValueToFormat);
 
 		// Attempt to format the evaluated value if appropriate
 		if (paramAndFormat.length == 2) {
@@ -216,13 +213,10 @@ public class EvaluationUtil {
 			else {
 				log.debug("Attempting to format by calling method: " + paramAndFormat[1]);
 				try {
-					Object formattedValue = paramValueToFormat.getClass().getMethod(paramAndFormat[1]).invoke(paramValueToFormat);
-					return formattedValue == null ? null : formattedValue.toString();
+					return paramValueToFormat.getClass().getMethod(paramAndFormat[1]).invoke(paramValueToFormat);
 				}
 				catch (Exception e) {
-					log.debug(e.getMessage());
-					throw new ParameterException("Error trying to call " + paramAndFormat[1] + 
-												 " on class " + paramValueToFormat.getClass(), e);
+					log.debug(e.getMessage()); // Don't throw an error here...
 				}
 			}
 		}

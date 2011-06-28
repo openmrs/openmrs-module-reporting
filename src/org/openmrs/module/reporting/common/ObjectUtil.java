@@ -1,7 +1,15 @@
 package org.openmrs.module.reporting.common;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
+
+import org.openmrs.OpenmrsMetadata;
+import org.openmrs.ProgramWorkflow;
+import org.openmrs.ProgramWorkflowState;
+import org.openmrs.api.context.Context;
 
 /**
  * Generically useful utility class for working with Objects
@@ -229,4 +237,36 @@ public class ObjectUtil {
 			return value;
 		}
 	}
+	
+	/**
+	 * @return a formatted version of the object suitable for display
+	 */
+	public static String format(Object o) {
+		return format(o, null);
+	}
+	
+	/**
+	 * @return a formatted version of the object suitable for display
+	 */
+	public static String format(Object o, String format) {
+		if (o == null) { return ""; }
+		if (o instanceof OpenmrsMetadata) {
+			String name = ((OpenmrsMetadata) o).getName();
+			if (name == null) {
+				if (o instanceof ProgramWorkflow) {
+					name = ((ProgramWorkflow)o).getConcept().getDisplayString();
+				}
+				else if (o instanceof ProgramWorkflowState) {
+					name = ((ProgramWorkflowState)o).getConcept().getDisplayString();
+				}
+			}
+			return name;
+		}
+		if (o instanceof Date) {
+			DateFormat df = decode(format, Context.getDateFormat(), new SimpleDateFormat(format));
+			return df.format((Date)o);
+		}
+		return o.toString();
+	}
+	
 }

@@ -98,6 +98,10 @@ public class ReflectionUtil {
 		try {
 			String methodName = "get"+StringUtils.capitalize(property);
 			Method m = object.getClass().getMethod(methodName, (Class[]) null);
+			if (m == null) {
+				methodName = "is"+StringUtils.capitalize(property);
+				m = object.getClass().getMethod(methodName, (Class[]) null);
+			}
 			return m.invoke(object, new Object[] {});
 		}
 		catch (Exception e) {

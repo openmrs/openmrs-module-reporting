@@ -35,6 +35,16 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  */
 public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	
+	//***** CONSTANT REPORT TEMPLATE PROPERTIES THAT ARE AVAILABLE
+	public static final String CONTEXT_PREFIX = "context";
+	public static final String ROW_CONTEXT_PREFIX = "rowContext";
+	public static final String PARAMETER_PREFIX = "parameter";
+	public static final String PROPERTY_PREFIX = "property";
+	public static final String SEPARATOR = ".";
+	public static final String GENERATED_BY = "generatedBy";
+	public static final String GENERATION_DATE = "generationDate";
+	public static final String INDEX = "index";
+	
 	/** 
 	 * Returns the template resource
 	 */
@@ -94,9 +104,11 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 		for (String dsName : reportData.getDataSets().keySet()) {
 			DataSet ds = reportData.getDataSets().get(dsName);
 			Iterator<DataSetRow> rowIter = ds.iterator();
-			DataSetRow firstRow = rowIter.next();
-			if (!rowIter.hasNext()) {
-				data.putAll(getReplacementData(reportData, design, dsName, firstRow));
+			if (rowIter.hasNext()) {
+				DataSetRow firstRow = rowIter.next();
+				if (!rowIter.hasNext()) {
+					data.putAll(getReplacementData(reportData, design, dsName, firstRow));
+				}
 			}
 		}
 		
@@ -149,7 +161,7 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 					replacementValue = e.getValue().toString();
 				}
 			}
-			data.put(dataSetName + "." + e.getKey().getName(), replacementValue);
+			data.put(dataSetName + SEPARATOR + e.getKey().getName(), replacementValue);
 			if (reportData.getDataSets().size() == 1) {
 				data.put(e.getKey().getName(), replacementValue);
 			}
@@ -160,16 +172,16 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 			if (!data.containsKey(entry.getKey())) {
 				data.put(entry.getKey(), entry.getValue());
 			}
-			data.put("parameter." + entry.getKey(), entry.getValue());
+			data.put(PARAMETER_PREFIX + SEPARATOR + entry.getKey(), entry.getValue());
 		}
 		
 		// Add all design properties as replacement data
 		for (Map.Entry<Object, Object> entry : design.getProperties().entrySet()) {
-			data.put("property." + entry.getKey(), entry.getValue());
+			data.put(PROPERTY_PREFIX + SEPARATOR  + entry.getKey(), entry.getValue());
 		}
 		
-		data.put("context.generatedBy", Context.getUserContext().getAuthenticatedUser().getPersonName().toString());
-		data.put("context.generationDate", new Date());
+		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATED_BY, Context.getUserContext().getAuthenticatedUser().getPersonName().toString());
+		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATION_DATE, new Date());
 
 		return data;
 	}
