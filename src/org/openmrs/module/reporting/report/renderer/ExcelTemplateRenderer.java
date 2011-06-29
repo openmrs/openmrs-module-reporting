@@ -139,7 +139,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			
 		int totalRows = sheet.getPhysicalNumberOfRows();
 		int rowsFound = 0;
-		for (int rowNum=0; rowsFound < totalRows && rowNum < 5000; rowNum++) {  // check for < 5000 is a hack to prevent infinite loops in edge cases
+		for (int rowNum=0; rowsFound < totalRows && rowNum < 50000; rowNum++) {  // check for < 50000 is a hack to prevent infinite loops in edge cases
 			HSSFRow currentRow = sheet.getRow(rowNum);
 			log.debug("Handling row: " + ExcelUtil.formatRow(currentRow));
 			if (currentRow != null) {
