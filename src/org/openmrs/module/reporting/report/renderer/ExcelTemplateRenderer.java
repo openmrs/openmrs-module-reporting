@@ -159,12 +159,12 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				log.debug("Repeating this row with dataset: " + dataSet + " and repeat of " + numRowsToRepeat);
 				int repeatNum=0;
 				for (DataSetRow dataSetRow : dataSet) {
+					repeatNum++;
 					for (int i=0; i<numRowsToRepeat; i++) {
 						HSSFRow row = (i == 0 ? currentRow : sheet.getRow(rowNum+i));
-						if (repeatNum == 0 && row != null && row != currentRow) {
+						if (repeatNum == 1 && row != null && row != currentRow) {
 							rowsFound++;
 						}
-						repeatNum++;
 						Map<String, Object> newReplacements = getReplacementData(sheetToAdd.getReplacementData(), reportData, design, dataSetName, dataSetRow, repeatNum);
 						rowsToAdd.add(new RowToAdd(row, newReplacements));
 						log.debug("Adding " + ExcelUtil.formatRow(row) + " with dataSetRow: " + dataSetRow);
@@ -228,13 +228,12 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				log.debug("Repeating this cell with dataset: " + dataSet + " and repeat of " + numCellsToRepeat);
 				int repeatNum=0;
 				for (DataSetRow dataSetRow : dataSet) {
-					log.debug("In row: " + repeatNum + " of dataset");
+					repeatNum++;
 					for (int i=0; i<numCellsToRepeat; i++) {
 						HSSFCell cell = (i == 0 ? currentCell : rowToClone.getCell(cellNum+i));
-						if (repeatNum == 0 && cell != null && cell != currentCell) {
+						if (repeatNum == 1 && cell != null && cell != currentCell) {
 							cellsFound++;
 						}
-						repeatNum++;
 						Map<String, Object> newReplacements = getReplacementData(rowToAdd.getReplacementData(), reportData, design, dataSetName, dataSetRow, repeatNum);
 						cellsToAdd.add(new CellToAdd(cell, newReplacements));
 						log.debug("Adding " + cell + " with dataSetRow: " + dataSetRow);
@@ -260,8 +259,13 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			HSSFCell cellToClone = cellToAdd.getCellToClone();
 			if (cellToClone != null) {
 		    	String contents = ExcelUtil.getCellContentsAsString(cellToClone);
-		    	HSSFCellStyle style = cellToClone.getCellStyle();
-		    	newCell.setCellStyle(style);
+		    	newCell.setCellStyle(cellToClone.getCellStyle());
+		    	try {
+		    		newCell.setCellFormula(cellToClone.getCellFormula());
+		    	}
+		    	catch (Exception e) {
+		    		// Do nothing here.  I don't know why POI throw exceptions here when the cell is not a formula, but this suppresses them...
+		    	}
 		    	if (ObjectUtil.notNull(contents)) {
 		    		Object newContents = EvaluationUtil.evaluateExpression(contents, cellToAdd.getReplacementData(), prefix, suffix);
 		    		ExcelUtil.setCellContents(styleHelper, newCell, newContents);
