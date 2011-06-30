@@ -115,14 +115,11 @@ public class ReportDashboardController {
 				
 				if (dsd == null) {
 					SimplePatientDataSetDefinition d = new SimplePatientDataSetDefinition();
+					d.addPatientProperty("patientId");
 					List<PatientIdentifierType> types = ReportingConstants.GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES();
-					if (types.isEmpty()) {
-						d.addPatientProperty("patientId");
-					}
-					else {
+					if (!types.isEmpty()) {
 						d.setIdentifierTypes(types);
 					}
-					System.out.println("Id Types: " + types);
 					d.addPatientProperty("givenName");
 					d.addPatientProperty("familyName");
 					d.addPatientProperty("age");

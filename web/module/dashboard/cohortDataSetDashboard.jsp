@@ -13,6 +13,7 @@
 	.profileImage { width: 75px; height: 86px; }
 	#cohort-details-table_wrapper { width: 75%; } 
 	#cohort-details-table { border: 0px; } 
+	.patientLink {cursor:pointer;}
 </style>
 
 <script type="text/javascript" charset="utf-8">
@@ -105,13 +106,11 @@ $(function() {
 							</thead>
 							<tbody>						
 									<c:forEach var="dataSetRow" items="${dataSet.rows}" varStatus="varStatus">
-										<tr>
+										<c:set var="patId" value="${dataSetRow.columnValuesByKey['patientId']}"/>
+										<tr<c:if test="${!empty patId}"> class="patientLink" onclick="document.location.href='${pageContext.request.contextPath}/patientDashboard.form?patientId=${patId}';"</c:if>>
 											<c:forEach var="column" items="${dataSet.metaData.columns}" varStatus="varStatus">
-												<td>			
-													<c:choose>
-														<c:when test="${column.label == 'patientId'}"><a href="${pageContext.request.contextPath}/patientDashboard.form?patientId=${dataSetRow.columnValues[column]}">${dataSetRow.columnValues[column]}</a></c:when>
-														<c:otherwise>${dataSetRow.columnValues[column]}</c:otherwise>
-													</c:choose>
+												<td>
+													${dataSetRow.columnValues[column]}
 												</td>
 											</c:forEach>										
 										</tr>
