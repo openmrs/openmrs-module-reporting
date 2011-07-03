@@ -198,9 +198,14 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		// Create a new row and copy over style attributes from the row to add
 		HSSFRow newRow = sheetToAdd.getSheet().createRow(rowIndex);
 		HSSFRow rowToClone = rowToAdd.getRowToClone();
-		HSSFCellStyle rowStyle = rowToClone.getRowStyle();
-		if (rowStyle != null) {
-			newRow.setRowStyle(rowStyle);
+		try {
+			HSSFCellStyle rowStyle = rowToClone.getRowStyle();
+			if (rowStyle != null) {
+				newRow.setRowStyle(rowStyle);
+			}
+		}
+		catch (Exception e) {
+			// No idea why this is necessary, but this has thrown IndexOutOfBounds errors getting the rowStyle.  Mysteries of POI
 		}
 		newRow.setHeight(rowToClone.getHeight());
 		
