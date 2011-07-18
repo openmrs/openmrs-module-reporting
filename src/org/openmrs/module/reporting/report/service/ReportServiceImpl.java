@@ -473,7 +473,12 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.HOUR, -1*ageInHoursToDelete);
 		for (ReportRequest request : getReportRequests(null, null, cal.getTime(), Status.COMPLETED,Status.FAILED)) {
-			purgeReportRequest(request);
+			try {
+				purgeReportRequest(request);
+			}
+			catch (Exception e) {
+				log.warn("Unable to delete old report request: " + request, e);
+			}
 		}
     }
 	
