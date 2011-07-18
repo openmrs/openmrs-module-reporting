@@ -295,7 +295,7 @@ public class FormatTag extends TagSupport {
 	    	DataSetRow row = map.getData();
 	    	for (DataSetColumn col : cols) {
 	    		sb.append("<tr><th align=\"left\">")
-	    			.append(col.getLabel())
+	    			.append(Context.getMessageSourceService().getMessage(col.getLabel()))
 	    			.append("</th><td>")
 	    			.append(formatHelper(row.getColumnValue(col)))
 	    			.append("</td></tr>");

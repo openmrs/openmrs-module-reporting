@@ -63,7 +63,7 @@ $(document).ready(function(){
 									${dataSetCol.key.name}
 								</td>
 								<td align="left">
-									${dataSetCol.key.label}
+									<spring:message code="${dataSetCol.key.label}"/>
 								</td>
 								<td align="center" class="value" width="1%" nowrap>
 									<a style="text-decoration: underline" href="${url}">
@@ -78,7 +78,7 @@ $(document).ready(function(){
 						</c:forEach>
 					</rpt:forEach>
 					<tfoot>
-						<tr >
+						<tr>
 							<c:set var="now" value="<%=new java.util.Date()%>" />
 							<td height="25px" valign="bottom" colspan="4" align="right">
 								<span style="font-size: small">
@@ -86,7 +86,6 @@ $(document).ready(function(){
 									<fmt:formatDate type="date" value="${now}"/> <fmt:formatDate type="time" value="${now}"/>
 								</span>
 							</td>
-								
 						</tr>
 					</tfoot>
 				</table>
