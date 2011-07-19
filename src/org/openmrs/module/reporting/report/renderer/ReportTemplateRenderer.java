@@ -44,6 +44,7 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	public static final String GENERATED_BY = "generatedBy";
 	public static final String GENERATION_DATE = "generationDate";
 	public static final String INDEX = "index";
+	public static final String LABEL = "label";
 	
 	/** 
 	 * Returns the template resource
@@ -162,8 +163,11 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 				}
 			}
 			data.put(dataSetName + SEPARATOR + e.getKey().getName(), replacementValue);
+			String columnLabel = Context.getMessageSourceService().getMessage(e.getKey().getLabel());
+			data.put(dataSetName + SEPARATOR + e.getKey().getName() + SEPARATOR + LABEL, columnLabel);
 			if (reportData.getDataSets().size() == 1) {
 				data.put(e.getKey().getName(), replacementValue);
+				data.put(e.getKey().getName() + SEPARATOR + LABEL, columnLabel);
 			}
 		}
 		
