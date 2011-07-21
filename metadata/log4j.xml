@@ -16,7 +16,11 @@
 	
 	<logger name="org.openmrs.module.reporting.definition.converter">
 		<level value="INFO"/>
-	</logger>	
+	</logger>
+	
+	<logger name="org.hibernate.type">
+		<level value="WARN"/>
+	</logger>
 	
 	<root>
 		<level value="WARN"/>

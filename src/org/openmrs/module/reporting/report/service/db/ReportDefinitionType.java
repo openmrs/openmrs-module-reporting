@@ -106,7 +106,7 @@ public class ReportDefinitionType implements UserType {
 	/** 
 	 * @see UserType#returnedClass()
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Class returnedClass() {
 		return ReportDefinition.class;
 	}

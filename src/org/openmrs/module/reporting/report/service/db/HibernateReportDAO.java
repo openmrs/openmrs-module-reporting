@@ -132,7 +132,7 @@ public class HibernateReportDAO implements ReportDAO {
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses) {
 		Criteria c = sessionFactory.getCurrentSession().createCriteria(ReportRequest.class);
 		if (reportDefinition != null) {
-			c.createCriteria("reportDefinition").add(Restrictions.eq("definition", reportDefinition));
+			c.add(Restrictions.eq("reportDefinition.definition", reportDefinition.getUuid()));
 		}
 		if (requestOnOrAfter != null) {
 			c.add(Restrictions.ge("requestDate", requestOnOrAfter));
@@ -140,7 +140,7 @@ public class HibernateReportDAO implements ReportDAO {
 		if (requestOnOrBefore != null) {
 			c.add(Restrictions.le("requestDate", requestOnOrBefore));
 		}
-		if (statuses != null) {
+		if (statuses != null && statuses.length > 0) {
 			c.add(Restrictions.in("status", statuses));
 		}
 		return c.list();

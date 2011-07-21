@@ -23,8 +23,11 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.service.ReportService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,6 +115,9 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	 * @see DefinitionService#purgeDefinition(Definition)
 	 */
 	public void purgeDefinition(ReportDefinition definition) {
+		for (ReportRequest request : Context.getService(ReportService.class).getReportRequests(definition, null, null, (Status[])null)) {
+			Context.getService(ReportService.class).purgeReportRequest(request);
+		}
 		getService().purgeDefinition(definition);
 	}
 	

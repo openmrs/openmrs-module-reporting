@@ -75,7 +75,7 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	 * @see CompositeUserType#getPropertyTypes()
 	 */
 	public Type[] getPropertyTypes() {
-		return new Type[] {Hibernate.SERIALIZABLE, Hibernate.SERIALIZABLE};
+		return new Type[] {Hibernate.STRING, Hibernate.TEXT};
 	}
 	
 	/**
@@ -146,13 +146,15 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 		String serializedMappings = null;
 		if (value != null) {
 			Mapped m = (Mapped) value;
-			definitionUuid = m.getParameterizable().getUuid();
-			if (m.getParameterMappings() != null && !m.getParameterMappings().isEmpty()) {
-				try {
-					serializedMappings = Context.getSerializationService().serialize(m.getParameterMappings(), ReportingSerializer.class);
-				}
-				catch (Exception e) {
-					throw new HibernateException("Unable to serialize mappings for definition", e);
+			if (m.getParameterizable() != null) {
+				definitionUuid = m.getParameterizable().getUuid();
+				if (m.getParameterMappings() != null && !m.getParameterMappings().isEmpty()) {
+					try {
+						serializedMappings = Context.getSerializationService().serialize(m.getParameterMappings(), ReportingSerializer.class);
+					}
+					catch (Exception e) {
+						throw new HibernateException("Unable to serialize mappings for definition", e);
+					}
 				}
 			}
 		}
