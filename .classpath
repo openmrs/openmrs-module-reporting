@@ -36,25 +36,9 @@
 	<classpathentry kind="lib" path="lib/poi-3.2-FINAL-20081019.jar"/>
 	<classpathentry kind="lib" path="lib-common/liquibase-1.9.1-mod.jar"/>
 	<classpathentry kind="lib" path="lib-common/xstream-1.3.1.jar" sourcepath="/openmrs-source/xstream-distribution-1.3.1-src.zip"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/mail/activation.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/mail/mail.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/antlr/antlr_2.7.6.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/dwr/dwr-205.jar" sourcepath="/openmrs-source/dwr-2.0.5-src.zip"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/hl7api/hapi-0.5.jar" sourcepath="/openmrs-source/hapi-0.5_source_v25.zip"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/jstl/jstl-1.1.jar" sourcepath="/openmrs-source/apache-tomcat-5.5.20-src.zip"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/mysql-connector-java/mysql-connector-java-5.1.7-bin.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/jakarta-taglibs/taglibs-page-1.1.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/jakarta-taglibs/taglibs-request-1.1.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/jakarta-taglibs/taglibs-response-1.1.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/jakarta-taglibs/taglibs-standard-1.1.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/hibernate/hibernate325-mod.jar" sourcepath="/openmrs-source/hibernate-3.2.5ga-lite.zip"/>
 	<classpathentry kind="lib" path="lib-common/hibernate325-mod.jar" sourcepath="/openmrs-source/hibernate-3.2.5ga-lite.zip"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/xerces/resolver.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/xerces/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/xerces/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib-common/jstl-1.1.jar"/>
 	<classpathentry kind="lib" path="lib-common/serialization.xstream-0.2.5.jar"/>
-	<classpathentry kind="lib" path="/openmrs-1.5.x/lib/commons-beanutils/commons-beanutils-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-asl-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.0.1.jar"/>

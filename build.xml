@@ -63,7 +63,6 @@
 			</fileset>
 			<fileset dir="lib-common">
 				<include name="**/*.jar"/>
-				<exclude name="*openmrs*1.4*.jar"/>
 			</fileset>
 		</path>
 
@@ -83,13 +82,13 @@
 		</copy>
 		
 		<!--  Compile module java files -->
-		<javac destdir="build" classpathref="classpath" debug="true" target="1.5" debuglevel="lines,vars,source">
+		<javac destdir="build" includeantruntime="false" classpathref="classpath" debug="true" target="1.5" debuglevel="lines,vars,source">
 			<src path="src/" />
 			<include name="**/*.java" />
 		</javac>
 		
 		<!--  Compile module web java files -->
-		<javac destdir="build" classpathref="classpath" debug="true" target="1.5" debuglevel="lines,vars,source">
+		<javac destdir="build" includeantruntime="false" classpathref="classpath" debug="true" target="1.5" debuglevel="lines,vars,source">
 			<compilerarg line="-g" />
 			<src path="web/src/" />
 			<include name="**/*.java" />
@@ -142,52 +141,6 @@
 		</jar>
 	</target>
 	
-	<target name="package-module-14x" depends="compile-module" description="Packages module into jar file">
-		<mkdir dir="dist" />
-		
-		<!-- Copy module metadata -->
-		<copy todir="build/">
-			<fileset dir="metadata/" includes="**/*" />
-			<filterset refid="variables.to.replace" />
-		</copy>
-		
-		<delete>
-			<fileset dir="build">
-	    		<include name="config.xml"/>
-			</fileset>
-		</delete>
-
-		<rename dest="build/config.xml" src="build/config14x.xml"/>
-		
-		<!-- Copy module web data -->
-		<copy todir="build/web/module/">
-			<fileset dir="web/module/" includes="**/*" excludes="resources/**/*" />
-			<filterset refid="variables.to.replace" />
-		</copy>
-		
-		<!-- Copy the /web/resources folder separately so that image files are not corrupted --> 
-		<copy todir="build/web/module/">
-			<fileset dir="web/module/" includes="resources/**/*" />
-		</copy>
-		
-		<!-- Copy lib folder -->
-		<!-- (lib should only contain this module's required -->
-		<!-- libraries that OpenMRS doesn't contain already) -->
-		<copy todir="build/lib" failonerror="false">
-			<fileset dir="lib" includes="**/*" />
-		</copy>
-		
-		<!-- Create distributable jar file -->
-		<jar destfile="dist/${module.id}-${module.version}.omod">
-			<fileset dir="build">
-				<include name="**/*" />
-				<exclude name="**/*Test*.class" />
-				<exclude name="**/CreateInitialDataSet.class" />
-				<exclude name="**/test/**/*" />
-			</fileset>			
-		</jar>
-	</target>
-	
 	<target name="deploy-web" depends="package-module" description="Copy web files to webapp">
 		<copy todir="${tomcat.home}/webapps/openmrs/WEB-INF/view/module/${module.id}">
 			<fileset dir="web/module" includes="**/*" />
@@ -195,10 +148,10 @@
 	</target>
 	
 	<target name="deploy-web-jetty" depends="package-module" description="Copy web files to webapp">
-		<copy todir="/home/djazayeri/workspace36/openmrs-trunk/webapp/src/main/webapp/WEB-INF/view/module/${module.id}">
+		<copy todir="../openmrs-trunk/webapp/src/main/webapp/WEB-INF/view/module/${module.id}">
 			<fileset dir="web/module" includes="**/*" excludes="web/module/tags/*"/>
 		</copy>
-		<copy todir="/home/djazayeri/workspace36/openmrs-trunk/webapp/src/main/webapp/WEB-INF/tags/module/${module.id}">
+		<copy todir="../openmrs-trunk/webapp/src/main/webapp/WEB-INF/tags/module/${module.id}">
 			<fileset dir="web/module/tags" includes="**/*"/>
 		</copy>
 	</target>
