@@ -29,6 +29,7 @@ import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefin
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.indicator.CohortReturnable;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.report.ReportData;
@@ -98,7 +99,10 @@ public class ReportDashboardController {
 				}
 				else if (result instanceof Cohort) {
 					selectedCohort = (Cohort) result;
-				}
+				} else if (result instanceof CohortReturnable)
+					selectedCohort = ((CohortReturnable) result).getCohort();
+				
+				System.out.println("Result is of type " + result.getClass().getName());
 				model.addAttribute("selectedCohort", selectedCohort);
 				
 				model.addAttribute("patients", Context.getPatientSetService().getPatients(selectedCohort.getMemberIds()));	
