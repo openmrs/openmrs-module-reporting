@@ -18,7 +18,7 @@
 	<c:set var="showDescription" value="false"/>
 </c:if>
 <c:if test="${empty portletTitle}">
-	<c:set var="portletTitle" value="Run a Report"/>
+	<spring:message var="portletTitle" code="reporting.Report.run.title" />
 </c:if>
 
 <c:if test="${showDecoration}">

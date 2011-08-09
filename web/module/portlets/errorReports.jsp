@@ -21,13 +21,13 @@
 	<c:if test="${showDecoration}">
 		<div class="portlet">
 			<div class="portlet-header">
-				Failed Reports
+				<spring:message  code="reporting.Report.failed.title" />
 			</div>
 			<div class="portlet-content">
 	</c:if>
 	
 	<c:if test="${fn:length(model.errorRequests) == 0}">
-		None
+		<spring:message code="reporting.none"/>
 	</c:if>
 	
 	<table cellspacing="0" cellpadding="2">

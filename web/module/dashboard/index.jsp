@@ -9,7 +9,8 @@
 			<tr>
 				<td valign="top">
 					<openmrs:portlet url="savedReports" moduleId="reporting"/>
-					<openmrs:portlet url="reportHistory" moduleId="reporting" parameters="includeSaved=false|includeError=false|title=Unsaved Reports"/>
+					<spring:message var="portletTitle" code="reporting.Report.unsaved.title"/>
+					<openmrs:portlet url="reportHistory" moduleId="reporting" parameters="includeSaved=false|includeError=false|title=${portletTitle}"/>
 				</td>
 				<td valign="top">
 					<openmrs:portlet url="runReport" moduleId="reporting"/>

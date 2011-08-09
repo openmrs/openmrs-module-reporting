@@ -217,7 +217,7 @@ $(document).ready(function() {
 							<li>
 								<div>
 									<input id="add-indicator-button" type="button" value="Add an indicator"/>
-									<input id="back-button" type="button" value="Back to reports"/>									
+									<input id="back-button" type="button" value="<spring:message code="reporting.Report.backToReports"/>"/>									
 								</div>						
 							</li>
 						</ul>

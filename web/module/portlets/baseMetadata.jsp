@@ -98,7 +98,7 @@
 								${model.obj.description}
 							</c:when>
 							<c:otherwise>
-								<i>none</i>							
+								<i><spring:message code="reporting.none"/></i>							
 							</c:otherwise>
 						</c:choose>
 					</div>

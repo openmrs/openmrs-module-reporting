@@ -82,7 +82,7 @@
 		<tr>
 			<td colspan="3" align="center">
 				<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistory.form?">
-					(show all)
+					<spring:message code="reporting.Report.showAll"/>
 				</a>
 			</td>
 		</tr>

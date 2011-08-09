@@ -21,7 +21,7 @@
     <c:if test="${showDecoration}">
         <div class="portlet">
             <div class="portlet-header">
-                Reports in Progress
+                <spring:message code="reporting.Report.inProgress.title" />
             </div>
             <div class="portlet-content">
     </c:if>
@@ -93,7 +93,7 @@
         
         </c:when>
         <c:otherwise>
-            None
+            <spring:message code="reporting.none"/>
         </c:otherwise>
     </c:choose>
     

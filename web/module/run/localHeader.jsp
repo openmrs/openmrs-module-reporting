@@ -13,7 +13,7 @@
 		<div align="center">
 			<a href="${__openmrs_last_report_url}">
 				<img src="<c:url value='/moduleResources/reporting/images/report_icon.gif'/>" width=45 height=45 border="0"/>
-				<br/><span class="small">back to report</span>
+				<br/><span class="small"><spring:message code="reporting.Report.backToReport"/></span>
 			</a>						
 		</div>
 	</div>

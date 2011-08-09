@@ -14,7 +14,15 @@
 			"bFilter": true,
 			"bSort": false,
 			"bInfo": true,
-			"bJQueryUI": true
+			"bJQueryUI": true,
+			"oLanguage": {
+				"oPaginate": {
+					"sPrevious": "<spring:message code="general.previous" javaScriptEscape="true"/>",
+					"sNext": "<spring:message code="general.next" javaScriptEscape="true"/>",
+				},
+				"sInfo": "<spring:message code="SearchResults.viewing" javaScriptEscape="true"/> _START_ - _END_ <spring:message code="SearchResults.of" javaScriptEscape="true"/> _TOTAL_ ",
+				"sSearch": "<spring:message code="general.search" javaScriptEscape="true"/>"
+			}
 		} );
 	} );	
 </script>
@@ -27,16 +35,16 @@
 	}
 </style>
 
-<h2>Report History</h2>
+<h2><spring:message code="reporting.reportHistory.title"/></h2>
 
 <table id="report-history-table" width="90%" cellspacing="0" cellpadding="3">
 	<thead>
 		<tr class="small">
-			<th>Report</th>
-			<th>Parameters</th>
-			<th>Open</th>
-			<th>Run</th>
-			<th>Description</th>
+			<th><spring:message code="reporting.reportHistory.report"/></th>
+			<th><spring:message code="general.parameters"/></th>
+			<th><spring:message code="reporting.reportHistory.open"/></th>
+			<th><spring:message code="reporting.reportHistory.runDetails"/></th>
+			<th><spring:message code="general.description"/></th>
 			<th width="0"></th>
 			<th width="0"></th>
 		</tr>

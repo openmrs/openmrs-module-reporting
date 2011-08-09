@@ -8,6 +8,9 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
+import org.springframework.context.support.MessageSourceAccessor;
 
 /**
  * A utility class for common date operations
@@ -147,6 +150,7 @@ public class DateUtil {
 	 * @should say one month ago even though february is short
 	 */
 	public static String getTimespan(Date now, Date then, boolean showAgoWord) {
+		MessageSourceService mss = Context.getMessageSourceService();
 
 		if (now == null || then == null) { 
 			return "";
@@ -164,40 +168,39 @@ public class DateUtil {
 		dstOffsetDifference -= cal.get(Calendar.DST_OFFSET);
 		delta += dstOffsetDifference / MILLISECOND;
 		
-		String suffix = showAgoWord ? " ago" : "";
+		String suffix = showAgoWord ? " " + mss.getMessage("reporting.dateUtil.ago") : "";
 
 		if (delta < 0) { 
-			return "(in the future?)";
+			return mss.getMessage("reporting.dateUtil.inTheFuture");
 		}
 		if (delta < 1 * MINUTE) {
-			return (delta / SECOND) == 1 ? "one second" + suffix : (delta / SECOND) + " seconds" + suffix;
+			return (delta / SECOND) == 1 ? mss.getMessage("reporting.dateUtil.oneSecond") + suffix : (delta / SECOND) + " " + mss.getMessage("reporting.dateUtil.seconds") + suffix;
 		}
 		if (delta < 2 * MINUTE) {
-			return "a minute" + suffix;
+			return mss.getMessage("reporting.dateUtil.aMinute") + suffix;
 		}
 		if (delta < 45 * MINUTE) {
-			return (delta / MINUTE) + " minutes" + suffix;
+			return (delta / MINUTE) +  " " + mss.getMessage("reporting.dateUtil.minutes") + suffix;
 		}
 		if (delta < 90 * MINUTE) {
-			return "an hour" + suffix;
+			return mss.getMessage("reporting.dateUtil.anHour") + suffix;
 		}
 		if (delta < 24 * HOUR) {
-			return (delta / HOUR) + " hours" + suffix;
+			return (delta / HOUR) +  " " + mss.getMessage("reporting.dateUtil.hours") + suffix;
 		}
 		if (delta < 48 * HOUR && showAgoWord) {
-			return "yesterday";
+			return mss.getMessage("reporting.dateUtil.yesterday");
 		}
 		if ((delta < 28 * DAY) || (delta < 30 * DAY && !wasFebruary)) {
-			return (delta / DAY) + " days" + suffix;
+			return (delta / DAY) + " " + mss.getMessage("reporting.dateUtil.days") + suffix;
 		}
 		if (delta < 12 * MONTH) {
 			int months = (int) (delta / (DAY * 30));
-			return months <= 1 ? "one month" + suffix : months + " months" + suffix;
+			return months <= 1 ? mss.getMessage("reporting.dateUtil.oneMonth") + suffix : months + " " + mss.getMessage("reporting.dateUtil.months") + suffix;
 		} else {
 			int years = (int) (delta / (DAY * 365));
-			return years <= 1 ? "one year" + suffix : years + " years" + suffix;
+			return years <= 1 ? mss.getMessage("reporting.dateUtil.oneYear") + suffix : years + " " + mss.getMessage("reporting.dateUtil.years") + suffix;
 		}
-
 	}
 
 	/**
