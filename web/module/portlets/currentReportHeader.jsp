@@ -9,7 +9,7 @@
 				<table>
 					<c:forEach items="${__openmrs_report_data.definition.parameters}" var="p" varStatus="paramStatus">
 						<tr>
-							<th align="left">${p.label}:</th>
+							<th align="left"><spring:message code="${p.label}"/>:</th>
 							<td><rpt:format object="${__openmrs_report_data.context.parameterValues[p.name]}"/></td>
 						</tr>
 					</c:forEach>

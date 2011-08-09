@@ -18,6 +18,11 @@
 
 	<!-- Set up URL mappings for new URLs -->
     <bean id="reportingUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    	<property name="interceptors">
+    		<list>
+    			<ref bean="localeChangeInterceptor" />
+    		</list>
+    	</property>
     	<property name="order"><value>50</value></property>
     	<property name="mappings">
             <props>
