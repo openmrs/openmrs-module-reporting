@@ -19,7 +19,7 @@
 				<c:if test="${model.showDiscardButton == 'true'}">
 					<button class="small" onClick="window.location='<c:url value="/module/reporting/run/currentReportDiscard.form"/>'">
 						<img src="<c:url value="/images/delete.gif"/>" border="0"/><br/>
-						Discard
+						<spring:message code="reporting.discardButton"/>
 					</button>
 				</c:if>
 				<%-- TODO put save button here, but we need to have a Report or ReportRequest in the session for that --%>

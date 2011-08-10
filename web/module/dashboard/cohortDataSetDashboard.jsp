@@ -24,7 +24,16 @@ $(document).ready(function() {
 		"bFilter": true,
 		"bSort": true,
 		"bInfo": true,
-		"bAutoWidth": true
+		"bAutoWidth": true,
+		"oLanguage": {
+			"oPaginate": {
+				"sPrevious": "<spring:message code="general.previous" javaScriptEscape="true"/>",
+				"sNext": "<spring:message code="general.next" javaScriptEscape="true"/>",
+			},
+			"sInfo": "<spring:message code="SearchResults.viewing" javaScriptEscape="true"/> _START_ - _END_ <spring:message code="SearchResults.of" javaScriptEscape="true"/> _TOTAL_ ",
+			"sSearch": "<spring:message code="general.search" javaScriptEscape="true"/>"
+		}		
+		
 		//"sDom": '<"top"i>rt<"bottom"flp<"clear">'
 	} );	
 
