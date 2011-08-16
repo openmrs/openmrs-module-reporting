@@ -1040,9 +1040,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.setParameterList("valueList", valueListForQuery);
 		}
 		if (onOrAfter != null)
-			query.setDate("onOrAfter", onOrAfter);
+			query.setTimestamp("onOrAfter", onOrAfter);
 		if (onOrBefore != null)
-			query.setDate("onOrBefore", onOrBefore);
+			query.setTimestamp("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(onOrBefore));
 		if (locationIds != null)
 			query.setParameterList("locationIds", locationIds);
 		if (encounterTypeIds != null)

@@ -168,8 +168,8 @@
   <concept_numeric concept_id="5497" hi_normal="1497.0" low_critical="99.0" low_normal="445.0" hi_critical="1800.0" hi_absolute="2500.0" low_absolute="0.0" units="cells/mmL" precise="false"/>
   <concept_numeric concept_id="5089" hi_normal="250.0" low_critical="0.0" units="kg" precise="true"/>
 
-  <concept_source concept_source_id="1" name="Some Standardized Terminology" description="A made up source" hl7_code="SSTRM" creator="1" date_created="2005-02-24 00:00:00.0" uuid="00001827-639f-4cb4-961f-1e025bf80000" voided="false"/>
-  <concept_source concept_source_id="2" name="SNOMED CT" description="'Systematized Nomenclature of Medicine--Clinical Terms' is a comprehensive clinical terminology" hl7_code="SNOMED-CT" creator="1" date_created="2005-02-24 00:00:00.0" uuid="j3nfjk33-639f-4cb4-961f-1e025b908433" voided="false"/>
+  <concept_source concept_source_id="1" name="Some Standardized Terminology" description="A made up source" hl7_code="SSTRM" creator="1" date_created="2005-02-24 00:00:00.0" uuid="00001827-639f-4cb4-961f-1e025bf80000" retired="false"/>
+  <concept_source concept_source_id="2" name="SNOMED CT" description="'Systematized Nomenclature of Medicine--Clinical Terms' is a comprehensive clinical terminology" hl7_code="SNOMED-CT" creator="1" date_created="2005-02-24 00:00:00.0" uuid="j3nfjk33-639f-4cb4-961f-1e025b908433" retired="false"/>
 
   <concept_set concept_set_id="1" concept_id="18" concept_set="23" sort_weight="0.0" creator="1" date_created="2008-08-18 12:38:58.0" uuid="1a111827-639f-4cb4-961f-1e025bf88d90"/>
   <concept_set concept_set_id="2" concept_id="19" concept_set="23" sort_weight="2.0" creator="1" date_created="2008-08-18 12:38:58.0" uuid="df26fc1a-6fc0-4867-8982-9e5dfe3f8265"/>
@@ -242,7 +242,7 @@
   <obs obs_id="27" person_id="22" concept_id="5089" encounter_id="9" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="180.0" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="3305114a-2452-102d-96e4-000c29c2a5d7"/>
   <obs obs_id="28" person_id="22" concept_id="5497" encounter_id="9" obs_datetime="2009-08-19 00:00:00.0" location_id="2" value_numeric="49.0" comments="" creator="1" date_created="2009-08-19 12:35:30.0" voided="false" uuid="3988dab0-2452-102d-96e4-000c29c2a5d7"/>
   <obs obs_id="29" person_id="22" concept_id="18" encounter_id="10" obs_datetime="2009-09-19 00:00:00.0" location_id="2" value_numeric="1" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="3f33dafa-2452-102d-96e4-000c29c2a5d7"/>
-  <obs obs_id="30" person_id="22" concept_id="5089" encounter_id="10" obs_datetime="2009-09-19 00:00:00.0" location_id="2" value_numeric="190.0" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="46bd9086-2452-102d-96e4-000c29c2a5d7"/>
+  <obs obs_id="30" person_id="22" concept_id="5089" encounter_id="10" obs_datetime="2009-09-19 10:00:00.0" location_id="2" value_numeric="190.0" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="46bd9086-2452-102d-96e4-000c29c2a5d7"/>
   <obs obs_id="31" person_id="22" concept_id="5497" encounter_id="10" obs_datetime="2009-09-19 00:00:00.0" location_id="2" value_numeric="51.0" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="4ed07356-2452-102d-96e4-000c29c2a5d7"/>
 
 
@@ -393,7 +393,7 @@
   <user_role user_id="501" role="Provider"/>
 
   <!-- pwd = test4Test -->
-  <users user_id="501" system_id="2-6" username="bruno" password="b4091b0010a67d47724b9ff1d65254cdc51abe75a2d3475870635f03ace3cb76b77ad5f2e4807f18a41c86f0b77e4398cf6b87eb1a1605ee10728ab9eba3bcd7" salt="e6a8913b24ea161d448b6f1bf1afaedf2edce6a21ce6d1bc4403897dfb33666c97b8b453a0eb23433983aede24e3c2a04601c0350db5f4c124cfab4ef157488c" secret_question="" creator="1" date_created="2008-08-15 15:46:47.0" changed_by="1" date_changed="2008-08-15 15:47:07.0" voided="true" void_reason="Test purposes"/>
+  <users user_id="501" system_id="2-6" username="bruno" password="b4091b0010a67d47724b9ff1d65254cdc51abe75a2d3475870635f03ace3cb76b77ad5f2e4807f18a41c86f0b77e4398cf6b87eb1a1605ee10728ab9eba3bcd7" salt="e6a8913b24ea161d448b6f1bf1afaedf2edce6a21ce6d1bc4403897dfb33666c97b8b453a0eb23433983aede24e3c2a04601c0350db5f4c124cfab4ef157488c" secret_question="" creator="1" date_created="2008-08-15 15:46:47.0" changed_by="1" date_changed="2008-08-15 15:47:07.0" retired="true" retire_reason="Test purposes"/>
 
   <global_property property="locale.allowed.list" property_value="en" uuid="4f55827e-26fe-102b-80cb-0017a47871b3"/>
   

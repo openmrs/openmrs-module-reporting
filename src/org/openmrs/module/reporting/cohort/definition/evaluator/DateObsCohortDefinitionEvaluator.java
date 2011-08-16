@@ -17,7 +17,7 @@ public class DateObsCohortDefinitionEvaluator implements CohortDefinitionEvaluat
 	public DateObsCohortDefinitionEvaluator() { }
 	
 	/**
-	 * @see org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator#evaluate(org.openmrs.module.reporting.cohort.definition.CohortDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
 	 * 
 	 * @should test any with many properties specified
 	 * @should find nobody if no patients match

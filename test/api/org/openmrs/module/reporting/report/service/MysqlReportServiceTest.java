@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.report.service;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -20,6 +21,7 @@ import org.openmrs.test.SkipBaseSetup;
 import org.openmrs.test.Verifies;
 
 @SkipBaseSetup
+@Ignore
 public class MysqlReportServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Override

@@ -23,12 +23,13 @@ import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
  * Testing the cohort definition persister.  
  */
-public class DateUtilTest {
+public class DateUtilTest extends BaseModuleContextSensitiveTest {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
 
@@ -38,7 +39,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.SECOND, +1);		
-		Assert.assertEquals("(in the future?)", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("reporting.dateUtil.inTheFuture", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 	
 	@Test
@@ -47,7 +48,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.SECOND, -1);		
-		Assert.assertEquals("one second ago", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("reporting.dateUtil.oneSecond reporting.dateUtil.ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	
@@ -57,7 +58,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.SECOND, -30);		
-		Assert.assertEquals("30 seconds ago", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("30 reporting.dateUtil.seconds reporting.dateUtil.ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	
@@ -67,7 +68,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.MINUTE, -40);		
-		Assert.assertEquals("40 minutes ago", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("40 reporting.dateUtil.minutes reporting.dateUtil.ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 	
 	@Test
@@ -76,7 +77,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.MINUTE, -65);		
-		Assert.assertEquals("an hour ago", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("reporting.dateUtil.anHour reporting.dateUtil.ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 	
 	@Test
@@ -85,7 +86,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.HOUR, -6);		
-		Assert.assertEquals("6 hours ago", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("6 reporting.dateUtil.hours reporting.dateUtil.ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	
@@ -95,7 +96,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.DAY_OF_MONTH, -1);
-		Assert.assertEquals("yesterday", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("reporting.dateUtil.yesterday", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	@Test
@@ -104,7 +105,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.DAY_OF_MONTH, -10);
-		Assert.assertEquals("10 days ago", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("10 reporting.dateUtil.days reporting.dateUtil.ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 	
 	@Test
@@ -113,7 +114,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.MONTH, -1);
-		Assert.assertEquals("one month ago", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("reporting.dateUtil.oneMonth reporting.dateUtil.ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	@Test
@@ -122,7 +123,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.MONTH, -5);
-		Assert.assertEquals("5 months ago", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("5 reporting.dateUtil.months reporting.dateUtil.ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}	
 	@Test
 	public void shouldReturnOneYearAgo() { 
@@ -130,7 +131,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.YEAR, -1);
-		Assert.assertEquals("one year ago", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("reporting.dateUtil.oneYear reporting.dateUtil.ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 	
 	@Test
@@ -139,7 +140,7 @@ public class DateUtilTest {
 		Date now = new Date();
 		calendar.setTime(now);
 		calendar.add(Calendar.YEAR, -10);
-		Assert.assertEquals("10 years ago", DateUtil.getTimespan(now, calendar.getTime()));
+		Assert.assertEquals("10 reporting.dateUtil.years reporting.dateUtil.ago", DateUtil.getTimespan(now, calendar.getTime()));
 	}
 
 	/**
@@ -174,10 +175,10 @@ public class DateUtilTest {
 	    cal.set(Calendar.MONTH, Calendar.DECEMBER);
 	    Date dec25 = cal.getTime();
 	    
-	    Assert.assertEquals("one month ago", DateUtil.getTimespan(mar25, feb25));
-	    Assert.assertEquals("one month ago", DateUtil.getTimespan(apr25, mar25));
-	    Assert.assertEquals("one month ago", DateUtil.getTimespan(nov25, oct25));
-	    Assert.assertEquals("one month ago", DateUtil.getTimespan(dec25, nov25));
+	    Assert.assertEquals("reporting.dateUtil.oneMonth reporting.dateUtil.ago", DateUtil.getTimespan(mar25, feb25));
+	    Assert.assertEquals("reporting.dateUtil.oneMonth reporting.dateUtil.ago", DateUtil.getTimespan(apr25, mar25));
+	    Assert.assertEquals("reporting.dateUtil.oneMonth reporting.dateUtil.ago", DateUtil.getTimespan(nov25, oct25));
+	    Assert.assertEquals("reporting.dateUtil.oneMonth reporting.dateUtil.ago", DateUtil.getTimespan(dec25, nov25));
     }
 
 	/**
@@ -186,7 +187,7 @@ public class DateUtilTest {
     @Test
     @Verifies(value = "should say one month ago even though february is short", method = "getTimespan(Date,Date,null)")
     public void getTimespan_shouldSayOneMonthAgoEvenThoughFebruaryIsShort() throws Exception {
-    	Assert.assertEquals("one month ago", DateUtil.getTimespan(DateUtil.getDateTime(2009, 3, 15), DateUtil.getDateTime(2009, 2, 15)));
+    	Assert.assertEquals("reporting.dateUtil.oneMonth reporting.dateUtil.ago", DateUtil.getTimespan(DateUtil.getDateTime(2009, 3, 15), DateUtil.getDateTime(2009, 2, 15)));
     }	
 	
 }
