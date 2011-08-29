@@ -1,11 +1,15 @@
 package org.openmrs.module.reporting.web.datasets;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -45,6 +49,12 @@ public class SqlDataSetEditor {
 		DataSetDefinition def = Context.getService(DataSetDefinitionService.class).getDefinitionByUuid(uuid);
 		SqlDataSetDefinition definition = (SqlDataSetDefinition) def;
 		definition.setSqlQuery(queryString);
+		
+		List<Parameter> parameters =  Context.getService(CohortQueryService.class).getNamedParameters(queryString);
+		for (Parameter parameter : parameters) {
+			if (definition.getParameter(parameter.getName()) == null)
+				definition.addParameter(parameter);
+		}
 
 		// Save the definition
 		Context.getService(DataSetDefinitionService.class).saveDefinition(definition);

@@ -1243,7 +1243,12 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			Parameter parameter = new Parameter();			
 			parameter.setName(parameterName);
 			parameter.setLabel(parameterName);
-			parameter.setType(String.class);	// TODO Need to be able to support more data types!
+			if (parameterName.toLowerCase().contains("date")) {
+				parameter.setType(Date.class);
+			}
+			else {
+				parameter.setType(String.class);
+			}
 			parameters.add(parameter);
 		}		
 		return parameters;
