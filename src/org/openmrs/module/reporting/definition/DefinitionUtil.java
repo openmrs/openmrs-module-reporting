@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 /**
@@ -55,7 +56,7 @@ public class DefinitionUtil {
 	 * @param classInstance - The instance to look at for default values.
 	 * @return - A List of {@link Property}s based on the annotations in the passed classes
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
     private static List<Property> getConfigurationProperties(Class<?> classToCheck, Object classInstance) {
     	
     	List<Property> ret = new ArrayList<Property>();
@@ -150,4 +151,17 @@ public class DefinitionUtil {
 		}
 		return newInstance;
 	}
+	
+    /**
+     * Generic method which takes in a property name, and returns either a Parameter value from the 
+     * EvaluationContext with this name, if it exists, or the configured property value otherwise
+     */
+    @SuppressWarnings("unchecked")
+    public static <P> P getConfiguredProperty(Definition d, String name, EvaluationContext context, Class<P> type) {
+		P p = (P)context.getParameterValue(name);
+		if (p != null) {
+			 return p;
+		}
+		return (P)ReflectionUtil.getPropertyValue(d, name);
+    }
 }
