@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 @Localized("reporting.SqlDataSetDefinition")
 public class SqlDataSetDefinition extends BaseDataSetDefinition {
 
-	private static final long serialVersionUID = 6405583324151111487L;
+	public static final long serialVersionUID = 6405583324151111487L;
 
 	//***** PROPERTIES *****
 	

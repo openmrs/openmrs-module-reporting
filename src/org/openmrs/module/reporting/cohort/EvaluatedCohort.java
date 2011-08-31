@@ -27,7 +27,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  */
 public class EvaluatedCohort extends Cohort implements Evaluated<CohortDefinition> {
 
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	//***********************
 	// PROPERTIES

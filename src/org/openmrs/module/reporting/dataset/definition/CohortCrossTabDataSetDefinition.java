@@ -37,7 +37,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 @Localized("reporting.CohortCrossTabDataSetDefinition")
 public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 	
-	private static final long serialVersionUID = -658417752199413012L;
+	public static final long serialVersionUID = -658417752199413012L;
 
 	@ConfigurationProperty
 	private Map<String, Mapped<? extends CohortDefinition>> rows;
@@ -143,7 +143,7 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	public class CohortDataSetColumn extends DataSetColumn {
 		
-		private static final long serialVersionUID = 1L;
+		public static final long serialVersionUID = 1L;
 		
 		//***** PROPERTIES *****
 		private String rowName;

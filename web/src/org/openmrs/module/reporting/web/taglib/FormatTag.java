@@ -34,7 +34,7 @@ import org.springframework.util.StringUtils;
 
 public class FormatTag extends TagSupport {
 
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	private final Log log = LogFactory.getLog(getClass());
 	

@@ -10,7 +10,7 @@ import org.openmrs.api.APIException;
  */
 public class EvaluationException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     
     private String propertyThatFailed;
         

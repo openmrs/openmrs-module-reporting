@@ -31,7 +31,7 @@ import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
 @Localized("reporting.CohortDefinitionDimension")
 public class CohortDefinitionDimension extends BaseDefinition implements CohortDimension {
 
-	private static final long serialVersionUID = 192837748L;
+	public static final long serialVersionUID = 192837748L;
 	
 	//***** PROPERTIES *****
 	

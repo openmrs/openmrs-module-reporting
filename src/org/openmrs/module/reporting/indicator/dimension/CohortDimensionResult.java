@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  */
 public class CohortDimensionResult implements Evaluated<Dimension> {
 	
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     
     //***** PROPERTIES *****
 

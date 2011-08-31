@@ -26,7 +26,7 @@ public class IllegalDatabaseAccessException extends ReportingException {
 	public IllegalDatabaseAccessException() {
 		super("Insert/Update/Delete/Drop/Alter/Create  queries  are not allowed");
 	}
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
 	
 

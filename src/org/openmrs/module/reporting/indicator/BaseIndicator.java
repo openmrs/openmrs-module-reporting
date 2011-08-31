@@ -20,7 +20,7 @@ import org.openmrs.module.reporting.evaluation.BaseDefinition;
  */
 public abstract class BaseIndicator extends BaseDefinition implements Indicator {
 	
-    private static final long serialVersionUID = 1920394873L;
+    public static final long serialVersionUID = 1920394873L;
     
     //***** PROPERTIES *****
 

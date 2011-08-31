@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 @Localized("reporting.StaticCohortDefinition")
 public class StaticCohortDefinition extends BaseCohortDefinition {
 
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     
     //****************
     // Properties

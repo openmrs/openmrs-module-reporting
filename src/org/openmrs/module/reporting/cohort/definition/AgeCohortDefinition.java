@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 @Localized("reporting.AgeCohortDefinition")
 public class AgeCohortDefinition extends BaseCohortDefinition {
 
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
 	
 	@ConfigurationProperty(group="ageGroup")
 	private Integer minAge;

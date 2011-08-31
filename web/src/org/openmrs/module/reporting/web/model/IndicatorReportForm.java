@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  */
 public class IndicatorReportForm {
 	
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     
     //***** PROPERTIES *****
     List<Indicator> indicators = null;    

@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
  */
 public class IndicatorForm {
 	
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     
     // Basic Details 
     private String columnKey = null;

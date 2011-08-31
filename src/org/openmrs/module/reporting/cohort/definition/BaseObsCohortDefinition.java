@@ -14,7 +14,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 @Localized("reporting.BaseObsCohortDefinition")
 public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
 
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	@ConfigurationProperty(required=true, group="questionGroup")
 	private TimeModifier timeModifier;

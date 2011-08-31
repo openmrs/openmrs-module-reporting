@@ -34,7 +34,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 @Localized("reporting.LogicDataSetDefinition")
 public class LogicDataSetDefinition extends BaseDataSetDefinition implements PageableDataSetDefinition {
 	
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	@ConfigurationProperty
 	private List<Column> columns = new ArrayList<Column>();
@@ -92,7 +92,7 @@ public class LogicDataSetDefinition extends BaseDataSetDefinition implements Pag
 	// ----- helper class for column definitions ----------
 
     public class Column extends DataSetColumn {
-		private static final long serialVersionUID = 1L;
+		public static final long serialVersionUID = 1L;
 		private String logic;
 		private String format;
 			

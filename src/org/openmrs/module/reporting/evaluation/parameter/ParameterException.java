@@ -20,7 +20,7 @@ import org.openmrs.api.APIException;
  */
 public class ParameterException extends APIException {
 	
-	private static final long serialVersionUID = 3393200101L;
+	public static final long serialVersionUID = 3393200101L;
 	
 	public ParameterException() {
 		super();

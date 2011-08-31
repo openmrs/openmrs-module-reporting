@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
  */
 public class DataSetColumn implements Comparable<DataSetColumn>, Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
 	//***** PROPERTIES *****
 	

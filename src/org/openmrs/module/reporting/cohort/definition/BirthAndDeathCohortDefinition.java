@@ -11,7 +11,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 @Localized("reporting.BirthAndDeathCohortDefinition")
 public class BirthAndDeathCohortDefinition extends BaseCohortDefinition {
 	
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 		
 	@ConfigurationProperty(group="birth")
 	private Date bornOnOrAfter;

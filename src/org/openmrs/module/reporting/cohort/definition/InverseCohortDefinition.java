@@ -28,7 +28,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 @Localized("reporting.InverseCohortDefinition")
 public class InverseCohortDefinition extends BaseCohortDefinition {
 	
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     
 	//***** PROPERTIES *****
 	

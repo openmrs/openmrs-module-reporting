@@ -28,7 +28,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  */
 public class Property implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	//***********************
 	// PROPERTIES

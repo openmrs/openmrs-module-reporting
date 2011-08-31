@@ -155,7 +155,7 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
      */
 	public class CohortIndicatorAndDimensionColumn extends DataSetColumn implements Cloneable {
 
-        private static final long serialVersionUID = 1L;
+        public static final long serialVersionUID = 1L;
         
         //***** PROPERTIES *****
         

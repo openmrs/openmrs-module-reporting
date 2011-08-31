@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.evaluation.BaseDefinition;
  */
 public abstract class BaseDataSetDefinition extends BaseDefinition implements DataSetDefinition {
 	
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     
     //***** PROPERTIES *****
     private Integer id;

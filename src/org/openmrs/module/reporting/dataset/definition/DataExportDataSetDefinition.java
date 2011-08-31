@@ -28,7 +28,7 @@ import org.openmrs.reporting.export.DataExportReportObject;
 @Localized("reporting.DataExportDataSetDefinition")
 public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	
-    private static final long serialVersionUID = -2572061676651616176L;
+    public static final long serialVersionUID = -2572061676651616176L;
 	
     //***** PROPERTIES *****
     

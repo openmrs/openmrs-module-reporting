@@ -28,7 +28,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 public abstract class BaseDefinition extends BaseOpenmrsMetadata implements Definition {
 
 	protected static Log log = LogFactory.getLog(BaseDefinition.class);
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	//***********************
 	// PROPERTIES

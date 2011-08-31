@@ -30,7 +30,7 @@ import org.openmrs.module.reporting.indicator.aggregation.CountAggregator;
  */
 public class CohortIndicatorResult implements IndicatorResult {
 	
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     
     //***** PROPERTIES *****
 

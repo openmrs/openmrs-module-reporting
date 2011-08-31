@@ -20,7 +20,7 @@ import org.openmrs.api.APIException;
  */
 public class ReportRendererException extends APIException {
 	
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	public ReportRendererException(String message) {
 		super(message);

@@ -29,7 +29,7 @@ import org.openmrs.module.reporting.indicator.aggregation.Aggregator;
 @Localized("reporting.CohortIndicator")
 public class CohortIndicator extends BaseIndicator {
 	
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     
     /**
      * Enumerated Indicator Types

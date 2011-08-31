@@ -38,7 +38,7 @@ import org.openmrs.module.reporting.report.service.ReportService;
 @Localized("reporting.ReportDefinition")
 public class ReportDefinition extends BaseDefinition {
 	
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	//***********************
 	// PROPERTIES

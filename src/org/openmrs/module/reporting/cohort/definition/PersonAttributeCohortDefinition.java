@@ -27,7 +27,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 @Localized("reporting.PersonAttributeCohortDefinition")
 public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
 	
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     
 	//***** PROPERTIES *****
     /**

@@ -33,7 +33,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 @SuppressWarnings("rawtypes")
 public class Parameter implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	//***********************
 	// PROPERTIES

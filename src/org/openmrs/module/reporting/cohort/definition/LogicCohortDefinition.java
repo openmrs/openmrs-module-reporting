@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 @Localized("reporting.LogicCohortDefinition")
 public class LogicCohortDefinition extends BaseCohortDefinition {
 
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	@ConfigurationProperty(required=true)
 	private String logic;

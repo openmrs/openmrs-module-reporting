@@ -35,7 +35,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationUtil;
  */
 public class Mapped<T extends Parameterizable> implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	private transient final Log log = LogFactory.getLog(getClass());
 	
 	//***********************

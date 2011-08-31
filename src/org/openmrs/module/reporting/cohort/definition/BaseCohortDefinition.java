@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public abstract class BaseCohortDefinition extends BaseDefinition implements CohortDefinition {
 	
-    private static final long serialVersionUID = 1920394873L;
+    public static final long serialVersionUID = 1920394873L;
     
     //***** PROPERTIES *****
 

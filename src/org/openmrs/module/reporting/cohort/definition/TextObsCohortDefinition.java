@@ -9,7 +9,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 @Localized("reporting.TextObsCohortDefinition")
 public class TextObsCohortDefinition extends BaseObsCohortDefinition {
 
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	@ConfigurationProperty(group="constraint")
 	SetComparator operator;

@@ -20,7 +20,7 @@ import org.openmrs.api.APIException;
  */
 public class RenderingException extends APIException {
 	
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	/**
 	 * Constructs a new Exception instance with the passed message
