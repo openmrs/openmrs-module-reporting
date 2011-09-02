@@ -20,9 +20,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.evaluator.ColumnEvaluator;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.evaluator.DataSetEvaluator;
 import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefinitionPersister;
@@ -182,6 +184,34 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	@Override
 	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws EvaluationException {
 		return (DataSet) super.evaluate(definition, context);
+	}
+	
+	/**
+	 * @see DataSetDefinitionService#evaluateColumn(DataSetDefinition, EvaluationContext)
+	 */
+	public EvaluatedColumnDefinition evaluateColumn(ColumnDefinition definition, EvaluationContext context) throws APIException {
+		ColumnEvaluator evaluator = HandlerUtil.getPreferredHandler(ColumnEvaluator.class, definition.getClass());
+		if (evaluator == null) {
+			throw new APIException("No ColumnEvaluator found for (" + definition.getClass() + ") " + definition.getName());
+		}
+		// Clone CohortDefinition and set all properties from the Parameters in the EvaluationContext
+		ColumnDefinition clonedDefinition = DefinitionUtil.clone(definition);
+		for (Parameter p : clonedDefinition.getParameters()) {
+			Object value = p.getDefaultValue();
+			if (context != null && context.containsParameter(p.getName())) {
+				value = context.getParameterValue(p.getName());
+			}
+			ReflectionUtil.setPropertyValue(clonedDefinition, p.getName(), value);
+		}
+		return evaluator.evaluate(clonedDefinition, context);
+	}
+	
+	/** 
+	 * @see DataSetDefinitionService#evaluateColumn(Mapped, EvaluationContext)
+	 */
+	public EvaluatedColumnDefinition evaluateColumn(Mapped<? extends ColumnDefinition> definition, EvaluationContext context) throws APIException {
+		EvaluationContext childContext = EvaluationContext.cloneForChild(context, definition);
+		return evaluateColumn(definition.getParameterizable(), childContext);
 	}
 	
 	/**

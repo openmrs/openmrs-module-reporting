@@ -195,7 +195,12 @@
 
 	<bean id="cohortQueryDAO" class="org.openmrs.module.reporting.cohort.query.db.hibernate.HibernateCohortQueryDAO">
 		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
-	</bean>							
+	</bean>		
+	
+	<bean id="dataSetQueryDAO" class="org.openmrs.module.reporting.dataset.query.service.db.HibernateDataSetQueryDAO">
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+	</bean>
+						
 
     <bean parent="serviceContext">
 		<property name="moduleService">
@@ -207,6 +212,30 @@
 						<bean class="org.openmrs.module.reporting.cohort.query.service.CohortQueryServiceImpl">
 							<property name="cohortQueryDAO">
 								<ref bean="cohortQueryDAO" />
+							</property>	
+						</bean>
+					</property>
+					<property name="preInterceptors">
+						<ref bean="serviceInterceptors" />
+					</property>
+					<property name="transactionAttributeSource">
+						<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	    <bean parent="serviceContext">
+		<property name="moduleService">
+			<list>
+				<value>org.openmrs.module.reporting.dataset.query.service.DataSetQueryService</value> <!-- service interface name -->
+				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+					<property name="transactionManager"><ref bean="transactionManager"/></property>
+					<property name="target">
+						<bean class="org.openmrs.module.reporting.dataset.query.service.BaseDataSetQueryService">
+							<property name="dao">
+								<ref bean="dataSetQueryDAO" />
 							</property>	
 						</bean>
 					</property>

@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.OpenmrsData;
 import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -49,6 +50,9 @@ public class EvaluationContext {
 	
 	// Base cohort to use for evaluation
 	private Cohort baseCohort;
+	
+	// Base set of ids to limit the rows evaluated and returned.
+	private Map<Class<? extends OpenmrsData>, Map<Integer, Integer>> baseIdSet;
 	
 	// Parameter values entered by user (or defaulted)
 	private Map<String, Object> parameterValues;
@@ -90,6 +94,7 @@ public class EvaluationContext {
 		this.setLimit(context.getLimit());
 		this.setCache(context.getCache());
 		this.setBaseCohort(context.getBaseCohort());
+		this.setBaseIdSet(context.getBaseIdSet());
 		this.getParameterValues().putAll(context.getParameterValues());
 	}
 	
@@ -282,7 +287,22 @@ public class EvaluationContext {
 		clearCache();
 		this.baseCohort = baseCohort;
 	}
-	
+
+	/**
+	 * @return the baseIdSet
+	 */
+	public Map<Class<? extends OpenmrsData>, Map<Integer, Integer>> getBaseIdSet() {
+		return baseIdSet;
+	}
+
+	/**
+	 * @param baseIdSet the baseIdSet to set
+	 */
+	public void setBaseIdSet(Map<Class<? extends OpenmrsData>, Map<Integer, Integer>> baseIdSet) {
+		clearCache();
+		this.baseIdSet = baseIdSet;
+	}
+
 	/**
 	 * @return the number of rows to evaluate
 	 */
