@@ -105,6 +105,27 @@
 		</property>
 	</bean>
 	
+	<!-- Base IdSet Definition Service -->
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list merge="true">
+				<value>org.openmrs.module.reporting.idset.service.IdSetDefinitionService</value> 
+				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+					<property name="transactionManager"><ref bean="transactionManager"/></property>
+					<property name="target">
+						<bean class="org.openmrs.module.reporting.idset.service.IdSetDefinitionServiceImpl"/>
+					</property>
+					<property name="preInterceptors">
+						<ref bean="serviceInterceptors" />
+					</property>
+					<property name="transactionAttributeSource">
+						<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+					</property>
+				</bean>		
+			</list>
+		</property>
+	</bean>
+	
 	<!-- Base Cohort Definition Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">

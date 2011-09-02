@@ -28,6 +28,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterConstants;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
+import org.openmrs.module.reporting.idset.IdSet;
 
 /**
  * The EvaluationContext provides the following capabilities: - A baseCohort, i.e. the universe of
@@ -52,7 +53,7 @@ public class EvaluationContext {
 	private Cohort baseCohort;
 	
 	// Base set of ids to limit the rows evaluated and returned.
-	private Map<Class<? extends OpenmrsData>, Map<Integer, Integer>> baseIdSet;
+	private Map<Class<? extends OpenmrsData>, IdSet> baseIdSets;
 	
 	// Parameter values entered by user (or defaulted)
 	private Map<String, Object> parameterValues;
@@ -94,7 +95,7 @@ public class EvaluationContext {
 		this.setLimit(context.getLimit());
 		this.setCache(context.getCache());
 		this.setBaseCohort(context.getBaseCohort());
-		this.setBaseIdSet(context.getBaseIdSet());
+		this.setBaseIdSets(context.getBaseIdSets());
 		this.getParameterValues().putAll(context.getParameterValues());
 	}
 	
@@ -289,18 +290,36 @@ public class EvaluationContext {
 	}
 
 	/**
-	 * @return the baseIdSet
+	 * @return the baseIdSets
 	 */
-	public Map<Class<? extends OpenmrsData>, Map<Integer, Integer>> getBaseIdSet() {
-		return baseIdSet;
+	public Map<Class<? extends OpenmrsData>, IdSet> getBaseIdSets() {
+		if (baseIdSets == null) {
+			baseIdSets = new HashMap<Class<? extends OpenmrsData>, IdSet>();
+		}
+		return baseIdSets;
 	}
 
 	/**
-	 * @param baseIdSet the baseIdSet to set
+	 * @param baseIdSets the baseIdSets to set
 	 */
-	public void setBaseIdSet(Map<Class<? extends OpenmrsData>, Map<Integer, Integer>> baseIdSet) {
+	public void setBaseIdSets(Map<Class<? extends OpenmrsData>, IdSet> baseIdSets) {
 		clearCache();
-		this.baseIdSet = baseIdSet;
+		this.baseIdSets = baseIdSets;
+	}
+	
+	/**
+	 * Adds a new IdSet
+	 */
+	public void addIdSet(Class<? extends OpenmrsData> type, IdSet idSet) {
+		clearCache();
+		getBaseIdSets().put(type, idSet);
+	}
+	
+	/**
+	 * Retrieves an IdSet
+	 */
+	public IdSet getIdSet(Class<? extends OpenmrsData> type) {
+		return getBaseIdSets().get(type);
 	}
 
 	/**
@@ -329,6 +348,7 @@ public class EvaluationContext {
 	 * @param evaluationDate the evaluationDate to set
 	 */
 	public void setEvaluationDate(Date evaluationDate) {
+		clearCache();
 		this.evaluationDate = evaluationDate;
 	}
 	

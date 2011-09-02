@@ -13,14 +13,12 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
-import org.openmrs.Patient;
-import org.openmrs.module.reporting.dataset.filter.Filter;
-import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.idset.definition.IdSetDefinition;
 
 /**
  * Represents a search strategy for arriving at a cohort.<br/>
  * You evaluate a CohortDefinition using CohortEvaluator
  */
-public interface CohortDefinition extends Definition, Filter<Patient>  {
+public interface CohortDefinition extends IdSetDefinition  {
 	
 }

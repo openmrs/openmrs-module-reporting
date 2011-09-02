@@ -13,31 +13,26 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
 import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.RowPerEncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.idset.IdSet;
 
 /**
  * The logic that evaluates a {@link RowPerObjectDataSetDefinition} and produces an {@link DataSet}
- * @see RowPerEncounterDataSetDefinition
  */
-@Handler(supports={RowPerObjectDataSetDefinition.class})
-public class RowPerObjectDataSetEvaluator implements DataSetEvaluator {
+public abstract class RowPerObjectDataSetEvaluator implements DataSetEvaluator {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
@@ -47,42 +42,40 @@ public class RowPerObjectDataSetEvaluator implements DataSetEvaluator {
 	public RowPerObjectDataSetEvaluator() { }
 	
 	/**
+	 * Implementations of this method should evaluate the appropriate id filters in the DataSetDefinition and
+	 * populate these IdSets within the Context
+	 */
+	public abstract void populateFilterIdSets(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context);
+	
+	/**
+	 * Implementations of this method should return the base IdSet that is appropriate for the passed DataSetDefinition
+	 */
+	public abstract IdSet getBaseIdSet(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context);
+	
+	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		RowPerObjectDataSetDefinition<? extends ColumnDefinition> dsd = (RowPerObjectDataSetDefinition<? extends ColumnDefinition>) dataSetDefinition;
+		DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
+		
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+		populateFilterIdSets(dsd, context);
+		IdSet baseIdSet = getBaseIdSet(dsd, context);
+		
 		RowPerObjectDataSet dataSet = new RowPerObjectDataSet(dsd, context);
-		DataSetDefinitionService dsds = Context.getService(DataSetDefinitionService.class);
-		
-		Cohort baseCohort = context.getBaseCohort();
-		if (baseCohort == null) {
-			baseCohort = Context.getPatientSetService().getAllPatients();
-		}
-		
-		// TODO: We probably want to add a way to filter down more thoroughly between column evaluations
-		// For example, keep contextual references to the encounterIds, obsIds, patientIds, etc that are still
-		// valid, and pass those through to the ColumnEvaluators as appropriate?
 
-		int columnNum = 0;
 		for (Mapped<? extends ColumnDefinition> mappedDef : dsd.getColumnDefinitions()) {
-			columnNum++;
-			EvaluatedColumnDefinition evaluatedColumnDef = dsds.evaluateColumn(mappedDef, context);
+			
+			EvaluatedColumnDefinition evaluatedColumnDef = service.evaluateColumn(mappedDef, context);
 			ColumnDefinition cd = evaluatedColumnDef.getDefinition();
+			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), cd.getDataType()); // TODO: Support One-Many column definition to column
 			
-			if (columnNum > 1) {
-				evaluatedColumnDef.retainColumnValues(dataSet.getRows().keySet());
+			for (Integer id : baseIdSet.getMemberIds()) {
+				dataSet.addColumnValue(id, column, evaluatedColumnDef.getColumnValues().get(id));
 			}
-			
-	    	for (Map.Entry<Integer, Object> e : evaluatedColumnDef.getColumnValues().entrySet()) {
-	    		Integer id = e.getKey();
-	    		Object value = e.getValue();
-	    		if (columnNum == 1 || dataSet.getRows().containsKey(id)) {
-	    			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), cd.getDataType());
-	    			dataSet.addColumnValue(id, column, value);
-	    		}
-	    	}
 		}
 
 		return dataSet;

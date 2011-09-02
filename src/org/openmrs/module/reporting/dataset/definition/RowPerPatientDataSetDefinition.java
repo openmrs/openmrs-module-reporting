@@ -13,9 +13,8 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
-import org.openmrs.Patient;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.patient.PatientColumnDefinition;
-import org.openmrs.module.reporting.dataset.filter.Filter;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
@@ -28,21 +27,21 @@ public class RowPerPatientDataSetDefinition extends RowPerObjectDataSetDefinitio
     //***** PROPERTIES *****
     
     @ConfigurationProperty
-	private Mapped<? extends Filter<Patient>> patientFilter;
+	private Mapped<? extends CohortDefinition> patientFilter;
     
     //***** PROPERTY ACCESS *****
 
 	/**
 	 * @return the patientFilter
 	 */
-	public Mapped<? extends Filter<Patient>> getPatientFilter() {
+	public Mapped<? extends CohortDefinition> getPatientFilter() {
 		return patientFilter;
 	}
 
 	/**
 	 * @param patientFilter the patientFilter to set
 	 */
-	public void setPatientFilter(Mapped<? extends Filter<Patient>> patientFilter) {
+	public void setPatientFilter(Mapped<? extends CohortDefinition> patientFilter) {
 		this.patientFilter = patientFilter;
 	}
 }

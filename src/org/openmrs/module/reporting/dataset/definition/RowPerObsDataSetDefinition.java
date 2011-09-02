@@ -16,18 +16,17 @@ package org.openmrs.module.reporting.dataset.definition;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.encounter.EncounterColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.obs.ObsColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.obs.ObsEncounterColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.obs.ObsPatientColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.patient.PatientColumnDefinition;
-import org.openmrs.module.reporting.dataset.filter.Filter;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.idset.definition.encounter.EncounterIdSetDefinition;
+import org.openmrs.module.reporting.idset.definition.obs.ObsIdSetDefinition;
 
 /**
  * DataSetDefinition for Producing a DataSet that has one row per Encounter
@@ -38,13 +37,13 @@ public class RowPerObsDataSetDefinition extends RowPerObjectDataSetDefinition<Ob
     //***** PROPERTIES *****
     
     @ConfigurationProperty
-	private Mapped<? extends Filter<Patient>> patientFilter;
+	private Mapped<? extends CohortDefinition> patientFilter;
     
     @ConfigurationProperty
-	private Mapped<? extends Filter<Encounter>> encounterFilter;
+	private Mapped<? extends EncounterIdSetDefinition> encounterFilter;
     
     @ConfigurationProperty
-	private Mapped<? extends Filter<Obs>> obsFilter;
+	private Mapped<? extends ObsIdSetDefinition> obsFilter;
 	
 	//***** INSTANCE METHODS *****
 
@@ -111,42 +110,42 @@ public class RowPerObsDataSetDefinition extends RowPerObjectDataSetDefinition<Ob
 	/**
 	 * @return the patientFilter
 	 */
-	public Mapped<? extends Filter<Patient>> getPatientFilter() {
+	public Mapped<? extends CohortDefinition> getPatientFilter() {
 		return patientFilter;
 	}
 
 	/**
 	 * @param patientFilter the patientFilter to set
 	 */
-	public void setPatientFilter(Mapped<? extends Filter<Patient>> patientFilter) {
+	public void setPatientFilter(Mapped<? extends CohortDefinition> patientFilter) {
 		this.patientFilter = patientFilter;
 	}
 
 	/**
 	 * @return the encounterFilter
 	 */
-	public Mapped<? extends Filter<Encounter>> getEncounterFilter() {
+	public Mapped<? extends EncounterIdSetDefinition> getEncounterFilter() {
 		return encounterFilter;
 	}
 
 	/**
 	 * @param encounterFilter the encounterFilter to set
 	 */
-	public void setEncounterFilter(Mapped<? extends Filter<Encounter>> encounterFilter) {
+	public void setEncounterFilter(Mapped<? extends EncounterIdSetDefinition> encounterFilter) {
 		this.encounterFilter = encounterFilter;
 	}
 
 	/**
 	 * @return the obsFilter
 	 */
-	public Mapped<? extends Filter<Obs>> getObsFilter() {
+	public Mapped<? extends ObsIdSetDefinition> getObsFilter() {
 		return obsFilter;
 	}
 
 	/**
 	 * @param obsFilter the obsFilter to set
 	 */
-	public void setObsFilter(Mapped<? extends Filter<Obs>> obsFilter) {
+	public void setObsFilter(Mapped<? extends ObsIdSetDefinition> obsFilter) {
 		this.obsFilter = obsFilter;
 	}
 }
