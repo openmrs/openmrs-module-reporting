@@ -13,9 +13,12 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Person;
+import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
@@ -24,12 +27,14 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.idset.EvaluatedIdSet;
 import org.openmrs.module.reporting.idset.IdSet;
+import org.openmrs.module.reporting.idset.PersonIdSet;
 import org.openmrs.module.reporting.idset.service.IdSetDefinitionService;
 
 /**
  * The logic that evaluates a {@link RowPerObjectDataSetDefinition} and produces an {@link DataSet}
  */
-public abstract class RowPerPersonDataSetEvaluator implements DataSetEvaluator {
+@Handler(supports=RowPerPersonDataSetDefinition.class)
+public class RowPerPersonDataSetEvaluator extends RowPerObjectDataSetEvaluator {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
@@ -44,14 +49,25 @@ public abstract class RowPerPersonDataSetEvaluator implements DataSetEvaluator {
 	 */
 	public void populateFilterIdSets(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) throws EvaluationException {
 		RowPerPersonDataSetDefinition rpp = (RowPerPersonDataSetDefinition) dsd;
-		EvaluatedIdSet personIdSet = Context.getService(IdSetDefinitionService.class).evaluate(rpp.getPersonFilter(), context);
-		context.getBaseIdSets().put(Person.class, personIdSet.getIdSet());
+		if (rpp.getPersonFilter() != null) {
+			EvaluatedIdSet personIdSet = Context.getService(IdSetDefinitionService.class).evaluate(rpp.getPersonFilter(), context);
+			context.getBaseIdSets().put(Person.class, personIdSet.getIdSet());
+		}
 	}
 	
 	/**
 	 * Implementations of this method should return the base IdSet that is appropriate for the passed DataSetDefinition
 	 */
 	public IdSet getBaseIdSet(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) {
-		return context.getBaseIdSets().get(Person.class);
+		IdSet s = context.getBaseIdSets().get(Person.class);
+		if (s == null) {
+			s = new PersonIdSet();
+			String query = "select person_id from person where voided = false";
+			List<List<Object>> results = Context.getAdministrationService().executeSQL(query, true);
+			for (List<Object> l : results) {
+				s.add((Integer)l.get(0));
+			}
+		}
+		return s;
 	}
 }

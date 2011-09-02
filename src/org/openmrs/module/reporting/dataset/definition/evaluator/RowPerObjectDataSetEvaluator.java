@@ -26,6 +26,7 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.idset.IdSet;
 
@@ -45,7 +46,7 @@ public abstract class RowPerObjectDataSetEvaluator implements DataSetEvaluator {
 	 * Implementations of this method should evaluate the appropriate id filters in the DataSetDefinition and
 	 * populate these IdSets within the Context
 	 */
-	public abstract void populateFilterIdSets(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context);
+	public abstract void populateFilterIdSets(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * Implementations of this method should return the base IdSet that is appropriate for the passed DataSetDefinition
@@ -56,7 +57,7 @@ public abstract class RowPerObjectDataSetEvaluator implements DataSetEvaluator {
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
-	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 		
 		RowPerObjectDataSetDefinition<? extends ColumnDefinition> dsd = (RowPerObjectDataSetDefinition<? extends ColumnDefinition>) dataSetDefinition;
 		DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);

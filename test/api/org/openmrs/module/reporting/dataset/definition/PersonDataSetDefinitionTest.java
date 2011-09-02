@@ -19,6 +19,7 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -70,20 +71,18 @@ public class PersonDataSetDefinitionTest extends BaseModuleContextSensitiveTest 
 			output.append(c.getParameterizable().getName() + "\t");
 		}
 		output.append("\n");
-		int rowNum = 0;
 		for (Iterator<DataSetRow> i = dataset.iterator(); i.hasNext();) {
 			DataSetRow r = i.next();
-			if (rowNum++ == 0) {
-				for (DataSetColumn c : r.getColumnValues().keySet()) {
-					output.append(c.getLabel() + "\t");
-				}
-				output.append("\n");
-			}
 			for (DataSetColumn c : r.getColumnValues().keySet()) {
 				output.append(r.getColumnValue(c) + "\t");
 			}
 			output.append("\n");
 		}
 		System.out.println(output.toString());
+	}
+	
+	@Before
+	public void setup() throws Exception {
+		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
 	}
 }
