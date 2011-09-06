@@ -88,6 +88,16 @@ public class Age {
 	 * Return the age in full months
 	 */
 	public Integer getFullMonths() {
+		if (birthDate != null) {
+			return getFullYears() * 12 + getFullMonthsSinceLastBirthday();
+		}
+		return null;
+	}
+	
+	/**
+	 * Return the age in full months since last birthday
+	 */
+	public Integer getFullMonthsSinceLastBirthday() {
 		Integer age = null;
 		if (birthDate != null) {
 			Calendar today = Calendar.getInstance();

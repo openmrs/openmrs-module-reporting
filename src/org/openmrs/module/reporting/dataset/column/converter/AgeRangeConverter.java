@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
- * Date column converter
+ * Converts an Age to one of a series of defined Age Ranges
  */
 public class AgeRangeConverter implements ColumnConverter {
 	
@@ -37,6 +37,8 @@ public class AgeRangeConverter implements ColumnConverter {
 
 	/** 
 	 * @see ColumnConverter#converter(Object)
+	 * @should convert an Age to a matching defined Age Range
+	 * @should return null if the Age does not fall within an Age Range
 	 */
 	public Object convert(Object original) {
 		Age age = (Age)original;
@@ -45,7 +47,7 @@ public class AgeRangeConverter implements ColumnConverter {
 				return ObjectUtil.nvl(a.getLabel(), a.toString());
 			}
 		}
-		return "";
+		return null;
 	}
 	
 	/** 

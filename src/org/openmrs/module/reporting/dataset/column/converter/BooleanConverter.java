@@ -44,6 +44,7 @@ public class BooleanConverter implements ColumnConverter  {
 
 	/** 
 	 * @see ColumnConverter#converter(Object)
+	 * @should convert a Boolean to a configured text representation
 	 */
 	public Object convert(Object original) {
 		Boolean b = (Boolean) original;

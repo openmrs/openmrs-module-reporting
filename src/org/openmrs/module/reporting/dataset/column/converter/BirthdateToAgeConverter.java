@@ -43,6 +43,7 @@ public class BirthdateToAgeConverter implements ColumnConverter {
 
 	/** 
 	 * @see ColumnConverter#converter(Object)
+	 * @should convert a birthdate to an age on the configured date
 	 */
 	public Object convert(Object original) {
 		Date birthdate = (Date) original;

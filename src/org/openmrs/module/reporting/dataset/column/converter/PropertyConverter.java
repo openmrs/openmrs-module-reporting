@@ -17,13 +17,14 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
 
 /**
- * Date column converter
+ * Property column converter
  */
-public class PropertyConverter<T> implements ColumnConverter {
+public class PropertyConverter implements ColumnConverter {
 	
 	//***** PROPERTIES *****
 	
-	private String format;
+	private Class<?> typeToConvert;
+	private String propertyName;
 	
 	//***** CONSTRUCTORS *****
 	
@@ -32,30 +33,43 @@ public class PropertyConverter<T> implements ColumnConverter {
 	/**
 	 * Full Constructor
 	 */
-	public PropertyConverter(String format) {
-		this.format = format;
+	public PropertyConverter(Class<?> typeToConvert, String propertyName) {
+		this.typeToConvert = typeToConvert;
+		this.propertyName = propertyName;
 	}
 	
 	//***** INSTANCE METHODS *****
 
 	/** 
 	 * @see ColumnConverter#converter(Object)
+	 * @should convert an Object into it's property whose name is the configured propertyName
+	 * @should convert an Object into it's string representation if not propertyName is configured
 	 */
 	public Object convert(Object o) {
-		String propertyName = ObjectUtil.nvl(getFormat(), "");
+		String propertyName = ObjectUtil.nvl(getPropertyName(), "");
 		if (o != null) {
 			if (ObjectUtil.isNull(propertyName)) {
 				return o.toString();
 			}
 			return ReflectionUtil.getPropertyValue(o, propertyName);
 		}
-		return "";
+		return null;
 	}
 	
 	/** 
 	 * @see ColumnConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
+		if (typeToConvert != null) {
+			if (propertyName != null) {
+				return ReflectionUtil.getField(typeToConvert, getPropertyName()).getType();
+			}
+		}
+		else {
+			if (propertyName != null) {
+				return Object.class;
+			}
+		}
 		return String.class;
 	}
 	
@@ -69,16 +83,30 @@ public class PropertyConverter<T> implements ColumnConverter {
 	//***** PROPERTY ACCESS *****
 
 	/**
-	 * @return the format
+	 * @return the typeToConvert
 	 */
-	public String getFormat() {
-		return format;
+	public Class<?> getTypeToConvert() {
+		return typeToConvert;
 	}
 
 	/**
-	 * @param format the format to set
+	 * @param typeToConvert the typeToConvert to set
 	 */
-	public void setFormat(String format) {
-		this.format = format;
+	public void setTypeToConvert(Class<?> typeToConvert) {
+		this.typeToConvert = typeToConvert;
+	}
+	
+	/**
+	 * @return the propertyName
+	 */
+	public String getPropertyName() {
+		return propertyName;
+	}
+
+	/**
+	 * @param propertyName the propertyName to set
+	 */
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
 	}
 }

@@ -41,6 +41,8 @@ public class AttributeValueConverter implements ColumnConverter {
 
 	/** 
 	 * @see ColumnConverter#converter(Object)
+	 * @should convert a serialized attribute value into its hydrated object form
+	 * @should return the passed in value if it is not attributable
 	 */
 	public Object convert(Object original) {
 		String value = (String) original;

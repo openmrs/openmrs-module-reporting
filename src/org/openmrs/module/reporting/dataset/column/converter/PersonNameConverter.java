@@ -22,12 +22,12 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 public class PersonNameConverter implements ColumnConverter {
 	
 	public static String PREFIX = "{p}";
-	public static String GIVEN_NAME = "{g}";
-	public static String MIDDLE_NAME = "{m}";
-	public static String FAMILY_NAME_PREFIX = "{fp}";
-	public static String FAMILY_NAME = "{f}";
-	public static String FAMILY_NAME_2 = "{f2}";
-	public static String FAMILY_NAME_SUFFIX = "{fs}";
+	public static String GIVEN_NAME = "{gn}";
+	public static String MIDDLE_NAME = "{mn}";
+	public static String FAMILY_NAME_PREFIX = "{fnp}";
+	public static String FAMILY_NAME = "{fn}";
+	public static String FAMILY_NAME_2 = "{fn2}";
+	public static String FAMILY_NAME_SUFFIX = "{fns}";
 	public static String DEGREE = "{d}";
 	
 	//***** PROPERTIES *****
@@ -49,6 +49,7 @@ public class PersonNameConverter implements ColumnConverter {
 
 	/** 
 	 * @see ColumnConverter#converter(Object)
+	 * @should convert a Person name into a String using a format expression
 	 */
 	public Object convert(Object original) {
 		PersonName name = (PersonName) original;

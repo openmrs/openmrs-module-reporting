@@ -17,7 +17,7 @@ import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
- * Converters a Birthdate into an Age
+ * Converts a Birthdate into an Age
  */
 public class AgeConverter implements ColumnConverter {
 	
@@ -43,10 +43,13 @@ public class AgeConverter implements ColumnConverter {
 
 	/** 
 	 * @see ColumnConverter#converter(Object)
+	 * @should convert an Age to integer years
+	 * @should convert an Age to integer months
+	 * @should convert an Age to a formatted string
 	 */
 	public Object convert(Object original) {
 		Age age = (Age) original;
-		String s = ObjectUtil.nvl(getFormat(), "{y}");
+		String s = ObjectUtil.nvl(getFormat(), YEARS);
 		if (age != null) {
 			if (s.equals(MONTHS)) {
 				return age.getFullMonths();
@@ -75,7 +78,7 @@ public class AgeConverter implements ColumnConverter {
 	 * @see ColumnConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
-		String s = ObjectUtil.nvl(getFormat(), "{y}");
+		String s = ObjectUtil.nvl(getFormat(), YEARS);
 		if (s.equals(MONTHS) || s.equals(YEARS)) {
 			return Integer.class;
 		}

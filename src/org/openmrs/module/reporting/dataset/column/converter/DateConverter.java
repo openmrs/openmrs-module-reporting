@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.dataset.column.converter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.openmrs.module.reporting.common.ObjectUtil;
 
@@ -35,19 +36,27 @@ public class DateConverter implements ColumnConverter {
 	}
 	
 	/**
-	 * Full Constructor
+	 * Constructor for just format, defaults to English Locale
 	 */
 	public DateConverter(String format) {
+		this (format, Locale.ENGLISH);
+	}
+	
+	/**
+	 * Full Constructor
+	 */
+	public DateConverter(String format, Locale locale) {
 		if (ObjectUtil.isNull(format)) {
 			format = "yyyy-MM-dd";
 		}
-		df = new SimpleDateFormat(format);
+		df = new SimpleDateFormat(format, locale);
 	}
 	
 	//***** INSTANCE METHODS *****
 
 	/** 
 	 * @see ColumnConverter#converter(Object)
+	 * @should convert a Date into a String with the passed format
 	 */
 	public String convert(Object original) {
 		Date date = (Date) original;
