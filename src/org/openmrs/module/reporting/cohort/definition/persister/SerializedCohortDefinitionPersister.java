@@ -13,14 +13,9 @@
  */
 package org.openmrs.module.reporting.cohort.definition.persister;
 
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
+import org.openmrs.module.reporting.definition.persister.SerializedDefinitionPersister;
 
 /**
  * This class returns CohortDefinitions that have been Serialized to the database
@@ -30,72 +25,15 @@ import org.openmrs.module.reporting.definition.service.SerializedDefinitionServi
  * should specify the order field on the Handler annotation.
  */
 @Handler(supports={CohortDefinition.class})
-public class SerializedCohortDefinitionPersister implements CohortDefinitionPersister {
-	
-	protected static Log log = LogFactory.getLog(SerializedCohortDefinitionPersister.class);
-	
-    //****************
-    // Constructor
-    //****************
+public class SerializedCohortDefinitionPersister extends SerializedDefinitionPersister<CohortDefinition> implements CohortDefinitionPersister {
+
 	protected SerializedCohortDefinitionPersister() { }
-	
-    //****************
-    // Instance methods
-    //****************
-	
+
 	/**
-	 * Utility method that returns the SerializedDefinitionService
+	 * @see SerializedDefinitionPersister#getBaseClass()
 	 */
-	public SerializedDefinitionService getService() {
-		return Context.getService(SerializedDefinitionService.class);
+	@Override
+	public Class<CohortDefinition> getBaseClass() {
+		return CohortDefinition.class;
 	}
-
-	/**
-     * @see CohortDefinitionPersister#getCohortDefinition(Integer)
-     */
-    public CohortDefinition getCohortDefinition(Integer id) {
-    	return getService().getDefinition(CohortDefinition.class, id);
-    }
-    
-	/**
-     * @see CohortDefinitionPersister#getCohortDefinitionByUuid(String)
-     */
-    public CohortDefinition getCohortDefinitionByUuid(String uuid) {
-     	return getService().getDefinitionByUuid(CohortDefinition.class, uuid);
-    }
-
-	/**
-     * @see CohortDefinitionPersister#getAllCohortDefinitions(boolean)
-     */
-    public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired) {
-     	return getService().getAllDefinitions(CohortDefinition.class, includeRetired);
-    }
-    
-	/**
-	 * @see CohortDefinitionPersister#getNumberOfCohortDefinitions(boolean)
-	 */
-	public int getNumberOfCohortDefinitions(boolean includeRetired) {
-    	return getService().getNumberOfDefinitions(CohortDefinition.class, includeRetired);
-	}
-
-	/**
-     * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)
-     */
-    public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) {
-    	return getService().getDefinitions(CohortDefinition.class, name, exactMatchOnly);
-    }
-    
-	/**
-     * @see CohortDefinitionPersister#saveCohortDefinition(CohortDefinition)
-     */
-    public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {
-     	return getService().saveDefinition(cohortDefinition);
-    }
-
-	/**
-     * @see CohortDefinitionPersister#purgeCohortDefinition(CohortDefinition)
-     */
-    public void purgeCohortDefinition(CohortDefinition cohortDefinition) {
-    	getService().purgeDefinition(cohortDefinition);
-    }
 }

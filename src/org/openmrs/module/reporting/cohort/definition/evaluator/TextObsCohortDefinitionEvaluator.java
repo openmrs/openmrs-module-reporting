@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.TextObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -20,14 +21,16 @@ public class TextObsCohortDefinitionEvaluator implements CohortDefinitionEvaluat
 	 * @should test any with many properties specified
 	 * @should test last with many properties specified
 	 */
-	public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
 		TextObsCohortDefinition cd = (TextObsCohortDefinition) cohortDefinition;
 		
-		return Context.getService(CohortQueryService.class).getPatientsHavingDiscreteObs(
+		Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingDiscreteObs(
 			cd.getTimeModifier(), cd.getQuestion(), cd.getGroupingConcept(),
 			cd.getOnOrAfter(), cd.getOnOrBefore(),
 			cd.getLocationList(), cd.getEncounterTypeList(),
 			cd.getOperator(), cd.getValueList());
+		
+		return new EvaluatedCohort(c, cohortDefinition, context);
 	}
 	
 }

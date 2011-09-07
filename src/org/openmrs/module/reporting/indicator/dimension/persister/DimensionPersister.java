@@ -3,13 +3,14 @@ package org.openmrs.module.reporting.indicator.dimension.persister;
 import java.util.List;
 
 import org.openmrs.api.APIException;
+import org.openmrs.module.reporting.definition.persister.DefinitionPersister;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
 
 /**
  * This interface exposes the functionality required to access the Data Access
  * functionality for a particular set of Dimension implementations
  */
-public interface DimensionPersister {
+public interface DimensionPersister extends DefinitionPersister<Dimension> {
 
 	/**
 	 * Gets the {@link Dimension} that matches the given id
@@ -20,7 +21,7 @@ public interface DimensionPersister {
 	 * @should return null when does not exist
 	 * @should return dimension when exists
 	 */
-	public Dimension getDimension(Integer id);
+	public Dimension getDefinition(Integer id);
 	
 	/**
 	 * Gets the {@link Dimension} that matches the given uuid
@@ -31,7 +32,7 @@ public interface DimensionPersister {
 	 * @should return null when does not exist
 	 * @should return dimension when exists
 	 */
-	public Dimension getDimensionByUuid(String uuid);
+	public Dimension getDefinitionByUuid(String uuid);
 	
 	/**
 	 * @param includeRetired - if true, include retired {@link Dimension}s in the returned List
@@ -40,13 +41,13 @@ public interface DimensionPersister {
 	 * @should get all dimensions including retired
 	 * @should get all dimensions not including retired
 	 */
-	public List<Dimension> getAllDimensions(boolean includeRetired);
+	public List<Dimension> getAllDefinitions(boolean includeRetired);
 	
 	/**
 	 * @param includeRetired indicates whether to also include retired Dimensions in the count
 	 * @return the number of saved Dimensions
 	 */
-	public int getNumberOfDimensions(boolean includeRetired);
+	public int getNumberOfDefinitions(boolean includeRetired);
 	
 	/**
 	 * Returns a List of {@link Dimension} whose name contains the passed name.
@@ -58,7 +59,7 @@ public interface DimensionPersister {
 	 * @throws APIException
 	 * @return a List<Dimension> objects whose name contains the passed name
 	 */
-	public List<Dimension> getDimensions(String name, boolean exactMatchOnly);
+	public List<Dimension> getDefinitions(String name, boolean exactMatchOnly);
 	
 	/**
 	 * Saves the given {@link Dimension} to the system.
@@ -70,7 +71,7 @@ public interface DimensionPersister {
 	 * @should update existing dimension
 	 * @should set identifier after save
 	 */
-	public Dimension saveDimension(Dimension dimension);
+	public Dimension saveDefinition(Dimension dimension);
 	
 	/**
 	 * Deletes a {@link Dimension} from the system.
@@ -79,5 +80,5 @@ public interface DimensionPersister {
 	 * 
 	 * @should remove the dimension
 	 */
-	public void purgeDimension(Dimension dimension);
+	public void purgeDefinition(Dimension dimension);
 }

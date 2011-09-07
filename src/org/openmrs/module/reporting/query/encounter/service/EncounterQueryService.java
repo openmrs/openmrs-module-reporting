@@ -32,11 +32,11 @@ public interface EncounterQueryService extends DefinitionService<EncounterQuery>
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public EvaluatedEncounterQuery evaluate(EncounterQuery definition, EvaluationContext context) throws EvaluationException;
+	public EvaluatedEncounterQuery evaluate(EncounterQuery query, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public EvaluatedEncounterQuery evaluate(Mapped<? extends EncounterQuery> definition, EvaluationContext context) throws EvaluationException;
+	public EvaluatedEncounterQuery evaluate(Mapped<? extends EncounterQuery> mappedQuery, EvaluationContext context) throws EvaluationException;
 }

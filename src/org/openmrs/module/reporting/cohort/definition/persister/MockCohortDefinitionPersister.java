@@ -34,48 +34,48 @@ public class MockCohortDefinitionPersister implements CohortDefinitionPersister 
 	Map<String,CohortDefinition> indexByUuid = new HashMap<String,CohortDefinition>();	
 	
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinition(Integer)
+     * @see CohortDefinitionPersister#getDefinition(Integer)
      */
-    public CohortDefinition getCohortDefinition(Integer id) {
+    public CohortDefinition getDefinition(Integer id) {
     	return indexById.get(id);
     }
     
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinitionByUuid(String)
+     * @see CohortDefinitionPersister#getDefinitionByUuid(String)
      */
-    public CohortDefinition getCohortDefinitionByUuid(String uuid) {
+    public CohortDefinition getDefinitionByUuid(String uuid) {
     	return indexByUuid.get(uuid);
     }
 
 	/**
-     * @see CohortDefinitionPersister#getAllCohortDefinitions(boolean)
+     * @see CohortDefinitionPersister#getAllDefinitions(boolean)
      */
-    public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired) {
+    public List<CohortDefinition> getAllDefinitions(boolean includeRetired) {
     	return cohortDefinitions;
     }
     
 	/**
-	 * @see CohortDefinitionPersister#getNumberOfCohortDefinitions(boolean)
+	 * @see CohortDefinitionPersister#getNumberOfDefinitions(boolean)
 	 */
-	public int getNumberOfCohortDefinitions(boolean includeRetired) {
+	public int getNumberOfDefinitions(boolean includeRetired) {
 		return cohortDefinitions.size();
 	}
 
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)
+     * @see CohortDefinitionPersister#getDefinitionByName(String, boolean)
      */
-    public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) {
+    public List<CohortDefinition> getDefinitions(String name, boolean exactMatchOnly) {
     	return cohortDefinitions;
     }
     
 	/**
-     * @see CohortDefinitionPersister#saveCohortDefinition(CohortDefinition)
+     * @see CohortDefinitionPersister#saveDefinition(Definition)
      */
-    public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {
+    public CohortDefinition saveDefinition(CohortDefinition cohortDefinition) {
     	
     	// Remove the existing cohort definition
-    	if (getCohortDefinitionByUuid(cohortDefinition.getUuid())!=null) { 
-    		purgeCohortDefinition(cohortDefinition);
+    	if (getDefinitionByUuid(cohortDefinition.getUuid())!=null) { 
+    		purgeDefinition(cohortDefinition);
     	} 
     	// Otherwise, we set the UUID and identifier of the new cohort definition
     	else { 
@@ -94,9 +94,9 @@ public class MockCohortDefinitionPersister implements CohortDefinitionPersister 
     }
 
 	/**
-     * @see CohortDefinitionPersister#purgeCohortDefinition(CohortDefinition)
+     * @see CohortDefinitionPersister#purgeDefinition(CohortDefinition)
      */
-    public void purgeCohortDefinition(CohortDefinition cohortDefinition) {    	
+    public void purgeDefinition(CohortDefinition cohortDefinition) {    	
     	indexById.remove(cohortDefinition.getId());
     	indexByUuid.remove(cohortDefinition.getUuid());
     	cohortDefinitions.remove(cohortDefinition);    	

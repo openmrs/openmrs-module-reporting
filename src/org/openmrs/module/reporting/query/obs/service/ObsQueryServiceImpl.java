@@ -11,48 +11,43 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition.service;
+package org.openmrs.module.reporting.query.obs.service;
 
-import org.openmrs.module.reporting.cohort.EvaluatedCohort;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.springframework.stereotype.Service;
+import org.openmrs.module.reporting.query.obs.EvaluatedObsQuery;
+import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *  Base Implementation of the CohortDefinitionService API
+ *  Base Implementation of the ObsQueryService API
  */
-@Transactional
-@Service
-public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDefinition> implements CohortDefinitionService {
-	
+public class ObsQueryServiceImpl extends BaseDefinitionService<ObsQuery> implements ObsQueryService {
+
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	public Class<CohortDefinition> getDefinitionType() {
-		return CohortDefinition.class;
+	public Class<ObsQuery> getDefinitionType() {
+		return ObsQuery.class;
 	}
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	@Override
-	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws EvaluationException {
-		return (EvaluatedCohort)super.evaluate(definition, context);
+	public EvaluatedObsQuery evaluate(ObsQuery query, EvaluationContext context) throws EvaluationException {
+		return (EvaluatedObsQuery)super.evaluate(query, context);
 	}
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	@Override
-	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException {
-		return (EvaluatedCohort)super.evaluate(definition, context);
+	public EvaluatedObsQuery evaluate(Mapped<? extends ObsQuery> mappedQuery, EvaluationContext context) throws EvaluationException {
+		return (EvaluatedObsQuery)super.evaluate(mappedQuery, context);
 	}
 }

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.indicator.dimension.evaluator;
 
+import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -21,7 +22,7 @@ import org.openmrs.module.reporting.indicator.dimension.Dimension;
 /**
  * This interfaces provides the functionality to evaluate a dimension and return a result.
  */
-public interface DimensionEvaluator {
+public interface DimensionEvaluator extends DefinitionEvaluator<Dimension> {
 	
 	/**
 	 * Evaluates an Dimension based on the passed EvaluationContext

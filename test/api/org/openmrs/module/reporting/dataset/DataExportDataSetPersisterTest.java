@@ -91,7 +91,7 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 		// big time hack: this test only works if it's first, because I'm creating the Data Exports programmatically, and each run they get new autonumbered ids.
 		// if the initial data gets set up via executing an xml dataset instead, then this test can be anywhere in the class
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		DataSetDefinition def = persister.getDataSetDefinition(1);
+		DataSetDefinition def = persister.getDefinition(1);
 		Assert.assertNotNull("Should return dataset definition if exists", def); 		
 	}
 	
@@ -103,35 +103,35 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 	@Test
 	public void shouldGetAllDataSetDefinitions() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		List<DataSetDefinition> list = persister.getAllDataSetDefinitions(false);
+		List<DataSetDefinition> list = persister.getAllDefinitions(false);
 		Assert.assertEquals("Should return all dataset definitions", 5, list.size()); 		
 	}
 	
 	@Test
 	public void shouldReturnAllDatasetDefinitionsIncludingRetired() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		List<DataSetDefinition> list = persister.getAllDataSetDefinitions(true);
+		List<DataSetDefinition> list = persister.getAllDefinitions(true);
 		Assert.assertEquals("Should return all dataset definitions, including retired", 5, list.size()); 		
 	}
 	
 	@Test
 	public void shouldReturnAllDatasetDefinitionsExcludingRetired() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		List<DataSetDefinition> list = persister.getAllDataSetDefinitions(false);		
+		List<DataSetDefinition> list = persister.getAllDefinitions(false);		
 		Assert.assertEquals("Should return all dataset definitions, excluding retired", 5, list.size()); 		
 	}
 	
 	@Test
 	public void shouldReturnNullIfNotExist() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		DataSetDefinition def = persister.getDataSetDefinition(999);	
+		DataSetDefinition def = persister.getDefinition(999);	
 		Assert.assertNull("Should return null if not exists", def); 		
 	}
 	@Test
 	public void shouldReturnNullIfNameDoesNotMatch() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
 		List<DataSetDefinition> def = 
-			persister.getDataSetDefinitions("Dataset definition that does not exist", true);
+			persister.getDefinitions("Dataset definition that does not exist", true);
 		Assert.assertEquals(0, def.size()); 		
 	}
 	
@@ -139,14 +139,14 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 	public void shouldReturnDataSetDefinitionIfNameMatches() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
 		List<DataSetDefinition> def = 
-			persister.getDataSetDefinitions("Test First 3 Weights", true);
+			persister.getDefinitions("Test First 3 Weights", true);
 		Assert.assertEquals(1, def.size()); 		
 	}
 
 	@Test(expected=UnsupportedOperationException.class)
 	public void shouldNotBeAbleToModifyUnderlyingDataExport() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		DataSetDefinition datasetDefinition = persister.getDataSetDefinitions("Test First 3 Weights", true).get(0);
+		DataSetDefinition datasetDefinition = persister.getDefinitions("Test First 3 Weights", true).get(0);
 		datasetDefinition.setName("My Data Set Definition");
 	}
 	
@@ -158,17 +158,17 @@ public class DataExportDataSetPersisterTest extends BaseModuleContextSensitiveTe
 		dataExport.setName("My Data Set Definition");
 		// Save an existing data set definition
 		DataSetDefinition datasetDefinition = new DataExportDataSetDefinition(dataExport);		
-		datasetDefinition = persister.saveDataSetDefinition(datasetDefinition);
+		datasetDefinition = persister.saveDefinition(datasetDefinition);
 		Assert.assertNotNull("Should set identifier after saving dataset definition", datasetDefinition.getId());
 	}
 
 	@Test
 	public void shouldRemoveDataSetDefintion() throws Exception { 
 		DataSetDefinitionPersister persister = new DataExportDataSetDefinitionPersister();
-		DataSetDefinition beforePurge = persister.getDataSetDefinitions("Test First 3 Weights", true).get(0);
+		DataSetDefinition beforePurge = persister.getDefinitions("Test First 3 Weights", true).get(0);
 		int idBefore = beforePurge.getId();
-		persister.purgeDataSetDefinition(beforePurge);
-		DataSetDefinition afterPurge = persister.getDataSetDefinition(idBefore);
+		persister.purgeDefinition(beforePurge);
+		DataSetDefinition afterPurge = persister.getDefinition(idBefore);
 		Assert.assertNull(afterPurge);
 	}
 }

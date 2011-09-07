@@ -60,14 +60,6 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	public Integer getId() {
 		return (getDataExport() == null ? null : getDataExport().getId());
 	}
-	
-	/**
-	 * @see BaseDataSetDefinition#setId(Integer)
-	 */
-	@Override
-	public void setId(Integer id) {
-		throw new UnsupportedOperationException();
-	}
 
 	/**
 	 * @see BaseOpenmrsObject#getUuid()
@@ -76,29 +68,13 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	public String getUuid() {
 		return (getDataExport() == null ? null : getDataExport().getUuid());
 	}
-	
-	/**
-	 * @see BaseOpenmrsObject#setUuid(String)
-	 */
-	@Override
-	public void setUuid(String uuid) {
-		throw new UnsupportedOperationException();
-	}
-	
+
 	/**
 	 * @see BaseOpenmrsMetadata#getName()
 	 */
 	@Override
 	public String getName() {
 		return (getDataExport() == null ? null : getDataExport().getName());
-	}
-	
-	/**
-	 * @see BaseOpenmrsMetadata#setName(String)
-	 */
-	@Override
-	public void setName(String name) {
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -107,14 +83,6 @@ public class DataExportDataSetDefinition extends BaseDataSetDefinition {
 	@Override
 	public String getDescription() {
 		return (getDataExport() == null ? null : getDataExport().getDescription());
-	}
-	
-	/**
-	 * @see BaseOpenmrsMetadata#setDescription(String)
-	 */
-	@Override
-	public void setDescription(String description) {
-		throw new UnsupportedOperationException();
 	}
 	
 	//***** PROPERTY ACCESS *****

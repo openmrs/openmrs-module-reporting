@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -25,15 +26,17 @@ public class NumericObsCohortDefinitionEvaluator implements CohortDefinitionEval
 	 * @should test last with many properties specified 
 	 * @should should find patients with obs within the specified time frame
 	 */
-	public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
 		NumericObsCohortDefinition cd = (NumericObsCohortDefinition) cohortDefinition;
 		
-		return Context.getService(CohortQueryService.class).getPatientsHavingRangedObs(
+		Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingRangedObs(
 			cd.getTimeModifier(), cd.getQuestion(), cd.getGroupingConcept(),
 			cd.getOnOrAfter(), cd.getOnOrBefore(),
 			cd.getLocationList(), cd.getEncounterTypeList(),
 			cd.getOperator1(), cd.getValue1(),
 			cd.getOperator2(), cd.getValue2());
+		
+		return new EvaluatedCohort(c, cohortDefinition, context);
 	}
 	
 }

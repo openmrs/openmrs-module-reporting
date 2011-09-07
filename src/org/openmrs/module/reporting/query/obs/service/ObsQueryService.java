@@ -32,11 +32,11 @@ public interface ObsQueryService extends DefinitionService<ObsQuery> {
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public EvaluatedObsQuery evaluate(ObsQuery definition, EvaluationContext context) throws EvaluationException;
+	public EvaluatedObsQuery evaluate(ObsQuery query, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public EvaluatedObsQuery evaluate(Mapped<? extends ObsQuery> definition, EvaluationContext context) throws EvaluationException;
+	public EvaluatedObsQuery evaluate(Mapped<? extends ObsQuery> mappedQuery, EvaluationContext context) throws EvaluationException;
 }

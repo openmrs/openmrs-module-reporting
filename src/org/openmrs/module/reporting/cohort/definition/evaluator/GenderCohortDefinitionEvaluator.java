@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -41,9 +42,10 @@ public class GenderCohortDefinitionEvaluator implements CohortDefinitionEvaluato
      * @should return patients with unknown gender when unknown are included
      * @should return no patients when none are included
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	GenderCohortDefinition gcd = (GenderCohortDefinition) cohortDefinition;
     	CohortQueryService cqs = Context.getService(CohortQueryService.class);
-    	return cqs.getPatientsWithGender(gcd.isMaleIncluded(), gcd.isFemaleIncluded(), gcd.isUnknownGenderIncluded());
+    	Cohort c = cqs.getPatientsWithGender(gcd.isMaleIncluded(), gcd.isFemaleIncluded(), gcd.isUnknownGenderIncluded());
+    	return new EvaluatedCohort(c, cohortDefinition, context);
     }
 }

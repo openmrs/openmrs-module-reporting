@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -20,13 +21,14 @@ public class BirthAndDeathCohortDefinitionEvaluator implements CohortDefinitionE
 	 * @should find patients by death range
 	 * @should find patients by birth range and death range
 	 */
-	public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
 		BirthAndDeathCohortDefinition definition = (BirthAndDeathCohortDefinition) cohortDefinition;
-		return Context.getService(CohortQueryService.class).getPatientsHavingBirthAndDeath(
+		Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingBirthAndDeath(
 			definition.getBornOnOrAfter(),
 			definition.getBornOnOrBefore(),
 			definition.getDiedOnOrAfter(),
 			definition.getDiedOnOrBefore());
+		return new EvaluatedCohort(c, cohortDefinition, context);
 	}
 	
 }

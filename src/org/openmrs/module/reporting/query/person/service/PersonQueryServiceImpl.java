@@ -11,48 +11,43 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition.service;
+package org.openmrs.module.reporting.query.person.service;
 
-import org.openmrs.module.reporting.cohort.EvaluatedCohort;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.springframework.stereotype.Service;
+import org.openmrs.module.reporting.query.person.EvaluatedPersonQuery;
+import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *  Base Implementation of the CohortDefinitionService API
+ *  Base Implementation of the PersonQueryService API
  */
-@Transactional
-@Service
-public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDefinition> implements CohortDefinitionService {
-	
+public class PersonQueryServiceImpl extends BaseDefinitionService<PersonQuery> implements PersonQueryService {
+
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	public Class<CohortDefinition> getDefinitionType() {
-		return CohortDefinition.class;
+	public Class<PersonQuery> getDefinitionType() {
+		return PersonQuery.class;
 	}
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	@Override
-	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws EvaluationException {
-		return (EvaluatedCohort)super.evaluate(definition, context);
+	public EvaluatedPersonQuery evaluate(PersonQuery query, EvaluationContext context) throws EvaluationException {
+		return (EvaluatedPersonQuery)super.evaluate(query, context);
 	}
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	@Override
-	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException {
-		return (EvaluatedCohort)super.evaluate(definition, context);
+	public EvaluatedPersonQuery evaluate(Mapped<? extends PersonQuery> mappedQuery, EvaluationContext context) throws EvaluationException {
+		return (EvaluatedPersonQuery)super.evaluate(mappedQuery, context);
 	}
 }

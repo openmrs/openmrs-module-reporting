@@ -18,6 +18,7 @@ import java.util.List;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefinitionPersister;
+import org.openmrs.module.reporting.definition.persister.SerializedDefinitionPersister;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 import org.openmrs.module.reporting.indicator.Indicator;
 
@@ -29,71 +30,15 @@ import org.openmrs.module.reporting.indicator.Indicator;
  * should specify the order field on the Handler annotation.
  */
 @Handler(supports={Indicator.class})
-public class SerializedIndicatorPersister implements IndicatorPersister {
-	
-    //****************
-    // Constructor
-    //****************
+public class SerializedIndicatorPersister extends SerializedDefinitionPersister<Indicator> implements IndicatorPersister {
 	
 	private SerializedIndicatorPersister() { }
 
-    //****************
-    // Instance methods
-    //****************
-	
 	/**
-	 * Utility method that returns the SerializedDefinitionService
+	 * @see SerializedDefinitionPersister#getBaseClass()
 	 */
-	public SerializedDefinitionService getService() {
-		return Context.getService(SerializedDefinitionService.class);
+	@Override
+	public Class<Indicator> getBaseClass() {
+		return Indicator.class;
 	}
-    
-	/**
-     * @see IndicatorPersister#getIndicator(Integer)
-     */
-    public Indicator getIndicator(Integer id) {
-    	return getService().getDefinition(Indicator.class, id);
-    }
-    
-	/**
-     * @see IndicatorPersister#getIndicatorByUuid(String)
-     */
-    public Indicator getIndicatorByUuid(String uuid) {
-    	return getService().getDefinitionByUuid(Indicator.class, uuid);
-    }
-
-	/**
-     * @see IndicatorPersister#getAllIndicators(boolean)
-     */
-    public List<Indicator> getAllIndicators(boolean includeRetired) {
-    	return getService().getAllDefinitions(Indicator.class, includeRetired);
-    }
-    
-	/**
-	 * @see DataSetDefinitionPersister#getNumberOfDataSetDefinitions(boolean)
-	 */
-	public int getNumberOfIndicators(boolean includeRetired) {
-    	return getService().getNumberOfDefinitions(Indicator.class, includeRetired);
-	}
-
-	/**
-     * @see IndicatorPersister#getIndicatorByName(String, boolean)
-     */
-    public List<Indicator> getIndicators(String name, boolean exactMatchOnly) {
-    	return getService().getDefinitions(Indicator.class, name, exactMatchOnly);
-    }
-    
-	/**
-     * @see IndicatorPersister#saveIndicator(Indicator)
-     */
-    public Indicator saveIndicator(Indicator indicator) {
-    	return getService().saveDefinition(indicator);
-    }
-
-	/**
-     * @see IndicatorPersister#purgeIndicator(Indicator)
-     */
-    public void purgeIndicator(Indicator indicator) {
-    	getService().purgeDefinition(indicator);
-    }
 }

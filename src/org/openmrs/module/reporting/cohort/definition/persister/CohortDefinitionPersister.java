@@ -13,61 +13,13 @@
  */
 package org.openmrs.module.reporting.cohort.definition.persister;
 
-import java.util.List;
-
-import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.definition.persister.DefinitionPersister;
 
 /**
  * This interface exposes the functionality required to access the Data Access
  * functionality for a particular set of CohortDefinition implementations
  */
-public interface CohortDefinitionPersister {
+public interface CohortDefinitionPersister extends DefinitionPersister<CohortDefinition> {
 	
-	/**
-	 * @param id
-	 * @return the cohort definition with the given id among those managed by this persister
-	 */
-	public CohortDefinition getCohortDefinition(Integer id);
-	
-	/**
-	 * @param uuid
-	 * @return the cohort definition with the given uuid among those managed by this persister
-	 */
-	public CohortDefinition getCohortDefinitionByUuid(String uuid);
-	
-	/**
-	 * @param includeRetired - if true, include retired CohortDefinitions in the returned list
-	 * @return All cohort definitions whose persistence is managed by this persister
-	 */
-	public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired);
-	
-	/**
-	 * @param includeRetired indicates whether to also include retired CohortDefinitions in the count
-	 * @return the number of saved Cohort Definitions
-	 */
-	public int getNumberOfCohortDefinitions(boolean includeRetired);
-	
-	/**
-	 * Returns a List of {@link CohortDefinition} whose name contains the passed name.
-	 * An empty list will be returned if there are none found. Search is case insensitive.
-	 * @param name The search string
-	 * @param exactMatchOnly if true will only return exact matches
-	 * @throws APIException
-	 * @return a List<CohortDefinition> objects whose name contains the passed name
-	 */
-	public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) throws APIException;
-	
-	/**
-	 * Persists a CohortDefinition, either as a save or update.
-	 * @param cohortDefinition
-	 * @return the CohortDefinition that was passed in
-	 */
-	public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition);
-	
-	/**
-	 * Deletes a cohort definition from the database.
-	 * @param cohortDefinition
-	 */
-	public void purgeCohortDefinition(CohortDefinition cohortDefinition);
 }

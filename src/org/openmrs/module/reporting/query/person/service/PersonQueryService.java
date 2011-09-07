@@ -32,11 +32,11 @@ public interface PersonQueryService extends DefinitionService<PersonQuery> {
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public EvaluatedPersonQuery evaluate(PersonQuery definition, EvaluationContext context) throws EvaluationException;
+	public EvaluatedPersonQuery evaluate(PersonQuery query, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public EvaluatedPersonQuery evaluate(Mapped<? extends PersonQuery> definition, EvaluationContext context) throws EvaluationException;
+	public EvaluatedPersonQuery evaluate(Mapped<? extends PersonQuery> mappedQuery, EvaluationContext context) throws EvaluationException;
 }

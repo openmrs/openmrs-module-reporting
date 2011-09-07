@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -41,7 +42,7 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
      * @should return correct patients when creation date parameters are set
      * @should return correct patients when time qualifier parameters are set
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	EncounterCohortDefinition cd = (EncounterCohortDefinition) cohortDefinition;
     	
     	Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingEncounters(
@@ -55,8 +56,8 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
     		if (baseCohort == null) {
     			baseCohort = Context.getPatientSetService().getAllPatients();
     		}
-    		return Cohort.subtract(baseCohort, c);
+    		c = Cohort.subtract(baseCohort, c);
     	}
-    	return c;
+    	return new EvaluatedCohort(c, cohortDefinition, context);
     }
 }

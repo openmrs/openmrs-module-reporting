@@ -17,12 +17,13 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.definition.persister.DefinitionPersister;
 
 /**
  * This interface exposes the functionality required to access the Data Access
  * functionality for a particular set of DataSetDefinition implementations
  */
-public interface DataSetDefinitionPersister {
+public interface DataSetDefinitionPersister extends DefinitionPersister<DataSetDefinition> {
 	
 	/**
 	 * Gets the {@link DataSetDefinition} that matches the given id
@@ -33,7 +34,7 @@ public interface DataSetDefinitionPersister {
 	 * @should return null when does not exist
 	 * @should return DataSetDefinition when exists
 	 */
-	public DataSetDefinition getDataSetDefinition(Integer id);
+	public DataSetDefinition getDefinition(Integer id);
 	
 	/**
 	 * Gets the {@link DataSetDefinition} that matches the given uuid
@@ -44,7 +45,7 @@ public interface DataSetDefinitionPersister {
 	 * @should return null when does not exist
 	 * @should return {@link DataSetDefinition} when exists
 	 */
-	public DataSetDefinition getDataSetDefinitionByUuid(String uuid);
+	public DataSetDefinition getDefinitionByUuid(String uuid);
 	
 	/**
 	 * @param includeRetired - if true, include retired {@link DataSetDefinition} in the returned List
@@ -53,13 +54,13 @@ public interface DataSetDefinitionPersister {
 	 * @should get all {@link DataSetDefinition} including retired
 	 * @should get all {@link DataSetDefinition} not including retired
 	 */
-	public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired);
+	public List<DataSetDefinition> getAllDefinitions(boolean includeRetired);
 	
 	/**
 	 * @param includeRetired indicates whether to also include retired DataSetDefinitions in the count
 	 * @return the number of saved DataSetDefinitions
 	 */
-	public int getNumberOfDataSetDefinitions(boolean includeRetired);
+	public int getNumberOfDefinitions(boolean includeRetired);
 	
 	/**
 	 * Returns a List of {@link DataSetDefinition} whose name contains the passed name.
@@ -71,7 +72,7 @@ public interface DataSetDefinitionPersister {
 	 * @throws APIException
 	 * @return a List<DataSetDefinition> objects whose name contains the passed name
 	 */
-	public List<DataSetDefinition> getDataSetDefinitions(String name, boolean exactMatchOnly);
+	public List<DataSetDefinition> getDefinitions(String name, boolean exactMatchOnly);
 	
 	/**
 	 * Saves the given {@link DataSetDefinition} to the system.
@@ -83,7 +84,7 @@ public interface DataSetDefinitionPersister {
 	 * @should update existing {@link DataSetDefinition}
 	 * @should set identifier after save
 	 */
-	public DataSetDefinition saveDataSetDefinition(DataSetDefinition datasetDefinition);
+	public DataSetDefinition saveDefinition(DataSetDefinition datasetDefinition);
 	
 	/**
 	 * Deletes a {@link DataSetDefinition} from the system.
@@ -92,5 +93,5 @@ public interface DataSetDefinitionPersister {
 	 * 
 	 * @should remove the DataSetDefinition
 	 */
-	public void purgeDataSetDefinition(DataSetDefinition dataSetDefinition);
+	public void purgeDefinition(DataSetDefinition dataSetDefinition);
 }

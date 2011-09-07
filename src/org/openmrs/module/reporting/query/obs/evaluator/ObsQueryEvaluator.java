@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.query.obs.evaluator;
 
+import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.obs.EvaluatedObsQuery;
 import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
@@ -20,7 +21,7 @@ import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
 /**
  * Each implementation of this class is expected to evaluate one or more type of ObsQuery to produce an EvaluatedObsQuery
  */
-public interface ObsQueryEvaluator {
+public interface ObsQueryEvaluator extends DefinitionEvaluator<ObsQuery> {
 	
 	/**
 	 * Evaluate an ObsQuery for the given EvaluationContext

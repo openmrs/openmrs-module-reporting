@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -35,12 +36,13 @@ public class PatientStateCohortDefinitionEvaluator implements CohortDefinitionEv
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	PatientStateCohortDefinition d = (PatientStateCohortDefinition) cohortDefinition;
-    	return Context.getService(CohortQueryService.class).getPatientsHavingStates(d.getStates(),
+    	Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingStates(d.getStates(),
     		d.getStartedOnOrAfter(),
     		d.getStartedOnOrBefore(),
     		d.getEndedOnOrAfter(),
-    		d.getEndedOnOrBefore());		
+    		d.getEndedOnOrBefore());
+    	return new EvaluatedCohort(c, cohortDefinition, context);
     }
 }

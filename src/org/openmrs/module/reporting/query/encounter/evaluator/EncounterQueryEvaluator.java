@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
+import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EvaluatedEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
@@ -20,7 +21,7 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 /**
  * Each implementation of this class is expected to evaluate one or more type of EncounterQuery to produce an EvaluatedEncounterQuery
  */
-public interface EncounterQueryEvaluator {
+public interface EncounterQueryEvaluator extends DefinitionEvaluator<EncounterQuery> {
 	
 	/**
 	 * Evaluate an EncounterQuery for the given EvaluationContext

@@ -16,13 +16,14 @@ package org.openmrs.module.reporting.indicator.persister;
 import java.util.List;
 
 import org.openmrs.api.APIException;
+import org.openmrs.module.reporting.definition.persister.DefinitionPersister;
 import org.openmrs.module.reporting.indicator.Indicator;
 
 /**
  * This interface exposes the functionality required to access the Data Access
  * functionality for a particular set of Indicator implementations
  */
-public interface IndicatorPersister {
+public interface IndicatorPersister extends DefinitionPersister<Indicator> {
 	
 	/**
 	 * Gets the {@link Indicator} that matches the given id
@@ -33,7 +34,7 @@ public interface IndicatorPersister {
 	 * @should return null when does not exist
 	 * @should return Indicator when exists
 	 */
-	public Indicator getIndicator(Integer id);
+	public Indicator getDefinition(Integer id);
 	
 	/**
 	 * Gets the {@link Indicator} that matches the given uuid
@@ -44,7 +45,7 @@ public interface IndicatorPersister {
 	 * @should return null when does not exist
 	 * @should return {@link Indicator} when exists
 	 */
-	public Indicator getIndicatorByUuid(String uuid);
+	public Indicator getDefinitionByUuid(String uuid);
 	
 	/**
 	 * @param includeRetired - if true, include retired {@link Indicator} in the returned List
@@ -53,13 +54,13 @@ public interface IndicatorPersister {
 	 * @should get all {@link Indicator} including retired
 	 * @should get all {@link Indicator} not including retired
 	 */
-	public List<Indicator> getAllIndicators(boolean includeRetired);
+	public List<Indicator> getAllDefinitions(boolean includeRetired);
 	
 	/**
 	 * @param includeRetired indicates whether to also include retired Indicators in the count
 	 * @return the number of saved Indicators
 	 */
-	public int getNumberOfIndicators(boolean includeRetired);
+	public int getNumberOfDefinitions(boolean includeRetired);
 	
 	/**
 	 * Returns a List of {@link Indicator} whose name contains the passed name.
@@ -71,7 +72,7 @@ public interface IndicatorPersister {
 	 * @throws APIException
 	 * @return a List<Indicator> objects whose name contains the passed name
 	 */
-	public List<Indicator> getIndicators(String name, boolean exactMatchOnly);
+	public List<Indicator> getDefinitions(String name, boolean exactMatchOnly);
 	
 	/**
 	 * Saves the given {@link Indicator} to the system.
@@ -83,7 +84,7 @@ public interface IndicatorPersister {
 	 * @should update existing {@link Indicator}
 	 * @should set identifier after save
 	 */
-	public Indicator saveIndicator(Indicator indicator);
+	public Indicator saveDefinition(Indicator indicator);
 	
 	/**
 	 * Deletes a {@link Indicator} from the system.
@@ -92,5 +93,5 @@ public interface IndicatorPersister {
 	 * 
 	 * @should remove the Indicator
 	 */
-	public void purgeIndicator(Indicator indicator);
+	public void purgeDefinition(Indicator indicator);
 }

@@ -50,6 +50,7 @@ public interface DataSetDefinitionService extends DefinitionService<DataSetDefin
 	 * @return a DataSetColumn matching the parameters
 	 * @throws APIException
 	 */
+	@Transactional(readOnly = true)
 	public EvaluatedColumnDefinition evaluateColumn(Mapped<? extends ColumnDefinition> definition, EvaluationContext context) throws APIException;
 	
 	/**
@@ -59,5 +60,6 @@ public interface DataSetDefinitionService extends DefinitionService<DataSetDefin
 	 * @return a DataSetColumn matching the parameters
 	 * @throws APIException
 	 */
+	@Transactional(readOnly = true)
 	public EvaluatedColumnDefinition evaluateColumn(ColumnDefinition definition, EvaluationContext context) throws APIException;
 }

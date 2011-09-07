@@ -13,15 +13,16 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import org.openmrs.Cohort;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * This interfaces provides the functionality to evaluate a CohortDefinition and return a Cohort.
  */
-public interface CohortDefinitionEvaluator {
+public interface CohortDefinitionEvaluator extends DefinitionEvaluator<CohortDefinition> {
 	
 	/**
 	 * Computes the list of patients who currently meet the given definition<br/>
@@ -29,6 +30,6 @@ public interface CohortDefinitionEvaluator {
 	 * @param context context to use during evaluation
 	 * @return the cohort of all patients who meet the definition now
 	 */
-	public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException;
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException;
 	
 }
