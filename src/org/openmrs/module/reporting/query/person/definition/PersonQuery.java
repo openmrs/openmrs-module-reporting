@@ -11,13 +11,13 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.definition;
+package org.openmrs.module.reporting.query.person.definition;
 
-import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.query.Query;
 
 /**
- * Filter Interface for defining a Generic Set of Ids
+ * Filter Interface for defining a Set of Person Ids
  */
-public interface Query extends Definition {
+public interface PersonQuery extends Query {
     
 }

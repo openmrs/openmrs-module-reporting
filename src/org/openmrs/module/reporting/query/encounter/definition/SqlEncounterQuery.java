@@ -11,16 +11,16 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.definition.obs;
+package org.openmrs.module.reporting.query.encounter.definition;
 
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.query.definition.BaseQuery;
+import org.openmrs.module.reporting.query.BaseQuery;
 
 /**
- * SQL-based Obs Query
+ * SQL-based Encounter Query
  */
-public class SqlObsQuery extends BaseQuery implements ObsQuery {
+public class SqlEncounterQuery extends BaseQuery implements EncounterQuery {
 
     public static final long serialVersionUID = 1L;
 	
@@ -32,7 +32,7 @@ public class SqlObsQuery extends BaseQuery implements ObsQuery {
 	/**
 	 * Default Constructor
 	 */
-	public SqlObsQuery() {
+	public SqlEncounterQuery() {
 		super();
 	}
 	
@@ -40,7 +40,7 @@ public class SqlObsQuery extends BaseQuery implements ObsQuery {
 	 * 
 	 * @param sqlQuery
 	 */
-	public SqlObsQuery(String query) { 
+	public SqlEncounterQuery(String query) { 
 		this.query = query;
 	}
 
@@ -50,7 +50,7 @@ public class SqlObsQuery extends BaseQuery implements ObsQuery {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "SQL Obs Query: [" + ObjectUtil.nvlStr(query, "") + "]";
+		return "SQL Encounter Query: [" + ObjectUtil.nvlStr(query, "") + "]";
 	}
 	
 	//***** PROPERTY ACCESS *****

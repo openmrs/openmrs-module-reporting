@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.evaluator.person;
+package org.openmrs.module.reporting.query.person.definition.evaluator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,10 +27,10 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.EvaluatedQuery;
 import org.openmrs.module.reporting.query.PersonQueryResult;
+import org.openmrs.module.reporting.query.Query;
+import org.openmrs.module.reporting.query.QueryEvaluator;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.definition.Query;
-import org.openmrs.module.reporting.query.definition.person.SqlPersonQuery;
-import org.openmrs.module.reporting.query.evaluator.QueryEvaluator;
+import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
 

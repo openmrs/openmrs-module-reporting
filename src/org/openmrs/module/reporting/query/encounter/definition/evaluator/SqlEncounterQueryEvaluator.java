@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.evaluator.obs;
+package org.openmrs.module.reporting.query.encounter.definition.evaluator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,49 +22,46 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
-import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.query.EncounterQueryResult;
 import org.openmrs.module.reporting.query.EvaluatedQuery;
-import org.openmrs.module.reporting.query.ObsQueryResult;
+import org.openmrs.module.reporting.query.Query;
+import org.openmrs.module.reporting.query.QueryEvaluator;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.definition.Query;
-import org.openmrs.module.reporting.query.definition.obs.SqlObsQuery;
-import org.openmrs.module.reporting.query.evaluator.QueryEvaluator;
+import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
-import org.openmrs.util.OpenmrsUtil;
 
 /**
- * The logic that evaluates a {@link SqlObsQuery} and produces an {@link Query}
+ * The logic that evaluates a {@link SqlEncounterQuery} and produces an {@link Query}
  */
-@Handler(supports=SqlObsQuery.class)
-public class SqlObsQueryEvaluator implements QueryEvaluator {
+@Handler(supports=SqlEncounterQuery.class)
+public class SqlEncounterQueryEvaluator implements QueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	/**
 	 * Public constructor
 	 */
-	public SqlObsQueryEvaluator() { }
+	public SqlEncounterQueryEvaluator() { }
 	
 	/**
 	 * @see QueryEvaluator#evaluate(Query, EvaluationContext)
-	 * @should evaluate a SQL query into an ObsQuery
-	 * @should filter results given a base Obs Query Result in an EvaluationContext
+	 * @should evaluate a SQL query into an EncounterQuery
 	 * @should filter results given a base Encounter Query Result in an EvaluationContext
 	 * @should filter results given a base cohort in an EvaluationContext
 	 */
 	public EvaluatedQuery evaluate(Query definition, EvaluationContext context) {
 		
-		ObsQueryResult queryResult = new ObsQueryResult();
+		EncounterQueryResult queryResult = new EncounterQueryResult();
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		
-		SqlObsQuery sqlDef = (SqlObsQuery) definition;
+		SqlEncounterQuery sqlDef = (SqlEncounterQuery) definition;
 		
 		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
 		Connection connection = null;
@@ -73,7 +70,7 @@ public class SqlObsQueryEvaluator implements QueryEvaluator {
 			ResultSet resultSet = null;
 
 			String sqlQuery = sqlDef.getQuery();
-			
+
 			// Limit if indicated in the EvaluationContext
 			if (context.getLimit() != null && !sqlQuery.contains(" limit ")) {
 				if (sqlQuery.endsWith(";")) {
@@ -93,43 +90,26 @@ public class SqlObsQueryEvaluator implements QueryEvaluator {
 			}
 
 			// TODO: This will need replacing
-			QueryResult baseObsQuery = context.getQueryResult(Obs.class);
 			QueryResult baseEncounterQuery = context.getQueryResult(Encounter.class);
 			Cohort basePatientQuery = context.getBaseCohort();
-			
-			if (baseEncounterQuery != null) {
-				String query = "select obs_id from obs where encounter_id in (" + OpenmrsUtil.join(baseEncounterQuery.getMemberIds(), ",") + ")";
-				List<List<Object>> ret = Context.getAdministrationService().executeSQL(query, true);
-				ObsQueryResult encounterObsQuery = new ObsQueryResult();
-				for (List<Object> l : ret) {
-					encounterObsQuery.add((Integer)l.get(0));
-				}
-				if (baseObsQuery == null) {
-					baseObsQuery = encounterObsQuery;
-				}
-				else {
-					baseObsQuery.getMemberIds().retainAll(encounterObsQuery.getMemberIds());
-				}
-			}
-			
 			if (basePatientQuery != null) {
-				String query = "select obs_id from obs where person_id in (" + basePatientQuery.getCommaSeparatedPatientIds() + ")";
+				String query = "select encounter_id from encounter where patient_id in (" + basePatientQuery.getCommaSeparatedPatientIds() + ")";
 				List<List<Object>> ret = Context.getAdministrationService().executeSQL(query, true);
-				ObsQueryResult patientObsQuery = new ObsQueryResult();
+				EncounterQueryResult patientEncounterQuery = new EncounterQueryResult();
 				for (List<Object> l : ret) {
-					patientObsQuery.add((Integer)l.get(0));
+					patientEncounterQuery.add((Integer)l.get(0));
 				}
-				if (baseObsQuery == null) {
-					baseObsQuery = patientObsQuery;
+				if (baseEncounterQuery == null) {
+					baseEncounterQuery = patientEncounterQuery;
 				}
 				else {
-					baseObsQuery.getMemberIds().retainAll(patientObsQuery.getMemberIds());
+					baseEncounterQuery.getMemberIds().retainAll(patientEncounterQuery.getMemberIds());
 				}
 			}
-			
+
 			while (resultSet.next()) {
 				Integer id = resultSet.getInt(1);
-				if (baseObsQuery == null || baseObsQuery.contains(id)) { // TODO: Figure out a way to do this in the query
+				if (baseEncounterQuery == null || baseEncounterQuery.contains(id)) { // TODO: Figure out a way to do this in the query
 					queryResult.add(id);
 				}
 			}

@@ -19,7 +19,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.query.EvaluatedQuery;
-import org.openmrs.module.reporting.query.definition.Query;
+import org.openmrs.module.reporting.query.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

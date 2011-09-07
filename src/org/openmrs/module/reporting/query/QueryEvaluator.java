@@ -11,11 +11,9 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.evaluator;
+package org.openmrs.module.reporting.query;
 
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.EvaluatedQuery;
-import org.openmrs.module.reporting.query.definition.Query;
 
 /**
  * Each implementation of this class is expected to evaluate one or more type of Query to produce an Query

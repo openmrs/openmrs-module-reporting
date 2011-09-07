@@ -15,7 +15,6 @@ package org.openmrs.module.reporting.query;
 
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.definition.Query;
 
 /**
  * Encapsulates the results of Evaluating a Filter

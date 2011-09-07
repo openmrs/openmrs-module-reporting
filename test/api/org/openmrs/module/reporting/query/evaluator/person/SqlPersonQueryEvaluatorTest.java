@@ -24,7 +24,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.PersonQueryResult;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.definition.person.SqlPersonQuery;
+import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
 import org.openmrs.module.reporting.query.service.QueryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 

@@ -16,7 +16,7 @@ package org.openmrs.module.reporting.query.persister;
 import java.util.List;
 
 import org.openmrs.api.APIException;
-import org.openmrs.module.reporting.query.definition.Query;
+import org.openmrs.module.reporting.query.Query;
 
 /**
  * This interface exposes the functionality required to access the Data Access

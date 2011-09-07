@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
-import org.openmrs.module.reporting.query.definition.Query;
+import org.openmrs.module.reporting.query.Query;
 
 /**
  * Represents a search strategy for arriving at a cohort.<br/>

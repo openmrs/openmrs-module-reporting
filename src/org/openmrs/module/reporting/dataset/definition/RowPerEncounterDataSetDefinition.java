@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.dataset.column.definition.patient.PatientCol
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
-import org.openmrs.module.reporting.query.definition.encounter.EncounterQuery;
+import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 
 /**
  * DataSetDefinition for Producing a DataSet that has one row per Encounter

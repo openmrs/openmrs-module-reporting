@@ -27,7 +27,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.EncounterQueryResult;
 import org.openmrs.module.reporting.query.ObsQueryResult;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.definition.obs.SqlObsQuery;
+import org.openmrs.module.reporting.query.obs.definition.SqlObsQuery;
 import org.openmrs.module.reporting.query.service.QueryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 

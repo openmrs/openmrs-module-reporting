@@ -11,16 +11,16 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.definition.person;
+package org.openmrs.module.reporting.query.obs.definition;
 
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.query.definition.BaseQuery;
+import org.openmrs.module.reporting.query.BaseQuery;
 
 /**
- * SQL-based Person Query
+ * SQL-based Obs Query
  */
-public class SqlPersonQuery extends BaseQuery implements PersonQuery {
+public class SqlObsQuery extends BaseQuery implements ObsQuery {
 
     public static final long serialVersionUID = 1L;
 	
@@ -32,7 +32,7 @@ public class SqlPersonQuery extends BaseQuery implements PersonQuery {
 	/**
 	 * Default Constructor
 	 */
-	public SqlPersonQuery() {
+	public SqlObsQuery() {
 		super();
 	}
 	
@@ -40,7 +40,7 @@ public class SqlPersonQuery extends BaseQuery implements PersonQuery {
 	 * 
 	 * @param sqlQuery
 	 */
-	public SqlPersonQuery(String query) { 
+	public SqlObsQuery(String query) { 
 		this.query = query;
 	}
 
@@ -50,7 +50,7 @@ public class SqlPersonQuery extends BaseQuery implements PersonQuery {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "SQL Person Query: [" + ObjectUtil.nvlStr(query, "") + "]";
+		return "SQL Obs Query: [" + ObjectUtil.nvlStr(query, "") + "]";
 	}
 	
 	//***** PROPERTY ACCESS *****

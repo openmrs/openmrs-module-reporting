@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
-import org.openmrs.module.reporting.query.definition.Query;
+import org.openmrs.module.reporting.query.Query;
 
 /**
  * This class returns Querys that have been Serialized to the database

@@ -11,13 +11,13 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.definition.encounter;
+package org.openmrs.module.reporting.query.obs.definition;
 
-import org.openmrs.module.reporting.query.definition.Query;
+import org.openmrs.module.reporting.query.Query;
 
 /**
- * Filter Interface for defining a Set of Encounter Ids
+ * Filter Interface for defining a Set of Obs Ids
  */
-public interface EncounterQuery extends Query {
+public interface ObsQuery extends Query {
     
 }

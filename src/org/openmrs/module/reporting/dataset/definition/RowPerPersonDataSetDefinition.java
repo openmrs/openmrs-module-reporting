@@ -16,7 +16,7 @@ package org.openmrs.module.reporting.dataset.definition;
 import org.openmrs.module.reporting.dataset.column.definition.person.PersonColumnDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.query.definition.person.PersonQuery;
+import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 
 /**
  * DataSetDefinition for Producing a DataSet that has one row per Person
