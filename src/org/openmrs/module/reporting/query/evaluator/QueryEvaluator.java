@@ -11,14 +11,19 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition;
+package org.openmrs.module.reporting.query.evaluator;
 
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.query.EvaluatedQuery;
 import org.openmrs.module.reporting.query.definition.Query;
 
 /**
- * Represents a search strategy for arriving at a cohort.<br/>
- * You evaluate a CohortDefinition using CohortEvaluator
+ * Each implementation of this class is expected to evaluate one or more type of Query to produce an Query
  */
-public interface CohortDefinition extends Query  {
+public interface QueryEvaluator {
 	
+	/**
+	 * Evaluate a Filter for the given EvaluationContext
+	 */
+	public EvaluatedQuery evaluate(Query definition, EvaluationContext context);
 }

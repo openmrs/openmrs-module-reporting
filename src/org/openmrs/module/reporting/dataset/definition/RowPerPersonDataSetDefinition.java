@@ -16,7 +16,7 @@ package org.openmrs.module.reporting.dataset.definition;
 import org.openmrs.module.reporting.dataset.column.definition.person.PersonColumnDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.idset.definition.person.PersonIdSetDefinition;
+import org.openmrs.module.reporting.query.definition.person.PersonQuery;
 
 /**
  * DataSetDefinition for Producing a DataSet that has one row per Person
@@ -27,21 +27,21 @@ public class RowPerPersonDataSetDefinition extends RowPerObjectDataSetDefinition
 	//***** PROPERTIES *****
 	
     @ConfigurationProperty
-	private Mapped<? extends PersonIdSetDefinition> personFilter;
+	private Mapped<? extends PersonQuery> personFilter;
 
     //***** PROPERTY ACCESS *****
     
 	/**
 	 * @return the personFilter
 	 */
-	public Mapped<? extends PersonIdSetDefinition> getPersonFilter() {
+	public Mapped<? extends PersonQuery> getPersonFilter() {
 		return personFilter;
 	}
 
 	/**
 	 * @param personFilter the personFilter to set
 	 */
-	public void setPersonFilter(Mapped<? extends PersonIdSetDefinition> personFilter) {
+	public void setPersonFilter(Mapped<? extends PersonQuery> personFilter) {
 		this.personFilter = personFilter;
 	}
 }

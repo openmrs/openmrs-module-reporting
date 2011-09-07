@@ -105,15 +105,15 @@
 		</property>
 	</bean>
 	
-	<!-- Base IdSet Definition Service -->
+	<!-- Base Query Definition Service -->
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list merge="true">
-				<value>org.openmrs.module.reporting.idset.service.IdSetDefinitionService</value> 
+				<value>org.openmrs.module.reporting.query.service.QueryService</value> 
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.reporting.idset.service.IdSetDefinitionServiceImpl"/>
+						<bean class="org.openmrs.module.reporting.query.service.QueryServiceImpl"/>
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors" />

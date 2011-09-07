@@ -25,8 +25,8 @@ import org.openmrs.module.reporting.dataset.column.definition.patient.PatientCol
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
-import org.openmrs.module.reporting.idset.definition.encounter.EncounterIdSetDefinition;
-import org.openmrs.module.reporting.idset.definition.obs.ObsIdSetDefinition;
+import org.openmrs.module.reporting.query.definition.encounter.EncounterQuery;
+import org.openmrs.module.reporting.query.definition.obs.ObsQuery;
 
 /**
  * DataSetDefinition for Producing a DataSet that has one row per Encounter
@@ -40,10 +40,10 @@ public class RowPerObsDataSetDefinition extends RowPerObjectDataSetDefinition<Ob
 	private Mapped<? extends CohortDefinition> patientFilter;
     
     @ConfigurationProperty
-	private Mapped<? extends EncounterIdSetDefinition> encounterFilter;
+	private Mapped<? extends EncounterQuery> encounterFilter;
     
     @ConfigurationProperty
-	private Mapped<? extends ObsIdSetDefinition> obsFilter;
+	private Mapped<? extends ObsQuery> obsFilter;
 	
 	//***** INSTANCE METHODS *****
 
@@ -124,28 +124,28 @@ public class RowPerObsDataSetDefinition extends RowPerObjectDataSetDefinition<Ob
 	/**
 	 * @return the encounterFilter
 	 */
-	public Mapped<? extends EncounterIdSetDefinition> getEncounterFilter() {
+	public Mapped<? extends EncounterQuery> getEncounterFilter() {
 		return encounterFilter;
 	}
 
 	/**
 	 * @param encounterFilter the encounterFilter to set
 	 */
-	public void setEncounterFilter(Mapped<? extends EncounterIdSetDefinition> encounterFilter) {
+	public void setEncounterFilter(Mapped<? extends EncounterQuery> encounterFilter) {
 		this.encounterFilter = encounterFilter;
 	}
 
 	/**
 	 * @return the obsFilter
 	 */
-	public Mapped<? extends ObsIdSetDefinition> getObsFilter() {
+	public Mapped<? extends ObsQuery> getObsFilter() {
 		return obsFilter;
 	}
 
 	/**
 	 * @param obsFilter the obsFilter to set
 	 */
-	public void setObsFilter(Mapped<? extends ObsIdSetDefinition> obsFilter) {
+	public void setObsFilter(Mapped<? extends ObsQuery> obsFilter) {
 		this.obsFilter = obsFilter;
 	}
 }

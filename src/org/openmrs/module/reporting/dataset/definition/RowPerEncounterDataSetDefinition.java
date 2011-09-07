@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.dataset.column.definition.patient.PatientCol
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
-import org.openmrs.module.reporting.idset.definition.encounter.EncounterIdSetDefinition;
+import org.openmrs.module.reporting.query.definition.encounter.EncounterQuery;
 
 /**
  * DataSetDefinition for Producing a DataSet that has one row per Encounter
@@ -37,7 +37,7 @@ public class RowPerEncounterDataSetDefinition extends RowPerObjectDataSetDefinit
 	private Mapped<? extends CohortDefinition> patientFilter;
     
     @ConfigurationProperty
-	private Mapped<? extends EncounterIdSetDefinition> encounterFilter;
+	private Mapped<? extends EncounterQuery> encounterFilter;
 	
 	//***** INSTANCE METHODS *****
 
@@ -90,14 +90,14 @@ public class RowPerEncounterDataSetDefinition extends RowPerObjectDataSetDefinit
 	/**
 	 * @return the encounterFilter
 	 */
-	public Mapped<? extends EncounterIdSetDefinition> getEncounterFilter() {
+	public Mapped<? extends EncounterQuery> getEncounterFilter() {
 		return encounterFilter;
 	}
 
 	/**
 	 * @param encounterFilter the encounterFilter to set
 	 */
-	public void setEncounterFilter(Mapped<? extends EncounterIdSetDefinition> encounterFilter) {
+	public void setEncounterFilter(Mapped<? extends EncounterQuery> encounterFilter) {
 		this.encounterFilter = encounterFilter;
 	}
 }

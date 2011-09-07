@@ -28,7 +28,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterConstants;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.idset.IdSet;
+import org.openmrs.module.reporting.query.QueryResult;
 
 /**
  * The EvaluationContext provides the following capabilities: - A baseCohort, i.e. the universe of
@@ -53,7 +53,7 @@ public class EvaluationContext {
 	private Cohort baseCohort;
 	
 	// Base set of ids to limit the rows evaluated and returned.
-	private Map<Class<? extends OpenmrsData>, IdSet> baseIdSets;
+	private Map<Class<? extends OpenmrsData>, QueryResult> baseQueryResults;
 	
 	// Parameter values entered by user (or defaulted)
 	private Map<String, Object> parameterValues;
@@ -95,7 +95,7 @@ public class EvaluationContext {
 		this.setLimit(context.getLimit());
 		this.setCache(context.getCache());
 		this.setBaseCohort(context.getBaseCohort());
-		this.setBaseIdSets(context.getBaseIdSets());
+		this.setBaseQueryResults(context.getBaseQueryResults());
 		this.getParameterValues().putAll(context.getParameterValues());
 	}
 	
@@ -290,36 +290,36 @@ public class EvaluationContext {
 	}
 
 	/**
-	 * @return the baseIdSets
+	 * @return the baseQueryResults
 	 */
-	public Map<Class<? extends OpenmrsData>, IdSet> getBaseIdSets() {
-		if (baseIdSets == null) {
-			baseIdSets = new HashMap<Class<? extends OpenmrsData>, IdSet>();
+	public Map<Class<? extends OpenmrsData>, QueryResult> getBaseQueryResults() {
+		if (baseQueryResults == null) {
+			baseQueryResults = new HashMap<Class<? extends OpenmrsData>, QueryResult>();
 		}
-		return baseIdSets;
+		return baseQueryResults;
 	}
 
 	/**
-	 * @param baseIdSets the baseIdSets to set
+	 * @param baseQueryResults the baseQueryResults to set
 	 */
-	public void setBaseIdSets(Map<Class<? extends OpenmrsData>, IdSet> baseIdSets) {
+	public void setBaseQueryResults(Map<Class<? extends OpenmrsData>, QueryResult> baseQueryResults) {
 		clearCache();
-		this.baseIdSets = baseIdSets;
+		this.baseQueryResults = baseQueryResults;
 	}
 	
 	/**
-	 * Adds a new IdSet
+	 * Adds a new QueryResult
 	 */
-	public void addIdSet(Class<? extends OpenmrsData> type, IdSet idSet) {
+	public void addQueryResult(Class<? extends OpenmrsData> type, QueryResult queryResult) {
 		clearCache();
-		getBaseIdSets().put(type, idSet);
+		getBaseQueryResults().put(type, queryResult);
 	}
 	
 	/**
-	 * Retrieves an IdSet
+	 * Retrieves a QueryResult
 	 */
-	public IdSet getIdSet(Class<? extends OpenmrsData> type) {
-		return getBaseIdSets().get(type);
+	public QueryResult getQueryResult(Class<? extends OpenmrsData> type) {
+		return getBaseQueryResults().get(type);
 	}
 
 	/**
@@ -330,7 +330,7 @@ public class EvaluationContext {
 	}
 	
 	/**
-	 * @param the
+	 * @param the limit
 	 */
 	public void setLimit(Integer limit) {
 		clearCache();

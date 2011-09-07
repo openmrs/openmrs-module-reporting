@@ -28,7 +28,7 @@ import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinition
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.idset.IdSet;
+import org.openmrs.module.reporting.query.QueryResult;
 
 /**
  * The logic that evaluates a {@link RowPerObjectDataSetDefinition} and produces an {@link DataSet}
@@ -44,14 +44,14 @@ public abstract class RowPerObjectDataSetEvaluator implements DataSetEvaluator {
 	
 	/**
 	 * Implementations of this method should evaluate the appropriate id filters in the DataSetDefinition and
-	 * populate these IdSets within the Context
+	 * populate these QueryResults within the Context
 	 */
-	public abstract void populateFilterIdSets(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) throws EvaluationException;
+	public abstract void populateFilterQueryResults(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) throws EvaluationException;
 	
 	/**
-	 * Implementations of this method should return the base IdSet that is appropriate for the passed DataSetDefinition
+	 * Implementations of this method should return the base QueryResult that is appropriate for the passed DataSetDefinition
 	 */
-	public abstract IdSet getBaseIdSet(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context);
+	public abstract QueryResult getBaseQueryResult(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context);
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
@@ -63,8 +63,8 @@ public abstract class RowPerObjectDataSetEvaluator implements DataSetEvaluator {
 		DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		populateFilterIdSets(dsd, context);
-		IdSet baseIdSet = getBaseIdSet(dsd, context);
+		populateFilterQueryResults(dsd, context);
+		QueryResult baseQuery = getBaseQueryResult(dsd, context);
 		
 		RowPerObjectDataSet dataSet = new RowPerObjectDataSet(dsd, context);
 
@@ -74,7 +74,7 @@ public abstract class RowPerObjectDataSetEvaluator implements DataSetEvaluator {
 			ColumnDefinition cd = evaluatedColumnDef.getDefinition();
 			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), cd.getDataType()); // TODO: Support One-Many column definition to column
 			
-			for (Integer id : baseIdSet.getMemberIds()) {
+			for (Integer id : baseQuery.getMemberIds()) {
 				dataSet.addColumnValue(id, column, evaluatedColumnDef.getColumnValues().get(id));
 			}
 		}

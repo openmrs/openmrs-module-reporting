@@ -27,8 +27,8 @@ import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefini
 import org.openmrs.module.reporting.dataset.definition.RowPerPatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.idset.IdSet;
-import org.openmrs.module.reporting.idset.PatientIdSet;
+import org.openmrs.module.reporting.query.PatientQueryResult;
+import org.openmrs.module.reporting.query.QueryResult;
 
 /**
  * The logic that evaluates a {@link RowPerPatientDataSetDefinition} and produces an {@link DataSet}
@@ -45,9 +45,9 @@ public class RowPerPatientDataSetEvaluator extends RowPerObjectDataSetEvaluator 
 	
 	/**
 	 * Implementations of this method should evaluate the appropriate id filters in the DataSetDefinition and
-	 * populate these IdSets within the Context
+	 * populate these QueryResults within the Context
 	 */
-	public void populateFilterIdSets(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) throws EvaluationException {
+	public void populateFilterQueryResults(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) throws EvaluationException {
 		RowPerPatientDataSetDefinition rpp = (RowPerPatientDataSetDefinition) dsd;
 		if (rpp.getPatientFilter() != null) {
 			EvaluatedCohort filterCohort = Context.getService(CohortDefinitionService.class).evaluate(rpp.getPatientFilter(), context);
@@ -61,12 +61,12 @@ public class RowPerPatientDataSetEvaluator extends RowPerObjectDataSetEvaluator 
 	}
 	
 	/**
-	 * Implementations of this method should return the base IdSet that is appropriate for the passed DataSetDefinition
+	 * Implementations of this method should return the base Query that is appropriate for the passed DataSetDefinition
 	 */
-	public IdSet getBaseIdSet(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) {
-		PatientIdSet s = new PatientIdSet();
+	public QueryResult getBaseQueryResult(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) {
+		PatientQueryResult s = new PatientQueryResult();
 		if (context.getBaseCohort() == null) {
-			s = new PatientIdSet();
+			s = new PatientQueryResult();
 			String query = "select patient_id from patient where voided = false"; // TODO: Is this right?
 			List<List<Object>> results = Context.getAdministrationService().executeSQL(query, true);
 			for (List<Object> l : results) {
@@ -74,7 +74,7 @@ public class RowPerPatientDataSetEvaluator extends RowPerObjectDataSetEvaluator 
 			}
 		}
 		else {
-			s = new PatientIdSet(context.getBaseCohort());
+			s = new PatientQueryResult(context.getBaseCohort());
 		}
 		return s;
 	}
