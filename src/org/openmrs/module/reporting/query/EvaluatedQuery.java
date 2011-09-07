@@ -13,19 +13,22 @@
  */
 package org.openmrs.module.reporting.query;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
  * Encapsulates the results of Evaluating a Filter
  */
-public class EvaluatedQuery implements Evaluated<Query> {
+public abstract class EvaluatedQuery<T extends Query> implements Evaluated<T>, QueryResult {
 	
 	//***** PROPERTIES *****
 	
-    private Query definition;
+    private T definition;
     private EvaluationContext context;
-    private QueryResult queryResult;
+    private Set<Integer> memberIds;
     
     //***** CONSTRUCTORS *****
     
@@ -33,10 +36,9 @@ public class EvaluatedQuery implements Evaluated<Query> {
     	super();
     }
     
-    public EvaluatedQuery(Query definition, EvaluationContext context, QueryResult queryResult) {
+    public EvaluatedQuery(T definition, EvaluationContext context) {
     	this.definition = definition;
     	this.context = context;
-    	this.queryResult = queryResult;
     }
     
     //***** PROPERTY ACCESS *****
@@ -44,14 +46,14 @@ public class EvaluatedQuery implements Evaluated<Query> {
 	/**
 	 * @return the definition
 	 */
-	public Query getDefinition() {
+	public T getDefinition() {
 		return definition;
 	}
 	
 	/**
 	 * @param definition the definition to set
 	 */
-	public void setDefinition(Query definition) {
+	public void setDefinition(T definition) {
 		this.definition = definition;
 	}
 	
@@ -68,18 +70,44 @@ public class EvaluatedQuery implements Evaluated<Query> {
 	public void setContext(EvaluationContext context) {
 		this.context = context;
 	}
-
+	
 	/**
-	 * @return the queryResult
+	 * @return the memberIds
 	 */
-	public QueryResult getQueryResult() {
-		return queryResult;
+	public Set<Integer> getMemberIds() {
+		if (memberIds == null) {
+			memberIds = new HashSet<Integer>();
+		}
+		return memberIds;
 	}
 
 	/**
-	 * @param queryResult the queryResult to set
+	 * @param memberIds the memberIds to set
 	 */
-	public void setQueryResult(QueryResult queryResult) {
-		this.queryResult = queryResult;
+	public void setMemberIds(Set<Integer> memberIds) {
+		this.memberIds = memberIds;
+	}
+	
+	/**
+	 * @param memberIds to add to the Query
+	 */
+	public void add(Integer... memberIds) {
+		for (Integer memberId : memberIds) {
+			getMemberIds().add(memberId);
+		}
+	}
+	
+	/**
+	 * @param memberId to check within the queryResult
+	 */
+	public boolean contains(Integer memberId) {
+		return getMemberIds().contains(memberId);
+	}
+
+	/**
+	 * @see Query#size()
+	 */
+	public int size() {
+		return getMemberIds().size();
 	}
 }

@@ -25,11 +25,11 @@ import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.query.EvaluatedQuery;
-import org.openmrs.module.reporting.query.PersonQueryResult;
 import org.openmrs.module.reporting.query.Query;
 import org.openmrs.module.reporting.query.QueryEvaluator;
 import org.openmrs.module.reporting.query.QueryResult;
+import org.openmrs.module.reporting.query.person.EvaluatedPersonQuery;
+import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
@@ -38,7 +38,7 @@ import org.openmrs.util.DatabaseUpdater;
  * The logic that evaluates a {@link SqlPersonQuery} and produces an {@link Query}
  */
 @Handler(supports=SqlPersonQuery.class)
-public class SqlPersonQueryEvaluator implements QueryEvaluator {
+public class SqlPersonQueryEvaluator implements PersonQueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
@@ -52,12 +52,11 @@ public class SqlPersonQueryEvaluator implements QueryEvaluator {
 	 * @should evaluate a SQL query into PersonQuery
 	 * @should filter results given a base filter in an EvaluationContext
 	 */
-	public EvaluatedQuery evaluate(Query definition, EvaluationContext context) {
+	public EvaluatedPersonQuery evaluate(PersonQuery definition, EvaluationContext context) {
 		
-		PersonQueryResult queryResult = new PersonQueryResult();
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		
 		SqlPersonQuery sqlDef = (SqlPersonQuery) definition;
+		EvaluatedPersonQuery queryResult = new EvaluatedPersonQuery();
 		
 		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
 		Connection connection = null;
@@ -109,6 +108,6 @@ public class SqlPersonQueryEvaluator implements QueryEvaluator {
 				log.error("Error while closing connection", e);
 			}
 		}
-		return new EvaluatedQuery(sqlDef, context, queryResult);
+		return queryResult;
 	}
 }

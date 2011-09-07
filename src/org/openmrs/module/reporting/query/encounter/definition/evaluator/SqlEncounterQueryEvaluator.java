@@ -28,11 +28,11 @@ import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.query.EncounterQueryResult;
-import org.openmrs.module.reporting.query.EvaluatedQuery;
 import org.openmrs.module.reporting.query.Query;
 import org.openmrs.module.reporting.query.QueryEvaluator;
 import org.openmrs.module.reporting.query.QueryResult;
+import org.openmrs.module.reporting.query.encounter.EvaluatedEncounterQuery;
+import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
@@ -41,7 +41,7 @@ import org.openmrs.util.DatabaseUpdater;
  * The logic that evaluates a {@link SqlEncounterQuery} and produces an {@link Query}
  */
 @Handler(supports=SqlEncounterQuery.class)
-public class SqlEncounterQueryEvaluator implements QueryEvaluator {
+public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
@@ -56,12 +56,11 @@ public class SqlEncounterQueryEvaluator implements QueryEvaluator {
 	 * @should filter results given a base Encounter Query Result in an EvaluationContext
 	 * @should filter results given a base cohort in an EvaluationContext
 	 */
-	public EvaluatedQuery evaluate(Query definition, EvaluationContext context) {
+	public EvaluatedEncounterQuery evaluate(EncounterQuery definition, EvaluationContext context) {
 		
-		EncounterQueryResult queryResult = new EncounterQueryResult();
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		
 		SqlEncounterQuery sqlDef = (SqlEncounterQuery) definition;
+		EvaluatedEncounterQuery queryResult = new EvaluatedEncounterQuery(sqlDef, context);
 		
 		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
 		Connection connection = null;
@@ -95,7 +94,7 @@ public class SqlEncounterQueryEvaluator implements QueryEvaluator {
 			if (basePatientQuery != null) {
 				String query = "select encounter_id from encounter where patient_id in (" + basePatientQuery.getCommaSeparatedPatientIds() + ")";
 				List<List<Object>> ret = Context.getAdministrationService().executeSQL(query, true);
-				EncounterQueryResult patientEncounterQuery = new EncounterQueryResult();
+				EvaluatedEncounterQuery patientEncounterQuery = new EvaluatedEncounterQuery();
 				for (List<Object> l : ret) {
 					patientEncounterQuery.add((Integer)l.get(0));
 				}
@@ -130,6 +129,6 @@ public class SqlEncounterQueryEvaluator implements QueryEvaluator {
 				log.error("Error while closing connection", e);
 			}
 		}
-		return new EvaluatedQuery(sqlDef, context, queryResult);
+		return queryResult;
 	}
 }

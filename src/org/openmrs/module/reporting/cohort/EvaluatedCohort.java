@@ -19,13 +19,14 @@ import org.openmrs.Cohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.query.QueryResult;
 
 /**
  * Provides access to an evaluated {@link Cohort}, along with the 
  * {@link CohortDefinition} and {@link EvaluationContext} which
  * produced it.
  */
-public class EvaluatedCohort extends Cohort implements Evaluated<CohortDefinition> {
+public class EvaluatedCohort extends Cohort implements Evaluated<CohortDefinition>, QueryResult {
 
 	public static final long serialVersionUID = 1L;
 	

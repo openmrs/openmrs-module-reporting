@@ -24,11 +24,6 @@ public interface QueryResult {
 	 * @return the memberIds
 	 */
 	public Set<Integer> getMemberIds();
-
-	/**
-	 * @param memberIds to add to the Query
-	 */
-	public void add(Integer... memberIds);
 	
 	/**
 	 * @param memberId to check within the queryResult

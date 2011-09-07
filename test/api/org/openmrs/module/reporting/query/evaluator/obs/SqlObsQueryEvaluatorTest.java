@@ -24,11 +24,11 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.EncounterQueryResult;
-import org.openmrs.module.reporting.query.ObsQueryResult;
 import org.openmrs.module.reporting.query.QueryResult;
+import org.openmrs.module.reporting.query.encounter.EvaluatedEncounterQuery;
+import org.openmrs.module.reporting.query.obs.EvaluatedObsQuery;
 import org.openmrs.module.reporting.query.obs.definition.SqlObsQuery;
-import org.openmrs.module.reporting.query.service.QueryService;
+import org.openmrs.module.reporting.query.obs.service.ObsQueryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -50,7 +50,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 	public void evaluate_shouldFilterResultsGivenABaseObsQueryInAnEvaluationContext() throws Exception {
 	
 		EvaluationContext context = new EvaluationContext();
-		ObsQueryResult baseObsIds = new ObsQueryResult();
+		EvaluatedObsQuery baseObsIds = new EvaluatedObsQuery();
 		baseObsIds.add(7, 9, 10, 11, 12);
 		context.addQueryResult(Obs.class, baseObsIds);
 		
@@ -68,12 +68,12 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 		EvaluationContext context = new EvaluationContext();
 		
-		ObsQueryResult baseObsIds = new ObsQueryResult();
+		EvaluatedObsQuery baseObsIds = new EvaluatedObsQuery();
 		baseObsIds.add(7, 16, 18, 21, 24);
 		context.addQueryResult(Obs.class, baseObsIds);
 		Assert.assertEquals(5, evaluate(d, context).size());
 		
-		EncounterQueryResult baseEncounterIds = new EncounterQueryResult();
+		EvaluatedEncounterQuery baseEncounterIds = new EvaluatedEncounterQuery();
 		baseEncounterIds.add(5, 6, 7, 8);
 		context.addQueryResult(Encounter.class, baseEncounterIds);
 		Assert.assertEquals(4, evaluate(d, context).size());
@@ -84,8 +84,8 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 	}
 
 	
-	public QueryResult evaluate(SqlObsQuery definition, EvaluationContext context) throws Exception {
-		return Context.getService(QueryService.class).evaluate(definition, context).getQueryResult();
+	public EvaluatedObsQuery evaluate(SqlObsQuery definition, EvaluationContext context) throws Exception {
+		return Context.getService(ObsQueryService.class).evaluate(definition, context);
 	}
 	
 	@Before

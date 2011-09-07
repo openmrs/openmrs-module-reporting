@@ -27,7 +27,6 @@ import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefini
 import org.openmrs.module.reporting.dataset.definition.RowPerPatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.query.PatientQueryResult;
 import org.openmrs.module.reporting.query.QueryResult;
 
 /**
@@ -64,17 +63,17 @@ public class RowPerPatientDataSetEvaluator extends RowPerObjectDataSetEvaluator 
 	 * Implementations of this method should return the base Query that is appropriate for the passed DataSetDefinition
 	 */
 	public QueryResult getBaseQueryResult(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) {
-		PatientQueryResult s = new PatientQueryResult();
+		EvaluatedCohort s = new EvaluatedCohort();
 		if (context.getBaseCohort() == null) {
-			s = new PatientQueryResult();
+			s = new EvaluatedCohort();
 			String query = "select patient_id from patient where voided = false"; // TODO: Is this right?
 			List<List<Object>> results = Context.getAdministrationService().executeSQL(query, true);
 			for (List<Object> l : results) {
-				s.add((Integer)l.get(0));
+				s.addMember((Integer)l.get(0));
 			}
 		}
 		else {
-			s = new PatientQueryResult(context.getBaseCohort());
+			s.setMemberIds(context.getBaseCohort().getMemberIds());
 		}
 		return s;
 	}

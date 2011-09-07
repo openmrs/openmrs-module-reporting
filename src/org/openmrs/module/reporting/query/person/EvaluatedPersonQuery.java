@@ -11,36 +11,30 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query;
+package org.openmrs.module.reporting.query.person;
 
-import org.openmrs.Cohort;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.query.EvaluatedQuery;
+import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 
 /**
- * Patient Query Result
+ * Evaluated Person Query
  */
-public class PatientQueryResult extends Cohort implements QueryResult {
-	
-	public static final long serialVersionUID = 1L;
-	
+public class EvaluatedPersonQuery extends EvaluatedQuery<PersonQuery> {
+    
+    //***** CONSTRUCTORS *****
+    
 	/**
 	 * Default Constructor
 	 */
-	public PatientQueryResult() { }
-	
-	/**
-	 * Constructor that takes a Cohort
-	 */
-	public PatientQueryResult(Cohort c) {
-		super(c.getMemberIds());
-	}
-
-	/**
-	 * @see Query#add(Integer[])
-	 */
-	public void add(Integer... memberIds) {
-		for (Integer memberId : memberIds) {
-			addMember(memberId);
-		}
-	}
+    public EvaluatedPersonQuery() {
+    	super();
+    }
     
+	/**
+	 * Full Constructor
+	 */
+    public EvaluatedPersonQuery(PersonQuery definition, EvaluationContext context) {
+    	super(definition, context);
+    } 
 }

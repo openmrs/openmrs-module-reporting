@@ -23,10 +23,10 @@ import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.EncounterQueryResult;
 import org.openmrs.module.reporting.query.QueryResult;
+import org.openmrs.module.reporting.query.encounter.EvaluatedEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
-import org.openmrs.module.reporting.query.service.QueryService;
+import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -48,7 +48,7 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 	public void evaluate_shouldFilterResultsGivenABaseEncounterQueryInAnEvaluationContext() throws Exception {
 	
 		EvaluationContext context = new EvaluationContext();
-		EncounterQueryResult baseEncounterIds = new EncounterQueryResult();
+		EvaluatedEncounterQuery baseEncounterIds = new EvaluatedEncounterQuery();
 		baseEncounterIds.add(3, 4, 5, 6, 7, 8);
 		context.addQueryResult(Encounter.class, baseEncounterIds);
 		
@@ -61,7 +61,7 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 	public void evaluate_shouldFilterResultsGivenABaseCohortInAnEvaluationContext() throws Exception {
 	
 		EvaluationContext context = new EvaluationContext();
-		EncounterQueryResult baseEncounterIds = new EncounterQueryResult();
+		EvaluatedEncounterQuery baseEncounterIds = new EvaluatedEncounterQuery();
 		baseEncounterIds.add(3, 4, 5, 6, 7, 8);
 		context.addQueryResult(Encounter.class, baseEncounterIds);
 		
@@ -74,8 +74,8 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 
 	}
 	
-	public QueryResult evaluate(SqlEncounterQuery definition, EvaluationContext context) throws Exception {
-		return Context.getService(QueryService.class).evaluate(definition, context).getQueryResult();
+	public EvaluatedEncounterQuery evaluate(SqlEncounterQuery definition, EvaluationContext context) throws Exception {
+		return Context.getService(EncounterQueryService.class).evaluate(definition, context);
 	}
 	
 	@Before

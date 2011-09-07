@@ -25,10 +25,9 @@ import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefini
 import org.openmrs.module.reporting.dataset.definition.RowPerPersonDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.query.EvaluatedQuery;
-import org.openmrs.module.reporting.query.PersonQueryResult;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.service.QueryService;
+import org.openmrs.module.reporting.query.person.EvaluatedPersonQuery;
+import org.openmrs.module.reporting.query.person.service.PersonQueryService;
 
 /**
  * The logic that evaluates a {@link RowPerObjectDataSetDefinition} and produces an {@link DataSet}
@@ -50,8 +49,8 @@ public class RowPerPersonDataSetEvaluator extends RowPerObjectDataSetEvaluator {
 	public void populateFilterQueryResults(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) throws EvaluationException {
 		RowPerPersonDataSetDefinition rpp = (RowPerPersonDataSetDefinition) dsd;
 		if (rpp.getPersonFilter() != null) {
-			EvaluatedQuery personQuery = Context.getService(QueryService.class).evaluate(rpp.getPersonFilter(), context);
-			context.getBaseQueryResults().put(Person.class, personQuery.getQueryResult());
+			EvaluatedPersonQuery personQuery = Context.getService(PersonQueryService.class).evaluate(rpp.getPersonFilter(), context);
+			context.getBaseQueryResults().put(Person.class, personQuery);
 		}
 	}
 	
@@ -59,9 +58,9 @@ public class RowPerPersonDataSetEvaluator extends RowPerObjectDataSetEvaluator {
 	 * Implementations of this method should return the base QueryResult that is appropriate for the passed DataSetDefinition
 	 */
 	public QueryResult getBaseQueryResult(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) {
-		QueryResult s = context.getBaseQueryResults().get(Person.class);
+		EvaluatedPersonQuery s = (EvaluatedPersonQuery)context.getBaseQueryResults().get(Person.class);
 		if (s == null) {
-			s = new PersonQueryResult();
+			s = new EvaluatedPersonQuery();
 			String query = "select person_id from person where voided = false"; // TODO: Is this right?
 			List<List<Object>> results = Context.getAdministrationService().executeSQL(query, true);
 			for (List<Object> l : results) {

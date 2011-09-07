@@ -13,7 +13,7 @@ import org.openmrs.module.reporting.dataset.column.definition.person.PersonIdCol
 import org.openmrs.module.reporting.dataset.definition.RowPerPersonDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.PersonQueryResult;
+import org.openmrs.module.reporting.query.person.EvaluatedPersonQuery;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class RowPerPersonDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -38,7 +38,7 @@ public class RowPerPersonDataSetEvaluatorTest extends BaseModuleContextSensitive
 		Assert.assertEquals("F", dataset.getColumnValue(7, "Sexe"));
 		Assert.assertEquals(13, dataset.getRows().size());
 		
-		PersonQueryResult personQuery = new PersonQueryResult();
+		EvaluatedPersonQuery personQuery = new EvaluatedPersonQuery();
 		personQuery.add(2,6,8,501);
 		context.addQueryResult(Person.class, personQuery);
 		

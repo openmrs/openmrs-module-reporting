@@ -29,11 +29,11 @@ import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.query.EvaluatedQuery;
-import org.openmrs.module.reporting.query.ObsQueryResult;
 import org.openmrs.module.reporting.query.Query;
 import org.openmrs.module.reporting.query.QueryEvaluator;
 import org.openmrs.module.reporting.query.QueryResult;
+import org.openmrs.module.reporting.query.obs.EvaluatedObsQuery;
+import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
 import org.openmrs.module.reporting.query.obs.definition.SqlObsQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
@@ -43,7 +43,7 @@ import org.openmrs.util.OpenmrsUtil;
  * The logic that evaluates a {@link SqlObsQuery} and produces an {@link Query}
  */
 @Handler(supports=SqlObsQuery.class)
-public class SqlObsQueryEvaluator implements QueryEvaluator {
+public class SqlObsQueryEvaluator implements ObsQueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
@@ -59,12 +59,11 @@ public class SqlObsQueryEvaluator implements QueryEvaluator {
 	 * @should filter results given a base Encounter Query Result in an EvaluationContext
 	 * @should filter results given a base cohort in an EvaluationContext
 	 */
-	public EvaluatedQuery evaluate(Query definition, EvaluationContext context) {
+	public EvaluatedObsQuery evaluate(ObsQuery definition, EvaluationContext context) {
 		
-		ObsQueryResult queryResult = new ObsQueryResult();
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		
 		SqlObsQuery sqlDef = (SqlObsQuery) definition;
+		EvaluatedObsQuery queryResult = new EvaluatedObsQuery();
 		
 		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
 		Connection connection = null;
@@ -100,7 +99,7 @@ public class SqlObsQueryEvaluator implements QueryEvaluator {
 			if (baseEncounterQuery != null) {
 				String query = "select obs_id from obs where encounter_id in (" + OpenmrsUtil.join(baseEncounterQuery.getMemberIds(), ",") + ")";
 				List<List<Object>> ret = Context.getAdministrationService().executeSQL(query, true);
-				ObsQueryResult encounterObsQuery = new ObsQueryResult();
+				EvaluatedObsQuery encounterObsQuery = new EvaluatedObsQuery();
 				for (List<Object> l : ret) {
 					encounterObsQuery.add((Integer)l.get(0));
 				}
@@ -115,7 +114,7 @@ public class SqlObsQueryEvaluator implements QueryEvaluator {
 			if (basePatientQuery != null) {
 				String query = "select obs_id from obs where person_id in (" + basePatientQuery.getCommaSeparatedPatientIds() + ")";
 				List<List<Object>> ret = Context.getAdministrationService().executeSQL(query, true);
-				ObsQueryResult patientObsQuery = new ObsQueryResult();
+				EvaluatedObsQuery patientObsQuery = new EvaluatedObsQuery();
 				for (List<Object> l : ret) {
 					patientObsQuery.add((Integer)l.get(0));
 				}
@@ -150,6 +149,6 @@ public class SqlObsQueryEvaluator implements QueryEvaluator {
 				log.error("Error while closing connection", e);
 			}
 		}
-		return new EvaluatedQuery(sqlDef, context, queryResult);
+		return queryResult;
 	}
 }
