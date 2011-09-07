@@ -26,7 +26,6 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.Query;
-import org.openmrs.module.reporting.query.QueryEvaluator;
 import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.person.EvaluatedPersonQuery;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
@@ -48,7 +47,7 @@ public class SqlPersonQueryEvaluator implements PersonQueryEvaluator {
 	public SqlPersonQueryEvaluator() { }
 	
 	/**
-	 * @see QueryEvaluator#evaluate(Query, EvaluationContext)
+	 * @see PersonQueryEvaluator#evaluate(PersonQuery, EvaluationContext)
 	 * @should evaluate a SQL query into PersonQuery
 	 * @should filter results given a base filter in an EvaluationContext
 	 */

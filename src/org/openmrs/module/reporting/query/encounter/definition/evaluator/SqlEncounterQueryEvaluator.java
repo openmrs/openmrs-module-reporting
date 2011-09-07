@@ -29,7 +29,6 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.Query;
-import org.openmrs.module.reporting.query.QueryEvaluator;
 import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.encounter.EvaluatedEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
@@ -51,7 +50,7 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 	public SqlEncounterQueryEvaluator() { }
 	
 	/**
-	 * @see QueryEvaluator#evaluate(Query, EvaluationContext)
+	 * @see EncounterQueryEvaluator#evaluate(EncounterQuery, EvaluationContext)
 	 * @should evaluate a SQL query into an EncounterQuery
 	 * @should filter results given a base Encounter Query Result in an EvaluationContext
 	 * @should filter results given a base cohort in an EvaluationContext

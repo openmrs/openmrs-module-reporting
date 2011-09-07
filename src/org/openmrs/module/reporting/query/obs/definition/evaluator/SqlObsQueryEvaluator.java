@@ -30,7 +30,6 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.Query;
-import org.openmrs.module.reporting.query.QueryEvaluator;
 import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.obs.EvaluatedObsQuery;
 import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
@@ -53,7 +52,7 @@ public class SqlObsQueryEvaluator implements ObsQueryEvaluator {
 	public SqlObsQueryEvaluator() { }
 	
 	/**
-	 * @see QueryEvaluator#evaluate(Query, EvaluationContext)
+	 * @see ObsQueryEvaluator#evaluate(ObsQuery, EvaluationContext)
 	 * @should evaluate a SQL query into an ObsQuery
 	 * @should filter results given a base Obs Query Result in an EvaluationContext
 	 * @should filter results given a base Encounter Query Result in an EvaluationContext
