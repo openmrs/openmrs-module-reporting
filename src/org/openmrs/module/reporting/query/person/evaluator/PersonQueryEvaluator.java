@@ -11,19 +11,19 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.obs.definition.evaluator;
+package org.openmrs.module.reporting.query.person.evaluator;
 
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.obs.EvaluatedObsQuery;
-import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
+import org.openmrs.module.reporting.query.person.EvaluatedPersonQuery;
+import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 
 /**
- * Each implementation of this class is expected to evaluate one or more type of ObsQuery to produce an EvaluatedObsQuery
+ * Each implementation of this class is expected to evaluate one or more type of PersonQuery to produce an EvaluatedPersonQuery
  */
-public interface ObsQueryEvaluator {
+public interface PersonQueryEvaluator {
 	
 	/**
-	 * Evaluate an ObsQuery for the given EvaluationContext
+	 * Evaluate an PersonQuery for the given EvaluationContext
 	 */
-	public EvaluatedObsQuery evaluate(ObsQuery definition, EvaluationContext context);
+	public EvaluatedPersonQuery evaluate(PersonQuery definition, EvaluationContext context);
 }

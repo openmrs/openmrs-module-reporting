@@ -11,29 +11,29 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.person.definition.persister;
+package org.openmrs.module.reporting.query.encounter.persister;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.definition.persister.SerializedDefinitionPersister;
-import org.openmrs.module.reporting.query.person.definition.PersonQuery;
+import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 
 /**
- * This class returns PersonQuerys that have been Serialized to the database
- * This class is annotated as a Handler that supports all PersonQuery classes
+ * This class returns EncounterQuerys that have been Serialized to the database
+ * This class is annotated as a Handler that supports all EncounterQuery classes
  * Specifying no order on this indicates that this is the default means of Persisting 
- * an PersonQuery.  To override this behavior, any additional PersonQueryPersister
+ * an EncounterQuery.  To override this behavior, any additional EncounterQueryPersister
  * should specify the order field on the Handler annotation.
  */
-@Handler(supports={PersonQuery.class})
-public class SerializedPersonQueryPersister extends SerializedDefinitionPersister<PersonQuery> {
+@Handler(supports={EncounterQuery.class})
+public class SerializedEncounterQueryPersister extends SerializedDefinitionPersister<EncounterQuery> {
 
-	protected SerializedPersonQueryPersister() { }
+	protected SerializedEncounterQueryPersister() { }
 
 	/**
 	 * @see SerializedDefinitionPersister#getBaseClass()
 	 */
 	@Override
-	public Class<PersonQuery> getBaseClass() {
-		return PersonQuery.class;
+	public Class<EncounterQuery> getBaseClass() {
+		return EncounterQuery.class;
 	}
 }

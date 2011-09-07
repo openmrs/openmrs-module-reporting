@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.person.definition.evaluator;
+package org.openmrs.module.reporting.query.person.evaluator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

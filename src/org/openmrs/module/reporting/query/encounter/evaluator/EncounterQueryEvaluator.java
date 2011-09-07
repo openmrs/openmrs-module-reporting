@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.encounter.definition.evaluator;
+package org.openmrs.module.reporting.query.encounter.evaluator;
 
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EvaluatedEncounterQuery;

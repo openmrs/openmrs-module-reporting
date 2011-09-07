@@ -11,29 +11,29 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.obs.definition.persister;
+package org.openmrs.module.reporting.query.person.persister;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.definition.persister.SerializedDefinitionPersister;
-import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
+import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 
 /**
- * This class returns ObsQuerys that have been Serialized to the database
- * This class is annotated as a Handler that supports all ObsQuery classes
+ * This class returns PersonQuerys that have been Serialized to the database
+ * This class is annotated as a Handler that supports all PersonQuery classes
  * Specifying no order on this indicates that this is the default means of Persisting 
- * an ObsQuery.  To override this behavior, any additional ObsQueryPersister
+ * an PersonQuery.  To override this behavior, any additional PersonQueryPersister
  * should specify the order field on the Handler annotation.
  */
-@Handler(supports={ObsQuery.class})
-public class SerializedObsQueryPersister extends SerializedDefinitionPersister<ObsQuery> {
+@Handler(supports={PersonQuery.class})
+public class SerializedPersonQueryPersister extends SerializedDefinitionPersister<PersonQuery> {
 
-	protected SerializedObsQueryPersister() { }
+	protected SerializedPersonQueryPersister() { }
 
 	/**
 	 * @see SerializedDefinitionPersister#getBaseClass()
 	 */
 	@Override
-	public Class<ObsQuery> getBaseClass() {
-		return ObsQuery.class;
+	public Class<PersonQuery> getBaseClass() {
+		return PersonQuery.class;
 	}
 }
