@@ -27,12 +27,12 @@ public interface ColumnDefinition extends Definition {
     public ColumnConverter getConverter();
     
     /**
-     * @return the data type for this Column, prior to Transform
+     * @return the data type for this Column, prior to Conversion
      */
     public Class<?> getRawDataType();
     
     /**
-     * @return the data type for this Column after any Transform
+     * @return the data type for this Column after any Conversion
      */
     public Class<?> getDataType();
 }
