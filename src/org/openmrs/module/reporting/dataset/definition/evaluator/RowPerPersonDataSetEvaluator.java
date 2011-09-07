@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.dataset.definition.RowPerPersonDataSetDefini
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.person.EvaluatedPersonQuery;
+import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.service.PersonQueryService;
 
 /**
@@ -49,7 +49,7 @@ public class RowPerPersonDataSetEvaluator extends RowPerObjectDataSetEvaluator {
 	public void populateFilterQueryResults(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) throws EvaluationException {
 		RowPerPersonDataSetDefinition rpp = (RowPerPersonDataSetDefinition) dsd;
 		if (rpp.getPersonFilter() != null) {
-			EvaluatedPersonQuery personQuery = Context.getService(PersonQueryService.class).evaluate(rpp.getPersonFilter(), context);
+			PersonQueryResult personQuery = Context.getService(PersonQueryService.class).evaluate(rpp.getPersonFilter(), context);
 			context.getBaseQueryResults().put(Person.class, personQuery);
 		}
 	}
@@ -58,9 +58,9 @@ public class RowPerPersonDataSetEvaluator extends RowPerObjectDataSetEvaluator {
 	 * Implementations of this method should return the base QueryResult that is appropriate for the passed DataSetDefinition
 	 */
 	public QueryResult getBaseQueryResult(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) {
-		EvaluatedPersonQuery s = (EvaluatedPersonQuery)context.getBaseQueryResults().get(Person.class);
+		PersonQueryResult s = (PersonQueryResult)context.getBaseQueryResults().get(Person.class);
 		if (s == null) {
-			s = new EvaluatedPersonQuery();
+			s = new PersonQueryResult();
 			String query = "select person_id from person where voided = false"; // TODO: Is this right?
 			List<List<Object>> results = Context.getAdministrationService().executeSQL(query, true);
 			for (List<Object> l : results) {

@@ -23,7 +23,7 @@ import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.person.EvaluatedPersonQuery;
+import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
 import org.openmrs.module.reporting.query.person.service.PersonQueryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -47,7 +47,7 @@ public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldFilterResultsGivenABaseFilterInAnEvaluationContext() throws Exception {
 		
 		EvaluationContext context = new EvaluationContext();
-		EvaluatedPersonQuery basePersonIds = new EvaluatedPersonQuery();
+		PersonQueryResult basePersonIds = new PersonQueryResult();
 		basePersonIds.add(2, 9, 20, 23);
 		context.addQueryResult(Person.class, basePersonIds);
 		
@@ -62,7 +62,7 @@ public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest 
 		Assert.assertEquals(1, evaluate(d, context).size());
 	}
 	
-	public EvaluatedPersonQuery evaluate(SqlPersonQuery definition, EvaluationContext context) throws Exception {
+	public PersonQueryResult evaluate(SqlPersonQuery definition, EvaluationContext context) throws Exception {
 		return Context.getService(PersonQueryService.class).evaluate(definition, context);
 	}
 	

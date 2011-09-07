@@ -30,7 +30,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.Query;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.encounter.EvaluatedEncounterQuery;
+import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
@@ -55,11 +55,11 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 	 * @should filter results given a base Encounter Query Result in an EvaluationContext
 	 * @should filter results given a base cohort in an EvaluationContext
 	 */
-	public EvaluatedEncounterQuery evaluate(EncounterQuery definition, EvaluationContext context) {
+	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		SqlEncounterQuery sqlDef = (SqlEncounterQuery) definition;
-		EvaluatedEncounterQuery queryResult = new EvaluatedEncounterQuery(sqlDef, context);
+		EncounterQueryResult queryResult = new EncounterQueryResult(sqlDef, context);
 		
 		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
 		Connection connection = null;
@@ -93,7 +93,7 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 			if (basePatientQuery != null) {
 				String query = "select encounter_id from encounter where patient_id in (" + basePatientQuery.getCommaSeparatedPatientIds() + ")";
 				List<List<Object>> ret = Context.getAdministrationService().executeSQL(query, true);
-				EvaluatedEncounterQuery patientEncounterQuery = new EvaluatedEncounterQuery();
+				EncounterQueryResult patientEncounterQuery = new EncounterQueryResult();
 				for (List<Object> l : ret) {
 					patientEncounterQuery.add((Integer)l.get(0));
 				}

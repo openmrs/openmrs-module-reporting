@@ -15,16 +15,16 @@ package org.openmrs.module.reporting.query.person.evaluator;
 
 import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.person.EvaluatedPersonQuery;
+import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 
 /**
- * Each implementation of this class is expected to evaluate one or more type of PersonQuery to produce an EvaluatedPersonQuery
+ * Each implementation of this class is expected to evaluate one or more type of PersonQuery to produce an PersonQueryResult
  */
 public interface PersonQueryEvaluator extends DefinitionEvaluator<PersonQuery> {
 	
 	/**
 	 * Evaluate an PersonQuery for the given EvaluationContext
 	 */
-	public EvaluatedPersonQuery evaluate(PersonQuery definition, EvaluationContext context);
+	public PersonQueryResult evaluate(PersonQuery definition, EvaluationContext context);
 }

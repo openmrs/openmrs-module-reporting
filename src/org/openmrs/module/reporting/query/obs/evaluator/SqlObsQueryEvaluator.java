@@ -31,7 +31,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.Query;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.obs.EvaluatedObsQuery;
+import org.openmrs.module.reporting.query.obs.ObsQueryResult;
 import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
 import org.openmrs.module.reporting.query.obs.definition.SqlObsQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
@@ -58,11 +58,11 @@ public class SqlObsQueryEvaluator implements ObsQueryEvaluator {
 	 * @should filter results given a base Encounter Query Result in an EvaluationContext
 	 * @should filter results given a base cohort in an EvaluationContext
 	 */
-	public EvaluatedObsQuery evaluate(ObsQuery definition, EvaluationContext context) {
+	public ObsQueryResult evaluate(ObsQuery definition, EvaluationContext context) {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		SqlObsQuery sqlDef = (SqlObsQuery) definition;
-		EvaluatedObsQuery queryResult = new EvaluatedObsQuery();
+		ObsQueryResult queryResult = new ObsQueryResult();
 		
 		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
 		Connection connection = null;
@@ -98,7 +98,7 @@ public class SqlObsQueryEvaluator implements ObsQueryEvaluator {
 			if (baseEncounterQuery != null) {
 				String query = "select obs_id from obs where encounter_id in (" + OpenmrsUtil.join(baseEncounterQuery.getMemberIds(), ",") + ")";
 				List<List<Object>> ret = Context.getAdministrationService().executeSQL(query, true);
-				EvaluatedObsQuery encounterObsQuery = new EvaluatedObsQuery();
+				ObsQueryResult encounterObsQuery = new ObsQueryResult();
 				for (List<Object> l : ret) {
 					encounterObsQuery.add((Integer)l.get(0));
 				}
@@ -113,7 +113,7 @@ public class SqlObsQueryEvaluator implements ObsQueryEvaluator {
 			if (basePatientQuery != null) {
 				String query = "select obs_id from obs where person_id in (" + basePatientQuery.getCommaSeparatedPatientIds() + ")";
 				List<List<Object>> ret = Context.getAdministrationService().executeSQL(query, true);
-				EvaluatedObsQuery patientObsQuery = new EvaluatedObsQuery();
+				ObsQueryResult patientObsQuery = new ObsQueryResult();
 				for (List<Object> l : ret) {
 					patientObsQuery.add((Integer)l.get(0));
 				}

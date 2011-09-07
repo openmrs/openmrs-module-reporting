@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 /**
  * Encapsulates the results of Evaluating a Filter
  */
-public abstract class EvaluatedQuery<T extends Query> implements Evaluated<T>, QueryResult {
+public abstract class BaseQueryResult<T extends Query> implements Evaluated<T>, QueryResult {
 	
 	//***** PROPERTIES *****
 	
@@ -32,11 +32,11 @@ public abstract class EvaluatedQuery<T extends Query> implements Evaluated<T>, Q
     
     //***** CONSTRUCTORS *****
     
-    public EvaluatedQuery() {
+    public BaseQueryResult() {
     	super();
     }
     
-    public EvaluatedQuery(T definition, EvaluationContext context) {
+    public BaseQueryResult(T definition, EvaluationContext context) {
     	this.definition = definition;
     	this.context = context;
     }

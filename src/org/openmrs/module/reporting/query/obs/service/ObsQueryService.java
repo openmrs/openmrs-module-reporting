@@ -18,7 +18,7 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.query.obs.EvaluatedObsQuery;
+import org.openmrs.module.reporting.query.obs.ObsQueryResult;
 import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +32,11 @@ public interface ObsQueryService extends DefinitionService<ObsQuery> {
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public EvaluatedObsQuery evaluate(ObsQuery query, EvaluationContext context) throws EvaluationException;
+	public ObsQueryResult evaluate(ObsQuery query, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
-	public EvaluatedObsQuery evaluate(Mapped<? extends ObsQuery> mappedQuery, EvaluationContext context) throws EvaluationException;
+	public ObsQueryResult evaluate(Mapped<? extends ObsQuery> mappedQuery, EvaluationContext context) throws EvaluationException;
 }

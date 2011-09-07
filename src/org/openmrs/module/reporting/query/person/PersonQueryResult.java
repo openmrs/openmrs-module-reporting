@@ -11,30 +11,30 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.encounter;
+package org.openmrs.module.reporting.query.person;
 
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.EvaluatedQuery;
-import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
+import org.openmrs.module.reporting.query.BaseQueryResult;
+import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 
 /**
- * Evaluated Encounter Query
+ * Result of an Evaluated Person Query
  */
-public class EvaluatedEncounterQuery extends EvaluatedQuery<EncounterQuery> {
+public class PersonQueryResult extends BaseQueryResult<PersonQuery> {
     
     //***** CONSTRUCTORS *****
     
 	/**
 	 * Default Constructor
 	 */
-    public EvaluatedEncounterQuery() {
+    public PersonQueryResult() {
     	super();
     }
     
 	/**
 	 * Full Constructor
 	 */
-    public EvaluatedEncounterQuery(EncounterQuery definition, EvaluationContext context) {
+    public PersonQueryResult(PersonQuery definition, EvaluationContext context) {
     	super(definition, context);
-    }
+    } 
 }

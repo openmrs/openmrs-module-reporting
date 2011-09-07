@@ -27,7 +27,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.Query;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.person.EvaluatedPersonQuery;
+import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
@@ -51,11 +51,11 @@ public class SqlPersonQueryEvaluator implements PersonQueryEvaluator {
 	 * @should evaluate a SQL query into PersonQuery
 	 * @should filter results given a base filter in an EvaluationContext
 	 */
-	public EvaluatedPersonQuery evaluate(PersonQuery definition, EvaluationContext context) {
+	public PersonQueryResult evaluate(PersonQuery definition, EvaluationContext context) {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		SqlPersonQuery sqlDef = (SqlPersonQuery) definition;
-		EvaluatedPersonQuery queryResult = new EvaluatedPersonQuery();
+		PersonQueryResult queryResult = new PersonQueryResult();
 		
 		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
 		Connection connection = null;

@@ -24,7 +24,7 @@ import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.QueryResult;
-import org.openmrs.module.reporting.query.encounter.EvaluatedEncounterQuery;
+import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -48,7 +48,7 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 	public void evaluate_shouldFilterResultsGivenABaseEncounterQueryInAnEvaluationContext() throws Exception {
 	
 		EvaluationContext context = new EvaluationContext();
-		EvaluatedEncounterQuery baseEncounterIds = new EvaluatedEncounterQuery();
+		EncounterQueryResult baseEncounterIds = new EncounterQueryResult();
 		baseEncounterIds.add(3, 4, 5, 6, 7, 8);
 		context.addQueryResult(Encounter.class, baseEncounterIds);
 		
@@ -61,7 +61,7 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 	public void evaluate_shouldFilterResultsGivenABaseCohortInAnEvaluationContext() throws Exception {
 	
 		EvaluationContext context = new EvaluationContext();
-		EvaluatedEncounterQuery baseEncounterIds = new EvaluatedEncounterQuery();
+		EncounterQueryResult baseEncounterIds = new EncounterQueryResult();
 		baseEncounterIds.add(3, 4, 5, 6, 7, 8);
 		context.addQueryResult(Encounter.class, baseEncounterIds);
 		
@@ -74,7 +74,7 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 
 	}
 	
-	public EvaluatedEncounterQuery evaluate(SqlEncounterQuery definition, EvaluationContext context) throws Exception {
+	public EncounterQueryResult evaluate(SqlEncounterQuery definition, EvaluationContext context) throws Exception {
 		return Context.getService(EncounterQueryService.class).evaluate(definition, context);
 	}
 	
