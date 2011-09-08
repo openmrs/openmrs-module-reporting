@@ -31,11 +31,11 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.query.QueryResult;
 
 /**
- * The EvaluationContext provides the following capabilities: - A baseCohort, i.e. the universe of
- * patients relevant to this context (defaults to all patients) - An in-memory cache which can be
- * used to persist and retrieve objects. Note that this cache is cleared whenever any changes are
- * made to baseCohort or any parameter values. - Capabilities to add, remove, and retrieve parameter
- * values - Capabilities to evaluate parametric expressions, e.g. ${someDateParameterName+30d}
+ * The EvaluationContext provides the following capabilities: 
+ * 	- A baseCohort, i.e. the universe of patients relevant to this context (defaults to all patients) 
+ *  - An in-memory cache which can be used to persist and retrieve previous Evaluation results. 
+ *    * Note that this cache is cleared whenever any changes are made to evaluationDate, limit, baseCohort, or baseQueryResults *
+ *  - Capabilities to add, remove, and retrieve parameter values
  */
 public class EvaluationContext {
 	
@@ -114,28 +114,23 @@ public class EvaluationContext {
 	}
 	
 	/**
-	 * Clone an EvaluationContext, replacing the parameters with those in the mapped child object as
-	 * appropriate.
-	 * 
-	 * @param baseCohort
-	 * @param parameters
-	 * @return
+	 * @return a cloned EvaluationContext, replacing the parameters with those in the mapped child object as appropriate.
 	 */
 	public static EvaluationContext cloneForChild(EvaluationContext initialContext, Mapped<? extends Parameterizable> child) {
 		
-		if (child == null || child.getParameterizable() == null)
-			throw new APIException(
-			        "The specified report could not be evaluated because one of its components has been removed from the database");
-		
+		if (child == null || child.getParameterizable() == null) {
+			throw new APIException("The specified report could not be evaluated because one of its components has been removed from the database");
+		}
 		EvaluationContext ec = EvaluationContext.clone(initialContext);
+		Parameterizable p = child.getParameterizable();
+		Map<String, Object> m = child.getParameterMappings();
 		
-		for (String paramName : child.getParameterMappings().keySet()) {
-			Parameter parameter = child.getParameterizable().getParameter(paramName);
+		for (String paramName : m.keySet()) {
+			Parameter parameter = p.getParameter(paramName);
 			if (parameter == null) {
-				throw new ParameterException("Cannot find parameter '" + paramName + "' in "
-				        + child.getParameterizable().getClass().getName() + " " + child.getParameterizable().getName());
+				throw new ParameterException("Cannot find parameter '" + paramName + "' in " + p.getClass().getName() + " " + p.getName());
 			}
-			Object paramVal = child.getParameterMappings().get(paramName);
+			Object paramVal = m.get(paramName);
 			if (paramVal instanceof String) {
 				paramVal = EvaluationUtil.evaluateExpression(paramVal.toString(), initialContext);
 			}
