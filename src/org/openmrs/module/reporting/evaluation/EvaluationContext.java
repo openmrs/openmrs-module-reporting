@@ -87,8 +87,6 @@ public class EvaluationContext {
 	
 	/**
 	 * Constructs a new EvaluationContext given the passed EvaluationContext
-	 * 
-	 * @param context
 	 */
 	public EvaluationContext(EvaluationContext context) {
 		this.setEvaluationDate(context.getEvaluationDate());
@@ -102,17 +100,7 @@ public class EvaluationContext {
 	// *******************
 	// FACTORY METHOD 
 	// *******************
-	
-	/**
-	 * Clones an evaluation context and returns it
-	 * 
-	 * @param initialContext the EvaluationContext to clone
-	 * @return EvaluationContext the cloned EvaluationContext
-	 */
-	public static EvaluationContext clone(EvaluationContext initialContext) {
-		return new EvaluationContext(initialContext);
-	}
-	
+
 	/**
 	 * @return a cloned EvaluationContext, replacing the parameters with those in the mapped child object as appropriate.
 	 */
@@ -121,7 +109,7 @@ public class EvaluationContext {
 		if (child == null || child.getParameterizable() == null) {
 			throw new APIException("The specified report could not be evaluated because one of its components has been removed from the database");
 		}
-		EvaluationContext ec = EvaluationContext.clone(initialContext);
+		EvaluationContext ec = initialContext.shallowCopy();
 		Parameterizable p = child.getParameterizable();
 		Map<String, Object> m = child.getParameterMappings();
 		
@@ -142,6 +130,13 @@ public class EvaluationContext {
 	// *******************
 	// INSTANCE METHODS 
 	// *******************
+	
+	/**
+	 * @return a shallow copy of the current instance
+	 */
+	public EvaluationContext shallowCopy() {
+		return new EvaluationContext(this);
+	}
 	
 	/**
 	 * @see java.lang.Object#toString()

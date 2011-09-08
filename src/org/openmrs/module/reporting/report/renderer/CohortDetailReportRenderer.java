@@ -160,7 +160,7 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 		for (Map.Entry<String, Mapped<? extends DataSetDefinition>> e : m.entrySet()) {
 			Cohort c = cohorts.get(e.getKey());
 			if (c != null) {
-				EvaluationContext ctx = EvaluationContext.clone(results.getContext());
+				EvaluationContext ctx = results.getContext().shallowCopy();
 				if (ctx.getBaseCohort() == null) {
 					ctx.setBaseCohort(c);
 				}
