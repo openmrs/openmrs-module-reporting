@@ -13,10 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition.service;
 
-import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
-import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
@@ -42,24 +39,4 @@ public interface DataSetDefinitionService extends DefinitionService<DataSetDefin
 	 */
 	@Transactional(readOnly = true)
 	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws EvaluationException;
-	
-	/**
-	 * Evaluate a Mapped<ColumnDefinition> to get turn it into a DataSetColumn
-	 * @param definition
-	 * @param context EvaluationContext containing parameter values, etc
-	 * @return a DataSetColumn matching the parameters
-	 * @throws APIException
-	 */
-	@Transactional(readOnly = true)
-	public EvaluatedColumnDefinition evaluateColumn(Mapped<? extends ColumnDefinition> definition, EvaluationContext context) throws APIException;
-	
-	/**
-	 * Evaluate a ColumnDefinition to get turn it into a DataSetColumn
-	 * @param definition
-	 * @param context EvaluationContext containing parameter values, etc
-	 * @return a DataSetColumn matching the parameters
-	 * @throws APIException
-	 */
-	@Transactional(readOnly = true)
-	public EvaluatedColumnDefinition evaluateColumn(ColumnDefinition definition, EvaluationContext context) throws APIException;
 }
