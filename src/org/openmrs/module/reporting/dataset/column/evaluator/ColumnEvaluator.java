@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.dataset.column.evaluator;
 import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * Each implementation of this class is expected to evaluate one or more type of ColumnDefinition.
@@ -31,5 +32,5 @@ public interface ColumnEvaluator {
 	 * @param inputCohortencounter_datetime
 	 * @return the EvaluatedColumnDefinition
 	 */
-	public EvaluatedColumnDefinition evaluate(ColumnDefinition definition, EvaluationContext context);
+	public EvaluatedColumnDefinition evaluate(ColumnDefinition definition, EvaluationContext context) throws EvaluationException;
 }

@@ -18,9 +18,10 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.JoinColumnDefinition;
-import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.reporting.dataset.column.service.DataSetColumnDefinitionService;
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * Evaluates join column definitions
@@ -31,12 +32,12 @@ public class JoinColumnEvaluator implements ColumnEvaluator {
 	/** 
 	 * @see ColumnEvaluator#evaluate(ColumnDefinition, EvaluationContext)
 	 */
-	public EvaluatedColumnDefinition evaluate(ColumnDefinition definition, EvaluationContext context) {
+	public EvaluatedColumnDefinition evaluate(ColumnDefinition definition, EvaluationContext context) throws EvaluationException {
 		
 		JoinColumnDefinition<?> cd = (JoinColumnDefinition<?>) definition;
-		DataSetDefinitionService dsds = Context.getService(DataSetDefinitionService.class);
+		DataSetColumnDefinitionService dsds = Context.getService(DataSetColumnDefinitionService.class);
 		DataSetQueryService dsqs = Context.getService(DataSetQueryService.class);
-		EvaluatedColumnDefinition column = dsds.evaluateColumn(cd.getColumnDefinition(), context);
+		EvaluatedColumnDefinition column = (EvaluatedColumnDefinition)dsds.evaluate(cd.getColumnDefinition(), context);
 
 		// At this point, we have the column values, but these are tied to the ids of the joined base type, so we need to convert
 		column = dsqs.convertColumn(column, cd);

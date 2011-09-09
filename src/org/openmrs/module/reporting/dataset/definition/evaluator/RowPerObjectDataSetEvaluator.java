@@ -22,9 +22,9 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
 import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.service.DataSetColumnDefinitionService;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -60,7 +60,7 @@ public abstract class RowPerObjectDataSetEvaluator implements DataSetEvaluator {
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 		
 		RowPerObjectDataSetDefinition<? extends ColumnDefinition> dsd = (RowPerObjectDataSetDefinition<? extends ColumnDefinition>) dataSetDefinition;
-		DataSetDefinitionService service = Context.getService(DataSetDefinitionService.class);
+		DataSetColumnDefinitionService service = Context.getService(DataSetColumnDefinitionService.class);
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		populateFilterQueryResults(dsd, context);
@@ -70,7 +70,7 @@ public abstract class RowPerObjectDataSetEvaluator implements DataSetEvaluator {
 
 		for (Mapped<? extends ColumnDefinition> mappedDef : dsd.getColumnDefinitions()) {
 			
-			EvaluatedColumnDefinition evaluatedColumnDef = service.evaluateColumn(mappedDef, context);
+			EvaluatedColumnDefinition evaluatedColumnDef = service.evaluate(mappedDef, context);
 			ColumnDefinition cd = evaluatedColumnDef.getDefinition();
 			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), cd.getDataType()); // TODO: Support One-Many column definition to column
 			

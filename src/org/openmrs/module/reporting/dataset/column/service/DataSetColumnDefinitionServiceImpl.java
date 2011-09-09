@@ -13,9 +13,12 @@
  */
 package org.openmrs.module.reporting.dataset.column.service;
 
+import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
 import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
-import org.openmrs.module.reporting.definition.service.DefinitionService;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -25,9 +28,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class DataSetColumnDefinitionServiceImpl extends BaseDefinitionService<ColumnDefinition> implements DataSetColumnDefinitionService {
 
 	/**
-	 * @see DefinitionService#getDefinitionType()
+	 * @see DataSetColumnDefinitionService#getDefinitionType()
 	 */
 	public Class<ColumnDefinition> getDefinitionType() {
 		return ColumnDefinition.class;
+	}
+	
+	/**
+	 * @see DataSetColumnDefinitionService#evaluate(ColumnDefinition, EvaluationContext)
+	 */
+	@Transactional(readOnly=true)
+	@Override
+	public EvaluatedColumnDefinition evaluate(ColumnDefinition definition, EvaluationContext context) throws EvaluationException {
+		return (EvaluatedColumnDefinition)super.evaluate(definition, context);
+	}
+	
+	/** 
+	 * @see DataSetColumnDefinitionService#evaluate(Mapped, EvaluationContext)
+	 */
+	@Transactional(readOnly=true)
+	@Override
+	public EvaluatedColumnDefinition evaluate(Mapped<? extends ColumnDefinition> definition, EvaluationContext context) throws EvaluationException {
+		return (EvaluatedColumnDefinition)super.evaluate(definition, context);
 	}
 }

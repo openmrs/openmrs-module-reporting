@@ -13,8 +13,13 @@
  */
 package org.openmrs.module.reporting.dataset.column.service;
 
+import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
+import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -23,4 +28,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface DataSetColumnDefinitionService extends DefinitionService<ColumnDefinition> {
 	
+	/**
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 */
+	@Transactional(readOnly = true)
+	public EvaluatedColumnDefinition evaluate(ColumnDefinition definition, EvaluationContext context) throws EvaluationException;
+	
+	/**
+	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 */
+	@Transactional(readOnly = true)
+	public EvaluatedColumnDefinition evaluate(Mapped<? extends ColumnDefinition> definition, EvaluationContext context) throws EvaluationException;
 }
