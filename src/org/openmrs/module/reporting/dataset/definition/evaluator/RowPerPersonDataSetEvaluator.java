@@ -33,6 +33,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.query.person.PersonIdSet;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.AllPersonQuery;
 import org.openmrs.module.reporting.query.person.service.PersonQueryService;
@@ -64,7 +65,7 @@ public class RowPerPersonDataSetEvaluator implements DataSetEvaluator {
 		// Construct an PersonEvaluationContext based on the person filter
 		Set<Integer> idsToUse = null;
 		if (context instanceof PersonEvaluationContext) {
-			PersonQueryResult basePersons = ((PersonEvaluationContext)context).getBasePersons();
+			PersonIdSet basePersons = ((PersonEvaluationContext)context).getBasePersons();
 			if (basePersons != null) {
 				idsToUse = new HashSet<Integer>(basePersons.getMemberIds());
 			}
