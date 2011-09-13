@@ -16,48 +16,48 @@ package org.openmrs.module.reporting.evaluation.context;
 import java.util.Date;
 
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
+import org.openmrs.module.reporting.query.obs.ObsIdSet;
 
 /**
- * Extends the patient-based EvaluationContext to add an additional Encounter filter for use within Encounter specific queries and data extraction
- * Note that this cache is cleared whenever any changes are made to baseEncounters
+ * Extends the patient-based EvaluationContext to add an additional Obs filter for use within obs specific queries and data extraction
+ * Note that this cache is cleared whenever any changes are made to baseObs
  */
-public class EncounterEvaluationContext extends EvaluationContext {
+public class ObsEvaluationContext extends EvaluationContext {
 	
 	// ***** PROPERTIES *****
 
-	private EncounterIdSet baseEncounters;
+	private ObsIdSet baseObs;
 		
 	// ***** CONSTRUCTORS *****
 	
 	/**
 	 * Default Constructor
 	 */
-	public EncounterEvaluationContext() {
+	public ObsEvaluationContext() {
 		super();
 	}
 	
 	/**
 	 * Constructor which sets the Evaluation Date to a particular date
 	 */
-	public EncounterEvaluationContext(Date evaluationDate) {
+	public ObsEvaluationContext(Date evaluationDate) {
 		super(evaluationDate);
 	}
 	
 	/**
-	 * Constructs a new EncounterEvaluationContext given the passed EvaluationContext and EncounterIdSet
+	 * Constructs a new EncounterEvaluationContext given the passed EvaluationContext and ObsIdSet
 	 */
-	public EncounterEvaluationContext(EvaluationContext context, EncounterIdSet baseEncounters) {
+	public ObsEvaluationContext(EvaluationContext context, ObsIdSet baseObs) {
 		super(context);
-		this.baseEncounters = baseEncounters;
+		this.baseObs = baseObs;
 	}
 	
 	/**
 	 * Constructs a new EvaluationContext given the passed EvaluationContext
 	 */
-	public EncounterEvaluationContext(EncounterEvaluationContext context) {
+	public ObsEvaluationContext(ObsEvaluationContext context) {
 		super(context);
-		this.baseEncounters = context.baseEncounters;
+		this.baseObs = context.baseObs;
 	}
 	
 	// *******************
@@ -68,22 +68,22 @@ public class EncounterEvaluationContext extends EvaluationContext {
 	 * @return a shallow copy of the current instance
 	 */
 	@Override
-	public EncounterEvaluationContext shallowCopy() {
-		return new EncounterEvaluationContext(this);
+	public ObsEvaluationContext shallowCopy() {
+		return new ObsEvaluationContext(this);
 	}
 
 	/**
-	 * @return the baseEncounters
+	 * @return the baseObs
 	 */
-	public EncounterIdSet getBaseEncounters() {
-		return baseEncounters;
+	public ObsIdSet getBaseObs() {
+		return baseObs;
 	}
 
 	/**
-	 * @param baseEncounters the baseEncounters to set
+	 * @param baseObs the baseObs to set
 	 */
-	public void setBaseEncounters(EncounterIdSet baseEncounters) {
+	public void setBaseObs(ObsIdSet baseObs) {
 		clearCache();
-		this.baseEncounters = baseEncounters;
+		this.baseObs = baseObs;
 	}
 }

@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.evaluation.context;
 import java.util.Date;
 
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.query.person.PersonIdSet;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 
 /**
@@ -26,7 +27,7 @@ public class PersonEvaluationContext extends EvaluationContext {
 	
 	// ***** PROPERTIES *****
 
-	private PersonQueryResult basePersons;
+	private PersonIdSet basePersons;
 		
 	// ***** CONSTRUCTORS *****
 	
@@ -86,14 +87,14 @@ public class PersonEvaluationContext extends EvaluationContext {
 	/**
 	 * @return the basePersons
 	 */
-	public PersonQueryResult getBasePersons() {
+	public PersonIdSet getBasePersons() {
 		return basePersons;
 	}
 
 	/**
 	 * @param basePersons the basePersons to set
 	 */
-	public void setBasePersons(PersonQueryResult basePersons) {
+	public void setBasePersons(PersonIdSet basePersons) {
 		this.basePersons = basePersons;
 	}
 }
