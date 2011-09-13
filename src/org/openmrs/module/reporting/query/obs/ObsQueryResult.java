@@ -13,16 +13,14 @@
  */
 package org.openmrs.module.reporting.query.obs;
 
-import org.openmrs.Obs;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.BaseIdSet;
 import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
 
 /**
  * Result of an Evaluated Obs Query
  */
-public class ObsQueryResult extends BaseIdSet<Obs> implements Evaluated<ObsQuery> {
+public class ObsQueryResult extends ObsIdSet implements Evaluated<ObsQuery> {
 	
 	//***** PROPERTIES *****
 	

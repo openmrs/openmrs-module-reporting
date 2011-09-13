@@ -13,16 +13,14 @@
  */
 package org.openmrs.module.reporting.query.encounter;
 
-import org.openmrs.Encounter;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.BaseIdSet;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 
 /**
  * Result of an Evaluated Encounter Query
  */
-public class EncounterQueryResult extends BaseIdSet<Encounter> implements Evaluated<EncounterQuery> {
+public class EncounterQueryResult extends EncounterIdSet implements Evaluated<EncounterQuery> {
     
 	//***** PROPERTIES *****
 	
