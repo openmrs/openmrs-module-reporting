@@ -13,14 +13,19 @@
  */
 package org.openmrs.module.reporting.query.person;
 
+import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.BaseQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 
 /**
  * Result of an Evaluated Person Query
  */
-public class PersonQueryResult extends BaseQueryResult<PersonQuery> {
+public class PersonQueryResult extends PersonIdSet implements Evaluated<PersonQuery> {
+    
+	//***** PROPERTIES *****
+	
+    private PersonQuery definition;
+    private EvaluationContext context;
     
     //***** CONSTRUCTORS *****
     
@@ -35,6 +40,37 @@ public class PersonQueryResult extends BaseQueryResult<PersonQuery> {
 	 * Full Constructor
 	 */
     public PersonQueryResult(PersonQuery definition, EvaluationContext context) {
-    	super(definition, context);
+    	this.definition = definition;
+    	this.context = context;
     } 
+
+    //***** PROPERTY ACCESS *****
+
+	/**
+	 * @return the definition
+	 */
+	public PersonQuery getDefinition() {
+		return definition;
+	}
+	
+	/**
+	 * @param definition the definition to set
+	 */
+	public void setDefinition(PersonQuery definition) {
+		this.definition = definition;
+	}
+	
+	/**
+	 * @return the context
+	 */
+	public EvaluationContext getContext() {
+		return context;
+	}
+	
+	/**
+	 * @param context the context to set
+	 */
+	public void setContext(EvaluationContext context) {
+		this.context = context;
+	}
 }

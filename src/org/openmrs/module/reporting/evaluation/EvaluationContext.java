@@ -29,7 +29,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterConstants;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.query.QueryResult;
+import org.openmrs.module.reporting.query.IdSet;
 
 /**
  * The EvaluationContext provides the following capabilities: 
@@ -56,7 +56,7 @@ public class EvaluationContext {
 	private Cohort baseCohort;
 	
 	// Set of base filters to use for evaluation
-	private Set<QueryResult> baseFilters;
+	private Set<IdSet<?>> baseFilters;
 	
 	// Parameter values entered by user (or defaulted)
 	private Map<String, Object> parameterValues;
@@ -284,9 +284,9 @@ public class EvaluationContext {
 	/**
 	 * @return the baseFilters
 	 */
-	public Set<QueryResult> getBaseFilters() {
+	public Set<IdSet<?>> getBaseFilters() {
 		if (baseFilters == null) {
-			return new HashSet<QueryResult>();
+			return new HashSet<IdSet<?>>();
 		}
 		return baseFilters;
 	}
@@ -294,7 +294,7 @@ public class EvaluationContext {
 	/**
 	 * @param baseFilters the baseFilters to set
 	 */
-	public void setBaseFilters(Set<QueryResult> baseFilters) {
+	public void setBaseFilters(Set<IdSet<?>> baseFilters) {
 		clearCache();
 		this.baseFilters = baseFilters;
 	}
@@ -302,7 +302,7 @@ public class EvaluationContext {
 	/**
 	 * @param filter the filter to add to the base filters
 	 */
-	public void addBaseFilter(QueryResult filter) {
+	public void addBaseFilter(IdSet<?> filter) {
 		clearCache();
 		getBaseFilters().add(filter);
 	}
@@ -311,9 +311,9 @@ public class EvaluationContext {
 	 * @return all base filters of the passed filterType
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends QueryResult> Set<T> getBaseFilters(Class<T> filterType) {
+	public <T extends IdSet<?>> Set<T> getBaseFilters(Class<T> filterType) {
 		Set<T> s = new HashSet<T>();
-		for (QueryResult filter : baseFilters) {
+		for (IdSet<?> filter : baseFilters) {
 			if (filterType.isAssignableFrom(filter.getClass())) {
 				s.add((T)filter);
 			}

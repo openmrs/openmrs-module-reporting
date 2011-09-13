@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.query;
 
+import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
@@ -23,7 +24,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * implementations for handling Parameters and common Property values
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public abstract class BaseQuery extends BaseDefinition implements Query {
+public abstract class BaseQuery<T extends OpenmrsObject> extends BaseDefinition implements Query<T> {
 	
     public static final long serialVersionUID = 1L;
     

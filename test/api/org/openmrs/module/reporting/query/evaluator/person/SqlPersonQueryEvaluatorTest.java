@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
-import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
 import org.openmrs.module.reporting.query.person.service.PersonQueryService;
@@ -39,7 +38,7 @@ public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldEvaluateASQLQueryIntoPersonQuery() throws Exception {
 		SqlPersonQuery d = new SqlPersonQuery();
 		d.setQuery("select person_id from person where gender = 'F'");
-		QueryResult s = evaluate(d, new EvaluationContext());
+		PersonQueryResult s = evaluate(d, new EvaluationContext());
 		Assert.assertEquals(6, s.size());
 	}
 	

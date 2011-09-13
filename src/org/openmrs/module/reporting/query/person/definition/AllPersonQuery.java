@@ -13,12 +13,13 @@
  */
 package org.openmrs.module.reporting.query.person.definition;
 
+import org.openmrs.Person;
 import org.openmrs.module.reporting.query.BaseQuery;
 
 /**
  * Person Query for obtaining all persons
  */
-public class AllPersonQuery extends BaseQuery implements PersonQuery {
+public class AllPersonQuery extends BaseQuery<Person> implements PersonQuery {
 
     public static final long serialVersionUID = 1L;
 	

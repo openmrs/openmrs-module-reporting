@@ -16,60 +16,32 @@ package org.openmrs.module.reporting.query;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.openmrs.module.reporting.evaluation.Evaluated;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.OpenmrsObject;
 
 /**
- * Encapsulates the results of Evaluating a Filter
+ * Encapsulates a set of OpenmrsObject ids
  */
-public abstract class BaseQueryResult<T extends Query> implements Evaluated<T>, QueryResult {
+public abstract class BaseIdSet<T extends OpenmrsObject> implements IdSet<T> {
 	
 	//***** PROPERTIES *****
-	
-    private T definition;
-    private EvaluationContext context;
+
     private Set<Integer> memberIds;
     
     //***** CONSTRUCTORS *****
     
-    public BaseQueryResult() {
+    public BaseIdSet() {
     	super();
     }
     
-    public BaseQueryResult(T definition, EvaluationContext context) {
-    	this.definition = definition;
-    	this.context = context;
+    public BaseIdSet(Set<Integer> memberIds) {
+    	setMemberIds(memberIds);
+    }
+    
+    public BaseIdSet(Integer... memberIds) {
+    	add(memberIds);
     }
     
     //***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the definition
-	 */
-	public T getDefinition() {
-		return definition;
-	}
-	
-	/**
-	 * @param definition the definition to set
-	 */
-	public void setDefinition(T definition) {
-		this.definition = definition;
-	}
-	
-	/**
-	 * @return the context
-	 */
-	public EvaluationContext getContext() {
-		return context;
-	}
-	
-	/**
-	 * @param context the context to set
-	 */
-	public void setContext(EvaluationContext context) {
-		this.context = context;
-	}
 	
 	/**
 	 * @return the memberIds

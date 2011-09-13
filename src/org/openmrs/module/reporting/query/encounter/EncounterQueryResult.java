@@ -13,14 +13,21 @@
  */
 package org.openmrs.module.reporting.query.encounter;
 
+import org.openmrs.Encounter;
+import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.BaseQueryResult;
+import org.openmrs.module.reporting.query.BaseIdSet;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 
 /**
  * Result of an Evaluated Encounter Query
  */
-public class EncounterQueryResult extends BaseQueryResult<EncounterQuery> {
+public class EncounterQueryResult extends BaseIdSet<Encounter> implements Evaluated<EncounterQuery> {
+    
+	//***** PROPERTIES *****
+	
+    private EncounterQuery definition;
+    private EvaluationContext context;
     
     //***** CONSTRUCTORS *****
     
@@ -35,6 +42,37 @@ public class EncounterQueryResult extends BaseQueryResult<EncounterQuery> {
 	 * Full Constructor
 	 */
     public EncounterQueryResult(EncounterQuery definition, EvaluationContext context) {
-    	super(definition, context);
-    }
+    	this.definition = definition;
+    	this.context = context;
+    } 
+
+    //***** PROPERTY ACCESS *****
+
+	/**
+	 * @return the definition
+	 */
+	public EncounterQuery getDefinition() {
+		return definition;
+	}
+	
+	/**
+	 * @param definition the definition to set
+	 */
+	public void setDefinition(EncounterQuery definition) {
+		this.definition = definition;
+	}
+	
+	/**
+	 * @return the context
+	 */
+	public EvaluationContext getContext() {
+		return context;
+	}
+	
+	/**
+	 * @param context the context to set
+	 */
+	public void setContext(EvaluationContext context) {
+		this.context = context;
+	}
 }

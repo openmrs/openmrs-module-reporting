@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.query.person.definition;
 
+import org.openmrs.Person;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.query.BaseQuery;
@@ -20,7 +21,7 @@ import org.openmrs.module.reporting.query.BaseQuery;
 /**
  * SQL-based Person Query
  */
-public class SqlPersonQuery extends BaseQuery implements PersonQuery {
+public class SqlPersonQuery extends BaseQuery<Person> implements PersonQuery {
 
     public static final long serialVersionUID = 1L;
 	

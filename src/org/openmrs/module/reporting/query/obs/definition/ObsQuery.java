@@ -13,11 +13,12 @@
  */
 package org.openmrs.module.reporting.query.obs.definition;
 
+import org.openmrs.Obs;
 import org.openmrs.module.reporting.query.Query;
 
 /**
  * Filter Interface for defining a Set of Obs Ids
  */
-public interface ObsQuery extends Query {
+public interface ObsQuery extends Query<Obs> {
     
 }

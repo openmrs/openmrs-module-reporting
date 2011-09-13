@@ -13,12 +13,13 @@
  */
 package org.openmrs.module.reporting.query.encounter.definition;
 
+import org.openmrs.Encounter;
 import org.openmrs.module.reporting.query.BaseQuery;
 
 /**
  * Encounter Query for obtaining all encounters
  */
-public class AllEncounterQuery extends BaseQuery implements EncounterQuery {
+public class AllEncounterQuery extends BaseQuery<Encounter> implements EncounterQuery {
 
     public static final long serialVersionUID = 1L;
 	

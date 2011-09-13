@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.query.obs.definition;
 
+import org.openmrs.Obs;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.query.BaseQuery;
@@ -20,7 +21,7 @@ import org.openmrs.module.reporting.query.BaseQuery;
 /**
  * SQL-based Obs Query
  */
-public class SqlObsQuery extends BaseQuery implements ObsQuery {
+public class SqlObsQuery extends BaseQuery<Obs> implements ObsQuery {
 
     public static final long serialVersionUID = 1L;
 	

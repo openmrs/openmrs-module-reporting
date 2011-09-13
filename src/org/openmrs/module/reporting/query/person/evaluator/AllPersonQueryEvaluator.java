@@ -23,7 +23,6 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
-import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.AllPersonQuery;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;

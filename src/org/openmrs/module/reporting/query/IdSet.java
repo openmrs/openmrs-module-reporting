@@ -15,23 +15,25 @@ package org.openmrs.module.reporting.query;
 
 import java.util.Set;
 
+import org.openmrs.OpenmrsObject;
+
 /**
- * Query Result Interface
+ * IdSet Interface
  */
-public interface QueryResult {
+public interface IdSet<T extends OpenmrsObject> {
 
 	/**
-	 * @return the memberIds
+	 * @return all memberIds in the set
 	 */
 	public Set<Integer> getMemberIds();
 	
 	/**
-	 * @param memberId to check within the queryResult
+	 * @return true of the passed memberId exists in the set
 	 */
 	public boolean contains(Integer memberId);
 
 	/**
-	 * @see Query#size()
+	 * @return the number of members within the set
 	 */
 	public int size();
 }

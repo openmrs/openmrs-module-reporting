@@ -23,7 +23,6 @@ import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
-import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
@@ -40,7 +39,7 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 	public void evaluate_shouldEvaluateASQLQueryIntoAnEncounterQuery() throws Exception {
 		SqlEncounterQuery d = new SqlEncounterQuery();
 		d.setQuery("select encounter_id from encounter where location_id = 2");
-		QueryResult s = evaluate(d, new EvaluationContext());
+		EncounterQueryResult s = evaluate(d, new EvaluationContext());
 		Assert.assertEquals(8, s.size());
 	}
 	

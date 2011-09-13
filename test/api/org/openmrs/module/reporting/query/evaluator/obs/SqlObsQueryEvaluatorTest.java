@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.obs.ObsQueryResult;
 import org.openmrs.module.reporting.query.obs.definition.SqlObsQuery;
@@ -40,7 +39,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 	public void evaluate_shouldEvaluateASQLQueryIntoAnObsQuery() throws Exception {
 		SqlObsQuery d = new SqlObsQuery();
 		d.setQuery("select obs_id from obs where concept_id = 5089");
-		QueryResult s = evaluate(d, new EvaluationContext());
+		ObsQueryResult s = evaluate(d, new EvaluationContext());
 		Assert.assertEquals(8, s.size());
 	}
 	
@@ -54,7 +53,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 		
 		SqlObsQuery d = new SqlObsQuery();
 		d.setQuery("select obs_id from obs where concept_id = 5089");
-		QueryResult s = evaluate(d, context);
+		ObsQueryResult s = evaluate(d, context);
 		Assert.assertEquals(2, s.size());
 	}
 	

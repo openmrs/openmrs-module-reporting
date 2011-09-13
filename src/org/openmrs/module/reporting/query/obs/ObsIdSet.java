@@ -11,14 +11,27 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.encounter.definition;
+package org.openmrs.module.reporting.query.obs;
 
-import org.openmrs.Encounter;
-import org.openmrs.module.reporting.query.Query;
+import java.util.Set;
+
+import org.openmrs.Obs;
+import org.openmrs.module.reporting.query.BaseIdSet;
 
 /**
- * Filter Interface for defining a Set of Encounter Ids
+ * A Set of Obs Ids
  */
-public interface EncounterQuery extends Query<Encounter> {
+public class ObsIdSet extends BaseIdSet<Obs> {
     
+    public ObsIdSet() {
+    	super();
+    }
+    
+    public ObsIdSet(Set<Integer> memberIds) {
+    	setMemberIds(memberIds);
+    }
+    
+    public ObsIdSet(Integer... memberIds) {
+    	add(memberIds);
+    }
 }

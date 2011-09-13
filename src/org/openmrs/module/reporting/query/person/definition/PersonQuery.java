@@ -13,11 +13,12 @@
  */
 package org.openmrs.module.reporting.query.person.definition;
 
+import org.openmrs.Person;
 import org.openmrs.module.reporting.query.Query;
 
 /**
  * Filter Interface for defining a Set of Person Ids
  */
-public interface PersonQuery extends Query {
+public interface PersonQuery extends Query<Person> {
     
 }

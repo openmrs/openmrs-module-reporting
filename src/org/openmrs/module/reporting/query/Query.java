@@ -13,11 +13,12 @@
  */
 package org.openmrs.module.reporting.query;
 
+import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.evaluation.Definition;
 
 /**
- * Filter Interface for defining a Generic Set of Ids
+ * Interface for defining a Query to retrieve a set of ids for a particular OpenmrsObject type
  */
-public interface Query extends Definition {
+public interface Query<T extends OpenmrsObject> extends Definition {
     
 }

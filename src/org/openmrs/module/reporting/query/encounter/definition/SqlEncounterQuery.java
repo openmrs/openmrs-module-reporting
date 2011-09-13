@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.query.encounter.definition;
 
+import org.openmrs.Encounter;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.query.BaseQuery;
@@ -20,7 +21,7 @@ import org.openmrs.module.reporting.query.BaseQuery;
 /**
  * SQL-based Encounter Query
  */
-public class SqlEncounterQuery extends BaseQuery implements EncounterQuery {
+public class SqlEncounterQuery extends BaseQuery<Encounter> implements EncounterQuery {
 
     public static final long serialVersionUID = 1L;
 	

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.query.encounter.definition;
 
+import org.openmrs.Encounter;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -21,7 +22,7 @@ import org.openmrs.module.reporting.query.BaseQuery;
 /**
  * Cohort Definition-based Encounter Query
  */
-public class PatientEncounterQuery extends BaseQuery implements EncounterQuery {
+public class PatientEncounterQuery extends BaseQuery<Encounter> implements EncounterQuery {
 
     public static final long serialVersionUID = 1L;
 	
@@ -50,7 +51,7 @@ public class PatientEncounterQuery extends BaseQuery implements EncounterQuery {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "SQL Patient Query";
+		return "Encounter Patient Query";
 	}
 	
 	//***** PROPERTY ACCESS *****
