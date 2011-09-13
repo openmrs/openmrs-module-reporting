@@ -26,9 +26,12 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.Property;
+import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.util.HandlerUtil;
 
 /**
  * Provides utility methods useful for Definitions
@@ -151,6 +154,36 @@ public class DefinitionUtil {
 			}
 		}
 		return newInstance;
+	}
+	
+	/**
+	 * @return the DefinitionEvaluator that is preferred for the passed definition
+	 * @throws EvaluationException if no appropriate evaluator is found
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Definition> DefinitionEvaluator<T> getPreferredEvaluator(T definition) throws EvaluationException {
+		DefinitionEvaluator<T> evaluator = HandlerUtil.getPreferredHandler(DefinitionEvaluator.class, definition.getClass());
+		if (evaluator == null) {
+			throw new EvaluationException("No Evaluator found for (" + definition.getClass() + ") " + definition.getName());
+		}
+		return evaluator;
+	}
+
+	/**
+	 * Utility method which takes in a Definition instance, clones it, and populates any properties
+	 * from parameters in the passed EvaluationContext as appropriate
+	 * @return - A new instance with all Parameter-based properties cloned and properties populated
+	 */
+    public static <T extends Definition> T cloneDefinitionWithContext(T definition, EvaluationContext context) {
+		T clonedDefinition = DefinitionUtil.clone(definition);
+		for (Parameter p : clonedDefinition.getParameters()) {
+			Object value = p.getDefaultValue();
+			if (context != null && context.containsParameter(p.getName())) {
+				value = context.getParameterValue(p.getName());
+			}
+			ReflectionUtil.setPropertyValue(clonedDefinition, p.getName(), value);
+		}
+		return clonedDefinition;
 	}
 	
     /**

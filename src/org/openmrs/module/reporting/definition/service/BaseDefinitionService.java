@@ -21,8 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.reporting.IllegalDatabaseAccessException;
-import org.openmrs.module.reporting.common.ReflectionUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
@@ -31,12 +30,9 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.evaluation.MissingDependencyException;
-import org.openmrs.module.reporting.evaluation.caching.Caching;
-import org.openmrs.module.reporting.evaluation.caching.CachingStrategy;
-import org.openmrs.module.reporting.evaluation.caching.NoCachingStrategy;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -205,46 +201,27 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	@SuppressWarnings("unchecked")
 	public Evaluated<T> evaluate(T definition, EvaluationContext context) throws EvaluationException {
 		
+		// Ensure context is not null
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+		
 		// Retrieve QueryEvaluator which can evaluate this Query
-		DefinitionEvaluator<T> evaluator = HandlerUtil.getPreferredHandler(DefinitionEvaluator.class, definition.getClass());
-		if (evaluator == null) {
-			throw new APIException("No QueryEvaluator found for (" + definition.getClass() + ") " + definition.getName());
-		}
-
+		DefinitionEvaluator<T> evaluator = DefinitionUtil.getPreferredEvaluator(definition);
+		
 		// Clone Query and set all properties from the Parameters in the EvaluationContext
-		T clonedDefinition = DefinitionUtil.clone(definition);
-		for (Parameter p : clonedDefinition.getParameters()) {
-			Object value = p.getDefaultValue();
-			if (context != null && context.containsParameter(p.getName())) {
-				value = context.getParameterValue(p.getName());
-			}
-			ReflectionUtil.setPropertyValue(clonedDefinition, p.getName(), value);
-		}
+		T clonedDefinition = DefinitionUtil.cloneDefinitionWithContext(definition, context);
+		
+		String cacheKey = EvaluationUtil.getCacheKey(clonedDefinition);
 		
 		// Retrieve from cache if possible, otherwise evaluate
 		Evaluated<T> evaluationResult = null;
-		if (context != null) {
-			Caching caching = clonedDefinition.getClass().getAnnotation(Caching.class);
-			if (caching != null && caching.strategy() != NoCachingStrategy.class) {
-				try {
-					CachingStrategy strategy = caching.strategy().newInstance();
-					String cacheKey = strategy.getCacheKey(clonedDefinition);
-					if (cacheKey != null) {
-						evaluationResult = (Evaluated<T>) context.getFromCache(cacheKey);
-					}
-					if (evaluationResult == null) {
-						evaluationResult = evaluator.evaluate(clonedDefinition, context);
-						context.addToCache(cacheKey, evaluationResult);
-					}
-				}
-				catch (IllegalDatabaseAccessException ie) {
-					throw ie;
-				}
-				catch (Exception e) {
-					log.warn("An error occurred while attempting to access the cache.", e);
-				}
+		if (cacheKey != null) {
+			evaluationResult = (Evaluated<T>) context.getFromCache(cacheKey);
+			if (evaluationResult == null) {
+				evaluationResult = evaluator.evaluate(clonedDefinition, context);
+				context.addToCache(cacheKey, evaluationResult);
 			}
 		}
+
 		if (evaluationResult == null) {
 			evaluationResult = evaluator.evaluate(clonedDefinition, context);
 		}

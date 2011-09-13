@@ -22,6 +22,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
+import org.openmrs.module.reporting.evaluation.caching.CachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.NoCachingStrategy;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 
 /**
@@ -222,5 +225,23 @@ public class EvaluationUtil {
 		}
 
 		return paramValueToFormat;
+	}
+	
+	/**
+	 * @return the Cache key for the given definition class
+	 */
+	public static String getCacheKey(Definition definition) {
+		String cacheKey = null;
+		Caching caching = definition.getClass().getAnnotation(Caching.class);
+		if (caching != null && caching.strategy() != NoCachingStrategy.class) {
+			try {
+				CachingStrategy strategy = caching.strategy().newInstance();
+				cacheKey = strategy.getCacheKey(definition);
+			}
+			catch (Exception e) {
+				log.warn("An error occurred while attempting to access the cache.", e);
+			}
+		}
+		return cacheKey;
 	}
 }
