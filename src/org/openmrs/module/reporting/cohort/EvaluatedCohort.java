@@ -16,18 +16,16 @@ package org.openmrs.module.reporting.cohort;
 import java.util.HashSet;
 
 import org.openmrs.Cohort;
-import org.openmrs.Patient;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.query.IdSet;
 
 /**
  * Provides access to an evaluated {@link Cohort}, along with the 
  * {@link CohortDefinition} and {@link EvaluationContext} which
  * produced it.
  */
-public class EvaluatedCohort extends Cohort implements Evaluated<CohortDefinition>, IdSet<Patient> {
+public class EvaluatedCohort extends PatientIdSet implements Evaluated<CohortDefinition> {
 
 	public static final long serialVersionUID = 1L;
 	

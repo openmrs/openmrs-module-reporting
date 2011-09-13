@@ -40,7 +40,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 		SqlObsQuery d = new SqlObsQuery();
 		d.setQuery("select obs_id from obs where concept_id = 5089");
 		ObsQueryResult s = evaluate(d, new EvaluationContext());
-		Assert.assertEquals(8, s.size());
+		Assert.assertEquals(8, s.getSize());
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 		SqlObsQuery d = new SqlObsQuery();
 		d.setQuery("select obs_id from obs where concept_id = 5089");
 		ObsQueryResult s = evaluate(d, context);
-		Assert.assertEquals(2, s.size());
+		Assert.assertEquals(2, s.getSize());
 	}
 	
 	@Test
@@ -68,16 +68,16 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 		ObsQueryResult baseObsIds = new ObsQueryResult();
 		baseObsIds.add(7, 16, 18, 21, 24);
 		//context.addQueryResult(Obs.class, baseObsIds);
-		Assert.assertEquals(5, evaluate(d, context).size());
+		Assert.assertEquals(5, evaluate(d, context).getSize());
 		
 		EncounterQueryResult baseEncounterIds = new EncounterQueryResult();
 		baseEncounterIds.add(5, 6, 7, 8);
 		//context.addQueryResult(Encounter.class, baseEncounterIds);
-		Assert.assertEquals(4, evaluate(d, context).size());
+		Assert.assertEquals(4, evaluate(d, context).getSize());
 		
 		Cohort baseCohort  = new Cohort("7, 21");
 		context.setBaseCohort(baseCohort);
-		Assert.assertEquals(3, evaluate(d, context).size());
+		Assert.assertEquals(3, evaluate(d, context).getSize());
 	}
 
 	

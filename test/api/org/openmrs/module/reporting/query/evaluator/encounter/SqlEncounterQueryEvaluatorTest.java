@@ -40,7 +40,7 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 		SqlEncounterQuery d = new SqlEncounterQuery();
 		d.setQuery("select encounter_id from encounter where location_id = 2");
 		EncounterQueryResult s = evaluate(d, new EvaluationContext());
-		Assert.assertEquals(8, s.size());
+		Assert.assertEquals(8, s.getSize());
 	}
 	
 	@Test
@@ -53,7 +53,7 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 		
 		SqlEncounterQuery d = new SqlEncounterQuery();
 		d.setQuery("select encounter_id from encounter where location_id = 2");
-		Assert.assertEquals(4, evaluate(d, context).size());
+		Assert.assertEquals(4, evaluate(d, context).getSize());
 	}
 	
 	@Test
@@ -69,7 +69,7 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 		
 		SqlEncounterQuery d = new SqlEncounterQuery();
 		d.setQuery("select encounter_id from encounter where location_id = 2");
-		Assert.assertEquals(3, evaluate(d, context).size());
+		Assert.assertEquals(3, evaluate(d, context).getSize());
 
 	}
 	

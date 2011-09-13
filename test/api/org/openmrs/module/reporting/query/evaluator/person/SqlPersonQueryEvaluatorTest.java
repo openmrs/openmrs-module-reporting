@@ -39,7 +39,7 @@ public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest 
 		SqlPersonQuery d = new SqlPersonQuery();
 		d.setQuery("select person_id from person where gender = 'F'");
 		PersonQueryResult s = evaluate(d, new EvaluationContext());
-		Assert.assertEquals(6, s.size());
+		Assert.assertEquals(6, s.getSize());
 	}
 	
 	@Test
@@ -52,13 +52,13 @@ public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest 
 		
 		SqlPersonQuery d = new SqlPersonQuery();
 		d.setQuery("select person_id from person where gender = 'F'");
-		Assert.assertEquals(1, evaluate(d, context).size());
+		Assert.assertEquals(1, evaluate(d, context).getSize());
 		
 		d.setQuery("select person_id from person where gender in ('M','F')");
-		Assert.assertEquals(3, evaluate(d, context).size());
+		Assert.assertEquals(3, evaluate(d, context).getSize());
 		
 		d.setQuery("select person_id from person where gender not in ('M', 'F')");
-		Assert.assertEquals(1, evaluate(d, context).size());
+		Assert.assertEquals(1, evaluate(d, context).getSize());
 	}
 	
 	public PersonQueryResult evaluate(SqlPersonQuery definition, EvaluationContext context) throws Exception {

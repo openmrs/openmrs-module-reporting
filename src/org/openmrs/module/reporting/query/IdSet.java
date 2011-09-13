@@ -20,7 +20,7 @@ import org.openmrs.OpenmrsObject;
 /**
  * IdSet Interface
  */
-public interface IdSet<T extends OpenmrsObject> {
+public interface IdSet<T extends OpenmrsObject> extends Cloneable {
 
 	/**
 	 * @return all memberIds in the set
@@ -35,5 +35,15 @@ public interface IdSet<T extends OpenmrsObject> {
 	/**
 	 * @return the number of members within the set
 	 */
-	public int size();
+	public int getSize();
+	
+	/**
+	 * @return true if there are no members within the set
+	 */
+	public boolean isEmpty();
+	
+	/**
+	 * @return a cloned copy of the current IdSet
+	 */
+	public IdSet<T> clone();
 }

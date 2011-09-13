@@ -70,16 +70,39 @@ public abstract class BaseIdSet<T extends OpenmrsObject> implements IdSet<T> {
 	}
 	
 	/**
-	 * @param memberId to check within the queryResult
+	 * @see IdSet#contains(Integer)
 	 */
 	public boolean contains(Integer memberId) {
 		return getMemberIds().contains(memberId);
 	}
 
 	/**
-	 * @see Query#size()
+	 * @see IdSet#size()
 	 */
-	public int size() {
+	public int getSize() {
 		return getMemberIds().size();
+	}
+	
+	/**
+	 * @see IdSet#isEmpty()
+	 */
+	public boolean isEmpty() {
+		return getMemberIds().isEmpty();
+	}
+
+	/**
+	 * @see Object#clone()
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public BaseIdSet<T> clone() {
+		try {
+			BaseIdSet<T> ret = this.getClass().newInstance();
+			ret.setMemberIds(new HashSet<Integer>(getMemberIds()));
+			return ret;
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Error while cloning an IdSet", e);
+		}
 	}
 }
