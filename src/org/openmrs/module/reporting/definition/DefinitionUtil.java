@@ -134,7 +134,6 @@ public class DefinitionUtil {
 		if (instanceToClone != null) {
 			try {
 				newInstance = (T) instanceToClone.getClass().newInstance();
-				newInstance.setName(instanceToClone.getName());
 				for (Property p : getConfigurationProperties(instanceToClone)) {
 					Object toCopy = ReflectionUtil.getPropertyValue(instanceToClone, p.getField().getName());
 					if (toCopy instanceof Definition) {
@@ -142,6 +141,7 @@ public class DefinitionUtil {
 					}
 					ReflectionUtil.setPropertyValue(newInstance, p.getField(), toCopy);
 				}
+				newInstance.setName(instanceToClone.getName());
 				for (Parameter p : instanceToClone.getParameters()) {
 					newInstance.addParameter(p);
 				}

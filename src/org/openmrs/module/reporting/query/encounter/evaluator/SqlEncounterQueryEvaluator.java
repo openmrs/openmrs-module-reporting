@@ -16,25 +16,22 @@ package org.openmrs.module.reporting.query.encounter.evaluator;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
-import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.Query;
-import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * The logic that evaluates a {@link SqlEncounterQuery} and produces an {@link Query}
@@ -55,68 +52,53 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 	 * @should filter results given a base Encounter Query Result in an EvaluationContext
 	 * @should filter results given a base cohort in an EvaluationContext
 	 */
-	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) {
+	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) throws EvaluationException {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		SqlEncounterQuery sqlDef = (SqlEncounterQuery) definition;
-		EncounterQueryResult queryResult = new EncounterQueryResult(sqlDef, context);
+		SqlEncounterQuery queryDefinition = (SqlEncounterQuery) definition;
+		EncounterQueryResult queryResult = new EncounterQueryResult(queryDefinition, context);
+		
+		// TODO: Probably need to fix this
+		StringBuilder sqlQuery = new StringBuilder(queryDefinition.getQuery());
+		boolean whereFound = sqlQuery.indexOf("where") != -1;
+		if (context.getBaseCohort() != null) {
+			whereFound = true;
+			sqlQuery.append(whereFound ? " and " : " where ");
+			sqlQuery.append("patient_id in (" + context.getBaseCohort().getCommaSeparatedPatientIds() + ")");
+		}
+		if (context instanceof EncounterEvaluationContext) {
+			EncounterEvaluationContext eec = (EncounterEvaluationContext) context;
+			if (eec.getBaseEncounters() != null) {
+				sqlQuery.append(whereFound ? " and " : " where ");
+				sqlQuery.append("encounter_id in (" + OpenmrsUtil.join(eec.getBaseEncounters().getMemberIds(), ",") + ")");
+			}
+		}
+		if (context.getLimit() != null) {
+			sqlQuery.append(" limit " + context.getLimit());
+		}
 		
 		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
 		Connection connection = null;
 		try {
 			connection = DatabaseUpdater.getConnection();
 			ResultSet resultSet = null;
-
-			String sqlQuery = sqlDef.getQuery();
-
-			// Limit if indicated in the EvaluationContext
-			if (context.getLimit() != null && !sqlQuery.contains(" limit ")) {
-				if (sqlQuery.endsWith(";")) {
-					sqlQuery = sqlQuery.substring(0, sqlQuery.length() - 1);
-				}
-				sqlQuery += " limit " + context.getLimit();
-			}
 			
-			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery, context.getParameterValues());
+			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery.toString(), context.getParameterValues());
 			boolean result = statement.execute();
 
-			if (result) {
-				resultSet = statement.getResultSet();
-			}
-			else {
+			if (!result) {
 				throw new EvaluationException("Unable to evaluate sql query");
 			}
-
-			// TODO: This will need replacing
-			QueryResult baseEncounterQuery = context.getQueryResult(Encounter.class);
-			Cohort basePatientQuery = context.getBaseCohort();
-			if (basePatientQuery != null) {
-				String query = "select encounter_id from encounter where patient_id in (" + basePatientQuery.getCommaSeparatedPatientIds() + ")";
-				List<List<Object>> ret = Context.getAdministrationService().executeSQL(query, true);
-				EncounterQueryResult patientEncounterQuery = new EncounterQueryResult();
-				for (List<Object> l : ret) {
-					patientEncounterQuery.add((Integer)l.get(0));
-				}
-				if (baseEncounterQuery == null) {
-					baseEncounterQuery = patientEncounterQuery;
-				}
-				else {
-					baseEncounterQuery.getMemberIds().retainAll(patientEncounterQuery.getMemberIds());
-				}
-			}
-
+			resultSet = statement.getResultSet();
 			while (resultSet.next()) {
-				Integer id = resultSet.getInt(1);
-				if (baseEncounterQuery == null || baseEncounterQuery.contains(id)) { // TODO: Figure out a way to do this in the query
-					queryResult.add(id);
-				}
+				queryResult.add(resultSet.getInt(1));
 			}
 		}
 		catch (IllegalDatabaseAccessException ie) {
 			throw ie;
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new EvaluationException("Unable to evaluate sql query", e);
 		}
 		finally {
 			try {

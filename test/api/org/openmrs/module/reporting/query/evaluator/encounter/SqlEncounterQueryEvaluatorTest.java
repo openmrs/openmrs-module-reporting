@@ -20,9 +20,9 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
-import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
@@ -47,10 +47,10 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 	@Test
 	public void evaluate_shouldFilterResultsGivenABaseEncounterQueryInAnEvaluationContext() throws Exception {
 	
-		EvaluationContext context = new EvaluationContext();
+		EncounterEvaluationContext context = new EncounterEvaluationContext();
 		EncounterQueryResult baseEncounterIds = new EncounterQueryResult();
 		baseEncounterIds.add(3, 4, 5, 6, 7, 8);
-		context.addQueryResult(Encounter.class, baseEncounterIds);
+		context.setBaseEncounters(baseEncounterIds);
 		
 		SqlEncounterQuery d = new SqlEncounterQuery();
 		d.setQuery("select encounter_id from encounter where location_id = 2");
@@ -60,10 +60,10 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 	@Test
 	public void evaluate_shouldFilterResultsGivenABaseCohortInAnEvaluationContext() throws Exception {
 	
-		EvaluationContext context = new EvaluationContext();
+		EncounterEvaluationContext context = new EncounterEvaluationContext();
 		EncounterQueryResult baseEncounterIds = new EncounterQueryResult();
 		baseEncounterIds.add(3, 4, 5, 6, 7, 8);
-		context.addQueryResult(Encounter.class, baseEncounterIds);
+		context.setBaseEncounters(baseEncounterIds);
 		
 		Cohort baseCohort = new Cohort("20,21");
 		context.setBaseCohort(baseCohort);

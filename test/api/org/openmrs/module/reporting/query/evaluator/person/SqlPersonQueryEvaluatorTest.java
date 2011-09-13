@@ -19,9 +19,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
@@ -46,10 +46,10 @@ public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void evaluate_shouldFilterResultsGivenABaseFilterInAnEvaluationContext() throws Exception {
 		
-		EvaluationContext context = new EvaluationContext();
+		PersonEvaluationContext context = new PersonEvaluationContext();
 		PersonQueryResult basePersonIds = new PersonQueryResult();
 		basePersonIds.add(2, 9, 20, 23);
-		context.addQueryResult(Person.class, basePersonIds);
+		context.setBasePersons(basePersonIds);
 		
 		SqlPersonQuery d = new SqlPersonQuery();
 		d.setQuery("select person_id from person where gender = 'F'");

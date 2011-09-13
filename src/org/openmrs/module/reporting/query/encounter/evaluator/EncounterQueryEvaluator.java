@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.query.encounter.evaluator;
 
 import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 
@@ -26,5 +27,5 @@ public interface EncounterQueryEvaluator extends DefinitionEvaluator<EncounterQu
 	/**
 	 * Evaluate an EncounterQuery for the given EvaluationContext
 	 */
-	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context);
+	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) throws EvaluationException;
 }

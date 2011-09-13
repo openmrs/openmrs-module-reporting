@@ -15,12 +15,13 @@ package org.openmrs.module.reporting.evaluation;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
-import org.openmrs.OpenmrsData;
 import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -33,8 +34,10 @@ import org.openmrs.module.reporting.query.QueryResult;
 /**
  * The EvaluationContext provides the following capabilities: 
  * 	- A baseCohort, i.e. the universe of patients relevant to this context (defaults to all patients) 
+ *  - A Set of base filters, which can be used to retrieve the base set of data to operate upon
  *  - An in-memory cache which can be used to persist and retrieve previous Evaluation results. 
- *    * Note that this cache is cleared whenever any changes are made to evaluationDate, limit, baseCohort, or baseQueryResults *
+ *    Note that this cache is cleared whenever any changes are made to evaluationDate, limit, baseCohort, baseFilters
+ *    TODO: We need to be smarter than this.  We will likely lose a lot of good cache data, particular between child and parent evaluations
  *  - Capabilities to add, remove, and retrieve parameter values
  */
 public class EvaluationContext {
@@ -52,8 +55,8 @@ public class EvaluationContext {
 	// Base cohort to use for evaluation
 	private Cohort baseCohort;
 	
-	// Base set of ids to limit the rows evaluated and returned.
-	private Map<Class<? extends OpenmrsData>, QueryResult> baseQueryResults;
+	// Set of base filters to use for evaluation
+	private Set<QueryResult> baseFilters;
 	
 	// Parameter values entered by user (or defaulted)
 	private Map<String, Object> parameterValues;
@@ -93,7 +96,6 @@ public class EvaluationContext {
 		this.setLimit(context.getLimit());
 		this.setCache(context.getCache());
 		this.setBaseCohort(context.getBaseCohort());
-		this.setBaseQueryResults(context.getBaseQueryResults());
 		this.getParameterValues().putAll(context.getParameterValues());
 	}
 	
@@ -144,7 +146,7 @@ public class EvaluationContext {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("EvaluationContext[evaluationDate=" + evaluationDate);
+		sb.append(getClass().getSimpleName()+"[evaluationDate=" + evaluationDate);
 		for (Map.Entry<String, Object> e : getParameterValues().entrySet()) {
 			if (e.getValue() != null)
 				sb.append("," + e.getKey() + "->" + e.getValue() + " (" + e.getValue().getClass().getSimpleName() + ")");
@@ -280,36 +282,43 @@ public class EvaluationContext {
 	}
 
 	/**
-	 * @return the baseQueryResults
+	 * @return the baseFilters
 	 */
-	public Map<Class<? extends OpenmrsData>, QueryResult> getBaseQueryResults() {
-		if (baseQueryResults == null) {
-			baseQueryResults = new HashMap<Class<? extends OpenmrsData>, QueryResult>();
+	public Set<QueryResult> getBaseFilters() {
+		if (baseFilters == null) {
+			return new HashSet<QueryResult>();
 		}
-		return baseQueryResults;
+		return baseFilters;
 	}
 
 	/**
-	 * @param baseQueryResults the baseQueryResults to set
+	 * @param baseFilters the baseFilters to set
 	 */
-	public void setBaseQueryResults(Map<Class<? extends OpenmrsData>, QueryResult> baseQueryResults) {
+	public void setBaseFilters(Set<QueryResult> baseFilters) {
 		clearCache();
-		this.baseQueryResults = baseQueryResults;
+		this.baseFilters = baseFilters;
 	}
 	
 	/**
-	 * Adds a new QueryResult
+	 * @param filter the filter to add to the base filters
 	 */
-	public void addQueryResult(Class<? extends OpenmrsData> type, QueryResult queryResult) {
+	public void addBaseFilter(QueryResult filter) {
 		clearCache();
-		getBaseQueryResults().put(type, queryResult);
+		getBaseFilters().add(filter);
 	}
 	
 	/**
-	 * Retrieves a QueryResult
+	 * @return all base filters of the passed filterType
 	 */
-	public QueryResult getQueryResult(Class<? extends OpenmrsData> type) {
-		return getBaseQueryResults().get(type);
+	@SuppressWarnings("unchecked")
+	public <T extends QueryResult> Set<T> getBaseFilters(Class<T> filterType) {
+		Set<T> s = new HashSet<T>();
+		for (QueryResult filter : baseFilters) {
+			if (filterType.isAssignableFrom(filter.getClass())) {
+				s.add((T)filter);
+			}
+		}
+		return s;
 	}
 
 	/**

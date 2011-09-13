@@ -16,22 +16,23 @@ package org.openmrs.module.reporting.query.person.evaluator;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Person;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.query.Query;
-import org.openmrs.module.reporting.query.QueryResult;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * The logic that evaluates a {@link SqlPersonQuery} and produces an {@link Query}
@@ -48,54 +49,64 @@ public class SqlPersonQueryEvaluator implements PersonQueryEvaluator {
 	
 	/**
 	 * @see PersonQueryEvaluator#evaluate(PersonQuery, EvaluationContext)
-	 * @should evaluate a SQL query into PersonQuery
-	 * @should filter results given a base filter in an EvaluationContext
+	 * @should evaluate a SQL query into an PersonQuery
+	 * @should filter results given a base Person Query Result in an EvaluationContext
+	 * @should filter results given a base cohort in an EvaluationContext
 	 */
-	public PersonQueryResult evaluate(PersonQuery definition, EvaluationContext context) {
+	public PersonQueryResult evaluate(PersonQuery definition, EvaluationContext context) throws EvaluationException {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		SqlPersonQuery sqlDef = (SqlPersonQuery) definition;
-		PersonQueryResult queryResult = new PersonQueryResult();
+		SqlPersonQuery queryDefinition = (SqlPersonQuery) definition;
+		PersonQueryResult queryResult = new PersonQueryResult(queryDefinition, context);
+		
+		// TODO: Probably need to fix this
+		Set<Integer> personIds = null;
+		if (context instanceof PersonEvaluationContext) {
+			PersonEvaluationContext pec = (PersonEvaluationContext) context;
+			if (pec.getBasePersons() != null) {
+				personIds = pec.getBasePersons().getMemberIds();
+			}
+		}
+		if (personIds == null) {
+			if (context.getBaseCohort() != null) {
+				personIds = context.getBaseCohort().getMemberIds();
+			}
+		}
+		
+		StringBuilder sqlQuery = new StringBuilder(queryDefinition.getQuery());
+		boolean whereFound = sqlQuery.indexOf("where") != -1;
+		if (personIds != null) {
+			whereFound = true;
+			sqlQuery.append(whereFound ? " and " : " where ");
+			sqlQuery.append("person_id in (" + OpenmrsUtil.join(personIds, ",") + ")");
+		}
+
+		if (context.getLimit() != null) {
+			sqlQuery.append(" limit " + context.getLimit());
+		}
 		
 		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
 		Connection connection = null;
 		try {
 			connection = DatabaseUpdater.getConnection();
 			ResultSet resultSet = null;
-
-			String sqlQuery = sqlDef.getQuery();
 			
-			// Limit if indicated in the EvaluationContext
-			if (context.getLimit() != null && !sqlQuery.contains(" limit ")) {
-				if (sqlQuery.endsWith(";")) {
-					sqlQuery = sqlQuery.substring(0, sqlQuery.length() - 1);
-				}
-				sqlQuery += " limit " + context.getLimit();
-			}
-			
-			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery, context.getParameterValues());
+			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery.toString(), context.getParameterValues());
 			boolean result = statement.execute();
 
-			if (result) {
-				resultSet = statement.getResultSet();
-			}
-			else {
+			if (!result) {
 				throw new EvaluationException("Unable to evaluate sql query");
 			}
-			
-			QueryResult basePersonQuery = context.getQueryResult(Person.class);
+			resultSet = statement.getResultSet();
 			while (resultSet.next()) {
-				Integer id = resultSet.getInt(1);
-				if (basePersonQuery == null || basePersonQuery.contains(id)) { // TODO: Figure out a way to do this in the query
-					queryResult.add(id);
-				}
+				queryResult.add(resultSet.getInt(1));
 			}
 		}
 		catch (IllegalDatabaseAccessException ie) {
 			throw ie;
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new EvaluationException("Unable to evaluate sql query", e);
 		}
 		finally {
 			try {

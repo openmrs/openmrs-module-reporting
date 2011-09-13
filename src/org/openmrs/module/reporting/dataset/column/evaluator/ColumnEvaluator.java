@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.dataset.column.evaluator;
 
 import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
+import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
@@ -24,7 +25,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
  * to the passed DataSet.  A DataSetDefinition may be evaluated across many ColumnEvaluators in sequence
  * in order to produce the final DataSet.
  */
-public interface ColumnEvaluator {
+public interface ColumnEvaluator extends DefinitionEvaluator<ColumnDefinition> {
 	
 	/**
 	 * Evaluate a DataSet for the given EvaluationContext

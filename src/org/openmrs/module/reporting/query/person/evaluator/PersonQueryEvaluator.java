@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.query.person.evaluator;
 
 import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 
@@ -26,5 +27,5 @@ public interface PersonQueryEvaluator extends DefinitionEvaluator<PersonQuery> {
 	/**
 	 * Evaluate an PersonQuery for the given EvaluationContext
 	 */
-	public PersonQueryResult evaluate(PersonQuery definition, EvaluationContext context);
+	public PersonQueryResult evaluate(PersonQuery definition, EvaluationContext context) throws EvaluationException;
 }

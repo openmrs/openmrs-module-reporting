@@ -13,27 +13,32 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
+import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
+import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.service.DataSetColumnDefinitionService;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.RowPerPatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.query.QueryResult;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 /**
  * The logic that evaluates a {@link RowPerPatientDataSetDefinition} and produces an {@link DataSet}
  */
 @Handler(supports=RowPerPatientDataSetDefinition.class)
-public class RowPerPatientDataSetEvaluator extends RowPerObjectDataSetEvaluator {
+public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
@@ -43,13 +48,19 @@ public class RowPerPatientDataSetEvaluator extends RowPerObjectDataSetEvaluator 
 	public RowPerPatientDataSetEvaluator() { }
 	
 	/**
-	 * Implementations of this method should evaluate the appropriate id filters in the DataSetDefinition and
-	 * populate these QueryResults within the Context
+	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public void populateFilterQueryResults(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) throws EvaluationException {
-		RowPerPatientDataSetDefinition rpp = (RowPerPatientDataSetDefinition) dsd;
-		if (rpp.getPatientFilter() != null) {
-			EvaluatedCohort filterCohort = Context.getService(CohortDefinitionService.class).evaluate(rpp.getPatientFilter(), context);
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
+		
+		RowPerPatientDataSetDefinition dsd = (RowPerPatientDataSetDefinition) dataSetDefinition;
+		DataSetColumnDefinitionService service = Context.getService(DataSetColumnDefinitionService.class);
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+		
+		RowPerObjectDataSet dataSet = new RowPerObjectDataSet(dsd, context);
+
+		if (dsd.getPatientFilter() != null) {
+			context = new EvaluationContext(context);
+			EvaluatedCohort filterCohort = Context.getService(CohortDefinitionService.class).evaluate(dsd.getPatientFilter(), context);
 			if (context.getBaseCohort() == null) {
 				context.setBaseCohort(filterCohort);
 			}
@@ -57,24 +68,24 @@ public class RowPerPatientDataSetEvaluator extends RowPerObjectDataSetEvaluator 
 				context.setBaseCohort(Cohort.intersect(context.getBaseCohort(), filterCohort));
 			}
 		}
-	}
-	
-	/**
-	 * Implementations of this method should return the base Query that is appropriate for the passed DataSetDefinition
-	 */
-	public QueryResult getBaseQueryResult(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) {
-		EvaluatedCohort s = new EvaluatedCohort();
-		if (context.getBaseCohort() == null) {
-			s = new EvaluatedCohort();
-			String query = "select patient_id from patient where voided = false"; // TODO: Is this right?
-			List<List<Object>> results = Context.getAdministrationService().executeSQL(query, true);
-			for (List<Object> l : results) {
-				s.addMember((Integer)l.get(0));
+		Cohort c = context.getBaseCohort();
+		if (c == null) {
+			AllPatientsCohortDefinition allPatients = new AllPatientsCohortDefinition();
+			c = Context.getService(CohortDefinitionService.class).evaluate(allPatients, context);
+		}
+
+		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
+		for (Mapped<? extends ColumnDefinition> mappedDef : dsd.getColumnDefinitions()) {
+			
+			EvaluatedColumnDefinition evaluatedColumnDef = service.evaluate(mappedDef, context);
+			ColumnDefinition cd = evaluatedColumnDef.getDefinition();
+			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), cd.getDataType()); // TODO: Support One-Many column definition to column
+			
+			for (Integer id : c.getMemberIds()) {
+				dataSet.addColumnValue(id, column, evaluatedColumnDef.getColumnValues().get(id));
 			}
 		}
-		else {
-			s.setMemberIds(context.getBaseCohort().getMemberIds());
-		}
-		return s;
+
+		return dataSet;
 	}
 }

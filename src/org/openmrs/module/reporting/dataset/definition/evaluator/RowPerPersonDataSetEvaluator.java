@@ -13,27 +13,35 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Person;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
+import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.service.DataSetColumnDefinitionService;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.RowPerPersonDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.query.QueryResult;
+import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
+import org.openmrs.module.reporting.query.person.definition.AllPersonQuery;
 import org.openmrs.module.reporting.query.person.service.PersonQueryService;
 
 /**
- * The logic that evaluates a {@link RowPerObjectDataSetDefinition} and produces an {@link DataSet}
+ * The logic that evaluates a {@link RowPerPersonDataSetDefinition} and produces an {@link DataSet}
  */
 @Handler(supports=RowPerPersonDataSetDefinition.class)
-public class RowPerPersonDataSetEvaluator extends RowPerObjectDataSetEvaluator {
+public class RowPerPersonDataSetEvaluator implements DataSetEvaluator {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
@@ -43,30 +51,56 @@ public class RowPerPersonDataSetEvaluator extends RowPerObjectDataSetEvaluator {
 	public RowPerPersonDataSetEvaluator() { }
 	
 	/**
-	 * Implementations of this method should evaluate the appropriate id filters in the DataSetDefinition and
-	 * populate these QueryResults within the Context
+	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	public void populateFilterQueryResults(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) throws EvaluationException {
-		RowPerPersonDataSetDefinition rpp = (RowPerPersonDataSetDefinition) dsd;
-		if (rpp.getPersonFilter() != null) {
-			PersonQueryResult personQuery = Context.getService(PersonQueryService.class).evaluate(rpp.getPersonFilter(), context);
-			context.getBaseQueryResults().put(Person.class, personQuery);
-		}
-	}
-	
-	/**
-	 * Implementations of this method should return the base QueryResult that is appropriate for the passed DataSetDefinition
-	 */
-	public QueryResult getBaseQueryResult(RowPerObjectDataSetDefinition<?> dsd, EvaluationContext context) {
-		PersonQueryResult s = (PersonQueryResult)context.getBaseQueryResults().get(Person.class);
-		if (s == null) {
-			s = new PersonQueryResult();
-			String query = "select person_id from person where voided = false"; // TODO: Is this right?
-			List<List<Object>> results = Context.getAdministrationService().executeSQL(query, true);
-			for (List<Object> l : results) {
-				s.add((Integer)l.get(0));
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
+		
+		RowPerPersonDataSetDefinition dsd = (RowPerPersonDataSetDefinition) dataSetDefinition;
+		DataSetColumnDefinitionService service = Context.getService(DataSetColumnDefinitionService.class);
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+		
+		RowPerObjectDataSet dataSet = new RowPerObjectDataSet(dsd, context);
+		
+		// Construct an PersonEvaluationContext based on the person filter
+		Set<Integer> idsToUse = null;
+		if (context instanceof PersonEvaluationContext) {
+			PersonQueryResult basePersons = ((PersonEvaluationContext)context).getBasePersons();
+			if (basePersons != null) {
+				idsToUse = new HashSet<Integer>(basePersons.getMemberIds());
 			}
 		}
-		return s;
+		
+		if (dsd.getPersonFilter() != null) {
+			PersonQueryResult filterResult = Context.getService(PersonQueryService.class).evaluate(dsd.getPersonFilter(), context);
+			if (idsToUse == null) {
+				idsToUse = new HashSet<Integer>(filterResult.getMemberIds());
+			}
+			else {
+				idsToUse.retainAll(filterResult.getMemberIds());
+			}
+		}
+		
+		if (idsToUse == null) {
+			idsToUse = Context.getService(PersonQueryService.class).evaluate(new AllPersonQuery(), context).getMemberIds();
+		}
+		
+		PersonQueryResult r = new PersonQueryResult();
+		r.setMemberIds(idsToUse);
+		
+		PersonEvaluationContext pec = new PersonEvaluationContext(context, r);
+
+		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
+		for (Mapped<? extends ColumnDefinition> mappedDef : dsd.getColumnDefinitions()) {
+			
+			EvaluatedColumnDefinition evaluatedColumnDef = service.evaluate(mappedDef, pec);
+			ColumnDefinition cd = evaluatedColumnDef.getDefinition();
+			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), cd.getDataType()); // TODO: Support One-Many column definition to column
+			
+			for (Integer id : pec.getBasePersons().getMemberIds()) {
+				dataSet.addColumnValue(id, column, evaluatedColumnDef.getColumnValues().get(id));
+			}
+		}
+
+		return dataSet;
 	}
 }

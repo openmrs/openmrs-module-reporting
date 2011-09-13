@@ -20,8 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.QueryResult;
@@ -52,7 +50,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 		EvaluationContext context = new EvaluationContext();
 		ObsQueryResult baseObsIds = new ObsQueryResult();
 		baseObsIds.add(7, 9, 10, 11, 12);
-		context.addQueryResult(Obs.class, baseObsIds);
+		//context.addQueryResult(Obs.class, baseObsIds);
 		
 		SqlObsQuery d = new SqlObsQuery();
 		d.setQuery("select obs_id from obs where concept_id = 5089");
@@ -70,12 +68,12 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 		
 		ObsQueryResult baseObsIds = new ObsQueryResult();
 		baseObsIds.add(7, 16, 18, 21, 24);
-		context.addQueryResult(Obs.class, baseObsIds);
+		//context.addQueryResult(Obs.class, baseObsIds);
 		Assert.assertEquals(5, evaluate(d, context).size());
 		
 		EncounterQueryResult baseEncounterIds = new EncounterQueryResult();
 		baseEncounterIds.add(5, 6, 7, 8);
-		context.addQueryResult(Encounter.class, baseEncounterIds);
+		//context.addQueryResult(Encounter.class, baseEncounterIds);
 		Assert.assertEquals(4, evaluate(d, context).size());
 		
 		Cohort baseCohort  = new Cohort("7, 21");
