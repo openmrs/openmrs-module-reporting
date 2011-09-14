@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import org.openmrs.module.reporting.data.patient.PatientData;
+import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -26,5 +26,5 @@ public interface PatientDataEvaluator extends DefinitionEvaluator<PatientDataDef
 	/**
 	 * Evaluate an PatientDataDefinition for the given EvaluationContext
 	 */
-	public PatientData evaluate(PatientDataDefinition definition, EvaluationContext context);
+	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context);
 }

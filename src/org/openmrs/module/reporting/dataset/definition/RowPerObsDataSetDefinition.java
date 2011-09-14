@@ -16,7 +16,6 @@ package org.openmrs.module.reporting.dataset.definition;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.encounter.EncounterColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.obs.ObsColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.obs.ObsEncounterColumnDefinition;
@@ -25,7 +24,6 @@ import org.openmrs.module.reporting.dataset.column.definition.patient.PatientCol
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
-import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
 
 /**
@@ -35,12 +33,6 @@ import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
 public class RowPerObsDataSetDefinition extends RowPerObjectDataSetDefinition<ObsColumnDefinition> {
 	
     //***** PROPERTIES *****
-    
-    @ConfigurationProperty
-	private Mapped<? extends CohortDefinition> patientFilter;
-    
-    @ConfigurationProperty
-	private Mapped<? extends EncounterQuery> encounterFilter;
     
     @ConfigurationProperty
 	private Mapped<? extends ObsQuery> obsFilter;
@@ -106,34 +98,6 @@ public class RowPerObsDataSetDefinition extends RowPerObjectDataSetDefinition<Ob
 	}
 	
     //***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the patientFilter
-	 */
-	public Mapped<? extends CohortDefinition> getPatientFilter() {
-		return patientFilter;
-	}
-
-	/**
-	 * @param patientFilter the patientFilter to set
-	 */
-	public void setPatientFilter(Mapped<? extends CohortDefinition> patientFilter) {
-		this.patientFilter = patientFilter;
-	}
-
-	/**
-	 * @return the encounterFilter
-	 */
-	public Mapped<? extends EncounterQuery> getEncounterFilter() {
-		return encounterFilter;
-	}
-
-	/**
-	 * @param encounterFilter the encounterFilter to set
-	 */
-	public void setEncounterFilter(Mapped<? extends EncounterQuery> encounterFilter) {
-		this.encounterFilter = encounterFilter;
-	}
 
 	/**
 	 * @return the obsFilter

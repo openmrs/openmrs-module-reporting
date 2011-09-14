@@ -13,28 +13,17 @@
  */
 package org.openmrs.module.reporting.data.encounter;
 
+import org.openmrs.Encounter;
 import org.openmrs.module.reporting.data.BaseData;
-import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
  * Encounter Data Implementation
  */
-public class EncounterData extends BaseData<EncounterDataDefinition> {
+public class EncounterData extends BaseData<Encounter> {
 
     //***** CONSTRUCTORS *****
     
-	/**
-	 * Default Constructor
-	 */
     public EncounterData() {
     	super();
     }
-    
-	/**
-	 * Full Constructor
-	 */
-    public EncounterData(EncounterDataDefinition definition, EvaluationContext context) {
-    	super(definition, context);
-    } 
 }

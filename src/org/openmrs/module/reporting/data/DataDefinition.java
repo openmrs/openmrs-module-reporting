@@ -13,11 +13,12 @@
  */
 package org.openmrs.module.reporting.data;
 
+import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.evaluation.Definition;
 
 /**
  * Data Definition Interface
  */
-public interface DataDefinition extends Definition {
+public interface DataDefinition<T extends OpenmrsObject> extends Definition {
 
 }

@@ -13,28 +13,17 @@
  */
 package org.openmrs.module.reporting.data.patient;
 
+import org.openmrs.Patient;
 import org.openmrs.module.reporting.data.BaseData;
-import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
  * Patient Data Implementation
  */
-public class PatientData extends BaseData<PatientDataDefinition> {
+public class PatientData extends BaseData<Patient> {
 
-    //***** CONSTRUCTORS *****
-    
-	/**
-	 * Default Constructor
-	 */
+	//***** CONSTRUCTORS *****
+	
     public PatientData() {
     	super();
-    }
-    
-	/**
-	 * Full Constructor
-	 */
-    public PatientData(PatientDataDefinition definition, EvaluationContext context) {
-    	super(definition, context);
     } 
 }

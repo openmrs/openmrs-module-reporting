@@ -16,18 +16,15 @@ package org.openmrs.module.reporting.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openmrs.module.reporting.evaluation.Evaluated;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.OpenmrsObject;
 
 /**
  * Provides abstract implementation of the Data interface
  */
-public abstract class BaseData<T extends DataDefinition> implements Evaluated<T>, Data {
+public abstract class BaseData<T extends OpenmrsObject> implements Data<T> {
 	
 	//***** PROPERTIES *****
 	
-    private T definition;
-    private EvaluationContext context;
     private Map<Integer, Object> data;
     
     //***** CONSTRUCTORS *****
@@ -35,41 +32,8 @@ public abstract class BaseData<T extends DataDefinition> implements Evaluated<T>
     public BaseData() {
     	super();
     }
-    
-    public BaseData(T definition, EvaluationContext context) {
-    	this.definition = definition;
-    	this.context = context;
-    }
-    
+        
     //***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the definition
-	 */
-	public T getDefinition() {
-		return definition;
-	}
-	
-	/**
-	 * @param definition the definition to set
-	 */
-	public void setDefinition(T definition) {
-		this.definition = definition;
-	}
-	
-	/**
-	 * @return the context
-	 */
-	public EvaluationContext getContext() {
-		return context;
-	}
-	
-	/**
-	 * @param context the context to set
-	 */
-	public void setContext(EvaluationContext context) {
-		this.context = context;
-	}
 
 	/**
 	 * @return the data

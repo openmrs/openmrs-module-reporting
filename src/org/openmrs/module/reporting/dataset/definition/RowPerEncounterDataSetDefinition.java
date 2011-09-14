@@ -16,7 +16,6 @@ package org.openmrs.module.reporting.dataset.definition;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.encounter.EncounterColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.encounter.EncounterPatientColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.patient.PatientColumnDefinition;
@@ -32,9 +31,6 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 public class RowPerEncounterDataSetDefinition extends RowPerObjectDataSetDefinition<EncounterColumnDefinition> {
 	
     //***** PROPERTIES *****
-    
-    @ConfigurationProperty
-	private Mapped<? extends CohortDefinition> patientFilter;
     
     @ConfigurationProperty
 	private Mapped<? extends EncounterQuery> encounterFilter;
@@ -72,20 +68,6 @@ public class RowPerEncounterDataSetDefinition extends RowPerObjectDataSetDefinit
 	}
 	
     //***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the patientFilter
-	 */
-	public Mapped<? extends CohortDefinition> getPatientFilter() {
-		return patientFilter;
-	}
-
-	/**
-	 * @param patientFilter the patientFilter to set
-	 */
-	public void setPatientFilter(Mapped<? extends CohortDefinition> patientFilter) {
-		this.patientFilter = patientFilter;
-	}
 
 	/**
 	 * @return the encounterFilter

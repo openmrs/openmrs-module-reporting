@@ -13,12 +13,13 @@
  */
 package org.openmrs.module.reporting.data.encounter.definition;
 
+import org.openmrs.Encounter;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
  * Encounter Data Definition Interface
  */
-public interface EncounterDataDefinition extends DataDefinition {
+public interface EncounterDataDefinition extends DataDefinition<Encounter> {
     
 
 }

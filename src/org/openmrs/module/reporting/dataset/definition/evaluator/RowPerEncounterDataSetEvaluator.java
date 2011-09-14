@@ -15,11 +15,8 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.EvaluatedCohort;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -60,18 +57,6 @@ public class RowPerEncounterDataSetEvaluator implements DataSetEvaluator {
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		
 		RowPerObjectDataSet dataSet = new RowPerObjectDataSet(dsd, context);
-		
-		// Determine the Base Cohort for this DataSet
-		if (dsd.getPatientFilter() != null) {
-			EvaluatedCohort filterCohort = Context.getService(CohortDefinitionService.class).evaluate(dsd.getPatientFilter(), context);
-			context = new EvaluationContext(context);
-			if (context.getBaseCohort() == null) {
-				context.setBaseCohort(filterCohort);
-			}
-			else {
-				context.setBaseCohort(Cohort.intersect(context.getBaseCohort(), filterCohort));
-			}
-		}
 		
 		// Construct an EncounterEvaluationContext based on the encounter filter
 		EncounterQueryResult r = null;
