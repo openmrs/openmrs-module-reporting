@@ -14,11 +14,36 @@
 package org.openmrs.module.reporting.data.patient.definition;
 
 import org.openmrs.Patient;
+import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
- * Patient Data Definition Interface
+ * Patient ID Data Definition
  */
-public interface PatientDataDefinition extends DataDefinition<Patient> {
-    
+public class PatientIdDataDefinition extends BaseDataDefinition<Patient> implements PatientDataDefinition {
+	
+	public static final long serialVersionUID = 1L;
+	
+	/**
+	 * Default Constructor
+	 */
+	public PatientIdDataDefinition() {
+		super();
+	}
+	
+	/**
+	 * Constructor to populate name only
+	 */
+	public PatientIdDataDefinition(String name) {
+		super(name);
+	}
+	
+	//***** INSTANCE METHODS *****
+	
+	/** 
+	 * @see DataDefinition#getDataType()
+	 */
+	public Class<?> getDataType() {
+		return Integer.class;
+	}
 }

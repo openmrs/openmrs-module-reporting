@@ -21,4 +21,8 @@ import org.openmrs.module.reporting.evaluation.Definition;
  */
 public interface DataDefinition<T extends OpenmrsObject> extends Definition {
 
+    /**
+     * @return the data type that this definition will produce when evaluated
+     */
+	public Class<?> getDataType();
 }

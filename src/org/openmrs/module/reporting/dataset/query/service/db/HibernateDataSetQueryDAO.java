@@ -13,7 +13,9 @@
  */
 package org.openmrs.module.reporting.dataset.query.service.db;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -49,6 +51,29 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 	private SessionFactory sessionFactory;
 
 	//***** INSTANCE METHODS *****
+	
+	/** 
+	 * @see DataSetQueryDAO#executeHqlQuery(String, Map<String, Object>)
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<Object> executeHqlQuery(String hqlQuery, Map<String, Object> parameterValues) {
+		Query q = sessionFactory.getCurrentSession().createQuery(hqlQuery);
+		for (Map.Entry<String, Object> e : parameterValues.entrySet()) {
+			if (e.getValue() instanceof Collection) {
+				q.setParameterList(e.getKey(), (Collection)e.getValue());
+			}
+			else if (e.getValue() instanceof Object[]) {
+				q.setParameterList(e.getKey(), (Object[])e.getValue());
+			}
+			else if (e.getValue() instanceof Cohort) {
+				q.setParameterList(e.getKey(), ((Cohort)e.getValue()).getMemberIds());
+			}
+			else {
+				q.setParameter(e.getKey(), e.getValue());
+			}
+		}
+		return q.list();
+	}
 	
 	/** 
 	 * @see DataSetQueryDAO#getPropertyValues(Class, String, EvaluationContext)

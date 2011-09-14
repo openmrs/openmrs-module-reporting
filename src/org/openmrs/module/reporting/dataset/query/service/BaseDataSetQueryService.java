@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.query.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -33,6 +34,13 @@ public class BaseDataSetQueryService implements DataSetQueryService {
 	private DataSetQueryDAO dao;
 	
 	//***** INSTANCE METHODS *****
+	
+	/** 
+	 * @see DataSetQueryService#executeHqlQuery(String, Map<String, Object>)
+	 */
+	public List<Object> executeHqlQuery(String hqlQuery, Map<String, Object> parameterValues) {
+		return dao.executeHqlQuery(hqlQuery, parameterValues);
+	}
 	
 	/** 
 	 * @see DataSetQueryDAO#getPropertyValues(Class, String, EvaluationContext)

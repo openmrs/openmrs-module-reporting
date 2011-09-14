@@ -41,6 +41,14 @@ public abstract class BaseDataDefinition<T extends OpenmrsObject> extends BaseDe
     	super();
     }
     
+    /**
+     * Name constructor
+     */
+    public BaseDataDefinition(String name) {
+    	this();
+    	setName(name);
+    }
+    
     //***** INSTANCE METHODS *****
 	
 	/**

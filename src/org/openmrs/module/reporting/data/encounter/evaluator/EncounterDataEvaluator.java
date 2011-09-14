@@ -17,6 +17,7 @@ import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * Each implementation of this class is expected to evaluate one or more type of EncounterDataDefinition to produce a EncounterData result
@@ -26,5 +27,5 @@ public interface EncounterDataEvaluator extends DefinitionEvaluator<EncounterDat
 	/**
 	 * Evaluate an EncounterDataDefinition for the given EvaluationContext
 	 */
-	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context);
+	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException;
 }

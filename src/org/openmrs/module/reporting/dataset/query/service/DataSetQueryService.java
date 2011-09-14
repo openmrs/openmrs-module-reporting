@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.query.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.openmrs.OpenmrsObject;
@@ -26,6 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional(readOnly=true)
 public interface DataSetQueryService {
+	
+	/** 
+	 * @return the List of Objects that result from the passed hql query and parameters
+	 */
+	public List<Object> executeHqlQuery(String hqlQuery, Map<String, Object> parameterValues);
 	
 	/**
 	 * @return all properties with the given name on the given type for the given ids

@@ -51,4 +51,11 @@ public abstract class BaseData<T extends OpenmrsObject> implements Data<T> {
 	public void setData(Map<Integer, Object> data) {
 		this.data = data;
 	}
+	
+	/**
+	 * Adds a data item with the passed id and value
+	 */
+	public void addData(Integer id, Object value) {
+		getData().put(id, value);
+	}
 }

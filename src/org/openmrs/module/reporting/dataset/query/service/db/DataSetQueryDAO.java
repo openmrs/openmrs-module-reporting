@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.query.service.db;
 
+import java.util.List;
 import java.util.Map;
 
 import org.openmrs.OpenmrsObject;
@@ -26,6 +27,11 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  * DataSetEvaluation DAO Queries
  */
 public interface DataSetQueryDAO {
+	
+	/** 
+	 * @see DataSetQueryService#executeHqlQuery(String, Map<String, Object>)
+	 */
+	public List<Object> executeHqlQuery(String hqlQuery, Map<String, Object> parameterValues);
 	
 	/** 
 	 * @see DataSetQueryService#getPropertyValues(Class, String, EvaluationContext)
