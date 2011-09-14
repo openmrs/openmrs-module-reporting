@@ -34,6 +34,7 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
+	 * @should return the preferred identifier of the passed type for each patient in the passed context
 	 */
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		

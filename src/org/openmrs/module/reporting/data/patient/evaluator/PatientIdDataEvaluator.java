@@ -33,6 +33,7 @@ public class PatientIdDataEvaluator implements PatientDataEvaluator {
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
+	 * @should return patientIds for all patients in the the passed context
 	 */
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPatientData c = new EvaluatedPatientData(definition, context);

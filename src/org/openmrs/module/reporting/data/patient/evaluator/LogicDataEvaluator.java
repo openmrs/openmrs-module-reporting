@@ -32,6 +32,8 @@ public class LogicDataEvaluator implements PatientDataEvaluator {
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
+	 * @should return Logic Results for all patients in the context baseCohort
+	 * @should return Logic Results for every patient if the context baseCohort is null
 	 */
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		
