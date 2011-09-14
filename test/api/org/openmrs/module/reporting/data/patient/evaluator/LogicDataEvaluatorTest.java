@@ -42,13 +42,4 @@ public class LogicDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("F", pd.getData().get(7));
 		Assert.assertEquals("F", pd.getData().get(8));
 	}
-
-	/**
-	 * @see LogicDataEvaluator#evaluate(PatientDataDefinition,EvaluationContext)
-	 * @verifies return Logic Results for every patient if the context baseCohort is null
-	 */
-	@Test
-	public void evaluate_shouldReturnLogicResultsForEveryPatientIfTheContextBaseCohortIsNull() throws Exception {
-
-	}
 }
