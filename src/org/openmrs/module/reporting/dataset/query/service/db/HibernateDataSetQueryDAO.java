@@ -33,6 +33,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
+import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
@@ -95,6 +96,7 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		// Can try to make this more clever through reflection.  Going to brute force it for now...
 		
 		Map<Class<? extends OpenmrsData>, String> patientJoinProperties = new HashMap<Class<? extends OpenmrsData>, String>();
+		patientJoinProperties.put(Person.class, "personId");
 		patientJoinProperties.put(Patient.class, "patientId");
 		patientJoinProperties.put(Encounter.class, "patient.patientId");
 		patientJoinProperties.put(Obs.class, "patient.patientId");
