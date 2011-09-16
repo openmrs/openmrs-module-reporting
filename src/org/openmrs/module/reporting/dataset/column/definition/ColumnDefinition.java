@@ -13,26 +13,19 @@
  */
 package org.openmrs.module.reporting.dataset.column.definition;
 
-import org.openmrs.module.reporting.dataset.column.converter.ColumnConverter;
+import java.util.List;
+
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.Definition;
 
 /**
  * Base Column Interface
  */
 public interface ColumnDefinition extends Definition {
-    
-    /**
-     * @return the converter to apply to this Column
-     */
-    public ColumnConverter getConverter();
-    
-    /**
-     * @return the data type for this Column, prior to Conversion
-     */
-    public Class<?> getRawDataType();
-    
-    /**
-     * @return the data type for this Column after any Conversion
-     */
-    public Class<?> getDataType();
+
+	/**
+	 * @return the DataSetColumns that this ColumnDefinition produces
+	 */
+	public List<DataSetColumn> getDataSetColumns();
+	
 }
