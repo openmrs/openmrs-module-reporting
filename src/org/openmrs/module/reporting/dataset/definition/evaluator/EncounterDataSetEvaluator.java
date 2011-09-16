@@ -18,65 +18,74 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
+import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
-import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.definition.SingleColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.service.DataSetColumnDefinitionService;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.RowPerEncounterDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
+import org.openmrs.module.reporting.query.QueryUtil;
+import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.openmrs.module.reporting.query.encounter.definition.AllEncounterQuery;
+import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
 
 /**
- * The logic that evaluates a {@link RowPerEncounterDataSetDefinition} and produces an {@link DataSet}
+ * The logic that evaluates a {@link EncounterDataSetDefinition} and produces an {@link DataSet}
  */
-@Handler(supports=RowPerEncounterDataSetDefinition.class)
-public class RowPerEncounterDataSetEvaluator implements DataSetEvaluator {
+@Handler(supports=EncounterDataSetDefinition.class)
+public class EncounterDataSetEvaluator implements DataSetEvaluator {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
 	/**
 	 * Public constructor
 	 */
-	public RowPerEncounterDataSetEvaluator() { }
+	public EncounterDataSetEvaluator() { }
 	
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 		
-		RowPerEncounterDataSetDefinition dsd = (RowPerEncounterDataSetDefinition) dataSetDefinition;
+		EncounterDataSetDefinition dsd = (EncounterDataSetDefinition) dataSetDefinition;
 		DataSetColumnDefinitionService service = Context.getService(DataSetColumnDefinitionService.class);
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		
 		RowPerObjectDataSet dataSet = new RowPerObjectDataSet(dsd, context);
 		
 		// Construct an EncounterEvaluationContext based on the encounter filter
-		EncounterQueryResult r = null;
-		if (dsd.getEncounterFilter() != null) {
-			r = Context.getService(EncounterQueryService.class).evaluate(dsd.getEncounterFilter(), context);
+		EncounterIdSet r = null;
+		if (dsd.getRowFilters() != null) {
+			for (Mapped<? extends EncounterQuery> q : dsd.getRowFilters()) {
+				EncounterIdSet s = Context.getService(EncounterQueryService.class).evaluate(q, context);
+				r = QueryUtil.intersectNonNull(r, s);
+			}
 		}
-		else {
+		if (r == null) {
 			r = Context.getService(EncounterQueryService.class).evaluate(new AllEncounterQuery(), context);
 		}
 		EncounterEvaluationContext eec = new EncounterEvaluationContext(context, r);
 
 		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
-		for (Mapped<? extends ColumnDefinition> mappedDef : dsd.getColumnDefinitions()) {
+		for (ColumnDefinition cd : dsd.getColumnDefinitions()) {
 			
-			EvaluatedColumnDefinition evaluatedColumnDef = service.evaluate(mappedDef, eec);
-			ColumnDefinition cd = evaluatedColumnDef.getDefinition();
-			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), cd.getDataType()); // TODO: Support One-Many column definition to column
+			Mapped<? extends EncounterDataDefinition> dataDef = (Mapped<? extends EncounterDataDefinition>) ((SingleColumnDefinition)cd).getDataDefinition();
+			EvaluatedEncounterData data = Context.getService(EncounterDataService.class).evaluate(dataDef, eec);
+			
+			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), dataDef.getParameterizable().getDataType()); // TODO: Support One-Many column definition to column
 			
 			for (Integer id : r.getMemberIds()) {
-				dataSet.addColumnValue(id, column, evaluatedColumnDef.getColumnValues().get(id));
+				dataSet.addColumnValue(id, column, data.getData().get(id));
 			}
 		}
 

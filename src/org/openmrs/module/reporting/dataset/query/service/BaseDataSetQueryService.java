@@ -15,13 +15,11 @@ package org.openmrs.module.reporting.dataset.query.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsObject;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
-import org.openmrs.module.reporting.dataset.column.definition.JoinColumnDefinition;
 import org.openmrs.module.reporting.dataset.query.service.db.DataSetQueryDAO;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
@@ -50,12 +48,11 @@ public class BaseDataSetQueryService implements DataSetQueryService {
 	}
 	
 	/** 
-	 * @see DataSetQueryService#convertColumn(DataSetColumn, JoinColumnDefinition)
-	 */
-	public EvaluatedColumnDefinition convertColumn(EvaluatedColumnDefinition originalColumn, JoinColumnDefinition<?> joinColumnDefinition) {
-		return dao.convertColumn(originalColumn, joinColumnDefinition);
+	 * @see DataSetQueryService#convertData()
+	*/
+	public Map<Integer, Integer> convertData(Class<?> fromType, String fromJoin, Set<Integer> fromIds, Class<?> toType, String toJoin, Set<Integer> toIds) {
+		return dao.convertData(fromType, fromJoin, fromIds, toType, toJoin, toIds);
 	}
-
 	
 	//***** PROPERTY ACCESS *****
 

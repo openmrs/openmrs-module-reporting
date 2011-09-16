@@ -15,10 +15,9 @@ package org.openmrs.module.reporting.dataset.query.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openmrs.OpenmrsObject;
-import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
-import org.openmrs.module.reporting.dataset.column.definition.JoinColumnDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +38,7 @@ public interface DataSetQueryService {
 	public Map<Integer, Object> getPropertyValues(Class<? extends OpenmrsObject> type, String property, EvaluationContext context);
 
 	/** 
-	 * @return a EvaluatedColumnDefinition converted from one type to another
-	 */
-	public EvaluatedColumnDefinition convertColumn(EvaluatedColumnDefinition originalColumn, JoinColumnDefinition<?> joinColumnDefinition);
-
+	 * @return a Set<Integer> given passed data
+	*/	 
+	public Map<Integer, Integer> convertData(Class<?> fromType, String fromJoin, Set<Integer> fromIds, Class<?> toType, String toJoin, Set<Integer> toIds);
 }

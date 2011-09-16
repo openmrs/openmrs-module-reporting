@@ -15,8 +15,6 @@ package org.openmrs.module.reporting.query.person.evaluator;
 
 import junit.framework.Assert;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
@@ -31,8 +29,11 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  * Test the evaluation of the SqlPersonQuery
  */
 public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
-
-	protected static Log log = LogFactory.getLog(SqlPersonQueryEvaluatorTest.class);
+	
+	@Before
+	public void setup() throws Exception {
+		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
+	}
 	
 	@Test
 	public void evaluate_shouldEvaluateASQLQueryIntoPersonQuery() throws Exception {
@@ -63,10 +64,5 @@ public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest 
 	
 	public PersonQueryResult evaluate(SqlPersonQuery definition, EvaluationContext context) throws Exception {
 		return Context.getService(PersonQueryService.class).evaluate(definition, context);
-	}
-	
-	@Before
-	public void setup() throws Exception {
-		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
 	}
 }

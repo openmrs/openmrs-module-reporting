@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,8 +40,6 @@ import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.EvaluatedColumnDefinition;
-import org.openmrs.module.reporting.dataset.column.definition.JoinColumnDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
@@ -129,44 +128,45 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 	
 	/** 
 	 * @see DataSetQueryDAO#convertColumn(DataSetColumn, JoinColumnDefinition)
-	 */
-	public EvaluatedColumnDefinition convertColumn(EvaluatedColumnDefinition originalColumn, JoinColumnDefinition<?> joinColumnDefinition) {
+	*/
+	public Map<Integer, Integer> convertData(Class<?> fromType, String fromJoin, Set<Integer> fromIds, Class<?> toType, String toJoin, Set<Integer> toIds) {	
+
+		ClassMetadata fromMetadata = sessionFactory.getClassMetadata(fromType);
+		String fromIdProperty = (Patient.class.isAssignableFrom(fromType) ? "patientId" : fromMetadata.getIdentifierPropertyName());
+		String fromEntity = fromType.getSimpleName();
+		String fromAlias = fromEntity.toLowerCase();
 		
-		Class<? extends OpenmrsData> fromType = joinColumnDefinition.getColumnDefinition().getBaseType();
-		Class<? extends OpenmrsData> toType = joinColumnDefinition.getBaseType();
-		
-		if (originalColumn == null || originalColumn.getColumnValues().isEmpty() || fromType.equals(toType)) {
-			return originalColumn;
-		}
-		
-		String initialEntity = fromType.getSimpleName();
-		String initialAlias = initialEntity.toLowerCase();
-		String initialIdProperty = joinColumnDefinition.getColumnDefinition().getIdProperty();
-		
-		String newEntity = toType.getSimpleName();
-		String newAlias = newEntity.toLowerCase();
-		String newIdProperty = joinColumnDefinition.getIdProperty();
-		String joinProperty = joinColumnDefinition.getJoinProperty();
-		
+		ClassMetadata toMetadata = sessionFactory.getClassMetadata(toType);
+		String toIdProperty = toMetadata.getIdentifierPropertyName();
+		String toEntity = toType.getSimpleName();
+		String toAlias = toEntity.toLowerCase();
+
 		StringBuilder hql = new StringBuilder();
-		hql.append("select 	" + newAlias + "." + newIdProperty + ", " + initialAlias + "." + initialIdProperty + " ");
-		hql.append("from	" + initialEntity + " " + initialAlias + ", " + newEntity + " " + newAlias + " ");
-		hql.append("where 	" + newAlias + "." + joinProperty + " = " + initialAlias + " ");
-		hql.append("and 	" + initialAlias + "." + initialIdProperty + " in (:initialIds)");
+		hql.append("select 	" + toAlias + "." + toIdProperty + ", " + fromAlias + "." + fromIdProperty + " ");
+		hql.append("from	" + fromEntity + " " + fromAlias + ", " + toEntity + " " + toAlias + " ");
+		hql.append("where 	" + fromAlias + "." + fromJoin + " = " + toAlias + "." + toJoin + " ");
+		if (fromIds != null) {
+			hql.append("and " + fromAlias + "." + fromIdProperty + " in (:fromIds) ");
+		}
+		if (toIds != null) {
+			hql.append("and " + toAlias + "." + toIdProperty + " in (:toIds) ");
+		}
 		
 		Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
-		query.setParameterList("initialIds", originalColumn.getColumnValues().keySet());
 		
-		Map<Integer, Object> columnValues = new HashMap<Integer, Object>();
+		if (fromIds != null) {
+			query.setParameterList("fromIds", fromIds);
+		}
+		if (toIds != null) {
+			query.setParameterList("toIds", toIds);
+		}
+		
+		Map<Integer, Integer> m = new HashMap<Integer, Integer>();
 		for (Object o : query.list()) {
 			Object[] vals = (Object[]) o;
-			Integer newId = (Integer) vals[0];
-			Integer initialId = (Integer) vals[1];
-			columnValues.put(newId, originalColumn.getColumnValues().get(initialId));
+			m.put((Integer)vals[0], (Integer)vals[1]);
 		}
-		originalColumn.setColumnValues(columnValues);
-
-		return originalColumn;
+		return m;
 	}
 	
 	//***** PROPERTY ACCESS *****
