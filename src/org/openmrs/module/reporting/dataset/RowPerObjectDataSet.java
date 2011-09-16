@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
@@ -14,7 +14,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  */
 public class RowPerObjectDataSet implements DataSet {
     
-    private RowPerObjectDataSetDefinition<?> definition;
+    private DataSetDefinition definition;
     private EvaluationContext context;
     private SimpleDataSetMetaData metaData = new SimpleDataSetMetaData();
     private Map<Integer, DataSetRow> rows;
@@ -28,7 +28,7 @@ public class RowPerObjectDataSet implements DataSet {
      * @param definition
      * @param evaluationContext
      */
-    public RowPerObjectDataSet(RowPerObjectDataSetDefinition<?> definition, EvaluationContext evaluationContext) {
+    public RowPerObjectDataSet(DataSetDefinition definition, EvaluationContext evaluationContext) {
         this.definition = definition;
         this.context = evaluationContext;
     }
@@ -50,6 +50,9 @@ public class RowPerObjectDataSet implements DataSet {
     		getRows().put(id, row);
     	}
     	row.addColumnValue(column, columnValue);
+    	if (getMetaData().getColumn(column.getName()) == null) {
+    		getMetaData().addColumn(column);
+    	}
     }
     
     /**
@@ -79,14 +82,14 @@ public class RowPerObjectDataSet implements DataSet {
 	/**
 	 * @return the definition
 	 */
-	public RowPerObjectDataSetDefinition<?> getDefinition() {
+	public DataSetDefinition getDefinition() {
 		return definition;
 	}
 
 	/**
 	 * @param definition the definition to set
 	 */
-	public void setDefinition(RowPerObjectDataSetDefinition<?> definition) {
+	public void setDefinition(DataSetDefinition definition) {
 		this.definition = definition;
 	}
 
