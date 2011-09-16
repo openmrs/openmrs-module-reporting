@@ -11,63 +11,67 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.data.patient.definition;
+package org.openmrs.module.reporting.data.encounter.definition;
 
-import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
- * Logic-Based Data Definition
+ * Adapter class for exposing a Person Data Definition as an Encounter Data Definition
  */
-public class LogicDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
-	
-	public static final long serialVersionUID = 1L;
+public class PersonToEncounterDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 	
 	//***** PROPERTIES *****
 	
-	@ConfigurationProperty
-	private String logicQuery;
-	
-	//***** CONSTRUCTORS *****
+	@ConfigurationProperty(required=true)
+	private PersonDataDefinition definition;
 	
 	/**
 	 * Default Constructor
 	 */
-	public LogicDataDefinition() {
+	public PersonToEncounterDataDefinition() {
 		super();
+	}
+	
+	/**
+	 * Default Constructor
+	 */
+	public PersonToEncounterDataDefinition(PersonDataDefinition definition) {
+		this.definition = definition;
 	}
 	
 	/**
 	 * Constructor to populate name only
 	 */
-	public LogicDataDefinition(String name) {
+	public PersonToEncounterDataDefinition(String name, PersonDataDefinition definition) {
 		super(name);
+		this.definition = definition;
 	}
-	
+
 	//***** INSTANCE METHODS *****
 	
 	/** 
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
-		return Result.class;
+		return definition.getDataType();
 	}
 	
 	//***** PROPERTY ACCESS *****
 
 	/**
-	 * @return the logicQuery
+	 * @return the definition
 	 */
-	public String getLogicQuery() {
-		return logicQuery;
+	public PersonDataDefinition getDefinition() {
+		return definition;
 	}
 
 	/**
-	 * @param logicQuery the logicQuery to set
+	 * @param definition the definition to set
 	 */
-	public void setLogicQuery(String logicQuery) {
-		this.logicQuery = logicQuery;
+	public void setDefinition(PersonDataDefinition definition) {
+		this.definition = definition;
 	}
 }

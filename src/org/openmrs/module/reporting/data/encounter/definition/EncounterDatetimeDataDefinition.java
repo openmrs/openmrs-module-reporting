@@ -13,12 +13,38 @@
  */
 package org.openmrs.module.reporting.data.encounter.definition;
 
+import java.util.Date;
+
+import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
- * Encounter Data Definition Interface
+ * Encounter Date Time Column
  */
-public interface EncounterDataDefinition extends DataDefinition {
-    
+public class EncounterDatetimeDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+	
+	public static final long serialVersionUID = 1L;
+	
+	/**
+	 * Default Constructor
+	 */
+	public EncounterDatetimeDataDefinition() {
+		super();
+	}
+	
+	/**
+	 * Constructor to populate name only
+	 */
+	public EncounterDatetimeDataDefinition(String name) {
+		super(name);
+	}
 
+	//***** INSTANCE METHODS *****
+	
+	/** 
+	 * @see DataDefinition#getDataType()
+	 */
+	public Class<?> getDataType() {
+		return Date.class;
+	}
 }

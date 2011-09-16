@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.data.patient.definition;
 
-import org.openmrs.Patient;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -22,7 +21,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Adapter class for exposing a Person Data Definition as a Patient Data Definition
  */
-public class PersonToPatientDataDefinition extends BaseDataDefinition<Patient> implements PatientDataDefinition {
+public class PersonToPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	//***** PROPERTIES *****
 	

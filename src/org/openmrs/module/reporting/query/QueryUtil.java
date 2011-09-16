@@ -37,13 +37,14 @@ public class QueryUtil {
 	 * @return an IdSet that contains only those members that exist in all passed sets
 	 * if any of the passed sets are null, they are ignored
 	 */
-	public static <T extends OpenmrsObject> IdSet<T> intersectNonNull(IdSet<T>... sets) {
-		IdSet<T> ret = null;
+	@SuppressWarnings("unchecked")
+	public static <T extends IdSet<?>> T intersectNonNull(T... sets) {
+		T ret = null;
 		if (sets != null && sets.length > 0) {
 			for (int i=0; i<sets.length; i++) {
 				if (sets[i] != null) {
 					if (ret == null) {
-						ret = sets[0].clone();
+						ret = (T) sets[0].clone();
 					}
 					else {
 						ret.getMemberIds().retainAll(sets[i].getMemberIds());

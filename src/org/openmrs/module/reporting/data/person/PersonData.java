@@ -13,13 +13,12 @@
  */
 package org.openmrs.module.reporting.data.person;
 
-import org.openmrs.Person;
 import org.openmrs.module.reporting.data.BaseData;
 
 /**
- * Patient Data Implementation
+ * Person Data Implementation
  */
-public class PersonData extends BaseData<Person> {
+public class PersonData extends BaseData {
 
 	//***** CONSTRUCTORS *****
 	

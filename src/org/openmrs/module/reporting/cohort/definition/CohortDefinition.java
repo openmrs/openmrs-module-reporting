@@ -13,12 +13,13 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
+import org.openmrs.Patient;
 import org.openmrs.module.reporting.query.Query;
 
 /**
  * Represents a search strategy for arriving at a cohort.<br/>
  * You evaluate a CohortDefinition using CohortEvaluator
  */
-public interface CohortDefinition extends Query  {
+public interface CohortDefinition extends Query<Patient>  {
 	
 }

@@ -15,13 +15,13 @@ package org.openmrs.module.reporting.query.encounter;
 
 import java.util.Set;
 
-import org.openmrs.Obs;
+import org.openmrs.Encounter;
 import org.openmrs.module.reporting.query.BaseIdSet;
 
 /**
  * A Set of Encounter Ids
  */
-public class EncounterIdSet extends BaseIdSet<Obs> {
+public class EncounterIdSet extends BaseIdSet<Encounter> {
     
     public EncounterIdSet() {
     	super();

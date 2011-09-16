@@ -11,63 +11,71 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.data.patient.definition;
+package org.openmrs.module.reporting.data.person.definition;
 
-import org.openmrs.logic.result.Result;
+import org.openmrs.Person;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
- * Logic-Based Data Definition
+ * Person Attribute Column
  */
-public class LogicDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
+public class PersonAttributeDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;
 	
 	//***** PROPERTIES *****
 	
-	@ConfigurationProperty
-	private String logicQuery;
+	private PersonAttributeType type;
 	
-	//***** CONSTRUCTORS *****
+	//****** CONSTRUCTORS ******
 	
 	/**
 	 * Default Constructor
 	 */
-	public LogicDataDefinition() {
+	public PersonAttributeDataDefinition() {
 		super();
 	}
 	
 	/**
-	 * Constructor to populate name only
+	 * Constructor to populate name and type
 	 */
-	public LogicDataDefinition(String name) {
+	public PersonAttributeDataDefinition(String name, PersonAttributeType type) {
 		super(name);
+		this.type = type;
 	}
 	
+	/**
+	 * Constructor to populate type only
+	 */
+	public PersonAttributeDataDefinition(PersonAttributeType type) {
+		this(null, type);
+	}
+
 	//***** INSTANCE METHODS *****
 	
 	/** 
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
-		return Result.class;
+		return PersonAttribute.class;
 	}
 	
 	//***** PROPERTY ACCESS *****
 
 	/**
-	 * @return the logicQuery
+	 * @return the type
 	 */
-	public String getLogicQuery() {
-		return logicQuery;
+	public PersonAttributeType getType() {
+		return type;
 	}
 
 	/**
-	 * @param logicQuery the logicQuery to set
+	 * @param type the type to set
 	 */
-	public void setLogicQuery(String logicQuery) {
-		this.logicQuery = logicQuery;
+	public void setType(PersonAttributeType type) {
+		this.type = type;
 	}
 }

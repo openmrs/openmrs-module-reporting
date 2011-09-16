@@ -11,17 +11,17 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.query.encounter.definition;
+package org.openmrs.module.reporting.query.person.definition;
 
-import org.openmrs.Encounter;
+import org.openmrs.Person;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.query.BaseQuery;
 
 /**
- * Cohort Definition-based Encounter Query
+ * Cohort Definition-based Person Query
  */
-public class PatientEncounterQuery extends BaseQuery<Encounter> implements EncounterQuery {
+public class PatientPersonQuery extends BaseQuery<Person> implements PersonQuery {
 
     public static final long serialVersionUID = 1L;
 	
@@ -33,14 +33,14 @@ public class PatientEncounterQuery extends BaseQuery<Encounter> implements Encou
 	/**
 	 * Default Constructor
 	 */
-	public PatientEncounterQuery() {
+	public PatientPersonQuery() {
 		super();
 	}
 	
 	/**
 	 * Full Constructor
 	 */
-	public PatientEncounterQuery(CohortDefinition patientQuery) { 
+	public PatientPersonQuery(CohortDefinition patientQuery) { 
 		this.patientQuery = patientQuery;
 	}
 
@@ -50,7 +50,7 @@ public class PatientEncounterQuery extends BaseQuery<Encounter> implements Encou
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Encounter Patient Query";
+		return "Patient Person Query";
 	}
 	
 	//***** PROPERTY ACCESS *****

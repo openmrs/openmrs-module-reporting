@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.data.DataDefinition;
 /**
  * Birth Date Data Definition
  */
-public class BirthdateDataDefinition extends BaseDataDefinition<Person> implements PersonDataDefinition {
+public class BirthdateDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;
 	

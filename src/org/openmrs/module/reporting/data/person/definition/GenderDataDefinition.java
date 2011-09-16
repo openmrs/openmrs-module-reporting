@@ -11,63 +11,39 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.data.patient.definition;
+package org.openmrs.module.reporting.data.person.definition;
 
-import org.openmrs.logic.result.Result;
+import org.openmrs.Person;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
- * Logic-Based Data Definition
+ * Gender Column
  */
-public class LogicDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
+public class GenderDataDefinition  extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;
-	
-	//***** PROPERTIES *****
-	
-	@ConfigurationProperty
-	private String logicQuery;
-	
-	//***** CONSTRUCTORS *****
 	
 	/**
 	 * Default Constructor
 	 */
-	public LogicDataDefinition() {
+	public GenderDataDefinition() {
 		super();
 	}
 	
 	/**
 	 * Constructor to populate name only
 	 */
-	public LogicDataDefinition(String name) {
+	public GenderDataDefinition(String name) {
 		super(name);
 	}
-	
+
 	//***** INSTANCE METHODS *****
 	
 	/** 
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
-		return Result.class;
-	}
-	
-	//***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the logicQuery
-	 */
-	public String getLogicQuery() {
-		return logicQuery;
-	}
-
-	/**
-	 * @param logicQuery the logicQuery to set
-	 */
-	public void setLogicQuery(String logicQuery) {
-		this.logicQuery = logicQuery;
+		return String.class;
 	}
 }

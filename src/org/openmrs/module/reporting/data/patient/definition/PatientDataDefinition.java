@@ -13,12 +13,11 @@
  */
 package org.openmrs.module.reporting.data.patient.definition;
 
-import org.openmrs.Patient;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
  * Patient Data Definition Interface
  */
-public interface PatientDataDefinition extends DataDefinition<Patient> {
+public interface PatientDataDefinition extends DataDefinition {
     
 }

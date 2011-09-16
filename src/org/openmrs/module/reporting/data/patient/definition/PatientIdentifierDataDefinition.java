@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.data.patient.definition;
 
-import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -26,7 +25,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
  * and/or showing compound results (eg. the location and identifier value for each identifier).
  * These might be different definition classes or they might be configuration options on this one...TBD
  */
-public class PatientIdentifierDataDefinition extends BaseDataDefinition<Patient> implements PatientDataDefinition {
+public class PatientIdentifierDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	//***** PROPERTIES *****
 	

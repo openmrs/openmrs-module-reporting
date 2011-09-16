@@ -13,11 +13,9 @@
  */
 package org.openmrs.module.reporting.data;
 
-import org.openmrs.OpenmrsObject;
-
 /**
  * Base Data Interface
  */
-public interface Data<T extends OpenmrsObject> {
+public interface Data {
 
 }

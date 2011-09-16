@@ -13,13 +13,12 @@
  */
 package org.openmrs.module.reporting.data.encounter;
 
-import org.openmrs.Encounter;
 import org.openmrs.module.reporting.data.BaseData;
 
 /**
  * Encounter Data Implementation
  */
-public class EncounterData extends BaseData<Encounter> {
+public class EncounterData extends BaseData {
 
     //***** CONSTRUCTORS *****
     

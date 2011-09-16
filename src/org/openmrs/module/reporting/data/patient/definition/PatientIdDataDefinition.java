@@ -13,14 +13,13 @@
  */
 package org.openmrs.module.reporting.data.patient.definition;
 
-import org.openmrs.Patient;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
  * Patient ID Data Definition
  */
-public class PatientIdDataDefinition extends BaseDataDefinition<Patient> implements PatientDataDefinition {
+public class PatientIdDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	public static final long serialVersionUID = 1L;
 	

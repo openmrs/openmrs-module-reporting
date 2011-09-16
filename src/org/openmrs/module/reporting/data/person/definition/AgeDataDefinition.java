@@ -11,63 +11,62 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.data.patient.definition;
+package org.openmrs.module.reporting.data.person.definition;
 
-import org.openmrs.logic.result.Result;
+import java.util.Date;
+
+import org.openmrs.Person;
+import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
- * Logic-Based Data Definition
+ * Age Column
  */
-public class LogicDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
+public class AgeDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;
+
+	//****** PROPERTIES ******
 	
-	//***** PROPERTIES *****
-	
-	@ConfigurationProperty
-	private String logicQuery;
-	
-	//***** CONSTRUCTORS *****
+	@ConfigurationProperty(required=false)
+	private Date effectiveDate;
 	
 	/**
 	 * Default Constructor
 	 */
-	public LogicDataDefinition() {
+	public AgeDataDefinition() {
 		super();
 	}
 	
 	/**
 	 * Constructor to populate name only
 	 */
-	public LogicDataDefinition(String name) {
+	public AgeDataDefinition(String name) {
 		super(name);
 	}
-	
+
 	//***** INSTANCE METHODS *****
 	
 	/** 
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
-		return Result.class;
-	}
-	
-	//***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the logicQuery
-	 */
-	public String getLogicQuery() {
-		return logicQuery;
+		return Age.class;
 	}
 
 	/**
-	 * @param logicQuery the logicQuery to set
+	 * @return the effectiveDate
 	 */
-	public void setLogicQuery(String logicQuery) {
-		this.logicQuery = logicQuery;
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	/**
+	 * @param effectiveDate the effectiveDate to set
+	 */
+	public void setEffectiveDate(Date effectiveDate) {
+		this.effectiveDate = effectiveDate;
 	}
 }

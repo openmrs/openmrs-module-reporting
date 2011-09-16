@@ -16,12 +16,10 @@ package org.openmrs.module.reporting.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openmrs.OpenmrsObject;
-
 /**
  * Provides abstract implementation of the Data interface
  */
-public abstract class BaseData<T extends OpenmrsObject> implements Data<T> {
+public abstract class BaseData implements Data {
 	
 	//***** PROPERTIES *****
 	

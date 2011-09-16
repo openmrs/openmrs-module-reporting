@@ -13,12 +13,36 @@
  */
 package org.openmrs.module.reporting.data.encounter.definition;
 
+import org.openmrs.Location;
+import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
- * Encounter Data Definition Interface
+ * Encounter Location Column
  */
-public interface EncounterDataDefinition extends DataDefinition {
-    
-
+public class EncounterLocationDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+	
+	public static final long serialVersionUID = 1L;
+	
+	/**
+	 * Default Constructor
+	 */
+	public EncounterLocationDataDefinition() {
+		super();
+	}
+	
+	/**
+	 * Constructor to populate name only
+	 */
+	public EncounterLocationDataDefinition(String name) {
+		super(name);
+	}
+	//***** INSTANCE METHODS *****
+	
+	/** 
+	 * @see DataDefinition#getDataType()
+	 */
+	public Class<?> getDataType() {
+		return Location.class;
+	}
 }

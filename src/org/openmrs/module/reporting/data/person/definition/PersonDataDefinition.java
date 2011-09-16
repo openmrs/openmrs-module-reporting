@@ -13,12 +13,11 @@
  */
 package org.openmrs.module.reporting.data.person.definition;
 
-import org.openmrs.Person;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
  * Person Data Definition Interface
  */
-public interface PersonDataDefinition extends DataDefinition<Person> {
+public interface PersonDataDefinition extends DataDefinition {
     
 }
