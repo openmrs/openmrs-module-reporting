@@ -13,11 +13,11 @@
  */
 package org.openmrs.module.reporting.data.person.definition;
 
-import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * Person Attribute Column
@@ -28,6 +28,7 @@ public class PersonAttributeDataDefinition extends BaseDataDefinition implements
 	
 	//***** PROPERTIES *****
 	
+	@ConfigurationProperty
 	private PersonAttributeType type;
 	
 	//****** CONSTRUCTORS ******

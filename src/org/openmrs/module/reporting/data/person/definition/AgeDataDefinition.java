@@ -15,7 +15,6 @@ package org.openmrs.module.reporting.data.person.definition;
 
 import java.util.Date;
 
-import org.openmrs.Person;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;

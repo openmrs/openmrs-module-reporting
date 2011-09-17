@@ -14,7 +14,6 @@
 package org.openmrs.module.reporting.data.person.definition;
 
 import org.openmrs.Concept;
-import org.openmrs.Person;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
