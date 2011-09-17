@@ -22,10 +22,13 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingTestUtils;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.column.converter.DateConverter;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -55,12 +58,16 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 		d.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		d.addParameter(new Parameter("endDate", "End Date", Date.class));
 		
-		d.addColumn("Encounter ID", new EncounterIdDataDefinition(), null, null);	// Test a basic encounter data item
+		d.addColumn("ENCOUNTER ID", new EncounterIdDataDefinition(), null, null);	// Test a basic encounter data item
 		d.addColumn("EMR ID", new PatientIdDataDefinition(), null, null); 			// Test a basic patient data item
 		d.addColumn("BIRTHDATE", new BirthdateDataDefinition(), null, null); 		// Test a basic person data item
-		//d.addColumn("Age At Start", new AgeDataDefinition(), "effectiveDate=${startDate}", null);
-		//d.addColumn("Age At End", new AgeDataDefinition(), "effectiveDate=${endDate}", null);
-		//d.addColumn("Encounter Date", new EncounterDatetimeDataDefinition(), null, new DateConverter("dd/MMM/yyyy"));
+		d.addColumn("ENCOUNTER DATE", new EncounterDatetimeDataDefinition(), null, new DateConverter("dd/MMM/yyyy"));  // Test a column with a converter
+		
+		AgeDataDefinition ageOnDateData = new AgeDataDefinition();
+		ageOnDateData.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		
+		d.addColumn("Age At Start", ageOnDateData, "effectiveDate=${startDate}", null); // Test a column with a parameter
+		d.addColumn("Age At End", ageOnDateData, "effectiveDate=${endDate}", null);  // Test a column with a different parameter mapping
 		
 		DataSet dataset = Context.getService(DataSetDefinitionService.class).evaluate(d, context);
 		ReportingTestUtils.printDataSetToConsole(dataset);

@@ -26,7 +26,6 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.SingleColumnDefinition;
-import org.openmrs.module.reporting.dataset.column.service.DataSetColumnDefinitionService;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -58,7 +57,6 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 		
 		EncounterDataSetDefinition dsd = (EncounterDataSetDefinition) dataSetDefinition;
-		DataSetColumnDefinitionService service = Context.getService(DataSetColumnDefinitionService.class);
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		
 		RowPerObjectDataSet dataSet = new RowPerObjectDataSet(dsd, context);
@@ -79,13 +77,18 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
 		for (ColumnDefinition cd : dsd.getColumnDefinitions()) {
 			
-			Mapped<? extends EncounterDataDefinition> dataDef = (Mapped<? extends EncounterDataDefinition>) ((SingleColumnDefinition)cd).getDataDefinition();
+			SingleColumnDefinition scd = (SingleColumnDefinition)cd;
+			Mapped<? extends EncounterDataDefinition> dataDef = (Mapped<? extends EncounterDataDefinition>) scd.getDataDefinition();
 			EvaluatedEncounterData data = Context.getService(EncounterDataService.class).evaluate(dataDef, eec);
 			
 			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), dataDef.getParameterizable().getDataType()); // TODO: Support One-Many column definition to column
 			
 			for (Integer id : r.getMemberIds()) {
-				dataSet.addColumnValue(id, column, data.getData().get(id));
+				Object val = data.getData().get(id);
+				if (scd.getConverter() != null) {
+					val = scd.getConverter().convert(val);
+				}
+				dataSet.addColumnValue(id, column, val);
 			}
 		}
 
