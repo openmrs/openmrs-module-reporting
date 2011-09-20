@@ -11,16 +11,16 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import org.openmrs.Attributable;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.util.OpenmrsClassLoader;
 
 /**
- * Date column converter
+ * Date data converter
  */
-public class AttributeValueConverter implements ColumnConverter {
+public class AttributeValueConverter implements DataConverter {
 	
 	//***** PROPERTIES *****
 	
@@ -40,7 +40,7 @@ public class AttributeValueConverter implements ColumnConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see ColumnConverter#converter(Object)
+	 * @see DataConverter#converter(Object)
 	 * @should convert a serialized attribute value into its hydrated object form
 	 * @should return the passed in value if it is not attributable
 	 */
@@ -62,7 +62,7 @@ public class AttributeValueConverter implements ColumnConverter {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getDataType()
+	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		try {
@@ -74,7 +74,7 @@ public class AttributeValueConverter implements ColumnConverter {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getInputDataType()
+	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return String.class;

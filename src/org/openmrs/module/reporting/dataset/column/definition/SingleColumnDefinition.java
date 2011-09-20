@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.column.converter.ColumnConverter;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -36,7 +36,7 @@ public class SingleColumnDefinition extends BaseColumnDefinition {
     private Mapped<? extends DataDefinition> dataDefinition;
     
 	@ConfigurationProperty
-	private ColumnConverter converter;
+	private DataConverter converter;
     
 	//***** CONSTRUCTORS *****
 	
@@ -64,7 +64,7 @@ public class SingleColumnDefinition extends BaseColumnDefinition {
 	/**
 	 * Constructor to populate all properties
 	 */
-	public SingleColumnDefinition(String name, Mapped<? extends DataDefinition> dataDefinition, ColumnConverter converter) {
+	public SingleColumnDefinition(String name, Mapped<? extends DataDefinition> dataDefinition, DataConverter converter) {
 		super(name);
 		this.dataDefinition = dataDefinition;
 		this.converter = converter;
@@ -73,7 +73,7 @@ public class SingleColumnDefinition extends BaseColumnDefinition {
 	/**
 	 * Constructor to populate name and data definition
 	 */
-	public SingleColumnDefinition(String name, DataDefinition dataDefinition, String mappings, ColumnConverter converter) {
+	public SingleColumnDefinition(String name, DataDefinition dataDefinition, String mappings, DataConverter converter) {
 		this(name, new Mapped<DataDefinition>(dataDefinition, ParameterizableUtil.createParameterMappings(mappings)), converter);
 	}
 	
@@ -111,14 +111,14 @@ public class SingleColumnDefinition extends BaseColumnDefinition {
 	/**
 	 * @return the converter
 	 */
-	public ColumnConverter getConverter() {
+	public DataConverter getConverter() {
 		return converter;
 	}
 
 	/**
 	 * @param converter the converter to set
 	 */
-	public void setConverter(ColumnConverter converter) {
+	public void setConverter(DataConverter converter) {
 		this.converter = converter;
 	}
 }

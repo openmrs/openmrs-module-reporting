@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import java.util.Date;
 
@@ -7,6 +7,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.data.converter.BirthdateToAgeConverter;
 
 public class BirthdateToAgeConverterTest {
 	

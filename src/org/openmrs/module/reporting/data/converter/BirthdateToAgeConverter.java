@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import java.util.Date;
 
@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Converters a Birthdate into an Age
  */
-public class BirthdateToAgeConverter implements ColumnConverter {
+public class BirthdateToAgeConverter implements DataConverter {
 	
 	//***** PROPERTIES *****
 	
@@ -42,7 +42,7 @@ public class BirthdateToAgeConverter implements ColumnConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see ColumnConverter#converter(Object)
+	 * @see DataConverter#converter(Object)
 	 * @should convert a birthdate to an age on the configured date
 	 */
 	public Object convert(Object original) {
@@ -54,14 +54,14 @@ public class BirthdateToAgeConverter implements ColumnConverter {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getDataType()
+	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return Age.class;
 	}
 	
 	/** 
-	 * @see ColumnConverter#getInputDataType()
+	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Date.class;

@@ -17,7 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.definition.SingleColumnDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
@@ -51,6 +57,24 @@ public class PatientDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	public PatientDataSetDefinition(String name) { 
 		super(name);
+	}
+	
+	//***** INSTANCE METHODS *****
+		
+	/**
+	 * Adds a new Column Definition given the passed parameters
+	 */
+	public void addColumn(String name, DataDefinition dataDefinition, String mappings, DataConverter converter) {
+		if (dataDefinition instanceof PatientDataDefinition) {
+			getColumnDefinitions().add(new SingleColumnDefinition(name, dataDefinition, mappings, converter));
+		}
+		else if (dataDefinition instanceof PersonDataDefinition) {
+			PatientDataDefinition pdd = new PersonToPatientDataDefinition((PersonDataDefinition) dataDefinition);
+			getColumnDefinitions().add(new SingleColumnDefinition(name, pdd, mappings, converter));
+		}
+		else {
+			throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
+		}
 	}
 	
     //***** PROPERTY ACCESS *****

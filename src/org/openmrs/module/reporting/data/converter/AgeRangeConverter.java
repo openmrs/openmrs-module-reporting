@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 /**
  * Converts an Age to one of a series of defined Age Ranges
  */
-public class AgeRangeConverter implements ColumnConverter {
+public class AgeRangeConverter implements DataConverter {
 	
 	//***** PROPERTIES *****
 	
@@ -36,7 +36,7 @@ public class AgeRangeConverter implements ColumnConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see ColumnConverter#converter(Object)
+	 * @see DataConverter#converter(Object)
 	 * @should convert an Age to a matching defined Age Range
 	 * @should return null if the Age does not fall within an Age Range
 	 */
@@ -51,14 +51,14 @@ public class AgeRangeConverter implements ColumnConverter {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getInputDataType()
+	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Age.class;
 	}
 	
 	/** 
-	 * @see ColumnConverter#getDataType()
+	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return String.class;

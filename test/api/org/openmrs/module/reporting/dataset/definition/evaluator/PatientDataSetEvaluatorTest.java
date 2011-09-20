@@ -13,12 +13,31 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
+import org.openmrs.Cohort;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingTestUtils;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.data.converter.AgeConverter;
+import org.openmrs.module.reporting.data.converter.DateConverter;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
+import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.test.annotation.ExpectedException;
 
 /**
  * Test the evaluation of the PatientDataSetDefinition
@@ -31,36 +50,48 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void setup() throws Exception {
 		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
 	}
-	
-	/*
+
 	@Test
-	public void evaluate_shouldExportASimpleProperty() throws Exception {
+	public void evaluate_shouldExportPersonData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumnDefinition(new PersonDataColumnDefinition("Sexe", new GenderDataDefinition()));
+		d.addColumn("Sexe", new GenderDataDefinition(), null, null);
 		RowPerObjectDataSet dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
 	}
 	
 	@Test
-	public void evaluate_shouldExportAConvertedProperty() throws Exception {
+	public void evaluate_shouldExportPatientData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumnDefinition(new BirthdateColumnDefinition("birthdate", new DateConverter("dd/MMM/yyyy")));
+		d.addColumn("EMR ID", new PatientIdDataDefinition(), null, null);
+		RowPerObjectDataSet dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
+		Assert.assertEquals(2, dataset.getColumnValue(2, "EMR ID"));
+	}
+	
+	@Test
+	@ExpectedException(IllegalArgumentException.class)
+	public void evaluate_shouldFailToExportEncounterData() throws Exception {
+		PatientDataSetDefinition d = new PatientDataSetDefinition();
+		d.addColumn("Encounter Date", new EncounterDatetimeDataDefinition(), null, null);
+	}
+	
+	@Test
+	public void evaluate_shouldExportConvertedData() throws Exception {
+		PatientDataSetDefinition d = new PatientDataSetDefinition();
+		d.addColumn("birthdate", new BirthdateDataDefinition(), null, new DateConverter("dd/MMM/yyyy"));
 		RowPerObjectDataSet dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals("08/Apr/1975", dataset.getColumnValue(2, "birthdate"));
 	}
 	
 	@Test
-	public void evaluate_shouldExportAnInternalConvertedProperty() throws Exception {
+	public void evaluate_shouldExportParameterizedData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumnDefinition(new PatientIdColumnDefinition("EMR ID"));
+		d.addColumn("EMR ID", new PatientIdDataDefinition(), null, null);
 		
-		AgeColumnDefinition ageAtStart = new AgeColumnDefinition("Age At Start", new AgeConverter());
-		ageAtStart.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-		d.addColumnDefinition(ageAtStart, "effectiveDate=${startDate}");
-
-		AgeColumnDefinition ageAtEnd = new AgeColumnDefinition("Age At End", new AgeConverter());
-		ageAtEnd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-		d.addColumnDefinition(ageAtEnd, "effectiveDate=${endDate}");
+		AgeDataDefinition ageOnDate = new AgeDataDefinition();
+		ageOnDate.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		
+		d.addColumn("Age At Start", ageOnDate, "effectiveDate=${startDate}", new AgeConverter());
+		d.addColumn("Age At End", ageOnDate, "effectiveDate=${endDate}", new AgeConverter());
 		
 		RowPerObjectDataSet dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals(35, dataset.getColumnValue(2, "Age At Start"));
@@ -68,13 +99,11 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		ReportingTestUtils.printDataSetToConsole(dataset);
 	}
 	
-		@Test
-	public void evaluate_shouldEvaluateDataSetDefinition() throws Exception {
+	@Test
+	public void evaluate_shouldEvaluateAgainstALimitedPatientSet() throws Exception {
 		
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumnDefinition(new PersonIdColumnDefinition("Person ID"));
-		d.addColumnDefinition(new GenderColumnDefinition("Sexe"));
-		d.addColumnDefinition(new AgeColumnDefinition("Age"));
+		d.addColumn("Sexe", new GenderDataDefinition(), null, null);
 		
 		EvaluationContext context = new EvaluationContext();
 		
@@ -91,7 +120,6 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
 		Assert.assertEquals(3, dataset.getRows().size());
 	}
-	*/
 	
 	//***** UTILITY METHODS *****
 	

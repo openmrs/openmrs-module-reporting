@@ -1,9 +1,10 @@
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class PropertyConverterTest extends BaseModuleContextSensitiveTest {

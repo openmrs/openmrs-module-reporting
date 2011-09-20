@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +19,9 @@ import java.util.Map;
 import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
- * String column converter
+ * String data converter
  */
-public class StringConverter implements ColumnConverter  {
+public class StringConverter implements DataConverter  {
 	
 	//***** PROPERTIES *****
 	
@@ -46,7 +46,7 @@ public class StringConverter implements ColumnConverter  {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see ColumnConverter#converter(Object)
+	 * @see DataConverter#converter(Object)
 	 * @should convert an Object to a configured String representation
 	 */
 	public Object convert(Object original) {
@@ -55,14 +55,14 @@ public class StringConverter implements ColumnConverter  {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getDataType()
+	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return String.class;
 	}
 	
 	/** 
-	 * @see ColumnConverter#getInputDataType()
+	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Object.class;

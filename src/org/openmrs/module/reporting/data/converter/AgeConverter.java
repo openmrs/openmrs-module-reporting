@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -19,7 +19,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 /**
  * Converts a Birthdate into an Age
  */
-public class AgeConverter implements ColumnConverter {
+public class AgeConverter implements DataConverter {
 	
 	public static String YEARS = "{y}";
 	public static String MONTHS = "{m}";
@@ -42,7 +42,7 @@ public class AgeConverter implements ColumnConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see ColumnConverter#converter(Object)
+	 * @see DataConverter#converter(Object)
 	 * @should convert an Age to integer years
 	 * @should convert an Age to integer months
 	 * @should convert an Age to a formatted string
@@ -75,7 +75,7 @@ public class AgeConverter implements ColumnConverter {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getDataType()
+	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		String s = ObjectUtil.nvl(getFormat(), YEARS);
@@ -86,7 +86,7 @@ public class AgeConverter implements ColumnConverter {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getInputDataType()
+	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Age.class;

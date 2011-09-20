@@ -11,15 +11,15 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import org.openmrs.PersonName;
 import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
- * Date column converter
+ * Date data converter
  */
-public class PersonNameConverter implements ColumnConverter {
+public class PersonNameConverter implements DataConverter {
 	
 	public static String PREFIX = "{p}";
 	public static String GIVEN_NAME = "{gn}";
@@ -48,7 +48,7 @@ public class PersonNameConverter implements ColumnConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see ColumnConverter#converter(Object)
+	 * @see DataConverter#converter(Object)
 	 * @should convert a Person name into a String using a format expression
 	 */
 	public Object convert(Object original) {
@@ -87,14 +87,14 @@ public class PersonNameConverter implements ColumnConverter {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getDataType()
+	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return String.class;
 	}
 	
 	/** 
-	 * @see ColumnConverter#getInputDataType()
+	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return PersonName.class;

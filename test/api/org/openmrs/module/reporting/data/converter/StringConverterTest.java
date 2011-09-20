@@ -1,8 +1,9 @@
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.openmrs.module.reporting.data.converter.StringConverter;
 
 public class StringConverterTest {
 	

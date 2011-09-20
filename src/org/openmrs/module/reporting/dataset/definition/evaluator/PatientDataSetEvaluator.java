@@ -1,0 +1,96 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+package org.openmrs.module.reporting.dataset.definition.evaluator;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
+import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.service.PatientDataService;
+import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
+import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.definition.SingleColumnDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+
+/**
+ * The logic that evaluates a {@link PatientDataSetDefinition} and produces an {@link DataSet}
+ */
+@Handler(supports=PatientDataSetDefinition.class)
+public class PatientDataSetEvaluator implements DataSetEvaluator {
+
+	protected Log log = LogFactory.getLog(this.getClass());
+
+	/**
+	 * Public constructor
+	 */
+	public PatientDataSetEvaluator() { }
+	
+	/**
+	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
+	 */
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
+		
+		PatientDataSetDefinition dsd = (PatientDataSetDefinition) dataSetDefinition;
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+		
+		RowPerObjectDataSet dataSet = new RowPerObjectDataSet(dsd, context);
+		
+		// Construct an PatientEvaluationContext based on the encounter filter
+		Cohort c = null;
+		if (dsd.getRowFilters() != null) {
+			for (Mapped<? extends CohortDefinition> q : dsd.getRowFilters()) {
+				Cohort s = Context.getService(CohortDefinitionService.class).evaluate(q, context);
+				c = Cohort.intersect(c, s);
+			}
+		}
+		EvaluationContext eec = context.shallowCopy();
+		
+		if (c == null) {
+			c = Context.getService(CohortDefinitionService.class).evaluate(new AllPatientsCohortDefinition(), context);
+		}
+
+		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
+		for (ColumnDefinition cd : dsd.getColumnDefinitions()) {
+			
+			SingleColumnDefinition scd = (SingleColumnDefinition)cd;
+			Mapped<? extends PatientDataDefinition> dataDef = (Mapped<? extends PatientDataDefinition>) scd.getDataDefinition();
+			EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(dataDef, eec);
+			
+			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), dataDef.getParameterizable().getDataType()); // TODO: Support One-Many column definition to column
+			
+			for (Integer id : c.getMemberIds()) {
+				Object val = data.getData().get(id);
+				if (scd.getConverter() != null) {
+					val = scd.getConverter().convert(val);
+				}
+				dataSet.addColumnValue(id, column, val);
+			}
+		}
+
+		return dataSet;
+	}
+}

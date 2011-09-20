@@ -1,4 +1,4 @@
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.data.converter.AttributeValueConverter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class AttributeValueConverterTest extends BaseModuleContextSensitiveTest {

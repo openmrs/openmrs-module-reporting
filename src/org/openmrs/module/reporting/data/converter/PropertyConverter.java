@@ -11,15 +11,15 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
 
 /**
- * Property column converter
+ * Property data converter
  */
-public class PropertyConverter implements ColumnConverter {
+public class PropertyConverter implements DataConverter {
 	
 	//***** PROPERTIES *****
 	
@@ -41,7 +41,7 @@ public class PropertyConverter implements ColumnConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see ColumnConverter#converter(Object)
+	 * @see DataConverter#converter(Object)
 	 * @should convert an Object into it's property whose name is the configured propertyName
 	 * @should convert an Object into it's string representation if not propertyName is configured
 	 */
@@ -57,7 +57,7 @@ public class PropertyConverter implements ColumnConverter {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getDataType()
+	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		if (typeToConvert != null) {
@@ -74,7 +74,7 @@ public class PropertyConverter implements ColumnConverter {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getInputDataType()
+	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Object.class;

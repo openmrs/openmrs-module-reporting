@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -21,9 +21,9 @@ import java.util.Locale;
 import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
- * Date column converter
+ * Date data converter
  */
-public class DateConverter implements ColumnConverter {
+public class DateConverter implements DataConverter {
 	
 	//***** PROPERTIES *****
 	
@@ -55,7 +55,7 @@ public class DateConverter implements ColumnConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see ColumnConverter#converter(Object)
+	 * @see DataConverter#converter(Object)
 	 * @should convert a Date into a String with the passed format
 	 */
 	public String convert(Object original) {
@@ -67,14 +67,14 @@ public class DateConverter implements ColumnConverter {
 	}
 
 	/** 
-	 * @see ColumnConverter#getDataType()
+	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return String.class;
 	}
 	
 	/** 
-	 * @see ColumnConverter#getInputDataType()
+	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Date.class;

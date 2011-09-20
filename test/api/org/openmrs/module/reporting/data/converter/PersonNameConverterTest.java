@@ -1,9 +1,10 @@
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openmrs.PersonName;
+import org.openmrs.module.reporting.data.converter.PersonNameConverter;
 
 public class PersonNameConverterTest {
 	

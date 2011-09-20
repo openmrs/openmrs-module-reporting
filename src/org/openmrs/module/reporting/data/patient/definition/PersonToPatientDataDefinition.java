@@ -13,10 +13,14 @@
  */
 package org.openmrs.module.reporting.data.patient.definition;
 
+import java.util.List;
+
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.evaluation.BaseDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 /**
  * Adapter class for exposing a Person Data Definition as a Patient Data Definition
@@ -57,6 +61,22 @@ public class PersonToPatientDataDefinition extends BaseDataDefinition implements
 	 */
 	public Class<?> getDataType() {
 		return definition.getDataType();
+	}
+	
+	/**
+	 * @see BaseDefinition#getParameter(String)
+	 */
+	@Override
+	public Parameter getParameter(String name) {
+		return definition.getParameter(name);
+	}
+
+	/**
+	 * @see BaseDefinition#getParameters()
+	 */
+	@Override
+	public List<Parameter> getParameters() {
+		return definition.getParameters();
 	}
 	
 	//***** PROPERTY ACCESS *****

@@ -11,12 +11,12 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 /**
- * Base converter, to provide a simple means of formatting Column values
+ * Base converter, to provide a simple means of formatting Data values
  */
-public interface ColumnConverter {
+public interface DataConverter {
 	
 	/**
 	 * Converter the passed object from one datatype to another

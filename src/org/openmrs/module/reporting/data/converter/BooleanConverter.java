@@ -11,12 +11,12 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.dataset.column.converter;
+package org.openmrs.module.reporting.data.converter;
 
 /**
- * Boolean column converter
+ * Boolean data converter
  */
-public class BooleanConverter implements ColumnConverter  {
+public class BooleanConverter implements DataConverter  {
 	
 	//***** PROPERTIES *****
 	
@@ -43,7 +43,7 @@ public class BooleanConverter implements ColumnConverter  {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see ColumnConverter#converter(Object)
+	 * @see DataConverter#converter(Object)
 	 * @should convert a Boolean to a configured text representation
 	 */
 	public Object convert(Object original) {
@@ -58,14 +58,14 @@ public class BooleanConverter implements ColumnConverter  {
 	}
 	
 	/** 
-	 * @see ColumnConverter#getDataType()
+	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return String.class;
 	}
 	
 	/** 
-	 * @see ColumnConverter#getInputDataType()
+	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Boolean.class;

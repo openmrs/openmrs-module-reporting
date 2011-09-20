@@ -17,16 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.PatientToEncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.PersonToEncounterDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.dataset.column.converter.ColumnConverter;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.SingleColumnDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 
 /**
@@ -66,7 +67,7 @@ public class EncounterDataSetDefinition extends BaseDataSetDefinition {
 	/**
 	 * Adds a new Column Definition given the passed parameters
 	 */
-	public void addColumn(String name, DataDefinition dataDefinition, String mappings, ColumnConverter converter) {
+	public void addColumn(String name, DataDefinition dataDefinition, String mappings, DataConverter converter) {
 		if (dataDefinition instanceof EncounterDataDefinition) {
 			getColumnDefinitions().add(new SingleColumnDefinition(name, dataDefinition, mappings, converter));
 		}
@@ -81,6 +82,13 @@ public class EncounterDataSetDefinition extends BaseDataSetDefinition {
 		else {
 			throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
 		}
+	}
+	
+	/**
+	 * Add a new row filter with the passed parameter mappings
+	 */
+	public void addRowFilter(EncounterQuery filter, String mappings) {
+		getRowFilters().add(new Mapped<EncounterQuery>(filter, ParameterizableUtil.createParameterMappings(mappings)));
 	}
 	
     //***** PROPERTY ACCESS *****
