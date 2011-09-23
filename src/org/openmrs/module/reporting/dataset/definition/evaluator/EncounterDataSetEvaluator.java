@@ -23,9 +23,9 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefin
 import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
+import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
-import org.openmrs.module.reporting.dataset.column.definition.SingleColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -59,7 +59,7 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 		EncounterDataSetDefinition dsd = (EncounterDataSetDefinition) dataSetDefinition;
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		
-		RowPerObjectDataSet dataSet = new RowPerObjectDataSet(dsd, context);
+		SimpleDataSet dataSet = new SimpleDataSet(dsd, context);
 		
 		// Construct an EncounterEvaluationContext based on the encounter filter
 		EncounterIdSet r = null;
@@ -77,7 +77,7 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
 		for (ColumnDefinition cd : dsd.getColumnDefinitions()) {
 			
-			SingleColumnDefinition scd = (SingleColumnDefinition)cd;
+			RowPerObjectColumnDefinition scd = (RowPerObjectColumnDefinition)cd;
 			Mapped<? extends EncounterDataDefinition> dataDef = (Mapped<? extends EncounterDataDefinition>) scd.getDataDefinition();
 			EvaluatedEncounterData data = Context.getService(EncounterDataService.class).evaluate(dataDef, eec);
 			

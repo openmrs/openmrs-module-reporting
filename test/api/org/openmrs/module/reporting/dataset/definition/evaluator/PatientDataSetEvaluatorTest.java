@@ -24,18 +24,25 @@ import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingTestUtils;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.SortCriteria.SortDirection;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeConverter;
 import org.openmrs.module.reporting.data.converter.DateConverter;
+import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterTypeDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
+import org.openmrs.module.reporting.dataset.SimpleDataSet;
+import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.query.encounter.definition.AllEncounterQuery;
+import org.openmrs.module.reporting.query.encounter.definition.MostRecentEncounterForPatientQuery;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.test.annotation.ExpectedException;
 
@@ -55,7 +62,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldExportPersonData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
 		d.addColumn("Sexe", new GenderDataDefinition(), null, null);
-		RowPerObjectDataSet dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
+		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
 	}
 	
@@ -63,7 +70,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldExportPatientData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
 		d.addColumn("EMR ID", new PatientIdDataDefinition(), null, null);
-		RowPerObjectDataSet dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
+		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals(2, dataset.getColumnValue(2, "EMR ID"));
 	}
 	
@@ -78,7 +85,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldExportConvertedData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
 		d.addColumn("birthdate", new BirthdateDataDefinition(), null, new DateConverter("dd/MMM/yyyy"));
-		RowPerObjectDataSet dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
+		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals("08/Apr/1975", dataset.getColumnValue(2, "birthdate"));
 	}
 	
@@ -93,7 +100,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		d.addColumn("Age At Start", ageOnDate, "effectiveDate=${startDate}", new AgeConverter());
 		d.addColumn("Age At End", ageOnDate, "effectiveDate=${endDate}", new AgeConverter());
 		
-		RowPerObjectDataSet dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
+		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals(35, dataset.getColumnValue(2, "Age At Start"));
 		Assert.assertEquals(36, dataset.getColumnValue(2, "Age At End"));
 		ReportingTestUtils.printDataSetToConsole(dataset);
@@ -107,7 +114,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		
 		EvaluationContext context = new EvaluationContext();
 		
-		RowPerObjectDataSet dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, context);
+		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, context);
 		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
 		Assert.assertEquals("F", dataset.getColumnValue(7, "Sexe"));
 		Assert.assertNull(dataset.getColumnValue(501, "Sexe"));
@@ -116,9 +123,49 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		Cohort c = new Cohort("2,6,8");
 		context.setBaseCohort(c);
 		
-		dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, context);
+		dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, context);
 		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
 		Assert.assertEquals(3, dataset.getRows().size());
+	}
+	
+	@Test
+	public void evaluate_shouldExportAMultiColumnDataItem() throws Exception {
+		
+		PatientDataSetDefinition d = new PatientDataSetDefinition();
+		d.addColumn("EMR ID", new PatientIdDataDefinition(), null, null);
+
+		EncounterDataSetDefinition encounterDataSet = new EncounterDataSetDefinition();
+		encounterDataSet.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		
+		MostRecentEncounterForPatientQuery encounterQuery = new MostRecentEncounterForPatientQuery();
+		encounterQuery.addParameter(new Parameter("onOrBefore", "On or Before Date", Date.class));
+		encounterDataSet.addRowFilter(encounterQuery, "onOrBefore=${effectiveDate}");
+		
+		encounterDataSet.addColumn("Last Encounter Type", new EncounterTypeDataDefinition(), null, new ObjectFormatter());
+		encounterDataSet.addColumn("Last Encounter Date", new EncounterDatetimeDataDefinition(), null, new DateConverter("yyyy-MM-dd"));
+		
+		d.addColumns("Last Scheduled Visit", encounterDataSet, "effectiveDate=${endDate}", new ObjectFormatter());
+		d.addSortCriteria("Last Encounter Date", SortDirection.ASC);
+		
+		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
+		ReportingTestUtils.printDataSetToConsole(dataset);
+	}
+	
+	@Test
+	public void evaluate_shouldExportAndFlattenAMultiValueDataItem() throws Exception {
+		
+		PatientDataSetDefinition d = new PatientDataSetDefinition();
+		d.addColumn("EMR ID", new PatientIdDataDefinition(), null, null);
+
+		EncounterDataSetDefinition encounterDataSet = new EncounterDataSetDefinition();
+		encounterDataSet.addRowFilter(new AllEncounterQuery(), "");
+		encounterDataSet.addColumn("Encounter Type", new EncounterTypeDataDefinition(), null, new ObjectFormatter());
+		encounterDataSet.addColumn("Encounter Date", new EncounterDatetimeDataDefinition(), null, new DateConverter("yyyy-MM-dd"));
+		
+		d.addColumns("Last 3 Encounters", encounterDataSet, "", null, TimeQualifier.LAST, 3);
+		
+		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
+		ReportingTestUtils.printDataSetToConsole(dataset);
 	}
 	
 	//***** UTILITY METHODS *****

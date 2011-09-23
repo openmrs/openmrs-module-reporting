@@ -73,7 +73,6 @@ public class SimpleDataSetMetaData implements DataSetMetaData {
 	 * @param column the column to add
 	 */
 	public void addColumn(DataSetColumn column) {
-		// TODO: Is this right?  Should we allow multiple columns with the same name?  
 		DataSetColumn existing = getColumn(column.getName());
 		if (existing == null) {
 			getColumns().add(column);
@@ -85,5 +84,12 @@ public class SimpleDataSetMetaData implements DataSetMetaData {
 	 */
 	public void removeColumn(DataSetColumn column) {
 		getColumns().remove(column);
+	}
+	
+	/**
+	 * @param column the column to remove
+	 */
+	public void removeColumn(String columnName) {
+		removeColumn(getColumn(columnName));
 	}
 }

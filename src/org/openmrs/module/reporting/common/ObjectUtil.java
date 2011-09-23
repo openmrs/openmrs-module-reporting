@@ -10,6 +10,7 @@ import org.openmrs.OpenmrsMetadata;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Generically useful utility class for working with Objects
@@ -95,6 +96,22 @@ public class ObjectUtil {
     	Object obj1 = nvl(o1, "");
     	Object obj2 = nvl(o2, "");
     	return obj1.equals(obj2);
+    }
+    
+    /**
+     * @return a null safe comparison between objects
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public static int nullSafeCompare(Object o1, Object o2) {
+    	if (o1 == null) {
+    		return (o2 == null ? 0 : -1);
+    	}
+    	else if (o2 == null) {
+    		return 1;
+    	}
+    	Comparable c1 = (o1 instanceof Comparable ? (Comparable) o1 : o1.toString());
+    	Comparable c2 = (o2 instanceof Comparable ? (Comparable) o2 : o2.toString());
+    	return c1.compareTo(c2);
     }
     
     /**
@@ -248,6 +265,7 @@ public class ObjectUtil {
 	/**
 	 * @return a formatted version of the object suitable for display
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static String format(Object o, String format) {
 		if (o == null) { return ""; }
 		if (o instanceof OpenmrsMetadata) {
@@ -265,6 +283,15 @@ public class ObjectUtil {
 		if (o instanceof Date) {
 			DateFormat df = decode(format, Context.getDateFormat(), new SimpleDateFormat(format));
 			return df.format((Date)o);
+		}
+		if (o instanceof Map) {
+			return toString((Map)o, nvl(format, ","));
+		}
+		if (o instanceof Collection) {
+			return OpenmrsUtil.join((Collection)o, nvl(format, ","));
+		}
+		if (o instanceof Object[]) {
+			return toString(nvl(format, ","), (Object[])o);
 		}
 		return o.toString();
 	}

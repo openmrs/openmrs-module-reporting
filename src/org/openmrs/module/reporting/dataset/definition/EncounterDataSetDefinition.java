@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.dataset.definition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -23,8 +24,7 @@ import org.openmrs.module.reporting.data.encounter.definition.PatientToEncounter
 import org.openmrs.module.reporting.data.encounter.definition.PersonToEncounterDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
-import org.openmrs.module.reporting.dataset.column.definition.SingleColumnDefinition;
+import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -34,7 +34,7 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
  * DataSetDefinition for Producing a DataSet that has one row per Encounter
  * @see DataSetDefinition
  */
-public class EncounterDataSetDefinition extends BaseDataSetDefinition {
+public class EncounterDataSetDefinition extends RowPerObjectDataSetDefinition {
 	
     public static final long serialVersionUID = 1L;
     
@@ -42,9 +42,6 @@ public class EncounterDataSetDefinition extends BaseDataSetDefinition {
     
     @ConfigurationProperty
     private List<Mapped<? extends EncounterQuery>> rowFilters;
-    
-    @ConfigurationProperty
-    private List<ColumnDefinition> columnDefinitions;
  
     //***** CONSTRUCTORS *****
     
@@ -69,21 +66,31 @@ public class EncounterDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	public void addColumn(String name, DataDefinition dataDefinition, String mappings, DataConverter converter) {
 		if (dataDefinition instanceof EncounterDataDefinition) {
-			getColumnDefinitions().add(new SingleColumnDefinition(name, dataDefinition, mappings, converter));
+			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converter));
 		}
 		else if (dataDefinition instanceof PatientDataDefinition) {
 			EncounterDataDefinition edd = new PatientToEncounterDataDefinition((PatientDataDefinition) dataDefinition);
-			getColumnDefinitions().add(new SingleColumnDefinition(name, edd, mappings, converter));
+			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converter));
 		}
 		else if (dataDefinition instanceof PersonDataDefinition) {
 			EncounterDataDefinition edd = new PersonToEncounterDataDefinition((PersonDataDefinition) dataDefinition);
-			getColumnDefinitions().add(new SingleColumnDefinition(name, edd, mappings, converter));
+			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converter));
 		}
 		else {
 			throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
 		}
 	}
-	
+
+	/**
+	 * @see RowPerObjectDataSetDefinition#addColumns(String, RowPerObjectDataSetDefinition, String, DataConverter, TimeQualifier, Integer)
+	 */
+	@Override
+	public void addColumns(String name, RowPerObjectDataSetDefinition dataSetDefinition, String mappings, DataConverter converter, 
+						   TimeQualifier whichValues, Integer numberOfValues) {
+		
+		// TODO Implement this
+	}
+
 	/**
 	 * Add a new row filter with the passed parameter mappings
 	 */
@@ -108,22 +115,5 @@ public class EncounterDataSetDefinition extends BaseDataSetDefinition {
 	 */
 	public void setRowFilters(List<Mapped<? extends EncounterQuery>> rowFilters) {
 		this.rowFilters = rowFilters;
-	}
-
-	/**
-	 * @return the columnDefinitions
-	 */
-	public List<ColumnDefinition> getColumnDefinitions() {
-		if (columnDefinitions == null) {
-			columnDefinitions = new ArrayList<ColumnDefinition>();
-		}
-		return columnDefinitions;
-	}
-
-	/**
-	 * @param columnDefinitions the columnDefinitions to set
-	 */
-	public void setColumnDefinitions(List<ColumnDefinition> columnDefinitions) {
-		this.columnDefinitions = columnDefinitions;
 	}
 }

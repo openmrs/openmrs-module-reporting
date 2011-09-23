@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -27,9 +29,9 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.RowPerObjectDataSet;
-import org.openmrs.module.reporting.dataset.column.definition.ColumnDefinition;
-import org.openmrs.module.reporting.dataset.column.definition.SingleColumnDefinition;
+import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.SimpleDataSet;
+import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -52,12 +54,14 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 */
+	@SuppressWarnings("unchecked")
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 		
 		PatientDataSetDefinition dsd = (PatientDataSetDefinition) dataSetDefinition;
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		
-		RowPerObjectDataSet dataSet = new RowPerObjectDataSet(dsd, context);
+		SimpleDataSet dataSet = new SimpleDataSet(dsd, context);
+		dataSet.setSortCriteria(dsd.getSortCriteria());
 		
 		// Construct an PatientEvaluationContext based on the encounter filter
 		Cohort c = null;
@@ -74,20 +78,31 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		}
 
 		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
-		for (ColumnDefinition cd : dsd.getColumnDefinitions()) {
+		for (RowPerObjectColumnDefinition cd : dsd.getColumnDefinitions()) {
 			
-			SingleColumnDefinition scd = (SingleColumnDefinition)cd;
-			Mapped<? extends PatientDataDefinition> dataDef = (Mapped<? extends PatientDataDefinition>) scd.getDataDefinition();
+			Mapped<? extends PatientDataDefinition> dataDef = (Mapped<? extends PatientDataDefinition>) cd.getDataDefinition();
 			EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(dataDef, eec);
 			
-			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), dataDef.getParameterizable().getDataType()); // TODO: Support One-Many column definition to column
-			
 			for (Integer id : c.getMemberIds()) {
-				Object val = data.getData().get(id);
-				if (scd.getConverter() != null) {
-					val = scd.getConverter().convert(val);
+				for (DataSetColumn column : cd.getDataSetColumns()) {
+					Object val = data.getData().get(id);
+					if (val instanceof DataSetRow) {
+						DataSetRow row = (DataSetRow) val;
+						for (Map.Entry<DataSetColumn, Object> e : row.getColumnValues().entrySet()) {
+							Object entryVal = e.getValue();
+							if (cd.getConverter() != null) {
+								entryVal = cd.getConverter().convert(entryVal);
+							}
+							dataSet.addColumnValue(id, e.getKey(), entryVal);
+						}
+					}
+					else {
+						if (cd.getConverter() != null) {
+							val = cd.getConverter().convert(val);
+						}
+						dataSet.addColumnValue(id, column, val);
+					}
 				}
-				dataSet.addColumnValue(id, column, val);
 			}
 		}
 

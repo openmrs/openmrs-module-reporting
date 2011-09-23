@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.DataSetDataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -24,9 +25,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 
 /**
- * Base column definition
+ * Row Per Object column definition
  */
-public class SingleColumnDefinition extends BaseColumnDefinition {
+public class RowPerObjectColumnDefinition extends BaseColumnDefinition {
 	
 	public static final long serialVersionUID = 1L;
 	
@@ -43,37 +44,37 @@ public class SingleColumnDefinition extends BaseColumnDefinition {
 	/**
 	 * Default Constructor
 	 */
-	public SingleColumnDefinition() {
+	public RowPerObjectColumnDefinition() {
 		super();
 	}
 	
 	/**
 	 * Constructor to populate name only
 	 */
-	public SingleColumnDefinition(String name) {
+	public RowPerObjectColumnDefinition(String name) {
 		super(name);
 	}
 	
 	/**
 	 * Constructor to populate to populate name and data definition
 	 */
-	public SingleColumnDefinition(String name, Mapped<? extends DataDefinition> dataDefinition) {
-		this(name, dataDefinition, null);
+	public RowPerObjectColumnDefinition(String name, Mapped<? extends DataDefinition> dataDefinition) {
+		this(name);
+		this.dataDefinition = dataDefinition;
 	}
 	
 	/**
 	 * Constructor to populate all properties
 	 */
-	public SingleColumnDefinition(String name, Mapped<? extends DataDefinition> dataDefinition, DataConverter converter) {
-		super(name);
-		this.dataDefinition = dataDefinition;
+	public RowPerObjectColumnDefinition(String name, Mapped<? extends DataDefinition> dataDefinition, DataConverter converter) {
+		this(name, dataDefinition);
 		this.converter = converter;
 	}
 	
 	/**
 	 * Constructor to populate name and data definition
 	 */
-	public SingleColumnDefinition(String name, DataDefinition dataDefinition, String mappings, DataConverter converter) {
+	public RowPerObjectColumnDefinition(String name, DataDefinition dataDefinition, String mappings, DataConverter converter) {
 		this(name, new Mapped<DataDefinition>(dataDefinition, ParameterizableUtil.createParameterMappings(mappings)), converter);
 	}
 	
@@ -83,11 +84,18 @@ public class SingleColumnDefinition extends BaseColumnDefinition {
 	public List<DataSetColumn> getDataSetColumns() {
 		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
 		if (dataDefinition != null && dataDefinition.getParameterizable() != null) {
-			Class<?> type = dataDefinition.getParameterizable().getDataType();
-			if (converter != null) {
-				type = converter.getDataType();
+			DataDefinition dataDef = dataDefinition.getParameterizable();
+			if (dataDef instanceof DataSetDataDefinition) {
+				DataSetDataDefinition dataSetDataDef = (DataSetDataDefinition)dataDef;
+				l.addAll(dataSetDataDef.getDataSetColumns());
 			}
-			l.add(new DataSetColumn(getName(), getName(), type));
+			else {
+				Class<?> type = dataDefinition.getParameterizable().getDataType();
+				if (converter != null) {
+					type = converter.getDataType();
+				}
+				l.add(new DataSetColumn(getName(), getName(), type));
+			}
 		}
 		return l;
 	}

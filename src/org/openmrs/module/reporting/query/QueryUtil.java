@@ -44,7 +44,7 @@ public class QueryUtil {
 			for (int i=0; i<sets.length; i++) {
 				if (sets[i] != null) {
 					if (ret == null) {
-						ret = (T) sets[0].clone();
+						ret = (T) sets[i].clone();
 					}
 					else {
 						ret.getMemberIds().retainAll(sets[i].getMemberIds());
