@@ -18,6 +18,7 @@ import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
@@ -36,6 +37,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 	protected static Log log = LogFactory.getLog(SqlObsQueryEvaluatorTest.class);
 
 	@Test
+	@Ignore
 	public void evaluate_shouldEvaluateASQLQueryIntoAnObsQuery() throws Exception {
 		SqlObsQuery d = new SqlObsQuery();
 		d.setQuery("select obs_id from obs where concept_id = 5089");
@@ -44,6 +46,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
+	@Ignore
 	public void evaluate_shouldFilterResultsGivenABaseObsQueryInAnEvaluationContext() throws Exception {
 	
 		EvaluationContext context = new EvaluationContext();
@@ -58,6 +61,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
+	@Ignore
 	public void evaluate_shouldFilterResultsGivenABaseEncounterQueryInAnEvaluationContext() throws Exception {
 		
 		SqlObsQuery d = new SqlObsQuery();

@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *  Base Implementation of the PersonQueryService API
+ *  Base Implementation of the EncounterDataService API
  */
 public class EncounterDataServiceImpl extends BaseDefinitionService<EncounterDataDefinition> implements EncounterDataService {
 

@@ -36,10 +36,12 @@ import org.openmrs.logic.datasource.LogicDataSource;
 import org.openmrs.logic.result.Result;
 import org.openmrs.logic.result.Result.Datatype;
 import org.openmrs.logic.rule.RuleParameterInfo;
+import org.springframework.stereotype.Service;
 
 /**
  * Mock implementation of Logic Service to get around issues using the actual Logic Service implementations
  */
+@Service(value="logicService")
 public class MockLogicService implements LogicService {
 	
 	protected final Log log = LogFactory.getLog(getClass());

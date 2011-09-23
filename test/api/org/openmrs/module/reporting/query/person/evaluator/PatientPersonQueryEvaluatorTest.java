@@ -30,6 +30,9 @@ public class PatientPersonQueryEvaluatorTest extends BaseModuleContextSensitiveT
 		males.setMaleIncluded(true);
 		PatientPersonQuery q = new PatientPersonQuery(males);
 		PersonQueryResult r = Context.getService(PersonQueryService.class).evaluate(q, context);
-		Assert.assertEquals(4, r.getSize());
+		Assert.assertEquals(3, r.getSize());
+		Assert.assertTrue(r.getMemberIds().contains(2));
+		Assert.assertTrue(r.getMemberIds().contains(6));
+		Assert.assertTrue(r.getMemberIds().contains(21));
 	}
 }

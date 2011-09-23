@@ -25,6 +25,7 @@
 	<bean parent="serializedObjectDAO">
 		<property name="supportedTypes">
 			<list>
+				<value>org.openmrs.module.reporting.data.DataDefinition</value>
 				<value>org.openmrs.module.reporting.query.Query</value>
 				<value>org.openmrs.module.reporting.indicator.Indicator</value>
 				<value>org.openmrs.module.reporting.indicator.dimension.Dimension</value>
@@ -265,27 +266,6 @@
 			</list>
 		</property>
 	</bean>
-	<!--  Base Dataset Column Definition Service -->
-	<bean parent="serviceContext">
-		<property name="moduleService">
-			<list merge="true">
-				<value>org.openmrs.module.reporting.dataset.column.service.DataSetColumnDefinitionService</value> 
-				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-					<property name="transactionManager"><ref bean="transactionManager"/></property>
-					<property name="target">
-						<bean class="org.openmrs.module.reporting.dataset.column.service.DataSetColumnDefinitionServiceImpl"></bean>
-					</property>
-					<property name="preInterceptors">
-						<ref bean="serviceInterceptors" />
-					</property>
-					<property name="transactionAttributeSource">
-						<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
-					</property>
-				</bean>		
-			</list>
-		</property>
-	</bean>
-
 
 	<!-- Base Indicator Service -->
 	<bean parent="serviceContext">
