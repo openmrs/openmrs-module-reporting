@@ -79,13 +79,13 @@ public abstract class DataSetDataDefinition extends BaseDataDefinition {
 			if (whichValues != null && numberOfValues != null) {
 				for (int index = 0; index < getNumberOfValues(); index++) {
 					for (DataSetColumn c : definition.getDataSetColumns()) {
-						l.add(new FlattenedDataSetColumn(c, index));
+						l.add(new FlattenedDataSetColumn(c, index, getNumberOfValues() > 1));
 					}
 				}
 			}
 			else {
 				for (DataSetColumn c : definition.getDataSetColumns()) {
-					l.add(new FlattenedDataSetColumn(c, null));
+					l.add(new FlattenedDataSetColumn(c, null, false));
 				}
 			}
 		}
@@ -180,8 +180,8 @@ public abstract class DataSetDataDefinition extends BaseDataDefinition {
 		/**
 		 * Full constructor
 		 */
-		public FlattenedDataSetColumn(DataSetColumn c, Integer index) {
-			String prefix = (index == null ? "" : (index+1) + "_");
+		public FlattenedDataSetColumn(DataSetColumn c, Integer index, boolean useIndexInPrefix) {
+			String prefix = (index == null || !useIndexInPrefix ? "" : (index+1) + "_");
 			setName(prefix + c.getName());
 			setLabel(prefix + c.getLabel());
 			setDataType(c.getDataType());
