@@ -15,9 +15,7 @@ package org.openmrs.module.reporting.evaluation;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,14 +27,13 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterConstants;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.query.IdSet;
 
 /**
  * The EvaluationContext provides the following capabilities: 
  * 	- A baseCohort, i.e. the universe of patients relevant to this context (defaults to all patients) 
  *  - A Set of base filters, which can be used to retrieve the base set of data to operate upon
  *  - An in-memory cache which can be used to persist and retrieve previous Evaluation results. 
- *    Note that this cache is cleared whenever any changes are made to evaluationDate, limit, baseCohort, baseFilters
+ *    Note that this cache is cleared whenever any changes are made to evaluationDate, limit, baseCohort
  *    TODO: We need to be smarter than this.  We will likely lose a lot of good cache data, particular between child and parent evaluations
  *  - Capabilities to add, remove, and retrieve parameter values
  */
@@ -54,9 +51,6 @@ public class EvaluationContext {
 	
 	// Base cohort to use for evaluation
 	private Cohort baseCohort;
-	
-	// Set of base filters to use for evaluation
-	private Set<IdSet<?>> baseFilters;
 	
 	// Parameter values entered by user (or defaulted)
 	private Map<String, Object> parameterValues;
@@ -279,46 +273,6 @@ public class EvaluationContext {
 	public void setBaseCohort(Cohort baseCohort) {
 		clearCache();
 		this.baseCohort = baseCohort;
-	}
-
-	/**
-	 * @return the baseFilters
-	 */
-	public Set<IdSet<?>> getBaseFilters() {
-		if (baseFilters == null) {
-			return new HashSet<IdSet<?>>();
-		}
-		return baseFilters;
-	}
-
-	/**
-	 * @param baseFilters the baseFilters to set
-	 */
-	public void setBaseFilters(Set<IdSet<?>> baseFilters) {
-		clearCache();
-		this.baseFilters = baseFilters;
-	}
-	
-	/**
-	 * @param filter the filter to add to the base filters
-	 */
-	public void addBaseFilter(IdSet<?> filter) {
-		clearCache();
-		getBaseFilters().add(filter);
-	}
-	
-	/**
-	 * @return all base filters of the passed filterType
-	 */
-	@SuppressWarnings("unchecked")
-	public <T extends IdSet<?>> Set<T> getBaseFilters(Class<T> filterType) {
-		Set<T> s = new HashSet<T>();
-		for (IdSet<?> filter : baseFilters) {
-			if (filterType.isAssignableFrom(filter.getClass())) {
-				s.add((T)filter);
-			}
-		}
-		return s;
 	}
 
 	/**

@@ -102,5 +102,11 @@ public class CohortUtil {
     	
     }	
 	
+    /**
+     * @return true if the passed Cohorts have the same members
+     */
+    public static boolean areEqual(Cohort a, Cohort b) {
+    	return (a != null && b != null && a.size() == b.size() && a.size() == Cohort.intersect(a, b).size());
+    }
 	
 }

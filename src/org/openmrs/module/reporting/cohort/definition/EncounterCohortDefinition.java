@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -137,6 +138,16 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
     }
 	
     /**
+     * @param encounterType the encounter type to add to the list
+     */
+    public void addEncounterType(EncounterType encounterType) {
+    	if (encounterTypeList == null) {
+    		encounterTypeList = new ArrayList<EncounterType>();
+    	}
+    	encounterTypeList.add(encounterType);
+    }
+    
+    /**
      * @return the atLeastCount
      */
     public Integer getAtLeastCount() {
@@ -226,6 +237,16 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
     public void setLocationList(List<Location> locationList) {
     	this.locationList = locationList;
     }
+    
+    /**
+     * @param location the location to add to the list
+     */
+    public void addLocation(Location location) {
+    	if (locationList == null) {
+    		locationList = new ArrayList<Location>();
+    	}
+    	locationList.add(location);
+    }
 	
     /**
      * @return the formList
@@ -239,6 +260,16 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
      */
     public void setFormList(List<Form> formList) {
     	this.formList = formList;
+    }
+    
+    /**
+     * @param Form the form to add to the list
+     */
+    public void addForm(Form Form) {
+    	if (formList == null) {
+    		formList = new ArrayList<Form>();
+    	}
+    	formList.add(Form);
     }
 
 	/**

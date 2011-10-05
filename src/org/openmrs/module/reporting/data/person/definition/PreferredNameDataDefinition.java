@@ -13,28 +13,24 @@
  */
 package org.openmrs.module.reporting.data.person.definition;
 
+import org.openmrs.PersonName;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
- * Birth Date Estimated Column
+ * Preferred Name Data
  */
-public class BirthdateEstimatedDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class PreferredNameDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;
+	
+	//****** CONSTRUCTORS ******
 	
 	/**
 	 * Default Constructor
 	 */
-	public BirthdateEstimatedDataDefinition() {
+	public PreferredNameDataDefinition() {
 		super();
-	}
-	
-	/**
-	 * Constructor to populate name only
-	 */
-	public BirthdateEstimatedDataDefinition(String name) {
-		super(name);
 	}
 
 	//***** INSTANCE METHODS *****
@@ -43,6 +39,6 @@ public class BirthdateEstimatedDataDefinition extends BaseDataDefinition impleme
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
-		return Boolean.class;
+		return PersonName.class;
 	}
 }

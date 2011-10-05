@@ -364,6 +364,8 @@
   <person_name person_name_id="9349" preferred="false" person_id="501" given_name="Bruno" middle_name="" family_name="Otterbourg" creator="1" date_created="2008-08-15 15:46:47.0" voided="false" uuid="d7e51684-a077-4039-9d85-8fd599609156"/>
   <person_name person_name_id="9350" preferred="false" person_id="502" given_name="Hippocrates" middle_name="" family_name="of Cos" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="0e69f78c-e3f2-4d9c-933b-d52aa8a669b8"/>
   <person_name person_name_id="9351" preferred="true" person_id="6" given_name="Johnny" middle_name="Test" family_name="Doe" creator="1" date_created="2008-08-18 11:44:02.0" voided="false" void_reason="" uuid="c8fb44f1-b54c-4741-a485-1d435ec8e28f"/>
+  <person_name person_name_id="9352" preferred="false" person_id="6" given_name="JohnnyNonPreferred" middle_name="Test" family_name="Doe" creator="1" date_created="2008-08-18 11:44:02.0" voided="false" void_reason="" uuid="c8fb44f1-b54c-4741-a485-1d435ec8e52f"/>
+
  
   <!-- 3 program --> 
   <program program_id="1" concept_id="9" creator="1" date_created="2008-08-15 16:07:11.0" changed_by="1" date_changed="2008-08-15 17:04:50.0" retired="false" name="HIV Program" description="hiv program" uuid="da4a0391-ba62-4fad-ad66-1e3722d16380"/>

@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.openmrs.Person;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -37,9 +40,20 @@ public class BirthdateDataEvaluator implements PersonDataEvaluator {
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);		
-		Map<Integer, Object> data = qs.getPropertyValues(Person.class, "birthdate", context);
-		c.setData(data);
+		DataSetQueryService qs = Context.getService(DataSetQueryService.class);	
+		Map<Integer, Object> birthdateData = qs.getPropertyValues(Person.class, "birthdate", context);
+		Map<Integer, Object> estimatedData = qs.getPropertyValues(Person.class, "birthdateEstimated", context);
+		Map<Integer, Object> ret = new LinkedHashMap<Integer, Object>();
+		for (Integer pId : birthdateData.keySet()) {
+			Birthdate birthdate = null;
+			Date bd = (Date)birthdateData.get(pId);
+			if (bd != null) {
+				boolean estimated = estimatedData.get(pId) == Boolean.TRUE;
+				birthdate = new Birthdate(bd, estimated);
+			}
+			ret.put(pId, birthdate);
+		}
+		c.setData(ret);
 		return c;
 	}
 }

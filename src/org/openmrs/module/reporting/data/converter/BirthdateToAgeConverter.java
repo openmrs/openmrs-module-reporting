@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.data.converter;
 import java.util.Date;
 
 import org.openmrs.module.reporting.common.Age;
+import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
@@ -46,9 +47,9 @@ public class BirthdateToAgeConverter implements DataConverter {
 	 * @should convert a birthdate to an age on the configured date
 	 */
 	public Object convert(Object original) {
-		Date birthdate = (Date) original;
+		Birthdate birthdate = (Birthdate) original;
 		if (birthdate != null) {
-			return new Age(birthdate, effectiveDate);
+			return new Age(birthdate.getBirthdate(), effectiveDate);
 		}
 		return null;
 	}
@@ -64,7 +65,7 @@ public class BirthdateToAgeConverter implements DataConverter {
 	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
-		return Date.class;
+		return Birthdate.class;
 	}
 	
 	//***** PROPERTY ACCESS *****

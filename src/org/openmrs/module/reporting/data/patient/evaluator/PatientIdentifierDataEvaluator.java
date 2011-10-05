@@ -13,12 +13,18 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
@@ -34,32 +40,74 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
-	 * @should return the preferred identifier of the passed type for each patient in the passed context
+	 * @should return all identifiers of the passed types for each patient in the passed context
 	 */
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		
-		PatientIdentifierDataDefinition def = (PatientIdentifierDataDefinition)definition;
+		PatientIdentifierDataDefinition def = (PatientIdentifierDataDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
-		StringBuilder query = new StringBuilder();
-		Map<String, Object> parameterValues = new HashMap<String, Object>();
-		parameterValues.put("typeId", def.getType().getPatientIdentifierTypeId());
-		
-		query.append("select 	pi.patient.patientId, pi.identifier ");
-		query.append("from 		PatientIdentifier pi ");
-		query.append("where 	pi.voided = false ");
-		query.append("and		pi.identifierType.id = :typeId ");
-		if (context.getBaseCohort() != null) {
-			query.append("and	pi.patient.patientId in (:patientIds) ");
-			parameterValues.put("patientIds", context.getBaseCohort().getMemberIds());
+		if (context.getBaseCohort() == null || context.getBaseCohort().isEmpty() || def.getTypes() == null || def.getTypes().isEmpty()) {
+			return c;
 		}
-		query.append("order by	pi.preferred asc "); // This should make preferred = 1 come up last, which will put it in the return set
 		
-		List<Object> l = Context.getService(DataSetQueryService.class).executeHqlQuery(query.toString(), parameterValues);
-		for (Object o : l) {
-			Object[] row = (Object[])o;
-			c.addData((Integer)row[0], (String)row[1]);
+		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
+		
+		List<Integer> idTypes = new ArrayList<Integer>();
+		for (PatientIdentifierType t : def.getTypes()) {
+			idTypes.add(t.getPatientIdentifierTypeId());
 		}
+	
+		StringBuilder hql = new StringBuilder();
+		hql.append("from 		PatientIdentifier ");
+		hql.append("where 		voided = false ");
+		hql.append("and 		patient.patientId in (:patientIds) ");
+		hql.append("and 		identifierType.patientIdentifierTypeId in (:idTypes) ");
+		hql.append("order by 	preferred asc");
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("patientIds", context.getBaseCohort());
+		m.put("idTypes", idTypes);
+		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
+		
+		ListMap<Integer, PatientIdentifier> patIds = new ListMap<Integer, PatientIdentifier>();
+		for (Object o : queryResult) {
+			PatientIdentifier pi = (PatientIdentifier)o;
+			patIds.put(pi.getPatient().getPatientId(), pi);  // TODO: This is probably inefficient.  Try to improve this with HQL
+		}
+		
+		// Order the resulting patient identifiers by the type of identifiers passed in, followed by preferred/non-preferred
+		PatientIdentifierComparator comparator = new PatientIdentifierComparator(def.getTypes());
+		for (Integer pId : patIds.keySet()) {
+			List<PatientIdentifier> l = patIds.get(pId);
+			Collections.sort(l, comparator);
+			c.addData(pId, l);
+		}
+		
 		return c;
+	}
+	
+	/**
+	 * Helper comparator class for sorting patient identifiers in each List
+	 */
+	protected class PatientIdentifierComparator implements Comparator<PatientIdentifier> {
+		
+		private List<PatientIdentifierType> idTypes;
+		
+		public PatientIdentifierComparator(List<PatientIdentifierType> idTypes) {
+			this.idTypes = idTypes;
+		}
+		
+		/**
+		 * @see Comparator#compare(Object, Object)
+		 */
+		public int compare(PatientIdentifier pi1, PatientIdentifier pi2) {
+			int c1 = idTypes.indexOf(pi1.getIdentifierType());
+			int c2 = idTypes.indexOf(pi2.getIdentifierType());
+			if (c1 != c2) {
+				c1 = pi1.getPreferred() == Boolean.TRUE ? 0 : 1;
+				c2 = pi2.getPreferred() == Boolean.TRUE ? 0 : 1;
+			}
+			return c2-c1;
+		}
 	}
 }

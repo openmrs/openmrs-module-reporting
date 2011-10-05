@@ -13,9 +13,7 @@
  */
 package org.openmrs.module.reporting.data.patient.definition;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -24,32 +22,28 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Patient Identifier Data Definition
  */
-public class PatientIdentifierDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
+public class PreferredIdentifierDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty(required=true)
-	private List<PatientIdentifierType> types;
+	private PatientIdentifierType type;
 	
 	//****** CONSTRUCTORS ******
 	
 	/**
 	 * Default Constructor
 	 */
-	public PatientIdentifierDataDefinition() {
+	public PreferredIdentifierDataDefinition() {
 		super();
 	}
 	
 	/**
 	 * Constructor to populate name and type only
 	 */
-	public PatientIdentifierDataDefinition(String name, PatientIdentifierType... types) {
+	public PreferredIdentifierDataDefinition(String name, PatientIdentifierType type) {
 		super(name);
-		if (types != null) {
-			for (PatientIdentifierType type : types) {
-				addType(type);
-			}
-		}
+		this.type = type;
 	}
 	
 	//***** INSTANCE METHODS *****
@@ -58,32 +52,22 @@ public class PatientIdentifierDataDefinition extends BaseDataDefinition implemen
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
-		return List.class;
+		return PatientIdentifier.class;
 	}
 	
 	//****** PROPERTY ACCESS ******
 
 	/**
-	 * @return the types
+	 * @return the type
 	 */
-	public List<PatientIdentifierType> getTypes() {
-		return types;
+	public PatientIdentifierType getType() {
+		return type;
 	}
 
 	/**
-	 * @param types the types to set
+	 * @param type the type to set
 	 */
-	public void setTypes(List<PatientIdentifierType> types) {
-		this.types = types;
-	}
-	
-	/**
-	 * @param type the type to add
-	 */
-	public void addType(PatientIdentifierType type) {
-		if (types == null) {
-			types = new ArrayList<PatientIdentifierType>();
-		}
-		types.add(type);
+	public void setType(PatientIdentifierType type) {
+		this.type = type;
 	}
 }

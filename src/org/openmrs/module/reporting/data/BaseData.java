@@ -56,4 +56,16 @@ public abstract class BaseData implements Data {
 	public void addData(Integer id, Object value) {
 		getData().put(id, value);
 	}
+	
+	/**
+	 * Sets/replaces all values with the given values
+	 */
+	public void replaceData(Map<Integer, ? extends Object> data) {
+		this.data = null;
+		if (data != null) {
+			for (Integer id : data.keySet()) {
+				addData(id, (Object)data.get(id));
+			}
+		}
+	}
 }

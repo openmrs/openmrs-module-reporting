@@ -13,37 +13,42 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.data.converter.BirthdateToAgeConverter;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
-import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.data.person.service.PersonDataService;
+import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
- * Evaluates a AgeDataDefinition to produce a PersonData
+ * Evaluates a PreferredNameDataDefinition to produce a PersonData
  */
-@Handler(supports=AgeDataDefinition.class, order=50)
-public class AgeDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=PreferredNameDataDefinition.class, order=50)
+public class PreferredNameDataEvaluator implements PersonDataEvaluator {
 
 	/** 
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
-	 * @should return all ages for the given context
+	 * @should return all genders for all persons
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
-		EvaluatedPersonData c = Context.getService(PersonDataService.class).evaluate(new BirthdateDataDefinition(), context);
-		BirthdateToAgeConverter converter = new BirthdateToAgeConverter((Date)context.getParameterValue("effectiveDate"));
-		EvaluatedPersonData ret = new EvaluatedPersonData(definition, context);
-		for (Map.Entry<Integer, Object> e : c.getData().entrySet()) {
-			ret.addData(e.getKey(), converter.convert(e.getValue()));
+		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
+		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
+		
+		String hql = "from PersonName where voided = false and person.personId in (:personIds) order by preferred asc";
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("personIds", context.getBaseCohort());
+		List<Object> queryResult = qs.executeHqlQuery(hql, m);
+		for (Object o : queryResult) {
+			PersonName pn = (PersonName)o;
+			c.addData(pn.getPerson().getPersonId(), pn);  // TODO: This is probably inefficient.  Try to improve this
 		}
-		return ret;
+		return c;
 	}
 }

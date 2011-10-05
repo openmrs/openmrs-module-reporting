@@ -95,17 +95,31 @@ public class ReflectionUtil {
      * @return the property value with the given property name on the given object
      */
 	public static Object getPropertyValue(Object object, String property) {
+		Method m = null;
 		try {
 			String methodName = "get"+StringUtils.capitalize(property);
-			Method m = object.getClass().getMethod(methodName, (Class[]) null);
-			if (m == null) {
-				methodName = "is"+StringUtils.capitalize(property);
+			m = object.getClass().getMethod(methodName, (Class[]) null);
+		}
+		catch (Exception e) {
+			// Handled below 
+		}
+		if (m == null) {
+			try {
+				String methodName = "is"+StringUtils.capitalize(property);
 				m = object.getClass().getMethod(methodName, (Class[]) null);
 			}
+			catch (Exception e) {
+				// Handled below
+			}
+		}
+		if (m == null) {
+			throw new IllegalArgumentException("Unable to access property " + property + " on " + object);
+		}
+		try {
 			return m.invoke(object, new Object[] {});
 		}
 		catch (Exception e) {
-			throw new IllegalArgumentException("Unable to access property " + property + " on " + object, e);
+			throw new IllegalArgumentException("Unable to invoke method " + m + " on " + object);
 		}
 	}
 	

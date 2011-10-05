@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -63,25 +64,28 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		SimpleDataSet dataSet = new SimpleDataSet(dsd, context);
 		dataSet.setSortCriteria(dsd.getSortCriteria());
 		
-		// Construct an PatientEvaluationContext based on the encounter filter
-		Cohort c = null;
+		// Construct a new EvaluationContext based on the passed filters
+		Cohort c = context.getBaseCohort();
 		if (dsd.getRowFilters() != null) {
 			for (Mapped<? extends CohortDefinition> q : dsd.getRowFilters()) {
 				Cohort s = Context.getService(CohortDefinitionService.class).evaluate(q, context);
-				c = Cohort.intersect(c, s);
+				c = CohortUtil.intersectNonNull(c, s);
 			}
 		}
-		EvaluationContext eec = context.shallowCopy();
-		
 		if (c == null) {
 			c = Context.getService(CohortDefinitionService.class).evaluate(new AllPatientsCohortDefinition(), context);
+		}
+		
+		EvaluationContext ec = context.shallowCopy();
+		if (!CohortUtil.areEqual(ec.getBaseCohort(), c)) {
+			ec.setBaseCohort(c);
 		}
 
 		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
 		for (RowPerObjectColumnDefinition cd : dsd.getColumnDefinitions()) {
 			
 			Mapped<? extends PatientDataDefinition> dataDef = (Mapped<? extends PatientDataDefinition>) cd.getDataDefinition();
-			EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(dataDef, eec);
+			EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(dataDef, ec);
 			
 			for (Integer id : c.getMemberIds()) {
 				for (DataSetColumn column : cd.getDataSetColumns()) {

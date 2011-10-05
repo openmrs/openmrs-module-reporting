@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.cohort.definition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.Concept;
@@ -19,7 +20,6 @@ public class CodedObsCohortDefinition extends BaseObsCohortDefinition {
 	List<Concept> valueList;
 	
 	public CodedObsCohortDefinition() { }
-
 	
     /**
      * @return the operator
@@ -28,7 +28,6 @@ public class CodedObsCohortDefinition extends BaseObsCohortDefinition {
     	return operator;
     }
 
-	
     /**
      * @param operator the operator to set
      */
@@ -36,14 +35,12 @@ public class CodedObsCohortDefinition extends BaseObsCohortDefinition {
     	this.operator = operator;
     }
 
-	
     /**
      * @return the valueList
      */
     public List<Concept> getValueList() {
     	return valueList;
     }
-
 	
     /**
      * @param valueList the valueList to set
@@ -52,4 +49,13 @@ public class CodedObsCohortDefinition extends BaseObsCohortDefinition {
     	this.valueList = valueList;
     }
 
+    /**
+     * @param concept the coded value to add to the valueList
+     */
+    public void addValue(Concept concept) {
+    	if (valueList == null) {
+    		valueList = new ArrayList<Concept>();
+    	}
+    	valueList.add(concept);
+    }
 }

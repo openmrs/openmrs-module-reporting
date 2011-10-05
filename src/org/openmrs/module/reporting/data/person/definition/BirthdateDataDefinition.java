@@ -13,8 +13,7 @@
  */
 package org.openmrs.module.reporting.data.person.definition;
 
-import java.util.Date;
-
+import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
@@ -45,6 +44,6 @@ public class BirthdateDataDefinition extends BaseDataDefinition implements Perso
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
-		return Date.class;
+		return Birthdate.class;
 	}
 }

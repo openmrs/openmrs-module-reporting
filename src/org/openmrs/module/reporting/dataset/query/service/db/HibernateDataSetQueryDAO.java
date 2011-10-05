@@ -37,8 +37,6 @@ import org.openmrs.PatientState;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Relationship;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
@@ -82,8 +80,8 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		Map<Integer, Object> ret = new HashMap<Integer, Object>();
 		
 		Cohort baseCohort = context.getBaseCohort();
-		if (baseCohort == null) {
-			baseCohort = Context.getPatientSetService().getAllPatients();
+		if (baseCohort != null && baseCohort.isEmpty()) {
+			return ret;
 		}
 		
 		ClassMetadata metadata = sessionFactory.getClassMetadata(type);
@@ -106,16 +104,18 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		patientJoinProperties.put(PatientIdentifier.class, "patient.patientId");
 		patientJoinProperties.put(Relationship.class, "personA.personId");
 		
-		String patientIdConstraint = "";
+		StringBuilder hql = new StringBuilder();
+		hql.append("select 	" + idPropertyName + ", " + property + " ");
+		hql.append("from	" + entityName + " " + alias + " ");
+		hql.append("where	" + alias + ".voided = false ");
 		for (Class<? extends OpenmrsData> clazz : patientJoinProperties.keySet()) {
-			if (clazz.isAssignableFrom(type)) {
-				patientIdConstraint = " where " + alias + "." + patientJoinProperties.get(clazz) + " in (:ids)";
+			if (clazz.isAssignableFrom(type) && baseCohort != null) {
+				hql.append(" and " + alias + "." + patientJoinProperties.get(clazz) + " in (:ids)");
 			}
 		}
 		
-		String hql = "select " + idPropertyName + ", " + property + " from " + entityName + " " + alias + patientIdConstraint;
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		if(ObjectUtil.notNull(patientIdConstraint)) {
+		Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
+		if(hql.toString().contains(":ids")) {
 			query.setParameterList("ids", baseCohort.getMemberIds());
 		}
 		

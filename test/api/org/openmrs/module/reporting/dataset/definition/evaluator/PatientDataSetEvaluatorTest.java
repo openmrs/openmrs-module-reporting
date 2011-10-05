@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.SortCriteria.SortDirection;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeConverter;
+import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
@@ -84,7 +85,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void evaluate_shouldExportConvertedData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumn("birthdate", new BirthdateDataDefinition(), null, new DateConverter("dd/MMM/yyyy"));
+		d.addColumn("birthdate", new BirthdateDataDefinition(), null, new BirthdateConverter("dd/MMM/yyyy"));
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals("08/Apr/1975", dataset.getColumnValue(2, "birthdate"));
 	}

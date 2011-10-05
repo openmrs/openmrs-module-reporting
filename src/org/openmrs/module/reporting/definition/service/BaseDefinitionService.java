@@ -209,7 +209,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 		
 		// Clone Query and set all properties from the Parameters in the EvaluationContext
 		T clonedDefinition = DefinitionUtil.cloneDefinitionWithContext(definition, context);
-		
+
 		String cacheKey = EvaluationUtil.getCacheKey(clonedDefinition);
 		
 		// Retrieve from cache if possible, otherwise evaluate
@@ -225,6 +225,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 		if (evaluationResult == null) {
 			evaluationResult = evaluator.evaluate(clonedDefinition, context);
 		}
+		
 		return evaluationResult;
 	}
 	

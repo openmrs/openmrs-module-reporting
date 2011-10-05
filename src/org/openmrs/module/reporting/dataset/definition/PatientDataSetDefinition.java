@@ -28,6 +28,7 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 
 /**
  * DataSetDefinition for Producing a DataSet that has one row per Patient
@@ -111,5 +112,19 @@ public class PatientDataSetDefinition extends RowPerObjectDataSetDefinition {
 	 */
 	public void setRowFilters(List<Mapped<? extends CohortDefinition>> rowFilters) {
 		this.rowFilters = rowFilters;
+	}
+	
+	/**
+	 * @param rowFilter the rowFilter to add
+	 */
+	public void addRowFilter(Mapped<? extends CohortDefinition> rowFilter) {
+		getRowFilters().add(rowFilter);
+	}
+	
+	/**
+	 * @param rowFilter the rowFilter to add
+	 */
+	public void addRowFilter(CohortDefinition rowFilter, String parameterMappings) {
+		addRowFilter(new Mapped<CohortDefinition>(rowFilter, ParameterizableUtil.createParameterMappings(parameterMappings)));
 	}
 }
