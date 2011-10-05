@@ -158,6 +158,9 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 				else if (e.getValue() instanceof Date) {
 					replacementValue = e.getValue();
 				}
+				else if (e.getValue() instanceof DataSet) {
+					replacementValue = e.getValue();
+				}
 				else {
 					replacementValue = e.getValue().toString();
 				}
