@@ -40,19 +40,19 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
 	public DataExportDataSetDefinitionPersister() { }
     
 	/**
-     * @see DataSetDefinitionPersister#getDataSetDefinition(Integer)
+     * @see DataSetDefinitionPersister#getDefinition(Integer)
      */
-    public DataSetDefinition getDataSetDefinition(Integer id) {
+    public DataSetDefinition getDefinition(Integer id) {
     	ReportObjectService ros = Context.getService(ReportObjectService.class);
     	DataExportReportObject dataExport = (DataExportReportObject) ros.getReportObject(id);
     	return (dataExport != null) ? new DataExportDataSetDefinition(dataExport) : null;
     }
     
 	/** 
-	 * @see DataSetDefinitionPersister#getDataSetDefinitionByUuid(String)
+	 * @see DataSetDefinitionPersister#getDefinitionByUuid(String)
 	 */
-	public DataSetDefinition getDataSetDefinitionByUuid(String uuid) {	
-    	for(DataSetDefinition dsd : getAllDataSetDefinitions(false)) {
+	public DataSetDefinition getDefinitionByUuid(String uuid) {	
+    	for(DataSetDefinition dsd : getAllDefinitions(false)) {
     		if (dsd.getUuid() != null && dsd.getUuid().equals(uuid)) {
     			return dsd;
     		}
@@ -61,9 +61,9 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
 	}
 
 	/**
-     * @see DataSetDefinitionPersister#getAllDataSetDefinitions(boolean)
+     * @see DataSetDefinitionPersister#getAllDefinitions(boolean)
      */
-    public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {
+    public List<DataSetDefinition> getAllDefinitions(boolean includeRetired) {
     	List <DataSetDefinition> dataSetDefinitions = new Vector<DataSetDefinition>();
     	if (ModuleFactory.getStartedModulesMap().containsKey("reportingcompatibility")) {
 		    ReportObjectService ros = Context.getService(ReportObjectService.class);
@@ -79,9 +79,9 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
     }    
     
 	/**
-	 * @see DataSetDefinitionPersister#getNumberOfDataSetDefinitions(boolean)
+	 * @see DataSetDefinitionPersister#getNumberOfDefinitions(boolean)
 	 */
-	public int getNumberOfDataSetDefinitions(boolean includeRetired) {
+	public int getNumberOfDefinitions(boolean includeRetired) {
 		if (ModuleFactory.getStartedModulesMap().containsKey("reportingcompatibility")) {
 			ReportObjectService ros = Context.getService(ReportObjectService.class);
 		    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");
@@ -91,11 +91,11 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
 	}
     
 	/**
-     * @see DataSetDefinitionPersister#getDataSetDefinitions(String, boolean)
+     * @see DataSetDefinitionPersister#getDefinitions(String, boolean)
      */
-    public List<DataSetDefinition> getDataSetDefinitions(String name, boolean exactMatchOnly) {
+    public List<DataSetDefinition> getDefinitions(String name, boolean exactMatchOnly) {
     	List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();	
-    	for(DataSetDefinition dsd : getAllDataSetDefinitions(false)) {
+    	for(DataSetDefinition dsd : getAllDefinitions(false)) {
     		if (dsd.getName() != null) {
     			if (exactMatchOnly) {
     				if (dsd.getName().equalsIgnoreCase(name)) {
@@ -113,9 +113,9 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
     }
     
 	/**
-     * @see DataSetDefinitionPersister#saveDataSetDefinition(DataSetDefinition)
+     * @see DataSetDefinitionPersister#saveDefinition(DataSetDefinition)
      */
-    public DataSetDefinition saveDataSetDefinition(DataSetDefinition dataSetDefinition) {
+    public DataSetDefinition saveDefinition(DataSetDefinition dataSetDefinition) {
     	DataExportDataSetDefinition dsd = (DataExportDataSetDefinition) dataSetDefinition;
     	ReportObjectService ros = Context.getService(ReportObjectService.class);
     	DataExportReportObject dataExport = (DataExportReportObject) ros.saveReportObject(dsd.getDataExport());
@@ -124,9 +124,9 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
     }
 
 	/**
-     * @see DataSetDefinitionPersister#purgeDataSetDefinition(DataSetDefinition)
+     * @see DataSetDefinitionPersister#purgeDefinition(DataSetDefinition)
      */
-    public void purgeDataSetDefinition(DataSetDefinition dataSetDefinition) {
+    public void purgeDefinition(DataSetDefinition dataSetDefinition) {
     	DataExportDataSetDefinition dsd = (DataExportDataSetDefinition) dataSetDefinition;
     	Context.getService(AdministrationService.class).deleteReportObject(dsd.getDataExport().getId()); 	
     }

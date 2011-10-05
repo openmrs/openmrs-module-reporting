@@ -5,6 +5,7 @@ import java.util.Date;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -25,7 +26,7 @@ public class InStateCohortDefinitionEvaluator implements CohortDefinitionEvaluat
 	 * @should return no patients if none have the given state
 	 * @should return patients in given state on given date
 	 */
-	public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
 		InStateCohortDefinition definition = (InStateCohortDefinition) cohortDefinition;
 		Date onOrAfter = definition.getOnOrAfter();
 		Date onOrBefore = definition.getOnOrBefore();
@@ -33,6 +34,7 @@ public class InStateCohortDefinitionEvaluator implements CohortDefinitionEvaluat
 			onOrAfter = definition.getOnDate();
 			onOrBefore = definition.getOnDate();
 		}
-		return Context.getService(CohortQueryService.class).getPatientsInStates(definition.getStates(), onOrAfter, onOrBefore);
+		Cohort c = Context.getService(CohortQueryService.class).getPatientsInStates(definition.getStates(), onOrAfter, onOrBefore);
+		return new EvaluatedCohort(c, cohortDefinition, context);
 	}	
 }

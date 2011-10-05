@@ -13,10 +13,8 @@
  */
 package org.openmrs.module.reporting.cohort.definition.service;
 
-import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.history.CohortDefinitionSearchHistory;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -41,30 +39,4 @@ public interface CohortDefinitionService extends DefinitionService<CohortDefinit
 	 */
 	@Transactional(readOnly = true)
 	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException;
-	
-	//******* TODO: DO WE REMOVE EVERYTHING BELOW HERE? (MS 3/16/10) ******
-	
-	/**
-	 * Gets the current user's CohortDefinitionSearchHistory, or null if none exists yet  
-	 * @return
-	 * @throws APIException
-	 */
-	@Transactional(readOnly = true)
-	public CohortDefinitionSearchHistory getCurrentUsersCohortDefinitionSearchHistory() throws APIException;
-	
-	/**
-	 * Sets the current user's CohortDefinitionSearchHistory 
-	 * @param history
-	 * @throws APIException
-	 */
-	@Transactional
-	public void setCurrentUsersCohortDefinitionSearchHistory(CohortDefinitionSearchHistory history) throws APIException;
-	
-	/**
-	 * Removes the current user's search history from persisted storage
-	 * 
-	 * @throws APIException
-	 */
-	public void clearCurrentUsersCohortDefinitionSearchHistory() throws APIException;
-	
 }

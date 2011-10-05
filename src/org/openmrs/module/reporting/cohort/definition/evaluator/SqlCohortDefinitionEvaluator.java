@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -44,13 +45,13 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
      * @should support date parameter
      * @should should protect SQL Query Against database modifications
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	SqlCohortDefinition sqlCohortDefinition = (SqlCohortDefinition) cohortDefinition;
     	CohortQueryService cqs = Context.getService(CohortQueryService.class);
     	Cohort c = cqs.executeSqlQuery(sqlCohortDefinition.getQuery(), context.getParameterValues());
     	if (context.getBaseCohort() != null) {
     		c = Cohort.intersect(c, context.getBaseCohort());
     	}
-    	return c;
+    	return new EvaluatedCohort(c, cohortDefinition, context);
     }
 }

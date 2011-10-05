@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -96,6 +97,15 @@ public class PatientStateCohortDefinition extends BaseCohortDefinition {
     	this.states = states;
     }
 
+    /**
+     * @param state the state to add
+     */
+    public void addState(ProgramWorkflowState state) {
+    	if (states == null) {
+    		states = new ArrayList<ProgramWorkflowState>();
+    	}
+    	states.add(state);
+    }
 	
     /**
      * @return the startedOnOrAfter

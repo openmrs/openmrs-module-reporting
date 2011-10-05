@@ -78,6 +78,18 @@ public class DataSetRow {
 		return ret;
 	}
 	
+	/**
+	 * Removes an entire column and all values from a DataSetRow
+	 */
+	public void removeColumn(String columnName) {
+		for (Iterator<DataSetColumn> i = getColumnValues().keySet().iterator(); i.hasNext();) {
+			DataSetColumn c = i.next();
+			if (c.getName().equals(columnName)) {
+				i.remove();
+			}
+		}
+	}
+	
 	//****** PROPERTY ACCESS ******
 
 	/** 

@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -39,11 +40,12 @@ public class AgeCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
      * @should return only patients in the given age range
      * @should only return patients with unknown age if specified
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	AgeCohortDefinition acd = (AgeCohortDefinition) cohortDefinition;
     	CohortQueryService cqs = Context.getService(CohortQueryService.class);
     	
-    	return cqs.getPatientsWithAgeRange(acd.getMinAge(), acd.getMinAgeUnit(), acd.getMaxAge(), acd.getMaxAgeUnit(), 
+    	Cohort c = cqs.getPatientsWithAgeRange(acd.getMinAge(), acd.getMinAgeUnit(), acd.getMaxAge(), acd.getMaxAgeUnit(), 
     									   acd.isUnknownAgeIncluded(), acd.getEffectiveDate());
+    	return new EvaluatedCohort(c, cohortDefinition, context);
     }
 }

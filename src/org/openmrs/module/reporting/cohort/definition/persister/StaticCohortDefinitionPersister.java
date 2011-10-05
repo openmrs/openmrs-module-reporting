@@ -43,9 +43,9 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     //****************
 
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinition(java.lang.Integer)
+     * @see CohortDefinitionPersister#getDefinition(java.lang.Integer)
      */
-    public CohortDefinition getCohortDefinition(Integer id) {
+    public CohortDefinition getDefinition(Integer id) {
     	Cohort c = Context.getCohortService().getCohort(id);
     	if (c != null) {
     		return new StaticCohortDefinition(c);
@@ -54,9 +54,9 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     }
     
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinitionByUuid(java.lang.String)
+     * @see CohortDefinitionPersister#getDefinitionByUuid(java.lang.String)
      */
-    public CohortDefinition getCohortDefinitionByUuid(String uuid) {
+    public CohortDefinition getDefinitionByUuid(String uuid) {
     	Cohort c = Context.getCohortService().getCohortByUuid(uuid);
     	if (c != null) {
     		return new StaticCohortDefinition(c);
@@ -65,9 +65,9 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     }
     
 	/**
-     * @see CohortDefinitionPersister#getAllCohortDefinitions(boolean)
+     * @see CohortDefinitionPersister#getAllDefinitions(boolean)
      */
-    public List<CohortDefinition> getAllCohortDefinitions(boolean includeRetired) {
+    public List<CohortDefinition> getAllDefinitions(boolean includeRetired) {
 		List<CohortDefinition> ret = new Vector<CohortDefinition>();
 		for (Cohort c : Context.getCohortService().getAllCohorts(includeRetired)) {
 			ret.add(new StaticCohortDefinition(c));
@@ -76,16 +76,16 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     }
     
 	/**
-	 * @see CohortDefinitionPersister#getNumberOfCohortDefinitions(boolean)
+	 * @see CohortDefinitionPersister#getNumberOfDefinitions(boolean)
 	 */
-	public int getNumberOfCohortDefinitions(boolean includeRetired) {
+	public int getNumberOfDefinitions(boolean includeRetired) {
 		return Context.getCohortService().getAllCohorts(includeRetired).size();
 	}
 
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)
+     * @see CohortDefinitionPersister#getDefinitionByName(String, boolean)
      */
-    public List<CohortDefinition> getCohortDefinitions(String name, boolean exactMatchOnly) {
+    public List<CohortDefinition> getDefinitions(String name, boolean exactMatchOnly) {
     	List<Cohort> cohorts = new ArrayList<Cohort>();
     	if (exactMatchOnly) {
     		Cohort c = Context.getCohortService().getCohort(name);
@@ -104,9 +104,9 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     }
     
 	/**
-     * @see CohortDefinitionPersister#saveCohortDefinition(CohortDefinition)
+     * @see CohortDefinitionPersister#saveDefinition(CohortDefinition)
      */
-    public CohortDefinition saveCohortDefinition(CohortDefinition cohortDefinition) {
+    public CohortDefinition saveDefinition(CohortDefinition cohortDefinition) {
     	if (cohortDefinition != null) {
 	    	if (cohortDefinition instanceof StaticCohortDefinition) {
 				StaticCohortDefinition def = (StaticCohortDefinition) cohortDefinition;
@@ -121,9 +121,9 @@ public class StaticCohortDefinitionPersister implements CohortDefinitionPersiste
     }
 
 	/**
-     * @see CohortDefinitionPersister#purgeCohortDefinition(CohortDefinition)
+     * @see CohortDefinitionPersister#purgeDefinition(Definition)
      */
-    public void purgeCohortDefinition(CohortDefinition cohortDefinition) {
+    public void purgeDefinition(CohortDefinition cohortDefinition) {
     	if (cohortDefinition instanceof StaticCohortDefinition) {
 			StaticCohortDefinition def = (StaticCohortDefinition) cohortDefinition;
 			Context.getCohortService().purgeCohort(def.getCohort());

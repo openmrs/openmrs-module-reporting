@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.StaticCohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -33,7 +34,8 @@ public class StaticCohortDefinitionEvaluator implements CohortDefinitionEvaluato
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	return ((StaticCohortDefinition) cohortDefinition).getCohort();
+    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+    	Cohort c = ((StaticCohortDefinition) cohortDefinition).getCohort();
+    	return new EvaluatedCohort(c, cohortDefinition, context);
     }
 }

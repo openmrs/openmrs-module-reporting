@@ -21,6 +21,7 @@ import java.util.Map;
 import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
@@ -36,9 +37,9 @@ public class CohortDefinitionDimension extends BaseDefinition implements CohortD
 	//***** PROPERTIES *****
 	
 	private Integer id;
+	
+	@ConfigurationProperty
 	private Map<String, Mapped<CohortDefinition>> cohortDefinitions;
-	
-	
     
     /**
 	 * @see Object#toString()

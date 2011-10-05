@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.cohort.definition;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -75,6 +76,16 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
      */
     public void setPrograms(List<Program> programs) {
     	this.programs = programs;
+    }
+    
+    /**
+     * @param program the program to add
+     */
+    public void addProgram(Program program) {
+    	if (programs == null) {
+    		programs = new ArrayList<Program>();
+    	}
+    	programs.add(program);
     }
 	
     /**

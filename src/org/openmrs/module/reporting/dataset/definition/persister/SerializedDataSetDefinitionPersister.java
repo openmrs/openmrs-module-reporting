@@ -13,12 +13,9 @@
  */
 package org.openmrs.module.reporting.dataset.definition.persister;
 
-import java.util.List;
-
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
+import org.openmrs.module.reporting.definition.persister.SerializedDefinitionPersister;
 
 /**
  * This class returns DataSetDefinitions that have been Serialized to the database
@@ -28,70 +25,15 @@ import org.openmrs.module.reporting.definition.service.SerializedDefinitionServi
  * should specify the order field on the Handler annotation.
  */
 @Handler(supports={DataSetDefinition.class}, order=100)
-public class SerializedDataSetDefinitionPersister implements DataSetDefinitionPersister {
+public class SerializedDataSetDefinitionPersister extends SerializedDefinitionPersister<DataSetDefinition> implements DataSetDefinitionPersister {
 
-    //****************
-    // Constructor
-    //****************
 	private SerializedDataSetDefinitionPersister() { }
-	
-    //****************
-    // Instance methods
-    //****************
-	
+
 	/**
-	 * Utility method that returns the SerializedDefinitionService
+	 * @see SerializedDefinitionPersister#getBaseClass()
 	 */
-	public SerializedDefinitionService getService() {
-		return Context.getService(SerializedDefinitionService.class);
+	@Override
+	public Class<DataSetDefinition> getBaseClass() {
+		return DataSetDefinition.class;
 	}
-
-	/**
-     * @see DataSetDefinitionPersister#getDataSetDefinition(Integer)
-     */
-    public DataSetDefinition getDataSetDefinition(Integer id) {
-    	return getService().getDefinition(DataSetDefinition.class, id);
-    }
-    
-	/**
-     * @see DataSetDefinitionPersister#getDataSetDefinitionByUuid(String)
-     */
-    public DataSetDefinition getDataSetDefinitionByUuid(String uuid) {
-     	return getService().getDefinitionByUuid(DataSetDefinition.class, uuid);
-    }
-
-	/**
-     * @see DataSetDefinitionPersister#getAllDataSetDefinitions(boolean)
-     */
-    public List<DataSetDefinition> getAllDataSetDefinitions(boolean includeRetired) {
-     	return getService().getAllDefinitions(DataSetDefinition.class, includeRetired);
-    }
-    
-	/**
-	 * @see DataSetDefinitionPersister#getNumberOfDataSetDefinitions(boolean)
-	 */
-	public int getNumberOfDataSetDefinitions(boolean includeRetired) {
-    	return getService().getNumberOfDefinitions(DataSetDefinition.class, includeRetired);
-	}
-
-	/**
-     * @see DataSetDefinitionPersister#getDataSetDefinitionByName(String, boolean)
-     */
-    public List<DataSetDefinition> getDataSetDefinitions(String name, boolean exactMatchOnly) {
-    	return getService().getDefinitions(DataSetDefinition.class, name, exactMatchOnly);
-    }
-    
-	/**
-     * @see DataSetDefinitionPersister#saveDataSetDefinition(DataSetDefinition)
-     */
-    public DataSetDefinition saveDataSetDefinition(DataSetDefinition dataSetDefinition) {
-     	return getService().saveDefinition(dataSetDefinition);
-    }
-
-	/**
-     * @see DataSetDefinitionPersister#purgeDataSetDefinition(DataSetDefinition)
-     */
-    public void purgeDataSetDefinition(DataSetDefinition dataSetDefinition) {
-    	getService().purgeDefinition(dataSetDefinition);
-    }
 }

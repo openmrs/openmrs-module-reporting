@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.util.CohortExpressionParser;
@@ -37,10 +38,11 @@ public class CompositionCohortDefinitionEvaluator implements CohortDefinitionEva
      * @throws EvaluationException 
 	 * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
+    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
     	CompositionCohortDefinition composition = (CompositionCohortDefinition) cohortDefinition;
     	try {
-    		return CohortExpressionParser.evaluate(composition, context);
+    		Cohort c = CohortExpressionParser.evaluate(composition, context);
+    		return new EvaluatedCohort(c, cohortDefinition, context);
     	} catch (MissingDependencyException ex) {
     		String name = composition.getName() != null ? composition.getName() : composition.getCompositionString();
     		throw new EvaluationException("sub-query '" + ex.getPropertyThatFailed() + "' of composition '" + name + "'", ex);

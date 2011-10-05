@@ -29,11 +29,13 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 
 /**
- * The EvaluationContext provides the following capabilities: - A baseCohort, i.e. the universe of
- * patients relevant to this context (defaults to all patients) - An in-memory cache which can be
- * used to persist and retrieve objects. Note that this cache is cleared whenever any changes are
- * made to baseCohort or any parameter values. - Capabilities to add, remove, and retrieve parameter
- * values - Capabilities to evaluate parametric expressions, e.g. ${someDateParameterName+30d}
+ * The EvaluationContext provides the following capabilities: 
+ * 	- A baseCohort, i.e. the universe of patients relevant to this context (defaults to all patients) 
+ *  - A Set of base filters, which can be used to retrieve the base set of data to operate upon
+ *  - An in-memory cache which can be used to persist and retrieve previous Evaluation results. 
+ *    Note that this cache is cleared whenever any changes are made to evaluationDate, limit, baseCohort
+ *    TODO: We need to be smarter than this.  We will likely lose a lot of good cache data, particular between child and parent evaluations
+ *  - Capabilities to add, remove, and retrieve parameter values
  */
 public class EvaluationContext {
 	
@@ -82,8 +84,6 @@ public class EvaluationContext {
 	
 	/**
 	 * Constructs a new EvaluationContext given the passed EvaluationContext
-	 * 
-	 * @param context
 	 */
 	public EvaluationContext(EvaluationContext context) {
 		this.setEvaluationDate(context.getEvaluationDate());
@@ -96,40 +96,25 @@ public class EvaluationContext {
 	// *******************
 	// FACTORY METHOD 
 	// *******************
-	
+
 	/**
-	 * Clones an evaluation context and returns it
-	 * 
-	 * @param initialContext the EvaluationContext to clone
-	 * @return EvaluationContext the cloned EvaluationContext
-	 */
-	public static EvaluationContext clone(EvaluationContext initialContext) {
-		return new EvaluationContext(initialContext);
-	}
-	
-	/**
-	 * Clone an EvaluationContext, replacing the parameters with those in the mapped child object as
-	 * appropriate.
-	 * 
-	 * @param baseCohort
-	 * @param parameters
-	 * @return
+	 * @return a cloned EvaluationContext, replacing the parameters with those in the mapped child object as appropriate.
 	 */
 	public static EvaluationContext cloneForChild(EvaluationContext initialContext, Mapped<? extends Parameterizable> child) {
 		
-		if (child == null || child.getParameterizable() == null)
-			throw new APIException(
-			        "The specified report could not be evaluated because one of its components has been removed from the database");
+		if (child == null || child.getParameterizable() == null) {
+			throw new APIException("The specified report could not be evaluated because one of its components has been removed from the database");
+		}
+		EvaluationContext ec = initialContext.shallowCopy();
+		Parameterizable p = child.getParameterizable();
+		Map<String, Object> m = child.getParameterMappings();
 		
-		EvaluationContext ec = EvaluationContext.clone(initialContext);
-		
-		for (String paramName : child.getParameterMappings().keySet()) {
-			Parameter parameter = child.getParameterizable().getParameter(paramName);
+		for (String paramName : m.keySet()) {
+			Parameter parameter = p.getParameter(paramName);
 			if (parameter == null) {
-				throw new ParameterException("Cannot find parameter '" + paramName + "' in "
-				        + child.getParameterizable().getClass().getName() + " " + child.getParameterizable().getName());
+				throw new ParameterException("Cannot find parameter '" + paramName + "' in " + p.getClass().getName() + " " + p.getName());
 			}
-			Object paramVal = child.getParameterMappings().get(paramName);
+			Object paramVal = m.get(paramName);
 			if (paramVal instanceof String) {
 				paramVal = EvaluationUtil.evaluateExpression(paramVal.toString(), initialContext);
 			}
@@ -143,12 +128,19 @@ public class EvaluationContext {
 	// *******************
 	
 	/**
+	 * @return a shallow copy of the current instance
+	 */
+	public EvaluationContext shallowCopy() {
+		return new EvaluationContext(this);
+	}
+	
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("EvaluationContext[evaluationDate=" + evaluationDate);
+		sb.append(getClass().getSimpleName()+"[evaluationDate=" + evaluationDate);
 		for (Map.Entry<String, Object> e : getParameterValues().entrySet()) {
 			if (e.getValue() != null)
 				sb.append("," + e.getKey() + "->" + e.getValue() + " (" + e.getValue().getClass().getSimpleName() + ")");
@@ -282,7 +274,7 @@ public class EvaluationContext {
 		clearCache();
 		this.baseCohort = baseCohort;
 	}
-	
+
 	/**
 	 * @return the number of rows to evaluate
 	 */
@@ -291,7 +283,7 @@ public class EvaluationContext {
 	}
 	
 	/**
-	 * @param the
+	 * @param the limit
 	 */
 	public void setLimit(Integer limit) {
 		clearCache();
@@ -309,6 +301,7 @@ public class EvaluationContext {
 	 * @param evaluationDate the evaluationDate to set
 	 */
 	public void setEvaluationDate(Date evaluationDate) {
+		clearCache();
 		this.evaluationDate = evaluationDate;
 	}
 	

@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
-import org.springframework.context.support.MessageSourceAccessor;
 
 /**
  * A utility class for common date operations

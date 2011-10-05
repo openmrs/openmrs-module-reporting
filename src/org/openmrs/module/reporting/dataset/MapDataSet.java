@@ -21,6 +21,8 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  */
 public class MapDataSet extends SimpleDataSet {
 	
+	private static Integer SINGLE_ROW_ID = 1;
+	
 	//****** CONSTRUCTORS ******
 	
     /**
@@ -40,16 +42,7 @@ public class MapDataSet extends SimpleDataSet {
      * @param dataElement - The data to add
      */
     public void addData(DataSetColumn column, Object dataElement) {
-    	DataSetRow row = null;
-    	if (getRows().isEmpty()) {
-    		row = new DataSetRow();
-    		getRows().add(row);
-    	}
-    	else {
-    		row = getRows().get(0);
-    	}
-    	row.addColumnValue(column, dataElement);
-    	getMetaData().addColumn(column);
+    	addColumnValue(SINGLE_ROW_ID, column, dataElement);
     }
     
 	/**
@@ -69,10 +62,7 @@ public class MapDataSet extends SimpleDataSet {
      * @param dataElement - The data to add
      */
     public Object getData(DataSetColumn column) {
-    	if (getRows().isEmpty()) {
-    		return null;
-    	}
-    	return getRows().get(0).getColumnValue(column);
+    	return getColumnValue(SINGLE_ROW_ID, column.getName());
     }
     
 	/**

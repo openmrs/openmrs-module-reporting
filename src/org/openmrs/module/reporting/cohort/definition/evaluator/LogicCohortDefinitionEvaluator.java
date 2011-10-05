@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.LogicCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -31,11 +32,11 @@ public class LogicCohortDefinitionEvaluator implements CohortDefinitionEvaluator
 	/**
 	 * @see org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator#evaluate(org.openmrs.module.reporting.cohort.definition.CohortDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
 	 */
-	public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
 		LogicCohortDefinition logicCohortDefinition = (LogicCohortDefinition) cohortDefinition;
 		CohortQueryService cqs = Context.getService(CohortQueryService.class);
     	Cohort c = cqs.executeLogicQuery(logicCohortDefinition.getLogic(), context.getParameterValues(), context.getBaseCohort());
-    	return c;
+    	return new EvaluatedCohort(c, cohortDefinition, context);
 	}
 	
 }

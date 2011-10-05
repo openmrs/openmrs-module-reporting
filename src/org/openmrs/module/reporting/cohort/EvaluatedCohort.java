@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  * {@link CohortDefinition} and {@link EvaluationContext} which
  * produced it.
  */
-public class EvaluatedCohort extends Cohort implements Evaluated<CohortDefinition> {
+public class EvaluatedCohort extends PatientIdSet implements Evaluated<CohortDefinition> {
 
 	public static final long serialVersionUID = 1L;
 	

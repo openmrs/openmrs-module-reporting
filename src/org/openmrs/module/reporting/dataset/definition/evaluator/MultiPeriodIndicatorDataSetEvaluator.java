@@ -40,7 +40,7 @@ public class MultiPeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 		SimpleDataSet ret = new SimpleDataSet(dsd, context);
 		
 		for (Iteration iter : dsd.getIterations()) {
-			EvaluationContext ec = EvaluationContext.clone(context);
+			EvaluationContext ec = context.shallowCopy();
 			ec.addParameterValue("startDate", iter.getStartDate());
 			ec.addParameterValue("endDate", iter.getEndDate());
 			ec.addParameterValue("location", iter.getLocation());

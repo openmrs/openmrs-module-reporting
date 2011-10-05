@@ -82,6 +82,13 @@ public class ReportDesign extends BaseOpenmrsMetadata  {
 	}
 	
 	/**
+	 * Adds a property with the given name and value
+	 */
+	public void addPropertyValue(String name, String value) {
+		getProperties().put(name, value);
+	}
+	
+	/**
 	 * Returns the property value given the passed name
 	 */
 	public String getPropertyValue(String name, String defaultValue) {

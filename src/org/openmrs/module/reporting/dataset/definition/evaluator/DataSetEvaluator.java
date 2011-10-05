@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
@@ -27,7 +28,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
  * @see DataSetDefinition
  * @see DataSet
  */
-public interface DataSetEvaluator {
+public interface DataSetEvaluator extends DefinitionEvaluator<DataSetDefinition> {
 	
 	/**
 	 * Evaluate a DataSet for the given EvaluationContext

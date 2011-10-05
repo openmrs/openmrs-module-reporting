@@ -9,11 +9,16 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
+import org.openmrs.module.reporting.indicator.dimension.CohortDimensionResult;
+import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 
@@ -35,6 +40,9 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		gender.addCohortDefinition("female", female, null);
 		gender.addCohortDefinition("male", male, null);
 		
+		CohortDimensionResult results = (CohortDimensionResult)Context.getService(DimensionService.class).evaluate(gender, new EvaluationContext());
+		System.out.println("Results: " + results.getOptionCohorts());
+		
 		InProgramCohortDefinition inProgram = new InProgramCohortDefinition();
 		inProgram.setPrograms(Collections.singletonList(Context.getProgramWorkflowService().getProgram(2)));
 
@@ -47,6 +55,10 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		dsd.addColumn("1.b", "Females in program", new Mapped<CohortIndicator>(ind, null), "gender=female");
 		
 		MapDataSet ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
+		DataSetRow row = ds.getData();
+		for (DataSetColumn column : row.getColumnValues().keySet()) {
+			System.out.println(column + ": " + row.getColumnValue(column));
+		}
 		
 		Assert.assertEquals(2, ((IndicatorResult) ds.getData().getColumnValue("1")).getValue().intValue());
 		Assert.assertEquals(1, ((IndicatorResult) ds.getData().getColumnValue("1.a")).getValue().intValue());

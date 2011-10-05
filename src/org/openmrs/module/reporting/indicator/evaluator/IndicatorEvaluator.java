@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.indicator.evaluator;
 
+import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.Indicator;
@@ -21,7 +22,7 @@ import org.openmrs.module.reporting.indicator.IndicatorResult;
 /**
  * This interfaces provides the functionality to evaluate an Indicator and return a result.
  */
-public interface IndicatorEvaluator {
+public interface IndicatorEvaluator extends DefinitionEvaluator<Indicator> {
 	
 	/**
 	 * Evaluates an Indicator based on the passed EvaluationContext

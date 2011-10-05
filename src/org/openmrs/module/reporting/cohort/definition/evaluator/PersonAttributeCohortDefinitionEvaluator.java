@@ -21,6 +21,7 @@ import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
@@ -40,7 +41,7 @@ public class PersonAttributeCohortDefinitionEvaluator implements CohortDefinitio
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
      */
-    public Cohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	
     	PersonAttributeCohortDefinition pacd = (PersonAttributeCohortDefinition) cohortDefinition;
 		List<String> values = new ArrayList<String>();
@@ -60,6 +61,7 @@ public class PersonAttributeCohortDefinitionEvaluator implements CohortDefinitio
 		}
     	
 		CohortQueryService cqs = Context.getService(CohortQueryService.class);
-    	return cqs.getPatientsHavingPersonAttributes(pacd.getAttributeType(), values);
+    	Cohort c = cqs.getPatientsHavingPersonAttributes(pacd.getAttributeType(), values);
+    	return new EvaluatedCohort(c, cohortDefinition, context);
     }
 }

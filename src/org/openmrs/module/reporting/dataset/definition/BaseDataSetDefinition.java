@@ -35,17 +35,23 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
     public BaseDataSetDefinition() {
     	super();
     }
+    
+	/**
+	 * Public constructor
+	 * @param name
+	 */
+	public BaseDataSetDefinition(String name) { 
+		this();
+		this.setName(name);
+	}
 
 	/**
 	 * Public constructor
-	 * 
 	 * @param name
 	 * @param description
-	 * @param questions
 	 */
 	public BaseDataSetDefinition(String name, String description) { 
-		this();
-		this.setName(name);
+		this(name);
 		this.setDescription(description);
 	}
 

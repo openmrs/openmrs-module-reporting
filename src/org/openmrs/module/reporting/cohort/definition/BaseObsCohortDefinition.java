@@ -49,20 +49,24 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
 	}
 
 	public List<Integer> getLocationIds() {
-		if (locationList == null || locationList.size() == 0)
+		if (locationList == null || locationList.size() == 0) {
 			return null;
+		}
 		List<Integer> ret = new ArrayList<Integer>();
-		for (Location l : locationList)
+		for (Location l : locationList) {
 			ret.add(l.getId());
+		}
 		return ret;
 	}
 
 	public List<Integer> getEncounterTypeIds() {
-		if (encounterTypeList == null || encounterTypeList.size() == 0)
+		if (encounterTypeList == null || encounterTypeList.size() == 0) {
 			return null;
+		}
 		List<Integer> ret = new ArrayList<Integer>();
-		for (EncounterType t : encounterTypeList)
+		for (EncounterType t : encounterTypeList) {
 			ret.add(t.getId());
+		}
 		return ret;
 	}
 
@@ -74,7 +78,6 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     public Concept getQuestion() {
     	return question;
     }
-
 	
     /**
      * @param question the question to set
@@ -82,7 +85,6 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     public void setQuestion(Concept question) {
     	this.question = question;
     }
-
 	
     /**
      * @return the groupingConcept
@@ -90,7 +92,6 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     public Concept getGroupingConcept() {
     	return groupingConcept;
     }
-
 	
     /**
      * @param groupingConcept the groupingConcept to set
@@ -98,7 +99,6 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     public void setGroupingConcept(Concept groupingConcept) {
     	this.groupingConcept = groupingConcept;
     }
-
 	
     /**
      * @return the onOrAfter
@@ -107,7 +107,6 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     	return onOrAfter;
     }
 
-	
     /**
      * @param onOrAfter the onOrAfter to set
      */
@@ -115,7 +114,6 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     	this.onOrAfter = onOrAfter;
     }
 
-	
     /**
      * @return the onOrBefore
      */
@@ -123,7 +121,6 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     	return onOrBefore;
     }
 
-	
     /**
      * @param onOrBefore the onOrBefore to set
      */
@@ -131,14 +128,12 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     	this.onOrBefore = onOrBefore;
     }
 
-	
     /**
      * @return the locationList
      */
     public List<Location> getLocationList() {
     	return locationList;
     }
-
 	
     /**
      * @param locationList the locationList to set
@@ -146,7 +141,16 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     public void setLocationList(List<Location> locationList) {
     	this.locationList = locationList;
     }
-
+    
+    /**
+     * @param location the location to add to the list
+     */
+    public void addLocation(Location location) {
+    	if (locationList == null) {
+    		locationList = new ArrayList<Location>();
+    	}
+    	locationList.add(location);
+    }
 	
     /**
      * @return the encounterTypeList
@@ -154,7 +158,6 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     public List<EncounterType> getEncounterTypeList() {
     	return encounterTypeList;
     }
-
 	
     /**
      * @param encounterTypeList the encounterTypeList to set
@@ -162,7 +165,16 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     public void setEncounterTypeList(List<EncounterType> encounterTypeList) {
     	this.encounterTypeList = encounterTypeList;
     }
-
+    
+    /**
+     * @param encounterType the encounter type to add to the list
+     */
+    public void addEncounterType(EncounterType encounterType) {
+    	if (encounterTypeList == null) {
+    		encounterTypeList = new ArrayList<EncounterType>();
+    	}
+    	encounterTypeList.add(encounterType);
+    }
 	
     /**
      * @return the timeModifier
@@ -171,13 +183,10 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
     	return timeModifier;
     }
 
-	
     /**
      * @param timeModifier the timeModifier to set
      */
     public void setTimeModifier(TimeModifier timeModifier) {
     	this.timeModifier = timeModifier;
-    }
-
-	
+    }	
 }

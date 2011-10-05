@@ -68,6 +68,26 @@ public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
 	}
 
 	//***** INSTANCE METHODS *****
+	
+	/**
+	 * @param value
+	 */
+	public void addValue(Object value) {
+		if (value != null) {
+			if (value instanceof Concept) {
+				getValueConcepts().add((Concept)value);
+			}
+			else if (value instanceof Location) {
+				getValueLocations().add((Location)value);
+			}
+			else if (value instanceof String) {
+				getValues().add((String)value);
+			}
+			else {
+				throw new IllegalArgumentException("You cannot add value " + value + " that is not a Location, Concept, or String");
+			}
+		}
+	}
 
 	/**
      * @see java.lang.Object#toString()
