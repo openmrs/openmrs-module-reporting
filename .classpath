@@ -19,7 +19,7 @@
 	<classpathentry kind="lib" path="lib-common/jcommon-1.0.15.jar"/>
 	<classpathentry kind="lib" path="lib-common/jfreechart-1.0.12.jar"/>
 	<classpathentry kind="lib" path="lib-common/jta.jar"/>
-	<classpathentry kind="lib" path="lib-common/junit-4.4.jar" sourcepath="/home/mseaton/.m2/repository/junit/junit/4.4/junit-4.4-sources.jar"/>
+	<classpathentry kind="lib" path="lib-common/junit-4.4.jar"/>
 	<classpathentry kind="lib" path="lib-common/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib-common/mail.jar"/>
 	<classpathentry kind="lib" path="lib-common/servlet-api.jar"/>
