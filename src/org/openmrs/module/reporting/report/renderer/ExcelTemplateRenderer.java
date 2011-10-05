@@ -86,7 +86,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				String dataSetName = getRepeatingSheetProperty(sheetNum, repeatSections);
 				if (dataSetName != null) {
 					
-					DataSet repeatingSheetDataSet = getDataSet(reportData, dataSetName);
+					DataSet repeatingSheetDataSet = getDataSet(reportData, dataSetName, replacements);
 					int dataSetRowNum = 0;
 					for (Iterator<DataSetRow> rowIterator = repeatingSheetDataSet.iterator(); rowIterator.hasNext();) {
 						DataSetRow dataSetRow = rowIterator.next();
@@ -150,7 +150,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			if (repeatingRowProperty != null) {
 				String[] dataSetSpanSplit = repeatingRowProperty.split(",");
 				String dataSetName = dataSetSpanSplit[0];
-				DataSet dataSet = getDataSet(reportData, dataSetName);
+				DataSet dataSet = getDataSet(reportData, dataSetName, sheetToAdd.getReplacementData());
 				
 				int numRowsToRepeat = 1;
 				if (dataSetSpanSplit.length == 2) {
@@ -225,7 +225,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			if (repeatingColumnProperty != null) {
 				String[] dataSetSpanSplit = repeatingColumnProperty.split(",");
 				String dataSetName = dataSetSpanSplit[0];
-				DataSet dataSet = getDataSet(reportData, dataSetName);
+				DataSet dataSet = getDataSet(reportData, dataSetName, rowToAdd.getReplacementData());
 				int numCellsToRepeat = 1;
 				if (dataSetSpanSplit.length == 2) {
 					numCellsToRepeat = Integer.parseInt(dataSetSpanSplit[1]);
@@ -375,9 +375,13 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	/**
 	 * @return the DataSet with the passed name in the passed ReportData, throwing an Exception if one does not exist
 	 */
-	public DataSet getDataSet(ReportData reportData, String dataSetName) {
+	public DataSet getDataSet(ReportData reportData, String dataSetName, Map<String, Object> replacementData) {
 		DataSet ds = reportData.getDataSets().get(dataSetName);
 		if (ds == null) {
+			Object result = replacementData.get(dataSetName);
+			if (result != null && result instanceof DataSet) {
+				return (DataSet) result;
+			}
 			throw new RenderingException("Invalid Report Design Configuration.  There is no Data Set named " + dataSetName + " in this Report Definition");
 		}
 		return ds;
