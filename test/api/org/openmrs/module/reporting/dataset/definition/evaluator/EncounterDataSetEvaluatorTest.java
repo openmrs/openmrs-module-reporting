@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.ReportingTestUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
@@ -29,6 +28,7 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinit
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetUtil;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -70,6 +70,6 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 		d.addColumn("Age At End", ageOnDateData, "effectiveDate=${endDate}", null);  // Test a column with a different parameter mapping
 		
 		DataSet dataset = Context.getService(DataSetDefinitionService.class).evaluate(d, context);
-		ReportingTestUtils.printDataSetToConsole(dataset);
+		DataSetUtil.printDataSet(dataset, System.out);
 	}
 }

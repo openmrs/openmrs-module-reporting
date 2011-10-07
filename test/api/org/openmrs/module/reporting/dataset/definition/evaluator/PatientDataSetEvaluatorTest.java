@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.ReportingTestUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.SortCriteria.SortDirection;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -36,6 +35,7 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinit
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.dataset.DataSetUtil;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -104,7 +104,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals(35, dataset.getColumnValue(2, "Age At Start"));
 		Assert.assertEquals(36, dataset.getColumnValue(2, "Age At End"));
-		ReportingTestUtils.printDataSetToConsole(dataset);
+		DataSetUtil.printDataSet(dataset, System.out);
 	}
 	
 	@Test
@@ -149,7 +149,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		d.addSortCriteria("Last Encounter Date", SortDirection.ASC);
 		
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
-		ReportingTestUtils.printDataSetToConsole(dataset);
+		DataSetUtil.printDataSet(dataset, System.out);
 	}
 	
 	@Test
@@ -166,7 +166,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		d.addColumns("Last 3 Encounters", encounterDataSet, "", null, TimeQualifier.LAST, 3);
 		
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
-		ReportingTestUtils.printDataSetToConsole(dataset);
+		DataSetUtil.printDataSet(dataset, System.out);
 	}
 	
 	//***** UTILITY METHODS *****

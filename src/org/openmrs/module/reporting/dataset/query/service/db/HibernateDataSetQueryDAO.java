@@ -104,10 +104,12 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		patientJoinProperties.put(PatientIdentifier.class, "patient.patientId");
 		patientJoinProperties.put(Relationship.class, "personA.personId");
 		
+		String voidedProperty = (type == Person.class ? "personVoided" : "voided");
+		
 		StringBuilder hql = new StringBuilder();
 		hql.append("select 	" + idPropertyName + ", " + property + " ");
 		hql.append("from	" + entityName + " " + alias + " ");
-		hql.append("where	" + alias + ".voided = false ");
+		hql.append("where	" + alias + "." + voidedProperty + " = false ");
 		for (Class<? extends OpenmrsData> clazz : patientJoinProperties.keySet()) {
 			if (clazz.isAssignableFrom(type) && baseCohort != null) {
 				hql.append(" and " + alias + "." + patientJoinProperties.get(clazz) + " in (:ids)");

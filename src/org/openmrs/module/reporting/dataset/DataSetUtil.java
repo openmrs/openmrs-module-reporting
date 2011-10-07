@@ -11,30 +11,24 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting;
+package org.openmrs.module.reporting.dataset;
 
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.DataSetRow;
 
 /**
- * Utility methods for use in reporting tests
+ * Utility methods for working with Data Sets
  */
-public class ReportingTestUtils {
-	
-	protected Log log = LogFactory.getLog(this.getClass());
-	
+public class DataSetUtil {
+
 	/**
 	 * Prints the passed dataset to the console
 	 */
-	public static void printDataSetToConsole(DataSet d) {
+	public static void printDataSet(DataSet d, OutputStream out) {
 
 		Map<DataSetColumn, Integer> columnLengthMap = new LinkedHashMap<DataSetColumn, Integer>();
 		for (DataSetColumn c : d.getMetaData().getColumns()) {
