@@ -26,7 +26,17 @@ public class ObjectFormatter implements DataConverter {
 	
 	//***** CONSTRUCTORS *****
 	
+	/**
+	 * Default Constructor
+	 */
 	public ObjectFormatter() {}
+	
+	/**
+	 * Constructor with specification
+	 */
+	public ObjectFormatter(String specification) {
+		this.specification = specification;
+	}
 	
 	//***** INSTANCE METHODS *****
 

@@ -4,7 +4,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openmrs.PersonName;
-import org.openmrs.module.reporting.data.converter.PersonNameConverter;
 
 public class PersonNameConverterTest {
 	
@@ -18,7 +17,7 @@ public class PersonNameConverterTest {
 		personName.setGivenName("John");
 		personName.setMiddleName("T");
 		personName.setFamilyName("Smith");
-		Object result = (new PersonNameConverter("{fn}, {gn}")).convert(personName);
+		Object result = (new ObjectFormatter("{familyName}, {givenName}")).convert(personName);
 		Assert.assertEquals("Smith, John", result.toString());
 	}
 }

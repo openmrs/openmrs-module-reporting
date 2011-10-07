@@ -1,21 +1,29 @@
 package org.openmrs.module.reporting.common;
 
+import java.beans.PropertyDescriptor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Generically useful utility class for working with Objects
  */
 public class ObjectUtil {
+	
+	protected static Log log = LogFactory.getLog(ObjectUtil.class);
     
 	/**
 	 * Returns a String representation of the passed Map
@@ -268,18 +276,6 @@ public class ObjectUtil {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static String format(Object o, String format) {
 		if (o == null) { return ""; }
-		if (o instanceof OpenmrsMetadata) {
-			String name = ((OpenmrsMetadata) o).getName();
-			if (name == null) {
-				if (o instanceof ProgramWorkflow) {
-					name = ((ProgramWorkflow)o).getConcept().getDisplayString();
-				}
-				else if (o instanceof ProgramWorkflowState) {
-					name = ((ProgramWorkflowState)o).getConcept().getDisplayString();
-				}
-			}
-			return name;
-		}
 		if (o instanceof Date) {
 			DateFormat df = decode(format, Context.getDateFormat(), new SimpleDateFormat(format));
 			return df.format((Date)o);
@@ -292,6 +288,33 @@ public class ObjectUtil {
 		}
 		if (o instanceof Object[]) {
 			return toString(nvl(format, ","), (Object[])o);
+		}
+		if (o instanceof OpenmrsMetadata) {
+			String name = ((OpenmrsMetadata) o).getName();
+			if (name == null) {
+				if (o instanceof ProgramWorkflow) {
+					name = ((ProgramWorkflow)o).getConcept().getDisplayString();
+				}
+				else if (o instanceof ProgramWorkflowState) {
+					name = ((ProgramWorkflowState)o).getConcept().getDisplayString();
+				}
+			}
+			return name;
+		}
+		if (o instanceof OpenmrsData) {
+			if (ObjectUtil.notNull(format)) {
+				try {
+					for (PropertyDescriptor pd : PropertyUtils.getPropertyDescriptors(o)) {
+						String replacement = "{" + pd.getName() + "}";
+						Object value = PropertyUtils.getProperty(o, pd.getName());
+						format = format.replace(replacement, ObjectUtil.nvlStr(value, ""));
+					}
+					return format;
+				}
+				catch (Exception e) {
+					log.warn("Unable to get property using converter with format: " + format);
+				}
+			}
 		}
 		return o.toString();
 	}

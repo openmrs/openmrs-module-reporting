@@ -17,37 +17,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openmrs.PersonName;
+import org.openmrs.PersonAddress;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PreferredAddressDataDefinition;
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
- * Evaluates a PreferredNameDataDefinition to produce a PersonData
+ * Evaluates a PreferredAddressDataDefinition to produce a PersonData
  */
-@Handler(supports=PreferredNameDataDefinition.class, order=50)
-public class PreferredNameDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=PreferredAddressDataDefinition.class, order=50)
+public class PreferredAddressDataEvaluator implements PersonDataEvaluator {
 
 	/** 
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
-	 * @should return the preferred name for all persons
+	 * @should return the preferred address for all persons
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
 		
-		String hql = "from PersonName where voided = false and person.personId in (:personIds) order by preferred asc";
+		String hql = "from PersonAddress where voided = false and person.personId in (:personIds) order by preferred asc";
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("personIds", context.getBaseCohort());
 		List<Object> queryResult = qs.executeHqlQuery(hql, m);
 		for (Object o : queryResult) {
-			PersonName pn = (PersonName)o;
-			c.addData(pn.getPerson().getPersonId(), pn);  // TODO: This is probably inefficient.  Try to improve this
+			PersonAddress pa = (PersonAddress)o;
+			c.addData(pa.getPerson().getPersonId(), pa);  // TODO: This is probably inefficient.  Try to improve this
 		}
 		return c;
 	}
