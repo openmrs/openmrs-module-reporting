@@ -13,27 +13,28 @@
  */
 package org.openmrs.module.reporting.data.person.definition;
 
+import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
- * Dead Column
+ * Vital Status Data
  */
-public class DeadDataDefinition  extends BaseDataDefinition implements PersonDataDefinition {
+public class VitalStatusDataDefinition  extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;
 	
 	/**
 	 * Default Constructor
 	 */
-	public DeadDataDefinition() {
+	public VitalStatusDataDefinition() {
 		super();
 	}
 	
 	/**
 	 * Constructor to populate name only
 	 */
-	public DeadDataDefinition(String name) {
+	public VitalStatusDataDefinition(String name) {
 		super(name);
 	}
 
@@ -43,6 +44,6 @@ public class DeadDataDefinition  extends BaseDataDefinition implements PersonDat
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
-		return Boolean.class;
+		return VitalStatus.class;
 	}
 }
