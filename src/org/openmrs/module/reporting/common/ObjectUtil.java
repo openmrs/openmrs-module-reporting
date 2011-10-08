@@ -323,9 +323,8 @@ public class ObjectUtil {
 					while (startIndex != -1 && endIndex != -1) {
 						String propertyName = format.substring(startIndex+1, endIndex);
 						Object replacement = ReflectionUtil.getPropertyValue(o, propertyName);
-						if (replacement != null && formatSplit.length > 1) {
-							replacement = ObjectUtil.format(replacement, formatSplit[1]);
-						}
+						String newFormat = (replacement != null && formatSplit.length > 1 ? formatSplit[1] : null);
+						replacement = ObjectUtil.format(replacement, newFormat);
 						ret = ret.replace("{"+propertyName+"}", nvlStr(replacement, ""));
 						startIndex = ret.indexOf("{");
 						endIndex = ret.indexOf("}", startIndex+1);
