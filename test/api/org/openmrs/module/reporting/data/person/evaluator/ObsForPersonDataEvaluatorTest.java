@@ -11,13 +11,13 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
-import org.openmrs.module.reporting.data.person.definition.PersonObsDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-public class PersonObsDataEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
 	public void setup() throws Exception {
@@ -25,7 +25,7 @@ public class PersonObsDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	/**
-	 * @see PersonObsDataEvaluator#evaluate(PersonDataDefinition,EvaluationContext)
+	 * @see ObsForPersonDataEvaluator#evaluate(PersonDataDefinition,EvaluationContext)
 	 * @verifies return the obs that match the passed definition configuration
 	 */
 	@SuppressWarnings("rawtypes")
@@ -35,7 +35,7 @@ public class PersonObsDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort("7,20"));
 		
-		PersonObsDataDefinition d = new PersonObsDataDefinition();
+		ObsForPersonDataDefinition d = new ObsForPersonDataDefinition();
 		d.setQuestion(Context.getConceptService().getConcept(5089));
 		
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);

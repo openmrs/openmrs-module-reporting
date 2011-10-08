@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Obs Data Definition
  */
-public class PersonObsDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class ObsForPersonDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	
 	//***** PROPERTIES *****
 	
@@ -47,21 +47,21 @@ public class PersonObsDataDefinition extends BaseDataDefinition implements Perso
 	/**
 	 * Default Constructor
 	 */
-	public PersonObsDataDefinition() {
+	public ObsForPersonDataDefinition() {
 		super();
 	}
 	
 	/**
 	 * Name only Constructor
 	 */
-	public PersonObsDataDefinition(String name) {
+	public ObsForPersonDataDefinition(String name) {
 		super(name);
 	}
 	
 	/**
 	 * Constructor to populate all properties only
 	 */
-	public PersonObsDataDefinition(String name, TimeQualifier which, Concept question, Date onOrBefore, Date onOrAfter) {
+	public ObsForPersonDataDefinition(String name, TimeQualifier which, Concept question, Date onOrBefore, Date onOrAfter) {
 		this(name);
 		this.which = which;
 		this.question = question;

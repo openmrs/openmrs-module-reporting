@@ -24,17 +24,17 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
-import org.openmrs.module.reporting.data.person.definition.PersonObsDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
- * Evaluates an PersonObsDataDefinition to produce a PersonData
+ * Evaluates an ObsForPersonDataDefinition to produce a PersonData
  */
-@Handler(supports=PersonObsDataDefinition.class, order=50)
-public class PersonObsDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=ObsForPersonDataDefinition.class, order=50)
+public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 
 	/** 
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
@@ -42,7 +42,7 @@ public class PersonObsDataEvaluator implements PersonDataEvaluator {
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		
-		PersonObsDataDefinition def = (PersonObsDataDefinition) definition;
+		ObsForPersonDataDefinition def = (ObsForPersonDataDefinition) definition;
 		EvaluatedPersonData c = new EvaluatedPersonData(def, context);
 		
 		if (context.getBaseCohort() == null || context.getBaseCohort().isEmpty()) {
