@@ -77,7 +77,7 @@ public class PropertyConverter implements DataConverter {
 	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
-		return Object.class;
+		return typeToConvert;
 	}
 	
 	//***** PROPERTY ACCESS *****

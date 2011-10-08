@@ -52,10 +52,17 @@ public class PersonObsDataDefinition extends BaseDataDefinition implements Perso
 	}
 	
 	/**
+	 * Name only Constructor
+	 */
+	public PersonObsDataDefinition(String name) {
+		super(name);
+	}
+	
+	/**
 	 * Constructor to populate all properties only
 	 */
 	public PersonObsDataDefinition(String name, TimeQualifier which, Concept question, Date onOrBefore, Date onOrAfter) {
-		super(name);
+		this(name);
 		this.which = which;
 		this.question = question;
 		this.onOrBefore = onOrBefore;

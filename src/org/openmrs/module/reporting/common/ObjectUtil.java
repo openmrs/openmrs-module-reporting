@@ -1,13 +1,14 @@
 package org.openmrs.module.reporting.common;
 
-import java.beans.PropertyDescriptor;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.ProgramWorkflow;
@@ -15,28 +16,32 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Generically useful utility class for working with Objects
  */
 public class ObjectUtil {
 	
 	protected static Log log = LogFactory.getLog(ObjectUtil.class);
+
+	/**
+	 * Returns a String representation of the passed Map
+	 */
+    public static String toString(Map<?, ?> m, String keyValueSeparator, String entrySeparator) {
+		StringBuffer sb = new StringBuffer();
+		for (Map.Entry<?, ?> e : m.entrySet()) {
+			if (sb.length() > 0) {
+				sb.append(entrySeparator);
+			}
+		    sb.append(e.getKey() + keyValueSeparator + e.getValue());
+		}
+		return sb.toString();
+    }
     
 	/**
 	 * Returns a String representation of the passed Map
 	 */
     public static String toString(Map<?, ?> m, String sep) {
-		StringBuffer sb = new StringBuffer();
-		for (Map.Entry<?, ?> e : m.entrySet()) {
-			if (sb.length() > 0) {
-				sb.append(sep);
-			}
-		    sb.append(e.getKey() + " -> " + e.getValue());
-		}
-		return sb.toString();
+    	return toString(m, " -> ", sep);
     }
     
     /**
@@ -289,6 +294,13 @@ public class ObjectUtil {
 		if (o instanceof Object[]) {
 			return toString(nvl(format, ","), (Object[])o);
 		}
+		if (o instanceof Number) {
+			if (notNull(format)) {
+				NumberFormat nf = NumberFormat.getInstance();
+				nf.setGroupingUsed(false);
+				return nf.format((Number)o);
+			}
+		}
 		if (o instanceof OpenmrsMetadata) {
 			String name = ((OpenmrsMetadata) o).getName();
 			if (name == null) {
@@ -303,16 +315,25 @@ public class ObjectUtil {
 		}
 		if (o instanceof OpenmrsData) {
 			if (ObjectUtil.notNull(format)) {
+				String[] formatSplit = format.split("\\|");
+				String ret = formatSplit[0];
 				try {
-					for (PropertyDescriptor pd : PropertyUtils.getPropertyDescriptors(o)) {
-						String replacement = "{" + pd.getName() + "}";
-						Object value = PropertyUtils.getProperty(o, pd.getName());
-						format = format.replace(replacement, ObjectUtil.nvlStr(value, ""));
+					int startIndex = ret.indexOf("{");
+					int endIndex = ret.indexOf("}", startIndex+1);
+					while (startIndex != -1 && endIndex != -1) {
+						String propertyName = format.substring(startIndex+1, endIndex);
+						Object replacement = ReflectionUtil.getPropertyValue(o, propertyName);
+						if (replacement != null && formatSplit.length > 1) {
+							replacement = ObjectUtil.format(replacement, formatSplit[1]);
+						}
+						ret = ret.replace("{"+propertyName+"}", nvlStr(replacement, ""));
+						startIndex = ret.indexOf("{");
+						endIndex = ret.indexOf("}", startIndex+1);
 					}
-					return format;
+					return ret;
 				}
 				catch (Exception e) {
-					log.warn("Unable to get property using converter with format: " + format);
+					log.warn("Unable to get property using converter with format: " + format, e);
 				}
 			}
 		}
