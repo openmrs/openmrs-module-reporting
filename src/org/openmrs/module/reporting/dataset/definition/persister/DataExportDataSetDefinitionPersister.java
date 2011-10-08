@@ -21,6 +21,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.DataExportDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.reporting.AbstractReportObject;
@@ -52,7 +53,7 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
 	 * @see DataSetDefinitionPersister#getDefinitionByUuid(String)
 	 */
 	public DataSetDefinition getDefinitionByUuid(String uuid) {	
-    	for(DataSetDefinition dsd : getAllDefinitions(false)) {
+    	for(DataSetDefinition dsd : getAllDefinitions(false)) {  // NOTE: This is very slow.  We could speed it up significantly with a custom dao
     		if (dsd.getUuid() != null && dsd.getUuid().equals(uuid)) {
     			return dsd;
     		}
@@ -65,9 +66,10 @@ public class DataExportDataSetDefinitionPersister implements DataSetDefinitionPe
      */
     public List<DataSetDefinition> getAllDefinitions(boolean includeRetired) {
     	List <DataSetDefinition> dataSetDefinitions = new Vector<DataSetDefinition>();
-    	if (ModuleFactory.getStartedModulesMap().containsKey("reportingcompatibility")) {
+    	if (ModuleFactory.getStartedModulesMap().containsKey("reportingcompatibility") &&
+    		ReportingConstants.GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS()) {
 		    ReportObjectService ros = Context.getService(ReportObjectService.class);
-		    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");    	
+		    List<AbstractReportObject> dataExports = ros.getReportObjectsByType("Data Export");
 	    	
 	    	for (AbstractReportObject obj : dataExports) { 
 	    		DataExportReportObject dataExport = (DataExportReportObject) obj;

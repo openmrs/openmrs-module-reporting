@@ -90,7 +90,12 @@
 		<property>reporting.maxCachedReports</property>
 		<defaultValue>10</defaultValue>
 		<description>The maximum number of reports whose underlying data and output should be kept in the cache at any one time</description>
-	</globalProperty>	
+	</globalProperty>
+	<globalProperty>
+		<property>reporting.includeDataExportsAsDataSetDefinitions</property>
+		<defaultValue>false</defaultValue>
+		<description>If reportingcompatibility is installed, this indicates whether data exports should be exposed as Dataset Definitions</description>
+	</globalProperty>
 	
 	<globalProperty>
 		<property>reporting.preferredIdentifierTypes</property>

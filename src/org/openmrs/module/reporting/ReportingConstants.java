@@ -96,4 +96,8 @@ public class ReportingConstants {
 		}
 		return 10;
 	}
+	
+	public static final boolean GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS() {
+		return "true".equals(Context.getAdministrationService().getGlobalProperty("reporting.includeDataExportsAsDataSetDefinitions"));
+	}
 }
