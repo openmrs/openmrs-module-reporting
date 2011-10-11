@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -13,10 +15,17 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
+import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
+import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
+import org.openmrs.module.reporting.report.renderer.TextTemplateRenderer;
+import org.openmrs.util.OpenmrsClassLoader;
 
 public class ReportUtil {
 	
@@ -121,5 +130,57 @@ public class ReportUtil {
 			IOUtils.closeQuietly(in);
 			IOUtils.closeQuietly(out);
 		}
+	}
+	
+	/**
+	 * Looks up a resource on the class path, and returns a RenderingMode based on it
+	 * @throws UnsupportedEncodingException 
+	 */
+	public static RenderingMode renderingModeFromResource(String label, String resourceName) {
+		InputStreamReader reader;
+		
+        try {
+	        reader = new InputStreamReader(OpenmrsClassLoader.getInstance().getResourceAsStream(resourceName), "UTF-8");    
+        }
+        catch (UnsupportedEncodingException e) {
+	        throw new IllegalArgumentException("Error reading template from stream", e);
+        }
+
+		final ReportDesign design = new ReportDesign();
+		ReportDesignResource resource = new ReportDesignResource();
+		resource.setName("template");
+		String extension = resourceName.substring(resourceName.lastIndexOf("."));
+		resource.setExtension(extension);
+		String contentType = "text/plain";
+		for (ContentType type : ContentType.values()) {
+			if (type.getExtension().equals(extension)) {
+				contentType = type.getContentType();
+			}
+		}
+		resource.setContentType(contentType);
+		ReportRenderer renderer = null;
+		try {
+			resource.setContents(IOUtils.toByteArray(reader, "UTF-8"));
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Error reading template from stream", e);
+		}
+		
+		design.getResources().add(resource);
+		if ("xls".equals(extension)) {
+			renderer = new ExcelTemplateRenderer() {
+				public ReportDesign getDesign(String argument) {
+					return design;
+				}
+			};
+		}
+		else {
+			renderer = new TextTemplateRenderer() {
+				public ReportDesign getDesign(String argument) {
+					return design;
+				}
+			};
+		}
+		return new RenderingMode(renderer, label, extension, null);
 	}
 }

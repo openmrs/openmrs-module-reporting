@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
@@ -32,6 +33,7 @@ public class GetMappedAsStringController {
 	                              @RequestParam("valueType") String valueTypeClassname,
 	                              @RequestParam("saveCallback") String saveCallback,
 	                              @RequestParam("cancelCallback") String cancelCallback,
+	                              @RequestParam(required=false, value="removeCallback") String removeCallback,
 	                              @RequestParam(required=false, value="initialUuid") String initialUuid,
 	                              @RequestParam(required=false, value="valueUuid") String valueUuid,
 	                              @RequestParam(required=false, value="label") String label,
@@ -41,7 +43,7 @@ public class GetMappedAsStringController {
 		if (valueUuid == null && initialUuid != null)
 			valueUuid = initialUuid;
 		
-		Class<Definition> clazz = (Class<Definition>) Class.forName(valueTypeClassname);
+		Class<Definition> clazz = (Class<Definition>) Context.loadClass(valueTypeClassname);
 		List<DefinitionSummary> list = DefinitionContext.getDefinitionService(clazz).getAllDefinitionSummaries(true);
 		model.addAttribute("valueOptions", list);
 		

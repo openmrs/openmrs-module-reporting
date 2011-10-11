@@ -58,7 +58,9 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 				Class<?>[] types = handlerAnnotation.supports();
 				if (types != null) {
 					for (Class<?> type : types) {
-						ret.add((Class<? extends T>) type);
+						if (getDefinitionType().isAssignableFrom(type)) {
+							ret.add((Class<? extends T>) type);
+						}
 					}
 				}
 			}
@@ -260,6 +262,6 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 */
 	@SuppressWarnings("rawtypes")
 	protected List<DefinitionPersister> getAllPersisters() {	
-		return HandlerUtil.getHandlersForType(DefinitionPersister.class, null);
+		return HandlerUtil.getHandlersForType(DefinitionPersister.class, getDefinitionType());
 	}
 }

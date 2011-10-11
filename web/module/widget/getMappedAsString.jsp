@@ -18,8 +18,16 @@ $(document).ready(function() {
 	$('#cancelButton').click(function() {
 		window.parent.${ param.cancelCallback }();
 	});
+	<c:if test="${!empty param.removeCallback}">
+		$('#deleteButton').click(function() {
+			window.parent.${ param.removeCallback }();
+		});
+	</c:if>
 	<c:if test="${ not empty selectedValue }">
 	   $('#valueUuid').val('${ selectedValue.uuid }');
+	   <c:if test="${!empty param.removeCallback}">
+	  	 $('#deleteButton').show();
+	   </c:if>
 	</c:if>
 });
 </script>
@@ -65,6 +73,7 @@ $(document).ready(function() {
 		   <br/>
 		   <input type="submit" name="action" value="Use this mapped value"/>
 		   <input type="button" value="Cancel" id="cancelButton"/>
+		   <input type="button" value="Delete" id="deleteButton" style="display:none;"/>
 	   </div>
 	</c:if>
 </form>

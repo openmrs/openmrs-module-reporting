@@ -51,9 +51,9 @@ public class ManageDefinitionsController {
     		List<Definition> l = defsByType.get(d.getClass());
     		if (l == null) {
     			l = new ArrayList<Definition>();
+    			defsByType.put(d.getClass(), l);
     		}
     		l.add(d);
-    		defsByType.put(d.getClass(), l);
     	}
     	
     	model.addAttribute("type", type);

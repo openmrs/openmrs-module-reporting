@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -361,5 +363,54 @@ public class DateUtil {
 		return calendar.getTime();
 	}	
 	
-	
+	public static Map<String, Date> getPeriodDates(Integer year, Integer quarter, Integer month) {
+		
+		// Validate input and construct start and end months
+		int startMonth = 1;
+		int endMonth = 12;
+		
+		
+		// if the year is null, we don't have start and end dates, want to query from the beginning of time until today
+		if (year == null && month == null && quarter == null) {
+			Map<String, Date> periodDates = new HashMap<String, Date>();;
+			periodDates.put("startDate", null);
+			periodDates.put("endDate", new Date());
+			
+			return periodDates;
+		}
+		
+		if (year == null || year < 1900 || year > 2100) {
+			throw new IllegalArgumentException("Please enter a valid year");
+		}
+		
+		if (quarter != null) {
+			if (quarter < 1 || quarter > 4) {
+				throw new IllegalArgumentException("Please enter a valid quarter (1-4)");
+			}
+			if (month != null) {
+				throw new IllegalArgumentException("Please enter either a quarter or a month");
+			}
+			endMonth = quarter*3;
+			startMonth = endMonth-2;
+		}
+		if (month != null) {
+			if (month < 1 || month > 12) {
+				throw new IllegalArgumentException("Please enter a valid month (1-12)");
+			}
+			startMonth = month;
+			endMonth = month;
+		}
+		
+		Map<String, Date> periodDates = new HashMap<String, Date>();
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.YEAR, year);
+		c.set(Calendar.MONTH, startMonth-1);
+		c.set(Calendar.DATE, 1);
+		periodDates.put("startDate", c.getTime());
+		c.set(Calendar.MONTH, endMonth-1);
+		c.set(Calendar.DATE, c.getActualMaximum(Calendar.DATE));
+		periodDates.put("endDate", c.getTime());
+		
+		return periodDates;
+	}
 }

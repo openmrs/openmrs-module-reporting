@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 
 /**
@@ -81,7 +82,7 @@ public abstract class BaseDataSetDefinition extends BaseDefinition implements Da
 	 */
 	@Override
 	public String toString() {
-		return getName();
+		return ObjectUtil.nvlStr(getName(), super.toString());
 	}
 
 	

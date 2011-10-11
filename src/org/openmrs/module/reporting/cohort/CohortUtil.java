@@ -2,13 +2,17 @@ package org.openmrs.module.reporting.cohort;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 /**
  * A utility class for cohort
@@ -108,5 +112,67 @@ public class CohortUtil {
     public static boolean areEqual(Cohort a, Cohort b) {
     	return (a != null && b != null && a.size() == b.size() && a.size() == Cohort.intersect(a, b).size());
     }
+    
+    /**
+     * @return a Composition Cohort Definition with each definition composed with a single type of operator
+     */
+	public static CohortDefinition getCompositionCohort(String operator, Map<String, Mapped<? extends CohortDefinition>> entries) {
+		if (entries.size() == 1) {
+			return entries.values().iterator().next().getParameterizable();
+		}
+		CompositionCohortDefinition d = new CompositionCohortDefinition();
+		StringBuilder s = new StringBuilder();
+		for (Map.Entry<String, Mapped<? extends CohortDefinition>> cd : entries.entrySet()) {
+			d.addSearch(cd.getKey(), cd.getValue().getParameterizable(), cd.getValue().getParameterMappings());
+			if (s.length() > 0) {
+				s.append(" " + operator + " ");
+			}
+			s.append(cd.getKey());
+		}
+		d.setCompositionString(s.toString());
+		return d;
+	}
 	
+    /**
+     * @return a Composition Cohort Definition with each definition composed with a single type of operator
+     */
+	public static CohortDefinition getCompositionCohort(String operator, CohortDefinition... definitions) {
+		if (definitions.length == 1) {
+			return definitions[0];
+		}
+		CompositionCohortDefinition d = new CompositionCohortDefinition();
+		StringBuilder s = new StringBuilder();
+		int i = 1;
+		for (CohortDefinition cd : definitions) {
+			if (cd != null) {
+				d.addSearch(""+i, cd, null);
+				if (s.length() > 0) {
+					s.append(" " + operator + " ");
+				}
+				s.append(i++);
+			}
+		}
+		d.setCompositionString(s.toString());
+		return d;
+	}
+	
+    /**
+     * @return a Composition Cohort Definition with a primary cohort which has 1 to n cohorts subtracted from it
+     */
+	public static CohortDefinition minus(CohortDefinition base, CohortDefinition... toSubtract) {
+		CompositionCohortDefinition d = new CompositionCohortDefinition();
+		d.addSearch("base", base, null);
+		StringBuilder s = new StringBuilder("base AND NOT (");
+		int i = 1;
+		for (CohortDefinition cd : toSubtract) {
+			d.addSearch(""+i, cd, null);
+			if (i > 1) {
+				s.append(" OR ");
+			}
+			s.append(i++);
+		}
+		s.append(")");
+		d.setCompositionString(s.toString());
+		return d;
+	}
 }
