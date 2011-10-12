@@ -60,6 +60,17 @@ public class PatientDataSetDefinition extends RowPerObjectDataSetDefinition {
 	}
 	
 	//***** INSTANCE METHODS *****
+	
+	/**
+	 * @see RowPerObjectDataSetDefinition#getSupportedDataDefinitionTypes()
+	 */
+	@Override
+	public List<Class<? extends DataDefinition>> getSupportedDataDefinitionTypes() {
+		List<Class<? extends DataDefinition>> l = new ArrayList<Class<? extends DataDefinition>>();
+		l.add(PatientDataDefinition.class);
+		l.add(PersonDataDefinition.class);
+		return l;
+	}
 		
 	/**
 	 * Adds a new Column Definition given the passed parameters
@@ -76,7 +87,7 @@ public class PatientDataSetDefinition extends RowPerObjectDataSetDefinition {
 			throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
 		}
 	}
-	
+
 	/**
 	 * Adds a the Column Definitions defined in the passed DataSetDefinition
 	 */

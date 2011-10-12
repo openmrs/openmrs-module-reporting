@@ -62,6 +62,18 @@ public class EncounterDataSetDefinition extends RowPerObjectDataSetDefinition {
 	//***** INSTANCE METHODS *****
 	
 	/**
+	 * @see RowPerObjectDataSetDefinition#getSupportedDataDefinitionTypes()
+	 */
+	@Override
+	public List<Class<? extends DataDefinition>> getSupportedDataDefinitionTypes() {
+		List<Class<? extends DataDefinition>> l = new ArrayList<Class<? extends DataDefinition>>();
+		l.add(EncounterDataDefinition.class);
+		l.add(PatientDataDefinition.class);
+		l.add(PersonDataDefinition.class);
+		return l;
+	}
+	
+	/**
 	 * Adds a new Column Definition given the passed parameters
 	 */
 	public void addColumn(String name, DataDefinition dataDefinition, String mappings, DataConverter converter) {

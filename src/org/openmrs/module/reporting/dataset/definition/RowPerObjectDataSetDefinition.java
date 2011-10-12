@@ -63,6 +63,11 @@ public abstract class RowPerObjectDataSetDefinition extends BaseDataSetDefinitio
 	//***** INSTANCE METHODS *****
 	
 	/**
+	 * @return the DataDefinition types that are supported by this DataSetDefinition instance
+	 */
+	public abstract List<Class<? extends DataDefinition>> getSupportedDataDefinitionTypes();
+	
+	/**
 	 * @return all of the DataSetColumns that this DataSetDfinition will produce
 	 */
 	public List<DataSetColumn> getDataSetColumns() {

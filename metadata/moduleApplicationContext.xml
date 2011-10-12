@@ -27,6 +27,9 @@
 			<list>
 				<value>org.openmrs.module.reporting.cohort.definition.CohortDefinition</value>
 				<value>org.openmrs.module.reporting.query.encounter.definition.EncounterQuery</value>
+				<value>org.openmrs.module.reporting.data.person.definition.PersonDataDefinition</value>
+				<value>org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition</value>
+				<value>org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition</value>
 				<value>org.openmrs.module.reporting.indicator.Indicator</value>
 				<value>org.openmrs.module.reporting.indicator.dimension.Dimension</value>
 				<value>org.openmrs.module.reporting.dataset.definition.DataSetDefinition</value>
