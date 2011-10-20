@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.openmrs.annotation.Handler;
