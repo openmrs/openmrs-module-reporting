@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.data.patient.definition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -30,16 +31,19 @@ public class PatientIdentifierDataDefinition extends BaseDataDefinition implemen
 	
 	@ConfigurationProperty(required=true)
 	private List<PatientIdentifierType> types;
-	
+
+    @ConfigurationProperty
+    private Boolean includeFirstNonNullOnly = Boolean.FALSE;
+
 	//****** CONSTRUCTORS ******
-	
+
 	/**
 	 * Default Constructor
 	 */
 	public PatientIdentifierDataDefinition() {
 		super();
 	}
-	
+
 	/**
 	 * Constructor to populate name and type only
 	 */
@@ -58,6 +62,9 @@ public class PatientIdentifierDataDefinition extends BaseDataDefinition implemen
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
+        if (getIncludeFirstNonNullOnly() == Boolean.TRUE) {
+            return PatientIdentifier.class;
+        }
 		return List.class;
 	}
 	
@@ -86,4 +93,18 @@ public class PatientIdentifierDataDefinition extends BaseDataDefinition implemen
 		}
 		types.add(type);
 	}
+
+    /**
+     * @return whether or not to include only the first null value for each patient
+     */
+    public Boolean getIncludeFirstNonNullOnly() {
+        return includeFirstNonNullOnly;
+    }
+
+    /**
+     * @param includeFirstNonNullOnly whether or not to include only the first null value for each patient
+     */
+    public void setIncludeFirstNonNullOnly(Boolean includeFirstNonNullOnly) {
+        this.includeFirstNonNullOnly = includeFirstNonNullOnly;
+    }
 }

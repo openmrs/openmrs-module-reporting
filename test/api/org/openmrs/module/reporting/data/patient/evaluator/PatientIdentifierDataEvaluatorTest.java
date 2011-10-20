@@ -58,5 +58,10 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 		Assert.assertEquals(2, identifiers.size());
 		Assert.assertEquals("101", identifiers.get(0).getIdentifier());
 		Assert.assertEquals("101-6", identifiers.get(1).getIdentifier());
+
+        d.setIncludeFirstNonNullOnly(true);
+        pd = Context.getService(PatientDataService.class).evaluate(d, context);
+        o = pd.getData().get(2);
+        Assert.assertEquals("101", ((PatientIdentifier)o).getIdentifier());
 	}
 }

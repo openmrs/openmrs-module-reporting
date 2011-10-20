@@ -39,7 +39,8 @@ public class AgeDataEvaluator implements PersonDataEvaluator {
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = Context.getService(PersonDataService.class).evaluate(new BirthdateDataDefinition(), context);
-		BirthdateToAgeConverter converter = new BirthdateToAgeConverter((Date)context.getParameterValue("effectiveDate"));
+		AgeDataDefinition add = (AgeDataDefinition)definition;
+        BirthdateToAgeConverter converter = new BirthdateToAgeConverter(add.getEffectiveDate());
 		EvaluatedPersonData ret = new EvaluatedPersonData(definition, context);
 		for (Map.Entry<Integer, Object> e : c.getData().entrySet()) {
 			ret.addData(e.getKey(), converter.convert(e.getValue()));

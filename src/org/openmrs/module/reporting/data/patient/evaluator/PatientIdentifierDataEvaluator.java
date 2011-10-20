@@ -80,7 +80,12 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		for (Integer pId : patIds.keySet()) {
 			List<PatientIdentifier> l = patIds.get(pId);
 			Collections.sort(l, comparator);
-			c.addData(pId, l);
+            if (def.getIncludeFirstNonNullOnly() == Boolean.TRUE) {
+                c.addData(pId, l.get(0));
+            }
+            else {
+			    c.addData(pId, l);
+            }
 		}
 		
 		return c;
