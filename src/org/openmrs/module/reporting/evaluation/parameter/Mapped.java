@@ -68,6 +68,13 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 		}
 	}
 	
+	/**
+	 * Constructor which allows you to set all available Map<String, Object>
+	 */
+	public Mapped(T parameterizable, String parameterMappings) {
+		this(parameterizable, ParameterizableUtil.createParameterMappings(parameterMappings));
+	}
+	
 	//***********************
 	// INSTANCE METHODS
 	//***********************
