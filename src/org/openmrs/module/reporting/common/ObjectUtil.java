@@ -321,7 +321,7 @@ public class ObjectUtil {
 					int startIndex = ret.indexOf("{");
 					int endIndex = ret.indexOf("}", startIndex+1);
 					while (startIndex != -1 && endIndex != -1) {
-						String propertyName = format.substring(startIndex+1, endIndex);
+						String propertyName = ret.substring(startIndex+1, endIndex);
 						Object replacement = ReflectionUtil.getPropertyValue(o, propertyName);
 						String newFormat = (replacement != null && formatSplit.length > 1 ? formatSplit[1] : null);
 						replacement = ObjectUtil.format(replacement, newFormat);
