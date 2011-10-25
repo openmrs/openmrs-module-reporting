@@ -51,7 +51,7 @@ public class PatientDataSetDataEvaluator implements PatientDataEvaluator {
 		PatientDataSetDataDefinition def = (PatientDataSetDataDefinition)definition;
 		
 		RowPerObjectDataSetDefinition dsd = def.getDefinition();
-		dsd.addColumn("__patientId", new PatientIdDataDefinition(), null, null);
+		dsd.addColumn("__patientId", new PatientIdDataDefinition(), null);
 		SimpleDataSet d = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(def.getDefinition(), context);
 
 		// Aggregate the Rows on the Patient Id column

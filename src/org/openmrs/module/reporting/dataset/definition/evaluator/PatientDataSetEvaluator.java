@@ -25,6 +25,8 @@ import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinitio
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.data.DataUtil;
+import org.openmrs.module.reporting.data.MappedData;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
@@ -84,7 +86,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
 		for (RowPerObjectColumnDefinition cd : dsd.getColumnDefinitions()) {
 			
-			Mapped<? extends PatientDataDefinition> dataDef = (Mapped<? extends PatientDataDefinition>) cd.getDataDefinition();
+			MappedData<? extends PatientDataDefinition> dataDef = (MappedData<? extends PatientDataDefinition>) cd.getDataDefinition();
 			EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(dataDef, ec);
 			
 			for (Integer id : c.getMemberIds()) {
@@ -93,17 +95,12 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 					if (val instanceof DataSetRow) {
 						DataSetRow row = (DataSetRow) val;
 						for (Map.Entry<DataSetColumn, Object> e : row.getColumnValues().entrySet()) {
-							Object entryVal = e.getValue();
-							if (cd.getConverter() != null) {
-								entryVal = cd.getConverter().convert(entryVal);
-							}
+							Object entryVal = DataUtil.convertData(e.getValue(), dataDef.getConverters());
 							dataSet.addColumnValue(id, e.getKey(), entryVal);
 						}
 					}
 					else {
-						if (cd.getConverter() != null) {
-							val = cd.getConverter().convert(val);
-						}
+						val = DataUtil.convertData(val, dataDef.getConverters());
 						dataSet.addColumnValue(id, column, val);
 					}
 				}

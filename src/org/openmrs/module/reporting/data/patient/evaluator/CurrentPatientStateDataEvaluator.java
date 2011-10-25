@@ -13,58 +13,65 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientState;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PreferredIdentifierDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.CurrentPatientStateDataDefinition;
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
- * Evaluates a PreferredIdentifierDataDefinition to produce a PatientData
+ * Evaluates a CurrentPatientStateDataDefinition to produce a PatientData
  */
-@Handler(supports=PreferredIdentifierDataDefinition.class, order=50)
-public class PreferredIdentifierDataEvaluator implements PatientDataEvaluator {
+@Handler(supports=CurrentPatientStateDataDefinition.class, order=50)
+public class CurrentPatientStateDataEvaluator implements PatientDataEvaluator {
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
-	 * @should return the preferred identifier of the passed type for each patient in the passed context
+	 * @should return the current state of the configured workflow for each patient in the passed context
 	 */
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		
-		PreferredIdentifierDataDefinition def = (PreferredIdentifierDataDefinition) definition;
+		CurrentPatientStateDataDefinition def = (CurrentPatientStateDataDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
-		if ((context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) || def.getType() == null) {
+		if ((context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) || def.getWorkflow() == null) {
 			return c;
 		}
 		
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
 		
 		StringBuilder hql = new StringBuilder();
-		hql.append("from 		PatientIdentifier ");
+		Map<String, Object> m = new HashMap<String, Object>();
+		
+		hql.append("from 		PatientState ");
 		hql.append("where 		voided = false ");
 		if (context.getBaseCohort() != null) {
-			hql.append("and 		patient.patientId in (:patientIds) ");
+			hql.append("and 		patientProgram.patient.patientId in (:patientIds) ");
 		}
-		hql.append("and 		identifierType.patientIdentifierTypeId = :idType ");
-		hql.append("order by 	preferred asc");
-		Map<String, Object> m = new HashMap<String, Object>();
+		hql.append("and 		state.programWorkflow.programWorkflowId = :workflowId ");
+		hql.append("and 		(startDate is null or startDate <= :effectiveDate )");
+		hql.append("and 		(endDate is null or endDate > :effectiveDate) ");
+		hql.append("order by	startDate asc ");
+
 		if (context.getBaseCohort() != null) {
 			m.put("patientIds", context.getBaseCohort());
 		}
-		m.put("idType", def.getType().getPatientIdentifierTypeId());
+		m.put("workflowId", def.getWorkflow().getProgramWorkflowId());
+		m.put("effectiveDate", ObjectUtil.nvl(def.getEffectiveDate(), new Date()));
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
 		for (Object o : queryResult) {
-			PatientIdentifier pi = (PatientIdentifier)o;
-			c.addData(pi.getPatient().getPatientId(), pi);  // TODO: This is probably inefficient.  Try to improve this with HQL
+			PatientState ps = (PatientState)o;
+			c.addData(ps.getPatientProgram().getPatient().getPatientId(), ps);  // TODO: This is probably inefficient.  Try to improve this with HQL
 		}
 		return c;
 	}

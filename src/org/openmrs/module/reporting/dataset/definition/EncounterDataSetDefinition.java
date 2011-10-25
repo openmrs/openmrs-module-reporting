@@ -76,17 +76,17 @@ public class EncounterDataSetDefinition extends RowPerObjectDataSetDefinition {
 	/**
 	 * Adds a new Column Definition given the passed parameters
 	 */
-	public void addColumn(String name, DataDefinition dataDefinition, String mappings, DataConverter converter) {
+	public void addColumn(String name, DataDefinition dataDefinition, String mappings,  DataConverter... converters) {
 		if (dataDefinition instanceof EncounterDataDefinition) {
-			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converter));
+			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converters));
 		}
 		else if (dataDefinition instanceof PatientDataDefinition) {
 			EncounterDataDefinition edd = new PatientToEncounterDataDefinition((PatientDataDefinition) dataDefinition);
-			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converter));
+			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
 		}
 		else if (dataDefinition instanceof PersonDataDefinition) {
 			EncounterDataDefinition edd = new PersonToEncounterDataDefinition((PersonDataDefinition) dataDefinition);
-			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converter));
+			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
 		}
 		else {
 			throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
@@ -97,8 +97,8 @@ public class EncounterDataSetDefinition extends RowPerObjectDataSetDefinition {
 	 * @see RowPerObjectDataSetDefinition#addColumns(String, RowPerObjectDataSetDefinition, String, DataConverter, TimeQualifier, Integer)
 	 */
 	@Override
-	public void addColumns(String name, RowPerObjectDataSetDefinition dataSetDefinition, String mappings, DataConverter converter, 
-						   TimeQualifier whichValues, Integer numberOfValues) {
+	public void addColumns(String name, RowPerObjectDataSetDefinition dataSetDefinition, String mappings, 
+						   TimeQualifier whichValues, Integer numberOfValues, DataConverter... converters) {
 		
 		// TODO Implement this
 	}

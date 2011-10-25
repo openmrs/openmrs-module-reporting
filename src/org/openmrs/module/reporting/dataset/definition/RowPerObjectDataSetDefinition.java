@@ -81,20 +81,20 @@ public abstract class RowPerObjectDataSetDefinition extends BaseDataSetDefinitio
 	/**
 	 * Adds a new Column Definition given the passed parameters
 	 */
-	public abstract void addColumn(String name, DataDefinition dataDefinition, String mappings, DataConverter converter);
+	public abstract void addColumn(String name, DataDefinition dataDefinition, String mappings, DataConverter... converters);
 	
 	/**
 	 * Adds a the Column Definitions defined in the passed DataSetDefinition
 	 */
-	public void addColumns(String name, RowPerObjectDataSetDefinition dataSetDefinition, String mappings, DataConverter converter) {
-		addColumns(name, dataSetDefinition, mappings, converter, null, null);
+	public void addColumns(String name, RowPerObjectDataSetDefinition dataSetDefinition, String mappings, DataConverter... converters) {
+		addColumns(name, dataSetDefinition, mappings, null, null, converters);
 	}
 	
 	/**
 	 * Adds a the Column Definitions defined in the passed DataSetDefinition
 	 */
-	public abstract void addColumns(String name, RowPerObjectDataSetDefinition dataSetDefinition, String mappings, DataConverter converter,
-									TimeQualifier whichValues, Integer numberOfValues);
+	public abstract void addColumns(String name, RowPerObjectDataSetDefinition dataSetDefinition, String mappings,
+									TimeQualifier whichValues, Integer numberOfValues, DataConverter... converters);
 	
 	/**
 	 * Returns the RowPerObjectColumnDefinition defined with the passed name

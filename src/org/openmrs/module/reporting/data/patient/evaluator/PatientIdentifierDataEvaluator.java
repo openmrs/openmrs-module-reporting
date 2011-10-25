@@ -47,7 +47,7 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		PatientIdentifierDataDefinition def = (PatientIdentifierDataDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
-		if (context.getBaseCohort() == null || context.getBaseCohort().isEmpty() || def.getTypes() == null || def.getTypes().isEmpty()) {
+		if ((context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) || def.getTypes() == null || def.getTypes().isEmpty()) {
 			return c;
 		}
 		
@@ -61,11 +61,15 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		StringBuilder hql = new StringBuilder();
 		hql.append("from 		PatientIdentifier ");
 		hql.append("where 		voided = false ");
-		hql.append("and 		patient.patientId in (:patientIds) ");
+		if (context.getBaseCohort() != null) {
+			hql.append("and 		patient.patientId in (:patientIds) ");
+		}
 		hql.append("and 		identifierType.patientIdentifierTypeId in (:idTypes) ");
 		hql.append("order by 	preferred asc");
 		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("patientIds", context.getBaseCohort());
+		if (context.getBaseCohort() != null) {
+			m.put("patientIds", context.getBaseCohort());
+		}
 		m.put("idTypes", idTypes);
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
 		

@@ -18,10 +18,10 @@ import java.util.List;
 
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.DataSetDataDefinition;
+import org.openmrs.module.reporting.data.MappedData;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 
 /**
@@ -34,10 +34,7 @@ public class RowPerObjectColumnDefinition extends BaseColumnDefinition {
 	//***** PROPERTIES *****
 	
     @ConfigurationProperty
-    private Mapped<? extends DataDefinition> dataDefinition;
-    
-	@ConfigurationProperty
-	private DataConverter converter;
+    private MappedData<? extends DataDefinition> dataDefinition;
     
 	//***** CONSTRUCTORS *****
 	
@@ -58,24 +55,16 @@ public class RowPerObjectColumnDefinition extends BaseColumnDefinition {
 	/**
 	 * Constructor to populate to populate name and data definition
 	 */
-	public RowPerObjectColumnDefinition(String name, Mapped<? extends DataDefinition> dataDefinition) {
+	public RowPerObjectColumnDefinition(String name, MappedData<? extends DataDefinition> dataDefinition) {
 		this(name);
 		this.dataDefinition = dataDefinition;
 	}
 	
 	/**
-	 * Constructor to populate all properties
-	 */
-	public RowPerObjectColumnDefinition(String name, Mapped<? extends DataDefinition> dataDefinition, DataConverter converter) {
-		this(name, dataDefinition);
-		this.converter = converter;
-	}
-	
-	/**
 	 * Constructor to populate name and data definition
 	 */
-	public RowPerObjectColumnDefinition(String name, DataDefinition dataDefinition, String mappings, DataConverter converter) {
-		this(name, new Mapped<DataDefinition>(dataDefinition, ParameterizableUtil.createParameterMappings(mappings)), converter);
+	public RowPerObjectColumnDefinition(String name, DataDefinition dataDefinition, String mappings, DataConverter... converters) {
+		this(name, new MappedData<DataDefinition>(dataDefinition, ParameterizableUtil.createParameterMappings(mappings), converters));
 	}
 	
 	/**
@@ -91,8 +80,9 @@ public class RowPerObjectColumnDefinition extends BaseColumnDefinition {
 			}
 			else {
 				Class<?> type = dataDefinition.getParameterizable().getDataType();
-				if (converter != null) {
-					type = converter.getDataType();
+				List<DataConverter> converters = dataDefinition.getConverters();
+				if (converters != null && converters.size() > 0) {
+					type = converters.get(converters.size() - 1).getDataType();
 				}
 				l.add(new DataSetColumn(getName(), getName(), type));
 			}
@@ -105,28 +95,14 @@ public class RowPerObjectColumnDefinition extends BaseColumnDefinition {
 	/**
 	 * @return the dataDefinition
 	 */
-	public Mapped<? extends DataDefinition> getDataDefinition() {
+	public MappedData<? extends DataDefinition> getDataDefinition() {
 		return dataDefinition;
 	}
 	
 	/**
 	 * @param dataDefinition the dataDefinition to set
 	 */
-	public void setDataDefinition(Mapped<? extends DataDefinition> dataDefinition) {
+	public void setDataDefinition(MappedData<? extends DataDefinition> dataDefinition) {
 		this.dataDefinition = dataDefinition;
-	}
-
-	/**
-	 * @return the converter
-	 */
-	public DataConverter getConverter() {
-		return converter;
-	}
-
-	/**
-	 * @param converter the converter to set
-	 */
-	public void setConverter(DataConverter converter) {
-		this.converter = converter;
 	}
 }

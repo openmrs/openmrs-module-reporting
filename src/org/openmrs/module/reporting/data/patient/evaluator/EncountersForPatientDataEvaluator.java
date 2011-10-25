@@ -47,7 +47,7 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 		EncountersForPatientDataDefinition def = (EncountersForPatientDataDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
-		if (context.getBaseCohort() == null || context.getBaseCohort().isEmpty()) {
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
 			return c;
 		}
 		
@@ -59,8 +59,10 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 		hql.append("from 		Encounter ");
 		hql.append("where 		voided = false ");
 		
-		hql.append("and 		patientId in (:patientIds) ");
-		m.put("patientIds", context.getBaseCohort());
+		if (context.getBaseCohort() != null) {
+			hql.append("and 		patientId in (:patientIds) ");
+			m.put("patientIds", context.getBaseCohort());
+		}
 		
 		if (def.getTypes() != null && !def.getTypes().isEmpty()) {
 			List<Integer> ids = new ArrayList<Integer>();

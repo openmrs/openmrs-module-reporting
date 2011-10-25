@@ -16,9 +16,11 @@ package org.openmrs.module.reporting.data.converter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 
 /**
  * Date data converter
@@ -27,29 +29,36 @@ public class DateConverter implements DataConverter {
 	
 	//***** PROPERTIES *****
 	
-	private DateFormat df;
+	private DateFormat dateFormat;
+	private String conversionCalculation;
 	
 	//***** CONSTRUCTORS *****
 	
-	public DateConverter() {
-		this("yyyy-MM-dd");
+	/**
+	 * Default Constructor
+	 */
+	public DateConverter() {}
+
+	/**
+	 * Constructor for just format
+	 */
+	public DateConverter(String format) {
+		this(format, null);
 	}
 	
 	/**
-	 * Constructor for just format, defaults to English Locale
+	 * String format and conversionCalculation
 	 */
-	public DateConverter(String format) {
-		this (format, Locale.ENGLISH);
+	public DateConverter(String format, String conversionCalculation) {
+		this (new SimpleDateFormat(format), conversionCalculation);
 	}
 	
 	/**
 	 * Full Constructor
 	 */
-	public DateConverter(String format, Locale locale) {
-		if (ObjectUtil.isNull(format)) {
-			format = "yyyy-MM-dd";
-		}
-		df = new SimpleDateFormat(format, locale);
+	public DateConverter(DateFormat dateFormat, String conversionCalculation) {
+		this.dateFormat = dateFormat;
+		this.conversionCalculation = conversionCalculation;
 	}
 	
 	//***** INSTANCE METHODS *****
@@ -58,19 +67,29 @@ public class DateConverter implements DataConverter {
 	 * @see DataConverter#converter(Object)
 	 * @should convert a Date into a String with the passed format
 	 */
-	public String convert(Object original) {
+	public Object convert(Object original) {
 		Date date = (Date) original;
 		if (date != null) {
-			return df.format(date);
+			if (ObjectUtil.notNull(conversionCalculation)) {
+				Map<String, Object> m = new HashMap<String, Object>();
+				m.put("date", date);
+				date = (Date)EvaluationUtil.evaluateParameterExpression("date"+conversionCalculation, m);
+			}
+			if (dateFormat != null) {
+				return dateFormat.format(date);
+			}
 		}
-		return "";
+		return date;
 	}
 
 	/** 
 	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
-		return String.class;
+		if (dateFormat != null) {
+			return String.class;
+		}
+		return Date.class;
 	}
 	
 	/** 
@@ -78,5 +97,33 @@ public class DateConverter implements DataConverter {
 	 */
 	public Class<?> getInputDataType() {
 		return Date.class;
+	}
+
+	/**
+	 * @return the dateFormat
+	 */
+	public DateFormat getDateFormat() {
+		return dateFormat;
+	}
+
+	/**
+	 * @param dateFormat the dateFormat to set
+	 */
+	public void setDateFormat(DateFormat dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+	/**
+	 * @return the conversionCalculation
+	 */
+	public String getConversionCalculation() {
+		return conversionCalculation;
+	}
+
+	/**
+	 * @param conversionCalculation the conversionCalculation to set
+	 */
+	public void setConversionCalculation(String conversionCalculation) {
+		this.conversionCalculation = conversionCalculation;
 	}
 }

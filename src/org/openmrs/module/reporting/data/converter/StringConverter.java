@@ -86,6 +86,15 @@ public class StringConverter implements DataConverter  {
 	public void setConversions(Map<Object, String> conversions) {
 		this.conversions = conversions;
 	}
+	
+	/**
+	 * Adds a conversion for the given value
+	 * @param value
+	 * @param conversion
+	 */
+	public void addConversion(Object value, String conversion) {
+		getConversions().put(value, conversion);
+	}
 
 	/**
 	 * @return the unspecifiedValue

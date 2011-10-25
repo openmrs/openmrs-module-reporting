@@ -75,13 +75,13 @@ public class PatientDataSetDefinition extends RowPerObjectDataSetDefinition {
 	/**
 	 * Adds a new Column Definition given the passed parameters
 	 */
-	public void addColumn(String name, DataDefinition dataDefinition, String mappings, DataConverter converter) {
+	public void addColumn(String name, DataDefinition dataDefinition, String mappings, DataConverter... converters) {
 		if (dataDefinition instanceof PatientDataDefinition) {
-			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converter));
+			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converters));
 		}
 		else if (dataDefinition instanceof PersonDataDefinition) {
 			PatientDataDefinition pdd = new PersonToPatientDataDefinition((PersonDataDefinition) dataDefinition);
-			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, pdd, mappings, converter));
+			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, pdd, mappings, converters));
 		}
 		else {
 			throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
@@ -91,19 +91,19 @@ public class PatientDataSetDefinition extends RowPerObjectDataSetDefinition {
 	/**
 	 * Adds a the Column Definitions defined in the passed DataSetDefinition
 	 */
-	public void addColumns(String name, RowPerObjectDataSetDefinition dataSetDefinition, String mappings, DataConverter converter,
-						   TimeQualifier whichValues, Integer numberOfValues) {
+	public void addColumns(String name, RowPerObjectDataSetDefinition dataSetDefinition, String mappings,
+						   TimeQualifier whichValues, Integer numberOfValues, DataConverter... converters) {
 		
 		// Ensure that the DSD being passed in supports a Patient ID column.  If so, we can join against it
 		try {
 			RowPerObjectDataSetDefinition def = dataSetDefinition.getClass().newInstance();
-			def.addColumn("Patient ID", new PatientIdDataDefinition(), null, null);
+			def.addColumn("Patient ID", new PatientIdDataDefinition(), null);
 		}
 		catch (Exception e) {
 			throw new IllegalArgumentException("Unable to add columns from " + dataSetDefinition.getClass().getSimpleName(), e);
 		}
 		
-		addColumn(name, new PatientDataSetDataDefinition(dataSetDefinition, whichValues, numberOfValues), mappings, converter);
+		addColumn(name, new PatientDataSetDataDefinition(dataSetDefinition, whichValues, numberOfValues), mappings, converters);
 	}
 	
     //***** PROPERTY ACCESS *****

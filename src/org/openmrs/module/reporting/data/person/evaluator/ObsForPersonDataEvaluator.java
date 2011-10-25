@@ -45,7 +45,7 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		ObsForPersonDataDefinition def = (ObsForPersonDataDefinition) definition;
 		EvaluatedPersonData c = new EvaluatedPersonData(def, context);
 		
-		if (context.getBaseCohort() == null || context.getBaseCohort().isEmpty()) {
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
 			return c;
 		}
 		
@@ -57,8 +57,10 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		hql.append("from 		Obs ");
 		hql.append("where 		voided = false ");
 		
-		hql.append("and 		personId in (:patientIds) ");
-		m.put("patientIds", context.getBaseCohort());
+		if (context.getBaseCohort() != null) {
+			hql.append("and 		personId in (:patientIds) ");
+			m.put("patientIds", context.getBaseCohort());
+		}
 		
 		hql.append("and 		concept.conceptId = :question ");
 		m.put("question", def.getQuestion().getConceptId());
