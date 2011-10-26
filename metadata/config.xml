@@ -75,6 +75,10 @@
 		<name>Manage Report Designs</name>
 		<description>Add/Edit/Remove Report Designs</description>
 	</privilege>
+	<privilege>
+		<name>Manage Scheduled Report Tasks</name>
+		<description>Manage Task Scheduling in Reporting Module </description>
+	</privilege>
 	<!-- Global Properties -->
 	<globalProperty>
 		<property>report.deleteReportsAgeInHours</property>
