@@ -21,6 +21,9 @@ import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DrugOrderSet;
+import org.openmrs.module.reporting.data.converter.ChainedConverter;
+import org.openmrs.module.reporting.data.converter.CollectionConverter;
+import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
@@ -54,6 +57,11 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		def.addDrugToInclude(Context.getConceptService().getDrug(3));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
 		Assert.assertEquals(4, history.size());
+		
+		CollectionConverter drugOrderListConverter = new CollectionConverter(new ObjectFormatter("{drug}"), true, null);
+		ObjectFormatter drugOrderFormatter = new ObjectFormatter(" + ");
+		ChainedConverter c = new ChainedConverter(drugOrderListConverter, drugOrderFormatter);
+		System.out.println("History: " + c.convert(history));
 	}
 
 	/**
