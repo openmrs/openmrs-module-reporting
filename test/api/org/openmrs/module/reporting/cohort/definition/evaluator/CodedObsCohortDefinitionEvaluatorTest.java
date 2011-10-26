@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
@@ -64,5 +65,29 @@ public class CodedObsCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertEquals(1, cohort.size());
 		Assert.assertTrue(cohort.contains(7));
+	}
+	
+	/**
+	 * @see {@link CodedObsCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should test that obs are retricted by encounter type", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldTestThatObsAreRestrictedByEncounterType() throws Exception {
+		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+		cd.setTimeModifier(TimeModifier.LAST);
+		cd.setQuestion(new Concept(21)); // FOOD ASSISTANCE FOR ENTIRE FAMILY, in the reporting test dataset
+		cd.setOperator(SetComparator.IN);
+		cd.setValueList(Collections.singletonList(new Concept(7))); // YES, in the reporting test dataset
+		
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertEquals(1, cohort.size());
+
+		cd.setEncounterTypeList(Collections.singletonList(new EncounterType(1)));
+		cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertEquals(1, cohort.size());
+		
+		cd.setEncounterTypeList(Collections.singletonList(new EncounterType(2)));
+		cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertEquals(0, cohort.size());
 	}
 }
