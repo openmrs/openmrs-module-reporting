@@ -8,6 +8,12 @@
 
 <c:set var="pageUrl" value="/module/reporting/cohorts/compositionCohortDefinition.form?uuid=uuid"/>
 
+<style>
+	textarea#compositionString { 
+		width: 99%;
+	}
+</style>
+
 <c:choose>
 	<c:when test="${definition.uuid == null}">
 
@@ -67,7 +73,7 @@
 			<div class="box">
 				<form method="post" action="compositionCohortDefinitionSetComposition.form">
 					<input type="hidden" name="uuid" value="${definition.uuid}"/>
-					<textarea id="compositionString" name="compositionString">${definition.compositionString}</textarea>
+					<textarea id="compositionString" rows="6" name="compositionString">${definition.compositionString}</textarea>
 					<br/>
 					<input type="submit" value="Save"/>
 					<input type="button" value="Close" onClick="window.location='/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition';"/>
