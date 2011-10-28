@@ -15,6 +15,7 @@ import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.Person;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
@@ -26,10 +27,10 @@ import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.logic.LogicService;
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 public class CohortQueryServiceImpl  extends BaseOpenmrsService implements CohortQueryService {
@@ -144,20 +145,27 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount) {
-	    return dao.getPatientsHavingEncounters(onOrAfter, onOrBefore,
-	    	locationList, encounterTypeList, formList,
-	    	atLeastCount, atMostCount);
+	    return getPatientsHavingEncounters(onOrAfter, onOrBefore, locationList, encounterTypeList, formList, atLeastCount, atMostCount);
     }
-
+	
 	/**
 	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer, org.openmrs.User)
 	 */
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, TimeQualifier timeQualifier, 
 	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore) {
-	    return dao.getPatientsHavingEncounters(onOrAfter, onOrBefore, timeQualifier,
-	    	locationList, encounterTypeList, formList,
-	    	atLeastCount, atMostCount, createdBy, createdOnOrAfter, createdOnOrBefore);
+	    return getPatientsHavingEncounters(onOrAfter, onOrBefore, timeQualifier, locationList, null, encounterTypeList, formList, 
+	    								   atLeastCount, atMostCount, createdBy, createdOnOrAfter, createdOnOrBefore);
+    }
+
+	/**
+	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer, org.openmrs.User)
+	 */
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, TimeQualifier timeQualifier, List<Location> locationList, 
+	                                          List<Person> providerList, List<EncounterType> encounterTypeList, List<Form> formList,
+                                              Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore) {
+	    return dao.getPatientsHavingEncounters(onOrAfter, onOrBefore, timeQualifier, locationList, providerList, encounterTypeList, formList,
+	    									   atLeastCount, atMostCount, createdBy, createdOnOrAfter, createdOnOrBefore);
     }
 
 	/**

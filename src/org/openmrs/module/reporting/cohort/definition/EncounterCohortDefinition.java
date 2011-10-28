@@ -20,9 +20,10 @@ import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.Person;
 import org.openmrs.User;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 @Localized("reporting.EncounterCohortDefinition")
@@ -43,6 +44,9 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty(group="which")
 	private List<Location> locationList;
+	
+	@ConfigurationProperty(group="which")
+	private List<Person> providerList;
 	
 	@ConfigurationProperty(group="when")
 	private Date onOrAfter;
@@ -98,6 +102,8 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 			ret.append(" of type " + encounterTypeList);
 		if (formList != null)
 			ret.append(" from form " + formList);
+		if (providerList != null)
+			ret.append(" from provider " + providerList);
 		if (atLeastCount != null)
 			ret.append(" at least " + atLeastCount);
 		if (atMostCount != null)
@@ -247,8 +253,32 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
     	}
     	locationList.add(location);
     }
-	
+    
     /**
+	 * @return the providerList
+	 */
+	public List<Person> getProviderList() {
+		return providerList;
+	}
+
+	/**
+	 * @param providerList the providerList to set
+	 */
+	public void setProviderList(List<Person> providerList) {
+		this.providerList = providerList;
+	}
+
+    /**
+     * @param provider the provider to add to the list
+     */
+    public void addProvider(Person provider) {
+    	if (providerList == null) {
+    		providerList = new ArrayList<Person>();
+    	}
+    	providerList.add(provider);
+    }
+    
+	/**
      * @return the formList
      */
     public List<Form> getFormList() {

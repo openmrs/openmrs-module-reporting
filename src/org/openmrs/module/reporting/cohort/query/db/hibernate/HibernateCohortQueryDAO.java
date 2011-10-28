@@ -25,6 +25,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.Person;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
@@ -37,12 +38,12 @@ import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.report.util.SqlUtils;
@@ -1057,24 +1058,16 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		}
 		return ret;
     }
-	
-	/**
-	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer)
-	 */
-	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
-	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
-                                              Integer atLeastCount, Integer atMostCount) {
-		return getPatientsHavingEncounters(onOrAfter, onOrBefore, null, locationList, encounterTypeList, formList, atLeastCount, atMostCount, null, null, null);
-	}
 
 	/**
 	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer, org.openmrs.User)
 	 */
-	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, TimeQualifier timeQualifier, 
-	                                          List<Location> locationList, List<EncounterType> encounterTypeList, List<Form> formList,
+	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, TimeQualifier timeQualifier, List<Location> locationList, 
+	                                          List<Person> providerList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore) {
 		List<Integer> encTypeIds = SqlUtils.openmrsObjectIdListHelper(encounterTypeList);
 		List<Integer> locationIds = SqlUtils.openmrsObjectIdListHelper(locationList);
+		List<Integer> providerIds = SqlUtils.openmrsObjectIdListHelper(providerList);
 		List<Integer> formIds = SqlUtils.openmrsObjectIdListHelper(formList);
 		
 		// These clauses are applicable both in the overall query and in the subquery, if applicable
@@ -1083,6 +1076,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		whichClauses.add("voided = false");
 		ObjectUtil.addIfNotNull(whichClauses, "encounter_type in (:encTypeIds)", encTypeIds);
 		ObjectUtil.addIfNotNull(whichClauses, "location_id in (:locationIds)", locationIds);
+		ObjectUtil.addIfNotNull(whichClauses, "provider_id in (:providerIds)", providerIds);
 		ObjectUtil.addIfNotNull(whichClauses, "form_id in (:formIds)", formIds);
 		
 		// These clauses are only applicable in the overall query
@@ -1131,6 +1125,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.setParameterList("encTypeIds", encTypeIds);
 		if (locationIds != null)
 			query.setParameterList("locationIds", locationIds);
+		if (providerIds != null)
+			query.setParameterList("providerIds", providerIds);
 		if (formIds != null)
 			query.setParameterList("formIds", formIds);
 		if (onOrAfter != null)

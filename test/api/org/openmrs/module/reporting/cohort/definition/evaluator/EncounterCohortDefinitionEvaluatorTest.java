@@ -11,12 +11,13 @@ import org.openmrs.Cohort;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -179,4 +180,15 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	        Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
     	}
     }
+
+	/**
+	 * @see EncounterCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)
+	 * @verifies return correct patients when provider parameters are set
+	 */
+	@Test
+	public void evaluate_shouldReturnCorrectPatientsWhenProviderParametersAreSet() throws Exception {
+        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+        cd.addProvider(new Person(2));
+        Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, new EvaluationContext()).size());
+	}
 }

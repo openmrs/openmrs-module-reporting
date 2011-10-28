@@ -42,7 +42,6 @@
 	<classpathentry kind="lib" path="lib/jackson-core-asl-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.0.1.jar"/>
-	<classpathentry kind="lib" path="lib-common/htmlwidgets-1.5.6.2.jar"/>
 	<classpathentry kind="lib" path="lib-common/ant-contrib-1.0b2.jar"/>
 	<classpathentry kind="lib" path="lib-common/antlr_2.7.6.jar"/>
 	<classpathentry kind="lib" path="lib-common/dwr-205.jar"/>
@@ -55,5 +54,6 @@
 	<classpathentry kind="lib" path="lib-common/tests-openmrs-api-1.6.3.19958-dev.jar"/>
 	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.6.3.19958-dev.jar"/>
 	<classpathentry kind="lib" path="lib-common/commons-beanutils-1.7.0.jar" sourcepath="/home/mseaton/.m2/repository/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib-common/htmlwidgets-1.6.0.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

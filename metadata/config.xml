@@ -15,13 +15,11 @@
 	</description>
 	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>
 	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL>	
-	<require_version>1.5.2</require_version>
+	<require_version>1.6</require_version>
 
 	<require_modules>
-		<!-- really requires 0.1.8.3+ or 0.2.5+ of serialization.xstream, but there's no way to declare this -->
-	   	<require_module>org.openmrs.module.serialization.xstream</require_module>
-	   	<require_module version="1.5.6.2">org.openmrs.module.htmlwidgets</require_module>
-	   	<!-- <require_module version="0.4.1">org.openmrs.logic</require_module>  -->
+	   	<require_module version="0.2.5">org.openmrs.module.serialization.xstream</require_module>
+	   	<require_module version="1.6">org.openmrs.module.htmlwidgets</require_module>
 	</require_modules>
 
 	<!-- Extensions -->
