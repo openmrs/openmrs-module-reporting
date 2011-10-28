@@ -36,7 +36,7 @@
 					           <spring:message code="${parameter.label}"/>:
 		                    </td>
 		                    <td>
-								<wgt:widget id="${status.expression}" name="${status.expression}" type="${parameter.type.name}" property="${status.expression}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>
+								<wgt:widget id="userEnteredParam${parameter.name}" name="${status.expression}" type="${parameter.type.name}" property="${status.expression}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>
 		                        <c:if test="${not empty status.errorMessage}">
 		                            <span class="error">${status.errorMessage}</span>
 		                        </c:if>
