@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.web.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,6 +23,7 @@ import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
 import org.openmrs.module.reporting.propertyeditor.IndicatorEditor;
 import org.openmrs.propertyeditor.LocationEditor;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -42,6 +44,11 @@ public class IndicatorHistoryController {
 		binder.registerCustomEditor(Location.class, new LocationEditor());
 		binder.registerCustomEditor(Indicator.class, new IndicatorEditor());
 		binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
+		
+		//register a customDateEditor to handle startDate and endDate
+		SimpleDateFormat dateFormat = Context.getDateFormat();
+		dateFormat.setLenient(false);
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true, 10)); 
 	}
 	
 	@ModelAttribute("query")
