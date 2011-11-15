@@ -997,7 +997,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			sql.append("             where obs.voided = false and obs.concept_id = :questionConceptId " + dateAndLocationSqlForSubquery + " group by person_id ");
 			sql.append(" ) subq on o.person_id = subq.person_id and o.obs_datetime = subq.odt ");
 			sql.append(" where o.voided = false and o.concept_id = :questionConceptId ");
-
+			sql.append(dateAndLocationSql);
 		} else if (doSqlAggregation) {
 			sql.append(" select o.person_id ");
 			sql.append(" from obs o ");
