@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.dataset.definition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -34,6 +35,7 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
  * DataSetDefinition for Producing a DataSet that has one row per Encounter
  * @see DataSetDefinition
  */
+@Localized("reporting.EncounterDataSetDefinition")
 public class EncounterDataSetDefinition extends RowPerObjectDataSetDefinition {
 	
     public static final long serialVersionUID = 1L;

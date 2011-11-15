@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -34,6 +35,7 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
  * DataSetDefinition for Producing a DataSet that has one row per Patient
  * @see DataSetDefinition
  */
+@Localized("reporting.PatientDataSetDefinition")
 public class PatientDataSetDefinition extends RowPerObjectDataSetDefinition {
 	
     public static final long serialVersionUID = 1L;
