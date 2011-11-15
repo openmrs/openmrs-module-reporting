@@ -20,11 +20,9 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.htmlwidgets.web.WidgetConfig;
 import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
-import org.openmrs.util.HandlerUtil;
 
 /**
- * FieldGenHandler for String Types
+ * FieldGenHandler for Mapped Types
  */
 @Handler(supports={Mapped.class}, order=50)
 public class MappedHandler extends WidgetHandler {
@@ -33,20 +31,8 @@ public class MappedHandler extends WidgetHandler {
 	 * @see WidgetHandler#render(WidgetConfig)
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public void render(WidgetConfig config, Writer w) throws IOException {
-		
-		if (config.getGenericTypes() == null || config.getGenericTypes().length != 1) {
-			throw new IllegalArgumentException("Invalid generic types.");
-		}
-		Class<? extends Parameterizable> parentType = (Class<? extends Parameterizable>) config.getType();
-		Class<? extends Parameterizable> childType = (Class<? extends Parameterizable>)config.getGenericTypes()[0];
-		WidgetHandler handler = HandlerUtil.getPreferredHandler(WidgetHandler.class, childType);
-		if (handler == null) {
-			throw new RuntimeException("No Preferred Handler found for: " + childType);
-		}
-
-		w.write("This will be a widget for a " + parentType.getSimpleName() + "&lt;" + childType.getSimpleName() + "&gt;");
+		w.write("This will be a widget for a Mapped property");
 	}
 	
 	/** 
