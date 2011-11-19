@@ -1,27 +1,39 @@
 package org.openmrs.module.reporting.serializer;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.definition.service.DefinitionService;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 
-import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.ConverterLookup;
 import com.thoughtworks.xstream.mapper.Mapper;
 
-
-public class ReportDefinitionConverter extends ReportingShortConverter implements Converter {
+/**
+ * Defines how ReportDefinitions should be converted
+ */
+public class ReportDefinitionConverter extends ReportingShortConverter {
 	
+	/**
+	 * Constructor
+	 */
 	public ReportDefinitionConverter(Mapper mapper, ConverterLookup converterLookup) {
 	    super(mapper, converterLookup);
     }
 
+	/**
+	 * @see ReportingShortConverter#getDefinitionType()
+	 */
 	@Override
-	public Object getByUUID(String uuid) {
-		return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
+	public Class<? extends Definition> getDefinitionType() {
+		return ReportDefinition.class;
 	}
-	
-	public boolean canConvert(Class c) {
-		return ReportDefinition.class.isAssignableFrom(c);
-	}
-	
+
+	/**
+	 * @see ReportingShortConverter#getDefinitionService()
+	 */
+	@Override
+	public DefinitionService<?> getDefinitionService() {
+		return Context.getService(ReportDefinitionService.class);
+	}	
 }

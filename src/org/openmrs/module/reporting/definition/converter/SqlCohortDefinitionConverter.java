@@ -20,8 +20,9 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
-import org.openmrs.module.reporting.definition.DefinitionContext;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.definition.service.SerializedDefinitionService;
 
 /**
@@ -77,7 +78,7 @@ public class SqlCohortDefinitionConverter implements DefinitionConverter {
 			Context.getService(SerializedDefinitionService.class).saveSerializedDefinition(so);
 			
 			// Confirm this works
-			SqlCohortDefinition scd = DefinitionContext.getDefinitionByUuid(SqlCohortDefinition.class, so.getUuid());
+			CohortDefinition scd = Context.getService(CohortDefinitionService.class).getDefinitionByUuid(so.getUuid());
 			log.info("Successfully converted SqlCohortDefinition named '" + scd.getName() + "' to new format");
 			return true;
 		}

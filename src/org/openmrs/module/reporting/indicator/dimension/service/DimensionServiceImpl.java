@@ -18,14 +18,12 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Base Implementation of DimensionService
  */
 @Transactional
-@Service
 public class DimensionServiceImpl extends BaseDefinitionService<Dimension> implements DimensionService {
 
 	protected static Log log = LogFactory.getLog(DimensionServiceImpl.class);

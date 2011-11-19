@@ -37,6 +37,7 @@ public class EncounterQueryServiceImpl extends BaseDefinitionService<EncounterQu
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 * @should evaluate an encounter query
 	 */
 	@Transactional(readOnly = true)
 	public EncounterQueryResult evaluate(EncounterQuery query, EvaluationContext context) throws EvaluationException {

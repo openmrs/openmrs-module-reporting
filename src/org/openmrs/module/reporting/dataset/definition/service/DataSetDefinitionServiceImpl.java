@@ -22,14 +22,12 @@ import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Default implementation of the DataSetDefinitionService.
  */
 @Transactional
-@Service
 public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetDefinition> implements DataSetDefinitionService {
 
 	protected Log log = LogFactory.getLog(this.getClass());

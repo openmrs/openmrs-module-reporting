@@ -22,14 +22,12 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Base Implementation of IndicatorService
  */
 @Transactional
-@Service
 public class IndicatorServiceImpl extends BaseDefinitionService<Indicator> implements IndicatorService {
 
 	protected static Log log = LogFactory.getLog(IndicatorServiceImpl.class);

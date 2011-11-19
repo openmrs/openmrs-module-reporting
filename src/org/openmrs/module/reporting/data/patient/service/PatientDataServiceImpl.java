@@ -37,6 +37,7 @@ public class PatientDataServiceImpl extends BaseDefinitionService<PatientDataDef
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 * @should evaluate a patient data definition
 	 */
 	@Transactional(readOnly = true)
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {

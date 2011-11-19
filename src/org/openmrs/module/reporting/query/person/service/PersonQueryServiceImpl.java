@@ -37,6 +37,7 @@ public class PersonQueryServiceImpl extends BaseDefinitionService<PersonQuery> i
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 * @should evaluate a person query
 	 */
 	@Transactional(readOnly = true)
 	public PersonQueryResult evaluate(PersonQuery query, EvaluationContext context) throws EvaluationException {

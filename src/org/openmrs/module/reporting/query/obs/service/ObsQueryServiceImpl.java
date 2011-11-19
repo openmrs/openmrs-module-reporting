@@ -37,6 +37,7 @@ public class ObsQueryServiceImpl extends BaseDefinitionService<ObsQuery> impleme
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 * @should evaluate an obs query
 	 */
 	@Transactional(readOnly = true)
 	public ObsQueryResult evaluate(ObsQuery query, EvaluationContext context) throws EvaluationException {

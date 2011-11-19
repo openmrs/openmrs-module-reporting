@@ -47,12 +47,10 @@ import org.openmrs.scheduler.TaskDefinition;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
-import org.springframework.stereotype.Service;
 
 /**
  * Base Implementation of the ReportService API
  */
-@Service
 public class ReportServiceImpl extends BaseOpenmrsService implements ReportService {
 
 	private static final String REPORT_RESULTS_DIR = "REPORT_RESULTS";
