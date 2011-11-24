@@ -170,7 +170,9 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 						log.debug("Adding " + ExcelUtil.formatRow(row) + " with dataSetRow: " + dataSetRow);
 					}
 				}
-				rowNum += numRowsToRepeat;
+				if(numRowsToRepeat > 1) {
+					rowNum += numRowsToRepeat-1;
+				}
 			}
 			else {
 				rowsToAdd.add(new RowToAdd(currentRow, sheetToAdd.getReplacementData()));
