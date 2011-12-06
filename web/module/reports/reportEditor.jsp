@@ -45,7 +45,7 @@
 		
 		<c:choose>
 			
-			<c:when test="${report.uuid == null}">
+			<c:when test="${report.id == null}">
 				<b class="boxHeader">Create New Report</b>
 				<div class="box">
 					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.report.definition.ReportDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageReports.form|successUrl=reportEditor.form?type=org.openmrs.module.reporting.report.definition.ReportDefinition&uuid=uuid" />

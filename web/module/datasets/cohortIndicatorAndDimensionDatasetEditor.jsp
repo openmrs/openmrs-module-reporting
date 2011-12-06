@@ -8,7 +8,7 @@
 <c:set value="${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition" var="manageUrl"/>
 <br/>
 <c:choose>
-	<c:when test="${dsd.uuid == null}">
+	<c:when test="${dsd.id == null}">
 
 		<b class="boxHeader">Create Cohort Indicator and Dimension Data Set</b>
 		<div class="box">

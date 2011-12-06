@@ -51,7 +51,7 @@
 		
 		<c:choose>
 			
-			<c:when test="${dimension.uuid == null}">
+			<c:when test="${dimension.id == null}">
 				<b class="boxHeader">Create New Dimension</b>
 				<div class="box">
 					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension|size=380|mode=edit|dialog=false|cancelUrl=manageDimensions.form|successUrl=/module/reporting/indicators/editCohortDefinitionDimension.form?uuid=uuid" />

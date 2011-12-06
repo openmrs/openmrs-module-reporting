@@ -50,7 +50,7 @@
 <div id="page" style="padding-top: 25px;">
 	<div id="container">
 		<c:choose>
-			<c:when test="${definition.uuid == null}">
+			<c:when test="${definition.id == null}">
 		
 				<b class="boxHeader">SQL Cohort Query</b>
 				<div class="box">

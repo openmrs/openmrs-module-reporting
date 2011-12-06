@@ -57,7 +57,7 @@ public class ReportDesignFormController {
 		if (StringUtils.isNotEmpty(uuid)) {
 			design = rs.getReportDesignByUuid(uuid);
 		}
-		else {
+		if (design == null) {
 			design = new ReportDesign();
 		}
 		design.setName(name);
@@ -104,7 +104,7 @@ public class ReportDesignFormController {
 
     	for (Iterator<ReportDesignResource> i = design.getResources().iterator(); i.hasNext();) {
     		ReportDesignResource r = i.next();
-    		if (r.getUuid() != null && !foundResources.contains(r.getUuid())) {
+    		if (r.getId() != null && !foundResources.contains(r.getUuid())) {
     			i.remove();
     		}
     	}

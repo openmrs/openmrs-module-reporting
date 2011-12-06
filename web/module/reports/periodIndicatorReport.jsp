@@ -2,7 +2,7 @@
 <openmrs:require privilege="Manage Report Definitions" otherwise="/login.htm" redirect="/module/reporting/reports/manageReports.form" />
 
 		<c:choose>
-			<c:when test="${report.uuid == null}">
+			<c:when test="${report.id == null}">
 
 				<b class="boxHeader">Create Period Indicator Report</b>
 				<div class="box">

@@ -22,7 +22,7 @@
 		
 		<c:choose>
 			
-			<c:when test="${dsd.uuid == null}">
+			<c:when test="${dsd.id == null}">
 				<b class="boxHeader">Create New Cohort DataSet</b>
 				<div class="box">
 					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition|size=380|mode=edit|dialog=false|cancelUrl=../definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition|successUrl=/module/reporting/datasets/cohortDatasetEditor.form?type=org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition&uuid=uuid" />

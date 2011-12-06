@@ -152,17 +152,19 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
     	if (StringUtils.hasText(uuid)) {
 	    	ret = getDefinitionByUuid(uuid);
     	}
-    	else if (type != null) {
-     		try {
-    			ret = type.newInstance();
-    		}
-    		catch (Exception e) {
-    			log.error("Exception occurred while instantiating definition of type " + type, e);
-    			throw new IllegalArgumentException("Unable to instantiate a Definition of type: " + type, e);
-    		}
-    	}
-    	else {
-    		throw new IllegalArgumentException("You must supply either a uuid or a type");
+    	if (ret == null) {
+    		if (type != null) {
+	     		try {
+	    			ret = type.newInstance();
+	    		}
+	    		catch (Exception e) {
+	    			log.error("Exception occurred while instantiating definition of type " + type, e);
+	    			throw new IllegalArgumentException("Unable to instantiate a Definition of type: " + type, e);
+	    		}
+	    	}
+	    	else {
+	    		throw new IllegalArgumentException("You must supply either a uuid or a type");
+	    	}
     	}
     	return ret;
 	}

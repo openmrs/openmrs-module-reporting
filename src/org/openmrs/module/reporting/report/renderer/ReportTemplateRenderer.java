@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.openmrs.Cohort;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -118,17 +119,27 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 			if (!data.containsKey(entry.getKey())) {
 				data.put(entry.getKey(), entry.getValue());
 			}
-			data.put("parameter." + entry.getKey(), entry.getValue());
+			data.put(PARAMETER_PREFIX + SEPARATOR + entry.getKey(), entry.getValue());
 		}
 		
 		// Add all design properties as replacement data
 		for (Map.Entry<Object, Object> entry : design.getProperties().entrySet()) {
-			data.put("property." + entry.getKey(), entry.getValue());
+			data.put(PROPERTY_PREFIX + SEPARATOR  + entry.getKey(), entry.getValue());
 		}
 		
-		// Add context values as replacement data
-		data.put("context.generatedBy", Context.getUserContext().getAuthenticatedUser().getPersonName().toString());
-		data.put("context.generationDate", new Date());
+		String currentUserName = "";
+		User currentUser = Context.getUserContext().getAuthenticatedUser();
+		if (currentUser != null) {
+			if (currentUser.getPersonName() != null) {
+				currentUserName = currentUser.getPersonName().getFullName();
+			}
+			else {
+				currentUserName = currentUser.getUsername();
+			}
+		}
+		
+		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATED_BY, currentUserName);
+		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATION_DATE, new Date());
 
 		return data;
 	}
@@ -187,7 +198,18 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 			data.put(PROPERTY_PREFIX + SEPARATOR  + entry.getKey(), entry.getValue());
 		}
 		
-		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATED_BY, Context.getUserContext().getAuthenticatedUser().getPersonName().toString());
+		String currentUserName = "";
+		User currentUser = Context.getUserContext().getAuthenticatedUser();
+		if (currentUser != null) {
+			if (currentUser.getPersonName() != null) {
+				currentUserName = currentUser.getPersonName().getFullName();
+			}
+			else {
+				currentUserName = currentUser.getUsername();
+			}
+		}
+		
+		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATED_BY, currentUserName);
 		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATION_DATE, new Date());
 
 		return data;

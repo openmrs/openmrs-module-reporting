@@ -27,7 +27,7 @@
 	<div id="container">
 		<h1>
 			<c:choose>
-				<c:when test="${definition.uuid == null}">
+				<c:when test="${definition.id == null}">
 					Create New Logic DataSet
 				</c:when>
 				<c:otherwise>

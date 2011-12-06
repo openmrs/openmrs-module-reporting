@@ -19,7 +19,7 @@
 <c:set var="pageUrl" value="/module/reporting/indicators/editCohortIndicator.form?uuid=uuid"/>
 
 <c:choose>
-	<c:when test="${indicator.uuid == null}">
+	<c:when test="${indicator.id == null}">
 		<b class="boxHeader">Create Cohort Indicator</b>
 		<div class="box">
 			<openmrs:portlet url="baseCohortIndicator" id="baseCohortIndicator" moduleId="reporting" parameters="size=380|mode=edit|dialog=false|cancelUrl=manageIndicators.form|successUrl=${pageUrl}" />

@@ -15,7 +15,7 @@
 </style>
 
 <c:choose>
-	<c:when test="${definition.uuid == null}">
+	<c:when test="${definition.id == null}">
 
 		<b class="boxHeader">Create Composition Cohort Definition</b>
 		<div class="box">

@@ -23,10 +23,12 @@ public class BaseCohortIndicatorPortletController extends ReportingPortletContro
 		
 		super.populateModel(request, model);
 
+		CohortIndicator indicator = null;
 		String uuid = (String)model.get("uuid");
     	if (StringUtils.isNotEmpty(uuid)) {
-    		CohortIndicator indicator = (CohortIndicator) Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
-    		model.put("indicator", indicator);
+    		indicator = (CohortIndicator) Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
+    	}
+    	if (indicator != null) {
     		if (indicator.getAggregator() != null) {
     			try {
     				model.put("aggregatorName", indicator.getAggregator().newInstance().getName());
@@ -37,11 +39,11 @@ public class BaseCohortIndicatorPortletController extends ReportingPortletContro
     		}
     	}
     	else {
-    		CohortIndicator indicator = new CohortIndicator();
+    		indicator = new CohortIndicator();
 			indicator.addParameter(ReportingConstants.START_DATE_PARAMETER);
 			indicator.addParameter(ReportingConstants.END_DATE_PARAMETER);
 			indicator.addParameter(ReportingConstants.LOCATION_PARAMETER);
-			model.put("indicator", indicator);
     	}
+    	model.put("indicator", indicator);
 	}
 }
