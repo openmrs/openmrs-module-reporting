@@ -25,8 +25,8 @@ public class RunAdminListExt extends AdministrationSectionExt {
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		map.put("module/reporting/dashboard/index.form", "reporting.runReport.title");
 		map.put("module/reporting/reports/reportHistory.form", "reporting.reportHistory.title");
-		map.put("module/reporting/indicators/indicatorHistory.form", "reporting.indicatorHistory.title");
-		map.put("module/reporting/datasets/viewDataSet.form", "reporting.dataSetViewer.title");
+		//map.put("module/reporting/indicators/indicatorHistory.form", "reporting.indicatorHistory.title");
+		//map.put("module/reporting/datasets/viewDataSet.form", "reporting.dataSetViewer.title");
 		return map;
 	}
 }
