@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.definition;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +37,6 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 public class DefinitionContext {
 	
 	protected static Log log = LogFactory.getLog(DefinitionContext.class);
-	private static List<DefinitionService<?>> definitionServices;
 	
 	/**
 	 * @returns the DefinitionService registered for the passed Definition type
@@ -159,30 +157,5 @@ public class DefinitionContext {
 	 */
 	public static CohortDefinitionService getCohortDefinitionService() {
 		return Context.getService(CohortDefinitionService.class);
-	}
-
-	/**
-	 * @return the definitionServices
-	 */
-	public List<DefinitionService<?>> getDefinitionServices() {
-		if (definitionServices == null) {
-			definitionServices = new ArrayList<DefinitionService<?>>();
-		}
-		return definitionServices;
-	}
-
-	/**
-	 * @param definitionServices the definitionServices to set
-	 * NOTE, THIS ADDS, IT DOES NOT SET
-	 */
-	public void setDefinitionServices(List<DefinitionService<?>> definitionServices) {
-		getDefinitionServices().addAll(definitionServices);
-	}
-	
-	/**
-	 * @param definitionService the definitionService to add
-	 */
-	public void addDefinitionService(DefinitionService<?> definitionService) {
-		getDefinitionServices().add(definitionService);
 	}
 }
