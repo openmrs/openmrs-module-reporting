@@ -30,6 +30,7 @@ import org.hibernate.usertype.CompositeUserType;
 import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.HibernateUtil;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -75,7 +76,7 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	 * @see CompositeUserType#getPropertyTypes()
 	 */
 	public Type[] getPropertyTypes() {
-		return new Type[] {Hibernate.STRING, Hibernate.TEXT};
+		return new Type[] { HibernateUtil.standardType("STRING"), HibernateUtil.standardType("TEXT") };
 	}
 	
 	/**
@@ -122,9 +123,9 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	 * @see CompositeUserType#nullSafeGet(ResultSet, String[], SessionImplementor, Object)
 	 */
 	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
-		String parameterizableUuid = (String) Hibernate.STRING.nullSafeGet(rs, names[0]);
+		String parameterizableUuid = (String) HibernateUtil.standardType("STRING").nullSafeGet(rs, names[0], session, owner);
 		if (StringUtils.isEmpty(parameterizableUuid)) { return null; }
-		String serializedMappings = (String) Hibernate.STRING.nullSafeGet(rs, names[1]);
+		String serializedMappings = (String) HibernateUtil.standardType("STRING").nullSafeGet(rs, names[1], session, owner);
 		Definition d = DefinitionContext.getDefinitionByUuid(mappedType, parameterizableUuid);
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		if (StringUtils.isNotBlank(serializedMappings)) {
@@ -158,8 +159,8 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 				}
 			}
 		}
-		Hibernate.STRING.nullSafeSet(st, definitionUuid, index);
-		Hibernate.STRING.nullSafeSet(st, serializedMappings, index+1);
+		HibernateUtil.standardType("STRING").nullSafeSet(st, definitionUuid, index, session);
+		HibernateUtil.standardType("STRING").nullSafeSet(st, serializedMappings, index+1, session);
 	}
 
 	/**

@@ -18,12 +18,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
 import org.hibernate.usertype.UserType;
+import org.openmrs.module.reporting.common.HibernateUtil;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
@@ -58,7 +58,7 @@ public class RenderingModeType implements CompositeUserType {
 	 * @see CompositeUserType#getPropertyTypes()
 	 */
 	public Type[] getPropertyTypes() {
-		return new Type[] {Hibernate.CLASS, Hibernate.STRING};
+		return new Type[] { HibernateUtil.standardType("CLASS"), HibernateUtil.standardType("STRING") };
 	}
 	
 	/**
@@ -111,9 +111,9 @@ public class RenderingModeType implements CompositeUserType {
 	 * @see CompositeUserType#nullSafeGet(ResultSet, String[], SessionImplementor, Object)
 	 */
 	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
-		Class rendererClass = (Class) Hibernate.CLASS.nullSafeGet(rs, names[0]);
+		Class rendererClass = (Class) HibernateUtil.standardType("CLASS").nullSafeGet(rs, names[0], session, owner);
 		if (rendererClass == null) { return null; }
-		String argument = (String) Hibernate.STRING.nullSafeGet(rs, names[1]);
+		String argument = (String) HibernateUtil.standardType("STRING").nullSafeGet(rs, names[1], session, owner);
 		ReportRenderer r = null;
 		try {
 			r = (ReportRenderer)((Class) rendererClass).newInstance();
@@ -129,8 +129,8 @@ public class RenderingModeType implements CompositeUserType {
 	 */
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
 		RenderingMode mode = (RenderingMode) value;
-		Hibernate.CLASS.nullSafeSet(st, mode == null ? null : mode.getRenderer().getClass(), index);
-		Hibernate.STRING.nullSafeSet(st, mode == null ? null : mode.getArgument(), index+1);
+		HibernateUtil.standardType("CLASS").nullSafeSet(st, mode == null ? null : mode.getRenderer().getClass(), index, session);
+		HibernateUtil.standardType("STRING").nullSafeSet(st, mode == null ? null : mode.getArgument(), index+1, session);
 	}
 
 	/**

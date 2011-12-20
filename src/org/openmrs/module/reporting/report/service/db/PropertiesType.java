@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.report.service.db;
 
+import static java.sql.Types.VARCHAR;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -22,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 import org.openmrs.util.OpenmrsUtil;
@@ -149,6 +150,6 @@ public class PropertiesType implements UserType {
 	 * @see UserType#sqlTypes()
 	 */
 	public int[] sqlTypes() {
-		return new int[] {Hibernate.STRING.sqlType()};
+		return new int[] { VARCHAR };
 	}
 }

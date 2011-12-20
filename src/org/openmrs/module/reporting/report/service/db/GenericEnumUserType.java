@@ -21,15 +21,17 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.hibernate.HibernateException;
-import org.hibernate.type.NullableType;
-import org.hibernate.type.TypeFactory;
+import org.hibernate.engine.SessionImplementor;
+import org.hibernate.type.Type;
 import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
+import org.openmrs.module.reporting.common.HibernateUtil;
 
 /**
  * Taken primarily from https://www.hibernate.org/272.html
  * Written by Martin Kersten and tweaked by Gavin King
- *
+ * 
+ * Updated by Darius Jazayeri to (hackily) support both Hibernate 3.2.5 and 3.6  
  */
 public class GenericEnumUserType implements UserType, ParameterizedType {
     private static final String DEFAULT_IDENTIFIER_METHOD_NAME = "name";
@@ -39,7 +41,7 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
     private Class<?> identifierType;
     private Method identifierMethod;
     private Method valueOfMethod;
-    private NullableType type;
+    private Type type;
     private int[] sqlTypes;
 
     public void setParameterValues(Properties parameters) {
@@ -59,12 +61,12 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
             throw new HibernateException("Failed to obtain identifier method", e);
         }
 
-        type = (NullableType) TypeFactory.basic(identifierType.getName());
+        type = HibernateUtil.getBasicType(identifierType.getName(), parameters);
 
         if (type == null)
             throw new HibernateException("Unsupported identifier type " + identifierType.getName());
 
-        sqlTypes = new int[] { type.sqlType() };
+       	sqlTypes = new int[] { HibernateUtil.sqlType(type) };
 
         String valueOfMethodName = parameters.getProperty("valueOfMethod", DEFAULT_VALUE_OF_METHOD_NAME);
 
@@ -80,7 +82,19 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
     }
 
     public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-        Object identifier = type.get(rs, names[0]);
+    	// in 3.2.5 it'd be type.get(rs, names[0]);
+    	// in 3.6 it'd be type.get(rs, names[0], null);
+    	Object identifier;
+    	try {
+    		identifier = type.getClass().getMethod("get", ResultSet.class, String.class).invoke(type, rs, names[0]);
+    	} catch (Exception ex) {
+    		try {
+	            identifier = type.getClass().getMethod("get", ResultSet.class, String.class, SessionImplementor.class).invoke(type,  rs, names[0], null);
+            }
+            catch (Exception e) {
+	            throw new RuntimeException("Error executing get method on " + type, e);
+            }
+    	}
         if (rs.wasNull()) {
             return null;
         }
@@ -96,10 +110,12 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
     public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
         try {
             if (value == null) {
-                st.setNull(index, type.sqlType());
+                st.setNull(index, HibernateUtil.sqlType(type));
             } else {
                 Object identifier = identifierMethod.invoke(value, new Object[0]);
-                type.set(st, identifier, index);
+                
+                // in both 3.2.5 and 3.6: type.set(st, identifier, index);
+                type.getClass().getMethod("set", PreparedStatement.class, Object.class, int.class).invoke(type, st, identifier, index);
             }
         } catch (Exception e) {
             throw new HibernateException("Exception while invoking identifierMethod '" + identifierMethod.getName() + "' of " +
