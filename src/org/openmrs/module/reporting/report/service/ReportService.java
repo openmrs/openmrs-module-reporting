@@ -25,9 +25,11 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.processor.ReportProcessor;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,6 +145,50 @@ public interface ReportService extends OpenmrsService {
 	@Transactional
 	public void purgeReportRequest(ReportRequest request);
 	
+	//****** REPORT PROCESSOR CONFIGURATIONS *****
+	
+	/**
+	 * Saves a {@link ReportProcessorConfiguration} to the database and returns it
+	 * @should save a report processor configuration
+	 */
+	@Transactional
+	public ReportProcessorConfiguration saveReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration);
+
+	/**
+	 * @return the {@link ReportProcessorConfiguration} with the passed id
+	 * @should retrieve a saved report processor configuration by id
+	 */
+	@Transactional(readOnly = true)
+	public ReportProcessorConfiguration getReportProcessorConfiguration(Integer id);
+
+	/**
+	 * @return the {@link ReportProcessorConfiguration} with the passed uuid
+	 * @should retrieve a saved report processor configuration by uuid
+	 */
+	@Transactional(readOnly = true)
+	public ReportProcessorConfiguration getReportProcessorConfigurationByUuid(String uuid);
+	
+	/**
+	 * @return all the {@link ReportProcessorConfiguration}s
+	 * @should retrieve all saved report processor configurations including retired if specified
+	 */
+	@Transactional(readOnly = true)
+	public List<ReportProcessorConfiguration> getAllReportProcessorConfigurations(boolean includeRetired);
+	
+	/**
+	 * @return all {@link ReportProcessorConfiguration} in the system that match the passed parameters
+	 * @should retrieve all non-retired report processor configurations that are assignable to the passed type
+	 */
+	@Transactional(readOnly = true)
+	public List<ReportProcessorConfiguration> getReportProcessorConfigurations(Class<? extends ReportProcessor> processorType);
+
+	/**
+	 * Deletes the passed {@link ReportProcessorConfiguration}
+	 * @should delete a saved report processor configuration
+	 */
+	@Transactional
+	public void purgeReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration);
+	
 	//***** REPORTS *****
 	
 	/**
@@ -185,6 +231,7 @@ public interface ReportService extends OpenmrsService {
 	 * @should set uuid on the request
 	 * @should render the report if a plain renderer is specified
 	 * @should not render the report if a web renderer is specified
+	 * @should execute any configured report processors
 	 */
 	public Report runReport(ReportRequest request);
 

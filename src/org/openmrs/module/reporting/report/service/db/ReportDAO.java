@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -27,6 +28,8 @@ import org.openmrs.module.reporting.report.renderer.ReportRenderer;
  * ReportService Database Access Interface
  */
 public interface ReportDAO {
+	
+	//****** REPORT DESIGNS *****
 	
 	/**
 	 * @param uuid
@@ -68,6 +71,35 @@ public interface ReportDAO {
 	 * @throws DAOException
 	 */
 	public void purgeReportDesign(ReportDesign reportDesign);
+	
+	//****** REPORT PROCESSOR CONFIGURATIONS *****
+	
+	/**
+	 * Saves a {@link ReportProcessorConfiguration} to the database and returns it
+	 */
+	public ReportProcessorConfiguration saveReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration);
+
+	/**
+	 * @return the {@link ReportProcessorConfiguration} with the passed id
+	 */
+	public ReportProcessorConfiguration getReportProcessorConfiguration(Integer id);
+
+	/**
+	 * @return the {@link ReportProcessorConfiguration} with the passed uuid
+	 */
+	public ReportProcessorConfiguration getReportProcessorConfigurationByUuid(String uuid);
+	
+	/**
+	 * @return all the {@link ReportProcessorConfiguration}s
+	 */
+	public List<ReportProcessorConfiguration> getAllReportProcessorConfigurations(boolean includeRetired);
+	
+	/**
+	 * Deletes the passed {@link ReportProcessorConfiguration}
+	 */
+	public void purgeReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration);
+	
+	//****** REPORT REQUESTS *****
 	
 	/**
 	 * Saves a {@link ReportRequest} to the database and returns it

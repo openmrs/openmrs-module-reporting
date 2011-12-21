@@ -110,4 +110,53 @@
 			ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		</sql>
 	</diff>	
+	
+	<diff>
+		<version>0.3.0</version>
+		<author>Michael Seaton</author>
+		<date>Dec 9th 2011</date>
+		<description>
+			Create tables to persist report processors
+		</description>
+		<sql>
+			CREATE TABLE IF NOT EXISTS `reporting_report_processor` (
+			  `id` int(11) NOT NULL auto_increment,
+			  `uuid` char(38) NOT NULL,
+			  `name` varchar(255) NOT NULL,
+			  `description` varchar(1000),
+			  `processor_type` varchar(255) NOT NULL,
+			  `configuration` mediumtext,
+			  `run_on_success` tinyint(1) NOT NULL default '1',
+			  `run_on_error` tinyint(1) NOT NULL default '0',
+			  `creator` int(11) NOT NULL default '0',
+			  `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
+			  `changed_by` int(11) default NULL,
+  			  `date_changed` datetime default NULL,
+			  `retired` tinyint(1) NOT NULL default '0',
+			  `retired_by` int(11) default NULL,
+  			  `date_retired` datetime default NULL,
+  			  `retire_reason` varchar(255) default NULL,
+			  PRIMARY KEY  (`id`),
+			  KEY `creator for reporting_report_processor` (`creator`),
+			  KEY `changed_by for reporting_report_processor` (`changed_by`),
+			  KEY `retired_by for reporting_report_processor` (`retired_by`),
+			  CONSTRAINT `creator for reporting_report_processor` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
+			  CONSTRAINT `changed_by for reporting_report_processor` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
+			  CONSTRAINT `retired_by for reporting_report_processor` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
+			) 
+			ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			
+			CREATE TABLE IF NOT EXISTS `reporting_report_request_processor` (
+			  `id` int(11) NOT NULL auto_increment,
+			  `report_request_id` int(11) default NULL,
+			  `report_processor_configuration_id` int(11) default NULL,
+			  PRIMARY KEY  (`id`),
+			  KEY `report_request_id for reporting_report_request_processor` (`report_request_id`),
+			  KEY `report_processor_configuration_id for reporting_report_processor` (`report_processor_configuration_id`),
+			  CONSTRAINT `report_request_id for reporting_report_processor` FOREIGN KEY (`report_request_id`) REFERENCES `reporting_report_request` (`id`),
+			  CONSTRAINT `report_processor_configuration_id for reporting_report_processor` FOREIGN KEY (`report_processor_configuration_id`) REFERENCES `reporting_report_processor` (`id`)
+			) 
+			ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		</sql>
+	</diff>	
 </sqldiff>

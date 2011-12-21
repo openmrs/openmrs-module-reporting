@@ -29,6 +29,11 @@
 			<column name="renderer_argument"/>
 		</property>
 		
+		<set name="reportProcessors" table="reporting_report_request_processor" lazy="false" cascade="all-delete-orphan" inverse="true" access="field" order-by="id asc">
+			<key column="report_request_id" not-null="true" />
+			<many-to-many column="report_processor_configuration_id" class="ReportProcessorConfiguration" />
+		</set>
+		
 		<many-to-one name="requestedBy" class="org.openmrs.User" column="requested_by" not-null="true" />
 		<property name="requestDate" type="java.util.Date" column="request_datetime" not-null="true" />
 		
@@ -49,6 +54,25 @@
         <property name="renderCompleteDatetime" type="java.util.Date" column="render_complete_datetime" />
         <property name="description" type="string" column="description"/>
 
+	</class>
+	
+	<class name="ReportProcessorConfiguration" table="reporting_report_processor">
+		<id name="id" type="int" column="id" unsaved-value="0"><generator class="native" /></id>
+		<property name="uuid" type="string" length="38" not-null="true" />
+		<property name="name" type="string" not-null="true" />
+		<property name="description" type="string" />
+		<property name="processorType" type="class" length="255" column="processor_type" not-null="true" />
+		<property name="configuration" type="org.openmrs.module.reporting.report.service.db.PropertiesType" column="configuration" />
+		<property name="runOnSuccess" type="java.lang.Boolean" column="run_on_success" length="1" not-null="true"/>
+		<property name="runOnError" type="java.lang.Boolean" column="run_on_error" length="1" not-null="true"/>
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />
+		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" />
+		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
+		<property name="dateChanged" type="java.util.Date" column="date_changed" />		
+		<property name="retired" type="java.lang.Boolean" length="1" not-null="true"/>
+		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
+		<property name="dateRetired" type="java.util.Date" column="date_retired" />	
+		<property name="retireReason" type="string" column="retire_reason" />
 	</class>
 	
 </hibernate-mapping>

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,10 +32,12 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.processor.ReportProcessor;
 import org.openmrs.module.reporting.report.renderer.InteractiveReportRenderer;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
@@ -206,6 +209,56 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		FileUtils.deleteQuietly(getReportOutputFile(request));
 	}
 	
+	//****** REPORT PROCESSOR CONFIGURATIONS *****
+	
+	/**
+	 * @see ReportService#saveReportProcessorConfiguration(ReportProcessorConfiguration)
+	 */
+	public ReportProcessorConfiguration saveReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration) {
+		return reportDAO.saveReportProcessorConfiguration(processorConfiguration);
+	}
+
+	/**
+	 * @see ReportService#getReportProcessorConfiguration(Integer)
+	 */
+	public ReportProcessorConfiguration getReportProcessorConfiguration(Integer id) {
+		return reportDAO.getReportProcessorConfiguration(id);
+	}
+
+	/**
+	 * @see ReportService#getReportProcessorConfigurationByUuid(String)
+	 */
+	public ReportProcessorConfiguration getReportProcessorConfigurationByUuid(String uuid) {
+		return reportDAO.getReportProcessorConfigurationByUuid(uuid);
+	}
+
+	/**
+	 * @see ReportService#getAllReportProcessorConfigurations(boolean)
+	 */
+	public List<ReportProcessorConfiguration> getAllReportProcessorConfigurations(boolean includeRetired) {
+		return reportDAO.getAllReportProcessorConfigurations(includeRetired);
+	}
+
+	/**
+	 * @see ReportService#getReportProcessorConfigurations(ReportDefinition, Date, Date, Status)
+	 */
+	public List<ReportProcessorConfiguration> getReportProcessorConfigurations(Class<? extends ReportProcessor> processorType) {
+		List<ReportProcessorConfiguration> ret = new ArrayList<ReportProcessorConfiguration>();
+		for (ReportProcessorConfiguration p : getAllReportProcessorConfigurations(false)) {
+			if (p.getProcessorType().isAssignableFrom(processorType)) {
+				ret.add(p);
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * @see ReportService#purgeReportProcessorConfiguration(ReportProcessorConfiguration)
+	 */
+	public void purgeReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration) {
+		reportDAO.purgeReportProcessorConfiguration(processorConfiguration);
+	}
+	
 	//***** REPORTS *****
 	
 	/**
@@ -323,6 +376,23 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			
 		// Cache the report
 		cacheReport(report);
+		
+		// Run through any processors for the report, if defined
+		if (request.getReportProcessors() != null) {
+			for (ReportProcessorConfiguration c : request.getReportProcessors()) {
+				try {
+					if ((request.getStatus() == Status.COMPLETED && c.getRunOnSuccess()) || (request.getStatus() == Status.FAILED && c.getRunOnError())) {
+						log.info(timer.logInterval("Found a report processor to run: " + c));
+						ReportProcessor processor = (ReportProcessor)c.getProcessorType().newInstance();
+						processor.process(report, c.getConfiguration());
+						log.info(timer.logInterval("Processor completed."));
+					}
+				}
+				catch (Exception e) {
+					log.error("Unable to run report processor " + c, e);
+				}
+			}
+		}
 
 		Context.getService(ReportService.class).saveReportRequest(request);
 		log.info(timer.logInterval("Completed Running the Report"));

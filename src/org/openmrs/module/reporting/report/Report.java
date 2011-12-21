@@ -1,5 +1,8 @@
 package org.openmrs.module.reporting.report;
 
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.renderer.ReportRenderer;
+
 /**
  * This represents the result of having run a {@link ReportRequest}.
  * It includes the request, and any resulting data and output from the evaluation.
@@ -26,6 +29,18 @@ public class Report {
 	public Report(ReportRequest request) {
 	    this.request = request;
     }
+	
+	//***** CONTENT TYPES *****
+	
+	/**
+	 * @return the rendered content type for the given Report
+	 */
+	public String getOutputContentType() {
+		ReportRenderer renderer = request.getRenderingMode().getRenderer();
+		ReportDefinition definition = request.getReportDefinition().getParameterizable();
+		String argument = request.getRenderingMode().getArgument();
+		return renderer.getRenderedContentType(definition, argument);
+	}
 	
 	//***** PROPERTY ACCESS *****
 		

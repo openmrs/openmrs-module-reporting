@@ -23,6 +23,7 @@ import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -37,6 +38,8 @@ public class HibernateReportDAO implements ReportDAO {
 	private SessionFactory sessionFactory;
 	
 	//***** INSTANCE METHODS *****
+	
+	//****** REPORT DESIGNS *****
 	
 	/**
 	 * @param uuid
@@ -101,6 +104,52 @@ public class HibernateReportDAO implements ReportDAO {
 	public void purgeReportDesign(ReportDesign reportDesign) {
 		sessionFactory.getCurrentSession().delete(reportDesign);
 	}
+	
+	//****** REPORT PROCESSOR CONFIGURATIONS *****
+	
+	/**
+	 * Saves a {@link ReportProcessorConfiguration} to the database and returns it
+	 */
+	public ReportProcessorConfiguration saveReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration) {
+		sessionFactory.getCurrentSession().saveOrUpdate(processorConfiguration);
+		return processorConfiguration;
+	}
+
+	/**
+	 * @return the {@link ReportProcessorConfiguration} with the passed id
+	 */
+	public ReportProcessorConfiguration getReportProcessorConfiguration(Integer id) {
+		return (ReportProcessorConfiguration) sessionFactory.getCurrentSession().get(ReportProcessorConfiguration.class, id);
+	}
+
+	/**
+	 * @return the {@link ReportProcessorConfiguration} with the passed uuid
+	 */
+	public ReportProcessorConfiguration getReportProcessorConfigurationByUuid(String uuid) {
+		Query q = sessionFactory.getCurrentSession().createQuery("from ReportProcessorConfiguration r where r.uuid = :uuid");
+		return (ReportProcessorConfiguration) q.setString("uuid", uuid).uniqueResult();
+	}
+	
+	/**
+	 * @return all the {@link ReportProcessorConfiguration}s
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ReportProcessorConfiguration> getAllReportProcessorConfigurations(boolean includeRetired) {
+		Criteria crit = sessionFactory.getCurrentSession().createCriteria(ReportProcessorConfiguration.class);
+		if (includeRetired == false) {
+			crit.add(Expression.eq("retired", false));
+		}
+		return crit.list();
+	}
+	
+	/**
+	 * Deletes the passed {@link ReportProcessorConfiguration}
+	 */
+	public void purgeReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration) {
+		sessionFactory.getCurrentSession().delete(processorConfiguration);
+	}
+	
+	//****** REPORT REQUESTS *****
 	
 	/**
 	 * @see ReportDAO#saveReportRequest(ReportRequest)
