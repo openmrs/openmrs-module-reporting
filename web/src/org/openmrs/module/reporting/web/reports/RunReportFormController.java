@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -131,10 +130,10 @@ public class RunReportFormController extends SimpleFormController implements Val
 				command.setSelectedRenderer(req.getRenderingMode().getDescriptor());
 				command.setConfiguredProcessorConfigurations(req.getReportProcessors());
 			}
-			else if (StringUtils.hasText(request.getParameter("requestId"))) {
-				Integer reqId = Integer.parseInt(request.getParameter("requestId"));
-				ReportRequest rr = reportService.getReportRequest(reqId);
-				command.setExistingRequestId(reqId);
+			else if (StringUtils.hasText(request.getParameter("requestUuid"))) {
+				String reqUuid = request.getParameter("requestUuid");
+				ReportRequest rr = reportService.getReportRequestByUuid(reqUuid);
+				command.setExistingRequestUuid(reqUuid);
 				command.setReportDefinition(rr.getReportDefinition().getParameterizable());
 				command.setUserEnteredParams(rr.getReportDefinition().getParameterMappings());
 				command.setBaseCohort(rr.getBaseCohort());
@@ -199,8 +198,8 @@ public class RunReportFormController extends SimpleFormController implements Val
 		}
 		
 		ReportRequest rr = null;
-		if (command.getExistingRequestId() != null) {
-			rr = rs.getReportRequest(command.getExistingRequestId());
+		if (command.getExistingRequestUuid() != null) {
+			rr = rs.getReportRequestByUuid(command.getExistingRequestUuid());
 		}
 		else {
 			rr = new ReportRequest();
@@ -227,7 +226,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 
 	public class CommandObject {
 		
-		private Integer existingRequestId;
+		private String existingRequestUuid;
 		private ReportDefinition reportDefinition;
 		private Mapped<CohortDefinition> baseCohort;
 		private Map<String, Object> userEnteredParams;			
@@ -263,12 +262,12 @@ public class RunReportFormController extends SimpleFormController implements Val
 			return null;
 		}
 
-		public Integer getExistingRequestId() {
-			return existingRequestId;
+		public String getExistingRequestUuid() {
+			return existingRequestUuid;
 		}
 
-		public void setExistingRequestId(Integer existingRequestId) {
-			this.existingRequestId = existingRequestId;
+		public void setExistingRequestUuid(String existingRequestUuid) {
+			this.existingRequestUuid = existingRequestUuid;
 		}
 
 		public List<RenderingMode> getRenderingModes() {

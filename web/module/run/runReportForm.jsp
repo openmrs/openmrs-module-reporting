@@ -107,6 +107,13 @@
 					<td></td>
 					<td>					
 						<input type="submit" value="<spring:message code="reporting.Report.run.button"/>" />
+						<c:if test="${!empty report.existingRequestUuid}">
+							<span style="padding-left:20px;">
+								<a onclick="return confirm('<spring:message code="reporting.reportHistory.confirmDelete"/>');" href="../reports/reportHistoryDelete.form?uuid=${report.existingRequestUuid}">
+									<button border="0"><spring:message code="general.delete"/></button>
+								</a>
+							</span>
+						</c:if>
 	        		</td>
 	        	</tr>
 	        </table>

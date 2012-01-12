@@ -33,7 +33,7 @@
 		        <c:forEach var="r" items="${model.scheduled}" varStatus="iterstatus">
 		            <tr valign="top">
 		                <td <c:if test="${!iterstatus.last}"> style="border-bottom: 1px #c0c0c0 solid; white-space: nowrap;" </c:if>>
-		                	<a href="../run/runReport.form?requestId=${r.id}">
+		                	<a href="../run/runReport.form?requestUuid=${r.uuid}">
 		                    	${r.reportDefinition.parameterizable.name}
 		                    </a>
 		                </td>

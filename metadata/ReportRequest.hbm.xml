@@ -29,7 +29,7 @@
 			<column name="renderer_argument"/>
 		</property>
 		
-		<set name="reportProcessors" table="reporting_report_request_processor" lazy="false" cascade="all-delete-orphan" order-by="id asc">
+		<set name="reportProcessors" table="reporting_report_request_processor" lazy="false" order-by="id asc">
 			<key column="report_request_id" not-null="true" />
 			<many-to-many column="report_processor_configuration_id" class="ReportProcessorConfiguration" />
 		</set>
