@@ -110,7 +110,7 @@
 					</c:choose>
 				</td>				
 				<td>
-					<a href="reportHistoryDelete.form?uuid=${r.uuid}"><img src='<c:url value="/images/trash.gif"/>' border="0"/></a>
+					<a onclick="return confirm('<spring:message code="reporting.reportHistory.confirmDelete"/>');" href="reportHistoryDelete.form?uuid=${r.uuid}"><img src='<c:url value="/images/trash.gif"/>' border="0"/></a>
 				</td>
 			</tr>
 		</c:forEach>

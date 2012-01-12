@@ -7,7 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -16,6 +18,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.ContentType;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -55,6 +58,15 @@ public class ReportUtil {
 		}
 	}
 	
+	public static void appendStringToFile(File f, String s) throws IOException {
+		String original = null;
+		try {
+			original = readStringFromFile(f);
+		}
+		catch (Exception e) { }
+		writeStringToFile(f, (original == null ? s : original + System.getProperty("line.separator") + s));
+	}
+	
 	public static String readStringFromFile(File f) throws IOException {
 		String ret = null;
 		if (f.getAbsolutePath().endsWith(".gz")) {
@@ -66,6 +78,17 @@ public class ReportUtil {
 		}
 		else {
 			ret = FileUtils.readFileToString(f, "UTF-8");
+		}
+		return ret;
+	}
+	
+	public static List<String> readLinesFromFile(File f) throws IOException {
+		List<String> ret = new ArrayList<String>();
+		String s = readStringFromFile(f);
+		if (s != null) {
+			for (String line : s.split(System.getProperty("line.separator"))) {
+				ret.add(line);
+			}
 		}
 		return ret;
 	}

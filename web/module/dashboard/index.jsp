@@ -17,6 +17,7 @@
 					<openmrs:portlet url="queuedReports" moduleId="reporting"/>
 				</td>
 				<td valign="top">
+					<openmrs:portlet url="scheduledReports" moduleId="reporting"/>
 					<openmrs:portlet url="errorReports" moduleId="reporting"/>
 				</td>
 			</tr>

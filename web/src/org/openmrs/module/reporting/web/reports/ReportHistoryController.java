@@ -22,6 +22,7 @@ import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
+import org.openmrs.module.reporting.web.util.AjaxUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -77,6 +78,42 @@ public class ReportHistoryController {
 		return "redirect:reportHistory.form";
 	}
 	
+	@RequestMapping("/module/reporting/reports/loadReportStatus")
+	public String loadReportStatus(ModelMap model, @RequestParam("uuid") String uuid) {
+		ReportService rs = Context.getService(ReportService.class);
+		ReportRequest request = rs.getReportRequestByUuid(uuid);
+		
+		Map<String, Object> statusMap = new HashMap<String, Object>();
+		statusMap.put("logEntries", rs.loadReportLog(request));
+		statusMap.put("status", request.getStatus().toString());
+		
+		Report cachedReport = rs.getCachedReports().get(request);
+		
+		if (request.getStatus() == Status.COMPLETED || request.getStatus() == Status.SAVED) {
+			File reportOutputFile = rs.getReportOutputFile(request);
+			if (reportOutputFile.exists() || (cachedReport != null && cachedReport.getRenderedOutput() != null)) {
+				statusMap.put("action", "download");
+			}
+			File reportDataFile = rs.getReportDataFile(request);
+			if (request.getRenderingMode().getRenderer() instanceof WebReportRenderer) {
+				if (reportDataFile.exists() || (cachedReport != null && cachedReport.getReportData() != null)) {
+					statusMap.put("action", "view");
+				}
+			}
+		}
+		
+		if (request.getStatus() == Status.FAILED) {
+			File reportErrorFile = rs.getReportErrorFile(request);
+			if (reportErrorFile.exists() || (cachedReport != null && cachedReport.getErrorMessage() != null)) {
+				String errorDetails = rs.loadReportError(request);
+				statusMap.put("errorDetails", errorDetails);
+			}
+		}
+		
+		model.addAttribute("json", AjaxUtil.toJson(statusMap));
+		return "/module/reporting/json";
+	}
+	
 	@RequestMapping("/module/reporting/reports/reportHistorySave")
 	public String saveHistoryElement(@RequestParam("uuid") String uuid, @RequestParam(value="description", required=false) String description) {
 		ReportService rs = Context.getService(ReportService.class);
@@ -109,24 +146,6 @@ public class ReportHistoryController {
 			return "redirect:/module/reporting/reports/reportHistory.form";
 		}
 		model.addAttribute("request", req);
-		File reportOutputFile = rs.getReportOutputFile(req);
-		Report cachedReport = rs.getCachedReports().get(req);
-		if (reportOutputFile.exists() || (cachedReport != null && cachedReport.getRenderedOutput() != null)) {
-			model.addAttribute("action", "download");
-		}
-		File reportDataFile = rs.getReportDataFile(req);
-		if (req.getRenderingMode().getRenderer() instanceof WebReportRenderer) {
-			if (reportDataFile.exists() || (cachedReport != null && cachedReport.getReportData() != null)) {
-				model.addAttribute("action", "view");
-			}
-		}
-		File reportErrorFile = rs.getReportErrorFile(req);
-		if (req.getStatus() == Status.FAILED) {
-			if (reportErrorFile.exists() || (cachedReport != null && cachedReport.getErrorMessage() != null)) {
-				String errorDetails = rs.loadReportError(req);
-				model.addAttribute("errorDetails", errorDetails);
-			}
-		}
 		return "/module/reporting/reports/reportHistoryOpen";
 	}
 	
@@ -135,19 +154,22 @@ public class ReportHistoryController {
 		ReportRequest req = getReportService().getReportRequestByUuid(uuid);
 		RenderingMode rm = req.getRenderingMode();
 		String linkUrl = "/module/reporting/reports/reportHistoryOpen";
+		
 		if (rm.getRenderer() instanceof WebReportRenderer) {
 			WebReportRenderer webRenderer = (WebReportRenderer) rm.getRenderer();
 			linkUrl = webRenderer.getLinkUrl(req.getReportDefinition().getParameterizable());
-			if (linkUrl != null) {
-				ReportData reportData = getReportService().loadReportData(req);
-				if (reportData != null) {
-					request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, reportData);
-					request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument());
-					linkUrl = request.getContextPath() + (linkUrl.startsWith("/") ? "" : "/") + linkUrl;
-					request.getSession().setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, linkUrl);
-				}
+			linkUrl = request.getContextPath() + (linkUrl.startsWith("/") ? "" : "/") + linkUrl;
+		}
+		
+		if (req != null) {
+			ReportData reportData = getReportService().loadReportData(req);
+			if (reportData != null) {
+				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, reportData);
+				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument());
+				request.getSession().setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, linkUrl);
 			}
 		}
+
 		return new ModelAndView(new RedirectView(linkUrl));
 	}
 

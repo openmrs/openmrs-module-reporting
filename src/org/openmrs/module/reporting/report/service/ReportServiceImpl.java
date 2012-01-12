@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
@@ -26,6 +25,8 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.Timer;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -34,6 +35,8 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.Priority;
+import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
@@ -45,11 +48,9 @@ import org.openmrs.module.reporting.report.service.db.ReportDAO;
 import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
-import org.openmrs.scheduler.SchedulerException;
-import org.openmrs.scheduler.TaskDefinition;
 import org.openmrs.util.HandlerUtil;
-import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
+import org.springframework.core.task.TaskExecutor;
 
 /**
  * Base Implementation of the ReportService API
@@ -58,14 +59,12 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 
 	private static final String REPORT_RESULTS_DIR = "REPORT_RESULTS";
 	
-	public static final String RUN_QUEUED_REPORTS_TASK_NAME = "Run Queued Reports"; // Name of the task to run queued reports
-	public static final String DELETE_OLD_REPORTS_TASK_NAME = "Delete Old Reports"; // Name of the task to delete old reports
-	
 	// Logger
 	private transient Log log = LogFactory.getLog(this.getClass());
 
 	// Private variables
 	private ReportDAO reportDAO;
+	private TaskExecutor taskExecutor;
 	private Map<ReportRequest, Report> reportCache = new LinkedHashMap<ReportRequest, Report>();
 		
 	/**
@@ -207,6 +206,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		FileUtils.deleteQuietly(getReportDataFile(request));
 		FileUtils.deleteQuietly(getReportErrorFile(request));
 		FileUtils.deleteQuietly(getReportOutputFile(request));
+		FileUtils.deleteQuietly(getReportLogFile(request));
 	}
 	
 	//****** REPORT PROCESSOR CONFIGURATIONS *****
@@ -286,11 +286,55 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
-	 * @see ReportService#queueReport(ReportRequest)
+	 * @see ReportService#getReportOutputFile(ReportRequest)
+	 */
+	public File getReportLogFile(ReportRequest request) {
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+		return new File(dir, request.getUuid() + ".reportlog");
+	}
+	
+	/**
+	 * @see ReportService#queueReport(ReportRequest)		
+		ensureScheduledTasksRunning();
 	 */
 	public ReportRequest queueReport(ReportRequest request) {
-		ensureScheduledTasksRunning();
-		return Context.getService(ReportService.class).saveReportRequest(request);
+		
+		if (request.getStatus() == null) {
+			if (ObjectUtil.notNull(request.getSchedule())) {
+				request.setStatus(Status.SCHEDULED);
+				request.setPriority(Priority.NORMAL);
+				logReportMessage(request, "Report Scheduled by " + ObjectUtil.getNameOfCurrentUser());
+			}
+			else {
+				request.setStatus(Status.REQUESTED);
+				request.setPriority(Priority.HIGHEST);
+				logReportMessage(request, "Report Requested by " + ObjectUtil.getNameOfCurrentUser());
+			}
+		}
+		
+		request =  Context.getService(ReportService.class).saveReportRequest(request);
+		
+		List<ReportRequest> l = getReportRequests(null, null, null, Status.REQUESTED);
+		Collections.sort(l, new PriorityComparator());
+		boolean found = false;
+		for (int i=0; i<l.size(); i++) {
+			ReportRequest rr = l.get(i);
+			if (rr.equals(request)) {
+				found = true;
+			}
+			if (found) {
+				logReportMessage(l.get(i), "Report in queue at position " + (i+1));
+			}
+		}
+
+		return request;
+	}
+	
+	/**
+	 * @see ReportService#processNextQueuedReports()
+	 */
+	public void processNextQueuedReports() {
+		taskExecutor.execute(new RunQueuedReportsTask());
 	}
 	
 	/**
@@ -303,6 +347,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			request.setStatus(Status.SAVED);
 			request.setDescription(description);
 			Context.getService(ReportService.class).saveReportRequest(request);
+			logReportMessage(request, "Report Saved");
 			return report;
 		}
 		else {
@@ -316,12 +361,12 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public Report runReport(ReportRequest request) {
 		
 		// Start up a timer to check performance
-		Timer timer = Timer.start();
+		long startTime = System.currentTimeMillis();
 		
 		// Set the status to processing and save the request
 		request.setStatus(Status.PROCESSING);
 		request.setEvaluateStartDatetime(new Date());
-		log.info("Processing started for report request: " + request);
+		logReportMessage(request, "Starting to process report...");
 		
 		// Construct a new report object to return
 		Report report = new Report(request);
@@ -330,10 +375,11 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			// Create a new Evaluation Context, setting the base cohort from the request
 			EvaluationContext context = new EvaluationContext();
 			if (request.getBaseCohort() != null) {
+				logReportMessage(request, "Evaluating base Cohort....");
 				try {
 					Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(request.getBaseCohort(), context);
 					context.setBaseCohort(baseCohort);
-					log.info(timer.logInterval("Evaluated the baseCohort to : " + baseCohort.size() + " patients"));
+					
 				} 
 				catch (Exception ex) {
 					throw new EvaluationException("baseCohort", ex);
@@ -341,33 +387,33 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			}
 		
 			// Evaluate the Report Definition, any EvaluationException thrown by the next line can bubble up; wrapping it won't provide useful information
+			logReportMessage(request, "Evaluating Report Data....");
 			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
 			ReportData reportData = rds.evaluate(request.getReportDefinition(), context);
 			report.setReportData(reportData);
 			request.setEvaluateCompleteDatetime(new Date());
-			log.info(timer.logInterval("Evaluated the report into a ReportData successfully"));
 			
 			// Render the Report if appropriate
 			if (request.getRenderingMode() != null) {
 				ReportRenderer renderer = request.getRenderingMode().getRenderer();
 				String argument = request.getRenderingMode().getArgument();
 				if (!(renderer instanceof InteractiveReportRenderer)) {
+					logReportMessage(request, "Generating Rendered Report....");
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 		            renderer.render(reportData, argument, out);
 		            report.setRenderedOutput(out.toByteArray());
 		            request.setRenderCompleteDatetime(new Date());
-		            log.info(timer.logInterval("Evaluated the report into a Rendered Output successfully"));
 	            }
 			}
 			request.setStatus(Status.COMPLETED);
 		}
 		catch (Throwable t) {
 			request.setStatus(Status.FAILED);
+			logReportMessage(request, "Report Evaluation Failed");
 			try {
 				StringWriter sw = new StringWriter();
 				t.printStackTrace(new PrintWriter(sw));
 				report.setErrorMessage(sw.toString());
-	            log.info(timer.logInterval("Recorded a Report Error"));
 			}
 			catch (Exception e) {
 				log.warn("Unable to log reporting error to file.", e);
@@ -375,27 +421,43 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		}
 			
 		// Cache the report
+		logReportMessage(request, "Storing Report Results....");
 		cacheReport(report);
+		persistReportToDisk(report);
 		
 		// Run through any processors for the report, if defined
 		if (request.getReportProcessors() != null) {
 			for (ReportProcessorConfiguration c : request.getReportProcessors()) {
 				try {
 					if ((request.getStatus() == Status.COMPLETED && c.getRunOnSuccess()) || (request.getStatus() == Status.FAILED && c.getRunOnError())) {
-						log.info(timer.logInterval("Found a report processor to run: " + c));
+						logReportMessage(request, "Processing Report with " + c.getName() + "...");
 						ReportProcessor processor = (ReportProcessor)c.getProcessorType().newInstance();
 						processor.process(report, c.getConfiguration());
-						log.info(timer.logInterval("Processor completed."));
 					}
 				}
 				catch (Exception e) {
-					log.error("Unable to run report processor " + c, e);
+					log.warn("Report Processor Failed: " + c.getName(), e);
+					logReportMessage(request, "Report Processor Failed: " + c.getName());
 				}
 			}
 		}
 
 		Context.getService(ReportService.class).saveReportRequest(request);
-		log.info(timer.logInterval("Completed Running the Report"));
+		
+		if (request.isSaveAutomatically()) {
+			try {
+				logReportMessage(request, "Automatically Saving Report....");
+				report = Context.getService(ReportService.class).saveReport(report, "");
+			}
+			catch (Exception e) {
+				log.warn("Report Saving Failed", e);
+				logReportMessage(request, "Unable to save Report");
+			}
+		}
+		
+		long endTime = System.currentTimeMillis();
+		logReportMessage(request, "Report Generation Completed in " + (int)((endTime - startTime)/1000) + " seconds.");
+		
 		return report;
 	}
 	 
@@ -462,6 +524,20 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
+	 * Loads the logs for a Report for the given ReportRequest
+	 */
+	public List<String> loadReportLog(ReportRequest request) {
+		log.debug("Loading Report Log for ReportRequest");
+		try {
+			return ReportUtil.readLinesFromFile(getReportLogFile(request));
+		}
+		catch (Exception e) {
+			log.warn("Failed to load Report Log from disk for request " + request + " due to " + e.getMessage());
+		}
+		return null;
+	}
+	
+	/**
 	 * Loads a previously generated Report for the given ReportRequest, first checking the cache
 	 */
 	public Report loadReport(ReportRequest request) {
@@ -475,56 +551,6 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		}
 		return report;
 	}
-	
-	/**
-	 * @see ReportService#ensureScheduledTasksRunning()
-	 */
-	public void ensureScheduledTasksRunning() {
-		try {
-			Context.addProxyPrivilege(OpenmrsConstants.PRIV_MANAGE_SCHEDULER);
-			TaskDefinition runTask = Context.getSchedulerService().getTaskByName(RUN_QUEUED_REPORTS_TASK_NAME);
-			try {
-				if (runTask == null) {
-					runTask = new TaskDefinition();
-					runTask.setUuid(UUID.randomUUID().toString());
-					runTask.setTaskClass(RunQueuedReportsTask.class.getName());
-					runTask.setRepeatInterval(60l); // once per minute
-					runTask.setStartOnStartup(true);
-					runTask.setStartTime(null); // to induce immediate execution
-					runTask.setName(RUN_QUEUED_REPORTS_TASK_NAME);
-					runTask.setDescription("Runs queued reports. (If you stop this task, scheduled reports will not run.");
-					Context.getSchedulerService().saveTask(runTask);
-					Context.getSchedulerService().scheduleTask(runTask);
-				} else {
-					if (!runTask.getStarted()) {
-						Context.getSchedulerService().scheduleTask(runTask);
-					}
-				}
-			} catch (SchedulerException ex) {
-				throw new APIException("Failed to schedule task to run queued reports", ex);
-			}
-
-		    TaskDefinition deleteTask = Context.getSchedulerService().getTaskByName(DELETE_OLD_REPORTS_TASK_NAME);
-		    if (deleteTask == null) {
-		    	deleteTask = new TaskDefinition();
-		    	deleteTask.setUuid(UUID.randomUUID().toString());
-				deleteTask.setTaskClass(DeleteOldReportsTask.class.getName());
-				deleteTask.setRepeatInterval(60 * 60l); // hourly
-				deleteTask.setStartOnStartup(true);
-				deleteTask.setStartTime(null); // to induce immediate execution
-				deleteTask.setName(DELETE_OLD_REPORTS_TASK_NAME);
-				deleteTask.setDescription("Deletes reports that have not been saved and are older than the age specified in the global property.");
-				try {
-		            Context.getSchedulerService().scheduleTask(deleteTask);
-	            }
-	            catch (SchedulerException e) {
-		            log.warn("Failed to schedule Delete Old Reports task. Old reports will not be automatically deleted", e);
-	            }
-		    }
-		} finally {
-			Context.removeProxyPrivilege(OpenmrsConstants.PRIV_MANAGE_SCHEDULER);
-		}
-    }
 	
 	/**
 	 * @see ReportService#deleteOldReportRequests()
@@ -551,6 +577,20 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			}
 		}
     }
+	
+	/**
+	 * @see ReportService#logReportMessage(ReportRequest, String)
+	 */
+	public void logReportMessage(ReportRequest request, String message) {
+		try {
+			File f = getReportLogFile(request);
+			String d = DateUtil.formatDate(new Date(), "EEE dd/MMM/yyyy HH:mm:ss z");
+			ReportUtil.appendStringToFile(f, d + " | " + message);			
+		}
+		catch (Exception e) {
+			log.warn("Unable to log report message to disk: " + message, e);
+		}
+	}
 	
 	//***** PRIVATE UTILITY METHODS *****
 	
@@ -633,5 +673,19 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	public void setReportDAO(ReportDAO reportDAO) {
 		this.reportDAO = reportDAO;
+	}
+
+	/**
+	 * @return the taskExecutor
+	 */
+	public TaskExecutor getTaskExecutor() {
+		return taskExecutor;
+	}
+
+	/**
+	 * @param taskExecutor the taskExecutor to set
+	 */
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
+		this.taskExecutor = taskExecutor;
 	}
 }

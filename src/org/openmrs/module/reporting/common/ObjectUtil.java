@@ -11,8 +11,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
+import org.openmrs.PersonName;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -339,4 +341,22 @@ public class ObjectUtil {
 		return o.toString();
 	}
 	
+	public static String getNameOfCurrentUser() {
+		return getNameOfUser(Context.getAuthenticatedUser());
+	}
+	
+	public static String getNameOfUser(User user) {
+		if (user != null) {
+			PersonName pn = user.getPersonName();
+			if (pn != null) {
+				return pn.getFullName();
+			}
+			else {
+				if (user.getUsername() != null) {
+					return user.getUsername();
+				}
+			}
+		}
+		return "Unknown User";
+	}
 }

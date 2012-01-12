@@ -16,13 +16,10 @@
 				</table>
 			</td>
 			<td align="right">
-				<c:if test="${model.showDiscardButton == 'true'}">
-					<button class="small" onClick="window.location='<c:url value="/module/reporting/run/currentReportDiscard.form"/>'">
-						<img src="<c:url value="/images/delete.gif"/>" border="0"/><br/>
-						<spring:message code="reporting.discardButton"/>
-					</button>
-				</c:if>
-				<%-- TODO put save button here, but we need to have a Report or ReportRequest in the session for that --%>
+				<button onClick="history.go(-1);">
+					<b><spring:message code="reporting.Report.backToReportSummary"/></b><br/>
+					<img src="<c:url value="/images/leftArrow.gif"/>" border="0" width="16" height="16"/><br/>
+				</button>
 			</td>
 		</tr>
 	</table>

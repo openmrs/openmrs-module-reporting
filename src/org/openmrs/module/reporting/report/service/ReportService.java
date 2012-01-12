@@ -210,6 +210,12 @@ public interface ReportService extends OpenmrsService {
 	public File getReportOutputFile(ReportRequest request);
 	
 	/**
+	 * @return the File that may contain any log messages when evaluating a given {@link ReportRequest}
+	 */
+	@Transactional(readOnly = true)
+	public File getReportLogFile(ReportRequest request);
+	
+	/**
 	 * <pre>
 	 * Runs a report synchronously, blocking until the report is ready. This method populates the uuid
 	 * field on the ReportRequest that is passed in, and adds the Request to the history.
@@ -242,6 +248,11 @@ public interface ReportService extends OpenmrsService {
 	public ReportRequest queueReport(ReportRequest request);
 	
 	/**
+	 * Immediately try to process the next reports scheduled for processing off of the queue
+	 */
+	public void processNextQueuedReports();
+	
+	/**
 	 * Saves a Report, including the underlying report data, optionally providing a description
 	 */
 	@Transactional
@@ -266,6 +277,12 @@ public interface ReportService extends OpenmrsService {
 	public String loadReportError(ReportRequest request);
 	
 	/**
+	 * Loads the Log messages for a previously generated Report for the given ReportRequest, first checking the cache
+	 */
+	@Transactional(readOnly = true)
+	public List<String> loadReportLog(ReportRequest request);
+	
+	/**
 	 * @return the persisted Report for the given ReportRequest
 	 */
 	@Transactional(readOnly = true)
@@ -283,10 +300,12 @@ public interface ReportService extends OpenmrsService {
 	 */
 	@Transactional
 	public void deleteOldReportRequests();
-
+	
 	/**
-	 * Makes sure that the tasks for DeleteOldReports and RunQueuedReports are scheduled
+	 * Saves the passed message to disk for the given report, in order to have a record of the report generation
+	 * @param report
+	 * @param message
 	 */
-	@Transactional
-	public void ensureScheduledTasksRunning();
+	@Transactional(readOnly = true)
+	public void logReportMessage(ReportRequest request, String message);
 }

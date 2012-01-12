@@ -159,4 +159,31 @@
 			ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		</sql>
 	</diff>	
+	
+	<diff>
+		<version>0.4.0</version>
+		<author>Michael Seaton</author>
+		<date>Dec 22nd 2011</date>
+		<description>
+			Add a schedule property to ReportRequest
+		</description>
+		<sql>
+			ALTER TABLE `reporting_report_request` ADD `schedule` varchar(100);
+		</sql>
+	</diff>	
+	
+	<diff>
+		<version>0.4.1</version>
+		<author>Michael Seaton</author>
+		<date>Jan 11nd 2011</date>
+		<description>
+			Remove OpenMRS scheduled tasks produced by the reporting module
+		</description>
+		<sql>
+			delete 	from `scheduler_task_config_property` 
+			where 	task_config_id in (select task_config_id from scheduler_task_config where schedulable_class like 'org.openmrs.module.reporting.%');
+			
+			delete from `scheduler_task_config` where schedulable_class like 'org.openmrs.module.reporting.%';
+		</sql>
+	</diff>	
 </sqldiff>

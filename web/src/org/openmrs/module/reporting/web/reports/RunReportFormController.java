@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -27,23 +28,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.propertyeditor.MappedEditor;
-import org.openmrs.module.reporting.report.Report;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.Priority;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.module.reporting.report.renderer.RenderingException;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 import org.openmrs.util.OpenmrsUtil;
+import org.quartz.CronExpression;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -103,8 +102,15 @@ public class RunReportFormController extends SimpleFormController implements Val
 				}
 			}
 			
-			if (reportDefinition.getDataSetDefinitions() == null || reportDefinition.getDataSetDefinitions().size() == 0)
+			if (reportDefinition.getDataSetDefinitions() == null || reportDefinition.getDataSetDefinitions().size() == 0) {
 				errors.reject("reporting.Report.run.error.definitionNotDeclared");
+			}
+			
+			if (ObjectUtil.notNull(command.getSchedule())) {
+				if (!CronExpression.isValidExpression(command.getSchedule())) {
+					errors.rejectValue("schedule", "reporting.Report.run.error.invalidCronExpression");
+				}
+			}
 		}
 		ValidationUtils.rejectIfEmpty(errors, "selectedRenderer", "reporting.Report.run.error.noRendererSelected");
 	}
@@ -123,57 +129,39 @@ public class RunReportFormController extends SimpleFormController implements Val
 					command.getUserEnteredParams().put(param.getKey(), param.getValue());
 				}
 				command.setSelectedRenderer(req.getRenderingMode().getDescriptor());
-			} else {
+				command.setConfiguredProcessorConfigurations(req.getReportProcessors());
+			}
+			else if (StringUtils.hasText(request.getParameter("requestId"))) {
+				Integer reqId = Integer.parseInt(request.getParameter("requestId"));
+				ReportRequest rr = reportService.getReportRequest(reqId);
+				command.setExistingRequestId(reqId);
+				command.setReportDefinition(rr.getReportDefinition().getParameterizable());
+				command.setUserEnteredParams(rr.getReportDefinition().getParameterMappings());
+				command.setBaseCohort(rr.getBaseCohort());
+				command.setSelectedRenderer(rr.getRenderingMode().getDescriptor());
+				command.setSchedule(rr.getSchedule());
+				command.setConfiguredProcessorConfigurations(rr.getReportProcessors());
+			}
+			else {
 				String uuid = request.getParameter("reportId");
 				ReportDefinition reportDefinition = rds.getDefinitionByUuid(uuid);
 				command.setReportDefinition(reportDefinition);
 			}
 			command.setRenderingModes(reportService.getRenderingModes(command.getReportDefinition()));
+			command.setAvailableProcessorConfigurations(reportService.getAllReportProcessorConfigurations(false));
 		}
 		return command;
 	}
 	
 	@Override
-	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object commandObject,
-	                                BindException errors) throws Exception {
+	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object commandObject, BindException errors) throws Exception {
+		
 		CommandObject command = (CommandObject) commandObject;
 		ReportDefinition reportDefinition = command.getReportDefinition();
-		ReportService reportService = (ReportService) Context.getService(ReportService.class);
 		
-		EvaluationContext evalContext = new EvaluationContext();
-		
-		if (reportDefinition.getParameters() != null) {
-			for (Parameter parameter : reportDefinition.getParameters()) {
-				if (command.getUserEnteredParams() != null) {
-					Object value = command.getUserEnteredParams().get(parameter.getName());
-					if (ObjectUtil.notNull(value)) {
-						try {
-							value = WidgetUtil.parseInput(value.toString(), parameter.getType());
-							evalContext.addParameterValue(parameter.getName(), value);
-						}
-						catch (Exception ex) {
-							errors.rejectValue("userEnteredParams[" + parameter.getName() + "]",  ex.getMessage());
-						}
-					}
-				}
-			}
-		}
-		if (errors.hasErrors())
-			return showForm(request, response, errors);
-		
-		String renderClass = command.getSelectedRenderer();
-		String renderArg = "";
-		if (renderClass.indexOf("!") > 0) {
-			int ind = renderClass.indexOf("!");
-			renderArg = renderClass.substring(ind + 1);
-			renderClass = renderClass.substring(0, ind);
-		}
-		ReportRenderer renderer = reportService.getReportRenderer(renderClass);
+		ReportService rs = Context.getService(ReportService.class);
 
-		// Check to make sure the renderer can render this report 
-		if (!renderer.canRender(reportDefinition))  
-			throw new RenderingException("Unable to render report definition " + reportDefinition.getName());
-		
+		// Parse the input parameters into appropriate objects and fail validation if any are invalid
 		Map<String, Object> params = new LinkedHashMap<String, Object>();
 		if (reportDefinition.getParameters() != null) {
 			for (Parameter parameter : reportDefinition.getParameters()) {
@@ -185,75 +173,104 @@ public class RunReportFormController extends SimpleFormController implements Val
 							params.put(parameter.getName(), value);
 						}
 						catch (Exception ex) {
-							// this was already checked above
+							errors.rejectValue("userEnteredParams[" + parameter.getName() + "]",  ex.getMessage());
 						}
 					}
 				}
 			}
 		}
 		
-		ReportRequest run = new ReportRequest(new Mapped<ReportDefinition>(reportDefinition, params), command.getBaseCohort(), command.getSelectedMode(), ReportRequest.Priority.HIGHEST);
-		Report report = reportService.runReport(run);
+		// Ensure that the chosen renderer is valid for this report
+		RenderingMode renderingMode = command.getSelectedMode();
+		if (!renderingMode.getRenderer().canRender(reportDefinition)) {
+			errors.rejectValue("selectedRenderer", "reporting.Report.run.error.invalidRenderer");
+		}
+		
+		Set<ReportProcessorConfiguration> processors = new HashSet<ReportProcessorConfiguration>();
+		String[] processorParams = request.getParameterValues("configuredProcessors");
+		if (processorParams != null) {
+			for (String pp : processorParams) {
+				processors.add(rs.getReportProcessorConfiguration(Integer.parseInt(pp)));
+			}
+		}
 
-		if (report.getErrorMessage() != null) {
-			errors.rejectValue("reportDefinition", null, report.getErrorMessage().replaceAll("\\n", "<br/>"));
+		if (errors.hasErrors()) {
 			return showForm(request, response, errors);
 		}
 		
-		// If we're supposed to use a web report renderer, then we just redirect to the appropriate URL 
-		if (renderer instanceof WebReportRenderer) {
-			WebReportRenderer webRenderer = (WebReportRenderer) renderer;
-			if (webRenderer.getLinkUrl(reportDefinition) != null) {
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, report.getReportData());
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, renderArg);
-				String url = webRenderer.getLinkUrl(reportDefinition);
-				if (!url.startsWith("/"))
-					url = "/" + url;
-				url = request.getContextPath() + url;
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, url);
-				return new ModelAndView(new RedirectView(url));
-			}
+		ReportRequest rr = null;
+		if (command.getExistingRequestId() != null) {
+			rr = rs.getReportRequest(command.getExistingRequestId());
 		}
-		// Otherwise, just render the report 
-		else { 
-			// TODO it's possible that a web renderer will handle this -- is that ok?
-			String filename = renderer.getFilename(reportDefinition, renderArg).replace(" ", "_");
-			response.setContentType(renderer.getRenderedContentType(reportDefinition, renderArg));
-			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-			response.setHeader("Pragma", "no-cache");
-			response.getOutputStream().write(report.getRenderedOutput());
+		else {
+			rr = new ReportRequest();
 		}
-		return null;
+		rr.setReportDefinition(new Mapped<ReportDefinition>(reportDefinition, params));
+		rr.setBaseCohort(command.getBaseCohort());
+	    rr.setRenderingMode(command.getSelectedMode());
+	    rr.setPriority(Priority.NORMAL);
+	    rr.setSchedule(command.getSchedule());
+	    rr.setReportProcessors(processors);
+		
+		// TODO: We might want to check here if this exact same report request is already queued and just re-direct if so
+		
+		rr = rs.queueReport(rr);
+		rs.processNextQueuedReports();
+		
+		if (StringUtils.hasText(rr.getSchedule())) {
+			return new ModelAndView(new RedirectView("../dashboard/index.form"));
+		}
+		else {
+			return new ModelAndView(new RedirectView("../reports/reportHistoryOpen.form?uuid="+rr.getUuid()));
+		}
 	}
 
 	public class CommandObject {
 		
+		private Integer existingRequestId;
 		private ReportDefinition reportDefinition;
 		private Mapped<CohortDefinition> baseCohort;
-		private Map<String, Object> userEnteredParams;		
-		private List<RenderingMode> renderingModes;		
+		private Map<String, Object> userEnteredParams;			
 		private String selectedRenderer; // as RendererClass!Arg
+		private Set<ReportProcessorConfiguration> configuredProcessorConfigurations;
+		private String schedule;
+		
+		private List<RenderingMode> renderingModes;	
+		private List<ReportProcessorConfiguration> availableProcessorConfigurations;
 		
 		public CommandObject() {
 			userEnteredParams = new LinkedHashMap<String, Object>();
 		}
 		
-		public RenderingMode getSelectedMode() throws ClassNotFoundException {
-			if (selectedRenderer == null)
-				return null;
-			String[] temp = selectedRenderer.split("!");
-			Class<? extends ReportRenderer> rc = (Class<? extends ReportRenderer>) Context.loadClass(temp[0]);
-			String arg = (temp.length > 1 && StringUtils.hasText(temp[1])) ? temp[1] : null;
-			for (RenderingMode mode : renderingModes) {
-				if (mode.getRenderer().getClass().equals(rc)
-						&& OpenmrsUtil.nullSafeEquals(mode.getArgument(), arg)) {
-					return mode;
+		@SuppressWarnings("unchecked")
+		public RenderingMode getSelectedMode() {
+			if (selectedRenderer != null) {
+				try {
+					String[] temp = selectedRenderer.split("!");
+					Class<? extends ReportRenderer> rc = (Class<? extends ReportRenderer>) Context.loadClass(temp[0]);
+					String arg = (temp.length > 1 && StringUtils.hasText(temp[1])) ? temp[1] : null;
+					for (RenderingMode mode : renderingModes) {
+						if (mode.getRenderer().getClass().equals(rc) && OpenmrsUtil.nullSafeEquals(mode.getArgument(), arg)) {
+							return mode;
+						}
+					}
+					log.warn("Could not find requested rendering mode: " + selectedRenderer);
+				}
+				catch (Exception e) {
+					log.warn("Could not load requested renderer", e);
 				}
 			}
-			log.warn("Could not find requested rendering mode: " + selectedRenderer);
 			return null;
 		}
-		
+
+		public Integer getExistingRequestId() {
+			return existingRequestId;
+		}
+
+		public void setExistingRequestId(Integer existingRequestId) {
+			this.existingRequestId = existingRequestId;
+		}
+
 		public List<RenderingMode> getRenderingModes() {
 			return renderingModes;
 		}
@@ -292,6 +309,30 @@ public class RunReportFormController extends SimpleFormController implements Val
 		
 		public void setUserEnteredParams(Map<String, Object> userEnteredParams) {
 			this.userEnteredParams = userEnteredParams;
+		}
+
+		public Set<ReportProcessorConfiguration> getConfiguredProcessorConfigurations() {
+			return configuredProcessorConfigurations;
+		}
+
+		public void setConfiguredProcessorConfigurations(Set<ReportProcessorConfiguration> configuredProcessorConfigurations) {
+			this.configuredProcessorConfigurations = configuredProcessorConfigurations;
+		}
+
+		public String getSchedule() {
+			return schedule;
+		}
+
+		public void setSchedule(String schedule) {
+			this.schedule = schedule;
+		}
+
+		public List<ReportProcessorConfiguration> getAvailableProcessorConfigurations() {
+			return availableProcessorConfigurations;
+		}
+
+		public void setAvailableProcessorConfigurations(List<ReportProcessorConfiguration> availableProcessorConfigurations) {
+			this.availableProcessorConfigurations = availableProcessorConfigurations;
 		}
 	}	
 	

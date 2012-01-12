@@ -27,11 +27,13 @@ public class ReportRequest extends BaseOpenmrsObject {
 	private Mapped<CohortDefinition> baseCohort; //optional
 	private Mapped<ReportDefinition> reportDefinition;
 	private RenderingMode renderingMode;
+	private Priority priority = Priority.NORMAL;
+	private String schedule; //optional, in cron format
 	private Set<ReportProcessorConfiguration> reportProcessors; //optional
+	private boolean saveAutomatically = false;
 	private User requestedBy;
 	private Date requestDate;
-	private Priority priority = Priority.NORMAL;
-	private Status status = Status.REQUESTED;
+	private Status status;
 	private Date evaluateStartDatetime;
 	private Date evaluateCompleteDatetime;
 	private Date renderCompleteDatetime;
@@ -53,12 +55,13 @@ public class ReportRequest extends BaseOpenmrsObject {
 	 * Full Constructor
 	 */
 	public ReportRequest(Mapped<ReportDefinition> reportDefinition, Mapped<CohortDefinition> baseCohort,
-	                     RenderingMode renderingMode, Priority priority) {
+	                     RenderingMode renderingMode, Priority priority, String schedule) {
 	    this();
 	    this.reportDefinition = reportDefinition;
 	    this.baseCohort = baseCohort;
 	    this.renderingMode = renderingMode;
 	    this.priority = priority;
+	    this.schedule = schedule;
     }
 	
 	//*****  INSTANCE METHODS ******
@@ -152,6 +155,34 @@ public class ReportRequest extends BaseOpenmrsObject {
     	this.renderingMode = renderingMode;
     }
 
+    /**
+     * @return the priority
+     */
+    public Priority getPriority() {
+    	return priority;
+    }
+
+    /**
+     * @param priority the priority to set
+     */
+    public void setPriority(Priority priority) {
+    	this.priority = priority;
+    }
+
+	/**
+	 * @return the schedule
+	 */
+	public String getSchedule() {
+		return schedule;
+	}
+
+	/**
+	 * @param schedule the schedule to set
+	 */
+	public void setSchedule(String schedule) {
+		this.schedule = schedule;
+	}
+
 	/**
 	 * @return the reportProcessors
 	 */
@@ -174,6 +205,20 @@ public class ReportRequest extends BaseOpenmrsObject {
 	 */
 	public void setReportProcessors(Set<ReportProcessorConfiguration> reportProcessors) {
 		this.reportProcessors = reportProcessors;
+	}
+
+	/**
+	 * @return the saveAutomatically
+	 */
+	public boolean isSaveAutomatically() {
+		return saveAutomatically;
+	}
+
+	/**
+	 * @param saveAutomatically the saveAutomatically to set
+	 */
+	public void setSaveAutomatically(boolean saveAutomatically) {
+		this.saveAutomatically = saveAutomatically;
 	}
 
 	/**
@@ -202,20 +247,6 @@ public class ReportRequest extends BaseOpenmrsObject {
      */
     public void setRequestDate(Date requestDate) {
     	this.requestDate = requestDate;
-    }
-
-    /**
-     * @return the priority
-     */
-    public Priority getPriority() {
-    	return priority;
-    }
-
-    /**
-     * @param priority the priority to set
-     */
-    public void setPriority(Priority priority) {
-    	this.priority = priority;
     }
     
 	/**
@@ -313,6 +344,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 	 */
 	public enum Status {
 		REQUESTED,
+		SCHEDULED,
 		PROCESSING,
 		FAILED,
 		COMPLETED,

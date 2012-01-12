@@ -30,7 +30,6 @@ public class ModuleActivator implements Activator {
 	 */
 	public void startup() {
 		log.info("Starting the Reporting Module ...");
-		
 	}
 	
 	/**

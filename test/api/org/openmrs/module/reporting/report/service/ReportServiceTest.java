@@ -45,7 +45,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should set uuid on the request", method = "runReport(ReportRequest)")
 	public void runReport_shouldSetUuidOnTheRequest() throws Exception {
 		ReportDefinition def = new ReportDefinition();
-		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, null, Priority.NORMAL);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, null, Priority.NORMAL, null);
 		Context.getService(ReportService.class).runReport(request);
 		Assert.assertNotNull(request.getUuid());
 	}
@@ -62,7 +62,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		dsd.setSqlQuery("select count(*) from patient");
 		def.addDataSetDefinition("patients", dsd, null);
 		ReportRenderer renderer = new TsvReportRenderer();
-		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), Priority.NORMAL);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), Priority.NORMAL, null);
 		Report result = Context.getService(ReportService.class).runReport(request);
 		Assert.assertNotNull(result.getReportData());
 		Assert.assertNotNull(result.getRenderedOutput());
@@ -77,7 +77,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	public void runReport_shouldNotRenderTheReportIfAWebRendererIsSpecified() throws Exception {
 		ReportDefinition def = new ReportDefinition();
 		WebReportRenderer renderer = new IndicatorReportWebRenderer(); 
-		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "Web", null, 100), Priority.NORMAL);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "Web", null, 100), Priority.NORMAL, null);
 		Report result = Context.getService(ReportService.class).runReport(request);
 		Assert.assertNotNull(result.getReportData());
 		Assert.assertNull(result.getRenderedOutput());
@@ -171,7 +171,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		
 		RenderingMode rm = new RenderingMode(new TsvReportRenderer(), "TSV", null, 100);
 
-		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, rm, Priority.NORMAL);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, rm, Priority.NORMAL, null);
 		request.addReportProcessor(new ReportProcessorConfiguration("Logging Processor", LoggingReportProcessor.class, null, true, true));
 		
 		/*

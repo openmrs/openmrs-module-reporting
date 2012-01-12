@@ -63,6 +63,10 @@
 						</spring:bind>
 					</td>		
 				</tr>
+				<tr>
+					<td><b><spring:message code="reporting.Report.run.optionalConfiguration"/></b></td>
+					<td></td>
+				</tr>
 				<openmrs:globalProperty var="mode" key="reporting.runReportCohortFilterMode" defaultValue="showIfNull"/>
 				<c:set var="showCohortFilter" value="${mode == 'hide' ? false : (mode == 'show' ? true : report.reportDefinition.baseCohortDefinition == null)}"/>
 				<c:if test="${showCohortFilter}">
@@ -72,6 +76,29 @@
 		                    <rptTag:mappedPropertyForObject id="baseCohort"
 		                        formFieldName="baseCohort" object="${ report }"
 		                        propertyName="baseCohort" label="Optional Filter Cohort"/>
+		                </td>
+		            </tr>
+	            </c:if>
+        		<tr valign="top">
+	                <td align="right"><spring:message code="reporting.Report.run.optionalSchedule"/>:</td>
+	                <td>
+	                	<spring:bind path="schedule">
+				            <input type="text" size="30" name="${status.expression}" value="${status.value}">
+				            <c:if test="${not empty status.errorMessage}">
+								<span class="error">${status.errorMessage}</span>
+							</c:if>
+				        </spring:bind>
+	                </td>
+	            </tr>
+	            <c:if test="${!empty report.availableProcessorConfigurations}">
+	        		<tr valign="top">
+		                <td align="right"><spring:message code="reporting.Report.run.optionalProcessors"/>:</td>
+		                <td>
+		                	<c:forEach items="${report.availableProcessorConfigurations}" var="processor">
+		                		<c:set var="isChecked" value="${fn:contains(report.configuredProcessorConfigurations, processor)}"/>
+		                		<input type="checkbox" name="configuredProcessors" value="${processor.id}" <c:if test="${isChecked}">checked</c:if>/>
+		                		${processor.name}<br/>
+		                	</c:forEach>
 		                </td>
 		            </tr>
 	            </c:if>

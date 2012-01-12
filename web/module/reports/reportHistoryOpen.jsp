@@ -8,58 +8,97 @@
 
 <c:url var="iconFilename" value="/images/file.gif"/>
 
+<script type="text/javascript" charset="utf-8">
+	var i=0;
+	function loadReportStatus() {
+	    $.getJSON('${pageContext.request.contextPath}/module/reporting/reports/loadReportStatus.form?uuid=${request.uuid}', function(data) {
+	    	var statusText = '';
+	    	for (var i=0; i< data.logEntries.length; i++) {
+	    		statusText += data.logEntries[i] + "<br/>"
+            }	    	
+	    	$("#reportStatusDiv").html(statusText);
+	    	if (data.status == 'COMPLETED' || data.status == 'SAVED') {
+	    		if (data.action == 'download') {
+	    			$("#downloadReportDiv").show();
+	    			$("#runAgainDiv").show();
+	    		}
+	    		else if (data.action == 'view') {
+	    			$("#viewReportDiv").show();
+	    			$("#runAgainDiv").show();
+	    		}
+	    	}
+	    	else if (data.status == 'FAILED') {
+	    		$("#errorDiv").html(data.errorDetails).show();
+	    	}
+	    	else {
+	    		setTimeout("loadReportStatus()", 3000);
+	    	}
+	    });
+	}
+
+	$(document).ready(function() {
+		loadReportStatus();
+	} );	
+</script>
+
 <h1>
 	${request.reportDefinition.parameterizable.name}
 </h1>
 
 <table style="width:100%; padding:10px;">
 	<tr>
-		<th style="text-align:left"><spring:message code="general.parameters"/></th>
-		<th style="text-align:left"><spring:message code="reporting.reportHistory.runDetails"/> </th>
-		<th style="text-align:left"><spring:message code="reporting.reportHistory.actions"/></th>
-	</tr>
-	<tr>
 		<td valign="top">
+			<b><spring:message code="general.parameters"/></b><br/>
 			<c:forEach var="p" items="${request.reportDefinition.parameterMappings}">
 				${p.key}: <rpt:format object="${p.value}"/><br/>
 			</c:forEach>
-		</td>
-		<td valign="top">
-			<spring:message code="reporting.reportHistory.requestedBy"/>: <rpt:format object="${request.requestedBy}"/><br/>
-			<spring:message code="reporting.reportHistory.requestedOn"/>: <openmrs:formatDate date="${request.requestDate}" type="long"/><br/>
-			<spring:message code="reporting.reportHistory.evaluationStart"/>: <openmrs:formatDate date="${request.evaluateStartDatetime}" type="long"/><br/>
-			<spring:message code="reporting.reportHistory.status"/>: ${request.status}
-			<c:if test="${request.status == 'COMPLETED'}">
-				<rpt:timespan now="${request.evaluateCompleteDatetime}" then="${request.evaluateStartDatetime}" showAgoWord="false"/><br/>
-			</c:if>
-		</td>
-		<td valign="top">
-			<c:if test="${action == 'download'}">
-				<button onClick="window.location='reportHistoryDownload.form?uuid=${request.uuid}';">
-					<spring:message code="general.download"/>
+			<br/><br/>
+			<b><spring:message code="reporting.reportHistory.baseCohort"/></b><br/>
+			<c:choose>
+				<c:when test="${!empty request.baseCohort}">
+					${request.baseCohort.parameterizable.name}
+					<table class="small" cellspacing="0" cellpadding="0">
+						<c:forEach var="p" items="${request.baseCohort.parameterMappings}">
+							<tr valign="top">
+								<td class="faded" align="right">
+									${p.key}:
+								</td>
+								<td>
+									<rpt:format object="${p.value}"/>
+								</td>
+							</tr>
+						</c:forEach>
+					</table>
+				</c:when>
+				<c:otherwise><spring:message code="reporting.allPatients"/></c:otherwise>
+			</c:choose>
+			<br/><br/><br/>
+			<div id="downloadReportDiv" style="display:none; padding:5px;">
+				<button onClick="window.location='reportHistoryDownload.form?uuid=${request.uuid}';" style="width:100px; height:40px;">
+					<b><spring:message code="general.download"/></b><br/>
 					<img src="${iconFilename}" border="0" width="16" height="16"/>
 				</button>
-			</c:if>
-			<c:if test="${action == 'view'}">
-				<button onClick="window.location='reportHistoryView.form?uuid=${request.uuid}';">
-					<spring:message code="general.view"/>
+			</div>
+			<div id="viewReportDiv" style="display:none; padding:5px;">
+				<button onClick="window.location='reportHistoryView.form?uuid=${request.uuid}';" style="width:100px; height:40px;">
+					<b><spring:message code="general.view"/></b><br/>
 					<img src="${iconFilename}" border="0" width="16" height="16"/>
 				</button>
-			</c:if>
-			<button onClick="window.location='../run/runReport.form?copyRequest=${request.uuid}';">
-				<h4><spring:message code="reporting.reportHistory.runAgain"/></h4>
-				<img src="<c:url value="/images/play.gif"/>" border="0" width="16" height="16"/> <br/>
-			</button>
+			</div>
+			<div id="runAgainDiv" style="display:none; padding:5px;">
+				<button onClick="window.location='../run/runReport.form?copyRequest=${request.uuid}';" style="width:100px; height:40px;">
+					<b><spring:message code="reporting.reportHistory.runAgain"/></b><br/>
+					<img src="<c:url value="/images/play.gif"/>" border="0" width="16" height="16"/>
+				</button>
+			</div>
 		</td>
+		<td valign="top">
+			<b><spring:message code="reporting.reportHistory.runDetails"/></b><br/>
+			<div id="reportStatusDiv"></div>
+			<br/><br/>
+			<div id="errorDiv"></div>
+		</td>
+	</tr>
 </table>
-
-<br/><br/>
-
-<c:if test="${!empty errorDetails}">
-	<div style="width:100%; height:200px; overflow: auto; border: 1px solid #666;">
-		Failed due to error:<br/>
-		<span>${errorDetails}</span>
-	</div>
-</c:if>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

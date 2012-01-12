@@ -29,7 +29,7 @@
 			<column name="renderer_argument"/>
 		</property>
 		
-		<set name="reportProcessors" table="reporting_report_request_processor" lazy="false" cascade="all-delete-orphan" inverse="true" access="field" order-by="id asc">
+		<set name="reportProcessors" table="reporting_report_request_processor" lazy="false" cascade="all-delete-orphan" order-by="id asc">
 			<key column="report_request_id" not-null="true" />
 			<many-to-many column="report_processor_configuration_id" class="ReportProcessorConfiguration" />
 		</set>
@@ -49,6 +49,7 @@
             </type>
         </property>
         
+        <property name="schedule" type="string" column="schedule"/>
         <property name="evaluateStartDatetime" type="java.util.Date" column="evaluation_start_datetime" />
         <property name="evaluateCompleteDatetime" type="java.util.Date" column="evaluation_complete_datetime" />
         <property name="renderCompleteDatetime" type="java.util.Date" column="render_complete_datetime" />

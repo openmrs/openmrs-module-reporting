@@ -8,16 +8,6 @@
 	jqUiDecoration();
 </script>
 
-<c:if test="${ __openmrs_report_data != null && __openmrs_hide_report_link == null }">
-	<div style="float: right; border: 1px solid #8FABC7; background-color: white; padding: 10px; position: absolute; right: 0px; top: 50px; z-index: 1">
-		<div align="center">
-			<a href="${__openmrs_last_report_url}">
-				<img src="<c:url value='/moduleResources/reporting/images/report_icon.gif'/>" width=45 height=45 border="0"/>
-				<br/><span class="small"><spring:message code="reporting.Report.backToReport"/></span>
-			</a>						
-		</div>
-	</div>
-</c:if>
 <div style="border-bottom: 1px solid black;">
 	<openmrs:extensionPoint pointId="org.openmrs.module.reporting.run.localheader" type="html">
 		<openmrs:hasPrivilege privilege="${extension.requiredPrivilege}">

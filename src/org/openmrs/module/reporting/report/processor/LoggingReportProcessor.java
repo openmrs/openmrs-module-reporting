@@ -45,7 +45,11 @@ public class LoggingReportProcessor implements ReportProcessor {
 		log.warn("Processing report with configuration: " + configuration);
 		log.warn("Request: " + report.getRequest());
 		log.warn("Number of Data Sets produced: " + report.getReportData().getDataSets().size());
-		log.warn("Length of byte[] of rendered output: " + report.getRenderedOutput().length);
-		log.warn("Error messages to report: " + report.getErrorMessage());
+		if (report.getRenderedOutput() != null) {
+			log.warn("Rendered output produced of size: " + report.getRenderedOutput().length);
+		}
+		if (report.getErrorMessage() != null) {
+			log.warn("An error occurred: " + report.getErrorMessage());
+		}
 	}
 }

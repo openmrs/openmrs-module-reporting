@@ -98,6 +98,13 @@
 						<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
 					</bean>
 				</property>
+				<property name="taskExecutor">
+					<bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+						<property name="corePoolSize" value="5" />
+						<property name="maxPoolSize" value="10" />
+						<property name="queueCapacity" value="25" />
+					</bean>
+				</property>
 			</bean>
 		</property>
 		<property name="preInterceptors">
@@ -447,4 +454,32 @@
 		</property>
 	</bean>
 	
+	<bean id="queueScheduledReportsTask" class="org.openmrs.module.reporting.report.task.QueueScheduledReportsTask"/>
+	<bean id="runQueuedReportsTask" class="org.openmrs.module.reporting.report.task.RunQueuedReportsTask"/>
+	<bean id="deleteOldReportsTask" class="org.openmrs.module.reporting.report.task.DeleteOldReportsTask"/>
+
+	<bean id="queueScheduledReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	    <property name="period" value="60000" /> <!-- run every minute -->
+	    <property name="timerTask" ref="queueScheduledReportsTask"/>
+	</bean>
+
+	<bean id="runQueuedReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	    <property name="period" value="60000" /> <!-- run every minute -->
+	    <property name="timerTask" ref="runQueuedReportsTask"/>
+	</bean>
+	
+	<bean id="deleteOldReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	    <property name="period" value="3600000" /> <!-- run every hour -->
+	    <property name="timerTask" ref="deleteOldReportsTask"/>
+	</bean>
+	
+	<bean id="reportingTimerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+	    <property name="scheduledTimerTasks">
+	        <list>
+	            <ref bean="queueScheduledReportsTimerTask"/>
+	            <ref bean="runQueuedReportsTimerTask"/>
+	            <ref bean="deleteOldReportsTimerTask"/>
+	        </list>
+	    </property>
+	</bean>
 </beans>
