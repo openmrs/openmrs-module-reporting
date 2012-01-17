@@ -48,7 +48,7 @@ public class MysqlReportServiceTest extends BaseModuleContextSensitiveTest {
 		rd = Context.getService(ReportDefinitionService.class).saveDefinition(rd);
 		
 		RenderingMode mode = new RenderingMode(new CsvReportRenderer(), "CSV", "csv", 100);
-		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(rd, null), null, mode, Priority.HIGHEST);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(rd, null), null, mode, Priority.HIGHEST, null);
 		rs.runReport(request);
 		
 		List<ReportRequest> requests = rs.getReportRequests(rd, null, null);

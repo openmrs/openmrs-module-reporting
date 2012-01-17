@@ -971,42 +971,37 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		}
 		
 		StringBuilder sql = new StringBuilder();
+		sql.append(" select o.person_id from obs o ");
+		sql.append(" inner join patient p on o.person_id = p.patient_id ");
+		if (joinOnEncounter) {
+			sql.append(" inner join encounter e on o.encounter_id = e.encounter_id ");
+		}
 
 		if (timeModifier == TimeModifier.ANY || timeModifier == TimeModifier.NO) {
-			sql.append(" select o.person_id from obs o ");
-			if (joinOnEncounter) {
-				sql.append(" inner join encounter e on o.encounter_id = e.encounter_id ");
-			}
-			sql.append(" where o.voided = false ");
-			if (questionConceptId != null)
+			sql.append(" where o.voided = false and p.voided = false ");
+			if (questionConceptId != null) {
 				sql.append(" and concept_id = :questionConceptId ");
+			}
 			sql.append(dateAndLocationSql);
-
-		} else if (timeModifier == TimeModifier.FIRST || timeModifier == TimeModifier.LAST) {
+		} 
+		else if (timeModifier == TimeModifier.FIRST || timeModifier == TimeModifier.LAST) {
 			boolean isFirst = timeModifier == PatientSetService.TimeModifier.FIRST;
-			
-			sql.append(" select o.person_id ");
-			sql.append(" from obs o ");
-			if (joinOnEncounter)
-				sql.append(" inner join encounter e on o.encounter_id = e.encounter_id ");
 			sql.append(" inner join ( ");
 			sql.append("    select person_id, " + (isFirst ? "MIN" : "MAX") + "(obs_datetime) as odt ");
 			sql.append("    from obs ");
-			if (joinOnEncounter)
+			if (joinOnEncounter) {
 				sql.append(" inner join encounter on obs.encounter_id = encounter.encounter_id ");
+			}
 			sql.append("             where obs.voided = false and obs.concept_id = :questionConceptId " + dateAndLocationSqlForSubquery + " group by person_id ");
 			sql.append(" ) subq on o.person_id = subq.person_id and o.obs_datetime = subq.odt ");
-			sql.append(" where o.voided = false and o.concept_id = :questionConceptId ");
+			sql.append(" where o.voided = false and p.voided = false and o.concept_id = :questionConceptId ");
 			sql.append(dateAndLocationSql);
-		} else if (doSqlAggregation) {
-			sql.append(" select o.person_id ");
-			sql.append(" from obs o ");
-			if (joinOnEncounter)
-				sql.append(" inner join encounter e on o.encounter_id = e.encounter_id ");
-			sql.append(" where o.voided = false and concept_id = :questionConceptId " + dateAndLocationSql );
+		} 
+		else if (doSqlAggregation) {
+			sql.append(" where o.voided = false and p.voided = false and concept_id = :questionConceptId " + dateAndLocationSql );
 			sql.append(" group by o.person_id ");
-			
-		} else {
+		} 
+		else {
 			throw new IllegalArgumentException("TimeModifier '" + timeModifier + "' not recognized");
 		}
 		
