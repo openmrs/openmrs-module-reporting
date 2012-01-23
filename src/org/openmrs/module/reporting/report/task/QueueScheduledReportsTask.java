@@ -28,7 +28,7 @@ public class QueueScheduledReportsTask extends AbstractReportsTask {
 		Date currentTime = new Date(scheduledExecutionTime());		
 		ReportService rs = Context.getService(ReportService.class);
 		
-		log.info("Executing the Queue Scheduled Reports Task");
+		log.debug("Executing the Queue Scheduled Reports Task");
 		
 		// First, identify if there are any scheduled report requests that should be run at this moment
 		// If there are, clone the request and move it to the REQUESTED status.  If this is the last

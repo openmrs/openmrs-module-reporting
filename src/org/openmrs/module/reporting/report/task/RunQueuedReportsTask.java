@@ -35,7 +35,7 @@ public class RunQueuedReportsTask extends AbstractReportsTask {
 			maxExecutions = ReportingConstants.GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN();
 		}
 		
-		log.info("Executing the Run Queued Reports Task");
+		log.debug("Executing the Run Queued Reports Task");
 		
 		ReportService rs = Context.getService(ReportService.class);
 		
