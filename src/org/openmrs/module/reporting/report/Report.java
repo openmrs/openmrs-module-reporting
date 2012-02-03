@@ -15,6 +15,7 @@ public class Report {
 	private ReportData reportData;
 	private byte[] renderedOutput;
 	private String errorMessage;
+	private boolean persisted;
 
 	//***** CONSTRUCTORS *****
 	
@@ -98,5 +99,19 @@ public class Report {
 	 */
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+	}
+
+	/**
+	 * @return the persisted
+	 */
+	public boolean isPersisted() {
+		return persisted;
+	}
+
+	/**
+	 * @param persisted the persisted to set
+	 */
+	public void setPersisted(boolean persisted) {
+		this.persisted = persisted;
 	}
 }

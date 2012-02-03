@@ -302,6 +302,14 @@ public interface ReportService extends OpenmrsService {
 	public void deleteOldReportRequests();
 	
 	/**
+	 * Persists reports that are cached but not on disk
+	 * Removes from Cache the oldest reports if the max cache size is exceeded
+	 * {@link ReportingConstants#GLOBAL_PROPERTY_MAX_CACHED_REPORTS()}
+	 */
+	@Transactional(readOnly = true)
+	public void persistCachedReports();
+	
+	/**
 	 * Saves the passed message to disk for the given report, in order to have a record of the report generation
 	 * @param report
 	 * @param message

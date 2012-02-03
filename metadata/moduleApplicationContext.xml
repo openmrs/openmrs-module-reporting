@@ -457,6 +457,7 @@
 	<bean id="queueScheduledReportsTask" class="org.openmrs.module.reporting.report.task.QueueScheduledReportsTask"/>
 	<bean id="runQueuedReportsTask" class="org.openmrs.module.reporting.report.task.RunQueuedReportsTask"/>
 	<bean id="deleteOldReportsTask" class="org.openmrs.module.reporting.report.task.DeleteOldReportsTask"/>
+	<bean id="persistCachedReportsTask" class="org.openmrs.module.reporting.report.task.PersistCachedReportsTask"/>
 
 	<bean id="queueScheduledReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
 	    <property name="period" value="60000" /> <!-- run every minute -->
@@ -473,12 +474,19 @@
 	    <property name="timerTask" ref="deleteOldReportsTask"/>
 	</bean>
 	
+	<bean id="persistCachedReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	    <property name="period" value="60000" /> <!-- run every minute -->
+	    <property name="timerTask" ref="persistCachedReportsTask"/>
+	</bean>
+	
+	
 	<bean id="reportingTimerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
 	    <property name="scheduledTimerTasks">
 	        <list>
 	            <ref bean="queueScheduledReportsTimerTask"/>
 	            <ref bean="runQueuedReportsTimerTask"/>
 	            <ref bean="deleteOldReportsTimerTask"/>
+	            <ref bean="persistCachedReportsTimerTask"/>
 	        </list>
 	    </property>
 	</bean>

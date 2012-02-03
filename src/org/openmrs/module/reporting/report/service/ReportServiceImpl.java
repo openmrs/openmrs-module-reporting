@@ -379,7 +379,6 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				try {
 					Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(request.getBaseCohort(), context);
 					context.setBaseCohort(baseCohort);
-					
 				} 
 				catch (Exception ex) {
 					throw new EvaluationException("baseCohort", ex);
@@ -423,7 +422,6 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		// Cache the report
 		logReportMessage(request, "Storing Report Results....");
 		cacheReport(report);
-		persistReportToDisk(report);
 		
 		// Run through any processors for the report, if defined
 		if (request.getReportProcessors() != null) {
@@ -547,6 +545,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			report = new Report(request);
 			report.setReportData(loadReportData(request));
 			report.setRenderedOutput(loadRenderedOutput(request));
+			report.setPersisted(true);
 			cacheReport(report);
 		}
 		return report;
@@ -579,6 +578,23 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
     }
 	
 	/**
+	 * @see ReportService#persistCachedReports()
+	 */
+	public synchronized void persistCachedReports() {
+		for (Report r : reportCache.values()) {
+			if (!r.isPersisted()) {
+				persistReportToDisk(r);
+				r.setPersisted(true);
+			}
+		}
+		if (reportCache.size() >= ReportingConstants.GLOBAL_PROPERTY_MAX_CACHED_REPORTS()) {
+			Iterator<ReportRequest> i = reportCache.keySet().iterator();
+			i.next();
+			i.remove();
+		}
+    }
+	
+	/**
 	 * @see ReportService#logReportMessage(ReportRequest, String)
 	 */
 	public void logReportMessage(ReportRequest request, String message) {
@@ -598,17 +614,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @param report the Report to cache
 	 */
 	protected synchronized void cacheReport(Report report) {
-		try {
-			if (reportCache.size() >= ReportingConstants.GLOBAL_PROPERTY_MAX_CACHED_REPORTS()) {
-				Iterator<ReportRequest> i = reportCache.keySet().iterator();
-				i.next();
-				i.remove();
-			}
-			reportCache.put(report.getRequest(), report);
-		}
-		catch (Exception e) {
-			log.warn("Error caching Report", e);
-		}
+		reportCache.put(report.getRequest(), report);
 	}
 	
 	/**
@@ -654,6 +660,10 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				success = false;
 				log.warn("An error occurred writing report error to disk", e);
 			}
+		}
+		
+		if (success) {
+			report.setPersisted(true);
 		}
 		
 		return success;
