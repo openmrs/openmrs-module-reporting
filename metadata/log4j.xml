@@ -3,13 +3,6 @@
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern"
-				value="%p - %C{1}.%M(%L) |%d{ISO8601}| %m%n" />
-		</layout>
-	</appender>
-
 	<logger name="org.hibernate.tool.hbm2ddl">
 		<level value="FATAL"/>
 	</logger>
@@ -21,10 +14,5 @@
 	<logger name="org.hibernate.type">
 		<level value="WARN"/>
 	</logger>
-	
-	<root>
-		<level value="WARN"/>
-		<appender-ref ref="CONSOLE"/>
-	</root>
 	
 </log4j:configuration>
