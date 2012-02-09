@@ -31,6 +31,7 @@ public class PatientDataServiceImpl extends BaseDefinitionService<PatientDataDef
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly = true)
 	public Class<PatientDataDefinition> getDefinitionType() {
 		return PatientDataDefinition.class;
 	}

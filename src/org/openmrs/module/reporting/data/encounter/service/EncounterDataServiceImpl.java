@@ -31,6 +31,7 @@ public class EncounterDataServiceImpl extends BaseDefinitionService<EncounterDat
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly = true)
 	public Class<EncounterDataDefinition> getDefinitionType() {
 		return EncounterDataDefinition.class;
 	}

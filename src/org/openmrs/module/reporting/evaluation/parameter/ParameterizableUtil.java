@@ -256,10 +256,15 @@ public class ParameterizableUtil {
 	 * @param mapped
 	 */
 	public static <Def extends Definition> void refreshMappedDefinition(Mapped<Def> mapped) {
-		if (mapped.getParameterizable() != null) {
-			Def def = mapped.getParameterizable();
-			def = (Def) DefinitionContext.getDefinitionByUuid(def.getClass(), def.getUuid());
-			mapped.setParameterizable(def);
+		try {
+			if (mapped.getParameterizable() != null) {
+				Def def = mapped.getParameterizable();
+				def = (Def) DefinitionContext.getDefinitionByUuid(def.getClass(), def.getUuid());
+				mapped.setParameterizable(def);
+			}
+		}
+		catch (Exception e) {
+			// Do nothing.  Sometimes this throws a weird hibernate exception, but this method is a hack anyway
 		}
 	}
 

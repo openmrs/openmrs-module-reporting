@@ -35,6 +35,7 @@ public class IndicatorServiceImpl extends BaseDefinitionService<Indicator> imple
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly = true)
 	public Class<Indicator> getDefinitionType() {
 		return Indicator.class;
 	}

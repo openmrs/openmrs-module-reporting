@@ -51,6 +51,7 @@ import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Base Implementation of the ReportService API
@@ -172,6 +173,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	/**
 	 * @see ReportService#saveReportRequest(ReportRequest)
 	 */
+	@Transactional
 	public ReportRequest saveReportRequest(ReportRequest request) {
 		return reportDAO.saveReportRequest(request);
 	}
@@ -179,6 +181,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	/**
 	 * @see ReportService#getReportRequest(Integer)
 	 */
+	@Transactional(readOnly=true)
 	public ReportRequest getReportRequest(Integer id) {
 		return reportDAO.getReportRequest(id);
 	}
@@ -186,6 +189,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	/**
 	 * @see ReportService#getReportRequestByUuid(String)
 	 */
+	@Transactional(readOnly=true)
 	public ReportRequest getReportRequestByUuid(String uuid) {
 		return reportDAO.getReportRequestByUuid(uuid);
 	}
@@ -193,6 +197,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	/**
 	 * @see ReportService#getReportRequests(ReportDefinition, Date, Date, Status)
 	 */
+	@Transactional(readOnly=true)
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses) {
 		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
 	}
@@ -200,6 +205,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	/**
 	 * @see ReportService#purgeReportRequest(ReportRequest)
 	 */
+	@Transactional
 	public void purgeReportRequest(ReportRequest request) {
 		reportDAO.purgeReportRequest(request);
 		reportCache.remove(request);
@@ -294,9 +300,9 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
-	 * @see ReportService#queueReport(ReportRequest)		
-		ensureScheduledTasksRunning();
+	 * @see ReportService#queueReport(ReportRequest)
 	 */
+	@Transactional
 	public ReportRequest queueReport(ReportRequest request) {
 		
 		if (request.getStatus() == null) {
@@ -597,6 +603,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	/**
 	 * @see ReportService#logReportMessage(ReportRequest, String)
 	 */
+	@Transactional(readOnly=true)
 	public void logReportMessage(ReportRequest request, String message) {
 		try {
 			File f = getReportLogFile(request);

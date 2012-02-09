@@ -31,6 +31,7 @@ public class PersonDataServiceImpl extends BaseDefinitionService<PersonDataDefin
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly = true)
 	public Class<PersonDataDefinition> getDefinitionType() {
 		return PersonDataDefinition.class;
 	}

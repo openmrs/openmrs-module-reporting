@@ -31,6 +31,7 @@ public class PersonQueryServiceImpl extends BaseDefinitionService<PersonQuery> i
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly = true)
 	public Class<PersonQuery> getDefinitionType() {
 		return PersonQuery.class;
 	}

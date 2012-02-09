@@ -31,6 +31,7 @@ public class EncounterQueryServiceImpl extends BaseDefinitionService<EncounterQu
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly = true)
 	public Class<EncounterQuery> getDefinitionType() {
 		return EncounterQuery.class;
 	}

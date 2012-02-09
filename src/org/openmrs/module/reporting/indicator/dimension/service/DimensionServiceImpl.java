@@ -31,6 +31,7 @@ public class DimensionServiceImpl extends BaseDefinitionService<Dimension> imple
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly = true)
 	public Class<Dimension> getDefinitionType() {
 		return Dimension.class;
 	}

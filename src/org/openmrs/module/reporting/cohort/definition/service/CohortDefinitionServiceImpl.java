@@ -32,6 +32,7 @@ public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDef
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly = true)
 	public Class<CohortDefinition> getDefinitionType() {
 		return CohortDefinition.class;
 	}

@@ -41,6 +41,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly=true)
 	public Class<ReportDefinition> getDefinitionType() {
 		return ReportDefinition.class;
 	}
@@ -48,6 +49,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see DefinitionService#getDefinitionTypes()
 	 */
+	@Transactional(readOnly=true)
 	public List<Class<? extends ReportDefinition>> getDefinitionTypes() {
 		List<Class<? extends ReportDefinition>> ret = new ArrayList<Class<? extends ReportDefinition>>();
 		ret.add(ReportDefinition.class);
@@ -58,6 +60,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see ReportDefinitionService#getReportDefinition(Integer)
 	 */
+	@Transactional(readOnly=true)
 	public ReportDefinition getDefinition(Integer id) {
 		return getService().getDefinition(ReportDefinition.class, id);
 	}
@@ -65,6 +68,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see DefinitionService#getDefinition(Class, Integer)
 	 */
+	@Transactional(readOnly=true)
 	public <D extends ReportDefinition> D getDefinition(Class<D> type, Integer id) throws APIException {
 		return getService().getDefinition(type, id);
 	}
@@ -72,6 +76,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see DefinitionService#getDefinitionByUuid(String)
 	 */
+	@Transactional(readOnly=true)
 	public ReportDefinition getDefinitionByUuid(String uuid) throws APIException {
 		return getService().getDefinitionByUuid(ReportDefinition.class, uuid);
 	}
@@ -79,10 +84,16 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see DefinitionService#getAllDefinitions(boolean)
 	 */
+	@Transactional(readOnly=true)
 	public List<ReportDefinition> getAllDefinitions(boolean includeRetired) {
 		return getService().getAllDefinitions(ReportDefinition.class, includeRetired);
 	}
 	
+	/**
+	 * 
+	 * @see BaseDefinitionService#getAllDefinitionSummaries(boolean)
+	 */
+	@Transactional(readOnly=true)
 	public List<DefinitionSummary> getAllDefinitionSummaries(boolean includeRetired) {
 	    return getService().getAllDefinitionSummaries(ReportDefinition.class, includeRetired);
 	}
@@ -90,6 +101,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see DefinitionService#getNumberOfDefinitions(boolean)
 	 */
+	@Transactional(readOnly=true)
 	public int getNumberOfDefinitions(boolean includeRetired) {
 		return getService().getNumberOfDefinitions(ReportDefinition.class, includeRetired);
 	}
@@ -112,6 +124,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see DefinitionService#purgeDefinition(Definition)
 	 */
+	@Transactional
 	public void purgeDefinition(ReportDefinition definition) {
 		for (ReportRequest request : Context.getService(ReportService.class).getReportRequests(definition, null, null, (Status[])null)) {
 			Context.getService(ReportService.class).purgeReportRequest(request);
@@ -122,6 +135,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/** 
 	 * @see ReportDefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
+	@Transactional(readOnly=true)
 	@Override
 	public ReportData evaluate(Mapped<? extends ReportDefinition> definition, EvaluationContext context) throws EvaluationException {
 		return (ReportData) super.evaluate(definition, context);
@@ -130,6 +144,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see ReportDefinitionService#evaluate(ReportDefinition, EvaluationContext)
 	 */
+	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
 	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext evalContext) throws EvaluationException {
 		

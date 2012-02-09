@@ -31,6 +31,7 @@ public class ObsQueryServiceImpl extends BaseDefinitionService<ObsQuery> impleme
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
+	@Transactional(readOnly = true)
 	public Class<ObsQuery> getDefinitionType() {
 		return ObsQuery.class;
 	}
