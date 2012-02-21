@@ -24,6 +24,7 @@ import org.openmrs.OpenmrsObject;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.reporting.ExceptionUtil;
 import org.openmrs.module.reporting.cohort.definition.persister.CohortDefinitionPersister;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
@@ -106,6 +107,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     		return dao.convertSerializedObject(definitionType, so);
     	}
     	catch (Exception e) {
+    		ExceptionUtil.rethrowAuthenticationException(e);
     		log.warn("Unable to deserialize Definition: " + so, e);
     		return null;
     	}
@@ -120,6 +122,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     		return dao.convertSerializedObject(definitionType, so);
     	}
     	catch (Exception e) {
+    		ExceptionUtil.rethrowAuthenticationException(e);
     		log.warn("Unable to deserialize Definition : " + so, e);
     		return null;
     	}
@@ -135,6 +138,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
         		ret.add(dao.convertSerializedObject(definitionType, so));
         	}
         	catch (Exception e) {
+        		ExceptionUtil.rethrowAuthenticationException(e);
         		log.warn("Unable to deserialize Definition: " + so, e);
         	}
     	}
@@ -179,6 +183,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
         		dao.convertSerializedObject(definitionType, so);
         	}
         	catch (Exception e) {
+        		ExceptionUtil.rethrowAuthenticationException(e);
         		ret.add(so);
         	}
     	}
@@ -202,6 +207,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
         		ret.add(dao.convertSerializedObject(definitionType, so));
         	}
         	catch (Exception e) {
+        		ExceptionUtil.rethrowAuthenticationException(e);
         		log.warn("Unable to deserialize Definition: " + so, e);
         	}
     	}
