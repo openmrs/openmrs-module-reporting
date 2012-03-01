@@ -62,6 +62,9 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 		StringBuilder sqlQuery = new StringBuilder(queryDefinition.getQuery());
 		boolean whereFound = sqlQuery.indexOf("where") != -1;
 		if (context.getBaseCohort() != null) {
+			if (context.getBaseCohort().isEmpty()) {
+				return queryResult;
+			}
 			whereFound = true;
 			sqlQuery.append(whereFound ? " and " : " where ");
 			sqlQuery.append("patient_id in (" + context.getBaseCohort().getCommaSeparatedPatientIds() + ")");
@@ -69,6 +72,9 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 		if (context instanceof EncounterEvaluationContext) {
 			EncounterEvaluationContext eec = (EncounterEvaluationContext) context;
 			if (eec.getBaseEncounters() != null) {
+				if (eec.getBaseEncounters().isEmpty()) {
+					return queryResult;
+				}
 				sqlQuery.append(whereFound ? " and " : " where ");
 				sqlQuery.append("encounter_id in (" + OpenmrsUtil.join(eec.getBaseEncounters().getMemberIds(), ",") + ")");
 			}
