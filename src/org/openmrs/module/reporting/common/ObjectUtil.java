@@ -284,7 +284,10 @@ public class ObjectUtil {
 	public static String format(Object o, String format) {
 		if (o == null) { return ""; }
 		if (o instanceof Date) {
-			DateFormat df = decode(format, Context.getDateFormat(), new SimpleDateFormat(format));
+			DateFormat df = Context.getDateFormat();
+			if (ObjectUtil.notNull(format)) {
+				df = new SimpleDateFormat(format);
+			}
 			return df.format((Date)o);
 		}
 		if (o instanceof Map) {
