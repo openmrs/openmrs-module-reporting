@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -63,7 +64,9 @@ public class EvaluationUtil {
 	 * @see EvaluationUtil#evaluateExpression(String, Map<String, Object>, Class)
 	 */
 	public static Object evaluateExpression(String expression, EvaluationContext context) throws ParameterException {
-		return evaluateExpression(expression, context.getParameterValues());
+		Map<String, Object> params = new HashMap<String, Object>(context.getParameterValues());
+		params.putAll(context.getContextValues());
+		return evaluateExpression(expression, params);
 	}
 	
 	/**

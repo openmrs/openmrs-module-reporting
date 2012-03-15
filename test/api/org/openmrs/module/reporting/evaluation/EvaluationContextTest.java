@@ -19,11 +19,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.junit.Test;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
- *
+ * Tests for the EvaluationContext expression parsing
  */
-public class EvaluationContextTest {
+public class EvaluationContextTest extends BaseModuleContextSensitiveTest {
 	
 	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
 	
