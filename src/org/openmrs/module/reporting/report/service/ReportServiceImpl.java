@@ -59,6 +59,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReportServiceImpl extends BaseOpenmrsService implements ReportService {
 
 	private static final String REPORT_RESULTS_DIR = "REPORT_RESULTS";
+	public static final String GENERATED_BY = "generatedBy";
+	public static final String GENERATION_DATE = "generationDate";
 	
 	// Logger
 	private transient Log log = LogFactory.getLog(this.getClass());
@@ -380,6 +382,9 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		try {
 			// Create a new Evaluation Context, setting the base cohort from the request
 			EvaluationContext context = new EvaluationContext();
+			context.addContextValue(GENERATED_BY, ObjectUtil.getNameOfUser(request.getRequestedBy()));
+			context.addContextValue(GENERATION_DATE, request.getRequestDate());
+			
 			if (request.getBaseCohort() != null) {
 				logReportMessage(request, "Evaluating base Cohort....");
 				try {

@@ -21,10 +21,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.CohortUtil;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterConstants;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 
@@ -52,6 +54,9 @@ public class EvaluationContext {
 	// Base cohort to use for evaluation
 	private Cohort baseCohort;
 	
+	// Context-based data for the evaluation - evaluating user, date evaluated, etc
+	private Map<String, Object> contextValues;
+	
 	// Parameter values entered by user (or defaulted)
 	private Map<String, Object> parameterValues;
 	
@@ -77,9 +82,13 @@ public class EvaluationContext {
 	 */
 	public EvaluationContext(Date evaluationDate) {
 		this.evaluationDate = evaluationDate;
-		for (ParameterConstants c : ParameterConstants.values()) {
-			addParameterValue(c.getParameterName(), c.getParameterValue(this));
-		}
+		addContextValue("now", evaluationDate);
+		addContextValue("start_of_today", DateUtil.getStartOfDay(evaluationDate));
+		addContextValue("end_of_today", DateUtil.getEndOfDay(evaluationDate));
+		addContextValue("start_of_last_month", DateUtil.getStartOfMonth(evaluationDate, -1));
+		addContextValue("end_of_last_month", DateUtil.getEndOfMonth(evaluationDate, -1));
+		addContextValue("generatedBy", ObjectUtil.getNameOfUser(Context.getAuthenticatedUser()));
+		addContextValue("generationDate", new Date());
 	}
 	
 	/**
@@ -91,6 +100,7 @@ public class EvaluationContext {
 		this.setCache(context.getCache());
 		this.setBaseCohort(context.getBaseCohort());
 		this.getParameterValues().putAll(context.getParameterValues());
+		this.getContextValues().putAll(context.getContextValues());
 	}
 	
 	// *******************
@@ -209,6 +219,30 @@ public class EvaluationContext {
 	 */
 	public void clearCache() {
 		getCache().clear();
+	}
+	
+	/**
+	 * @return the contextValues
+	 */
+	public Map<String, Object> getContextValues() {
+		if (contextValues == null) {
+			contextValues = new HashMap<String, Object>();
+		}
+		return contextValues;
+	}
+	
+	/**
+	 * @param contextValues the contextValues to set
+	 */
+	public void setContextValues(Map<String, Object> contextValues) {
+		this.contextValues = contextValues;
+	}
+	
+	/**
+	 * Adds a value to the Context
+	 */
+	public void addContextValue(String key, Object value) {
+		getContextValues().put(key, value);
 	}
 	
 	/**

@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.openmrs.Cohort;
-import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -42,8 +41,6 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	public static final String PARAMETER_PREFIX = "parameter";
 	public static final String PROPERTY_PREFIX = "property";
 	public static final String SEPARATOR = ".";
-	public static final String GENERATED_BY = "generatedBy";
-	public static final String GENERATION_DATE = "generationDate";
 	public static final String INDEX = "index";
 	public static final String LABEL = "label";
 	
@@ -127,19 +124,10 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 			data.put(PROPERTY_PREFIX + SEPARATOR  + entry.getKey(), entry.getValue());
 		}
 		
-		String currentUserName = "";
-		User currentUser = Context.getUserContext().getAuthenticatedUser();
-		if (currentUser != null) {
-			if (currentUser.getPersonName() != null) {
-				currentUserName = currentUser.getPersonName().getFullName();
-			}
-			else {
-				currentUserName = currentUser.getUsername();
-			}
+		// Add all context values as replacement data
+		for (Map.Entry<String, Object> entry : reportData.getContext().getContextValues().entrySet()) {
+			data.put(CONTEXT_PREFIX + SEPARATOR  + entry.getKey(), entry.getValue());
 		}
-		
-		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATED_BY, currentUserName);
-		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATION_DATE, new Date());
 
 		return data;
 	}
@@ -198,19 +186,10 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 			data.put(PROPERTY_PREFIX + SEPARATOR  + entry.getKey(), entry.getValue());
 		}
 		
-		String currentUserName = "";
-		User currentUser = Context.getUserContext().getAuthenticatedUser();
-		if (currentUser != null) {
-			if (currentUser.getPersonName() != null) {
-				currentUserName = currentUser.getPersonName().getFullName();
-			}
-			else {
-				currentUserName = currentUser.getUsername();
-			}
+		// Add all context values as replacement data
+		for (Map.Entry<String, Object> entry : reportData.getContext().getContextValues().entrySet()) {
+			data.put(CONTEXT_PREFIX + SEPARATOR  + entry.getKey(), entry.getValue());
 		}
-		
-		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATED_BY, currentUserName);
-		data.put(CONTEXT_PREFIX + SEPARATOR + GENERATION_DATE, new Date());
 
 		return data;
 	}
