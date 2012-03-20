@@ -3,11 +3,9 @@ package org.openmrs.module.reporting.web.extension;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.openmrs.api.context.Context;
+import org.openmrs.module.Extension;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.definition.converter.ConverterUtil;
-import org.openmrs.module.Extension;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
 import org.openmrs.util.OpenmrsClassLoader;
 
