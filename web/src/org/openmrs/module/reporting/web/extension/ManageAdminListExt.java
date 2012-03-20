@@ -29,11 +29,6 @@ public class ManageAdminListExt extends AdministrationSectionExt {
 		// Using linked hash map to keep order of links
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		Thread.currentThread().setContextClassLoader(OpenmrsClassLoader.getInstance());
-		int numInvalidDefinitions = ConverterUtil.getNumberNeedingConversion();
-		if (numInvalidDefinitions > 0) {
-			String s = Context.getMessageSourceService().getMessage("reporting.fixInvalidDefinitions.title");
-			map.put("module/reporting/definition/invalidSerializedDefinitions.form", "*** " + s + " (" + numInvalidDefinitions + ") ***");
-		}
 		map.put("module/reporting/reports/manageReports.form", "reporting.manageReports.title");
 		map.put("module/reporting/definition/manageDefinitions.form?type="+DataSetDefinition.class.getName(), "reporting.manageDataSets.title");
 		map.put("module/reporting/indicators/manageIndicators.form", "reporting.manageIndicators.title");
