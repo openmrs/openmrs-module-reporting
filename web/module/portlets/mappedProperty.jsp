@@ -27,14 +27,14 @@
 				});
 		
 				<c:forEach var="p" items="${model.mappedObj.parameters}" varStatus="varstatus">
-					$('#typeSelector_${p.name}_${model.id}').change(function(event) {
-						$('#typeSelector_${p.name}_fixed_${model.id}').hide();
-						$('#typeSelector_${p.name}_mapped_${model.id}').hide();
-						$('#typeSelector_${p.name}_complex_${model.id}').hide();
-						var val = $('#typeSelector_${p.name}_${model.id}').val();
-						$('#typeSelector_${p.name}_'+val+'_${model.id}').show();
+					$('#typeSelector_${varstatus.index}_${model.id}').change(function(event) {
+						$('#typeSelector_${varstatus.index}_fixed_${model.id}').hide();
+						$('#typeSelector_${varstatus.index}_mapped_${model.id}').hide();
+						$('#typeSelector_${varstatus.index}_complex_${model.id}').hide();
+						var val = $('#typeSelector_${varstatus.index}_${model.id}').val();
+						$('#typeSelector_${varstatus.index}_'+val+'_${model.id}').show();
 					});
-					$('#typeSelector_${p.name}_${model.id}').trigger('change');
+					$('#typeSelector_${varstatus.index}_${model.id}').trigger('change');
 				</c:forEach>
 		
 				$('#mapParametersFormCancelButton_${model.id}').click(function(event){
@@ -96,10 +96,10 @@
 								<c:choose>
 									<c:when test="${empty model.allowedParams[p.name]}">
 										<input type="hidden" name="valueType_${p.name}" value="fixed"/>
-										<wgt:widget id="fixedValue_${p.name}_${model.id}" name="fixedValue_${p.name}" type="${p.type.name}" defaultValue="${model.fixedParams[p.name]}" attributes="style=vertical-align:top;"/>
+										<wgt:widget id="fixedValue_${varstatus.index}_${model.id}" name="fixedValue_${p.name}" type="${p.type.name}" defaultValue="${model.fixedParams[p.name]}" attributes="style=vertical-align:top;"/>
 									</c:when>
 									<c:otherwise>
-										<select id="typeSelector_${p.name}_${model.id}" name="valueType_${p.name}">
+										<select id="typeSelector_${varstatus.index}_${model.id}" name="valueType_${p.name}">
 											<option value="fixed" <c:if test="${model.mappedParams[p.name] == null && model.complexParams[p.name] == null}">selected</c:if>>
 												Value:
 											</option>
@@ -110,10 +110,10 @@
 												Expression:
 											</option>
 										</select>
-										<span id="typeSelector_${p.name}_fixed_${model.id}" style="display:none;">
-											<wgt:widget id="fixedValue_${p.name}_${model.id}" name="fixedValue_${p.name}" type="${p.type.name}" defaultValue="${model.fixedParams[p.name]}" attributes="style=vertical-align:top;"/>
+										<span id="typeSelector_${varstatus.index}_fixed_${model.id}" style="display:none;">
+											<wgt:widget id="fixedValue_${varstatus.index}_${model.id}" name="fixedValue_${p.name}" type="${p.type.name}" defaultValue="${model.fixedParams[p.name]}" attributes="style=vertical-align:top;"/>
 										</span>
-										<span id="typeSelector_${p.name}_mapped_${model.id}" style="display:none;">
+										<span id="typeSelector_${varstatus.index}_mapped_${model.id}" style="display:none;">
 											<select name="mappedValue_${p.name}">
 												<option value="" <c:if test="${model.mappedParams[p.name] == null}">selected</c:if>>Choose...</option>
 												<c:forEach var="parentParam" items="${model.allowedParams[p.name]}">
@@ -123,7 +123,7 @@
 												</c:forEach>
 											</select>
 										</span>
-										<span id="typeSelector_${p.name}_complex_${model.id}" style="display:none;">
+										<span id="typeSelector_${varstatus.index}_complex_${model.id}" style="display:none;">
 											<input type="text" name="complexValue_${p.name}" size="40" value="${model.complexParams[p.name]}"/>
 										</span>
 									</c:otherwise>
