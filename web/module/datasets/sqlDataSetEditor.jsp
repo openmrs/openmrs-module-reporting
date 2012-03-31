@@ -3,7 +3,7 @@
 <%@ include file="../manage/localHeader.jsp"%>
 
 <c:url value="/module/reporting/datasets/sqlDataSetEditor.form" var="pageUrlWithUuid">
-	<c:param name="uuid" value="${dsd.uuid}" />
+	<c:param name="uuid" value="${definition.uuid}" />
 </c:url>
 
 <c:set var="pageUrl" value="/module/reporting/datasets/sqlDataSetEditor.form?uuid=uuid"/>
