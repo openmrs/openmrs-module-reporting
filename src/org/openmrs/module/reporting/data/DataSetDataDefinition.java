@@ -13,11 +13,9 @@
  */
 package org.openmrs.module.reporting.data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -70,33 +68,14 @@ public abstract class DataSetDataDefinition extends BaseDataDefinition {
 
 	//***** INSTANCE METHODS *****
 	
-	/**
-	 * @return the DataSetColumns that are supported in the returned DataSetRow
-	 */
-	public List<FlattenedDataSetColumn> getDataSetColumns() {
-		List<FlattenedDataSetColumn> l = new ArrayList<FlattenedDataSetColumn>();
-		if (definition != null) {
-			if (whichValues != null && numberOfValues != null) {
-				for (int index = 0; index < getNumberOfValues(); index++) {
-					for (DataSetColumn c : definition.getDataSetColumns()) {
-						l.add(new FlattenedDataSetColumn(c, index, getNumberOfValues() > 1));
-					}
-				}
-			}
-			else {
-				for (DataSetColumn c : definition.getDataSetColumns()) {
-					l.add(new FlattenedDataSetColumn(c, null, false));
-				}
-			}
-		}
-		return l;
-	}
-	
 	/** 
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
-		return DataSetRow.class;
+		if (numberOfValues != null && numberOfValues == 1) {
+			return DataSetRow.class;
+		}
+		return List.class;
 	}
 	
 	/**
@@ -157,66 +136,5 @@ public abstract class DataSetDataDefinition extends BaseDataDefinition {
 	 */
 	public void setNumberOfValues(Integer numberOfValues) {
 		this.numberOfValues = numberOfValues;
-	}
-	
-	//***** INSTANCE METHODS *****
-	
-	public class FlattenedDataSetColumn extends DataSetColumn {
-
-		private static final long serialVersionUID = 1L;
-		
-		//***** PROPERTIES *****
-		
-		private DataSetColumn originalColumn;
-		private Integer index;
-		
-		//***** CONSTRUCTORS *****
-		
-		/**
-		 * Default constructor
-		 */
-		public FlattenedDataSetColumn() { }
-		
-		/**
-		 * Full constructor
-		 */
-		public FlattenedDataSetColumn(DataSetColumn c, Integer index, boolean useIndexInPrefix) {
-			String prefix = (index == null || !useIndexInPrefix ? "" : (index+1) + "_");
-			setName(prefix + c.getName());
-			setLabel(prefix + c.getLabel());
-			setDataType(c.getDataType());
-			setOriginalColumn(c);
-			setIndex(index);
-		}
-		
-		//***** PROPERTY ACCESS *****
-
-		/**
-		 * @return the originalColumn
-		 */
-		public DataSetColumn getOriginalColumn() {
-			return originalColumn;
-		}
-
-		/**
-		 * @param originalColumn the originalColumn to set
-		 */
-		public void setOriginalColumn(DataSetColumn originalColumn) {
-			this.originalColumn = originalColumn;
-		}
-		
-		/**
-		 * @return the index
-		 */
-		public Integer getIndex() {
-			return index;
-		}
-
-		/**
-		 * @param index the index to set
-		 */
-		public void setIndex(Integer index) {
-			this.index = index;
-		}	
 	}
 }

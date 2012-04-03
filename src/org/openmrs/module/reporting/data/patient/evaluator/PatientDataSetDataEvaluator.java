@@ -14,15 +14,14 @@
 package org.openmrs.module.reporting.data.patient.evaluator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.module.reporting.data.DataSetDataDefinition.FlattenedDataSetColumn;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataSetDataDefinition;
@@ -63,39 +62,34 @@ public class PatientDataSetDataEvaluator implements PatientDataEvaluator {
 				rowsForPatient = new ArrayList<DataSetRow>();
 				data.put(patientId, rowsForPatient);
 			}
+			r.removeColumn("__patientId");
 			rowsForPatient.add(r);
 		}
 		
 		for (Integer patientId : data.keySet()) {
 			
-			DataSetRow retForPatient = new DataSetRow();
-			
 			List<DataSetRow> values = data.get(patientId);
 			
-			// Flatten into single row if appropriate
-			if (def.getWhichValues() != null && def.getNumberOfValues() != null) {
-				for (FlattenedDataSetColumn fc : def.getDataSetColumns()) {
-					if (!ObjectUtil.areEqual(fc.getOriginalColumn().getName(), "__patientId")) {
-						int index = def.getWhichValues() == TimeQualifier.LAST ? values.size() - fc.getIndex() - 1 : fc.getIndex();
-						DataSetRow row = values.size() > fc.getIndex() ? values.get(index) : null;
-						Object value = (row == null ? null : row.getColumnValue(fc.getOriginalColumn().getName()));
-						retForPatient.addColumnValue(fc, value);
-					}
-				}
-			}
-			else {
-				for (FlattenedDataSetColumn fc : def.getDataSetColumns()) {
-					if (!ObjectUtil.areEqual(fc.getOriginalColumn().getName(), "__patientId")) {
-						List<Object> l = new ArrayList<Object>();
-						for (DataSetRow r : values) {
-							l.add(r.getColumnValue(fc.getOriginalColumn()));
-						}
-						retForPatient.addColumnValue(fc, l);
-					}
-				}
+			if (def.getWhichValues() == TimeQualifier.LAST) {
+				Collections.reverse(values);
 			}
 			
-			c.addData(patientId, retForPatient);
+			int numValues = values.size();
+			if (def.getNumberOfValues() != null && def.getNumberOfValues() < numValues) {
+				numValues = def.getNumberOfValues();
+			}
+			
+			if (def.getNumberOfValues() != null && def.getNumberOfValues() == 1) {
+				c.addData(patientId, values.size() > 0 ? values.get(0) : null);
+			}
+			else {
+				List<DataSetRow> patientRows = new ArrayList<DataSetRow>();
+				for (int i=0; i<numValues; i++) {
+					DataSetRow row = values.get(i);
+					patientRows.add(row);
+				}
+				c.addData(patientId, patientRows);
+			}
 		}
 
 		dsd.removeColumnDefinition("__patientId");

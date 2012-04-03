@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.module.reporting.data.DataDefinition;
-import org.openmrs.module.reporting.data.DataSetDataDefinition;
 import org.openmrs.module.reporting.data.MappedData;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -73,19 +72,12 @@ public class RowPerObjectColumnDefinition extends BaseColumnDefinition {
 	public List<DataSetColumn> getDataSetColumns() {
 		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
 		if (dataDefinition != null && dataDefinition.getParameterizable() != null) {
-			DataDefinition dataDef = dataDefinition.getParameterizable();
-			if (dataDef instanceof DataSetDataDefinition) {
-				DataSetDataDefinition dataSetDataDef = (DataSetDataDefinition)dataDef;
-				l.addAll(dataSetDataDef.getDataSetColumns());
+			Class<?> type = dataDefinition.getParameterizable().getDataType();
+			List<DataConverter> converters = dataDefinition.getConverters();
+			if (converters != null && converters.size() > 0) {
+				type = converters.get(converters.size() - 1).getDataType();
 			}
-			else {
-				Class<?> type = dataDefinition.getParameterizable().getDataType();
-				List<DataConverter> converters = dataDefinition.getConverters();
-				if (converters != null && converters.size() > 0) {
-					type = converters.get(converters.size() - 1).getDataType();
-				}
-				l.add(new DataSetColumn(getName(), getName(), type));
-			}
+			l.add(new DataSetColumn(getName(), getName(), type));
 		}
 		return l;
 	}
