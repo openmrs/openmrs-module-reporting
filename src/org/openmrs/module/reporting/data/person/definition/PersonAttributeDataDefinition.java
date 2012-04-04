@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.data.person.definition;
 
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -22,6 +23,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Person Attribute Column
  */
+@Localized("reporting.PersonAttributeDataDefinition")
 public class PersonAttributeDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;
@@ -29,7 +31,7 @@ public class PersonAttributeDataDefinition extends BaseDataDefinition implements
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty
-	private PersonAttributeType type;
+	private PersonAttributeType personAttributeType;
 	
 	//****** CONSTRUCTORS ******
 	
@@ -41,18 +43,18 @@ public class PersonAttributeDataDefinition extends BaseDataDefinition implements
 	}
 	
 	/**
-	 * Constructor to populate name and type
+	 * Constructor to populate name and personAttributeType
 	 */
-	public PersonAttributeDataDefinition(String name, PersonAttributeType type) {
+	public PersonAttributeDataDefinition(String name, PersonAttributeType personAttributeType) {
 		super(name);
-		this.type = type;
+		this.personAttributeType = personAttributeType;
 	}
 	
 	/**
 	 * Constructor to populate type only
 	 */
-	public PersonAttributeDataDefinition(PersonAttributeType type) {
-		this(null, type);
+	public PersonAttributeDataDefinition(PersonAttributeType personAttributeType) {
+		this(null, personAttributeType);
 	}
 
 	//***** INSTANCE METHODS *****
@@ -67,16 +69,16 @@ public class PersonAttributeDataDefinition extends BaseDataDefinition implements
 	//***** PROPERTY ACCESS *****
 
 	/**
-	 * @return the type
+	 * @return the personAttributeType
 	 */
-	public PersonAttributeType getType() {
-		return type;
+	public PersonAttributeType getPersonAttributeType() {
+		return personAttributeType;
 	}
 
 	/**
-	 * @param type the type to set
+	 * @param personAttributeType the personAttributeType to set
 	 */
-	public void setType(PersonAttributeType type) {
-		this.type = type;
+	public void setPersonAttributeType(PersonAttributeType personAttributeType) {
+		this.personAttributeType = personAttributeType;
 	}
 }

@@ -13,20 +13,13 @@
  */
 package org.openmrs.module.reporting.data.encounter.definition;
 
-import org.openmrs.module.reporting.data.BaseDataDefinition;
-import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.JoinDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * Adapter class for exposing a Patient Data Definition as an Encounter Data Definition
  */
-public class PatientToEncounterDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
-	
-	//***** PROPERTIES *****
-	
-	@ConfigurationProperty(required=true)
-	private PatientDataDefinition definition;
+public class PatientToEncounterDataDefinition extends JoinDataDefinition<PatientDataDefinition> implements EncounterDataDefinition {
 	
 	/**
 	 * Default Constructor
@@ -38,40 +31,22 @@ public class PatientToEncounterDataDefinition extends BaseDataDefinition impleme
 	/**
 	 * Default Constructor
 	 */
-	public PatientToEncounterDataDefinition(PatientDataDefinition definition) {
-		this.definition = definition;
+	public PatientToEncounterDataDefinition(PatientDataDefinition joinedDataDefinition) {
+		super(joinedDataDefinition);
 	}
 	
 	/**
-	 * Constructor to populate name only
+	 * Constructor to populate name
 	 */
-	public PatientToEncounterDataDefinition(String name, PatientDataDefinition definition) {
-		super(name);
-		this.definition = definition;
-	}
-
-	//***** INSTANCE METHODS *****
-	
-	/** 
-	 * @see DataDefinition#getDataType()
-	 */
-	public Class<?> getDataType() {
-		return definition.getDataType();
-	}
-	
-	//***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the definition
-	 */
-	public PatientDataDefinition getDefinition() {
-		return definition;
+	public PatientToEncounterDataDefinition(String name, PatientDataDefinition joinedDataDefinition) {
+		super(name, joinedDataDefinition);
 	}
 
 	/**
-	 * @param definition the definition to set
+	 * @see JoinDataDefinition#getJoinedDefinitionType()
 	 */
-	public void setDefinition(PatientDataDefinition definition) {
-		this.definition = definition;
+	@Override
+	public Class<PatientDataDefinition> getJoinedDefinitionType() {
+		return PatientDataDefinition.class;
 	}
 }

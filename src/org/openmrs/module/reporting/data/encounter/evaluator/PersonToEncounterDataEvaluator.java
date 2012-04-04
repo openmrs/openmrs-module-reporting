@@ -43,7 +43,7 @@ public class PersonToEncounterDataEvaluator implements EncounterDataEvaluator {
 	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 		PersonToEncounterDataDefinition def = (PersonToEncounterDataDefinition)definition;
-		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(def.getDefinition(), context);
+		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(def.getJoinedDefinition(), context);
 		DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
 		Set<Integer> encIds = null;
 		if (context instanceof EncounterEvaluationContext) {

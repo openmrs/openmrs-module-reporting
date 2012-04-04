@@ -13,12 +13,14 @@
  */
 package org.openmrs.module.reporting.data.encounter.definition;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
  * Encounter ID Column
  */
+@Localized("reporting.EncounterIdDataDefinition")
 public class EncounterIdDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 	
 	public static final long serialVersionUID = 1L;

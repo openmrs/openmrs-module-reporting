@@ -15,12 +15,14 @@ package org.openmrs.module.reporting.data.encounter.definition;
 
 import java.util.Date;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
  * Encounter Date Time Column
  */
+@Localized("reporting.EncounterDatetimeDataDefinition")
 public class EncounterDatetimeDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 	
 	public static final long serialVersionUID = 1L;

@@ -14,12 +14,14 @@
 package org.openmrs.module.reporting.data.person.definition;
 
 import org.openmrs.module.reporting.common.Birthdate;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
  * Birth Date Data Definition
  */
+@Localized("reporting.BirthdateDataDefinition")
 public class BirthdateDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;

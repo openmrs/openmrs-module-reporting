@@ -32,7 +32,7 @@ public class PreferredIdentifierDataEvaluatorTest extends BaseModuleContextSensi
 		context.setBaseCohort(new Cohort("2,6,7,8"));
 		
 		PreferredIdentifierDataDefinition d = new PreferredIdentifierDataDefinition();
-		d.setType(Context.getPatientService().getPatientIdentifierType(1));
+		d.setIdentifierType(Context.getPatientService().getPatientIdentifierType(1));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
 		
 		Assert.assertEquals(3, pd.getData().size()); // TODO: Is this what we want, or do we want all 4 patients returned, with potential null results?

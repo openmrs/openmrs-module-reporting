@@ -23,6 +23,7 @@ import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.result.EmptyResult;
 import org.openmrs.logic.result.Result;
+import org.openmrs.module.reporting.data.BaseData;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -184,6 +185,8 @@ public class FormatTag extends TagSupport {
 			printCohort(sb, (Cohort) o);
 		} else if (o instanceof CohortDimensionResult) {
 			printCohortDimensionResult(sb, (CohortDimensionResult) o);
+		} else if (o instanceof BaseData) {
+			printMap(sb, ((BaseData)o).getData());
 		} else {
 			sb.append("" + o);
 		}
@@ -358,6 +361,16 @@ public class FormatTag extends TagSupport {
 		sb.append(" | ");
 		printUser(sb, encounter.getProvider());
     }
+	
+	private void printMap(StringBuilder sb, Map<?, ?> m) {
+		if (m != null) {
+			sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
+			for (Map.Entry<?, ?> e : m.entrySet()) {
+				sb.append("<tr><th align=\"left\">" + format(e.getKey()) + "</th><td align=\"left\">" + format(e.getValue()) + "</td></tr>");
+			}
+			sb.append("</table>");
+		}
+	}
 
 
 	private String formatHelper(Object o) {

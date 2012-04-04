@@ -36,7 +36,7 @@ public class PersonToPatientDataEvaluator implements PatientDataEvaluator {
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPatientData c = new EvaluatedPatientData(definition, context);
 		PersonToPatientDataDefinition def = (PersonToPatientDataDefinition)definition;
-		EvaluatedPersonData personData = Context.getService(PersonDataService.class).evaluate(def.getDefinition(), context);
+		EvaluatedPersonData personData = Context.getService(PersonDataService.class).evaluate(def.getJoinedDefinition(), context);
 		c.setData(personData.getData());
 		return c;
 	}

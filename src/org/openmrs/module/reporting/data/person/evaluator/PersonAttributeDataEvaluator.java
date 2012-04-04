@@ -43,7 +43,7 @@ public class PersonAttributeDataEvaluator implements PersonDataEvaluator {
 		PersonAttributeDataDefinition def = (PersonAttributeDataDefinition) definition;
 		EvaluatedPersonData c = new EvaluatedPersonData(def, context);
 		
-		if ((context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) || def.getType() == null) {
+		if ((context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) || def.getPersonAttributeType() == null) {
 			return c;
 		}
 		
@@ -60,7 +60,7 @@ public class PersonAttributeDataEvaluator implements PersonDataEvaluator {
 		if (context.getBaseCohort() != null) {
 			m.put("patientIds", context.getBaseCohort());
 		}
-		m.put("idType", def.getType().getPersonAttributeTypeId());
+		m.put("idType", def.getPersonAttributeType().getPersonAttributeTypeId());
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
 		for (Object o : queryResult) {
 			PersonAttribute pa = (PersonAttribute)o;

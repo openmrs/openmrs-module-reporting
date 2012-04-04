@@ -11,6 +11,7 @@ public class DefinitionSummary {
 	private String uuid;
 	private String name;
 	private String description;
+	private String type;
 	
 	public DefinitionSummary() {
 	}
@@ -19,12 +20,14 @@ public class DefinitionSummary {
     	this.uuid = so.getUuid();
     	this.name = so.getName();
     	this.description = so.getDescription();
+    	this.type = so.getSubtype();
     }
 	
     public DefinitionSummary(OpenmrsMetadata metadata) {
 	    this.uuid = metadata.getUuid();
 	    this.name = metadata.getName();
 	    this.description = metadata.getDescription();
+	    this.type = metadata.getClass().getName();
     }
 
 	/**
@@ -73,5 +76,18 @@ public class DefinitionSummary {
     public void setDescription(String description) {
     	this.description = description;
     }
-	
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
 }

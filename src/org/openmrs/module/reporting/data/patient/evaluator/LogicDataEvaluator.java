@@ -15,9 +15,11 @@ package org.openmrs.module.reporting.data.patient.evaluator;
 
 import java.util.Map;
 
+import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.result.Result;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.LogicDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
@@ -39,7 +41,9 @@ public class LogicDataEvaluator implements PatientDataEvaluator {
 		LogicDataDefinition def = (LogicDataDefinition)definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
-		Map<Integer, Result> m = Context.getLogicService().eval(context.getBaseCohort(), def.getLogicQuery(), context.getParameterValues());
+		Cohort cohort = ObjectUtil.nvl(context.getBaseCohort(), Context.getPatientSetService().getAllPatients());
+		
+		Map<Integer, Result> m = Context.getLogicService().eval(cohort, def.getLogicQuery(), context.getParameterValues());
 		c.getData().putAll(m);
 		return c;
 	}

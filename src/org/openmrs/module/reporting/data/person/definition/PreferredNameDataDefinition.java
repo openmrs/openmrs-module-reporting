@@ -14,12 +14,14 @@
 package org.openmrs.module.reporting.data.person.definition;
 
 import org.openmrs.PersonName;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
  * Preferred Name Data
  */
+@Localized("reporting.PreferredNameDataDefinition")
 public class PreferredNameDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;

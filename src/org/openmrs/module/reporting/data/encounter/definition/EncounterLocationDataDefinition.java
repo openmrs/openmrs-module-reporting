@@ -14,12 +14,14 @@
 package org.openmrs.module.reporting.data.encounter.definition;
 
 import org.openmrs.Location;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
  * Encounter Location Column
  */
+@Localized("reporting.EncounterLocationDataDefinition")
 public class EncounterLocationDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 	
 	public static final long serialVersionUID = 1L;

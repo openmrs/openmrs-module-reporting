@@ -13,23 +13,13 @@
  */
 package org.openmrs.module.reporting.data.encounter.definition;
 
-import java.util.List;
-
-import org.openmrs.module.reporting.data.BaseDataDefinition;
-import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.JoinDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 /**
  * Adapter class for exposing a Person Data Definition as an Encounter Data Definition
  */
-public class PersonToEncounterDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
-	
-	//***** PROPERTIES *****
-	
-	@ConfigurationProperty(required=true)
-	private PersonDataDefinition definition;
+public class PersonToEncounterDataDefinition extends JoinDataDefinition<PersonDataDefinition> implements EncounterDataDefinition {
 	
 	/**
 	 * Default Constructor
@@ -41,56 +31,22 @@ public class PersonToEncounterDataDefinition extends BaseDataDefinition implemen
 	/**
 	 * Default Constructor
 	 */
-	public PersonToEncounterDataDefinition(PersonDataDefinition definition) {
-		this.definition = definition;
+	public PersonToEncounterDataDefinition(PersonDataDefinition joinedDataDefinition) {
+		super(joinedDataDefinition);
 	}
 	
 	/**
-	 * Constructor to populate name only
+	 * Constructor to populate name
 	 */
-	public PersonToEncounterDataDefinition(String name, PersonDataDefinition definition) {
-		super(name);
-		this.definition = definition;
+	public PersonToEncounterDataDefinition(String name, PersonDataDefinition joinedDataDefinition) {
+		super(name, joinedDataDefinition);
 	}
 
-	//***** INSTANCE METHODS *****
-	
-	/** 
-	 * @see DataDefinition#getDataType()
-	 */
-	public Class<?> getDataType() {
-		return definition.getDataType();
-	}
-	
 	/**
-	 * @see BaseDefinition#getParameter(String)
+	 * @see JoinDataDefinition#getJoinedDefinitionType()
 	 */
 	@Override
-	public Parameter getParameter(String name) {
-		return definition.getParameter(name);
-	}
-
-	/**
-	 * @see BaseDefinition#getParameters()
-	 */
-	@Override
-	public List<Parameter> getParameters() {
-		return definition.getParameters();
-	}
-	
-	//***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the definition
-	 */
-	public PersonDataDefinition getDefinition() {
-		return definition;
-	}
-
-	/**
-	 * @param definition the definition to set
-	 */
-	public void setDefinition(PersonDataDefinition definition) {
-		this.definition = definition;
+	public Class<PersonDataDefinition> getJoinedDefinitionType() {
+		return PersonDataDefinition.class;
 	}
 }

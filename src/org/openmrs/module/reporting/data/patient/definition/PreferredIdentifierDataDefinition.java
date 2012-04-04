@@ -29,7 +29,7 @@ public class PreferredIdentifierDataDefinition extends BaseDataDefinition implem
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty(required=true)
-	private PatientIdentifierType type;
+	private PatientIdentifierType identifierType;
 	
 	//****** CONSTRUCTORS ******
 	
@@ -43,9 +43,9 @@ public class PreferredIdentifierDataDefinition extends BaseDataDefinition implem
 	/**
 	 * Constructor to populate name and type only
 	 */
-	public PreferredIdentifierDataDefinition(String name, PatientIdentifierType type) {
+	public PreferredIdentifierDataDefinition(String name, PatientIdentifierType identifierType) {
 		super(name);
-		this.type = type;
+		this.identifierType = identifierType;
 	}
 	
 	//***** INSTANCE METHODS *****
@@ -60,16 +60,16 @@ public class PreferredIdentifierDataDefinition extends BaseDataDefinition implem
 	//****** PROPERTY ACCESS ******
 
 	/**
-	 * @return the type
+	 * @return the identifierType
 	 */
-	public PatientIdentifierType getType() {
-		return type;
+	public PatientIdentifierType getIdentifierType() {
+		return identifierType;
 	}
 
 	/**
-	 * @param type the type to set
+	 * @param identifierType the identifierType to set
 	 */
-	public void setType(PatientIdentifierType type) {
-		this.type = type;
+	public void setIdentifierType(PatientIdentifierType identifierType) {
+		this.identifierType = identifierType;
 	}
 }

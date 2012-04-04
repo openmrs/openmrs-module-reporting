@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.openmrs.Concept;
 import org.openmrs.Obs;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -26,6 +27,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Obs Data Definition
  */
+@Localized("reporting.ObsForPersonDataDefinition")
 public class ObsForPersonDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	
 	//***** PROPERTIES *****

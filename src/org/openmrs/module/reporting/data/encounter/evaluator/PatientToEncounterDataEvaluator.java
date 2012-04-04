@@ -43,7 +43,7 @@ public class PatientToEncounterDataEvaluator implements EncounterDataEvaluator {
 	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 		PatientToEncounterDataDefinition def = (PatientToEncounterDataDefinition)definition;
-		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def.getDefinition(), context);
+		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def.getJoinedDefinition(), context);
 		DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
 		Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
 		Map<Integer, Integer> convertedIds = dqs.convertData(Patient.class, "patientId", pd.getData().keySet(), Encounter.class, "patient.patientId", encIds);

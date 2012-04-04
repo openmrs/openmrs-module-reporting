@@ -10,6 +10,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.PatientToEncounterDataDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.PersonToEncounterDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataSetDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.AgeAtDateOfOtherDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.web.controller.mapping.DefinitionMappingHandler;
@@ -33,6 +45,25 @@ public class ManageDefinitionsController {
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
     	
+    	List<Class<? extends DataDefinition>> allTypes = new ArrayList<Class<? extends DataDefinition>>();
+    	if (DataDefinition.class.isAssignableFrom(type)) {
+    		allTypes.add(PersonDataDefinition.class);
+    		allTypes.add(PatientDataDefinition.class);
+    		allTypes.add(EncounterDataDefinition.class);
+    	}
+    	model.addAttribute("allTypes", allTypes);
+    	
+    	List<Class<? extends Definition>> hiddenDefinitions = new ArrayList<Class<? extends Definition>>();
+    	hiddenDefinitions.add(CohortIndicatorDataSetDefinition.class);
+    	hiddenDefinitions.add(MultiPeriodIndicatorDataSetDefinition.class);
+    	hiddenDefinitions.add(EncounterDataSetDefinition.class);
+    	hiddenDefinitions.add(PatientDataSetDataDefinition.class);
+    	hiddenDefinitions.add(AgeAtDateOfOtherDataDefinition.class);
+    	hiddenDefinitions.add(PersonToPatientDataDefinition.class);
+    	hiddenDefinitions.add(PersonToEncounterDataDefinition.class);
+    	hiddenDefinitions.add(PatientToEncounterDataDefinition.class);
+    	model.addAttribute("hiddenDefinitions", hiddenDefinitions);
+    	
     	// Get all Definitions
     	boolean retired = includeRetired != null && includeRetired.booleanValue();
     	List<? extends Definition> definitions = DefinitionContext.getAllDefinitions(type, retired);
@@ -43,17 +74,17 @@ public class ManageDefinitionsController {
     	
     	// Initialize the Map with all known supported types
     	for (Class<? extends Definition> supportedType : DefinitionContext.getDefinitionService(type).getDefinitionTypes()) {
-    		defsByType.put(supportedType, new ArrayList<Definition>());
+    		if (!hiddenDefinitions.contains(supportedType)) {
+    			defsByType.put(supportedType, new ArrayList<Definition>());
+    		}
     	}
     	
     	// Add all saved Definitions to the Map
     	for (Definition d : definitions) {
     		List<Definition> l = defsByType.get(d.getClass());
-    		if (l == null) {
-    			l = new ArrayList<Definition>();
-    			defsByType.put(d.getClass(), l);
+    		if (l != null) {
+    			l.add(d);
     		}
-    		l.add(d);
     	}
     	
     	model.addAttribute("type", type);

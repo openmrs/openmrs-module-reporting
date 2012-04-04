@@ -40,7 +40,7 @@ public class PersonAttributeDataEvaluatorTest extends BaseModuleContextSensitive
 	@Test
 	public void evaluate_shouldReturnAllBirthDatesForAllPersons() throws Exception {
 		PersonAttributeDataDefinition d = new PersonAttributeDataDefinition();
-		d.setType(Context.getPersonService().getPersonAttributeType(2));
+		d.setPersonAttributeType(Context.getPersonService().getPersonAttributeType(2));
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort("6,7,8"));
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);

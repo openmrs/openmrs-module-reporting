@@ -13,12 +13,14 @@
  */
 package org.openmrs.module.reporting.data.person.definition;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 
 /**
  * Gender Column
  */
+@Localized("reporting.GenderDataDefinition")
 public class GenderDataDefinition  extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;

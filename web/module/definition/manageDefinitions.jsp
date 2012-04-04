@@ -54,8 +54,20 @@
 
 	<div id="container">
 	
-		<h1><spring:message code="reporting.${type.simpleName}"/></h1>
-
+		<h1><spring:message code="reporting.manageDataDefinitions.title"/></h1>
+	
+		<c:if test="${!empty allTypes}">
+			<ul id="menu">
+				<c:forEach items="${allTypes}" var="allType" varStatus="allTypeStatus">
+					<li class="<c:if test="${status.index == 0}">first</c:if> <c:if test="${type == allType}">active</c:if>">
+						<a href="${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=${allType.name}">
+							<spring:message code="reporting.${allType.simpleName}"/>
+						</a>
+					</li>
+				</c:forEach>
+			</ul>		
+		</c:if>
+		
 		<table>
 			<tr>
 				<td style="text-align:center; vertical-align: top;">

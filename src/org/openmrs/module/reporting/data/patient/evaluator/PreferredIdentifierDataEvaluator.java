@@ -42,7 +42,7 @@ public class PreferredIdentifierDataEvaluator implements PatientDataEvaluator {
 		PreferredIdentifierDataDefinition def = (PreferredIdentifierDataDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
-		if ((context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) || def.getType() == null) {
+		if ((context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) || def.getIdentifierType() == null) {
 			return c;
 		}
 		
@@ -60,7 +60,7 @@ public class PreferredIdentifierDataEvaluator implements PatientDataEvaluator {
 		if (context.getBaseCohort() != null) {
 			m.put("patientIds", context.getBaseCohort());
 		}
-		m.put("idType", def.getType().getPatientIdentifierTypeId());
+		m.put("idType", def.getIdentifierType().getPatientIdentifierTypeId());
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
 		for (Object o : queryResult) {
 			PatientIdentifier pi = (PatientIdentifier)o;

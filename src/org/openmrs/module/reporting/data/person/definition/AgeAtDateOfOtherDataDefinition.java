@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.data.person.definition;
 
 import org.openmrs.module.reporting.common.Age;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.MappedData;
@@ -22,6 +23,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Age Data, calculated for each person based on the Data produced from another Data Definition
  */
+@Localized("reporting.AgeAtDateOfOtherDataDefinition")
 public class AgeAtDateOfOtherDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	
 	public static final long serialVersionUID = 1L;

@@ -19,7 +19,7 @@ import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Base Implementation of CohortDefinition which provides core method
+ * Base Implementation of DataDefinition which provides core method
  * implementations for handling Parameters and common Property values
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
