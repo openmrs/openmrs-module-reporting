@@ -42,7 +42,7 @@ $(document).ready(function() {
 
 		showReportingDialog({ 
 			title: 'Add Parameter', 
-			url: '<c:url value="/module/reporting/parameters/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&redirectUrl=${redirectUrl}"/>',
+			url: '<c:url value="/module/reporting/parameters/parameter.form?uuid=${indicator.uuid}&type=${indicator['class'].name}&redirectUrl=${redirectUrl}"/>',
 			successCallback: function() { 
 				window.location.reload(true);
 			} 
@@ -168,7 +168,7 @@ var cohortDefinitions = [
 				id: ${cohortDefinition.id}, 
 				uuid: "${cohortDefinition.uuid}", 
 				name: "${cohortDefinition.name}", 
-				description: "(<i>${cohortDefinition.class.simpleName}</i>)"
+				description: "(<i>${cohortDefinition['class'].simpleName}</i>)"
 			}
 			<c:if test="${!varStatus.last}">,</c:if>
 		</c:forEach>	            	
@@ -278,7 +278,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 
 								<div>
 									<rptTag:mappedField id="indicatorPararameterMapping" label="Parameter Mapping" 
-														parentType="${indicator.class.name}" parentObj="${indicator}" 
+														parentType="${indicator['class'].name}" parentObj="${indicator}" 
 														mappedProperty="cohortDefinition" 
 														defaultValue="${indicator.cohortDefinition}" nullValueLabel="None" 
 														width="375"/>
@@ -318,7 +318,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 	
 								<c:set var="redirectUrl" value='/module/reporting/indicators/manageIndicators.list' />								
 								<%-- <c:url var="redirectUrl" value='/module/reporting/editCohortDefinition.form?uuid=${param.uuid}&type=${param.type}'/> --%>
-								<c:url var="addParameterUrl" value='/module/reporting/parameters/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&redirectUrl=${redirectUrl}'/>
+								<c:url var="addParameterUrl" value='/module/reporting/parameters/parameter.form?uuid=${indicator.uuid}&type=${indicator['class'].name}&redirectUrl=${redirectUrl}'/>
 	
 
 								
@@ -342,8 +342,8 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 										</thead>
 										<tbody>
 											<c:forEach items="${indicator.parameters}" var="parameter" varStatus="varStatus">												
-												<c:url var="editParameterUrl" value='/module/reporting/parameters/parameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>																
-												<c:url var="deleteParameterUrl" value='/module/reporting/parameters/deleteParameter.form?uuid=${indicator.uuid}&type=${indicator.class.name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>
+												<c:url var="editParameterUrl" value='/module/reporting/parameters/parameter.form?uuid=${indicator.uuid}&type=${indicator['class'].name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>																
+												<c:url var="deleteParameterUrl" value='/module/reporting/parameters/deleteParameter.form?uuid=${indicator.uuid}&type=${indicator['class'].name}&parameterName=${parameter.name}&redirectUrl=${redirectUrl}'/>
 												<tr <c:if test="${varStatus.index % 2 == 0}">class="odd"</c:if>>
 													<td valign="top" nowrap="true">
 														<a href="${editParameterUrl}"><img src='<c:url value="/images/edit.gif"/>' border="0"/></a>

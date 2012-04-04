@@ -14,8 +14,8 @@
 
 		$("#previewButton").click(function(event){ 
 			showReportingDialog({ 
-				title: 'Preview <rpt:displayLabel type="${cohortDefinition.class.name}"/>', 
-				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition.class.name}',
+				title: 'Preview <rpt:displayLabel type="${cohortDefinition['class'].name}"/>', 
+				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition['class'].name}',
 				successCallback: function() { 
 					window.location = window.location; //.reload(true);
 				} 
@@ -86,7 +86,7 @@
 	<h1>
 		<c:choose>
 			<c:when test="${empty cohortDefinition.uuid || empty cohortDefinition.name}">
-				(unsaved <rpt:displayLabel type="${cohortDefinition.class.name}"/>)
+				(unsaved <rpt:displayLabel type="${cohortDefinition['class'].name}"/>)
 			</c:when>
 			<c:otherwise>${cohortDefinition.name}</c:otherwise>
 		</c:choose>
@@ -94,7 +94,7 @@
 
 	<springform:form method="post" commandName="cohortDefinition" action="saveCohortDefinition.form">
 		<input type="hidden" name="uuid" value="${cohortDefinition.uuid}"/>
-		<input type="hidden" name="type" value="${cohortDefinition.class.name}"/>
+		<input type="hidden" name="type" value="${cohortDefinition['class'].name}"/>
 
 		<table style="font-size:small;">
 			<tr>
@@ -102,7 +102,7 @@
 					<ul>				
 						<li>
 							<label class="inline" for="type">Type</label>
-							<rpt:displayLabel type="${cohortDefinition.class.name}"/>
+							<rpt:displayLabel type="${cohortDefinition['class'].name}"/>
 						</li>
 						<li>
 							<label class="desc" for="name">Name</label>

@@ -12,7 +12,7 @@
 
 		<b class="boxHeader">Create Cohort Indicator and Dimension Data Set</b>
 		<div class="box">
-			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dsd.class.name}|size=380|mode=edit|dialog=false|cancelUrl=${manageUrl}|successUrl=${pageUrl}" />
+			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dsd['class'].name}|size=380|mode=edit|dialog=false|cancelUrl=${manageUrl}|successUrl=${pageUrl}" />
 		</div>
 
 	</c:when>		
@@ -38,7 +38,7 @@
 				$('#previewButton').click(function(event) { 
 					showReportingDialog({ 
 						title: 'Preview Data Set', 
-						url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dsd.uuid}&type=${dsd.class.name}'
+						url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dsd.uuid}&type=${dsd['class'].name}'
 					});
 				}).height(32);
 				$('#closeButton').click(function(event) {
@@ -49,7 +49,7 @@
 					$("#${model.portletUUID}EditDimLink${dimStatus.index}").click(function(event){ 
 						showReportingDialog({
 							title: 'Dimension: ${dim.key}',
-							url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${dsd.class.name}|uuid=${dsd.uuid}|property=dimensions|currentKey=${dim.key}|mode=edit"/>',
+							url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${dsd['class'].name}|uuid=${dsd.uuid}|property=dimensions|currentKey=${dim.key}|mode=edit"/>',
 							successCallback: function() { window.location.reload(true); }
 						});
 					});
@@ -91,9 +91,9 @@
 		<table>
 			<tr valign="top">
 				<td width="30%">
-					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|size=380|label=Basic Details" />
+					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|size=380|label=Basic Details" />
 					<br/>
-					<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|label=Parameters|parentUrl=${pageUrl}" />
+					<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 					<br/>
 					<b class="boxHeader">Dimensions</b>
 					<div class="box">
@@ -126,7 +126,7 @@
 							<tfoot>
 								<tr>
 									<td colspan="3">
-										<openmrs:portlet url="mappedProperty" id="newDim" moduleId="reporting" parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|property=dimensions|mode=add|label=Add Dimension" />
+										<openmrs:portlet url="mappedProperty" id="newDim" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|property=dimensions|mode=add|label=Add Dimension" />
 									</td>
 								</tr>
 							</tfoot>

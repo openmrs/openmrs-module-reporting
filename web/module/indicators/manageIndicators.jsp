@@ -89,7 +89,7 @@
 					<c:forEach items="${indicators}" var="indicator" varStatus="status">					
 						<c:set var="editUrl">
 							<c:choose>
-								<c:when test="${indicator.class.simpleName == 'CohortIndicator'}">
+								<c:when test="${indicator['class'].simpleName == 'CohortIndicator'}">
 									${pageContext.request.contextPath}/module/reporting/indicators/editCohortIndicator.form?uuid=${indicator.uuid}
 								</c:when>
 								<c:otherwise>
@@ -102,7 +102,7 @@
 								$("#preview-indicator-${indicator.uuid}").click(function(event){ 
 									showReportingDialog({ 
 										title: 'Preview Indicator', 
-										url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${indicator.uuid}&type=${indicator.class.name}',
+										url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${indicator.uuid}&type=${indicator['class'].name}',
 										successCallback: function() { 
 											window.location = window.location; //.reload(true);
 										} 

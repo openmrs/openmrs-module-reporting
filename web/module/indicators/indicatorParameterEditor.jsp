@@ -34,9 +34,9 @@
 						<div>
 							
 							<strong>${indicatorParameter.cohortIndicator.name}</strong> <br/>
-							<em>(uuid${indicatorParameter.cohortIndicator.uuid}, type=${indicatorParameter.cohortIndicator.class.simpleName})</em>
+							<em>(uuid${indicatorParameter.cohortIndicator.uuid}, type=${indicatorParameter.cohortIndicator['class'].simpleName})</em>
 							<springform:hidden path="cohortIndicator.uuid" />								
-							<springform:hidden path="cohortIndicator.class.name" />														
+							<springform:hidden path="cohortIndicator['class'].name" />														
 						</div>
 					</li>
 					<li>			

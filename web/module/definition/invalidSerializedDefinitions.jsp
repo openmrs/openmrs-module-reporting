@@ -23,7 +23,7 @@
 			</thead>
 			<tbody>
 				<c:forEach items="${serializedDefinitions}" var="e" varStatus="status">
-					<c:set var="editUrl" value="editInvalidSerializedDefinition.form?uuid=${e.key.uuid}&type=${e.key.class.name}"/>
+					<c:set var="editUrl" value="editInvalidSerializedDefinition.form?uuid=${e.key.uuid}&type=${e.key['class'].name}"/>
 					<tr>
 						<td><a href="${editUrl}">${e.key.name}</a></td>
 						<td width="5%" style="white-space:nowrap;">${e.key.creator}</td>

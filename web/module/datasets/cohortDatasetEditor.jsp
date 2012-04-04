@@ -34,15 +34,15 @@
 				<table style="font-size:small;">
 					<tr>
 						<td valign="top" nowrap>
-							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|size=380|label=Basic Details" />
+							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|size=380|label=Basic Details" />
 							<br/>
-							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|label=Parameters|parentUrl=${pageUrl}" />
+							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 							<br/>
 						</td>
 						<td valign="top" width="100%">
 							<table width="100%" style="font-size:small;"><tr>
-								<td style="padding-right:50px;"><openmrs:portlet url="mappedProperty" id="newRow" moduleId="reporting" parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|property=rows|mode=add|label=Add a Row" /></td>
-								<td align="right"><openmrs:portlet url="mappedProperty" id="newColumn" moduleId="reporting" parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|property=columns|mode=add|label=Add a Column" /></td>
+								<td style="padding-right:50px;"><openmrs:portlet url="mappedProperty" id="newRow" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|property=rows|mode=add|label=Add a Row" /></td>
+								<td align="right"><openmrs:portlet url="mappedProperty" id="newColumn" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|property=columns|mode=add|label=Add a Column" /></td>
 							</tr></table>
 							<table width="100%" border="1" style="font-size:smaller;">
 								<c:if test="${!empty dsd.columns}">
@@ -51,7 +51,7 @@
 										<c:forEach items="${dsd.columns}" var="columnEntry" varStatus="columnStatus">
 											<td>
 												<openmrs:portlet url="mappedProperty" id="column${columnStatus.index}" moduleId="reporting" 
-															parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|property=columns|currentKey=${columnEntry.key}|label=${columnEntry.key}|parentUrl=${pageUrl}|viewId=dsdView${columnStatus.index}|headerClass=columnHeader" />
+															parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|property=columns|currentKey=${columnEntry.key}|label=${columnEntry.key}|parentUrl=${pageUrl}|viewId=dsdView${columnStatus.index}|headerClass=columnHeader" />
 											</td>
 										</c:forEach>
 									</tr>
@@ -67,7 +67,7 @@
 									<tr>
 										<td nowrap>
 											<openmrs:portlet url="mappedProperty" id="row${rowStatus.index}" moduleId="reporting" 
-														 	parameters="type=${dsd.class.name}|uuid=${dsd.uuid}|property=rows|currentKey=${rowEntry.key}|label=${rowEntry.key}|parentUrl=${pageUrl}|viewId=dsdView${rowStatus.index}|headerClass=rowHeader" />
+														 	parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|property=rows|currentKey=${rowEntry.key}|label=${rowEntry.key}|parentUrl=${pageUrl}|viewId=dsdView${rowStatus.index}|headerClass=rowHeader" />
 										</td>
 										<c:forEach items="${dsd.columns}" var="columnEntry" varStatus="columnStatus">
 											<td align="center" style="font-weight:bold; color:blue;" nowrap>${rowEntry.key}.${columnEntry.key}</td>

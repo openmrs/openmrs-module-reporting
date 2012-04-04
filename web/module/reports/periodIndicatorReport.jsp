@@ -50,7 +50,7 @@
 						$('#previewButton').click(function(event) { 
 							showReportingDialog({ 
 								title: 'Preview Report', 
-								url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${report.uuid}&type=${report.class.name}'
+								url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${report.uuid}&type=${report['class'].name}'
 							});
 						}).height(32);
 						$('#closeButton').click(function(event) {
@@ -61,7 +61,7 @@
 							$("#${model.portletUUID}EditDimLink${dimStatus.index}").click(function(event){ 
 								showReportingDialog({
 									title: 'Dimension: ${dim.key}',
-									url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${report.indicatorDataSetDefinition.class.name}|uuid=${report.indicatorDataSetDefinition.uuid}|property=dimensions|currentKey=${dim.key}|mode=edit"/>',
+									url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${report.indicatorDataSetDefinition['class'].name}|uuid=${report.indicatorDataSetDefinition.uuid}|property=dimensions|currentKey=${dim.key}|mode=edit"/>',
 									successCallback: function() { window.location.reload(true); }
 								});
 							});
@@ -166,7 +166,7 @@
 				<table>
 					<tr valign="top">
 						<td width="30%">
-							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|size=380|label=Basic Details" />
+							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report['class'].name}|uuid=${report.uuid}|size=380|label=Basic Details" />
 							<br/>
 							<b class="boxHeader">Dimensions</b>
 							<div class="box">
@@ -200,7 +200,7 @@
 										<tr>
 											<td colspan="3">
 												<openmrs:portlet url="mappedProperty" id="newDim" moduleId="reporting" 
-															 parameters="type=${report.indicatorDataSetDefinition.class.name}|uuid=${report.indicatorDataSetDefinition.uuid}|property=dimensions|mode=add|label=Add Dimension" />
+															 parameters="type=${report.indicatorDataSetDefinition['class'].name}|uuid=${report.indicatorDataSetDefinition.uuid}|property=dimensions|mode=add|label=Add Dimension" />
 											</td>
 										</tr>
 									</tfoot>
@@ -209,7 +209,7 @@
 					
 							<br/>
 							<openmrs:portlet url="mappedProperty" id="baseCohortDefinition" moduleId="reporting" 
-											 parameters="type=${report.class.name}|uuid=${report.uuid}|property=baseCohortDefinition|label=Filter|nullValueLabel=All Patients" />
+											 parameters="type=${report['class'].name}|uuid=${report.uuid}|property=baseCohortDefinition|label=Filter|nullValueLabel=All Patients" />
 							
 							<br/>
 							<button id="previewButton">

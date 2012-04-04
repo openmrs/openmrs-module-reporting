@@ -54,9 +54,9 @@
 		<table width="100%"><tr valign="top">
 		<td width="34%">	
 	
-			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${definition.class.name}|uuid=${definition.uuid}|label=Basic Details" />
+			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Basic Details" />
 			
-			<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${definition.class.name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrl}" />
+			<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 			
 			<b class="boxHeader">
 				Composition string
@@ -91,11 +91,11 @@
 			
 				<c:forEach items="${definition.searches}" var="h" varStatus="hStatus">
 					<openmrs:portlet url="mappedProperty" id="search${hStatus.index}" moduleId="reporting" 
-						parameters="type=${definition.class.name}|uuid=${definition.uuid}|property=searches|currentKey=${h.key}|label=${h.key}|parentUrl=${pageUrlWithUuid}" />
+						parameters="type=${definition['class'].name}|uuid=${definition.uuid}|property=searches|currentKey=${h.key}|label=${h.key}|parentUrl=${pageUrlWithUuid}" />
 				</c:forEach>
 			
 				<openmrs:portlet url="mappedProperty" id="newSearch" moduleId="reporting" 
-					 parameters="type=${definition.class.name}|uuid=${definition.uuid}|property=searches|mode=add|label=Add Search to Combine" />
+					 parameters="type=${definition['class'].name}|uuid=${definition.uuid}|property=searches|mode=add|label=Add Search to Combine" />
 			</div>
 		</td>
 		</tr></table>

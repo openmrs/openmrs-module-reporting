@@ -18,7 +18,7 @@
 			$("#preview-${dimension.uuid}").click(function(event){ 
 				showReportingDialog({ 
 					title: 'Preview Dimension', 
-					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dimension.uuid}&type=${dimension.class.name}',
+					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dimension.uuid}&type=${dimension['class'].name}',
 					successCallback: function() { 
 						window.location = window.location; //.reload(true);
 					} 

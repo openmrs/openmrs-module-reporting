@@ -40,7 +40,7 @@
 		$("#previewButton").click(function(event){ 
 			showReportingDialog({ 
 				title: 'Preview SQL Data Set Definition', 
-				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition.class.name}',
+				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}',
 				successCallback: function() { 
 					window.location = window.location; //.reload(true);
 				} 
@@ -72,13 +72,13 @@
 								id="baseMetadata" 
 								url="baseMetadata" 
 								moduleId="reporting" 
-								parameters="type=${definition.class.name}|uuid=${definition.uuid}|label=Basic Details" />
+								parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Basic Details" />
 							
 							<openmrs:portlet 
 								id="newParameter" 
 								url="parameter" 
 								moduleId="reporting" 
-								parameters="type=${definition.class.name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrlWithUuid}" />								
+								parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrlWithUuid}" />								
 						</td>
 
 						<td width="75%">

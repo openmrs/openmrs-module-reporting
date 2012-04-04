@@ -57,12 +57,12 @@
 				<table style="font-size:small;">
 					<tr>
 						<td valign="top" nowrap>
-							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|size=380|label=Basic Details" />
+							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report['class'].name}|uuid=${report.uuid}|size=380|label=Basic Details" />
 							<br/>
-							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${report.class.name}|uuid=${report.uuid}|label=Parameters|parentUrl=${pageUrl}" />
+							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${report['class'].name}|uuid=${report.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 							<br/>
 							<openmrs:portlet url="mappedProperty" id="baseCohortDefinition" moduleId="reporting" 
-											 parameters="type=${report.class.name}|uuid=${report.uuid}|property=baseCohortDefinition|label=Base Cohort Definition|nullValueLabel=All Patients" />
+											 parameters="type=${report['class'].name}|uuid=${report.uuid}|property=baseCohortDefinition|label=Base Cohort Definition|nullValueLabel=All Patients" />
 							<br/>
 							<b class="boxHeader">Output Designs</b>
 							<div class="box">
@@ -94,7 +94,7 @@
 										<tr>
 											<th colspan="7">
 												${dsd.value.parameterizable.name}
-												(<a href="../definition/editDefinition.form?type=${dsd.value.parameterizable.class.name}&uuid=${dsd.value.parameterizable.uuid}">Edit this Definition</a>)
+												(<a href="../definition/editDefinition.form?type=${dsd.value.parameterizable['class'].name}&uuid=${dsd.value.parameterizable.uuid}">Edit this Definition</a>)
 											</th>
 										</tr>
 										<c:if test="${rpt:instanceOf(dsd.value.parameterizable, 'org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition')}">
@@ -132,11 +132,11 @@
 							<div class="box" style="vertical-align:top;">
 								<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
 									<openmrs:portlet url="mappedProperty" id="dsd${dsd.key}" moduleId="reporting" 
-													parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|currentKey=${dsd.key}|label=${dsd.key}|parentUrl=${pageUrl}|viewId=dsdView${dsdStatus.index}|headerClass=dsdHeader" />
+													parameters="type=${report['class'].name}|uuid=${report.uuid}|property=dataSetDefinitions|currentKey=${dsd.key}|label=${dsd.key}|parentUrl=${pageUrl}|viewId=dsdView${dsdStatus.index}|headerClass=dsdHeader" />
 									<br/>
 								</c:forEach>
 								<openmrs:portlet url="mappedProperty" id="newDsd" moduleId="reporting" 
-												 parameters="type=${report.class.name}|uuid=${report.uuid}|property=dataSetDefinitions|mode=add|label=New Dataset Definition" />
+												 parameters="type=${report['class'].name}|uuid=${report.uuid}|property=dataSetDefinitions|mode=add|label=New Dataset Definition" />
 							</div>
 							
 						</td>

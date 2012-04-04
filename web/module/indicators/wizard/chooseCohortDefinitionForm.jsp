@@ -77,7 +77,7 @@ var cohortDefinitions = [
 				id: ${cohortDefinition.id}, 
 				uuid: "${cohortDefinition.uuid}", 
 				name: "${cohortDefinition.name}", 
-				description: "(<i>${cohortDefinition.class.simpleName}</i>)"
+				description: "(<i>${cohortDefinition['class'].simpleName}</i>)"
 			}
 			<c:if test="${!varStatus.last}">,</c:if>
 		</c:forEach>	            	

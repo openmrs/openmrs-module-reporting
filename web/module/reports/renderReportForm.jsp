@@ -73,7 +73,7 @@ $(document).ready(function() {
 					<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
 						<input type="hidden" name="action" value="preview"/>
 						<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
-						<input type="hidden" name="type" value="${parameterizable.class.name}"/>
+						<input type="hidden" name="type" value="${parameterizable['class'].name}"/>
 						<input type="hidden" name="format" value="indicator"/>
 						
 						<ul>								
@@ -111,7 +111,7 @@ $(document).ready(function() {
 							<h4>Evaluation Result</h4>
 							<div>
 								<span>Result Type: </span>
-								<strong>${results.class.simpleName}</strong>							
+								<strong>${results['class'].simpleName}</strong>							
 							</div>
 							<div>
 								<span>Result:</span>						

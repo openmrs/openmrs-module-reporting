@@ -50,7 +50,7 @@ $(document).ready(function() {
 					<form id="datasetForm" name="datasetForm" class="wufoo topLabel" autocomplete="off"
 						method="get" action="${pageContext.request.contextPath}/module/reporting/datasets/viewDataSet.form">
 	
-						<input type="hidden" id="type" name="type" value="${dataSetDefinition.class.name}"/>
+						<input type="hidden" id="type" name="type" value="${dataSetDefinition['class'].name}"/>
 						<input type="hidden" id="mode" name="mode" value="${param.mode}"/>
 						
 						<fieldset style="padding: 25px; width: 100%;">
@@ -115,10 +115,10 @@ $(document).ready(function() {
 							
 							<div align="right">
 								<strong>Download:</strong> 
-								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=csv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition.class.name}">csv</a> |
-								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=tsv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition.class.name}">tsv</a> |
-								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xml&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition.class.name}">xml</a> |
-								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xls&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition.class.name}">xls</a>
+								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=csv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">csv</a> |
+								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=tsv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">tsv</a> |
+								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xml&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">xml</a> |
+								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xls&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">xls</a>
 							</div>
 							<div>						
 		

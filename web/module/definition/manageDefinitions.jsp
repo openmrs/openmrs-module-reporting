@@ -18,7 +18,7 @@
 					$("#preview-${definition.uuid}").click(function(event){ 
 						showReportingDialog({ 
 							title: 'Preview', 
-							url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition.class.name}',
+							url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}',
 							successCallback: function() { 
 								window.location = window.location;
 							} 
@@ -106,7 +106,7 @@
 										</td>
 										<td align="left" nowrap="nowrap">
 											&nbsp;
-											<a href="editDefinition.form?uuid=${definition.uuid}&type=${definition.class.name}"><img src="<c:url value='/images/edit.gif'/>" border="0"/></a>
+											<a href="editDefinition.form?uuid=${definition.uuid}&type=${definition['class'].name}"><img src="<c:url value='/images/edit.gif'/>" border="0"/></a>
 											&nbsp;
 											<a href="javascript:confirmDelete('${definition.name}','${definition.uuid}','${type.name}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
 											&nbsp;

@@ -196,12 +196,12 @@ $(document).ready(function() {
 														<strong>${indicator.name}</strong><br/>
 														<c:forEach var="property" items="${indicator.cohortDefinition.parameterizable.configurationProperties}">
 															<c:if test="${!empty property.value}"> 															
-																${property.field.name}=${property.value.name} (${property.class.simpleName})
+																${property.field.name}=${property.value.name} (${property['class'].simpleName})
 															</c:if>									
 														</c:forEach>
 														<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}">
 															<c:if test="${!empty parameter.defaultValue}"> 															
-																${parameter.name}=${parameter.defaultValue} (${parameter.class.simpleName})
+																${parameter.name}=${parameter.defaultValue} (${parameter['class'].simpleName})
 															</c:if>
 														</c:forEach>
 													</td>

@@ -47,7 +47,7 @@
 				<c:if test="${!empty model.obj}">
 					<div class="metadataField">
 						<label class="desc" for="type">Type</label>
-						<rpt:displayLabel type="${model.obj.class.name}"/>			
+						<rpt:displayLabel type="${model.obj['class'].name}"/>			
 					</div>
 				</c:if>		
 				<div class="metadataField">
@@ -89,7 +89,7 @@
 					</div>
 					<div class="metadataField">
 						<label class="inline" for="type">Query Type:</label>
-						<rpt:displayLabel type="${model.obj.class.name}"/>			
+						<rpt:displayLabel type="${model.obj['class'].name}"/>			
 					</div>				
 					<div class="metadataField">
 						<label class="inline">Description:</label>

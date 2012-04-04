@@ -15,8 +15,8 @@
 
 		$("#previewButton").click(function(event){ 
 			showReportingDialog({ 
-				title: 'Preview <rpt:displayLabel type="${dimension.class.name}"/>', 
-				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dimension.uuid}&type=${dimension.class.name}',
+				title: 'Preview <rpt:displayLabel type="${dimension['class'].name}"/>', 
+				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dimension.uuid}&type=${dimension['class'].name}',
 				successCallback: function() { 
 					window.location = window.location; //.reload(true);
 				} 
@@ -27,7 +27,7 @@
 			$("#${model.portletUUID}EditDimLink${cdStatus.index}").click(function(event){ 
 				showReportingDialog({
 					title: 'Dimension Option: ${cd.key}',
-					url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${dimension.class.name}|uuid=${dimension.uuid}|property=cohortDefinitions|currentKey=${cd.key}|mode=edit"/>',
+					url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${dimension['class'].name}|uuid=${dimension.uuid}|property=cohortDefinitions|currentKey=${cd.key}|mode=edit"/>',
 					successCallback: function() { window.location.reload(true); }
 				});
 			});
@@ -63,9 +63,9 @@
 				<table style="font-size:small;">
 					<tr>
 						<td valign="top" nowrap>
-							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dimension.class.name}|uuid=${dimension.uuid}|size=380|label=Basic Details" />
+							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dimension['class'].name}|uuid=${dimension.uuid}|size=380|label=Basic Details" />
 							<br/>
-							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dimension.class.name}|uuid=${dimension.uuid}|label=Parameters|parentUrl=${pageUrl}" />
+							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dimension['class'].name}|uuid=${dimension.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 							<br/>
 							<input id="previewButton" name="preview" type="button" value="Preview"/>
 						</td>
@@ -102,7 +102,7 @@
 										<tr>
 											<td colspan="3">
 												<openmrs:portlet url="mappedProperty" id="newCd" moduleId="reporting" 
-															 parameters="type=${dimension.class.name}|uuid=${dimension.uuid}|property=cohortDefinitions|mode=add|label=New Dimension Option" />
+															 parameters="type=${dimension['class'].name}|uuid=${dimension.uuid}|property=cohortDefinitions|mode=add|label=New Dimension Option" />
 											</td>
 										</tr>
 									</tfoot>

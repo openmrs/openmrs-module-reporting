@@ -61,7 +61,7 @@ $(document).ready(function() {
 						<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
 							<input type="hidden" name="action" value="preview"/>
 							<input type="hidden" name="uuid" value="${parameterizable.uuid}"/>
-							<input type="hidden" name="type" value="${parameterizable.class.name}"/>
+							<input type="hidden" name="type" value="${parameterizable['class'].name}"/>
 							<input type="hidden" name="format" value="${param.format}"/>
 							<input type="hidden" name="successView" value="${param.successView}"/>
 							

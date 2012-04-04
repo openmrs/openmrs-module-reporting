@@ -63,7 +63,7 @@
 
 	<form method="post" action="saveDataSet.form">
 		<input type="hidden" name="uuid" value="${dataSetDefinition.uuid}"/>
-		<input type="hidden" name="type" value="${dataSetDefinition.class.name}"/>
+		<input type="hidden" name="type" value="${dataSetDefinition['class'].name}"/>
 
 		<table style="font-size:small;">
 			<tr>
@@ -79,7 +79,7 @@
 						</li>
 						<li>
 							<label class="desc" for="type">Type</label>
-							<rpt:displayLabel type="${dataSetDefinition.class.name}"/>
+							<rpt:displayLabel type="${dataSetDefinition['class'].name}"/>
 						</li>
 					</ul>
 				</td>

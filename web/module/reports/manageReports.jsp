@@ -19,7 +19,7 @@
 			$("#preview-report-${reportDefinition.uuid}").click(function(event){ 
 				showReportingDialog({ 
 					title: 'Run Report', 
-					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition.class.name}',
+					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition['class'].name}',
 					successCallback: function() { 
 						window.location = window.location; //.reload(true);
 					} 
@@ -29,7 +29,7 @@
 			$("#render-report-${reportDefinition.uuid}").click(function(event){ 
 				showReportingDialog({ 
 					title: 'Run Report', 
-					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition.class.name}&format=indicator&successView=redirect:/module/reporting/reports/renderReport.form',
+					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition['class'].name}&format=indicator&successView=redirect:/module/reporting/reports/renderReport.form',
 					successCallback: function() { 
 						window.location = window.location; //.reload(true);
 					} 
@@ -74,7 +74,7 @@
 				<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
 					<c:set var="editUrl">
 						<c:choose>
-							<c:when test="${reportDefinition.class.simpleName == 'PeriodIndicatorReportDefinition'}">
+							<c:when test="${reportDefinition['class'].simpleName == 'PeriodIndicatorReportDefinition'}">
 								${pageContext.request.contextPath}/module/reporting/reports/periodIndicatorReport.form?uuid=${reportDefinition.uuid}
 							</c:when>
 							<c:otherwise>
@@ -91,7 +91,7 @@
 							${reportDefinition.description}
 						</td>
 						<td width="10%" nowrap>
-							<rpt:displayLabel type="${reportDefinition.class.name}"/>
+							<rpt:displayLabel type="${reportDefinition['class'].name}"/>
 						</td>
 						<td width="5%" nowrap>
 							${reportDefinition.creator}
