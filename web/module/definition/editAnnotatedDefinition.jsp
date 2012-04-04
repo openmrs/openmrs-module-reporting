@@ -12,8 +12,8 @@
 
 		$("#previewButton").click(function(event){ 
 			showReportingDialog({ 
-				title: 'Preview <rpt:displayLabel type="${definition.class.name}"/>', 
-				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition.class.name}',
+				title: 'Preview <rpt:displayLabel type="${definition['class'].name}"/>', 
+				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}',
 				successCallback: function() { 
 					window.location = window.location; //.reload(true);
 				} 
@@ -84,7 +84,7 @@
 	<h1>
 		<c:choose>
 			<c:when test="${empty definition.uuid || empty definition.name}">
-				(unsaved <rpt:displayLabel type="${definition.class.name}"/>)
+				(unsaved <rpt:displayLabel type="${definition['class'].name}"/>)
 			</c:when>
 			<c:otherwise>${definition.name}</c:otherwise>
 		</c:choose>
@@ -92,7 +92,7 @@
 
 	<springform:form method="post" commandName="definition" action="saveAnnotatedDefinition.form">
 		<input type="hidden" name="uuid" value="${definition.uuid}"/>
-		<input type="hidden" name="type" value="${definition.class.name}"/>
+		<input type="hidden" name="type" value="${definition['class'].name}"/>
 		<input type="hidden" name="parentType" value="${parentType.name}"/>
 
 		<table style="font-size:small;">
@@ -101,7 +101,7 @@
 					<ul>				
 						<li>
 							<label class="inline" for="type">Type</label>
-							<rpt:displayLabel type="${definition.class.name}"/>
+							<rpt:displayLabel type="${definition['class'].name}"/>
 						</li>
 						<li>
 							<label class="desc" for="name">Name</label>
