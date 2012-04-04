@@ -124,6 +124,22 @@
 	<mappingFiles>
 		ReportDesign.hbm.xml
 		ReportRequest.hbm.xml
-	</mappingFiles>	
-
+	</mappingFiles>
+	
+	<!-- dwr -->
+	<dwr>
+		<allow>			
+			<create creator="new" javascript="DWRReportingService">
+				<param name="class" value="org.openmrs.module.reporting.web.dwr.DWRReportingService"/>
+				<include method="purgeReportRequest"/>
+			</create>
+		</allow>
+		<signatures>
+		<![CDATA[
+			import org.openmrs.module.reporting.web.dwr.DWRReportingService;
+			
+			DWRReportingService.purgeReportRequest(Integer id);
+		]]>
+	</signatures>
+	</dwr>
 </module>
