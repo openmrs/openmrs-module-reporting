@@ -79,7 +79,7 @@ span.cancel{
 			<td valign="top" style="text-align: center;">
 				<c:if test="${reportRequest.status == 'REQUESTED'}">
 				<span class="cancel" onclick="cancelReportRequest(${reportRequest.id})">
-					<img src="<c:url value='/moduleResources/reporting/images/cancel.gif'/>" border="0" /><br />
+					<img src="<c:url value='/images/delete.gif'/>" border="0" /><br />
 					<u><spring:message code="general.cancel"/></u>
 				</span>
 				</c:if>

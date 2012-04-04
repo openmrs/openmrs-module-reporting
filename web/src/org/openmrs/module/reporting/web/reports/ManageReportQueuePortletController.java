@@ -71,6 +71,7 @@ public class ManageReportQueuePortletController extends ReportingPortletControll
 				catch (NumberFormatException e) {
 					//ignore
 				}
+				break;
 			}
 		}
 		return position;
