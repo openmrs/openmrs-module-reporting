@@ -20,6 +20,7 @@ import java.util.List;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.module.reporting.common.DrugOrderSet;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -27,6 +28,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Drug Orders For Patient Data Definition
  */
+@Localized("reporting.DrugOrdersForPatientDataDefinition")
 public class DrugOrdersForPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	//***** PROPERTIES *****

@@ -40,10 +40,15 @@ public class PreferredNameDataEvaluator implements PersonDataEvaluator {
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		
-		String hql = "from PersonName where voided = false and person.personId in (:personIds) order by preferred asc";
 		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("personIds", context.getBaseCohort());
+		
+		String hql = "from PersonName where voided = false ";
+		if (context.getBaseCohort() != null) {
+			hql += "and person.personId in (:personIds) ";
+			m.put("personIds", context.getBaseCohort());
+		}
+		hql += "order by preferred asc";
+		
 		List<Object> queryResult = qs.executeHqlQuery(hql, m);
 		for (Object o : queryResult) {
 			PersonName pn = (PersonName)o;

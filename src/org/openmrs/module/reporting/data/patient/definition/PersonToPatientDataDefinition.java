@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.reporting.data.patient.definition;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -25,6 +27,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 /**
  * Adapter class for exposing a Person Data Definition as a Patient Data Definition
  */
+@Localized("reporting.PersonToPatientDataDefinition")
 public class PersonToPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	//***** PROPERTIES *****
@@ -76,6 +79,9 @@ public class PersonToPatientDataDefinition extends BaseDataDefinition implements
 	 */
 	@Override
 	public List<Parameter> getParameters() {
+		if (definition == null) {
+			return new ArrayList<Parameter>();
+		}
 		return definition.getParameters();
 	}
 	

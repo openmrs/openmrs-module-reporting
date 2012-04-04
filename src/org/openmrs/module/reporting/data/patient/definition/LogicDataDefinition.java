@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.data.patient.definition;
 
 import org.openmrs.logic.result.Result;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -21,6 +22,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Logic-Based Data Definition
  */
+@Localized("reporting.LogicDataDefinition")
 public class LogicDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	public static final long serialVersionUID = 1L;

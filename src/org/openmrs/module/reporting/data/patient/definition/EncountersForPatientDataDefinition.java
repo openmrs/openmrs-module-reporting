@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -27,6 +28,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Encounters For Patient Data Definition
  */
+@Localized("reporting.EncountersForPatientDataDefinition")
 public class EncountersForPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	//***** PROPERTIES *****

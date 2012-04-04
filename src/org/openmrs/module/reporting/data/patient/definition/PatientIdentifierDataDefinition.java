@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -25,6 +26,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Patient Identifier Data Definition
  */
+@Localized("reporting.PatientIdentifierDataDefinition")
 public class PatientIdentifierDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	//***** PROPERTIES *****

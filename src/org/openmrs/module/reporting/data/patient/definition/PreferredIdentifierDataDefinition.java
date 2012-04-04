@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.data.patient.definition;
 
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -22,6 +23,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Patient Identifier Data Definition
  */
+@Localized("reporting.PreferredIdentifierDataDefinition")
 public class PreferredIdentifierDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	//***** PROPERTIES *****

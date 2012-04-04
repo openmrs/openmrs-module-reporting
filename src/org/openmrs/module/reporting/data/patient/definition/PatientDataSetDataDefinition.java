@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.data.patient.definition;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataSetDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
@@ -20,6 +21,7 @@ import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefini
 /**
  * Patient DataSet Data Definition
  */
+@Localized("reporting.PatientDataSetDataDefinition")
 public class PatientDataSetDataDefinition extends DataSetDataDefinition implements PatientDataDefinition {
 	
 	/**
