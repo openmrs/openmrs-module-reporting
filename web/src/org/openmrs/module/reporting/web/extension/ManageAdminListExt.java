@@ -36,6 +36,7 @@ public class ManageAdminListExt extends AdministrationSectionExt {
 		map.put("module/reporting/definition/manageDefinitions.form?type=" + PersonDataDefinition.class.getName(), "reporting.manageDataDefinitions.title");
 		map.put("module/reporting/reports/manageReportDesigns.form", "reporting.manageReportDesigns.title");
 		map.put("module/reporting/reports/manageReportQueue.htm", "reporting.manageReportQueue.title");
+		map.put("module/reporting/reports/manageScheduledReports.form", "reporting.manageTasks.title");
 		return map;
 	}
 	
