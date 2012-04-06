@@ -62,7 +62,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void evaluate_shouldExportPersonData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumn("Sexe", new GenderDataDefinition(), null);
+		d.addColumn("Sexe", new GenderDataDefinition(), (String) null);
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
 	}
@@ -70,7 +70,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void evaluate_shouldExportPatientData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumn("EMR ID", new PatientIdDataDefinition(), null);
+		d.addColumn("EMR ID", new PatientIdDataDefinition(), (String) null);
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals(2, dataset.getColumnValue(2, "EMR ID"));
 	}
@@ -79,13 +79,13 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@ExpectedException(IllegalArgumentException.class)
 	public void evaluate_shouldFailToExportEncounterData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumn("Encounter Date", new EncounterDatetimeDataDefinition(), null);
+		d.addColumn("Encounter Date", new EncounterDatetimeDataDefinition(), (String) null);
 	}
 	
 	@Test
 	public void evaluate_shouldExportConvertedData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumn("birthdate", new BirthdateDataDefinition(), null, new BirthdateConverter("dd/MMM/yyyy"));
+		d.addColumn("birthdate", new BirthdateDataDefinition(), (String) null, new BirthdateConverter("dd/MMM/yyyy"));
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals("08/Apr/1975", dataset.getColumnValue(2, "birthdate"));
 	}
@@ -93,7 +93,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void evaluate_shouldExportParameterizedData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumn("EMR ID", new PatientIdDataDefinition(), null);
+		d.addColumn("EMR ID", new PatientIdDataDefinition(), (String) null);
 		
 		AgeDataDefinition ageOnDate = new AgeDataDefinition();
 		ageOnDate.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
@@ -111,7 +111,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldEvaluateAgainstALimitedPatientSet() throws Exception {
 		
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumn("Sexe", new GenderDataDefinition(), null);
+		d.addColumn("Sexe", new GenderDataDefinition(), (String) null);
 		
 		EvaluationContext context = new EvaluationContext();
 		
@@ -133,7 +133,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldExportAMultiColumnDataItem() throws Exception {
 		
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumn("EMR ID", new PatientIdDataDefinition(), null);
+		d.addColumn("EMR ID", new PatientIdDataDefinition(), (String) null);
 
 		EncounterDataSetDefinition encounterDataSet = new EncounterDataSetDefinition();
 		encounterDataSet.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
@@ -156,7 +156,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldExportAndFlattenAMultiValueDataItem() throws Exception {
 		
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumn("EMR ID", new PatientIdDataDefinition(), null);
+		d.addColumn("EMR ID", new PatientIdDataDefinition(), (String) null);
 
 		EncounterDataSetDefinition encounterDataSet = new EncounterDataSetDefinition();
 		encounterDataSet.addRowFilter(new AllEncounterQuery(), "");

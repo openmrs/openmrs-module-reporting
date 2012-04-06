@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.dataset.definition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.Localized;
@@ -78,6 +79,13 @@ public class PatientDataSetDefinition extends RowPerObjectDataSetDefinition {
 	 * Adds a new Column Definition given the passed parameters
 	 */
 	public void addColumn(String name, DataDefinition dataDefinition, String mappings, DataConverter... converters) {
+		addColumn(name, dataDefinition, ParameterizableUtil.createParameterMappings(mappings), converters);
+	}
+	
+	/**
+	 * Adds a new Column Definition given the passed parameters
+	 */
+	public void addColumn(String name, DataDefinition dataDefinition, Map<String, Object> mappings, DataConverter... converters) {
 		if (dataDefinition instanceof PatientDataDefinition) {
 			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converters));
 		}

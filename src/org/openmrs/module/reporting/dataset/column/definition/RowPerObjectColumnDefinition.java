@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.dataset.column.definition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.MappedData;
@@ -52,7 +53,7 @@ public class RowPerObjectColumnDefinition extends BaseColumnDefinition {
 	}
 	
 	/**
-	 * Constructor to populate to populate name and data definition
+	 * Constructor to populate name and data definition
 	 */
 	public RowPerObjectColumnDefinition(String name, MappedData<? extends DataDefinition> dataDefinition) {
 		this(name);
@@ -60,10 +61,17 @@ public class RowPerObjectColumnDefinition extends BaseColumnDefinition {
 	}
 	
 	/**
-	 * Constructor to populate name and data definition
+	 * Constructor to populate name, data definition, and converters
 	 */
 	public RowPerObjectColumnDefinition(String name, DataDefinition dataDefinition, String mappings, DataConverter... converters) {
 		this(name, new MappedData<DataDefinition>(dataDefinition, ParameterizableUtil.createParameterMappings(mappings), converters));
+	}
+	
+	/**
+	 * Constructor to populate name, data definition, and converters
+	 */
+	public RowPerObjectColumnDefinition(String name, DataDefinition dataDefinition, Map<String, Object> mappings, DataConverter... converters) {
+		this(name, new MappedData<DataDefinition>(dataDefinition, mappings, converters));
 	}
 	
 	/**

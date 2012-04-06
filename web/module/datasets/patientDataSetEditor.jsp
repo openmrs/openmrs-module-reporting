@@ -1,0 +1,301 @@
+<%@ include file="../manage/localHeader.jsp"%>
+<openmrs:require privilege="Manage Data Set Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition" />
+
+<spring:message var="cohortDefinitionLabel" code="reporting.CohortDefinition"/>
+<c:url var="addFilterUrl" value="/module/reporting/widget/getMappedAsString.form">
+	<c:param name="valueType" value="org.openmrs.module.reporting.cohort.definition.CohortDefinition"/>
+	<c:param name="label" value="${ cohortDefinitionLabel }"/> 
+	<c:param name="saveCallback" value="addFilterSave"/>
+	<c:param name="cancelCallback" value="addFilterCancel"/>
+</c:url>
+
+<style>
+	#unsaved { background-color: yellow; }
+	#unsaved form { display: inline; }
+	div.metadataField { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
+	div.metadataField label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
+	#sortable-columns { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+	#sortable-columns li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; height: 18px; }
+	#sortable-columns li span.column-sort-icon { position: absolute; margin-left: -1.3em; }
+	#sortable-columns li span.column-name { font-weight: bold; }
+	#sortable-columns li form { display: inline; float: right; }
+	div#addCol { display: inline; }
+	.boxHeader input[type=button] { float: right; }
+</style>
+
+<script>
+$(function() {
+	$('#edit-name-dialog,#add-parameter-dialog').dialog({
+		autoOpen: false,
+		modal: true,
+		width: '80%',
+		height: 600
+	});
+	$('#edit-name-button').click(function() {
+		$('#edit-name-dialog').dialog('open');
+	});
+	$('#edit-name-cancel').click(function() {
+		$('#edit-name-dialog').dialog('close');
+	});
+	$('#add-parameter-button').click(function() {
+		$('#add-parameter-dialog').dialog('open');
+	});
+	$('#add-parameter-cancel').click(function() {
+		$('#add-parameter-dialog').dialog('close');
+	});
+	$('#sortable-columns').sortable({
+		placeholder: 'ui-state-highlight',
+		update: function(evt, ui) {
+			submitColumnOrder($(this));
+		}
+	}).disableSelection();
+	$('#addFilterButton').click(function() {
+		showReportingDialog({ title: 'Add Row Filter', url: '${ addFilterUrl }' });
+	});
+});
+
+function addFilterSave(serializedResult, jsResult) {
+	$('#addFilterForm input[name=filterDefinition]').val(serializedResult);
+	$('#addFilterForm').submit();
+}
+
+function addFilterCancel() {
+	closeReportingDialog(false);
+}
+
+function submitColumnOrder(sortable) {
+	var columnOrder = { };
+	// don't know the jquery version, so we ensure we get a submission like column1=name1&column2=name2&...
+	sortable.children().each(function(index) {
+		columnOrder["column" + index] = $(this).children('.column-name').html();
+	});
+	$.post('patientDataSetEditor-sortColumns.form', columnOrder, function(data, textStatus, xhr) {
+		window.location.reload();
+	});
+}
+</script>
+
+<c:if test="${ unsaved }">
+	<div id="unsaved">
+		You have unsaved changes.
+		<form method="post" action="patientDataSetEditor-save.form">
+			<input type="submit" value="<spring:message code="general.save"/>"/>
+		</form>
+		<form method="post" action="patientDataSetEditor-discard.form">
+			<input type="submit" value="<spring:message code="general.discard"/>"/>
+		</form>
+	</div>
+</c:if>
+
+<div style="float: left; width: 40%">
+
+	<div class="boxHeader">
+		${ dsd.name }
+		<input type="button" id="edit-name-button" value="Edit"/>
+	</div>
+	<div class="box">
+		<h3></h3>
+		<c:choose>
+			<c:when test="${ empty dsd.description }">
+				<i><span style="color: #e0e0e0"><spring:message code="general.none"/></span></i>
+			</c:when>
+			<c:otherwise>
+				<i>${ dsd.description }</i>
+			</c:otherwise>
+		</c:choose>
+	</div>
+	
+	<br/>
+	
+	<div class="boxHeader">
+		Parameters
+		<input type="button" id="add-parameter-button" value="Add"/>
+	</div>
+	<div class="box">
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Label</th>
+				<th>Type</th>
+				<th></th>
+			</tr>
+			<c:forEach var="p" items="${ dsd.parameters }">
+				<tr>
+					<td>${ p.name }</td>
+					<td>${ p.label }</td>
+					<td>
+						<c:choose>
+							<c:when test="${p.collectionType != null}">
+								${p.collectionType.simpleName}&lt;${p.type.simpleName}&gt;
+							</c:when>
+							<c:otherwise>
+								${p.type.simpleName}
+							</c:otherwise>
+						</c:choose>
+					</td>
+					<td>
+						<form method="post" action="patientDataSetEditor-removeParam.form">
+							<input type="hidden" name="name" value="${ p.name }"/>
+							<input type="submit" value="Remove"/>
+						</form>
+					</td>
+				</tr>
+			</c:forEach>
+		</table>
+	</div>
+	
+	<br/>
+	
+	<div class="boxHeader">
+		Row Filters
+		<input type="button" id="addFilterButton" value="<spring:message code="general.add"/>"/>
+	</div>
+	<div class="box">
+		<c:choose>
+			<c:when test="${ empty dsd.rowFilters }">
+				<spring:message code="general.none"/>
+			</c:when>
+			<c:otherwise>
+				<table>
+					<tr>
+						<th>Name</th>
+						<th>Mappings</th>
+						<th></th>
+					</tr>
+					<c:forEach var="mappedFilter" items="${ dsd.rowFilters }" varStatus="iter">
+						<tr>
+							<td>${ mappedFilter.parameterizable.name }</td>
+							<td>
+								<c:forEach var="mapping" items="${ mappedFilter.parameterMappings }">
+									${ mapping.key } -> <rpt:format object="${ mapping.value }"/>
+									<br/>
+								</c:forEach>
+							</td>
+							<td>
+								<form method="post" action="patientDataSetEditor-removeFilter.form">
+									<input type="hidden" name="filterIndex" value="${ iter.index }"/>
+									<input type="submit" value="<spring:message code="general.remove"/>"/>
+								</form>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+			</c:otherwise>
+		</c:choose>
+		
+		<form method="post" action="patientDataSetEditor-addFilter.form" id="addFilterForm">
+			<input type="hidden" name="filterDefinition" value=""/>
+		</form>	
+	</div>
+	
+	<div id="edit-name-dialog">
+		<form method="post" action="patientDataSetEditor-nameDescription.form">
+			<table>
+				<tr valign="top">
+					<td>Name</td>
+					<td>
+						<input type="text" name="name" value="<spring:message javaScriptEscape="true" text="${ dsd.name }"/>"/>
+					</td>
+				</tr>
+				<tr valign="top">
+					<td>Description</td>
+					<td>
+						<textarea name="description" rows="5" cols="80"><c:out value="${ dsd.description }"/></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<input type="submit" value="<spring:message code="general.apply"/>"/>
+						<input type="button" value="<spring:message code="general.cancel"/>" id="edit-name-cancel"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	
+	<div id="add-parameter-dialog">
+		<form method="post" action="patientDataSetEditor-addParam.form">
+
+			<div class="metadataField">
+				<label class="desc">Type</label>
+				<select name="collectionType">
+					<option value="">Single</option>
+					<c:forEach var="supportedType" items="${ parameterCollectionTypes }">
+						<option value="${supportedType.value}">${supportedType.labelText} of</option>
+					</c:forEach>
+				</select>
+				<select name="parameterType">
+					<option value=""></option>
+					<c:forEach var="supportedType" items="${ parameterTypes }">
+						<option value="${supportedType.value}">${supportedType.labelText}</option>
+					</c:forEach>
+				</select>
+			</div>
+
+			<div class="metadataField">
+				<label class="desc" for="name">Name</label>
+				<input type="text" id="name" tabindex="1" name="name" size="50"/>
+			</div>
+			<div class="metadataField">
+				<label class="desc" for="label">Label</label>			
+				<textarea id="label" cols="50" rows="2" tabindex="2" name="label"></textarea>
+			</div>
+			<div class="metadataField">
+				<label class="desc" for="widgetConfiguration">Advanced Configuration</label>			
+				<textarea id="widgetConfiguration" cols="50" rows="5" tabindex="3" name="widgetConfiguration"></textarea>
+			</div>
+
+			<input type="submit" value="<spring:message code="general.apply"/>" tabindex="4"/>
+			<input type="button" value="<spring:message code="general.cancel"/>" id="add-parameter-cancel" tabindex="5"/>
+		</form>
+	</div>
+	
+</div>
+
+<div style="float: left; margin-left: 2em; width: 50%">
+
+	<div class="boxHeader">
+		Columns
+	</div>
+	<div class="box">
+		<ul id="sortable-columns">
+			<c:forEach var="col" items="${ dsd.columnDefinitions }">
+				<li class="ui-state-default">
+					<span class="column-sort-icon ui-icon ui-icon-arrowthick-2-n-s"></span>
+					<span class="column-name">${ col.name }</span>
+					<span class="column-description">(${ col.description })</span>
+					<form method="post" action="patientDataSetEditor-removeColumn.form">
+						<input type="hidden" name="name" value="${ col.name }"/>
+						<input type="submit" value="Remove"/>
+					</form>
+				</li>
+			</c:forEach>
+		</ul>
+		
+		<br/>
+		<form method="post" action="patientDataSetEditor-addColumn.form" style="background-color: #e0e0e0">
+			<b><u><spring:message code="general.add"/></u></b> <br/>
+			<table>
+				<tr>
+					<td>Label</td>
+					<td><input type="text" name="label"/></td>
+				</tr>
+				<tr>
+					<td>Definition</td>
+					<td><rptTag:chooseDataDefinition id="addCol" formFieldName="columnDefinition"/></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" value="<spring:message code="general.add"/>"/></td>
+				</tr>
+			</table>
+		</form>
+		
+	</div>
+</div>
+
+<div style="clear: both"></div>
+
+
+<%@ include file="/WEB-INF/template/footer.jsp"%>
