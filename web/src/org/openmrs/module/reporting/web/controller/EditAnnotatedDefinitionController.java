@@ -34,16 +34,19 @@ public class EditAnnotatedDefinitionController {
     @ModelAttribute("definition")
     public Definition getDefinition(@RequestParam(required = false, value = "uuid") String uuid,
     								@RequestParam(required = false, value = "type") Class<? extends Definition> type) {
+    	Definition d = null;
     	if (ObjectUtil.isNull(uuid)) {
+    		d = DefinitionContext.getDefinitionByUuid(type, uuid);
+    	}
+    	if (d == null) {
     		try {
-    			Definition d = type.newInstance();
-    			return d;
+    			d = type.newInstance();
     		}
     		catch (Exception e) {
     			throw new IllegalArgumentException("Unable to create definition instance of type " + type);
     		}
     	}
-		return DefinitionContext.getDefinitionByUuid(type, uuid);
+		return d;
     }
 	
 	/**
