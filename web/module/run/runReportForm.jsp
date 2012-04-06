@@ -36,7 +36,14 @@
 					           <spring:message code="${parameter.label}"/>:
 		                    </td>
 		                    <td>
-								<wgt:widget id="userEnteredParam${parameter.name}" name="${status.expression}" type="${parameter.type.name}" property="${status.expression}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>
+                   				<c:choose>
+									<c:when test="${parameter.collectionType != null}">
+										<wgt:widget id="userEnteredParam${parameter.name}" name="${status.expression}" type="${parameter.collectionType.name}" genericTypes="${parameter.type.name}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>	
+									</c:when>
+									<c:otherwise>
+										<wgt:widget id="userEnteredParam${parameter.name}" name="${status.expression}" type="${parameter.type.name}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>	
+									</c:otherwise>
+								</c:choose>
 		                        <c:if test="${not empty status.errorMessage}">
 		                            <span class="error">${status.errorMessage}</span>
 		                        </c:if>
