@@ -214,7 +214,7 @@
 							<br/>
 							<button id="previewButton">
 								<img src="<c:url value="/images/play.gif"/>" border="0"/>
-								Preview
+								<spring:message code="reporting.preview"/>
 							</button>
 							<button id="closeButton">
 								<spring:message code="general.close"/>

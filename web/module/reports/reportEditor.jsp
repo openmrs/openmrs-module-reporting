@@ -36,6 +36,13 @@
 			});
 		});
 		
+		$('#previewButton').click(function(event) { 
+			showReportingDialog({ 
+				title: 'Preview Report', 
+				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${report.uuid}&type=${report['class'].name}'
+			});
+		}).height(32);
+		
 	} );
 </script>
 
@@ -84,6 +91,11 @@
 								</c:if>
 								<a style="font-weight:bold;" href="#" id="designAddLink">[+] Add</a>
 							</div>
+							<br/>
+							<button id="previewButton">
+								<img src="<c:url value="/images/play.gif"/>" border="0"/>
+								<spring:message code="reporting.preview"/>
+							</button>
 						</td>
 						<td valign="top" width="100%">
 							<b class="boxHeader">Dataset Definitions</b>

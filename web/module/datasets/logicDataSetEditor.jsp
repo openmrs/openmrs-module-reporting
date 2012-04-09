@@ -20,6 +20,14 @@
 					return data;
 			}
 		});
+		<c:if test="${!empty definition.id}">
+			$('#previewButton').click(function(event) { 
+				showReportingDialog({ 
+					title: 'Preview ${definition.name}', 
+					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}'
+				});
+			}).height(32);
+		</c:if>
 	});
 </script>
 
@@ -116,6 +124,13 @@
 			</div>
 			<input type="submit" value="<spring:message code='general.save'/>"/>
 		</form>
+		<c:if test="${!empty definition.id}">
+			<br/>
+			<button id="previewButton">
+				<img src="<c:url value="/images/play.gif"/>" border="0"/>
+				<spring:message code="reporting.preview"/>
+			</button>
+		</c:if>
 	</div>
 </div>
 
