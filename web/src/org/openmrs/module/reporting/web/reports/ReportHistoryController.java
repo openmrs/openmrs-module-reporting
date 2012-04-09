@@ -78,6 +78,15 @@ public class ReportHistoryController {
 		return "redirect:reportHistory.form";
 	}
 	
+	@RequestMapping("/module/reporting/reports/deleteReportRequest")
+	public String deleteReportRequest(@RequestParam("uuid") String uuid,
+									@RequestParam("returnUrl") String returnUrl) {
+		ReportService rs = Context.getService(ReportService.class);
+		ReportRequest request = rs.getReportRequestByUuid(uuid);
+		rs.purgeReportRequest(request);
+		return "redirect:" + returnUrl;
+	}
+	
 	@RequestMapping("/module/reporting/reports/loadReportStatus")
 	public String loadReportStatus(ModelMap model, @RequestParam("uuid") String uuid) {
 		ReportService rs = Context.getService(ReportService.class);

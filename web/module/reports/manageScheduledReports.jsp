@@ -1,7 +1,8 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Report Definitions" otherwise="/login.htm" redirect="/module/reporting/reports/manageReports.form" />
+<openmrs:require privilege="Manage Report Definitions" otherwise="/login.htm" redirect="/module/reporting/reports/manageScheduledReports.form" />
 <%@ include file="../manage/localHeader.jsp"%>
 
+<c:set var="returnUrl" value="/module/reporting/reports/manageScheduledReports.form"/>
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
@@ -19,7 +20,7 @@
 
 	function confirmDelete(name, uuid) {
 		if (confirm('<spring:message code="reporting.confirmDelete"/> ' + name + '?')) {
-			document.location.href = '${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=' + uuid;
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/deleteReportRequest.form?uuid=' + uuid+"&returnUrl=${returnUrl}";
 		}
 	}
 
@@ -76,7 +77,7 @@
 							</td>
 							<td>${scheduledReport.schedule}</td>
 							<td>
-								<a href="javascript:confirmDelete('${scheduledReport.reportDefinition.parameterizable.name}','${scheduledReport.reportDefinition.parameterizable.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
+								<a href="javascript:confirmDelete('${scheduledReport.reportDefinition.parameterizable.name}','${scheduledReport.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
 							</td>
 						</tr>
 					</c:forEach>
