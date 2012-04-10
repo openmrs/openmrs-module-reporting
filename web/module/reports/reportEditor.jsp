@@ -5,8 +5,10 @@
 	<c:param name="uuid" value="${report.uuid}" />
 </c:url>
 
-<script type="text/javascript" charset="utf-8">
+<openmrs:htmlInclude file="/dwr/interface/DWRReportingService.js"/>
 
+<script type="text/javascript" charset="utf-8">
+	
 	$(document).ready(function() {
 
 		// Redirect to listing page
@@ -43,8 +45,59 @@
 			});
 		}).height(32);
 		
+		$('#addTagLink').click(function(event) {
+			$('#addTagDetails').show();
+			
+		});
+		
+		$('#addTag').click(function(event) {
+			if($.trim($('#newTagEle').val()) == '')
+				return;
+			
+			tag = $('#newTagEle').val();	
+			DWRReportingService.addTag('${report.uuid}', tag, '${report.class.name}', function(success){
+				if(success == true){
+					row = document.getElementById('newTagRow');
+					newrow = row.cloneNode(true);
+					newrow.style.display = "";
+					row.parentNode.insertBefore(newrow, row);
+					tds = newrow.getElementsByTagName("td");
+					$(tds[0]).html(tag);
+					imgs = newrow.getElementsByTagName("img");
+					$(imgs[0]).click(function(event) {
+						removeTag(this.parentNode.parentNode, tag);
+					});
+					
+					$('#newTagEle').val('');
+				}else{
+					alert('<spring:message code="reporting.Report.addTag.error" />');
+				}
+			});
+		});
+		
 	} );
+		
+	function removeTag(node, tag){
+		DWRReportingService.removeTag('${report.uuid}', tag, '${report.class.name}', function(success){
+			if(success == true){
+				node.parentNode.removeChild(node);
+			}else{
+				alert('<spring:message code="reporting.Report.removeTag.error" />');
+			}
+		});
+	}
+	
+	function doneAddingTags(){
+		$('#newTagEle').val(''); 
+		$('#addTagDetails').hide();
+	}
 </script>
+
+<style>
+img.removeImage{
+	cursor: pointer;
+}
+</style>
 
 <div id="page">
 	<div id="container">
@@ -91,6 +144,39 @@
 								</c:if>
 								<a style="font-weight:bold;" href="#" id="designAddLink">[+] Add</a>
 							</div>
+							<!-- Can't tag a definition on creation since its uuid isn't yet persisted -->
+							<c:if test="${report.id != null}">
+							<br/>
+							<b class="boxHeader" style="font-weight:bold; text-align:right;">
+								<span style="float:left;"><spring:message code="reporting.Report.tags" /></span>
+								<a style="font-weight:bold;"  href="javascript:void(0)" id="addTagLink">[+] <spring:message code="general.add" /></a>
+							</b>
+							<div class="box">
+								<span id="addTagDetails" style="display: none">
+									<input type="text" id="newTagEle" size="10" />
+									<input id="addTag" type="button" class="smallButtons" value="+" />
+									<input type="button" class="smallButtons" value="<spring:message code="general.close" />" 
+										onclick="doneAddingTags()" />
+								</span>
+								<table id="tagsTable" width="100%">
+									<c:forEach items="${tags}" var="tag">
+									<tr>
+										<td><div style="width:50% !important;">${tag}</td>
+										<td>
+												<img class="removeImage" src="<c:url value='/images/trash.gif'/>" border="0" 
+												 onclick="removeTag(this.parentNode.parentNode, '${tag}')" />
+										</td>
+									</tr>
+									</c:forEach>
+									<tr id="newTagRow" style="display: none">
+										<td></td>
+										<td>
+											<img class="removeImage" src="<c:url value='/images/trash.gif'/>" border="0" />
+										</td>
+									</tr>				
+								</table>
+							</div>
+							</c:if>
 							<br/>
 							<button id="previewButton">
 								<img src="<c:url value="/images/play.gif"/>" border="0"/>
@@ -130,7 +216,7 @@
 															<th>${rowEntry.key}</th>
 															<c:forEach items="${dsd.value.parameterizable.columns}" var="columnEntry" varStatus="colStatus">
 																<td style="border-bottom:1px solid black;">...</td>
-															</c:forEach>
+															</c:forEach><img border="0" src="/openmrs/images/trash.gif">
 														</tr>
 													</c:forEach>
 												</c:otherwise>

@@ -14,14 +14,22 @@
 package org.openmrs.module.reporting.definition.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.reporting.DuplicateTagException;
+import org.openmrs.module.reporting.cohort.definition.DefinitionTag;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.db.DefinitionDAO;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
@@ -33,7 +41,9 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.util.HandlerUtil;
+import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -45,6 +55,22 @@ import org.springframework.util.StringUtils;
 public abstract class BaseDefinitionService<T extends Definition> extends BaseOpenmrsService implements DefinitionService<T> {
 	
 	protected static Log log = LogFactory.getLog(BaseDefinitionService.class);
+	
+	private DefinitionDAO dao;
+	
+	/**
+	 * @return the dao
+	 */
+	protected DefinitionDAO getDao() {
+		return dao;
+	}
+	
+	/**
+	 * @param dao the dao to set
+	 */
+	public void setDao(DefinitionDAO dao) {
+		this.dao = dao;
+	}
 	
 	/**
 	 * @see DefinitionService#getDefinitionTypes()
@@ -169,17 +195,6 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	}
 	
 	/**
-	 * Default implementation is to consider a Definition to contain a tag if the tag is part of the
-	 * Definition name
-	 * 
-	 * @see DefinitionService#getDefinitionsByTag(String)
-	 */
-	@Transactional(readOnly = true)
-	public List<T> getDefinitionsByTag(String tagName) {
-		return getDefinitions(tagName, false);
-	}
-	
-	/**
 	 * Note that this base implementation is no more efficient than just calling
 	 * {@link #getAllDefinitions(boolean)} it should really be overridden in any subclasses that
 	 * intend to use this functionality.
@@ -267,5 +282,157 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	@SuppressWarnings("rawtypes")
 	protected List<DefinitionPersister> getAllPersisters() {
 		return HandlerUtil.getHandlersForType(DefinitionPersister.class, getDefinitionType());
+	}
+	
+	/**
+	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#getAllTags()
+	 */
+	@SuppressWarnings("unchecked")
+	public Set<String> getAllTags() {
+		//Since we are still going to loop over the tags, to get the tag names, get all
+		//so that the loop is only run once
+		List<DefinitionTag> definitionTags = getAllDefinitionTags();
+		Set<String> tags = new HashSet<String>(definitionTags.size());
+		for (DefinitionTag definitionTag : definitionTags) {
+			Class<T> clazz = (Class<T>) ReportUtil.loadClass(definitionTag.getDefinitionType());
+			//Filter on only this service's actual type's subclasses
+			if (getDefinitionType().isAssignableFrom(clazz))
+				tags.add(definitionTag.getTag());
+		}
+		
+		return tags;
+	}
+	
+	/**
+	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#getAllDefinitionsHavingTag(String)
+	 */
+	@SuppressWarnings("unchecked")
+	public List<DefinitionSummary> getAllDefinitionsHavingTag(String tag) {
+		if (!StringUtils.hasText(tag))
+			throw new IllegalArgumentException("tag cannot be null or blank");
+		
+		List<DefinitionTag> definitionTags = dao.getDefinitionTags(tag, null);
+		List<DefinitionSummary> defSummaries = new ArrayList<DefinitionSummary>();
+		for (DefinitionTag definitionTag : definitionTags) {
+			Class<T> clazz = (Class<T>) ReportUtil.loadClass(definitionTag.getDefinitionType());
+			if (getDefinitionType().isAssignableFrom(clazz)) {
+				T definition = getDefinition(definitionTag.getDefinitionUuid(), clazz);
+				DefinitionSummary ds = new DefinitionSummary(definition);
+				//Why isn't the definition above returned without a uuid?
+				ds.setUuid(definitionTag.getDefinitionUuid());
+				defSummaries.add(ds);
+			}
+		}
+		
+		return defSummaries;
+	}
+	
+	/**
+	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#getAllDefinitionTags()
+	 */
+	@SuppressWarnings("unchecked")
+	public List<DefinitionTag> getAllDefinitionTags() {
+		List<DefinitionTag> possibleTags = dao.getDefinitionTags(null, null);
+		List<DefinitionTag> dTags = new ArrayList<DefinitionTag>();
+		for (DefinitionTag definitionTag : possibleTags) {
+			Class<T> type = (Class<T>) ReportUtil.loadClass(definitionTag.getDefinitionType());
+			if (getDefinitionType().isAssignableFrom(type)) {
+				dTags.add(definitionTag);
+			}
+		}
+		
+		return dTags;
+	}
+	
+	/**
+	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#getAllDefinitionsByTag()
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, List<DefinitionSummary>> getAllDefinitionsByTag() {
+		List<DefinitionTag> definitionTags = getAllDefinitionTags();
+		Map<String, List<DefinitionSummary>> tagDefSummariesMap = new HashMap<String, List<DefinitionSummary>>();
+		for (DefinitionTag definitionTag : definitionTags) {
+			Class<T> clazz = (Class<T>) ReportUtil.loadClass(definitionTag.getDefinitionType());
+			if (getDefinitionType().isAssignableFrom(clazz)) {
+				String tag = definitionTag.getTag();
+				if (tagDefSummariesMap.get(tag) == null)
+					tagDefSummariesMap.put(tag, new ArrayList<DefinitionSummary>());
+				
+				T definition = getDefinition(definitionTag.getDefinitionUuid(), clazz);
+				DefinitionSummary ds = new DefinitionSummary(definition);
+				ds.setUuid(definitionTag.getDefinitionUuid());
+				tagDefSummariesMap.get(tag).add(ds);
+			}
+		}
+		
+		return tagDefSummariesMap;
+	}
+	
+	/**
+	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#addTagToDefinition(Definition,
+	 *      String)
+	 */
+	public boolean addTagToDefinition(T definition, String tag) {
+		if (definition == null || !StringUtils.hasText(tag))
+			throw new IllegalArgumentException("definition or tag cannot be null or blank");
+		
+		DefinitionTag definitionTag = new DefinitionTag(tag, definition);
+		try {
+			ValidateUtil.validate(definitionTag);
+		}
+		catch (DuplicateTagException e) {
+			//silently ignore diplicates
+			return false;
+		}
+		//Only 1.9+ sets the uuid on object instantiation and this isn't named saveXX so AOP isn't helping
+		if (definitionTag.getUuid() == null)
+			definitionTag.setUuid(UUID.randomUUID().toString());
+		dao.saveDefinitionTag(definitionTag);
+		return true;
+	}
+	
+	/**
+	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#removeTagFromDefinition(Definition,
+	 *      String)
+	 */
+	public void removeTagFromDefinition(T definition, String tag) {
+		if (definition != null)
+			dao.deleteDefinitionTag(definition.getUuid(), tag);
+	}
+	
+	/**
+	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#hasTag(Definition,
+	 *      String)
+	 */
+	public boolean hasTag(T definition, String tag) {
+		if (definition == null || definition.getUuid() == null)
+			return false;
+		
+		return hasTag(definition.getUuid(), tag);
+	}
+	
+	/**
+	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#hasTag(String, String)
+	 */
+	public boolean hasTag(String definitionUuid, String tag) {
+		if (definitionUuid == null || tag == null)
+			return false;
+		
+		return dao.checkIfTagExists(definitionUuid, tag);
+	}
+	
+	/**
+	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#getTags(org.openmrs.module.reporting.evaluation.Definition)
+	 */
+	public List<String> getTags(T definition) {
+		if (definition == null)
+			throw new IllegalArgumentException("definition cannot be null");
+		
+		List<DefinitionTag> definitionTags = dao.getDefinitionTags(null, definition.getUuid());
+		List<String> tags = new ArrayList<String>();
+		for (DefinitionTag definitionTag : definitionTags) {
+			tags.add(definitionTag.getTag());
+		}
+		return tags;
 	}
 }

@@ -14,9 +14,12 @@
 package org.openmrs.module.reporting.definition.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.reporting.cohort.definition.DefinitionTag;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
@@ -102,13 +105,6 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	public List<T> getDefinitions(String name, boolean exactMatchOnly);
 	
 	/**
-	 * @param tagName the tag name to look up
-	 * @return all Definitions that are tagged with the given tagName
-	 */
-	@Transactional(readOnly = true)
-	public List<T> getDefinitionsByTag(String tagName);
-	
-	/**
 	 * Persists a Definition, either as a save or update.
 	 * 
 	 * @param definition
@@ -144,4 +140,100 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 */
 	@Transactional(readOnly = true)
 	public Evaluated<T> evaluate(T definition, EvaluationContext context) throws EvaluationException;
+	
+	/**
+	 * Gets all tags that have been applied to any of this service's definition type's subclasses
+	 * 
+	 * @return a list of tags
+	 * @should get all tags applied to any definition of the service type
+	 */
+	@Transactional(readOnly = true)
+	public Set<String> getAllTags();
+	
+	/**
+	 * Gets definition summaries for all definitions of this service's definition type's subclasses
+	 * that have the given tag
+	 * 
+	 * @param tag the tag to match against
+	 * @return a list of definition summaries
+	 * @should get all definition as summaries with the specified tag
+	 */
+	@Transactional(readOnly = true)
+	public List<DefinitionSummary> getAllDefinitionsHavingTag(String tag);
+	
+	/**
+	 * Gets all DefinitionTags for all definition of this service's definition type's subclasses
+	 * (e.g. all tags on CohortDefinitions for CohortDefinitionService)
+	 * 
+	 * @return a list of definition tags
+	 * @should get all definition tags applied to any definition of the service type
+	 */
+	@Transactional(readOnly = true)
+	public List<DefinitionTag> getAllDefinitionTags();
+	
+	/**
+	 * Fetches all definitions of this service's definition type's subclasses grouped by the tags
+	 * they have (note that definitions may have multiple tags, so a definition can appear in
+	 * multiple lists)
+	 * 
+	 * @return map of tags and definition summaries
+	 * @should get all definitions as summaries of the service type grouped by tags
+	 */
+	@Transactional(readOnly = true)
+	public Map<String, List<DefinitionSummary>> getAllDefinitionsByTag();
+	
+	/**
+	 * Adds the specified tag to the specified defintionm, silently does not add duplicates
+	 * 
+	 * @param definition the definition to add the tag
+	 * @param tag the tag to add to the definition
+	 * @return true if the tag was added otherwise false
+	 * @should add the specified tag to the specified definition
+	 */
+	public boolean addTagToDefinition(T definition, String tag);
+	
+	/**
+	 * Silently returns if the definition doesn't have the given tag
+	 * 
+	 * @param definition the definition from which to remove the tag
+	 * @param tag the tag to remove from the definition
+	 * @should remove the specified tag from the specified definition
+	 */
+	public void removeTagFromDefinition(T definition, String tag);
+	
+	/**
+	 * Checks if the specified definition has the specified tag
+	 * 
+	 * @param definition the definition to check
+	 * @param tag the name of the tag to check for
+	 * @return true if the definition has the tag otherwise false
+	 * @should return true if the definition has the tag
+	 * @should return false if the definition doesnt have the tag
+	 * @should return false if the definition is null
+	 * @should return false if the tag is null
+	 * @should return false if the definition has a null uuid
+	 */
+	public boolean hasTag(T definition, String tag);
+	
+	/**
+	 * Checks if the definition with the specified uuid has the specified tag
+	 * 
+	 * @param definitionUuid the uuid of the definition to check
+	 * @param tag the name of the tag to check for
+	 * @return true if the matching definition has the tag otherwise false
+	 * @should return true if the matching definition has the tag
+	 * @should return false if the matching definition doesnt have the tag
+	 * @should return false if the uuid is null
+	 * @should return false if the tag parameter is null
+	 */
+	public boolean hasTag(String definitionUuid, String tag);
+	
+	/**
+	 * Gets all the tags applied to the specified definition
+	 * 
+	 * @param Definition the definition to match against
+	 * @return a list of tags for the definition
+	 * @should get all the tags applied to the definition
+	 */
+	public List<String> getTags(T definition);
 }

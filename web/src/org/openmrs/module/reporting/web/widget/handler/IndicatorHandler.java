@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.web.widget.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
@@ -21,8 +22,10 @@ import org.openmrs.module.htmlwidgets.web.WidgetConfig;
 import org.openmrs.module.htmlwidgets.web.handler.CodedHandler;
 import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
 import org.openmrs.module.htmlwidgets.web.html.Option;
+import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
+import org.openmrs.module.reporting.report.util.ReportUtil;
 
 /**
  * FieldGenHandler for Enumerated Types
@@ -33,14 +36,23 @@ public class IndicatorHandler extends CodedHandler {
 	/**
 	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void populateOptions(WidgetConfig config, CodedWidget widget) {
 		List<Indicator> l = null;
 		String tag = config.getAttributeValue("tag", null);
+		IndicatorService is = Context.getService(IndicatorService.class);
 		if (tag != null) {
-			l = Context.getService(IndicatorService.class).getDefinitionsByTag(tag);
+			List<DefinitionSummary> definitionTags = is.getAllDefinitionsHavingTag(tag);
+			l = new ArrayList<Indicator>();
+			for (DefinitionSummary definitionSummary : definitionTags) {
+				Class<Indicator> type = (Class<Indicator>) ReportUtil.loadClass(definitionSummary.getType());
+				Indicator indicator = is.getDefinition(definitionSummary.getUuid(), type);
+				if (indicator != null)
+					l.add(indicator);
+			}
 		} else {
-			l = Context.getService(IndicatorService.class).getAllDefinitions(false);
+			l = is.getAllDefinitions(false);
 		}
 		for (Indicator d : l) {
 			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);

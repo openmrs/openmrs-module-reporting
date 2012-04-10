@@ -40,5 +40,6 @@ public class ReportEditor {
 			List<ReportDesign> designs = Context.getService(ReportService.class).getReportDesigns(r, null, false);
 			model.addAttribute("designs", designs);
 		}
+		model.addAttribute("tags", rs.getTags(r));
 	}
 }

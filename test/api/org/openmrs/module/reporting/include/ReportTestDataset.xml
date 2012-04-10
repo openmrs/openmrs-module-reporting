@@ -421,4 +421,13 @@
   <reporting_report_processor id="1" name="Old retired Logging processor" processor_type="org.openmrs.module.reporting.report.processor.LoggingReportProcessor" configuration="Not needed" run_on_success="true" run_on_error="false" creator="1" date_created="2008-08-18 11:50:15.0" retired="true" uuid="c18717dd-4478-4a0e-84fe-ee62c5f0676a"/>
   <reporting_report_processor id="2" name="Logging processor" processor_type="org.openmrs.module.reporting.report.processor.LoggingReportProcessor" configuration="Still not needed" run_on_success="true" run_on_error="false" creator="1" date_created="2008-08-18 11:50:15.0" retired="false" uuid="c11117dd-4478-4a0e-84fe-ee62c5f0676a"/>
 
+  <!-- tags applied to CohortDefinitions -->
+  <reporting_definition_tag id="1" tag="one" definition_uuid="9023095e-7f5a-11e1-8393-00248140a5eb" definition_type="org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition" uuid="78ecd9cc-7f5a-11e1-8393-00248140a5eb" />
+  <reporting_definition_tag id="2" tag="two" definition_uuid="95b6f506-7f5a-11e1-8393-00248140a5eb" definition_type="org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition" uuid="7f709676-7f5a-11e1-8393-00248140a5eb" />
+  <reporting_definition_tag id="3" tag="three" definition_uuid="9023095e-7f5a-11e1-8393-00248140a5eb" definition_type="org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition" uuid="842b1740-7f5a-11e1-8393-00248140a5eb" />
+  <reporting_definition_tag id="4" tag="one" definition_uuid="95b6f506-7f5a-11e1-8393-00248140a5eb" definition_type="org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition" uuid="936e4e20-7f64-11e1-8393-00248140a5eb" />
+  
+  <!-- tags applied to DataDefinitions -->
+  <reporting_definition_tag id="5" tag="one" definition_uuid="915ade20-7f5d-11e1-8393-00248140a5eb" definition_type="org.openmrs.module.reporting.data.person.definition.AgeDataDefinition" uuid="05988c24-7f5e-11e1-8393-00248140a5eb" />
+  <reporting_definition_tag id="6" tag="four" definition_uuid="915ade20-7f5d-11e1-8393-00248140a5eb" definition_type="org.openmrs.module.reporting.data.person.definition.AgeDataDefinition" uuid="9ae6117c-7f98-11e1-a94b-00248140a5eb" />
 </dataset>
