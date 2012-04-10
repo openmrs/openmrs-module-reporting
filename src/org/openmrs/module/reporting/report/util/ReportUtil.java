@@ -18,7 +18,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.ContentType;
-import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -48,12 +47,11 @@ public class ReportUtil {
 	public static void writeStringToFile(File f, String s) throws IOException {
 		if (f.getAbsolutePath().endsWith(".gz")) {
 			String fn = f.getAbsolutePath();
-			File unzippedFile = new File(fn.substring(0, fn.length()-3));
+			File unzippedFile = new File(fn.substring(0, fn.length() - 3));
 			FileUtils.writeStringToFile(unzippedFile, s, "UTF-8");
 			compressFile(unzippedFile, f);
 			FileUtils.deleteQuietly(unzippedFile);
-		}
-		else {
+		} else {
 			FileUtils.writeStringToFile(f, s, "UTF-8");
 		}
 	}
@@ -63,7 +61,7 @@ public class ReportUtil {
 		try {
 			original = readStringFromFile(f);
 		}
-		catch (Exception e) { }
+		catch (Exception e) {}
 		writeStringToFile(f, (original == null ? s : original + System.getProperty("line.separator") + s));
 	}
 	
@@ -71,12 +69,11 @@ public class ReportUtil {
 		String ret = null;
 		if (f.getAbsolutePath().endsWith(".gz")) {
 			String fn = f.getAbsolutePath();
-			File unzippedFile = new File(fn.substring(0, fn.length()-3));
+			File unzippedFile = new File(fn.substring(0, fn.length() - 3));
 			decompressFile(f, unzippedFile);
 			ret = FileUtils.readFileToString(unzippedFile, "UTF-8");
 			FileUtils.deleteQuietly(unzippedFile);
-		}
-		else {
+		} else {
 			ret = FileUtils.readFileToString(f, "UTF-8");
 		}
 		return ret;
@@ -96,12 +93,11 @@ public class ReportUtil {
 	public static void writeByteArrayToFile(File f, byte[] bytes) throws IOException {
 		if (f.getAbsolutePath().endsWith(".gz")) {
 			String fn = f.getAbsolutePath();
-			File unzippedFile = new File(fn.substring(0, fn.length()-3));
+			File unzippedFile = new File(fn.substring(0, fn.length() - 3));
 			FileUtils.writeByteArrayToFile(unzippedFile, bytes);
 			compressFile(unzippedFile, f);
 			FileUtils.deleteQuietly(unzippedFile);
-		}
-		else {
+		} else {
 			FileUtils.writeByteArrayToFile(f, bytes);
 		}
 	}
@@ -110,12 +106,11 @@ public class ReportUtil {
 		byte[] ret = null;
 		if (f.getAbsolutePath().endsWith(".gz")) {
 			String fn = f.getAbsolutePath();
-			File unzippedFile = new File(fn.substring(0, fn.length()-3));
+			File unzippedFile = new File(fn.substring(0, fn.length() - 3));
 			decompressFile(f, unzippedFile);
 			ret = FileUtils.readFileToByteArray(unzippedFile);
 			FileUtils.deleteQuietly(unzippedFile);
-		}
-		else {
+		} else {
 			ret = FileUtils.readFileToByteArray(f);
 		}
 		return ret;
@@ -125,9 +120,9 @@ public class ReportUtil {
 		FileInputStream in = null;
 		GZIPOutputStream out = null;
 		try {
-	    	in = new FileInputStream(inFile);
-	    	out = new GZIPOutputStream(new FileOutputStream(outFile));
-	    	IOUtils.copy(in, out);
+			in = new FileInputStream(inFile);
+			out = new GZIPOutputStream(new FileOutputStream(outFile));
+			IOUtils.copy(in, out);
 		}
 		catch (Exception e) {
 			log.warn("Unable to zip file: " + inFile);
@@ -142,9 +137,9 @@ public class ReportUtil {
 		GZIPInputStream in = null;
 		FileOutputStream out = null;
 		try {
-	    	in = new GZIPInputStream(new FileInputStream(inFile));
-	    	out = new FileOutputStream(outFile);
-	    	IOUtils.copy(in, out);
+			in = new GZIPInputStream(new FileInputStream(inFile));
+			out = new FileOutputStream(outFile);
+			IOUtils.copy(in, out);
 		}
 		catch (Exception e) {
 			log.warn("Unable to unzip file: " + inFile);
@@ -157,18 +152,19 @@ public class ReportUtil {
 	
 	/**
 	 * Looks up a resource on the class path, and returns a RenderingMode based on it
-	 * @throws UnsupportedEncodingException 
+	 * 
+	 * @throws UnsupportedEncodingException
 	 */
 	public static RenderingMode renderingModeFromResource(String label, String resourceName) {
 		InputStreamReader reader;
 		
-        try {
-	        reader = new InputStreamReader(OpenmrsClassLoader.getInstance().getResourceAsStream(resourceName), "UTF-8");    
-        }
-        catch (UnsupportedEncodingException e) {
-	        throw new IllegalArgumentException("Error reading template from stream", e);
-        }
-
+		try {
+			reader = new InputStreamReader(OpenmrsClassLoader.getInstance().getResourceAsStream(resourceName), "UTF-8");
+		}
+		catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("Error reading template from stream", e);
+		}
+		
 		final ReportDesign design = new ReportDesign();
 		ReportDesignResource resource = new ReportDesignResource();
 		resource.setName("template");
@@ -192,13 +188,14 @@ public class ReportUtil {
 		design.getResources().add(resource);
 		if ("xls".equals(extension)) {
 			renderer = new ExcelTemplateRenderer() {
+				
 				public ReportDesign getDesign(String argument) {
 					return design;
 				}
 			};
-		}
-		else {
+		} else {
 			renderer = new TextTemplateRenderer() {
+				
 				public ReportDesign getDesign(String argument) {
 					return design;
 				}

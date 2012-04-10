@@ -27,11 +27,10 @@ import org.openmrs.module.reporting.indicator.service.IndicatorService;
 /**
  * FieldGenHandler for Enumerated Types
  */
-@Handler(supports={Indicator.class}, order=50)
+@Handler(supports = { Indicator.class }, order = 50)
 public class IndicatorHandler extends CodedHandler {
 	
-	
-	/** 
+	/**
 	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
 	 */
 	@Override
@@ -40,16 +39,15 @@ public class IndicatorHandler extends CodedHandler {
 		String tag = config.getAttributeValue("tag", null);
 		if (tag != null) {
 			l = Context.getService(IndicatorService.class).getDefinitionsByTag(tag);
-		}
-		else {
+		} else {
 			l = Context.getService(IndicatorService.class).getAllDefinitions(false);
 		}
-		for (Indicator d : l){
+		for (Indicator d : l) {
 			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
 		}
 	}
 	
-	/** 
+	/**
 	 * @see WidgetHandler#parse(String, Class<?>)
 	 */
 	@Override
@@ -57,4 +55,3 @@ public class IndicatorHandler extends CodedHandler {
 		return Context.getService(IndicatorService.class).getDefinitionByUuid(input);
 	}
 }
-

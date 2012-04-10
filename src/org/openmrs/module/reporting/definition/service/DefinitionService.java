@@ -56,14 +56,15 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	@Transactional(readOnly = true)
 	public T getDefinitionByUuid(String uuid) throws APIException;
 	
-    /**
-     * Helper method which checks that either uuid or type is passed, and returns either the
-     * saved Definition with the passed uuid, or a new instance of the Definition
-     * represented by the passed type.  Throws an IllegalArgumentException if any of this is invalid.
-     * @param uuid	
-     * @param type
-     * @return the Definition with the given uuid and type
-     */
+	/**
+	 * Helper method which checks that either uuid or type is passed, and returns either the saved
+	 * Definition with the passed uuid, or a new instance of the Definition represented by the
+	 * passed type. Throws an IllegalArgumentException if any of this is invalid.
+	 * 
+	 * @param uuid
+	 * @param type
+	 * @return the Definition with the given uuid and type
+	 */
 	@Transactional(readOnly = true)
 	public T getDefinition(String uuid, Class<? extends T> type);
 	
@@ -78,7 +79,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @param includeRetired
 	 * @return lightweight summaries for all definitions managed by this service
 	 */
-	@Transactional(readOnly= true)
+	@Transactional(readOnly = true)
 	public List<DefinitionSummary> getAllDefinitionSummaries(boolean includeRetired);
 	
 	/**
@@ -89,15 +90,16 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	public int getNumberOfDefinitions(boolean includeRetired);
 	
 	/**
-	 * Returns a List of {@link Definition} whose name contains the passed name.
-	 * An empty list will be returned if there are none found. Search is case insensitive.
+	 * Returns a List of {@link Definition} whose name contains the passed name. An empty list will
+	 * be returned if there are none found. Search is case insensitive.
+	 * 
 	 * @param name The search string
 	 * @param exactMatchOnly if true will only return exact matches
 	 * @throws APIException
 	 * @return a List<Definition> objects whose name contains the passed name
 	 */
 	@Transactional(readOnly = true)
-    public List<T> getDefinitions(String name, boolean exactMatchOnly);
+	public List<T> getDefinitions(String name, boolean exactMatchOnly);
 	
 	/**
 	 * @param tagName the tag name to look up
@@ -105,9 +107,10 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 */
 	@Transactional(readOnly = true)
 	public List<T> getDefinitionsByTag(String tagName);
-
+	
 	/**
 	 * Persists a Definition, either as a save or update.
+	 * 
 	 * @param definition
 	 * @return the Definition that was passed in
 	 */
@@ -116,6 +119,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	
 	/**
 	 * Deletes a Definition from the database.
+	 * 
 	 * @param definition the Definition to purge
 	 */
 	@Transactional
@@ -123,6 +127,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	
 	/**
 	 * Evaluates the passed Mapped Definition for the given EvaluationContext
+	 * 
 	 * @param definition Mapped<Definition> to evaluate
 	 * @param context context to use during evaluation
 	 * @return the evaluated definition
@@ -132,6 +137,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	
 	/**
 	 * Evaluates the passed Definition for the given EvaluationContext<br/>
+	 * 
 	 * @param definition Definition to evaluate
 	 * @param context context to use during evaluation
 	 * @return the evaluated definition

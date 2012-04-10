@@ -38,8 +38,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 /**
- *  Base Implementation of the DefinitionService API.
- *  Note that any subclasses that want {@link #getAllDefinitionSummaries(boolean)} to perform well need to override it.
+ * Base Implementation of the DefinitionService API. Note that any subclasses that want
+ * {@link #getAllDefinitionSummaries(boolean)} to perform well need to override it.
  */
 @Transactional
 public abstract class BaseDefinitionService<T extends Definition> extends BaseOpenmrsService implements DefinitionService<T> {
@@ -82,7 +82,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	@SuppressWarnings("unchecked")
 	public T getDefinitionByUuid(String uuid) throws APIException {
 		for (DefinitionPersister<?> p : getAllPersisters()) {
-			T d = (T)p.getDefinitionByUuid(uuid);
+			T d = (T) p.getDefinitionByUuid(uuid);
 			if (d != null) {
 				return d;
 			}
@@ -97,7 +97,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	public List<T> getAllDefinitions(boolean includeRetired) {
 		List<T> ret = new ArrayList<T>();
 		for (DefinitionPersister<?> p : getAllPersisters()) {
-			ret.addAll((List<T>)p.getAllDefinitions(includeRetired));
+			ret.addAll((List<T>) p.getAllDefinitions(includeRetired));
 		}
 		return ret;
 	}
@@ -112,7 +112,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 		}
 		return i;
 	}
-
+	
 	/**
 	 * @see DefinitionService#getDefinitions(String, boolean)
 	 */
@@ -120,11 +120,11 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	public List<T> getDefinitions(String name, boolean exactMatchOnly) {
 		List<T> ret = new ArrayList<T>();
 		for (DefinitionPersister<?> p : getAllPersisters()) {
-			ret.addAll((List<T>)p.getDefinitions(name, exactMatchOnly));
+			ret.addAll((List<T>) p.getDefinitions(name, exactMatchOnly));
 		}
 		return ret;
 	}
-
+	
 	/**
 	 * @see DefinitionService#saveDefinition(Definition)
 	 */
@@ -132,7 +132,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	@SuppressWarnings("unchecked")
 	public <D extends T> D saveDefinition(D definition) throws APIException {
 		log.debug("Saving definition: " + definition + " of type " + definition.getClass());
-		return (D)getPersister((Class<T>)definition.getClass()).saveDefinition(definition);
+		return (D) getPersister((Class<T>) definition.getClass()).saveDefinition(definition);
 	}
 	
 	/**
@@ -140,7 +140,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 */
 	@SuppressWarnings("unchecked")
 	public void purgeDefinition(T definition) {
-		getPersister((Class<T>)definition.getClass()).purgeDefinition(definition);
+		getPersister((Class<T>) definition.getClass()).purgeDefinition(definition);
 	}
 	
 	/**
@@ -148,59 +148,61 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 */
 	@Transactional(readOnly = true)
 	public T getDefinition(String uuid, Class<? extends T> type) {
-	   	T ret = null;
-    	if (StringUtils.hasText(uuid)) {
-	    	ret = getDefinitionByUuid(uuid);
-    	}
-    	if (ret == null) {
-    		if (type != null) {
-	     		try {
-	    			ret = type.newInstance();
-	    		}
-	    		catch (Exception e) {
-	    			log.error("Exception occurred while instantiating definition of type " + type, e);
-	    			throw new IllegalArgumentException("Unable to instantiate a Definition of type: " + type, e);
-	    		}
-	    	}
-	    	else {
-	    		throw new IllegalArgumentException("You must supply either a uuid or a type");
-	    	}
-    	}
-    	return ret;
+		T ret = null;
+		if (StringUtils.hasText(uuid)) {
+			ret = getDefinitionByUuid(uuid);
+		}
+		if (ret == null) {
+			if (type != null) {
+				try {
+					ret = type.newInstance();
+				}
+				catch (Exception e) {
+					log.error("Exception occurred while instantiating definition of type " + type, e);
+					throw new IllegalArgumentException("Unable to instantiate a Definition of type: " + type, e);
+				}
+			} else {
+				throw new IllegalArgumentException("You must supply either a uuid or a type");
+			}
+		}
+		return ret;
 	}
 	
 	/**
-	 * Default implementation is to consider a Definition to contain a tag if the tag is part of the Definition name
+	 * Default implementation is to consider a Definition to contain a tag if the tag is part of the
+	 * Definition name
+	 * 
 	 * @see DefinitionService#getDefinitionsByTag(String)
 	 */
 	@Transactional(readOnly = true)
 	public List<T> getDefinitionsByTag(String tagName) {
 		return getDefinitions(tagName, false);
 	}
-
+	
 	/**
-	 * Note that this base implementation is no more efficient than just calling {@link #getAllDefinitions(boolean)}
-	 * it should really be overridden in any subclasses that intend to use this functionality.
+	 * Note that this base implementation is no more efficient than just calling
+	 * {@link #getAllDefinitions(boolean)} it should really be overridden in any subclasses that
+	 * intend to use this functionality.
+	 * 
 	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#getAllDefinitionSummaries(boolean)
 	 */
 	public List<DefinitionSummary> getAllDefinitionSummaries(boolean includeRetired) {
 		List<DefinitionSummary> ret = new ArrayList<DefinitionSummary>();
-	    for (T def : getAllDefinitions(includeRetired)) {
-	    	ret.add(new DefinitionSummary(def));
-	    }
-	    return ret;
+		for (T def : getAllDefinitions(includeRetired)) {
+			ret.add(new DefinitionSummary(def));
+		}
+		return ret;
 	}
 	
 	/**
-	 * 	This is the main method which should be used to evaluate a Definition
-	 *  - retrieves all evaluation parameter values from the class and the EvaluationContext
-	 *  - checks whether a definition with this configuration exists in the cache (if caching is supported)
-	 *  - returns the cached evaluation result if found
-	 *  - otherwise, delegates to the appropriate Evaluator and evaluates the result
-	 *  - caches the result (if caching is supported)
+	 * This is the main method which should be used to evaluate a Definition - retrieves all
+	 * evaluation parameter values from the class and the EvaluationContext - checks whether a
+	 * definition with this configuration exists in the cache (if caching is supported) - returns
+	 * the cached evaluation result if found - otherwise, delegates to the appropriate Evaluator and
+	 * evaluates the result - caches the result (if caching is supported)
 	 * 
 	 * @see getCacheKey(EvaluationContext)
-     * @see DefinitionEvaluator#evaluate(Definition, EvaluationContext)
+	 * @see DefinitionEvaluator#evaluate(Definition, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
 	public Evaluated<T> evaluate(T definition, EvaluationContext context) throws EvaluationException {
@@ -213,7 +215,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 		
 		// Clone Query and set all properties from the Parameters in the EvaluationContext
 		T clonedDefinition = DefinitionUtil.cloneDefinitionWithContext(definition, context);
-
+		
 		String cacheKey = EvaluationUtil.getCacheKey(clonedDefinition);
 		
 		// Retrieve from cache if possible, otherwise evaluate
@@ -225,7 +227,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 				context.addToCache(cacheKey, evaluationResult);
 			}
 		}
-
+		
 		if (evaluationResult == null) {
 			evaluationResult = evaluator.evaluate(clonedDefinition, context);
 		}
@@ -263,7 +265,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * @return all DefinitionPersister<?>s
 	 */
 	@SuppressWarnings("rawtypes")
-	protected List<DefinitionPersister> getAllPersisters() {	
+	protected List<DefinitionPersister> getAllPersisters() {
 		return HandlerUtil.getHandlersForType(DefinitionPersister.class, getDefinitionType());
 	}
 }

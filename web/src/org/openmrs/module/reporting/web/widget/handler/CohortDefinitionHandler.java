@@ -27,10 +27,10 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 /**
  * FieldGenHandler for Enumerated Types
  */
-@Handler(supports={CohortDefinition.class}, order=50)
+@Handler(supports = { CohortDefinition.class }, order = 50)
 public class CohortDefinitionHandler extends CodedHandler {
 	
-	/** 
+	/**
 	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
 	 */
 	@Override
@@ -39,8 +39,7 @@ public class CohortDefinitionHandler extends CodedHandler {
 		String tag = config.getAttributeValue("tag", null);
 		if (tag != null) {
 			l = Context.getService(CohortDefinitionService.class).getDefinitionsByTag(tag);
-		}
-		else {
+		} else {
 			l = Context.getService(CohortDefinitionService.class).getAllDefinitions(false);
 		}
 		for (CohortDefinition d : l) {
@@ -48,7 +47,7 @@ public class CohortDefinitionHandler extends CodedHandler {
 		}
 	}
 	
-	/** 
+	/**
 	 * @see WidgetHandler#parse(String, Class<?>)
 	 */
 	@Override
