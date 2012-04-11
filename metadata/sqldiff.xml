@@ -204,7 +204,7 @@
   				PRIMARY KEY (`id`),
   				UNIQUE KEY `uuid` (`uuid`),
   				UNIQUE KEY `unique_definition_tag` (`tag`,`definition_uuid`)
-  			) ENGINE=InnoDB DEFAULT CHARSET=latin1
+  			) ENGINE=InnoDB DEFAULT CHARSET=utf8
 		</sql>
 	</diff>
 </sqldiff>
