@@ -1,4 +1,6 @@
-<%@ include file="/WEB-INF/template/include.jsp"%>
+<%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
+<%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
+
 <openmrs:require privilege="Manage Report Definitions" otherwise="/login.htm" redirect="/module/reporting/reports/manageScheduledReports.form" />
 <%@ include file="../run/localHeader.jsp"%>
 
@@ -69,13 +71,7 @@
 			                                <td class="faded" align="right">
 			                                    ${parameter.labelOrName}:
 			                                </td>
-			                                <td>
-			                                	<c:forEach var="parameterMapping" items="${scheduledReport.reportDefinition.parameterMappings}">
-			                                    	<c:if test="${ parameterMapping.key eq  parameter.name }">
-			                                    		<rpt:format object="${parameterMapping.value}"/>
-			                                    	</c:if>
-			                                    </c:forEach>
-			                                </td>
+			                                <td><rpt:format object="${scheduledReport.reportDefinition.parameterMappings[parameter.name]}"/></td>
 			                            </tr>
 			                        </c:forEach>
 		                    	</table>

@@ -1,5 +1,4 @@
-<%@ include file="/WEB-INF/template/include.jsp"%>
-
+<%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
 <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
 <openmrs:htmlInclude file="/dwr/interface/DWRReportingService.js"/>
@@ -55,9 +54,16 @@ span.cancel{
 		<tr id="reportRequest_${reportRequest.id}">
 			<td valign="top">${reportRequest.reportDefinition.parameterizable.name}</td>
 			<td valign="top">
-			<c:forEach var="entry" items="${reportRequest.reportDefinition.parameterMappings}">
-				${entry.key}: ${entry.value}<br />
-			</c:forEach>
+				<table class="small" cellspacing="0" cellpadding="0">
+					<c:forEach var="parameter" items="${reportRequest.reportDefinition.parameterizable.parameters}">
+						<tr valign="top">
+							<td class="faded" align="right">
+								${parameter.labelOrName}:
+							</td>
+							<td><rpt:format object="${reportRequest.reportDefinition.parameterMappings[parameter.name]}"/></td>
+						</tr>
+					</c:forEach>
+				</table>
 			</td>
 			<td valign="top">
 				<openmrs:formatDate date="${reportRequest.requestDate}" format="dd/MMM/yyyy h:mm a" /><br />

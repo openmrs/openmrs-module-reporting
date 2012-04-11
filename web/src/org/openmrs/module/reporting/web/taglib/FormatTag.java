@@ -18,11 +18,13 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
+import org.openmrs.OpenmrsMetadata;
 import org.openmrs.Person;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.result.EmptyResult;
 import org.openmrs.logic.result.Result;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.BaseData;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -187,6 +189,8 @@ public class FormatTag extends TagSupport {
 			printCohortDimensionResult(sb, (CohortDimensionResult) o);
 		} else if (o instanceof BaseData) {
 			printMap(sb, ((BaseData)o).getData());
+		} else if (o instanceof OpenmrsMetadata) {
+			sb.append(ObjectUtil.nvlStr(((OpenmrsMetadata)o).getName(), o.toString()));
 		} else {
 			sb.append("" + o);
 		}
