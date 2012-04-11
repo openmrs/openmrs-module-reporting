@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.report.task;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -25,7 +26,12 @@ public class QueueScheduledReportsTask extends AbstractReportsTask {
 	@Override
 	public void execute() {
 
-		Date currentTime = new Date(scheduledExecutionTime());		
+		// Retrieve the time at which this task was scheduled to execute, ignoring seconds
+		Calendar currentCal = Calendar.getInstance();
+		currentCal.setTimeInMillis(scheduledExecutionTime());
+		currentCal.set(Calendar.SECOND, 0);
+		Date currentTime = currentCal.getTime();
+		
 		ReportService rs = Context.getService(ReportService.class);
 		
 		log.debug("Executing the Queue Scheduled Reports Task");
@@ -35,7 +41,8 @@ public class QueueScheduledReportsTask extends AbstractReportsTask {
 		// time this scheduled report can run, move it into the COMPLETED status.
 		for (ReportRequest scheduledReport : rs.getReportRequests(null, null, null, Status.SCHEDULED)) {
 			try {
-				CronExpression cron = new CronExpression(scheduledReport.getSchedule());
+				String cronSchedule = scheduledReport.getSchedule();
+				CronExpression cron = new CronExpression(cronSchedule);
 				if (cron.isSatisfiedBy(currentTime)) {	
 					log.info("Running scheduled report at " + currentTime + " which matches the schedule: " + scheduledReport.getSchedule());
 					ReportRequest newRequest = new ReportRequest();
@@ -53,8 +60,11 @@ public class QueueScheduledReportsTask extends AbstractReportsTask {
 					newRequest.setSaveAutomatically(true);
 					rs.saveReportRequest(newRequest);
 				}
-				Date lastScheduledRunTime = cron.getFinalFireTime();
-				if (lastScheduledRunTime != null && !lastScheduledRunTime.after(currentTime)) {
+				
+				Date nextInvalidTime = cron.getNextInvalidTimeAfter(currentTime);
+				Date nextValidTime = cron.getNextValidTimeAfter(nextInvalidTime);
+
+				if (nextValidTime == null) {
 					scheduledReport.setStatus(Status.COMPLETED);
 					rs.saveReportRequest(scheduledReport);
 				}

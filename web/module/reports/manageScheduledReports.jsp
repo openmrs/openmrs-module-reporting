@@ -45,6 +45,7 @@
 						<th><spring:message code="reporting.Report.parameters"/></th>
 						<th><spring:message code="reporting.manageTasks.outputTo"/></th>
 						<th><spring:message code="reporting.manageTasks.scheduleDescription"/></th>
+						<th><spring:message code="reporting.manageTasks.nextExecutionTime"/></th>
 						<th><spring:message code="reporting.reportHistory.actions"/></th>
 					</thead>
 					<c:forEach var="scheduledReport" items="${scheduledReports}">
@@ -76,6 +77,7 @@
 				                </c:forEach>
 							</td>
 							<td>${scheduledReport.schedule}</td>
+							<td>${rpt:nextExecutionTime(scheduledReport.schedule)}</td>
 							<td>
 								<a href="javascript:confirmDelete('${scheduledReport.reportDefinition.parameterizable.name}','${scheduledReport.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
 							</td>

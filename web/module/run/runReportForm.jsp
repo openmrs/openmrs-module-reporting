@@ -90,8 +90,8 @@
 	                <td align="right"><spring:message code="reporting.Report.run.optionalSchedule"/>:</td>
 	                <td>
 	                	<spring:bind path="schedule">
-				            <input type="text" size="30" name="${status.expression}" value="${status.value}">
-				            <c:if test="${not empty status.errorMessage}">
+	                		<rptTag:cronExpressionField id="runReport" formFieldName="${status.expression}" formFieldValue="${status.value}"/>
+				       		<c:if test="${not empty status.errorMessage}">
 								<span class="error">${status.errorMessage}</span>
 							</c:if>
 				        </spring:bind>

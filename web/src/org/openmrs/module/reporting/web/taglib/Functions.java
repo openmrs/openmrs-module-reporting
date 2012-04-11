@@ -13,9 +13,12 @@
  */
 package org.openmrs.module.reporting.web.taglib;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.quartz.CronExpression;
 
 /**
  * Web Functions
@@ -40,4 +43,17 @@ public class Functions {
 		return false;
 	}
 
+	/**
+	 * Provides instance of functionality to jsp pages
+	 */
+	public static Date nextExecutionTime(String cronExpression) {
+		try {
+			CronExpression cron = new CronExpression(cronExpression);
+			return cron.getNextValidTimeAfter(new Date());
+		}
+		catch (Exception e) {
+			log.warn("Error getting next valid time for cron expression " + cronExpression, e);
+		}
+		return null;
+	}
 }

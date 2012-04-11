@@ -199,5 +199,11 @@
 		<function-class>org.openmrs.module.reporting.web.taglib.Functions</function-class>
 		<function-signature>boolean instanceOf(java.lang.Object, java.lang.String)</function-signature>
 	</function>
+	
+	<function>
+		<name>nextExecutionTime</name>
+		<function-class>org.openmrs.module.reporting.web.taglib.Functions</function-class>
+		<function-signature>java.util.Date nextExecutionTime(java.lang.String)</function-signature>
+	</function>
 
 </taglib>
