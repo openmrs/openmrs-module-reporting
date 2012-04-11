@@ -15,7 +15,7 @@ package org.openmrs.module.reporting.db;
 
 import java.util.List;
 
-import org.openmrs.module.reporting.cohort.definition.DefinitionTag;
+import org.openmrs.module.reporting.definition.DefinitionTag;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 

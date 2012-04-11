@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.DuplicateTagException;
-import org.openmrs.module.reporting.cohort.definition.DefinitionTag;
+import org.openmrs.module.reporting.definition.DefinitionTag;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.report.util.ReportUtil;

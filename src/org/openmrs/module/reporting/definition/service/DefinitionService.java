@@ -19,8 +19,8 @@ import java.util.Set;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.reporting.cohort.definition.DefinitionTag;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
+import org.openmrs.module.reporting.definition.DefinitionTag;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;

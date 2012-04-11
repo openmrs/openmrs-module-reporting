@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition;
+package org.openmrs.module.reporting.definition;
 
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.module.reporting.evaluation.Definition;

@@ -22,8 +22,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.module.reporting.cohort.definition.DefinitionTag;
 import org.openmrs.module.reporting.db.DefinitionDAO;
+import org.openmrs.module.reporting.definition.DefinitionTag;
 
 /**
  * Hibernate implementations of {@link DefinitionDAO}
@@ -66,7 +66,7 @@ public class HibernateDefinitionDAO implements DefinitionDAO {
 	}
 	
 	/**
-	 * @see org.openmrs.module.reporting.db.DefinitionDAO#saveDefinitionTag(org.openmrs.module.reporting.cohort.definition.DefinitionTag)
+	 * @see org.openmrs.module.reporting.db.DefinitionDAO#saveDefinitionTag(org.openmrs.module.reporting.definition.DefinitionTag)
 	 */
 	public DefinitionTag saveDefinitionTag(DefinitionTag definitionTag) {
 		getSession().save(definitionTag);//shouldn't really be updating
