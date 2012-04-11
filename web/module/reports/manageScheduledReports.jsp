@@ -2,6 +2,8 @@
 <openmrs:require privilege="Manage Report Definitions" otherwise="/login.htm" redirect="/module/reporting/reports/manageScheduledReports.form" />
 <%@ include file="../manage/localHeader.jsp"%>
 
+<openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/reporting/scripts/cron-editing.js"/>
+
 <c:set var="returnUrl" value="/module/reporting/reports/manageScheduledReports.form"/>
 
 <script type="text/javascript" charset="utf-8">
@@ -16,6 +18,17 @@
 			"bInfo": true,
 			"bAutoWidth": false
 		} );
+		
+		$('.schedule').each(function() {
+			var val = $(this).html();
+			var quartz = true
+			try{
+				val = getScheduleDescription(val)
+				$(this).html(val)
+			} catch(e) {
+				console.log(e)
+			}
+		});
 	} );
 
 	function confirmDelete(name, uuid) {
@@ -72,11 +85,15 @@
 		                    	</table>
 							</td> 
 							<td>
+								<c:set var="found" value="${ false }"/>
 								<c:forEach var="renderingMode" items="${renderingModes}">
-				                    <c:if test="${scheduledReport.renderingMode.descriptor == renderingMode.descriptor}">${renderingMode.label}</c:if>
+				                    <c:if test="${scheduledReport.renderingMode.descriptor == renderingMode.descriptor && !found}">
+				                    	${renderingMode.label}
+				                    	<c:set var="found" value="${ true }"/>
+				                    </c:if>
 				                </c:forEach>
 							</td>
-							<td>${scheduledReport.schedule}</td>
+							<td class="schedule">${scheduledReport.schedule}</td>
 							<td>${rpt:nextExecutionTime(scheduledReport.schedule)}</td>
 							<td>
 								<a href="javascript:confirmDelete('${scheduledReport.reportDefinition.parameterizable.name}','${scheduledReport.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
