@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.DuplicateTagException;
+import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.definition.DefinitionTag;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
@@ -74,7 +75,7 @@ public class DefinitionTagValidator implements Validator {
 		if (!errors.hasErrors()) {
 			Class<? extends Definition> type = (Class<? extends Definition>) ReportUtil.loadClass(definitionTag
 			        .getDefinitionType());
-			DefinitionService definitionService = ReportUtil.getDefinitionServiceForType(type);
+			DefinitionService definitionService = DefinitionContext.getDefinitionService(type);
 			if (definitionService.hasTag(definitionTag.getDefinitionUuid(), definitionTag.getTag())) {
 				throw new DuplicateTagException(Context.getMessageSourceService().getMessage(
 				    "reporting.Report.error.duplicateTag", new Object[] { definitionTag.getTag() }, null));

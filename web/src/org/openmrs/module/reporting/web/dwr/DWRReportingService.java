@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.report.ReportRequest;
@@ -62,7 +63,7 @@ public class DWRReportingService {
 	public boolean addTag(String uuid, String tag, String definitionType) {
 		if (StringUtils.isNotBlank(uuid) && StringUtils.isNotBlank(tag) && StringUtils.isNotBlank(definitionType)) {
 			Class<? extends Definition> type = (Class<? extends Definition>) ReportUtil.loadClass(definitionType);
-			DefinitionService definitionService = ReportUtil.getDefinitionServiceForType(type);
+			DefinitionService definitionService = DefinitionContext.getDefinitionService(type);
 			Definition definition = definitionService.getDefinition(uuid, type);
 			return definitionService.addTagToDefinition(definition, tag);
 		}
@@ -81,7 +82,7 @@ public class DWRReportingService {
 	public boolean removeTag(String uuid, String tag, String definitionType) {
 		if (StringUtils.isNotBlank(uuid) && StringUtils.isNotBlank(tag) && StringUtils.isNotBlank(definitionType)) {
 			Class<? extends Definition> type = (Class<? extends Definition>) ReportUtil.loadClass(definitionType);
-			DefinitionService definitionService = ReportUtil.getDefinitionServiceForType(type);
+			DefinitionService definitionService = DefinitionContext.getDefinitionService(type);
 			Definition definition = definitionService.getDefinition(uuid, type);
 			definitionService.removeTagFromDefinition(definition, tag);
 			return true;

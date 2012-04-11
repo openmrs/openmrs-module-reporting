@@ -21,8 +21,6 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.definition.service.DefinitionService;
-import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
@@ -222,22 +220,5 @@ public class ReportUtil {
 		catch (ClassNotFoundException e) {
 			throw new APIException(e);
 		}
-	}
-	
-	/**
-	 * Find the {@link DefinitionService} for handling the {@link Definition} with the specified
-	 * name, note that this method returns a spring proxy object
-	 * 
-	 * @param className
-	 * @return the {@link DefinitionService}
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static DefinitionService getDefinitionServiceForType(Class<? extends Definition> type) {
-		List<DefinitionService> definitionServices = Context.getRegisteredComponents(DefinitionService.class);
-		for (DefinitionService definitionService : definitionServices) {
-			if (definitionService.getDefinitionType().isAssignableFrom(type))
-				return definitionService;
-		}
-		throw new APIException("Cannot find DefinitionService for  definition type:" + type.getName());
 	}
 }
