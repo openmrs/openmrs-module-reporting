@@ -195,7 +195,7 @@
 			Adding reporting_definition_tag table
 		</description>
 		<sql>
-			CREATE TABLE  `openmrs`.`reporting_definition_tag` (
+			CREATE TABLE `reporting_definition_tag` (
   				`id` int(11) NOT NULL AUTO_INCREMENT,
   				`tag` varchar(100) NOT NULL,
   				`definition_uuid` char(38) NOT NULL,
