@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Report Definitions" otherwise="/login.htm" redirect="/module/reporting/reports/manageScheduledReports.form" />
-<%@ include file="../manage/localHeader.jsp"%>
+<%@ include file="../run/localHeader.jsp"%>
 
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/reporting/scripts/cron-editing.js"/>
 
@@ -38,10 +38,6 @@
 	}
 
 </script>
-
-<style>
-	.scheduledReportsTable th,td {padding-left:10px; padding-right:10px;}
-</style>
 
 <div id="page">
 	<div id="container">

@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Report Definitions" otherwise="/login.htm" redirect="/module/reporting/reports/manageReports.form" />
-<%@ include file="../manage/localHeader.jsp"%>
+<%@ include file="../run/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
@@ -52,7 +52,7 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Report Manager</h1>
+		<h1><spring:message code="reporting.manageReports.title"/></h1>
 		
 		<spring:message code="reporting.manage.createNew"/>:
 		<c:forEach var="createLink" items="${createLinks}">

@@ -2,7 +2,7 @@
 
 <openmrs:require privilege="Run Reports" otherwise="/login.htm" redirect="/module/reporting/reports/manageReportQueue.htm" />
 
-<%@ include file="../manage/localHeader.jsp"%>
+<%@ include file="../run/localHeader.jsp"%>
 
 <div id="page">
 	<div id="container">
