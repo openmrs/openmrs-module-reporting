@@ -2,7 +2,7 @@
 
 <%@ attribute name="id" required="true" type="java.lang.String" %>
 <%@ attribute name="formFieldName" required="true" type="java.lang.String" %>
-<%@ attribute name="formFieldValue" required="true" type="java.lang.String" %>
+<%@ attribute name="formFieldValue" required="false" type="java.lang.String" %>
 
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/reporting/scripts/cron-editing.js"/>
 
