@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.web.widget.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.annotation.Handler;
@@ -24,8 +23,6 @@ import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
 import org.openmrs.module.htmlwidgets.web.html.Option;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.definition.DefinitionSummary;
-import org.openmrs.module.reporting.report.util.ReportUtil;
 
 /**
  * FieldGenHandler for Enumerated Types
@@ -36,23 +33,14 @@ public class CohortDefinitionHandler extends CodedHandler {
 	/**
 	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void populateOptions(WidgetConfig config, CodedWidget widget) {
 		List<CohortDefinition> l = null;
 		String tag = config.getAttributeValue("tag", null);
-		CohortDefinitionService cds = Context.getService(CohortDefinitionService.class);
 		if (tag != null) {
-			List<DefinitionSummary> definitionTags = cds.getAllDefinitionsHavingTag(tag);
-			l = new ArrayList<CohortDefinition>();
-			for (DefinitionSummary definitionSummary : definitionTags) {
-				Class<CohortDefinition> type = (Class<CohortDefinition>) ReportUtil.loadClass(definitionSummary.getType());
-				CohortDefinition Cohortdefinition = cds.getDefinition(definitionSummary.getUuid(), type);
-				if (Cohortdefinition != null)
-					l.add(Cohortdefinition);
-			}
+			l = Context.getService(CohortDefinitionService.class).getDefinitionsByTag(tag);
 		} else {
-			l = cds.getAllDefinitions(false);
+			l = Context.getService(CohortDefinitionService.class).getAllDefinitions(false);
 		}
 		for (CohortDefinition d : l) {
 			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);

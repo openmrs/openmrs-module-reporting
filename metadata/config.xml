@@ -124,7 +124,6 @@
 	<mappingFiles>
 		ReportDesign.hbm.xml
 		ReportRequest.hbm.xml
-		DefinitionTag.hbm.xml
 	</mappingFiles>
 	
 	<!-- dwr -->
@@ -133,8 +132,6 @@
 			<create creator="new" javascript="DWRReportingService">
 				<param name="class" value="org.openmrs.module.reporting.web.dwr.DWRReportingService"/>
 				<include method="purgeReportRequest"/>
-				<include method="addTag"/>
-				<include method="removeTag"/>
 			</create>
 		</allow>
 		<signatures>
@@ -142,8 +139,6 @@
 			import org.openmrs.module.reporting.web.dwr.DWRReportingService;
 			
 			DWRReportingService.purgeReportRequest(Integer id);
-			DWRReportingService.addTag(String uuid, String tag, String definitionType);
-			DWRReportingService.removeTag(String uuid, String tag, String definitionType);
 		]]>
 	</signatures>
 	</dwr>

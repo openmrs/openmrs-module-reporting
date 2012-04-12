@@ -70,9 +70,7 @@
 	<bean id="reportingReportDefinitionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager"><ref bean="transactionManager"/></property>
 		<property name="target">
-			<bean class="org.openmrs.module.reporting.report.definition.service.ReportDefinitionServiceImpl">
-				<property name="dao" ref="definitionDAO" />
-			</bean>
+			<bean class="org.openmrs.module.reporting.report.definition.service.ReportDefinitionServiceImpl"/>
 		</property>
 		<property name="preInterceptors">
 			<ref bean="serviceInterceptors" />
@@ -267,9 +265,7 @@
 	<bean id="reportingCohortDefinitionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager"><ref bean="transactionManager"/></property>
 		<property name="target">
-			<bean class="org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionServiceImpl">
-				<property name="dao" ref="definitionDAO" /> 
-			</bean>
+			<bean class="org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionServiceImpl"/>
 		</property>
 		<property name="preInterceptors">
 			<ref bean="serviceInterceptors" />
@@ -317,9 +313,7 @@
 	<bean id="reportingIndicatorService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager"><ref bean="transactionManager"/></property>
 		<property name="target">
-			<bean class="org.openmrs.module.reporting.indicator.service.IndicatorServiceImpl">
-				<property name="dao" ref="definitionDAO" />
-			</bean>
+			<bean class="org.openmrs.module.reporting.indicator.service.IndicatorServiceImpl"/>
 		</property>
 		<property name="preInterceptors">
 			<ref bean="serviceInterceptors" />
@@ -456,7 +450,6 @@
 		<property name="validators">
 			<list>
 				<bean class="org.openmrs.module.reporting.validator.CohortDefinitionValidator"/>
-				<bean class="org.openmrs.module.reporting.validator.DefinitionTagValidator"/>
 			</list>
 		</property>
 	</bean>
@@ -497,8 +490,5 @@
 	        </list>
 	    </property>
 	</bean>
-	
-	<bean id="definitionDAO" class="org.openmrs.module.reporting.db.hibernate.HibernateDefinitionDAO">
-		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
-	</bean>
+
 </beans>

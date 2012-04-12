@@ -186,25 +186,5 @@
 			delete from `scheduler_task_config` where schedulable_class like 'org.openmrs.module.reporting.%';
 		</sql>
 	</diff>
-	
-	<diff>
-		<version>0.7.2</version>
-		<author>Wyclif</author>
-		<date>April 5nd 2012</date>
-		<description>
-			Adding reporting_definition_tag table
-		</description>
-		<sql>
-			CREATE TABLE `reporting_definition_tag` (
-  				`id` int(11) NOT NULL AUTO_INCREMENT,
-  				`tag` varchar(100) NOT NULL,
-  				`definition_uuid` char(38) NOT NULL,
-  				`definition_type` varchar(255) NOT NULL,
-  				`uuid` char(38) NOT NULL,
-  				PRIMARY KEY (`id`),
-  				UNIQUE KEY `uuid` (`uuid`),
-  				UNIQUE KEY `unique_definition_tag` (`tag`,`definition_uuid`)
-  			) ENGINE=InnoDB DEFAULT CHARSET=utf8
-		</sql>
-	</diff>
+
 </sqldiff>
