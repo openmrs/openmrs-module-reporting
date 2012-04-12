@@ -39,7 +39,7 @@
 			<input type="hidden" name="uuid" value="${model.uuid}"/>
 			<input type="hidden" name="type" value="${model.type}"/>
 			<input type="hidden" name="successUrl" value="${model.successUrl}"/>
-			<div style="margin:0; padding:0; width:100%; padd">
+			<div style="margin:0; padding:0; width:100%;">
 				<div class="metadataField">
 					<label class="desc" for="name">Name</label>
 					<input type="text" id="name" tabindex="1" name="name" value="${model.obj.name}" size="50"/>
