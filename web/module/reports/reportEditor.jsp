@@ -143,7 +143,7 @@
 							
 							<div class="box" style="vertical-align:top;">
 								<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
-									<openmrs:portlet url="mappedProperty" id="dsd${dsd.key}" moduleId="reporting" 
+									<openmrs:portlet url="mappedProperty" id="dsd${dsdStatus.index}" moduleId="reporting" 
 													parameters="type=${report['class'].name}|uuid=${report.uuid}|property=dataSetDefinitions|currentKey=${dsd.key}|label=${dsd.key}|parentUrl=${pageUrl}|viewId=dsdView${dsdStatus.index}|headerClass=dsdHeader" />
 									<br/>
 								</c:forEach>
