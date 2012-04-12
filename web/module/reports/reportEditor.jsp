@@ -61,9 +61,9 @@
 			
 			<c:otherwise>
 		
-				<table style="font-size:small;">
+				<table style="font-size:small; width:100%;">
 					<tr>
-						<td valign="top" nowrap>
+						<td valign="top" style="width:35%;">
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report['class'].name}|uuid=${report.uuid}|size=380|label=Basic Details" />
 							<br/>
 							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${report['class'].name}|uuid=${report.uuid}|label=Parameters|parentUrl=${pageUrl}" />
@@ -97,7 +97,7 @@
 								<spring:message code="reporting.preview"/>
 							</button>
 						</td>
-						<td valign="top" width="100%">
+						<td valign="top" style="width:65%;">
 							<b class="boxHeader">Dataset Definitions</b>
 							
 							<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
