@@ -93,6 +93,17 @@ public abstract class JoinDataDefinition<T extends DataDefinition> extends BaseD
 		return joinedDefinition.getParameters();
 	}
 	
+	/**
+	 * @see org.openmrs.BaseOpenmrsMetadata#getName()
+	 */
+	@Override
+	public String getName() {
+	    if (joinedDefinition != null) {
+	    	return joinedDefinition.getName();
+	    }
+	    return null;
+	}
+	
 	//***** PROPERTY ACCESS *****
 
 	/**
