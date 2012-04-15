@@ -51,11 +51,6 @@ public class QueueScheduledReportsTask extends AbstractReportsTask {
 					newRequest.setBaseCohort(scheduledReport.getBaseCohort());
 					newRequest.setRenderingMode(scheduledReport.getRenderingMode());
 					newRequest.setPriority(scheduledReport.getPriority());
-					if (scheduledReport.getReportProcessors() != null) {
-						for (ReportProcessorConfiguration rpc : scheduledReport.getReportProcessors()) {
-							newRequest.addReportProcessor(rpc);
-						}
-					}
 					newRequest.setDescription(scheduledReport.getDescription());
 					newRequest.setSaveAutomatically(true);
 					rs.saveReportRequest(newRequest);

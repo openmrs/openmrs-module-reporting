@@ -30,6 +30,12 @@ public class ReportProcessorConfiguration extends BaseOpenmrsMetadata  {
 	private Properties configuration;
 	private Boolean runOnSuccess = Boolean.TRUE;
 	private Boolean runOnError = Boolean.FALSE;
+	private ReportDesign reportDesign;
+	private ProcessorMode processorMode = ProcessorMode.DISABLED;
+	
+	public enum ProcessorMode {
+		ON_DEMAND, AUTOMATIC, ON_DEMAND_AND_AUTOMATIC, DISABLED
+	}
 
 	//***** CONSTRUCTORS *****
 	
@@ -150,4 +156,48 @@ public class ReportProcessorConfiguration extends BaseOpenmrsMetadata  {
 	public void setRunOnError(Boolean runOnError) {
 		this.runOnError = runOnError;
 	}
+
+	/**
+	 * @return the ReportDesign
+	 * NOTE:  if null, this implies that this ReportProcessorConfiguration is global.
+	 */
+	public ReportDesign getReportDesign() {
+		return reportDesign;
+	}
+
+	/**
+	 * @param reportDesign the reportDesignToSet
+	 */
+	public void setReportDesign(ReportDesign reportDesign) {
+		this.reportDesign = reportDesign;
+	}
+	
+	/**
+	 * Convenience method for asking this ReportProcessorConfiguration if it is global, or local to a single ReportDesign
+	 * @return true if global, false if specific to a single ReportDesign
+	 */
+	public boolean isGlobal(){
+		if (getReportDesign() == null)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * 
+	 * @return the processorMode
+	 */
+	public ProcessorMode getProcessorMode() {
+		return processorMode;
+	}
+
+	/**
+	 * 
+	 * @param the processorMode to set
+	 */
+	public void setProcessorMode(ProcessorMode processorMode) {
+		this.processorMode = processorMode;
+	}
+	
+	
 }

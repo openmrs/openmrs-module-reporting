@@ -24,11 +24,16 @@ import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.TextTemplateRenderer;
+import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.OpenmrsClassLoader;
 
 public class ReportUtil {
@@ -221,4 +226,47 @@ public class ReportUtil {
 			throw new APIException(e);
 		}
 	}
+	
+	/**
+	 * Convenience method that collects available ReportProcessorConfigurations from global ReportProcessorConfigurations, as well as from the ReportDesign associated with the ReportRequest
+	 * @param request
+	 * @param modes
+	 * @return
+	 */
+	public static List<ReportProcessorConfiguration> getAvailableReportProcessorConfigurations(ReportRequest request, ReportProcessorConfiguration.ProcessorMode ... modes){
+		List<ReportProcessorConfiguration> processors = new ArrayList<ReportProcessorConfiguration>();
+		for (ReportProcessorConfiguration rpc : Context.getService(ReportService.class).getGlobalReportProcessorConfigurations()){
+			for (int i = 0; i < modes.length; i++){
+				ReportProcessorConfiguration.ProcessorMode mode = modes[i];
+				if (mode.equals(rpc.getProcessorMode())){
+					processors.add(rpc);
+					break;
+				}	
+			}	
+		}
+		// Find ReportDesign processors
+		ReportService rs = Context.getService(ReportService.class);
+		ReportDefinition rd = Context.getService(ReportDefinitionService.class).getDefinitionByUuid(request.getReportDefinition().getUuidOfMappedOpenmrsObject());
+		//TODO: REPORT-314.   This is a hack, and should be changed when there's a direct link between reportRequest and reportDesign.
+		//                    i.e., when there's a specific reportDesigns for each possible render, given a reportDefinition
+		if (request.getRenderingMode() != null){
+			List<ReportDesign> rdList = rs.getReportDesigns(rd, request.getRenderingMode().getRenderer().getClass(), false); //this is the join to report definition
+			if (rdList != null){
+				for (ReportDesign d : rdList) {
+					for (ReportProcessorConfiguration rpc : d.getReportProcessors()){
+						for (int i = 0; i < modes.length; i++){
+							ReportProcessorConfiguration.ProcessorMode mode = modes[i];
+							if (mode.equals(rpc.getProcessorMode())){
+								log.debug("runReport matched request renderingMode to reportDesign.rendererType on " + request.getRenderingMode().getRenderer().getClass());
+								processors.add(rpc);
+								break;
+							}	
+						}	
+					}
+				}
+			}
+		}
+		return processors;
+	}
+	
 }

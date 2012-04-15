@@ -128,7 +128,6 @@ public class RunReportFormController extends SimpleFormController implements Val
 					command.getUserEnteredParams().put(param.getKey(), param.getValue());
 				}
 				command.setSelectedRenderer(req.getRenderingMode().getDescriptor());
-				command.setConfiguredProcessorConfigurations(req.getReportProcessors());
 			}
 			else if (StringUtils.hasText(request.getParameter("requestUuid"))) {
 				String reqUuid = request.getParameter("requestUuid");
@@ -139,7 +138,6 @@ public class RunReportFormController extends SimpleFormController implements Val
 				command.setBaseCohort(rr.getBaseCohort());
 				command.setSelectedRenderer(rr.getRenderingMode().getDescriptor());
 				command.setSchedule(rr.getSchedule());
-				command.setConfiguredProcessorConfigurations(rr.getReportProcessors());
 			}
 			else {
 				String uuid = request.getParameter("reportId");
@@ -147,7 +145,6 @@ public class RunReportFormController extends SimpleFormController implements Val
 				command.setReportDefinition(reportDefinition);
 			}
 			command.setRenderingModes(reportService.getRenderingModes(command.getReportDefinition()));
-			command.setAvailableProcessorConfigurations(reportService.getAllReportProcessorConfigurations(false));
 		}
 		return command;
 	}
@@ -184,14 +181,6 @@ public class RunReportFormController extends SimpleFormController implements Val
 		if (!renderingMode.getRenderer().canRender(reportDefinition)) {
 			errors.rejectValue("selectedRenderer", "reporting.Report.run.error.invalidRenderer");
 		}
-		
-		Set<ReportProcessorConfiguration> processors = new HashSet<ReportProcessorConfiguration>();
-		String[] processorParams = request.getParameterValues("configuredProcessors");
-		if (processorParams != null) {
-			for (String pp : processorParams) {
-				processors.add(rs.getReportProcessorConfiguration(Integer.parseInt(pp)));
-			}
-		}
 
 		if (errors.hasErrors()) {
 			return showForm(request, response, errors);
@@ -209,7 +198,6 @@ public class RunReportFormController extends SimpleFormController implements Val
 	    rr.setRenderingMode(command.getSelectedMode());
 	    rr.setPriority(Priority.NORMAL);
 	    rr.setSchedule(command.getSchedule());
-	    rr.setReportProcessors(processors);
 		
 		// TODO: We might want to check here if this exact same report request is already queued and just re-direct if so
 		
@@ -231,11 +219,9 @@ public class RunReportFormController extends SimpleFormController implements Val
 		private Mapped<CohortDefinition> baseCohort;
 		private Map<String, Object> userEnteredParams;			
 		private String selectedRenderer; // as RendererClass!Arg
-		private Set<ReportProcessorConfiguration> configuredProcessorConfigurations;
 		private String schedule;
 		
 		private List<RenderingMode> renderingModes;	
-		private List<ReportProcessorConfiguration> availableProcessorConfigurations;
 		
 		public CommandObject() {
 			userEnteredParams = new LinkedHashMap<String, Object>();
@@ -310,28 +296,12 @@ public class RunReportFormController extends SimpleFormController implements Val
 			this.userEnteredParams = userEnteredParams;
 		}
 
-		public Set<ReportProcessorConfiguration> getConfiguredProcessorConfigurations() {
-			return configuredProcessorConfigurations;
-		}
-
-		public void setConfiguredProcessorConfigurations(Set<ReportProcessorConfiguration> configuredProcessorConfigurations) {
-			this.configuredProcessorConfigurations = configuredProcessorConfigurations;
-		}
-
 		public String getSchedule() {
 			return schedule;
 		}
 
 		public void setSchedule(String schedule) {
 			this.schedule = schedule;
-		}
-
-		public List<ReportProcessorConfiguration> getAvailableProcessorConfigurations() {
-			return availableProcessorConfigurations;
-		}
-
-		public void setAvailableProcessorConfigurations(List<ReportProcessorConfiguration> availableProcessorConfigurations) {
-			this.availableProcessorConfigurations = availableProcessorConfigurations;
 		}
 	}	
 	

@@ -94,6 +94,12 @@ public interface ReportDAO {
 	 */
 	public List<ReportProcessorConfiguration> getAllReportProcessorConfigurations(boolean includeRetired);
 	
+	
+	/**
+	 * 
+	 * @return all the {@link ReportProcessorConfiguration}s that have no reportDesign associated
+	 */
+	public List<ReportProcessorConfiguration> getGlobalReportProcessorConfigurations();
 	/**
 	 * Deletes the passed {@link ReportProcessorConfiguration}
 	 */

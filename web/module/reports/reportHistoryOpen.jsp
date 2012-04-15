@@ -26,6 +26,9 @@
 	    			$("#viewReportDiv").show();
 	    			$("#runAgainDiv").show();
 	    		}
+	    		<c:forEach var="processor" items="${onDemandProcessors}">
+	    		    $("#postProcessor${processor.uuid}").show();
+	    		</c:forEach>
 	    	}
 	    	else if (data.status == 'FAILED') {
 	    		$("#errorDiv").html(data.errorDetails).show();
@@ -73,24 +76,33 @@
 				<c:otherwise><spring:message code="reporting.allPatients"/></c:otherwise>
 			</c:choose>
 			<br/><br/><br/>
-			<div id="downloadReportDiv" style="display:none; padding:5px;">
-				<button onClick="window.location='reportHistoryDownload.form?uuid=${request.uuid}';" style="width:100px; height:40px;">
+			<span id="downloadReportDiv" style="display:none; padding:10px;">
+				<button onClick="window.location='reportHistoryDownload.form?uuid=${request.uuid}';" style="width:200px; height:40px;">
 					<b><spring:message code="general.download"/></b><br/>
 					<img src="${iconFilename}" border="0" width="16" height="16"/>
 				</button>
-			</div>
-			<div id="viewReportDiv" style="display:none; padding:5px;">
-				<button onClick="window.location='reportHistoryView.form?uuid=${request.uuid}';" style="width:100px; height:40px;">
+			</span>
+			<span id="viewReportDiv" style="display:none; padding:5px;">
+				<button onClick="window.location='reportHistoryView.form?uuid=${request.uuid}';" style="width:200px; height:40px;">
 					<b><spring:message code="general.view"/></b><br/>
 					<img src="${iconFilename}" border="0" width="16" height="16"/>
 				</button>
-			</div>
-			<div id="runAgainDiv" style="display:none; padding:5px;">
-				<button onClick="window.location='../run/runReport.form?copyRequest=${request.uuid}';" style="width:100px; height:40px;">
+			</span>
+			<span id="runAgainDiv" style="display:none; padding:10px;">
+				<button onClick="window.location='../run/runReport.form?copyRequest=${request.uuid}';" style="width:200px; height:40px;">
 					<b><spring:message code="reporting.reportHistory.runAgain"/></b><br/>
 					<img src="<c:url value="/images/play.gif"/>" border="0" width="16" height="16"/>
 				</button>
-			</div>
+			</span>
+			<br/><br/>
+			<c:forEach var="processor" items="${onDemandProcessors}">
+			    <span id="postProcessor${processor.uuid}" style="display:none; padding:10px;">
+					<button onClick="window.location='../reports/reportHistoryProcess.form?processorUuid=${processor.uuid}&uuid=${request.uuid}';" style="width:200px; height:40px;">
+						<b>${processor.name}</b><br/>
+						<img src="<c:url value="/images/play.gif"/>" border="0" width="16" height="16"/>
+					</button>
+				</span>
+			</c:forEach>
 		</td>
 		<td valign="top">
 			<b><spring:message code="reporting.reportHistory.runDetails"/></b><br/>

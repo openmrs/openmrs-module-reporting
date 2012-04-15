@@ -97,18 +97,6 @@
 				        </spring:bind>
 	                </td>
 	            </tr>
-	            <c:if test="${!empty report.availableProcessorConfigurations}">
-	        		<tr valign="top">
-		                <td align="right"><spring:message code="reporting.Report.run.optionalProcessors"/>:</td>
-		                <td>
-		                	<c:forEach items="${report.availableProcessorConfigurations}" var="processor">
-		                		<c:set var="isChecked" value="${fn:contains(report.configuredProcessorConfigurations, processor)}"/>
-		                		<input type="checkbox" name="configuredProcessors" value="${processor.id}" <c:if test="${isChecked}">checked</c:if>/>
-		                		${processor.name}<br/>
-		                	</c:forEach>
-		                </td>
-		            </tr>
-	            </c:if>
 				<tr><td>&nbsp;</td></tr>			
 				<tr>
 					<td></td>

@@ -11,8 +11,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
@@ -246,6 +248,17 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public List<ReportProcessorConfiguration> getAllReportProcessorConfigurations(boolean includeRetired) {
 		return reportDAO.getAllReportProcessorConfigurations(includeRetired);
 	}
+	
+	/**
+	 * 
+	 * @see ReportService#getGlobalReportProcessorConfigurations()
+	 */
+	public List<ReportProcessorConfiguration> getGlobalReportProcessorConfigurations(){
+		List<ReportProcessorConfiguration>  ret =  reportDAO.getGlobalReportProcessorConfigurations();
+		if (ret == null)
+			ret = new ArrayList<ReportProcessorConfiguration>();
+		return ret;
+	}
 
 	/**
 	 * @see ReportService#getReportProcessorConfigurations(ReportDefinition, Date, Date, Status)
@@ -378,7 +391,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		
 		// Construct a new report object to return
 		Report report = new Report(request);
-
+		ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
 		try {
 			// Create a new Evaluation Context, setting the base cohort from the request
 			EvaluationContext context = new EvaluationContext();
@@ -398,7 +411,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		
 			// Evaluate the Report Definition, any EvaluationException thrown by the next line can bubble up; wrapping it won't provide useful information
 			logReportMessage(request, "Evaluating Report Data....");
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+			
 			ReportData reportData = rds.evaluate(request.getReportDefinition(), context);
 			report.setReportData(reportData);
 			request.setEvaluateCompleteDatetime(new Date());
@@ -434,20 +447,22 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		logReportMessage(request, "Storing Report Results....");
 		cacheReport(report);
 		
-		// Run through any processors for the report, if defined
-		if (request.getReportProcessors() != null) {
-			for (ReportProcessorConfiguration c : request.getReportProcessors()) {
-				try {
-					if ((request.getStatus() == Status.COMPLETED && c.getRunOnSuccess()) || (request.getStatus() == Status.FAILED && c.getRunOnError())) {
-						logReportMessage(request, "Processing Report with " + c.getName() + "...");
-						ReportProcessor processor = (ReportProcessor)c.getProcessorType().newInstance();
-						processor.process(report, c.getConfiguration());
-					}
+		// Find applicable global processors
+		List<ReportProcessorConfiguration> processorsToRun = ReportUtil.getAvailableReportProcessorConfigurations(request, 
+				ReportProcessorConfiguration.ProcessorMode.AUTOMATIC, 
+				ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC);
+		
+		for (ReportProcessorConfiguration c : processorsToRun) {
+			try {
+				if ((request.getStatus() == Status.COMPLETED && c.getRunOnSuccess()) || (request.getStatus() == Status.FAILED && c.getRunOnError())) {
+					logReportMessage(request, "Processing Report with " + c.getName() + "...");
+					ReportProcessor processor = (ReportProcessor)c.getProcessorType().newInstance();
+					processor.process(report, c.getConfiguration());
 				}
-				catch (Exception e) {
-					log.warn("Report Processor Failed: " + c.getName(), e);
-					logReportMessage(request, "Report Processor Failed: " + c.getName());
-				}
+			}
+			catch (Exception e) {
+				log.warn("Report Processor Failed: " + c.getName(), e);
+				logReportMessage(request, "Report Processor Failed: " + c.getName());
 			}
 		}
 

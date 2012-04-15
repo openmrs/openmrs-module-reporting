@@ -1,5 +1,9 @@
 package org.openmrs.module.reporting.report.service;
 
+import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,12 +11,14 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.Report;
+import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Priority;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.processor.LoggingReportProcessor;
+import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
@@ -154,13 +160,41 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		rs.purgeReportProcessorConfiguration(c);
 		Assert.assertEquals(1, rs.getAllReportProcessorConfigurations(true).size());
 	}
+	
+	@Test
+	@Verifies(value = "should retrieve all global processors after creating a non-global processor", method = "getGlobalReportProcessor")
+	public void shouldRetrieveAllGlobalProcessors() throws Exception { 
+
+		
+		//now we should have three total ReportProcessorConfigs in the db, 2 of which don't have reportDesign set (the two in the dbunit file), meaning that they're global.
+		// but 1 is retired, so there should only be 1
+		List<ReportProcessorConfiguration>  ret = Context.getService(ReportService.class).getGlobalReportProcessorConfigurations();
+		Assert.assertTrue(ret.size() == 1);
+	}
+	
+	@Test
+	@Verifies(value = "should retrieve all global processors after creating a non-global processor", method = "getGlobalReportProcessor")
+	public void shouldRetrieveAllGlobalProcessorsAfterAddingGlobalProcessor() throws Exception { 
+
+		//create a report processor config
+		Properties props = new Properties();
+		ReportProcessorConfiguration procConfig = new ReportProcessorConfiguration("Test Processor", LoggingReportProcessor.class, props, true, true);
+		String procUuid = UUID.randomUUID().toString();
+		procConfig.setUuid(procUuid);
+		procConfig.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC);
+		Context.getService(ReportService.class).saveReportProcessorConfiguration(procConfig);
+		
+		//there was 1 to start with, now there should be 2
+		List<ReportProcessorConfiguration>  ret = Context.getService(ReportService.class).getGlobalReportProcessorConfigurations();
+		Assert.assertTrue(ret.size() == 2);
+	}
 
 	/**
 	 * @see ReportService#runReport(ReportRequest)
 	 * @verifies execute any configured report processors
 	 */
 	@Test
-	public void runReport_shouldExecuteAnyConfiguredReportProcessors() throws Exception {
+	public void runReport_shouldExecuteTestReportProcessor() throws Exception {
 		
 		ReportDefinition def = new ReportDefinition();
 		def.setName("My report");
@@ -170,29 +204,171 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		Context.getService(ReportDefinitionService.class).saveDefinition(def);
 		
 		RenderingMode rm = new RenderingMode(new TsvReportRenderer(), "TSV", null, 100);
-
 		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, rm, Priority.NORMAL, null);
-		request.addReportProcessor(new ReportProcessorConfiguration("Logging Processor", LoggingReportProcessor.class, null, true, true));
 		
-		/*
-		Properties emailProperties = new Properties();
-		emailProperties.put("from", "mseaton@pih.org");
-		emailProperties.put("to", "mseaton@pih.org");
-		emailProperties.put("subject", "Mail with content as attachment");
-		emailProperties.put("content", "This is the content of the email");
-		emailProperties.put("addOutputAsAttachment", "true");
-		emailProperties.put("attachmentName", "ReportTemplate");
-		request.addReportProcessor(new ReportProcessorConfiguration("Email Processor", EmailReportProcessor.class, emailProperties, true, true));
+		//build a processor
+		Properties props = new Properties();
+		ReportProcessorConfiguration procConfig = new ReportProcessorConfiguration("LoggingProcessorTest", TestReportProcessor.class, props, true, true);
+		String procUuid = UUID.randomUUID().toString();
+		procConfig.setUuid(procUuid);
+		procConfig.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.AUTOMATIC); //test processor can run because processing mode is automatic
 		
-		Properties emailProperties2 = new Properties();
-		emailProperties2.put("from", "mseaton@pih.org");
-		emailProperties2.put("to", "mseaton@pih.org");
-		emailProperties2.put("subject", "Mail with content as body");
-		emailProperties2.put("content", "This is the content of the email:<br/><br/>");
-		emailProperties2.put("addOutputToContent", "true");
-		request.addReportProcessor(new ReportProcessorConfiguration("Email Processor 2", EmailReportProcessor.class, emailProperties2, true, true));
-		*/
-		Context.getService(ReportService.class).runReport(request);
+		//create and save a report  design, containing the processor
+		ReportDesign rd = new ReportDesign();
+		rd.setName("myReportDesign");
+		rd.addReportProcessor(procConfig);
+		rd.setReportDefinition(def);
+		rd.setRendererType(TsvReportRenderer.class);
+		String uuid = UUID.randomUUID().toString();
+		rd.setUuid(uuid);
+		Context.getService(ReportService.class).saveReportDesign(rd);
+		
+		//run the report
+		Report report = Context.getService(ReportService.class).runReport(request);
+		//TestReportProcessor is a simple processor that set a report error message -- just a simple way to ensure the processor was run...
+		Assert.assertTrue(report.getErrorMessage().equals("TestReportProcessor.process was called corretly."));
+		
+		//sanity check on global processors -- the one we create here isn't global, so there should only be 1
+		List<ReportProcessorConfiguration>  ret = Context.getService(ReportService.class).getGlobalReportProcessorConfigurations();
+		Assert.assertTrue(ret.size() == 1);
 	}
+	
+	/**
+	 * @see ReportService#runReport(ReportRequest)
+	 * @verifies execute any configured report processors
+	 */
+	@Test
+	public void runReport_shouldNotExecuteTestReportProcessorDifferentRenderers() throws Exception {
+		
+		ReportDefinition def = new ReportDefinition();
+		def.setName("My report");
+		SqlDataSetDefinition dsd = new SqlDataSetDefinition();
+		dsd.setSqlQuery("select count(*) from patient");
+		def.addDataSetDefinition("patients", dsd, null);
+		Context.getService(ReportDefinitionService.class).saveDefinition(def);
+		
+		RenderingMode rm = new RenderingMode(new TsvReportRenderer(), "TSV", null, 100);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, rm, Priority.NORMAL, null);
+		
+		//build a processor
+		Properties props = new Properties();
+		ReportProcessorConfiguration procConfig = new ReportProcessorConfiguration("LoggingProcessorTest", TestReportProcessor.class, props, true, true);
+		String procUuid = UUID.randomUUID().toString();
+		procConfig.setUuid(procUuid);
+		procConfig.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.AUTOMATIC); //test processor can run because processing mode is automatic
+		
+		//create and save a report  design, containing the processor
+		ReportDesign rd = new ReportDesign();
+		rd.setName("myReportDesign");
+		rd.addReportProcessor(procConfig);
+		rd.setReportDefinition(def);
+		rd.setRendererType(CsvReportRenderer.class); // test processor won't run because report request is Tsv, reportDefinition is Csv
+		String uuid = UUID.randomUUID().toString();
+		rd.setUuid(uuid);
+		Context.getService(ReportService.class).saveReportDesign(rd);
+		
+		//run the report
+		Report report = Context.getService(ReportService.class).runReport(request);
+		//TestReportProcessor is a simple processor that set a report error message -- just a simple way to ensure the processor was run...
+		Assert.assertTrue(report.getErrorMessage() == null);
+	}
+	
+	/**
+	 * @see ReportService#runReport(ReportRequest)
+	 * @verifies execute any configured report processors
+	 */
+	@Test
+	public void runReport_shouldNotExecuteTestReportProcessorNotAutomatic() throws Exception {
+		
+		ReportDefinition def = new ReportDefinition();
+		def.setName("My report");
+		SqlDataSetDefinition dsd = new SqlDataSetDefinition();
+		dsd.setSqlQuery("select count(*) from patient");
+		def.addDataSetDefinition("patients", dsd, null);
+		Context.getService(ReportDefinitionService.class).saveDefinition(def);
+		
+		RenderingMode rm = new RenderingMode(new TsvReportRenderer(), "TSV", null, 100);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, rm, Priority.NORMAL, null);
+		
+		//build a processor
+		Properties props = new Properties();
+		ReportProcessorConfiguration procConfig = new ReportProcessorConfiguration("LoggingProcessorTest", TestReportProcessor.class, props, true, true);
+		String procUuid = UUID.randomUUID().toString();
+		procConfig.setUuid(procUuid);
+		procConfig.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND); //test processor won't be run because its not automatic
+		
+		//create and save a report  design, containing the processor
+		ReportDesign rd = new ReportDesign();
+		rd.setName("myReportDesign");
+		rd.addReportProcessor(procConfig);
+		rd.setReportDefinition(def);
+		rd.setRendererType(TsvReportRenderer.class);
+		String uuid = UUID.randomUUID().toString();
+		rd.setUuid(uuid);
+		Context.getService(ReportService.class).saveReportDesign(rd);
+		
+		//run the report
+		Report report = Context.getService(ReportService.class).runReport(request);
+		//TestReportProcessor is a simple processor that set a report error message -- just a simple way to ensure the processor was run...
+		Assert.assertTrue(report.getErrorMessage() == null);
+	}
+	
+	@Test
+	@Verifies(value = "should save the ReportProcessor", method = "saveReportDesign(ReportDesign)")
+	public void shouldSaveReportDefinitionWithProcessor() throws Exception { 		
+		
+		//save a blank report definition
+		ReportDefinitionService service = Context.getService(ReportDefinitionService.class);
+		ReportService rs = Context.getService(ReportService.class);
+		ReportDefinition reportDefinition = new ReportDefinition();		
+		reportDefinition.setName("Testing");
+		service.saveDefinition(reportDefinition);
 
+		//create a report processor config
+		Properties props = new Properties();
+		ReportProcessorConfiguration procConfig = new ReportProcessorConfiguration("LoggingProcessorTest", LoggingReportProcessor.class, props, true, true);
+		String procUuid = UUID.randomUUID().toString();
+		procConfig.setUuid(procUuid);
+		procConfig.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC);
+		
+		//create and save a report  design, containing the processor
+		ReportDesign rd = new ReportDesign();
+		rd.setName("myReportDesign");
+		rd.addReportProcessor(procConfig);
+		rd.setReportDefinition(reportDefinition);
+		rd.setRendererType(CsvReportRenderer.class);
+		String uuid = UUID.randomUUID().toString();
+		rd.setUuid(uuid);
+		rs.saveReportDesign(rd);
+		
+		//retreive and verify the processor
+		ReportProcessorConfiguration rpc = rs.getReportProcessorConfigurationByUuid(procUuid);
+		Assert.assertTrue(rpc != null);
+		Assert.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC));
+		rpc = null;
+		
+		//retrieve and verify that the processor is retreived with ReportDesign
+		ReportDesign ret = rs.getReportDesignByUuid(uuid);
+		Assert.assertTrue(ret != null);
+		Assert.assertTrue(ret.getReportProcessors().size() == 1);
+		ReportProcessorConfiguration rp = ret.getReportProcessors().iterator().next();
+		Assert.assertTrue(rp.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC));
+		
+	}
+	
+	@Test
+	@Verifies(value = "readProcessorModeCorrectly", method = "getReportProcessorConfiguration(id)")
+	public void shouldReadProcessorModeEnumCorrectly() throws Exception { 
+		ReportService rs = Context.getService(ReportService.class);
+		ReportProcessorConfiguration rpc = rs.getReportProcessorConfiguration(1);
+		Assert.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.DISABLED));
+
+		rpc = rs.getReportProcessorConfiguration(2);
+		Assert.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.AUTOMATIC));
+	}
 }
+
+
+
+
+

@@ -176,6 +176,13 @@ public interface ReportService extends OpenmrsService {
 	public List<ReportProcessorConfiguration> getAllReportProcessorConfigurations(boolean includeRetired);
 	
 	/**
+	 * @return all the {@link ReportProcessorConfiguration}s that aren't associated with a specific ReportDesign
+	 * @should retrieve all saved report processor configurations with reportDesign = null, and retired = false;
+	 */
+	@Transactional(readOnly = true)
+	public List<ReportProcessorConfiguration> getGlobalReportProcessorConfigurations();
+	
+	/**
 	 * @return all {@link ReportProcessorConfiguration} in the system that match the passed parameters
 	 * @should retrieve all non-retired report processor configurations that are assignable to the passed type
 	 */

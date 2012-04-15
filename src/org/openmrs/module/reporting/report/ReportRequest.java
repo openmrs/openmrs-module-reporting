@@ -2,8 +2,6 @@ package org.openmrs.module.reporting.report;
 
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.openmrs.BaseOpenmrsObject;
@@ -29,7 +27,6 @@ public class ReportRequest extends BaseOpenmrsObject {
 	private RenderingMode renderingMode;
 	private Priority priority = Priority.NORMAL;
 	private String schedule; //optional, in cron format
-	private Set<ReportProcessorConfiguration> reportProcessors; //optional
 	private boolean saveAutomatically = false;
 	private User requestedBy;
 	private Date requestDate;
@@ -182,31 +179,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 	public void setSchedule(String schedule) {
 		this.schedule = schedule;
 	}
-
-	/**
-	 * @return the reportProcessors
-	 */
-	public Set<ReportProcessorConfiguration> getReportProcessors() {
-		if (reportProcessors == null) {
-			reportProcessors = new HashSet<ReportProcessorConfiguration>();
-		}
-		return reportProcessors;
-	}
 	
-	/**
-	 * @param reportProcessor adds the processor
-	 */
-	public void addReportProcessor(ReportProcessorConfiguration reportProcessor) {
-		getReportProcessors().add(reportProcessor);
-	}
- 
-	/**
-	 * @param reportProcessors the reportProcessors to set
-	 */
-	public void setReportProcessors(Set<ReportProcessorConfiguration> reportProcessors) {
-		this.reportProcessors = reportProcessors;
-	}
-
 	/**
 	 * @return the saveAutomatically
 	 */

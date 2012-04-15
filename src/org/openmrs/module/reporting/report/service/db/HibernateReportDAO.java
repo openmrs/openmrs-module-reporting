@@ -143,6 +143,17 @@ public class HibernateReportDAO implements ReportDAO {
 	}
 	
 	/**
+	 * @return all the {@link ReportProcessorConfiguration}s that are meant to be applied globally, i.e., their reportDesign property is null
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ReportProcessorConfiguration> getGlobalReportProcessorConfigurations() {
+		Criteria crit = sessionFactory.getCurrentSession().createCriteria(ReportProcessorConfiguration.class);
+		crit.add(Expression.eq("retired", false));
+		crit.add(Expression.isNull("reportDesign"));
+		return crit.list();
+	}
+	
+	/**
 	 * Deletes the passed {@link ReportProcessorConfiguration}
 	 */
 	public void purgeReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration) {

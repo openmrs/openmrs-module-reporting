@@ -35,6 +35,7 @@ public class ReportDesign extends BaseOpenmrsMetadata  {
 	private Class<? extends ReportRenderer> rendererType;
 	private Properties properties;
 	private Set<ReportDesignResource> resources;
+	private Set<ReportProcessorConfiguration> reportProcessors;
 
 	//***** CONSTRUCTORS *****
 	
@@ -201,5 +202,30 @@ public class ReportDesign extends BaseOpenmrsMetadata  {
 	 */
 	public void setResources(Set<ReportDesignResource> resources) {
 		this.resources = resources;
+	}
+	
+	/**
+	 * @return the reportProcessors
+	 */
+	public Set<ReportProcessorConfiguration> getReportProcessors() {
+		if (reportProcessors == null) {
+			reportProcessors = new HashSet<ReportProcessorConfiguration>();
+		}
+		return reportProcessors;
+	}
+	
+	/**
+	 * @param reportProcessor adds the processor
+	 */
+	public void addReportProcessor(ReportProcessorConfiguration reportProcessor) {
+		getReportProcessors().add(reportProcessor);
+		reportProcessor.setReportDesign(this);
+	}
+ 
+	/**
+	 * @param reportProcessors the reportProcessors to set
+	 */
+	public void setReportProcessors(Set<ReportProcessorConfiguration> reportProcessors) {
+		this.reportProcessors = reportProcessors;
 	}
 }

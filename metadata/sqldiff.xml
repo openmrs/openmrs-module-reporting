@@ -186,5 +186,24 @@
 			delete from `scheduler_task_config` where schedulable_class like 'org.openmrs.module.reporting.%';
 		</sql>
 	</diff>
+	
+	<diff>
+		<version>0.5</version>
+		<author>Dave Thomas</author>
+		<date>April 11, 2011</date>
+		<description>
+				1.  drop the reporting_report_request_processor table.  report requests no long contain the processors -- these have been moved to ReportDesign
+				2.  update reporting_report_processor table to have report_design_id column, add a constraint such that if not null, report_design_id column points to valid report_design
+				3.  update reporting_report_processor table to have processor_mode column
+				4.  all previous processors that we know about have been automatic.  So, let's set report processors to automatic.
+		</description>
+		<sql>
+				DROP table `reporting_report_request_processor`;
+				ALTER table `reporting_report_processor` ADD COLUMN report_design_id int(11) default NULL,
+				ADD CONSTRAINT `reporting_report_processor_report_design` FOREIGN KEY (`report_design_id`) REFERENCES `reporting_report_design` (`id`);
+				ALTER table `reporting_report_processor` ADD COLUMN processor_mode varchar(255) default NULL;
+				UPDATE `reporting_report_processor` set processor_mode = 'AUTOMATIC';
+		</sql>
+	</diff>
 
 </sqldiff>

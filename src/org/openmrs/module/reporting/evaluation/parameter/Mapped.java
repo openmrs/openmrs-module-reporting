@@ -22,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
@@ -192,5 +193,19 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	 */
 	public void setParameterMappings(Map<String, Object> parameterMappings) {
 		this.parameterMappings = parameterMappings;
+	}
+	
+	/**
+	 * if the parameterized object is an OpenmrsObject, return its uuid.
+	 * @return
+	 */
+	public String getUuidOfMappedOpenmrsObject(){
+		if (parameterizable != null && parameterizable instanceof OpenmrsObject ){
+			OpenmrsObject o = (OpenmrsObject) parameterizable;
+			return o.getUuid();
+		} else {
+			log.warn("Mapped.getUuidOfMappedOpenmrsObject called for a mapped object that is not an OpenmrsObject.");
+			return null;  //should this throw an exception instead?
+		}
 	}
 }

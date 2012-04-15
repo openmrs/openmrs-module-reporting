@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.web.reports;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,13 +18,17 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
+import org.openmrs.module.reporting.report.processor.ReportProcessor;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 import org.openmrs.module.reporting.web.util.AjaxUtil;
 import org.openmrs.web.WebConstants;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -155,6 +160,12 @@ public class ReportHistoryController {
 			return "redirect:/module/reporting/reports/reportHistory.form";
 		}
 		model.addAttribute("request", req);
+		
+		List<ReportProcessorConfiguration> procs = ReportUtil.getAvailableReportProcessorConfigurations(req, 
+				ReportProcessorConfiguration.ProcessorMode.ON_DEMAND, 
+				ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC);
+		model.addAttribute("onDemandProcessors", procs);
+		
 		return "/module/reporting/reports/reportHistoryOpen";
 	}
 	
@@ -200,6 +211,30 @@ public class ReportHistoryController {
 			response.getWriter().write("There was an error retrieving the report");
 		}
 	}
+	
+	@RequestMapping("/module/reporting/reports/reportHistoryProcess")
+	public String runOnDemandPostProcessor(@RequestParam("uuid") String requestUuid, @RequestParam("processorUuid") String processorUuid, HttpServletResponse response, HttpServletRequest request) throws IOException {
+		ReportRequest req = getReportService().getReportRequestByUuid(requestUuid);
+		ReportProcessorConfiguration rpc = getReportService().getReportProcessorConfigurationByUuid(processorUuid);
+		try {
+			if ((req.getStatus() == Status.COMPLETED && rpc.getRunOnSuccess()) || (req.getStatus() == Status.FAILED && rpc.getRunOnError())) {
+				getReportService().logReportMessage(req, "Processing Report with " + rpc.getName() + "...");
+				ReportProcessor processor = (ReportProcessor) rpc.getProcessorType().newInstance();
+				Report report = getReportService().loadReport(req);
+				processor.process(report, rpc.getConfiguration());
+			}
+		}
+		catch (Exception e) {
+			log.warn("Report Processor Failed: " + rpc.getName(), e);
+			getReportService().logReportMessage(req, "Report Processor Failed: " + rpc.getName());
+			e.printStackTrace();
+			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, rpc.getName() + " " + Context.getMessageSourceService().getMessage("reporting.runReport.processorFailed"));
+		}
+		//send back a success message
+		request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, rpc.getName() + " " + Context.getMessageSourceService().getMessage("reporting.runReport.processorSuccess"));
+		return "redirect:reportHistoryOpen.form?uuid=" + requestUuid;
+	}
+	
 	
 	private ReportService getReportService() {
 		return Context.getService(ReportService.class);
