@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -90,8 +92,24 @@ public class RunReportFormController extends SimpleFormController implements Val
 			}
 			
 			for (Map.Entry<String, Object> e : command.getUserEnteredParams().entrySet()) {
-				if (ObjectUtil.notNull(e.getValue()))
+				if (e.getValue() instanceof Iterable || e.getValue() instanceof Object[]) {
+					Object iterable = e.getValue();
+					if (e.getValue() instanceof Object[]) {
+						iterable = Arrays.asList((Object[]) e.getValue());
+					}
+					
+					boolean hasNull = true;
+					
+					for (Object value : (Iterable<Object>) iterable) {
+						hasNull = !ObjectUtil.notNull(value);
+                    }
+					
+					if (!hasNull) {
+						requiredParams.remove(e.getKey());
+					}
+				} else if (ObjectUtil.notNull(e.getValue())) {
 					requiredParams.remove(e.getKey());
+				}
 			}
 			if (requiredParams.size() > 0) {
 				for (Iterator<String> iterator = requiredParams.iterator(); iterator.hasNext();) {
@@ -165,7 +183,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 					Object value = command.getUserEnteredParams().get(parameter.getName());
 					if (ObjectUtil.notNull(value)) {
 						try {
-							value = WidgetUtil.parseInput(value.toString(), parameter.getType());
+							value = WidgetUtil.parseInput(value, parameter.getType(), parameter.getCollectionType());
 							params.put(parameter.getName(), value);
 						}
 						catch (Exception ex) {

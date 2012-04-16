@@ -19,7 +19,7 @@
 
 	<require_modules>
 	   	<require_module version="0.2.5">org.openmrs.module.serialization.xstream</require_module>
-	   	<require_module version="1.6">org.openmrs.module.htmlwidgets</require_module>
+	   	<require_module version="1.6.1">org.openmrs.module.htmlwidgets</require_module>
 	</require_modules>
 
 	<!-- Extensions -->
