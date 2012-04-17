@@ -99,7 +99,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportProcessorConfiguration c = new ReportProcessorConfiguration();
 		c.setName("New Processor");
-		c.setProcessorType(LoggingReportProcessor.class);
+		c.setProcessorType(LoggingReportProcessor.class.getName());
 		c = rs.saveReportProcessorConfiguration(c);
 		Assert.assertNotNull(c.getId());
 		Assert.assertNotNull(c.getUuid());

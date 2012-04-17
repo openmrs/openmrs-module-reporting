@@ -11,10 +11,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
@@ -253,11 +251,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * 
 	 * @see ReportService#getGlobalReportProcessorConfigurations()
 	 */
-	public List<ReportProcessorConfiguration> getGlobalReportProcessorConfigurations(){
-		List<ReportProcessorConfiguration>  ret =  reportDAO.getGlobalReportProcessorConfigurations();
-		if (ret == null)
-			ret = new ArrayList<ReportProcessorConfiguration>();
-		return ret;
+	public List<ReportProcessorConfiguration> getGlobalReportProcessorConfigurations() {
+		return reportDAO.getGlobalReportProcessorConfigurations();
 	}
 
 	/**
@@ -266,8 +261,14 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public List<ReportProcessorConfiguration> getReportProcessorConfigurations(Class<? extends ReportProcessor> processorType) {
 		List<ReportProcessorConfiguration> ret = new ArrayList<ReportProcessorConfiguration>();
 		for (ReportProcessorConfiguration p : getAllReportProcessorConfigurations(false)) {
-			if (p.getProcessorType().isAssignableFrom(processorType)) {
-				ret.add(p);
+			try {
+				Class<?> clazz = Context.loadClass(p.getProcessorType());
+				if (processorType.isAssignableFrom(clazz)) {
+					ret.add(p);
+				}
+			}
+			catch (Exception e) {
+				log.warn("Error trying to load processor class " + p.getProcessorType(), e);
 			}
 		}
 		return ret;
@@ -456,7 +457,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			try {
 				if ((request.getStatus() == Status.COMPLETED && c.getRunOnSuccess()) || (request.getStatus() == Status.FAILED && c.getRunOnError())) {
 					logReportMessage(request, "Processing Report with " + c.getName() + "...");
-					ReportProcessor processor = (ReportProcessor)c.getProcessorType().newInstance();
+					Class<?> processorType = Context.loadClass(c.getProcessorType());
+					ReportProcessor processor = (ReportProcessor)processorType.newInstance();
 					processor.process(report, c.getConfiguration());
 				}
 			}

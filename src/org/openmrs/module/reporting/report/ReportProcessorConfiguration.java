@@ -26,7 +26,7 @@ public class ReportProcessorConfiguration extends BaseOpenmrsMetadata  {
 	//***** PROPERTIES *****
 	
 	private Integer id;
-	private Class<? extends ReportProcessor> processorType;
+	private String processorType;
 	private Properties configuration;
 	private Boolean runOnSuccess = Boolean.TRUE;
 	private Boolean runOnError = Boolean.FALSE;
@@ -50,7 +50,9 @@ public class ReportProcessorConfiguration extends BaseOpenmrsMetadata  {
 	public ReportProcessorConfiguration(String name, Class<? extends ReportProcessor> processorType, Properties configuration, 
 										Boolean runOnSuccess, Boolean runOnError) {
 		setName(name);
-		this.processorType = processorType;
+		if (processorType != null) {
+			this.processorType = processorType.getName();
+		}
 		this.configuration = configuration;
 		this.runOnSuccess = runOnSuccess;
 		this.runOnError = runOnError;
@@ -104,14 +106,14 @@ public class ReportProcessorConfiguration extends BaseOpenmrsMetadata  {
 	/**
 	 * @return the processorType
 	 */
-	public Class<? extends ReportProcessor> getProcessorType() {
+	public String getProcessorType() {
 		return processorType;
 	}
 
 	/**
 	 * @param processorType the processorType to set
 	 */
-	public void setProcessorType(Class<? extends ReportProcessor> processorType) {
+	public void setProcessorType(String processorType) {
 		this.processorType = processorType;
 	}
 
@@ -176,15 +178,11 @@ public class ReportProcessorConfiguration extends BaseOpenmrsMetadata  {
 	 * Convenience method for asking this ReportProcessorConfiguration if it is global, or local to a single ReportDesign
 	 * @return true if global, false if specific to a single ReportDesign
 	 */
-	public boolean isGlobal(){
-		if (getReportDesign() == null)
-			return true;
-		else
-			return false;
+	public boolean isGlobal() {
+		return getReportDesign() == null;
 	}
 	
 	/**
-	 * 
 	 * @return the processorMode
 	 */
 	public ProcessorMode getProcessorMode() {
@@ -198,6 +196,4 @@ public class ReportProcessorConfiguration extends BaseOpenmrsMetadata  {
 	public void setProcessorMode(ProcessorMode processorMode) {
 		this.processorMode = processorMode;
 	}
-	
-	
 }

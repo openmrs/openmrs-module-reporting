@@ -2,7 +2,6 @@ package org.openmrs.module.reporting.web.reports;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +27,6 @@ import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 import org.openmrs.module.reporting.web.util.AjaxUtil;
 import org.openmrs.web.WebConstants;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -219,7 +217,8 @@ public class ReportHistoryController {
 		try {
 			if ((req.getStatus() == Status.COMPLETED && rpc.getRunOnSuccess()) || (req.getStatus() == Status.FAILED && rpc.getRunOnError())) {
 				getReportService().logReportMessage(req, "Processing Report with " + rpc.getName() + "...");
-				ReportProcessor processor = (ReportProcessor) rpc.getProcessorType().newInstance();
+				Class<?> processorType = Context.loadClass(rpc.getProcessorType());
+				ReportProcessor processor = (ReportProcessor) processorType.newInstance();
 				Report report = getReportService().loadReport(req);
 				processor.process(report, rpc.getConfiguration());
 			}
