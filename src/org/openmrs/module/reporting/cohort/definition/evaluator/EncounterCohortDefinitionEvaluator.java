@@ -42,6 +42,7 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
      * @should return correct patients when creation date parameters are set
      * @should return correct patients when time qualifier parameters are set
      * @should return correct patients when provider parameters are set
+     * @should not return voided patients
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	EncounterCohortDefinition cd = (EncounterCohortDefinition) cohortDefinition;

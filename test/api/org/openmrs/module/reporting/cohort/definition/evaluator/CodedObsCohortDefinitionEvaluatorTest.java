@@ -10,6 +10,7 @@ import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.Patient;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -89,5 +90,27 @@ public class CodedObsCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		cd.setEncounterTypeList(Collections.singletonList(new EncounterType(2)));
 		cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertEquals(0, cohort.size());
+	}
+	
+	/**
+	 * @see {@link CodedObsCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 * 
+	 */
+	@Test
+	@Verifies(value = "should not return voided patients", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldNotReturnVoidedPatients() throws Exception {
+		Patient patient = Context.getPatientService().getPatient(7);
+		Context.getPatientService().voidPatient(patient, "testing");
+		Context.flushSession();
+		
+		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+		cd.setTimeModifier(TimeModifier.ANY);
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertEquals(3, cohort.size());
+		Assert.assertFalse(cohort.contains(7));
+		Assert.assertTrue(cohort.contains(20));
+		Assert.assertTrue(cohort.contains(21));
+		Assert.assertTrue(cohort.contains(22));
+		
 	}
 }

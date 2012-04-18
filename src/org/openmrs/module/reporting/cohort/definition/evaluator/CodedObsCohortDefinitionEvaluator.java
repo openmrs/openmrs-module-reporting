@@ -20,6 +20,7 @@ public class CodedObsCohortDefinitionEvaluator implements CohortDefinitionEvalua
 	 * 
 	 * @should test any with many properties specified
 	 * @should test last with many properties specified
+	 * @should not return voided patients
 	 */
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
 		CodedObsCohortDefinition cd = (CodedObsCohortDefinition) cohortDefinition;
