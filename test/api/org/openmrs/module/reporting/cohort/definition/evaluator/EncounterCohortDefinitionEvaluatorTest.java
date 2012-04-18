@@ -11,6 +11,7 @@ import org.openmrs.Cohort;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -191,4 +192,24 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
         cd.addProvider(new Person(2));
         Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, new EvaluationContext()).size());
 	}
+    
+	@Test
+    @Verifies(value = "should not return voided patients", method = "evaluate(CohortDefinition,EvaluationContext)")
+    public void evaluate_shouldNotReturnVoidedPatients() throws Exception {
+    	
+       Patient patient = Context.getPatientService().getPatient(7);
+       Context.getPatientService().voidPatient(patient, "testing");
+       Context.flushSession();
+       
+	   EncounterCohortDefinition cd = new EncounterCohortDefinition();
+	   cd.setEncounterTypeList(new ArrayList<EncounterType>()); // this is a regression test for a NPE on empty lists
+	   Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+	   Assert.assertEquals(5, c.size());
+	   Assert.assertFalse(c.contains(7));
+ 	   Assert.assertTrue(c.contains(20));
+ 	   Assert.assertTrue(c.contains(21));
+ 	   Assert.assertTrue(c.contains(22));
+ 	   Assert.assertTrue(c.contains(23));
+ 	   Assert.assertTrue(c.contains(24));
+    }
 }

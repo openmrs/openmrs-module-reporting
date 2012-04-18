@@ -1087,7 +1087,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		ObjectUtil.addIfNotNull(havingClauses, "count(*) <= :atMostCount", atMostCount);
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(" select e.patient_id from encounter e ");
+		sb.append(" select e.patient_id from encounter e inner join patient p on e.patient_id = p.patient_id");
 		
 		if (timeQualifier == TimeQualifier.FIRST || timeQualifier == TimeQualifier.LAST) {
 			boolean isFirst = timeQualifier == TimeQualifier.FIRST;
@@ -1107,6 +1107,8 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			sb.append(i.nextIndex() == 0 ? " where " : " and ");
 			sb.append("e." + i.next());
 		}
+		
+		sb.append(" and p.voided = false");
 		sb.append(" group by e.patient_id ");
 		for (ListIterator<String> i = havingClauses.listIterator(); i.hasNext();) {
 			sb.append(i.nextIndex() == 0 ? " having " : " and ");
