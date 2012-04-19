@@ -65,9 +65,6 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 		
 		// By default, get all patients
 		Cohort cohort = context.getBaseCohort();
-		if (cohort == null) {
-			cohort = Context.getPatientSetService().getAllPatients();
-		}
 				
 		Connection connection = null;
 		try {
@@ -108,7 +105,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 				// Limit the DataSet to only patient in the base cohort, if there exists a column named "patientId"
 				if (patientIdColumnIndex > 0) {
 					Integer patientId = resultSet.getInt(patientIdColumnIndex);
-					if (!cohort.contains(patientId)) {
+					if (cohort != null && !cohort.contains(patientId)) {
 						continue;
 					}
 				}

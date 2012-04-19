@@ -48,9 +48,6 @@ public class CohortIndicatorDataSetEvaluator implements DataSetEvaluator {
 		CohortIndicatorDataSetDefinition dsd = (CohortIndicatorDataSetDefinition) dataSetDefinition;
 
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		if (context.getBaseCohort() == null) {
-			context.setBaseCohort(Context.getPatientSetService().getAllPatients());
-		}
 		
 		IndicatorService is = Context.getService(IndicatorService.class);
 		DimensionService ds = Context.getService(DimensionService.class);
