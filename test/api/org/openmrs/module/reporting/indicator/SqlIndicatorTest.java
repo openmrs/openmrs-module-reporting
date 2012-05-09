@@ -1,3 +1,16 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.reporting.indicator;
 
 import java.util.ArrayList;
@@ -17,12 +30,14 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
-import org.openmrs.module.reporting.indicator.SqlIndicator.QueryString;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+/**
+ * test class for testing evaluation of SQLIndicators
+ */
 public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 
 	
@@ -37,11 +52,11 @@ public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 			//build indicators
 			SqlIndicator indicator = new SqlIndicator();
 			String sql = "SELECT distinct(251) as res from patient";
-			indicator.setSql(new Mapped<QueryString>(indicator.new QueryString(sql), null));
+			indicator.setSql(sql);
 			
 			SqlIndicator indicator2 = new SqlIndicator();
 			String sql2 = "SELECT distinct(0.7154) as res2 from patient";
-			indicator2.setSql(new Mapped<QueryString>(indicator2.new QueryString(sql2), null));
+			indicator2.setSql(sql2);
 			
 			//build simpleDataSetDefintiion
 			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
@@ -75,10 +90,10 @@ public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 			//build indicators
 			SqlIndicator indicator = new SqlIndicator();
 			String sql = "SELECT distinct(4736) as res from patient";
-			indicator.setSql(new Mapped<QueryString>(indicator.new QueryString(sql), null));
+			indicator.setSql(sql);
 
 			String sql2 = "SELECT distinct(0) as res2 from patient";
-			indicator.setDenominatorSql(new Mapped<QueryString>(indicator.new QueryString(sql2), null));
+			indicator.setDenominatorSql(sql2);
 			
 			//build simpleDataSetDefintiion
 			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
@@ -105,10 +120,10 @@ public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 			//build indicators
 			SqlIndicator indicator = new SqlIndicator();
 			String sql = "SELECT distinct(null) as res from patient";
-			indicator.setSql(new Mapped<QueryString>(indicator.new QueryString(sql), null));
+			indicator.setSql(sql);
 
 			String sql2 = "SELECT distinct(55) as res2 from patient";
-			indicator.setDenominatorSql(new Mapped<QueryString>(indicator.new QueryString(sql2), null));
+			indicator.setDenominatorSql(sql2);
 			
 			//build simpleDataSetDefintiion
 			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
@@ -135,10 +150,10 @@ public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 			//build indicators
 			SqlIndicator indicator = new SqlIndicator();
 			String sql = "SELECT distinct(55) as res from patient";
-			indicator.setSql(new Mapped<QueryString>(indicator.new QueryString(sql), null));
+			indicator.setSql(sql);
 
 			String sql2 = "SELECT distinct(null) as res2 from patient";
-			indicator.setDenominatorSql(new Mapped<QueryString>(indicator.new QueryString(sql2), null));
+			indicator.setDenominatorSql(sql2);
 			
 			//build simpleDataSetDefintiion
 			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
@@ -174,10 +189,10 @@ public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 			//build indicators
 			SqlIndicator indicator = new SqlIndicator();
 			String sql = "SELECT distinct(:numValue) as res from patient";
-			indicator.setSql(new Mapped<QueryString>(indicator.new QueryString(sql), ParameterizableUtil.createParameterMappings("numValue=${numValue}")));
+			indicator.setSql(sql);
 
 			String sql2 = "SELECT distinct(:denValue) as res2 from patient";
-			indicator.setDenominatorSql(new Mapped<QueryString>(indicator.new QueryString(sql2), ParameterizableUtil.createParameterMappings("denValue=${denValue}")));
+			indicator.setDenominatorSql(sql2);
 			indicator.setParameters(params);
 			
 			//build simpleDataSetDefintiion
@@ -204,17 +219,16 @@ public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 	}
 	
 	
-	//TODO:  test decimal fractions -- should fail.
 	@Test
 	public void sqlIndicator_shouldEvaluateSqlIndicatorDecimals() throws Exception { 
 		
 			//build indicators
 			SqlIndicator indicator = new SqlIndicator();
 			String sql = "SELECT distinct(.222) as res from patient";
-			indicator.setSql(new Mapped<QueryString>(indicator.new QueryString(sql), null));
-
-			String sql2 = "SELECT distinct(.444) as res2 from patient";
-			indicator.setDenominatorSql(new Mapped<QueryString>(indicator.new QueryString(sql2), null));
+			indicator.setSql(sql);
+			
+			String sql2 = "SELECT distinct(.44) as res2 from patient";
+			indicator.setDenominatorSql(sql2);
 			
 			//build simpleDataSetDefintiion
 			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
@@ -226,13 +240,69 @@ public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 			
 			//run the report
 			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			boolean decimalErrorCaught = true;
+			String decimalError = "";
 			try {
 				ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, null), new EvaluationContext()); //throws Exception because we can't currently pass decimals as numerators or denominators
 			} catch (Exception ex){
-				if (ex.getMessage().equals("FRACTION indicator type is not currently supported by SimpleIndicatorResult if your numerator and denominator are not whole numbers.  If you are returning decimals, try changing your queries to use the samllest possible units."))
-					decimalErrorCaught = true;
+				decimalError = ex.getCause().getMessage();
 			}
-			Assert.assertTrue(decimalErrorCaught);
+			//System.out.println(decimalError);
+			Assert.assertTrue(decimalError.contains("FRACTION indicator type is not currently supported by SimpleIndicatorResult"));
+	}
+	
+	@Test
+	public void sqlIndicator_shouldNotAllowQueriesThatReturnMoreThanOneColumn() throws Exception { 
+		
+			//build indicators
+			SqlIndicator indicator = new SqlIndicator();
+			String sql = "SELECT distinct(.222) as res, 33 as res2 from patient";  ///2 columns returned by sql.
+			indicator.setSql(sql);
+
+			
+			//build simpleDataSetDefintiion
+			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
+			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, null));
+			
+			//build a report
+			ReportDefinition rd = new ReportDefinition();
+			rd.addDataSetDefinition(d, null);
+			
+			//run the report
+			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+			String errorCaught = "";
+			try {
+				ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, null), new EvaluationContext()); //throws Exception because we can't currently pass decimals as numerators or denominators
+			} catch (Exception ex){
+				errorCaught = ex.getCause().getMessage();
+			}
+			Assert.assertTrue(errorCaught.contains("The query that you're using in your indicator should only return 1 column"));
+	}
+	
+	@Test
+	public void sqlIndicator_shouldNotAllowQueriesThatReturnMoreThanOneRow() throws Exception { 
+		
+			//build indicators
+			SqlIndicator indicator = new SqlIndicator();
+			String sql = "SELECT person_id from person";  ///returns more than 1 row
+			indicator.setSql(sql);
+
+			
+			//build simpleDataSetDefintiion
+			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
+			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, null));
+			
+			//build a report
+			ReportDefinition rd = new ReportDefinition();
+			rd.addDataSetDefinition(d, null);
+			
+			//run the report
+			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+			String errorCaught = "";
+			try {
+				ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, null), new EvaluationContext()); //throws Exception because we can't currently pass decimals as numerators or denominators
+			} catch (Exception ex){
+				errorCaught = ex.getCause().getMessage();
+			}
+			Assert.assertTrue(errorCaught.contains("The query that you're using in your indicator should only return 1 row."));
 	}
 }

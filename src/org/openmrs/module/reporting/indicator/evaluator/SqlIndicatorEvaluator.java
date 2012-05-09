@@ -1,9 +1,23 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.reporting.indicator.evaluator;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,17 +32,17 @@ import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.SimpleIndicatorResult;
 import org.openmrs.module.reporting.indicator.SqlIndicator;
-import org.openmrs.module.reporting.indicator.SqlIndicator.QueryString;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
 
-
+/**
+ *  The evaluator that evaluates {@link SqlIndicator}.  Returns a {@link SimpleIndicatorResult}.
+ */
 @Handler(supports={SqlIndicator.class})
 public class SqlIndicatorEvaluator implements IndicatorEvaluator {
 
@@ -42,15 +56,14 @@ public class SqlIndicatorEvaluator implements IndicatorEvaluator {
 		 SimpleIndicatorResult result = new SimpleIndicatorResult();
 		 result.setIndicator(indicator);
 		 result.setContext(context);
-		 Mapped<QueryString> q = sqlIndicator.getSql();
-		 String sql = new String(q.getParameterizable().getSql());
+		 String sql = sqlIndicator.getSql();
 
 		 //TODO:  EVERYTHING FROM HERE DOWN IS A HACK PENDING REPORT-380
 		 //this validates, prepares, and runs the query, and set the numerator and denominator on the result object
 		 validateQuery(sql, context.getParameterValues());
 		 executeSql(sql, context.getParameterValues(), result, "numerator");
 		 if (sqlIndicator.getDenominatorSql() != null)
-			 executeSql(new String(sqlIndicator.getDenominatorSql().getParameterizable().getSql()), context.getParameterValues(), result, "denominator");	 
+			 executeSql(new String(sqlIndicator.getDenominatorSql()), context.getParameterValues(), result, "denominator");	 
 		 return result;
 	 }
 	 
@@ -74,7 +87,11 @@ public class SqlIndicatorEvaluator implements IndicatorEvaluator {
 					throw new EvaluationException("Unable to evaluate sql query");
 				}
 				resultSet = statement.getResultSet();
+				
+				int numRows = 1;
 				while (resultSet.next()) {
+					if (numRows > 1)
+						throw new RuntimeException("The query that you're using in your indicator should only return 1 row.");
 					if (resultType.equals("numerator")){
 						if (resultSet.getObject(1) == null)
 							continue;						
@@ -82,9 +99,16 @@ public class SqlIndicatorEvaluator implements IndicatorEvaluator {
 							result.setNumeratorResult(resultSet.getInt(1));
 						else
 							result.setNumeratorResult(BigDecimal.valueOf(resultSet.getDouble(1)));
-					}	
+					}
 					else if (resultType.equals("denominator") && !resultSet.wasNull())
 						result.setDenominatorResult(resultSet.getInt(1));
+					numRows ++;
+					try {
+						resultSet.getObject(2);
+						throw new RuntimeException("The query that you're using in your indicator should only return 1 column.");
+					} catch (SQLException ex){
+						//pass
+					}
 				}
 			}
 			catch (IllegalDatabaseAccessException ie) {

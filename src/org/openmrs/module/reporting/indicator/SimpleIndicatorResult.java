@@ -1,9 +1,25 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.reporting.indicator;
 
 import org.openmrs.module.reporting.common.Fraction;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
+/**
+ * A class containing generic indicator results.  @see SimpleIndicatorDataSetDefinition
+ */
 public class SimpleIndicatorResult implements IndicatorResult {
 	
 	public static final long serialVersionUID = 1L;
@@ -42,7 +58,7 @@ public class SimpleIndicatorResult implements IndicatorResult {
 					&& Math.rint(indicatorResult.getDenominatorResult().doubleValue()) == indicatorResult.getDenominatorResult().doubleValue()) //check for whole numbers
 				return new Fraction(indicatorResult.getNumeratorResult().intValue(),indicatorResult.getDenominatorResult().intValue());
 			else
-				throw new RuntimeException("FRACTION indicator type is not currently supported by SimpleIndicatorResult if your numerator and denominator are not whole numbers.  If you are returning decimals, try changing your queries to use the samllest possible units.");
+				throw new RuntimeException("FRACTION indicator type is not currently supported by SimpleIndicatorResult if your numerator and denominator are not whole numbers.  If you are returning decimals in your queries, try changing your queries to use the samllest possible units.");
 		}
 	}
 	

@@ -134,7 +134,8 @@ public class CohortIndicatorDataSetDefinition extends BaseDataSetDefinition {
      */
 	public void removeColumn(String columnName) {
 		for (Iterator<CohortIndicatorAndDimensionColumn> i = getColumns().iterator(); i.hasNext(); ) {
-			if (i.next().getName().equals(columnName)) {
+			CohortIndicatorAndDimensionColumn col = i.next();
+			if (col.getName() != null && col.getName().equals(columnName)) {
 				i.remove();
 			}
 		}
