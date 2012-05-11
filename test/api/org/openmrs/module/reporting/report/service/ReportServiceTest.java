@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.report.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -10,6 +11,8 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
@@ -87,6 +90,30 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		Report result = Context.getService(ReportService.class).runReport(request);
 		Assert.assertNotNull(result.getReportData());
 		Assert.assertNull(result.getRenderedOutput());
+	}
+	
+	/**
+	 * @see {@link ReportService#runReport(ReportRequest)}
+	 * 
+	 */
+	@Test
+	@Verifies(value = "should allow dynamic parameters", method = "runReport(ReportRequest)")
+	public void runReport_shouldAllowDynamicParameters() throws Exception {
+		ReportDefinition rptDef = new ReportDefinition();
+		rptDef.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		SqlDataSetDefinition sqlDef = new SqlDataSetDefinition("test sql dsd", null, "select person_id, birthdate from person where birthdate < :effectiveDate");
+		sqlDef.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		rptDef.addDataSetDefinition(sqlDef, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}"));
+		
+		RenderingMode mode = new RenderingMode(new CsvReportRenderer(), "CSV", null, 100);
+		
+		Mapped<ReportDefinition> mappedReport = new Mapped<ReportDefinition>();
+		mappedReport.setParameterizable(rptDef);
+		mappedReport.addParameterMapping("effectiveDate", "${now-50y}");
+		ReportRequest request = new ReportRequest(mappedReport, null, mode, Priority.HIGHEST, null);
+		Report report = Context.getService(ReportService.class).runReport(request);
+		String s = new String(report.getRenderedOutput());
+		System.out.println(s);
 	}
 	
 
@@ -367,8 +394,3 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.AUTOMATIC));
 	}
 }
-
-
-
-
-

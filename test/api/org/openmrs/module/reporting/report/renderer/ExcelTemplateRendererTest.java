@@ -86,7 +86,7 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		design.setRendererType(ExcelTemplateRenderer.class);
 		
 		Properties props = new Properties();
-		props.put("repeatingSections", "sheet:1,row:6-8,dataset:allPatients | sheet:2,row:9,dataset:femalePatients | sheet:2,column:4,dataset:malePatients | sheet:3,dataset:allPatients");
+		props.put("repeatingSections", "sheet:1,row:6-8,dataset:allPatients | sheet:2,column:4,dataset:malePatients | sheet:3,dataset:allPatients");
 
 		design.setProperties(props);
 		

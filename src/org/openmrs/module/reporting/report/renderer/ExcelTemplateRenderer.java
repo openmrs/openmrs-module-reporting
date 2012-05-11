@@ -30,9 +30,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFConditionalFormatting;
+import org.apache.poi.hssf.usermodel.HSSFConditionalFormattingRule;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ExcelUtil;
@@ -273,6 +276,26 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		    	catch (Exception e) {
 		    		// Do nothing here.  I don't know why POI throw exceptions here when the cell is not a formula, but this suppresses them...
 		    	}
+		    	
+		    	int numFormattings = sheetToAdd.getSheet().getSheetConditionalFormatting().getNumConditionalFormattings();
+				for (int n=0; n<numFormattings; n++) {
+					HSSFConditionalFormatting f = sheetToAdd.getSheet().getSheetConditionalFormatting().getConditionalFormattingAt(n);
+					for (CellRangeAddress add : f.getFormattingRanges()) {
+						
+						if (add.getFirstRow() == rowToAdd.getRowToClone().getRowNum() && add.getLastRow() == rowToClone.getRowNum()) {
+							if (add.getFirstColumn() == cellToClone.getColumnIndex() && add.getLastColumn() == cellToClone.getColumnIndex()) {
+								HSSFConditionalFormattingRule[] rules = new HSSFConditionalFormattingRule[f.getNumberOfRules()];
+								for (int j=0; j<f.getNumberOfRules(); j++) {
+									rules[j] = f.getRule(j);
+								}
+								CellRangeAddress[] cellRange = new CellRangeAddress[1];
+								cellRange[0] = new CellRangeAddress(rowIndex, rowIndex, i, i);
+								sheetToAdd.getSheet().getSheetConditionalFormatting().addConditionalFormatting(cellRange, rules);
+							}
+						}
+					}
+				}	
+		    	
 		    	if (ObjectUtil.notNull(contents)) {
 		    		Object newContents = EvaluationUtil.evaluateExpression(contents, cellToAdd.getReplacementData(), prefix, suffix);
 		    		ExcelUtil.setCellContents(styleHelper, newCell, newContents);
