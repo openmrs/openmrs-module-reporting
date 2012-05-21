@@ -57,11 +57,20 @@ public abstract class ReportingShortConverter extends BaseShortConverter impleme
 	public void marshal(Object obj, HierarchicalStreamWriter writer, MarshallingContext context) {
 		
 		boolean hasUuid = false;
+		String uuid = null;
 		try {
-			hasUuid = ((OpenmrsObject) obj).getUuid() != null;
+			uuid = ((OpenmrsObject) obj).getUuid();	
+			hasUuid = (uuid != null);
 		} 
-		catch (Exception ex) { }
+		catch (Exception ex) {}
 		
+		if (hasUuid && obj instanceof OpenmrsObject){
+			hasUuid = getByUUID(uuid) == null ? false : true;
+			if (hasUuid == false && !needsFullSeralization(context)){  //needsFullSerialization returns true of object is the parent.
+				((OpenmrsObject) obj).setUuid(null);
+			}		
+		}
+
 		if (needsFullSeralization(context) || !hasUuid) {
 			if (isCGLibProxy(obj.getClass())) {
 				CustomCGLIBEnhancedConverter converter = new CustomCGLIBEnhancedConverter(getMapper(), getConverterLookup());

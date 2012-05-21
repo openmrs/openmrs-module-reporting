@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.serializer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -61,19 +63,21 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
     @Test
     @Verifies(value = "should serialize an indicator that contains an unsaved cohort definition", method = "ReportingSerializer()")
     public void ReportingSerializer_shouldSerializeAnIndicatorThatContainsAnUnsavedCohortDefinition() throws Exception {
-    	AgeCohortDefinition age = new AgeCohortDefinition();
-		age.addParameter(new Parameter("onDate", "On Date", Date.class));
-		age.setMaxAge(15);
+
+		GenderCohortDefinition males = new GenderCohortDefinition();
+		males.setUuid(UUID.randomUUID().toString());
+		males.setMaleIncluded(true);
 		
-		GenderCohortDefinition gender = new GenderCohortDefinition();
-		gender.setMaleIncluded(true);
+		CohortIndicator numMales = CohortIndicator.newCountIndicator("numMales", new Mapped<CohortDefinition>(males, null), null);
 		
-		AgeCohortDefinition cd = new AgeCohortDefinition();
-		cd.setMinAge(15);
+		ReportingSerializer s = new ReportingSerializer();
 		
-		String xml = new ReportingSerializer().serialize(cd);
-		System.out.println(xml);
-		Assert.assertNotNull(xml);
+		String serialization = s.serialize(numMales);
+		CohortIndicator hydrated = s.deserialize(serialization, CohortIndicator.class);
+		Assert.assertNotNull(hydrated.getCohortDefinition());
+		Assert.assertNotNull(hydrated.getCohortDefinition().getParameterizable());
+		Assert.assertTrue(((GenderCohortDefinition)hydrated.getCohortDefinition().getParameterizable()).getMaleIncluded());
+		Assert.assertFalse(((GenderCohortDefinition)hydrated.getCohortDefinition().getParameterizable()).getFemaleIncluded());
     }
     
 	/**
