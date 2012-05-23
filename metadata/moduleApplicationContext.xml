@@ -460,21 +460,25 @@
 	<bean id="persistCachedReportsTask" class="org.openmrs.module.reporting.report.task.PersistCachedReportsTask"/>
 
 	<bean id="queueScheduledReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	    <property name="delay" value="10000" /> <!-- delay 10 seconds -->
 	    <property name="period" value="60000" /> <!-- run every minute -->
 	    <property name="timerTask" ref="queueScheduledReportsTask"/>
 	</bean>
 
 	<bean id="runQueuedReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+		<property name="delay" value="10000" /> <!-- delay 10 seconds -->
 	    <property name="period" value="60000" /> <!-- run every minute -->
 	    <property name="timerTask" ref="runQueuedReportsTask"/>
 	</bean>
 	
 	<bean id="deleteOldReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+		<property name="delay" value="10000" /> <!-- delay 10 seconds -->
 	    <property name="period" value="3600000" /> <!-- run every hour -->
 	    <property name="timerTask" ref="deleteOldReportsTask"/>
 	</bean>
 	
 	<bean id="persistCachedReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+		<property name="delay" value="10000" /> <!-- delay 10 seconds -->
 	    <property name="period" value="60000" /> <!-- run every minute -->
 	    <property name="timerTask" ref="persistCachedReportsTask"/>
 	</bean>
