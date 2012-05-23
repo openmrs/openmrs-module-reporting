@@ -3,16 +3,12 @@ package org.openmrs.module.reporting.cohort.definition;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 @Localized("reporting.CompositionCohortDefinition")
 public class CompositionCohortDefinition extends BaseCohortDefinition {
-	
-	protected final Log log = LogFactory.getLog(getClass());
 	
 	public static final long serialVersionUID = 1L;
 	
