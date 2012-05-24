@@ -99,18 +99,17 @@ public class CodedObsCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 	@Test
 	@Verifies(value = "should not return voided patients", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldNotReturnVoidedPatients() throws Exception {
-		Patient patient = Context.getPatientService().getPatient(7);
-		Context.getPatientService().voidPatient(patient, "testing");
-		Context.flushSession();
 		
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
 		cd.setTimeModifier(TimeModifier.ANY);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(3, cohort.size());
-		Assert.assertFalse(cohort.contains(7));
-		Assert.assertTrue(cohort.contains(20));
-		Assert.assertTrue(cohort.contains(21));
-		Assert.assertTrue(cohort.contains(22));
+		Assert.assertTrue(cohort.contains(7));
 		
+		Patient patient = Context.getPatientService().getPatient(7);
+		Context.getPatientService().voidPatient(patient, "testing");
+		Context.flushSession();
+		
+		cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertFalse(cohort.contains(7));
 	}
 }
