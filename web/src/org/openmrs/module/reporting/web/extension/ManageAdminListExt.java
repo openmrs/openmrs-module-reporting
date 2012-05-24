@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.web.extension;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.Extension;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -28,6 +29,9 @@ public class ManageAdminListExt extends AdministrationSectionExt {
 		// Using linked hash map to keep order of links
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		Thread.currentThread().setContextClassLoader(OpenmrsClassLoader.getInstance());
+		if (Context.hasPrivilege("Manage Report Definitions")) {
+			map.put("module/reporting/reports/manageReports.form", "reporting.manageReports.title");
+		}
 		map.put("module/reporting/definition/manageDefinitions.form?type=" + DataSetDefinition.class.getName(), "reporting.manageDataSets.title");
 		map.put("module/reporting/indicators/manageIndicators.form", "reporting.manageIndicators.title");
 		map.put("module/reporting/indicators/manageDimensions.form", "reporting.manageDimensions.title");
