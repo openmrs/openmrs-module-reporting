@@ -53,8 +53,8 @@
 <div id="page">
 
 	<div id="container">
-	
-		<h1><spring:message code="reporting.manageDataDefinitions.title"/></h1>
+
+		<h1><spring:message code="reporting.${type.simpleName}"/></h1>
 	
 		<c:if test="${!empty allTypes}">
 			<ul id="menu">

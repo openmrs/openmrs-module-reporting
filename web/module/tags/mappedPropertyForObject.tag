@@ -16,6 +16,7 @@
 <%@ attribute name="object" required="true" type="java.lang.Object" %>
 <%@ attribute name="propertyName" required="true" type="java.lang.String" %>
 <%@ attribute name="label" required="true" type="java.lang.String" %>
+<%@ attribute name="emptyValueLabel" required="false" type="java.lang.String" %>
 <%@ attribute name="changeFunction" required="false" type="java.lang.String" %>
 
 <%
@@ -53,7 +54,8 @@ if (currentValue != null) {
 } else {
 	jspContext.setAttribute("currentValue", null);
 	jspContext.setAttribute("initialParamLabel", null);
-	jspContext.setAttribute("initialValueLabel", "Choose");
+	String emptyValueLabel = (String)jspContext.getAttribute("emptyValueLabel");
+	jspContext.setAttribute("initialValueLabel", emptyValueLabel == null ? "Choose" : emptyValueLabel);
     jspContext.setAttribute("initialFormFieldValue", null);
 }
 %>

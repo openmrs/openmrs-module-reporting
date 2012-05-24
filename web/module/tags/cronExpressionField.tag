@@ -401,4 +401,4 @@
 
 <input type="hidden" id="${id}scheduleExpression" name="${formFieldName}" value="${formFieldValue}">
 <input id="${id}showSelectScheduleDialog" type="button" value="<spring:message code="reporting.manageTasks.scheduleDescription"/>">
-<span id="${id}labelScheduleExpression" class="cronExpression"></span>
+<span id="${id}labelScheduleExpression" class="cronExpression"><spring:message code="reporting.immediately"/></span>

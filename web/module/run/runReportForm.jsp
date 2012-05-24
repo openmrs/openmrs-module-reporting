@@ -3,119 +3,140 @@
 
 <openmrs:require privilege="Run Reports" otherwise="/login.htm" redirect="/admin/reports/runReport.list" />
 
+<style>
+	.runTableCell {padding-right:10px; padding-bottom:5px;}
+</style>
+
 <div id="page">
 	<div id="container">
-<div style="width: 60%">
-	<h1><b><big>${report.reportDefinition.name}</big></b></h1>
-	<h2><i>${report.reportDefinition.description}</i></h2>
+		<div>
+			<h1>${report.reportDefinition.name}</h1>
+			<h2>${report.reportDefinition.description}</h2>
+			
+			<table style="width:100%;">
+				<tr>
+					<td style="width:50%; vertical-align:top;">
 	
-	<spring:hasBindErrors name="report">
-		<spring:message code="fix.error"/>
-		<c:if test="${not empty errors.globalErrors}">
-			<div class="error">
-				<c:forEach items="${errors.globalErrors}" var="error">
-					<spring:message code="${error.code}" text="${error.defaultMessage}"/><br/>
-				</c:forEach>
-			</div>
-		</c:if>
-	</spring:hasBindErrors>
-		
-	<spring:nestedPath path="report">
-		<spring:bind path="reportDefinition">
-			<c:if test="${not empty status.errorMessage}">
-				<span class="error">${status.errorMessage}</span>
-			</c:if>
-		</spring:bind>
-
-		<form method="post">
-			<table>
-				<c:forEach var="parameter" items="${report.reportDefinition.parameters}">
-	                <tr>
-	                    <spring:bind path="userEnteredParams[${parameter.name}]">
-				            <td align="right">
-					           <spring:message code="${parameter.label}"/>:
-		                    </td>
-		                    <td>
-                   				<c:choose>
-									<c:when test="${parameter.collectionType != null}">
-										<wgt:widget id="userEnteredParam${parameter.name}" name="${status.expression}" type="${parameter.collectionType.name}" genericTypes="${parameter.type.name}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>	
-									</c:when>
-									<c:otherwise>
-										<wgt:widget id="userEnteredParam${parameter.name}" name="${status.expression}" type="${parameter.type.name}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>	
-									</c:otherwise>
-								</c:choose>
-		                        <c:if test="${not empty status.errorMessage}">
-		                            <span class="error">${status.errorMessage}</span>
-		                        </c:if>
-		                    </td>
-			            </spring:bind>
-	                </tr>
-	            </c:forEach>
-				<tr>				
-					<td align="right"><spring:message code="reporting.Report.run.outputFormat"/>:</td>					
-					<td>
-						<spring:bind path="selectedRenderer">
-				            <select name="${status.expression}">
-				                <c:forEach var="renderingMode" items="${report.renderingModes}">
-				                	<c:set var="thisVal" value="${renderingMode.descriptor}"/>
-				                    <option
-				                        <c:if test="${status.value == thisVal}"> selected</c:if>
-				                        value="${thisVal}">${renderingMode.label}
-				                    </option>
-				                </c:forEach>
-				            </select>
-							<c:if test="${not empty status.errorMessage}">
-								<span class="error">${status.errorMessage}</span>
-							</c:if>
-						</spring:bind>
-					</td>		
-				</tr>
-				<tr>
-					<td><b><spring:message code="reporting.Report.run.optionalConfiguration"/></b></td>
-					<td></td>
-				</tr>
-				<openmrs:globalProperty var="mode" key="reporting.runReportCohortFilterMode" defaultValue="showIfNull"/>
-				<c:set var="showCohortFilter" value="${mode == 'hide' ? false : (mode == 'show' ? true : report.reportDefinition.baseCohortDefinition == null)}"/>
-				<c:if test="${showCohortFilter}">
-		            <tr valign="top">
-		                <td align="right"><spring:message code="reporting.Report.run.optionalFilterCohort"/>:</td>
-		                <td>
-		                    <rptTag:mappedPropertyForObject id="baseCohort"
-		                        formFieldName="baseCohort" object="${ report }"
-		                        propertyName="baseCohort" label="Optional Filter Cohort"/>
-		                </td>
-		            </tr>
-	            </c:if>
-        		<tr valign="top">
-	                <td align="right"><spring:message code="reporting.Report.run.optionalSchedule"/>:</td>
-	                <td>
-	                	<spring:bind path="schedule">
-	                		<rptTag:cronExpressionField id="runReport" formFieldName="${status.expression}" formFieldValue="${status.value}"/>
-				       		<c:if test="${not empty status.errorMessage}">
-								<span class="error">${status.errorMessage}</span>
-							</c:if>
-				        </spring:bind>
-	                </td>
-	            </tr>
-				<tr><td>&nbsp;</td></tr>			
-				<tr>
-					<td></td>
-					<td>					
-						<input type="submit" value="<spring:message code="reporting.Report.run.button"/>" />
-						<c:if test="${!empty report.existingRequestUuid}">
-							<span style="padding-left:20px;">
-								<a onclick="return confirm('<spring:message code="reporting.reportHistory.confirmDelete"/>');" href="../reports/reportHistoryDelete.form?uuid=${report.existingRequestUuid}">
-									<button border="0"><spring:message code="general.delete"/></button>
+						<fieldSet>
+							<legend><b><spring:message code="reporting.runReport.runOrScheduleThisReport"/></b></legend>
+			
+							<spring:nestedPath path="report">
+								<spring:bind path="reportDefinition">
+									<c:if test="${not empty status.errorMessage}">
+										<span class="error">${status.errorMessage}</span>
+									</c:if>
+								</spring:bind>
+			
+								<form method="post">
+									<table style="padding:10px;">
+										<c:forEach var="parameter" items="${report.reportDefinition.parameters}">
+							                <tr>
+							                    <spring:bind path="userEnteredParams[${parameter.name}]">
+										            <td><spring:message code="${parameter.label}"/>:</td>
+								                    <td>
+						                   				<c:choose>
+															<c:when test="${parameter.collectionType != null}">
+																<wgt:widget id="userEnteredParam${parameter.name}" name="${status.expression}" type="${parameter.collectionType.name}" genericTypes="${parameter.type.name}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>	
+															</c:when>
+															<c:otherwise>
+																<wgt:widget id="userEnteredParam${parameter.name}" name="${status.expression}" type="${parameter.type.name}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>	
+															</c:otherwise>
+														</c:choose>
+								                        <c:if test="${not empty status.errorMessage}">
+								                            <span class="error">${status.errorMessage}</span>
+								                        </c:if>
+								                    </td>
+									            </spring:bind>
+							                </tr>
+							            </c:forEach>
+										<tr>				
+											<td><spring:message code="reporting.Report.run.outputFormat"/>:</td>					
+											<td>
+												<spring:bind path="selectedRenderer">
+										            <select name="${status.expression}">
+										                <c:forEach var="renderingMode" items="${report.renderingModes}">
+										                	<c:set var="thisVal" value="${renderingMode.descriptor}"/>
+										                    <option
+										                        <c:if test="${status.value == thisVal}"> selected</c:if>
+										                        value="${thisVal}">${renderingMode.label}
+										                    </option>
+										                </c:forEach>
+										            </select>
+													<c:if test="${not empty status.errorMessage}">
+														<span class="error">${status.errorMessage}</span>
+													</c:if>
+												</spring:bind>
+											</td>		
+										</tr>
+									</table>
+									<table style="padding:10px;">
+										<openmrs:globalProperty var="mode" key="reporting.runReportCohortFilterMode" defaultValue="showIfNull"/>
+										<c:set var="showCohortFilter" value="${mode == 'hide' ? false : (mode == 'show' ? true : report.reportDefinition.baseCohortDefinition == null)}"/>
+										<c:if test="${showCohortFilter}">
+											<tr>
+												<td class="runTableCell">
+													<spring:message code="reporting.Report.run.runForSpecificCohort"/>
+												</td>
+												<td class="runTableCell">
+													<spring:message code="reporting.Report.run.optionalFilterCohort" var="filterCohortLabel"/>
+													<spring:message code="reporting.allPatients" var="allPatients"/>
+													<rptTag:mappedPropertyForObject id="baseCohort" formFieldName="baseCohort" object="${report}" propertyName="baseCohort" label="${filterCohortLabel}" emptyValueLabel="${allPatients}"/>
+									          	</td>
+									         </tr>
+										</c:if>
+						        		<tr valign="top">
+							                <td class="runTableCell"><spring:message code="reporting.Report.run.whenShouldReportBeRun"/></td>
+							                <td class="runTableCell">
+							                	<spring:bind path="schedule">
+							                		<rptTag:cronExpressionField id="runReport" formFieldName="${status.expression}" formFieldValue="${status.value}"/>
+										       		<c:if test="${not empty status.errorMessage}">
+														<span class="error">${status.errorMessage}</span>
+													</c:if>
+										        </spring:bind>
+							                </td>
+							            </tr>
+							            <tr>
+							            	<td colspan="2">
+							            		<br/>
+												<input type="submit" value="<spring:message code="reporting.Report.run.button"/>" />
+												<c:if test="${!empty report.existingRequestUuid}">
+													<span style="padding-left:20px;">
+														<a onclick="return confirm('<spring:message code="reporting.reportHistory.confirmDelete"/>');" href="../reports/reportHistoryDelete.form?uuid=${report.existingRequestUuid}">
+															<button border="0"><spring:message code="general.delete"/></button>
+														</a>
+													</span>
+												</c:if>
+							        		</td>
+							        	</tr>
+							        </table>
+								</form>
+							</spring:nestedPath>
+							
+						</fieldSet>
+					</td>
+					<td style="width:50%; vertical-align:top;">
+						<fieldSet>
+							<legend>
+								<b><spring:message code="reporting.reportHistory.title"/></b>
+								&nbsp;&nbsp;
+								<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistory.form?id=${report.reportDefinition.id}">
+									(<spring:message code="reporting.viewAll"/>)
 								</a>
-							</span>
-						</c:if>
-	        		</td>
-	        	</tr>
-	        </table>
-		</form>
-	</spring:nestedPath>
-		
-</div>
-</div>
+							</legend>
+							<div style="padding:10px;">
+								<h4><spring:message code="reporting.Report.mostRecentlyCompletedReport"/></h4>
+								
+								<h4><spring:message code="reporting.Report.currentlyRunning"/></h4>
+								
+								<h4><spring:message code="reporting.Report.currentlyQueued"/></h4>
+								
+								<h4><spring:message code="reporting.Report.currentlyScheduled"/></h4>
+							</div>
+						</fieldSet>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>
 <%@ include file="/WEB-INF/template/footer.jsp"%>
