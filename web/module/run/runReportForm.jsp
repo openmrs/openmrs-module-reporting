@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="../run/localHeader.jsp"%>
 
-<openmrs:require privilege="Run Reports" otherwise="/login.htm" redirect="/admin/reports/runReport.list" />
+<openmrs:require privilege="Run Reports" otherwise="/login.htm" redirect="/module/reporting/run/runReport.form" />
 
 <style>
 	.runTableCell {padding-right:10px; padding-bottom:5px;}
