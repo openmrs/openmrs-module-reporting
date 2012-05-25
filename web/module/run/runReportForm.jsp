@@ -118,19 +118,30 @@
 						<fieldSet>
 							<legend>
 								<b><spring:message code="reporting.reportHistory.title"/></b>
-								&nbsp;&nbsp;
-								<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistory.form?id=${report.reportDefinition.id}">
-									(<spring:message code="reporting.viewAll"/>)
-								</a>
 							</legend>
 							<div style="padding:10px;">
-								<h4><spring:message code="reporting.Report.mostRecentlyCompletedReport"/></h4>
-								
+								<h4>
+									<spring:message code="reporting.Report.mostRecentlyCompletedReport"/>
+									&nbsp;&nbsp;
+									<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistory.form?id=${report.reportDefinition.id}">
+										(<spring:message code="reporting.viewAll"/>)
+									</a>
+								</h4>
+								<div style="padding:5px 0px 5px 10px;">
+									<openmrs:portlet url="reportRequests" id="completedRequests" moduleId="reporting" parameters="reportId=${report.reportDefinition.id}|status=SAVED,COMPLETED,FAILED|mostRecentNum=1"/>
+								</div>
 								<h4><spring:message code="reporting.Report.currentlyRunning"/></h4>
-								
+								<div style="padding:5px 0px 5px 10px;">
+									<openmrs:portlet url="reportRequests" id="runningRequests" moduleId="reporting" parameters="reportId=${report.reportDefinition.id}|status=PROCESSING"/>
+								</div>
 								<h4><spring:message code="reporting.Report.currentlyQueued"/></h4>
-								
+								<div style="padding:5px 0px 5px 10px;">
+									<openmrs:portlet url="reportRequests" id="queuedRequests" moduleId="reporting" parameters="reportId=${report.reportDefinition.id}|status=REQUESTED"/>
+								</div>
 								<h4><spring:message code="reporting.Report.currentlyScheduled"/></h4>
+								<div style="padding:5px 0px 5px 10px;">
+									<openmrs:portlet url="reportRequests" id="scheduledRequests" moduleId="reporting" parameters="reportId=${report.reportDefinition.id}|status=SCHEDULED"/>
+								</div>
 							</div>
 						</fieldSet>
 					</td>

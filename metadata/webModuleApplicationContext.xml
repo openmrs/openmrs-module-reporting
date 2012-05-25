@@ -38,6 +38,7 @@
             	<prop key="**/queuedReports.portlet">queuedReportsPortletController</prop>
             	<prop key="**/scheduledReports.portlet">scheduledReportsPortletController</prop>
             	<prop key="**/runReport.portlet">runReportPortletController</prop>
+            	<prop key="**/reportRequests.portlet">reportRequestPortletController</prop>
 				<prop key="module/reporting/indicatorWizard.form">indicatorFormController</prop>
 				<prop key="module/reporting/newIndicator.form">indicatorFormController</prop>
 				<prop key="module/reporting/run/runReport.list">runReportList</prop>
@@ -63,6 +64,7 @@
 	<bean id="queuedReportsPortletController" class="org.openmrs.module.reporting.web.controller.portlet.QueuedReportsPortletController" />
 	<bean id="scheduledReportsPortletController" class="org.openmrs.module.reporting.web.controller.portlet.ScheduledReportsPortletController" />
 	<bean id="runReportPortletController" class="org.openmrs.module.reporting.web.controller.portlet.RunReportPortletController" />
+	<bean id="reportRequestPortletController" class="org.openmrs.module.reporting.web.reports.ReportRequestPortletController" />
 
 	<bean id="runReportList" class="org.openmrs.module.reporting.web.reports.RunReportListController">
         <property name="commandName"><value>reports</value></property>

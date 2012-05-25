@@ -20,17 +20,6 @@
 			"bInfo": true,
 			"bAutoWidth": false
 		} );
-		
-		$('.schedule').each(function() {
-			var val = $(this).html();
-			var quartz = true
-			try{
-				val = getScheduleDescription(val)
-				$(this).html(val)
-			} catch(e) {
-				console.log(e)
-			}
-		});
 	} );
 
 	function confirmDelete(name, uuid) {
@@ -85,7 +74,7 @@
 				                    </c:if>
 				                </c:forEach>
 							</td>
-							<td class="schedule">${scheduledReport.schedule}</td>
+							<td><rptTag:cronDisplay id="${scheduledReport.id}Schedule" expression="${scheduledReport.schedule}"/></td>
 							<td>${rpt:nextExecutionTime(scheduledReport.schedule)}</td>
 							<td>
 								<a href="javascript:confirmDelete('${scheduledReport.reportDefinition.parameterizable.name}','${scheduledReport.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
