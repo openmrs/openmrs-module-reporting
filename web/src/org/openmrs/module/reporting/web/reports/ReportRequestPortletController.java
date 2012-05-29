@@ -14,7 +14,6 @@
 package org.openmrs.module.reporting.web.reports;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,13 +24,13 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.web.controller.portlet.ReportingPortletController;
 import org.openmrs.util.OpenmrsClassLoader;
-import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.controller.PortletController;
 
 /**
@@ -76,21 +75,7 @@ public class ReportRequestPortletController extends ReportingPortletController {
 		}
 		
 		List<ReportRequest> requests = rs.getReportRequests(reportDefinition, null, null, statuses);
-		Collections.sort(requests, new Comparator<ReportRequest>() {
-			public int compare(ReportRequest r1, ReportRequest r2) {
-				int ret = OpenmrsUtil.compareWithNullAsLatest(r1.getEvaluateCompleteDatetime(), r2.getEvaluateCompleteDatetime());
-				if (ret == 0) {
-					ret = OpenmrsUtil.compareWithNullAsLatest(r1.getEvaluateStartDatetime(), r2.getEvaluateStartDatetime());
-				}
-				if (ret == 0) {
-					ret = r1.getPriority().compareTo(r2.getPriority());
-				}
-				if (ret == 0) {
-					ret = OpenmrsUtil.compareWithNullAsLatest(r1.getRequestDate(), r2.getRequestDate());
-				}
-				return ret;
-			}
-		});
+		Collections.sort(requests, new PriorityComparator());
 		
 		if (ObjectUtil.notNull(mostRecentNumParam)) {
 			Integer mostRecentNum = Integer.valueOf(mostRecentNumParam);

@@ -77,13 +77,13 @@
 			</c:choose>
 			<br/><br/><br/>
 			<span id="downloadReportDiv" style="display:none; padding:10px;">
-				<button onClick="window.location='reportHistoryDownload.form?uuid=${request.uuid}';" style="width:200px; height:40px;">
+				<button onClick="window.location='viewReport.form?uuid=${request.uuid}';" style="width:200px; height:40px;">
 					<b><spring:message code="general.download"/></b><br/>
 					<img src="${iconFilename}" border="0" width="16" height="16"/>
 				</button>
 			</span>
 			<span id="viewReportDiv" style="display:none; padding:5px;">
-				<button onClick="window.location='reportHistoryView.form?uuid=${request.uuid}';" style="width:200px; height:40px;">
+				<button onClick="window.location='viewReport.form?uuid=${request.uuid}';" style="width:200px; height:40px;">
 					<b><spring:message code="general.view"/></b><br/>
 					<img src="${iconFilename}" border="0" width="16" height="16"/>
 				</button>

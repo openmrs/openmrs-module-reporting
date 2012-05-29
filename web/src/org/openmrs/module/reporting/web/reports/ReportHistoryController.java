@@ -2,8 +2,13 @@ package org.openmrs.module.reporting.web.reports;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,22 +18,33 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.propertyeditor.ReportDefinitionEditor;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.processor.ReportProcessor;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 import org.openmrs.module.reporting.web.util.AjaxUtil;
+import org.openmrs.propertyeditor.UserEditor;
+import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
@@ -37,57 +53,72 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class ReportHistoryController {
+
+	private final Log log = LogFactory.getLog(getClass());
 	
-	/** Logger for this class and subclasses */
-	protected final Log log = LogFactory.getLog(getClass());
-	
-	@RequestMapping("/module/reporting/reports/reportHistory")
-	public void showReportHistory(ModelMap model) {
-		List<ReportRequest> complete = getReportService().getReportRequests(null, null, null, Status.COMPLETED, Status.FAILED, Status.SAVED);
-		List<ReportRequest> queue = getReportService().getReportRequests(null, null, null, Status.REQUESTED);
-		Collections.reverse(complete);
-		Collections.reverse(queue);
-		model.addAttribute("complete", complete);
-		model.addAttribute("queue", queue);
-		model.addAttribute("cached", getReportService().getCachedReports().keySet());
-		
-		Map<ReportRequest, String> shortNames = new HashMap<ReportRequest, String>();
-		Map<ReportRequest, Boolean> isWebRenderer = new HashMap<ReportRequest, Boolean>();
-		for (ReportRequest r : complete) {
-			if (r.getRenderingMode().getRenderer() instanceof WebReportRenderer) {
-				shortNames.put(r, "Web");
-				isWebRenderer.put(r, true);
-			} else {
-				String filename = r.getRenderingMode().getRenderer().getFilename(r.getReportDefinition().getParameterizable(),
-				    r.getRenderingMode().getArgument());
-				try {
-					filename = filename.substring(filename.lastIndexOf('.') + 1);
-					filename = filename.toUpperCase();
-				}
-				catch (Exception ex) {}
-				shortNames.put(r, filename);
-				isWebRenderer.put(r, false);
-			}
-		}
-		model.addAttribute("shortNames", shortNames);
-		model.addAttribute("isWebRenderer", isWebRenderer);
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		SimpleDateFormat dateFormat = Context.getDateFormat();
+		dateFormat.setLenient(false);
+		binder.registerCustomEditor(ReportDefinition.class, new ReportDefinitionEditor());
+		binder.registerCustomEditor(User.class, new UserEditor());
+		binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true, 10)); 
 	}
 	
-	@RequestMapping("/module/reporting/reports/reportHistoryDelete")
-	public String deleteFromHistory(@RequestParam("uuid") String uuid) {
-		ReportService rs = Context.getService(ReportService.class);
-		ReportRequest request = rs.getReportRequestByUuid(uuid);
-		rs.purgeReportRequest(request);
-		return "redirect:reportHistory.form";
+	@RequestMapping("/module/reporting/reports/reportHistory")
+	public void showReportHistory(ModelMap model, 
+								  @RequestParam(value="reportDefinition", required=false) ReportDefinition reportDefinition,
+								  @RequestParam(value="requestedBy", required=false) User requestedBy,
+								  @RequestParam(value="statuses", required=false) Status[] statuses,
+								  @RequestParam(value="requestOnOrAfter", required=false) Date requestOnOrAfter,
+								  @RequestParam(value="requestOnOrBefore", required=false) Date requestOnOrBefore) {
+		
+		Status[] historyStatuses = new Status[] {Status.COMPLETED, Status.SAVED, Status.FAILED};
+		model.addAttribute("historyStatuses", historyStatuses);
+		if (statuses == null) {
+			statuses = historyStatuses;
+		}
+		
+		model.addAttribute("reportDefinition", reportDefinition);
+		model.addAttribute("requestedBy", requestedBy);
+		model.addAttribute("statuses", Arrays.asList(statuses));
+		model.addAttribute("requestOnOrAfter", requestOnOrAfter);
+		model.addAttribute("requestOnOrBefore", requestOnOrBefore);
+
+		List<ReportRequest> history = getReportService().getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
+		if (requestedBy != null) {
+			for (Iterator<ReportRequest> i = history.iterator(); i.hasNext();) {
+				ReportRequest rr = i.next();
+				if (!rr.getRequestedBy().equals(requestedBy)) {
+					i.remove();
+				}
+			}
+		}
+		Collections.sort(history, new PriorityComparator());
+		Collections.reverse(history);
+		model.addAttribute("history", history);
+		
+		model.addAttribute("cached", getReportService().getCachedReports().keySet());
+		
+		List<RenderingMode> renderingModes = new ArrayList<RenderingMode>();
+		for (ReportRequest reportRequest : history) {
+			for (RenderingMode mode : getReportService().getRenderingModes(reportRequest.getReportDefinition().getParameterizable())) {
+				if (OpenmrsUtil.nullSafeEquals(mode, reportRequest.getRenderingMode())) {
+					reportRequest.setRenderingMode(mode);
+				}
+			}
+        }
+		model.addAttribute("renderingModes", renderingModes);
 	}
 	
 	@RequestMapping("/module/reporting/reports/deleteReportRequest")
 	public String deleteReportRequest(@RequestParam("uuid") String uuid,
-									@RequestParam("returnUrl") String returnUrl) {
+									  @RequestParam("returnUrl") String returnUrl) {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportRequest request = rs.getReportRequestByUuid(uuid);
 		rs.purgeReportRequest(request);
-		return "redirect:" + returnUrl;
+		return "redirect:" + ObjectUtil.nvlStr(returnUrl, "reportHistory.form");
 	}
 	
 	@RequestMapping("/module/reporting/reports/loadReportStatus")
@@ -167,8 +198,8 @@ public class ReportHistoryController {
 		return "/module/reporting/reports/reportHistoryOpen";
 	}
 	
-	@RequestMapping("/module/reporting/reports/reportHistoryView")
-	public ModelAndView viewFromHistory(@RequestParam("uuid") String uuid, HttpServletResponse response, HttpServletRequest request) throws IOException {
+	@RequestMapping("/module/reporting/reports/viewReport")
+	public ModelAndView viewReport(@RequestParam("uuid") String uuid, HttpServletResponse response, HttpServletRequest request) throws IOException {
 		ReportRequest req = getReportService().getReportRequestByUuid(uuid);
 		RenderingMode rm = req.getRenderingMode();
 		String linkUrl = "/module/reporting/reports/reportHistoryOpen";
@@ -177,37 +208,32 @@ public class ReportHistoryController {
 			WebReportRenderer webRenderer = (WebReportRenderer) rm.getRenderer();
 			linkUrl = webRenderer.getLinkUrl(req.getReportDefinition().getParameterizable());
 			linkUrl = request.getContextPath() + (linkUrl.startsWith("/") ? "" : "/") + linkUrl;
-		}
-		
-		if (req != null) {
-			ReportData reportData = getReportService().loadReportData(req);
-			if (reportData != null) {
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, reportData);
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument());
-				request.getSession().setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, linkUrl);
+			if (req != null) {
+				ReportData reportData = getReportService().loadReportData(req);
+				if (reportData != null) {
+					request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_DATA, reportData);
+					request.getSession().setAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, rm.getArgument());
+					request.getSession().setAttribute(ReportingConstants.OPENMRS_LAST_REPORT_URL, linkUrl);
+				}
 			}
-		}
-
-		return new ModelAndView(new RedirectView(linkUrl));
-	}
-
-	@RequestMapping("/module/reporting/reports/reportHistoryDownload")
-	public void downloadFromHistory(@RequestParam("uuid") String uuid, HttpServletResponse response, HttpServletRequest request) throws IOException {
-		ReportRequest req = getReportService().getReportRequestByUuid(uuid);
-		RenderingMode rm = req.getRenderingMode();
-
-		String filename = rm.getRenderer().getFilename(req.getReportDefinition().getParameterizable(), rm.getArgument()).replace(" ", "_");
-		response.setContentType(rm.getRenderer().getRenderedContentType(req.getReportDefinition().getParameterizable(), rm.getArgument()));
-		byte[] data = getReportService().loadRenderedOutput(req);
-		
-		if (data != null) {
-			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-			response.setHeader("Pragma", "no-cache");
-			IOUtils.write(data, response.getOutputStream());
+			return new ModelAndView(new RedirectView(linkUrl));
 		}
 		else {
-			response.getWriter().write("There was an error retrieving the report");
+			String filename = rm.getRenderer().getFilename(req.getReportDefinition().getParameterizable(), rm.getArgument()).replace(" ", "_");
+			response.setContentType(rm.getRenderer().getRenderedContentType(req.getReportDefinition().getParameterizable(), rm.getArgument()));
+			byte[] data = getReportService().loadRenderedOutput(req);
+			
+			if (data != null) {
+				response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+				response.setHeader("Pragma", "no-cache");
+				IOUtils.write(data, response.getOutputStream());
+			}
+			else {
+				response.getWriter().write("There was an error retrieving the report");
+			}
+			return null;
 		}
+		
 	}
 	
 	@RequestMapping("/module/reporting/reports/reportHistoryProcess")

@@ -18,14 +18,14 @@
 	});
 	
 	function cancelReportRequest(id){
-		if(id && confirm('<spring:message code="reporting.manageReportQueue.cancel.confirm" />')){
+		if(id && confirm('<spring:message code="reporting.reportRequest.cancel.confirm" />')){
 			DWRReportingService.purgeReportRequest(id, function(success){
 				if(success == true){
 					pos = reportRequestsTable.fnGetPosition(document.getElementById('reportRequest_'+id));
 					if(pos != undefined)
 						reportRequestsTable.fnDeleteRow(pos);
 				}else{
-					alert('<spring:message code="reporting.manageReportQueue.error.failedToCancel" />');
+					alert('<spring:message code="reporting.reportRequest.error.failedToCancel" />');
 				}
 			});
 		}
@@ -41,12 +41,12 @@ span.cancel{
 <table id="reportRequestsTable" class="reporting-data-table display">
 	<thead>
 		<tr>
-			<th><spring:message code="reporting.manageReportQueue.reportname"/></th>
-			<th><spring:message code="reporting.manageReportQueue.parameters"/></th>
-			<th><spring:message code="reporting.manageReportQueue.requestedOn"/></th>
-			<th><spring:message code="reporting.manageReportQueue.priority"/></th>
-			<th><spring:message code="reporting.manageReportQueue.status"/></th>
-			<th><spring:message code="reporting.manageReportQueue.actions"/></th>
+			<th><spring:message code="reporting.reportRequest.reportName"/></th>
+			<th><spring:message code="reporting.reportRequest.parameters"/></th>
+			<th><spring:message code="reporting.reportRequest.requestedOn"/></th>
+			<th><spring:message code="reporting.reportRequest.priority"/></th>
+			<th><spring:message code="reporting.reportRequest.status"/></th>
+			<th><spring:message code="reporting.reportRequest.actions"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -76,7 +76,7 @@ span.cancel{
 				<br />
 				<c:choose>
 					<c:when test="${model.reportPositionMap[reportRequest.id] != null && model.reportPositionMap[reportRequest.id] > 0}">
-						<spring:message code="reporting.manageReportQueue.position"/> ${model.reportPositionMap[reportRequest.id]}
+						<spring:message code="reporting.reportRequest.position"/> ${model.reportPositionMap[reportRequest.id]}
 					</c:when>
 					<c:otherwise><spring:message code="general.unknown"/></c:otherwise>
 				</c:choose>

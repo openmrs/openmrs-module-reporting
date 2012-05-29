@@ -27,92 +27,97 @@
 	} );	
 </script>
 
-<style>
-	.report-label {
-		border: 1px gray solid;
-		padding: 0px;
-		margin: 0.2em;
-	}
-</style>
-
 <div id="page">
 	<div id="container">
 		<h1><spring:message code="reporting.reportHistory.title"/></h1>
+		<form method="get">
+			<table>
+				<tr>
+					<td><spring:message code="reporting.reportHistory.report"/>: </td>
+					<td>
+						<spring:message code="reporting.allReports" var="allReportLabel"/>
+						<wgt:widget id="reportField" name="reportDefinition" type="org.openmrs.module.reporting.report.definition.ReportDefinition" defaultValue="${reportDefinition}" attributes="emptyLabel=${allReportLabel}"/>	
+					</td>
+					<td style="padding-left:20px;"><spring:message code="reporting.reportHistory.requestedBy"/>: </td>
+					<td><wgt:widget id="requestedByField" name="requestedBy" type="org.openmrs.User" defaultValue="${requestedBy}" format="select" attributes="emptyCode=reporting.allUsers"/></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><spring:message code="reporting.reportHistory.status"/>: </td>
+					<td>
+						<c:forEach items="${historyStatuses}" var="status">
+							<c:set var="selected" value="${statuses == null || fn:contains(statuses, status)}"/>
+							<input type="checkbox" name="statuses" value="${status}"<c:if test="${selected}"> checked="true"</c:if>/> 
+							<spring:message code="reporting.status.${status}"/>&nbsp;&nbsp;
+						</c:forEach>
+					</td>
+					<td style="padding-left:20px;"><spring:message code="reporting.reportHistory.requestedFrom"/>: </td>
+					<td>
+						<wgt:widget id="requestOnOrAfterField" name="requestOnOrAfter" type="java.util.Date" defaultValue="${requestOnOrAfter}"/>
+						-
+						<wgt:widget id="requestOnOrBeforeField" name="requestOnOrBefore" type="java.util.Date" defaultValue="${requestOnOrBefore}"/>
+					</td>
+					<td><input type="submit" value="<spring:message code="general.search"/>"/></td>
+				</tr>
+			</table>
+		</form>
+		
+		<hr/>
 
-		<table id="report-history-table" width="90%" cellspacing="0" cellpadding="3">
+		<table id="report-history-table" class="display" width="99%" style="padding:3px;">
 			<thead>
-				<tr class="small">
-					<th><spring:message code="reporting.reportHistory.report"/></th>
-					<th><spring:message code="general.parameters"/></th>
-					<th><spring:message code="reporting.reportHistory.open"/></th>
-					<th><spring:message code="reporting.reportHistory.runDetails"/></th>
-					<th><spring:message code="general.description"/></th>
-					<th width="0"></th>
-					<th width="0"></th>
+				<tr>
+					<th><spring:message code="reporting.reportRequest.reportName"/></th>
+					<th><spring:message code="reporting.reportRequest.parameters"/></th>
+					<th><spring:message code="reporting.reportRequest.outputFormat"/></th>
+					<th><spring:message code="reporting.reportRequest.requestedOn"/></th>
+					<th><spring:message code="reporting.reportRequest.status"/></th>
+					<th style="text-align:center;"><spring:message code="reporting.reportRequest.actions"/></th>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach var="r" items="${complete}">
-					<c:choose>
-						<c:when test="${isWebRenderer[r]}">
-							<c:set var="openImageFilename" value="/moduleResources/reporting/images/report_icon.gif"/>
-						</c:when>
-						<c:otherwise>
-							<c:set var="openImageFilename" value="/images/file.gif"/>
-						</c:otherwise>
-					</c:choose>
+				<c:forEach var="r" items="${history}">
 					<tr valign="baseline">
 						<td>
-							${r.reportDefinition.parameterizable.name}
+							<a href="reportHistoryOpen.form?uuid=${r.uuid}">
+								${r.reportDefinition.parameterizable.name}
+							</a>
 						</td>
-						<td>
+						<td style="white-space:nowrap;">
 							<table class="small">
-								<c:forEach var="p" items="${r.reportDefinition.parameterMappings}">
+								<c:forEach var="p" items="${r.reportDefinition.parameterizable.parameters}">
 									<tr>
-										<td>${p.key}:</td>
-										<td><rpt:format object="${p.value}"/></td>
+										<td>${p.label}:</td>
+										<td><rpt:format object="${r.reportDefinition.parameterMappings[p.name]}"/></td>
 									</tr>
 								</c:forEach>
 							</table>
 		 				</td>
-						<td valign="middle">
-							<button onClick="window.location='reportHistoryOpen.form?uuid=${r.uuid}';">
-								<c:choose>
-									<c:when test="${r.status == 'FAILED'}">
-										<img src='<c:url value="/images/error.gif"/>' border="0" width="16" height="16"/>
-									</c:when>
-									<c:otherwise>
-										<img src='<c:url value="${openImageFilename}"/>' border="0" width="16" height="16"/>
-										<br/>
-										${shortNames[r]}
-									</c:otherwise>
-								</c:choose>
-							</button>
-						</td>
-						<td>
-							<rpt:timespan then="${r.requestDate}"/><br/>
+		 				<td>
+		 					${r.renderingMode.label}
+		 				</td>
+						<td style="white-space:nowrap;">
+							<openmrs:formatDate date="${r.requestDate}" format="dd/MMM/yyyy HH:mm"/><br/>
 							<small>
-								by ${r.requestedBy.username}
+								<rpt:format object="${r.requestedBy}"/>
 							</small>
 						</td>
-						<td>
-							${r.description}
+						<td style="white-space:nowrap;">
+							<spring:message code="reporting.status.${r.status}"/>
 						</td>
-						<td>
+						<td style="text-align:center; vertical-align:middle;">
 							<c:choose>
-								<c:when test="${r.status == 'SAVED'}">
-									<img src='<c:url value="/images/checkmark.png"/>' border="0"/>
-								</c:when>
-								<c:when test="${fn:contains(cached, r)}">
-									<a href="reportHistorySave.form?uuid=${r.uuid}"><img src='<c:url value="/images/save.gif"/>' border="0"/></a>
+								<c:when test="${r.status == 'FAILED'}">
+									<img src='<c:url value="/images/error.gif"/>' border="0" width="16" height="16"/><br/>
+									<small><spring:message code="reporting.viewError"/></small>
 								</c:when>
 								<c:otherwise>
-									&nbsp;
+									<a href="viewReport.form?uuid=${r.uuid}">
+										<img src='<c:url value="/moduleResources/reporting/images/report_icon.gif"/>' border="0" width="16" height="16"/><br/>
+										<small><spring:message code="reporting.viewReport"/></small>
+									</a>
 								</c:otherwise>
 							</c:choose>
-						</td>				
-						<td>
-							<a onclick="return confirm('<spring:message code="reporting.reportHistory.confirmDelete"/>');" href="reportHistoryDelete.form?uuid=${r.uuid}"><img src='<c:url value="/images/trash.gif"/>' border="0"/></a>
 						</td>
 					</tr>
 				</c:forEach>

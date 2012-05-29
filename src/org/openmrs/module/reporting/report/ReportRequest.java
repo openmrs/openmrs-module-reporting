@@ -335,14 +335,20 @@ public class ReportRequest extends BaseOpenmrsObject {
 			if (r1 == null && r2 == null) { return 0; }
 			if (r1 == null) { return -1; }
 			if (r2 == null) { return 1; }
-		    int temp = r1.getPriority().compareTo(r2.getPriority());
-		    if (temp == 0) {
-		    	temp = OpenmrsUtil.compareWithNullAsLatest(r1.getRequestDate(), r2.getRequestDate());
+			int ret = OpenmrsUtil.compareWithNullAsLatest(r1.getEvaluateCompleteDatetime(), r2.getEvaluateCompleteDatetime());
+			if (ret == 0) {
+				ret = OpenmrsUtil.compareWithNullAsLatest(r1.getEvaluateStartDatetime(), r2.getEvaluateStartDatetime());
+			}
+			if (ret == 0) {
+				ret = r1.getPriority().compareTo(r2.getPriority());
+			}
+			if (ret == 0) {
+				ret = OpenmrsUtil.compareWithNullAsLatest(r1.getRequestDate(), r2.getRequestDate());
+			}
+		    if (ret == 0) {
+		    	ret = OpenmrsUtil.compareWithNullAsGreatest(r1.getUuid(), r2.getUuid());
 		    }
-		    if (temp == 0) {
-		    	temp = OpenmrsUtil.compareWithNullAsGreatest(r1.getUuid(), r2.getUuid());
-		    }
-		    return temp;
+			return ret;
 		}
 	}
 }
