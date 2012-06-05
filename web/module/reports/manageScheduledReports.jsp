@@ -51,7 +51,7 @@
 					<c:forEach var="scheduledReport" items="${scheduledReports}">
 						<tr>
 							<td>
-								<a href="../run/runReport.form?requestUuid=${scheduledReport.uuid}" style="text-decoration:none;">${scheduledReport.reportDefinition.parameterizable.name}</a>
+								<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistoryOpen.form?uuid=${scheduledReport.uuid}" style="text-decoration:none;">${scheduledReport.reportDefinition.parameterizable.name}</a>
 							</td>
 							 <td>
 								<table class="small" cellspacing="0" cellpadding="0">

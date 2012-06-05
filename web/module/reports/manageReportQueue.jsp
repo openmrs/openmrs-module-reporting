@@ -1,4 +1,5 @@
-<%@ include file="/WEB-INF/template/include.jsp"%>
+<%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
+<%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
 <openmrs:require privilege="Run Reports" otherwise="/login.htm" redirect="/module/reporting/reports/manageReportQueue.htm" />
 

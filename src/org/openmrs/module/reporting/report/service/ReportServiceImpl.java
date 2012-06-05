@@ -336,20 +336,28 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		
 		request =  Context.getService(ReportService.class).saveReportRequest(request);
 		
+		Integer position = getPositionInQueue(request);
+		if (position != null) {
+			logReportMessage(request, "Report in queue at position " + position);
+		}
+		
+		return request;
+	}
+	
+	/**
+	 * @see ReportService#getPositionInQueue(ReportRequest)
+	 */
+	@Transactional(readOnly=true)
+	public Integer getPositionInQueue(ReportRequest request) {
 		List<ReportRequest> l = getReportRequests(null, null, null, Status.REQUESTED);
 		Collections.sort(l, new PriorityComparator());
-		boolean found = false;
 		for (int i=0; i<l.size(); i++) {
 			ReportRequest rr = l.get(i);
 			if (rr.equals(request)) {
-				found = true;
-			}
-			if (found) {
-				logReportMessage(l.get(i), "Report in queue at position " + (i+1));
+				return (i+1);
 			}
 		}
-
-		return request;
+		return null;
 	}
 	
 	/**

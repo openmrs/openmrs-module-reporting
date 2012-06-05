@@ -1,11 +1,10 @@
-<%@ include file="/WEB-INF/template/include.jsp"%>
+<%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
+<%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <c:set var="__openmrs_hide_report_link" value="true"/>
 <%@ include file="../run/localHeader.jsp"%>
 
-
-
-<script type="text/javascript" src="reporting/web/resources/scripts/jquery/jquery-1.3.2.min.js"></script>        
 <style type="text/css">
     .alt { background-color: #EEE; }
     .hover { background-color: #DED; }

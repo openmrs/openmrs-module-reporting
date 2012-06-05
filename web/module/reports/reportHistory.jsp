@@ -1,5 +1,5 @@
-<%@ include file="/WEB-INF/template/include.jsp"%>
-<%@page import="org.openmrs.module.reporting.report.ReportRequest"%>
+<%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
+<%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
 <openmrs:require privilege="View Reports" otherwise="/login.htm" redirect="/module/reporting/reports/reportHistory.form" />
 
@@ -12,7 +12,7 @@
 			"iDisplayLength": 25,
 			"bLengthChange": false,
 			"bFilter": true,
-			"bSort": false,
+			"bSort": true,
 			"bInfo": true,
 			"bJQueryUI": true,
 			"oLanguage": {
@@ -24,7 +24,14 @@
 				"sSearch": "<spring:message code="general.search" javaScriptEscape="true"/>"
 			}
 		} );
-	} );	
+	} );
+	
+	function showErrorDetails(uuid) {
+		showReportingDialog({
+			title: '<spring:message code="reporting.errorDetails"/>',
+			url: '${pageContext.request.contextPath}/module/reporting/reports/viewErrorDetails.form?uuid='+uuid
+		});
+	}
 </script>
 
 <div id="page">
@@ -33,7 +40,7 @@
 		<form method="get">
 			<table>
 				<tr>
-					<td><spring:message code="reporting.reportHistory.report"/>: </td>
+					<td><spring:message code="reporting.reportHistory.reportName"/>: </td>
 					<td>
 						<spring:message code="reporting.allReports" var="allReportLabel"/>
 						<wgt:widget id="reportField" name="reportDefinition" type="org.openmrs.module.reporting.report.definition.ReportDefinition" defaultValue="${reportDefinition}" attributes="emptyLabel=${allReportLabel}"/>	
@@ -108,8 +115,10 @@
 						<td style="text-align:center; vertical-align:middle;">
 							<c:choose>
 								<c:when test="${r.status == 'FAILED'}">
-									<img src='<c:url value="/images/error.gif"/>' border="0" width="16" height="16"/><br/>
-									<small><spring:message code="reporting.viewError"/></small>
+									<a href="javascript:showErrorDetails('${r.uuid}');">
+										<img src='<c:url value="/images/error.gif"/>' border="0" width="16" height="16"/><br/>
+										<small><spring:message code="reporting.viewError"/></small>
+									</a>
 								</c:when>
 								<c:otherwise>
 									<a href="viewReport.form?uuid=${r.uuid}">

@@ -1,6 +1,5 @@
 package org.openmrs.module.reporting.web.reports;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import org.openmrs.module.reporting.propertyeditor.ReportDefinitionEditor;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration.ProcessorMode;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
@@ -114,7 +114,7 @@ public class ReportHistoryController {
 	
 	@RequestMapping("/module/reporting/reports/deleteReportRequest")
 	public String deleteReportRequest(@RequestParam("uuid") String uuid,
-									  @RequestParam("returnUrl") String returnUrl) {
+									  @RequestParam(value="returnUrl", required=false) String returnUrl) {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportRequest request = rs.getReportRequestByUuid(uuid);
 		rs.purgeReportRequest(request);
@@ -123,60 +123,29 @@ public class ReportHistoryController {
 	
 	@RequestMapping("/module/reporting/reports/loadReportStatus")
 	public String loadReportStatus(ModelMap model, @RequestParam("uuid") String uuid) {
-		ReportService rs = Context.getService(ReportService.class);
-		ReportRequest request = rs.getReportRequestByUuid(uuid);
-		
 		Map<String, Object> statusMap = new HashMap<String, Object>();
-		statusMap.put("logEntries", rs.loadReportLog(request));
+		
+		ReportRequest request = Context.getService(ReportService.class).getReportRequestByUuid(uuid);
 		statusMap.put("status", request.getStatus().toString());
-		
-		Report cachedReport = rs.getCachedReports().get(request);
-		
-		if (request.getStatus() == Status.COMPLETED || request.getStatus() == Status.SAVED) {
-			File reportOutputFile = rs.getReportOutputFile(request);
-			if (reportOutputFile.exists() || (cachedReport != null && cachedReport.getRenderedOutput() != null)) {
-				statusMap.put("action", "download");
-			}
-			File reportDataFile = rs.getReportDataFile(request);
-			if (request.getRenderingMode().getRenderer() instanceof WebReportRenderer) {
-				if (reportDataFile.exists() || (cachedReport != null && cachedReport.getReportData() != null)) {
-					statusMap.put("action", "view");
-				}
-			}
-		}
-		
-		if (request.getStatus() == Status.FAILED) {
-			File reportErrorFile = rs.getReportErrorFile(request);
-			if (reportErrorFile.exists() || (cachedReport != null && cachedReport.getErrorMessage() != null)) {
-				String errorDetails = rs.loadReportError(request);
-				statusMap.put("errorDetails", errorDetails);
-			}
-		}
-		
+
 		model.addAttribute("json", AjaxUtil.toJson(statusMap));
 		return "/module/reporting/json";
+	}
+	
+	@RequestMapping("/module/reporting/reports/viewErrorDetails")
+	public void viewErrorDetails(HttpServletResponse response, @RequestParam("uuid") String uuid) throws IOException {
+		ReportRequest rr = Context.getService(ReportService.class).getReportRequestByUuid(uuid);
+		String error = Context.getService(ReportService.class).loadReportError(rr);
+		response.getWriter().write(error);
 	}
 	
 	@RequestMapping("/module/reporting/reports/reportHistorySave")
 	public String saveHistoryElement(@RequestParam("uuid") String uuid, @RequestParam(value="description", required=false) String description) {
 		ReportService rs = Context.getService(ReportService.class);
-		boolean saved = false;
-		try {
-			for (ReportRequest request : rs.getCachedReports().keySet()) {
-				if (request.getUuid().equals(uuid)) {
-					Report report = rs.getCachedReports().get(request);
-					rs.saveReport(report, description);
-					saved = true;
-				}
-			}
-		}
-		catch (Exception e) {
-			// Do nothing
-		}
-		
-		// TODO: Alert the user that saving failed
-		
-		return "redirect:reportHistory.form";
+		ReportRequest rr = rs.getReportRequestByUuid(uuid);
+		Report report = rs.loadReport(rr);
+		rs.saveReport(report, description);
+		return "redirect:/module/reporting/reports/reportHistoryOpen.form?uuid="+uuid;
 	}
 	
 	@RequestMapping("/module/reporting/reports/reportHistoryOpen")
@@ -188,12 +157,34 @@ public class ReportHistoryController {
 			request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "Cannot load report request", WebRequest.SCOPE_SESSION);
 			return "redirect:/module/reporting/reports/reportHistory.form";
 		}
+		for (RenderingMode mode : getReportService().getRenderingModes(req.getReportDefinition().getParameterizable())) {
+			if (OpenmrsUtil.nullSafeEquals(mode, req.getRenderingMode())) {
+				req.setRenderingMode(mode);
+			}
+		}
 		model.addAttribute("request", req);
 		
-		List<ReportProcessorConfiguration> procs = ReportUtil.getAvailableReportProcessorConfigurations(req, 
-				ReportProcessorConfiguration.ProcessorMode.ON_DEMAND, 
-				ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC);
-		model.addAttribute("onDemandProcessors", procs);
+		if (req.getStatus() == Status.REQUESTED) {
+			model.addAttribute("positionInQueue", rs.getPositionInQueue(req));
+		}
+		if (req.getStatus() == Status.FAILED) {
+			model.addAttribute("errorDetails", rs.loadReportError(req));
+		}
+		
+		List<ReportProcessorConfiguration> onDemandProcessors = new ArrayList<ReportProcessorConfiguration>();
+		List<ReportProcessorConfiguration> automaticProcessors = new ArrayList<ReportProcessorConfiguration>();
+		
+		for (ReportProcessorConfiguration c : ReportUtil.getAvailableReportProcessorConfigurations(req, ProcessorMode.values())) {
+			ProcessorMode m = c.getProcessorMode();
+			if (m == ProcessorMode.ON_DEMAND || m == ProcessorMode.ON_DEMAND_AND_AUTOMATIC) {
+				onDemandProcessors.add(c);
+			}
+			if (m == ProcessorMode.AUTOMATIC || m == ProcessorMode.ON_DEMAND_AND_AUTOMATIC) {
+				automaticProcessors.add(c);
+			}
+		}
+		model.addAttribute("onDemandProcessors", onDemandProcessors);
+		model.addAttribute("automaticProcessors", automaticProcessors);
 		
 		return "/module/reporting/reports/reportHistoryOpen";
 	}
@@ -241,7 +232,8 @@ public class ReportHistoryController {
 		ReportRequest req = getReportService().getReportRequestByUuid(requestUuid);
 		ReportProcessorConfiguration rpc = getReportService().getReportProcessorConfigurationByUuid(processorUuid);
 		try {
-			if ((req.getStatus() == Status.COMPLETED && rpc.getRunOnSuccess()) || (req.getStatus() == Status.FAILED && rpc.getRunOnError())) {
+			boolean completed = req.getStatus() == Status.COMPLETED || req.getStatus() == Status.SAVED;
+			if ((completed && rpc.getRunOnSuccess()) || (req.getStatus() == Status.FAILED && rpc.getRunOnError())) {
 				getReportService().logReportMessage(req, "Processing Report with " + rpc.getName() + "...");
 				Class<?> processorType = Context.loadClass(rpc.getProcessorType());
 				ReportProcessor processor = (ReportProcessor) processorType.newInstance();

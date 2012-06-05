@@ -251,8 +251,12 @@ public interface ReportService extends OpenmrsService {
 	/**
 	 * Adds a {@link ReportRequest} to the queue to be run asynchronously
 	 */
-	@Transactional
 	public ReportRequest queueReport(ReportRequest request);
+	
+	/**
+	 * Returns the number in the queue for this report request, or null if processing has already started
+	 */
+	public Integer getPositionInQueue(ReportRequest request);
 	
 	/**
 	 * Immediately try to process the next reports scheduled for processing off of the queue
@@ -293,7 +297,7 @@ public interface ReportService extends OpenmrsService {
 	 * @return the persisted Report for the given ReportRequest
 	 */
 	@Transactional(readOnly = true)
-	public Report loadReport(ReportRequest request) throws EvaluationException;
+	public Report loadReport(ReportRequest request);
 	
 	/**
 	 * @return any Reports that are currently cached

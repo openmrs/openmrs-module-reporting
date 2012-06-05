@@ -5,11 +5,11 @@
 	padding: 0px;
 	padding-bottom: 20px;
 	font-family: Verdana, sans-serif;
-	}
+}
 
 #inline-list p {
 	display: inline;
-	}
+}
 
 #inline-list ul, #inline-list li {
 	display: inline;
@@ -17,15 +17,15 @@
 	padding: 0;
 	color: #339;
 	font-weight: bold;
-	}
+}
 	
 #inline-list ul li:after {
 	content: " | ";
-	}
+}
 	
 #inline-list ul li.last:after {
 	content: "";
-	}
+}
 	
 .small {
 	font-size: x-small;

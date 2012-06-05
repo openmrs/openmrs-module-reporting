@@ -18,6 +18,7 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.quartz.CronExpression;
 
 /**
@@ -47,12 +48,14 @@ public class Functions {
 	 * Provides instance of functionality to jsp pages
 	 */
 	public static Date nextExecutionTime(String cronExpression) {
-		try {
-			CronExpression cron = new CronExpression(cronExpression);
-			return cron.getNextValidTimeAfter(new Date());
-		}
-		catch (Exception e) {
-			log.warn("Error getting next valid time for cron expression " + cronExpression, e);
+		if (ObjectUtil.notNull(cronExpression)) {
+			try {
+				CronExpression cron = new CronExpression(cronExpression);
+				return cron.getNextValidTimeAfter(new Date());
+			}
+			catch (Exception e) {
+				log.warn("Error getting next valid time for cron expression " + cronExpression, e);
+			}
 		}
 		return null;
 	}

@@ -220,12 +220,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 		rr = rs.queueReport(rr);
 		rs.processNextQueuedReports();
 		
-		if (StringUtils.hasText(rr.getSchedule())) {
-			return new ModelAndView(new RedirectView("../dashboard/index.form"));
-		}
-		else {
-			return new ModelAndView(new RedirectView("../reports/reportHistoryOpen.form?uuid="+rr.getUuid()));
-		}
+		return new ModelAndView(new RedirectView("../reports/reportHistoryOpen.form?uuid="+rr.getUuid()));
 	}
 
 	public class CommandObject {
