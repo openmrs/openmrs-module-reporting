@@ -190,9 +190,7 @@ public class FormatTag extends TagSupport {
 		} else if (o instanceof BaseData) {
 			printMap(sb, ((BaseData)o).getData());
 		} else if (o instanceof OpenmrsMetadata) {
-			sb.append(ObjectUtil.nvlStr(((OpenmrsMetadata)o).getName(), o.toString()));
-		} else {
-			sb.append("" + o);
+			sb.append(ObjectUtil.format(o));
 		}
 	}
 
