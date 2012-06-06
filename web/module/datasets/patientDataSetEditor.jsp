@@ -222,7 +222,7 @@ function submitColumnOrder(sortable) {
 				<tr>
 					<td></td>
 					<td>
-						<input type="submit" value="<spring:message code="general.apply"/>"/>
+						<input type="submit" value="<spring:message code="reporting.apply"/>"/>
 						<input type="button" value="<spring:message code="general.cancel"/>" id="edit-name-cancel"/>
 					</td>
 				</tr>
@@ -262,7 +262,7 @@ function submitColumnOrder(sortable) {
 				<textarea id="widgetConfiguration" cols="50" rows="5" tabindex="3" name="widgetConfiguration"></textarea>
 			</div>
 
-			<input type="submit" value="<spring:message code="general.apply"/>" tabindex="4"/>
+			<input type="submit" value="<spring:message code="reporting.apply"/>" tabindex="4"/>
 			<input type="button" value="<spring:message code="general.cancel"/>" id="add-parameter-cancel" tabindex="5"/>
 		</form>
 	</div>
