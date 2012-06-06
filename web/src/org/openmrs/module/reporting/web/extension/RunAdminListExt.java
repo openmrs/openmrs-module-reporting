@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.web.extension;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.Extension;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
 
@@ -27,6 +28,9 @@ public class RunAdminListExt extends AdministrationSectionExt {
 		map.put("module/reporting/reports/manageReportQueue.htm", "reporting.manageReportQueue.title");
 		map.put("module/reporting/reports/reportHistory.form", "reporting.reportHistory.title");
 		map.put("module/reporting/reports/manageScheduledReports.form", "reporting.manageTasks.title");
+		if (Context.hasPrivilege("Manage Report Definitions")) {
+			map.put("module/reporting/reports/manageReports.form", "reporting.manageReports.title");
+		}
 		return map;
 	}
 }

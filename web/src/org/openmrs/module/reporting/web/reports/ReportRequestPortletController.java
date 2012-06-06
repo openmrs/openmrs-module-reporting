@@ -79,7 +79,7 @@ public class ReportRequestPortletController extends ReportingPortletController {
 		
 		if (ObjectUtil.notNull(mostRecentNumParam)) {
 			Integer mostRecentNum = Integer.valueOf(mostRecentNumParam);
-			while (requests.size() > mostRecentNum) {
+			while (requests.size() > mostRecentNum && mostRecentNum > 0) {
 				requests.remove(0);
 			}
 			Collections.reverse(requests);

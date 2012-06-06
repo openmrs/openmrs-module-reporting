@@ -123,7 +123,7 @@
 								<h4>
 									<spring:message code="reporting.Report.mostRecentlyCompletedReport"/>
 									&nbsp;&nbsp;
-									<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistory.form?id=${report.reportDefinition.id}">
+									<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistory.form?reportDefinition=${report.reportDefinition.uuid}">
 										(<spring:message code="reporting.viewAll"/>)
 									</a>
 								</h4>
