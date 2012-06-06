@@ -23,7 +23,7 @@ public class RunQueuedReportsTask extends AbstractReportsTask {
 	private static Log log = LogFactory.getLog(RunQueuedReportsTask.class);
 	
 	private static Integer maxExecutions = null;
-	private static Set<ReportRequest> currentlyRunningRequests = new HashSet<ReportRequest>();
+	private static Set<String> currentlyRunningRequests = new HashSet<String>();
 	
 	/**
 	 * @see AbstractReportsTask#execute()
@@ -51,16 +51,24 @@ public class RunQueuedReportsTask extends AbstractReportsTask {
 		    	if (requestToRun.getBaseCohort() != null) {
 		    		ParameterizableUtil.refreshMappedDefinition(requestToRun.getBaseCohort());
 		    	}
-		    	if (!currentlyRunningRequests.contains(requestToRun)) {
+		    	if (!currentlyRunningRequests.contains(requestToRun.getUuid())) {
 		    		try {
-		    			currentlyRunningRequests.add(requestToRun);
+		    			currentlyRunningRequests.add(requestToRun.getUuid());
 			    		rs.runReport(requestToRun);
 			    	}
 		    		finally {
-		    			currentlyRunningRequests.remove(requestToRun);
+		    			currentlyRunningRequests.remove(requestToRun.getUuid());
 		    		}
 				}
 			}
 		}
+	}
+
+	/**
+	 * @see TimerTask#cancel()
+	 */
+	@Override
+	public boolean cancel() {
+		return super.cancel();
 	}
 }

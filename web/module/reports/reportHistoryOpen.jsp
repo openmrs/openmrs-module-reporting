@@ -18,7 +18,7 @@
 	
 	function deleteRequest(uuid) {
 		if (confirm('<spring:message code="reporting.reportHistory.confirmDelete"/>')) {
-			document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportRequest.form?uuid='+uuid;
+			document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportRequest.form?uuid='+uuid+'&returnUrl=/module/reporting/dashboard/index.form';
 		}
 	}
 	

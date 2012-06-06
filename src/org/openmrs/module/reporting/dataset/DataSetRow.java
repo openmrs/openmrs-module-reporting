@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -21,7 +22,9 @@ import java.util.Map;
 /**
  * Represents one row of data in a {@link DataSet}
  */
-public class DataSetRow {
+public class DataSetRow implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	//****** PROPERTIES ******
 	
