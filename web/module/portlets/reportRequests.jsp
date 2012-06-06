@@ -18,17 +18,17 @@
 				    "bFilter": false,
 				    "bInfo": true,
 				    "bAutoWidth": false,
-				    "bSortable": false,
-				    "aoColumns": [{ "sType": "html" }, { "sType": "text" }, { "sType": "text" }]
+				    "bSortable": false
 				});
 			});
 		</script>
 
 		<table id="${model.portletUUID}RequestTable" style="width:100%;" class="reporting-data-table display">
-			<thead style="display:none"><tr><th colspan="4"></th></tr></thead>
+			<thead style="display:none"><tr><th colspan="5"></th></tr></thead>
 			<tbody>
 				<c:forEach items="${model.requests}" var="rr" varStatus="rrStatus">
 					<tr>
+						<td style="display:none;">${rrStatus.index}</td>
 						<td align="center">
 							<c:choose>
 								<c:when test="${rr.status == 'FAILED'}">
@@ -48,7 +48,15 @@
 							<rpt:format object="${rr.requestedBy}"/>
 						</td>
 						<td>
-							<openmrs:formatDate date="${rr.evaluateCompleteDatetime}" format="dd/MMM/yyyy HH:mm"/>
+							<c:choose>
+								<c:when test="${!empty rr.evaluateCompleteDatetime}">
+									<openmrs:formatDate date="${rr.evaluateCompleteDatetime}" format="dd/MMM/yyyy HH:mm"/>
+								</c:when>
+								<c:otherwise>
+									<openmrs:formatDate date="${rr.evaluateStartDatetime}" format="dd/MMM/yyyy HH:mm"/>
+								</c:otherwise>
+							</c:choose>
+							
 						</td>
 					</tr>
 				</c:forEach>
