@@ -123,12 +123,23 @@ public class ReportHistoryController {
 	
 	@RequestMapping("/module/reporting/reports/loadReportStatus")
 	public String loadReportStatus(ModelMap model, @RequestParam("uuid") String uuid) {
-		Map<String, Object> statusMap = new HashMap<String, Object>();
+		
 		ReportService rs = Context.getService(ReportService.class);
 		ReportRequest request = rs.getReportRequestByUuid(uuid);
-		statusMap.put("status", request.getStatus().toString());
-		statusMap.put("log", rs.loadReportLog(request));
+		String status = request.getStatus().toString();
+		List<String> reportLog = rs.loadReportLog(request);
+		if ("REQUESTED".equals(status)) {
+			for (String s : reportLog) {
+				if (s.indexOf("Starting to process report") != -1) {
+					status = "PROCESSING"; // This shouldn't be needed, and is a hack.  Needed until we can work out txns
+				}
+			}
+		}
+		Map<String, Object> statusMap = new HashMap<String, Object>();
+		statusMap.put("status", status);
+		statusMap.put("log", reportLog);
 		model.addAttribute("json", AjaxUtil.toJson(statusMap));
+		
 		return "/module/reporting/json";
 	}
 	
