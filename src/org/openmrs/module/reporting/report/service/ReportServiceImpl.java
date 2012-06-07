@@ -373,11 +373,12 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public Report saveReport(Report report, String description) {
 		boolean isPersisted = persistReportToDisk(report);
 		if (isPersisted) {
-			ReportRequest request = report.getRequest();
+			ReportRequest request = Context.getService(ReportService.class).getReportRequest(report.getRequest().getId());
 			request.setStatus(Status.SAVED);
 			request.setDescription(description);
 			Context.getService(ReportService.class).saveReportRequest(request);
 			logReportMessage(request, "Report Saved");
+			report.setRequest(request);
 			return report;
 		}
 		else {
