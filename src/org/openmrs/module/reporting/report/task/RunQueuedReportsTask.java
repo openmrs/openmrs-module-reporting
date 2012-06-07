@@ -30,6 +30,10 @@ public class RunQueuedReportsTask extends AbstractReportsTask {
 	 */
 	@Override
 	public synchronized void execute() {
+		try {
+			Thread.sleep(3000);  // This should not be necessary, but there is something funky with transaction order and this helps things to work
+		}
+		catch (Exception e) {}
 		
 		if (maxExecutions == null) {
 			maxExecutions = ReportingConstants.GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN();
