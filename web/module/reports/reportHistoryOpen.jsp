@@ -157,6 +157,7 @@
 								<span style="font-size:large"><spring:message code="reporting.status.SAVED"/></span><br/>
 							</span>
 						</div>
+						<div class="logDiv"></div>
 					</fieldset>
 					<br/>
 

@@ -63,12 +63,4 @@ public class RunQueuedReportsTask extends AbstractReportsTask {
 			}
 		}
 	}
-
-	/**
-	 * @see TimerTask#cancel()
-	 */
-	@Override
-	public boolean cancel() {
-		return super.cancel();
-	}
 }

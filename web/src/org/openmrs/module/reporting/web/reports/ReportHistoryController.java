@@ -124,10 +124,10 @@ public class ReportHistoryController {
 	@RequestMapping("/module/reporting/reports/loadReportStatus")
 	public String loadReportStatus(ModelMap model, @RequestParam("uuid") String uuid) {
 		Map<String, Object> statusMap = new HashMap<String, Object>();
-		
-		ReportRequest request = Context.getService(ReportService.class).getReportRequestByUuid(uuid);
+		ReportService rs = Context.getService(ReportService.class);
+		ReportRequest request = rs.getReportRequestByUuid(uuid);
 		statusMap.put("status", request.getStatus().toString());
-
+		statusMap.put("log", rs.loadReportLog(request));
 		model.addAttribute("json", AjaxUtil.toJson(statusMap));
 		return "/module/reporting/json";
 	}

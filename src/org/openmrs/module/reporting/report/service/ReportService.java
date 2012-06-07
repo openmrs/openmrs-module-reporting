@@ -303,7 +303,7 @@ public interface ReportService extends OpenmrsService {
 	 * @return any Reports that are currently cached
 	 */
 	@Transactional(readOnly = true)
-	public Map<ReportRequest, Report> getCachedReports();
+	public Map<String, Report> getCachedReports();
 
 	/**
 	 * Deletes report requests that are not saved, and are older than the value specified by

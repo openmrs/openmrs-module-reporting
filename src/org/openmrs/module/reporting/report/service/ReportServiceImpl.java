@@ -68,7 +68,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	// Private variables
 	private ReportDAO reportDAO;
 	private TaskExecutor taskExecutor;
-	private Map<ReportRequest, Report> reportCache = new LinkedHashMap<ReportRequest, Report>();
+	private Map<String, Report> reportCache = new LinkedHashMap<String, Report>();
 		
 	/**
 	 * Default constructor
@@ -210,7 +210,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	@Transactional
 	public void purgeReportRequest(ReportRequest request) {
 		reportDAO.purgeReportRequest(request);
-		reportCache.remove(request);
+		reportCache.remove(request.getUuid());
 		FileUtils.deleteQuietly(getReportDataFile(request));
 		FileUtils.deleteQuietly(getReportErrorFile(request));
 		FileUtils.deleteQuietly(getReportOutputFile(request));
@@ -498,8 +498,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	/**
 	 * @see ReportService#getCachedReports()
 	 */
-	public Map<ReportRequest, Report> getCachedReports() {
-		return new LinkedHashMap<ReportRequest, Report>(reportCache);
+	public Map<String, Report> getCachedReports() {
+		return new LinkedHashMap<String, Report>(reportCache);
 	}
 	
 	/**
@@ -507,7 +507,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	public ReportData loadReportData(ReportRequest request) {
 		log.debug("Loading ReportData for ReportRequest");
-		Report report = reportCache.get(request);
+		Report report = reportCache.get(request.getUuid());
 		if (report != null) {
 			return report.getReportData();
 		}
@@ -530,7 +530,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	public byte[] loadRenderedOutput(ReportRequest request) {
 		log.debug("Loading Rendered Output for ReportRequest");
-		Report report = reportCache.get(request);
+		Report report = reportCache.get(request.getUuid());
 		if (report != null) {
 			return report.getRenderedOutput();
 		}
@@ -576,7 +576,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	public Report loadReport(ReportRequest request) {
 		log.info("Loading Report for ReportRequest");
-		Report report = reportCache.get(request);
+		Report report = reportCache.get(request.getUuid());
 		if (report == null) {
 			report = new Report(request);
 			report.setReportData(loadReportData(request));
@@ -624,7 +624,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			}
 		}
 		if (reportCache.size() >= ReportingConstants.GLOBAL_PROPERTY_MAX_CACHED_REPORTS()) {
-			Iterator<ReportRequest> i = reportCache.keySet().iterator();
+			Iterator<String> i = reportCache.keySet().iterator();
 			i.next();
 			i.remove();
 		}
@@ -651,7 +651,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @param report the Report to cache
 	 */
 	protected synchronized void cacheReport(Report report) {
-		reportCache.put(report.getRequest(), report);
+		reportCache.put(report.getRequest().getUuid(), report);
 	}
 	
 	/**
