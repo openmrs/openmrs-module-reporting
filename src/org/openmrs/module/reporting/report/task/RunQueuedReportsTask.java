@@ -31,7 +31,7 @@ public class RunQueuedReportsTask extends AbstractReportsTask {
 	@Override
 	public synchronized void execute() {
 		try {
-			Thread.sleep(3000);  // This should not be necessary, but there is something funky with transaction order and this helps things to work
+			Thread.sleep(1000);  // This should not be necessary, but there is something funky with transaction order and this helps things to work
 		}
 		catch (Exception e) {}
 		
