@@ -3,6 +3,8 @@ package org.openmrs.module.reporting.serializer;
 import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
 import org.openmrs.module.serialization.xstream.mapper.CGLibMapper;
 import org.openmrs.module.serialization.xstream.mapper.HibernateCollectionMapper;
+import org.openmrs.module.serialization.xstream.mapper.JavassistMapper;
+import org.openmrs.module.serialization.xstream.mapper.NullValueMapper;
 import org.openmrs.serialization.SerializationException;
 
 import com.thoughtworks.xstream.XStream;
@@ -33,8 +35,9 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	    	 */
 			protected MapperWrapper wrapMapper(MapperWrapper next) {
 				MapperWrapper mapper = new CGLibMapper(next);
+				mapper = new JavassistMapper(mapper);
 				mapper = new HibernateCollectionMapper(mapper);
-				//mapper = new IgnoreUnknownElementMapper(mapper);
+				mapper = new NullValueMapper(mapper);
 				return mapper;
 			}
 			
