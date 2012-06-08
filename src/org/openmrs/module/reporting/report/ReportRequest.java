@@ -8,6 +8,7 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
@@ -335,10 +336,9 @@ public class ReportRequest extends BaseOpenmrsObject {
 			if (r1 == null && r2 == null) { return 0; }
 			if (r1 == null) { return -1; }
 			if (r2 == null) { return 1; }
-			int ret = OpenmrsUtil.compareWithNullAsLatest(r1.getEvaluateCompleteDatetime(), r2.getEvaluateCompleteDatetime());
-			if (ret == 0) {
-				ret = OpenmrsUtil.compareWithNullAsLatest(r1.getEvaluateStartDatetime(), r2.getEvaluateStartDatetime());
-			}
+			Date d1 = ObjectUtil.nvl(r1.getEvaluateCompleteDatetime(), r1.getEvaluateStartDatetime());
+			Date d2 = ObjectUtil.nvl(r2.getEvaluateCompleteDatetime(), r2.getEvaluateStartDatetime());
+			int ret = OpenmrsUtil.compareWithNullAsLatest(d1, d2);
 			if (ret == 0) {
 				ret = r1.getPriority().compareTo(r2.getPriority());
 			}
