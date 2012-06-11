@@ -1,7 +1,5 @@
 package org.openmrs.module.reporting.report.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.service.ReportService;
 
@@ -10,14 +8,11 @@ import org.openmrs.module.reporting.report.service.ReportService;
  */
 public class DeleteOldReportsTask extends AbstractReportsTask {
 	
-	private static Log log = LogFactory.getLog(DeleteOldReportsTask.class);
-	
 	/**
 	 * @see AbstractReportsTask#execute()
 	 */
 	@Override
 	public synchronized void execute() {		
-		log.info("Executing the Delete Old Reports Task");
 		Context.getService(ReportService.class).deleteOldReportRequests();
 	}
 }

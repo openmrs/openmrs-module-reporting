@@ -36,6 +36,7 @@ public abstract class AbstractReportsTask extends TimerTask {
 			if (!Context.isAuthenticated()) {
 				authenticate();
 			}
+			log.debug("Running reporting task: " + getClass().getSimpleName());
 			execute();
 		}
 		catch (Exception e) {
