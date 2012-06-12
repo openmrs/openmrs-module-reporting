@@ -1,10 +1,6 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
 <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
-<c:if test="${empty model.requests}">
-	<spring:message code="general.none"/>
-</c:if>
-
 <c:choose>
 
 	<c:when test="${empty model.reportId}">
