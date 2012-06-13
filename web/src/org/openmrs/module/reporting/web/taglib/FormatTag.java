@@ -18,7 +18,6 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
-import org.openmrs.OpenmrsMetadata;
 import org.openmrs.Person;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -189,7 +188,8 @@ public class FormatTag extends TagSupport {
 			printCohortDimensionResult(sb, (CohortDimensionResult) o);
 		} else if (o instanceof BaseData) {
 			printMap(sb, ((BaseData)o).getData());
-		} else if (o instanceof OpenmrsMetadata) {
+		} 
+		else {
 			sb.append(ObjectUtil.format(o));
 		}
 	}
