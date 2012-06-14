@@ -54,7 +54,7 @@
 	<classpathentry kind="lib" path="lib-common/web-openmrs-api-1.6.3.19958-dev.jar"/>
 	<classpathentry kind="lib" path="lib-common/commons-beanutils-1.7.0.jar" sourcepath="/home/mseaton/.m2/repository/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/quartz-2.1.1.jar"/>
-	<classpathentry kind="lib" path="lib-common/htmlwidgets-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib-common/htmlwidgets-1.6.1.jar" sourcepath="/htmlwidgets"/>
 	<classpathentry kind="lib" path="lib-common/serialization.xstream-api-0.2.7-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

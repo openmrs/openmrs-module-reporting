@@ -62,7 +62,7 @@
                 <param name="enumClass">org.openmrs.module.reporting.report.ReportProcessorConfiguration$ProcessorMode</param>
             </type>
         </property>
-        <many-to-one name="reportDesign" column="report_design_id" class="ReportDesign" not-null="false"/>
+        <many-to-one name="reportDesign" column="report_design_id" class="ReportDesign" not-null="false" lazy="false"/>
 		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />
 		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" />
 		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />

@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.service.ReportService;
@@ -41,17 +42,6 @@ public class ManageReportsController {
 	 * Default Constructor
 	 */
 	public ManageReportsController() { }
-
-	/*
-	@RequestMapping(value="/admin/patients/newPatient")
-	public ModelAndView newPatientOverride() { 
-		
-		ModelAndView model = new ModelAndView();
-		model.setViewName("redirect:/module/reporting/dashboard/manageDashboard.form");
-		
-		return model;
-	}
-	*/
 	
 	
     /**
@@ -91,6 +81,15 @@ public class ManageReportsController {
     	model.addAttribute("reportDesigns", reportDesigns);
     	
         return model;
+    }
+    
+    /**
+     * Provide all reports processor configurations, to a page that lists them and provides options for working with them.
+     */
+    @RequestMapping("/module/reporting/reports/manageReportProcessors")
+    public void manageReportProcessors(ModelMap model) {
+    	List<ReportProcessorConfiguration> configs = Context.getService(ReportService.class).getAllReportProcessorConfigurations(false);
+    	model.addAttribute("reportProcessorConfigurations", configs);
     }
     
     /**

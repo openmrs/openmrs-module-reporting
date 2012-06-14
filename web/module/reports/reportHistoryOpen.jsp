@@ -114,7 +114,7 @@
 										<td>
 											<small>
 												<c:forEach items="${processor.configuration}" var="entry">
-													${entry.key}: ${entry.value}
+													${entry.key}: ${entry.value}<br/>
 												</c:forEach>
 											</small>
 										</td>
