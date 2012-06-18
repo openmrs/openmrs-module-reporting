@@ -6,10 +6,12 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Ignore;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.processor.ReportProcessor;
 import org.springframework.stereotype.Component;
 
+@Ignore
 @Component
 public class TestReportProcessor implements ReportProcessor {
 
