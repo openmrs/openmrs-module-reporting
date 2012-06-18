@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module configVersion="1.1">
+	
+	<!-- Base Module Properties -->
+	<id>@MODULE_ID@</id>
+	<name>@MODULE_NAME@</name>
+	<version>@MODULE_VERSION@</version>
+	<package>@MODULE_PACKAGE@</package>
+	<author>Partners In Health</author>
+	<description>
+		The Reporting Module provides a user interface for defining 
+		and managing core objects like reports, data sets, cohort queries, 
+		indicators, dimensions, and report designs.  The module also provides 
+		an extensible API for developing custom reports and new features.
+	</description>
+	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>
+	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL>	
+	<require_version>1.6</require_version>
+
+	<require_modules>
+	   	<require_module version="0.2.7">org.openmrs.module.serialization.xstream</require_module>
+	   	<require_module version="1.6.1">org.openmrs.module.htmlwidgets</require_module>
+	</require_modules>
+
+	<!-- Extensions -->
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>@MODULE_PACKAGE@.web.extension.RunAdminListExt</class>
+	</extension>
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>@MODULE_PACKAGE@.web.extension.ManageAdminListExt</class>
+	</extension>
+	<extension>
+		<point>org.openmrs.module.reporting.run.localheader</point>
+		<class>@MODULE_PACKAGE@.web.extension.RunAdminListExt</class>
+	</extension>
+	<extension>
+		<point>org.openmrs.module.reporting.manage.localheader</point>
+		<class>@MODULE_PACKAGE@.web.extension.ManageAdminListExt</class>
+	</extension>
+	<extension>
+		<point>org.openmrs.gutter.tools</point>
+		<class>@MODULE_PACKAGE@.web.extension.GutterListExt</class>
+	</extension>
+	
+	<!-- Privileges -->
+	<privilege>
+		<name>Manage Reports</name>
+		<description>Base privilege for add/edit/delete reporting definitions. This gives access to the administrative menus, but you need to grant additional privileges to manage each specific type of reporting definition</description>
+	</privilege>
+	<privilege>
+		<name>Manage Report Definitions</name>
+		<description>Add/Edit/Remove Report Definitions</description>
+	</privilege>
+	<privilege>
+		<name>Manage Data Set Definitions</name>
+		<description>Add/Edit/Remove Data Set Definitions</description>
+	</privilege>
+	<privilege>
+		<name>Manage Indicator Definitions</name>
+		<description>Add/Edit/Remove Indicator Definitions</description>
+	</privilege>
+	<privilege>
+		<name>Manage Dimension Definitions</name>
+		<description>Add/Edit/Remove Dimension Definitions</description>
+	</privilege>
+	<privilege>
+		<name>Manage Cohort Definitions</name>
+		<description>Add/Edit/Remove Cohort Definitions</description>
+	</privilege>
+	<privilege>
+		<name>Manage Report Designs</name>
+		<description>Add/Edit/Remove Report Designs</description>
+	</privilege>
+	<privilege>
+		<name>Manage Scheduled Report Tasks</name>
+		<description>Manage Task Scheduling in Reporting Module </description>
+	</privilege>
+	<!-- Global Properties -->
+	<globalProperty>
+		<property>report.deleteReportsAgeInHours</property>
+		<defaultValue>72</defaultValue>
+		<description>Reports that are not explicitly saved are deleted automatically when they are this many hours old. (Values less than or equal to zero means do not delete automatically)</description>
+	</globalProperty>
+	<globalProperty>
+		<property>reporting.maxReportsToRun</property>
+		<defaultValue>1</defaultValue>
+		<description>The maximum number of reports that should be processed at any one time</description>
+	</globalProperty>	
+	<globalProperty>
+		<property>reporting.maxCachedReports</property>
+		<defaultValue>10</defaultValue>
+		<description>The maximum number of reports whose underlying data and output should be kept in the cache at any one time</description>
+	</globalProperty>
+	<globalProperty>
+		<property>reporting.includeDataExportsAsDataSetDefinitions</property>
+		<defaultValue>false</defaultValue>
+		<description>If reportingcompatibility is installed, this indicates whether data exports should be exposed as Dataset Definitions</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>reporting.preferredIdentifierTypes</property>
+		<defaultValue></defaultValue>
+		<description>Pipe-separated list of patient identifier type names, which should be displayed on default patient datasets</description>
+	</globalProperty>
+	<globalProperty>
+		<property>reporting.runReportCohortFilterMode</property>
+		<defaultValue>showIfNull</defaultValue>
+		<description>Supports the values hide,showIfNull,show which determine whether the cohort selector should be available in the run report page</description>
+	</globalProperty>	
+	
+	<!--  Message Properties -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+		
+	<!-- Hibernate Mappings -->
+	<mappingFiles>
+		${omodHbmConfig}
+	</mappingFiles>
+	
+	<!-- dwr -->
+	<dwr>
+		<allow>			
+			<create creator="new" javascript="DWRReportingService">
+				<param name="class" value="org.openmrs.module.reporting.web.dwr.DWRReportingService"/>
+				<include method="purgeReportRequest"/>
+			</create>
+		</allow>
+		<signatures>
+		<![CDATA[
+			import org.openmrs.module.reporting.web.dwr.DWRReportingService;
+			
+			DWRReportingService.purgeReportRequest(Integer id);
+		]]>
+	</signatures>
+	</dwr>
+</module>
