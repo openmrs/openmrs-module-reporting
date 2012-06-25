@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.common.SortCriteria.SortDirection;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeConverter;
@@ -44,6 +45,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.encounter.definition.AllEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.MostRecentEncounterForPatientQuery;
+import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.test.annotation.ExpectedException;
 
@@ -54,9 +56,19 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 
 	protected static Log log = LogFactory.getLog(PatientDataSetEvaluatorTest.class);
 	
+	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
+	
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+	
+	/**
+	 * Run this before each unit test in this class. The "@Before" method in
+	 * {@link BaseContextSensitiveTest} is run right before this method.
+	 * 
+	 * @throws Exception
+	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
+		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
 
 	@Test

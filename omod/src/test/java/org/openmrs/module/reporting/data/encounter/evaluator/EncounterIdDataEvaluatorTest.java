@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterIdDataDefinition;
@@ -25,13 +26,24 @@ import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
+import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class EncounterIdDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
+	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
+	
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+	
+	/**
+	 * Run this before each unit test in this class. The "@Before" method in
+	 * {@link BaseContextSensitiveTest} is run right before this method.
+	 * 
+	 * @throws Exception
+	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
+		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
 	
 	/**

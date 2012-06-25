@@ -23,6 +23,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -35,6 +36,10 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 
 	public final Log log = LogFactory.getLog(this.getClass());
 	
+	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
+	
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+	
 	/**
 	 * Run this before each unit test in this class. The "@Before" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
@@ -42,8 +47,8 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 	 * @throws Exception
 	 */
 	@Before
-	public void runBeforeAllTests() throws Exception {
-		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
+	public void setup() throws Exception {
+		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
 	
 	/**

@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -22,9 +23,13 @@ import org.openmrs.test.Verifies;
 
 public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
+	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
+	
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+	
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
+		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
 	
 	/**

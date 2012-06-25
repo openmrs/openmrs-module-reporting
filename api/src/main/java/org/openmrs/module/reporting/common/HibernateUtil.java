@@ -63,16 +63,19 @@ public class HibernateUtil {
      */
     public static Type getBasicType(String name, Properties parameters) {
     	try {
-    		return TypeFactory.basic(name);
-    	} catch (NoSuchMethodError ex) {
+    		// use reflection to do: return TypeFactory.basic(name);
+    		Class<?> clazz = Context.loadClass("org.hibernate.type.TypeFactory");
+    		Method method = clazz.getMethod("basic", String.class);
+    		return (Type) method.invoke(null, name);
+    	} catch (Exception ex) {
     		// use reflection to do: return new TypeResolver().heuristicType(name, parameters);
-    		try {
+			try {
 	    		Object typeResolver = Context.loadClass("org.hibernate.type.TypeResolver").newInstance();
 	    		Method method = typeResolver.getClass().getMethod("heuristicType", String.class, Properties.class);
 	    		return (Type) method.invoke(typeResolver, name, parameters);
-    		} catch (Exception e) {
-    			throw new RuntimeException("Error getting hibernate type", e);
-    		}
+			} catch (Exception e) {
+				throw new RuntimeException("Error getting hibernate type", e);
+			}
     	}
     }
 

@@ -22,6 +22,7 @@ import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.MappedData;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
@@ -31,12 +32,28 @@ import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefin
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
  * Test for the AgeAtDateOfOtherDataEvaluator
  */
 public class AgeAtDateOfOtherDataEvaluatorTest extends BaseModuleContextSensitiveTest {
+	
+	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
+	
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+	
+	/**
+	 * Run this before each unit test in this class. The "@Before" method in
+	 * {@link BaseContextSensitiveTest} is run right before this method.
+	 * 
+	 * @throws Exception
+	 */
+	@Before
+	public void setup() throws Exception {
+		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+	}
 	
 	/**
 	 * @see AgeAtDateOfOtherDataEvaluator#evaluate(PersonDataDefinition,EvaluationContext)
@@ -76,8 +93,4 @@ public class AgeAtDateOfOtherDataEvaluatorTest extends BaseModuleContextSensitiv
 		Assert.assertEquals(12, pat22.getFullYears().intValue());
 	}
 	
-	@Before
-	public void setup() throws Exception {
-		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
-	}
 }

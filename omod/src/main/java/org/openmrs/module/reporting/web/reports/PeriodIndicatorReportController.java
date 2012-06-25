@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition.CohortIndicatorAndDimensionColumn;
@@ -14,7 +14,6 @@ import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
-import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
 import org.openmrs.module.reporting.propertyeditor.IndicatorEditor;
 import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
@@ -94,8 +93,8 @@ public class PeriodIndicatorReportController {
 			
 		// special code because I don't think I can do a RequestParam for: Map<String, String> dimensionOptions
 		Map<String, String> dimensionOptions = new HashMap<String, String>();
-		Map<String, String> params = (Map<String, String>) request.getParameterMap();
-		for (String param : params.keySet()) {
+		Set<String> paramKeys = request.getParameterMap().keySet();
+		for (String param : paramKeys) {
 			if (param.startsWith("dimensionOption_")) {
 				String dimName = param.substring("dimensionOption_".length());
 				String dimValue = request.getParameter(param);
