@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.web.reports;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -30,6 +31,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.propertyeditor.MappedEditor;
@@ -112,8 +115,16 @@ public class RunReportFormController extends SimpleFormController implements Val
 			if (requiredParams.size() > 0) {
 				for (Iterator<String> iterator = requiredParams.iterator(); iterator.hasNext();) {
 					String parameterName = (String) iterator.next();
-					errors.rejectValue("userEnteredParams[" + parameterName + "]", "error.required",
-					    new Object[] { "This parameter" }, "{0} is required");
+					if (StringUtils.hasText(command.getExpressions().get(parameterName))) {
+						String expression = command.getExpressions().get(parameterName);
+						if (!EvaluationUtil.isExpression(expression)){
+							errors.rejectValue("expressions[" + parameterName + "]",
+							    "reporting.Report.run.error.invalidParamExpression");
+						}
+					} else {
+						errors.rejectValue("userEnteredParams[" + parameterName + "]", "error.required",
+						    new Object[] { "This parameter" }, "{0} is required");
+					}
 				}
 			}
 			
@@ -175,18 +186,26 @@ public class RunReportFormController extends SimpleFormController implements Val
 
 		// Parse the input parameters into appropriate objects and fail validation if any are invalid
 		Map<String, Object> params = new LinkedHashMap<String, Object>();
-		if (reportDefinition.getParameters() != null) {
+		if (reportDefinition.getParameters() != null && (command.getUserEnteredParams() != null || command.getExpressions() != null)) {
 			for (Parameter parameter : reportDefinition.getParameters()) {
-				if (command.getUserEnteredParams() != null) {
-					Object value = command.getUserEnteredParams().get(parameter.getName());
-					if (ObjectUtil.notNull(value)) {
-						try {
+				Object value = null;
+				String expression = null;
+				if(command.getExpressions() != null && ObjectUtil.notNull(command.getExpressions().get(parameter.getName())))
+					expression = command.getExpressions().get(parameter.getName());
+				else
+					value = command.getUserEnteredParams().get(parameter.getName());
+				
+				if (ObjectUtil.notNull(value) || ObjectUtil.notNull(expression)) {
+					try {
+						if (StringUtils.hasText(expression))
+							value = expression;
+						else
 							value = WidgetUtil.parseInput(value, parameter.getType(), parameter.getCollectionType());
-							params.put(parameter.getName(), value);
-						}
-						catch (Exception ex) {
-							errors.rejectValue("userEnteredParams[" + parameter.getName() + "]",  ex.getMessage());
-						}
+						
+						params.put(parameter.getName(), value);
+					}
+					catch (Exception ex) {
+						errors.rejectValue("userEnteredParams[" + parameter.getName() + "]", ex.getMessage());
 					}
 				}
 			}
@@ -222,7 +241,23 @@ public class RunReportFormController extends SimpleFormController implements Val
 		
 		return new ModelAndView(new RedirectView("../reports/reportHistoryOpen.form?uuid="+rr.getUuid()));
 	}
-
+	
+	/**
+	 * @see org.springframework.web.servlet.mvc.SimpleFormController#referenceData(javax.servlet.http.HttpServletRequest)
+	 */
+	@Override
+	protected Map<String, Object> referenceData(HttpServletRequest request) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		EvaluationContext ec = new EvaluationContext();
+		Set<String> expSupportedTypes = new HashSet<String>();
+		for (Object value : ec.getContextValues().values()) {
+			expSupportedTypes.add(value.getClass().getName());
+		}
+		map.put("expSupportedTypes", expSupportedTypes);
+		
+		return map;
+	}
+	
 	public class CommandObject {
 		
 		private String existingRequestUuid;
@@ -231,6 +266,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 		private Map<String, Object> userEnteredParams;			
 		private String selectedRenderer; // as RendererClass!Arg
 		private String schedule;
+		private Map<String, String> expressions;
 		
 		private List<RenderingMode> renderingModes;	
 		
@@ -314,6 +350,20 @@ public class RunReportFormController extends SimpleFormController implements Val
 		public void setSchedule(String schedule) {
 			this.schedule = schedule;
 		}
-	}	
+		
+		/**
+		 * @return the expressions
+		 */
+		public Map<String, String> getExpressions() {
+			return expressions;
+		}
+		
+		/**
+		 * @param expressions the expressions to set
+		 */
+		public void setExpressions(Map<String, String> expressions) {
+			this.expressions = expressions;
+		}
+	}
 	
 }

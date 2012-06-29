@@ -3,6 +3,21 @@
 
 <openmrs:require privilege="Run Reports" otherwise="/login.htm" redirect="/module/reporting/run/runReport.form" />
 
+<script type="text/javascript">
+var fixedValueElementIds = new Array();
+jQuery(document).ready(
+	function(){
+		for(var i in fixedValueElementIds){
+			jQuery("#"+fixedValueElementIds[i]).addClass(fixedValueElementIds[i]);
+		}
+	}
+);
+
+function toggleInputElements(idPrefix){
+	jQuery('.'+idPrefix).toggle();
+}
+</script>
+
 <style>
 	.runTableCell {padding-right:10px; padding-bottom:5px;}
 </style>
@@ -30,6 +45,9 @@
 								<form method="post">
 									<table style="padding:10px;">
 										<c:forEach var="parameter" items="${report.reportDefinition.parameters}">
+											<script type="text/javascript">
+												fixedValueElementIds.push('userEnteredParam${parameter.name}');
+											</script>
 							                <tr>
 							                    <spring:bind path="userEnteredParams[${parameter.name}]">
 										            <td><spring:message code="${parameter.label}"/>:</td>
@@ -40,6 +58,18 @@
 															</c:when>
 															<c:otherwise>
 																<wgt:widget id="userEnteredParam${parameter.name}" name="${status.expression}" type="${parameter.type.name}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>	
+																<c:if test="${fn:contains(expSupportedTypes, parameter.type.name)}">
+																<spring:bind path="expressions[${parameter.name}]">
+																<input class="userEnteredParam${parameter.name}" type="text" name="${status.expression}" value="${status.value}" style="display: none" /> 
+																<span onclick="toggleInputElements('userEnteredParam${parameter.name}')">
+																	<input class="userEnteredParam${parameter.name} smallButton" type="button" value='<spring:message code="reporting.Report.run.enterExpression"/>' />
+																	<input class="userEnteredParam${parameter.name} smallButton" type="button" value='<spring:message code="reporting.Report.run.enterFixedValue"/>' style="display: none" />
+																</span>
+																<c:if test="${not empty status.errorMessage}">
+								                            		<span class="error">${status.errorMessage}</span>
+								                        		</c:if>
+																</spring:bind>
+																</c:if>
 															</c:otherwise>
 														</c:choose>
 								                        <c:if test="${not empty status.errorMessage}">
