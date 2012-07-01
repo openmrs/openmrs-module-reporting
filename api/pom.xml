@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.openmrs.module</groupId>
@@ -16,110 +16,48 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 		</dependency>
-		
-	    <dependency>
-		   	<groupId>org.quartz-scheduler</groupId>
-		   	<artifactId>quartz</artifactId>
-		</dependency>
-		
+
 		<dependency>
-		   	<groupId>org.codehaus.jackson</groupId>
-		   	<artifactId>jackson-core-asl</artifactId>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
 		</dependency>
-		
+
 		<dependency>
-		   	<groupId>org.codehaus.jackson</groupId>
-		   	<artifactId>jackson-mapper-asl</artifactId>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
 			<artifactId>openmrs-api</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openmrs.web</groupId>
 			<artifactId>openmrs-web</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.api</groupId>
+			<artifactId>openmrs-api</artifactId>
+			<classifier>tests</classifier>
+		</dependency>
 		
+		<dependency>
+			<groupId>org.openmrs.test</groupId>
+			<artifactId>openmrs-test</artifactId>
+			<type>pom</type>
+		</dependency>
+
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>serialization.xstream-api</artifactId>
 		</dependency>
 	</dependencies>
-	
-	<!-- different profiles for building/testing against different version of openmrs -->
-	<profiles>
-		<profile>
-			<id>openmrs-1.6</id>
-			<dependencies>	
-				<dependency>
-					<groupId>org.openmrs.test</groupId>
-					<artifactId>openmrs-test</artifactId>
-				</dependency>
-			</dependencies>
-		</profile>
-	
-		<profile>
-			<id>openmrs-1.7</id>
-
-			<dependencies>	
-				<dependency>
-					<groupId>org.openmrs.test</groupId>
-					<artifactId>openmrs-test</artifactId>
-				</dependency>
-			</dependencies>
-		</profile>
-		
-		<profile>
-			<id>openmrs-1.8</id>
-			
-			<dependencies>				
-				<dependency>
-				    <groupId>org.openmrs.api</groupId>
-				    <artifactId>openmrs-api</artifactId>
-				    <classifier>tests</classifier>
-				</dependency>
-				<dependency>
-				    <groupId>org.openmrs.test</groupId>
-				    <artifactId>openmrs-test</artifactId>
-				    <type>pom</type>
-				</dependency>
-			</dependencies>
-		</profile>
-		
-		<profile>
-			<id>openmrs-1.9</id>
-			<dependencies>	
-				<dependency>
-				    <groupId>org.openmrs.api</groupId>
-				    <artifactId>openmrs-api</artifactId>
-				    <classifier>tests</classifier>
-				</dependency>
-				<dependency>
-				    <groupId>org.openmrs.test</groupId>
-				    <artifactId>openmrs-test</artifactId>
-				    <type>pom</type>
-				</dependency>
-			</dependencies>
-		</profile>
-	
-		<profile>
-			<id>openmrs-1.10</id>
-			<dependencies>				
-				<dependency>
-				    <groupId>org.openmrs.api</groupId>
-				    <artifactId>openmrs-api</artifactId>
-				    <classifier>tests</classifier>
-				</dependency>
-				<dependency>
-				    <groupId>org.openmrs.test</groupId>
-				    <artifactId>openmrs-test</artifactId>
-				    <type>pom</type>
-				</dependency>
-			</dependencies>
-		</profile>
-		
-	</profiles>
 
 </project>

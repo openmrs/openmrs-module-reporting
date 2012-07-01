@@ -15,12 +15,18 @@
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>reporting-api</artifactId>
-			<version>${project.parent.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.openmrs.web</groupId>
 			<artifactId>openmrs-web</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.web</groupId>
+			<artifactId>openmrs-web</artifactId>
+			<classifier>tests</classifier>
 		</dependency>
 		
 		<dependency>
@@ -31,7 +37,31 @@
 
 	<build>
 		<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
-
+		
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/*.xml</exclude>
+					<exclude>**/*.properties</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+				<filtering>false</filtering>
+				<targetPath>web/module</targetPath>
+			</resource>
+		</resources>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.openmrs.maven.plugins</groupId>
@@ -60,52 +90,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-	<!-- different profiles for building/testing against different version of openmrs -->
-	<profiles>
-		<profile>
-			<id>openmrs-1.6</id>
-		</profile>
-		
-		<profile>
-			<id>openmrs-1.7</id>	
-		</profile>
-		
-		<profile>
-			<id>openmrs-1.8</id>
-			<dependencies>				
-				<dependency>
-				    <groupId>org.openmrs.web</groupId>
-				    <artifactId>openmrs-web</artifactId>
-				    <classifier>tests</classifier>
-				</dependency>
-			</dependencies>
-		</profile>
-		
-		<profile>
-			<id>openmrs-1.9</id>
-			<dependencies>				
-				<dependency>
-				    <groupId>org.openmrs.web</groupId>
-				    <artifactId>openmrs-web</artifactId>
-				    <classifier>tests</classifier>
-				</dependency>
-			</dependencies>
-		</profile>
-		
-		<profile>
-			<id>openmrs-1.10</id>
-			<dependencies>				
-				<dependency>
-				    <groupId>org.openmrs.web</groupId>
-				    <artifactId>openmrs-web</artifactId>
-				    <classifier>tests</classifier>
-				</dependency>
-			</dependencies>
-		</profile>
-		
-	</profiles>
-	
-	
 
 </project>
