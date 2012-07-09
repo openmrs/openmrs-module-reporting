@@ -106,7 +106,7 @@ public class ProgramEnrollmentsForPatientDataEvaluator implements PatientDataEva
 		ListMap<Integer, PatientProgram> enrollmentsForPatients = new ListMap<Integer, PatientProgram>();
 		for (Object o : queryResult) {
 			PatientProgram pp = (PatientProgram)o;
-			enrollmentsForPatients.put(pp.getPatient().getPatientId(), pp); // TODO: Make this more efficient via HQL
+			enrollmentsForPatients.putInList(pp.getPatient().getPatientId(), pp); // TODO: Make this more efficient via HQL
 		}
 		
 		for (Integer pId : enrollmentsForPatients.keySet()) {

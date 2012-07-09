@@ -82,7 +82,7 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		ListMap<Integer, Obs> obsForPatients = new ListMap<Integer, Obs>();
 		for (Object o : queryResult) {
 			Obs obs = (Obs)o;
-			obsForPatients.put(obs.getPersonId(), obs);
+			obsForPatients.putInList(obs.getPersonId(), obs);
 		}
 		
 		for (Integer pId : obsForPatients.keySet()) {

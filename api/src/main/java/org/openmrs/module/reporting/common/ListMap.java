@@ -130,7 +130,7 @@ public class ListMap<K, V> implements Map<K, List<V>>  {
 	/**
 	 * @see Map#put(Object, Object)
 	 */
-	public List<V> put(K key, V value) {
+	public List<V> putInList(K key, V value) {
 		List<V> l = get(key);
 		if (l == null) {
 			l = new ArrayList<V>();
@@ -153,7 +153,7 @@ public class ListMap<K, V> implements Map<K, List<V>>  {
 	public void putAll(K key, List<V> values) {
 		if (values != null) {
 			for (V v : values) {
-				put(key, v);
+				putInList(key, v);
 			}
 		}
 	}

@@ -106,7 +106,7 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		ListMap<Integer, PatientState> statesForPatients = new ListMap<Integer, PatientState>();
 		for (Object o : queryResult) {
 			PatientState ps = (PatientState)o;
-			statesForPatients.put(ps.getPatientProgram().getPatient().getPatientId(), ps); // TODO: Make this more efficient via HQL
+			statesForPatients.putInList(ps.getPatientProgram().getPatient().getPatientId(), ps); // TODO: Make this more efficient via HQL
 		}
 		
 		for (Integer pId : statesForPatients.keySet()) {
