@@ -30,6 +30,7 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.indicator.dimension.CohortDimensionResult;
+import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.module.reporting.report.ReportData;
 import org.springframework.util.StringUtils;
 
@@ -188,6 +189,8 @@ public class FormatTag extends TagSupport {
 			printCohortDimensionResult(sb, (CohortDimensionResult) o);
 		} else if (o instanceof BaseData) {
 			printMap(sb, ((BaseData)o).getData());
+		} else if (o instanceof IdSet) {
+			printCollection(sb, ((IdSet)o).getMemberIds());
 		} 
 		else {
 			sb.append(ObjectUtil.format(o));
@@ -369,6 +372,19 @@ public class FormatTag extends TagSupport {
 			sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
 			for (Map.Entry<?, ?> e : m.entrySet()) {
 				sb.append("<tr><th align=\"left\">" + format(e.getKey()) + "</th><td align=\"left\">" + format(e.getValue()) + "</td></tr>");
+			}
+			sb.append("</table>");
+		}
+	}
+	
+	private void printCollection(StringBuilder sb, Collection<?> c){
+		if(c != null){
+			sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
+			sb.append("<tr><th align=\"left\">" + Context.getMessageSourceService().getMessage("reporting.ids") + "</th></tr>");
+			for (Object item : c) {
+				sb.append("<tr><td align=\"left\">");
+				printObject(sb, item);
+				sb.append("</td></tr>");
 			}
 			sb.append("</table>");
 		}

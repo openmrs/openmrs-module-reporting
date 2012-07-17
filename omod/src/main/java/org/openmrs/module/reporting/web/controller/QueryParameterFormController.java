@@ -77,7 +77,7 @@ public class QueryParameterFormController {
 			parameterizable = ParameterizableUtil.getParameterizable(uuid, type);
 		}
 		
-		if (parameterizable.getParameters().isEmpty() && StringUtils.isEmpty(action)) {
+		if (parameterizable != null && parameterizable.getParameters().isEmpty() && StringUtils.isEmpty(action)) {
 			action = "preview";
 		}
 		
