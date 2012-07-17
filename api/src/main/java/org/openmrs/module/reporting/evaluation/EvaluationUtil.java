@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -212,19 +210,7 @@ public class EvaluationUtil {
 
 		// Attempt to format the evaluated value if appropriate
 		if (paramAndFormat.length == 2) {
-			if (paramValueToFormat instanceof Date) {
-				DateFormat df = new SimpleDateFormat(paramAndFormat[1]);
-				return df.format((Date)paramValueToFormat);
-			}
-			else {
-				log.debug("Attempting to format by calling method: " + paramAndFormat[1]);
-				try {
-					return paramValueToFormat.getClass().getMethod(paramAndFormat[1]).invoke(paramValueToFormat);
-				}
-				catch (Exception e) {
-					log.debug(e.getMessage()); // Don't throw an error here...
-				}
-			}
+			paramValueToFormat = ObjectUtil.format(paramValueToFormat, paramAndFormat[1]);
 		}
 
 		return paramValueToFormat;

@@ -13,10 +13,8 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.openmrs.annotation.Handler;
@@ -27,6 +25,7 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.data.patient.definition.PatientDataSetDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.DataSetRowList;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
@@ -54,12 +53,12 @@ public class PatientDataSetDataEvaluator implements PatientDataEvaluator {
 		SimpleDataSet d = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(def.getDefinition(), context);
 
 		// Aggregate the Rows on the Patient Id column
-		Map<Integer, List<DataSetRow>> data = new LinkedHashMap<Integer, List<DataSetRow>>();
+		Map<Integer, DataSetRowList> data = new LinkedHashMap<Integer, DataSetRowList>();
 		for (DataSetRow r : d.getRows()) {
 			Integer patientId = (Integer)r.getColumnValue("__patientId");
-			List<DataSetRow> rowsForPatient = data.get(patientId);
+			DataSetRowList rowsForPatient = data.get(patientId);
 			if (rowsForPatient == null) {
-				rowsForPatient = new ArrayList<DataSetRow>();
+				rowsForPatient = new DataSetRowList();
 				data.put(patientId, rowsForPatient);
 			}
 			r.removeColumn("__patientId");
@@ -68,7 +67,7 @@ public class PatientDataSetDataEvaluator implements PatientDataEvaluator {
 		
 		for (Integer patientId : data.keySet()) {
 			
-			List<DataSetRow> values = data.get(patientId);
+			DataSetRowList values = data.get(patientId);
 			
 			if (def.getWhichValues() == TimeQualifier.LAST) {
 				Collections.reverse(values);
@@ -83,7 +82,7 @@ public class PatientDataSetDataEvaluator implements PatientDataEvaluator {
 				c.addData(patientId, values.size() > 0 ? values.get(0) : null);
 			}
 			else {
-				List<DataSetRow> patientRows = new ArrayList<DataSetRow>();
+				DataSetRowList patientRows = new DataSetRowList();
 				for (int i=0; i<numValues; i++) {
 					DataSetRow row = values.get(i);
 					patientRows.add(row);

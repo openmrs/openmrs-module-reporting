@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -32,7 +30,6 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -92,17 +89,8 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 			for (Integer id : c.getMemberIds()) {
 				for (DataSetColumn column : cd.getDataSetColumns()) {
 					Object val = data.getData().get(id);
-					if (val instanceof DataSetRow) {
-						DataSetRow row = (DataSetRow) val;
-						for (Map.Entry<DataSetColumn, Object> e : row.getColumnValues().entrySet()) {
-							Object entryVal = DataUtil.convertData(e.getValue(), dataDef.getConverters());
-							dataSet.addColumnValue(id, e.getKey(), entryVal);
-						}
-					}
-					else {
-						val = DataUtil.convertData(val, dataDef.getConverters());
-						dataSet.addColumnValue(id, column, val);
-					}
+					val = DataUtil.convertData(val, dataDef.getConverters());
+					dataSet.addColumnValue(id, column, val);
 				}
 			}
 		}

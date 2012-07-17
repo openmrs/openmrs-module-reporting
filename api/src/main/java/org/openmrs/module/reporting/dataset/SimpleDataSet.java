@@ -1,10 +1,8 @@
 package org.openmrs.module.reporting.dataset;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -96,8 +94,8 @@ public class SimpleDataSet implements DataSet {
 	/**
      * @return the data
      */
-    public List<DataSetRow> getRows() {
-    	List<DataSetRow> l = new ArrayList<DataSetRow>();
+    public DataSetRowList getRows() {
+    	DataSetRowList l = new DataSetRowList();
     	l.addAll(getRowMap().values());
     	if (getSortCriteria() != null) {
     		Collections.sort(l, new DataSetRowComparator(getSortCriteria()));
