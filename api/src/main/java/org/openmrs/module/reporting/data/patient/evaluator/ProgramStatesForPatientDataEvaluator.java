@@ -61,45 +61,52 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		StringBuilder hql = new StringBuilder();
 		Map<String, Object> m = new HashMap<String, Object>();
 		
-		hql.append("from 		PatientState ");
-		hql.append("where 		voided = false ");
-		
-		hql.append("and 		state.programWorkflowStateId = :stateId ");
-		m.put("stateId", def.getState().getProgramWorkflowStateId());
+		hql.append("select		patientState ");
+		hql.append("from 		PatientState as patientState ");
+		hql.append("inner join	patientState.state as state ");
 		
 		if (context.getBaseCohort() != null) {
-			hql.append("and 	patientProgram.patient.patientId in (:patientIds) ");
+			hql.append("inner join	patientState.patientProgram as patientProgram ");
+			hql.append("inner join	patientProgram.patient as patient ");
+			hql.append("where 		patient.patientId in (:patientIds) ");
 			m.put("patientIds", context.getBaseCohort());
+			hql.append("and ");
 		}
-		
+		else {
+			hql.append("where ");
+		}
+		hql.append("			patientState.voided = false ");
+		hql.append("and 		state.programWorkflowStateId = :stateId ");
+		m.put("stateId", def.getState().getProgramWorkflowStateId());
+
 		if (def.getStartedOnOrBefore() != null) {
-			hql.append("and		startDate <= :startedOnOrBefore ");
+			hql.append("and		patientState.startDate <= :startedOnOrBefore ");
 			m.put("startedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getStartedOnOrBefore()));
 		}
 		
 		if (def.getStartedOnOrAfter() != null) {
-			hql.append("and		startDate >= :startedOnOrAfter ");
+			hql.append("and		patientState.startDate >= :startedOnOrAfter ");
 			m.put("startedOnOrAfter", def.getStartedOnOrAfter());
 		}
 		
 		if (def.getEndedOnOrBefore() != null) {
-			hql.append("and		endDate <= :endedOnOrBefore ");
+			hql.append("and		patientState.endDate <= :endedOnOrBefore ");
 			m.put("endedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getEndedOnOrBefore()));
 		}
 		
 		if (def.getEndedOnOrAfter() != null) {
-			hql.append("and		endDate >= :endedOnOrAfter ");
+			hql.append("and		patientState.endDate >= :endedOnOrAfter ");
 			m.put("endedOnOrAfter", def.getEndedOnOrAfter());
 		}
 		
 		if (def.getActiveOnDate() != null) {
-			hql.append("and		startDate <= :startedOnOrBefore ");
-			hql.append("and		(endDate is null or endDate >= :endedOnOrAfter) ");
+			hql.append("and		patientState.startDate <= :startedOnOrBefore ");
+			hql.append("and		(patientState.endDate is null or patientState.endDate >= :endedOnOrAfter) ");
 			m.put("startedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getActiveOnDate()));
 			m.put("endedOnOrAfter", def.getActiveOnDate());
 		}
 		
-		hql.append("order by 	startDate " + (def.getWhich() == TimeQualifier.LAST ? "desc" : "asc"));
+		hql.append("order by 	patientState.startDate " + (def.getWhich() == TimeQualifier.LAST ? "desc" : "asc"));
 		
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
 		

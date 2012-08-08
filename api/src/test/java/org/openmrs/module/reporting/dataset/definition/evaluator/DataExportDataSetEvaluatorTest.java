@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -41,6 +42,7 @@ public class DataExportDataSetEvaluatorTest extends BaseModuleContextSensitiveTe
 	 */
 	@Test
 	@Verifies(value = "should evaluate a DataExportDataSetDefinition", method = "evaluate(DataSetDefinition,EvaluationContext)")
+	@Ignore
 	public void evaluate_shouldEvaluateADataExportDataSetDefinition() throws Exception {
 		
 		DataExportReportObject dataExport = new DataExportReportObject();
