@@ -62,8 +62,8 @@ function toggleInputElements(idPrefix){
 																<spring:bind path="expressions[${parameter.name}]">
 																<input class="userEnteredParam${parameter.name}" type="text" name="${status.expression}" value="${status.value}" style="display: none" /> 
 																<span onclick="toggleInputElements('userEnteredParam${parameter.name}')">
-																	<input class="userEnteredParam${parameter.name} smallButton" type="button" value='<spring:message code="reporting.Report.run.enterExpression"/>' />
-																	<input class="userEnteredParam${parameter.name} smallButton" type="button" value='<spring:message code="reporting.Report.run.enterFixedValue"/>' style="display: none" />
+																	<input class="userEnteredParam${parameter.name} smallButton" type="button" value='<spring:message code="reporting.Report.run.enterExpression"/>' style="width:100px;"/>
+																	<input class="userEnteredParam${parameter.name} smallButton" type="button" value='<spring:message code="reporting.Report.run.enterFixedValue"/>' style="display:none; width:100px;" />
 																</span>
 																<c:if test="${not empty status.errorMessage}">
 								                            		<span class="error">${status.errorMessage}</span>

@@ -272,6 +272,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 		
 		public CommandObject() {
 			userEnteredParams = new LinkedHashMap<String, Object>();
+			expressions = new HashMap<String ,String>();
 		}
 		
 		@SuppressWarnings("unchecked")
