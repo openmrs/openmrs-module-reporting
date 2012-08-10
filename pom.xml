@@ -123,14 +123,14 @@
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>serialization.xstream-api</artifactId>
-				<version>0.2.7-SNAPSHOT</version>
+				<version>0.2.7</version>
 				<scope>provided</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>htmlwidgets</artifactId>
-				<version>1.6.1</version>
+				<version>1.6.2</version>
 				<scope>provided</scope>
 			</dependency>
 		</dependencies>
