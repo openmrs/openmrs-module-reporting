@@ -47,9 +47,9 @@ public class ReportProcessorFormController {
     	
 		ReportService rs = Context.getService(ReportService.class);
 		
-		ReportProcessorConfiguration c = new ReportProcessorConfiguration();
-		if (StringUtils.isNotEmpty(uuid)) {
-			c = rs.getReportProcessorConfigurationByUuid(uuid);
+		ReportProcessorConfiguration c = rs.getReportProcessorConfigurationByUuid(uuid);
+		if (c == null) {
+			c = new ReportProcessorConfiguration();
 		}
 
 		c.setName(name);
