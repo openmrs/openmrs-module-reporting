@@ -22,7 +22,8 @@
 				},
 				"sInfo": "<spring:message code="SearchResults.viewing" javaScriptEscape="true"/> _START_ - _END_ <spring:message code="SearchResults.of" javaScriptEscape="true"/> _TOTAL_ ",
 				"sSearch": "<spring:message code="general.search" javaScriptEscape="true"/>"
-			}
+			},
+			"aaSorting": [[ 1, "desc" ]]
 		} );
 	} );
 	
@@ -74,6 +75,7 @@
 		<table id="report-history-table" class="display" width="99%" style="padding:3px;">
 			<thead>
 				<tr>
+					<th style="display:none"></th>
 					<th><spring:message code="reporting.reportRequest.reportName"/></th>
 					<th><spring:message code="reporting.reportRequest.parameters"/></th>
 					<th><spring:message code="reporting.reportRequest.outputFormat"/></th>
@@ -85,6 +87,7 @@
 			<tbody>
 				<c:forEach var="r" items="${history}">
 					<tr valign="baseline">
+						<td style="display:none"><openmrs:formatDate date="${r.requestDate}" format="yyyy-MM-dd HH:mm:ss"/></td>
 						<td>
 							<a href="reportHistoryOpen.form?uuid=${r.uuid}">
 								${r.reportDefinition.parameterizable.name}

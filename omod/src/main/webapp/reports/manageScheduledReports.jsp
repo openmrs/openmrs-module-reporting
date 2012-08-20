@@ -75,7 +75,13 @@
 				                </c:forEach>
 							</td>
 							<td><rptTag:cronDisplay id="${scheduledReport.id}Schedule" expression="${scheduledReport.schedule}"/></td>
-							<td>${rpt:nextExecutionTime(scheduledReport.schedule)}</td>
+							<td>
+								<c:set value="${rpt:nextExecutionTime(scheduledReport.schedule)}" var="nextTime"/>
+								<c:choose>
+									<c:when test="${empty nextTime}"><spring:message code="reporting.completed"/></c:when>
+									<c:otherwise>${nextTime}</c:otherwise>
+								</c:choose>	
+							</td>
 							<td>
 								<a href="javascript:confirmDelete('${scheduledReport.reportDefinition.parameterizable.name}','${scheduledReport.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
 							</td>

@@ -5,30 +5,32 @@
 	 **/
 	
 	/*
-		Determines if entered date is valid (e.g. matches dd/mm/yyyy format)
-		and is not in the past
+	 	This takes in a date string, and it's current date format, and returns a new
+	 	date string in the output format.
+	 */
+	function convertDate(dateAsString, inputFormat, outputFormat) {
+		if (inputFormat != outputFormat) {
+			console.log('Received input date: ' + dateAsString);
+			var dateObj = parseDateFromStringToJs(inputFormat, dateAsString);
+			console.log('Converted this to date object: ' + dateObj);
+			dateAsString = parseDateFromJsToString(outputFormat, dateObj);
+			console.log('Returning output date: ' + dateAsString);
+		}
+		return dateAsString;
+	}
+
+	/*
+		Determines if entered date is valid and is not in the past
 	*/
-	function isValidScheduleDate(dateVal, minutes, hours){
+	function isValidScheduleDate(dateObj, minutes, hours){
 		var isValid = true;
-		var scheduleDate = null;
-		try{
-			// in jquery two letters yy means 4 digit year representation
-			scheduleDate = jQuery.datepicker.parseDate('dd/mm/yy', dateVal, null);
-		}
-		catch(error){
-			console.log(error);
+		var now = new Date();
+		var scheduleDate = new Date(dateObj);
+		scheduleDate.setMinutes(minutes);
+		scheduleDate.setHours(hours);
+		if (scheduleDate.getTime() < now.getTime()) {
+			console.log('The schedule date is in the past');
 			isValid = false;
-		}
-		
-		// if date has valid format we need to check whether it is in future or not 
-		if (isValid) {
-			var now = new Date();
-			scheduleDate.setMinutes(minutes);
-			scheduleDate.setHours(hours);
-			if (scheduleDate.getTime() < now.getTime()) {
-				console.log('The schedule date is in the past');
-				isValid = false;
-			}
 		}
 		return isValid;
 	}
@@ -61,7 +63,10 @@
 		advanced expression is passed it returns expression without modifications, 
 		otherwise it will trying to represent expression depending on its type
 	*/
-	function getScheduleDescription(expression) {
+	function getScheduleDescription(expression, dateFormat) {
+		if (!dateFormat) {
+			dateFormat = 'dd/mm/yyyy'
+		}
 		var scheduleDescription;
 		// first we need to determine the type of expression
 		var schedulingType = detectSchedulingType(expression);
@@ -74,10 +79,10 @@
 			var hours = parseInt(tokens[2]);
 			var day = parseInt(tokens[3]);
 			var month = parseInt(tokens[4]);
-			month++;
 			var year = tokens[6];
 			// formatting exact date string
 			var dateString = prettyFormat(day) + '/' + prettyFormat(month) + '/' + year;
+			dateString = convertDate(dateString, 'dd/mm/yyyy', dateFormat)
 			scheduleDescription = "Once on " + dateString + " at " + prettyFormat(hours) + ":" + prettyFormat(minutes);
 		} else if (schedulingType == 'every-day') {
 			var tokens = expression.split(' ');
@@ -102,6 +107,7 @@
 			var domName = formatDomName(tokens[3]);
 			scheduleDescription = "Every month on " + domName + " at " + prettyFormat(hours) + ":" + prettyFormat(minutes);
 		}
+		console.log('Formatting expression: ' + expression + ' to: ' + scheduleDescription);
 		return scheduleDescription;
 	}
 	

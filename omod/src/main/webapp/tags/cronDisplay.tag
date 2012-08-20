@@ -10,7 +10,7 @@
 		jQuery("#${id}").each(function() {
 			var val = $(this).html();
 			try {
-				val = getScheduleDescription(val);
+				val = getScheduleDescription(val, '<openmrs:datePattern localize="false"/>');
 				$(this).html(val);
 			} catch(e) {
 				console.log(e);

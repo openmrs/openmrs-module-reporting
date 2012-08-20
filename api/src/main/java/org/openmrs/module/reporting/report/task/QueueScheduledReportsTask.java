@@ -59,7 +59,7 @@ public class QueueScheduledReportsTask extends AbstractReportsTask {
 				Date nextValidTime = cron.getNextValidTimeAfter(nextInvalidTime);
 
 				if (nextValidTime == null) {
-					scheduledReport.setStatus(Status.COMPLETED);
+					scheduledReport.setStatus(Status.SCHEDULE_COMPLETED);
 					rs.saveReportRequest(scheduledReport);
 				}
 			}

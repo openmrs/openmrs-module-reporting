@@ -322,7 +322,8 @@ public class ReportRequest extends BaseOpenmrsObject {
 		PROCESSING,
 		FAILED,
 		COMPLETED,
-		SAVED
+		SAVED,
+		SCHEDULE_COMPLETED
 	}
 	
 	/**
