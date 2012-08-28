@@ -20,7 +20,7 @@
 		
 		if (jQuery("#${id}scheduleExpression").val() != '') {
 			populateValues(jQuery("#${id}scheduleExpression").val());
-			jQuery("#${id}labelScheduleExpression").text(getScheduleDescription(jQuery("#${id}scheduleExpression").val(), '<openmrs:datePattern localize="false"/>'));
+			jQuery("#${id}labelScheduleExpression").text(getScheduleDescription(jQuery("#${id}scheduleExpression").val(), '<openmrs:datePattern/>'));
 		}
 		
 		jQuery('#${id}selectScheduleType').change(function(){
@@ -80,7 +80,7 @@
 				jQuery("#${id}labelScheduleExpression").html(getScheduleDescription(expression));
 			}
 		} else if (schedulingType == 'once') {
-			var datePattern = '<openmrs:datePattern localize="false"/>';
+			var datePattern = '<openmrs:datePattern/>';
 			var exactDate = jQuery("#${id}once-scheduleDate").val();
 			var exactDateObj = parseDateFromStringToJs(datePattern, exactDate);
 			var minute = parseInt(jQuery("#${id}once-minutes").val());
@@ -88,7 +88,7 @@
 			
 			// if date is valid we need to build cron expression 
 			// with it and with two another time fields
-			if (isValidScheduleDate(exactDate, minute, hour)) {
+			if (isValidScheduleDate(exactDateObj, minute, hour)) {
 				var date = exactDateObj.getDate();
 				var month = exactDateObj.getMonth() + 1;
 				var year = exactDateObj.getFullYear();
@@ -198,7 +198,7 @@
 			exactDate.setDate(parseInt(tokens[3]));
 			exactDate.setMonth(parseInt(tokens[4]) - 1);
 			exactDate.setYear(parseInt(tokens[6]));
-			dateString = parseDateFromJsToString('<openmrs:datePattern localize="false"/>', exactDate);
+			dateString = parseDateFromJsToString('<openmrs:datePattern/>', exactDate);
 			
 			jQuery("#${id}once-scheduleDate").val(dateString);
 			jQuery("#${id}once").show();
