@@ -35,7 +35,7 @@ public class EditAnnotatedDefinitionController {
     public Definition getDefinition(@RequestParam(required = false, value = "uuid") String uuid,
     								@RequestParam(required = false, value = "type") Class<? extends Definition> type) {
     	Definition d = null;
-    	if (ObjectUtil.isNull(uuid)) {
+    	if (ObjectUtil.notNull(uuid)) {
     		d = DefinitionContext.getDefinitionByUuid(type, uuid);
     	}
     	if (d == null) {
