@@ -42,6 +42,9 @@ public class EvaluationContextTest extends BaseModuleContextSensitiveTest {
 		assertEquals(evaluate("${report.d1+36h}"), df.parse("2007-01-11 22:30:17:000"));
 		assertEquals(evaluate("${report.d1-1m-1w}"), df.parse("2006-12-3 10:30:17:000"));
 		assertEquals(evaluate("${report.d1+36m-10w+24h}"), df.parse("2009-11-02 10:30:17:000"));
+		assertEquals(evaluate("${report.testDouble}"), new Double(5));
+		assertEquals(evaluate("${report.testDouble|0}"), "5");
+		assertEquals(evaluate("${report.testDouble|3}"), "5.000");
 		assertEquals(evaluate("${report.gender}"), "male");
 		assertEquals(evaluate("report.gender"), "report.gender");
 		assertEquals(evaluate("hello ${report.gender} person"), "hello male person");
@@ -72,6 +75,7 @@ public class EvaluationContextTest extends BaseModuleContextSensitiveTest {
 	public Object evaluate(String expression, EvaluationContext context) throws Exception {
 		context.addParameterValue("report.d1", df.parse("2007-01-10 10:30:17:000"));
 		context.addParameterValue("report.gender", "male");
+		context.addParameterValue("report.testDouble", new Double(5));
 		return EvaluationUtil.evaluateExpression(expression, context);
 	}
 	

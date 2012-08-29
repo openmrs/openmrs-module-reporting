@@ -16,6 +16,7 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -299,10 +300,20 @@ public class ObjectUtil {
 		if (o instanceof Object[]) {
 			return toString(nvl(format, ","), (Object[])o);
 		}
+		if (o instanceof IndicatorResult) {
+			if (notNull(format)) {
+				return format(((IndicatorResult)o).getValue(), format);
+			}
+		}
 		if (o instanceof Number) {
 			if (notNull(format)) {
 				NumberFormat nf = NumberFormat.getInstance();
 				nf.setGroupingUsed(false);
+				try {
+					nf.setMinimumFractionDigits(Integer.parseInt(format));
+					nf.setMaximumFractionDigits(Integer.parseInt(format));
+				}
+				catch (Exception e) {}
 				return nf.format((Number)o);
 			}
 		}
