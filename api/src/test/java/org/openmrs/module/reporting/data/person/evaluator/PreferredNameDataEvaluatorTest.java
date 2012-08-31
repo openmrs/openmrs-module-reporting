@@ -50,7 +50,7 @@ public class PreferredNameDataEvaluatorTest extends BaseModuleContextSensitiveTe
 	 * @verifies return the most preferred name for each person in the passed context
 	 */
 	@Test
-	public void evaluate_shouldReturnAllBirthDatesForAllPersons() throws Exception {
+	public void evaluate_shouldReturnAllNamesForAllPersons() throws Exception {
 		PreferredNameDataDefinition d = new PreferredNameDataDefinition();
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort("2,6,7,8"));
@@ -59,5 +59,18 @@ public class PreferredNameDataEvaluatorTest extends BaseModuleContextSensitiveTe
 		Assert.assertEquals("Johnny", ((PersonName)pd.getData().get(6)).getGivenName());
 		Assert.assertEquals("Collet", ((PersonName)pd.getData().get(7)).getGivenName());
 		Assert.assertEquals("Oloo", ((PersonName)pd.getData().get(8)).getFamilyName());
+	}
+	
+	/**
+	 * @see PreferredNameEvaluator#evaluate(PersonDataDefinition,EvaluationContext)
+	 * @verifies return empty result set for an empty base cohort
+	 */
+	@Test
+	public void evaluate_shouldReturnEmptyResultSetForEmptyBaseCohort() throws Exception {
+		PreferredNameDataDefinition d = new PreferredNameDataDefinition();
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort());
+		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
+		Assert.assertEquals(0, pd.getData().size());
 	}
 }

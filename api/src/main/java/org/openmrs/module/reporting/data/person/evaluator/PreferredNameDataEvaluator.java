@@ -36,23 +36,26 @@ public class PreferredNameDataEvaluator implements PersonDataEvaluator {
 	/** 
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
 	 * @should return the preferred name for all persons
+	 * @should return empty result set for an empty base cohort
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		Map<String, Object> m = new HashMap<String, Object>();
-		
-		String hql = "from PersonName where voided = false ";
-		if (context.getBaseCohort() != null) {
-			hql += "and person.personId in (:personIds) ";
-			m.put("personIds", context.getBaseCohort());
-		}
-		hql += "order by preferred asc";
-		
-		List<Object> queryResult = qs.executeHqlQuery(hql, m);
-		for (Object o : queryResult) {
-			PersonName pn = (PersonName)o;
-			c.addData(pn.getPerson().getPersonId(), pn);  // TODO: This is probably inefficient.  Try to improve this
+		if (context != null && context.getBaseCohort() != null && !context.getBaseCohort().isEmpty()) {
+			DataSetQueryService qs = Context.getService(DataSetQueryService.class);
+			Map<String, Object> m = new HashMap<String, Object>();
+			
+			String hql = "from PersonName where voided = false ";
+			if (context.getBaseCohort() != null) {
+				hql += "and person.personId in (:personIds) ";
+				m.put("personIds", context.getBaseCohort());
+			}
+			hql += "order by preferred asc";
+			
+			List<Object> queryResult = qs.executeHqlQuery(hql, m);
+			for (Object o : queryResult) {
+				PersonName pn = (PersonName)o;
+				c.addData(pn.getPerson().getPersonId(), pn);  // TODO: This is probably inefficient.  Try to improve this
+			}
 		}
 		return c;
 	}
