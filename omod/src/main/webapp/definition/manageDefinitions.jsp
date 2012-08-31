@@ -13,6 +13,13 @@
 			"bSort": true,
 			"bInfo": true,
 			"bAutoWidth": false,
+			"aoColumns": [
+		                    null,
+			                null,
+			                null,
+			                null,
+			                {"bSortable": false}
+		                ],
 			"fnDrawCallback": function() {
 				<c:forEach items="${allDefinitions}" var="definition" varStatus="status">
 					$("#preview-${definition.uuid}").click(function(event){ 
