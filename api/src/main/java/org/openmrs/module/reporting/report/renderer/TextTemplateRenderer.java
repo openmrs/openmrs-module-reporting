@@ -20,10 +20,15 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
@@ -32,56 +37,89 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 
 /**
- * Report Renderer implementation that supports rendering to an Excel template
+ * Report Renderer implementation that supports rendering of a text template
  */
 @Handler
 @Localized("reporting.TextTemplateRenderer")
 public class TextTemplateRenderer extends ReportTemplateRenderer {
+	
+	public static String SCRIPT_ENGINE_NAME = "ScriptEngineName";
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
 	public TextTemplateRenderer() {
 		super();
 	}
-
-	/** 
+	
+	/**
+	 * Renders a report template by doing simple variable replacement.
+	 * 
+	 * @param reportData
+	 * @param outputStream
+	 * @param reportDesign
+	 * @param reportDesignResource
+	 * @param writter
+	 * @throws IOException
+	 * @throws RenderingException
+	 */
+	public void render(ReportData reportData, OutputStream outputStream, ReportDesign reportDesign,
+	                   ReportDesignResource reportDesignResource, Writer writter) throws IOException, RenderingException {
+		Map<String, Object> replacements = new HashMap<String, Object>();
+		
+		for (String dsName : reportData.getDataSets().keySet()) {
+			DataSet ds = reportData.getDataSets().get(dsName);
+			int num = 0;
+			for (DataSetRow row : ds) {
+				if (num++ > 0) {
+					throw new RuntimeException("Currently only datasets with one row are supported.");
+				}
+				replacements.putAll(getReplacementData(reportData, reportDesign, dsName, row));
+			}
+		}
+		
+		String prefix = getExpressionPrefix(reportDesign);
+		String suffix = getExpressionSuffix(reportDesign);
+		
+		String templateContents = new String(reportDesignResource.getContents(), "UTF-8");
+		writter.write(EvaluationUtil.evaluateExpression(templateContents, replacements, prefix, suffix).toString());
+	}
+	
+	/**
 	 * @see ReportRenderer#render(ReportData, String, OutputStream)
 	 */
 	public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException {
 		
 		log.debug("Attempting to render report with TextTemplateRenderer");
-
-		Writer pw = null;
+		
+		Writer pw = new OutputStreamWriter(out, "UTF-8");
 		
 		try {
-			ReportDesign design = getDesign(argument);
-			ReportDesignResource r = getTemplate(design);
+			ReportDesign reportDesign = getDesign(argument);
+			ReportDesignResource reportDesignResource = getTemplate(reportDesign);
 			
-			Map<String, Object> replacements = new HashMap<String, Object>();
-			
-			for (String dsName : reportData.getDataSets().keySet()) {
-				DataSet ds = reportData.getDataSets().get(dsName);
-				int num = 0;
-				for (DataSetRow row : ds) {
-					if (num++ > 0) {
-						throw new RuntimeException("Currently only datasets with one row are supported.");
-					}
-					replacements.putAll(getReplacementData(reportData, design, dsName, row));
-				}
+			String scriptEngineName = reportDesign.getPropertyValue(SCRIPT_ENGINE_NAME, null);
+			if (scriptEngineName == null) {
+				//Just do simple variable replacement
+				render(reportData, out, reportDesign, reportDesignResource, pw);
+			} else {
+				ScriptEngineManager manager = new ScriptEngineManager();
+				ScriptEngine scriptEngine = manager.getEngineByName(scriptEngineName);
+				
+				scriptEngine.put("reportData", reportData);
+				scriptEngine.put("reportDesign", reportDesign);
+				scriptEngine.put("util", new ObjectUtil());
+				
+				String templateContents = new String(reportDesignResource.getContents(), "UTF-8");
+				Object output = scriptEngine.eval(templateContents);
+				
+				pw.write(output.toString());
 			}
-			
-			String prefix = getExpressionPrefix(design);
-			String suffix = getExpressionSuffix(design);
-			
-			String templateContents = new String(r.getContents(), "UTF-8");
-			pw = new OutputStreamWriter(out,"UTF-8");
-			pw.write(EvaluationUtil.evaluateExpression(templateContents, replacements, prefix, suffix).toString());
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			throw new RenderingException("Unable to render results due to: " + e, e);
 		}
 		finally {
-			pw.close();
+			IOUtils.closeQuietly(pw);
 		}
 	}
 }
