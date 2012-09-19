@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
-import org.openmrs.module.reporting.web.renderers.IndicatorReportWebRenderer;
+import org.openmrs.module.reporting.web.renderers.DefaultWebRenderer;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -97,7 +97,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should not render the report if a web renderer is specified", method = "runReport(ReportRequest)")
 	public void runReport_shouldNotRenderTheReportIfAWebRendererIsSpecified() throws Exception {
 		ReportDefinition def = new ReportDefinition();
-		WebReportRenderer renderer = new IndicatorReportWebRenderer(); 
+		WebReportRenderer renderer = new DefaultWebRenderer(); 
 		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "Web", null, 100), Priority.NORMAL, null);
 		Report result = Context.getService(ReportService.class).runReport(request);
 		Assert.assertNotNull(result.getReportData());

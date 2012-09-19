@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.openmrs.Cohort;
@@ -31,11 +29,11 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
- * ReportRenderer that renders to a delimited text file
+ * ReportRenderer that renders to a default XML format
  */
 @Handler
 @Localized("reporting.XmlReportRenderer")
-public class XmlReportRenderer extends AbstractReportRenderer {
+public class XmlReportRenderer extends ReportDesignRenderer {
 	
 	/**
 	 * @see ReportRenderer#getFilename(ReportDefinition, String)
@@ -45,15 +43,10 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 	}
 	
 	/**
-	 * @see ReportRenderer#getRenderingModes(ReportDefinition)
+	 * @see ReportRenderer#getRenderedContentType(ReportDefinition, String)
 	 */
-	public Collection<RenderingMode> getRenderingModes(ReportDefinition reportDefinition) {
-		if (reportDefinition.getDataSetDefinitions() == null || reportDefinition.getDataSetDefinitions().size() != 1) {
-			return null;
-		}
-		else {
-			return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MIN_VALUE));
-		}
+	public String getRenderedContentType(ReportDefinition schema, String argument) {
+		return "text/xml";
 	}
 	
 	/**
@@ -61,38 +54,34 @@ public class XmlReportRenderer extends AbstractReportRenderer {
 	 */
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
 		
-		Writer w = new OutputStreamWriter(out,"UTF-8");
-		
-		DataSet dataset = results.getDataSets().values().iterator().next();	
-		List<DataSetColumn> columns = dataset.getMetaData().getColumns();
-		
+		Writer w = new OutputStreamWriter(out, "UTF-8");
+
 		w.write("<?xml version=\"1.0\"?>\n");
-		w.write("<dataset>\n");
-		w.write("\t<rows>\n");
-		for (DataSetRow row : dataset) {		
-			w.write("\t\t<row>");
-			for (DataSetColumn column : columns) {			
-				Object colValue = row.getColumnValue(column);
-				w.write("<" + column.getLabel() + ">");
-				if (colValue != null) { 
-					if (colValue instanceof Cohort) {
-						w.write(Integer.toString(((Cohort) colValue).size()));
-					} 
-					else {
-						w.write(colValue.toString());
+		for (String dsKey : results.getDataSets().keySet()) {
+			DataSet dataset = results.getDataSets().get(dsKey);
+			List<DataSetColumn> columns = dataset.getMetaData().getColumns();
+			w.write("<dataset name=\"" + dsKey + "\">\n");
+			w.write("\t<rows>\n");
+			for (DataSetRow row : dataset) {		
+				w.write("\t\t<row>");
+				for (DataSetColumn column : columns) {			
+					Object colValue = row.getColumnValue(column);
+					w.write("<" + column.getLabel() + ">");
+					if (colValue != null) { 
+						if (colValue instanceof Cohort) {
+							w.write(Integer.toString(((Cohort) colValue).size()));
+						} 
+						else {
+							w.write(colValue.toString());
+						}
 					}
+					w.write("</" + column.getLabel() + ">");
 				}
-				w.write("</" + column.getLabel() + ">");
+				w.write("</row>\n");
 			}
-			w.write("</row>\n");
-		}		
+		}
 		w.write("\t</rows>\n");
 		w.write("</dataset>\n");
 		w.flush();
-	}
-
-	public String getRenderedContentType(ReportDefinition schema,
-			String argument) {
-		return "text/xml";
 	}
 }

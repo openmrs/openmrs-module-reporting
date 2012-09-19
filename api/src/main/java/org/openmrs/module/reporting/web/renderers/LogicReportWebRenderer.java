@@ -57,7 +57,6 @@ public class LogicReportWebRenderer extends AbstractWebReportRenderer {
 	 * @see ReportRenderer#getRenderingModes(ReportDefinition)
 	 */
 	public Collection<RenderingMode> getRenderingModes(ReportDefinition definition) {
-		List<DataSetDefinition> matchingDefs = new ArrayList<DataSetDefinition>();
 		int numMatching = 0;
 		for (Mapped<? extends DataSetDefinition> def : definition.getDataSetDefinitions().values()) {
 	    	if (def.getParameterizable() instanceof LogicDataSetDefinition)

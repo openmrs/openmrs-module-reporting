@@ -157,43 +157,48 @@ public class FormatTag extends TagSupport {
 	 * @param o
 	 */
 	private void printObject(StringBuilder sb, Object o) {
-		if (o instanceof Result) {
-			printResult(sb, (Result) o);
-		} else if (o instanceof Collection) {
-			for (Iterator<?> i = ((Collection) o).iterator(); i.hasNext(); ) {
-				printObject(sb, i.next());
-				if (i.hasNext())
-					sb.append(", ");
+		try {
+			if (o instanceof Result) {
+				printResult(sb, (Result) o);
+			} else if (o instanceof Collection) {
+				for (Iterator<?> i = ((Collection) o).iterator(); i.hasNext(); ) {
+					printObject(sb, i.next());
+					if (i.hasNext())
+						sb.append(", ");
+				}
+			} else if (o instanceof Date) {
+				printDate(sb, (Date) o);
+			} else if (o instanceof Concept) {
+				printConcept(sb, (Concept) o);
+			} else if (o instanceof Obs) {
+				printObsValue(sb, (Obs) o);
+			} else if (o instanceof User) {
+				printUser(sb, (User) o);
+			} else if (o instanceof Encounter) {
+				printEncounter(sb, (Encounter) o);
+			} else if (o instanceof EncounterType) {
+				printEncounterType(sb, (EncounterType) o);
+			} else if (o instanceof Location) {
+				printLocation(sb, (Location) o);
+			} else if (o instanceof ReportData) {
+				printReportData(sb, (ReportData) o);
+			} else if (o instanceof DataSet) {
+				printDataSet(sb, null, (DataSet) o);
+			} else if (o instanceof Cohort) {
+				printCohort(sb, (Cohort) o);
+			} else if (o instanceof CohortDimensionResult) {
+				printCohortDimensionResult(sb, (CohortDimensionResult) o);
+			} else if (o instanceof BaseData) {
+				printMap(sb, ((BaseData)o).getData());
+			} else if (o instanceof IdSet) {
+				printCollection(sb, ((IdSet)o).getMemberIds());
+			} 
+			else {
+				sb.append(ObjectUtil.format(o));
 			}
-		} else if (o instanceof Date) {
-			printDate(sb, (Date) o);
-		} else if (o instanceof Concept) {
-			printConcept(sb, (Concept) o);
-		} else if (o instanceof Obs) {
-			printObsValue(sb, (Obs) o);
-		} else if (o instanceof User) {
-			printUser(sb, (User) o);
-		} else if (o instanceof Encounter) {
-			printEncounter(sb, (Encounter) o);
-		} else if (o instanceof EncounterType) {
-			printEncounterType(sb, (EncounterType) o);
-		} else if (o instanceof Location) {
-			printLocation(sb, (Location) o);
-		} else if (o instanceof ReportData) {
-			printReportData(sb, (ReportData) o);
-		} else if (o instanceof DataSet) {
-			printDataSet(sb, null, (DataSet) o);
-		} else if (o instanceof Cohort) {
-			printCohort(sb, (Cohort) o);
-		} else if (o instanceof CohortDimensionResult) {
-			printCohortDimensionResult(sb, (CohortDimensionResult) o);
-		} else if (o instanceof BaseData) {
-			printMap(sb, ((BaseData)o).getData());
-		} else if (o instanceof IdSet) {
-			printCollection(sb, ((IdSet)o).getMemberIds());
-		} 
-		else {
-			sb.append(ObjectUtil.format(o));
+		}
+		catch (Exception e) {
+			sb.append(o.toString());
 		}
 	}
 

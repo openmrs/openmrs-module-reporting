@@ -75,6 +75,17 @@ public class CohortCrossTabDataSetDefinition extends BaseDataSetDefinition {
 		}
 		return c;
 	}
+	
+	/**
+	 * @return the data set columns by key
+	 */
+	public Map<String, CohortDataSetColumn> getDataSetColumnsByKey() {
+		Map<String, CohortDataSetColumn> ret = new LinkedHashMap<String, CohortDataSetColumn>();
+		for (CohortDataSetColumn c : getDataSetColumns()) {
+			ret.put(c.getName(), c);
+		}
+		return ret;
+	}
 
 	/**
 	 * @return the rows

@@ -2,8 +2,6 @@ package org.openmrs.module.reporting.report.renderer;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,32 +22,24 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  */
 @Handler
 @Localized("reporting.XlsReportRenderer")
-public class XlsReportRenderer extends AbstractReportRenderer {
+public class XlsReportRenderer extends ReportDesignRenderer {
 
     /**
-     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportDefinition, java.lang.String)
+     * @see ReportRenderer#getFilename(ReportDefinition, String)
      */
     public String getFilename(ReportDefinition schema, String argument) {
         return schema.getName() + ".xls";
     }
 
     /**
-     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportDefinition, java.lang.String)
+     * @see ReportRenderer#getRenderedContentType(ReportDefinition, String)
      */
     public String getRenderedContentType(ReportDefinition schema, String argument) {
         return "application/vnd.ms-excel";
     }
 
     /**
-     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getRenderingModes(org.openmrs.module.reporting.report.ReportDefinition)
-     */
-    public Collection<RenderingMode> getRenderingModes(ReportDefinition schema) {
-        // Don't return *quite* the lowest priority, so that this appears above CSV and TSV.
-        return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MIN_VALUE + 1));
-    }
-
-    /**
-     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#render(org.openmrs.module.reporting.report.ReportData, java.lang.String, java.io.OutputStream)
+     * @see ReportRenderer#render(ReportData, String, OutputStream)
      * @should render ReportData to an xls file
      */
     public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException {
