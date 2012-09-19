@@ -45,15 +45,15 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void shouldRenderGroovyTemplate() throws Exception {
-		shouldRenderTemplate("GroovyTemplate.groovy", "groovy");
+		shouldRenderTemplate("GroovyTemplate.groovy", "Groovy");
 	}
 	
 	@Test
-	public void shouldRenderJavaScriptTemplate() throws Exception {
-		shouldRenderTemplate("JavaScriptTemplate.js", "JavaScript");
+	public void shouldRenderVelocityTemplate() throws Exception {
+		shouldRenderTemplate("VelocityTemplate.vm", "Velocity");
 	}
 	
-	private void shouldRenderTemplate(String templateName, String scriptEngineName) throws Exception {
+	private void shouldRenderTemplate(String templateName, String templateType) throws Exception {
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName("Test Report");
@@ -82,8 +82,8 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		reportDesign.setReportDefinition(reportDefinition);
 		reportDesign.setRendererType(TextTemplateRenderer.class);
 		
-		if (scriptEngineName != null) {
-			reportDesign.addPropertyValue(TextTemplateRenderer.SCRIPT_ENGINE_NAME, scriptEngineName);
+		if (templateType != null) {
+			reportDesign.addPropertyValue(TextTemplateRenderer.TEMPLATE_TYPE, templateType);
 		}
 		
 		EvaluationContext context = new EvaluationContext();
@@ -107,8 +107,6 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		renderer.render(reportData, "ReportData", baos);
 		String renderedOutput = StringUtils.deleteWhitespace(baos.toString());
 		
-		System.out.println(renderedOutput);
-		
 		String xml = "<?xml version=\"1.0\"?>" + "<dataset>" + "	<rows>"
 		        + "		<row><patientId>2</patientId><gender>M</gender><birthdate>08/Apr/1975</birthdate></row>"
 		        + "		<row><patientId>6</patientId><gender>M</gender><birthdate>27/May/2007</birthdate></row>"
@@ -116,7 +114,7 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		        + "		<row><patientId>8</patientId><gender>F</gender><birthdate></birthdate></row>" + "	</rows>"
 		        + "</dataset>";
 		
-		xml = scriptEngineName != null ? StringUtils.deleteWhitespace(xml) : "Males=2Females=2";
+		xml = templateType != null ? StringUtils.deleteWhitespace(xml) : "Males=2Females=2";
 		Assert.assertEquals(xml, renderedOutput);
 	}
 }

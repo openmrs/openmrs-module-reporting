@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<dataset>
+	<rows>
+		#set( $dataset = $reportData.dataSets.get("allPatients") )
+		#foreach( $row in $dataset )
+			<row>
+				#foreach( $column in $dataset.metaData.columns )
+					#set( $colValue = $row.getColumnValue($column) )
+					<$column.label>
+						#if ( $util.instanceOf($colValue, 'java.util.Date') )
+							$util.format($colValue, 'dd/MMM/yyyy')
+						#else
+							$util.format($row.getColumnValue($column))
+						#end
+					</$column.label>
+				#end
+			</row>
+		#end
+	</rows>
+</dataset>

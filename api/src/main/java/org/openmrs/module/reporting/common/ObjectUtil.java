@@ -377,4 +377,17 @@ public class ObjectUtil {
 		}
 		return "Unknown User";
 	}
+	
+	public static boolean instanceOf(Object o, String className) {
+		try {
+			Class<?> c = Context.loadClass(className);
+			if (c.isAssignableFrom(o.getClass())) {
+				return true;
+			}
+		}
+		catch (Exception e) {
+			log.warn("Error performing instanceof check.  Object " + o + "; class: " + className, e);
+		}
+		return false;
+	}
 }

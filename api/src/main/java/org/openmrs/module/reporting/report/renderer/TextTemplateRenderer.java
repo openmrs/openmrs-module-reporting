@@ -17,10 +17,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -36,6 +34,8 @@ import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.renderer.template.TemplateEngine;
+import org.openmrs.module.reporting.report.renderer.template.TemplateEngineManager;
 
 /**
  * Report Renderer implementation that supports rendering of a text template
@@ -44,7 +44,7 @@ import org.openmrs.module.reporting.report.ReportDesignResource;
 @Localized("reporting.TextTemplateRenderer")
 public class TextTemplateRenderer extends ReportTemplateRenderer {
 	
-	public static String SCRIPT_ENGINE_NAME = "ScriptEngineName";
+	public static final String TEMPLATE_TYPE = "templateType";
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
@@ -98,23 +98,20 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 			ReportDesignResource reportDesignResource = getTemplate(reportDesign);
 			String templateContents = new String(reportDesignResource.getContents(), "UTF-8");
 			Map<String, Object> replacements = getBaseReplacementData(reportData, reportDesign);
-			
-			// First, run the template through any scripting engine that is specified
-			String scriptEngineName = reportDesign.getPropertyValue(SCRIPT_ENGINE_NAME, null);
-			if (scriptEngineName != null) {
-				ScriptEngineManager manager = new ScriptEngineManager();
-				ScriptEngine scriptEngine = manager.getEngineByName(scriptEngineName);
-				
-				scriptEngine.put("reportData", reportData);
-				scriptEngine.put("reportDesign", reportDesign);
-				scriptEngine.put("data", replacements);
-				scriptEngine.put("util", new ObjectUtil());
-
-				templateContents = scriptEngine.eval(templateContents).toString();
+	
+			// First, run the template through any engine that is specified
+			String templateEngineName = reportDesign.getPropertyValue(TEMPLATE_TYPE, null);
+			TemplateEngine engine = TemplateEngineManager.getTemplateEngineByName(templateEngineName);
+			if (engine != null) {
+				Map<String, Object> bindings = new HashMap<String, Object>();
+				bindings.put("reportData", reportData);
+				bindings.put("reportDesign", reportDesign);
+				bindings.put("data", replacements);
+				bindings.put("util", new ObjectUtil());
+				templateContents = engine.evaluate(templateContents, bindings);
 			}
 			
 			// Now, apply any direct variable replacements that might be applicable
-			
 			String prefix = getExpressionPrefix(reportDesign);
 			String suffix = getExpressionSuffix(reportDesign);
 			templateContents = EvaluationUtil.evaluateExpression(templateContents, replacements, prefix, suffix).toString();
