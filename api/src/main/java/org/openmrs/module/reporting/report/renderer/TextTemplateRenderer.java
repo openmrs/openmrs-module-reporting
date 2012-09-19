@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.script.ScriptEngine;
@@ -27,9 +26,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.report.ReportData;
@@ -52,36 +53,35 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 	}
 	
 	/**
-	 * Renders a report template by doing simple variable replacement.
-	 * 
-	 * @param reportData
-	 * @param outputStream
-	 * @param reportDesign
-	 * @param reportDesignResource
-	 * @param writter
-	 * @throws IOException
-	 * @throws RenderingException
+	 * @see ReportTemplateRenderer#getBaseReplacementDataReportData, ReportDesign)
 	 */
-	public void render(ReportData reportData, OutputStream outputStream, ReportDesign reportDesign,
-	                   ReportDesignResource reportDesignResource, Writer writter) throws IOException, RenderingException {
-		Map<String, Object> replacements = new HashMap<String, Object>();
+	@Override
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getBaseReplacementData(ReportData reportData, ReportDesign design) {
+		// Populate the replacement data with all core values, and any data sets with only one row
+		Map<String, Object> data = super.getBaseReplacementData(reportData, design);
 		
-		for (String dsName : reportData.getDataSets().keySet()) {
-			DataSet ds = reportData.getDataSets().get(dsName);
-			int num = 0;
+		// Now go through and add data sets and add rows by index to replacement data as well
+		for (String dataSetName : reportData.getDataSets().keySet()) {
+			DataSet ds = reportData.getDataSets().get(dataSetName);
+			int rowNum = 0;
 			for (DataSetRow row : ds) {
-				if (num++ > 0) {
-					throw new RuntimeException("Currently only datasets with one row are supported.");
-				}
-				replacements.putAll(getReplacementData(reportData, reportDesign, dsName, row));
+				for (Object entry : row.getColumnValues().entrySet()) {
+					rowNum++;
+					Map.Entry<DataSetColumn, Object> e = (Map.Entry<DataSetColumn, Object>) entry;
+					String baseKey = dataSetName + SEPARATOR + e.getKey().getName() + SEPARATOR + rowNum;
+					Object replacementValue = getReplacementValue(e.getValue());
+					data.put(baseKey, replacementValue);
+					String columnLabel = Context.getMessageSourceService().getMessage(e.getKey().getLabel());
+					data.put(baseKey + SEPARATOR + LABEL, columnLabel);
+					if (reportData.getDataSets().size() == 1) {
+						data.put(e.getKey().getName() + SEPARATOR + rowNum, replacementValue);
+						data.put(e.getKey().getName() + SEPARATOR + rowNum + SEPARATOR + LABEL, columnLabel);
+					}
+				}				
 			}
 		}
-		
-		String prefix = getExpressionPrefix(reportDesign);
-		String suffix = getExpressionSuffix(reportDesign);
-		
-		String templateContents = new String(reportDesignResource.getContents(), "UTF-8");
-		writter.write(EvaluationUtil.evaluateExpression(templateContents, replacements, prefix, suffix).toString());
+		return data;
 	}
 	
 	/**
@@ -96,24 +96,30 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 		try {
 			ReportDesign reportDesign = getDesign(argument);
 			ReportDesignResource reportDesignResource = getTemplate(reportDesign);
+			String templateContents = new String(reportDesignResource.getContents(), "UTF-8");
+			Map<String, Object> replacements = getBaseReplacementData(reportData, reportDesign);
 			
+			// First, run the template through any scripting engine that is specified
 			String scriptEngineName = reportDesign.getPropertyValue(SCRIPT_ENGINE_NAME, null);
-			if (scriptEngineName == null) {
-				//Just do simple variable replacement
-				render(reportData, out, reportDesign, reportDesignResource, pw);
-			} else {
+			if (scriptEngineName != null) {
 				ScriptEngineManager manager = new ScriptEngineManager();
 				ScriptEngine scriptEngine = manager.getEngineByName(scriptEngineName);
 				
 				scriptEngine.put("reportData", reportData);
 				scriptEngine.put("reportDesign", reportDesign);
+				scriptEngine.put("data", replacements);
 				scriptEngine.put("util", new ObjectUtil());
-				
-				String templateContents = new String(reportDesignResource.getContents(), "UTF-8");
-				Object output = scriptEngine.eval(templateContents);
-				
-				pw.write(output.toString());
+
+				templateContents = scriptEngine.eval(templateContents).toString();
 			}
+			
+			// Now, apply any direct variable replacements that might be applicable
+			
+			String prefix = getExpressionPrefix(reportDesign);
+			String suffix = getExpressionSuffix(reportDesign);
+			templateContents = EvaluationUtil.evaluateExpression(templateContents, replacements, prefix, suffix).toString();
+			
+			pw.write(templateContents.toString());
 		}
 		catch (Throwable e) {
 			throw new RenderingException("Unable to render results due to: " + e, e);

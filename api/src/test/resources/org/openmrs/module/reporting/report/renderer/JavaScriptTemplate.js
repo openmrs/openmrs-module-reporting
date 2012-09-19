@@ -1,4 +1,4 @@
-var dataset = reportData.getDataSets().values().iterator().next();	
+var dataset = reportData.getDataSets().get("allPatients");	
 var columns = dataset.getMetaData().getColumns();
 
 var output = "<?xml version=\"1.0\"?>\n";
@@ -18,11 +18,11 @@ while (datasetIterator.hasNext()) {
 		var colValue = row.getColumnValue(column);
 		output += "<" + column.getLabel() + ">";
 		if (colValue != null) { 
-			if (util.instanceofCohort(colValue)) {
-				output += util.getCohortSize(colValue);
-			} 
+			if (colValue instanceof java.util.Date) {
+				output += util.format(colValue, 'dd/MMM/yyyy');
+			}
 			else {
-				output += colValue.toString();
+				output += util.format(colValue);
 			}
 		}
 		output += "</" + column.getLabel() + ">";

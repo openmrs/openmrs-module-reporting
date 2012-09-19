@@ -1,6 +1,6 @@
 import org.openmrs.Cohort;
 
-dataset = reportData.getDataSets().values().iterator().next();
+dataset = reportData.getDataSets().get("allPatients");
 columns = dataset.getMetaData().getColumns();
 
 output = "<?xml version=\"1.0\"?>\n";
@@ -13,12 +13,12 @@ for (row in dataset) {
 	for (column in columns) {
 		colValue = row.getColumnValue(column);
 		output += "<" + column.getLabel() + ">";
-		if (colValue != null) {
-			if (colValue instanceof Cohort) {
-				output += colValue.size();
+		if (colValue != null) { 
+			if (colValue instanceof java.util.Date) {
+				output += util.format(colValue, 'dd/MMM/yyyy');
 			}
 			else {
-				output += colValue.toString();
+				output += util.format(colValue);
 			}
 		}
 		output += "</" + column.getLabel() + ">";

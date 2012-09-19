@@ -306,6 +306,9 @@ public class ObjectUtil {
 				return format(((IndicatorResult)o).getValue(), format);
 			}
 		}
+		if (o instanceof Cohort) {
+			return Integer.toString(((Cohort)o).getSize());
+		}
 		if (o instanceof Number) {
 			if (notNull(format)) {
 				NumberFormat nf = NumberFormat.getInstance();
@@ -373,13 +376,5 @@ public class ObjectUtil {
 			}
 		}
 		return "Unknown User";
-	}
-	
-	public static boolean instanceofCohort(Object value) {
-		return value instanceof Cohort;
-	}
-	
-	public static int getCohortSize(Object value) {
-		return ((Cohort) value).size();
 	}
 }
