@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.PersonName;
@@ -372,5 +373,13 @@ public class ObjectUtil {
 			}
 		}
 		return "Unknown User";
+	}
+	
+	public static boolean instanceofCohort(Object value) {
+		return value instanceof Cohort;
+	}
+	
+	public static int getCohortSize(Object value) {
+		return ((Cohort) value).size();
 	}
 }

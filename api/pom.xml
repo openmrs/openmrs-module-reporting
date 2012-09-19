@@ -30,6 +30,12 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>1.8.7</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
