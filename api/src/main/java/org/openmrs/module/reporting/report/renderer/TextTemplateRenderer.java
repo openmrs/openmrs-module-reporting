@@ -109,7 +109,7 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 				bindings.put("reportDesign", reportDesign);
 				bindings.put("data", replacements);
 				bindings.put("util", new ObjectUtil());
-				bindings.put("i18n", new MessageUtil());
+				bindings.put("msg", new MessageUtil());
 				templateContents = engine.evaluate(templateContents, bindings);
 			}
 			
