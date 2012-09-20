@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -108,6 +109,7 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 				bindings.put("reportDesign", reportDesign);
 				bindings.put("data", replacements);
 				bindings.put("util", new ObjectUtil());
+				bindings.put("i18n", new MessageUtil());
 				templateContents = engine.evaluate(templateContents, bindings);
 			}
 			
