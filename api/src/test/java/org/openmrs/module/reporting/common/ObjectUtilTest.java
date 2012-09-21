@@ -31,7 +31,7 @@ public class ObjectUtilTest {
 	@Test
 	public void sortShouldSortSimpleStrings() throws Exception {
 		List<String> list = Arrays.asList(new String[] { "Daniel", "Abbas", "Kizito" });
-		ObjectUtil.sort((list), null);
+		list = ObjectUtil.sort((list), null);
 		Assert.assertEquals("Abbas", list.get(0));
 		Assert.assertEquals("Daniel", list.get(1));
 		Assert.assertEquals("Kizito", list.get(2));
@@ -44,7 +44,7 @@ public class ObjectUtilTest {
 		PersonName personName3 = new PersonName("givenNamea", "middleName", "familyName");
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), null);
+		list = ObjectUtil.sort((list), null);
 		Assert.assertEquals(personName3, list.get(0));
 		Assert.assertEquals(personName2, list.get(1));
 		Assert.assertEquals(personName1, list.get(2));
@@ -57,7 +57,7 @@ public class ObjectUtilTest {
 		PersonName personName3 = new PersonName("givenNamea", "middleName", "familyName");
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "asc");
+		list = ObjectUtil.sort((list), "asc");
 		Assert.assertEquals(personName3, list.get(0));
 		Assert.assertEquals(personName2, list.get(1));
 		Assert.assertEquals(personName1, list.get(2));
@@ -70,7 +70,7 @@ public class ObjectUtilTest {
 		PersonName personName3 = new PersonName("givenNamec", "middleName", "familyName");
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "desc");
+		list = ObjectUtil.sort((list), "desc");
 		Assert.assertEquals(personName3, list.get(0));
 		Assert.assertEquals(personName1, list.get(1));
 		Assert.assertEquals(personName2, list.get(2));
@@ -83,7 +83,7 @@ public class ObjectUtilTest {
 		PersonName personName3 = new PersonName("givenNamea", "middleNamec", "familyName");
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "givenName");
+		list = ObjectUtil.sort((list), "givenName");
 		Assert.assertEquals(personName3, list.get(0));
 		Assert.assertEquals(personName2, list.get(1));
 		Assert.assertEquals(personName1, list.get(2));
@@ -96,7 +96,7 @@ public class ObjectUtilTest {
 		PersonName personName3 = new PersonName("givenNamea", "middleNamec", "familyName");
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "givenName asc");
+		list = ObjectUtil.sort((list), "givenName asc");
 		Assert.assertEquals(personName3, list.get(0));
 		Assert.assertEquals(personName2, list.get(1));
 		Assert.assertEquals(personName1, list.get(2));
@@ -109,7 +109,7 @@ public class ObjectUtilTest {
 		PersonName personName3 = new PersonName("givenNamea", "middleNamec", "familyName");
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "givenName desc");
+		list = ObjectUtil.sort((list), "givenName desc");
 		Assert.assertEquals(personName1, list.get(0));
 		Assert.assertEquals(personName2, list.get(1));
 		Assert.assertEquals(personName3, list.get(2));
@@ -122,7 +122,7 @@ public class ObjectUtilTest {
 		PersonName personName3 = new PersonName("givenNamea", "middleNamec", "familyName");
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "middleName, givenName");
+		list = ObjectUtil.sort((list), "middleName, givenName");
 		Assert.assertEquals(personName1, list.get(0));
 		Assert.assertEquals(personName2, list.get(1));
 		Assert.assertEquals(personName3, list.get(2));
@@ -135,7 +135,7 @@ public class ObjectUtilTest {
 		PersonName personName3 = new PersonName("givenNamea", "middleNamec", "familyName");
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "familyName, middleName, givenName");
+		list = ObjectUtil.sort((list), "familyName, middleName, givenName");
 		Assert.assertEquals(personName1, list.get(0));
 		Assert.assertEquals(personName2, list.get(1));
 		Assert.assertEquals(personName3, list.get(2));
@@ -152,7 +152,7 @@ public class ObjectUtilTest {
 		personName3.setCreator(new User(2));
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "familyName, creator.userId");
+		list = ObjectUtil.sort((list), "familyName, creator.userId");
 		Assert.assertEquals(personName2, list.get(0));
 		Assert.assertEquals(personName3, list.get(1));
 		Assert.assertEquals(personName1, list.get(2));
@@ -169,7 +169,7 @@ public class ObjectUtilTest {
 		personName3.setCreator(new User(2));
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "familyName, creator.userId desc");
+		list = ObjectUtil.sort((list), "familyName, creator.userId desc");
 		Assert.assertEquals(personName1, list.get(0));
 		Assert.assertEquals(personName3, list.get(1));
 		Assert.assertEquals(personName2, list.get(2));
@@ -182,7 +182,7 @@ public class ObjectUtilTest {
 		PersonName personName3 = new PersonName("givenNamea", "middleNamec", "familyName");
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "givenName");
+		list = ObjectUtil.sort((list), "givenName");
 		Assert.assertEquals(personName3, list.get(0));
 		Assert.assertEquals(personName2, list.get(1));
 		Assert.assertEquals(personName1, list.get(2));
@@ -195,7 +195,7 @@ public class ObjectUtilTest {
 		PersonName personName3 = new PersonName("givenNamea", "middleNamec", "familyName");
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
-		ObjectUtil.sort((list), "givenName desc");
+		list = ObjectUtil.sort((list), "givenName desc");
 		Assert.assertEquals(personName2, list.get(0));
 		Assert.assertEquals(personName3, list.get(1));
 		Assert.assertEquals(personName1, list.get(2));
@@ -209,7 +209,7 @@ public class ObjectUtilTest {
 		ConceptClass conceptClass4 = new ConceptClass(2);
 		
 		List<ConceptClass> list = Arrays.asList(new ConceptClass[] { conceptClass1, conceptClass2, conceptClass3, conceptClass4 });
-		ObjectUtil.sort((list), "conceptClassId");
+		list = ObjectUtil.sort((list), "conceptClassId");
 		Assert.assertEquals(conceptClass2, list.get(0));
 		Assert.assertEquals(conceptClass4, list.get(1));
 		Assert.assertEquals(conceptClass1, list.get(2));

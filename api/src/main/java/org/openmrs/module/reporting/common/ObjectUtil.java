@@ -3,14 +3,13 @@ package org.openmrs.module.reporting.common;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -395,61 +394,30 @@ public class ObjectUtil {
 		return false;
 	}
 	
-	public static void sort(List collection, String sortSpecification) throws Exception {
+	/**
+	 * Sorts a given Collection given the passed sortSpecification and returns it in a new List
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static <T extends Object> List<T> sort(Collection<T> collection, String sortSpecification) throws Exception {
 		
+		if (collection == null) {
+			return null;
+		}
+		
+		List ret = new ArrayList(collection);
 		//If sort specification is null or "asc", we use natural order ascending.
 		if (sortSpecification == null || sortSpecification.equalsIgnoreCase("asc")) {
-			Collections.sort(collection);
-			return;
+			Collections.sort(ret);
 		}
-		
 		//If sort specification is "desc", we use natural order descending.
-		if (sortSpecification.equalsIgnoreCase("desc")) {
-			Collections.sort(collection, Collections.reverseOrder());
-			return;
+		else if (sortSpecification.equalsIgnoreCase("desc")) {
+			Collections.sort(ret, Collections.reverseOrder());
 		}
-		
-		//sort specification contains property name/s
-		final String tokens[] = sortSpecification.split(",");
-		
-		Collections.sort(collection, new Comparator<Object>() {
-			public int compare(Object left, Object right) {
-				try{
-					boolean sortAsc = true;
-					for (String token : tokens) {
-						String[] values = token.trim().split(" ");
-						if (values.length > 1 && values[1].equalsIgnoreCase("desc")) {
-							sortAsc = false;
-						}
-						
-						String property = values[0];
-						Object valueLeft = PropertyUtils.getNestedProperty(left, property);
-						Object valueRight = PropertyUtils.getNestedProperty(right, property);
-						
-						//We put NULLs at the bottom.
-						if (valueLeft == null)
-							return 1;
-						
-						if (valueRight == null)
-							return -1;
-						
-						if (!valueLeft.equals(valueRight)) {
-							int ret = ((Comparable)valueLeft).compareTo(valueRight);
-							if (!sortAsc) {
-								ret = (ret == 1 ? -1 : 1);
-							}
-							return ret;
-						}
-						
-						//else values are equal. Try next sort property
-					}
-				}
-				catch(Exception ex) {
-					log.error("Failed to compare: " + left + " and " + right, ex);
-				}
-				
-				return 0; //values are equal for all sort properties
-			}
-			});
+		else {
+			//sort specification based on property name/s
+			BeanPropertyComparator comparator = new BeanPropertyComparator(sortSpecification);
+			Collections.sort(ret, comparator);
+		}
+		return ret;
 	}
 }
