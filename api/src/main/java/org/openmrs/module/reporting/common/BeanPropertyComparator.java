@@ -20,7 +20,8 @@ import org.apache.commons.beanutils.PropertyUtils;
 /**
  * A comparator that can compare 2 objects based on a particular nested property value
  */
-public class BeanPropertyComparator implements Comparator<Object> {
+@SuppressWarnings("rawtypes")
+public class BeanPropertyComparator implements Comparator {
 	
 	private String sortSpecification;
 	
@@ -34,7 +35,7 @@ public class BeanPropertyComparator implements Comparator<Object> {
 	/**
 	 * @see Comparator#compare(Object, Object)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	@Override
 	public int compare(Object left, Object right) {
 		try {	

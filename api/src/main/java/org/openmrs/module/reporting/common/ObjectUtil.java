@@ -1,5 +1,8 @@
 package org.openmrs.module.reporting.common;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -419,5 +422,15 @@ public class ObjectUtil {
 			Collections.sort(ret, comparator);
 		}
 		return ret;
+	}
+	
+	/**
+	 * Simple utility method to return the full stack trace as a String for a Throwable
+	 */
+	public static String getStackTrace(Throwable t) {
+	    Writer sw = new StringWriter();
+	    PrintWriter pw = new PrintWriter(sw);
+	    t.printStackTrace(pw);
+		return sw.toString();
 	}
 }
