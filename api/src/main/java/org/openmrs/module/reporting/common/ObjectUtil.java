@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.common;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -12,7 +13,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -24,6 +27,7 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
+import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -432,5 +436,24 @@ public class ObjectUtil {
 	    PrintWriter pw = new PrintWriter(sw);
 	    t.printStackTrace(pw);
 		return sw.toString();
+	}
+	
+	/**
+	 * @return a Properties object based on a properties file on the classpath at the specified location
+	 */
+	public static Properties loadPropertiesFromClasspath(String location) {
+		Properties ret = new Properties();
+		InputStream is = null;
+		try {
+			is = OpenmrsClassLoader.getInstance().getResourceAsStream(location);
+			ret.load(is);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Unable to load properties from classpath at " + location, e);
+		}
+		finally {
+			IOUtils.closeQuietly(is);
+		}
+		return ret;
 	}
 }
