@@ -19,6 +19,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.IndicatorReportRenderer;
+import org.openmrs.module.reporting.report.renderer.MultipleRowReportDesignRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.SimpleHtmlReportRenderer;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
@@ -104,7 +105,7 @@ public class RenderReportFormController {
 				log.debug("Rendering report data as " + format + " file named " + filename);		
 				
 				for (ReportDesign d : Context.getService(ReportService.class).getReportDesigns(reportDefinition, null, false)) {
-					ReportRenderer r = d.getRendererType().newInstance();
+					ReportRenderer r = new MultipleRowReportDesignRenderer(d.getRendererType().newInstance());
 					System.out.println("-------Rendering design: " + d.getName() + "--------");
 					r.render(reportData, d.getUuid(), System.out);
 					System.out.println("---------------");
@@ -113,24 +114,24 @@ public class RenderReportFormController {
 				if ("csv".equalsIgnoreCase(format)) { 
 					response.setContentType("text/csv");				
 					response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");  				
-					new CsvReportRenderer().render(reportData, null, response.getOutputStream());
+					new MultipleRowReportDesignRenderer(new CsvReportRenderer()).render(reportData, null, response.getOutputStream());
 				} 
 				else if ("tsv".equalsIgnoreCase(format)) { 
 					response.setContentType("text/tsv");
 					response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");  				
-					new TsvReportRenderer().render(reportData, null, response.getOutputStream());					
+					new MultipleRowReportDesignRenderer(new TsvReportRenderer()).render(reportData, null, response.getOutputStream());					
 				}
 				else if ("xml".equalsIgnoreCase(format)) { 
 					response.setContentType("text/xml");				
 					response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");  				
-					new XmlReportRenderer().render(reportData, null, response.getOutputStream());					
+					new MultipleRowReportDesignRenderer(new XmlReportRenderer()).render(reportData, null, response.getOutputStream());					
 				}
 				else if ("indicator".equalsIgnoreCase(format)) {  
 					model = new ModelAndView("/module/reporting/reports/renderReportData");
 					ByteArrayOutputStream out = null;
 					try {
 						out = new ByteArrayOutputStream();
-						new IndicatorReportRenderer().render(reportData, null, out);
+						new MultipleRowReportDesignRenderer(new IndicatorReportRenderer()).render(reportData, null, out);
 						model.addObject("renderedData", out.toString("UTF-8"));
 					}
 					finally {
@@ -140,7 +141,7 @@ public class RenderReportFormController {
 					}
 				}
 				else { 
-					new SimpleHtmlReportRenderer().render(reportData, null, response.getOutputStream());
+					new MultipleRowReportDesignRenderer(new SimpleHtmlReportRenderer()).render(reportData, null, response.getOutputStream());
 				}							
 				request.getSession().removeAttribute("results");
 				
