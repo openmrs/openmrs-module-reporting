@@ -244,6 +244,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		
 		RenderingMode rm = new RenderingMode(new TsvReportRenderer(), "TSV", null, 100);
 		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, rm, Priority.NORMAL, null);
+		request.setProcessAutomatically(true);
 		
 		//build a processor
 		Properties props = new Properties();

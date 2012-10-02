@@ -205,5 +205,15 @@
 				UPDATE `reporting_report_processor` set processor_mode = 'AUTOMATIC';
 		</sql>
 	</diff>
-
+	
+	<diff>
+		<version>0.6</version>
+		<author>Michael Seaton</author>
+		<date>October 2, 2012</date>
+		<description>Add processAutomatically boolean to ReportRequest</description>
+		<sql>
+				ALTER table `reporting_report_request` ADD COLUMN process_automatically tinyint(1) NOT NULL default '0';
+		</sql>
+	</diff>
+	
 </sqldiff>

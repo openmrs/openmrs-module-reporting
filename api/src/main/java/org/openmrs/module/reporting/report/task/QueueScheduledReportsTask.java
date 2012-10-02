@@ -51,7 +51,7 @@ public class QueueScheduledReportsTask extends AbstractReportsTask {
 					newRequest.setRenderingMode(scheduledReport.getRenderingMode());
 					newRequest.setPriority(scheduledReport.getPriority());
 					newRequest.setDescription(scheduledReport.getDescription());
-					newRequest.setSaveAutomatically(true);
+					newRequest.setProcessAutomatically(true);
 					rs.saveReportRequest(newRequest);
 				}
 				

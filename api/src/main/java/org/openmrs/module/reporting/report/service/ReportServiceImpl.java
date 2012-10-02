@@ -456,30 +456,29 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		// Cache the report
 		logReportMessage(request, "Storing Report Results....");
 		cacheReport(report);
-		
-		// Find applicable global processors
-		List<ReportProcessorConfiguration> processorsToRun = ReportUtil.getAvailableReportProcessorConfigurations(request, 
-				ReportProcessorConfiguration.ProcessorMode.AUTOMATIC, 
-				ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC);
-		
-		for (ReportProcessorConfiguration c : processorsToRun) {
-			try {
-				if ((request.getStatus() == Status.COMPLETED && c.getRunOnSuccess()) || (request.getStatus() == Status.FAILED && c.getRunOnError())) {
-					logReportMessage(request, "Processing Report with " + c.getName() + "...");
-					Class<?> processorType = Context.loadClass(c.getProcessorType());
-					ReportProcessor processor = (ReportProcessor)processorType.newInstance();
-					processor.process(report, c.getConfiguration());
-				}
-			}
-			catch (Exception e) {
-				log.warn("Report Processor Failed: " + c.getName(), e);
-				logReportMessage(request, "Report Processor Failed: " + c.getName());
-			}
-		}
-
 		Context.getService(ReportService.class).saveReportRequest(request);
 		
-		if (request.isSaveAutomatically()) {
+		// Find applicable global processors
+		if (request.isProcessAutomatically()) {
+			List<ReportProcessorConfiguration> processorsToRun = ReportUtil.getAvailableReportProcessorConfigurations(request, 
+					ReportProcessorConfiguration.ProcessorMode.AUTOMATIC, 
+					ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC);
+			
+			for (ReportProcessorConfiguration c : processorsToRun) {
+				try {
+					if ((request.getStatus() == Status.COMPLETED && c.getRunOnSuccess()) || (request.getStatus() == Status.FAILED && c.getRunOnError())) {
+						logReportMessage(request, "Processing Report with " + c.getName() + "...");
+						Class<?> processorType = Context.loadClass(c.getProcessorType());
+						ReportProcessor processor = (ReportProcessor)processorType.newInstance();
+						processor.process(report, c.getConfiguration());
+					}
+				}
+				catch (Exception e) {
+					log.warn("Report Processor Failed: " + c.getName(), e);
+					logReportMessage(request, "Report Processor Failed: " + c.getName());
+				}
+			}
+
 			try {
 				logReportMessage(request, "Automatically Saving Report....");
 				report = Context.getService(ReportService.class).saveReport(report, "");

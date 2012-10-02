@@ -45,6 +45,7 @@
         </property>
         
         <property name="schedule" type="string" column="schedule"/>
+        <property name="processAutomatically" type="java.lang.Boolean" column="process_automatically" length="1"/>
         <property name="evaluateStartDatetime" type="java.util.Date" column="evaluation_start_datetime" />
         <property name="evaluateCompleteDatetime" type="java.util.Date" column="evaluation_complete_datetime" />
         <property name="renderCompleteDatetime" type="java.util.Date" column="render_complete_datetime" />
