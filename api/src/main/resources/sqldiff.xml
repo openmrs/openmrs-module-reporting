@@ -216,4 +216,16 @@
 		</sql>
 	</diff>
 	
+	<diff>
+		<version>0.7</version>
+		<author>Michael Seaton</author>
+		<date>October 3, 2012</date>
+		<description>Add processAutomatically boolean to ReportRequest</description>
+		<sql>
+			update 	reporting_report_request 
+			set 	renderer_type = 'org.openmrs.module.reporting.web.renderers.DefaultWebRenderer' 
+			where 	renderer_type = 'org.openmrs.module.reporting.web.renderers.IndicatorReportWebRenderer';
+		</sql>
+	</diff>
+	
 </sqldiff>
