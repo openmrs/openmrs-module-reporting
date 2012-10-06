@@ -44,7 +44,7 @@
 					<label class="desc" for="name">Name</label>
 					<input type="text" id="name" tabindex="1" name="name" value="${model.obj.name}" size="50"/>
 				</div>
-				<c:if test="${!empty model.obj}">
+				<c:if test="${!empty model.obj && model.showType != 'false'}">
 					<div class="metadataField">
 						<label class="desc" for="type">Type</label>
 						<rpt:displayLabel type="${model.obj['class'].name}"/>			
@@ -70,7 +70,7 @@
 				$('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
-						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editBaseMetadataPortlet&url=baseMetadata&parameters=type=${model.type}|uuid=${model.uuid}|mode=edit"/>',
+						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editBaseMetadataPortlet&url=baseMetadata&parameters=type=${model.type}|uuid=${model.uuid}|showType=${model.showType}|mode=edit"/>',
 						successCallback: function() { window.location.reload(true); }
 					});
 				});
@@ -87,10 +87,12 @@
 					<div class="metadataField">
 						<label class="inline">Name:</label>${model.obj.name}
 					</div>
-					<div class="metadataField">
-						<label class="inline" for="type">Query Type:</label>
-						<rpt:displayLabel type="${model.obj['class'].name}"/>			
-					</div>				
+					<c:if test="${model.showType != 'false'}">
+						<div class="metadataField">
+							<label class="inline" for="type">Query Type:</label>
+							<rpt:displayLabel type="${model.obj['class'].name}"/>			
+						</div>
+					</c:if>		
 					<div class="metadataField">
 						<label class="inline">Description:</label>
 						<c:choose>
