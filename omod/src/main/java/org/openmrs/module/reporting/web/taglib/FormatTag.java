@@ -30,6 +30,7 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.indicator.dimension.CohortDimensionResult;
+import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.module.reporting.report.ReportData;
 import org.springframework.util.StringUtils;
 
@@ -156,41 +157,48 @@ public class FormatTag extends TagSupport {
 	 * @param o
 	 */
 	private void printObject(StringBuilder sb, Object o) {
-		if (o instanceof Result) {
-			printResult(sb, (Result) o);
-		} else if (o instanceof Collection) {
-			for (Iterator<?> i = ((Collection) o).iterator(); i.hasNext(); ) {
-				printObject(sb, i.next());
-				if (i.hasNext())
-					sb.append(", ");
+		try {
+			if (o instanceof Result) {
+				printResult(sb, (Result) o);
+			} else if (o instanceof Collection) {
+				for (Iterator<?> i = ((Collection) o).iterator(); i.hasNext(); ) {
+					printObject(sb, i.next());
+					if (i.hasNext())
+						sb.append(", ");
+				}
+			} else if (o instanceof Date) {
+				printDate(sb, (Date) o);
+			} else if (o instanceof Concept) {
+				printConcept(sb, (Concept) o);
+			} else if (o instanceof Obs) {
+				printObsValue(sb, (Obs) o);
+			} else if (o instanceof User) {
+				printUser(sb, (User) o);
+			} else if (o instanceof Encounter) {
+				printEncounter(sb, (Encounter) o);
+			} else if (o instanceof EncounterType) {
+				printEncounterType(sb, (EncounterType) o);
+			} else if (o instanceof Location) {
+				printLocation(sb, (Location) o);
+			} else if (o instanceof ReportData) {
+				printReportData(sb, (ReportData) o);
+			} else if (o instanceof DataSet) {
+				printDataSet(sb, null, (DataSet) o);
+			} else if (o instanceof Cohort) {
+				printCohort(sb, (Cohort) o);
+			} else if (o instanceof CohortDimensionResult) {
+				printCohortDimensionResult(sb, (CohortDimensionResult) o);
+			} else if (o instanceof BaseData) {
+				printMap(sb, ((BaseData)o).getData());
+			} else if (o instanceof IdSet) {
+				printCollection(sb, ((IdSet)o).getMemberIds());
+			} 
+			else {
+				sb.append(ObjectUtil.format(o));
 			}
-		} else if (o instanceof Date) {
-			printDate(sb, (Date) o);
-		} else if (o instanceof Concept) {
-			printConcept(sb, (Concept) o);
-		} else if (o instanceof Obs) {
-			printObsValue(sb, (Obs) o);
-		} else if (o instanceof User) {
-			printUser(sb, (User) o);
-		} else if (o instanceof Encounter) {
-			printEncounter(sb, (Encounter) o);
-		} else if (o instanceof EncounterType) {
-			printEncounterType(sb, (EncounterType) o);
-		} else if (o instanceof Location) {
-			printLocation(sb, (Location) o);
-		} else if (o instanceof ReportData) {
-			printReportData(sb, (ReportData) o);
-		} else if (o instanceof DataSet) {
-			printDataSet(sb, null, (DataSet) o);
-		} else if (o instanceof Cohort) {
-			printCohort(sb, (Cohort) o);
-		} else if (o instanceof CohortDimensionResult) {
-			printCohortDimensionResult(sb, (CohortDimensionResult) o);
-		} else if (o instanceof BaseData) {
-			printMap(sb, ((BaseData)o).getData());
-		} 
-		else {
-			sb.append(ObjectUtil.format(o));
+		}
+		catch (Exception e) {
+			sb.append(o.toString());
 		}
 	}
 
@@ -369,6 +377,19 @@ public class FormatTag extends TagSupport {
 			sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
 			for (Map.Entry<?, ?> e : m.entrySet()) {
 				sb.append("<tr><th align=\"left\">" + format(e.getKey()) + "</th><td align=\"left\">" + format(e.getValue()) + "</td></tr>");
+			}
+			sb.append("</table>");
+		}
+	}
+	
+	private void printCollection(StringBuilder sb, Collection<?> c){
+		if(c != null){
+			sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
+			sb.append("<tr><th align=\"left\">" + Context.getMessageSourceService().getMessage("reporting.ids") + "</th></tr>");
+			for (Object item : c) {
+				sb.append("<tr><td align=\"left\">");
+				printObject(sb, item);
+				sb.append("</td></tr>");
 			}
 			sb.append("</table>");
 		}

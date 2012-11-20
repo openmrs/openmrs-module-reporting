@@ -15,7 +15,6 @@ package org.openmrs.module.reporting.data.converter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -88,7 +87,7 @@ public class ListConverter implements DataConverter {
 	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
-		return Date.class;
+		return List.class;
 	}
 	
 	//***** PROPERTY ACCESS *****

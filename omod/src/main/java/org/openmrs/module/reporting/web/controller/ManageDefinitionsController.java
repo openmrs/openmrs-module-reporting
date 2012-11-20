@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -24,6 +25,10 @@ import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinitio
 import org.openmrs.module.reporting.dataset.definition.MultiPeriodIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.query.Query;
+import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
+import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
+import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 import org.openmrs.module.reporting.web.controller.mapping.DefinitionMappingHandler;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.stereotype.Controller;
@@ -45,11 +50,17 @@ public class ManageDefinitionsController {
     		@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
     		ModelMap model) {
     	
-    	List<Class<? extends DataDefinition>> allTypes = new ArrayList<Class<? extends DataDefinition>>();
+    	List<Class<? extends Definition>> allTypes = new ArrayList<Class<? extends Definition>>();
     	if (DataDefinition.class.isAssignableFrom(type)) {
     		allTypes.add(PersonDataDefinition.class);
     		allTypes.add(PatientDataDefinition.class);
     		allTypes.add(EncounterDataDefinition.class);
+    	}
+    	else if (Query.class.isAssignableFrom(type)) {
+    		//allTypes.add(PersonQuery.class);
+			//allTypes.add(EncounterQuery.class);
+			//allTypes.add(ObsQuery.class);
+			//allTypes.add(CohortDefinition.class);
     	}
     	model.addAttribute("allTypes", allTypes);
     	

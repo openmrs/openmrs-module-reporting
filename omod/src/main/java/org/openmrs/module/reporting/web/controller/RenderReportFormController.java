@@ -52,9 +52,9 @@ public class RenderReportFormController {
     	binder.registerCustomEditor(Date.class, new CustomDateEditor(ymd, true)); 
     }    
 	
-    @RequestMapping("/module/reporting/reports/renderIndicatorReportData")
+    @RequestMapping("/module/reporting/reports/renderDefaultReport")
 	public ModelAndView renderIndicatorReport() {     	
-    	return new ModelAndView("/module/reporting/reports/renderIndicatorReportData");    	
+    	return new ModelAndView("/module/reporting/reports/renderDefaultReport");    	
     }
     
 	/**

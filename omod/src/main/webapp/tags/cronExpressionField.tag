@@ -4,6 +4,7 @@
 <%@ attribute name="formFieldName" required="true" type="java.lang.String" %>
 <%@ attribute name="formFieldValue" required="false" type="java.lang.String" %>
 
+<openmrs:htmlInclude file="/openmrs.js" />
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/reporting/scripts/cron-editing.js"/>
 
 <script type="text/javascript" charset="utf-8">
@@ -19,7 +20,7 @@
 		
 		if (jQuery("#${id}scheduleExpression").val() != '') {
 			populateValues(jQuery("#${id}scheduleExpression").val());
-			jQuery("#${id}labelScheduleExpression").text(getScheduleDescription(jQuery("#${id}scheduleExpression").val()));
+			jQuery("#${id}labelScheduleExpression").text(getScheduleDescription(jQuery("#${id}scheduleExpression").val(), '<openmrs:datePattern/>'));
 		}
 		
 		jQuery('#${id}selectScheduleType').change(function(){
@@ -79,23 +80,23 @@
 				jQuery("#${id}labelScheduleExpression").html(getScheduleDescription(expression));
 			}
 		} else if (schedulingType == 'once') {
+			var datePattern = '<openmrs:datePattern/>';
 			var exactDate = jQuery("#${id}once-scheduleDate").val();
+			var exactDateObj = parseDateFromStringToJs(datePattern, exactDate);
 			var minute = parseInt(jQuery("#${id}once-minutes").val());
 			var hour = parseInt(jQuery("#${id}once-hours").val());
+			
 			// if date is valid we need to build cron expression 
 			// with it and with two another time fields
-			if (isValidScheduleDate(exactDate, minute, hour)) {
-				var tokens = exactDate.split('/');
-				// we need to use radix value of 10 for parsing
-				// date and month because they can starts with 0
-				var date = parseInt(tokens[0], 10);
-				var month = parseInt(tokens[1], 10);
-				var year = parseInt(tokens[2]);
+			if (isValidScheduleDate(exactDateObj, minute, hour)) {
+				var date = exactDateObj.getDate();
+				var month = exactDateObj.getMonth() + 1;
+				var year = exactDateObj.getFullYear();
 				// for this type of scheduling we have the next expression pattern
 				// 0 m h dom M ? y
 				expression = '0 ' + minute + ' ' + hour + ' ' + date + ' ' + month + ' ? ' + year;
 				jQuery("#${id}scheduleExpression").val(expression);
-				jQuery("#${id}labelScheduleExpression").text(getScheduleDescription(expression));
+				jQuery("#${id}labelScheduleExpression").text(getScheduleDescription(expression, datePattern));
 			} else {
 				alert('<spring:message code="reporting.runReport.schedule.incorrectDate"/>');
 				jQuery("${id}once-scheduleDate").focus();
@@ -189,17 +190,16 @@
 			jQuery("#${id}advanced").show();
 		} else if (schedulingType == 'once') {
 			var tokens = expression.split(' ');
-			// getting values from expression (seconds and day-of-week are ignored)
-			var minutes = tokens[1];
-			var hours = tokens[2];
-			var day = parseInt(tokens[3]);
-			var month = parseInt(tokens[4]);
-			var year = tokens[6];
 			// selecting values on dropdowns
-			jQuery("#${id}once-minutes").val(minutes);
-			jQuery("#${id}once-hours").val(hours);
-			// formatting exact date string
-			var dateString = prettyFormat(day) + '/' + prettyFormat(month) + '/' + year;
+			jQuery("#${id}once-minutes").val(tokens[1]);
+			jQuery("#${id}once-hours").val(tokens[2]);
+			
+			var exactDate = new Date();
+			exactDate.setDate(parseInt(tokens[3]));
+			exactDate.setMonth(parseInt(tokens[4]) - 1);
+			exactDate.setYear(parseInt(tokens[6]));
+			dateString = parseDateFromJsToString('<openmrs:datePattern/>', exactDate);
+			
 			jQuery("#${id}once-scheduleDate").val(dateString);
 			jQuery("#${id}once").show();
 		} else if (schedulingType == 'every-day') {

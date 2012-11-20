@@ -145,31 +145,15 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 		
 		// Add row to replacement data
 		for (Object entry : row.getColumnValues().entrySet()) {
+			
 			Map.Entry<DataSetColumn, Object> e = (Map.Entry<DataSetColumn, Object>) entry;
-			Object replacementValue = "";
-			if (e.getValue() != null) { 
-				if (e.getValue() instanceof Cohort) {
-					replacementValue = new Integer(((Cohort) e.getValue()).size());
-				} 
-				else if (e.getValue() instanceof IndicatorResult) {
-					replacementValue = new Double(((IndicatorResult) e.getValue()).getValue().doubleValue());
-				}
-				else if (e.getValue() instanceof Date) {
-					replacementValue = e.getValue();
-				}
-				else if (e.getValue() instanceof DataSet) {
-					replacementValue = e.getValue();
-				}
-				else if (e.getValue() instanceof Number) {
-					replacementValue = e.getValue();
-				}
-				else {
-					replacementValue = e.getValue().toString();
-				}
-			}
-			data.put(dataSetName + SEPARATOR + e.getKey().getName(), replacementValue);
+			String baseKey = dataSetName + SEPARATOR + e.getKey().getName();
+			
+			Object replacementValue = getReplacementValue(e.getValue());
+			data.put(baseKey, replacementValue);
 			String columnLabel = Context.getMessageSourceService().getMessage(e.getKey().getLabel());
-			data.put(dataSetName + SEPARATOR + e.getKey().getName() + SEPARATOR + LABEL, columnLabel);
+			data.put(baseKey + SEPARATOR + LABEL, columnLabel);
+
 			if (reportData.getDataSets().size() == 1) {
 				data.put(e.getKey().getName(), replacementValue);
 				data.put(e.getKey().getName() + SEPARATOR + LABEL, columnLabel);
@@ -195,5 +179,24 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 		}
 
 		return data;
+	}
+	
+	/**
+	 * @return the value for the report template replacement given the initial value
+	 */
+	public Object getReplacementValue(Object initialValue) {
+		Object replacementValue = "";
+		if (initialValue != null) { 
+			if (initialValue instanceof Cohort) {
+				replacementValue = new Integer(((Cohort) initialValue).size());
+			} 
+			else if (initialValue instanceof IndicatorResult) {
+				replacementValue = new Double(((IndicatorResult) initialValue).getValue().doubleValue());
+			}
+			else {
+				replacementValue = initialValue;
+			}
+		}
+		return replacementValue;
 	}
 }

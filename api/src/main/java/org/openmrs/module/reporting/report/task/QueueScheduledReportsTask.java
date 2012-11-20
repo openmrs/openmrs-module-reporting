@@ -51,7 +51,7 @@ public class QueueScheduledReportsTask extends AbstractReportsTask {
 					newRequest.setRenderingMode(scheduledReport.getRenderingMode());
 					newRequest.setPriority(scheduledReport.getPriority());
 					newRequest.setDescription(scheduledReport.getDescription());
-					newRequest.setSaveAutomatically(true);
+					newRequest.setProcessAutomatically(true);
 					rs.saveReportRequest(newRequest);
 				}
 				
@@ -59,7 +59,7 @@ public class QueueScheduledReportsTask extends AbstractReportsTask {
 				Date nextValidTime = cron.getNextValidTimeAfter(nextInvalidTime);
 
 				if (nextValidTime == null) {
-					scheduledReport.setStatus(Status.COMPLETED);
+					scheduledReport.setStatus(Status.SCHEDULE_COMPLETED);
 					rs.saveReportRequest(scheduledReport);
 				}
 			}

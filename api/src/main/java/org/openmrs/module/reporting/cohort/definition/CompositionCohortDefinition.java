@@ -3,6 +3,8 @@ package org.openmrs.module.reporting.cohort.definition;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -11,6 +13,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 public class CompositionCohortDefinition extends BaseCohortDefinition {
 	
 	public static final long serialVersionUID = 1L;
+	
+	protected transient Log log = LogFactory.getLog(getClass());
 	
 	//***** PROPERTIES *****
 	

@@ -122,7 +122,8 @@
 		
 	<!-- Hibernate Mappings -->
 	<mappingFiles>
-		${omodHbmConfig}
+		ReportDesign.hbm.xml
+		ReportRequest.hbm.xml
 	</mappingFiles>
 	
 	<!-- dwr -->

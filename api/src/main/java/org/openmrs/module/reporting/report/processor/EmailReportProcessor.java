@@ -124,7 +124,11 @@ public class EmailReportProcessor implements ReportProcessor {
 			
 			if (report.getRenderedOutput() != null && "true".equalsIgnoreCase(configuration.getProperty("addOutputAsAttachment"))) {
 				MimeBodyPart attachment = new MimeBodyPart();
-				attachment.setDataHandler(new DataHandler(report.getRenderedOutput(), report.getOutputContentType()));
+				Object output = report.getRenderedOutput();
+				if (report.getOutputContentType().contains("text")) {
+					output = new String(report.getRenderedOutput(), "UTF-8");
+				}
+				attachment.setDataHandler(new DataHandler(output, report.getOutputContentType()));
 				attachment.setFileName(configuration.getProperty("attachmentName"));
 				multipart.addBodyPart(attachment);
 			}

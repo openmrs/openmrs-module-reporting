@@ -97,7 +97,7 @@
 								<spring:message code="reporting.preview"/>
 							</button>
 						</td>
-						<td valign="top" style="width:65%;">
+						<td valign="top" style="width:65%; padding-left:20px;">
 							<b class="boxHeader">Dataset Definitions</b>
 							
 							<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">

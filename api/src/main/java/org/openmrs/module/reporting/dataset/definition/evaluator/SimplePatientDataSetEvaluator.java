@@ -110,7 +110,7 @@ public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 			}
 			
 			for (ProgramWorkflow t : definition.getProgramWorkflows()) {
-				String name = (t.getName() == null ? t.getConcept().getDisplayString() : t.getName());
+				String name = ObjectUtil.format(t.getProgram()) + " - " + ObjectUtil.format(t);
 				DataSetColumn c = new DataSetColumn(name, name, String.class);
 				PatientState ps = states.get(t).get(p.getPatientId());
 				

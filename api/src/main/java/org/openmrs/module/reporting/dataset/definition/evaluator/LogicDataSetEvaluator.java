@@ -28,13 +28,14 @@ import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.common.LogicUtil;
 import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.DataSetRowList;
 import org.openmrs.module.reporting.dataset.LazyPageableDataSet;
 import org.openmrs.module.reporting.dataset.PageableDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PageableDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.Column;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.ColumnFormatter;
+import org.openmrs.module.reporting.dataset.definition.PageableDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
@@ -105,7 +106,7 @@ public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 		}
 
 		boolean anyColumns = def.getColumns().size() > 0;
-		List<DataSetRow> ret = new ArrayList<DataSetRow>();
+		DataSetRowList ret = new DataSetRowList();
 		for (Integer ptId : cohort.getMemberIds()) {
 			List<Result> forPatient = results.get(ptId);
 			if (forPatient == null && anyColumns)

@@ -15,12 +15,6 @@
 					</c:forEach>
 				</table>
 			</td>
-			<td align="right">
-				<button onClick="history.go(-1);">
-					<b><spring:message code="reporting.Report.backToReportSummary"/></b><br/>
-					<img src="<c:url value="/images/leftArrow.gif"/>" border="0" width="16" height="16"/><br/>
-				</button>
-			</td>
 		</tr>
 	</table>
 </div>

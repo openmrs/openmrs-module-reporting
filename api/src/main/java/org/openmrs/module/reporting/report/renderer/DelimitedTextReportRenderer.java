@@ -34,7 +34,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 /**
  * ReportRenderer that renders to a delimited text file
  */
-public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer {
+public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	
 	transient protected final Log log = LogFactory.getLog(getClass());
 	
@@ -96,18 +96,6 @@ public abstract class DelimitedTextReportRenderer extends AbstractReportRenderer
 	 */
 	public String getFilename(ReportDefinition reportDefinition, String argument) {
 		return reportDefinition.getName() + "." + getFilenameExtension();
-	}
-	
-	/**
-	 * @see ReportRenderer#getRenderingModes(ReportDefinition)
-	 */
-	public Collection<RenderingMode> getRenderingModes(ReportDefinition reportDefinition) {
-		if (reportDefinition.getDataSetDefinitions() == null || reportDefinition.getDataSetDefinitions().size() != 1) {
-			return null;
-		}
-		else {
-			return Collections.singleton(new RenderingMode(this, getLabel(), null, Integer.MIN_VALUE));
-		}
 	}
 	
 	/**

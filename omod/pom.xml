@@ -1,12 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>reporting</artifactId>
-		<version>0.7.2.DEV-SNAPSHOT</version>
+		<version>0.7.4-SNAPSHOT</version>
 	</parent>
-	<groupId>org.openmrs.module</groupId>
 	<artifactId>reporting-omod</artifactId>
 	<packaging>jar</packaging>
 	<name>Reporting OMOD</name>
@@ -16,208 +14,113 @@
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>reporting-api</artifactId>
-			<version>${project.parent.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.openmrs.api</groupId>
-			<artifactId>openmrs-api</artifactId>
-			<type>jar</type>
+			<groupId>org.openmrs.web</groupId>
+			<artifactId>openmrs-web</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.openmrs.web</groupId>
 			<artifactId>openmrs-web</artifactId>
-			<type>jar</type>
+			<classifier>tests</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>htmlwidgets-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>htmlwidgets</artifactId>
-			<type>jar</type>
+			<artifactId>htmlwidgets-omod</artifactId>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
+		
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/webapp</directory>
-				<filtering>true</filtering>
-				<excludes>
-					<exclude>resources</exclude>
-				</excludes>
-				<targetPath>web/module</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/webapp</directory>
-				<filtering>false</filtering>
-				<includes>
-					<include>resources</include>
-				</includes>
-				<targetPath>web/module</targetPath>
-			</resource>
-			<!--  filter the test classes since we dynamically substitute some of the test data filenames based on build profile -->
-			<resource>
-				<directory>src/test/java</directory>
-				<filtering>true</filtering>
-				<targetPath>java</targetPath>
-			</resource>
-		</resources>
-		<testResources>
-			
-			<testResource>
-				<directory>src/test/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>**/*.xml</include>
-					<include>**/*.txt</include>
-					<include>**/*.properties</include>
-				</includes>
-			</testResource>
-			<testResource>
-				<directory>src/test/resources</directory>
 				<filtering>false</filtering>
 				<excludes>
 					<exclude>**/*.xml</exclude>
-					<exclude>**/*.txt</exclude>
 					<exclude>**/*.properties</exclude>
 				</excludes>
-			</testResource>
-		</testResources>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<configuration>
-						<includeEmptyDirs>true</includeEmptyDirs>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+				<filtering>false</filtering>
+				<targetPath>web/module</targetPath>
+			</resource>
+		</resources>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.openmrs.maven.plugins</groupId>
 				<artifactId>maven-openmrs-plugin</artifactId>
-				<extensions>true</extensions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>init</id>
-						<phase>initialize</phase>
+						<id>Expand resources</id>
 						<goals>
-							<goal>initialize-module</goal>
+							<goal>unpack-dependencies</goal>
 						</goals>
-					</execution>
-					<execution>
-						<id>pack</id>
-						<phase>package</phase>
-						<goals>
-							<goal>package-module</goal>
-						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<includeGroupIds>${project.parent.groupId}</includeGroupIds>
+							<includeArtifactIds>${project.parent.artifactId}-api</includeArtifactIds>
+							<includeScope>compile</includeScope>
+							<includes>**\/*.xml,**\/*.properties</includes>
+							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
-	<properties>
-		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
-		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
-		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
-		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
-	</properties>
 	
-	<!-- different profiles for building/testing against different version of openmrs -->
-	<profiles>
-		<profile>
-			<id>openmrs-1.6</id>
-			<dependencies>
-				<dependency>
-					<groupId>org.openmrs.test</groupId>
-					<artifactId>openmrs-test</artifactId>
-					<type>jar</type>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>	
-		</profile>
-		
-		<profile>
-			<id>openmrs-1.7</id>	
-			<dependencies>
-				<dependency>
-					<groupId>org.openmrs.test</groupId>
-					<artifactId>openmrs-test</artifactId>
-					<type>jar</type>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>	
-		</profile>
-		
-		<profile>
-			<id>openmrs-1.8</id>
-			<dependencies>				
-				<dependency>
-				    <groupId>org.openmrs.api</groupId>
-				    <artifactId>openmrs-api</artifactId>
-				    <type>test-jar</type>
-				</dependency>
-				<dependency>
-				    <groupId>org.openmrs.web</groupId>
-				    <artifactId>openmrs-web</artifactId>
-				    <type>test-jar</type>
-				</dependency>
-				<dependency>
-				    <groupId>org.openmrs.test</groupId>
-				    <artifactId>openmrs-test</artifactId>
-				    <type>pom</type>
-				</dependency>
-			</dependencies>
-		</profile>
-		
-		<profile>
-			<id>openmrs-1.9</id>
-			<dependencies>				
-				<dependency>
-				    <groupId>org.openmrs.api</groupId>
-				    <artifactId>openmrs-api</artifactId>
-				    <type>test-jar</type>
-				</dependency>
-				<dependency>
-				    <groupId>org.openmrs.web</groupId>
-				    <artifactId>openmrs-web</artifactId>
-				    <type>test-jar</type>
-				</dependency>
-				<dependency>
-				    <groupId>org.openmrs.test</groupId>
-				    <artifactId>openmrs-test</artifactId>
-				    <type>pom</type>
-				</dependency>
-			</dependencies>
-		</profile>
-		
-		<profile>
-			<id>openmrs-1.10</id>
-			<dependencies>				
-				<dependency>
-				    <groupId>org.openmrs.api</groupId>
-				    <artifactId>openmrs-api</artifactId>
-				    <type>test-jar</type>
-				</dependency>
-				<dependency>
-				    <groupId>org.openmrs.web</groupId>
-				    <artifactId>openmrs-web</artifactId>
-				    <type>test-jar</type>
-				</dependency>
-				<dependency>
-				    <groupId>org.openmrs.test</groupId>
-				    <artifactId>openmrs-test</artifactId>
-				    <type>pom</type>
-				</dependency>
-			</dependencies>
-		</profile>
-		
+    <profiles>
+	  <profile>
+	    <id>deploy-web</id>
+	    <build>
+	      <plugins>
+	        <plugin>
+	          <groupId>org.apache.maven.plugins</groupId>
+	          <artifactId>maven-antrun-plugin</artifactId>
+	          <executions>
+	            <execution>
+	              <phase>package</phase>
+	              <goals>
+	                <goal>run</goal>
+	              </goals>
+	              <configuration>
+	                <tasks>
+	                  <copy todir="${deploy.path}/WEB-INF/view/module/${project.parent.artifactId}">
+	                    <fileset dir="src/main/webapp" includes="**/*" />
+	                  </copy>
+	                </tasks>
+	              </configuration>
+	            </execution>
+	          </executions>
+	        </plugin>
+	      </plugins>
+	    </build>
+	  </profile>
 	</profiles>
 
 </project>

@@ -90,7 +90,7 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 		ListMap<Integer, Encounter> encsForPatients = new ListMap<Integer, Encounter>();
 		for (Object o : queryResult) {
 			Encounter e = (Encounter)o;
-			encsForPatients.put(e.getPatientId(), e);
+			encsForPatients.putInList(e.getPatientId(), e);
 		}
 		
 		for (Integer pId : encsForPatients.keySet()) {

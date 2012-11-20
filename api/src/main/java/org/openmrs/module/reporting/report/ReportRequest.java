@@ -28,7 +28,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 	private RenderingMode renderingMode;
 	private Priority priority = Priority.NORMAL;
 	private String schedule; //optional, in cron format
-	private boolean saveAutomatically = false;
+	private boolean processAutomatically = false;
 	private User requestedBy;
 	private Date requestDate;
 	private Status status;
@@ -182,17 +182,17 @@ public class ReportRequest extends BaseOpenmrsObject {
 	}
 	
 	/**
-	 * @return the saveAutomatically
+	 * @return the processAutomatically
 	 */
-	public boolean isSaveAutomatically() {
-		return saveAutomatically;
+	public boolean isProcessAutomatically() {
+		return processAutomatically;
 	}
 
 	/**
-	 * @param saveAutomatically the saveAutomatically to set
+	 * @param processAutomatically the processAutomatically to set
 	 */
-	public void setSaveAutomatically(boolean saveAutomatically) {
-		this.saveAutomatically = saveAutomatically;
+	public void setProcessAutomatically(boolean processAutomatically) {
+		this.processAutomatically = processAutomatically;
 	}
 
 	/**
@@ -322,7 +322,8 @@ public class ReportRequest extends BaseOpenmrsObject {
 		PROCESSING,
 		FAILED,
 		COMPLETED,
-		SAVED
+		SAVED,
+		SCHEDULE_COMPLETED
 	}
 	
 	/**

@@ -76,7 +76,7 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		ListMap<Integer, PatientIdentifier> patIds = new ListMap<Integer, PatientIdentifier>();
 		for (Object o : queryResult) {
 			PatientIdentifier pi = (PatientIdentifier)o;
-			patIds.put(pi.getPatient().getPatientId(), pi);  // TODO: This is probably inefficient.  Try to improve this with HQL
+			patIds.putInList(pi.getPatient().getPatientId(), pi);  // TODO: This is probably inefficient.  Try to improve this with HQL
 		}
 		
 		// Order the resulting patient identifiers by the type of identifiers passed in, followed by preferred/non-preferred

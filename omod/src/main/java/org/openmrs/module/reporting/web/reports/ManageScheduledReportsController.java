@@ -48,7 +48,7 @@ public class ManageScheduledReportsController {
     public ModelMap manageReports(ModelMap model) {
     	// getting all currently scheduled reports
     	ReportService reportService = Context.getService(ReportService.class);
-		List<ReportRequest> scheduledReportRequests = reportService.getReportRequests(null, null, null, Status.SCHEDULED);
+		List<ReportRequest> scheduledReportRequests = reportService.getReportRequests(null, null, null, Status.SCHEDULED, Status.SCHEDULE_COMPLETED);
 		// getting list of available rendering modes
 		List<RenderingMode> renderingModes = new ArrayList<RenderingMode>();
 		for (ReportRequest reportRequest : scheduledReportRequests) {

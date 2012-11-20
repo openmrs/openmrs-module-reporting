@@ -10,7 +10,7 @@
 	    $.getJSON('${pageContext.request.contextPath}/module/reporting/reports/loadReportStatus.form?uuid=${request.uuid}', function(data) {
 	    	$(".status").hide();
 	    	$(".status"+data.status).show();
-	    	if (data.status != 'COMPLETED' && data.status != 'SAVED' && data.status != 'FAILED') {
+	    	if (data.status != 'COMPLETED' && data.status != 'SAVED' && data.status != 'FAILED' && data.status != 'SCHEDULE_COMPLETED') {
 	    		setTimeout("loadReportStatus()", 3000);
 	    	}
 	    });
@@ -139,6 +139,12 @@
 								<rptTag:cronDisplay id="${request.id}Schedule" expression="${request.schedule}"/><br/><br/>
 								<spring:message code="reporting.manageTasks.nextExecutionTime"/>: 
 								${rpt:nextExecutionTime(request.schedule)}
+							</span>
+							<span class="status statusSCHEDULE_COMPLETED">
+								<img src="<c:url value="/images/checkmark.png"/>" width="24" height="24" border="0" style="vertical-align:middle"/>
+								<span style="font-size:large"><spring:message code="reporting.status.SCHEDULE_COMPLETED"/></span><br/><br/>
+								<spring:message code="reporting.manageTasks.scheduleDescription"/>: 
+								<rptTag:cronDisplay id="${request.id}ScheduleCompleted" expression="${request.schedule}"/><br/><br/>
 							</span>
 							<span class="status statusPROCESSING">
 								<img src="<c:url value="/images/loading.gif"/>" width="24" height="24" border="0" style="vertical-align:middle"/>

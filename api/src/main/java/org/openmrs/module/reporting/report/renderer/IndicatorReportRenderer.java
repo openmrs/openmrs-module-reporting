@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,34 +35,20 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  */
 //@Handler
 @Localized("reporting.IndicatorReportRenderer")
-public class IndicatorReportRenderer extends AbstractReportRenderer {
+public class IndicatorReportRenderer extends ReportDesignRenderer {
 
 	/**
-     * @see org.openmrs.report.ReportRenderer#getRenderedContentType(org.openmrs.report.ReportDefinition, java.lang.String)
+     * @see ReportRenderer#getRenderedContentType(ReportDefinition, String)
      */
     public String getRenderedContentType(ReportDefinition schema, String argument) {
     	return "text/html";
     }
 
 	/**
-	 * @see org.openmrs.report.ReportRenderer#getLinkUrl(org.openmrs.report.ReportDefinition)
-	 */
-	public String getLinkUrl(ReportDefinition schema) {
-		return null;
-	}
-	
-	/**
-	 * @see org.openmrs.report.ReportRenderer#getFilename(org.openmrs.report.ReportDefinition)
+	 * @see ReportRenderer#getFilename(ReportDefinition)
 	 */
 	public String getFilename(ReportDefinition schema, String argument) {
 		return schema.getName() + ".html";
-	}
-	
-	/**
-	 * @see org.openmrs.report.ReportRenderer#getRenderingModes(org.openmrs.report.ReportDefinition)
-	 */
-	public Collection<RenderingMode> getRenderingModes(ReportDefinition schema) {
-		return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MAX_VALUE - 1));
 	}
 
 	/**

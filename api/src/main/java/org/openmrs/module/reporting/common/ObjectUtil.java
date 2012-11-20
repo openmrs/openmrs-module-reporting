@@ -1,14 +1,24 @@
 package org.openmrs.module.reporting.common;
 
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.PersonName;
@@ -16,6 +26,8 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.indicator.IndicatorResult;
+import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -299,10 +311,23 @@ public class ObjectUtil {
 		if (o instanceof Object[]) {
 			return toString(nvl(format, ","), (Object[])o);
 		}
+		if (o instanceof IndicatorResult) {
+			if (notNull(format)) {
+				return format(((IndicatorResult)o).getValue(), format);
+			}
+		}
+		if (o instanceof Cohort) {
+			return Integer.toString(((Cohort)o).getSize());
+		}
 		if (o instanceof Number) {
 			if (notNull(format)) {
 				NumberFormat nf = NumberFormat.getInstance();
 				nf.setGroupingUsed(false);
+				try {
+					nf.setMinimumFractionDigits(Integer.parseInt(format));
+					nf.setMaximumFractionDigits(Integer.parseInt(format));
+				}
+				catch (Exception e) {}
 				return nf.format((Number)o);
 			}
 		}
@@ -361,5 +386,74 @@ public class ObjectUtil {
 			}
 		}
 		return "Unknown User";
+	}
+	
+	public static boolean instanceOf(Object o, String className) {
+		try {
+			Class<?> c = Context.loadClass(className);
+			if (c.isAssignableFrom(o.getClass())) {
+				return true;
+			}
+		}
+		catch (Exception e) {
+			log.warn("Error performing instanceof check.  Object " + o + "; class: " + className, e);
+		}
+		return false;
+	}
+	
+	/**
+	 * Sorts a given Collection given the passed sortSpecification and returns it in a new List
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static <T extends Object> List<T> sort(Collection<T> collection, String sortSpecification) throws Exception {
+		
+		if (collection == null) {
+			return null;
+		}
+		
+		List ret = new ArrayList(collection);
+		//If sort specification is null or "asc", we use natural order ascending.
+		if (sortSpecification == null || sortSpecification.equalsIgnoreCase("asc")) {
+			Collections.sort(ret);
+		}
+		//If sort specification is "desc", we use natural order descending.
+		else if (sortSpecification.equalsIgnoreCase("desc")) {
+			Collections.sort(ret, Collections.reverseOrder());
+		}
+		else {
+			//sort specification based on property name/s
+			BeanPropertyComparator comparator = new BeanPropertyComparator(sortSpecification);
+			Collections.sort(ret, comparator);
+		}
+		return ret;
+	}
+	
+	/**
+	 * Simple utility method to return the full stack trace as a String for a Throwable
+	 */
+	public static String getStackTrace(Throwable t) {
+	    Writer sw = new StringWriter();
+	    PrintWriter pw = new PrintWriter(sw);
+	    t.printStackTrace(pw);
+		return sw.toString();
+	}
+	
+	/**
+	 * @return a Properties object based on a properties file on the classpath at the specified location
+	 */
+	public static Properties loadPropertiesFromClasspath(String location) {
+		Properties ret = new Properties();
+		InputStream is = null;
+		try {
+			is = OpenmrsClassLoader.getInstance().getResourceAsStream(location);
+			ret.load(is);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Unable to load properties from classpath at " + location, e);
+		}
+		finally {
+			IOUtils.closeQuietly(is);
+		}
+		return ret;
 	}
 }

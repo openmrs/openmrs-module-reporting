@@ -5,8 +5,8 @@
 *.war
 *.ear
 
-# IDE files #
-*.project
-*.settings
-*.classpath
+/.project
+/.settings
+
 *.iml
+*.idea
