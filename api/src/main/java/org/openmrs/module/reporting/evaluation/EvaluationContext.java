@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -164,6 +165,7 @@ public class EvaluationContext {
 	 * 
 	 * @return Map<String, Object>
 	 */
+    @JsonIgnore
 	public Map<String, Object> getCache() {
 		if (cache == null) {
 			cache = new HashMap<String, Object>();
