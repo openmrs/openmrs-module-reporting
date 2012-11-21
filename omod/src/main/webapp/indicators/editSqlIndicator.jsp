@@ -1,8 +1,12 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
-<openmrs:require privilege="Manage Cohort Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition" />
+<openmrs:require privilege="Manage Indicator Definitions" otherwise="/login.htm" redirect="/module/reporting/indicators/editSqlIndicator.form" />
 <%@ include file="../manage/localHeader.jsp"%>
 
-<c:set var="pageUrl" value="/module/reporting/cohorts/sqlCohortDefinition.form?uuid=uuid"/>
+<c:url value="/module/reporting/indicators/editSqlIndicator.form" var="pageUrlWithUuid">
+	<c:param name="uuid" value="${definition.uuid}" />
+</c:url>
+
+<c:set var="pageUrl" value="/module/reporting/indicators/editSqlIndicator.form?uuid=uuid"/>
 
 <style>
 	input["submit"], button { 
@@ -31,12 +35,11 @@
 	img#play { vertical-align: middle; margin: 0; }  
 </style>
 
-
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		$("#previewButton").click(function(event){ 
 			showReportingDialog({ 
-				title: 'Preview SQL Cohort Definition', 
+				title: 'Preview Indicator', 
 				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}',
 				successCallback: function() { 
 					window.location = window.location; //.reload(true);
@@ -52,13 +55,14 @@
 		<c:choose>
 			<c:when test="${definition.id == null}">
 		
-				<b class="boxHeader">SQL Cohort Query</b>
+				<b class="boxHeader">SQL Indicator</b>
 				<div class="box">
-					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition|successUrl=${pageUrl}" />
+					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.indicator.SqlIndicator|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/indicators/manageIndicators.form|successUrl=${pageUrl}" />
 				</div>
 				
 			</c:when>		
 			<c:otherwise>
+
 		
 				<table cellspacing="5" cellpadding="5" width="100%">
 					<tr valign="top">
@@ -74,7 +78,7 @@
 								id="newParameter" 
 								url="parameter" 
 								moduleId="reporting" 
-								parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrl}" />								
+								parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrlWithUuid}" />								
 						</td>
 
 						<td width="75%">
@@ -83,24 +87,24 @@
 							<div style="margin: 0.1em; width:100%;"> 
 								<b class="boxHeader">SQL Query</b>
 								<div class="box">
-									<form method="post" action="sqlCohortDefinitionAssignQueryString.form">
+									<form method="post" action="saveSqlIndicatorQueryString.form">
 										<input type="hidden" name="uuid" value="${definition.uuid}"/>
-										<textarea id="editBox" rows="18" cols="50" id="queryString" name="queryString">${definition.query}</textarea>
+										<textarea id="editBox" rows="18" cols="50" id="queryString" name="queryString">${definition.sql}</textarea>
 										<br/>
 										<span>
 											<input type="submit" value="Save"/>
-											<input id="closeButton" type="button" value="Close" onClick="window.location='${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition';"/>
+											<input id="closeButton" type="button" value="Close" onClick="window.location='${pageContext.request.contextPath}/module/reporting/indicators/manageIndicators.form';"/>
 											<span style="float: right">
 												<button id="previewButton"><img id="play" src='<c:url value="/images/play.gif"/>' border="0"/>&nbsp;&nbsp;Preview</button>
 											</span>
 										</span>
-									</form>							
+									</form>								
 								</div>	
 							</div>
 						</td>
 					</tr>
 				</table>
-		
+
 			</c:otherwise>
 		</c:choose>
 

@@ -38,17 +38,6 @@
 </script>
 
 <style>
-	#navigation ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-	#navigation menu li {
-		float:left;
-		line-height:2.3em;
-		padding-left:.75em;
-		color:#777;
-	}
 	#main { 
 		padding-bottom: 100px;
 	}
@@ -62,17 +51,17 @@
 		<h1>Indicator Manager</h1>
 
 		<div id="navigation">
-			<c:url var="snapshotIndicatorImage" value="/moduleResources/reporting/images/indicator-interval-snapshot.png"/>
-			<c:url var="periodIndicatorImage" value="/moduleResources/reporting/images/indicator-interval-period.png"/>		
-			<h2 style="display:inline">Actions</h2>	
-			<ul id="menu" style="display:inline">
-				<li class="first">
-				 	<span id="period-indicator-form">
-						<img src="${periodIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>				
-						<a href="<c:url value="/module/reporting/indicators/editCohortIndicator.form"/>">Create Cohort Indicator</a>
-					</span>
-				</li>
-			</ul>
+			<c:url var="cohortIndicatorImage" value="/moduleResources/reporting/images/indicator-interval-period.png"/>
+			<c:url var="sqlIndicatorImage" value="/moduleResources/reporting/images/db_add.png"/>	
+		 	<span>
+				<img src="${cohortIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>				
+				<a href="<c:url value="/module/reporting/indicators/editCohortIndicator.form"/>">Create Cohort Indicator</a>
+			</span>
+			&nbsp;&nbsp;
+		 	<span>
+				<img src="${sqlIndicatorImage}" width="24" height="24" border="0" alt="sql indicator" style="vertical-align:middle"/>				
+				<a href="<c:url value="/module/reporting/indicators/editSqlIndicator.form"/>">Create Sql Indicator</a>
+			</span>
 		</div>
 
 		<div id="main">		
@@ -93,7 +82,7 @@
 									${pageContext.request.contextPath}/module/reporting/indicators/editCohortIndicator.form?uuid=${indicator.uuid}
 								</c:when>
 								<c:otherwise>
-									${pageContext.request.contextPath}/module/reporting/indicators/editIndicator.form?uuid=${indicator.uuid}
+									${pageContext.request.contextPath}/module/reporting/indicators/editSqlIndicator.form?uuid=${indicator.uuid}
 								</c:otherwise>							
 							</c:choose>
 						</c:set>
@@ -130,17 +119,28 @@
 								<c:url var="simpleIndicatorImage" value="/moduleResources/reporting/images/indicator-type-simple.png"/>
 								<c:url var="fractionIndicatorImage" value="/moduleResources/reporting/images/indicator-type-fraction.png"/>
 								<c:url var="customIndicatorImage" value="/moduleResources/reporting/images/indicator-type-custom.png"/>
-								<c:choose>								
-									<c:when test="${indicator.type=='FRACTION'}">
-										<img src="${fractionIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>										
+								<c:url var="sqlIndicatorImage" value="/moduleResources/reporting/images/db.png"/>
+								<c:choose>
+									<c:when test="${indicator['class'].simpleName == 'CohortIndicator'}">
+										<c:choose>						
+											<c:when test="${indicator.type=='FRACTION'}">
+												<img src="${fractionIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>										
+											</c:when>
+											<c:when test="${indicator.type=='LOGIC'}">
+												<img src="${customIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>																				
+											</c:when>
+											<c:otherwise>
+												<img src="${simpleIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>			
+											</c:otherwise>
+										</c:choose>
 									</c:when>
-									<c:when test="${indicator.type=='LOGIC'}">
-										<img src="${customIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>																				
+									<c:when test="${indicator['class'].simpleName == 'SqlIndicator'}">
+										<img src="${sqlIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>										
 									</c:when>
 									<c:otherwise>
-										<img src="${simpleIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>			
+										<img src="${simpleIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>												
 									</c:otherwise>
-								</c:choose>							
+								</c:choose>						
 								<a href="${editUrl}">${indicator.name}</a>								
 							</td>	
 							<td nowrap width="10%" align="center">
