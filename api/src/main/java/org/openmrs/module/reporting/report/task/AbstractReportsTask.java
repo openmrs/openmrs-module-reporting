@@ -44,6 +44,7 @@ public abstract class AbstractReportsTask extends TimerTask {
 		}
 		finally {
 			if (Context.isSessionOpen()) {
+				Context.clearSession();
 				Context.closeSession();
 			}
 		}
