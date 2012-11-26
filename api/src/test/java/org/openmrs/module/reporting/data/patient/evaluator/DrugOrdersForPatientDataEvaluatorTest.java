@@ -25,6 +25,7 @@ import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.converter.ChainedConverter;
 import org.openmrs.module.reporting.data.converter.CollectionConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
+import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
@@ -87,11 +88,13 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		
 		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
 		def.addDrugConceptToInclude(Context.getConceptService().getConcept(792));
-		DrugOrderSet history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		EvaluatedPatientData evaluated = Context.getService(PatientDataService.class).evaluate(def, context);
+		DrugOrderSet history = (DrugOrderSet)evaluated.getData().get(2);
 		Assert.assertEquals(2, history.size());
 		
-		def.addDrugConceptToInclude(Context.getConceptService().getConcept(88));;
-		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		def.addDrugConceptToInclude(Context.getConceptService().getConcept(88));
+		evaluated = Context.getService(PatientDataService.class).evaluate(def, context);
+		history = (DrugOrderSet)evaluated.getData().get(2);
 		Assert.assertEquals(4, history.size());
 	}
 

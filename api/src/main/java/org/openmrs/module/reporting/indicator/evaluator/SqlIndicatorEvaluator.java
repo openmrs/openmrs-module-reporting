@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.SessionFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.ReportingException;
@@ -39,6 +40,7 @@ import org.openmrs.module.reporting.indicator.SimpleIndicatorResult;
 import org.openmrs.module.reporting.indicator.SqlIndicator;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *  The evaluator that evaluates {@link SqlIndicator}.  Returns a {@link SimpleIndicatorResult}.
@@ -47,6 +49,9 @@ import org.openmrs.util.DatabaseUpdater;
 public class SqlIndicatorEvaluator implements IndicatorEvaluator {
 
 	protected Log log = LogFactory.getLog(this.getClass());	
+	
+	@Autowired
+	private SessionFactory sessionFactory;
 	
 
 	 public SimpleIndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException {
@@ -77,7 +82,7 @@ public class SqlIndicatorEvaluator implements IndicatorEvaluator {
 	 private void executeSql(String sql, Map<String, Object> paramMap, SimpleIndicatorResult result, String resultType) throws EvaluationException {
 			Connection connection = null;
 			try {
-				connection = DatabaseUpdater.getConnection();
+				connection = sessionFactory.getCurrentSession().connection();
 				ResultSet resultSet = null;
 				
 				PreparedStatement statement = SqlUtils.prepareStatement(connection, sql.toString(), paramMap);
@@ -116,16 +121,6 @@ public class SqlIndicatorEvaluator implements IndicatorEvaluator {
 			}
 			catch (Exception e) {
 				throw new EvaluationException("Unable to evaluate sql query", e);
-			}
-			finally {
-				try {
-					if (connection != null) {
-						connection.close();
-					}
-				}
-				catch (Exception e) {
-					log.error("Error while closing connection", e);
-				}
 			}
 	 }
 	 

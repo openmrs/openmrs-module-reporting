@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.SessionFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -30,8 +31,8 @@ import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
-import org.openmrs.util.DatabaseUpdater;
 import org.openmrs.util.OpenmrsUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The logic that evaluates a {@link SqlEncounterQuery} and produces an {@link Query}
@@ -40,6 +41,9 @@ import org.openmrs.util.OpenmrsUtil;
 public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
+	
+	@Autowired
+	private SessionFactory sessionFactory;
 	
 	/**
 	 * Public constructor
@@ -86,7 +90,7 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
 		Connection connection = null;
 		try {
-			connection = DatabaseUpdater.getConnection();
+			connection = sessionFactory.getCurrentSession().connection();
 			ResultSet resultSet = null;
 			
 			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery.toString(), context.getParameterValues());
@@ -105,16 +109,6 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 		}
 		catch (Exception e) {
 			throw new EvaluationException("Unable to evaluate sql query", e);
-		}
-		finally {
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-			}
-			catch (Exception e) {
-				log.error("Error while closing connection", e);
-			}
 		}
 		return queryResult;
 	}
