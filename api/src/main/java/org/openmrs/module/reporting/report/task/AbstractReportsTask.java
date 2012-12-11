@@ -65,12 +65,13 @@ public abstract class AbstractReportsTask extends TimerTask {
 		}
 	}
 	
-	public void cancelCurrentlyRunnningReportingTask() {
+	public void cancelCurrentlyRunningReportingTask() {
 		Session session = currentSession;
 		if (session != null && session.isOpen()) {
 			session.close();
 			log.info("Reporting task has been cancelled");
-		} else {
+		}
+        else {
 			log.warn("Failed to cancel the reporting task");
 		}
 	}
@@ -94,9 +95,7 @@ public abstract class AbstractReportsTask extends TimerTask {
 			Context.authenticate(userName, password);
 		}
 		catch (ContextAuthenticationException e) {
-			log.warn("Error authenticating '"
-			        + userName
-			        + "' user. Please ensure you scheduler username and password are configured correctly in your global properties");
+			log.warn("Error authenticating '" + userName + "' user. Please ensure you scheduler username and password are configured correctly in your global properties");
 			lastFailedLogin = new Date();
 		}
 	}

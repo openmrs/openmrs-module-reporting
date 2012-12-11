@@ -79,13 +79,16 @@ public class ReportRequest extends BaseOpenmrsObject {
 	 * @see Object#equals(Object)
 	 */
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!(obj instanceof ReportRequest))
+        }
+		if (!(obj instanceof ReportRequest)) {
 			return false;
+        }
 		ReportRequest other = (ReportRequest) obj;
-		if (getUuid() == null)
+		if (getUuid() == null) {
 			return false;
+        }
 		return getUuid().equals(other.getUuid());
 	}
 	
@@ -93,9 +96,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 	 * @see Object#hashCode()
 	 */
 	public int hashCode() {
-		if (getUuid() == null)
-			return super.hashCode();
-		return getUuid().hashCode();
+        return (getUuid() == null ? super.hashCode() : getUuid().hashCode());
 	}
 	
 	//*****  PROPERTY ACCESS ******

@@ -211,9 +211,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public void purgeReportRequest(ReportRequest request) {
 		RunQueuedReportsTask reportsTask = RunQueuedReportsTask.getCurrentlyRunningRequests().get(request.getUuid());
 		if (reportsTask != null) {
-			reportsTask.cancelCurrentlyRunnningReportingTask();
+			reportsTask.cancelCurrentlyRunningReportingTask();
 		}
-		
 		reportDAO.purgeReportRequest(request);
 		reportCache.remove(request.getUuid());
 		FileUtils.deleteQuietly(getReportDataFile(request));
