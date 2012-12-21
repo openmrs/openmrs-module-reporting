@@ -31,7 +31,7 @@
 						<fieldset>
 							<legend><b><spring:message code="reporting.Report.inProgress.title"/></b></legend>
 							<div style="padding:5px;">
-								<openmrs:portlet url="reportRequests" id="queuedRequests" moduleId="reporting" parameters="reportId=${report.reportDefinition.id}|status=REQUESTED,PROCESSING"/>
+								<openmrs:portlet url="reportRequests" id="queuedRequests" moduleId="reporting" parameters="status=REQUESTED,PROCESSING"/>
 							</div>
 						</fieldset>
 					</div>
@@ -46,7 +46,7 @@
 								(<spring:message code="reporting.viewAll"/>)
 							</a>
 						</legend>
-						<openmrs:portlet url="reportRequests" id="completedRequests" moduleId="reporting" parameters="status=SAVED,COMPLETED,FAILED|mostRecentNum=0|numOnPage=20"/>					
+						<openmrs:portlet url="reportRequests" id="completedRequests" moduleId="reporting" parameters="status=SAVED,COMPLETED,FAILED|mostRecentNum=10|numOnPage=10"/>
 					</fieldset>
 				</td>
 			</tr>

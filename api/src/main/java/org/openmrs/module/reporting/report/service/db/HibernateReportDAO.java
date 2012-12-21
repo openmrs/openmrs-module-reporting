@@ -20,6 +20,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -186,10 +187,10 @@ public class HibernateReportDAO implements ReportDAO {
 	}
 
 	/**
-	 * @see ReportDAO#getReportRequests(definition.ReportDefinition, Date, Date, Status)
+	 * @see ReportDAO#getReportRequests(ReportDefinition, Date, Date, Integer, Status)
 	 */
 	@SuppressWarnings("unchecked")
-	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses) {
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses) {
 		Criteria c = sessionFactory.getCurrentSession().createCriteria(ReportRequest.class);
 		if (reportDefinition != null) {
 			c.add(Restrictions.eq("reportDefinition.definition", reportDefinition.getUuid()));
@@ -202,6 +203,14 @@ public class HibernateReportDAO implements ReportDAO {
 		}
 		if (statuses != null && statuses.length > 0) {
 			c.add(Restrictions.in("status", statuses));
+		}
+		c.addOrder(Order.desc("evaluateCompleteDatetime"));
+		c.addOrder(Order.desc("evaluateStartDatetime"));
+		c.addOrder(Order.desc("priority"));
+		c.addOrder(Order.desc("requestDate"));
+
+		if (mostRecentNum != null) {
+			c.setMaxResults(mostRecentNum);
 		}
 		return c.list();
 	}
