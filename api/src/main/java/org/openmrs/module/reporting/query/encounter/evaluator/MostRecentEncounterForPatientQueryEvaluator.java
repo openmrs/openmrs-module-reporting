@@ -47,6 +47,10 @@ public class MostRecentEncounterForPatientQueryEvaluator implements EncounterQue
 	
 	/**
 	 * @see EncounterQueryEvaluator#evaluate(EncounterQuery, EvaluationContext)
+	 * @should include the encounter at the start of the specified onOrAfter date
+	 * @should include the encounter at the end of the specified onOrAfter date
+	 * @should include the encounter at the start of the specified onOrBefore date
+	 * @should include the encounter at the end of the specified onOrBefore date
 	 */
 	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) throws EvaluationException {
 		
