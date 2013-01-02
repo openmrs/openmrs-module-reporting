@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.HashMap;
@@ -118,14 +117,12 @@ public class CohortDetailReportRendererTest extends BaseModuleContextSensitiveTe
 		ReportData data = rs.evaluate(report, context);
 		
 		// We demonstrate here how we can use this renderer to output to HTML
-		String outFile = System.getProperty("java.io.tmpdir") + File.separator + "test.html";
-		FileOutputStream fos = new FileOutputStream(outFile); 
+		FileOutputStream fos = new FileOutputStream("/tmp/test.html"); // You will need to change this if you have no /tmp directory
 		renderer.render(data, "xxx:html", fos);
 		fos.close();
 		
 		// We demonstrate here how we can use this renderer to output to Excel
-		outFile = System.getProperty("java.io.tmpdir") + File.separator + "test.xls";
-		fos = new FileOutputStream(outFile); 
+		fos = new FileOutputStream("/tmp/test.xls"); // You will need to change this if you have no /tmp directory
 		renderer.render(data, "xxx:xls", fos);
 		fos.close();
 	}

@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Properties;
@@ -115,8 +114,8 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		
 		CsvReportRenderer csvRenderer = new CsvReportRenderer();
 		csvRenderer.render(data, "thedata", System.out);
-		String outFile = System.getProperty("java.io.tmpdir") + File.separator + "test.xls";
-		FileOutputStream fos = new FileOutputStream(outFile);
+		
+		FileOutputStream fos = new FileOutputStream("/tmp/test.xls"); // You will need to change this if you have no /tmp directory
 		renderer.render(data, "xxx:xls", fos);
 		fos.close();
 	}
