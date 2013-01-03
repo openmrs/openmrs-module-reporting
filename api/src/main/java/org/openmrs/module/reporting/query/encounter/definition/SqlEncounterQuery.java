@@ -14,19 +14,14 @@
 package org.openmrs.module.reporting.query.encounter.definition;
 
 import org.openmrs.Encounter;
-import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.query.BaseQuery;
+import org.openmrs.module.reporting.query.BaseSqlQuery;
 
 /**
  * SQL-based Encounter Query
  */
-public class SqlEncounterQuery extends BaseQuery<Encounter> implements EncounterQuery {
+public class SqlEncounterQuery extends BaseSqlQuery<Encounter> implements EncounterQuery {
 
     public static final long serialVersionUID = 1L;
-	
-	@ConfigurationProperty(required=true)
-	private String query;
 	
 	//***** CONSTRUCTORS *****
 
@@ -39,34 +34,9 @@ public class SqlEncounterQuery extends BaseQuery<Encounter> implements Encounter
 	
 	/**
 	 * 
-	 * @param sqlQuery
+	 * @param query the query to evaluate
 	 */
 	public SqlEncounterQuery(String query) { 
-		this.query = query;
-	}
-
-	//***** INSTANCE METHODS *****
-	
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		return "SQL Encounter Query: [" + ObjectUtil.nvlStr(query, "") + "]";
-	}
-	
-	//***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the query
-	 */
-	public String getQuery() {
-		return query;
-	}
-
-	/**
-	 * @param query the query to set
-	 */
-	public void setQuery(String query) {
-		this.query = query;
+		super(query);
 	}
 }

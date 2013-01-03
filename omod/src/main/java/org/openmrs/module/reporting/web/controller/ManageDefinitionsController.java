@@ -57,10 +57,10 @@ public class ManageDefinitionsController {
     		allTypes.add(EncounterDataDefinition.class);
     	}
     	else if (Query.class.isAssignableFrom(type)) {
-    		//allTypes.add(PersonQuery.class);
-			//allTypes.add(EncounterQuery.class);
-			//allTypes.add(ObsQuery.class);
-			//allTypes.add(CohortDefinition.class);
+    		allTypes.add(PersonQuery.class);
+			allTypes.add(CohortDefinition.class);
+			allTypes.add(EncounterQuery.class);
+			//allTypes.add(ObsQuery.class);  TODO: None of these are implemented yet
     	}
     	model.addAttribute("allTypes", allTypes);
     	

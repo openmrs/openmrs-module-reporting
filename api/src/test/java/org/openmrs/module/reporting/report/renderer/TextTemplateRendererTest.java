@@ -45,7 +45,7 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void shouldRenderGroovyTemplate() throws Exception {
-		shouldRenderTemplate("GroovyTemplate.groovy", "Groovy");
+		shouldRenderTemplate("GroovyTemplate.txt", "Groovy");
 	}
 	
 	@Test

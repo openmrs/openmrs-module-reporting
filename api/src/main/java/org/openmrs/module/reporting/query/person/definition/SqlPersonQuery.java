@@ -14,19 +14,14 @@
 package org.openmrs.module.reporting.query.person.definition;
 
 import org.openmrs.Person;
-import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.query.BaseQuery;
+import org.openmrs.module.reporting.query.BaseSqlQuery;
 
 /**
  * SQL-based Person Query
  */
-public class SqlPersonQuery extends BaseQuery<Person> implements PersonQuery {
+public class SqlPersonQuery extends BaseSqlQuery<Person> implements PersonQuery {
 
     public static final long serialVersionUID = 1L;
-	
-	@ConfigurationProperty(required=true)
-	private String query;
 	
 	//***** CONSTRUCTORS *****
 
@@ -39,34 +34,9 @@ public class SqlPersonQuery extends BaseQuery<Person> implements PersonQuery {
 	
 	/**
 	 * 
-	 * @param sqlQuery
+	 * @param query the query to execute
 	 */
 	public SqlPersonQuery(String query) { 
-		this.query = query;
-	}
-
-	//***** INSTANCE METHODS *****
-	
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		return "SQL Person Query: [" + ObjectUtil.nvlStr(query, "") + "]";
-	}
-	
-	//***** PROPERTY ACCESS *****
-
-	/**
-	 * @return the query
-	 */
-	public String getQuery() {
-		return query;
-	}
-
-	/**
-	 * @param query the query to set
-	 */
-	public void setQuery(String query) {
-		this.query = query;
+		super(query);
 	}
 }
