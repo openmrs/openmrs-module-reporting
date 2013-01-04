@@ -3,8 +3,11 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Patient;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -69,5 +72,43 @@ public class BirthAndDeathCohortDefinitionEvaluatorTest extends BaseModuleContex
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertEquals(1, cohort.size());
 		Assert.assertTrue(cohort.contains(20));
+	}
+	
+	/**
+	 * @see {@link BirthAndDeathCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Ignore
+	@Verifies(value = "should find patients born on the onOrBefore date if passed in time is at midnight", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldFindPatientsBornOnTheOnOrBeforeDateIfPassedInTimeIsAtMidnight() throws Exception {
+		PatientService ps = Context.getPatientService();
+		Patient patient = ps.getPatient(6);
+		patient.setBirthdate(DateUtil.getDateTime(1999, 8, 23, 11, 0, 0, 0));
+		ps.savePatient(patient);
+		
+		BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
+		cd.setBornOnOrBefore(DateUtil.getDateTime(1999, 8, 23));
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertTrue(cohort.contains(6));
+	}
+	
+	/**
+	 * @see {@link BirthAndDeathCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Ignore
+	@Verifies(value = "should find patients that died on the onOrBefore date if passed in time is at midnight", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldFindPatientsThatDiedOnTheOnOrBeforeDateIfPassedInTimeIsAtMidnight() throws Exception {
+		PatientService ps = Context.getPatientService();
+		Patient patient = ps.getPatient(7);
+		patient.setDead(true);
+		patient.setDeathDate(DateUtil.getDateTime(2005, 12, 31, 11, 0, 0, 0));
+		ps.savePatient(patient);
+		
+		BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
+		cd.setDiedOnOrBefore(DateUtil.getDateTime(2005, 12, 31));
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertTrue(cohort.contains(20));
+		Assert.assertTrue(cohort.contains(7));
 	}
 }
