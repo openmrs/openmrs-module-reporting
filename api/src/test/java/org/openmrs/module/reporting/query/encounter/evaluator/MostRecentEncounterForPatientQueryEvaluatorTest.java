@@ -24,6 +24,7 @@ import org.openmrs.Encounter;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
@@ -33,12 +34,17 @@ import org.openmrs.test.Verifies;
 
 public class MostRecentEncounterForPatientQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
+	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
+	
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+	
 	private final Integer patientId = 7;
 	
 	private EncounterService es;
 	
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
+		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 		es = Context.getEncounterService();
 	}
 	

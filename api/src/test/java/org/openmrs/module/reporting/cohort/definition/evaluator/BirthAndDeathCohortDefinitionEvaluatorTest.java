@@ -1,6 +1,5 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -78,29 +77,29 @@ public class BirthAndDeathCohortDefinitionEvaluatorTest extends BaseModuleContex
 	 * @see {@link BirthAndDeathCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
 	 */
 	@Test
-	@Ignore
 	@Verifies(value = "should find patients born on the onOrBefore date if passed in time is at midnight", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldFindPatientsBornOnTheOnOrBeforeDateIfPassedInTimeIsAtMidnight() throws Exception {
 		PatientService ps = Context.getPatientService();
-		Patient patient = ps.getPatient(6);
+		final Integer patientId = 6;
+		Patient patient = ps.getPatient(patientId);
 		patient.setBirthdate(DateUtil.getDateTime(1999, 8, 23, 11, 0, 0, 0));
 		ps.savePatient(patient);
 		
 		BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
 		cd.setBornOnOrBefore(DateUtil.getDateTime(1999, 8, 23));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(6));
+		Assert.assertTrue(cohort.contains(patientId));
 	}
 	
 	/**
 	 * @see {@link BirthAndDeathCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
 	 */
 	@Test
-	@Ignore
 	@Verifies(value = "should find patients that died on the onOrBefore date if passed in time is at midnight", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldFindPatientsThatDiedOnTheOnOrBeforeDateIfPassedInTimeIsAtMidnight() throws Exception {
 		PatientService ps = Context.getPatientService();
-		Patient patient = ps.getPatient(7);
+		final Integer patientId = 7;
+		Patient patient = ps.getPatient(patientId);
 		patient.setDead(true);
 		patient.setDeathDate(DateUtil.getDateTime(2005, 12, 31, 11, 0, 0, 0));
 		ps.savePatient(patient);
@@ -108,7 +107,43 @@ public class BirthAndDeathCohortDefinitionEvaluatorTest extends BaseModuleContex
 		BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
 		cd.setDiedOnOrBefore(DateUtil.getDateTime(2005, 12, 31));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(20));
-		Assert.assertTrue(cohort.contains(7));
+		Assert.assertTrue(cohort.contains(patientId));
+	}
+	
+	/**
+	 * @see {@link BirthAndDeathCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should find patients born after the specified date", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldFindPatientsBornAfterTheSpecifiedDate() throws Exception {
+		PatientService ps = Context.getPatientService();
+		final Integer patientId = 6;
+		Patient patient = ps.getPatient(patientId);
+		patient.setBirthdate(DateUtil.getDateTime(1999, 8, 23));
+		ps.savePatient(patient);
+		
+		BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
+		cd.setBornOnOrAfter(DateUtil.getDateTime(1999, 8, 23, 11, 0, 0, 0));
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertFalse(cohort.contains(patientId));
+	}
+	
+	/**
+	 * @see {@link BirthAndDeathCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should find patients that died after the specified date", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldFindPatientsThatDiedAfterTheSpecifiedDate() throws Exception {
+		PatientService ps = Context.getPatientService();
+		final Integer patientId = 7;
+		Patient patient = ps.getPatient(patientId);
+		patient.setDead(true);
+		patient.setDeathDate(DateUtil.getDateTime(2005, 12, 31));
+		ps.savePatient(patient);
+		
+		BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
+		cd.setDiedOnOrAfter(DateUtil.getDateTime(2005, 12, 31, 11, 0, 0, 0));
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertFalse(cohort.contains(patientId));
 	}
 }
