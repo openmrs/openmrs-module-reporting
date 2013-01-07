@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>reporting</artifactId>
-		<version>0.7.4</version>
+		<version>0.7.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>reporting-omod</artifactId>
 	<packaging>jar</packaging>
