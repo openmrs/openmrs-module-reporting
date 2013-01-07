@@ -59,7 +59,7 @@ public class EditSqlIndicatorController {
 
 		// Save the definition
 		Context.getService(IndicatorService.class).saveDefinition(definition);
-		httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "reporting.Indicator.saved");
+		httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "reporting.saved");
 		httpSession.setAttribute(WebConstants.OPENMRS_MSG_ARGS, queryString);				
 		return "redirect:editSqlIndicator.form?uuid=" + uuid;
 	}
