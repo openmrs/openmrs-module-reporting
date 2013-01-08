@@ -43,6 +43,8 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
      * @should return correct patients when time qualifier parameters are set
      * @should return correct patients when provider parameters are set
      * @should not return voided patients
+     * @should find patients with encounters on the onOrBefore date if passed in time is at midnight
+     * @should find patients with encounters created on the specified date if passed in time is at midnight
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	EncounterCohortDefinition cd = (EncounterCohortDefinition) cohortDefinition;

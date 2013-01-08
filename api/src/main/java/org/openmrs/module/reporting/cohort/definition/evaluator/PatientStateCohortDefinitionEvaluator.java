@@ -35,6 +35,12 @@ public class PatientStateCohortDefinitionEvaluator implements CohortDefinitionEv
 	
 	/**
      * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @should return patients in the specified states before the start date
+     * @should return patients in the specified states after the start date
+	 * @should return patients in the specified states before the end date
+	 * @should return patients in the specified states after the end date
+	 * @should find patients in specified states on the before start date if passed in time is at midnight
+	 * @should find patients in specified states on the before end date if passed in time is at midnight
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	PatientStateCohortDefinition d = (PatientStateCohortDefinition) cohortDefinition;

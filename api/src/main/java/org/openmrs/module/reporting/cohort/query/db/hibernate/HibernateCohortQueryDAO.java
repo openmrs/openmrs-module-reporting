@@ -700,13 +700,13 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (programIds != null && !programIds.isEmpty())
 			query.setParameterList("programIds", programIds);
 		if (enrolledOnOrAfter != null)
-			query.setDate("enrolledOnOrAfter", enrolledOnOrAfter);
+			query.setTimestamp("enrolledOnOrAfter", enrolledOnOrAfter);
 		if (enrolledOnOrBefore != null)
-			query.setDate("enrolledOnOrBefore", enrolledOnOrBefore);
+			query.setTimestamp("enrolledOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(enrolledOnOrBefore));
 		if (completedOnOrAfter != null)
-			query.setDate("completedOnOrAfter", completedOnOrAfter);
+			query.setTimestamp("completedOnOrAfter", completedOnOrAfter);
 		if (completedOnOrBefore != null)
-			query.setDate("completedOnOrBefore", completedOnOrBefore);
+			query.setTimestamp("completedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(completedOnOrBefore));
 
 		return new Cohort(query.list());
     }
@@ -743,9 +743,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (programIds != null && !programIds.isEmpty())
 			query.setParameterList("programIds", programIds);
 		if (onOrAfter != null)
-			query.setDate("onOrAfter", onOrAfter);
+			query.setTimestamp("onOrAfter", onOrAfter);
 		if (onOrBefore != null)
-			query.setDate("onOrBefore", onOrBefore);
+			query.setTimestamp("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(onOrBefore));
 		return new Cohort(query.list()); 
 	}
 
@@ -788,13 +788,13 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (stateIds != null && !stateIds.isEmpty())
 			query.setParameterList("stateIds", stateIds);
 		if (startedOnOrAfter != null)
-			query.setDate("startedOnOrAfter", startedOnOrAfter);
+			query.setTimestamp("startedOnOrAfter", startedOnOrAfter);
 		if (startedOnOrBefore != null)
-			query.setDate("startedOnOrBefore", startedOnOrBefore);
+			query.setTimestamp("startedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(startedOnOrBefore));
 		if (endedOnOrAfter != null)
-			query.setDate("endedOnOrAfter", endedOnOrAfter);
+			query.setTimestamp("endedOnOrAfter", endedOnOrAfter);
 		if (endedOnOrBefore != null)
-			query.setDate("endedOnOrBefore", endedOnOrBefore);
+			query.setTimestamp("endedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(endedOnOrBefore));
 
 		return new Cohort(query.list());
     }
@@ -831,9 +831,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (stateIds != null && !stateIds.isEmpty())
 			query.setParameterList("stateIds", stateIds);
 		if (onOrAfter != null)
-			query.setDate("onOrAfter", onOrAfter);
+			query.setTimestamp("onOrAfter", onOrAfter);
 		if (onOrBefore != null)
-			query.setDate("onOrBefore", onOrBefore);
+			query.setTimestamp("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(onOrBefore));
 		return new Cohort(query.list()); 
     }
 
@@ -1445,13 +1445,13 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		q.setCacheMode(CacheMode.IGNORE);
 
 		if (bornOnOrAfter != null)
-			q.setDate("bornOnOrAfter", bornOnOrAfter);
+			q.setTimestamp("bornOnOrAfter", bornOnOrAfter);
 		if (bornOnOrBefore != null)
-			q.setDate("bornOnOrBefore", bornOnOrBefore);
+			q.setTimestamp("bornOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(bornOnOrBefore));
 		if (diedOnOrAfter != null)
-			q.setDate("diedOnOrAfter", diedOnOrAfter);
+			q.setTimestamp("diedOnOrAfter", diedOnOrAfter);
 		if (diedOnOrBefore != null)
-			q.setDate("diedOnOrBefore", diedOnOrBefore);
+			q.setTimestamp("diedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(diedOnOrBefore));
 		
 		return new Cohort(q.list());
     }

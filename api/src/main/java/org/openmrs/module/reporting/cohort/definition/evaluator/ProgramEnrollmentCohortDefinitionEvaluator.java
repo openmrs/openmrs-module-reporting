@@ -20,6 +20,12 @@ public class ProgramEnrollmentCohortDefinitionEvaluator implements CohortDefinit
 	
 	/**
 	 * @see org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator#evaluate(org.openmrs.module.reporting.cohort.definition.CohortDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @should return patients enrolled in the given programs before the given date
+     * @should return patients enrolled in the given programs after the given date
+	 * @should return patients that completed the given programs before the given date
+     * @should return patients that completed the given programs after the given date
+	 * @should return patients enrolled in the given programs on the given date if passed in time is at midnight
+	 * @should return patients that completed the given programs on the given date if passed in time is at midnight
 	 */
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
 		ProgramEnrollmentCohortDefinition definition = (ProgramEnrollmentCohortDefinition) cohortDefinition;
