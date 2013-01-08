@@ -47,6 +47,7 @@ public class MostRecentEncounterForPatientQueryEvaluator implements EncounterQue
 	
 	/**
 	 * @see EncounterQueryEvaluator#evaluate(EncounterQuery, EvaluationContext)
+	 * @should find an encounter on the onOrBefore date if passed in time is at midnight
 	 */
 	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) throws EvaluationException {
 		
