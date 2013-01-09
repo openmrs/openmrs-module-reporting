@@ -40,9 +40,9 @@
 		<groovyVersion>1.8.7</groovyVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
-		<MODULE_NAME>${project.name}</MODULE_NAME>
-		<MODULE_VERSION>${project.version}</MODULE_VERSION>
-		<MODULE_PACKAGE>${project.groupId}.${project.artifactId}</MODULE_PACKAGE>
+		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
+		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
+		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
 	</properties>
 
 	<dependencies>
