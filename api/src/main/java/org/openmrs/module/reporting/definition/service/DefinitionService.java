@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensionDataSetDefinition;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
@@ -52,6 +53,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	/**
 	 * @param uuid
 	 * @return the Definition with the given uuid
+	 * @should deserialize CohortIndicatorAndDimensionDataSetDefinition
 	 */
 	@Transactional(readOnly = true)
 	public T getDefinitionByUuid(String uuid) throws APIException;

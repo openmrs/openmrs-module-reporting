@@ -47,7 +47,7 @@ public class CohortIndicatorAndDimensionSpecificationPortletController extends R
 			specification = cidsd.getSpecifications().get(Integer.parseInt(index));
 		}
 		else {
-			specification = cidsd.new CohortIndicatorAndDimensionSpecification();
+			specification = new CohortIndicatorAndDimensionDataSetDefinition.CohortIndicatorAndDimensionSpecification();
 		}
 		model.put("specification", specification);
 		
