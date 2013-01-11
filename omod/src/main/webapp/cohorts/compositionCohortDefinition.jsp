@@ -14,6 +14,22 @@
 	}
 </style>
 
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		$("#previewButton").click(function(event){ 
+			showReportingDialog({ 
+				title: 'Preview Cohort Query Results', 
+				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}',
+				successCallback: function() { 
+					window.location = window.location; //.reload(true);
+				} 
+			});
+			//event.preventDefault();			
+		});
+	});
+</script>
+
+
 <c:choose>
 	<c:when test="${definition.id == null}">
 
@@ -75,12 +91,15 @@
 					<input type="hidden" name="uuid" value="${definition.uuid}"/>
 					<textarea id="compositionString" rows="6" name="compositionString">${definition.compositionString}</textarea>
 					<br/>
+				<span>					
 					<input type="submit" value="Save"/>
 					<input type="button" value="Close" onClick="window.location='/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition';"/>
-					
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					
 					<input type="button" id="saveAsButton" value="Save as new"/>
+					<c:if test="${!empty definition.uuid}">
+					    <input type="button" id="previewButton" value="Preview"/>
+					</c:if>    
+				</span>
+					
 				</form>
 			</div>			
 		
