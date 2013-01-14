@@ -26,7 +26,7 @@ import org.openmrs.module.htmlwidgets.web.html.Option;
 import org.openmrs.module.reporting.cohort.definition.ScriptingLanguage;
 
 /**
- * FieldGenHandler for Enumerated Types
+ * FieldGenHandler for scripting languages
  */
 @Handler(supports = { ScriptingLanguage.class }, order = 50)
 public class ScriptingLanguageHandler extends CodedHandler {
@@ -39,7 +39,8 @@ public class ScriptingLanguageHandler extends CodedHandler {
 		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 		List<ScriptEngineFactory> factories = scriptEngineManager.getEngineFactories();
 		for (ScriptEngineFactory factory : factories) {
-			widget.addOption(new Option(factory.getLanguageName(), factory.getLanguageName(), null, null), config);
+			String language = factory.getLanguageName();
+			widget.addOption(new Option(language, language, null, new ScriptingLanguage(language)), config);
 		}
 	}
 	
@@ -48,6 +49,6 @@ public class ScriptingLanguageHandler extends CodedHandler {
 	 */
 	@Override
 	public Object parse(String input, Class<?> type) {
-		return input;
+		return new ScriptingLanguage(input);
 	}
 }
