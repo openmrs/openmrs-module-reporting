@@ -17,6 +17,7 @@ import java.util.Collection;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
@@ -45,7 +46,7 @@ public class ScriptedCohortDefinitionEvaluator implements CohortDefinitionEvalua
 		ScriptedCohortDefinition scriptedCohortDefinition = (ScriptedCohortDefinition) cohortDefinition;
 		
 		ScriptEngineManager manager = new ScriptEngineManager();
-		ScriptEngine scriptEngine = manager.getEngineByName(scriptedCohortDefinition.getScriptType().toString());
+		ScriptEngine scriptEngine = manager.getEngineByName(scriptedCohortDefinition.getScriptType().getLanguage());
 		scriptEngine.put("context", context);
 		scriptEngine.put("parameters", context.getParameterValues());
 		try {
@@ -60,7 +61,10 @@ public class ScriptedCohortDefinitionEvaluator implements CohortDefinitionEvalua
 			
 			return new EvaluatedCohort(cohort, cohortDefinition, context);
 		}
-		catch (Exception ex) {
+		catch (ScriptException ex) {
+			throw new EvaluationException("An error occured while evaluating script", ex);
+		}
+		catch (ClassCastException ex) {
 			throw new EvaluationException(
 			        "A Scripted Cohort Definition must return either a Cohort or a Collection<Integer>", ex);
 		}

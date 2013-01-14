@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.ScriptedCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.ScriptedCohortDefinition.ScriptingLanguage;
+import org.openmrs.module.reporting.cohort.definition.ScriptingLanguage;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsClassLoader;
@@ -34,11 +34,11 @@ public class ScriptedCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 	@Test
 	public void evaluate_shouldRunScript() throws Exception {
 		InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream(
-		    "org/openmrs/module/reporting/report/script/ScriptedCohortDefinition.groovy");
+		    "org/openmrs/module/reporting/report/script/ScriptedCohortDefinition.txt");
 		String script = new String(IOUtils.toByteArray(is), "UTF-8");
 		IOUtils.closeQuietly(is);
 		
-		ScriptedCohortDefinition cohortDefinition = new ScriptedCohortDefinition(ScriptingLanguage.valueOf("Groovy"), script);
+		ScriptedCohortDefinition cohortDefinition = new ScriptedCohortDefinition(new ScriptingLanguage("Groovy"), script);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, null);
 		Assert.assertEquals(4, cohort.size());
 		Assert.assertTrue(cohort.contains(2));

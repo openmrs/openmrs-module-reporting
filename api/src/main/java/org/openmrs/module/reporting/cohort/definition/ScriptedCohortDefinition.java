@@ -13,14 +13,8 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
-import java.util.List;
-
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptEngineManager;
-
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.report.util.DynamicEnumUtil;
 
 /**
  * A CohortDefinition where a user can define in any JSR-223 (javax.script) supported script
@@ -82,18 +76,5 @@ public class ScriptedCohortDefinition extends BaseCohortDefinition {
 	
 	public void setScriptCode(String scriptCode) {
 		this.scriptCode = scriptCode;
-	}
-	
-	//empty because it is populated at runtime in the static block below
-	public enum ScriptingLanguage {
-
-	}
-	
-	static {
-		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-		List<ScriptEngineFactory> factories = scriptEngineManager.getEngineFactories();
-		for (ScriptEngineFactory factory : factories) {
-			DynamicEnumUtil.addEnum(ScriptingLanguage.class, factory.getLanguageName());
-		}
 	}
 }
