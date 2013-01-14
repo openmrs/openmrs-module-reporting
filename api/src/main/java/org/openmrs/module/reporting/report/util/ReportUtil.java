@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -269,4 +270,18 @@ public class ReportUtil {
 		return processors;
 	}
 	
+	/**
+	 * Checks if we are running OpenMRS version 1.9 and above
+	 * 
+	 * @return true if we are running openmrs version 1.9 and above.
+	 */
+	public static boolean isOpenmrsVersionOnePointNineAndAbove() {
+		try {
+			Method method = Context.class.getMethod("getProviderService", null);
+			return true;
+		}
+		catch (NoSuchMethodException ex) {}
+		
+		return false;
+	}
 }
