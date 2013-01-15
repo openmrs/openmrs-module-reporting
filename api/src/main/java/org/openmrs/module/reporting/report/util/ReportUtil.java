@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.report.ReportData;
@@ -36,6 +36,7 @@ import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.TextTemplateRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.OpenmrsClassLoader;
+import org.openmrs.util.OpenmrsConstants;
 
 public class ReportUtil {
 	
@@ -276,12 +277,6 @@ public class ReportUtil {
 	 * @return true if we are running openmrs version 1.9 and above.
 	 */
 	public static boolean isOpenmrsVersionOnePointNineAndAbove() {
-		try {
-			Method method = Context.class.getMethod("getProviderService", null);
-			return true;
-		}
-		catch (NoSuchMethodException ex) {}
-		
-		return false;
+		return ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, "1.9.0");
 	}
 }
