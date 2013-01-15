@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.cohort.definition;
 
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.ScriptingLanguage;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
