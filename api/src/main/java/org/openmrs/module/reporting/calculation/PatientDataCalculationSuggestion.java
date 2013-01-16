@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.registration.CalculationRegistration;
-import org.openmrs.calculation.registration.CalculationRegistrationSuggestion;
+import org.openmrs.calculation.CalculationRegistration;
+import org.openmrs.calculation.CalculationRegistrationSuggestion;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
@@ -32,22 +32,22 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PatientDataCalculationSuggestion implements CalculationRegistrationSuggestion {
-
+	
 	/**
 	 * @see CalculationRegistrationSuggestion#getName()
 	 */
 	public String getName() {
 		return "Reporting Data Items";
 	}
-
+	
 	/**
 	 * @see org.openmrs.calculation.CalculationRegistrationSuggestion#getSuggestions()
 	 */
 	public List<CalculationRegistration> getSuggestions() {
-
+		
 		List<CalculationRegistration> ret = new ArrayList<CalculationRegistration>();
 		String provider = PatientDataCalculationProvider.class.getName();
-
+		
 		List<DataDefinition> dataDefinitions = new ArrayList<DataDefinition>();
 		for (DataDefinition d : Context.getService(PatientDataService.class).getAllDefinitions(false)) {
 			dataDefinitions.add(d);
@@ -62,10 +62,10 @@ public class PatientDataCalculationSuggestion implements CalculationRegistration
 		if (ret.isEmpty()) {
 			ret.add(new CalculationRegistration("gender", provider, GenderDataDefinition.class.getName(), null));
 			ret.add(new CalculationRegistration("age", provider, AgeDataDefinition.class.getName(), null));
-			ret.add(new CalculationRegistration("villageName", provider, PreferredAddressDataDefinition.class.getName(), "{cityVillage}"));
-			// TODO: Add more here
+			ret.add(new CalculationRegistration("villageName", provider, PreferredAddressDataDefinition.class.getName(),
+			        "{cityVillage}"));
 		}
-
+		
 		return ret;
 	}
 }

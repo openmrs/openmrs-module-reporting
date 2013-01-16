@@ -13,86 +13,94 @@
  */
 package org.openmrs.module.reporting.calculation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.calculation.Calculation;
-import org.openmrs.calculation.ConfigurableCalculation;
-import org.openmrs.calculation.InvalidCalculationException;
-import org.openmrs.calculation.parameter.ParameterDefinitionSet;
+import org.apache.commons.collections.MapUtils;
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.calculation.parameter.ParameterDefinition;
 import org.openmrs.calculation.patient.PatientCalculation;
-import org.openmrs.module.reporting.data.DataDefinition;
-import org.openmrs.module.reporting.data.converter.DataConverter;
-import org.openmrs.module.reporting.data.converter.ObjectFormatter;
+import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.service.PatientDataService;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.data.person.service.PersonDataService;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
- * Adapter class which exposes a Patient or Person Data Definition as a Patient Calculation
+ * Adapter class which exposes a Patient or Person DataDefinition as a PatientCalculation
  */
-public class PatientDataCalculation implements PatientCalculation, ConfigurableCalculation {
-	
-	private DataDefinition dataDefinition;
-	private List<DataConverter> converters;
+public class PatientDataCalculation extends DataCalculation implements PatientCalculation {
 	
 	/**
 	 * Default Constructor
 	 */
-	public PatientDataCalculation() { }
-
-	/**
-	 * @see ConfigurableCalculation#setConfiguration(String)
-	 */
-	public void setConfiguration(String configuration) throws InvalidCalculationException {
-		if (StringUtils.isNotBlank(configuration)) {
-			// TODO: Allow full configuration of properties and converters here.
-			// For now, as a poc, I'll allow formatting via the ObjectFormatter
-			// You can specify a formatString here
-			addConverter(new ObjectFormatter(configuration));
-		}
-	}
-
-	/**
-	 * @see Calculation#getParameterDefinitionSet()
-	 */
-	public ParameterDefinitionSet getParameterDefinitionSet() {
-		return ReportingCalculationUtil.getParameterDefinitionSet(dataDefinition);
-	}
-
-	/**
-	 * @return the dataDefinition
-	 */
-	public DataDefinition getDataDefinition() {
-		return dataDefinition;
-	}
-
-	/**
-	 * @param dataDefinition the dataDefinition to set
-	 */
-	public void setDataDefinition(DataDefinition dataDefinition) {
-		this.dataDefinition = dataDefinition;
-	}
-
-	/**
-	 * @return the converters
-	 */
-	public List<DataConverter> getConverters() {
-		if (converters == null) {
-			converters = new ArrayList<DataConverter>();
-		}
-		return converters;
-	}
-
-	/**
-	 * @param converters the converters to set
-	 */
-	public void setConverters(List<DataConverter> converters) {
-		this.converters = converters;
+	public PatientDataCalculation() {
 	}
 	
 	/**
-	 * @param converter adds a Converter to the list of Converters
+	 * @see PatientCalculation#evaluate(Collection, Map, PatientCalculationContext)
+	 * @should ui iu iu
 	 */
-	public void addConverter(DataConverter converter) {
-		getConverters().add(converter);
+	@SuppressWarnings("rawtypes")
+	@Override
+	public CalculationResultMap evaluate(Collection<Integer> personIds, Map<String, Object> parameterValues,
+	                                     PatientCalculationContext context) {
+		
+		EvaluationContext ec = ReportingCalculationUtil.getEvaluationContextForCalculation(personIds, parameterValues,
+		    context);
+		Map<Integer, Object> data = null;
+		
+		try {
+			//Set the passed in parameter values on the definition
+			if (MapUtils.isNotEmpty(parameterValues)) {
+				for (ParameterDefinition p : getParameterDefinitionSet()) {
+					getDataDefinition().getParameter(p.getKey()).setDefaultValue(parameterValues.get(p.getKey()));
+				}
+			}
+			
+			if (getDataDefinition() instanceof PatientDataDefinition) {
+				PatientDataService service = Context.getService(PatientDataService.class);
+				data = service.evaluate((PatientDataDefinition) getDataDefinition(), ec).getData();
+			} else if (getDataDefinition() instanceof PersonDataDefinition) {
+				PersonDataService service = Context.getService(PersonDataService.class);
+				data = service.evaluate((PersonDataDefinition) getDataDefinition(), ec).getData();
+			} else {
+				throw new APIException(
+				        "You must specify either a PersonDataDefinition or a PatientDataDefinition within a PatientCalculation");
+			}
+		}
+		catch (EvaluationException e) {
+			throw new APIException("Evaluation Exception occurred while evaluating " + getDataDefinition(), e);
+		}
+		
+		if (data == null) {
+			throw new IllegalArgumentException("No data generated while evaluating " + getDataDefinition());
+		}
+		
+		CalculationResultMap result = new CalculationResultMap();
+		for (Integer id : data.keySet()) {
+			CalculationResult cr;
+			if (data.get(id) instanceof Collection) {
+				Collection c = (Collection) data.get(id);
+				ListResult lr = new ListResult();
+				for (Object obj : c) {
+					lr.add(new SimpleResult(obj, this, context));
+				}
+				cr = lr;
+			} else {
+				cr = new SimpleResult(data.get(id), this, context);
+			}
+			
+			result.put(id, cr);
+		}
+		
+		return result;
 	}
 }

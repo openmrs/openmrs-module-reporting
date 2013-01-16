@@ -18,10 +18,9 @@ import java.util.List;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.Calculation;
 import org.openmrs.calculation.CalculationProvider;
 import org.openmrs.calculation.InvalidCalculationException;
-import org.openmrs.module.htmlwidgets.util.ReflectionUtil;
+import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
@@ -30,19 +29,23 @@ import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 /**
- * Evaluates a {@link PatientDataCalculation} to produce a Result
+ * {@link CalculationProvider} used to expose Patient and Person data definitions as calculations
  */
-@Handler(supports=PatientDataCalculation.class, order=50)
+@Handler(supports = PatientDataCalculation.class, order = 50)
 public class PatientDataCalculationProvider implements CalculationProvider {
-
+	
 	/**
+	 * Creates a calculation instances for the matching data definitions by loading the data
+	 * definition, if none is found, a saved instance is looked up
+	 * 
 	 * @see CalculationProvider#getCalculation(String, String)
 	 */
 	@SuppressWarnings("unchecked")
-	public Calculation getCalculation(String calculationName, String configuration) throws InvalidCalculationException {
+	public PatientDataCalculation getCalculation(String calculationName, String configuration)
+	    throws InvalidCalculationException {
 		PatientDataCalculation c = new PatientDataCalculation();
 		try {
-			Class<? extends DataDefinition> clazz = (Class<? extends DataDefinition>)Context.loadClass(calculationName);
+			Class<? extends DataDefinition> clazz = (Class<? extends DataDefinition>) Context.loadClass(calculationName);
 			DataDefinition dd = clazz.newInstance();
 			for (Property p : DefinitionUtil.getConfigurationProperties(dd)) {
 				Class<? extends Collection<?>> collectionType = null;
@@ -51,24 +54,28 @@ public class PatientDataCalculationProvider implements CalculationProvider {
 					collectionType = (Class<? extends Collection<?>>) p.getField().getType();
 					fieldType = (Class<?>) ReflectionUtil.getGenericTypes(p.getField())[0];
 				}
-				dd.addParameter(new Parameter(p.getField().getName(), p.getDisplayName(), fieldType, collectionType, p.getValue()));
+				
+				dd.addParameter(new Parameter(p.getField().getName(), p.getDisplayName(), fieldType, collectionType, p
+				        .getValue()));
 			}
+			
 			c.setDataDefinition(dd);
 		}
 		catch (Exception e) {
 			// If we are unable to instantiate a new class, try loading a saved instance
-			List<? extends DataDefinition> l = Context.getService(PatientDataService.class).getDefinitions(calculationName, true);
+			List<? extends DataDefinition> l = Context.getService(PatientDataService.class).getDefinitions(calculationName,
+			    true);
 			if (l.isEmpty()) {
 				l = Context.getService(PersonDataService.class).getDefinitions(calculationName, true);
 			}
 			if (l.size() == 1) {
 				c.setDataDefinition(l.get(0));
-			}
-			else {
-				throw new InvalidCalculationException("Unable to load Data Definition from calculationName: " + calculationName);
+			} else {
+				throw new InvalidCalculationException("Unable to load Data Definition from calculationName: "
+				        + calculationName);
 			}
 		}
-		c.setConfiguration(configuration);
+		
 		return c;
 	}
 }

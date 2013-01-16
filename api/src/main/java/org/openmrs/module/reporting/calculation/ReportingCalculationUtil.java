@@ -13,12 +13,15 @@
  */
 package org.openmrs.module.reporting.calculation;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.calculation.parameter.ParameterDefinitionSet;
 import org.openmrs.calculation.parameter.SimpleParameterDefinition;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
+import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -27,7 +30,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
  * Utility methods for adapting Reporting to work with Calculation
  */
 public class ReportingCalculationUtil {
-
+	
 	/**
 	 * @return a Calculation ParameterDefinitionSet matching the reporting definition parameters
 	 */
@@ -42,37 +45,28 @@ public class ReportingCalculationUtil {
 				s.add(new SimpleParameterDefinition(p.getName(), type, p.getLabel(), false));
 			}
 		}
-		return s;
-	}
-
-	/**
-	 * @return an EvaluationContext based on the passed Calculation evaluation parameters
-	 */
-	public static EvaluationContext getEvaluationContextForCalculation(Cohort baseCohort, 
-			Map<String, Object> parameterValues, PatientCalculationContext pcc) {
+		//Set required parameter definitions
+		for (Property p : DefinitionUtil.getConfigurationProperties(d)) {
+			if (p.getRequired()) {
+				s.getParameterByKey(p.getField().getName()).setRequired(true);
+			}
+		}
 		
-		// TODO: Consider caching the reporting evaluation context in the patient calculation context to reuse
-		EvaluationContext context = new EvaluationContext();
-		context.setEvaluationDate(pcc.getNow());
-		context.setBaseCohort(baseCohort);
-		context.setParameterValues(parameterValues);
-		return context;
+		return s;
 	}
 	
 	/**
-	 * @return true if the passed cohorts contain the same member ids or are both null
+	 * @return an EvaluationContext based on the passed Calculation evaluation parameters
 	 */
-	public static boolean cohortsMatch(Cohort c1, Cohort c2) {
-		if (c1 == c2 || (c1 == null && c2 == null)) {
-			return true;
-		}
-		if (c1 != null && c2 != null) {
-			if (c1.size() == c2.size()) {
-				if (c1.getMemberIds().containsAll(c2.getMemberIds())) {
-					return true;
-				}
-			}
-		}
-		return false;
+	public static EvaluationContext getEvaluationContextForCalculation(Collection<Integer> patientIds,
+	                                                                   Map<String, Object> parameterValues,
+	                                                                   PatientCalculationContext pcc) {
+		
+		EvaluationContext context = new EvaluationContext();
+		if (pcc != null)
+			context.setEvaluationDate(pcc.getNow());
+		context.setBaseCohort(new Cohort(patientIds));
+		
+		return context;
 	}
 }
