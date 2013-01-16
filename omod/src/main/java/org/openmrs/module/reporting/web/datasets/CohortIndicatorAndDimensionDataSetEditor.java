@@ -62,7 +62,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
 		
 		CohortIndicatorAndDimensionSpecification spec = null;
 		if (index == null) {
-			spec = new CohortIndicatorAndDimensionDataSetDefinition.CohortIndicatorAndDimensionSpecification();
+			spec = cidsd.new CohortIndicatorAndDimensionSpecification();
 			cidsd.addSpecification(spec);
 		}
 		else {
