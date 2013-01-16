@@ -13,18 +13,18 @@
 		width: 99%;
 	}
 </style>
-<!-- Preview Button -->
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		$("#previewButton").click(function(event){ 
 			showReportingDialog({ 
-				title: 'Preview SQL Cohort Definition', 
+				title: 'Preview Composition Cohort Definition', 
 				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}',
 				successCallback: function() { 
 					window.location = window.location; //.reload(true);
 				} 
 			});
-			event.preventDefault();			
+			//event.preventDefault();			
 		});
 	});
 </script>
@@ -94,13 +94,8 @@
 				<span>					
 					<input type="submit" value="Save"/>
 					<input type="button" value="Close" onClick="window.location='/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition';"/>
-					<!-- 
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					-->
 					<input type="button" id="saveAsButton" value="Save as new"/>
- 					  <span style="float: right">
-						button id="previewButton"><img id="play" src='<c:url value="/images/play.gif"/>' border="0"/>&nbsp;&nbsp;Preview</button>
-					  </span>
+					<input type="button" id="previewButton" value="Preview"/>
 					</span>
 					
 				</form>
