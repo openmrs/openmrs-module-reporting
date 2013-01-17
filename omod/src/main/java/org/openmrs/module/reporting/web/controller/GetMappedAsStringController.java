@@ -87,15 +87,12 @@ public class GetMappedAsStringController {
 				MappedEditor editor = new MappedEditor();
 
 				editor.setValue(new Mapped<Definition>(selectedValue, chosenMappings));
-
 				model.addAttribute("serializedResult", editor.getAsText());
-
 				Map<String, String> params = new LinkedHashMap<String, String>();
 
 				for (Map.Entry<String, Object> e : chosenMappings.entrySet()) {
 					params.put(e.getKey(), FormatTag.format(e.getValue()));
 				}
-				System.out.println(selectedValue.getName());
 				Map<String, Object> json = new LinkedHashMap<String, Object>();
 				json.put("parameterizable", selectedValue.getName());
 				json.put("parameterizableUuid", selectedValue.getUuid());
