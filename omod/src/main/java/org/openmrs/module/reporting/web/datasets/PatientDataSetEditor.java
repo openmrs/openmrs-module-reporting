@@ -31,6 +31,8 @@ import org.openmrs.module.htmlwidgets.web.html.Option;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
@@ -119,6 +121,7 @@ public class PatientDataSetEditor {
 	                        Model model) {
 		model.addAttribute("unsaved", session.getAttribute(IS_UNSAVED_ATTR));
 		model.addAttribute("dsd", session.getAttribute(DSD_ATTR));
+		model.addAttribute("dataDefinitionTypes", PatientDataDefinition.class.getName() + "," + PersonDataDefinition.class.getName());
 	}
 	
 	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-nameDescription", method=RequestMethod.POST)

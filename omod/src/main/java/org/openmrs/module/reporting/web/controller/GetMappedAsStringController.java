@@ -1,14 +1,11 @@
 package org.openmrs.module.reporting.web.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.definition.DefinitionContext;
@@ -28,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class GetMappedAsStringController {
 
+	private static Log log = LogFactory.getLog(GetMappedAsStringController.class);
+
 	@RequestMapping("/module/reporting/widget/getMappedAsString")
 	public void getMappedAsString(Model model,
 	                              HttpServletRequest request,
@@ -40,27 +39,37 @@ public class GetMappedAsStringController {
 	                              @RequestParam(required=false, value="label") String label,
 	                              @RequestParam(required=false, value="action") String action) throws Exception {
 		// TODO allow list of parameters (maybe with types) to be passed in
-		List<DefinitionSummary> list = new ArrayList<DefinitionSummary>();
-		Class<Definition> clazz = null;
-		
-		if (valueUuid == null && initialUuid != null)
-			valueUuid = initialUuid;
-		
-		String[] names = valueTypeClassnames.split(",");
-		for(String name : names) {
-		clazz = (Class<Definition>) Context.loadClass(name);
-		list.addAll( DefinitionContext.getDefinitionService(clazz).getAllDefinitionSummaries(true));
-		}
-		model.addAttribute("valueOptions", list);
-		
+		Map<String, DefinitionSummary> sortedDefinitions = new TreeMap<String, DefinitionSummary>();
 		Definition selectedValue = null;
+
+		if (valueUuid == null && initialUuid != null) {
+			valueUuid = initialUuid;
+		}
+		
+		if (valueTypeClassnames != null) {
+			for (String className : valueTypeClassnames.split(",")) {
+				try {
+					Class<Definition> type = (Class<Definition>) Context.loadClass(className);
+					for (DefinitionSummary d : DefinitionContext.getDefinitionService(type).getAllDefinitionSummaries(true)) {
+						sortedDefinitions.put(d.getName(), d);
+					};
+					if (valueUuid != null && selectedValue == null) {
+						selectedValue = DefinitionContext.getDefinitionByUuid(type, valueUuid);
+					}
+				}
+				catch (Exception e) {
+					log.warn("Error adding definitions of type: " + className, e);
+				}
+			}
+		}
+		model.addAttribute("valueOptions", sortedDefinitions.values());
+		model.addAttribute("selectedValue", selectedValue);
+
 		List<Parameter> selectedValParams = Collections.emptyList();
-		if (valueUuid != null) {
-			selectedValue = DefinitionContext.getDefinitionByUuid(clazz, valueUuid);
-			if (selectedValue != null && selectedValue.getParameters() != null)
-				selectedValParams = selectedValue.getParameters();
+		if (selectedValue != null && selectedValue.getParameters() != null) {
+			selectedValParams = selectedValue.getParameters();
 			Map<String, Object> chosenMappings = new LinkedHashMap<String, Object>();
-			model.addAttribute("selectedValue", selectedValue);
+
 			model.addAttribute("chosenMappings", chosenMappings);
 
 			if (selectedValParams != null) {
