@@ -13,24 +13,24 @@
  */
 package org.openmrs.module.reporting.calculation;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.api.PatientService;
+import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
-import org.openmrs.calculation.result.ResultUtil;
+import org.openmrs.calculation.patient.PatientCalculation;
+import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.patient.PatientCalculationService;
+import org.openmrs.calculation.result.*;
 import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.common.TimeQualifier;
+import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
+import org.openmrs.module.reporting.data.patient.service.PatientDataService;
+import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class PatientDataCalculationBehaviorTest extends BaseModuleContextSensitiveTest {
@@ -38,69 +38,103 @@ public class PatientDataCalculationBehaviorTest extends BaseModuleContextSensiti
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 	
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
-	
-	private PatientService ps;
+
+	private PatientDataCalculationProvider savedProvider = new PatientDataCalculationProvider();
+	private PatientDataClasspathCalculationProvider classProvider = new PatientDataClasspathCalculationProvider();
 	
 	@Before
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
-		ps = Context.getPatientService();
 	}
-	
+
 	@Test
-	public void evaluate_shouldEvaluateAPatientCalculation() throws Exception {
-		Integer patientId1 = 2;
-		Integer patientId2 = 7;
-		Set<PatientIdentifier> identifiers1 = ps.getPatient(patientId1).getIdentifiers();
-		Set<PatientIdentifier> identifiers2 = ps.getPatient(patientId2).getIdentifiers();
-		PatientDataCalculation calculation = new PatientDataCalculationProvider().getCalculation(
-		    "org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition", null);
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("types", ps.getAllPatientIdentifierTypes(false));
-		
-		CalculationResultMap results = calculation.evaluate(Arrays.asList(patientId1, patientId2), parameters, null);
-		
-		Assert.assertEquals(identifiers2.iterator().next(), ResultUtil.getFirst(results.get(patientId2)).getValue());
-		
-		ListResult lr = (ListResult) results.get(patientId1);
-		Assert.assertEquals(2, lr.size());
-		Object pId1 = ResultUtil.getFirst(lr).getValue();
-		Object pId2 = lr.getLastResult().getValue();
-		
-		Assert.assertTrue(CollectionUtils.isEqualCollection(identifiers1, Arrays.asList(pId1, pId2)));
+	public void evaluate_shouldEvaluateWithSavedPersonDefinition() throws Exception {
+		List<Integer> patientsToTest = Arrays.asList(2, 7);
+
+		GenderDataDefinition gdd = new GenderDataDefinition();
+		gdd.setName("Gender");
+		gdd = Context.getService(PersonDataService.class).saveDefinition(gdd);
+
+		PatientCalculation c = savedProvider.getCalculation(gdd.getUuid(), null);
+		CalculationResultMap m = c.evaluate(patientsToTest, null, null);
+
+		checkResult(m, SimpleResult.class, patientsToTest, "M", "F");
 	}
-	
+
 	@Test
-	public void evaluate_shouldEvaluateAPatientCalculationWithTheSpecifiedParameterValues() throws Exception {
-		Integer patientId1 = 2;
-		Integer patientId2 = 7;
-		PatientIdentifierType type = Context.getPatientService().getPatientIdentifierType(1);
-		PatientIdentifier id1 = ps.getPatient(patientId1).getPatientIdentifier(type);
-		PatientIdentifier id2 = ps.getPatient(patientId2).getPatientIdentifier(type);
-		PatientDataCalculation calculation = new PatientDataCalculationProvider().getCalculation(
-		    "org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition", null);
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("types", Collections.singletonList(type));
-		parameters.put("includeFirstNonNullOnly", true);
-		
-		CalculationResultMap results = calculation.evaluate(Arrays.asList(patientId1, patientId2), parameters, null);
-		
-		Assert.assertEquals(id1, ResultUtil.getFirst(results.get(patientId1)).getValue());
-		Assert.assertEquals(id2, ResultUtil.getFirst(results.get(patientId2)).getValue());
+	public void evaluate_shouldEvaluateWithClasspathPersonDefinition() throws Exception {
+		List<Integer> patientsToTest = Arrays.asList(2, 7);
+
+		PatientCalculation c = classProvider.getCalculation(GenderDataDefinition.class.getName(), null);
+		CalculationResultMap m = c.evaluate(patientsToTest, null, null);
+
+		checkResult(m, SimpleResult.class, patientsToTest, "M", "F");
 	}
-	
+
 	@Test
-	public void evaluate_shouldEvaluateTheSpecifiedPersonCalculation() throws Exception {
-		Integer patientId1 = 2;
-		Integer patientId2 = 7;
-		String gender1 = ps.getPatient(patientId1).getGender();
-		String gender2 = ps.getPatient(patientId2).getGender();
-		PatientDataCalculation calculation = new PatientDataCalculationProvider().getCalculation(
-		    "org.openmrs.module.reporting.data.person.definition.GenderDataDefinition", null);
-		
-		CalculationResultMap results = calculation.evaluate(Arrays.asList(patientId1, patientId2), null, null);
-		
-		Assert.assertEquals(gender1, ResultUtil.getFirst(results.get(patientId1)).getValue());
-		Assert.assertEquals(gender2, ResultUtil.getFirst(results.get(patientId2)).getValue());
+	public void evaluate_shouldEvaluateWithSavedPatientDefinition() throws Exception {
+		List<Integer> patientsToTest = Arrays.asList(2, 7);
+
+		EncountersForPatientDataDefinition dd = new EncountersForPatientDataDefinition();
+		dd.setName("Most Recent Encounter");
+		dd.setWhich(TimeQualifier.LAST);
+		dd = Context.getService(PatientDataService.class).saveDefinition(dd);
+
+		PatientCalculation c = savedProvider.getCalculation(dd.getUuid(), null);
+		CalculationResultMap m = c.evaluate(patientsToTest, null, null);
+
+		Encounter pat2Enc = null;
+		Encounter pat7Enc = Context.getEncounterService().getEncounter(5);
+
+		checkResult(m, EncounterResult.class, patientsToTest, pat2Enc, pat7Enc);
+	}
+
+	@Test
+	public void evaluate_shouldEvaluateWithClasspathPatientDefinition() throws Exception {
+		List<Integer> patientsToTest = Arrays.asList(2, 7);
+
+		PatientCalculation c = classProvider.getCalculation(PatientIdDataDefinition.class.getName(), null);
+		CalculationResultMap m = c.evaluate(patientsToTest, null, null);
+
+		checkResult(m, SimpleResult.class, patientsToTest, 2, 7);
+	}
+
+	@Test
+	public void evaluate_shouldEvaluateWithParameters() throws Exception {
+		List<Integer> patientsToTest = Arrays.asList(2, 7);
+
+		PatientCalculationContext pcc = Context.getService(PatientCalculationService.class).createCalculationContext();
+
+		PatientCalculation c = classProvider.getCalculation(EncountersForPatientDataDefinition.class.getName(), null);
+		Map<String, Object> parameterValues = new HashMap<String, Object>();
+		parameterValues.put("which", TimeQualifier.LAST);
+
+		CalculationResultMap m = c.evaluate(patientsToTest, parameterValues, pcc);
+
+		Encounter pat2Enc = null;
+		Encounter pat7Enc = Context.getEncounterService().getEncounter(5);
+		checkResult(m, EncounterResult.class, patientsToTest, pat2Enc, pat7Enc);
+
+		parameterValues.put("which", TimeQualifier.ANY);
+
+		m = c.evaluate(patientsToTest, parameterValues, pcc);
+		CalculationResult result = m.get(7);
+		Assert.assertTrue(result instanceof ListResult);
+		Assert.assertEquals(3, ((ListResult)result).size());
+		Assert.assertNull(m.get(2));
+	}
+
+	protected void checkResult(CalculationResultMap m, Class<? extends CalculationResult> clazz, List<Integer> patientsToTest, Object...expectedValues) {
+		Assert.assertEquals(patientsToTest.size(), m.size());
+		for (int i=0; i<patientsToTest.size(); i++) {
+			CalculationResult result = m.get(patientsToTest.get(i));
+			if (result != null) {
+				Assert.assertEquals(clazz, result.getClass());
+				Assert.assertEquals(expectedValues[i], result.getValue());
+			}
+			else {
+				Assert.assertNull(expectedValues[i]);
+			}
+		}
 	}
 }

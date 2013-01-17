@@ -17,9 +17,15 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.openmrs.Cohort;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.calculation.Calculation;
+import org.openmrs.calculation.parameter.ParameterDefinition;
 import org.openmrs.calculation.parameter.ParameterDefinitionSet;
 import org.openmrs.calculation.parameter.SimpleParameterDefinition;
+import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.*;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.reporting.evaluation.Definition;
@@ -48,7 +54,10 @@ public class ReportingCalculationUtil {
 		//Set required parameter definitions
 		for (Property p : DefinitionUtil.getConfigurationProperties(d)) {
 			if (p.getRequired()) {
-				s.getParameterByKey(p.getField().getName()).setRequired(true);
+				ParameterDefinition pd = s.getParameterByKey(p.getField().getName());
+				if (pd != null) {
+					pd.setRequired(p.getRequired());
+				}
 			}
 		}
 		
@@ -63,10 +72,38 @@ public class ReportingCalculationUtil {
 	                                                                   PatientCalculationContext pcc) {
 		
 		EvaluationContext context = new EvaluationContext();
-		if (pcc != null)
+		if (pcc != null) {
 			context.setEvaluationDate(pcc.getNow());
+		}
 		context.setBaseCohort(new Cohort(patientIds));
+		context.setParameterValues(parameterValues);
 		
 		return context;
+	}
+
+	/**
+	 * @return an appropriate CalculationResult for the given object
+	 */
+	public static CalculationResult constructResult(Object o, PatientCalculation calculation, PatientCalculationContext  context) {
+		if (o != null) {
+			if (o instanceof Collection) {
+				Collection c = (Collection) o;
+				ListResult lr = new ListResult();
+				for (Object obj : c) {
+					lr.add(constructResult(obj, calculation, context));
+				}
+				return lr;
+			}
+			else if (o instanceof Obs) {
+				return new ObsResult((Obs) o, calculation, context);
+			}
+			else if (o instanceof Encounter) {
+				return new EncounterResult((Encounter) o, calculation, context);
+			}
+			else {
+				return new SimpleResult(o, calculation, context);
+			}
+		}
+		return null;
 	}
 }

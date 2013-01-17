@@ -22,6 +22,7 @@ import org.openmrs.calculation.CalculationRegistrationSuggestion;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredAddressDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
@@ -62,8 +63,7 @@ public class PatientDataCalculationSuggestion implements CalculationRegistration
 		if (ret.isEmpty()) {
 			ret.add(new CalculationRegistration("gender", provider, GenderDataDefinition.class.getName(), null));
 			ret.add(new CalculationRegistration("age", provider, AgeDataDefinition.class.getName(), null));
-			ret.add(new CalculationRegistration("villageName", provider, PreferredAddressDataDefinition.class.getName(),
-			        "{cityVillage}"));
+			ret.add(new CalculationRegistration("birthdate", provider, BirthdateDataDefinition.class.getName(), null));
 		}
 		
 		return ret;

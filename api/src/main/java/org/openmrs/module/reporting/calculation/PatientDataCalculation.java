@@ -26,6 +26,7 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -41,39 +42,41 @@ public class PatientDataCalculation extends DataCalculation implements PatientCa
 	/**
 	 * Default Constructor
 	 */
-	public PatientDataCalculation() {
+	public PatientDataCalculation() {}
+
+	/**
+	 * Constructor that takes in a PatientDataDefinition
+	 */
+	public PatientDataCalculation(DataDefinition dataDefinition) {
+		if (dataDefinition instanceof PatientDataDefinition || dataDefinition instanceof PersonDataDefinition) {
+			setDataDefinition(dataDefinition);
+		}
+		else {
+			throw new IllegalArgumentException("A Patient Data Calculation only supports patient data and person data definitions");
+		}
 	}
 	
 	/**
 	 * @see PatientCalculation#evaluate(Collection, Map, PatientCalculationContext)
-	 * @should ui iu iu
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> personIds, Map<String, Object> parameterValues,
-	                                     PatientCalculationContext context) {
+	public CalculationResultMap evaluate(Collection<Integer> personIds, Map<String, Object> parameterValues, PatientCalculationContext context) {
 		
-		EvaluationContext ec = ReportingCalculationUtil.getEvaluationContextForCalculation(personIds, parameterValues,
-		    context);
+		EvaluationContext ec = ReportingCalculationUtil.getEvaluationContextForCalculation(personIds, parameterValues, context);
 		Map<Integer, Object> data = null;
 		
 		try {
-			//Set the passed in parameter values on the definition
-			if (MapUtils.isNotEmpty(parameterValues)) {
-				for (ParameterDefinition p : getParameterDefinitionSet()) {
-					getDataDefinition().getParameter(p.getKey()).setDefaultValue(parameterValues.get(p.getKey()));
-				}
-			}
-			
 			if (getDataDefinition() instanceof PatientDataDefinition) {
 				PatientDataService service = Context.getService(PatientDataService.class);
 				data = service.evaluate((PatientDataDefinition) getDataDefinition(), ec).getData();
-			} else if (getDataDefinition() instanceof PersonDataDefinition) {
+			}
+			else if (getDataDefinition() instanceof PersonDataDefinition) {
 				PersonDataService service = Context.getService(PersonDataService.class);
 				data = service.evaluate((PersonDataDefinition) getDataDefinition(), ec).getData();
-			} else {
-				throw new APIException(
-				        "You must specify either a PersonDataDefinition or a PatientDataDefinition within a PatientCalculation");
+			}
+			else {
+				throw new APIException("You must specify either a PersonDataDefinition or a PatientDataDefinition within a PatientCalculation");
 			}
 		}
 		catch (EvaluationException e) {
@@ -85,20 +88,8 @@ public class PatientDataCalculation extends DataCalculation implements PatientCa
 		}
 		
 		CalculationResultMap result = new CalculationResultMap();
-		for (Integer id : data.keySet()) {
-			CalculationResult cr;
-			if (data.get(id) instanceof Collection) {
-				Collection c = (Collection) data.get(id);
-				ListResult lr = new ListResult();
-				for (Object obj : c) {
-					lr.add(new SimpleResult(obj, this, context));
-				}
-				cr = lr;
-			} else {
-				cr = new SimpleResult(data.get(id), this, context);
-			}
-			
-			result.put(id, cr);
+		for (Integer id : personIds) {
+			result.put(id, ReportingCalculationUtil.constructResult(data.get(id), this, context));
 		}
 		
 		return result;
