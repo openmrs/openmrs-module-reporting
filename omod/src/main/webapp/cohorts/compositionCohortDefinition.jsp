@@ -18,7 +18,7 @@
 	$(document).ready(function() {
 		$("#previewButton").click(function(event){ 
 			showReportingDialog({ 
-				title: 'Preview Composition Cohort Definition', 
+				title: 'Preview Cohort Query Results', 
 				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}',
 				successCallback: function() { 
 					window.location = window.location; //.reload(true);
@@ -95,7 +95,9 @@
 					<input type="submit" value="Save"/>
 					<input type="button" value="Close" onClick="window.location='/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition';"/>
 					<input type="button" id="saveAsButton" value="Save as new"/>
-					<input type="button" id="previewButton" value="Preview"/>
+					<c:if test="${!empty definition.uuid}">
+					    <input type="button" id="previewButton" value="Preview"/>
+					</c:if>    
 				</span>
 					
 				</form>
