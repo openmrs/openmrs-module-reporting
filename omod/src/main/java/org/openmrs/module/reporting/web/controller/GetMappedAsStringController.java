@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.web.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -30,7 +31,7 @@ public class GetMappedAsStringController {
 	@RequestMapping("/module/reporting/widget/getMappedAsString")
 	public void getMappedAsString(Model model,
 	                              HttpServletRequest request,
-	                              @RequestParam("valueType") String valueTypeClassname,
+	                              @RequestParam("valueType") String valueTypeClassnames,
 	                              @RequestParam("saveCallback") String saveCallback,
 	                              @RequestParam("cancelCallback") String cancelCallback,
 	                              @RequestParam(required=false, value="removeCallback") String removeCallback,
@@ -39,12 +40,17 @@ public class GetMappedAsStringController {
 	                              @RequestParam(required=false, value="label") String label,
 	                              @RequestParam(required=false, value="action") String action) throws Exception {
 		// TODO allow list of parameters (maybe with types) to be passed in
+		List<DefinitionSummary> list = new ArrayList<DefinitionSummary>();
+		Class<Definition> clazz = null;
 		
 		if (valueUuid == null && initialUuid != null)
 			valueUuid = initialUuid;
 		
-		Class<Definition> clazz = (Class<Definition>) Context.loadClass(valueTypeClassname);
-		List<DefinitionSummary> list = DefinitionContext.getDefinitionService(clazz).getAllDefinitionSummaries(true);
+		String[] names = valueTypeClassnames.split(",");
+		for(String name : names) {
+		clazz = (Class<Definition>) Context.loadClass(name);
+		list.addAll( DefinitionContext.getDefinitionService(clazz).getAllDefinitionSummaries(true));
+		}
 		model.addAttribute("valueOptions", list);
 		
 		Definition selectedValue = null;
@@ -78,19 +84,33 @@ public class GetMappedAsStringController {
 			// action != null means they have actually pressed save. (we don't want an initial
 			// value with no parameters to be immediately chosen when the dialog is first opened)
 			if (action != null && chosenMappings.size() == selectedValParams.size()) {
+				System.out.println("gonna break !-------------------------------------------------------------------");
 				MappedEditor editor = new MappedEditor();
+				System.out.println("gonna break !-------------------------------------------------------------------");
+
 				editor.setValue(new Mapped<Definition>(selectedValue, chosenMappings));
+				System.out.println("gonna break !-------------------------------------------------------------------");
+
 				model.addAttribute("serializedResult", editor.getAsText());
-				
+				System.out.println("gonna break !-------------------------------------------------------------------");
+
 				Map<String, String> params = new LinkedHashMap<String, String>();
+				System.out.println("gonna break !-------------------------------------------------------------------");
+
 				for (Map.Entry<String, Object> e : chosenMappings.entrySet()) {
 					params.put(e.getKey(), FormatTag.format(e.getValue()));
 				}
+				System.out.println("gonna break !-------------------------------------------------------------------");
+				System.out.println(selectedValue.getName());
 				Map<String, Object> json = new LinkedHashMap<String, Object>();
 				json.put("parameterizable", selectedValue.getName());
+				System.out.println("gonna break !-------------------------------------------------------------------");
 				json.put("parameterizableUuid", selectedValue.getUuid());
+				System.out.println("gonna break !-------------------------------------------------------------------");
 				json.put("parameterMappings", params);
+				System.out.println("gonna break !-------------------------------------------------------------------");
 				model.addAttribute("jsResult", AjaxUtil.toJson(json));
+				System.out.println("gonna break !-------------------------------------------------------------------");
 			}
 		}
 	}
