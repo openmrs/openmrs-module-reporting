@@ -224,12 +224,8 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     	//TODO This setting of audit fields can be safely removed after TRUNK-3876 is fixed.
 		//check if existing definition
 		if (definition.getId() != null) {
-			if (definition.getChangedBy() == null) {
-				definition.setChangedBy(Context.getAuthenticatedUser());
-			}
-			if (definition.getDateChanged() ==  null) {
-				definition.setDateChanged(new Date());
-			}
+			definition.setChangedBy(Context.getAuthenticatedUser());
+			definition.setDateChanged(new Date());
     	}
 		else {
 			//new definition
