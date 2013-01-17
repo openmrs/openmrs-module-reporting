@@ -96,7 +96,7 @@
 					<input type="button" value="Close" onClick="window.location='/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition';"/>
 					<input type="button" id="saveAsButton" value="Save as new"/>
 					<input type="button" id="previewButton" value="Preview"/>
-					</span>
+				</span>
 					
 				</form>
 			</div>			
