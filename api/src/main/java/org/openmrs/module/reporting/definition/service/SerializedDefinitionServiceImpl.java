@@ -221,13 +221,23 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	 * @see SerializedDefinitionService#saveDefinition(Definition)
 	 */
     public <T extends Definition> T saveDefinition(T definition) {
-    	if (definition instanceof Auditable) {
-			Auditable auditableObj = (Auditable) definition;
-			if (auditableObj.getCreator() == null) {
-				auditableObj.setCreator(Context.getAuthenticatedUser());
+    	//TODO This setting of audit fields can be safely removed after TRUNK-3876 is fixed.
+		//check if existing definition
+		if (definition.getId() != null) {
+			if (definition.getChangedBy() == null) {
+				definition.setChangedBy(Context.getAuthenticatedUser());
 			}
-			if (auditableObj.getDateCreated() == null) {
-				auditableObj.setDateCreated(new Date());
+			if (definition.getDateChanged() ==  null) {
+				definition.setDateChanged(new Date());
+			}
+    	}
+		else {
+			//new definition
+			if (definition.getCreator() == null) {
+				definition.setCreator(Context.getAuthenticatedUser());
+			}
+			if (definition.getDateCreated() == null) {
+				definition.setDateCreated(new Date());
 			}
 		}
      	
