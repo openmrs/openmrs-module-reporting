@@ -1,5 +1,7 @@
+<%@tag import="org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition"%>
 <%@tag import="java.net.URLEncoder"%>
 <%@tag import="org.openmrs.module.reporting.data.person.definition.PersonDataDefinition"%>
+<%@tag import="org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition"%>
 <%@ include file="/WEB-INF/template/include.jsp" %>
 
 <%@ attribute name="id" required="true" type="java.lang.String" %>
@@ -9,7 +11,7 @@
 <%
 String label = URLEncoder.encode("Data Definition");
 //The url to load (in a dialog) when the user clicks change
-String changeUrl = "/module/reporting/widget/getMappedAsString.form?valueType=" + PersonDataDefinition.class.getName() + "&label=" + label + "&saveCallback=save" + id + "&cancelCallback=cancel" + id;
+String changeUrl = "/module/reporting/widget/getMappedAsString.form?valueType=" + PatientDataDefinition.class.getName() + "," + PersonDataDefinition.class.getName() + "&label=" + label + "&saveCallback=save" + id + "&cancelCallback=cancel" + id;
 jspContext.setAttribute("changeUrl", changeUrl);
 
 jspContext.setAttribute("currentValue", null);
