@@ -84,33 +84,23 @@ public class GetMappedAsStringController {
 			// action != null means they have actually pressed save. (we don't want an initial
 			// value with no parameters to be immediately chosen when the dialog is first opened)
 			if (action != null && chosenMappings.size() == selectedValParams.size()) {
-				System.out.println("gonna break !-------------------------------------------------------------------");
 				MappedEditor editor = new MappedEditor();
-				System.out.println("gonna break !-------------------------------------------------------------------");
 
 				editor.setValue(new Mapped<Definition>(selectedValue, chosenMappings));
-				System.out.println("gonna break !-------------------------------------------------------------------");
 
 				model.addAttribute("serializedResult", editor.getAsText());
-				System.out.println("gonna break !-------------------------------------------------------------------");
 
 				Map<String, String> params = new LinkedHashMap<String, String>();
-				System.out.println("gonna break !-------------------------------------------------------------------");
 
 				for (Map.Entry<String, Object> e : chosenMappings.entrySet()) {
 					params.put(e.getKey(), FormatTag.format(e.getValue()));
 				}
-				System.out.println("gonna break !-------------------------------------------------------------------");
 				System.out.println(selectedValue.getName());
 				Map<String, Object> json = new LinkedHashMap<String, Object>();
 				json.put("parameterizable", selectedValue.getName());
-				System.out.println("gonna break !-------------------------------------------------------------------");
 				json.put("parameterizableUuid", selectedValue.getUuid());
-				System.out.println("gonna break !-------------------------------------------------------------------");
 				json.put("parameterMappings", params);
-				System.out.println("gonna break !-------------------------------------------------------------------");
 				model.addAttribute("jsResult", AjaxUtil.toJson(json));
-				System.out.println("gonna break !-------------------------------------------------------------------");
 			}
 		}
 	}
