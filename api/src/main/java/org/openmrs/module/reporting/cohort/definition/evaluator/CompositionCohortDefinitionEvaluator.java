@@ -37,6 +37,7 @@ public class CompositionCohortDefinitionEvaluator implements CohortDefinitionEva
 	/**
      * @throws EvaluationException 
 	 * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+	 * @should evaluate a definition with a search that contains an under score
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
     	CompositionCohortDefinition composition = (CompositionCohortDefinition) cohortDefinition;
