@@ -57,7 +57,7 @@ public class PatientDataCalculationSuggestion implements CalculationRegistration
 			dataDefinitions.add(d);
 		}
 		for (DataDefinition d : dataDefinitions) {
-			ret.add(new CalculationRegistration(d.getName(), provider, d.getName(), null));
+			ret.add(new CalculationRegistration(d.getName(), provider, d.getUuid(), null));
 		}
 		
 		if (ret.isEmpty()) {
