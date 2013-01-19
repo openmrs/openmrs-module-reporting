@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.api.PatientSetService.BooleanOperator;
 import org.openmrs.test.Verifies;
 
 public class CohortExpressionParserTest {
@@ -25,10 +26,16 @@ public class CohortExpressionParserTest {
 	 * @see {@link CohortExpressionParser#parseIntoTokens(String)}
 	 */
 	@Test
-	@Verifies(value = "should parse an expression containing multiple allowed characters", method = "parseIntoTokens(String)")
-	public void parseIntoTokens_shouldParseAnExpressionContainingMultipleAllowedCharacters() throws Exception {
-		List<Object> tokens = CohortExpressionParser.parseIntoTokens("all the_allowed_characters");
-		Assert.assertEquals(2, tokens.size());
+	@Verifies(value = "should parse a combination containing allowed characters spaces and quoted terms", method = "parseIntoTokens(String)")
+	public void parseIntoTokens_shouldParseACombinationContainingAllowedCharactersSpacesAndQuotedTerms() throws Exception {
+		List<Object> tokens = CohortExpressionParser
+		        .parseIntoTokens("all  the_allowed_characters  AND \"include spaces\" OR \"under  scores and spaces\"");
+		Assert.assertEquals(6, tokens.size());
+		Assert.assertTrue(tokens.contains("all"));
 		Assert.assertTrue(tokens.contains("the_allowed_characters"));
+		Assert.assertTrue(tokens.contains("include spaces"));
+		Assert.assertTrue(tokens.contains("under  scores and spaces"));
+		Assert.assertTrue(tokens.contains(BooleanOperator.AND));
+		Assert.assertTrue(tokens.contains(BooleanOperator.OR));
 	}
 }

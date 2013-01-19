@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,12 +57,12 @@ public class CohortExpressionParser {
 	private static final List<Character> characterWords = Arrays.asList('+','!','(','[','{',')',']','}');
 	
 	private static final Map<String, String> characterPlaceHolderMap;
+	private static final String PLACE_HOLDER_EXT = "XXXXXXXXXX";
 	
 	static {
+		//more characters can be added
 		characterPlaceHolderMap = new HashMap<String, String>();
-		//Should we use UUIDs instead of the XXXs? The 95 is the number
-		//assigned by StreamTokenizer for the '_'
-		characterPlaceHolderMap.put("_", "XXXXXXXXXXXXXXXXXXXX95");
+		characterPlaceHolderMap.put("_", PLACE_HOLDER_EXT + "UNDERSCORE" + PLACE_HOLDER_EXT);
 	}
 	
 	public static boolean supports(Class<?> type) {
@@ -210,12 +211,13 @@ public class CohortExpressionParser {
 	 * Elements in this list can be: an Integer, indicating a 1-based index into a search history a
 	 * BooleanOperator (AND, OR, NOT) a CohortDefinition a PatientSearch another List of the same form,
 	 * which indicates a parenthetical expression
-	 * @should parse an expression containing multiple allowed characters
+	 * @should parse a combination containing allowed characters spaces and quoted terms
 	 */
 	public static List<Object> parseIntoTokens(String expression) {
 
 		//replace all characters skipped by StreamTokizer with place holders so it doesn't skip them
 		Set<String> replacedChars = null;
+		String quotedTerms[] = StringUtils.substringsBetween(expression, "\"", "\"");
 		for (Map.Entry<String, String> entry : characterPlaceHolderMap.entrySet()) {
 			if (expression.indexOf(entry.getKey()) > -1) {
 				expression = StringUtils.replace(expression, entry.getKey(), entry.getValue());
@@ -223,6 +225,18 @@ public class CohortExpressionParser {
 					replacedChars = new HashSet<String>();
 				replacedChars.add(entry.getKey());
 			}
+		}
+		
+		//replace terms in quotes with their versions without spaces
+		//e.g 'meandyou' for 'me and you'
+		Map<String, String> placeHolderReplacedTermsMap = null;
+		if(!ArrayUtils.isEmpty(quotedTerms)){
+			placeHolderReplacedTermsMap = new HashMap<String, String>();
+			for (String term : quotedTerms) {
+				String key = term.replaceAll("\\s+", "");
+				placeHolderReplacedTermsMap.put(key, term);
+				expression = StringUtils.replace(expression, "\""+term+"\"", key);
+            }
 		}
 		
 		List<Object> tokens = new ArrayList<Object>();
@@ -250,6 +264,12 @@ public class CohortExpressionParser {
 							if (stringToken.indexOf(characterPlaceHolderMap.get(s)) > -1) {
 								stringToken = StringUtils.replace(stringToken, characterPlaceHolderMap.get(s), s);
 							}
+						}
+					}
+					//replace back the origin term with spaces in it
+					if(!ArrayUtils.isEmpty(quotedTerms)){
+						for (Map.Entry<String, String> entry : placeHolderReplacedTermsMap.entrySet()) {
+							stringToken = StringUtils.replace(stringToken, entry.getKey(), entry.getValue());
 						}
 					}
 					
