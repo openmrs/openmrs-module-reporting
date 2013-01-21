@@ -69,6 +69,7 @@ public interface ReportDAO {
 	 * Purges a <code>ReportDesign</code> from the database.
 	 * @param reportDesign The <code>ReportDesign</code> to remove from the system
 	 * @throws DAOException
+	 * @should purge if report definition cannot be deserialized
 	 */
 	public void purgeReportDesign(ReportDesign reportDesign);
 	

@@ -89,15 +89,15 @@
 		</property>
 	</bean>
 	
+	<bean id="reporting.ReportDAO" class="org.openmrs.module.reporting.report.service.db.HibernateReportDAO">
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+	</bean>
+	
 	<bean id="reportingReportService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager"><ref bean="transactionManager"/></property>
 		<property name="target">
 			<bean class="org.openmrs.module.reporting.report.service.ReportServiceImpl">
-				<property name="reportDAO">
-					<bean class="org.openmrs.module.reporting.report.service.db.HibernateReportDAO">
-						<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
-					</bean>
-				</property>
+				<property name="reportDAO" ref="reporting.ReportDAO" />
 				<property name="taskExecutor">
 					<bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
 						<property name="corePoolSize" value="5" />

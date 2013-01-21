@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<serialized_object serialized_object_id="46"
+		name="Patients in 2006 by indicators" type="org.openmrs.module.reporting.report.definition.ReportDefinition"
+		subtype="org.openmrs.module.reporting.report.definition.ReportDefinition"
+		serialization_class="org.openmrs.module.reporting.serializer.ReportingSerializer"
+		creator="1" date_created="2013-01-10 14:45:49" retired="false"
+		uuid="67f155d5-bd0b-4042-b92f-76556ab4e28a"
+		serialized_data="&lt;org.openmrs.module.reporting.report.definition.ReportDefinition id=&quot;46&quot; uuid=&quot;67f155d5-bd0b-4042-b92f-76556ab4e28a&quot; retired=&quot;false&quot;&gt;
+  &lt;name&gt;Patients in 2006&lt;/name&gt;
+  &lt;parameters id=&quot;2&quot;/&gt;
+  &lt;dataSetDefinitions class=&quot;linked-hash-map&quot; id=&quot;3&quot;&gt;
+    &lt;entry&gt;
+      &lt;string&gt;Children&lt;/string&gt;
+      &lt;org.openmrs.module.reporting.BROKEN XML
+    &lt;/entry&gt;
+  &lt;/dataSetDefinitions&gt;
+&lt;/org.openmrs.module.reporting.report.definition.ReportDefinition&gt;" />
+	<reporting_report_design id="1"
+		uuid="c7a82b63-1066-4c1d-9b43-b405851fc467" name="Patients in 2006"
+		report_definition_id="46"
+		renderer_type="org.openmrs.module.reporting.report.renderer.CsvReportRenderer"
+		properties="#Mon Jan 21 14:08:47 CET 2013" creator="1"
+		date_created="2013-01-21 14:08:47" retired="0" />
+</dataset>
