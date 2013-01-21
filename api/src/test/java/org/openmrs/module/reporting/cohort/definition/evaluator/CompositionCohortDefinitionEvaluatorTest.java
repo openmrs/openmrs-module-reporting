@@ -30,15 +30,15 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 public class CompositionCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
-	
+
 	/**
-	 * @see {@link CompositionCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
-	 */
-	@Test
-	@Verifies(value = "should evaluate a definition with a search that contains an under score", method = "evaluate(CohortDefinition,EvaluationContext)")
-	public void evaluate_shouldEvaluateADefinitionWithASearchThatContainsAnUnderScore() throws Exception {
-		
-		GenderCohortDefinition females = new GenderCohortDefinition();
+     * @see {@link CompositionCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+     * 
+     */
+    @Test
+    @Verifies(value = "should evaluate a definition with a search that contains an under score or space", method = "evaluate(CohortDefinition,EvaluationContext)")
+    public void evaluate_shouldEvaluateADefinitionWithASearchThatContainsAnUnderScoreOrSpace() throws Exception {
+    	GenderCohortDefinition females = new GenderCohortDefinition();
 		females.setName("females patients");
 		females.setFemaleIncluded(true);
 		DefinitionContext.saveDefinition(females);
@@ -49,13 +49,13 @@ public class CompositionCohortDefinitionEvaluatorTest extends BaseModuleContextS
 		DefinitionContext.saveDefinition(voided);
 		
 		Map<String, Mapped<CohortDefinition>> searches = new HashMap<String, Mapped<CohortDefinition>>();
-		searches.put("females_only", new Mapped<CohortDefinition>(females, null));
-		searches.put("voided", new Mapped<CohortDefinition>(voided, null));
+		searches.put("females_patients_only", new Mapped<CohortDefinition>(females, null));
+		searches.put("voided patient  only", new Mapped<CohortDefinition>(voided, null));
 		
 		CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 		compositionCohortDefinition.setName("Voided Female Patients");
 		compositionCohortDefinition.setSearches(searches);
-		compositionCohortDefinition.setCompositionString("voided AND females_only");
+		compositionCohortDefinition.setCompositionString("voided patient  only AND females_patients_only");
 		
 		EvaluationContext context = new EvaluationContext();
 		//should not fail

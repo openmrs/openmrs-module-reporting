@@ -13,6 +13,11 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -22,6 +27,7 @@ import org.openmrs.module.reporting.cohort.definition.util.CohortExpressionParse
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.MissingDependencyException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 /**
  * Evaluates an CompositionCohortDefinition and produces a Cohort
@@ -37,16 +43,35 @@ public class CompositionCohortDefinitionEvaluator implements CohortDefinitionEva
 	/**
      * @throws EvaluationException 
 	 * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
-	 * @should evaluate a definition with a search that contains an under score
+	 * @should evaluate a definition with a search that contains an under score or space
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
     	CompositionCohortDefinition composition = (CompositionCohortDefinition) cohortDefinition;
     	try {
-    		Cohort c = CohortExpressionParser.evaluate(composition, context);
+        	CompositionCohortDefinition clone = (CompositionCohortDefinition) BeanUtils.cloneBean(composition);
+        	String expression = clone.getCompositionString();
+        	Set<String> searches = new HashSet<String>();
+        	for (String s : clone.getSearches().keySet()) {
+        		searches.add(s);
+            }
+
+        	String replacement = "XXXXXX";
+        	for (String search : searches) {
+        		expression = StringUtils.replace(expression, search, replacement+="X");
+        		//change the keys to the new ones
+        		Mapped<CohortDefinition> def = clone.getSearches().get(search);
+        		clone.getSearches().put(replacement, def);
+        		clone.getSearches().remove(search);
+            }
+    		clone.setCompositionString(expression);
+    		Cohort c = CohortExpressionParser.evaluate(clone, context);
     		return new EvaluatedCohort(c, cohortDefinition, context);
     	} catch (MissingDependencyException ex) {
     		String name = composition.getName() != null ? composition.getName() : composition.getCompositionString();
     		throw new EvaluationException("sub-query '" + ex.getPropertyThatFailed() + "' of composition '" + name + "'", ex);
+    	}catch (Exception ex) {
+    		ex.printStackTrace();
+    		throw new EvaluationException("Some error occured:"+ex.getMessage());
     	}
     }
 }
