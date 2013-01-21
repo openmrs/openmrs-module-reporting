@@ -69,9 +69,9 @@ public class CompositionCohortDefinitionEvaluator implements CohortDefinitionEva
     	} catch (MissingDependencyException ex) {
     		String name = composition.getName() != null ? composition.getName() : composition.getCompositionString();
     		throw new EvaluationException("sub-query '" + ex.getPropertyThatFailed() + "' of composition '" + name + "'", ex);
-    	}catch (Exception ex) {
-    		ex.printStackTrace();
-    		throw new EvaluationException("Some error occured:"+ex.getMessage());
+    	}
+    	catch (Exception ex) {
+    		throw new EvaluationException("Error:", ex);
     	}
     }
 }
