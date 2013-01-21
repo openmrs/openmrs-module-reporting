@@ -15,7 +15,20 @@
 			"aoColumns": [{ "bSortable": true },
 			              { "bSortable": true },
 			      		  { "bSortable": true },
-			              { "bSortable": false }]
+			              { "bSortable": false }],
+			"fnDrawCallback": function() {
+				<c:forEach items="${indicators}" var="indicator" varStatus="status">	
+				$("#preview-indicator-${indicator.uuid}").click(function(event){ 
+					showReportingDialog({ 
+						title: 'Preview Indicator', 
+						url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${indicator.uuid}&type=${indicator['class'].name}',
+						successCallback: function() { 
+							window.location = window.location; //.reload(true);
+						} 
+					});
+				});
+				</c:forEach>				
+			}
 		} );			
 	
 		$("#cohort-indicator-wizard-form").click(function(event){ 
@@ -85,20 +98,7 @@
 									${pageContext.request.contextPath}/module/reporting/indicators/editSqlIndicator.form?uuid=${indicator.uuid}
 								</c:otherwise>							
 							</c:choose>
-						</c:set>
-						<script>					
-							$(document).ready(function() {
-								$("#preview-indicator-${indicator.uuid}").click(function(event){ 
-									showReportingDialog({ 
-										title: 'Preview Indicator', 
-										url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${indicator.uuid}&type=${indicator['class'].name}',
-										successCallback: function() { 
-											window.location = window.location; //.reload(true);
-										} 
-									});
-								});
-							} );
-						</script>					
+						</c:set>					
 						<tr>
 							<td align="center" width="5%" style="white-space:nowrap;">
 								<span style="padding-left: 10px;">
