@@ -34,8 +34,10 @@ public class ReportDefinitionType implements UserType {
 	 * @see UserType#assemble(Serializable, Object)
 	 */
 	public Object assemble(Serializable cached, Object owner) throws HibernateException {
-		String uuid = cached.toString();
-		return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
+		if(cached == null){
+			return null;
+		}
+		return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(cached.toString());
 	}
 
 	/** 
