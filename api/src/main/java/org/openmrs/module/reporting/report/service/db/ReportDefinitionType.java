@@ -34,8 +34,10 @@ public class ReportDefinitionType implements UserType {
 	 * @see UserType#assemble(Serializable, Object)
 	 */
 	public Object assemble(Serializable cached, Object owner) throws HibernateException {
-		Integer id = (Integer) cached;
-		return Context.getService(ReportDefinitionService.class).getDefinition(id);
+		if(cached == null){
+			return null;
+		}
+		return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(cached.toString());
 	}
 
 	/** 
@@ -52,7 +54,7 @@ public class ReportDefinitionType implements UserType {
 		if (value == null) {
 			return null;
 		}
-		return ((ReportDefinition)value).getId();
+		return ((ReportDefinition)value).getUuid();
 	}
 
 	/** 
@@ -80,11 +82,11 @@ public class ReportDefinitionType implements UserType {
 	 * @see UserType#nullSafeGet(ResultSet, String[], Object)
 	 */
 	public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-		Integer id = rs.getInt(names[0]);
-		if (id == null) {
+		String uuid = rs.getString(names[0]);
+		if (uuid == null) {
 			return null;
 		}
-		return Context.getService(ReportDefinitionService.class).getDefinition(id);
+		return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 	}
 
 	/** 
@@ -92,8 +94,8 @@ public class ReportDefinitionType implements UserType {
 	 */
 	public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
 		ReportDefinition d = (ReportDefinition) value;
-		Integer val = (d == null ? null : d.getId());
-		st.setInt(index, val);
+		String val = (d == null ? null : d.getUuid());
+		st.setString(index, val);
 	}
 
 	/** 
@@ -115,6 +117,6 @@ public class ReportDefinitionType implements UserType {
 	 * @see UserType#sqlTypes()
 	 */
 	public int[] sqlTypes() {
-		return new int[] { Types.INTEGER };
+		return new int[] { Types.VARCHAR };
 	}
 }

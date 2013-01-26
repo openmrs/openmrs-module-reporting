@@ -114,7 +114,7 @@ public class DefinitionUtil {
 						}
 					}
 
-    				Property p = new Property(f, value, ann.required(), displayName, groupName);
+    				Property p = new Property(f, value, ann.required(), displayName, groupName, ann.displayFormat(), ann.displayAttributes());
     				if (log.isDebugEnabled())
     					log.debug("Adding: " + p);
     				ret.add(p);

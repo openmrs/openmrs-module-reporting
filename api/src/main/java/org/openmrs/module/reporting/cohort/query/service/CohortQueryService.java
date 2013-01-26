@@ -131,6 +131,8 @@ public interface CohortQueryService extends OpenmrsService {
 		
 	/**
 	 * Get patients having encounters with the following characteristics
+	 * 
+	 * @should should get patients having encounters with a specified provider
 	 * @return cohort of patients matching the query
 	 */
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, TimeQualifier timeQualifier, List<Location> locationList,

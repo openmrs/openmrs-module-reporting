@@ -60,7 +60,7 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 		hql.append("where 		voided = false ");
 		
 		if (context.getBaseCohort() != null) {
-			hql.append("and 		patientId in (:patientIds) ");
+			hql.append("and 		patient.patientId in (:patientIds) ");
 			m.put("patientIds", context.getBaseCohort());
 		}
 		

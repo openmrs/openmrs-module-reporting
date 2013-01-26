@@ -59,7 +59,7 @@ public class MostRecentEncounterForPatientQueryEvaluator implements EncounterQue
 		StringBuilder q = new StringBuilder();
 		Map<String, Object> params = new HashMap<String, Object>();
 		
-		q.append("select 	encounterId, patientId ");
+		q.append("select 	encounterId, patient.patientId ");
 		q.append("from 		Encounter ");
 		q.append("where 	voided = false ");
 		if (query.getEncounterTypes() != null) {
@@ -75,7 +75,7 @@ public class MostRecentEncounterForPatientQueryEvaluator implements EncounterQue
 			params.put("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(query.getOnOrBefore()));
 		}
 		if (context.getBaseCohort() != null) {
-			q.append(" and patientId in (:patientIds) ");
+			q.append(" and patient.patientId in (:patientIds) ");
 			params.put("patientIds", context.getBaseCohort().getMemberIds());
 		}
 		if (context instanceof EncounterEvaluationContext) {

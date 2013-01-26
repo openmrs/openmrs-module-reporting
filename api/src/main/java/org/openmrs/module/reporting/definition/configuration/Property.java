@@ -59,6 +59,16 @@ public class Property implements Serializable {
 	 */
 	private String group;
 	
+	/**
+	 * The display format
+	 */
+	private String displayFormat;
+	
+	/**
+	 * The display attributes.
+	 */
+	private String displayAttributes;
+	
 	//***********************
 	// CONSTRUCTORS
 	//***********************
@@ -70,6 +80,24 @@ public class Property implements Serializable {
 	
 	/**
 	 * Full constructor for this ConfigurationProperty
+	 * 
+	 * @param field The field
+	 * @param value The configured value for this property
+	 * @param required The flag indicating whether a value is required
+	 * @param displayName the display name
+	 * @param group the group
+	 * @param displayFormat the display format
+	 * @param displayAttributes the display attributes
+	 */
+	public Property(Field field, Object value, Boolean required, String displayName, String group, String displayFormat, String displayAttributes) {
+		this(field, value, required, displayName, group);
+		setDisplayFormat(displayFormat);
+		setDisplayAttributes(displayAttributes);
+	}
+	
+	/**
+	 * Constructor for this ConfigurationProperty
+	 * 
 	 * @param field The field
 	 * @param value The configured value for this property
 	 * @param required The flag indicating whether a value is required
@@ -195,4 +223,32 @@ public class Property implements Serializable {
 	public void setGroup(String group) {
 		this.group = group;
 	}
+
+	/**
+	 * @return the display format
+	 */
+    public String getDisplayFormat() {
+    	return displayFormat;
+    }
+
+    /**
+	 * @param displayFormat the display format to set
+	 */
+    public void setDisplayFormat(String displayFormat) {
+    	this.displayFormat = displayFormat;
+    }
+
+    /**
+     * @return the display attributes
+     */
+    public String getDisplayAttributes() {
+    	return displayAttributes;
+    }
+
+    /**
+	 * @param displayAttributes the display attributes to set
+	 */
+    public void setDisplayAttributes(String displayAttributes) {
+    	this.displayAttributes = displayAttributes;
+    }
 }

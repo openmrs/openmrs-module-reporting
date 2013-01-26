@@ -46,6 +46,7 @@ import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
+import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 
 public class HibernateCohortQueryDAO implements CohortQueryDAO {
@@ -1071,7 +1072,11 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		whichClauses.add("voided = false");
 		ObjectUtil.addIfNotNull(whichClauses, "encounter_type in (:encTypeIds)", encTypeIds);
 		ObjectUtil.addIfNotNull(whichClauses, "location_id in (:locationIds)", locationIds);
-		ObjectUtil.addIfNotNull(whichClauses, "provider_id in (:providerIds)", providerIds);
+		
+		if (!ReportUtil.isOpenmrsVersionOnePointNineAndAbove()) {
+			ObjectUtil.addIfNotNull(whichClauses, "provider_id in (:providerIds)", providerIds);
+		}
+		
 		ObjectUtil.addIfNotNull(whichClauses, "form_id in (:formIds)", formIds);
 		
 		// These clauses are only applicable in the overall query
@@ -1089,16 +1094,31 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" select e.patient_id from encounter e inner join patient p on e.patient_id = p.patient_id");
 		
+		if (providerIds != null && ReportUtil.isOpenmrsVersionOnePointNineAndAbove()) {
+			sb.append(" inner join encounter_provider ep on ep.encounter_id = e.encounter_id ");
+		}
+		
 		if (timeQualifier == TimeQualifier.FIRST || timeQualifier == TimeQualifier.LAST) {
 			boolean isFirst = timeQualifier == TimeQualifier.FIRST;
 			
 			sb.append(" inner join ( ");
 			sb.append("    select patient_id, " + (isFirst ? "MIN" : "MAX") + "(encounter_datetime) as edt ");
 			sb.append("    from encounter ");
+			
+			if (providerIds != null && ReportUtil.isOpenmrsVersionOnePointNineAndAbove()) {
+				sb.append(" inner join encounter_provider ep on ep.encounter_id = encounter.encounter_id ");
+			}
+			
 			for (ListIterator<String> i = whichClauses.listIterator(); i.hasNext();) {
 				sb.append(i.nextIndex() == 0 ? " where " : " and ");
 				sb.append("encounter." + i.next());
 			}
+			
+			if (providerIds != null && ReportUtil.isOpenmrsVersionOnePointNineAndAbove()) {
+				sb.append(whichClauses.size() == 0 ? " where " : " and ");
+				sb.append("ep.provider_id in (:providerIds)");
+			}
+			
 			sb.append(" group by encounter.patient_id ");
 			sb.append(" ) subq on e.patient_id = subq.patient_id and e.encounter_datetime = subq.edt ");
 	
@@ -1106,6 +1126,11 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		for (ListIterator<String> i = whereClauses.listIterator(); i.hasNext();) {
 			sb.append(i.nextIndex() == 0 ? " where " : " and ");
 			sb.append("e." + i.next());
+		}
+		
+		if (providerIds != null && ReportUtil.isOpenmrsVersionOnePointNineAndAbove()) {
+			sb.append(whereClauses.size() == 0 ? " where " : " and ");
+			sb.append("ep.provider_id in (:providerIds)");
 		}
 		
 		sb.append(" and p.voided = false");

@@ -116,17 +116,17 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		
 		ProgramWorkflowService ps = Context.getProgramWorkflowService();
 		PatientState patientState = ps.getPatientStateByUuid("ea89deaa-23cc-4840-92fe-63d199c37eaa");
-		patientState.setEndDate(DateUtil.getDateTime(2008, 8, 1, 12, 0, 0, 0));
+		patientState.setEndDate(DateUtil.getDateTime(2012, 8, 1, 12, 0, 0, 0));
 		ps.savePatientProgram(patientState.getPatientProgram());
 		Context.flushSession();
 		
 		InStateCohortDefinition cd = new InStateCohortDefinition();
 		cd.setStates(Collections.singletonList(patientState.getState()));
-		cd.setOnOrAfter(DateUtil.getDateTime(2008, 8, 1, 11, 0, 0, 0));
+		cd.setOnOrAfter(DateUtil.getDateTime(2012, 8, 1, 11, 0, 0, 0));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertTrue(c.contains(patientState.getPatientProgram().getPatient().getPatientId()));
 		
-		patientState.setEndDate(DateUtil.getDateTime(2008, 8, 1, 10, 0, 0, 0));
+		patientState.setEndDate(DateUtil.getDateTime(2012, 8, 1, 10, 0, 0, 0));
 		ps.savePatientProgram(patientState.getPatientProgram());
 		Context.flushSession();
 		

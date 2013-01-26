@@ -20,6 +20,7 @@
 	<require_modules>
 	   	<require_module version="0.2.7">org.openmrs.module.serialization.xstream</require_module>
 	   	<require_module version="1.6.1">org.openmrs.module.htmlwidgets</require_module>
+	   	<require_module version="${calculationVersion}">org.openmrs.calculation</require_module>
 	</require_modules>
 
 	<!-- Extensions -->

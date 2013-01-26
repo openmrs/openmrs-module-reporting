@@ -52,6 +52,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	/**
 	 * @param uuid
 	 * @return the Definition with the given uuid
+	 * @should deserialize CohortIndicatorAndDimensionDataSetDefinition
 	 */
 	@Transactional(readOnly = true)
 	public T getDefinitionByUuid(String uuid) throws APIException;
