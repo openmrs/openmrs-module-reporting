@@ -76,7 +76,11 @@
 	</privilege>
 	<privilege>
 		<name>Manage Scheduled Report Tasks</name>
-		<description>Manage Task Scheduling in Reporting Module </description>
+		<description>Manage Task Scheduling in Reporting Module</description>
+	</privilege>
+	<privilege>
+		<name>Run Reports</name>
+		<description>Schedule the running of a report</description>
 	</privilege>
 	<!-- Global Properties -->
 	<globalProperty>
