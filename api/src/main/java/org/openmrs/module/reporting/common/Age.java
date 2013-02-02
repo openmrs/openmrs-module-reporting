@@ -104,8 +104,11 @@ public class Age {
 			today.setTime(ObjectUtil.nvl(currentDate, new Date()));
 			Calendar bday = Calendar.getInstance();
 			bday.setTime(birthDate);
-			
+
 			age = today.get(Calendar.MONTH) - bday.get(Calendar.MONTH);
+			if (age < 0) {
+				age += 12;
+			}
 			
 			// Adjust age when today's date is before the person's birthday
 			int todaysDay = today.get(Calendar.DAY_OF_MONTH);
