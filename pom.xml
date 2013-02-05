@@ -38,7 +38,8 @@
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.2-FINAL</poiVersion>
 		<groovyVersion>1.8.7</groovyVersion>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <calculationVersion>1.0</calculationVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
@@ -164,6 +165,13 @@
 			<version>${htmlwidgetsVersion}</version>
 			<scope>provided</scope>
 		</dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>calculation-api</artifactId>
+            <version>${calculationVersion}</version>
+            <scope>provided</scope>
+        </dependency>
 
 	</dependencies>
 
