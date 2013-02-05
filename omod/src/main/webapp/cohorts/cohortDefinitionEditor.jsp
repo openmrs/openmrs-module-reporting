@@ -149,7 +149,7 @@
 														</span>
 													</span>
 													<span id="fixedValue${p.field.name}" style="display:none;">
-														<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}"/>
+														<wgt:widget id="${p.field.name}" name="parameter.${p.field.name}.value" object="${cohortDefinition}" property="${p.field.name}" format="${p.displayFormat}" attributes="${p.displayAttributes}"/>
 													</span>
 													<spring:bind path="${p.field.name}">
 														<c:if test="${status.errorMessage != ''}">

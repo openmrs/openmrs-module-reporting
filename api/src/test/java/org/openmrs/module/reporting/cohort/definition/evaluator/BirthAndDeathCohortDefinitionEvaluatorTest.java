@@ -5,7 +5,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.Patient;
+import org.openmrs.PersonAttribute;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
@@ -14,6 +16,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+import java.util.Set;
 
 public class BirthAndDeathCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -83,6 +86,7 @@ public class BirthAndDeathCohortDefinitionEvaluatorTest extends BaseModuleContex
 		final Integer patientId = 6;
 		Patient patient = ps.getPatient(patientId);
 		patient.setBirthdate(DateUtil.getDateTime(1999, 8, 23, 11, 0, 0, 0));
+		patient.getAttribute(8).setValue("value"); //1.9 is not happy with empty values
 		ps.savePatient(patient);
 		
 		BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
@@ -102,6 +106,7 @@ public class BirthAndDeathCohortDefinitionEvaluatorTest extends BaseModuleContex
 		Patient patient = ps.getPatient(patientId);
 		patient.setDead(true);
 		patient.setDeathDate(DateUtil.getDateTime(2005, 12, 31, 11, 0, 0, 0));
+		patient.setCauseOfDeath(new Concept(3));
 		ps.savePatient(patient);
 		
 		BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
@@ -120,6 +125,7 @@ public class BirthAndDeathCohortDefinitionEvaluatorTest extends BaseModuleContex
 		final Integer patientId = 6;
 		Patient patient = ps.getPatient(patientId);
 		patient.setBirthdate(DateUtil.getDateTime(1999, 8, 23));
+		patient.getAttribute(8).setValue("value"); //1.9 is not happy with empty values
 		ps.savePatient(patient);
 		
 		BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
@@ -139,6 +145,7 @@ public class BirthAndDeathCohortDefinitionEvaluatorTest extends BaseModuleContex
 		Patient patient = ps.getPatient(patientId);
 		patient.setDead(true);
 		patient.setDeathDate(DateUtil.getDateTime(2005, 12, 31));
+		patient.setCauseOfDeath(new Concept(3));
 		ps.savePatient(patient);
 		
 		BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();

@@ -14,6 +14,7 @@
 
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,6 +35,7 @@ import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.report.util.SqlScriptParser;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +80,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 			ResultSet resultSet = null;
 
 			String sqlQuery = sqlDsd.getSqlQuery();
+			sqlQuery = SqlScriptParser.parse(new StringReader(sqlQuery))[0];
 			
 			// if the user asked for only a subset, append a "limit" clause to the query so that 
 			// the query runs faster in the database

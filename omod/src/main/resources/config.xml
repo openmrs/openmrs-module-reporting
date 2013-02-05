@@ -20,6 +20,7 @@
 	<require_modules>
 	   	<require_module version="0.2.7">org.openmrs.module.serialization.xstream</require_module>
 	   	<require_module version="1.6.1">org.openmrs.module.htmlwidgets</require_module>
+	   	<require_module version="${calculationVersion}">org.openmrs.calculation</require_module>
 	</require_modules>
 
 	<!-- Extensions -->
@@ -75,7 +76,11 @@
 	</privilege>
 	<privilege>
 		<name>Manage Scheduled Report Tasks</name>
-		<description>Manage Task Scheduling in Reporting Module </description>
+		<description>Manage Task Scheduling in Reporting Module</description>
+	</privilege>
+	<privilege>
+		<name>Run Reports</name>
+		<description>Schedule the running of a report</description>
 	</privilege>
 	<!-- Global Properties -->
 	<globalProperty>

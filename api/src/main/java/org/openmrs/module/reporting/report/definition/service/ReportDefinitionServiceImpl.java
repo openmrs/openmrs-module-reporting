@@ -23,6 +23,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
@@ -123,12 +124,22 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	
 	/**
 	 * @see DefinitionService#purgeDefinition(Definition)
+	 * 
+	 * @should purge report designs
 	 */
 	@Transactional
 	public void purgeDefinition(ReportDefinition definition) {
-		for (ReportRequest request : Context.getService(ReportService.class).getReportRequests(definition, null, null, (Status[])null)) {
-			Context.getService(ReportService.class).purgeReportRequest(request);
+		ReportService reportService = Context.getService(ReportService.class);
+		
+		for (ReportRequest request : reportService.getReportRequests(definition, null, null, (Status[])null)) {
+			reportService.purgeReportRequest(request);
 		}
+		
+		List<ReportDesign> reportDesigns = reportService.getReportDesigns(definition, null, true);
+		for (ReportDesign reportDesign : reportDesigns) {
+			reportService.purgeReportDesign(reportDesign);
+        }
+		
 		getService().purgeDefinition(definition);
 	}
 	

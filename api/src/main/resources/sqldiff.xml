@@ -228,4 +228,25 @@
 		</sql>
 	</diff>
 	
+	<diff>
+		<version>0.87</version>
+		<author>Wyclif Luyima</author>
+		<date>January 22, 2013</date>
+		<description>
+			Changing reporting_report_design to reference ReportDefinitions 
+			by uuid rather than by id to serialized object 
+		</description>
+		<sql>
+			ALTER table `reporting_report_design` ADD COLUMN report_definition_uuid varchar(38) NOT NULL;
+			
+			UPDATE reporting_report_design rd
+			LEFT JOIN serialized_object so ON rd.report_definition_id = so.serialized_object_id
+			SET rd.report_definition_uuid = so.uuid;
+			
+			ALTER table `reporting_report_design` ADD CONSTRAINT `report_definition_uuid for reporting_report_design` FOREIGN KEY (`report_definition_uuid`) REFERENCES `serialized_object` (`uuid`),
+			DROP FOREIGN KEY `report_definition_id for reporting_report_design`,
+			DROP COLUMN report_definition_id;
+		</sql>
+	</diff>
+	
 </sqldiff>
