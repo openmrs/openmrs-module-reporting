@@ -429,4 +429,20 @@ public class DateUtil {
 		}
 		return false;
 	}
+
+	/**
+	 * @return the full number of months between the two passed dates
+	 */
+	public static int monthsBetween(Date d1, Date d2) {
+		int count = 0;
+		Calendar c = Calendar.getInstance();
+		c.setTime((d1.before(d2) ? d1 : d2));
+		c.add(Calendar.MONTH, 1);
+		Date compareDate = (d1.before(d2) ? d2 : d1);
+		while (c.getTime().compareTo(compareDate) <= 0) {
+			count++;
+			c.add(Calendar.MONTH, 1);
+		}
+		return count;
+	}
 }
