@@ -56,8 +56,9 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	    xstream.registerConverter(new CohortDefinitionConverter(mapper, converterLookup));
 	    xstream.registerConverter(new EncounterQueryConverter(mapper, converterLookup));
 	    xstream.registerConverter(new ObsQueryConverter(mapper, converterLookup));
-	    
-	    xstream.registerConverter(new PersonDataDefinitionConverter(mapper, converterLookup));
+		xstream.registerConverter(new CalculationRegistrationShortConverter(mapper, converterLookup));
+
+		xstream.registerConverter(new PersonDataDefinitionConverter(mapper, converterLookup));
 	    xstream.registerConverter(new PatientDataDefinitionConverter(mapper, converterLookup));
 	    xstream.registerConverter(new EncounterDataDefinitionConverter(mapper, converterLookup));
 	    
@@ -65,8 +66,8 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	    
 	    xstream.registerConverter(new DimensionConverter(mapper, converterLookup));
 	    xstream.registerConverter(new IndicatorConverter(mapper, converterLookup));
-	    
-	    xstream.registerConverter(new ReportDefinitionConverter(mapper, converterLookup));
+
+		xstream.registerConverter(new ReportDefinitionConverter(mapper, converterLookup));
 	}
 	
 	@Override
