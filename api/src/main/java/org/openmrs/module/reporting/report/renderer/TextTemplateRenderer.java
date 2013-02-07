@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
@@ -36,6 +37,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.template.TemplateEngine;
 import org.openmrs.module.reporting.report.renderer.template.TemplateEngineManager;
 
@@ -53,9 +55,20 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 	public TextTemplateRenderer() {
 		super();
 	}
+
+	/**
+	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
+	 */
+	public String getRenderedContentType(ReportDefinition schema, String argument) {
+		String contentType = super.getRenderedContentType(schema, argument);
+		if (StringUtils.isEmpty(contentType)) {
+			contentType = "text/html";
+		}
+		return contentType;
+	}
 	
 	/**
-	 * @see ReportTemplateRenderer#getBaseReplacementDataReportData, ReportDesign)
+	 * @see ReportTemplateRenderer#getBaseReplacementData(ReportData, ReportDesign)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")

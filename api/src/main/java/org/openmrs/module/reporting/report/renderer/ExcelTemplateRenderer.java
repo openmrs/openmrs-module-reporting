@@ -47,6 +47,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * Report Renderer implementation that supports rendering to an Excel template
@@ -59,6 +60,13 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	
 	public ExcelTemplateRenderer() {
 		super();
+	}
+
+	/**
+	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
+	 */
+	public String getRenderedContentType(ReportDefinition schema, String argument) {
+		return "application/vnd.ms-excel";
 	}
 
 	/** 
