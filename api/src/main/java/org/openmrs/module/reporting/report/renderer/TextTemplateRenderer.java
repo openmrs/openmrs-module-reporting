@@ -135,6 +135,9 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 			
 			pw.write(templateContents.toString());
 		}
+		catch (RenderingException re) {
+			throw re;
+		}
 		catch (Throwable e) {
 			throw new RenderingException("Unable to render results due to: " + e, e);
 		}
