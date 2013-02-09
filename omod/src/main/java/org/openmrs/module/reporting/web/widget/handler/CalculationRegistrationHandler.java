@@ -36,12 +36,12 @@ public class CalculationRegistrationHandler extends CodedHandler {
 	@Override
 	public void populateOptions(WidgetConfig widgetConfig, CodedWidget codedWidget) {
 		for (CalculationRegistration registration : Context.getService(CalculationRegistrationService.class).getAllCalculationRegistrations()) {
-			codedWidget.addOption(new Option(registration.getUuid(), registration.getCalculationName(), null, registration), widgetConfig);
+			codedWidget.addOption(new Option(registration.getUuid(), registration.getToken(), null, registration), widgetConfig);
 		}
 	}
 
 	/**
-	 * @see WidgetHandler#parse(String, Class<?>)
+	 * @see org.openmrs.module.htmlwidgets.web.handler.WidgetHandler#parse(String, Class<?>)
 	 */
 	@Override
 	public Object parse(String s, Class<?> aClass) {

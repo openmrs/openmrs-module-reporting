@@ -23,6 +23,7 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.reporting.calculation.PatientDataCalculation;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientCalculationDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
@@ -49,8 +50,9 @@ public class PatientCalculationDataEvaluator implements PatientDataEvaluator {
 
 		// fail if passed-in definition has no PatientCalculation on it
 		CalculationRegistration registration =  def.getCalculationRegistration();
-		if (registration == null)
+		if (registration == null) {
 			throw new EvaluationException("No PatientCalculation found on this PatientCalculationDataDefinition");
+		}
 
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 
@@ -63,7 +65,8 @@ public class PatientCalculationDataEvaluator implements PatientDataEvaluator {
 		CalculationProvider provider;
 		try {
 			provider = (CalculationProvider) Context.loadClass(registration.getProviderClassName()).newInstance();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new EvaluationException("Could not instantiate provider for calculation " + registration.getToken(), e);
 		}
 
@@ -71,8 +74,13 @@ public class PatientCalculationDataEvaluator implements PatientDataEvaluator {
 		PatientCalculation calculation;
 		try {
 			calculation = (PatientCalculation) provider.getCalculation(registration.getCalculationName(), registration.getConfiguration());
-		} catch (InvalidCalculationException e) {
+		}
+		catch (InvalidCalculationException e) {
 			throw new EvaluationException("The provider could not find calculation " + registration.getToken(), e);
+		}
+
+		if (calculation instanceof PatientDataCalculation) {
+			throw new EvaluationException("You cannot configure a PatientDataCalculation in a PatientCalculationDataDefinition.");
 		}
 
 		// evaluate the calculation
