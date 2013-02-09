@@ -23,6 +23,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -40,7 +41,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
  *    TODO: We need to be smarter than this.  We will likely lose a lot of good cache data, particular between child and parent evaluations
  *  - Capabilities to add, remove, and retrieve parameter values
  */
-public class EvaluationContext {
+public class EvaluationContext implements PatientCalculationContext {
 	
 	/* Logger */
 	protected static Log log = LogFactory.getLog(EvaluationContext.class);
@@ -181,7 +182,23 @@ public class EvaluationContext {
 	public void setCache(Map<String, Object> cache) {
 		this.cache = cache;
 	}
-	
+
+	/**
+	 * @see PatientCalculationContext#getNow()
+	 */
+	@Override
+	public Date getNow() {
+		return this.getEvaluationDate();
+	}
+
+	/**
+	 * @see PatientCalculationContext#setNow(java.util.Date)
+	 */
+	@Override
+	public void setNow(Date date) {
+		this.setEvaluationDate(date);
+	}
+
 	/**
 	 * Add a value to the cache with a given key
 	 */
@@ -304,7 +321,7 @@ public class EvaluationContext {
 	}
 	
 	/**
-	 * @param the baseCohort
+	 * @param baseCohort the baseCohort
 	 */
 	public void setBaseCohort(Cohort baseCohort) {
 		clearCache();
@@ -319,7 +336,7 @@ public class EvaluationContext {
 	}
 	
 	/**
-	 * @param the limit
+	 * @param limit the limit
 	 */
 	public void setLimit(Integer limit) {
 		clearCache();
