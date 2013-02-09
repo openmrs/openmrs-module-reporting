@@ -27,8 +27,8 @@ import org.openmrs.module.htmlwidgets.web.html.Option;
 /**
  * FieldGenHandler for Calculations
  */
-@Handler(supports = {Calculation.class}, order = 50)
-public class CalculationHandler extends CodedHandler {
+@Handler(supports = {CalculationRegistration.class}, order = 50)
+public class CalculationRegistrationHandler extends CodedHandler {
 
 	/**
 	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
