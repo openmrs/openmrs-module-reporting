@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
+import org.junit.Ignore;
 import org.openmrs.Person;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -28,6 +29,7 @@ import java.util.Map;
 /**
  * Test Calculation for use in unit tests
  */
+@Ignore
 public class TestPatientCalculation implements PatientCalculation {
 
 	/**
