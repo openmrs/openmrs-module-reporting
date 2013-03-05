@@ -172,7 +172,7 @@ public class EvaluationUtil {
 				Object paramVal = parameters.get(parameterName);
 	
 				if (paramVal == null || !(paramVal instanceof Date)) {
-					log.warn("Expression appears to be a Date operation expression, but the parameter value is actually " + paramVal == null ? "null" : paramVal.getClass());
+					log.warn("Expression appears to be a Date operation expression, but the parameter value is actually " + (paramVal == null ? "null" : paramVal.getClass()));
 				}
 				else {
 					Calendar cal = Calendar.getInstance();
