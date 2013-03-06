@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
@@ -89,39 +89,22 @@ public class ReflectionUtil {
     }
 	
     /**
-     * Returns the property value with the given property name on the given object
+     * Returns the property value with the given property name on the given object.
+     * <p>
+     * It uses {@link PropertyUtils#getProperty(Object, String)}.
+     * 
      * @param object
      * @param property
      * @return the property value with the given property name on the given object
      * @throws IllegalArgumentException if anything goes wrong
      */
 	public static Object getPropertyValue(Object object, String property) {
-		Method m = null;
-		try {
-			String methodName = "get"+StringUtils.capitalize(property);
-			m = object.getClass().getMethod(methodName, (Class[]) null);
-		}
-		catch (Exception e) {
-			// Handled below 
-		}
-		if (m == null) {
-			try {
-				String methodName = "is"+StringUtils.capitalize(property);
-				m = object.getClass().getMethod(methodName, (Class[]) null);
-			}
-			catch (Exception e) {
-				// Handled below
-			}
-		}
-		if (m == null) {
-			throw new IllegalArgumentException("Unable to access property " + property + " on " + object);
-		}
-		try {
-			return m.invoke(object, new Object[] {});
-		}
-		catch (Exception e) {
-			throw new IllegalArgumentException("Unable to invoke method " + m + " on " + object, e);
-		}
+    	try {
+	        return PropertyUtils.getProperty(object, property);
+        }
+        catch (Exception e) {
+        	throw new IllegalArgumentException(e);
+        }
 	}
 	
 	/**
