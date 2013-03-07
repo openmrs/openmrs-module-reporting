@@ -97,6 +97,9 @@ public class ReflectionUtil {
      * @param property
      * @return the property value with the given property name on the given object
      * @throws IllegalArgumentException if anything goes wrong
+     * @should work for string property
+     * @should work for boolean property
+     * @should work for object property
      */
 	public static Object getPropertyValue(Object object, String property) {
     	try {
