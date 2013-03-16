@@ -1,9 +1,9 @@
 package org.openmrs.module.reporting.report.task;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,10 +20,10 @@ import org.openmrs.module.reporting.report.service.ReportService;
  */
 public class RunQueuedReportsTask extends AbstractReportsTask {
 	
-	private static Log log = LogFactory.getLog(RunQueuedReportsTask.class);
+	private final Log log = LogFactory.getLog(RunQueuedReportsTask.class);
 	
 	private static Integer maxExecutions = null;
-	private static Set<String> currentlyRunningRequests = new HashSet<String>();
+	private final static Map<String, RunQueuedReportsTask> currentlyRunningRequests = new ConcurrentHashMap<String, RunQueuedReportsTask>();
 	
 	/**
 	 * @see AbstractReportsTask#execute()
@@ -55,16 +55,21 @@ public class RunQueuedReportsTask extends AbstractReportsTask {
 		    	if (requestToRun.getBaseCohort() != null) {
 		    		ParameterizableUtil.refreshMappedDefinition(requestToRun.getBaseCohort());
 		    	}
-		    	if (!currentlyRunningRequests.contains(requestToRun.getUuid())) {
-		    		try {
-		    			currentlyRunningRequests.add(requestToRun.getUuid());
-			    		rs.runReport(requestToRun);
-			    	}
-		    		finally {
-		    			currentlyRunningRequests.remove(requestToRun.getUuid());
-		    		}
+
+		    	if (!currentlyRunningRequests.containsKey(requestToRun.getUuid())) {
+					try {
+						currentlyRunningRequests.put(requestToRun.getUuid(), this);
+						rs.runReport(requestToRun);
+					}
+					finally {
+						currentlyRunningRequests.remove(requestToRun.getUuid());
+					}
 				}
 			}
 		}
+	}
+	
+	public static Map<String, RunQueuedReportsTask> getCurrentlyRunningRequests() {
+		return currentlyRunningRequests;
 	}
 }

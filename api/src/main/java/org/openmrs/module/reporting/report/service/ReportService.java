@@ -140,6 +140,13 @@ public interface ReportService extends OpenmrsService {
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
 
 	/**
+	 * @return all {@link ReportRequest} in the system that match the passed parameters
+	 * @should retrieve report requests by definition
+	 */
+	@Transactional(readOnly = true)
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
+
+	/**
 	 * Deletes the passed {@link ReportRequest}
 	 */
 	@Transactional

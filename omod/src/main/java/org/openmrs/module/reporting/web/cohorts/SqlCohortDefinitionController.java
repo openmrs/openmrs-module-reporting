@@ -66,9 +66,6 @@ public class SqlCohortDefinitionController {
 	/**
 	 * Copies the SQL cohort definition with the given uuid into another one with the same
 	 * parameters and searches, but blank name/description and SQL string
-	 * 
-	 * @param uuid
-	 * @return
 	 */
 	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinitionClone")
 	public String cloneDefinition(WebRequest request,

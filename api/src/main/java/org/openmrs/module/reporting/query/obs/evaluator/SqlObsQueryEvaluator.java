@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.query.obs.definition.SqlObsQuery;
 /**
  * The logic that evaluates a {@link SqlObsQuery} and produces an {@link Query}
  */
-@Handler(supports=SqlObsQuery.class)
+//@Handler(supports=SqlObsQuery.class) TODO: Uncomment this out wne the evaluate method is implemented
 public class SqlObsQueryEvaluator implements ObsQueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());

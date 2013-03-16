@@ -14,11 +14,12 @@
 package org.openmrs.module.reporting.report.renderer.template;
 
 import org.openmrs.api.APIException;
+import org.openmrs.module.reporting.report.renderer.RenderingException;
 
 /**
  * Represents an Exception that occurs during evaluation of a template
  */
-public class TemplateEvaluationException extends APIException {
+public class TemplateEvaluationException extends RenderingException {
 	
 	public static final long serialVersionUID = 1L;
 	

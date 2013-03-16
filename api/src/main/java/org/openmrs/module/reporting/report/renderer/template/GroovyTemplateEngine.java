@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.report.renderer.template;
 
+import groovy.lang.GroovyRuntimeException;
 import groovy.text.SimpleTemplateEngine;
 import groovy.text.Template;
 
@@ -42,6 +43,9 @@ public class GroovyTemplateEngine implements TemplateEngine {
 			Template groovyTemplate = engine.createTemplate(template);
 			String result = groovyTemplate.make(bindings).toString();
 			return result;
+		}
+		catch (GroovyRuntimeException gre) {
+			throw new TemplateEvaluationException(gre.getMessage(), gre);
 		}
 		catch (Exception e) {
 			throw new TemplateEvaluationException("Unable to compile " + getName() + " template", e);

@@ -16,11 +16,14 @@ package org.openmrs.module.reporting.definition.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Auditable;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -218,6 +221,22 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	 * @see SerializedDefinitionService#saveDefinition(Definition)
 	 */
     public <T extends Definition> T saveDefinition(T definition) {
+    	//TODO This setting of audit fields can be safely removed after TRUNK-3876 is fixed.
+		//check if existing definition
+		if (definition.getId() != null) {
+			definition.setChangedBy(Context.getAuthenticatedUser());
+			definition.setDateChanged(new Date());
+    	}
+		else {
+			//new definition
+			if (definition.getCreator() == null) {
+				definition.setCreator(Context.getAuthenticatedUser());
+			}
+			if (definition.getDateCreated() == null) {
+				definition.setDateCreated(new Date());
+			}
+		}
+     	
     	return dao.saveObject(definition, serializer);
     }
 

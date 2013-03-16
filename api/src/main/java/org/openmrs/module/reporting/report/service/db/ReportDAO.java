@@ -125,7 +125,7 @@ public interface ReportDAO {
 	/**
 	 * @return all {@link ReportRequest} in the system that match the passed parameters
 	 */
-	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}

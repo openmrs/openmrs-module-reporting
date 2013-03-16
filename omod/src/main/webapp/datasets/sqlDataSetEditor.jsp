@@ -64,7 +64,7 @@
 			<c:otherwise>
 
 		
-				<table cellspacing="5" cellpadding="5">
+				<table cellspacing="5" cellpadding="5" width="100%">
 					<tr valign="top">
 						<td width="25%">	
 			

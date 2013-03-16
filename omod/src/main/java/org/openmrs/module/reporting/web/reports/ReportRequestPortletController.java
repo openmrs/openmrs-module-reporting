@@ -73,18 +73,16 @@ public class ReportRequestPortletController extends ReportingPortletController {
 				statuses[i] = Status.valueOf(statusNames[i]);
 			}
 		}
-		
-		List<ReportRequest> requests = rs.getReportRequests(reportDefinition, null, null, statuses);
-		Collections.sort(requests, new PriorityComparator());
-		
+
+		Integer mostRecentNum = null;
 		if (ObjectUtil.notNull(mostRecentNumParam)) {
-			Integer mostRecentNum = Integer.valueOf(mostRecentNumParam);
-			while (requests.size() > mostRecentNum && mostRecentNum > 0) {
-				requests.remove(0);
+			mostRecentNum = Integer.valueOf(mostRecentNumParam);
+			if (mostRecentNum == 0) {
+				mostRecentNum = null;
 			}
-			Collections.reverse(requests);
 		}
 		
+		List<ReportRequest> requests = rs.getReportRequests(reportDefinition, null, null, mostRecentNum, statuses);
 		model.put("requests", requests);
     }    
 }

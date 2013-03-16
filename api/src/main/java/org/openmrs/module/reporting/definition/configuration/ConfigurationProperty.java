@@ -48,4 +48,14 @@ public @interface ConfigurationProperty {
 	 * Optional grouping category which can be used to organize related ConfigurationProperties together.
 	 */
 	public String group() default "";
+	
+	/**
+	 * Optional display format. e.g textarea
+	 */
+	public String displayFormat() default "";
+	
+	/**
+	 * Optional display attributes. e.g rows=5|cols=100
+	 */
+	public String displayAttributes() default "";
 }

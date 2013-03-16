@@ -201,7 +201,15 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	@Transactional(readOnly=true)
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses) {
-		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
+		return getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, null, statuses);
+	}
+
+	/**
+	 * @see ReportService#getReportRequests(ReportDefinition, Date, Date, Integer, Status)
+	 */
+	@Transactional(readOnly=true)
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses) {
+		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, mostRecentNum, statuses);
 	}
 
 	/**
@@ -209,6 +217,10 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	@Transactional
 	public void purgeReportRequest(ReportRequest request) {
+		RunQueuedReportsTask reportsTask = RunQueuedReportsTask.getCurrentlyRunningRequests().get(request.getUuid());
+		if (reportsTask != null) {
+			reportsTask.cancelCurrentlyRunningReportingTask();
+		}
 		reportDAO.purgeReportRequest(request);
 		reportCache.remove(request.getUuid());
 		FileUtils.deleteQuietly(getReportDataFile(request));
@@ -477,15 +489,6 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 					log.warn("Report Processor Failed: " + c.getName(), e);
 					logReportMessage(request, "Report Processor Failed: " + c.getName());
 				}
-			}
-
-			try {
-				logReportMessage(request, "Automatically Saving Report....");
-				report = Context.getService(ReportService.class).saveReport(report, "");
-			}
-			catch (Exception e) {
-				log.warn("Report Saving Failed", e);
-				logReportMessage(request, "Unable to save Report");
 			}
 		}
 		

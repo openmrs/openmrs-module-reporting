@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
+import java.io.StringReader;
+
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -21,6 +23,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.report.util.SqlScriptParser;
 
 /**
  * Evaluates a SQL query and returns a Cohort
@@ -48,7 +51,8 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	SqlCohortDefinition sqlCohortDefinition = (SqlCohortDefinition) cohortDefinition;
     	CohortQueryService cqs = Context.getService(CohortQueryService.class);
-    	Cohort c = cqs.executeSqlQuery(sqlCohortDefinition.getQuery(), context.getParameterValues());
+    	String sql = SqlScriptParser.parse(new StringReader(sqlCohortDefinition.getQuery()))[0];
+    	Cohort c = cqs.executeSqlQuery(sql, context.getParameterValues());
     	if (context.getBaseCohort() != null) {
     		c = Cohort.intersect(c, context.getBaseCohort());
     	}

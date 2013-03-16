@@ -14,6 +14,7 @@
 
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +22,7 @@ import java.sql.ResultSetMetaData;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.SessionFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -33,8 +35,10 @@ import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.report.util.SqlScriptParser;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 import org.openmrs.util.DatabaseUpdater;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The logic that evaluates a {@link SqlDataSetDefinition} and produces an {@link DataSet}
@@ -44,6 +48,9 @@ import org.openmrs.util.DatabaseUpdater;
 public class SqlDataSetEvaluator implements DataSetEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
+	
+	@Autowired
+	private SessionFactory sessionFactory;
 	
 	/**
 	 * Public constructor
@@ -69,10 +76,11 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 				
 		Connection connection = null;
 		try {
-			connection = DatabaseUpdater.getConnection();
+			connection = sessionFactory.getCurrentSession().connection();
 			ResultSet resultSet = null;
 
 			String sqlQuery = sqlDsd.getSqlQuery();
+			sqlQuery = SqlScriptParser.parse(new StringReader(sqlQuery))[0];
 			
 			// if the user asked for only a subset, append a "limit" clause to the query so that 
 			// the query runs faster in the database
@@ -122,16 +130,6 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-		finally {
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-			}
-			catch (Exception e) {
-				log.error("Error while closing connection", e);
-			}
 		}
 		return dataSet;
 	}

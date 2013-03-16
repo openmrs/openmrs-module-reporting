@@ -314,7 +314,7 @@ function submitColumnOrder(sortable) {
 				</tr>
 				<tr>
 					<td>Definition</td>
-					<td><rptTag:chooseDataDefinition id="addCol" formFieldName="columnDefinition"/></td>
+					<td><rptTag:chooseDataDefinition id="addCol" formFieldName="columnDefinition" types="${dataDefinitionTypes}"/></td>
 					<td></td>
 				</tr>
 				<tr>

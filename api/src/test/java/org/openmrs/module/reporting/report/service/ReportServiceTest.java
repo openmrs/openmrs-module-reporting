@@ -31,6 +31,7 @@ import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+import org.springframework.test.annotation.NotTransactional;
 
 public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	

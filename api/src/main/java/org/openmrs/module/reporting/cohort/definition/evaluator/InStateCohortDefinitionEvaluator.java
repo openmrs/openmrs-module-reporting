@@ -25,6 +25,9 @@ public class InStateCohortDefinitionEvaluator implements CohortDefinitionEvaluat
 	 * @see org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator#evaluate(org.openmrs.module.reporting.cohort.definition.CohortDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
 	 * @should return no patients if none have the given state
 	 * @should return patients in given state on given date
+	 * @should return patients in the given state on or before the given start date
+	 * @should return patients in the given state on or after the given end date
+	 * @should find patients in a state on the onOrBefore date if passed in time is at midnight
 	 */
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
 		InStateCohortDefinition definition = (InStateCohortDefinition) cohortDefinition;

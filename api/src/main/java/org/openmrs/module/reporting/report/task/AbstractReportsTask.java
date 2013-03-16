@@ -5,20 +5,27 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.scheduler.SchedulerConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Generic superclass for a Reports task
  */
 public abstract class AbstractReportsTask extends TimerTask {
 	
-	private static Log log = LogFactory.getLog(AbstractReportsTask.class);
+	private final Log log = LogFactory.getLog(AbstractReportsTask.class);
 	
 	// Per REPORT-368, we need to avoid locking the admin user account if the scheduler.password GP is wrong.
 	private static Date lastFailedLogin = null;
+	
+	private static SessionFactory sessionFactory;
+	
+	private volatile Session currentSession;
 	
 	/**
 	 * Sub-classes should override this method instead of the run method to implement their logic
@@ -26,6 +33,12 @@ public abstract class AbstractReportsTask extends TimerTask {
 	 */
 	public abstract void execute();
 	
+	@Autowired
+    public void setSessionFactory(SessionFactory sessionFactory) {
+		//Store it in a static variable so that you can instantiate tasks with 'new'.
+    	AbstractReportsTask.sessionFactory = sessionFactory;
+    }
+
 	/**
 	 * @see TimerTask#run()
 	 */
@@ -33,6 +46,8 @@ public abstract class AbstractReportsTask extends TimerTask {
 	public final void run() {
 		try {
 			Context.openSession();
+			currentSession = sessionFactory.getCurrentSession();
+			
 			if (!Context.isAuthenticated()) {
 				authenticate();
 			}
@@ -44,8 +59,20 @@ public abstract class AbstractReportsTask extends TimerTask {
 		}
 		finally {
 			if (Context.isSessionOpen()) {
+				Context.clearSession();
 				Context.closeSession();
 			}
+		}
+	}
+	
+	public void cancelCurrentlyRunningReportingTask() {
+		Session session = currentSession;
+		if (session != null && session.isOpen()) {
+			session.close();
+			log.info("Reporting task has been cancelled");
+		}
+        else {
+			log.warn("Failed to cancel the reporting task");
 		}
 	}
 	

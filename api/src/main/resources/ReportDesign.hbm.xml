@@ -8,7 +8,7 @@
 		<property name="uuid" type="string" length="38" not-null="true" />
 		<property name="name" type="string" not-null="true" />
 		<property name="description" type="string" />
-		<property name="reportDefinition" type="org.openmrs.module.reporting.report.service.db.ReportDefinitionType" not-null="true" column="report_definition_id" />
+		<property name="reportDefinition" type="org.openmrs.module.reporting.report.service.db.ReportDefinitionType" not-null="true" column="report_definition_uuid" />
 		<property name="rendererType" type="class" length="255" column="renderer_type" not-null="true" />
 		<property name="properties" type="org.openmrs.module.reporting.report.service.db.PropertiesType" column="properties" />
 		<set name="resources" lazy="true" cascade="all-delete-orphan" inverse="true" access="field" order-by="name asc">

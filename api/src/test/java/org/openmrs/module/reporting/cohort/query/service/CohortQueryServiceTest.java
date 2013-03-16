@@ -13,11 +13,15 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.Person;
+import org.openmrs.User;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
@@ -147,6 +151,18 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
     	cohort = service.getPatientsHavingRangedObs(TimeModifier.NO, concept, null, onOrAfter, onOrBefore, locationList, encTypeList, RangeComparator.GREATER_THAN, 175d, RangeComparator.LESS_THAN, 185d);
     	assertCohort(cohort, 2, 6, 7, 8, 21, 23, 24);
     }
+    
+    /**
+	 * @see {@link CohortQueryService#getPatientsHavingEncounters(Date, Date, TimeQualifier, List<Location>, List<Person>, List<EncounterType>, List<Form>, Integer, Integer, User, Date, Date)}
+	 */
+	@Test
+	@Verifies(value = "should get patients having encounters with a specified provider", method = "getPatientsHavingEncounters(Date, Date, TimeQualifier, List<Location>, List<Person>, List<EncounterType>, List<Form>, Integer, Integer, User, Date, Date)")
+	public void getPatientsHavingEncounters_shouldGetPatientsHavingEncountersWithASpecifiedProvider() throws Exception {
+		List<Person> providerList = Collections.singletonList(new Person(2));
+		CohortQueryService service = Context.getService(CohortQueryService.class);
+		Cohort cohort = service.getPatientsHavingEncounters(null, null, TimeQualifier.ANY, null, providerList, null, null, null, null, null, null, null);
+		assertCohort(cohort, 23, 24);
+	}
 
     /**
      * Asserts that the passed in cohort has exactly the specified member ids

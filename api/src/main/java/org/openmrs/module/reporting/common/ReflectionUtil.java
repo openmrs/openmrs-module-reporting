@@ -93,6 +93,7 @@ public class ReflectionUtil {
      * @param object
      * @param property
      * @return the property value with the given property name on the given object
+     * @throws IllegalArgumentException if anything goes wrong
      */
 	public static Object getPropertyValue(Object object, String property) {
 		Method m = null;
@@ -119,7 +120,7 @@ public class ReflectionUtil {
 			return m.invoke(object, new Object[] {});
 		}
 		catch (Exception e) {
-			throw new IllegalArgumentException("Unable to invoke method " + m + " on " + object);
+			throw new IllegalArgumentException("Unable to invoke method " + m + " on " + object, e);
 		}
 	}
 	

@@ -312,9 +312,8 @@ public class ObjectUtil {
 			return toString(nvl(format, ","), (Object[])o);
 		}
 		if (o instanceof IndicatorResult) {
-			if (notNull(format)) {
-				return format(((IndicatorResult)o).getValue(), format);
-			}
+			IndicatorResult r = (IndicatorResult)o;
+			return format(r.getValue(), format);
 		}
 		if (o instanceof Cohort) {
 			return Integer.toString(((Cohort)o).getSize());

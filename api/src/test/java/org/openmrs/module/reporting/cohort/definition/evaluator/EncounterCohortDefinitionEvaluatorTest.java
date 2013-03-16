@@ -9,11 +9,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
@@ -220,5 +222,46 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		Assert.assertTrue(c.contains(22));
 		Assert.assertTrue(c.contains(23));
 		Assert.assertTrue(c.contains(24));
+	}
+	
+	/**
+	 * @see {@link EncounterCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should find patients with encounters on the onOrBefore date if passed in time is at midnight", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldFindPatientsWithEncountersOnTheOnOrBeforeDateIfPassedInTimeIsAtMidnight() throws Exception {
+		EncounterService es = Context.getEncounterService();
+		Encounter enc = es.getEncounter(3);
+		final Integer patentId = 7;
+		Assert.assertEquals(patentId, enc.getPatient().getPatientId());//sanity check
+		enc.setEncounterDatetime(DateUtil.getDateTime(2005, 8, 1, 11, 0, 0, 0));
+		es.saveEncounter(enc);
+		Context.flushSession();//because the query will compare with the value in the DB
+		
+		EncounterCohortDefinition cd = new EncounterCohortDefinition();
+		cd.setOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
+		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertTrue(c.contains(patentId));
+	}
+	
+	/**
+	 * @see {@link EncounterCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should find patients with encounters created on the specified date if passed in time is at midnight", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldFindPatientsWithEncountersCreatedOnTheSpecifiedDateIfPassedInTimeIsAtMidnight()
+	    throws Exception {
+		EncounterService es = Context.getEncounterService();
+		Encounter enc = es.getEncounter(3);
+		final Integer patentId = 7;
+		Assert.assertEquals(patentId, enc.getPatient().getPatientId());
+		enc.setDateCreated(DateUtil.getDateTime(2005, 8, 1, 11, 0, 0, 0));
+		es.saveEncounter(enc);
+		Context.flushSession();
+		
+		EncounterCohortDefinition cd = new EncounterCohortDefinition();
+		cd.setCreatedOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
+		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertTrue(c.contains(patentId));
 	}
 }

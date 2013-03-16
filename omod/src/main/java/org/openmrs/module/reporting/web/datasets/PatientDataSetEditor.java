@@ -31,6 +31,8 @@ import org.openmrs.module.htmlwidgets.web.html.Option;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
@@ -56,12 +58,15 @@ public class PatientDataSetEditor {
 	
 	public final static String DSD_ATTR = "PatientDataSetEditor_dsd";
 	public final static String IS_UNSAVED_ATTR = "PatientDataSetEditor_is_unsaved"; 
+	public final static String SUCCESS_URL_ATTR = "PatientDataSetEditor_successUrl";
+	public final static String DISCARD_URL_ATTR = "PatientDataSetEditor_discardUrl";
 	
 	Log log = LogFactory.getLog(getClass());
 	
 	@ModelAttribute("dsd")
 	public PatientDataSetDefinition getDataSetDefinition(@RequestParam(required=false, value="uuid") String uuid,
-	                                                     HttpSession session) {
+	                                                     @RequestParam(required=false) String successUrl, 
+	                                                     @RequestParam(required=false) String discardUrl, HttpSession session) {
 		PatientDataSetDefinition dsd = getFromSession(session);
 		if (dsd != null && uuid != null && !uuid.equals(dsd.getUuid())) {
 			removeFromSession(session);
@@ -79,6 +84,13 @@ public class PatientDataSetEditor {
 				dsd.setName("Untitled");
 				putInSession(session, dsd, true);
 			}
+		}
+		
+		if (!StringUtils.isBlank(successUrl)) {
+			session.setAttribute(SUCCESS_URL_ATTR, successUrl);
+		}
+		if (!StringUtils.isBlank(discardUrl)) {
+			session.setAttribute(DISCARD_URL_ATTR, discardUrl);
 		}
 		
 		return dsd;
@@ -102,6 +114,8 @@ public class PatientDataSetEditor {
 	private void removeFromSession(HttpSession session) {
 	    session.removeAttribute(DSD_ATTR);
 	    session.removeAttribute(IS_UNSAVED_ATTR);
+	    session.removeAttribute(SUCCESS_URL_ATTR);
+	    session.removeAttribute(DISCARD_URL_ATTR);
     }
 
 	private PatientDataSetDefinition getFromSession(HttpSession session) {
@@ -119,6 +133,7 @@ public class PatientDataSetEditor {
 	                        Model model) {
 		model.addAttribute("unsaved", session.getAttribute(IS_UNSAVED_ATTR));
 		model.addAttribute("dsd", session.getAttribute(DSD_ATTR));
+		model.addAttribute("dataDefinitionTypes", PatientDataDefinition.class.getName() + "," + PersonDataDefinition.class.getName());
 	}
 	
 	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-nameDescription", method=RequestMethod.POST)
@@ -255,15 +270,30 @@ public class PatientDataSetEditor {
 	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-save", method=RequestMethod.POST)
 	public String save(HttpSession session) {
 		PatientDataSetDefinition dsd = getFromSession(session);
+		String successUrl = (String) session.getAttribute(SUCCESS_URL_ATTR);
+		
 		Context.getService(DataSetDefinitionService.class).saveDefinition(dsd);
+		
 		removeFromSession(session);
-		return "redirect:patientDataSetEditor.form?uuid=" + dsd.getUuid();
+		
+		if (!StringUtils.isBlank(successUrl)) {
+			return "redirect:" + successUrl;
+		} else {
+			return "redirect:patientDataSetEditor.form?uuid=" + dsd.getUuid();
+		}
 	}
 	
 	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-discard", method=RequestMethod.POST)
 	public String discard(HttpSession session) {
+		String discardUrl = (String) session.getAttribute(DISCARD_URL_ATTR);
+		
 		removeFromSession(session);
-		return "redirect:/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition";
+		
+		if (!StringUtils.isBlank(discardUrl)) {
+			return "redirect:" + discardUrl;
+		} else {
+			return "redirect:/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition";
+		}
 	}
 	
 }

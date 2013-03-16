@@ -424,4 +424,7 @@
   <reporting_report_processor id="1" name="Old retired Logging processor" processor_type="org.openmrs.module.reporting.report.processor.LoggingReportProcessor" configuration="Not needed" run_on_success="true" run_on_error="false" creator="1" date_created="2008-08-18 11:50:15.0" retired="true" uuid="c18717dd-4478-4a0e-84fe-ee62c5f0676a" processor_mode="DISABLED"/>
   <reporting_report_processor id="2" name="Logging processor" processor_type="org.openmrs.module.reporting.report.processor.LoggingReportProcessor" configuration="Still not needed" run_on_success="true" run_on_error="false" creator="1" date_created="2008-08-18 11:50:15.0" retired="false" uuid="c11117dd-4478-4a0e-84fe-ee62c5f0676a" processor_mode="AUTOMATIC"/>
 
+  <encounter_provider encounter_provider_id="1" encounter_id="11" provider_id="2" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0aae8-20ee-46b7-ade6-9e68f897b712" />
+  <encounter_provider encounter_provider_id="2" encounter_id="12" provider_id="2" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="1609ac3f-090c-4b1c-a497-4c307e24c534" />
+  
 </dataset>
