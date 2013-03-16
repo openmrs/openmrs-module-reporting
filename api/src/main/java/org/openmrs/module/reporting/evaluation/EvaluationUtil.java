@@ -13,11 +13,13 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -153,7 +155,7 @@ public class EvaluationUtil {
 	 * 
 	 * @param expression
 	 * @return value for given expression, as an <code>Object</code>
-	 * @throws ParameterException
+	 * @throws org.openmrs.module.reporting.evaluation.parameter.ParameterException
 	 */
 	public static Object evaluateParameterExpression(String expression, Map<String, Object> parameters) throws ParameterException {
 		
@@ -162,41 +164,95 @@ public class EvaluationUtil {
 		log.debug("Starting expression: " + expression);
 		String[] paramAndFormat = expression.split(FORMAT_SEPARATOR, 2);
 		Object paramValueToFormat = null;
-		
-		// First try to handle Date operations
-		try {
-			String dateStr = paramAndFormat[0];
-			String[] split = dateStr.split("[+-]");
-			if (split.length > 1) {
-				String parameterName = split[0].trim();
-				Object paramVal = parameters.get(parameterName);
-	
-				if (paramVal == null || !(paramVal instanceof Date)) {
-					log.debug("Expression looked like a Date operation expression, but the parameter value is " + (paramVal == null ? "null" : paramVal.getClass()));
-				}
-				else {
-					Calendar cal = Calendar.getInstance();
-					cal.setTime((Date)paramVal);
-					int runningLength = split[0].length();
-					for (int i=1; i<split.length; i++) {
-						int multiplier = dateStr.charAt(runningLength) == '-' ? -1 : 1;
-						int num = multiplier * Integer.parseInt(split[i].substring(0, split[i].length()-1));
-						String fld = split[i].substring(split[i].length()-1, split[i].length()).toLowerCase();
-						num *= "w".equals(fld) ? 7 : 1;
-						int field = "h".equals(fld) ? Calendar.HOUR : "m".equals(fld) ? Calendar.MONTH : "y".equals(fld) ? Calendar.YEAR : Calendar.DATE;
-						cal.add(field, num);
-						runningLength += split[i].length() + 1;
-					}
-					paramValueToFormat = cal.getTime();
-					log.debug("Calculated date of: " + paramValueToFormat);
-				}
-			}
-		}
-		catch (Exception e) {
-			log.debug(e.getMessage());
-			throw new ParameterException("Error parsing dates in expression: " + paramAndFormat[0]);
-		}
-		
+
+        try {
+            Pattern pattern = Pattern.compile("([a-zA-Z_0-9.]+)((?:\\s*[+-/*]\\s*\\d*\\.?\\d+\\w?)+)"); // a word, then any number of { [+-*/] int/double unit? } with optional spaces
+            Matcher matcher = pattern.matcher(paramAndFormat[0]);
+            if (matcher.matches()) {
+                String parameterName = matcher.group(1);
+                paramValueToFormat = parameters.get(parameterName);
+                if (paramValueToFormat == null) {
+                    log.debug("Looked like an expression but the parameter value is null");
+                } else {
+                    String operations = matcher.group(2);
+                    Pattern opPattern = Pattern.compile("([+-/*])\\s*(\\d*\\.?\\d+)(\\w?)"); // [+-*/] int/double [ymwd]?
+                    Matcher opMatcher = opPattern.matcher(operations);
+                    while (opMatcher.find()) {
+                        String op = opMatcher.group(1);
+                        String number = opMatcher.group(2);
+                        String unit = opMatcher.group(3).toLowerCase();
+                        if (paramValueToFormat instanceof Date) {
+                            if (!op.matches("[+-]")) {
+                                throw new IllegalArgumentException("Dates only support the + and - operators");
+                            }
+                            Integer numAsInt;
+                            try {
+                                numAsInt = Integer.parseInt(number);
+                            } catch (NumberFormatException ex) {
+                                throw new IllegalArgumentException("Dates do not support arithmetic with floating-point values");
+                            }
+
+                            if ("-".equals(op)) {
+                                numAsInt = -numAsInt;
+                            }
+                            if ("w".equals(unit)) {
+                                unit = "d";
+                                numAsInt *= 7;
+                            }
+                            if ("h".equals(unit)) {
+                                paramValueToFormat = DateUtils.addHours((Date) paramValueToFormat, numAsInt);
+                            } else if ("m".equals(unit)) {
+                                paramValueToFormat = DateUtils.addMonths((Date) paramValueToFormat, numAsInt);
+                            } else if ("y".equals(unit)) {
+                                paramValueToFormat = DateUtils.addYears((Date) paramValueToFormat, numAsInt);
+                            } else if ("".equals(unit) || "d".equals(unit)) {
+                                paramValueToFormat = DateUtils.addDays((Date) paramValueToFormat, numAsInt);
+                            } else {
+                                throw new IllegalArgumentException("Unknown unit: " + unit);
+                            }
+                        }
+                        else { // assume it's a number
+                            if (!"".equals(unit)) {
+                                throw new IllegalArgumentException("Can't specify units in a non-date expression");
+                            }
+                            if (paramValueToFormat instanceof Integer && number.matches("\\d+")) {
+                                Integer parsed = Integer.parseInt(number);
+                                if ("+".equals(op)) {
+                                    paramValueToFormat = ((Integer) paramValueToFormat) + parsed;
+                                } else if ("-".equals(op)) {
+                                    paramValueToFormat = ((Integer) paramValueToFormat) - parsed;
+                                } else if ("*".equals(op)) {
+                                    paramValueToFormat = ((Integer) paramValueToFormat) * parsed;
+                                } else if ("/".equals(op)) {
+                                    paramValueToFormat = ((Integer) paramValueToFormat) / parsed;
+                                } else {
+                                    throw new IllegalArgumentException("Unknown operator " + op);
+                                }
+                            } else {
+                                // since one or both are decimal values, do double arithmetic
+                                Double parsed = Double.parseDouble(number);
+                                if ("+".equals(op)) {
+                                    paramValueToFormat = ((Number) paramValueToFormat).doubleValue() + parsed;
+                                } else if ("-".equals(op)) {
+                                    paramValueToFormat = ((Number) paramValueToFormat).doubleValue() - parsed;
+                                } else if ("*".equals(op)) {
+                                    paramValueToFormat = ((Number) paramValueToFormat).doubleValue() * parsed;
+                                } else if ("/".equals(op)) {
+                                    paramValueToFormat = ((Number) paramValueToFormat).doubleValue() / parsed;
+                                } else {
+                                    throw new IllegalArgumentException("Unknown operator " + op);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            log.debug(e.getMessage());
+            throw new ParameterException("Error handling expression: " + paramAndFormat[0], e);
+        }
+
 		paramValueToFormat = ObjectUtil.nvl(paramValueToFormat, parameters.get(paramAndFormat[0]));
 		if (ObjectUtil.isNull(paramValueToFormat)) {
 			if (parameters.containsKey(paramAndFormat[0])) {
