@@ -33,15 +33,17 @@ public class EvaluationUtilTest {
     public void setUp() throws Exception {
         parameters = new HashMap<String, Object>();
         parameters.put("date", date);
+        parameters.put("report.date", date);
         parameters.put("integer", anInteger);
+        parameters.put("report.integer", anInteger);
         parameters.put("double", aDouble);
     }
 
     @Test
     public void evaluateParameterExpression_shouldSupportDateSubtraction() throws Exception {
         assertThat((Date) evaluateParameterExpression("date - 12h", parameters), is(DateUtils.addHours(date, -12)));
-        assertThat((Date) evaluateParameterExpression("date - 4d", parameters), is(DateUtils.addDays(date, -4)));
-        assertThat((Date) evaluateParameterExpression("date-1w", parameters), is(DateUtils.addDays(date, -7)));
+        assertThat((Date) evaluateParameterExpression("report.date - 4d", parameters), is(DateUtils.addDays(date, -4)));
+        assertThat((Date) evaluateParameterExpression("report.date-1w", parameters), is(DateUtils.addDays(date, -7)));
         assertThat((Date) evaluateParameterExpression("date -3m", parameters), is(DateUtils.addMonths(date, -3)));
         assertThat((Date) evaluateParameterExpression("date-2y", parameters), is(DateUtils.addYears(date, -2)));
     }
@@ -65,9 +67,10 @@ public class EvaluationUtilTest {
     @Test
     public void evaluateParameterExpression_shouldSupportIntegerArithmetic() throws Exception {
         assertThat((Integer) evaluateParameterExpression("integer + 1", parameters), is(anInteger + 1));
-        assertThat((Integer) evaluateParameterExpression("integer- 10", parameters), is(anInteger - 10));
+        assertThat((Integer) evaluateParameterExpression("report.integer- 10", parameters), is(anInteger - 10));
         assertThat((Integer) evaluateParameterExpression("integer *2", parameters), is(anInteger * 2));
         assertThat((Integer) evaluateParameterExpression("integer/3", parameters), is(anInteger / 3));
+        assertThat((Integer) evaluateParameterExpression("report.integer +1 *2", parameters), is((anInteger + 1) * 2)); // note these are applied left-to-right
     }
 
     @Test

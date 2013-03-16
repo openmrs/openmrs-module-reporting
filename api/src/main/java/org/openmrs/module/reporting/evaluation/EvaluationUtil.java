@@ -166,7 +166,7 @@ public class EvaluationUtil {
 		Object paramValueToFormat = null;
 
         try {
-            Pattern pattern = Pattern.compile("(\\w+)((?:\\s*[+-/*]\\s*\\d*\\.?\\d+\\w?)+)"); // a word, then any number of { [+-*/] int/double unit? } with optional spaces
+            Pattern pattern = Pattern.compile("([a-zA-Z_0-9.]+)((?:\\s*[+-/*]\\s*\\d*\\.?\\d+\\w?)+)"); // a word, then any number of { [+-*/] int/double unit? } with optional spaces
             Matcher matcher = pattern.matcher(paramAndFormat[0]);
             if (matcher.matches()) {
                 String parameterName = matcher.group(1);
