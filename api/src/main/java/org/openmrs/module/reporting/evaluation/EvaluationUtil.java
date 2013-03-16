@@ -38,8 +38,27 @@ public class EvaluationUtil {
 	public static final String EXPRESSION_START = "${";
 	public static final String EXPRESSION_END = "}";
 	public static final String FORMAT_SEPARATOR = "\\|";
-	
-	/**
+
+    /*
+     * ([a-zA-Z_0-9.]+)                      ... (group 1) word made of letters, _, or dot, e.g. "report.start_date"
+     *
+     * ((?:\s*[+-/*]\s*\d*\.?\d+[a-zA-Z]?)+) ... (group 2)
+     *  (?:                               )+    ... means this occurs at least once, but isn't counted as a group
+     *     \s*[+-/*]\s*                         ... optional whitespace, operator [+-/*], optional whitespace
+     *                 \d*\.?\d+                ... captures either #.# or #
+     *                          [a-zA-Z]?       ... optional single-letter unit
+     */
+    private static Pattern expressionPattern = Pattern.compile("([a-zA-Z_0-9.]+)((?:\\s*[+-/*]\\s*\\d*\\.?\\d+[a-zA-Z]?)+)");
+
+    /*
+     * ([+-/*])                          ... (group 1) single-character operator
+     *         \s*                       ... optional whitespace
+     *            (\d*\.?\d+)            ... (group 2) captures either #.# or #
+     *                       ([a-zA-Z]?) ... (group 3) optional single-character unit
+     */
+    private static Pattern operationPattern = Pattern.compile("([+-/*])\\s*(\\d*\\.?\\d+)([a-zA-Z]?)");
+
+    /**
 	 * Returns true if the passed String is an expression that is capable of being evaluated
 	 * @param s the String to check
 	 * @return true if the passed String is an expression that is capable of being evaluated
@@ -166,8 +185,7 @@ public class EvaluationUtil {
 		Object paramValueToFormat = null;
 
         try {
-            Pattern pattern = Pattern.compile("([a-zA-Z_0-9.]+)((?:\\s*[+-/*]\\s*\\d*\\.?\\d+\\w?)+)"); // a word, then any number of { [+-*/] int/double unit? } with optional spaces
-            Matcher matcher = pattern.matcher(paramAndFormat[0]);
+            Matcher matcher = expressionPattern.matcher(paramAndFormat[0]);
             if (matcher.matches()) {
                 String parameterName = matcher.group(1);
                 paramValueToFormat = parameters.get(parameterName);
@@ -175,8 +193,7 @@ public class EvaluationUtil {
                     log.debug("Looked like an expression but the parameter value is null");
                 } else {
                     String operations = matcher.group(2);
-                    Pattern opPattern = Pattern.compile("([+-/*])\\s*(\\d*\\.?\\d+)(\\w?)"); // [+-*/] int/double [ymwd]?
-                    Matcher opMatcher = opPattern.matcher(operations);
+                    Matcher opMatcher = operationPattern.matcher(operations);
                     while (opMatcher.find()) {
                         String op = opMatcher.group(1);
                         String number = opMatcher.group(2);
