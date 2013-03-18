@@ -82,7 +82,7 @@ public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
                 addLocationValue((Location) value);
             }
 			else if (value instanceof String) {
-                addLocationValue((String) value);
+                addStringValue((String) value);
             }
 			else {
 				throw new IllegalArgumentException("You cannot add value " + value + " that is not a Location, Concept, or String");
@@ -90,7 +90,7 @@ public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
 		}
 	}
 
-    private void addLocationValue(String value) {
+    private void addStringValue(String value) {
         if (values==null){
             values = new ArrayList<String>();
         }
