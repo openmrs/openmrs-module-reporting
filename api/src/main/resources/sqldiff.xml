@@ -237,7 +237,7 @@
 			by uuid rather than by id to serialized object 
 		</description>
 		<sql>
-			ALTER table `reporting_report_design` ADD COLUMN report_definition_uuid varchar(38) NOT NULL;
+			ALTER table `reporting_report_design` ADD COLUMN report_definition_uuid char(38) NOT NULL;
 			
 			UPDATE reporting_report_design rd
 			LEFT JOIN serialized_object so ON rd.report_definition_id = so.serialized_object_id
@@ -246,6 +246,18 @@
 			ALTER table `reporting_report_design` ADD CONSTRAINT `report_definition_uuid for reporting_report_design` FOREIGN KEY (`report_definition_uuid`) REFERENCES `serialized_object` (`uuid`),
 			DROP FOREIGN KEY `report_definition_id for reporting_report_design`,
 			DROP COLUMN report_definition_id;
+		</sql>
+	</diff>
+	
+	<diff>
+		<version>0.871</version>
+		<author>Wyclif Luyima</author>
+		<date>March 22, 2013</date>
+		<description>
+			Changing datatype of reporting_report_design.report_definition_uuid column to char(38)
+		</description>
+		<sql>
+			ALTER table `reporting_report_design` MODIFY COLUMN report_definition_uuid char(38) NOT NULL;
 		</sql>
 	</diff>
 	
