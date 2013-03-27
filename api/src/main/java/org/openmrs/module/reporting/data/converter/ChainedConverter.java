@@ -20,15 +20,16 @@ import java.util.List;
  * Combines multiple converters together
  */
 public class ChainedConverter implements DataConverter {
-		
-	//***** PROPERTIES *****
-	
+
+	// ***** PROPERTIES *****
+
 	private List<DataConverter> converters;
-	
-	//***** CONSTRUCTORS *****
-	
-	public ChainedConverter() {}
-	
+
+	// ***** CONSTRUCTORS *****
+
+	public ChainedConverter() {
+	}
+
 	/**
 	 * Full Constructor
 	 */
@@ -39,33 +40,38 @@ public class ChainedConverter implements DataConverter {
 			}
 		}
 	}
-	
-	//***** INSTANCE METHODS *****
 
-	/** 
+	// ***** INSTANCE METHODS *****
+
+	/**
 	 * @see DataConverter#converter(Object)
 	 */
 	public Object convert(Object original) {
 		Object o = original;
-		if (converters != null) {
-			for (DataConverter converter : getConverters()) {
-				o = converter.convert(o);
+		try {
+			if (converters != null) {
+				for (DataConverter converter : getConverters()) {
+					o = converter.convert(o);
+				}
 			}
+		} catch (Exception e) {
+			throw new ConversionException("Unable to convert object "
+					+ original + "using multiple converters, due to: " + e, e);
 		}
 		return o;
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		if (converters.size() > 0) {
-			return converters.get(converters.size()-1).getDataType();
+			return converters.get(converters.size() - 1).getDataType();
 		}
 		return Object.class;
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
@@ -74,8 +80,8 @@ public class ChainedConverter implements DataConverter {
 		}
 		return Object.class;
 	}
-	
-	//***** PROPERTY ACCESS *****
+
+	// ***** PROPERTY ACCESS *****
 
 	/**
 	 * @return the converters
@@ -83,9 +89,10 @@ public class ChainedConverter implements DataConverter {
 	public List<DataConverter> getConverters() {
 		return converters;
 	}
-	
+
 	/**
-	 * @param converter the converter to add
+	 * @param converter
+	 *            the converter to add
 	 */
 	public void addConverter(DataConverter converter) {
 		if (converters == null) {
@@ -95,7 +102,8 @@ public class ChainedConverter implements DataConverter {
 	}
 
 	/**
-	 * @param converters the converters to set
+	 * @param converters
+	 *            the converters to set
 	 */
 	public void setConverters(List<DataConverter> converters) {
 		this.converters = converters;

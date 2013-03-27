@@ -24,69 +24,79 @@ import java.util.List;
  * Collection converter
  */
 public class CollectionConverter implements DataConverter {
-	
-	//***** PROPERTIES *****
-	
+
+	// ***** PROPERTIES *****
+
 	private DataConverter itemConverter;
 	private Boolean removeDuplicates;
 	private Comparator<Object> orderComparator;
-	
-	//***** CONSTRUCTORS *****
-	
+
+	// ***** CONSTRUCTORS *****
+
 	/**
 	 * Default Constructor
 	 */
-	public CollectionConverter() { }
-	
+	public CollectionConverter() {
+	}
+
 	/**
 	 * Full Constructor
 	 */
-	public CollectionConverter(DataConverter itemConverter, Boolean removeDuplicates, Comparator<Object> orderComparator) {
+	public CollectionConverter(DataConverter itemConverter,
+			Boolean removeDuplicates, Comparator<Object> orderComparator) {
 		this.itemConverter = itemConverter;
 		this.removeDuplicates = removeDuplicates;
 		this.orderComparator = orderComparator;
 	}
-	
-	
-	//***** INSTANCE METHODS *****
 
-	/** 
+	// ***** INSTANCE METHODS *****
+
+	/**
 	 * @see DataConverter#converter(Object)
 	 * @should convert a Date into a String with the passed format
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object convert(Object original) {
-		if (original != null) {
-			Collection c = (removeDuplicates ? new HashSet() : new ArrayList());
-			for (Object o : ((Collection)original)) {
-				c.add(itemConverter == null ? o : itemConverter.convert(o));
+		try {
+			if (original != null) {
+				Collection c = (removeDuplicates ? new HashSet()
+						: new ArrayList());
+				for (Object o : ((Collection) original)) {
+					c.add(itemConverter == null ? o : itemConverter.convert(o));
+				}
+				if (orderComparator != null) {
+					List<Object> l = new ArrayList<Object>(c);
+					Comparator<Object> comparator = (Comparator<Object>) orderComparator;
+					Collections.sort(l, comparator);
+					c = l;
+				}
+				return c;
 			}
-			if (orderComparator != null) {
-				List<Object> l = new ArrayList<Object>(c);
-				Comparator<Object> comparator = (Comparator<Object>)orderComparator;
-				Collections.sort(l, comparator);
-				c = l;
-			}
-			return c;
+		} catch (Exception e) {
+			throw new ConversionException(
+					"Unable to convert "
+							+ original
+							+ "to a String with the passed format using Collection converter, due to: "
+							+ e, e);
 		}
 		return null;
 	}
 
-	/** 
+	/**
 	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return Collection.class;
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Collection.class;
 	}
-	
-	//***** PROPERTY ACCESS *****
+
+	// ***** PROPERTY ACCESS *****
 
 	/**
 	 * @return the itemConverter
@@ -96,7 +106,8 @@ public class CollectionConverter implements DataConverter {
 	}
 
 	/**
-	 * @param itemConverter the itemConverter to set
+	 * @param itemConverter
+	 *            the itemConverter to set
 	 */
 	public void setItemConverter(DataConverter itemConverter) {
 		this.itemConverter = itemConverter;
@@ -110,7 +121,8 @@ public class CollectionConverter implements DataConverter {
 	}
 
 	/**
-	 * @param removeDuplicates the removeDuplicates to set
+	 * @param removeDuplicates
+	 *            the removeDuplicates to set
 	 */
 	public void setRemoveDuplicates(Boolean removeDuplicates) {
 		this.removeDuplicates = removeDuplicates;
@@ -124,7 +136,8 @@ public class CollectionConverter implements DataConverter {
 	}
 
 	/**
-	 * @param orderComparator the orderComparator to set
+	 * @param orderComparator
+	 *            the orderComparator to set
 	 */
 	public void setOrderComparator(Comparator<Object> orderComparator) {
 		this.orderComparator = orderComparator;

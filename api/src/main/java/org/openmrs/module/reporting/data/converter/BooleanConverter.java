@@ -48,11 +48,15 @@ public class BooleanConverter implements DataConverter  {
 	 */
 	public Object convert(Object original) {
 		Boolean b = (Boolean) original;
+		try{
 		if (b == Boolean.TRUE) {
 			return trueFormat;
 		}
 		else if (b == Boolean.FALSE) {
 			return falseFormat;
+		}
+		}catch (Exception e) {
+			throw new ConversionException("Unable to convert Boolean "+original+" to configured text representation due to: "+e, e);
 		}
 		return unspecifiedFormat;
 	}

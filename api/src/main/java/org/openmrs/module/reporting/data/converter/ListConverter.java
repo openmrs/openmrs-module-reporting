@@ -24,56 +24,65 @@ import org.openmrs.module.reporting.common.TimeQualifier;
  * List data converter
  */
 public class ListConverter implements DataConverter {
-	
-	//***** PROPERTIES *****
-	
+
+	// ***** PROPERTIES *****
+
 	private TimeQualifier whichItems;
 	private Integer maxNumberOfItems;
 	private Class<?> typeOfItem;
-	
-	//***** CONSTRUCTORS *****
-	
-	public ListConverter() { }
-	
+
+	// ***** CONSTRUCTORS *****
+
+	public ListConverter() {
+	}
+
 	/**
 	 * Full Constructor
 	 */
-	public ListConverter(TimeQualifier whichItems, Integer maxNumberOfItems, Class<?> typeOfItem) {
+	public ListConverter(TimeQualifier whichItems, Integer maxNumberOfItems,
+			Class<?> typeOfItem) {
 		this.whichItems = whichItems;
 		this.maxNumberOfItems = maxNumberOfItems;
 		this.typeOfItem = typeOfItem;
 	}
-	
-	//***** INSTANCE METHODS *****
 
-	/** 
+	// ***** INSTANCE METHODS *****
+
+	/**
 	 * @see DataConverter#converter(Object)
 	 * @should convert a Date into a String with the passed format
 	 */
 	@SuppressWarnings("rawtypes")
 	public Object convert(Object original) {
 		List l = (List) original;
-		if (l != null) {
-			TimeQualifier which = ObjectUtil.nvl(whichItems, TimeQualifier.ANY);
-			int max = (maxNumberOfItems == null || maxNumberOfItems > l.size() ? l.size() : maxNumberOfItems);
-			if (which != TimeQualifier.FIRST) {
-				Collections.reverse(l);
-			}
-			if (max == 1) {
-				return l.get(0);
-			}
-			else {
-				List<Object> ret = new ArrayList<Object>();
-				for (int i=0; i<=max; i++) {
-					ret.add(l.get(i));
+		try {
+			if (l != null) {
+				TimeQualifier which = ObjectUtil.nvl(whichItems,
+						TimeQualifier.ANY);
+				int max = (maxNumberOfItems == null
+						|| maxNumberOfItems > l.size() ? l.size()
+						: maxNumberOfItems);
+				if (which != TimeQualifier.FIRST) {
+					Collections.reverse(l);
 				}
-				return ret;				
+				if (max == 1) {
+					return l.get(0);
+				} else {
+					List<Object> ret = new ArrayList<Object>();
+					for (int i = 0; i <= max; i++) {
+						ret.add(l.get(i));
+					}
+					return ret;
+				}
 			}
+		} catch (Exception e) {
+			throw new ConversionException("Unable to convert Date" + original
+					+ "into a String with the passed format, due to: " + e, e);
 		}
 		return null;
 	}
 
-	/** 
+	/**
 	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
@@ -82,15 +91,15 @@ public class ListConverter implements DataConverter {
 		}
 		return typeOfItem;
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return List.class;
 	}
-	
-	//***** PROPERTY ACCESS *****
+
+	// ***** PROPERTY ACCESS *****
 
 	/**
 	 * @return the whichItems
@@ -100,7 +109,8 @@ public class ListConverter implements DataConverter {
 	}
 
 	/**
-	 * @param whichItems the whichItems to set
+	 * @param whichItems
+	 *            the whichItems to set
 	 */
 	public void setWhichItems(TimeQualifier whichItems) {
 		this.whichItems = whichItems;
@@ -114,7 +124,8 @@ public class ListConverter implements DataConverter {
 	}
 
 	/**
-	 * @param maxNumberOfItems the maxNumberOfItems to set
+	 * @param maxNumberOfItems
+	 *            the maxNumberOfItems to set
 	 */
 	public void setMaxNumberOfItems(Integer maxNumberOfItems) {
 		this.maxNumberOfItems = maxNumberOfItems;
@@ -128,7 +139,8 @@ public class ListConverter implements DataConverter {
 	}
 
 	/**
-	 * @param typeOfItem the typeOfItem to set
+	 * @param typeOfItem
+	 *            the typeOfItem to set
 	 */
 	public void setTypeOfItem(Class<?> typeOfItem) {
 		this.typeOfItem = typeOfItem;
