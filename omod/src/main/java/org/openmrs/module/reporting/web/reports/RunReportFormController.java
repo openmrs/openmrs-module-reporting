@@ -80,6 +80,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 		return c == CommandObject.class;
 	}
 	
+	@Override
 	public void validate(Object commandObject, Errors errors) {
 		CommandObject command = (CommandObject) commandObject;
 		ValidationUtils.rejectIfEmpty(errors, "reportDefinition", "reporting.Report.run.error.missingReportID");
@@ -152,7 +153,12 @@ public class RunReportFormController extends SimpleFormController implements Val
 				// avoid lazy init exceptions
 				command.setReportDefinition(rds.getDefinitionByUuid(req.getReportDefinition().getParameterizable().getUuid()));
 				for (Map.Entry<String, Object> param : req.getReportDefinition().getParameterMappings().entrySet()) {
-					command.getUserEnteredParams().put(param.getKey(), param.getValue());
+					Object value = param.getValue();
+					if ( EvaluationUtil.isExpression( value.toString() ) ) {
+						command.getExpressions().put( param.getKey(),  ( String ) value );
+						value = "";
+					} 
+					command.getUserEnteredParams().put(param.getKey(), value );
 				}
 				command.setSelectedRenderer(req.getRenderingMode().getDescriptor());
 			}
@@ -178,7 +184,6 @@ public class RunReportFormController extends SimpleFormController implements Val
 	
 	@Override
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object commandObject, BindException errors) throws Exception {
-		
 		CommandObject command = (CommandObject) commandObject;
 		ReportDefinition reportDefinition = command.getReportDefinition();
 		
@@ -246,15 +251,23 @@ public class RunReportFormController extends SimpleFormController implements Val
 	 * @see org.springframework.web.servlet.mvc.SimpleFormController#referenceData(javax.servlet.http.HttpServletRequest)
 	 */
 	@Override
-	protected Map<String, Object> referenceData(HttpServletRequest request) throws Exception {
+	protected Map<String, Object> referenceData(HttpServletRequest request, Object commandObject, Errors errors) throws Exception {
+		CommandObject command = (CommandObject) commandObject;
 		Map<String, Object> map = new HashMap<String, Object>();
 		EvaluationContext ec = new EvaluationContext();
 		Set<String> expSupportedTypes = new HashSet<String>();
+		Set<String> inputsToToggle = new HashSet<String>();
 		for (Object value : ec.getContextValues().values()) {
 			expSupportedTypes.add(value.getClass().getName());
 		}
 		map.put("expSupportedTypes", expSupportedTypes);
-		
+
+		for (Map.Entry<String, Object> e : command.getUserEnteredParams().entrySet()) {
+			if (StringUtils.hasText(command.getExpressions().get(e.getKey()))) {
+				inputsToToggle.add( e.getKey() );
+			}
+		}
+		map.put( "inputsToToggle", inputsToToggle );
 		return map;
 	}
 	
