@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.openmrs.module.reporting.report.renderer.ExcelStyleHelper;
@@ -51,7 +52,9 @@ public class ExcelUtil {
 				return;
 			}
 			if (cellValue instanceof Date) {
-				cell.setCellStyle(styleHelper.getStyle("date"));
+				if (!HSSFDateUtil.isCellDateFormatted(cell)) {
+					cell.setCellStyle(styleHelper.getStyle("date"));
+				}
 				cell.setCellValue(((Date) cellValue));
 				return;
 			}
