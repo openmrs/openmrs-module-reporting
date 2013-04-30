@@ -23,7 +23,7 @@ public abstract class AbstractReportsTask extends TimerTask {
 	// Per REPORT-368, we need to avoid locking the admin user account if the scheduler.password GP is wrong.
 	private static Date lastFailedLogin = null;
 	
-	private static SessionFactory sessionFactory;
+	private SessionFactory sessionFactory;
 	
 	private volatile Session currentSession;
 	
@@ -35,8 +35,7 @@ public abstract class AbstractReportsTask extends TimerTask {
 	
 	@Autowired
     public void setSessionFactory(SessionFactory sessionFactory) {
-		//Store it in a static variable so that you can instantiate tasks with 'new'.
-    	AbstractReportsTask.sessionFactory = sessionFactory;
+    	this.sessionFactory = sessionFactory;
     }
 
 	/**
@@ -44,6 +43,11 @@ public abstract class AbstractReportsTask extends TimerTask {
 	 */
 	@Override
 	public final void run() {
+		if (sessionFactory == null) {
+			//Need to set it here in case the task was instantiated with NEW.
+			sessionFactory = Context.getRegisteredComponents(SessionFactory.class).get(0);
+		}
+		
 		try {
 			Context.openSession();
 			currentSession = sessionFactory.getCurrentSession();
@@ -69,10 +73,10 @@ public abstract class AbstractReportsTask extends TimerTask {
 		Session session = currentSession;
 		if (session != null && session.isOpen()) {
 			session.close();
-			log.info("Reporting task has been cancelled");
+			log.info(getClass().getSimpleName() + " task has been cancelled");
 		}
         else {
-			log.warn("Failed to cancel the reporting task");
+			log.info("Did not have to cancel " + getClass().getSimpleName() + " task as it was not running");
 		}
 	}
 	
