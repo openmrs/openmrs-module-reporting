@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.Concept;
@@ -75,21 +76,42 @@ public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
 	public void addValue(Object value) {
 		if (value != null) {
 			if (value instanceof Concept) {
-				getValueConcepts().add((Concept)value);
-			}
+                addConceptValue((Concept) value);
+            }
 			else if (value instanceof Location) {
-				getValueLocations().add((Location)value);
-			}
+                addLocationValue((Location) value);
+            }
 			else if (value instanceof String) {
-				getValues().add((String)value);
-			}
+                addStringValue((String) value);
+            }
 			else {
 				throw new IllegalArgumentException("You cannot add value " + value + " that is not a Location, Concept, or String");
 			}
 		}
 	}
 
-	/**
+    private void addStringValue(String value) {
+        if (values==null){
+            values = new ArrayList<String>();
+        }
+        values.add(value);
+    }
+
+    private void addLocationValue(Location value) {
+        if (valueLocations==null){
+            valueLocations = new ArrayList<Location>();
+        }
+        valueLocations.add(value);
+    }
+
+    private void addConceptValue(Concept value) {
+        if (valueConcepts== null){
+            valueConcepts = new ArrayList<Concept>();
+        }
+        valueConcepts.add(value);
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
 	public String toString() {
