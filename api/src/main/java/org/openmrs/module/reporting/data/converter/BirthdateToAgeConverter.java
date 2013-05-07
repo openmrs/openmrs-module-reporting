@@ -48,8 +48,12 @@ public class BirthdateToAgeConverter implements DataConverter {
 	 */
 	public Object convert(Object original) {
 		Birthdate birthdate = (Birthdate) original;
+		try{
 		if (birthdate != null) {
 			return new Age(birthdate.getBirthdate(), effectiveDate);
+		}
+		}catch (Exception e) {
+			throw new ConversionException("Unable to convert birthdate "+original+" to an age on the configured date -"+getEffectiveDate()+" due to: "+e, e);
 		}
 		return null;
 	}

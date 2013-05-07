@@ -19,51 +19,61 @@ import org.openmrs.module.reporting.dataset.DataSetRow;
  * List data converter
  */
 public class DataSetRowConverter implements DataConverter {
-	
-	//***** PROPERTIES *****
-	
+
+	// ***** PROPERTIES *****
+
 	private String columnName;
-	
-	//***** CONSTRUCTORS *****
-	
-	public DataSetRowConverter() { }
-	
+
+	// ***** CONSTRUCTORS *****
+
+	public DataSetRowConverter() {
+	}
+
 	/**
 	 * Full Constructor
 	 */
 	public DataSetRowConverter(String columnName) {
 		this.columnName = columnName;
 	}
-	
-	//***** INSTANCE METHODS *****
 
-	/** 
+	// ***** INSTANCE METHODS *****
+
+	/**
 	 * @see DataConverter#converter(Object)
-	 * @should convert a DataSetRow to the value in the column with the configured name
+	 * @should convert a DataSetRow to the value in the column with the
+	 *         configured name
 	 */
 	public Object convert(Object original) {
-		if (original != null) {
-			DataSetRow dsr = (DataSetRow)original;
-			return dsr.getColumnValue(getColumnName());
+		try {
+			if (original != null) {
+				DataSetRow dsr = (DataSetRow) original;
+				return dsr.getColumnValue(getColumnName());
+			}
+		} catch (Exception e) {
+			throw new ConversionException(
+					"Unable to convert DataSetRow "
+							+ original
+							+ "to to the value in the column with the configured name: "
+							+ getColumnName() + "due to: " + e, e);
 		}
 		return original;
 	}
 
-	/** 
+	/**
 	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return Object.class;
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return DataSetRow.class;
 	}
-	
-	//***** PROPERTY ACCESS *****
+
+	// ***** PROPERTY ACCESS *****
 
 	/**
 	 * @return the columnName
@@ -73,7 +83,8 @@ public class DataSetRowConverter implements DataConverter {
 	}
 
 	/**
-	 * @param columnName the columnName to set
+	 * @param columnName
+	 *            the columnName to set
 	 */
 	public void setColumnName(String columnName) {
 		this.columnName = columnName;

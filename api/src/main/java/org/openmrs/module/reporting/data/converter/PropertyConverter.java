@@ -47,11 +47,15 @@ public class PropertyConverter implements DataConverter {
 	 */
 	public Object convert(Object o) {
 		String propertyName = ObjectUtil.nvl(getPropertyName(), "");
+		try{
 		if (o != null) {
 			if (ObjectUtil.isNull(propertyName)) {
 				return o.toString();
 			}
 			return ReflectionUtil.getPropertyValue(o, propertyName);
+		}
+		}catch (Exception e) {
+			throw new ConversionException("Unable to convert Object"+o+"into it's property or it's string representation due to: "+e, e);
 		}
 		return null;
 	}

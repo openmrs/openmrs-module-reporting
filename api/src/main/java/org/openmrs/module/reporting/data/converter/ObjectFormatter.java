@@ -19,50 +19,59 @@ import org.openmrs.module.reporting.common.ObjectUtil;
  * Formats any object into a String representation
  */
 public class ObjectFormatter implements DataConverter {
-	
-	//***** PROPERTIES *****
-	
+
+	// ***** PROPERTIES *****
+
 	private String specification;
-	
-	//***** CONSTRUCTORS *****
-	
+
+	// ***** CONSTRUCTORS *****
+
 	/**
 	 * Default Constructor
 	 */
-	public ObjectFormatter() {}
-	
+	public ObjectFormatter() {
+	}
+
 	/**
 	 * Constructor with specification
 	 */
 	public ObjectFormatter(String specification) {
 		this.specification = specification;
 	}
-	
-	//***** INSTANCE METHODS *****
 
-	/** 
+	// ***** INSTANCE METHODS *****
+
+	/**
 	 * @see DataConverter#converter(Object)
 	 * @should convert an Object into a nicely formatted text representation
 	 */
 	public Object convert(Object o) {
-		return ObjectUtil.format(o, getSpecification());
+		try {
+			return ObjectUtil.format(o, getSpecification());
+		} catch (Exception e) {
+			throw new ConversionException(
+					"Unable to convert Object "
+							+ o
+							+ " into a nicely formatted text representation,with the specification: "
+							+ getSpecification() + " due to: " + e, e);
+		}
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return String.class;
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Object.class;
 	}
-	
-	//***** PROPERTY ACCESS *****
+
+	// ***** PROPERTY ACCESS *****
 
 	/**
 	 * @return the specification
@@ -72,7 +81,8 @@ public class ObjectFormatter implements DataConverter {
 	}
 
 	/**
-	 * @param specification the specification to set
+	 * @param specification
+	 *            the specification to set
 	 */
 	public void setSpecification(String specification) {
 		this.specification = specification;

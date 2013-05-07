@@ -21,54 +21,61 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 /**
  * String data converter
  */
-public class StringConverter implements DataConverter  {
-	
-	//***** PROPERTIES *****
-	
+public class StringConverter implements DataConverter {
+
+	// ***** PROPERTIES *****
+
 	private Map<Object, String> conversions;
 	private String unspecifiedValue;
-	
-	//***** CONSTRUCTORS *****
-	
+
+	// ***** CONSTRUCTORS *****
+
 	/**
 	 * Default constructor
 	 */
-	public StringConverter() { }
-	
+	public StringConverter() {
+	}
+
 	/**
 	 * Full constructor
 	 */
-	public StringConverter(Map<Object, String> conversions, String unspecifiedValue) {
+	public StringConverter(Map<Object, String> conversions,
+			String unspecifiedValue) {
 		this.conversions = conversions;
 		this.unspecifiedValue = unspecifiedValue;
 	}
-	
-	//***** INSTANCE METHODS *****
 
-	/** 
+	// ***** INSTANCE METHODS *****
+
+	/**
 	 * @see DataConverter#converter(Object)
 	 * @should convert an Object to a configured String representation
 	 */
 	public Object convert(Object original) {
-		String ret = getConversions().get(original);
-		return ObjectUtil.nvl(ret, unspecifiedValue);
+		try {
+			String ret = getConversions().get(original);
+			return ObjectUtil.nvl(ret, unspecifiedValue);
+		} catch (Exception e) {
+			throw new ConversionException("Unable to convert Object" + original
+					+ "to a configured String representation due to: " + e, e);
+		}
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return String.class;
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Object.class;
 	}
-	
-	//***** PROPERTIES *****
+
+	// ***** PROPERTIES *****
 
 	/**
 	 * @return the conversions
@@ -81,14 +88,16 @@ public class StringConverter implements DataConverter  {
 	}
 
 	/**
-	 * @param conversions the conversions to set
+	 * @param conversions
+	 *            the conversions to set
 	 */
 	public void setConversions(Map<Object, String> conversions) {
 		this.conversions = conversions;
 	}
-	
+
 	/**
 	 * Adds a conversion for the given value
+	 * 
 	 * @param value
 	 * @param conversion
 	 */
@@ -104,7 +113,8 @@ public class StringConverter implements DataConverter  {
 	}
 
 	/**
-	 * @param unspecifiedValue the unspecifiedValue to set
+	 * @param unspecifiedValue
+	 *            the unspecifiedValue to set
 	 */
 	public void setUnspecifiedValue(String unspecifiedValue) {
 		this.unspecifiedValue = unspecifiedValue;

@@ -16,22 +16,24 @@ package org.openmrs.module.reporting.data.converter;
 import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
- * Data converter which provides a replacement value for non-null and null values
+ * Data converter which provides a replacement value for non-null and null
+ * values
  */
-public class ExistenceConverter implements DataConverter  {
-	
-	//***** PROPERTIES *****
-	
+public class ExistenceConverter implements DataConverter {
+
+	// ***** PROPERTIES *****
+
 	private Object notNullValue;
 	private Object nullValue;
-	
-	//***** CONSTRUCTORS *****
-	
+
+	// ***** CONSTRUCTORS *****
+
 	/**
 	 * Default constructor
 	 */
-	public ExistenceConverter() { }
-	
+	public ExistenceConverter() {
+	}
+
 	/**
 	 * Full constructor
 	 */
@@ -39,32 +41,40 @@ public class ExistenceConverter implements DataConverter  {
 		this.notNullValue = notNullValue;
 		this.nullValue = nullValue;
 	}
-	
-	//***** INSTANCE METHODS *****
 
-	/** 
+	// ***** INSTANCE METHODS *****
+
+	/**
 	 * @see DataConverter#converter(Object)
 	 * @should convert a Boolean to a configured text representation
 	 */
 	public Object convert(Object original) {
-		return ObjectUtil.decode(original, nullValue, notNullValue);
+		try {
+			return ObjectUtil.decode(original, nullValue, notNullValue);
+		} catch (Exception e) {
+			throw new ConversionException(
+					"Unable to convert Boolean"
+							+ original
+							+ "to a configured text representation, which provides a replacement value for non-null and null values, due to: "
+							+ e, e);
+		}
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return Object.class;
 	}
-	
-	/** 
+
+	/**
 	 * @see DataConverter#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Object.class;
 	}
-	
-	//***** PROPERTIES *****
+
+	// ***** PROPERTIES *****
 
 	/**
 	 * @return the notNullValue
@@ -74,7 +84,8 @@ public class ExistenceConverter implements DataConverter  {
 	}
 
 	/**
-	 * @param notNullValue the notNullValue to set
+	 * @param notNullValue
+	 *            the notNullValue to set
 	 */
 	public void setNotNullValue(Object notNullValue) {
 		this.notNullValue = notNullValue;
@@ -88,7 +99,8 @@ public class ExistenceConverter implements DataConverter  {
 	}
 
 	/**
-	 * @param nullValue the nullValue to set
+	 * @param nullValue
+	 *            the nullValue to set
 	 */
 	public void setNullValue(Object nullValue) {
 		this.nullValue = nullValue;

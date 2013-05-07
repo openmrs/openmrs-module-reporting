@@ -41,11 +41,15 @@ public class AgeRangeConverter implements DataConverter {
 	 * @should return null if the Age does not fall within an Age Range
 	 */
 	public Object convert(Object original) {
+		try{
 		Age age = (Age)original;
 		for (AgeRange a : getAgeRanges()) {
 			if (a.isInRange(age)) {
 				return ObjectUtil.nvl(a.getLabel(), a.toString());
 			}
+		}
+		} catch (Exception e) {
+			throw new ConversionException("Unable to convert Age "+original+" due to: "+e, e);
 		}
 		return null;
 	}

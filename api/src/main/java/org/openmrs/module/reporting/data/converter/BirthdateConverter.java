@@ -71,6 +71,7 @@ public class BirthdateConverter implements DataConverter {
 	 * @should convert a Birthdate into a String with the passed format
 	 */
 	public String convert(Object original) {
+		try{
 		Birthdate bd = (Birthdate) original;
 		if (bd != null && bd.getBirthdate() != null) {
 			if (bd.isEstimated()) {
@@ -79,6 +80,9 @@ public class BirthdateConverter implements DataConverter {
 			else {
 				return getExactDateFormat().format(bd.getBirthdate());
 			}
+		}
+		}catch (Exception e) {
+			throw new ConversionException("Unable to convert Birthdate "+original+" to a String with the passed format due to: "+e, e);
 		}
 		return "";
 	}
