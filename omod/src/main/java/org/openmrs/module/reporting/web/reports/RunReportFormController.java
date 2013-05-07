@@ -154,7 +154,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 				command.setReportDefinition(rds.getDefinitionByUuid(req.getReportDefinition().getParameterizable().getUuid()));
 				for (Map.Entry<String, Object> param : req.getReportDefinition().getParameterMappings().entrySet()) {
 					Object value = param.getValue();
-					if ( EvaluationUtil.isExpression( value.toString() ) ) {
+					if ( value != null && EvaluationUtil.isExpression( value.toString() ) ) {
 						command.getExpressions().put( param.getKey(),  ( String ) value );
 						value = "";
 					} 

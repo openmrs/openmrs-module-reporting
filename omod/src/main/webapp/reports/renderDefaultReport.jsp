@@ -65,27 +65,62 @@ $(document).ready(function(){
 										<c:set var="rows" value="${dataSetDefinitionEntry.value.parameterizable.rows}"/>
 										<c:set var="cols" value="${dataSetDefinitionEntry.value.parameterizable.columns}"/>
 										<tr>
-											<th></th>
+											<c:if test="${!empty rows}"><th></th></c:if>
+											<c:if test="${empty cols}"><th></th></c:if>
 											<c:forEach items="${cols}" var="colEntry">
 												<th style="text-align:left;">${colEntry.key}</th>
 											</c:forEach>
 										</tr>
-										<c:forEach items="${rows}" var="rowEntry">
-											<tr>
-												<th>${rowEntry.key}</th>
-												<c:forEach items="${cols}" var="colEntry">
-													<c:set var="colName" value="${rowEntry.key}.${colEntry.key}"/>
-													<c:set var="column" value="${dataSetDefinitionEntry.value.parameterizable.dataSetColumnsByKey[colName]}"/>
-													<c:set var="columnValue" value="${dataSet.data.columnValues[column]}"/>
-													<c:url var="url" value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetKey=${dataSetKey}&savedColumnKey=${colName}"/>
-													<td>
-														<a style="text-decoration: underline" href="${url}">
-															<rpt:format object="${columnValue}"/>
-														</a>
-													</td>
-												</c:forEach>											
-											</tr>
-										</c:forEach>
+										<c:choose>
+											<c:when test="${empty rows}">
+												<tr>
+													<c:forEach items="${cols}" var="colEntry">
+														<c:set var="colName" value="${colEntry.key}"/>
+														<c:set var="column" value="${dataSetDefinitionEntry.value.parameterizable.dataSetColumnsByKey[colName]}"/>
+														<c:set var="columnValue" value="${dataSet.data.columnValues[column]}"/>
+														<c:url var="url" value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetKey=${dataSetKey}&savedColumnKey=${colName}"/>
+														<td>
+															<a style="text-decoration: underline" href="${url}">
+																<rpt:format object="${columnValue}"/>
+															</a>
+														</td>
+													</c:forEach>
+												</tr>
+											</c:when>
+											<c:otherwise>
+												<c:forEach items="${rows}" var="rowEntry">
+													<tr>
+														<th>${rowEntry.key}</th>
+														<c:choose>
+															<c:when test="${empty cols}">
+																<c:set var="colName" value="${rowEntry.key}"/>
+																<c:set var="column" value="${dataSetDefinitionEntry.value.parameterizable.dataSetColumnsByKey[colName]}"/>
+																<c:set var="columnValue" value="${dataSet.data.columnValues[column]}"/>
+																<c:url var="url" value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetKey=${dataSetKey}&savedColumnKey=${colName}"/>
+																<td>
+																	<a style="text-decoration: underline" href="${url}">
+																		<rpt:format object="${columnValue}"/>
+																	</a>
+																</td>
+															</c:when>
+															<c:otherwise>
+																<c:forEach items="${cols}" var="colEntry">
+																	<c:set var="colName" value="${rowEntry.key}.${colEntry.key}"/>
+																	<c:set var="column" value="${dataSetDefinitionEntry.value.parameterizable.dataSetColumnsByKey[colName]}"/>
+																	<c:set var="columnValue" value="${dataSet.data.columnValues[column]}"/>
+																	<c:url var="url" value="/module/reporting/dashboard/viewCohortDataSet.form?savedDataSetKey=${dataSetKey}&savedColumnKey=${colName}"/>
+																	<td>
+																		<a style="text-decoration: underline" href="${url}">
+																			<rpt:format object="${columnValue}"/>
+																		</a>
+																	</td>
+																</c:forEach>
+															</c:otherwise>
+														</c:choose>
+													</tr>
+												</c:forEach>
+											</c:otherwise>
+										</c:choose>
 									</c:when>
 									<c:otherwise>
 										<c:forEach items="${dataSet.metaData.columns}" var="col">
