@@ -5,16 +5,20 @@
 
 <script type="text/javascript">
 var fixedValueElementIds = new Array();
+var inputsToToggle = new Array();
 jQuery(document).ready(
 	function(){
-		for(var i in fixedValueElementIds){
-			jQuery("#"+fixedValueElementIds[i]).addClass(fixedValueElementIds[i]);
+		for( var i in fixedValueElementIds ){
+			jQuery( "#" + fixedValueElementIds[ i ] ).addClass( fixedValueElementIds[ i ] );
+		}
+		for ( var i in inputsToToggle ) {
+			toggleInputElements(inputsToToggle[i]);
 		}
 	}
 );
 
-function toggleInputElements(idPrefix){
-	jQuery('.'+idPrefix).toggle();
+function toggleInputElements( idPrefix ){
+	jQuery( '.'+idPrefix ).toggle();
 }
 </script>
 
@@ -75,6 +79,11 @@ function toggleInputElements(idPrefix){
 								                        <c:if test="${not empty status.errorMessage}">
 								                            <span class="error">${status.errorMessage}</span>
 								                        </c:if>
+								                        <c:if test="${fn:contains(inputsToToggle, parameter.name)}">
+								                            <script type="text/javascript">
+								                            	inputsToToggle.push('userEnteredParam${parameter.name}');
+															</script>
+								                        </c:if>	
 								                    </td>
 									            </spring:bind>
 							                </tr>
