@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
@@ -32,7 +33,7 @@ public class DataSetUtil {
 
 		Map<DataSetColumn, Integer> columnLengthMap = new LinkedHashMap<DataSetColumn, Integer>();
 		for (DataSetColumn c : d.getMetaData().getColumns()) {
-			columnLengthMap.put(c, c.getLabel().length());
+			columnLengthMap.put(c, c.toString().length());
 		}
 		for (Iterator<DataSetRow> i = d.iterator(); i.hasNext();) {
 			DataSetRow r = i.next();
@@ -46,7 +47,7 @@ public class DataSetUtil {
 	
 		StringBuilder output = new StringBuilder();
 		for (Map.Entry<DataSetColumn, Integer> c : columnLengthMap.entrySet()) {
-			StringBuilder n = new StringBuilder(c.getKey().getLabel());
+			StringBuilder n = new StringBuilder(c.getKey().toString());
 			while (n.length() < c.getValue()) {
 				n.append(" ");
 			}
@@ -72,6 +73,12 @@ public class DataSetUtil {
 			}
 			output.append("\n");
 		}
-		System.out.println(output.toString());
+
+		try {
+			IOUtils.write(output.toString(), out);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Unable to write dataset to outputstream", e);
+		}
 	}
 }
