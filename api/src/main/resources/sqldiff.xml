@@ -245,6 +245,7 @@
 			
 			ALTER table `reporting_report_design` ADD CONSTRAINT `report_definition_uuid for reporting_report_design` FOREIGN KEY (`report_definition_uuid`) REFERENCES `serialized_object` (`uuid`),
 			DROP FOREIGN KEY `report_definition_id for reporting_report_design`,
+            ADD INDEX `report_definition_uuid for reporting_report_design` (`report_definition_uuid` ASC),
 			DROP COLUMN report_definition_id;
 		</sql>
 	</diff>
