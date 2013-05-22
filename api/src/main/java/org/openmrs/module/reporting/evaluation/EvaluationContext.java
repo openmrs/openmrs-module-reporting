@@ -99,10 +99,10 @@ public class EvaluationContext implements PatientCalculationContext {
 	public EvaluationContext(EvaluationContext context) {
 		this.setEvaluationDate(context.getEvaluationDate());
 		this.setLimit(context.getLimit());
-		this.setCache(context.getCache());
 		this.setBaseCohort(context.getBaseCohort());
 		this.getParameterValues().putAll(context.getParameterValues());
 		this.getContextValues().putAll(context.getContextValues());
+		this.setCache(context.getCache()); // This needs to be the last call, as the above calls clears the cache
 	}
 	
 	// *******************
