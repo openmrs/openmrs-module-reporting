@@ -18,9 +18,9 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
- * Abstrct SQL-based Query
+ * Abstract SQL-based Query
  */
-public class BaseSqlQuery<T extends OpenmrsObject> extends BaseQuery<T> {
+public abstract class BaseSqlQuery<T extends OpenmrsObject> extends BaseQuery<T> {
 
     public static final long serialVersionUID = 1L;
 

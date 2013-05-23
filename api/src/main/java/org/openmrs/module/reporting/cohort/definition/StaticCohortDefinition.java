@@ -17,10 +17,13 @@ import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  *  Simple CohortDefinition to restrict to a Static Cohort
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.StaticCohortDefinition")
 public class StaticCohortDefinition extends BaseCohortDefinition {
 

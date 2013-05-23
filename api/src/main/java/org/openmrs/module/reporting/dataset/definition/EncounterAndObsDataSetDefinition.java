@@ -21,11 +21,14 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Definition of an EncounterAndObs DataSet
  * @see EncounterAndObsDataSetEvaluator
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.EncounterAndObsDataSetDefinition")
 public class EncounterAndObsDataSetDefinition extends BaseDataSetDefinition {
 	

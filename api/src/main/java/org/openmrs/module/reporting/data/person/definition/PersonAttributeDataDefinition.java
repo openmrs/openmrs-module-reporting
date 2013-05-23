@@ -19,10 +19,13 @@ import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Person Attribute Column
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.PersonAttributeDataDefinition")
 public class PersonAttributeDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	

@@ -14,11 +14,14 @@
 package org.openmrs.module.reporting.query.obs.definition;
 
 import org.openmrs.Obs;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.query.BaseSqlQuery;
 
 /**
  * SQL-based Obs Query
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class SqlObsQuery extends BaseSqlQuery<Obs> implements ObsQuery {
 
     public static final long serialVersionUID = 1L;

@@ -17,10 +17,13 @@ import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Vital Status Data
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.VitalStatusDataDefinition")
 public class VitalStatusDataDefinition  extends BaseDataDefinition implements PersonDataDefinition {
 	

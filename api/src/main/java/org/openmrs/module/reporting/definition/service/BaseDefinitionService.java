@@ -200,8 +200,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * definition with this configuration exists in the cache (if caching is supported) - returns
 	 * the cached evaluation result if found - otherwise, delegates to the appropriate Evaluator and
 	 * evaluates the result - caches the result (if caching is supported)
-	 * 
-	 * @see getCacheKey(EvaluationContext)
+	 *
 	 * @see DefinitionEvaluator#evaluate(Definition, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
@@ -223,8 +222,12 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 		if (cacheKey != null) {
 			evaluationResult = (Evaluated<T>) context.getFromCache(cacheKey);
 			if (evaluationResult == null) {
+				log.debug("No cached value with key <" + cacheKey + ">.  Evaluating.");
 				evaluationResult = evaluator.evaluate(clonedDefinition, context);
 				context.addToCache(cacheKey, evaluationResult);
+			}
+			else {
+				log.debug("Retrieved cached value with key <" + cacheKey + "> = " + evaluationResult);
 			}
 		}
 		

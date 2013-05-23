@@ -4,10 +4,13 @@ import java.util.Date;
 
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Query for patients based on ranges for birthdate and death date
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.BirthAndDeathCohortDefinition")
 public class BirthAndDeathCohortDefinition extends BaseCohortDefinition {
 	

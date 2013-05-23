@@ -17,10 +17,13 @@ import org.openmrs.Person;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Encounter Provider Column
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.EncounterProviderDataDefinition")
 public class EncounterProviderDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 	

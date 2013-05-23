@@ -14,11 +14,14 @@
 package org.openmrs.module.reporting.query.encounter.definition;
 
 import org.openmrs.Encounter;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.query.BaseQuery;
 
 /**
  * Encounter Query for obtaining all encounters
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class AllEncounterQuery extends BaseQuery<Encounter> implements EncounterQuery {
 
     public static final long serialVersionUID = 1L;

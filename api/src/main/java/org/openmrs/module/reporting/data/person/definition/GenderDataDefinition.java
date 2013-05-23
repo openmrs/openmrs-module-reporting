@@ -16,10 +16,13 @@ package org.openmrs.module.reporting.data.person.definition;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Gender Column
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.GenderDataDefinition")
 public class GenderDataDefinition  extends BaseDataDefinition implements PersonDataDefinition {
 	

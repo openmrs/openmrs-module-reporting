@@ -23,7 +23,6 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * Base Implementation of CohortDefinition which provides core method
  * implementations for handling Parameters and common Property values
  */
-@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public abstract class BaseQuery<T extends OpenmrsObject> extends BaseDefinition implements Query<T> {
 	
     public static final long serialVersionUID = 1L;

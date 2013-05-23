@@ -17,10 +17,13 @@ import org.openmrs.PersonAddress;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Preferred Address Data
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.PreferredAddressDataDefinition")
 public class PreferredAddressDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 	

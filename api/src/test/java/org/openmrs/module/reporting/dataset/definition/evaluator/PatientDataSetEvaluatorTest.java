@@ -109,9 +109,10 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		
 		AgeDataDefinition ageOnDate = new AgeDataDefinition();
 		ageOnDate.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-		
+
 		d.addColumn("Age At Start", ageOnDate, "effectiveDate=${startDate}", new AgeConverter());
 		d.addColumn("Age At End", ageOnDate, "effectiveDate=${endDate}", new AgeConverter());
+		d.addColumn("Age in Months At End", ageOnDate, "effectiveDate=${endDate}", new AgeConverter("{m}"));
 		
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals(35, dataset.getColumnValue(2, "Age At Start"));

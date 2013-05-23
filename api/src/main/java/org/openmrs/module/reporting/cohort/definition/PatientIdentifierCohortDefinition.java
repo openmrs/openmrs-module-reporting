@@ -21,11 +21,14 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
  * A {@link CohortDefinition} which queries for patients based on matching on Patient Identifiers
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.PatientIdentifierCohortDefinition")
 public class PatientIdentifierCohortDefinition extends BaseCohortDefinition {
 	

@@ -15,6 +15,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -63,18 +64,12 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		def.addColumn("1", "Indicator", new Mapped<CohortIndicator>(lessThanOneAtStart, periodMappings), "");
 		
 		MultiPeriodIndicatorDataSetDefinition multi = new MultiPeriodIndicatorDataSetDefinition(def);
-		// for every month in 2009, which is the year that patient 6 turns 1 year old. (Actually this
-		// seems wrong but I think the underlying cohort definition is broken.)
+		// for every month in 2009, which is the year that patient 6 turns 2 years old.
 		Assert.assertEquals(0, Calendar.JANUARY);
 		Location loc = new Location(1);
 		for (int i = 0; i < 12; ++i) {
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.YEAR, 2009);
-			cal.set(Calendar.MONTH, i);
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-			Date startDate = cal.getTime();
-			cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-			Date endDate = cal.getTime();
+			Date startDate = DateUtil.getDateTime(2009, i, 1);
+			Date endDate = DateUtil.getEndOfMonth(startDate);
 			multi.addIteration(new Iteration(startDate, endDate, loc));
 		}
 		
@@ -82,10 +77,11 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		DataSet result = Context.getService(DataSetDefinitionService.class).evaluate(multi, null);
 		Date june1 = ymd.parse("2009-06-01");
 		for (DataSetRow row : result) {
-			if (((Date) row.getColumnValue("startDate")).compareTo(june1) < 0) {
-				Assert.assertEquals("Should be 1 before June", 1d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue());
+			Date rowStartDate = (Date) row.getColumnValue("startDate");
+			if (rowStartDate.compareTo(june1) < 0) {
+				Assert.assertEquals("Should be 1 patient before June", 1d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue());
 			} else {
-				Assert.assertEquals("Should be 0 after June", 0d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue());
+				Assert.assertEquals("Should be 0 patients after June", 0d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue());
 			}
 		}
 	}

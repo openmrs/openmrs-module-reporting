@@ -20,10 +20,13 @@ import java.util.List;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Query for whether the patient started or ended any of the specified states in a date range
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.PatientStateCohortDefinition")
 public class PatientStateCohortDefinition extends BaseCohortDefinition {
 

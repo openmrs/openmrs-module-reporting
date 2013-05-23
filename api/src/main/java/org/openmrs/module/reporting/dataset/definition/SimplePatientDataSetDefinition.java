@@ -21,6 +21,8 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * This is a simple example of how one might implement a row-per-Patient DataSetDefinition
@@ -28,6 +30,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
  * release, so should be used with caution
  * @see SimplePatientDataSetEvaluator
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.SimplePatientDataSetDefinition")
 public class SimplePatientDataSetDefinition extends BaseDataSetDefinition {
 

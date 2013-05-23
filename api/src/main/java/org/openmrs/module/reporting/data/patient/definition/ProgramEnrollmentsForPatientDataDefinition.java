@@ -23,10 +23,13 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * ProgramEnrollments For Patient Data Definition
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.ProgramEnrollmentsForPatientDataDefinition")
 public class ProgramEnrollmentsForPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	

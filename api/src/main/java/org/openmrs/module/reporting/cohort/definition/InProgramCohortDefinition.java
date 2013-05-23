@@ -7,11 +7,14 @@ import java.util.List;
 import org.openmrs.Program;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Query for whether the patient was in a program on a date or date range
  * (Using onDate is equivalent to setting onOrAfter==onOrBefore, but may be more efficient and readable
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.InProgramCohortDefinition")
 public class InProgramCohortDefinition extends BaseCohortDefinition {
 

@@ -22,7 +22,6 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * Base Implementation of DataDefinition which provides core method
  * implementations for handling Parameters and common Property values
  */
-@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public abstract class BaseDataDefinition extends BaseDefinition implements DataDefinition {
 	
     public static final long serialVersionUID = 1L;

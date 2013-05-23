@@ -187,47 +187,41 @@ public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 	
 	//TODO:  test that parameters work
 	@Test
-	public void sqlIndicator_shouldEvaluateSqlIndicatorUsesParameters() throws Exception { 
-		
-			Map<String,Object> paramValues = new HashMap<String,Object>(); //the actual values we pass in at runtime by adding to EvaluationContext
-			paramValues.put("numValue", Integer.valueOf(55));
-			paramValues.put("denValue", Integer.valueOf(110));
+	public void sqlIndicator_shouldEvaluateSqlIndicatorUsesParameters() throws Exception {
 			
 			List<Parameter> params= new ArrayList<Parameter>();
-			params.add(new Parameter("numValue", "num label", Integer.class)); //the local parameter to global parameter mappings
-			params.add(new Parameter("denValue", "den lablel", Integer.class));
-			
-			
-			//build indicators
-			SqlIndicator indicator = new SqlIndicator();
-			String sql = "SELECT distinct(:numValue) as res from patient";
-			indicator.setSql(sql);
+			params.add(new Parameter("numValue", "num label", Integer.class));
+			params.add(new Parameter("denValue", "den label", Integer.class));
 
-			String sql2 = "SELECT distinct(:denValue) as res2 from patient";
-			indicator.setDenominatorSql(sql2);
-			indicator.setParameters(params);
-			
-			//build simpleDataSetDefintiion
-			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
-			d.setParameters(params);
-			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, ParameterizableUtil.createParameterMappings("numValue=${numValue},denValue=${denValue}")));
-			
+			Map<String, Object> paramMappings = ParameterizableUtil.createParameterMappings("numValue=${numValue},denValue=${denValue}");
+
 			//build a report
 			ReportDefinition rd = new ReportDefinition();
-			rd.addDataSetDefinition(d, null);
-			rd.setParameters(params);
+			rd.addParameters(params);
+
+			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
+			d.addParameters(params);
+			rd.addDataSetDefinition(d, paramMappings);
+
+			SqlIndicator indicator = new SqlIndicator();
+			indicator.addParameters(params);
+			indicator.setSql("SELECT patient_id from patient where patient_id = :numValue");
+			indicator.setDenominatorSql("SELECT patient_id from patient where patient_id = :denValue");
+
+			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, ParameterizableUtil.createParameterMappings("numValue=${numValue},denValue=${denValue}")));
+
+			EvaluationContext context = new EvaluationContext();
+			context.addParameterValue("numValue", new Integer(6));
+			context.addParameterValue("denValue", new Integer(24));
 			
 			//run the report
 			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			EvaluationContext ec = new EvaluationContext();
-			ec.setParameterValues(paramValues);//send values to all the params
-			ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, ParameterizableUtil.createParameterMappings("numValue=${numValue},denValue=${denValue}")), ec);
+			ReportData data = rds.evaluate(rd, context);
 			SimpleDataSet ds = (SimpleDataSet) data.getDataSets().values().iterator().next();
 			
 			//unpack the report
 			DataSetRow row = ds.getRows().iterator().next();
-			//System.out.println(row.getColumnValuesByKey().entrySet().iterator().next().getValue().toString());
-			Assert.assertTrue(row.getColumnValuesByKey().entrySet().iterator().next().getValue().toString().contains("50%"));  //represents divide by 0
+			Assert.assertTrue(row.getColumnValuesByKey().entrySet().iterator().next().getValue().toString().contains("25%"));  //represents divide by 0
 	}
 	
 	

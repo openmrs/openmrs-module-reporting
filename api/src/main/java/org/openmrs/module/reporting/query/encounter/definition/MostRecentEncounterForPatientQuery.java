@@ -20,11 +20,14 @@ import java.util.List;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.query.BaseQuery;
 
 /**
  * Encounter Query for obtaining the single most recent encounter for each patient
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class MostRecentEncounterForPatientQuery extends BaseQuery<Encounter> implements EncounterQuery {
 
     public static final long serialVersionUID = 1L;

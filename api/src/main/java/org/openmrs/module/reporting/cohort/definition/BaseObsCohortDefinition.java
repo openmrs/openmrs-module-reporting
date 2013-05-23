@@ -10,7 +10,10 @@ import org.openmrs.Location;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.BaseObsCohortDefinition")
 public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
 

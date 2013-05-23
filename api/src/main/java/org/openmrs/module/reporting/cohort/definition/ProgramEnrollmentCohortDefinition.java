@@ -7,10 +7,13 @@ import java.util.List;
 import org.openmrs.Program;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Query for whether the patient enrolled in or completed any of the specified programs in a date range
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.ProgramEnrollmentCohortDefinition")
 public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
 

@@ -16,10 +16,13 @@ package org.openmrs.module.reporting.cohort.definition;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * SQL-based Cohort Definition
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.SqlCohortDefinition")
 public class SqlCohortDefinition extends BaseCohortDefinition {
 

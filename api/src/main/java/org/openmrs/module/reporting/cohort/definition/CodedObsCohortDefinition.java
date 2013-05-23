@@ -7,7 +7,10 @@ import org.openmrs.Concept;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.CodedObsCohortDefinition")
 public class CodedObsCohortDefinition extends BaseObsCohortDefinition {
 	

@@ -15,7 +15,10 @@ package org.openmrs.module.reporting.cohort.definition;
 
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.GenderCohortDefinition")
 public class GenderCohortDefinition extends BaseCohortDefinition {
 

@@ -14,11 +14,14 @@
 package org.openmrs.module.reporting.query.person.definition;
 
 import org.openmrs.Person;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.query.BaseSqlQuery;
 
 /**
  * SQL-based Person Query
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class SqlPersonQuery extends BaseSqlQuery<Person> implements PersonQuery {
 
     public static final long serialVersionUID = 1L;

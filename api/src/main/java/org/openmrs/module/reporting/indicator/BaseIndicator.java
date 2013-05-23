@@ -20,7 +20,6 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 /**
  * Base Implementation of Indicator
  */
-@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public abstract class BaseIndicator extends BaseDefinition implements Indicator {
 	
     public static final long serialVersionUID = 1920394873L;

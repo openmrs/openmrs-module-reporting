@@ -22,10 +22,13 @@ import org.openmrs.module.reporting.common.ObsActiveList;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Observation-based Active List Data Definition
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.ObsActiveListPersonDataDefinition")
 public class ObsActiveListPersonDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 

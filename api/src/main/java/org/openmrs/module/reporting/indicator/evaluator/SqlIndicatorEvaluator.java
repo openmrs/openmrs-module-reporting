@@ -31,8 +31,10 @@ import org.hibernate.SessionFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.ReportingException;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.indicator.Indicator;
@@ -45,6 +47,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  *  The evaluator that evaluates {@link SqlIndicator}.  Returns a {@link SimpleIndicatorResult}.
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Handler(supports={SqlIndicator.class})
 public class SqlIndicatorEvaluator implements IndicatorEvaluator {
 

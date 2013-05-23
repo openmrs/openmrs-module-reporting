@@ -20,10 +20,13 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Data definition based on {@link org.openmrs.calculation.patient.PatientCalculation}
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.PatientCalculationDataDefinition")
 public class PatientCalculationDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 

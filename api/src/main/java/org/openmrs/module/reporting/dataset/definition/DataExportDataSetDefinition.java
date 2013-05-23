@@ -17,6 +17,8 @@ import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.reporting.export.DataExportReportObject;
 
 /**
@@ -24,6 +26,7 @@ import org.openmrs.reporting.export.DataExportReportObject;
  * module.
  * @see DataExportDataSet
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @SuppressWarnings("deprecation")
 @Localized("reporting.DataExportDataSetDefinition")
 public class DataExportDataSetDefinition extends BaseDataSetDefinition {

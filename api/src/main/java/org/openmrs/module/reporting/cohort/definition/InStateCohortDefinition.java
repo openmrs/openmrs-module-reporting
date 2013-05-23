@@ -7,11 +7,14 @@ import java.util.List;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Query for whether the patient was in a state on a date or date range
  * (Using onDate is equivalent to setting onOrAfter==onOrBefore, but may be more efficient and readable
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.InStateCohortDefinition")
 public class InStateCohortDefinition extends BaseCohortDefinition {
 

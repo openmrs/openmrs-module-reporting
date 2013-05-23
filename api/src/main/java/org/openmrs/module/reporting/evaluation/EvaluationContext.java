@@ -113,11 +113,13 @@ public class EvaluationContext implements PatientCalculationContext {
 	 * @return a cloned EvaluationContext, replacing the parameters with those in the mapped child object as appropriate.
 	 */
 	public static EvaluationContext cloneForChild(EvaluationContext initialContext, Mapped<? extends Parameterizable> child) {
-		
+
 		if (child == null || child.getParameterizable() == null) {
 			throw new APIException("The specified report could not be evaluated because one of its components has been removed from the database");
 		}
 		EvaluationContext ec = initialContext.shallowCopy();
+		ec.setParameterValues(new HashMap<String, Object>());
+
 		Parameterizable p = child.getParameterizable();
 		Map<String, Object> m = child.getParameterMappings();
 		

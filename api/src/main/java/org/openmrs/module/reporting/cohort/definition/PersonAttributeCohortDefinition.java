@@ -21,10 +21,13 @@ import org.openmrs.Location;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Cohort query that returns patients with certain person attribute types and values.
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.PersonAttributeCohortDefinition")
 public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
 	
