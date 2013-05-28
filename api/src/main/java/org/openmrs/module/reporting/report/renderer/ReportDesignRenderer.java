@@ -28,6 +28,8 @@ import org.openmrs.module.reporting.report.service.ReportService;
  */
 public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
 
+	public static final String SORT_WEIGHT_PROPERTY = "sortWeight";
+
 	/** 
 	 * @see ReportRenderer#getRenderingModes(ReportDefinition)
 	 */
@@ -35,7 +37,12 @@ public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
 		List<RenderingMode> ret = new ArrayList<RenderingMode>();
 		List<ReportDesign> designs = Context.getService(ReportService.class).getReportDesigns(definition, getClass(), false);
 		for (ReportDesign d : designs) {
-			ret.add(new RenderingMode(this, d.getName(), d.getUuid(), 100));
+			Integer sortWeight = 100;
+			try {
+				sortWeight = Integer.valueOf(d.getPropertyValue(SORT_WEIGHT_PROPERTY, "100"));
+			}
+			catch (Exception e) {}
+			ret.add(new RenderingMode(this, d.getName(), d.getUuid(), sortWeight));
 		}
 		return ret;
 	}

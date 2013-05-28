@@ -29,9 +29,6 @@ public interface WebReportRenderer extends InteractiveReportRenderer {
 	 * link, rather than with the render(ReportData, OutputStream) method. In this situation, the
 	 * ReportData to be displayed will be passed to that page via the session attribute called
 	 * WebConstants.OPENMRS_REPORT_DATA
-	 * 
-	 * @param schema
-	 * @return
 	 */
 	public String getLinkUrl(ReportDefinition reportDefinition);
 	

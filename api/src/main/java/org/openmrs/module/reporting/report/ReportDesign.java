@@ -62,7 +62,7 @@ public class ReportDesign extends BaseOpenmrsMetadata  {
 	
 	/**
 	 * Returns the resource with the given uuid for this ReportDesign
-	 * @param name the ReportDesignResource uuid to match
+	 * @param uuid the ReportDesignResource uuid to match
 	 * @return ReportDesignResource
 	 */
 	public ReportDesignResource getResourceByUuid(String uuid) {

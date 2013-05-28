@@ -37,14 +37,14 @@ public class DefaultWebRenderer extends AbstractWebReportRenderer {
     }
 
 	/**
-     * @see ReportRenderer#getLabel()
+	 * Return a user friendly display label
      */
     public String getLabel() {
     	return MessageUtil.translate("reporting.DefaultWebRenderer");
     }
 
 	/**
-	 * @see ReportRenderer#getLinkUrl(ReportDefinition)
+	 * @see WebReportRenderer#getLinkUrl(ReportDefinition)
 	 */
 	public String getLinkUrl(ReportDefinition reportDefinition) {
 		return "module/reporting/reports/renderDefaultReport.form";
@@ -54,6 +54,6 @@ public class DefaultWebRenderer extends AbstractWebReportRenderer {
 	 * @see ReportRenderer#getRenderingModes(ReportDefinition)
 	 */
 	public Collection<RenderingMode> getRenderingModes(ReportDefinition reportDefinition) {
-		return Collections.singleton(new RenderingMode(this, this.getLabel(), null, Integer.MAX_VALUE - 10));
+		return Collections.singleton(new RenderingMode(this, this.getLabel(), null, 1000));
 	}
 }
