@@ -1,9 +1,6 @@
 package org.openmrs.module.reporting.report.definition.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -162,7 +159,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 		log.debug("Evaluating report: " + reportDefinition + "(" + evalContext.getParameterValues() + ")");
 		
 		ReportData ret = new ReportData();
-		Map<String, DataSet> data = new HashMap<String, DataSet>();
+		Map<String, DataSet> data = new LinkedHashMap<String, DataSet>();
 		ret.setDataSets(data);
 		ret.setDefinition(reportDefinition);
 		ret.setContext(evalContext);
