@@ -92,7 +92,7 @@
 		</sql>
 	</changeSet>
 
-	<changeSet id="reporting_report_design_4a" author="mseaton">
+	<changeSet id="reporting_report_design_4" author="mseaton">
 		<comment>
 			Step 2 in changing reporting_report_design to reference report definition
 			by uuid rather than id, in order to not tie it directly to the serialized object table
