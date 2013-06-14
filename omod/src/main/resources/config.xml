@@ -15,7 +15,7 @@
 	</description>
 	<activator>@MODULE_PACKAGE@.ModuleActivator</activator>
 	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL>	
-	<require_version>1.6</require_version>
+	<require_version>1.6.6</require_version>
 
 	<require_modules>
 	   	<require_module version="0.2.7">org.openmrs.module.serialization.xstream</require_module>

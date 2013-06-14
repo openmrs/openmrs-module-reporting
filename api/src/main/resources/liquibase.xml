@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+		xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+    	http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<!--  REPORTING REPORT DESIGN SCHEMA -->
+
+	<changeSet id="reporting_report_design_1" author="mseaton">
+        <preConditions onFail="MARK_RAN">
+        	<not><tableExists tableName="reporting_report_design" /></not>
+        </preConditions>
+        <comment>
+			Create table to persist report design specifications
+        </comment>
+        <createTable tableName="reporting_report_design">
+            <column name="id" autoIncrement="true" type="int">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="varchar(1000)" />
+			<column name="report_definition_id" defaultValueNumeric="0" type="int">
+				<constraints nullable="false"  />
+			</column>
+			<column name="renderer_type" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="properties" type="text" />
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false"/>
+			</column>
+			<column name="changed_by" type="int"/>
+			<column name="date_changed" type="datetime"/>
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false"/>
+			</column>
+			<column name="retired_by" type="int"/>
+			<column name="date_retired" type="datetime"/>
+			<column name="retire_reason" type="varchar(255)"/>
+        </createTable>
+	</changeSet>
+
+	<changeSet id="reporting_report_design_2" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<and>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_design_creator"></foreignKeyConstraintExists>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_design_changed_by"></foreignKeyConstraintExists>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_design_retired_by"></foreignKeyConstraintExists>
+				</and>
+			</not>
+		</preConditions>
+		<comment>
+			Add foreign key constraints to reporting_report_design, dropping any that may have previously existed
+			in order to ensure names are appropriate
+		</comment>
+		<dropAllForeignKeyConstraints baseTableName="reporting_report_design" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="creator" constraintName="reporting_report_design_creator" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="changed_by" constraintName="reporting_report_design_changed_by" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="retired_by" constraintName="reporting_report_design_retired_by" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="reporting_report_design_3" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><columnExists tableName="reporting_report_design" columnName="report_definition_uuid"/></not>
+		</preConditions>
+		<comment>
+			Step 1 in changing reporting_report_design to reference report definition
+			by uuid rather than id, in order to not tie it directly to the serialized object table
+			Add report_definition_uuid column, populate default values based on the existing serialized_object uuids
+		</comment>
+		<addColumn tableName="reporting_report_design">
+			<column name="report_definition_uuid" type="varchar(38)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		<sql>
+			UPDATE reporting_report_design rd
+			LEFT JOIN serialized_object so ON rd.report_definition_id = so.serialized_object_id
+			SET rd.report_definition_uuid = so.uuid;
+		</sql>
+	</changeSet>
+
+	<changeSet id="reporting_report_design_4a" author="mseaton">
+		<comment>
+			Step 2 in changing reporting_report_design to reference report definition
+			by uuid rather than id, in order to not tie it directly to the serialized object table
+			Modify report_definition_uuid to be char(38) rather than varchar(38)
+		</comment>
+		<sql>
+			alter table reporting_report_design modify report_definition_uuid char(38) not null;
+		</sql>
+	</changeSet>
+
+	<changeSet id="reporting_report_design_5" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><indexExists indexName="report_definition_uuid for reporting_report_design"/></not>
+		</preConditions>
+		<comment>
+			Step 3 in changing reporting_report_design to reference report definition
+			by uuid rather than id, in order to not tie it directly to the serialized object table
+			Add index on reporting_report_design.report_definition_uuid
+		</comment>
+		<createIndex tableName="reporting_report_design" indexName="report_definition_uuid for reporting_report_design">
+			<column name="report_definition_uuid" />
+		</createIndex>
+	</changeSet>
+
+	<changeSet id="reporting_report_design_6" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<columnExists tableName="reporting_report_design" columnName="report_definition_id"/>
+		</preConditions>
+		<comment>
+			Step 4 in changing reporting_report_design to reference report definition
+			by uuid rather than id, in order to not tie it directly to the serialized object table
+			Drop report_definition_id column
+		</comment>
+		<dropColumn tableName="reporting_report_design" columnName="report_definition_id" />
+	</changeSet>
+
+	<!--  REPORTING REPORT DESIGN RESOURCE SCHEMA -->
+
+	<changeSet id="reporting_report_design_resource_1" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><tableExists tableName="reporting_report_design_resource" /></not>
+		</preConditions>
+		<comment>
+			Create table to persist report design resources
+		</comment>
+		<createTable tableName="reporting_report_design_resource">
+			<column name="id" autoIncrement="true" type="int">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="varchar(1000)" />
+			<column name="report_design_id" defaultValueNumeric="0" type="int">
+				<constraints nullable="false"  />
+			</column>
+			<column name="content_type" type="varchar(50)"/>
+			<column name="extension" type="varchar(20)"/>
+			<column name="contents" type="longblob" />
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false"/>
+			</column>
+			<column name="changed_by" type="int"/>
+			<column name="date_changed" type="datetime"/>
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false"/>
+			</column>
+			<column name="retired_by" type="int"/>
+			<column name="date_retired" type="datetime"/>
+			<column name="retire_reason" type="varchar(255)"/>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="reporting_report_design_resource_2" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<and>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_design_resource_report_design_id"></foreignKeyConstraintExists>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_design_resource_creator"></foreignKeyConstraintExists>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_design_resource_changed_by"></foreignKeyConstraintExists>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_design_resource_retired_by"></foreignKeyConstraintExists>
+				</and>
+			</not>
+		</preConditions>
+		<comment>
+			Add foreign key constraints to reporting_report_design_resource, dropping any that may have previously existed
+			in order to ensure names are appropriate
+		</comment>
+		<dropAllForeignKeyConstraints baseTableName="reporting_report_design_resource" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="report_design_id" constraintName="reporting_report_design_resource_report_design_id" referencedTableName="reporting_report_design" referencedColumnNames="id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="creator" constraintName="reporting_report_design_resource_creator" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="changed_by" constraintName="reporting_report_design_resource_changed_by" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="retired_by" constraintName="reporting_report_design_resource_retired_by" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<!--  REPORTING REPORT REQUEST SCHEMA -->
+
+	<changeSet id="reporting_report_request_1" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><tableExists tableName="reporting_report_request" /></not>
+		</preConditions>
+		<comment>
+			Create tables to persist a report request and save reports
+		</comment>
+		<createTable tableName="reporting_report_request">
+			<column name="id" autoIncrement="true" type="int">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="base_cohort_uuid" type="char(38)" />
+			<column name="base_cohort_parameters" type="text" />
+			<column name="report_definition_uuid" type="char(38)">
+				<constraints nullable="false" />
+			</column>
+			<column name="report_definition_parameters" type="text" />
+			<column name="renderer_type" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="renderer_argument" type="varchar(255)"/>
+			<column name="requested_by" defaultValueNumeric="0" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="request_datetime" type="datetime">
+				<constraints nullable="false"/>
+			</column>
+			<column name="priority" type="varchar(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="status" type="varchar(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="evaluation_start_datetime" type="datetime"/>
+			<column name="evaluation_complete_datetime" type="datetime"/>
+			<column name="render_complete_datetime" type="datetime"/>
+			<column name="description" type="varchar(1000)" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="reporting_report_request_2" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><foreignKeyConstraintExists foreignKeyName="reporting_report_request_requested_by"></foreignKeyConstraintExists></not>
+		</preConditions>
+		<comment>
+			Add foreign key constraints to reporting_report_request, dropping any that may have previously existed
+			in order to ensure names are appropriate
+		</comment>
+		<dropAllForeignKeyConstraints baseTableName="reporting_report_request" />
+		<addForeignKeyConstraint baseTableName="reporting_report_request" baseColumnNames="requested_by" constraintName="reporting_report_request_requested_by" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="reporting_report_request_3" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><columnExists tableName="reporting_report_request" columnName="schedule" /></not>
+		</preConditions>
+		<comment>
+			Add a schedule property to ReportRequest
+		</comment>
+		<addColumn tableName="reporting_report_request">
+			<column name="schedule" type="varchar(100)"/>
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="reporting_report_request_4" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><columnExists tableName="reporting_report_request" columnName="process_automatically"/></not>
+		</preConditions>
+		<comment>
+			Add processAutomatically boolean to ReportRequest
+		</comment>
+		<addColumn tableName="reporting_report_request">
+			<column name="process_automatically" defaultValueNumeric="0" type="tinyint(1)">
+				<constraints nullable="false"/>
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<!--  REPORTING REPORT PROCESSOR SCHEMA -->
+
+	<changeSet id="reporting_report_processor_1" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><tableExists tableName="reporting_report_processor" /></not>
+		</preConditions>
+		<comment>
+			Create tables to persist report processors
+		</comment>
+		<createTable tableName="reporting_report_processor">
+			<column name="id" autoIncrement="true" type="int">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="varchar(1000)" />
+			<column name="processor_type" type="varchar(255)">
+				<constraints nullable="false"  />
+			</column>
+			<column name="configuration" type="mediumtext" />
+			<column name="run_on_success" defaultValueNumeric="1" type="tinyint(1)">
+				<constraints nullable="false"  />
+			</column>
+			<column name="run_on_error" defaultValueNumeric="0" type="tinyint(1)">
+				<constraints nullable="false"  />
+			</column>
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false"/>
+			</column>
+			<column name="changed_by" type="int"/>
+			<column name="date_changed" type="datetime"/>
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false"/>
+			</column>
+			<column name="retired_by" type="int"/>
+			<column name="date_retired" type="datetime"/>
+			<column name="retire_reason" type="varchar(255)"/>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="reporting_report_processor_2" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="reporting_report_request_processor"/>
+		</preConditions>
+		<comment>
+			Drop the reporting_report_request_processor table (creation of this table was done
+			in the old sqldiff and not ported over to liquibase, as it is not needed.  this
+			changeset serves only to clean it up and delete it if is still exists
+		</comment>
+		<dropTable tableName="reporting_report_request_processor"/>
+	</changeSet>
+
+	<changeSet id="reporting_report_processor_3" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><columnExists tableName="reporting_report_processor" columnName="report_design_id"/></not>
+		</preConditions>
+		<comment>
+			Update reporting_report_processor table to have report_design_id column
+		</comment>
+		<addColumn tableName="reporting_report_processor">
+			<column name="report_design_id" type="int" />
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="reporting_report_processor_4" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<and>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_processor_report_design_id"></foreignKeyConstraintExists>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_processor_creator"></foreignKeyConstraintExists>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_processor_changed_by"></foreignKeyConstraintExists>
+					<foreignKeyConstraintExists foreignKeyName="reporting_report_processor_retired_by"></foreignKeyConstraintExists>
+				</and>
+			</not>
+		</preConditions>
+		<comment>
+			Add foreign key constraints to reporting_report_design, dropping any that may have previously existed
+			in order to ensure names are appropriate
+		</comment>
+		<dropAllForeignKeyConstraints baseTableName="reporting_report_processor" />
+		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="report_design_id" constraintName="reporting_report_processor_report_design_id" referencedTableName="reporting_report_design" referencedColumnNames="id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="creator" constraintName="reporting_report_processor_creator" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="changed_by" constraintName="reporting_report_processor_changed_by" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="retired_by" constraintName="reporting_report_processor_retired_by" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="reporting_report_processor_5" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><columnExists tableName="reporting_report_processor" columnName="processor_mode"/></not>
+		</preConditions>
+		<comment>
+			Update reporting_report_processor table to have processor_mode column
+			and set the value to automatic for all processors that were previously created
+		</comment>
+		<addColumn tableName="reporting_report_processor">
+			<column name="processor_mode" type="varchar(255)" />
+		</addColumn>
+		<sql>update reporting_report_processor set processor_mode = 'AUTOMATIC';</sql>
+	</changeSet>
+
+	<!--  REPORTING MIGRATION CHANGE SETS TO SUPPORT REFACTORING -->
+
+	<changeSet id="reporting_migration_1" author="mseaton">
+		<comment>
+			Remove OpenMRS scheduled tasks produced by the reporting module
+		</comment>
+		<sql>
+			delete 	from scheduler_task_config_property
+			where 	task_config_id in (select task_config_id from scheduler_task_config where schedulable_class like 'org.openmrs.module.reporting.%');
+		</sql>
+		<sql>
+			delete from `scheduler_task_config` where schedulable_class like 'org.openmrs.module.reporting.%';
+		</sql>
+	</changeSet>
+
+	<changeSet id="reporting_migration_2" author="mseaton">
+		<comment>
+			Rename the default web renderer
+		</comment>
+		<sql>
+			update 	reporting_report_request
+			set 	renderer_type = 'org.openmrs.module.reporting.web.renderers.DefaultWebRenderer'
+			where 	renderer_type = 'org.openmrs.module.reporting.web.renderers.IndicatorReportWebRenderer';
+		</sql>
+	</changeSet>
+        
+</databaseChangeLog>
