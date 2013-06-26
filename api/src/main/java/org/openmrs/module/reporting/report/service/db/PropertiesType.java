@@ -52,7 +52,11 @@ public class PropertiesType implements UserType {
 	 * @see UserType#deepCopy(Object)
 	 */
 	public Object deepCopy(Object value) throws HibernateException {
-		return value;
+		if (value != null) {
+			return new Properties((Properties) value);
+		} else {
+			return null;
+		}
 	}
 
 	/** 
@@ -91,7 +95,7 @@ public class PropertiesType implements UserType {
 	 * @see UserType#isMutable()
 	 */
 	public boolean isMutable() {
-		return false;
+		return true;
 	}
 
 	/** 
