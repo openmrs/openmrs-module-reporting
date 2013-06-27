@@ -177,7 +177,7 @@ public class ReportUtil {
 		final ReportDesign design = new ReportDesign();
 		ReportDesignResource resource = new ReportDesignResource();
 		resource.setName("template");
-		String extension = resourceName.substring(resourceName.lastIndexOf("."));
+		String extension = resourceName.substring(resourceName.lastIndexOf(".") + 1);
 		resource.setExtension(extension);
 		String contentType = "text/plain";
 		for (ContentType type : ContentType.values()) {
