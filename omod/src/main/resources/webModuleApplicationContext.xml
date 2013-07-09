@@ -45,6 +45,7 @@
 				<prop key="module/reporting/newIndicator.form">indicatorFormController</prop>
 				<prop key="module/reporting/run/runReport.list">runReportList</prop>
 				<prop key="module/reporting/run/runReport.form">runReportForm</prop>
+				<prop key="module/reporting/reports/renderers/defaultReportDesign.form">defaultReportDesignForm</prop>
 			</props>
 		</property>
 	</bean>	
@@ -84,6 +85,14 @@
 		</property>
     </bean>
 
+	<bean id="defaultReportDesignForm" class="org.openmrs.module.reporting.web.reports.renderers.DefaultReportDesignFormController">
+        <property name="commandName"><value>defaultDesign</value></property>
+        <property name="formView"><value>/module/reporting/reports/renderers/defaultReportDesignForm</value></property>
+        <property name="successView"><value>manageReportDesigns.form</value></property>
+        <property name="validator">
+            <ref bean="defaultReportDesignForm" />
+        </property>
+    </bean>
 <!--  
  	<bean id="exceptionResolver"
 		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
