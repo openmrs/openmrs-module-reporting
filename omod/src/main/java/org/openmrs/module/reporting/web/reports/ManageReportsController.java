@@ -78,7 +78,9 @@ public class ManageReportsController {
     	// Get list of existing reports
     	boolean includeRet = (includeRetired == Boolean.TRUE);
     	List<ReportDesign> reportDesigns = Context.getService(ReportService.class).getAllReportDesigns(includeRet);
+    	ReportDesign reportDesign = new ReportDesign();
     	model.addAttribute("reportDesigns", reportDesigns);
+    	model.addAttribute("reportDesign", reportDesign);
     	
         return model;
     }
