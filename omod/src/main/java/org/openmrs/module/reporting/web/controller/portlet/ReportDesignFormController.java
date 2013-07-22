@@ -48,7 +48,8 @@ public class ReportDesignFormController {
     		@RequestParam(required=false, value="description") String description,
     		@RequestParam(required=true, value="reportDefinition") String reportDefinitionUuid,
     		@RequestParam(required=true, value="rendererType") Class<? extends ReportRenderer> rendererType,
-    		@RequestParam(required=false, value="properties") String properties
+    		@RequestParam(required=false, value="properties") String properties,
+            @RequestParam(required=false, value="returnUrl") String returnUrl
     ) {
     	
 		ReportService rs = Context.getService(ReportService.class);
@@ -110,7 +111,7 @@ public class ReportDesignFormController {
     	}
 
     	design = rs.saveReportDesign(design);
-    	return "redirect:/module/reporting/closeWindow.htm";
+    	return "redirect:" + returnUrl;
     }
     
     /**

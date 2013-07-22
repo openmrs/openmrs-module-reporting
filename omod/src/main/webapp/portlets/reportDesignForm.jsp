@@ -1,25 +1,11 @@
-<%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
-<c:choose>
-    <c:when test="${model.dialog != 'false'}">
-	   <%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
-	</c:when>
-	<c:otherwise>
-	   <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
-	</c:otherwise>
-</c:choose>
+<%@ include file="../manage/localHeader.jsp"%>
+<openmrs:require privilege="Manage Report Designs" otherwise="/login.htm" redirect="/module/reporting/reports/manageReportDesigns.form" />
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 
 		$('#cancelButton').click(function(event){
-			<c:choose>
-				<c:when test="${model.dialog != 'false'}">
-					closeReportingDialog(false);
-				</c:when>
-				<c:otherwise>
-					document.location.href = '${model.cancelUrl}';
-				</c:otherwise>
-			</c:choose>
+			document.location.href = '${pageContext.request.contextPath}${model.returnUrl}'
 		});
 
 		$('#submitButton').click(function(event){
@@ -55,7 +41,7 @@
 	.metadataField { padding-top:5px; border:none; color:#222; display:block; vertical-align:top; font-weight:bold; white-space:nowrap; }
 </style>
 
-<form id="reportDesignForm" method="post" action="${pageContext.request.contextPath}/module/reporting/reports/saveReportDesign.form" enctype="multipart/form-data">
+<form id="reportDesignForm" method="post" action="${pageContext.request.contextPath}/module/reporting/reports/saveReportDesign.form?returnUrl=${model.returnUrl}" enctype="multipart/form-data">
 	<input type="hidden" name="uuid" value="${model.design.uuid}" />
 	<input type="hidden" name="successUrl" value="${model.successUrl}"/>
 	
@@ -127,3 +113,4 @@
 	</div>
 </form>
 
+<%@ include file="/WEB-INF/template/footer.jsp"%>
