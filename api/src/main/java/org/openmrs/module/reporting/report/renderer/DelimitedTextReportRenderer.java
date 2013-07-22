@@ -17,12 +17,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -34,19 +34,48 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 /**
  * ReportRenderer that renders to a delimited text file
  */
-public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
+@Handler
+@Localized("reporting.DelimitedTextReportRenderer")
+public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	
 	transient protected final Log log = LogFactory.getLog(getClass());
+
+	private String filenameExtension;
+	private String afterColumnDelimiter;
 	
+	public DelimitedTextReportRenderer() {}
+
+	public DelimitedTextReportRenderer( String filenameExtension, String afterColumnDelimiter ) {
+		this.filenameExtension = filenameExtension;
+		this.afterColumnDelimiter = afterColumnDelimiter;
+	}
+
 	/**
 	 * @return the filename extension for the particular type of delimited file
 	 */
-	public abstract String getFilenameExtension();
+	public String getFilenameExtension() {
+		return filenameExtension;
+	}
+
+	public void setFilenameExtension( String filenameExtension ) {
+		this.filenameExtension = filenameExtension;
+	}
+
 	
 	/**
 	 * @return the delimiter that occurs after each column
 	 */
-	public abstract String getAfterColumnDelimiter();
+	public String getAfterColumnDelimiter() {
+		return afterColumnDelimiter;
+	}
+
+	public void setAfterColumnDelimiter( String afterColumnDelimiter ) {
+		this.afterColumnDelimiter = afterColumnDelimiter;
+	}
+	
+	public String getUrlForm() {
+		return "/module/reporting/reports/renderers/delimitedTextReportRenderer.form";
+	}
 	
 	/**
 	 * @see org.openmrs.report.ReportRenderer#getRenderedContentType(ReportDefinition, String)

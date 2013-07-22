@@ -26,7 +26,9 @@ public class TsvReportRenderer extends DelimitedTextReportRenderer {
 	/**
 	 * Default Constructor
 	 */
-	public TsvReportRenderer() { }
+	public TsvReportRenderer() {
+		super( "tsv", "\"\t" );
+	}
 
 	/**
 	 * @see DelimitedTextReportRenderer#getFilenameExtension()

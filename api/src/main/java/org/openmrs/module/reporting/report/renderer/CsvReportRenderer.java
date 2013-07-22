@@ -26,7 +26,9 @@ public class CsvReportRenderer extends DelimitedTextReportRenderer {
 	/**
 	 * Default Constructor
 	 */
-	public CsvReportRenderer() { }
+	public CsvReportRenderer() {
+		super( "csv", "\"," );
+	}
 	
 	/**
 	 * @see DelimitedTextReportRenderer#getFilenameExtension()
