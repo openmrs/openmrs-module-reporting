@@ -17,7 +17,11 @@
 
 		<c:forEach items="${reportDesigns}" var="design" varStatus="designStatus">
 			$('#${design.uuid}DesignEditLink').click(function(event){
-				document.location.href = '${pageContext.request.contextPath}/module/reporting/viewPortlet.htm?id=reportDesignPortlet&url=reportDesignForm&parameters=reportDesignUuid=${design.uuid}';
+				showReportingDialog({
+					title: 'Edit Report Design',
+					url: '<c:url value="/module/reporting/viewPortlet.htm?id=reportDesignPortlet&url=reportDesignForm&parameters=reportDesignUuid=${design.uuid}"/>',
+					successCallback: function() { window.location.reload(true); }
+				});
 			});
 			$('#${design.uuid}DesignRemoveLink').click(function(event){					
 				if (confirm('Please confirm you wish to permanantly delete ${design.name}')) {
@@ -25,12 +29,13 @@
 				}
 			});
 		</c:forEach>
-		$( '#rendererType' ).change( function() {
-			$( this ).next( 'input#designAddLink' ).attr( 'href', $( this ).val() );
-		} );
 		
 		$('#designAddLink').click(function(event){
-			document.location.href = '${pageContext.request.contextPath}/module/reporting/viewPortlet.htm?id=reportDesignPortlet&url=reportDesignForm&parameters=';
+			showReportingDialog({
+				title: 'Add New Report Design',
+				url: '<c:url value="/module/reporting/viewPortlet.htm?id=reportDesignPortlet&url=reportDesignForm&parameters="/>',
+				successCallback: function() { window.location.reload(true); }
+			});
 		});
 	});
 </script>
@@ -38,7 +43,6 @@
 <div id="page">
 	<div id="container">
 		<h1>Report Design Manager</h1>
-		<wgt:widget id="rendererType" name="rendererType" object="${reportDesign}" property="rendererType" attributes="type=org.openmrs.module.reporting.report.renderer.ReportRenderer|simple=true"/>
 		<input id="designAddLink" href="#"" type="button" value="<spring:message code="reporting.manage.createNew"/>"/>
 		<br/>
 

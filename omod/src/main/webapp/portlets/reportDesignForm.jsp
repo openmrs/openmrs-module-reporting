@@ -1,13 +1,25 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
-<openmrs:require privilege="Manage Report Designs" otherwise="/login.htm" redirect="/module/reporting/reports/manageReportDesigns.form" />
-<%@ include file="../manage/localHeader.jsp"%>
-<%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
+<c:choose>
+	<c:when test="${model.dialog != 'false'}">
+		<%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
+	</c:when>
+	<c:otherwise>
+		<%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
+	</c:otherwise>
+</c:choose>
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 
 		$('#cancelButton').click(function(event){
-			window.location.href='<c:url value="/module/reporting/reports/manageReportDesigns.form"/>';
+			<c:choose>
+				<c:when test="${model.dialog != 'false'}">
+					closeReportingDialog(false);
+				</c:when>
+				<c:otherwise>
+					document.location.href = '${model.cancelUrl}';
+				</c:otherwise>
+			</c:choose>
 		});
 
 		$('#submitButton').click(function(event){
@@ -115,4 +127,3 @@
 	</div>
 </form>
 
-<%@ include file="/WEB-INF/template/footer.jsp"%>
