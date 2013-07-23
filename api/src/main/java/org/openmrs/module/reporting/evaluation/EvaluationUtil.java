@@ -292,13 +292,13 @@ public class EvaluationUtil {
 	/**
 	 * @return the Cache key for the given definition class
 	 */
-	public static String getCacheKey(Definition definition) {
+	public static String getCacheKey(Definition definition, EvaluationContext context) {
 		String cacheKey = null;
 		Caching caching = definition.getClass().getAnnotation(Caching.class);
 		if (caching != null && caching.strategy() != NoCachingStrategy.class) {
 			try {
 				CachingStrategy strategy = caching.strategy().newInstance();
-				cacheKey = strategy.getCacheKey(definition);
+				cacheKey = strategy.getCacheKey(definition, context);
 			}
 			catch (Exception e) {
 				log.warn("An error occurred while attempting to access the cache.", e);

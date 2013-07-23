@@ -19,6 +19,7 @@ import java.util.TreeMap;
 
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.evaluation.caching.CachingStrategy;
 
@@ -32,19 +33,19 @@ public class ConfigurationPropertyCachingStrategy implements CachingStrategy  {
 	/**
 	 * Implementation that creates a cache key out of the instance class name and a sorted Map of 
 	 * field name -> value for all fields annotated as {@link ConfigurationProperty}
-	 * @see CachingStrategy#getCacheKey(Object)
+	 * @see CachingStrategy#getCacheKey(Definition, EvaluationContext)
 	 */
-	public String getCacheKey(Object o) {
-		if (o == null || !(o instanceof Definition)) {
-			throw new IllegalArgumentException("Unable to getCacheKey for object that is null or not a Definition");
+	public String getCacheKey(Definition definition, EvaluationContext context) {
+		if (definition == null) {
+			throw new IllegalArgumentException("Unable to getCacheKey for object that is null");
 		}
-		List<Property> props = DefinitionUtil.getConfigurationProperties((Definition)o);
+		List<Property> props = DefinitionUtil.getConfigurationProperties(definition);
 		Map<String, Object> m = new TreeMap<String, Object>();
 		for (Property p : props) {
 			if (p.getValue() != null) {
 				m.put(p.getField().getName(), p.getValue());
 			}
 		}
-		return o.getClass().getName() + m.toString();
+		return definition.getClass().getName() + m.toString();
 	}
 }

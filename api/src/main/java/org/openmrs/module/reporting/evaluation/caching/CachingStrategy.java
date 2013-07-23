@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.reporting.evaluation.caching;
 
+import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+
 /**
  * Represents a strategy for caching a particular object
  * in the EvaluationContext.  You would typically specify which
@@ -23,6 +26,6 @@ package org.openmrs.module.reporting.evaluation.caching;
  */
 public interface CachingStrategy  {
 	
-	public String getCacheKey(Object o);
+	public String getCacheKey(Definition definition, EvaluationContext context);
 	
 }

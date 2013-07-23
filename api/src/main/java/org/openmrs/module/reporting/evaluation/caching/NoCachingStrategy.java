@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.reporting.evaluation.caching;
 
+import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+
 /**
  * Strategy that is intended to represent no caching enabled
  * for a particular class
@@ -23,7 +26,7 @@ public class NoCachingStrategy implements CachingStrategy  {
 	/**
 	 * Implementation that returns a null cache key
 	 */
-	public String getCacheKey(Object o) {
+	public String getCacheKey(Definition definition, EvaluationContext context) {
 		return null;
 	}
 }

@@ -37,7 +37,7 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	public SqlCohortDefinitionEvaluator() {}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
      * 
      * @should support integer parameter
      * @should support string parameter

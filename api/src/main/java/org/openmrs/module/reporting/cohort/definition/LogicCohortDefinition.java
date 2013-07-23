@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyAndParameterCachingStrategy;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
@@ -23,7 +24,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 /**
  * A {@link CohortDefinition} based on a Logic query
  */
-@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
+@Caching(strategy=ConfigurationPropertyAndParameterCachingStrategy.class)
 @Localized("reporting.LogicCohortDefinition")
 public class LogicCohortDefinition extends BaseCohortDefinition {
 

@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ScriptingLanguage;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyAndParameterCachingStrategy;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
@@ -23,7 +24,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * A CohortDefinition where a user can define in any JSR-223 (javax.script) supported script
  * (Groovy, Javascript, etc)
  */
-@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
+@Caching(strategy=ConfigurationPropertyAndParameterCachingStrategy.class)
 @Localized("reporting.ScriptedCohortDefinition")
 public class ScriptedCohortDefinition extends BaseCohortDefinition {
 	

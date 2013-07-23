@@ -13,7 +13,10 @@
  */
 package org.openmrs.module.reporting.indicator;
 
+import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyAndParameterCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.indicator.evaluator.SqlIndicatorEvaluator;
 
 /**
@@ -24,6 +27,8 @@ import org.openmrs.module.reporting.indicator.evaluator.SqlIndicatorEvaluator;
  * @see SqlIndicatorEvaluator
  *
  */
+@Caching(strategy=ConfigurationPropertyAndParameterCachingStrategy.class)
+@Localized("reporting.SqlIndicator")
 public class SqlIndicator extends BaseIndicator {
 
 	public static final long serialVersionUID = 1L;

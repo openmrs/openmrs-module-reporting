@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +19,19 @@ import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
+import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
@@ -205,4 +216,47 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
         EvaluationContext evaluationContext = new EvaluationContext();
         Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
     }
+
+	/**
+	 * @see {@link SqlCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 *
+	 */
+	@Test
+	@Verifies(value = "should evaluate different results for the same query with different parameters", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldEvaluateDifferentResultsForTheSameQueryWithDifferentParameters() throws Exception {
+
+		SqlCohortDefinition cd = new SqlCohortDefinition("SELECT distinct patient_id FROM encounter WHERE encounter_datetime >= :startParam and encounter_datetime <= :endParam");
+		cd.addParameter(new Parameter("startParam", "startParam", Date.class));
+		cd.addParameter(new Parameter("endParam", "endParam", Date.class));
+
+		CohortIndicator i1 = CohortIndicator.newCountIndicator("num", new Mapped<CohortDefinition>(cd,
+				ParameterizableUtil.createParameterMappings("startParam=${startDate},endParam=${endDate}")), null);
+		i1.addParameter(new Parameter("startDate", "Start date", Date.class));
+		i1.addParameter(new Parameter("endDate", "End date", Date.class));
+
+		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+		dsd.addParameter(new Parameter("startDate", "Start date", Date.class));
+		dsd.addParameter(new Parameter("endDate", "End date", Date.class));
+
+		dsd.addColumn("1", "Num in period", new Mapped(i1, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+
+		CohortIndicator i2 = CohortIndicator.newCountIndicator("num", new Mapped<CohortDefinition>(cd,
+				ParameterizableUtil.createParameterMappings("startParam=${endDate-1m},endParam=${endDate}")), null);
+		i2.addParameter(new Parameter("startDate", "Start date", Date.class));
+		i2.addParameter(new Parameter("endDate", "End date", Date.class));
+
+		dsd.addColumn("2", "Num at end of period", new Mapped(i2, ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+		EvaluationContext context = new EvaluationContext();
+		context.addParameterValue("startDate", DateUtil.getDateTime(2009, 8, 19));
+		context.addParameterValue("endDate", DateUtil.getDateTime(2009, 10, 20));
+
+		DataSet ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, context);
+		DataSetRow row = ds.iterator().next();
+
+		System.out.println(ReportUtil.toCsv(ds));
+
+		Assert.assertEquals("5", row.getColumnValue("1").toString());
+		Assert.assertEquals("1", row.getColumnValue("2").toString());
+	}
 }

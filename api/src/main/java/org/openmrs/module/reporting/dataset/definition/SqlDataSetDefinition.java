@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.dataset.definition;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.definition.evaluator.SqlDataSetEvaluator;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyAndParameterCachingStrategy;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
@@ -23,7 +24,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * Definition of a SQL DataSet
  * @see SqlDataSetEvaluator
  */
-@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
+@Caching(strategy=ConfigurationPropertyAndParameterCachingStrategy.class)
 @Localized("reporting.SqlDataSetDefinition")
 public class SqlDataSetDefinition extends BaseDataSetDefinition {
 
@@ -48,7 +49,7 @@ public class SqlDataSetDefinition extends BaseDataSetDefinition {
 	 * 
 	 * @param name
 	 * @param description
-	 * @param questions
+	 * @param sqlQuery
 	 */
 	public SqlDataSetDefinition(String name, String description, String sqlQuery) {
 		this();

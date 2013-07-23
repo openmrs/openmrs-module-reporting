@@ -57,8 +57,8 @@ public class CachingCohortDefinitionTest extends BaseModuleContextSensitiveTest 
 		females.setFemaleIncluded(true);
 		
 		ConfigurationPropertyCachingStrategy strategy = new ConfigurationPropertyCachingStrategy();
-		String maleKey = strategy.getCacheKey(males);
-		String femaleKey = strategy.getCacheKey(females);
+		String maleKey = strategy.getCacheKey(males, ec);
+		String femaleKey = strategy.getCacheKey(females, ec);
 		assertNull("Cache should not have male filter yet", ec.getFromCache(maleKey));
 
 		Cohort maleCohort = Context.getService(CohortDefinitionService.class).evaluate(males, ec);		
