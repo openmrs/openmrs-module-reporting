@@ -90,7 +90,7 @@
 				</and>
 				<and>
 					<not><dbms type="mysql"/></not>
-					<foreignKeyConstraintExists foreignKeyTableName="reporting_report_design" foreignKeyName="report_definition_id for reporting_report_design"/>
+					<foreignKeyConstraintExists foreignKeyName="report_definition_id for reporting_report_design"/>
 				</and>
 			</or>
 		</preConditions>
