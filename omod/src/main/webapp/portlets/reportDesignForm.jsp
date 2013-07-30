@@ -1,25 +1,15 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
-<c:choose>
-	<c:when test="${model.dialog != 'false'}">
-		<%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
-	</c:when>
-	<c:otherwise>
-		<%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
-	</c:otherwise>
-</c:choose>
+<%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-
+	$(document).ready(function() {		
+		<c:if test="${not empty model.type}">
+			$( "#rendererType" ).val("${model.type}");
+		</c:if>
+		
+		
 		$('#cancelButton').click(function(event){
-			<c:choose>
-				<c:when test="${model.dialog != 'false'}">
-					closeReportingDialog(false);
-				</c:when>
-				<c:otherwise>
-					document.location.href = '${model.cancelUrl}';
-				</c:otherwise>
-			</c:choose>
+			document.location.href = '${pageContext.request.contextPath}${model.cancelUrl}';
 		});
 
 		$('#submitButton').click(function(event){
@@ -37,7 +27,7 @@
 			}
 			var resourceInput = $newRow.find("input[name='resources']")[0];
 			$(resourceInput).attr('name', 'resources.new'+count);
-		});
+		});		
 
 	});
 

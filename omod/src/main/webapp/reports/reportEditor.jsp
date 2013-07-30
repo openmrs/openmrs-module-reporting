@@ -16,11 +16,7 @@
 
 		<c:forEach items="${designs}" var="design" varStatus="designStatus">
 			$('#${design.uuid}DesignEditLink').click(function(event){
-				showReportingDialog({
-					title: 'Edit Report Design',
-					url: '<c:url value="/module/reporting/viewPortlet.htm?id=reportDesignPortlet&url=reportDesignForm&parameters=reportDesignUuid=${design.uuid}"/>',
-					successCallback: function() { window.location.reload(true); }
-				});
+				document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=${design.rendererType.name}&reportDesignUuid=${design.uuid}&returnUrl=${pageUrl}';
 			});
 			$('#${design.uuid}DesignRemoveLink').click(function(event){					
 				if (confirm('Please confirm you wish to permanantly delete <b>${design.name}</b>')) {
@@ -29,11 +25,7 @@
 			});
 		</c:forEach>
 		$('#designAddLink').click(function(event){
-			showReportingDialog({
-				title: 'Add New Report Design',
-				url: '<c:url value="/module/reporting/viewPortlet.htm?id=reportDesignPortlet&url=reportDesignForm&parameters=reportDefinitionUuid=${report.uuid}"/>',
-				successCallback: function() { window.location.reload(true); }
-			});
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/defaultReportDesignEditor.htm?parameters=reportDefinitionUuid=${report.uuid}|returnUrl=${pageUrl}';
 		});
 		
 		$('#previewButton').click(function(event) { 
@@ -82,14 +74,14 @@
 										</tr>
 										<c:forEach items="${designs}" var="design" varStatus="designStatus">
 											<tr>
-												<td nowrap><a href="#" id="${design.uuid}DesignEditLink">${design.name}</a></td>
+												<td nowrap><a href="#edit" id="${design.uuid}DesignEditLink">${design.name}</a></td>
 												<td width="100%">${design.rendererType.simpleName}</td>
 												<td nowrap align="center"><a href="#" id="${design.uuid}DesignRemoveLink">[X]</a></td>
 											</tr>
 										</c:forEach>
 									</table>
 								</c:if>
-								<a style="font-weight:bold;" href="#" id="designAddLink">[+] Add</a>
+								<a style="font-weight:bold;" href="#add" id="designAddLink">[+] Add</a>
 							</div>
 							<br/>
 							<button id="previewButton">

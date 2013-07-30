@@ -22,12 +22,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.web.controller.mapping.renderers.RendererMappingHandler;
+import org.openmrs.util.HandlerUtil;
+import org.openmrs.api.APIException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,9 +83,44 @@ public class ManageReportsController {
     	// Get list of existing reports
     	boolean includeRet = (includeRetired == Boolean.TRUE);
     	List<ReportDesign> reportDesigns = Context.getService(ReportService.class).getAllReportDesigns(includeRet);
+    	ReportDesign reportDesign = new ReportDesign();
     	model.addAttribute("reportDesigns", reportDesigns);
+    	model.addAttribute("reportDesign", reportDesign);
     	
         return model;
+    }
+    
+    /**
+     *  
+     * to edit a reportDefinition based on its rendererType.
+     */
+	@RequestMapping("/module/reporting/reports/renderers/editReportDesign")
+    public String editReportDesign(ModelMap model, 
+    		@RequestParam(required=true, value="type") Class<? extends ReportRenderer> type,
+    		@RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid,
+    		@RequestParam(required=false, value="returnUrl") String returnUrl) {
+    
+		if ( !ObjectUtil.isNull(type) ) {
+			try {
+				RendererMappingHandler handler = HandlerUtil.getPreferredHandler(RendererMappingHandler.class, type);
+				if (ObjectUtil.isNull(reportDesignUuid)) {
+					return "redirect:" + handler.getCreateUrl( type ) + ( ObjectUtil.isNull(returnUrl) ? "" : "&successUrl=" + returnUrl );
+				}
+				else {
+					ReportService rs = Context.getService(ReportService.class);
+					ReportDesign design = rs.getReportDesignByUuid(reportDesignUuid);
+					return "redirect:" + handler.getEditUrl( design ) + ( ObjectUtil.isNull(returnUrl) ? "" : "&successUrl=" + returnUrl );
+				}
+			} catch ( APIException e ) {
+				log.error( "No handler found" );
+			}			
+		}
+	
+		return "redirect:/module/reporting/reports/renderers/defaultReportDesignEditor.htm?parameters=" 
+				+ ( ObjectUtil.isNull( type ) || !ObjectUtil.isNull(reportDesignUuid) ? "" : "type=" + type.getName() + "|" )  
+				+ ( ObjectUtil.isNull(reportDesignUuid) ? "" : "reportDesignUuid=" + reportDesignUuid ) 
+				+ ( ObjectUtil.isNull(returnUrl) ? "" : "|returnUrl=" + returnUrl );
+    	
     }
     
     /**

@@ -48,7 +48,8 @@ public class ReportDesignFormController {
     		@RequestParam(required=false, value="description") String description,
     		@RequestParam(required=true, value="reportDefinition") String reportDefinitionUuid,
     		@RequestParam(required=true, value="rendererType") Class<? extends ReportRenderer> rendererType,
-    		@RequestParam(required=false, value="properties") String properties
+    		@RequestParam(required=false, value="properties") String properties,
+    		@RequestParam(required=true, value="successUrl") String successUrl
     ) {
     	
 		ReportService rs = Context.getService(ReportService.class);
@@ -109,8 +110,15 @@ public class ReportDesignFormController {
     		}
     	}
 
+    	String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
+    	if (StringUtils.isEmpty(successUrl)) {
+    		successUrl = "/module/reporting/reports/manageReportDesigns.form";
+    	}
+    	else if (successUrl.startsWith(pathToRemove)) {
+    		successUrl = successUrl.substring(pathToRemove.length());
+    	}
     	design = rs.saveReportDesign(design);
-    	return "redirect:/module/reporting/closeWindow.htm";
+    	return "redirect:" + successUrl;
     }
     
     /**

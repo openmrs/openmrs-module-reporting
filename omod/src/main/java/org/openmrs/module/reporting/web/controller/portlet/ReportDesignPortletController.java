@@ -13,6 +13,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.OpenmrsClassLoader;
+import org.openmrs.web.WebConstants;
 
 /**
  * This Controller loads a ReportDesign for editing
@@ -41,6 +42,18 @@ public class ReportDesignPortletController extends ReportingPortletController {
 				design.setReportDefinition(Context.getService(ReportDefinitionService.class).getDefinitionByUuid(reportDefinitionUuid));
 			}
 		}
+		
+		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
+		String returnUrl = (String) model.get("returnUrl");
+    	if (StringUtils.isEmpty(returnUrl)) {
+    		returnUrl = "/module/reporting/reports/manageReportDesigns.form";
+    	}
+    	else if (returnUrl.startsWith(pathToRemove)) {
+    		returnUrl = returnUrl.substring(pathToRemove.length());
+    	}
+
 		model.put("design", design);
+		model.put("successUrl", returnUrl);
+		model.put("cancelUrl",  returnUrl);
 	}
 }
