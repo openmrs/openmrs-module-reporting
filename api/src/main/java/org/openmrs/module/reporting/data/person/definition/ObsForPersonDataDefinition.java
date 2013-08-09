@@ -13,10 +13,13 @@
  */
 package org.openmrs.module.reporting.data.person.definition;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -40,6 +43,12 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
 	
 	@ConfigurationProperty(required=true)
 	private Concept question;
+	
+	@ConfigurationProperty(group="whichEncounter")
+	private List<EncounterType> encounterTypeList;
+	
+	@ConfigurationProperty(group="whichEncounter")
+	private List<Form> formList;
 	
 	@ConfigurationProperty
 	private Date onOrAfter;
@@ -115,6 +124,54 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
 	public void setQuestion(Concept question) {
 		this.question = question;
 	}
+	
+	/**
+     * @return the encounterTypeList
+     */
+    public List<EncounterType> getEncounterTypeList() {
+    	return encounterTypeList;
+    }
+	
+    /**
+     * @param encounterTypeList the encounterTypeList to set
+     */
+    public void setEncounterTypeList(List<EncounterType> encounterTypeList) {
+    	this.encounterTypeList = encounterTypeList;
+    }
+	
+    /**
+     * @param encounterType the encounter type to add to the list
+     */
+    public void addEncounterType(EncounterType encounterType) {
+    	if (encounterTypeList == null) {
+    		encounterTypeList = new ArrayList<EncounterType>();
+    	}
+    	encounterTypeList.add(encounterType);
+    }
+    
+	/**
+     * @return the formList
+     */
+    public List<Form> getFormList() {
+    	return formList;
+    }
+	
+    /**
+     * @param formList the formList to set
+     */
+    public void setFormList(List<Form> formList) {
+    	this.formList = formList;
+    }
+    
+    /**
+     * @param Form the form to add to the list
+     */
+    public void addForm(Form Form) {
+    	if (formList == null) {
+    		formList = new ArrayList<Form>();
+    	}
+    	formList.add(Form);
+    }
 
 	/**
 	 * @return the onOrAfter
