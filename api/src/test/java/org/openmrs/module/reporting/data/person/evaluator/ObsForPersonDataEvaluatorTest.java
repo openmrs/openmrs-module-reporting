@@ -13,12 +13,14 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -86,5 +88,30 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 		pd = Context.getService(PersonDataService.class).evaluate(d, context);
 		Assert.assertEquals(50, ((Obs)pd.getData().get(7)).getValueNumeric().intValue());
 		Assert.assertEquals(180, ((Obs)pd.getData().get(20)).getValueNumeric().intValue());
+		
+		d.setWhich(TimeQualifier.ANY);
+		d.setOnOrAfter(null);
+		d.setOnOrBefore(null);
+		d.addEncounterType(Context.getEncounterService().getEncounterType(1));
+		pd = Context.getService(PersonDataService.class).evaluate(d, context);
+		Assert.assertEquals(2, ((List)pd.getData().get(7)).size());
+			
+		d.addEncounterType(Context.getEncounterService().getEncounterType(1));
+		d.addEncounterType(Context.getEncounterService().getEncounterType(2));
+		pd = Context.getService(PersonDataService.class).evaluate(d, context);
+		Assert.assertEquals(3, ((List)pd.getData().get(7)).size());
+	
+		d.addEncounterType(Context.getEncounterService().getEncounterType(1));
+		d.addEncounterType(Context.getEncounterService().getEncounterType(2));
+		d.setFormList(Collections.singletonList(new Form(1)));
+		pd = Context.getService(PersonDataService.class).evaluate(d, context);
+		Assert.assertEquals(3, ((List)pd.getData().get(7)).size());
+		
+		d.addEncounterType(Context.getEncounterService().getEncounterType(1));
+		d.addEncounterType(Context.getEncounterService().getEncounterType(2));
+		d.setFormList(Collections.singletonList(new Form(2)));
+		pd = Context.getService(PersonDataService.class).evaluate(d, context);
+		Assert.assertNull(pd.getData().get(7));
+		
 	}
 }
