@@ -13,10 +13,13 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -64,6 +67,24 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		
 		hql.append("and 		concept.conceptId = :question ");
 		m.put("question", def.getQuestion().getConceptId());
+		
+		if (def.getEncounterTypeList() != null && !def.getEncounterTypeList().isEmpty()) {
+			List<Integer> ids = new ArrayList<Integer>();
+			for (EncounterType encType : def.getEncounterTypeList()) {
+				ids.add(encType.getEncounterTypeId());
+			}
+			hql.append("and		encounter.encounterType.encounterTypeId in (:encounterTypeIds) ");
+			m.put("encounterTypeIds", ids);
+		}
+		
+		if (def.getFormList() != null && !def.getFormList().isEmpty()) {
+			List<Integer> ids = new ArrayList<Integer>();
+			for (Form encForm : def.getFormList()) {
+				ids.add(encForm.getFormId());
+			}
+			hql.append("and		encounter.form.formId in (:formIds) ");
+			m.put("formIds", ids);
+		}
 		
 		if (def.getOnOrAfter() != null) {
 			hql.append("and		obsDatetime >= :onOrAfter ");
