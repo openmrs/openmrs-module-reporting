@@ -59,24 +59,31 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		}
 	
 		StringBuilder hql = new StringBuilder();
-		hql.append("from 		PatientIdentifier ");
+		hql.append("select 		pi.patient.patientId, pi ");
+		hql.append("from 		PatientIdentifier as pi ");
 		hql.append("where 		voided = false ");
 		if (context.getBaseCohort() != null) {
 			hql.append("and 		patient.patientId in (:patientIds) ");
 		}
 		hql.append("and 		identifierType.patientIdentifierTypeId in (:idTypes) ");
 		hql.append("order by 	preferred asc");
+
 		Map<String, Object> m = new HashMap<String, Object>();
 		if (context.getBaseCohort() != null) {
 			m.put("patientIds", context.getBaseCohort());
 		}
 		m.put("idTypes", idTypes);
+
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
 		
 		ListMap<Integer, PatientIdentifier> patIds = new ListMap<Integer, PatientIdentifier>();
 		for (Object o : queryResult) {
-			PatientIdentifier pi = (PatientIdentifier)o;
-			patIds.putInList(pi.getPatient().getPatientId(), pi);  // TODO: This is probably inefficient.  Try to improve this with HQL
+			Object[] parts = (Object[]) o;
+			if (parts.length == 2) {
+				Integer pId = (Integer) parts[0];
+				PatientIdentifier pi = (PatientIdentifier) parts[1];
+				patIds.putInList(pId, pi);
+			}
 		}
 		
 		// Order the resulting patient identifiers by the type of identifiers passed in, followed by preferred/non-preferred
