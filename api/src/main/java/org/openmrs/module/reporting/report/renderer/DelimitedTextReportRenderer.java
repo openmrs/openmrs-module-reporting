@@ -17,26 +17,30 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * ReportRenderer that renders to a delimited text file
  */
+
 public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	
 	transient protected final Log log = LogFactory.getLog(getClass());
+		
+	private ReportDesign design = new ReportDesign();
 	
 	/**
 	 * @return the filename extension for the particular type of delimited file
@@ -55,25 +59,33 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		return "text/" + getFilenameExtension();
 	}
 	
+
+	public ReportDesign getReportDesign() {
+		return design;
+	}
+	
+	public void setReportDesign( String argument ) {
+		this.design = getDesign( argument );
+	}
 	/**
 	 * @see DelimitedTextReportRenderer#getBeforeColumnDelimiter()
 	 */
 	public String getBeforeColumnDelimiter() {
-		return "\"";
+		return getReportDesign().getPropertyValue("beforeColumnDelimiter", "\"");
 	}
 	
 	/**
 	 * @see DelimitedTextReportRenderer#getBeforeRowDelimiter()
 	 */
 	public String getBeforeRowDelimiter() {
-		return "";
+		return getReportDesign().getPropertyValue("beforeRowDelimiter", "");
 	}
 	
 	/**
 	 * @see DelimitedTextReportRenderer#getAfterRowDelimiter()
 	 */
 	public String getAfterRowDelimiter() {
-		return "\n";
+		return getReportDesign().getPropertyValue("afterRowDelimiter", "\n");
 	}
 	
 	/**
@@ -105,6 +117,8 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		
 		Writer w = new OutputStreamWriter(out,"UTF-8");
 		DataSet dataset = results.getDataSets().values().iterator().next();
+		
+		setReportDesign(argument);
 		
 		List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 		

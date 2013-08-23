@@ -26,19 +26,21 @@ public class TsvReportRenderer extends DelimitedTextReportRenderer {
 	/**
 	 * Default Constructor
 	 */
-	public TsvReportRenderer() { }
+	public TsvReportRenderer() {}
 
 	/**
 	 * @see DelimitedTextReportRenderer#getFilenameExtension()
 	 */
 	public String getFilenameExtension() {
-		return "tsv";
+		return getReportDesign().getPropertyValue("filenameExtension", "tsv");
 	}
 	
+
 	/**
 	 * @see DelimitedTextReportRenderer#getAfterColumnDelimiter()
 	 */
 	public String getAfterColumnDelimiter() {
-		return "\"\t";
+		return getReportDesign().getPropertyValue("afterColumnDelimiter", "\"\t");
 	}
+	
 }

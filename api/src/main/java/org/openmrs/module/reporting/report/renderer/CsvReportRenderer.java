@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.report.renderer;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
 
+
 /**
  * Implementation of a ReportRenderer that renders ReportData to a CSV file
  */
@@ -26,19 +27,20 @@ public class CsvReportRenderer extends DelimitedTextReportRenderer {
 	/**
 	 * Default Constructor
 	 */
-	public CsvReportRenderer() { }
+	public CsvReportRenderer(){}
 	
 	/**
 	 * @see DelimitedTextReportRenderer#getFilenameExtension()
 	 */
 	public String getFilenameExtension() {
-		return "csv";
+		return getReportDesign().getPropertyValue("filenameExtension", "csv");
 	}
 
 	/**
 	 * @see DelimitedTextReportRenderer#getAfterColumnDelimiter()
 	 */
 	public String getAfterColumnDelimiter() {
-		return "\",";
+		return getReportDesign().getPropertyValue("afterColumnDelimiter", "\",");
 	}
+
 }
