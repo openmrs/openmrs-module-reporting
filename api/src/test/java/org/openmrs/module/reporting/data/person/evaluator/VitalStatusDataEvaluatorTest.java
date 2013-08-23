@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -55,13 +56,19 @@ public class VitalStatusDataEvaluatorTest extends BaseModuleContextSensitiveTest
 		VitalStatusDataDefinition d = new VitalStatusDataDefinition();
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort("20,21"));
+		Concept unknown = Context.getConceptService().getConcept(22);
+
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
 		Assert.assertEquals(2, pd.getData().size());
+
 		VitalStatus deadStatus = (VitalStatus)pd.getData().get(20);
 		Assert.assertEquals(true, deadStatus.getDead());
 		Assert.assertEquals("2005-02-08", DateUtil.formatDate(deadStatus.getDeathDate(), "yyyy-MM-dd"));
+		Assert.assertEquals(unknown, deadStatus.getCauseOfDeath());
+
 		VitalStatus alive = (VitalStatus)pd.getData().get(21);
 		Assert.assertEquals(false, alive.getDead());
 		Assert.assertNull(alive.getDeathDate());
+		Assert.assertNull(alive.getCauseOfDeath());
 	}
 }
