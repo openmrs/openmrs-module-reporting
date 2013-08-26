@@ -32,7 +32,7 @@ public class TsvReportRenderer extends DelimitedTextReportRenderer {
 	 * @see DelimitedTextReportRenderer#getFilenameExtension()
 	 */
 	public String getFilenameExtension() {
-		return getReportDesign().getPropertyValue("filenameExtension", "tsv");
+		return "tsv";
 	}
 	
 
@@ -40,7 +40,7 @@ public class TsvReportRenderer extends DelimitedTextReportRenderer {
 	 * @see DelimitedTextReportRenderer#getAfterColumnDelimiter()
 	 */
 	public String getAfterColumnDelimiter() {
-		return getReportDesign().getPropertyValue("afterColumnDelimiter", "\"\t");
+		return "\"\t";
 	}
 	
 }

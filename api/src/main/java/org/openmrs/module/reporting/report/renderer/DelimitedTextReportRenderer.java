@@ -40,8 +40,6 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	
 	transient protected final Log log = LogFactory.getLog(getClass());
 		
-	private ReportDesign design = new ReportDesign();
-	
 	/**
 	 * @return the filename extension for the particular type of delimited file
 	 */
@@ -59,33 +57,25 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		return "text/" + getFilenameExtension();
 	}
 	
-
-	public ReportDesign getReportDesign() {
-		return design;
-	}
-	
-	public void setReportDesign( String argument ) {
-		this.design = getDesign( argument );
-	}
 	/**
 	 * @see DelimitedTextReportRenderer#getBeforeColumnDelimiter()
 	 */
 	public String getBeforeColumnDelimiter() {
-		return getReportDesign().getPropertyValue("beforeColumnDelimiter", "\"");
+		return "\"";
 	}
 	
 	/**
 	 * @see DelimitedTextReportRenderer#getBeforeRowDelimiter()
 	 */
 	public String getBeforeRowDelimiter() {
-		return getReportDesign().getPropertyValue("beforeRowDelimiter", "");
+		return "";
 	}
 	
 	/**
 	 * @see DelimitedTextReportRenderer#getAfterRowDelimiter()
 	 */
 	public String getAfterRowDelimiter() {
-		return getReportDesign().getPropertyValue("afterRowDelimiter", "\n");
+		return "\n";
 	}
 	
 	/**
@@ -118,25 +108,29 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		Writer w = new OutputStreamWriter(out,"UTF-8");
 		DataSet dataset = results.getDataSets().values().iterator().next();
 		
-		setReportDesign(argument);
+		ReportDesign design = getDesign( argument );
+		String beforeColumnDelimiter = design.getPropertyValue("beforeColumnDelimiter", getBeforeColumnDelimiter());
+		String afterColumnDelimiter = design.getPropertyValue("afterColumnDelimiter", getAfterColumnDelimiter());
+		String beforeRowDelimiter = design.getPropertyValue("beforeRowDelimiter", getBeforeRowDelimiter());
+		String afterRowDelimiter = design.getPropertyValue("afterRowDelimiter", getAfterRowDelimiter());
 		
 		List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 		
 		// header row
-		w.write(getBeforeRowDelimiter());
+		w.write(beforeRowDelimiter);
 		for (DataSetColumn column : columns) {
-			w.write(getBeforeColumnDelimiter());
+			w.write(beforeColumnDelimiter);
 			w.write(escape(column.getName()));
-			w.write(getAfterColumnDelimiter());
+			w.write(afterColumnDelimiter);
 		}
-		w.write(getAfterRowDelimiter());
+		w.write(afterRowDelimiter);
 		
 		// data rows
 		for (DataSetRow row : dataset) {
-			w.write(getBeforeRowDelimiter());
+			w.write(beforeRowDelimiter);
 			for (DataSetColumn column : columns) {
 				Object colValue = row.getColumnValue(column);
-				w.write(getBeforeColumnDelimiter());
+				w.write(beforeColumnDelimiter);
 				if (colValue != null) {
 					if (colValue instanceof Cohort) {
 						w.write(escape(Integer.toString(((Cohort) colValue).size())));
@@ -150,9 +144,9 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 							w.write(temp);
 					}
 				}
-				w.write(getAfterColumnDelimiter());
+				w.write(afterColumnDelimiter);
 			}
-			w.write(getAfterRowDelimiter());
+			w.write(afterRowDelimiter);
 		}
 		
 		w.flush();

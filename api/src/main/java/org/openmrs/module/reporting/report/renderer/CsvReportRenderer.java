@@ -33,14 +33,14 @@ public class CsvReportRenderer extends DelimitedTextReportRenderer {
 	 * @see DelimitedTextReportRenderer#getFilenameExtension()
 	 */
 	public String getFilenameExtension() {
-		return getReportDesign().getPropertyValue("filenameExtension", "csv");
+		return "csv";
 	}
 
 	/**
 	 * @see DelimitedTextReportRenderer#getAfterColumnDelimiter()
 	 */
 	public String getAfterColumnDelimiter() {
-		return getReportDesign().getPropertyValue("afterColumnDelimiter", "\",");
+		return "\",";
 	}
 
 }
