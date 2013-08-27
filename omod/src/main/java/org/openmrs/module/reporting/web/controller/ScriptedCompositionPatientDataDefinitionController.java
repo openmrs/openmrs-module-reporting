@@ -49,7 +49,7 @@ public class ScriptedCompositionPatientDataDefinitionController {
 	}
 	
 	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinitionSetComposition")
-	public String setComposition(@RequestParam("uuid") String uuid,
+	public String setScriptCode(@RequestParam("uuid") String uuid,
 	                             @RequestParam("scriptCode") String scriptCode,
 	                             @RequestParam("scriptType") String scriptType) {
 		PatientDataDefinition def = Context.getService(PatientDataService.class).getDefinitionByUuid(uuid);
