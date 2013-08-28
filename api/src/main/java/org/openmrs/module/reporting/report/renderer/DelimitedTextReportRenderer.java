@@ -38,7 +38,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	
 	transient protected final Log log = LogFactory.getLog(getClass());
-		
+
 	/**
 	 * @return the filename extension for the particular type of delimited file
 	 */
