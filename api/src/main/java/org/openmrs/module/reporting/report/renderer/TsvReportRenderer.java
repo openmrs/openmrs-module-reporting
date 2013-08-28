@@ -26,7 +26,7 @@ public class TsvReportRenderer extends DelimitedTextReportRenderer {
 	/**
 	 * Default Constructor
 	 */
-	public TsvReportRenderer() {}
+	public TsvReportRenderer() { }
 
 	/**
 	 * @see DelimitedTextReportRenderer#getFilenameExtension()
@@ -35,12 +35,10 @@ public class TsvReportRenderer extends DelimitedTextReportRenderer {
 		return "tsv";
 	}
 	
-
 	/**
 	 * @see DelimitedTextReportRenderer#getAfterColumnDelimiter()
 	 */
 	public String getAfterColumnDelimiter() {
 		return "\"\t";
 	}
-	
 }
