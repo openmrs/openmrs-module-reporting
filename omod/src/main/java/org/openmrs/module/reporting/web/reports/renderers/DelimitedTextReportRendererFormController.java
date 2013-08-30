@@ -56,8 +56,6 @@ public class DelimitedTextReportRendererFormController {
 	 * 
 	 */
 	public boolean compareEscapedStrings( String one, String two ) {
-		log.error(one);
-		log.error(StringEscapeUtils.escapeJava(two));
 		return one.equals(StringEscapeUtils.escapeJava(two));
 	}
 	/**
