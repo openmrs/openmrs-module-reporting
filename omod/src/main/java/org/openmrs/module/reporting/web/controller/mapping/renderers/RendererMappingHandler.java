@@ -34,7 +34,7 @@ public abstract class RendererMappingHandler {
 	 */
 	public String getEditUrl(ReportDesign reportDesign) {
 		String baseUrl = getCreateUrl( reportDesign.getRendererType() );
-		return baseUrl + "?reportDesignUuid=" + reportDesign.getUuid();
+		return baseUrl + (baseUrl.indexOf("?") != -1 ? "&" : "?" ) + "reportDesignUuid=" + reportDesign.getUuid();
 	}
 	
 	/**

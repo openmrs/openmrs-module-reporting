@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -38,7 +39,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	
 	transient protected final Log log = LogFactory.getLog(getClass());
-
+	
 	/**
 	 * @return the filename extension for the particular type of delimited file
 	 */
@@ -53,7 +54,8 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	 * @see org.openmrs.report.ReportRenderer#getRenderedContentType(ReportDefinition, String)
 	 */
 	public String getRenderedContentType(ReportDefinition model, String argument) {
-		return "text/" + getFilenameExtension();
+		ReportDesign design = getDesign(argument);
+		return "text/" + design.getPropertyValue("filenameExtension", getFilenameExtension());
 	}
 	
 	/**
@@ -75,6 +77,19 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	 */
 	public String getAfterRowDelimiter() {
 		return "\n";
+	}
+	
+	/**
+	 * 
+	 * Method to escape characters of a delimiter string to its html form
+	 * @param delimiter delimiter to escape
+	 * @return The escaped text
+	 */
+	public String escapeDelimiter(String delimiter) {
+		if ( delimiter != null ) {
+			return StringEscapeUtils.escapeHtml(StringEscapeUtils.escapeJava(delimiter));
+		}
+		return null;
 	}
 	
 	/**
