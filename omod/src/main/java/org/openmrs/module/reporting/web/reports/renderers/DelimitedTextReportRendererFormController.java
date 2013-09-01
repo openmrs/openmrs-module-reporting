@@ -50,15 +50,6 @@ public class DelimitedTextReportRendererFormController {
 	public DelimitedTextReportRendererFormController() { }
 
 	/**
-	 * @param one a String that won't be escaped
-	 * @param two a string that will be escaped
-	 * @return true if both strings are equals 
-	 * 
-	 */
-	public boolean compareEscapedStrings( String one, String two ) {
-		return one.equals(StringEscapeUtils.escapeJava(two));
-	}
-	/**
 	 *  prepares a new form for the a DelimitedReportRenderer
 	 */
 	@RequestMapping("/module/reporting/reports/renderers/delimitedTextReportRenderer")
@@ -73,8 +64,7 @@ public class DelimitedTextReportRendererFormController {
 		ReportDesign design = null;
 		if (StringUtils.isNotEmpty(reportDesignUuid)) {
 			design = rs.getReportDesignByUuid(reportDesignUuid);
-		}
-		else {
+		} else {
 			design = new ReportDesign();
 			design.setRendererType(type);
 			if (StringUtils.isNotEmpty(reportDefinitionUuid)) {
@@ -89,7 +79,7 @@ public class DelimitedTextReportRendererFormController {
 		} else if ( CsvReportRenderer.class.isAssignableFrom( design.getRendererType() ) ) {
 			rendererType = new CsvReportRenderer();
 		}
-
+		
 		configurableProperties.put("filenameExtension", design.getPropertyValue("filenameExtension", rendererType.getFilenameExtension()));
 		configurableProperties.put("beforeColumnDelimiter", 
 				rendererType.escapeDelimiter(design.getPropertyValue("beforeColumnDelimiter", rendererType.getBeforeColumnDelimiter())));
@@ -133,7 +123,7 @@ public class DelimitedTextReportRendererFormController {
 	){
 		ReportService rs = Context.getService(ReportService.class);
 		ReportDesign design = null;
-		Properties delimiters = null;
+		Properties delimiters = new Properties();
 
 		if (StringUtils.isNotEmpty(uuid)) {
 			design = rs.getReportDesignByUuid(uuid);
@@ -142,9 +132,7 @@ public class DelimitedTextReportRendererFormController {
 			design = new ReportDesign();
 			design.setRendererType(rendererType);
 		}
-		
-		delimiters = design.getProperties();
-		
+				
 		design.setName(name);
 		design.setDescription(description);
 		design.setReportDefinition(Context.getService(ReportDefinitionService.class).getDefinitionByUuid(reportDefinitionUuid));
@@ -156,23 +144,23 @@ public class DelimitedTextReportRendererFormController {
 			renderer = new CsvReportRenderer();
 		}
 		
-		if ( !compareEscapedStrings( filenameExtension, design.getPropertyValue("filenameExtension", renderer.getFilenameExtension()))) {
+		if ( !filenameExtension.equals(StringEscapeUtils.escapeJava(renderer.getFilenameExtension()))) {
 			delimiters.put("filenameExtension", StringEscapeUtils.escapeJava(filenameExtension));
 		}
 		
-		if ( !compareEscapedStrings( beforeColumnDelimiter, design.getPropertyValue("beforeColumnDelimiter", renderer.getBeforeColumnDelimiter()))) {
+		if ( !beforeColumnDelimiter.equals(StringEscapeUtils.escapeJava(renderer.getBeforeColumnDelimiter()))) {
 			delimiters.put("beforeColumnDelimiter", StringEscapeUtils.escapeJava(beforeColumnDelimiter));
 		}
 		
-		if ( !compareEscapedStrings( afterColumnDelimiter, design.getPropertyValue("afterColumnDelimiter", renderer.getAfterColumnDelimiter()))) {
+		if ( !afterColumnDelimiter.equals(StringEscapeUtils.escapeJava(renderer.getAfterColumnDelimiter()))) {
 			delimiters.put("afterColumnDelimiter", StringEscapeUtils.escapeJava(afterColumnDelimiter));
 		}
 		
-		if ( !compareEscapedStrings( beforeRowDelimiter, design.getPropertyValue("beforeRowDelimiter", renderer.getBeforeRowDelimiter()))) {
+		if ( !beforeRowDelimiter.equals(StringEscapeUtils.escapeJava(renderer.getBeforeRowDelimiter()))) {
 			delimiters.put("beforeRowDelimiter", StringEscapeUtils.escapeJava(beforeRowDelimiter));
 		}
 		
-		if ( !compareEscapedStrings( afterRowDelimiter, design.getPropertyValue("afterRowDelimiter", renderer.getAfterRowDelimiter()))) {
+		if ( !afterRowDelimiter.equals(StringEscapeUtils.escapeJava(renderer.getAfterRowDelimiter()))) {
 			delimiters.put("afterRowDelimiter", StringEscapeUtils.escapeJava(afterRowDelimiter));
 		}
 		
