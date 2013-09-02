@@ -48,6 +48,16 @@ public class DelimitedTextReportRendererFormController {
 	 * Default Constructor
 	 */
 	public DelimitedTextReportRendererFormController() { }
+	
+	/**
+	 * @param one a String that won't be escaped
+     * @param two a string that will be escaped
+	 * @return true if both strings are equals false otherwise
+	 * 
+	 */ 
+	public boolean isEqualEscapedString(String one, String two) {
+		return one.equals(StringEscapeUtils.escapeJava(two));		
+	}
 
 	/**
 	 *  prepares a new form for the a DelimitedReportRenderer
@@ -93,8 +103,7 @@ public class DelimitedTextReportRendererFormController {
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
-    	}
-    	else if (successUrl.startsWith(pathToRemove)) {
+    	} else if (successUrl.startsWith(pathToRemove)) {
     		successUrl = successUrl.substring(pathToRemove.length());
     	}
 		model.addAttribute("design", design );
@@ -132,7 +141,7 @@ public class DelimitedTextReportRendererFormController {
 			design = new ReportDesign();
 			design.setRendererType(rendererType);
 		}
-				
+
 		design.setName(name);
 		design.setDescription(description);
 		design.setReportDefinition(Context.getService(ReportDefinitionService.class).getDefinitionByUuid(reportDefinitionUuid));
@@ -144,35 +153,32 @@ public class DelimitedTextReportRendererFormController {
 			renderer = new CsvReportRenderer();
 		}
 		
-		if ( !filenameExtension.equals(StringEscapeUtils.escapeJava(renderer.getFilenameExtension()))) {
-			delimiters.put("filenameExtension", StringEscapeUtils.escapeJava(filenameExtension));
+		if ( !filenameExtension.equals(renderer.getFilenameExtension())) {
+			delimiters.setProperty("filenameExtension", filenameExtension);
 		}
 		
-		if ( !beforeColumnDelimiter.equals(StringEscapeUtils.escapeJava(renderer.getBeforeColumnDelimiter()))) {
-			delimiters.put("beforeColumnDelimiter", StringEscapeUtils.escapeJava(beforeColumnDelimiter));
+		if ( !isEqualEscapedString(beforeColumnDelimiter, renderer.getBeforeColumnDelimiter())) {
+			delimiters.setProperty("beforeColumnDelimiter", beforeColumnDelimiter);
 		}
 		
-		if ( !afterColumnDelimiter.equals(StringEscapeUtils.escapeJava(renderer.getAfterColumnDelimiter()))) {
-			delimiters.put("afterColumnDelimiter", StringEscapeUtils.escapeJava(afterColumnDelimiter));
+		if ( !isEqualEscapedString(afterColumnDelimiter, renderer.getAfterColumnDelimiter())) {
+			delimiters.setProperty("afterColumnDelimiter", afterColumnDelimiter);
 		}
 		
-		if ( !beforeRowDelimiter.equals(StringEscapeUtils.escapeJava(renderer.getBeforeRowDelimiter()))) {
-			delimiters.put("beforeRowDelimiter", StringEscapeUtils.escapeJava(beforeRowDelimiter));
+		if ( !isEqualEscapedString(beforeRowDelimiter, renderer.getBeforeRowDelimiter())) {
+			delimiters.setProperty("beforeRowDelimiter", beforeRowDelimiter);
 		}
 		
-		if ( !afterRowDelimiter.equals(StringEscapeUtils.escapeJava(renderer.getAfterRowDelimiter()))) {
-			delimiters.put("afterRowDelimiter", StringEscapeUtils.escapeJava(afterRowDelimiter));
+		if ( !isEqualEscapedString(afterRowDelimiter, renderer.getAfterRowDelimiter())) {
+			delimiters.setProperty("afterRowDelimiter", afterRowDelimiter);
 		}
-		
-		if ( !delimiters.isEmpty()) {
-			design.setProperties(delimiters);
-		}
-		
+
+		design.setProperties(delimiters);
+	
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
-    	}
-    	else if (successUrl.startsWith(pathToRemove)) {
+    	} else if (successUrl.startsWith(pathToRemove)) {
     		successUrl = successUrl.substring(pathToRemove.length());
     	}
     	design = rs.saveReportDesign(design);

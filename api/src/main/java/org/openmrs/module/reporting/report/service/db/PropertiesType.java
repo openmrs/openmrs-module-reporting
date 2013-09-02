@@ -23,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
@@ -53,7 +54,12 @@ public class PropertiesType implements UserType {
 	 */
 	public Object deepCopy(Object value) throws HibernateException {
 		if (value != null) {
-			return new Properties((Properties) value);
+			Properties val = (Properties) value;
+			Properties copy = new Properties();
+			for ( Map.Entry<Object, Object> e : val.entrySet() ) {
+				copy.setProperty((String) e.getKey(), (String) e.getValue());
+			}
+			return copy;
 		} else {
 			return null;
 		}
