@@ -14,14 +14,6 @@
 
   	});
 
-  	function showResourceChange(element) {
-    	$(element).parent().parent().children('.currentResourceSection').hide();
-    	$(element).parent().parent().children('.resourceChangeSection').show();
-  	}
-  	function hideResourceChange(element) {    
-		$(element).parent().parent().children('.currentResourceSection').show();    
-    	$(element).parent().parent().children('.resourceChangeSection').hide();  
-  	}
 </script>
 
 <style>
