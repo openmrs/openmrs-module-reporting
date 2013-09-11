@@ -34,28 +34,38 @@
 			buildPropertiesStr();			
 		} );
 		
-		var $addButton = $( "#reportDesignForm td.propertiesSection table.propertiesContainer input#propertiesInputs" ),
-			$addBttnParent = $( findParentWithClass( $addButton[ 0 ], 'addBttnContainer' ) );
-		<c:if test="${not empty design.properties}">	
-			<c:forEach items="${design.properties}" var="property" >
-				<c:choose>
-  					<c:when test="${ property.key == 'repeatingSections' }">
-  						setRSProperties( '${property.value}' );
-  					</c:when>
-  					<c:otherwise>
-  						setKeyValueProperty( '${property.key}', '${property.value}', $addButton, $addBttnParent );
-  					</c:otherwise>
-				</c:choose>
-			</c:forEach>
+		<c:if test="${not empty design.properties.repeatingSections}">	
+			setRSProperties( '${design.properties.repeatingSections}' );
 		</c:if>
+		addRemoveEvntKeyValueProperty();
   	});
 	
-	function setKeyValueProperty( key, value, $addButton, $addBttnParent ) {
-		$addButton.click();
-		var $inputs = $addBttnParent.prev( 'tr.propertiesInputs' ).find( 'input' );
-		$inputs.filter( "[name='key']" ).val( key );
-		$inputs.filter( "[name='value']" ).val( value );
-		hideOrShowTableHeaders( $addButton, 'propertiesInputs' );
+	function removeInputs() {
+		removeParentWithClass( this, trClass );
+		hideOrShowTableHeaders( $referenceButton, trClass );		
+	}
+	
+	function hideOrShowTableHeaders( $referenceElement, trClass ) {
+		var $parentElement = $( findParentWithClass( $referenceElement[0], "addBttnContainer" ) );
+		if ( $parentElement.siblings( 'tr.' + trClass ).length == 0 ) {
+			 $parentElement.prevAll( 'tr.tableHeaders' ).hide();
+		} else {
+			$parentElement.prevAll( 'tr.tableHeaders' ).show();
+		}
+	}
+	
+	function addRemoveEvntKeyValueProperty() {
+		var $trPropInputs = $( '#reportDesignForm td.propertiesSection table.propertiesContainer tr.propertiesInputs' );
+		if ( $trPropInputs.length ) {
+			var $addButton = $( "#reportDesignForm td.propertiesSection table.propertiesContainer input#propertiesInputs" );
+			hideOrShowTableHeaders( $addButton, 'propertiesInputs' );
+			$trPropInputs.each(function() {
+				$( this ).find( 'input:last' ).click(function() {
+					removeParentWithClass( this, 'propertiesInputs' );
+					hideOrShowTableHeaders( $addButton, 'propertiesInputs' );
+				} );
+			} );			
+		}
 	}
 	
 	function setRSProperties( RSValue ) {
@@ -141,19 +151,10 @@
 			$trBttnContainer = $referenceButton.parents( 'tr:first' );
 		$trBttnContainer.before( $template );
 		hideOrShowTableHeaders( $referenceButton, trClass );
-		$trBttnContainer.prev( 'tr.' + trClass ).find( "input[type='button']" ).click( function() {
+		$trBttnContainer.prev( 'tr.' + trClass ).find( "input[type='button']" ).click(function() {
 			removeParentWithClass( this, trClass );
 			hideOrShowTableHeaders( $referenceButton, trClass );
-		});
-	}
-	
-	function hideOrShowTableHeaders( $referenceElement, trClass ) {
-		var $parentElement = $( findParentWithClass( $referenceElement[0], "addBttnContainer" ) );
-		if ( $parentElement.siblings( 'tr.' + trClass ).length == 0 ) {
-			 $parentElement.prevAll( 'tr.tableHeaders' ).hide();
-		} else {
-			$parentElement.prevAll( 'tr.tableHeaders' ).show();
-		}
+		} );
 	}
 		
   	function showResourceChange(element) {
@@ -273,6 +274,17 @@
       					<td><span class="metadataField"><spring:message code="reporting.ExcelReportRenderer.designProperties.value"/></span></td>
       					<td></td>
 	      			</tr>
+	      			<c:if test="${not empty design.properties}">	
+						<c:forEach items="${design.properties}" var="property" >
+							<c:if test="${ property.key != 'repeatingSections' }">
+								<tr class="propertiesInputs">
+	      							<td><input type="text" name="key" size="10"  value="${property.key}"/></td>
+	      							<td><input type="text" name="value" size="10" value="${property.value}"/></td>
+	      							<td><input type="button" value="X" size="1"/></td>
+	      						</tr>
+							</c:if>
+						</c:forEach>
+					</c:if>
       				<tr class="addBttnContainer">
       					<td colspan="3"><input id="propertiesInputs" type="button" value="+" size="1"/></td>
       				</tr>
