@@ -17,6 +17,7 @@ package org.openmrs.module.reporting.web.reports.renderers;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,12 +34,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.service.ReportService;
 
+import org.openmrs.util.HandlerUtil;
 import org.openmrs.web.WebConstants;
 
 @Controller
@@ -72,7 +75,7 @@ public class ExcelReportRendererFormController {
 				design.setReportDefinition(Context.getService(ReportDefinitionService.class).getDefinitionByUuid(reportDefinitionUuid));
 			}
 		}
-				
+		
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
@@ -97,6 +100,7 @@ public class ExcelReportRendererFormController {
 					@RequestParam(required=false, value="description") String description,
 					@RequestParam(required=true,  value="reportDefinition") String reportDefinitionUuid,
 					@RequestParam(required=true,  value="rendererType") Class<? extends ReportRenderer> rendererType,
+					@RequestParam(required=false, value="properties") String properties,
 					@RequestParam(required=true,  value="successUrl") String successUrl
 	){
 		ReportService rs = Context.getService(ReportService.class);
@@ -114,6 +118,10 @@ public class ExcelReportRendererFormController {
 		design.setDescription(description);
 		design.setReportDefinition(Context.getService(ReportDefinitionService.class).getDefinitionByUuid(reportDefinitionUuid));
 		design.setRendererType(rendererType);
+		
+		WidgetHandler propHandler = HandlerUtil.getPreferredHandler(WidgetHandler.class, Properties.class);
+    	Properties props = (Properties)propHandler.parse(properties, Properties.class);
+    	design.setProperties(props);
 		
 		MultipartHttpServletRequest mpr = (MultipartHttpServletRequest) request;
 		Map<String, MultipartFile> files = (Map<String, MultipartFile>)mpr.getFileMap();
