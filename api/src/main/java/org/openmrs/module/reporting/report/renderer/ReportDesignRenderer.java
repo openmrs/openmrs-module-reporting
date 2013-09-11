@@ -53,6 +53,7 @@ public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
 	 * @return
 	 */
 	public ReportDesign getDesign(String argument) {
-		return Context.getService(ReportService.class).getReportDesignByUuid(argument);
+		ReportDesign design = Context.getService(ReportService.class).getReportDesignByUuid(argument); 
+		return design != null ? design : new ReportDesign();
 	}
 }

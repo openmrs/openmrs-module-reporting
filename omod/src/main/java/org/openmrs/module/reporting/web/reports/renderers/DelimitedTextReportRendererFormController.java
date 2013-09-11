@@ -32,8 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.DelimitedTextReportRenderer;
-import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
-import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
+
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.service.ReportService;
 
@@ -83,12 +82,8 @@ public class DelimitedTextReportRendererFormController {
 
 		}
 		
-		DelimitedTextReportRenderer rendererType = null;
-		if ( TsvReportRenderer.class.isAssignableFrom( design.getRendererType() ) ) {
-			rendererType = new TsvReportRenderer();
-		} else if ( CsvReportRenderer.class.isAssignableFrom( design.getRendererType() ) ) {
-			rendererType = new CsvReportRenderer();
-		}
+		Class<?> rt = Context.loadClass(design.getRendererType().getName());
+		DelimitedTextReportRenderer rendererType = (DelimitedTextReportRenderer) rt.newInstance();
 		
 		configurableProperties.put("filenameExtension", design.getPropertyValue("filenameExtension", rendererType.getFilenameExtension()));
 		configurableProperties.put("beforeColumnDelimiter", 
@@ -115,6 +110,9 @@ public class DelimitedTextReportRendererFormController {
 
 	/**
 	 * Saves report design
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
 	@RequestMapping("/module/reporting/reports/renderers/saveDelimitedTextReportDesign")
 	public String saveDelimitedTextReportDesign(ModelMap model, HttpServletRequest request,
@@ -129,7 +127,7 @@ public class DelimitedTextReportRendererFormController {
 					@RequestParam(required=false, value="beforeRowDelimiter") String beforeRowDelimiter,
 					@RequestParam(required=false, value="afterRowDelimiter") String afterRowDelimiter,
 					@RequestParam(required=true,  value="successUrl") String successUrl
-	){
+	) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
 		ReportService rs = Context.getService(ReportService.class);
 		ReportDesign design = null;
 		Properties delimiters = new Properties();
@@ -146,12 +144,9 @@ public class DelimitedTextReportRendererFormController {
 		design.setDescription(description);
 		design.setReportDefinition(Context.getService(ReportDefinitionService.class).getDefinitionByUuid(reportDefinitionUuid));
 		
-		DelimitedTextReportRenderer renderer = null;
-		if ( TsvReportRenderer.class.isAssignableFrom( design.getRendererType() ) ) {
-			renderer = new TsvReportRenderer();
-		} else if ( CsvReportRenderer.class.isAssignableFrom( design.getRendererType() ) ) {
-			renderer = new CsvReportRenderer();
-		}
+		Class<?> rt = Context.loadClass(design.getRendererType().getName());
+		DelimitedTextReportRenderer renderer = (DelimitedTextReportRenderer) rt.newInstance();
+
 		
 		if ( !filenameExtension.equals(renderer.getFilenameExtension())) {
 			delimiters.setProperty("filenameExtension", filenameExtension);

@@ -114,7 +114,7 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		ReportData data = rs.evaluate(report, context);
 		
 		CsvReportRenderer csvRenderer = new CsvReportRenderer();
-		csvRenderer.render(data, null, System.out);
+		csvRenderer.render(data, "thedata", System.out);
 		String outFile = System.getProperty("java.io.tmpdir") + File.separator + "test.xls";
 		FileOutputStream fos = new FileOutputStream(outFile);
 		renderer.render(data, "xxx:xls", fos);
