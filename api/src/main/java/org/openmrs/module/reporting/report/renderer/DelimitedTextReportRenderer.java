@@ -122,7 +122,7 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		Writer w = new OutputStreamWriter(out,"UTF-8");
 		DataSet dataset = results.getDataSets().values().iterator().next();
 		
-		ReportDesign design = argument != null ? getDesign( argument ) : new ReportDesign();
+		ReportDesign design = getDesign( argument );
 		String beforeColumnDelimiter = design.getPropertyValue("beforeColumnDelimiter", getBeforeColumnDelimiter());
 		String afterColumnDelimiter = design.getPropertyValue("afterColumnDelimiter", getAfterColumnDelimiter());
 		String beforeRowDelimiter = design.getPropertyValue("beforeRowDelimiter", getBeforeRowDelimiter());
