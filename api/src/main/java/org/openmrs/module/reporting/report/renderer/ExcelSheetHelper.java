@@ -8,6 +8,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 
@@ -111,7 +112,7 @@ public class ExcelSheetHelper {
         } 
         else {
             cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_STRING);
-            cell.setCellValue(new HSSFRichTextString(cellValue.toString()));
+            cell.setCellValue(new HSSFRichTextString(ObjectUtil.format(cellValue)));
         } 
         if (style != null) {
             cell.setCellStyle(style);
