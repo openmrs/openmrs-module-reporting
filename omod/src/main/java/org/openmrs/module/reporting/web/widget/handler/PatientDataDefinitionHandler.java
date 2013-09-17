@@ -46,16 +46,18 @@ public class PatientDataDefinitionHandler extends CodedHandler {
 			l = Context.getService(PatientDataService.class).getAllDefinitions(false);
 		}
 		
-		for (PersonDataDefinition d : Context.getService(PersonDataService.class).getAllDefinitions(false)) { //bad that we have to create joins for all Person data definitions
-			if (!isJoined(d)) {
-				PatientDataDefinition pd = new PersonToPatientDataDefinition(d);
-				Context.getService(PatientDataService.class).saveDefinition(pd);
-				l.add(pd);
-			}
-		}
-		
 		for (PatientDataDefinition d : l) {
 			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
+		}
+		
+		for (PersonDataDefinition d : Context.getService(PersonDataService.class).getAllDefinitions(false)) {
+			
+			/*this is to prevent a person data definition to be displayed multiple times into the widget 
+			(if it is has been joined, it well be picked up as a patient data definition)*/
+
+			if (!isJoined(d)) {
+				widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
+			}
 		}
 	}
 	
@@ -64,7 +66,7 @@ public class PatientDataDefinitionHandler extends CodedHandler {
 	 */
 	@Override
 	public Object parse(String input, Class<?> type) {
-		return Context.getService(PatientDataService.class).getDefinitionByUuid(input);
+		return null; // TODO;
 	}
 	
 	/**
