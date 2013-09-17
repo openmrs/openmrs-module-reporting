@@ -13,9 +13,9 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -45,13 +45,12 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 		Map<String, Mapped<PatientDataDefinition>> containedDataDefintions = pd.getContainedDataDefinitions();
 		EvaluatedPatientData evaluationResult = new EvaluatedPatientData(pd, context);
 		
-		List<EvaluatedPatientData> evaluatedContainedDataDefinitions = new ArrayList<EvaluatedPatientData>();
+		Map<String, EvaluatedPatientData> evaluatedContainedDataDefinitions = new HashMap<String, EvaluatedPatientData>();
 		
-		for (Mapped<PatientDataDefinition> def : containedDataDefintions.values()) {
-			PatientDataDefinition data = def.getParameterizable();
-			def.setParameterizable(data);
-			EvaluatedPatientData patientDataResult = Context.getService(PatientDataService.class).evaluate(def, context);
-			evaluatedContainedDataDefinitions.add(patientDataResult);
+		for (Entry<String, Mapped<PatientDataDefinition>> e : containedDataDefintions.entrySet()) {
+			EvaluatedPatientData patientDataResult = Context.getService(PatientDataService.class).evaluate(e.getValue(),
+			    context);
+			evaluatedContainedDataDefinitions.put(e.getKey(), patientDataResult);
 		}
 		
 		if (pd.getScriptCode() != null) {
@@ -63,11 +62,7 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 			scriptEngine.put("evaluationResult", evaluationResult);
 			
 			try {
-				Object result = scriptEngine.eval(pd.getScriptCode());
-				if (result instanceof EvaluatedPatientData) {
-					return (EvaluatedPatientData) result;
-				}
-				
+				evaluationResult = (EvaluatedPatientData) scriptEngine.eval(pd.getScriptCode());
 			}
 			catch (ScriptException ex) {
 				throw new EvaluationException("An error occured while evaluating script", ex);
@@ -75,8 +70,6 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 			catch (ClassCastException ex) {
 				throw new EvaluationException("A Scripted Patient Data Definition must return an EvaluatedPatientData", ex);
 			}
-			
-			return evaluationResult;
 		}
 		
 		return evaluationResult;
