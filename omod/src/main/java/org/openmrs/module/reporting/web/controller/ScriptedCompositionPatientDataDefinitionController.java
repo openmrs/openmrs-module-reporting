@@ -37,21 +37,22 @@ public class ScriptedCompositionPatientDataDefinitionController {
 	                     @RequestParam(value = "copyFromUuid", required = false) String copyFromUuid) {
 		if (uuid == null) {
 			model.addAttribute("definition", new ScriptedCompositionPatientDataDefinition());
-		} else {
+		} 
+		else {
 			PatientDataDefinition def = Context.getService(PatientDataService.class).getDefinitionByUuid(uuid);
 			if (def instanceof ScriptedCompositionPatientDataDefinition) {
 				ScriptedCompositionPatientDataDefinition definition = (ScriptedCompositionPatientDataDefinition) def;
 				model.addAttribute("definition", definition);
-			} else {
+			} 
+			else {
 				throw new RuntimeException("This definition is not of the right class");
 			}
 		}
 	}
 	
 	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinitionSetComposition")
-	public String setScriptCode(@RequestParam("uuid") String uuid,
-	                             @RequestParam("scriptCode") String scriptCode,
-	                             @RequestParam("scriptType") String scriptType) {
+	public String setScriptCode(@RequestParam("uuid") String uuid, @RequestParam("scriptCode") String scriptCode,
+	                            @RequestParam("scriptType") String scriptType) {
 		PatientDataDefinition def = Context.getService(PatientDataService.class).getDefinitionByUuid(uuid);
 		ScriptedCompositionPatientDataDefinition definition = (ScriptedCompositionPatientDataDefinition) def;
 		definition.setScriptCode(scriptCode);
