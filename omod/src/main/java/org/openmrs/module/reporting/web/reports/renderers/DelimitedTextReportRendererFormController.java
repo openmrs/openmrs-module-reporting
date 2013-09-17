@@ -19,7 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringUtils;
@@ -48,15 +47,6 @@ public class DelimitedTextReportRendererFormController {
 	 */
 	public DelimitedTextReportRendererFormController() { }
 	
-	/**
-	 * @param one a String that won't be escaped
-     * @param two a string that will be escaped
-	 * @return true if both strings are equals false otherwise
-	 * 
-	 */ 
-	public boolean isEqualEscapedString(String one, String two) {
-		return one.equals(StringEscapeUtils.escapeJava(two));		
-	}
 
 	/**
 	 *  prepares a new form for the a DelimitedReportRenderer
@@ -86,14 +76,10 @@ public class DelimitedTextReportRendererFormController {
 		DelimitedTextReportRenderer rendererType = (DelimitedTextReportRenderer) rt.newInstance();
 		
 		configurableProperties.put("filenameExtension", design.getPropertyValue("filenameExtension", rendererType.getFilenameExtension()));
-		configurableProperties.put("beforeColumnDelimiter", 
-				rendererType.escapeDelimiter(design.getPropertyValue("beforeColumnDelimiter", rendererType.getBeforeColumnDelimiter())));
-		configurableProperties.put("afterColumnDelimiter",  
-				rendererType.escapeDelimiter(design.getPropertyValue("afterColumnDelimiter", rendererType.getAfterColumnDelimiter())));
-		configurableProperties.put("beforeRowDelimiter",    
-				rendererType.escapeDelimiter(design.getPropertyValue("beforeRowDelimiter", rendererType.getBeforeRowDelimiter())));
-		configurableProperties.put("afterRowDelimiter",     
-				rendererType.escapeDelimiter(design.getPropertyValue("afterRowDelimiter", rendererType.getAfterRowDelimiter())));
+		configurableProperties.put("beforeColumnDelimiter", design.getPropertyValue("beforeColumnDelimiter", rendererType.getBeforeColumnDelimiter()));
+		configurableProperties.put("afterColumnDelimiter", design.getPropertyValue("afterColumnDelimiter", rendererType.getAfterColumnDelimiter()));
+		configurableProperties.put("beforeRowDelimiter", design.getPropertyValue("beforeRowDelimiter", rendererType.getBeforeRowDelimiter()));
+		configurableProperties.put("afterRowDelimiter", design.getPropertyValue("afterRowDelimiter", rendererType.getAfterRowDelimiter()));
 		
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
@@ -148,23 +134,23 @@ public class DelimitedTextReportRendererFormController {
 		DelimitedTextReportRenderer renderer = (DelimitedTextReportRenderer) rt.newInstance();
 
 		
-		if ( !filenameExtension.equals(renderer.getFilenameExtension())) {
+		if (!filenameExtension.equals(renderer.getFilenameExtension()) && !StringUtils.isEmpty(filenameExtension)) {
 			delimiters.setProperty("filenameExtension", filenameExtension);
 		}
 		
-		if ( !isEqualEscapedString(beforeColumnDelimiter, renderer.getBeforeColumnDelimiter())) {
+		if (!beforeColumnDelimiter.equals(renderer.getBeforeColumnDelimiter()) && !StringUtils.isEmpty(beforeColumnDelimiter)) {
 			delimiters.setProperty("beforeColumnDelimiter", beforeColumnDelimiter);
 		}
 		
-		if ( !isEqualEscapedString(afterColumnDelimiter, renderer.getAfterColumnDelimiter())) {
+		if (!afterColumnDelimiter.equals(renderer.getAfterColumnDelimiter()) && !StringUtils.isEmpty(afterColumnDelimiter) ) {
 			delimiters.setProperty("afterColumnDelimiter", afterColumnDelimiter);
 		}
 		
-		if ( !isEqualEscapedString(beforeRowDelimiter, renderer.getBeforeRowDelimiter())) {
+		if (!beforeRowDelimiter.equals(renderer.getBeforeRowDelimiter()) && !StringUtils.isEmpty(beforeRowDelimiter) ) {
 			delimiters.setProperty("beforeRowDelimiter", beforeRowDelimiter);
 		}
 		
-		if ( !isEqualEscapedString(afterRowDelimiter, renderer.getAfterRowDelimiter())) {
+		if (!afterRowDelimiter.equals(renderer.getAfterRowDelimiter()) && !StringUtils.isEmpty(afterRowDelimiter) ) {
 			delimiters.setProperty("afterRowDelimiter", afterRowDelimiter);
 		}
 

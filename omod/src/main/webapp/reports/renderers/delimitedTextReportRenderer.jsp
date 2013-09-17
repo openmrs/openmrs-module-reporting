@@ -56,56 +56,44 @@
 				<span class="metadataField">
 					<spring:message code="reporting.${design.rendererType.simpleName}.filenameExtension"/>
 				</span>
-				<wgt:widget id="filenameExtension" name="filenameExtension" type="java.lang.String" defaultValue="${configurableProperties.filenameExtension}"/>
+				<input type="text" id="filenameExtension" name="filenameExtension" value='<c:out value="${configurableProperties.filenameExtension}"/>'/>
 				<table padding="5" class="delimitersTable">
 					<tr>
 						<td class="delimiterTittle" colspan="4">
-							<span class="metadataField">
-								<spring:message code="reporting.${design.rendererType.simpleName}.columnDelimiters"/>
-							</span>
+							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.columnDelimiters"/></span>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="metadataField">
-								<spring:message code="reporting.${design.rendererType.simpleName}.beforeColumnDelimiter"/>
-							</span>
+							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.beforeColumnDelimiter"/></span>
 						</td>
 						<td>
-							<wgt:widget id="beforeColumnDelimiter" name="beforeColumnDelimiter" type="java.lang.String" defaultValue="${configurableProperties.beforeColumnDelimiter}"/>
+							<input type="text" id="beforeColumnDelimiter" name="beforeColumnDelimiter" value='<c:out value="${configurableProperties.beforeColumnDelimiter}"/>'/>
 						</td>
 						<td>
-							<span class="metadataField">
-								<spring:message code="reporting.${design.rendererType.simpleName}.afterColumnDelimiter"/>
-							</span>
+							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.afterColumnDelimiter"/></span>
 						</td>
 						<td>
-							<wgt:widget id="afterColumnDelimiter" name="afterColumnDelimiter" type="java.lang.String" defaultValue="${configurableProperties.afterColumnDelimiter}"/>
+							<input type="text" id="afterColumnDelimiter" name="afterColumnDelimiter" value='<c:out value="${configurableProperties.afterColumnDelimiter}"/>'/>
 						</td>
 					</tr>
 					<tr>
 						<td class="delimiterTittle" colspan="4">
-							<span class="metadataField">
-								<spring:message code="reporting.${design.rendererType.simpleName}.rowDelimiters"/>
-							</span>
+							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.rowDelimiters"/></span>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="metadataField">
-								<spring:message code="reporting.${design.rendererType.simpleName}.beforeRowDelimiter"/>
-							</span>
+							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.beforeRowDelimiter"/></span>
 						</td>
 						<td>
-							<wgt:widget id="beforeRowDelimiter" name="beforeRowDelimiter" type="java.lang.String" defaultValue="${configurableProperties.beforeRowDelimiter}"/>
+							<input type="text" id="beforeRowDelimiter" name="beforeRowDelimiter" value='<c:out value="${configurableProperties.beforeRowDelimiter}"/>'/>
 						</td>
 						<td>
-							<span class="metadataField">
-								<spring:message code="reporting.${design.rendererType.simpleName}.afterRowDelimiter"/>
-							</span>
+							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.afterRowDelimiter"/></span>
 						</td>
 						<td>
-							<wgt:widget id="afterRowDelimiter" name="afterRowDelimiter" type="java.lang.String" defaultValue="${configurableProperties.afterRowDelimiter}"/>
+							<input type="text" id="afterRowDelimiter" name="afterRowDelimiter" value='<c:out value="${configurableProperties.afterRowDelimiter}"/>'/>
 						</td>
 					</tr>
 				</table>

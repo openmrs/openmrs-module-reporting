@@ -78,20 +78,7 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	public String getAfterRowDelimiter() {
 		return "\n";
 	}
-	
-	/**
-	 * 
-	 * Method to escape characters of a delimiter string to its html form
-	 * @param delimiter delimiter to escape
-	 * @return The escaped text
-	 */
-	public String escapeDelimiter(String delimiter) {
-		if ( delimiter != null ) {
-			return StringEscapeUtils.escapeHtml(StringEscapeUtils.escapeJava(delimiter));
-		}
-		return null;
-	}
-	
+		
 	/**
 	 * Convenience method used to escape a string of text.
 	 * 
@@ -129,13 +116,20 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		String afterRowDelimiter = design.getPropertyValue("afterRowDelimiter", getAfterRowDelimiter());
 		
 		List<DataSetColumn> columns = dataset.getMetaData().getColumns();
+		DataSetColumn lastColumn = (DataSetColumn) columns.get(columns.size() - 1 );
 		
 		// header row
 		w.write(beforeRowDelimiter);
 		for (DataSetColumn column : columns) {
 			w.write(beforeColumnDelimiter);
 			w.write(escape(column.getName()));
-			w.write(afterColumnDelimiter);
+			if (column.equals(lastColumn)) {
+				w.write(afterColumnDelimiter.replace(",", ""));
+			} 
+			else {
+				w.write(afterColumnDelimiter);
+			}
+			
 		}
 		w.write(afterRowDelimiter);
 		
@@ -158,7 +152,12 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 							w.write(temp);
 					}
 				}
-				w.write(afterColumnDelimiter);
+				if (column.equals(lastColumn)) {
+					w.write(afterColumnDelimiter.replace(",", ""));
+				} 
+				else {
+					w.write(afterColumnDelimiter);
+				}
 			}
 			w.write(afterRowDelimiter);
 		}
