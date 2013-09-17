@@ -20,15 +20,12 @@ import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ScriptingLanguage;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
-import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 /**
  * A patient data definition made by performing calculations based on multiple person/patient data
  * definitions
  */
-@Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.ScriptedCompositionPatientDataDefinition")
 public class ScriptedCompositionPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
