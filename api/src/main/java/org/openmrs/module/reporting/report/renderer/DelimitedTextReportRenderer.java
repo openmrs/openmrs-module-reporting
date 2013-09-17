@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -29,6 +30,7 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
@@ -52,7 +54,8 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	 * @see org.openmrs.report.ReportRenderer#getRenderedContentType(ReportDefinition, String)
 	 */
 	public String getRenderedContentType(ReportDefinition model, String argument) {
-		return "text/" + getFilenameExtension();
+		ReportDesign design = getDesign(argument);
+		return "text/" + design.getPropertyValue("filenameExtension", getFilenameExtension());
 	}
 	
 	/**
@@ -75,7 +78,7 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	public String getAfterRowDelimiter() {
 		return "\n";
 	}
-	
+		
 	/**
 	 * Convenience method used to escape a string of text.
 	 * 
@@ -106,23 +109,36 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		Writer w = new OutputStreamWriter(out,"UTF-8");
 		DataSet dataset = results.getDataSets().values().iterator().next();
 		
+		ReportDesign design = getDesign( argument );
+		String beforeColumnDelimiter = design.getPropertyValue("beforeColumnDelimiter", getBeforeColumnDelimiter());
+		String afterColumnDelimiter = design.getPropertyValue("afterColumnDelimiter", getAfterColumnDelimiter());
+		String beforeRowDelimiter = design.getPropertyValue("beforeRowDelimiter", getBeforeRowDelimiter());
+		String afterRowDelimiter = design.getPropertyValue("afterRowDelimiter", getAfterRowDelimiter());
+		
 		List<DataSetColumn> columns = dataset.getMetaData().getColumns();
+		DataSetColumn lastColumn = (DataSetColumn) columns.get(columns.size() - 1 );
 		
 		// header row
-		w.write(getBeforeRowDelimiter());
+		w.write(beforeRowDelimiter);
 		for (DataSetColumn column : columns) {
-			w.write(getBeforeColumnDelimiter());
+			w.write(beforeColumnDelimiter);
 			w.write(escape(column.getName()));
-			w.write(getAfterColumnDelimiter());
+			if (column.equals(lastColumn)) {
+				w.write(afterColumnDelimiter.replace(",", ""));
+			} 
+			else {
+				w.write(afterColumnDelimiter);
+			}
+			
 		}
-		w.write(getAfterRowDelimiter());
+		w.write(afterRowDelimiter);
 		
 		// data rows
 		for (DataSetRow row : dataset) {
-			w.write(getBeforeRowDelimiter());
+			w.write(beforeRowDelimiter);
 			for (DataSetColumn column : columns) {
 				Object colValue = row.getColumnValue(column);
-				w.write(getBeforeColumnDelimiter());
+				w.write(beforeColumnDelimiter);
 				if (colValue != null) {
 					if (colValue instanceof Cohort) {
 						w.write(escape(Integer.toString(((Cohort) colValue).size())));
@@ -136,9 +152,14 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 							w.write(temp);
 					}
 				}
-				w.write(getAfterColumnDelimiter());
+				if (column.equals(lastColumn)) {
+					w.write(afterColumnDelimiter.replace(",", ""));
+				} 
+				else {
+					w.write(afterColumnDelimiter);
+				}
 			}
-			w.write(getAfterRowDelimiter());
+			w.write(afterRowDelimiter);
 		}
 		
 		w.flush();

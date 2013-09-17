@@ -49,7 +49,7 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	 */
 	public ReportDesignResource getTemplate(ReportDesign design) {
 		ReportDesignResource ret = design.getResourceByName("template");
-		if (ret == null) {
+		if (ret == null && design.getResources().iterator().hasNext()) {
 			ret = design.getResources().iterator().next();
 		}
 		return ret;
@@ -60,8 +60,10 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	 */
 	public String getFilename(ReportDefinition definition, String argument) {
 		ReportDesign d = getDesign(argument);
+		ReportDesignResource rds = getTemplate(d);
+		if ( rds == null ) return definition.getName() + ".xls";  
 		String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-hhmmss");
-		return definition.getName() + "_" + dateStr  + "." + getTemplate(d).getExtension();
+		return definition.getName() + "_" + dateStr  + "." + rds.getExtension();
 	}
 	
 	/** 
@@ -74,20 +76,18 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	
 	/**
 	 * Returns the string which prefixes a key to replace in the template document
-	 * @param design
 	 * @return
 	 */
-	public String getExpressionPrefix(ReportDesign design) {
-		return design.getPropertyValue("expressionPrefix", "#");
+	public String getExpressionPrefix() {
+		return "#";
 	}
 	
 	/**
 	 * Returns the string which suffixes a key to replace in the template document
-	 * @param design
 	 * @return
 	 */
-	public String getExpressionSuffix(ReportDesign design) {
-		return design.getPropertyValue("expressionSuffix", "#");
+	public String getExpressionSuffix() {
+		return "#";
 	}
 	
 	/**

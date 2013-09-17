@@ -54,7 +54,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  */
 @Handler
 @Localized("reporting.ExcelTemplateRenderer")
-public class ExcelTemplateRenderer extends ReportTemplateRenderer {
+@Deprecated public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
@@ -73,11 +73,19 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	 * @see ReportRenderer#render(ReportData, String, OutputStream)
 	 */
 	public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException {
-		
-		try {
-			log.debug("Attempting to render report with ExcelTemplateRenderer");
-			ReportDesign design = getDesign(argument);
-			HSSFWorkbook wb = getExcelTemplate(design);
+		ReportDesign design = getDesign(argument);
+		HSSFWorkbook wb = null;
+        try {
+        	wb = getExcelTemplate(design);
+        } catch( Exception e ) {
+        	log.debug("No template found");
+        }
+        
+        if ( wb == null ){
+        	XlsReportRenderer xlsRR = new XlsReportRenderer();
+        	xlsRR.render(reportData, argument, out);
+        } else {
+        	log.debug("Attempting to render report with ExcelTemplateRenderer");
 			Map<String, String> repeatSections = getRepeatingSections(design);
 
 			// Put together base set of replacements.  Any dataSet with only one row is included.
@@ -117,11 +125,8 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				addSheet(wb, sheetsToAdd.get(i), usedSheetNames, reportData, design, repeatSections);
 			}
 
-			wb.write(out);
-		}
-		catch (Exception e) {
-			throw new RenderingException("Unable to render results due to: " + e, e);
-		}
+			wb.write(out);        	
+        }
 	}
 	
 	/**
@@ -129,8 +134,8 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	 */
 	public HSSFSheet addSheet(HSSFWorkbook wb, SheetToAdd sheetToAdd, Set<String> usedSheetNames, ReportData reportData, ReportDesign design, Map<String, String> repeatSections) {
 
-		String prefix = getExpressionPrefix(design);
-		String suffix = getExpressionSuffix(design);
+		String prefix = design.getPropertyValue("expresionPrefix", getExpressionPrefix());
+		String suffix = design.getPropertyValue("expressionSuffix", getExpressionSuffix());
 		
 		HSSFSheet sheet = sheetToAdd.getSheet();
 		sheet.setForceFormulaRecalculation(true);
@@ -268,8 +273,8 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		// Now, go through all of the collected cells, and add them back in
 		
 		ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
-		String prefix = getExpressionPrefix(design);
-		String suffix = getExpressionSuffix(design);
+		String prefix = design.getPropertyValue("expresionPrefix", getExpressionPrefix());
+		String suffix = design.getPropertyValue("expressionSuffix", getExpressionSuffix());
 		
 		for (int i=0; i<cellsToAdd.size(); i++) {
 			CellToAdd cellToAdd = cellsToAdd.get(i);
