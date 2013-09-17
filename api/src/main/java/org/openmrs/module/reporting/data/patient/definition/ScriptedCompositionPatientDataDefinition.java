@@ -32,7 +32,7 @@ public class ScriptedCompositionPatientDataDefinition extends BaseDataDefinition
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty(required = true)
-	private Map<String, Mapped<PatientDataDefinition>> containedDataDefinitions = new HashMap<String, Mapped<PatientDataDefinition>>();
+	private Map<String, Mapped<PatientDataDefinition>> containedDataDefinitions;
 	
 	@ConfigurationProperty(required = true)
 	private ScriptingLanguage scriptType;
@@ -51,6 +51,9 @@ public class ScriptedCompositionPatientDataDefinition extends BaseDataDefinition
 	 * @return the containedDataDefinitions
 	 */
 	public Map<String, Mapped<PatientDataDefinition>> getContainedDataDefinitions() {
+		if (containedDataDefinitions == null) {
+			containedDataDefinitions = new HashMap<String, Mapped<PatientDataDefinition>>();
+		}
 		return containedDataDefinitions;
 	}
 	
