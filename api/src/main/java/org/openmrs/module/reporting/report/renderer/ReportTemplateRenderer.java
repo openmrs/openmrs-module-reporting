@@ -76,20 +76,18 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	
 	/**
 	 * Returns the string which prefixes a key to replace in the template document
-	 * @param design
 	 * @return
 	 */
-	public String getExpressionPrefix(ReportDesign design) {
-		return design.getPropertyValue("expressionPrefix", "#");
+	public String getExpressionPrefix() {
+		return "#";
 	}
 	
 	/**
 	 * Returns the string which suffixes a key to replace in the template document
-	 * @param design
 	 * @return
 	 */
-	public String getExpressionSuffix(ReportDesign design) {
-		return design.getPropertyValue("expressionSuffix", "#");
+	public String getExpressionSuffix() {
+		return "#";
 	}
 	
 	/**

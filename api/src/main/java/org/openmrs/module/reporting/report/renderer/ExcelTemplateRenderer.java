@@ -134,8 +134,8 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 	 */
 	public HSSFSheet addSheet(HSSFWorkbook wb, SheetToAdd sheetToAdd, Set<String> usedSheetNames, ReportData reportData, ReportDesign design, Map<String, String> repeatSections) {
 
-		String prefix = getExpressionPrefix(design);
-		String suffix = getExpressionSuffix(design);
+		String prefix = design.getPropertyValue("expresionPrefix", getExpressionPrefix());
+		String suffix = design.getPropertyValue("expressionSuffix", getExpressionSuffix());
 		
 		HSSFSheet sheet = sheetToAdd.getSheet();
 		sheet.setForceFormulaRecalculation(true);
@@ -273,8 +273,8 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 		// Now, go through all of the collected cells, and add them back in
 		
 		ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
-		String prefix = getExpressionPrefix(design);
-		String suffix = getExpressionSuffix(design);
+		String prefix = design.getPropertyValue("expresionPrefix", getExpressionPrefix());
+		String suffix = design.getPropertyValue("expressionSuffix", getExpressionSuffix());
 		
 		for (int i=0; i<cellsToAdd.size(); i++) {
 			CellToAdd cellToAdd = cellsToAdd.get(i);

@@ -129,8 +129,8 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 			}
 			
 			// Now, apply any direct variable replacements that might be applicable
-			String prefix = getExpressionPrefix(reportDesign);
-			String suffix = getExpressionSuffix(reportDesign);
+			String prefix = reportDesign.getPropertyValue("expresionPrefix", getExpressionPrefix());
+			String suffix = reportDesign.getPropertyValue("expressionSuffix", getExpressionSuffix());
 			templateContents = EvaluationUtil.evaluateExpression(templateContents, replacements, prefix, suffix).toString();
 			
 			pw.write(templateContents.toString());

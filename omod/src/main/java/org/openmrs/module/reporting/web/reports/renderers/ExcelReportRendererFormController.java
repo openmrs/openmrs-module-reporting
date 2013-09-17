@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.web.reports.renderers;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -36,7 +37,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.renderer.DelimitedTextReportRenderer;
+import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
+import org.openmrs.module.reporting.report.renderer.ReportTemplateRenderer;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.service.ReportService;
@@ -60,10 +64,11 @@ public class ExcelReportRendererFormController {
 	public void excelReportRenderer(ModelMap model, 
 								@RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid, 
 								@RequestParam(required=false, value="reportDefinitionUuid") String reportDefinitionUuid,
-								@RequestParam(required=true,  value="type") Class<? extends ReportRenderer> type,
+								@RequestParam(required=true,  value="type") Class<? extends ReportTemplateRenderer> type,
 								@RequestParam(required=false, value="successUrl") String successUrl) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException, InstantiationException, ClassNotFoundException {
 		
 		ReportService rs = Context.getService(ReportService.class); 
+		Map<String, String> configurableExpressions = new LinkedHashMap<String, String>();
 		ReportDesign design = null;
 		if (StringUtils.isNotEmpty(reportDesignUuid)) {
 			design = rs.getReportDesignByUuid(reportDesignUuid);
@@ -76,6 +81,13 @@ public class ExcelReportRendererFormController {
 			}
 		}
 		
+		Class<?> rt = Context.loadClass(design.getRendererType().getName());
+		ReportTemplateRenderer rendererType = (ReportTemplateRenderer) rt.newInstance();
+		
+		configurableExpressions.put("expressionPrefix", design.getPropertyValue("expressionPrefix", rendererType.getExpressionPrefix()));
+		configurableExpressions.put("expressionSuffix", design.getPropertyValue("expressionSuffix", rendererType.getExpressionSuffix()));
+		
+		
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
@@ -84,6 +96,7 @@ public class ExcelReportRendererFormController {
     		successUrl = successUrl.substring(pathToRemove.length());
     	}
 		model.addAttribute("design", design );
+		model.addAttribute("configurableExpressions", configurableExpressions);
 		model.addAttribute("successUrl", successUrl);
 		model.addAttribute("cancelUrl",  successUrl);
 
@@ -91,6 +104,9 @@ public class ExcelReportRendererFormController {
 
 	/**
 	 * Saves report design
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/module/reporting/reports/renderers/saveExcelReportRenderer")
@@ -99,10 +115,13 @@ public class ExcelReportRendererFormController {
 					@RequestParam(required=true,  value="name") String name,
 					@RequestParam(required=false, value="description") String description,
 					@RequestParam(required=true,  value="reportDefinition") String reportDefinitionUuid,
-					@RequestParam(required=true,  value="rendererType") Class<? extends ReportRenderer> rendererType,
+					@RequestParam(required=true,  value="rendererType") Class<? extends ReportTemplateRenderer> rendererType,
 					@RequestParam(required=false, value="properties") String properties,
+					@RequestParam(required=false, value="resourceId") String resourceId,
+					@RequestParam(required=false, value="expressionPrefix") String expressionPrefix,
+					@RequestParam(required=false, value="expressionSuffix") String expressionSuffix,
 					@RequestParam(required=true,  value="successUrl") String successUrl
-	){
+	) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
 		ReportService rs = Context.getService(ReportService.class);
 		ReportDesign design = null;
 
@@ -119,27 +138,28 @@ public class ExcelReportRendererFormController {
 		design.setReportDefinition(Context.getService(ReportDefinitionService.class).getDefinitionByUuid(reportDefinitionUuid));
 		design.setRendererType(rendererType);
 		
-		WidgetHandler propHandler = HandlerUtil.getPreferredHandler(WidgetHandler.class, Properties.class);
-    	Properties props = (Properties)propHandler.parse(properties, Properties.class);
-    	design.setProperties(props);
-		
-		MultipartHttpServletRequest mpr = (MultipartHttpServletRequest) request;
-		Map<String, MultipartFile> files = (Map<String, MultipartFile>)mpr.getFileMap();
-    	Set<String> foundResources = new HashSet<String>();
-    	for (String paramName : files.keySet()) {
-    		try {
-	    		String[] split = paramName.split("\\.", 2);
-	    		if (split.length == 2 && split[0].equals("resources")) {
-	    			ReportDesignResource resource = null;
-	    			if (split[1].startsWith("new")) {
-	    				resource = new ReportDesignResource();
-	    			}
-	    			else {
-	    				foundResources.add(split[1]);
-	    				resource = design.getResourceByUuid(split[1]);
-	    			}
-	    			MultipartFile file = files.get(paramName);
-	    			String fileName = file.getOriginalFilename();
+		if (design.getRendererType().isAssignableFrom(ExcelTemplateRenderer.class)) {
+			WidgetHandler propHandler = HandlerUtil.getPreferredHandler(WidgetHandler.class, Properties.class);
+	    	Properties props = (Properties)propHandler.parse(properties, Properties.class);
+	    	
+	    	Class<?> rt = Context.loadClass(design.getRendererType().getName());
+			ReportTemplateRenderer type = (ReportTemplateRenderer) rt.newInstance();
+			
+			MultipartHttpServletRequest mpr = (MultipartHttpServletRequest) request;
+			MultipartFile file = mpr.getFile("resource");
+			Set<String> foundResources = new HashSet<String>();
+			
+			if ( file != null ) {
+				try {
+					ReportDesignResource resource = null;
+			    	if(!StringUtils.isEmpty(resourceId)) {
+			    		foundResources.add(resourceId);
+			    		resource = design.getResourceByUuid(resourceId);
+			    	}
+			    	else {
+			    		resource = new ReportDesignResource();
+			    	}
+			    	String fileName = file.getOriginalFilename();
 	    			if (StringUtils.isNotEmpty(fileName)) {
 		    			int index = fileName.lastIndexOf(".");
 		    			resource.setReportDesign(design);
@@ -149,19 +169,31 @@ public class ExcelReportRendererFormController {
 		    			resource.setContents(file.getBytes());
 		    			design.getResources().add(resource);
 	    			}
+				}
+				catch (Exception e) {
+	    			throw new RuntimeException("Unable to add resource to design.", e);
 	    		}
-    		}
-    		catch (Exception e) {
-    			throw new RuntimeException("Unable to add resource to design.", e);
-    		}
-    	}
+				
+			}
+	    	
+	    	for (Iterator<ReportDesignResource> i = design.getResources().iterator(); i.hasNext();) {
+	    		ReportDesignResource r = i.next();
+	    		if (r.getId() != null && !foundResources.contains(r.getUuid())) {
+	    			i.remove();
+	    		}
+	    	}
 
-    	for (Iterator<ReportDesignResource> i = design.getResources().iterator(); i.hasNext();) {
-    		ReportDesignResource r = i.next();
-    		if (r.getId() != null && !foundResources.contains(r.getUuid())) {
-    			i.remove();
-    		}
-    	}
+	    	if (!StringUtils.isEmpty(expressionPrefix) && !expressionPrefix.equals(type.getExpressionPrefix())) {
+	    		props.setProperty("expressionPrefix", expressionPrefix);
+	    	}
+	    	
+	    	if(!StringUtils.isEmpty(expressionSuffix) && !expressionSuffix.equals(type.getExpressionSuffix())) {
+	    		props.setProperty("expressionSuffix", expressionSuffix);
+	    	}
+	    	
+	    	design.setProperties(props);
+		}
+
     	
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
