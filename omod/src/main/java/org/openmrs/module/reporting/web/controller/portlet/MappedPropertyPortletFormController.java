@@ -14,6 +14,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
+import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.ScriptedCompositionPatientDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
@@ -62,7 +65,15 @@ public class MappedPropertyPortletFormController {
 		
 		if (StringUtils.isNotEmpty(mappedUuid)) {
 			Parameterizable valToSet = ParameterizableUtil.getParameterizable(mappedUuid, mappedType);
-    		
+			
+			/*This is just a demo on how we would handle converting person data definitions 
+			if we agree the conversion should happen here. The idea is that since ScriptedCompositionPatientDataDefinition allows only to add a
+			list of PatientDataDefinition objects, and a PersonDataDefinition is applicable for a PatientDataDefinition, we need somewhere to convert 
+			the mapped PersonDataDefinition to a PatientDataDefinition to be able to add it*/
+			
+			if(parent instanceof ScriptedCompositionPatientDataDefinition && valToSet instanceof PersonDataDefinition)
+    		valToSet = new PersonToPatientDataDefinition((PersonDataDefinition) valToSet);
+			
 			m = new Mapped();
     		m.setParameterizable(valToSet);
     		
