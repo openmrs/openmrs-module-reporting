@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.common.ScriptingLanguage;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ScriptedCompositionPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
+import org.openmrs.module.reporting.report.renderer.template.TemplateEngineManager;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,9 +33,11 @@ public class ScriptedCompositionPatientDataDefinitionController {
 	
 	protected transient Log log = LogFactory.getLog(getClass());
 	
-	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinition")
+	@SuppressWarnings("unchecked")
+    @RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinition")
 	public void showForm(ModelMap model, @RequestParam(value = "uuid", required = false) String uuid,
 	                     @RequestParam(value = "copyFromUuid", required = false) String copyFromUuid) {
+		model.put("scriptTypes", TemplateEngineManager.getAvailableTemplateEngineNames());
 		if (uuid == null) {
 			model.addAttribute("definition", new ScriptedCompositionPatientDataDefinition());
 		} 

@@ -33,18 +33,17 @@
 			<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 			
 			<b class="boxHeader">
-				Script Type
+				<spring:message code="reporting.ScriptedCohortDefinition.scriptType" />
 			</b>
 			<div class="box">
 				<form method="post" action="scriptedCompositionPatientDataDefinitionSetComposition.form">
-					<input type="hidden" name="uuid" value="${definition.uuid}"/>
-					
-				 <select id="scriptType" name="scriptType">
-				    <option value="" <c:if test="${definition.scriptType == null}">selected</c:if>></option>				    
-					<option value="ecmascript" <c:if test="${definition.scriptType.language == 'ecmascript'}">selected</c:if>>Ecmascript</option>
-					<option value="groovy" <c:if test="${definition.scriptType.language == 'groovy'}">selected</c:if>>Groovy</option>					
-				 </select>
-					
+					<input type="hidden" name="uuid" value="${definition.uuid}"/>					
+			<select id="scriptType" name="scriptType">
+				<c:forEach var="type" items="${scriptTypes}">
+					<c:set var="isSelected" value="${scriptType eq type ? ' selected' : ''}"/>
+					<option value="${type}"${isSelected}>${type}</option>
+				</c:forEach>
+			</select>					
 					<br/>
 					<br/>
 					<textarea id="scriptCode" rows="6" name="scriptCode">${definition.scriptCode}</textarea>
