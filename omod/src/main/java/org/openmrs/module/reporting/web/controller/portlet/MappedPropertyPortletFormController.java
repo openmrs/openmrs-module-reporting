@@ -66,10 +66,10 @@ public class MappedPropertyPortletFormController {
 		if (StringUtils.isNotEmpty(mappedUuid)) {
 			Parameterizable valToSet = ParameterizableUtil.getParameterizable(mappedUuid, mappedType);
 			
-			/*This is just a demo on how we would handle converting person data definitions 
-			if we agree the conversion should happen here. The idea is that since ScriptedCompositionPatientDataDefinition allows only to add a
-			list of PatientDataDefinition objects, and a PersonDataDefinition is applicable for a PatientDataDefinition, we need somewhere to convert 
-			the mapped PersonDataDefinition to a PatientDataDefinition to be able to add it*/
+			// TODO We need to find a more generic way of converting data definitions.
+			//  If the definition being mapped is of unsupported type, the code should
+			//  be able to find a proper adapter class and convert the definition to 
+			//  the supported type.
 			
 			if(parent instanceof ScriptedCompositionPatientDataDefinition && valToSet instanceof PersonDataDefinition)
     		valToSet = new PersonToPatientDataDefinition((PersonDataDefinition) valToSet);
