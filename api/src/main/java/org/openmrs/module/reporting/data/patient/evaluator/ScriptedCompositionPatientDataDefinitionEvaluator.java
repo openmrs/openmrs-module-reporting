@@ -23,6 +23,7 @@ import javax.script.ScriptException;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ScriptingLanguage;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ScriptedCompositionPatientDataDefinition;
@@ -43,36 +44,47 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 		
 		ScriptedCompositionPatientDataDefinition pd = (ScriptedCompositionPatientDataDefinition) definition;
 		Map<String, Mapped<PatientDataDefinition>> containedDataDefintions = pd.getContainedDataDefinitions();
+		
+		String scriptCode = pd.getScriptCode();
+		ScriptingLanguage scriptType = pd.getScriptType();
+		
+		// fail if passed-in definition has no script code or script type specified
+		if (scriptCode == null) {
+			throw new EvaluationException("No script code found on this ScriptedCompositionPatientDataDefinition");
+		}
+		
+		if (scriptType == null) {
+			throw new EvaluationException("No script type found on this ScriptedCompositionPatientDataDefinition");
+		}
 		EvaluatedPatientData evaluationResult = new EvaluatedPatientData(pd, context);
 		
 		Map<String, EvaluatedPatientData> evaluatedContainedDataDefinitions = new HashMap<String, EvaluatedPatientData>();
 		
-		for (Entry<String, Mapped<PatientDataDefinition>> e : containedDataDefintions.entrySet()) {
-			EvaluatedPatientData patientDataResult = Context.getService(PatientDataService.class).evaluate(e.getValue(),
-			    context);
-			evaluatedContainedDataDefinitions.put(e.getKey(), patientDataResult);
+		for (Entry<String, Mapped<PatientDataDefinition>> definitions : containedDataDefintions.entrySet()) {
+			EvaluatedPatientData patientDataResult = Context.getService(PatientDataService.class).evaluate(
+			    definitions.getValue(), context);
+			evaluatedContainedDataDefinitions.put(definitions.getKey(), patientDataResult);
 		}
 		
-		if (pd.getScriptCode() != null) {
-			ScriptEngineManager manager = new ScriptEngineManager();
-			ScriptEngine scriptEngine = manager.getEngineByName(pd.getScriptType().getLanguage());
-			scriptEngine.put("context", context);
-			scriptEngine.put("parameters", context.getParameterValues());
-			scriptEngine.put("containedDataDefinitionResults", evaluatedContainedDataDefinitions);
-			scriptEngine.put("evaluationResult", evaluationResult);
-			
-			try {
-				evaluationResult = (EvaluatedPatientData) scriptEngine.eval(pd.getScriptCode());
-			}
-			catch (ScriptException ex) {
-				throw new EvaluationException("An error occured while evaluating script", ex);
-			}
-			catch (ClassCastException ex) {
-				throw new EvaluationException("A Scripted Patient Data Definition must return an EvaluatedPatientData", ex);
-			}
+		ScriptEngineManager manager = new ScriptEngineManager();
+		ScriptEngine scriptEngine = manager.getEngineByName(pd.getScriptType().getLanguage());
+		scriptEngine.put("context", context);
+		scriptEngine.put("parameters", context.getParameterValues());
+		scriptEngine.put("containedDataDefinitionResults", evaluatedContainedDataDefinitions);
+		scriptEngine.put("evaluationResult", evaluationResult);
+		
+		try {
+			scriptEngine.eval(pd.getScriptCode());
+		}
+		catch (ScriptException ex) {
+			throw new EvaluationException("An error occured while evaluating script", ex);
+		}
+		catch (ClassCastException ex) {
+			throw new EvaluationException("A Scripted Patient Data Definition must return an EvaluatedPatientData", ex);
 		}
 		
 		return evaluationResult;
+		
 	}
 	
 }
