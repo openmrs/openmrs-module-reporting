@@ -79,13 +79,12 @@ public class ScriptedCompositionPatientDataDefinitionController {
 		ScriptedCompositionPatientDataDefinition from = (ScriptedCompositionPatientDataDefinition) def;
 		
 		ScriptedCompositionPatientDataDefinition clone = new ScriptedCompositionPatientDataDefinition();
-		clone.setId(null);
-		clone.setUuid(null);
 		clone.setName(name);
 		clone.setDescription(description);
 		clone.setParameters(from.getParameters());
 		clone.setContainedDataDefinitions(from.getContainedDataDefinitions());
 		clone.setScriptCode(from.getScriptCode());
+		clone.setScriptType(from.getScriptType());
 		Context.getService(PatientDataService.class).saveDefinition(clone);
 		request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Saved as a new copy", WebRequest.SCOPE_SESSION);
 		return "redirect:scriptedCompositionPatientDataDefinition.form?uuid=" + clone.getUuid();

@@ -24,6 +24,15 @@
 		
 	</c:when>		
 	<c:otherwise>
+	
+	<script>
+			$(document).ready(function() {
+				makeDialog('saveAsDialog');
+				$('#saveAsButton').click(function(event) {
+					showDialog('saveAsDialog', 'Save a Copy');
+				});
+			});
+		</script>
 
 		<table width="100%"><tr valign="top">
 		<td width="34%">	
