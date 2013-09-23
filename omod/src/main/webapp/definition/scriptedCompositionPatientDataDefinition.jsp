@@ -48,10 +48,12 @@
 				<form method="post" action="scriptedCompositionPatientDataDefinitionSetComposition.form">
 					<input type="hidden" name="uuid" value="${definition.uuid}"/>					
 			<select id="scriptType" name="scriptType">
-				<c:forEach var="type" items="${scriptTypes}">
-					<c:set var="isSelected" value="${scriptType eq type ? ' selected' : ''}"/>
-					<option value="${type}"${isSelected}>${type}</option>
-				</c:forEach>
+				 <option value="" <c:if test="${definition.scriptType == null}">selected</c:if>>Choose...</option>
+						<c:forEach var="type" items="${scriptTypes}">
+							<option value="${type}" <c:if test="${definition.scriptType.language == type}">selected</c:if>>
+							   ${type}
+				            </option>
+						</c:forEach>
 			</select>					
 					<br/>
 					<br/>
