@@ -1,0 +1,110 @@
+<%@ include file="/WEB-INF/template/include.jsp"%>
+<openmrs:require anyPrivilege="Manage Cohort Definitions,Manage Data Set Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form" />
+<%@ include file="../manage/localHeader.jsp"%>
+
+<c:url value="/module/reporting/definition/scriptedCompositionPatientDataDefinition.form" var="pageUrlWithUuid">
+	<c:param name="uuid" value="${definition.uuid}" />
+</c:url>
+
+<c:set var="pageUrl" value="/module/reporting/definition/scriptedCompositionPatientDataDefinition.form?uuid=uuid"/>
+
+<style>
+	textarea#scriptCode { 
+		width: 99%;
+	}
+</style>
+
+<c:choose>
+	<c:when test="${definition.id == null}">
+
+		<b class="boxHeader">Create Composition Patient Data Definition</b>
+		<div class="box">
+			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.data.patient.definition.ScriptedCompositionPatientDataDefinition|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition|successUrl=${pageUrl}" />
+		</div>
+		
+	</c:when>		
+	<c:otherwise>
+	
+	<script>
+			$(document).ready(function() {
+				makeDialog('saveAsDialog');
+				$('#saveAsButton').click(function(event) {
+					showDialog('saveAsDialog', 'Save a Copy');
+				});
+			});
+		</script>
+
+		<table width="100%"><tr valign="top">
+		<td width="34%">	
+	
+			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Basic Details" />
+			
+			<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrl}" />
+			
+			<b class="boxHeader">
+				<spring:message code="reporting.ScriptedCohortDefinition.scriptType" />
+			</b>
+			<div class="box">
+				<form method="post" action="scriptedCompositionPatientDataDefinitionSetComposition.form">
+					<input type="hidden" name="uuid" value="${definition.uuid}"/>					
+			<select id="scriptType" name="scriptType">
+				 <option value="" <c:if test="${definition.scriptType == null}">selected</c:if>>Choose...</option>
+						<c:forEach var="type" items="${scriptTypes}">
+							<option value="${type}" <c:if test="${definition.scriptType.language == type}">selected</c:if>>
+							   ${type}
+				            </option>
+						</c:forEach>
+			</select>					
+					<br/>
+					<br/>
+					<textarea id="scriptCode" rows="6" name="scriptCode">${definition.scriptCode}</textarea>
+					<br/>
+					<input type="submit" value="Save"/>
+					<input type="button" value="Close" onClick="window.location='/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition';"/>
+					
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<input type="button" id="saveAsButton" value="Save as new"/>
+				</form>
+			</div>			
+		
+		</td>
+		<td width="66%">
+			<b class="boxHeader">Definitions to combine</b>
+			<div class="box" style="border: none">
+			
+				<c:forEach items="${definition.containedDataDefinitions}" var="h" varStatus="hStatus">
+					<openmrs:portlet url="mappedProperty" id="definition${hStatus.index}" moduleId="reporting" 
+						parameters="type=${definition['class'].name}|uuid=${definition.uuid}|property=containedDataDefinitions|currentKey=${h.key}|label=${h.key}|parentUrl=${pageUrlWithUuid}" />
+				</c:forEach>
+			
+				<openmrs:portlet url="mappedProperty" id="newDefinition" moduleId="reporting" 
+					 parameters="type=${definition['class'].name}|uuid=${definition.uuid}|property=containedDataDefinitions|mode=add|label=Add Definitions to Combine" />
+			</div>
+		</td>
+		</tr></table>
+		
+		<div id="saveAsDialog" style="display:none">
+			<form method="get" action="scriptedCompositionPatientDataDefinitionClone.form">
+				<input type="hidden" name="copyFromUuid" value="${definition.uuid}"/>
+				<table>
+					<tr>
+						<th align="right">Name:</th>
+						<td><input type="text" name="name"/></td>
+					</tr>
+					<tr valign="top">
+						<th align="right">Description:</th>
+						<td><textarea name="description"></textarea></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="submit" value="Save As"/></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+
+	</c:otherwise>
+</c:choose>
+
+<%@ include file="/WEB-INF/template/footer.jsp"%>
