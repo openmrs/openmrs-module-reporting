@@ -29,8 +29,10 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ScriptedCompositionPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
+import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.test.BaseContextSensitiveTest;
@@ -86,5 +88,40 @@ public class ScriptedCompositionPatientDataEvaluatorTest extends BaseModuleConte
 		
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(daysSinceLastVisit, context);
 		Assert.assertEquals("2 days", pd.getData().values().toArray()[0]);
+	}
+	
+	/**
+	 * @see ScriptedCompositionPatientDataDefinitionEvaluator#evaluate(PatientDataDefinition,EvaluationContext)
+	 * @verifies return a specified alert based on patient's last weight value
+	 */
+	@Test
+	public void evaluate_shouldReturnSpecifiedAlertBasedOnLastWeightValue() throws Exception {
+		
+		InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream(
+		    "org/openmrs/module/reporting/report/script/GroovyBasedCustomAlertBasedOnLastWeightValue.txt");
+		String script = new String(IOUtils.toByteArray(is), "UTF-8");
+		IOUtils.closeQuietly(is);
+		
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("7,20,21,22"));
+		
+		ObsForPersonDataDefinition lastWeight = new ObsForPersonDataDefinition();
+		lastWeight.setWhich(TimeQualifier.LAST);
+		lastWeight.setQuestion(Context.getConceptService().getConcept(5089));
+		
+		ScriptedCompositionPatientDataDefinition daysSinceLastVisit = new ScriptedCompositionPatientDataDefinition();
+		daysSinceLastVisit.setScriptType(new ScriptingLanguage("groovy"));
+		daysSinceLastVisit.setScriptCode(script);
+		daysSinceLastVisit.getContainedDataDefinitions().put("patientsLastVisit",
+		    new Mapped<PatientDataDefinition>(new PersonToPatientDataDefinition(lastWeight), null));
+		EvaluatedPatientData daysSinceLastVisitResult = Context.getService(PatientDataService.class).evaluate(
+		    daysSinceLastVisit, context);
+		
+		Assert.assertEquals("High", daysSinceLastVisitResult.getData().values().toArray()[0]);
+		Assert.assertEquals("The recorded weight value might be incorrect!", daysSinceLastVisitResult.getData().values()
+		        .toArray()[1]);
+		Assert.assertEquals("Normal", daysSinceLastVisitResult.getData().values().toArray()[2]);
+		Assert.assertEquals("The recorded weight value might be incorrect!", daysSinceLastVisitResult.getData().values()
+		        .toArray()[3]);
 	}
 }
