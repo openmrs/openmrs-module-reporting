@@ -66,7 +66,7 @@ public class ScriptedCompositionPatientDataEvaluatorTest extends BaseModuleConte
 	public void evaluate_shouldReturnNumberOfDaysSinceLastEncounterOfTheSpecifiedTypes() throws Exception {
 		
 		InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream(
-		    "org/openmrs/module/reporting/report/script/GroovyBasedCompositionPatientDataDefinition.txt");
+		    "org/openmrs/module/reporting/report/script/GroovyBasedDaysSinceLastVisitCalculation.txt");
 		String script = new String(IOUtils.toByteArray(is), "UTF-8");
 		IOUtils.closeQuietly(is);
 		
