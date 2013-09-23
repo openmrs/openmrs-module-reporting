@@ -1,0 +1,14 @@
+import groovy.time.*
+import org.openmrs.Encounter;
+import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
+
+for (result in containedDataDefinitionResults.values()) {
+			for (obj in result.getData().values()) {
+				if(obj instanceof Encounter){
+					Encounter e = (Encounter)obj;    				
+					TimeDuration td = TimeCategory.minus(context.getParameterValue("date"), e.getEncounterDatetime());    				
+					evaluationResult.addData(e.getPatientId(), td.toString());
+				}
+
+			}
+		}
