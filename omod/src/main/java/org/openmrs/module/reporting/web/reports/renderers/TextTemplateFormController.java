@@ -46,7 +46,6 @@ public class TextTemplateFormController {
 	 * Default Constructor
 	 */
 	public TextTemplateFormController() { }
-	
 
 	/**
 	 *  prepares a new form for the a TextTemplateRenderer
@@ -81,7 +80,8 @@ public class TextTemplateFormController {
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
-    	} else if (successUrl.startsWith(pathToRemove)) {
+    	}
+		else if (successUrl.startsWith(pathToRemove)) {
     		successUrl = successUrl.substring(pathToRemove.length());
     	}
 		model.addAttribute("design", design );
@@ -89,7 +89,6 @@ public class TextTemplateFormController {
 		model.addAttribute("scriptTypes", TemplateEngineManager.getAvailableTemplateEngineNames());
 		model.addAttribute("successUrl", successUrl);
 		model.addAttribute("cancelUrl",  successUrl);
-
 	}
 	
 	/**
@@ -136,7 +135,8 @@ public class TextTemplateFormController {
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
-    	} else if (successUrl.startsWith(pathToRemove)) {
+    	}
+		else if (successUrl.startsWith(pathToRemove)) {
     		successUrl = successUrl.substring(pathToRemove.length());
     	}
     	design = rs.saveReportDesign(design);

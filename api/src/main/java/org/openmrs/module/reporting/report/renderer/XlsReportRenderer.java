@@ -43,23 +43,30 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
         return "application/vnd.ms-excel";
     }
 
+	/**
+	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
+	 */
+	public String getFilename(ReportDefinition definition, String argument) {
+		String fileName = super.getFilename(definition, argument);
+		if (!fileName.endsWith(".xls")) {
+			fileName += ".xls";
+		}
+		return fileName;
+	}
+
     /**
      * @see ReportRenderer#render(ReportData, String, OutputStream)
      * @should render ReportData to an xls file
      */
     public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException {
         ReportDesign design = getDesign(argument);
-    	HSSFWorkbook wb = null;
-        try {
-        	wb = getExcelTemplate(design);
-        } catch( Exception e ) {
-        	log.debug("No template found");
-        }
+    	HSSFWorkbook wb = getExcelTemplate(design);
         
-        if ( wb != null ){
-        	ExcelTemplateRenderer ext = new ExcelTemplateRenderer();
-        	ext.render(reportData, argument, out);
-        } else {
+        if (wb != null) {
+        	ExcelTemplateRenderer templateRenderer = new ExcelTemplateRenderer();
+			templateRenderer.render(reportData, argument, out);
+        }
+		else {
         	wb = new HSSFWorkbook();
             ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
             for (Map.Entry<String, DataSet> e : reportData.getDataSets().entrySet()) {
@@ -86,24 +93,27 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
             }
             
             wb.write(out);
-        	
         }
     }
-    
+
 	/**
 	 * @return an Excel Workbook for the given argument
 	 */
 	protected HSSFWorkbook getExcelTemplate(ReportDesign design) throws IOException {
+		HSSFWorkbook wb = null;
 		InputStream is = null;
 		try {
 			ReportDesignResource r = getTemplate(design);
 			is = new ByteArrayInputStream(r.getContents());
 			POIFSFileSystem fs = new POIFSFileSystem(is);
-			HSSFWorkbook wb = new HSSFWorkbook(fs);
-			return wb;
+			wb = new HSSFWorkbook(fs);
+		}
+		catch (Exception e) {
+			log.debug("No template file found, will use default Excel output");
 		}
 		finally {
 			IOUtils.closeQuietly(is);
 		}
+		return wb;
 	}
 }

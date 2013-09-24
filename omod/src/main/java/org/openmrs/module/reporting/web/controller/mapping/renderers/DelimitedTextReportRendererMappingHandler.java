@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.report.renderer.DelimitedTextReportRenderer;
 public class DelimitedTextReportRendererMappingHandler extends RendererMappingHandler {
 
 	/**
-	 * @see RendererMappingHandler#getCreateUrl()
+	 * @see RendererMappingHandler#getCreateUrl(Class)
 	 */
 	public String getCreateUrl( Class<? extends ReportRenderer> rendererType ) {
 		return "/module/reporting/reports/renderers/delimitedTextReportRenderer.form?type=" + rendererType.getName();

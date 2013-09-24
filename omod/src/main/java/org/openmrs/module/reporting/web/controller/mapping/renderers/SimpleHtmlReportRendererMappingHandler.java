@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.report.renderer.SimpleHtmlReportRenderer;
 public class SimpleHtmlReportRendererMappingHandler extends RendererMappingHandler {
 	
 	/**
-	 * @see RendererMappingHandler#getCreateUrl()
+	 * @see RendererMappingHandler#getCreateUrl(Class)
 	 */
 	public String getCreateUrl( Class<? extends ReportRenderer> rendererType ) {
 		return "/module/reporting/reports/renderers/nonConfigurableReportRenderer.form?type=" + rendererType.getName();

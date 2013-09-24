@@ -54,7 +54,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  */
 @Handler
 @Localized("reporting.ExcelTemplateRenderer")
-@Deprecated public class ExcelTemplateRenderer extends ReportTemplateRenderer {
+public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
@@ -63,9 +63,20 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 	}
 
 	/**
+	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
+	 */
+	public String getFilename(ReportDefinition definition, String argument) {
+		String fileName = super.getFilename(definition, argument);
+		if (!fileName.endsWith(".xls")) {
+			fileName += ".xls";
+		}
+		return fileName;
+	}
+
+	/**
 	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
 	 */
-	public String getRenderedContentType(ReportDefinition schema, String argument) {
+	public String getRenderedContentType(ReportDefinition definition, String argument) {
 		return "application/vnd.ms-excel";
 	}
 
@@ -73,60 +84,62 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 	 * @see ReportRenderer#render(ReportData, String, OutputStream)
 	 */
 	public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException {
-		ReportDesign design = getDesign(argument);
-		HSSFWorkbook wb = null;
-        try {
-        	wb = getExcelTemplate(design);
-        } catch( Exception e ) {
-        	log.debug("No template found");
-        }
-        
-        if ( wb == null ){
-        	XlsReportRenderer xlsRR = new XlsReportRenderer();
-        	xlsRR.render(reportData, argument, out);
-        } else {
-        	log.debug("Attempting to render report with ExcelTemplateRenderer");
-			Map<String, String> repeatSections = getRepeatingSections(design);
 
-			// Put together base set of replacements.  Any dataSet with only one row is included.
-			Map<String, Object> replacements = getBaseReplacementData(reportData, design);
-			
-			// Iterate across all of the sheets in the workbook, and configure all those that need to be added/cloned
-			List<SheetToAdd> sheetsToAdd = new ArrayList<SheetToAdd>();
+		try {
+			log.debug("Attempting to render report with ExcelTemplateRenderer");
+			ReportDesign design = getDesign(argument);
+			HSSFWorkbook wb = getExcelTemplate(design);
 
-			Set<String> usedSheetNames = new HashSet<String>();
-			int numberOfSheets = wb.getNumberOfSheets();
-			
-			for (int sheetNum=0; sheetNum<numberOfSheets; sheetNum++) {
-				
-				HSSFSheet currentSheet = wb.getSheetAt(sheetNum);
-				String originalSheetName = wb.getSheetName(sheetNum);
-				
-				String dataSetName = getRepeatingSheetProperty(sheetNum, repeatSections);
-				if (dataSetName != null) {
-					
-					DataSet repeatingSheetDataSet = getDataSet(reportData, dataSetName, replacements);
-					int dataSetRowNum = 0;
-					for (Iterator<DataSetRow> rowIterator = repeatingSheetDataSet.iterator(); rowIterator.hasNext();) {
-						DataSetRow dataSetRow = rowIterator.next();
-						dataSetRowNum++;
-						Map<String, Object> newReplacements = getReplacementData(replacements, reportData, design, dataSetName, dataSetRow, dataSetRowNum);
-						HSSFSheet newSheet = (dataSetRowNum == 1 ? currentSheet : wb.cloneSheet(sheetNum));
-						sheetsToAdd.add(new SheetToAdd(newSheet, sheetNum, originalSheetName, newReplacements));
+        	if (wb == null) {
+        		XlsReportRenderer xlsRenderer = new XlsReportRenderer();
+				xlsRenderer.render(reportData, argument, out);
+			}
+			else {
+				Map<String, String> repeatSections = getRepeatingSections(design);
+
+				// Put together base set of replacements.  Any dataSet with only one row is included.
+				Map<String, Object> replacements = getBaseReplacementData(reportData, design);
+
+				// Iterate across all of the sheets in the workbook, and configure all those that need to be added/cloned
+				List<SheetToAdd> sheetsToAdd = new ArrayList<SheetToAdd>();
+
+				Set<String> usedSheetNames = new HashSet<String>();
+				int numberOfSheets = wb.getNumberOfSheets();
+
+				for (int sheetNum=0; sheetNum<numberOfSheets; sheetNum++) {
+
+					HSSFSheet currentSheet = wb.getSheetAt(sheetNum);
+					String originalSheetName = wb.getSheetName(sheetNum);
+
+					String dataSetName = getRepeatingSheetProperty(sheetNum, repeatSections);
+					if (dataSetName != null) {
+
+						DataSet repeatingSheetDataSet = getDataSet(reportData, dataSetName, replacements);
+						int dataSetRowNum = 0;
+						for (Iterator<DataSetRow> rowIterator = repeatingSheetDataSet.iterator(); rowIterator.hasNext();) {
+							DataSetRow dataSetRow = rowIterator.next();
+							dataSetRowNum++;
+							Map<String, Object> newReplacements = getReplacementData(replacements, reportData, design, dataSetName, dataSetRow, dataSetRowNum);
+							HSSFSheet newSheet = (dataSetRowNum == 1 ? currentSheet : wb.cloneSheet(sheetNum));
+							sheetsToAdd.add(new SheetToAdd(newSheet, sheetNum, originalSheetName, newReplacements));
+						}
+					}
+					else {
+						sheetsToAdd.add(new SheetToAdd(currentSheet, sheetNum, originalSheetName, replacements));
 					}
 				}
-				else {
-					sheetsToAdd.add(new SheetToAdd(currentSheet, sheetNum, originalSheetName, replacements));
-				}
-			}
-			
-			// Then iterate across all of these and add them in
-			for (int i=0; i<sheetsToAdd.size(); i++) {
-				addSheet(wb, sheetsToAdd.get(i), usedSheetNames, reportData, design, repeatSections);
-			}
 
-			wb.write(out);        	
-        }
+				// Then iterate across all of these and add them in
+				for (int i=0; i<sheetsToAdd.size(); i++) {
+					addSheet(wb, sheetsToAdd.get(i), usedSheetNames, reportData, design, repeatSections);
+				}
+
+				wb.write(out);
+			}
+		}
+		catch (Exception e) {
+			throw new RenderingException("Unable to render results due to: " + e, e);
+		}
 	}
 	
 	/**
@@ -134,9 +147,9 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 	 */
 	public HSSFSheet addSheet(HSSFWorkbook wb, SheetToAdd sheetToAdd, Set<String> usedSheetNames, ReportData reportData, ReportDesign design, Map<String, String> repeatSections) {
 
-		String prefix = design.getPropertyValue("expresionPrefix", getExpressionPrefix());
-		String suffix = design.getPropertyValue("expressionSuffix", getExpressionSuffix());
-		
+		String prefix = getExpressionPrefix(design);
+		String suffix = getExpressionSuffix(design);
+
 		HSSFSheet sheet = sheetToAdd.getSheet();
 		sheet.setForceFormulaRecalculation(true);
 		
@@ -273,9 +286,9 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 		// Now, go through all of the collected cells, and add them back in
 		
 		ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
-		String prefix = design.getPropertyValue("expresionPrefix", getExpressionPrefix());
-		String suffix = design.getPropertyValue("expressionSuffix", getExpressionSuffix());
-		
+		String prefix = getExpressionPrefix(design);
+		String suffix = getExpressionSuffix(design);
+
 		for (int i=0; i<cellsToAdd.size(); i++) {
 			CellToAdd cellToAdd = cellsToAdd.get(i);
 			HSSFCell newCell = newRow.createCell(i);
@@ -323,17 +336,21 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 	 * @return an Excel Workbook for the given argument
 	 */
 	protected HSSFWorkbook getExcelTemplate(ReportDesign design) throws IOException {
+		HSSFWorkbook wb = null;
 		InputStream is = null;
 		try {
 			ReportDesignResource r = getTemplate(design);
 			is = new ByteArrayInputStream(r.getContents());
 			POIFSFileSystem fs = new POIFSFileSystem(is);
-			HSSFWorkbook wb = new HSSFWorkbook(fs);
-			return wb;
+			wb = new HSSFWorkbook(fs);
+		}
+		catch (Exception e) {
+			log.warn("No template file found, will use default Excel output");
 		}
 		finally {
 			IOUtils.closeQuietly(is);
 		}
+		return wb;
 	}
 
 	/**
@@ -530,7 +547,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 			return rowToClone;
 		}
 		/**
-		 * @param row the row to set
+		 * @param rowToClone the row to set
 		 */
 		public void setRowToClone(HSSFRow rowToClone) {
 			this.rowToClone = rowToClone;

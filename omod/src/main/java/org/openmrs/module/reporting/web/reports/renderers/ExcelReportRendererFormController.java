@@ -84,10 +84,9 @@ public class ExcelReportRendererFormController {
 		Class<?> rt = Context.loadClass(design.getRendererType().getName());
 		ReportTemplateRenderer rendererType = (ReportTemplateRenderer) rt.newInstance();
 		
-		configurableExpressions.put("expressionPrefix", design.getPropertyValue("expressionPrefix", rendererType.getExpressionPrefix()));
-		configurableExpressions.put("expressionSuffix", design.getPropertyValue("expressionSuffix", rendererType.getExpressionSuffix()));
-		
-		
+		configurableExpressions.put("expressionPrefix", rendererType.getExpressionPrefix(design));
+		configurableExpressions.put("expressionSuffix", rendererType.getExpressionSuffix(design));
+
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
@@ -121,7 +120,7 @@ public class ExcelReportRendererFormController {
 					@RequestParam(required=false, value="expressionPrefix") String expressionPrefix,
 					@RequestParam(required=false, value="expressionSuffix") String expressionSuffix,
 					@RequestParam(required=true,  value="successUrl") String successUrl
-	) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+	) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportDesign design = null;
 
@@ -138,7 +137,7 @@ public class ExcelReportRendererFormController {
 		design.setReportDefinition(Context.getService(ReportDefinitionService.class).getDefinitionByUuid(reportDefinitionUuid));
 		design.setRendererType(rendererType);
 		
-		if (design.getRendererType().isAssignableFrom(ExcelTemplateRenderer.class)) {
+		if (ExcelTemplateRenderer.class.isAssignableFrom(design.getRendererType())) {
 			WidgetHandler propHandler = HandlerUtil.getPreferredHandler(WidgetHandler.class, Properties.class);
 	    	Properties props = (Properties)propHandler.parse(properties, Properties.class);
 	    	
@@ -183,11 +182,11 @@ public class ExcelReportRendererFormController {
 	    		}
 	    	}
 
-	    	if (!StringUtils.isEmpty(expressionPrefix) && !expressionPrefix.equals(type.getExpressionPrefix())) {
+	    	if (!StringUtils.isEmpty(expressionPrefix) && !expressionPrefix.equals(type.getExpressionPrefix(design))) {
 	    		props.setProperty("expressionPrefix", expressionPrefix);
 	    	}
 	    	
-	    	if(!StringUtils.isEmpty(expressionSuffix) && !expressionSuffix.equals(type.getExpressionSuffix())) {
+	    	if(!StringUtils.isEmpty(expressionSuffix) && !expressionSuffix.equals(type.getExpressionSuffix(design))) {
 	    		props.setProperty("expressionSuffix", expressionSuffix);
 	    	}
 	    	

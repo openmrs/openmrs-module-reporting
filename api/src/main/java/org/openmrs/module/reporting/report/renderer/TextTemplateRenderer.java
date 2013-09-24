@@ -127,12 +127,12 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 				bindings.put("msg", new MessageUtil());
 				templateContents = engine.evaluate(templateContents, bindings);
 			}
-			
+
 			// Now, apply any direct variable replacements that might be applicable
-			String prefix = reportDesign.getPropertyValue("expresionPrefix", getExpressionPrefix());
-			String suffix = reportDesign.getPropertyValue("expressionSuffix", getExpressionSuffix());
+			String prefix = getExpressionPrefix(reportDesign);
+			String suffix = getExpressionSuffix(reportDesign);
 			templateContents = EvaluationUtil.evaluateExpression(templateContents, replacements, prefix, suffix).toString();
-			
+
 			pw.write(templateContents.toString());
 		}
 		catch (RenderingException re) {

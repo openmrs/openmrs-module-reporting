@@ -49,8 +49,10 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	 */
 	public ReportDesignResource getTemplate(ReportDesign design) {
 		ReportDesignResource ret = design.getResourceByName("template");
-		if (ret == null && design.getResources().iterator().hasNext()) {
-			ret = design.getResources().iterator().next();
+		if (ret == null) {
+			if (design.getResources().size() > 0) {
+				ret = design.getResources().iterator().next();
+			}
 		}
 		return ret;
 	}
@@ -60,10 +62,13 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	 */
 	public String getFilename(ReportDefinition definition, String argument) {
 		ReportDesign d = getDesign(argument);
-		ReportDesignResource rds = getTemplate(d);
-		if ( rds == null ) return definition.getName() + ".xls";  
 		String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-hhmmss");
-		return definition.getName() + "_" + dateStr  + "." + rds.getExtension();
+		String fileName = definition.getName() + "_" + dateStr;
+		ReportDesignResource template = getTemplate(d);
+		if (template != null) {
+			return fileName + "." + template.getExtension();
+		}
+		return fileName;
 	}
 	
 	/** 
@@ -71,23 +76,29 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	 */
 	public String getRenderedContentType(ReportDefinition definition, String argument) {
 		ReportDesign d = getDesign(argument);
-		return getTemplate(d).getContentType();
+		ReportDesignResource template = getTemplate(d);
+		if (template != null) {
+			return template.getContentType();
+		}
+		return "";
 	}
-	
+
 	/**
 	 * Returns the string which prefixes a key to replace in the template document
+	 * @param design
 	 * @return
 	 */
-	public String getExpressionPrefix() {
-		return "#";
+	public String getExpressionPrefix(ReportDesign design) {
+		return design.getPropertyValue("expressionPrefix", "#");
 	}
-	
+
 	/**
 	 * Returns the string which suffixes a key to replace in the template document
+	 * @param design
 	 * @return
 	 */
-	public String getExpressionSuffix() {
-		return "#";
+	public String getExpressionSuffix(ReportDesign design) {
+		return design.getPropertyValue("expressionSuffix", "#");
 	}
 	
 	/**
@@ -135,7 +146,7 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	/**
 	 * Constructs a Map from String to Object of all data than can be used as replacements for the given data set row
 	 * @param reportData
-	 * @param template
+	 * @param design
 	 * @return Map from String to Object of all data than can be used as replacements in the template
 	 */
 	@SuppressWarnings("unchecked")

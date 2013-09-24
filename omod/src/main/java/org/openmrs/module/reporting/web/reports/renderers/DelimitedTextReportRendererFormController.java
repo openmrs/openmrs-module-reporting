@@ -63,7 +63,8 @@ public class DelimitedTextReportRendererFormController {
 		ReportDesign design = null;
 		if (StringUtils.isNotEmpty(reportDesignUuid)) {
 			design = rs.getReportDesignByUuid(reportDesignUuid);
-		} else {
+		}
+		else {
 			design = new ReportDesign();
 			design.setRendererType(type);
 			if (StringUtils.isNotEmpty(reportDefinitionUuid)) {
@@ -84,14 +85,14 @@ public class DelimitedTextReportRendererFormController {
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
-    	} else if (successUrl.startsWith(pathToRemove)) {
+    	}
+		else if (successUrl.startsWith(pathToRemove)) {
     		successUrl = successUrl.substring(pathToRemove.length());
     	}
 		model.addAttribute("design", design );
 		model.addAttribute("configurableProperties", configurableProperties);
 		model.addAttribute("successUrl", successUrl);
 		model.addAttribute("cancelUrl",  successUrl);
-
 	}
 
 	/**
@@ -113,7 +114,7 @@ public class DelimitedTextReportRendererFormController {
 					@RequestParam(required=false, value="beforeRowDelimiter") String beforeRowDelimiter,
 					@RequestParam(required=false, value="afterRowDelimiter") String afterRowDelimiter,
 					@RequestParam(required=true,  value="successUrl") String successUrl
-	) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+	) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportDesign design = null;
 		Properties delimiters = new Properties();
@@ -138,19 +139,19 @@ public class DelimitedTextReportRendererFormController {
 			delimiters.setProperty("filenameExtension", filenameExtension);
 		}
 		
-		if (!beforeColumnDelimiter.equals(renderer.getBeforeColumnDelimiter()) && !StringUtils.isEmpty(beforeColumnDelimiter)) {
+		if (!beforeColumnDelimiter.equals(renderer.getBeforeColumnDelimiter())) {
 			delimiters.setProperty("beforeColumnDelimiter", beforeColumnDelimiter);
 		}
 		
-		if (!afterColumnDelimiter.equals(renderer.getAfterColumnDelimiter()) && !StringUtils.isEmpty(afterColumnDelimiter) ) {
+		if (!afterColumnDelimiter.equals(renderer.getAfterColumnDelimiter())) {
 			delimiters.setProperty("afterColumnDelimiter", afterColumnDelimiter);
 		}
 		
-		if (!beforeRowDelimiter.equals(renderer.getBeforeRowDelimiter()) && !StringUtils.isEmpty(beforeRowDelimiter) ) {
+		if (!beforeRowDelimiter.equals(renderer.getBeforeRowDelimiter())) {
 			delimiters.setProperty("beforeRowDelimiter", beforeRowDelimiter);
 		}
 		
-		if (!afterRowDelimiter.equals(renderer.getAfterRowDelimiter()) && !StringUtils.isEmpty(afterRowDelimiter) ) {
+		if (!afterRowDelimiter.equals(renderer.getAfterRowDelimiter())) {
 			delimiters.setProperty("afterRowDelimiter", afterRowDelimiter);
 		}
 
@@ -159,7 +160,8 @@ public class DelimitedTextReportRendererFormController {
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
-    	} else if (successUrl.startsWith(pathToRemove)) {
+    	}
+		else if (successUrl.startsWith(pathToRemove)) {
     		successUrl = successUrl.substring(pathToRemove.length());
     	}
     	design = rs.saveReportDesign(design);

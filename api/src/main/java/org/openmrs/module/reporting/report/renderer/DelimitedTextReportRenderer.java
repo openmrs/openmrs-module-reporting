@@ -17,11 +17,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -51,7 +49,7 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	public abstract String getAfterColumnDelimiter();
 	
 	/**
-	 * @see org.openmrs.report.ReportRenderer#getRenderedContentType(ReportDefinition, String)
+	 * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getRenderedContentType(ReportDefinition, String)
 	 */
 	public String getRenderedContentType(ReportDefinition model, String argument) {
 		ReportDesign design = getDesign(argument);
@@ -116,27 +114,28 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		String afterRowDelimiter = design.getPropertyValue("afterRowDelimiter", getAfterRowDelimiter());
 		
 		List<DataSetColumn> columns = dataset.getMetaData().getColumns();
-		DataSetColumn lastColumn = (DataSetColumn) columns.get(columns.size() - 1 );
-		
+
 		// header row
 		w.write(beforeRowDelimiter);
-		for (DataSetColumn column : columns) {
+		for (Iterator<DataSetColumn> i = columns.iterator(); i.hasNext();) {
+			DataSetColumn column = i.next();
 			w.write(beforeColumnDelimiter);
 			w.write(escape(column.getName()));
-			if (column.equals(lastColumn)) {
+			if (!i.hasNext()) {
 				w.write(afterColumnDelimiter.replace(",", ""));
-			} 
+			}
 			else {
 				w.write(afterColumnDelimiter);
 			}
-			
+
 		}
 		w.write(afterRowDelimiter);
 		
 		// data rows
 		for (DataSetRow row : dataset) {
 			w.write(beforeRowDelimiter);
-			for (DataSetColumn column : columns) {
+			for (Iterator<DataSetColumn> i = columns.iterator(); i.hasNext();) {
+				DataSetColumn column = i.next();
 				Object colValue = row.getColumnValue(column);
 				w.write(beforeColumnDelimiter);
 				if (colValue != null) {
@@ -152,7 +151,7 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 							w.write(temp);
 					}
 				}
-				if (column.equals(lastColumn)) {
+				if (!i.hasNext()) {
 					w.write(afterColumnDelimiter.replace(",", ""));
 				} 
 				else {

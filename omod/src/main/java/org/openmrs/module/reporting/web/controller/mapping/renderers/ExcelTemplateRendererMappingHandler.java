@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 public class ExcelTemplateRendererMappingHandler extends RendererMappingHandler {
 	
 	/**
-	 * @see RendererMappingHandler#getCreateUrl()
+	 * @see RendererMappingHandler#getCreateUrl(Class)
 	 */
 	public String getCreateUrl( Class<? extends ReportRenderer> rendererType ) {
 		return "/module/reporting/reports/renderers/excelReportRenderer.form?type=" + rendererType.getName();
