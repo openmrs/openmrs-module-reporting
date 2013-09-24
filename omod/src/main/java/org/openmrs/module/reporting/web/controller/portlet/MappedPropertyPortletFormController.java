@@ -14,6 +14,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
+import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.ScriptedCompositionPatientDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
@@ -62,7 +65,15 @@ public class MappedPropertyPortletFormController {
 		
 		if (StringUtils.isNotEmpty(mappedUuid)) {
 			Parameterizable valToSet = ParameterizableUtil.getParameterizable(mappedUuid, mappedType);
-    		
+			
+			// TODO We need to find a more generic way of converting data definitions.
+			//  If the definition being mapped is of unsupported type, the code should
+			//  be able to find a proper adapter class and convert the definition to 
+			//  the supported type.
+			
+			if(parent instanceof ScriptedCompositionPatientDataDefinition && valToSet instanceof PersonDataDefinition)
+    		valToSet = new PersonToPatientDataDefinition((PersonDataDefinition) valToSet);
+			
 			m = new Mapped();
     		m.setParameterizable(valToSet);
     		

@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.Obs;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.PersonName;
@@ -362,6 +363,20 @@ public class ObjectUtil {
 				}
 				catch (Exception e) {
 					log.warn("Unable to get property using converter with format: " + format, e);
+				}
+			}
+			else {
+				if (o instanceof Obs) {
+					Obs obs = (Obs)o;
+					if (obs.getValueNumeric() != null) {
+						return format(obs.getValueNumeric());
+					}
+					else if (obs.getValueDatetime() != null) {
+						return format(obs.getValueDatetime());
+					}
+					else {
+						return obs.getValueAsString(Context.getLocale());
+					}
 				}
 			}
 		}
