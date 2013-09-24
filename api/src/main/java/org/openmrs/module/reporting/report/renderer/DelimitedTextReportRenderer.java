@@ -17,12 +17,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -34,49 +36,39 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 /**
  * ReportRenderer that renders to a delimited text file
  */
-public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
+public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	
 	transient protected final Log log = LogFactory.getLog(getClass());
 	
 	/**
 	 * @return the filename extension for the particular type of delimited file
 	 */
-	public abstract String getFilenameExtension();
+	public String getFilenameExtension(ReportDesign design) {
+		return design.getPropertyValue("filenameExtension", "csv");
+	}
 	
 	/**
-	 * @return the delimiter that occurs after each column
+	 * @return the delimiter that surrounds each column value, if applicable
 	 */
-	public abstract String getAfterColumnDelimiter();
+	public String getTextDelimiter(ReportDesign design) {
+		return design.getPropertyValue("textDelimiter", "\"");
+	}
+
+	/**
+	 * @return the delimiter that separates each column value
+	 */
+	public String getFieldDelimiter(ReportDesign design) {
+		return design.getPropertyValue("fieldDelimiter", ",");
+	}
 	
 	/**
 	 * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getRenderedContentType(ReportDefinition, String)
 	 */
 	public String getRenderedContentType(ReportDefinition model, String argument) {
 		ReportDesign design = getDesign(argument);
-		return "text/" + design.getPropertyValue("filenameExtension", getFilenameExtension());
+		return "text/" + getFilenameExtension(design);
 	}
-	
-	/**
-	 * @see DelimitedTextReportRenderer#getBeforeColumnDelimiter()
-	 */
-	public String getBeforeColumnDelimiter() {
-		return "\"";
-	}
-	
-	/**
-	 * @see DelimitedTextReportRenderer#getBeforeRowDelimiter()
-	 */
-	public String getBeforeRowDelimiter() {
-		return "";
-	}
-	
-	/**
-	 * @see DelimitedTextReportRenderer#getAfterRowDelimiter()
-	 */
-	public String getAfterRowDelimiter() {
-		return "\n";
-	}
-		
+
 	/**
 	 * Convenience method used to escape a string of text.
 	 * 
@@ -96,7 +88,9 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	 * @see ReportRenderer#getFilename(ReportDefinition, String)
 	 */
 	public String getFilename(ReportDefinition reportDefinition, String argument) {
-		return reportDefinition.getName() + "." + getFilenameExtension();
+		ReportDesign design = getDesign(argument);
+		String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-hhmmss");
+		return reportDefinition.getName() + "_" + dateStr + "." + getFilenameExtension(design);
 	}
 	
 	/**
@@ -107,37 +101,28 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		Writer w = new OutputStreamWriter(out,"UTF-8");
 		DataSet dataset = results.getDataSets().values().iterator().next();
 		
-		ReportDesign design = getDesign( argument );
-		String beforeColumnDelimiter = design.getPropertyValue("beforeColumnDelimiter", getBeforeColumnDelimiter());
-		String afterColumnDelimiter = design.getPropertyValue("afterColumnDelimiter", getAfterColumnDelimiter());
-		String beforeRowDelimiter = design.getPropertyValue("beforeRowDelimiter", getBeforeRowDelimiter());
-		String afterRowDelimiter = design.getPropertyValue("afterRowDelimiter", getAfterRowDelimiter());
+		ReportDesign design = getDesign(argument);
+		String textDelimiter = getTextDelimiter(design);
+		String fieldDelimiter = getFieldDelimiter(design);
 		
 		List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 
 		// header row
-		w.write(beforeRowDelimiter);
 		for (Iterator<DataSetColumn> i = columns.iterator(); i.hasNext();) {
 			DataSetColumn column = i.next();
-			w.write(beforeColumnDelimiter);
-			w.write(escape(column.getName()));
-			if (!i.hasNext()) {
-				w.write(afterColumnDelimiter.replace(",", ""));
+			w.write(textDelimiter + escape(column.getName()) + textDelimiter);
+			if (i.hasNext()) {
+				w.write(fieldDelimiter);
 			}
-			else {
-				w.write(afterColumnDelimiter);
-			}
-
 		}
-		w.write(afterRowDelimiter);
+		w.write("\n");
 		
 		// data rows
 		for (DataSetRow row : dataset) {
-			w.write(beforeRowDelimiter);
 			for (Iterator<DataSetColumn> i = columns.iterator(); i.hasNext();) {
 				DataSetColumn column = i.next();
 				Object colValue = row.getColumnValue(column);
-				w.write(beforeColumnDelimiter);
+				w.write(textDelimiter);
 				if (colValue != null) {
 					if (colValue instanceof Cohort) {
 						w.write(escape(Integer.toString(((Cohort) colValue).size())));
@@ -151,14 +136,12 @@ public abstract class DelimitedTextReportRenderer extends ReportDesignRenderer {
 							w.write(temp);
 					}
 				}
-				if (!i.hasNext()) {
-					w.write(afterColumnDelimiter.replace(",", ""));
-				} 
-				else {
-					w.write(afterColumnDelimiter);
+				w.write(textDelimiter);
+				if (i.hasNext()) {
+					w.write(fieldDelimiter);
 				}
 			}
-			w.write(afterRowDelimiter);
+			w.write("\n");
 		}
 		
 		w.flush();

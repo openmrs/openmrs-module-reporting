@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.report.renderer;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.report.ReportDesign;
 
 /**
  * Implementation of a ReportRenderer that renders ReportData to a TSV file
@@ -29,16 +30,19 @@ public class TsvReportRenderer extends DelimitedTextReportRenderer {
 	public TsvReportRenderer() { }
 
 	/**
-	 * @see DelimitedTextReportRenderer#getFilenameExtension()
+	 * @return the filename extension for the particular type of delimited file
 	 */
-	public String getFilenameExtension() {
-		return "tsv";
+	@Override
+	public String getFilenameExtension(ReportDesign design) {
+		return design.getPropertyValue("filenameExtension", "tsv");
 	}
-	
+
+
 	/**
-	 * @see DelimitedTextReportRenderer#getAfterColumnDelimiter()
+	 * @return the delimiter that separates each column value
 	 */
-	public String getAfterColumnDelimiter() {
-		return "\"\t";
+	@Override
+	public String getFieldDelimiter(ReportDesign design) {
+		return design.getPropertyValue("fieldDelimiter", "\t");
 	}
 }

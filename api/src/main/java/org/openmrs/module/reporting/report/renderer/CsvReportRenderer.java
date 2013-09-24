@@ -27,18 +27,5 @@ public class CsvReportRenderer extends DelimitedTextReportRenderer {
 	 * Default Constructor
 	 */
 	public CsvReportRenderer() { }
-	
-	/**
-	 * @see DelimitedTextReportRenderer#getFilenameExtension()
-	 */
-	public String getFilenameExtension() {
-		return "csv";
-	}
 
-	/**
-	 * @see DelimitedTextReportRenderer#getAfterColumnDelimiter()
-	 */
-	public String getAfterColumnDelimiter() {
-		return "\",";
-	}
 }

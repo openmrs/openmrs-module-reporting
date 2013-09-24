@@ -18,7 +18,7 @@
 
 <style>
 	.metadataField { padding-top:5px; border:none; color:#222; display:block; vertical-align:top; font-weight:bold; white-space:nowrap; }
-	.delimiterTittle { text-align:left; }
+	.delimiterTitle { text-align:left; }
 	.delimitersTable, .formTable { margin:0; padding:0; font-size:small; }
 	.buttonsContainer { width:100%; text-align:left; }
 	.delimitersTable input { width:100px;}
@@ -30,7 +30,7 @@
   	<input type="hidden" name="rendererType" value="${design.rendererType.name}"/>
   	<h2>
   		<spring:message code="reporting.${design.rendererType.simpleName}.title"/>
-  	</h1>
+  	</h2>
   	<table class="formTable" padding="5">
     	<tr>
       		<td valign="top" align="left">
@@ -54,49 +54,27 @@
       		</td>
       		<td align="left" valign="top" style="padding-left:15px;">
 				<span class="metadataField">
-					<spring:message code="reporting.${design.rendererType.simpleName}.filenameExtension"/>
+					<spring:message code="reporting.DelimitedTextReportRenderer.filenameExtension"/>
 				</span>
 				<input type="text" id="filenameExtension" name="filenameExtension" value='<c:out value="${configurableProperties.filenameExtension}"/>'/>
-				<table padding="5" class="delimitersTable">
-					<tr>
-						<td class="delimiterTittle" colspan="4">
-							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.columnDelimiters"/></span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.beforeColumnDelimiter"/></span>
-						</td>
-						<td>
-							<input type="text" id="beforeColumnDelimiter" name="beforeColumnDelimiter" value='<c:out value="${configurableProperties.beforeColumnDelimiter}"/>'/>
-						</td>
-						<td>
-							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.afterColumnDelimiter"/></span>
-						</td>
-						<td>
-							<input type="text" id="afterColumnDelimiter" name="afterColumnDelimiter" value='<c:out value="${configurableProperties.afterColumnDelimiter}"/>'/>
-						</td>
-					</tr>
-					<tr>
-						<td class="delimiterTittle" colspan="4">
-							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.rowDelimiters"/></span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.beforeRowDelimiter"/></span>
-						</td>
-						<td>
-							<input type="text" id="beforeRowDelimiter" name="beforeRowDelimiter" value='<c:out value="${configurableProperties.beforeRowDelimiter}"/>'/>
-						</td>
-						<td>
-							<span class="metadataField"><spring:message code="reporting.${design.rendererType.simpleName}.afterRowDelimiter"/></span>
-						</td>
-						<td>
-							<input type="text" id="afterRowDelimiter" name="afterRowDelimiter" value='<c:out value="${configurableProperties.afterRowDelimiter}"/>'/>
-						</td>
-					</tr>
-				</table>
+				<br/>
+				<span class="metadataField">
+					<spring:message code="reporting.DelimitedTextReportRenderer.fieldDelimiter"/>
+				</span>
+				<c:choose>
+					<c:when test="${design.rendererType.simpleName == 'TsvReportRenderer'}">
+						<spring:message code="reporting.DelimitedTextReportRenderer.tab"/>
+					</c:when>
+					<c:otherwise>
+						<input type="text" id="fieldDelimiter" name="fieldDelimiter" value='<c:out value="${configurableProperties.fieldDelimiter}"/>'/>
+					</c:otherwise>
+				</c:choose>
+				<br/>
+				<span class="metadataField">
+					<spring:message code="reporting.DelimitedTextReportRenderer.textDelimiter"/>
+				</span>
+				<input type="text" id="textDelimiter" name="textDelimiter" value='<c:out value="${configurableProperties.textDelimiter}"/>'/>
+				<br/>
 			</td>
     	</tr>
   	</table>

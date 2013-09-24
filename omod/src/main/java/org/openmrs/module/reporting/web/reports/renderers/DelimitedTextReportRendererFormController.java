@@ -76,12 +76,10 @@ public class DelimitedTextReportRendererFormController {
 		Class<?> rt = Context.loadClass(design.getRendererType().getName());
 		DelimitedTextReportRenderer rendererType = (DelimitedTextReportRenderer) rt.newInstance();
 		
-		configurableProperties.put("filenameExtension", design.getPropertyValue("filenameExtension", rendererType.getFilenameExtension()));
-		configurableProperties.put("beforeColumnDelimiter", design.getPropertyValue("beforeColumnDelimiter", rendererType.getBeforeColumnDelimiter()));
-		configurableProperties.put("afterColumnDelimiter", design.getPropertyValue("afterColumnDelimiter", rendererType.getAfterColumnDelimiter()));
-		configurableProperties.put("beforeRowDelimiter", design.getPropertyValue("beforeRowDelimiter", rendererType.getBeforeRowDelimiter()));
-		configurableProperties.put("afterRowDelimiter", design.getPropertyValue("afterRowDelimiter", rendererType.getAfterRowDelimiter()));
-		
+		configurableProperties.put("filenameExtension", rendererType.getFilenameExtension(design));
+		configurableProperties.put("fieldDelimiter", rendererType.getFieldDelimiter(design));
+		configurableProperties.put("textDelimiter", rendererType.getTextDelimiter(design));
+
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
@@ -109,10 +107,8 @@ public class DelimitedTextReportRendererFormController {
 					@RequestParam(required=true,  value="reportDefinition") String reportDefinitionUuid,
 					@RequestParam(required=true,  value="rendererType") Class<? extends DelimitedTextReportRenderer> rendererType,
 					@RequestParam(required=false, value="filenameExtension") String filenameExtension,
-					@RequestParam(required=false, value="beforeColumnDelimiter") String beforeColumnDelimiter,
-					@RequestParam(required=false, value="afterColumnDelimiter") String afterColumnDelimiter,
-					@RequestParam(required=false, value="beforeRowDelimiter") String beforeRowDelimiter,
-					@RequestParam(required=false, value="afterRowDelimiter") String afterRowDelimiter,
+					@RequestParam(required=false, value="fieldDelimiter") String fieldDelimiter,
+					@RequestParam(required=false, value="textDelimiter") String textDelimiter,
 					@RequestParam(required=true,  value="successUrl") String successUrl
 	) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		ReportService rs = Context.getService(ReportService.class);
@@ -134,28 +130,18 @@ public class DelimitedTextReportRendererFormController {
 		Class<?> rt = Context.loadClass(design.getRendererType().getName());
 		DelimitedTextReportRenderer renderer = (DelimitedTextReportRenderer) rt.newInstance();
 
-		
-		if (!filenameExtension.equals(renderer.getFilenameExtension()) && !StringUtils.isEmpty(filenameExtension)) {
-			delimiters.setProperty("filenameExtension", filenameExtension);
+		design.getProperties().clear();
+		if (filenameExtension != null && !filenameExtension.equals(renderer.getFilenameExtension(design))) {
+			design.addPropertyValue("filenameExtension", filenameExtension);
 		}
 		
-		if (!beforeColumnDelimiter.equals(renderer.getBeforeColumnDelimiter())) {
-			delimiters.setProperty("beforeColumnDelimiter", beforeColumnDelimiter);
+		if (fieldDelimiter != null && !fieldDelimiter.equals(renderer.getFieldDelimiter(design))) {
+			design.addPropertyValue("fieldDelimiter", fieldDelimiter);
 		}
 		
-		if (!afterColumnDelimiter.equals(renderer.getAfterColumnDelimiter())) {
-			delimiters.setProperty("afterColumnDelimiter", afterColumnDelimiter);
+		if (textDelimiter != null && !textDelimiter.equals(renderer.getTextDelimiter(design))) {
+			design.addPropertyValue("textDelimiter", textDelimiter);
 		}
-		
-		if (!beforeRowDelimiter.equals(renderer.getBeforeRowDelimiter())) {
-			delimiters.setProperty("beforeRowDelimiter", beforeRowDelimiter);
-		}
-		
-		if (!afterRowDelimiter.equals(renderer.getAfterRowDelimiter())) {
-			delimiters.setProperty("afterRowDelimiter", afterRowDelimiter);
-		}
-
-		design.setProperties(delimiters);
 	
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
