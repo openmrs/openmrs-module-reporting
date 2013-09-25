@@ -8,12 +8,6 @@
 
 <c:set var="pageUrl" value="/module/reporting/definition/scriptedCompositionPatientDataDefinition.form?uuid=uuid"/>
 
-<style>
-	textarea#scriptCode { 
-		width: 99%;
-	}
-</style>
-
 <c:choose>
 	<c:when test="${definition.id == null}">
 
@@ -41,9 +35,24 @@
 			
 			<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 			
-			<b class="boxHeader">
+			<br/>
+		<b class="boxHeader">Definitions to combine</b>
+			<div class="box" style="border: none">
+			
+				<c:forEach items="${definition.containedDataDefinitions}" var="h" varStatus="hStatus">
+					<openmrs:portlet url="mappedProperty" id="definition${hStatus.index}" moduleId="reporting" 
+						parameters="type=${definition['class'].name}|uuid=${definition.uuid}|property=containedDataDefinitions|currentKey=${h.key}|label=${h.key}|parentUrl=${pageUrlWithUuid}" />
+				</c:forEach>
+			
+				<openmrs:portlet url="mappedProperty" id="newDefinition" moduleId="reporting" 
+					 parameters="type=${definition['class'].name}|uuid=${definition.uuid}|property=containedDataDefinitions|mode=add|label=Add Definitions to Combine" />
+			</div>		
+		
+		</td>
+		<td width="66%">	
+		<b class="boxHeader">
 				<spring:message code="reporting.ScriptedCohortDefinition.scriptType" />
-			</b>
+			</b>		
 			<div class="box">
 				<form method="post" action="scriptedCompositionPatientDataDefinitionSetComposition.form">
 					<input type="hidden" name="uuid" value="${definition.uuid}"/>					
@@ -54,10 +63,9 @@
 							   ${type}
 				            </option>
 						</c:forEach>
-			</select>					
+			</select>	
 					<br/>
-					<br/>
-					<textarea id="scriptCode" rows="6" name="scriptCode">${definition.scriptCode}</textarea>
+					<textarea id="scriptCode" name="scriptCode" cols="140" rows="25">${definition.scriptCode}</textarea>
 					<br/>
 					<input type="submit" value="Save"/>
 					<input type="button" value="Close" onClick="window.location='/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition';"/>
@@ -67,20 +75,6 @@
 					<input type="button" id="saveAsButton" value="Save as new"/>
 				</form>
 			</div>			
-		
-		</td>
-		<td width="66%">
-			<b class="boxHeader">Definitions to combine</b>
-			<div class="box" style="border: none">
-			
-				<c:forEach items="${definition.containedDataDefinitions}" var="h" varStatus="hStatus">
-					<openmrs:portlet url="mappedProperty" id="definition${hStatus.index}" moduleId="reporting" 
-						parameters="type=${definition['class'].name}|uuid=${definition.uuid}|property=containedDataDefinitions|currentKey=${h.key}|label=${h.key}|parentUrl=${pageUrlWithUuid}" />
-				</c:forEach>
-			
-				<openmrs:portlet url="mappedProperty" id="newDefinition" moduleId="reporting" 
-					 parameters="type=${definition['class'].name}|uuid=${definition.uuid}|property=containedDataDefinitions|mode=add|label=Add Definitions to Combine" />
-			</div>
 		</td>
 		</tr></table>
 		
