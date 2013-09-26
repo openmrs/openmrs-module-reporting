@@ -14,7 +14,6 @@
 package org.openmrs.module.reporting.data.person.evaluator;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.Concept;
@@ -41,28 +40,22 @@ public class VitalStatusDataEvaluator implements PersonDataEvaluator {
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);	
+		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
 		Map<Integer, Object> deadData = qs.getPropertyValues(Person.class, "dead", context);
 		Map<Integer, Object> deathDateData = qs.getPropertyValues(Person.class, "deathDate", context);
 		Map<Integer, Object> causeOfDeathData = qs.getPropertyValues(Person.class, "causeOfDeath", context);
-		Map<Integer, Concept> reasonConcepts = new HashMap<Integer, Concept>();
+
 		for (Integer pId : deadData.keySet()) {
-			Boolean dead = (Boolean)deadData.get(pId) == Boolean.TRUE;
+			Boolean dead = deadData.get(pId) == Boolean.TRUE;
 			Date deathDate = null;
 			Concept causeOfDeath = null;
 			if (dead) {
 				deathDate = (Date)deathDateData.get(pId);
-				Integer causeOfDeathId = (Integer)causeOfDeathData.get(pId);
-				if (causeOfDeathId != null) {
-					causeOfDeath = reasonConcepts.get(causeOfDeathId);
-					if (causeOfDeath == null) {
-						causeOfDeath = Context.getConceptService().getConcept(causeOfDeathId);
-						reasonConcepts.put(causeOfDeathId, causeOfDeath);
-					}
-				}
+				causeOfDeath = (Concept) causeOfDeathData.get(pId);
 			}
 			c.addData(pId, new VitalStatus(dead, deathDate, causeOfDeath));
 		}
+
 		return c;
 	}
 }
