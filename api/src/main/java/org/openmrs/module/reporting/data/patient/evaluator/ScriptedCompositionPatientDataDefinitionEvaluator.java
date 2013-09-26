@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,8 +39,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 public class ScriptedCompositionPatientDataDefinitionEvaluator implements PatientDataEvaluator {
 	
 	@Override
-	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	    throws EvaluationException {
+	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		
 		ScriptedCompositionPatientDataDefinition pd = (ScriptedCompositionPatientDataDefinition) definition;
 		Map<String, Mapped<PatientDataDefinition>> containedDataDefintions = pd.getContainedDataDefinitions();
@@ -49,8 +47,7 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 		
 		// fail if passed-in definition has no patient data definitions on it
 		if (containedDataDefintions.size() < 1) {
-			throw new EvaluationException(
-			        "No patient data definition(s) found on this ScriptedCompositionPatientDataDefinition");
+			throw new EvaluationException("No patient data definition(s) found on this ScriptedCompositionPatientDataDefinition");
 		}
 		
 		// fail if passed-in definition has no script code specified
@@ -65,8 +62,7 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 		
 		//evaluate the contained data definitions and put the results in the "evaluatedContainedDataDefinitions" map
 		for (Entry<String, Mapped<PatientDataDefinition>> d : containedDataDefintions.entrySet()) {
-			EvaluatedPatientData patientDataResult = Context.getService(PatientDataService.class).evaluate(d.getValue(),
-			    context);
+			EvaluatedPatientData patientDataResult = Context.getService(PatientDataService.class).evaluate(d.getValue(), context);
 			evaluatedContainedDataDefinitions.put(d.getKey(), patientDataResult);
 		}
 		
@@ -76,13 +72,17 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 		ScriptEngine scriptEngine = manager.getEngineByName(pd.getScriptType().getLanguage());
 		scriptEngine.put("evaluationContext", context);
 		scriptEngine.put("parameters", context.getParameterValues());
+
+		Cohort baseCohort = context.getBaseCohort();
+		if (baseCohort == null) {
+			baseCohort = Context.getPatientSetService().getAllPatients();
+		}
+
+		for (Integer pId : baseCohort.getMemberIds()) { //iterate across all patients
 		
-		for (Integer pId : getCohortFromEvaluatedPatientData(evaluatedContainedDataDefinitions.values()).getMemberIds()) { //iterate across all patients
-		
-			for (Entry<String, EvaluatedPatientData> d : evaluatedContainedDataDefinitions.entrySet()) {
-				Object o = d.getValue().getData().get(pId);
-				if (o != null)
-					scriptEngine.put(d.getKey(), o); //put the definition result key and the corresponding actual object directly in the scripting context
+			for (Entry<String, EvaluatedPatientData> dataEntry : evaluatedContainedDataDefinitions.entrySet()) {
+				Object o = dataEntry.getValue().getData().get(pId);
+				scriptEngine.put(dataEntry.getKey(), o); //put the definition result key and the corresponding actual object directly in the scripting context
 			}
 			
 			try {
@@ -98,22 +98,4 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 		return evaluationResult;
 		
 	}
-	
-	/**
-	 * Get a Cohort of patient Id's from the evaluated patient data
-	 * 
-	 * @param results -A collection of evaluated patient data definitions
-	 * @return Cohort -A cohort of patients id's
-	 */
-	public Cohort getCohortFromEvaluatedPatientData(Collection<EvaluatedPatientData> results) {
-		Cohort c = new Cohort();
-		for (EvaluatedPatientData d : results) {
-			for (Integer integer : d.getData().keySet()) {
-				c.addMember(integer);
-			}
-			
-		}
-		return c;
-	}
-	
 }

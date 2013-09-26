@@ -28,15 +28,16 @@
 			});
 		</script>
 
-		<table width="100%"><tr valign="top">
-		<td width="34%">	
+		<table width="100%"><tr>
+		<td width="34%" style="padding:5px; vertical-align: top;">
 	
 			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Basic Details" />
 			
 			<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 			
 			<br/>
-		<b class="boxHeader">Definitions to combine</b>
+
+			<b class="boxHeader">Definitions to combine</b>
 			<div class="box" style="border: none">
 			
 				<c:forEach items="${definition.containedDataDefinitions}" var="h" varStatus="hStatus">
@@ -49,7 +50,7 @@
 			</div>		
 		
 		</td>
-		<td width="66%">	
+		<td width="66%" style="padding:5px; vertical-align: top;">
 		<b class="boxHeader">
 				<spring:message code="reporting.ScriptedCohortDefinition.scriptType" />
 			</b>		
