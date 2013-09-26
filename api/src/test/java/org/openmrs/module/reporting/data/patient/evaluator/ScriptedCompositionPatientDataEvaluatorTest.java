@@ -83,11 +83,11 @@ public class ScriptedCompositionPatientDataEvaluatorTest extends BaseModuleConte
 		ScriptedCompositionPatientDataDefinition daysSinceLastVisit = new ScriptedCompositionPatientDataDefinition();
 		daysSinceLastVisit.setScriptType(new ScriptingLanguage("groovy"));
 		daysSinceLastVisit.setScriptCode(script);
-		daysSinceLastVisit.getContainedDataDefinitions().put("patientsLastVisit",
+		daysSinceLastVisit.getContainedDataDefinitions().put("patientLastVisit",
 		    new Mapped<PatientDataDefinition>(lastEncounter, null));
 		
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(daysSinceLastVisit, context);
-		Assert.assertEquals("2 days", pd.getData().values().toArray()[0]);
+		Assert.assertEquals("2 days", pd.getData().get(22));
 	}
 	
 	/**
@@ -112,16 +112,14 @@ public class ScriptedCompositionPatientDataEvaluatorTest extends BaseModuleConte
 		ScriptedCompositionPatientDataDefinition daysSinceLastVisit = new ScriptedCompositionPatientDataDefinition();
 		daysSinceLastVisit.setScriptType(new ScriptingLanguage("groovy"));
 		daysSinceLastVisit.setScriptCode(script);
-		daysSinceLastVisit.getContainedDataDefinitions().put("patientsLastVisit",
+		daysSinceLastVisit.getContainedDataDefinitions().put("lastWeight",
 		    new Mapped<PatientDataDefinition>(new PersonToPatientDataDefinition(lastWeight), null));
 		EvaluatedPatientData daysSinceLastVisitResult = Context.getService(PatientDataService.class).evaluate(
 		    daysSinceLastVisit, context);
 		
-		Assert.assertEquals("High", daysSinceLastVisitResult.getData().values().toArray()[0]);
-		Assert.assertEquals("The recorded weight value might be incorrect!", daysSinceLastVisitResult.getData().values()
-		        .toArray()[1]);
-		Assert.assertEquals("Normal", daysSinceLastVisitResult.getData().values().toArray()[2]);
-		Assert.assertEquals("The recorded weight value might be incorrect!", daysSinceLastVisitResult.getData().values()
-		        .toArray()[3]);
+		Assert.assertEquals("Normal", daysSinceLastVisitResult.getData().get(7));
+		Assert.assertEquals("The recorded weight value might be incorrect!", daysSinceLastVisitResult.getData().get(20));
+		Assert.assertEquals("High", daysSinceLastVisitResult.getData().get(21));
+		Assert.assertEquals("The recorded weight value might be incorrect!", daysSinceLastVisitResult.getData().get(22));
 	}
 }
