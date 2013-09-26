@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,6 +22,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -43,6 +45,7 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 		
 		ScriptedCompositionPatientDataDefinition pd = (ScriptedCompositionPatientDataDefinition) definition;
 		Map<String, Mapped<PatientDataDefinition>> containedDataDefintions = pd.getContainedDataDefinitions();
+		Map<String, EvaluatedPatientData> evaluatedContainedDataDefinitions = new HashMap<String, EvaluatedPatientData>();
 		
 		// fail if passed-in definition has no patient data definitions on it
 		if (containedDataDefintions.size() < 1) {
@@ -59,31 +62,58 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 		if (pd.getScriptType() == null) {
 			throw new EvaluationException("No script type found on this ScriptedCompositionPatientDataDefinition");
 		}
-		EvaluatedPatientData evaluationResult = new EvaluatedPatientData(pd, context);
 		
-		Map<String, EvaluatedPatientData> evaluatedContainedDataDefinitions = new HashMap<String, EvaluatedPatientData>();
-		
-		for (Entry<String, Mapped<PatientDataDefinition>> definitions : containedDataDefintions.entrySet()) {
-			EvaluatedPatientData patientDataResult = Context.getService(PatientDataService.class).evaluate(
-			    definitions.getValue(), context);
-			evaluatedContainedDataDefinitions.put(definitions.getKey(), patientDataResult);
+		//evaluate the contained data definitions and put the results in the "evaluatedContainedDataDefinitions" map
+		for (Entry<String, Mapped<PatientDataDefinition>> d : containedDataDefintions.entrySet()) {
+			EvaluatedPatientData patientDataResult = Context.getService(PatientDataService.class).evaluate(d.getValue(),
+			    context);
+			evaluatedContainedDataDefinitions.put(d.getKey(), patientDataResult);
 		}
+		
+		EvaluatedPatientData evaluationResult = new EvaluatedPatientData(pd, context);
 		
 		ScriptEngineManager manager = new ScriptEngineManager();
 		ScriptEngine scriptEngine = manager.getEngineByName(pd.getScriptType().getLanguage());
-		scriptEngine.put("context", context);
+		scriptEngine.put("evaluationContext", context);
 		scriptEngine.put("parameters", context.getParameterValues());
-		scriptEngine.put("containedDataDefinitionResults", evaluatedContainedDataDefinitions);
-		scriptEngine.put("evaluationResult", evaluationResult);
 		
-		try {
-			scriptEngine.eval(pd.getScriptCode());
+		for (Integer pId : getCohortFromEvaluatedPatientData(evaluatedContainedDataDefinitions.values()).getMemberIds()) { //iterate across all patients
+		
+			for (Entry<String, EvaluatedPatientData> d : evaluatedContainedDataDefinitions.entrySet()) {
+				Object o = d.getValue().getData().get(pId);
+				if (o != null)
+					scriptEngine.put(d.getKey(), o); //put the definition result key and the corresponding actual object directly in the scripting context
+			}
+			
+			try {
+				Object o = scriptEngine.eval(pd.getScriptCode()); //execute the script for the current patient.
+				evaluationResult.addData(pId, o); //put the returned object value in the evaluationResult for the current patient
+			}
+			catch (ScriptException ex) {
+				throw new EvaluationException("An error occured while evaluating script", ex);
+			}
+			
 		}
-		catch (ScriptException ex) {
-			throw new EvaluationException("An error occured while evaluating script", ex);
-		}
+		
 		return evaluationResult;
 		
+	}
+	
+	/**
+	 * Get a Cohort of patient Id's from the evaluated patient data
+	 * 
+	 * @param results -A collection of evaluated patient data definitions
+	 * @return Cohort -A cohort of patients id's
+	 */
+	public Cohort getCohortFromEvaluatedPatientData(Collection<EvaluatedPatientData> results) {
+		Cohort c = new Cohort();
+		for (EvaluatedPatientData d : results) {
+			for (Integer integer : d.getData().keySet()) {
+				c.addMember(integer);
+			}
+			
+		}
+		return c;
 	}
 	
 }

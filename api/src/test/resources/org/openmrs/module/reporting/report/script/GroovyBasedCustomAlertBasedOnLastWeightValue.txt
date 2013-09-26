@@ -1,23 +1,12 @@
-import groovy.time.*
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
-
-for (result in containedDataDefinitionResults.values()) {
-			for (obj in result.getData().values()) {
-				if(obj instanceof Obs){
-					Obs o = (Obs)obj;	
-					if(o !=null && o.getEncounter() !=null){
-						if(o.getValueNumeric() < 70){
-					evaluationResult.addData(o.getEncounter().getPatientId(), "Normal");
-						}else if(o.getValueNumeric() > 100 && o.getValueNumeric() < 160){
-							evaluationResult.addData(o.getEncounter().getPatientId(), "High");
-						}
-						else if(o.getValueNumeric() > 160){
-							evaluationResult.addData(o.getEncounter().getPatientId(), "The recorded weight value might be incorrect!");
-						}
-					}
-				}
-
+		if (lastWeight != null && lastWeight.encounter != null) {
+			if (lastWeight.valueNumeric < 70) {
+				return "Normal";
+			} else if (lastWeight.valueNumeric > 100
+					&& lastWeight.valueNumeric < 160) {
+				return "High";
+			} else if (lastWeight.valueNumeric > 160) {
+				return "The recorded weight value might be incorrect!";
+			} else {
+				return "Not Classified";
 			}
 		}

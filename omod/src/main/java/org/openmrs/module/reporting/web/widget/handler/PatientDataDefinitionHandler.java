@@ -66,7 +66,7 @@ public class PatientDataDefinitionHandler extends CodedHandler {
 	 */
 	@Override
 	public Object parse(String input, Class<?> type) {
-		return null; // TODO;
+		return Context.getService(PatientDataService.class).getDefinitionByUuid(input);
 	}
 	
 	/**
