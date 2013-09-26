@@ -1,6 +1,6 @@
 import groovy.time.*
   				
-		return (TimeCategory.minus(context.getParameterValue("date"), patientLastVisit.encounterDatetime)).toString();    	
+		return (TimeCategory.minus(evaluationContext.getParameterValue("date"), patientLastVisit.encounterDatetime)).toString();    	
 					
 
 			
