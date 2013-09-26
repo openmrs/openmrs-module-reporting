@@ -2,6 +2,8 @@
 <openmrs:require anyPrivilege="Manage Cohort Definitions,Manage Data Set Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form" />
 <%@ include file="../manage/localHeader.jsp"%>
 
+<script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/reportDesigns/codemirror.js"></script>
+
 <c:url value="/module/reporting/definition/scriptedCompositionPatientDataDefinition.form" var="pageUrlWithUuid">
 	<c:param name="uuid" value="${definition.uuid}" />
 </c:url>
@@ -24,6 +26,18 @@
 				makeDialog('saveAsDialog');
 				$('#saveAsButton').click(function(event) {
 					showDialog('saveAsDialog', 'Save a Copy');
+				});
+
+				var editor = CodeMirror.fromTextArea('scriptCode', {
+					height: "350px",
+					parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
+					stylesheet: "${pageContext.request.contextPath}/moduleResources/reporting/css/reportDesigns/jscolors.css",
+					path: "${pageContext.request.contextPath}/moduleResources/reporting/scripts/reportDesigns/",
+					continuousScanning: 500,
+					lineNumbers: true,
+					textWrapping: false,
+					autoMatchParens: true,
+					tabMode: "spaces"
 				});
 			});
 		</script>
