@@ -39,7 +39,7 @@
 <div id="page">
 	<div id="container">
 		<h1>Report Design Manager</h1>
-		<wgt:widget id="rendererType" name="rendererType" object="${reportDesign}" property="rendererType" attributes="type=org.openmrs.module.reporting.report.renderer.ReportRenderer|simple=true"/>
+		<wgt:widget id="rendererType" name="rendererType" type="org.openmrs.module.reporting.report.renderer.ReportDesignRenderer"/>
 		<input id="designAddLink" href="#" type="button" value="<spring:message code="reporting.manage.createNew"/>"/>
 		<br/>
 
