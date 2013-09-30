@@ -98,28 +98,31 @@ public class ManageReportsController {
     public String editReportDesign(ModelMap model, 
     		@RequestParam(required=true, value="type") Class<? extends ReportRenderer> type,
     		@RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid,
+    		@RequestParam(required=false, value="reportDefinitionUuid") String reportDefinitionUuid,
     		@RequestParam(required=false, value="returnUrl") String returnUrl) {
     
 		if ( !ObjectUtil.isNull(type) ) {
 			try {
 				RendererMappingHandler handler = HandlerUtil.getPreferredHandler(RendererMappingHandler.class, type);
+				String redirectParameters = ObjectUtil.isNull(reportDefinitionUuid) ? "" : "&reportDefinitionUuid=" + reportDefinitionUuid;
+				redirectParameters += ObjectUtil.isNull(returnUrl) ? "" : "&successUrl=" + returnUrl;
 				if (ObjectUtil.isNull(reportDesignUuid)) {
-					return "redirect:" + handler.getCreateUrl( type ) + ( ObjectUtil.isNull(returnUrl) ? "" : "&successUrl=" + returnUrl );
+					return "redirect:" + handler.getCreateUrl( type ) + redirectParameters;
 				}
 				else {
 					ReportService rs = Context.getService(ReportService.class);
 					ReportDesign design = rs.getReportDesignByUuid(reportDesignUuid);
-					return "redirect:" + handler.getEditUrl( design ) + ( ObjectUtil.isNull(returnUrl) ? "" : "&successUrl=" + returnUrl );
+					return "redirect:" + handler.getEditUrl( design ) + redirectParameters;
 				}
 			} catch ( APIException e ) {
 				log.error( "No handler found" );
 			}			
 		}
-	
 		return "redirect:/module/reporting/reports/renderers/defaultReportDesignEditor.htm?parameters=" 
-				+ ( ObjectUtil.isNull( type ) || !ObjectUtil.isNull(reportDesignUuid) ? "" : "type=" + type.getName() + "|" )  
-				+ ( ObjectUtil.isNull(reportDesignUuid) ? "" : "reportDesignUuid=" + reportDesignUuid ) 
-				+ ( ObjectUtil.isNull(returnUrl) ? "" : "|returnUrl=" + returnUrl );
+				+ ( ObjectUtil.isNull( type ) || !ObjectUtil.isNull(reportDesignUuid) ? "" : "type=" + type.getName() + "|" )
+				+ ( ObjectUtil.isNull(reportDesignUuid) ? "" : "reportDesignUuid=" + reportDesignUuid + "|" )  
+				+ ( ObjectUtil.isNull(reportDefinitionUuid) ? "" : "reportDefinitionUuid=" + reportDefinitionUuid  + "|"  )
+				+ ( ObjectUtil.isNull(returnUrl) ? "" : "returnUrl=" + returnUrl );
     	
     }
     
