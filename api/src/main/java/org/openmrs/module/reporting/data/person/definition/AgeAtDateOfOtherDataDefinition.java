@@ -31,7 +31,7 @@ public class AgeAtDateOfOtherDataDefinition extends BaseDataDefinition implement
 	//****** PROPERTIES ******
 	
 	@ConfigurationProperty(required=false)
-	private MappedData<? extends PersonDataDefinition> effectiveDateDefinition;
+	private MappedData<? extends DataDefinition> effectiveDateDefinition; // should be a PersonDataDefinition or PatientDataDefinition
 	
 	/**
 	 * Default Constructor
@@ -59,14 +59,14 @@ public class AgeAtDateOfOtherDataDefinition extends BaseDataDefinition implement
 	/**
 	 * @return the effectiveDateDefinition
 	 */
-	public MappedData<? extends PersonDataDefinition> getEffectiveDateDefinition() {
+	public MappedData<? extends DataDefinition> getEffectiveDateDefinition() {
 		return effectiveDateDefinition;
 	}
 
 	/**
 	 * @param effectiveDateDefinition the effectiveDateDefinition to set
 	 */
-	public void setEffectiveDateDefinition(MappedData<? extends PersonDataDefinition> effectiveDateDefinition) {
+	public void setEffectiveDateDefinition(MappedData<? extends DataDefinition> effectiveDateDefinition) {
 		this.effectiveDateDefinition = effectiveDateDefinition;
 	}
 }

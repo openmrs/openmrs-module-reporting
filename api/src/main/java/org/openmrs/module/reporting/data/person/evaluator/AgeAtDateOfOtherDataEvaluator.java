@@ -18,9 +18,15 @@ import java.util.List;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.data.BaseData;
+import org.openmrs.module.reporting.data.Data;
+import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.DataUtil;
+import org.openmrs.module.reporting.data.MappedData;
 import org.openmrs.module.reporting.data.converter.BirthdateToAgeConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.AgeAtDateOfOtherDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
@@ -44,9 +50,18 @@ public class AgeAtDateOfOtherDataEvaluator implements PersonDataEvaluator {
 		AgeAtDateOfOtherDataDefinition add = (AgeAtDateOfOtherDataDefinition)definition;
 		
 		EvaluatedPersonData birthdates = Context.getService(PersonDataService.class).evaluate(new BirthdateDataDefinition(), context);
-		
-		EvaluatedPersonData effectiveDates = Context.getService(PersonDataService.class).evaluate(add.getEffectiveDateDefinition(), context);
-		List<DataConverter> converters = add.getEffectiveDateDefinition().getConverters();
+
+        MappedData<? extends DataDefinition> effectiveDateDefinition = add.getEffectiveDateDefinition();
+        BaseData effectiveDates;
+        if (effectiveDateDefinition.getParameterizable() instanceof PersonDataDefinition) {
+            effectiveDates = Context.getService(PersonDataService.class).evaluate((MappedData<PersonDataDefinition>) effectiveDateDefinition, context);
+        } else if (effectiveDateDefinition.getParameterizable() instanceof PatientDataDefinition) {
+            effectiveDates = Context.getService(PatientDataService.class).evaluate((MappedData<PatientDataDefinition>) effectiveDateDefinition, context);
+        } else{
+            throw new EvaluationException("Can only handle PersonDataDefinition and PatientDataDefinition for effectiveDataDefinition");
+        }
+
+		List<DataConverter> converters = effectiveDateDefinition.getConverters();
 		if (converters != null && converters.size() > 0) {
 			for (Integer pId : effectiveDates.getData().keySet()) {
 				Object convertedValue = DataUtil.convertData(effectiveDates.getData().get(pId), converters);
