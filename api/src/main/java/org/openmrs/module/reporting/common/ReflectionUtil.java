@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.common;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -51,7 +52,18 @@ public class ReflectionUtil {
 		}
 		return null;
 	}
-	
+
+    public static Class<?> getPropertyType(Class<?> type, String propertyName) {
+        if (type != null) {
+            for (PropertyDescriptor propertyDescriptor : PropertyUtils.getPropertyDescriptors(type)) {
+                if (propertyDescriptor.getName().equals(propertyName)) {
+                    return propertyDescriptor.getPropertyType();
+                }
+            }
+        }
+        return null;
+    }
+
 	/**
 	 * Returns true if the passed field is a Collection
 	 * @param f the field to check
@@ -100,6 +112,7 @@ public class ReflectionUtil {
      * @should work for string property
      * @should work for boolean property
      * @should work for object property
+     * @verifies work for nested property
      */
 	public static Object getPropertyValue(Object object, String property) {
     	try {

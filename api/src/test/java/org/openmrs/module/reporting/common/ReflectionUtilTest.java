@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.common;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -43,14 +44,42 @@ public class ReflectionUtilTest {
 		
 		assertThat(ReflectionUtil.getPropertyValue(bean, "objectProperty"), is(object));
 	}
-	
-	public static class Bean {
+
+    /**
+     * @see ReflectionUtil#getPropertyValue(Object,String)
+     * @verifies work for nested property
+     */
+    @Test
+    public void getPropertyValue_shouldWorkForNestedProperty() throws Exception {
+        String expectedValue = "expected value";
+        Bean child = new Bean();
+        child.setStringProperty(expectedValue);
+        Bean parent = new Bean();
+        parent.setBeanProperty(child);
+
+        assertThat((String) ReflectionUtil.getPropertyValue(parent, "beanProperty.stringProperty"), is(expectedValue));
+    }
+
+    @Test
+    public void getPropertyType_shouldWorkForBooleanProperty() throws Exception {
+        assertTrue(ReflectionUtil.getPropertyType(Bean.class, "booleanProperty").equals(boolean.class));
+    }
+
+    @Test
+    public void getPropertyType_shouldWorkForStringProperty() throws Exception {
+        assertTrue(ReflectionUtil.getPropertyType(Bean.class, "stringProperty").equals(String.class));
+    }
+
+
+    public static class Bean {
 		
 		private boolean booleanProperty;
 		
 		private String stringProperty;
 		
 		private Object objectProperty;
+
+        private Bean beanProperty;
 		
 		public boolean isBooleanProperty() {
 			return booleanProperty;
@@ -75,5 +104,13 @@ public class ReflectionUtilTest {
 		public void setObjectProperty(Object objectProperty) {
 			this.objectProperty = objectProperty;
 		}
-	}
+
+        public Bean getBeanProperty() {
+            return beanProperty;
+        }
+
+        public void setBeanProperty(Bean beanProperty) {
+            this.beanProperty = beanProperty;
+        }
+    }
 }

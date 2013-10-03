@@ -62,7 +62,7 @@ public class PropertyConverter implements DataConverter {
 	public Class<?> getDataType() {
 		if (typeToConvert != null) {
 			if (propertyName != null) {
-				return ReflectionUtil.getField(typeToConvert, getPropertyName()).getType();
+				return ReflectionUtil.getPropertyType(typeToConvert, getPropertyName());
 			}
 		}
 		else {
