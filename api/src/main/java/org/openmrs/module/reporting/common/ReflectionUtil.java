@@ -1,5 +1,10 @@
 package org.openmrs.module.reporting.common;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -11,11 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.APIException;
 
 /**
  * A utility class for common reflection methods
@@ -38,7 +38,7 @@ public class ReflectionUtil {
 	/**
 	 * Returns the field with the given name from the passed class, including it's superclasses
 	 * @param type - The type to look at
-	 * @param propertyName - The name of the field to return
+	 * @param fieldName - The name of the field to return
 	 * @return - The field with the given name, or null if not found
 	 */
 	public static Field getField(Class<?> type, String fieldName) {
@@ -119,7 +119,11 @@ public class ReflectionUtil {
 	        return PropertyUtils.getProperty(object, property);
         }
         catch (Exception e) {
-        	throw new IllegalArgumentException(e);
+            String message = "Error getting '" + property + "' from " + object;
+            if (object != null) {
+                message += " (" + object.getClass() + ")";
+            }
+            throw new IllegalArgumentException(message, e);
         }
 	}
 	
