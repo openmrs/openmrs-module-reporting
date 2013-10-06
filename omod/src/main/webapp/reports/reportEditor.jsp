@@ -16,7 +16,7 @@
 
 		<c:forEach items="${designs}" var="design" varStatus="designStatus">
 			$('#${design.uuid}DesignEditLink').click(function(event){
-				document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=${design.rendererType.name}&reportDesignUuid=${design.uuid}&returnUrl=${pageUrl}';
+				document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=${design.rendererType.name}&reportDesignUuid=${design.uuid}&reportDefinitionUuid=${report.uuid}&returnUrl=${pageUrl}';
 			});
 			$('#${design.uuid}DesignRemoveLink').click(function(event){					
 				if (confirm('Please confirm you wish to permanantly delete <b>${design.name}</b>')) {
@@ -24,8 +24,12 @@
 				}
 			});
 		</c:forEach>
+		$( '#rendererType' ).change( function() {
+			$( this ).next( 'input#designAddLink' ).attr( 'href', $( this ).val() );
+		} );
+		
 		$('#designAddLink').click(function(event){
-			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/defaultReportDesignEditor.htm?parameters=reportDefinitionUuid=${report.uuid}|returnUrl=${pageUrl}';
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=' + $( this ).attr( 'href' ) + '&reportDefinitionUuid=${report.uuid}&returnUrl=${pageUrl}';
 		});
 		
 		$('#previewButton').click(function(event) { 
@@ -81,7 +85,8 @@
 										</c:forEach>
 									</table>
 								</c:if>
-								<a style="font-weight:bold;" href="#add" id="designAddLink">[+] Add</a>
+								<wgt:widget id="rendererType" name="rendererType" type="org.openmrs.module.reporting.report.renderer.ReportDesignRenderer"/>
+								<input id="designAddLink" href="" type="button" value="<spring:message code="reporting.manage.createNew"/>"/>
 							</div>
 							<br/>
 							<button id="previewButton">
