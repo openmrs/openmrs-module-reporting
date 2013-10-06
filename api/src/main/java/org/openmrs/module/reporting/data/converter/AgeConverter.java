@@ -13,8 +13,12 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.ObjectUtil;
+
+import java.util.Date;
 
 /**
  * Converts a Birthdate into an Age
@@ -22,6 +26,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 public class AgeConverter implements DataConverter {
 	
 	public static String YEARS = "{y}";
+	public static String YEARS_TO_ONE_DECIMAL_PLACE = "{y:1}";
 	public static String MONTHS = "{m}";
 	
 	//***** PROPERTIES *****
@@ -42,7 +47,7 @@ public class AgeConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convert(Object)
 	 * @should convert an Age to integer years
 	 * @should convert an Age to integer months
 	 * @should convert an Age to a formatted string
@@ -57,12 +62,19 @@ public class AgeConverter implements DataConverter {
 			if (s.equals(YEARS)) {
 				return age.getFullYears();
 			}
-			boolean containsYears = false;
+            if (s.equals(YEARS_TO_ONE_DECIMAL_PLACE)) {
+                return getYearsToOneDecimalPlace(age);
+            }
+            boolean containsYears = false;
 			if (s.contains(YEARS)) {
 				containsYears = true;
 				s = s.replace(YEARS, ObjectUtil.nvlStr(age.getFullYears(), "0"));
 			}
-			if (s.contains(MONTHS)) {
+            if (s.contains(YEARS_TO_ONE_DECIMAL_PLACE)) {
+                containsYears = true;
+                s = s.replace(YEARS_TO_ONE_DECIMAL_PLACE, ObjectUtil.nvlStr(getYearsToOneDecimalPlace(age), "0"));
+            }
+            if (s.contains(MONTHS)) {
 				int months = age.getFullMonths();
 				if (containsYears && months > 12) {
 					months = months % 12;
@@ -73,8 +85,18 @@ public class AgeConverter implements DataConverter {
 		}
 		return "";
 	}
-	
-	/** 
+
+    private Double getYearsToOneDecimalPlace(Age age) {
+        if (age.getBirthDate() == null) {
+            return null;
+        }
+        Days days = Days.daysBetween(
+                new DateTime(age.getBirthDate().getTime()),
+                new DateTime((age.getCurrentDate() == null ? new Date() : age.getCurrentDate()).getTime()));
+        return Math.round(10d * (days.getDays() / 365.25d)) / 10d;
+    }
+
+    /**
 	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
