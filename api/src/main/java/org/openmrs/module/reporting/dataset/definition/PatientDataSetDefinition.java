@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -31,6 +27,10 @@ import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumn
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * DataSetDefinition for Producing a DataSet that has one row per Patient
@@ -86,17 +86,18 @@ public class PatientDataSetDefinition extends RowPerObjectDataSetDefinition {
 	 * Adds a new Column Definition given the passed parameters
 	 */
 	public void addColumn(String name, DataDefinition dataDefinition, Map<String, Object> mappings, DataConverter... converters) {
-		if (dataDefinition instanceof PatientDataDefinition) {
-			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converters));
-		}
-		else if (dataDefinition instanceof PersonDataDefinition) {
-			PatientDataDefinition pdd = new PersonToPatientDataDefinition((PersonDataDefinition) dataDefinition);
-			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, pdd, mappings, converters));
-		}
-		else {
-			throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
-		}
-	}
+        if (dataDefinition == null) {
+            throw new IllegalArgumentException("Trying to add column with null dataDefinition");
+        }
+        if (dataDefinition instanceof PatientDataDefinition) {
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converters));
+        } else if (dataDefinition instanceof PersonDataDefinition) {
+            PatientDataDefinition pdd = new PersonToPatientDataDefinition((PersonDataDefinition) dataDefinition);
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, pdd, mappings, converters));
+        } else {
+            throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
+        }
+    }
 
 	/**
 	 * Adds a the Column Definitions defined in the passed DataSetDefinition
