@@ -13,17 +13,12 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.openmrs.Cohort;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
@@ -31,6 +26,13 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDat
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Evaluates a PatientIdentifierDataDefinition to produce a PatientData
@@ -57,32 +59,38 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		for (PatientIdentifierType t : def.getTypes()) {
 			idTypes.add(t.getPatientIdentifierTypeId());
 		}
-	
+
+        Cohort baseCohort = context.getBaseCohort();
+        boolean filterPatientsInQuery = baseCohort != null && baseCohort.size() < ReportingConstants.MAX_PATIENT_IDS_TO_FILTER_IN_DATABASE;
+        boolean doNotFilterPatientsInJava = baseCohort == null || filterPatientsInQuery;
+
 		StringBuilder hql = new StringBuilder();
 		hql.append("select 		pi.patient.patientId, pi ");
 		hql.append("from 		PatientIdentifier as pi ");
 		hql.append("where 		voided = false ");
-		if (context.getBaseCohort() != null) {
-			hql.append("and 		patient.patientId in (:patientIds) ");
-		}
+        if (filterPatientsInQuery) {
+            hql.append("and 		patient.patientId in (:patientIds) ");
+        }
 		hql.append("and 		identifierType.patientIdentifierTypeId in (:idTypes) ");
 		hql.append("order by 	preferred asc");
 
 		Map<String, Object> m = new HashMap<String, Object>();
-		if (context.getBaseCohort() != null) {
+        if (filterPatientsInQuery) {
 			m.put("patientIds", context.getBaseCohort());
 		}
 		m.put("idTypes", idTypes);
 
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
-		
-		ListMap<Integer, PatientIdentifier> patIds = new ListMap<Integer, PatientIdentifier>();
+
+        ListMap<Integer, PatientIdentifier> patIds = new ListMap<Integer, PatientIdentifier>();
 		for (Object o : queryResult) {
 			Object[] parts = (Object[]) o;
 			if (parts.length == 2) {
 				Integer pId = (Integer) parts[0];
-				PatientIdentifier pi = (PatientIdentifier) parts[1];
-				patIds.putInList(pId, pi);
+                if (doNotFilterPatientsInJava || baseCohort.contains(pId)) {
+                    PatientIdentifier pi = (PatientIdentifier) parts[1];
+                    patIds.putInList(pId, pi);
+                }
 			}
 		}
 		

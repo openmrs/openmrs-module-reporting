@@ -13,15 +13,15 @@
  */
 package org.openmrs.module.reporting;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Constants required by this module
@@ -54,9 +54,12 @@ public class ReportingConstants {
 	public static final Parameter START_DATE_PARAMETER = new Parameter("startDate", "Start date", Date.class);
 	public static final Parameter END_DATE_PARAMETER = new Parameter("endDate", "End date", Date.class);
 	public static final Parameter LOCATION_PARAMETER = new Parameter("location", "Location", Location.class);
-	
-	
-	// Semi-Constants defined through global properties
+
+    // It is very slow to do "... AND patient_id IN (:cohort) for large cohorts. This is the cutoff we use to decide
+    // to filter in the database query versus filtering in Java
+    public static final int MAX_PATIENT_IDS_TO_FILTER_IN_DATABASE = 2000;
+
+    // Semi-Constants defined through global properties
 	
 	public static final List<PatientIdentifierType> GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES() {
 		String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.preferredIdentifierTypes");

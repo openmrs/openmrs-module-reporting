@@ -13,15 +13,12 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -32,25 +29,33 @@ import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Evaluates an EncountersForPatientDataDefinition to produce a PatientData
  */
 @Handler(supports=EncountersForPatientDataDefinition.class, order=50)
 public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 
-	/** 
+    /**
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
 	 * @should return the obs that match the passed definition configuration
 	 */
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
-		
+        Cohort baseCohort = context.getBaseCohort();
+        boolean filterPatientsInQuery = baseCohort != null && baseCohort.size() < ReportingConstants.MAX_PATIENT_IDS_TO_FILTER_IN_DATABASE;
+        boolean doNotFilterPatientsInJava = baseCohort == null || filterPatientsInQuery;
+
 		EncountersForPatientDataDefinition def = (EncountersForPatientDataDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
-		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
+		if (baseCohort != null && baseCohort.isEmpty()) {
 			return c;
 		}
-		
+
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
 		
 		StringBuilder hql = new StringBuilder();
@@ -58,8 +63,8 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 		
 		hql.append("from 		Encounter ");
 		hql.append("where 		voided = false ");
-		
-		if (context.getBaseCohort() != null) {
+
+        if (filterPatientsInQuery) {
 			hql.append("and 		patient.patientId in (:patientIds) ");
 			m.put("patientIds", context.getBaseCohort());
 		}
@@ -89,8 +94,10 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 		
 		ListMap<Integer, Encounter> encsForPatients = new ListMap<Integer, Encounter>();
 		for (Object o : queryResult) {
-			Encounter e = (Encounter)o;
-			encsForPatients.putInList(e.getPatientId(), e);
+			Encounter e = (Encounter) o;
+            if (doNotFilterPatientsInJava || baseCohort.contains(e.getPatientId())) {
+			    encsForPatients.putInList(e.getPatientId(), e);
+            }
 		}
 		
 		for (Integer pId : encsForPatients.keySet()) {

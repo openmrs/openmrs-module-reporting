@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.reporting.dataset.query.service.db;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
@@ -37,8 +31,15 @@ import org.openmrs.PatientState;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Relationship;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 
@@ -105,16 +106,21 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		patientJoinProperties.put(Relationship.class, "personA.personId");
 		
 		String voidedProperty = (type == Person.class ? "personVoided" : "voided");
+
+        boolean filterInQuery = baseCohort != null && baseCohort.size() < ReportingConstants.MAX_PATIENT_IDS_TO_FILTER_IN_DATABASE;
+        boolean doNotFilterInJava = baseCohort == null || filterInQuery;
 		
 		StringBuilder hql = new StringBuilder();
 		hql.append("select 	" + idPropertyName + ", " + property + " ");
 		hql.append("from	" + entityName + " " + alias + " ");
 		hql.append("where	" + alias + "." + voidedProperty + " = false ");
-		for (Class<? extends OpenmrsData> clazz : patientJoinProperties.keySet()) {
-			if (clazz.isAssignableFrom(type) && baseCohort != null) {
-				hql.append(" and " + alias + "." + patientJoinProperties.get(clazz) + " in (:ids)");
-			}
-		}
+        if (filterInQuery) {
+            for (Class<? extends OpenmrsData> clazz : patientJoinProperties.keySet()) {
+                if (clazz.isAssignableFrom(type) && baseCohort != null) {
+                    hql.append(" and " + alias + "." + patientJoinProperties.get(clazz) + " in (:ids)");
+                }
+            }
+        }
 		
 		Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
 		if(hql.toString().contains(":ids")) {
@@ -123,7 +129,10 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		
 		for (Object o : query.list()) {
 			Object[] vals = (Object[]) o;
-			ret.put((Integer)vals[0], vals[1]);
+            Integer ptId = (Integer) vals[0];
+            if (doNotFilterInJava || baseCohort.contains(ptId)) {
+                ret.put(ptId, vals[1]);
+            }
 		}
 		return ret;
 	}

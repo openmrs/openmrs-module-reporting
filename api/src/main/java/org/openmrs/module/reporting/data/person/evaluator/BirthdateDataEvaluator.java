@@ -13,13 +13,10 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.openmrs.Person;
+import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
@@ -27,6 +24,12 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Evaluates a BirthdateDataDefinition to produce a PersonData
@@ -39,21 +42,39 @@ public class BirthdateDataEvaluator implements PersonDataEvaluator {
 	 * @should return all birth dates for all persons
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
+        Cohort baseCohort = context.getBaseCohort();
+        boolean filterPatientsInQuery = baseCohort != null && baseCohort.size() < ReportingConstants.MAX_PATIENT_IDS_TO_FILTER_IN_DATABASE;
+        boolean doNotFilterPatientsInJava = baseCohort == null || filterPatientsInQuery;
+
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);	
-		Map<Integer, Object> birthdateData = qs.getPropertyValues(Person.class, "birthdate", context);
-		Map<Integer, Object> estimatedData = qs.getPropertyValues(Person.class, "birthdateEstimated", context);
-		Map<Integer, Object> ret = new LinkedHashMap<Integer, Object>();
-		for (Integer pId : birthdateData.keySet()) {
-			Birthdate birthdate = null;
-			Date bd = (Date)birthdateData.get(pId);
-			if (bd != null) {
-				boolean estimated = estimatedData.get(pId) == Boolean.TRUE;
-				birthdate = new Birthdate(bd, estimated);
-			}
-			ret.put(pId, birthdate);
-		}
-		c.setData(ret);
-		return c;
+		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
+
+        String hql = "select personId, birthdate, birthdateEstimated from Person where voided = false";
+        if (filterPatientsInQuery) {
+            hql += " and personId in (:patientIds)";
+        }
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        if (filterPatientsInQuery) {
+            params.put("patientIds", baseCohort);
+        }
+
+        Map<Integer, Object> ret = new LinkedHashMap<Integer, Object>();
+        List<Object> queryResult = qs.executeHqlQuery(hql, params);
+        for (Object o : queryResult) {
+            Object[] parts = (Object[]) o;
+            Integer pId = (Integer) parts[0];
+            Birthdate birthdate = null;
+            if (doNotFilterPatientsInJava || baseCohort.contains(pId)) {
+                Date bd = (Date) parts[1];
+                if (bd != null) {
+                    boolean estimated = (Boolean) parts[2];
+                    birthdate = new Birthdate(bd, estimated);
+                }
+            }
+            ret.put(pId, birthdate);
+        }
+        c.setData(ret);
+        return c;
 	}
+
 }
