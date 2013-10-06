@@ -13,13 +13,9 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.BaseData;
-import org.openmrs.module.reporting.data.Data;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.DataUtil;
 import org.openmrs.module.reporting.data.MappedData;
@@ -34,6 +30,9 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Evaluates a AgeDataDefinition to produce a PersonData
@@ -73,8 +72,13 @@ public class AgeAtDateOfOtherDataEvaluator implements PersonDataEvaluator {
 		BirthdateToAgeConverter converter = new BirthdateToAgeConverter();
 		for (Integer personId : birthdates.getData().keySet()) {
 			Object birthdate = birthdates.getData().get(personId);
-			converter.setEffectiveDate((Date)effectiveDates.getData().get(personId));
-			ret.addData(personId, converter.convert(birthdate));
+            Date dateOfOtherDefinition = (Date) effectiveDates.getData().get(personId);
+            if (dateOfOtherDefinition != null) {
+                converter.setEffectiveDate(dateOfOtherDefinition);
+                ret.addData(personId, converter.convert(birthdate));
+            } else {
+                ret.addData(personId, null);
+            }
 		}
 
 		return ret;
