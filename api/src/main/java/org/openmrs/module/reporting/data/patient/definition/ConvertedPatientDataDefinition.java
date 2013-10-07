@@ -28,10 +28,12 @@ public class ConvertedPatientDataDefinition extends ConvertedDataDefinition<Pati
 		super();
 	}
 
-	/**
-	 * Default Constructor
-	 */
+    public ConvertedPatientDataDefinition(PatientDataDefinition definitionToConvert, DataConverter...converters) {
+        super(null, definitionToConvert, converters);
+    }
+
 	public ConvertedPatientDataDefinition(String name, PatientDataDefinition definitionToConvert, DataConverter...converters) {
 		super(name, definitionToConvert, converters);
 	}
+
 }
