@@ -13,11 +13,13 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import org.openmrs.Cohort;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.openmrs.PersonAttribute;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.data.patient.evaluator.PatientDataEvaluator;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
@@ -25,10 +27,6 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Evaluates a PersonAttributeDataDefinition to produce a PatientData
@@ -50,30 +48,23 @@ public class PersonAttributeDataEvaluator implements PersonDataEvaluator {
 		}
 		
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-
-        Cohort baseCohort = context.getBaseCohort();
-        boolean filterPatientsInQuery = baseCohort != null && baseCohort.size() < ReportingConstants.MAX_PATIENT_IDS_TO_FILTER_IN_DATABASE;
-        boolean doNotFilterPatientsInJava = baseCohort == null || filterPatientsInQuery;
 		
 		StringBuilder hql = new StringBuilder();
 		hql.append("from 		PersonAttribute ");
 		hql.append("where 		voided = false ");
-		if (filterPatientsInQuery) {
+		if (context.getBaseCohort() != null) {
 			hql.append("and 		person.personId in (:patientIds) ");
 		}
 		hql.append("and 		attributeType.personAttributeTypeId = :idType ");
 		Map<String, Object> m = new HashMap<String, Object>();
-		if (filterPatientsInQuery) {
+		if (context.getBaseCohort() != null) {
 			m.put("patientIds", context.getBaseCohort());
 		}
 		m.put("idType", def.getPersonAttributeType().getPersonAttributeTypeId());
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
 		for (Object o : queryResult) {
 			PersonAttribute pa = (PersonAttribute)o;
-            Integer personId = pa.getPerson().getPersonId(); // TODO: This is probably inefficient.  Try to improve this with HQL
-            if (doNotFilterPatientsInJava || baseCohort.contains(personId)) {
-                c.addData(personId, pa);
-            }
+			c.addData(pa.getPerson().getPersonId(), pa);  // TODO: This is probably inefficient.  Try to improve this with HQL
 		}
 		return c;
 	}

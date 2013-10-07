@@ -55,10 +55,6 @@ public class ReportingConstants {
 	public static final Parameter END_DATE_PARAMETER = new Parameter("endDate", "End date", Date.class);
 	public static final Parameter LOCATION_PARAMETER = new Parameter("location", "Location", Location.class);
 
-    // It is very slow to do "... AND patient_id IN (:cohort) for large cohorts. This is the cutoff we use to decide
-    // to filter in the database query versus filtering in Java
-    public static final int MAX_PATIENT_IDS_TO_FILTER_IN_DATABASE = 2000;
-
     // Semi-Constants defined through global properties
 	
 	public static final List<PatientIdentifierType> GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES() {
@@ -98,6 +94,23 @@ public class ReportingConstants {
 			}
 		}
 		return 10;
+	}
+
+	/**
+	 * @return for data definition evaluations, this determines whether to run these in batches and what the
+	 * size of those batches should be.  A value of <= 0 indicates that no batching is desired.
+	 */
+	public static final int GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE() {
+		String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.dataEvaluationBatchSize");
+		if (StringUtils.hasText(propertyValue)) {
+			try {
+				return Integer.parseInt(propertyValue);
+			}
+			catch (Exception e) {
+				// Do nothing
+			}
+		}
+		return 1000;
 	}
 	
 	public static final boolean GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS() {

@@ -13,21 +13,19 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import org.openmrs.Cohort;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.openmrs.PersonAddress;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredAddressDataDefinition;
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Evaluates a PreferredAddressDataDefinition to produce a PersonData
@@ -40,16 +38,12 @@ public class PreferredAddressDataEvaluator implements PersonDataEvaluator {
 	 * @should return the preferred address for all persons
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        Cohort baseCohort = context.getBaseCohort();
-        boolean filterPatientsInQuery = baseCohort != null && baseCohort.size() < ReportingConstants.MAX_PATIENT_IDS_TO_FILTER_IN_DATABASE;
-        boolean doNotFilterPatientsInJava = baseCohort == null || filterPatientsInQuery;
-
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
 		Map<String, Object> m = new HashMap<String, Object>();
 		
 		String hql = "from PersonAddress where voided = false ";
-		if (filterPatientsInQuery) {
+		if (context.getBaseCohort() != null) {
 			hql += "and person.personId in (:personIds) ";
 			m.put("personIds", context.getBaseCohort());
 		}
@@ -57,13 +51,9 @@ public class PreferredAddressDataEvaluator implements PersonDataEvaluator {
 
 		List<Object> queryResult = qs.executeHqlQuery(hql, m);
 		for (Object o : queryResult) {
-			PersonAddress pa = (PersonAddress) o;
-            Integer pId = pa.getPerson().getPersonId(); // TODO: This is probably inefficient.  Try to improve this
-            if (doNotFilterPatientsInJava || baseCohort.contains(pId)) {
-                c.addData(pId, pa);
-            }
+			PersonAddress pa = (PersonAddress)o;
+			c.addData(pa.getPerson().getPersonId(), pa);  // TODO: This is probably inefficient.  Try to improve this
 		}
 		return c;
 	}
-
 }

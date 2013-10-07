@@ -223,16 +223,16 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 			evaluationResult = (Evaluated<T>) context.getFromCache(cacheKey);
 			if (evaluationResult == null) {
 				log.debug("No cached value with key <" + cacheKey + ">.  Evaluating.");
-				evaluationResult = evaluator.evaluate(clonedDefinition, context);
+				evaluationResult = executeEvaluator(evaluator, clonedDefinition, context);
 				context.addToCache(cacheKey, evaluationResult);
 			}
 			else {
 				log.debug("Retrieved cached value with key <" + cacheKey + "> = " + evaluationResult);
 			}
 		}
-		
+
 		if (evaluationResult == null) {
-			evaluationResult = evaluator.evaluate(clonedDefinition, context);
+			evaluationResult = executeEvaluator(evaluator, clonedDefinition, context);
 		}
 		
 		return evaluationResult;
@@ -249,6 +249,14 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 		EvaluationContext childContext = EvaluationContext.cloneForChild(context, definition);
 		log.debug("Evaluating: " + definition.getParameterizable() + "(" + context.getParameterValues() + ")");
 		return evaluate(definition.getParameterizable(), childContext);
+	}
+
+	/**
+	 * Subclasses should override this method if they need to insert specific behavior around calling the
+	 * actual evaluators.  Examples might include running the evaluators in batches, etc
+	 */
+	protected Evaluated<T> executeEvaluator(DefinitionEvaluator<T> evaluator, T definition, EvaluationContext context) throws EvaluationException {
+		return evaluator.evaluate(definition, context);
 	}
 	
 	/**

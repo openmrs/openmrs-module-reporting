@@ -7,9 +7,13 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.Properties;
 
+import org.junit.Assert;
 import org.junit.Ignore;
+import org.openmrs.GlobalProperty;
+import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 
 @Ignore
@@ -39,15 +43,7 @@ public class TestUtil {
 		}
 		return sb.toString();
 	}
-	
-	
-	/**
-	 * Mimics org.openmrs.web.Listener.getRuntimeProperties()
-	 * 
-	 * @param webappName name to use when looking up the runtime properties env var or filename
-	 * @return Properties runtime
-	 * @throws Exception 
-	 */
+
     @SuppressWarnings("deprecation")
     public String getTestDatasetFilename(String testDatasetName) throws Exception {
 		
@@ -73,5 +69,22 @@ public class TestUtil {
 		
 		return props.getProperty(testDatasetName);
 	}
-	
+
+	public static void updateGlobalProperty(String propertyName, String propertyValue) {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(propertyName);
+		if (gp == null) {
+			gp = new GlobalProperty(propertyName);
+		}
+		gp.setPropertyValue(propertyValue);
+		Context.getAdministrationService().saveGlobalProperty(gp);
+	}
+
+	public static void assertCollectionsEqual(Collection c1, Collection c2) {
+		Assert.assertEquals("Size of two collections does not match", c1.size(), c2.size());
+		for (Object o : c1) {
+			if (!c2.contains(o)) {
+				Assert.fail("Second collection does not contain " + o);
+			}
+		}
+	}
 }

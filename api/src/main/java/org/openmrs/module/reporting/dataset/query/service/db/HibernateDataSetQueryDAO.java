@@ -107,7 +107,7 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		
 		String voidedProperty = (type == Person.class ? "personVoided" : "voided");
 
-        boolean filterInQuery = baseCohort != null && baseCohort.size() < ReportingConstants.MAX_PATIENT_IDS_TO_FILTER_IN_DATABASE;
+        boolean filterInQuery = baseCohort != null && baseCohort.size() < 2000;  // TODO: Change to batch if it is good
         boolean doNotFilterInJava = baseCohort == null || filterInQuery;
 		
 		StringBuilder hql = new StringBuilder();
