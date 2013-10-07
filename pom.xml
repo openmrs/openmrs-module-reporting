@@ -48,7 +48,7 @@
 		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
-		<calculationVersion>1.1-SNAPSHOT</calculationVersion>
+		<calculationVersion>1.0</calculationVersion>
 	</properties>
 
 	<dependencies>
