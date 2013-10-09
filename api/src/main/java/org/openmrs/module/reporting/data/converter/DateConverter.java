@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -29,7 +30,8 @@ public class DateConverter implements DataConverter {
 	
 	//***** PROPERTIES *****
 	
-	private DateFormat dateFormat;
+	private String dateFormat;
+	private Locale locale;
 	private String conversionCalculation;
 	
 	//***** CONSTRUCTORS *****
@@ -42,29 +44,31 @@ public class DateConverter implements DataConverter {
 	/**
 	 * Constructor for just format
 	 */
-	public DateConverter(String format) {
-		this(format, null);
+	public DateConverter(String dateFormat) {
+		this(dateFormat, null);
 	}
 	
 	/**
 	 * String format and conversionCalculation
 	 */
-	public DateConverter(String format, String conversionCalculation) {
-		this (new SimpleDateFormat(format), conversionCalculation);
-	}
-	
-	/**
-	 * Full Constructor
-	 */
-	public DateConverter(DateFormat dateFormat, String conversionCalculation) {
+	public DateConverter(String dateFormat, String conversionCalculation) {
 		this.dateFormat = dateFormat;
 		this.conversionCalculation = conversionCalculation;
+	}
+
+	/**
+	 * String format and conversionCalculation
+	 */
+	public DateConverter(String dateFormat, String conversionCalculation, Locale locale) {
+		this.dateFormat = dateFormat;
+		this.conversionCalculation = conversionCalculation;
+		this.locale = locale;
 	}
 	
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convert(Object)
 	 * @should convert a Date into a String with the passed format
 	 */
 	public Object convert(Object original) {
@@ -76,7 +80,8 @@ public class DateConverter implements DataConverter {
 				date = (Date)EvaluationUtil.evaluateParameterExpression("date"+conversionCalculation, m);
 			}
 			if (dateFormat != null) {
-				return dateFormat.format(date);
+				DateFormat df = (locale == null ? new SimpleDateFormat(dateFormat) : new SimpleDateFormat(dateFormat, locale));
+				return df.format(date);
 			}
 		}
 		return date;
@@ -102,15 +107,23 @@ public class DateConverter implements DataConverter {
 	/**
 	 * @return the dateFormat
 	 */
-	public DateFormat getDateFormat() {
+	public String getDateFormat() {
 		return dateFormat;
 	}
 
 	/**
 	 * @param dateFormat the dateFormat to set
 	 */
-	public void setDateFormat(DateFormat dateFormat) {
+	public void setDateFormat(String dateFormat) {
 		this.dateFormat = dateFormat;
+	}
+
+	public Locale getLocale() {
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 	/**

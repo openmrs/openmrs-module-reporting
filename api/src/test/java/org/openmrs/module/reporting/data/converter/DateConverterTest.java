@@ -20,6 +20,6 @@ public class DateConverterTest {
 		Date today = DateUtil.getDateTime(2011, 4, 6);
 		Assert.assertEquals("2011-04-06", (new DateConverter("yyyy-MM-dd")).convert(today));
 		Assert.assertEquals("06/Apr/2011", (new DateConverter("dd/MMM/yyyy")).convert(today));
-		Assert.assertEquals("06/avr./2011", (new DateConverter(new SimpleDateFormat("dd/MMM/yyyy", Locale.FRENCH), null)).convert(today));
+		Assert.assertEquals("06/avr./2011", (new DateConverter("dd/MMM/yyyy", null, Locale.FRENCH)).convert(today));
 	}
 }

@@ -11,7 +11,7 @@
 	</appender>
  
  	<logger name="org.openmrs.module.reporting">
-		<level value="DEBUG" />
+		<level value="INFO" />
 		<appender-ref ref="CONSOLE" />
  	</logger>
  	

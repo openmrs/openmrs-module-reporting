@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import org.openmrs.api.context.Context;
@@ -28,8 +26,8 @@ public class BirthdateConverter implements DataConverter {
 	
 	//***** PROPERTIES *****
 	
-	private DateFormat exactDateFormat;
-	private DateFormat estimatedDateFormat;
+	private String exactDateFormat;
+	private String estimatedDateFormat;
 	private Locale locale;
 	
 	//***** CONSTRUCTORS *****
@@ -59,25 +57,25 @@ public class BirthdateConverter implements DataConverter {
 	 * Full Constructor
 	 */
 	public BirthdateConverter(String exactDateFormat, String estimatedDateFormat, Locale locale) {
-		this.exactDateFormat = new SimpleDateFormat(ObjectUtil.nvlStr(exactDateFormat, "yyyy-MM-dd"));
-		this.estimatedDateFormat = (estimatedDateFormat == null ? this.exactDateFormat : new SimpleDateFormat(estimatedDateFormat));
+		this.exactDateFormat = ObjectUtil.nvlStr(exactDateFormat, "yyyy-MM-dd");
+		this.estimatedDateFormat = (estimatedDateFormat == null ? this.exactDateFormat : estimatedDateFormat);
 		this.locale = (locale == null ? Context.getLocale() : locale);
 	}
 	
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convert(Object)
 	 * @should convert a Birthdate into a String with the passed format
 	 */
 	public String convert(Object original) {
 		Birthdate bd = (Birthdate) original;
 		if (bd != null && bd.getBirthdate() != null) {
 			if (bd.isEstimated()) {
-				return getEstimatedDateFormat().format(bd.getBirthdate());
+				return ObjectUtil.format(bd.getBirthdate(), getEstimatedDateFormat());
 			}
 			else {
-				return getExactDateFormat().format(bd.getBirthdate());
+				return ObjectUtil.format(bd.getBirthdate(), getExactDateFormat());
 			}
 		}
 		return "";
@@ -102,28 +100,28 @@ public class BirthdateConverter implements DataConverter {
 	/**
 	 * @return the exactDateFormat
 	 */
-	public DateFormat getExactDateFormat() {
+	public String getExactDateFormat() {
 		return exactDateFormat;
 	}
 
 	/**
 	 * @param exactDateFormat the exactDateFormat to set
 	 */
-	public void setExactDateFormat(DateFormat exactDateFormat) {
+	public void setExactDateFormat(String exactDateFormat) {
 		this.exactDateFormat = exactDateFormat;
 	}
 
 	/**
 	 * @return the estimatedDateFormat
 	 */
-	public DateFormat getEstimatedDateFormat() {
+	public String getEstimatedDateFormat() {
 		return estimatedDateFormat;
 	}
 
 	/**
 	 * @param estimatedDateFormat the estimatedDateFormat to set
 	 */
-	public void setEstimatedDateFormat(DateFormat estimatedDateFormat) {
+	public void setEstimatedDateFormat(String estimatedDateFormat) {
 		this.estimatedDateFormat = estimatedDateFormat;
 	}
 
