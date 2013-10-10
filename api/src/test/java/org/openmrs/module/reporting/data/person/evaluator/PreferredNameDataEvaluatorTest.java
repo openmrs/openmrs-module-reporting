@@ -73,4 +73,19 @@ public class PreferredNameDataEvaluatorTest extends BaseModuleContextSensitiveTe
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
 		Assert.assertEquals(0, pd.getData().size());
 	}
+
+	/**
+	 * @verifies return the preferred name for all persons
+	 * @see PreferredNameDataEvaluator#evaluate(org.openmrs.module.reporting.data.person.definition.PersonDataDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 */
+	@Test
+	public void evaluate_shouldReturnThePreferredNameForAllPersons() throws Exception {
+		PreferredNameDataDefinition d = new PreferredNameDataDefinition();
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("6"));
+		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
+		Assert.assertEquals(1, pd.getData().size());
+		PersonName pn = (PersonName) pd.getData().get(6);
+		Assert.assertEquals(Boolean.TRUE, pn.getPreferred());
+	}
 }
