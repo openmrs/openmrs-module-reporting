@@ -40,7 +40,10 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
-	 * @should return all identifiers of the passed types for each patient in the passed context
+	 *
+	 * @should return all identifiers of the specified types in order for each patient
+	 * @should return all identifiers in groups according to preferred list order
+	 * @should place all preferred identifiers first within type groups
 	 */
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		
@@ -66,7 +69,7 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 			hql.append("and 		patient.patientId in (:patientIds) ");
 		}
 		hql.append("and 		identifierType.patientIdentifierTypeId in (:idTypes) ");
-		hql.append("order by 	preferred asc");
+		hql.append("order by 	preferred desc");
 
 		Map<String, Object> m = new HashMap<String, Object>();
 		if (context.getBaseCohort() != null) {
@@ -112,7 +115,7 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		public PatientIdentifierComparator(List<PatientIdentifierType> idTypes) {
 			this.idTypes = idTypes;
 		}
-		
+
 		/**
 		 * @see Comparator#compare(Object, Object)
 		 */
