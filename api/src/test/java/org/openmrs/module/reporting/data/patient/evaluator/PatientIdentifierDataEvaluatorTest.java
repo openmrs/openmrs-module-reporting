@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -20,7 +22,9 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -67,13 +71,66 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 		
 		Object o = pd.getData().get(2);
 		List<PatientIdentifier> identifiers = (List<PatientIdentifier>) o;
-		Assert.assertEquals(2, identifiers.size());
-		Assert.assertEquals("101", identifiers.get(0).getIdentifier());
-		Assert.assertEquals("101-6", identifiers.get(1).getIdentifier());
+		Assert.assertEquals(3, identifiers.size());
+		Assert.assertEquals("102", identifiers.get(0).getIdentifier());
+		Assert.assertEquals("101", identifiers.get(1).getIdentifier());
+		Assert.assertEquals("101-6", identifiers.get(2).getIdentifier());
 
         d.setIncludeFirstNonNullOnly(true);
         pd = Context.getService(PatientDataService.class).evaluate(d, context);
         o = pd.getData().get(2);
-        Assert.assertEquals("101", ((PatientIdentifier)o).getIdentifier());
+        Assert.assertEquals("102", ((PatientIdentifier)o).getIdentifier());
+	}
+
+	/**
+	 * @verifies return all identifiers in groups according to preferred list order
+	 * @see PatientIdentifierDataEvaluator#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 */
+	@Test
+	public void evaluate_shouldReturnAllIdentifiersInGroupsAccordingToPreferredListOrder() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+
+		PatientIdentifierType pi1 = Context.getPatientService().getPatientIdentifierType(1);
+		PatientIdentifierType pi2 = Context.getPatientService().getPatientIdentifierType(2);
+
+		PatientIdentifierDataDefinition d = new PatientIdentifierDataDefinition();
+		d.addType(pi2); // "101-6", preferred
+		d.addType(pi1); // "101"
+
+		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
+
+		Object o = pd.getData().get(2);
+		List<PatientIdentifier> identifiers = (List<PatientIdentifier>) o;
+		Assert.assertEquals(3, identifiers.size());
+		Assert.assertEquals(pi2, identifiers.get(0).getIdentifierType());
+		Assert.assertEquals(pi2, identifiers.get(1).getIdentifierType());
+		Assert.assertEquals(pi1, identifiers.get(2).getIdentifierType());
+	}
+
+	/**
+	 * @verifies place all preferred identifiers first within type groups
+	 * @see PatientIdentifierDataEvaluator#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 */
+	@Test
+	public void evaluate_shouldPlaceAllPreferredIdentifiersFirstWithinTypeGroups() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+
+		PatientIdentifierType pi1 = Context.getPatientService().getPatientIdentifierType(1);
+		PatientIdentifierType pi2 = Context.getPatientService().getPatientIdentifierType(2);
+
+		PatientIdentifierDataDefinition d = new PatientIdentifierDataDefinition();
+		d.addType(pi2); // "101-6", preferred
+		d.addType(pi1); // "101"
+
+		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
+
+		Object o = pd.getData().get(2);
+		List<PatientIdentifier> identifiers = (List<PatientIdentifier>) o;
+		Assert.assertEquals(3, identifiers.size());
+		Assert.assertEquals(Boolean.TRUE, identifiers.get(0).getPreferred());
+		Assert.assertEquals(Boolean.FALSE, identifiers.get(1).getPreferred());
+		Assert.assertEquals(Boolean.TRUE, identifiers.get(2).getPreferred());
 	}
 }

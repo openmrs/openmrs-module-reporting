@@ -307,7 +307,8 @@
   <patient_identifier patient_identifier_id="9" patient_id="21" identifier="902TEST" identifier_type="2" preferred="0" location_id="1" creator="1" date_created="2009-01-18 00:00:00.0" voided="false" void_reason="" uuid="7abffd75-c4cd-11de-a970-6ab447468ce9"/>
   <patient_identifier patient_identifier_id="10" patient_id="22" identifier="5001-FF" identifier_type="2" preferred="0" location_id="1" creator="1" date_created="2009-01-18 00:00:00.0" voided="false" void_reason="" uuid="85a5193e-c4cd-11de-a970-6ab447468ce9"/>
   <patient_identifier patient_identifier_id="11" patient_id="23" identifier="ID2" identifier_type="2" preferred="0" location_id="1" creator="1" date_created="2009-01-18 00:00:00.0" voided="false" void_reason="" uuid="8bdd5264-c4cd-11de-a970-6ab447468ce9"/>
-  <patient_identifier patient_identifier_id="12" patient_id="24" identifier="9080" identifier_type="2" preferred="0" location_id="1" creator="1" date_created="2009-01-18 00:00:00.0" voided="false" void_reason="" uuid="91ce4086-c4cd-11de-a970-6ab447468ce9"/>   
+  <patient_identifier patient_identifier_id="12" patient_id="24" identifier="9080" identifier_type="2" preferred="0" location_id="1" creator="1" date_created="2009-01-18 00:00:00.0" voided="false" void_reason="" uuid="91ce4086-c4cd-11de-a970-6ab447468ce9"/>
+  <patient_identifier patient_identifier_id="13" patient_id="2" identifier="102" identifier_type="2" preferred="1" location_id="1" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="8a9aac6e-3f9f-4ed2-8fb5-25215f8bb615"/>
 
   <encounter_type encounter_type_id="1" name="Scheduled" description="Scheduled Visit" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="61ae96f4-6afe-4351-b6f8-cd4fc383cce1"/>
   <encounter_type encounter_type_id="2" name="Emergency" description="Emergency visit" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="07000be2-26b6-4cce-8b40-866d8435b613"/>
