@@ -35,7 +35,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 public class PersonAttributeDataEvaluator implements PersonDataEvaluator {
 
 	/** 
-	 * @see PatientDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
+	 * @see PatientDataEvaluator#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
 	 * @should return the person attribute of the passed type for each person in the passed context
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
@@ -50,12 +50,13 @@ public class PersonAttributeDataEvaluator implements PersonDataEvaluator {
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
 		
 		StringBuilder hql = new StringBuilder();
-		hql.append("from 		PersonAttribute ");
+		hql.append("select 		pa.person.personId, pa ");
+		hql.append("from 		PersonAttribute pa ");
 		hql.append("where 		voided = false ");
 		if (context.getBaseCohort() != null) {
-			hql.append("and 		person.personId in (:patientIds) ");
+			hql.append("and 		pa.person.personId in (:patientIds) ");
 		}
-		hql.append("and 		attributeType.personAttributeTypeId = :idType ");
+		hql.append("and 		pa.attributeType.personAttributeTypeId = :idType ");
 		Map<String, Object> m = new HashMap<String, Object>();
 		if (context.getBaseCohort() != null) {
 			m.put("patientIds", context.getBaseCohort());
@@ -63,8 +64,12 @@ public class PersonAttributeDataEvaluator implements PersonDataEvaluator {
 		m.put("idType", def.getPersonAttributeType().getPersonAttributeTypeId());
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
 		for (Object o : queryResult) {
-			PersonAttribute pa = (PersonAttribute)o;
-			c.addData(pa.getPerson().getPersonId(), pa);  // TODO: This is probably inefficient.  Try to improve this with HQL
+			Object[] parts = (Object[]) o;
+			if (parts.length == 2) {
+				Integer pId = (Integer) parts[0];
+				PersonAttribute pa = (PersonAttribute) parts[1];
+				c.addData(pId, pa);
+			}
 		}
 		return c;
 	}

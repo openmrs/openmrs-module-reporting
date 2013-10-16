@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -27,34 +23,47 @@ import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Evaluates a PreferredNameDataDefinition to produce a PersonData
  */
-@Handler(supports=PreferredNameDataDefinition.class, order=50)
+@Handler(supports = PreferredNameDataDefinition.class, order = 50)
 public class PreferredNameDataEvaluator implements PersonDataEvaluator {
 
-	/** 
+	/**
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
-	 * @should return the preferred name for all persons
+	 *
+	 * @should return the most preferred name for each person in the passed context
 	 * @should return empty result set for an empty base cohort
+	 * @should return the preferred name for all persons
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 		if (context != null && context.getBaseCohort() != null && !context.getBaseCohort().isEmpty()) {
 			DataSetQueryService qs = Context.getService(DataSetQueryService.class);
+
+			// orders all person names so preferred comes last for each person id
+			String hql = "select pn.person.personId, pn" +
+					" from PersonName as pn" +
+					" where voided = false " +
+					" and pn.person.personId in (:personIds)" +
+					" order by preferred asc";
+
 			Map<String, Object> m = new HashMap<String, Object>();
-			
-			String hql = "from PersonName where voided = false ";
-			if (context.getBaseCohort() != null) {
-				hql += "and person.personId in (:personIds) ";
-				m.put("personIds", context.getBaseCohort());
-			}
-			hql += "order by preferred asc";
-			
+			m.put("personIds", context.getBaseCohort());
+
+			// overwrite person name for each person, finishing with the preferred if it exists
 			List<Object> queryResult = qs.executeHqlQuery(hql, m);
 			for (Object o : queryResult) {
-				PersonName pn = (PersonName)o;
-				c.addData(pn.getPerson().getPersonId(), pn);  // TODO: This is probably inefficient.  Try to improve this
+				Object[] parts = (Object[]) o;
+				if (parts.length == 2) {
+					Integer pId = (Integer) parts[0];
+					PersonName pn = (PersonName) parts[1];
+					c.addData(pId, pn);
+				}
 			}
 		}
 		return c;

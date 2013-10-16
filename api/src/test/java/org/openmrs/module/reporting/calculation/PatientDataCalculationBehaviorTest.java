@@ -63,11 +63,9 @@ public class PatientDataCalculationBehaviorTest extends BaseModuleContextSensiti
 		Assert.assertEquals(identifiers2.iterator().next(), ResultUtil.getFirst(results.get(patientId2)).getValue());
 		
 		ListResult lr = (ListResult) results.get(patientId1);
-		Assert.assertEquals(2, lr.size());
-		Object pId1 = ResultUtil.getFirst(lr).getValue();
-		Object pId2 = lr.getLastResult().getValue();
+		Assert.assertEquals(3, lr.size());
 		
-		Assert.assertTrue(CollectionUtils.isEqualCollection(identifiers1, Arrays.asList(pId1, pId2)));
+		Assert.assertTrue(CollectionUtils.isEqualCollection(identifiers1, lr.getValues()));
 	}
 	
 	@Test
