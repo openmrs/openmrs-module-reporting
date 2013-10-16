@@ -18,9 +18,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Date;
 
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -42,6 +44,7 @@ public class BuiltInCohortDefinitionLibraryTest {
     public void testGetMales() throws Exception {
         GenderCohortDefinition males = library.getMales();
         assertTrue(GenderCohortDefinition.class.isAssignableFrom(males.getClass()));
+        assertThat(males.getParameters().size(), is(0));
         assertThat(males.getMaleIncluded(), is(true));
         assertThat(males.getFemaleIncluded(), is(false));
         assertThat(males.getUnknownGenderIncluded(), is(false));
@@ -51,6 +54,7 @@ public class BuiltInCohortDefinitionLibraryTest {
     public void testGetFemales() throws Exception {
         GenderCohortDefinition females = library.getFemales();
         assertTrue(GenderCohortDefinition.class.isAssignableFrom(females.getClass()));
+        assertThat(females.getParameters().size(), is(0));
         assertThat(females.getMaleIncluded(), is(false));
         assertThat(females.getFemaleIncluded(), is(true));
         assertThat(females.getUnknownGenderIncluded(), is(false));
@@ -60,6 +64,7 @@ public class BuiltInCohortDefinitionLibraryTest {
     public void testGetUnknownGender() throws Exception {
         GenderCohortDefinition unknownGender = library.getUnknownGender();
         assertTrue(GenderCohortDefinition.class.isAssignableFrom(unknownGender.getClass()));
+        assertThat(unknownGender.getParameters().size(), is(0));
         assertThat(unknownGender.getMaleIncluded(), is(false));
         assertThat(unknownGender.getFemaleIncluded(), is(false));
         assertThat(unknownGender.getUnknownGenderIncluded(), is(true));
@@ -71,6 +76,7 @@ public class BuiltInCohortDefinitionLibraryTest {
         assertTrue(AgeCohortDefinition.class.isAssignableFrom(upToAgeOnDate.getClass()));
         assertThat(upToAgeOnDate, hasParameter("effectiveDate", Date.class));
         assertThat(upToAgeOnDate, hasParameter("maxAge", Integer.class));
+        assertThat(upToAgeOnDate, hasProperty("maxAgeUnit", is(DurationUnit.YEARS)));
     }
 
     @Test
@@ -79,5 +85,6 @@ public class BuiltInCohortDefinitionLibraryTest {
         assertTrue(AgeCohortDefinition.class.isAssignableFrom(atLeastAgeOnDate.getClass()));
         assertThat(atLeastAgeOnDate, hasParameter("effectiveDate", Date.class));
         assertThat(atLeastAgeOnDate, hasParameter("minAge", Integer.class));
+        assertThat(atLeastAgeOnDate, hasProperty("minAgeUnit", is(DurationUnit.YEARS)));
     }
 }
