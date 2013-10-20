@@ -13,15 +13,15 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
-import static org.junit.Assert.assertEquals;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for the EvaluationContext expression parsing
@@ -34,6 +34,7 @@ public class EvaluationContextTest extends BaseModuleContextSensitiveTest {
 	public void shouldEvaluateExpression() throws Exception {
 
 		assertEquals(evaluate("${report.d1}"), df.parse("2007-01-10 10:30:17:000"));
+		assertEquals(evaluate("${report.d1 - 17s}"), df.parse("2007-01-10 10:30:00:000"));
 		assertEquals(evaluate("${report.d1-15d}"), df.parse("2006-12-26 10:30:17:000"));
 		assertEquals(evaluate("${report.d1 - 15d}"), df.parse("2006-12-26 10:30:17:000"));
 		assertEquals(evaluate("${report.d1- 15d}"), df.parse("2006-12-26 10:30:17:000"));

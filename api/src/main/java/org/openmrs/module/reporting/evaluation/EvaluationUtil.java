@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +21,12 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.evaluation.caching.CachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.NoCachingStrategy;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Provides utility methods useful for Evaluation
@@ -216,7 +216,9 @@ public class EvaluationUtil {
                                 unit = "d";
                                 numAsInt *= 7;
                             }
-                            if ("h".equals(unit)) {
+                            if ("s".equals(unit)) {
+                                paramValueToFormat = DateUtils.addSeconds((Date) paramValueToFormat, numAsInt);
+                            } else if ("h".equals(unit)) {
                                 paramValueToFormat = DateUtils.addHours((Date) paramValueToFormat, numAsInt);
                             } else if ("m".equals(unit)) {
                                 paramValueToFormat = DateUtils.addMonths((Date) paramValueToFormat, numAsInt);
