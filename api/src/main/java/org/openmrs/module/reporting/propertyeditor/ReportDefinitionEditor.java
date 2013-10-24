@@ -13,14 +13,14 @@
  */
 package org.openmrs.module.reporting.propertyeditor;
 
-import java.beans.PropertyEditorSupport;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.springframework.util.StringUtils;
+
+import java.beans.PropertyEditorSupport;
 
 public class ReportDefinitionEditor extends PropertyEditorSupport {
 	
@@ -35,8 +35,7 @@ public class ReportDefinitionEditor extends PropertyEditorSupport {
 				setValue(rs.getDefinitionByUuid(text));
 			}
 			catch (Exception ex) {
-				log.error("Error setting text" + text, ex);
-				throw new IllegalArgumentException("ReportDefinition not found: " + ex.getMessage());
+				throw new IllegalArgumentException("Unable to load report definition: " + text, ex);
 			}
 		} else {
 			setValue(null);
