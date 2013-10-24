@@ -15,6 +15,7 @@
 package org.openmrs.module.reporting.data.patient.library;
 
 import org.openmrs.PatientIdentifier;
+import org.openmrs.PersonAddress;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
@@ -28,6 +29,7 @@ import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataD
 import org.openmrs.module.reporting.data.patient.definition.PreferredIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
@@ -54,6 +56,26 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
     @DocumentedDefinition("patientId")
     public PatientDataDefinition getPatientId() {
         return new PatientIdDataDefinition();
+    }
+
+    @DocumentedDefinition("preferredName.familyName")
+    public PatientDataDefinition getPreferredFamilyName() {
+        return getPreferredName("familyName");
+    }
+
+    @DocumentedDefinition("preferredName.familyName2")
+    public PatientDataDefinition getPreferredFamilyName2() {
+        return getPreferredName("familyName2");
+    }
+
+    @DocumentedDefinition("preferredName.givenName")
+    public PatientDataDefinition getPreferredGivenName() {
+        return getPreferredName("givenName");
+    }
+
+    @DocumentedDefinition("preferredName.middleName")
+    public PatientDataDefinition getPreferredMiddleName() {
+        return getPreferredName("middleName");
     }
 
     @DocumentedDefinition("birthdate.ymd")
@@ -113,5 +135,11 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
                 converters);
     }
 
+    private PatientDataDefinition getPreferredName(String property) {
+        return new ConvertedPatientDataDefinition(
+                new PersonToPatientDataDefinition(
+                        new PreferredNameDataDefinition()),
+                new PropertyConverter(PersonAddress.class, property));
+    }
 
 }
