@@ -13,9 +13,9 @@
  */
 package org.openmrs.module.reporting.data;
 
-import java.util.List;
-
 import org.openmrs.module.reporting.data.converter.DataConverter;
+
+import java.util.List;
 
 /**
  * Data utility classes
@@ -47,4 +47,16 @@ public class DataUtil {
 		}
 		return ret;
 	}
+
+    /**
+     *
+     * @param data
+     * @param results each element should be an Object[2] with the first being an Integer id, and the second being the value
+     */
+    public static void populate(BaseData data, List<Object[]> results) {
+        for (Object[] row : results) {
+            data.getData().put((Integer) row[0], row[1]);
+        }
+    }
+
 }
