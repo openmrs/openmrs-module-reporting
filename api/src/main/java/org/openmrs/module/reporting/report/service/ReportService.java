@@ -252,6 +252,8 @@ public interface ReportService extends OpenmrsService {
 	 * @should render the report if a plain renderer is specified
 	 * @should not render the report if a web renderer is specified
 	 * @should execute any configured report processors
+	 * @should set the evaluationDate on the context from the request
+	 * @should use current date as evaluationDate if not provided by the request
 	 */
 	public Report runReport(ReportRequest request);
 
