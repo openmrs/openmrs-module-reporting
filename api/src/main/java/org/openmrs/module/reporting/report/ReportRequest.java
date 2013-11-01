@@ -16,10 +16,10 @@ import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Represents a request to run and render a report.
- * (The natural ordering of this class places higher priority requests first, so that it may be used in a PriorityQueue.) 
+ * (The natural ordering of this class places higher priority requests first, so that it may be used in a PriorityQueue.)
  */
 public class ReportRequest extends BaseOpenmrsObject {
-	
+
 	//***** PROPERTIES *****
 
 	private Integer id;
@@ -32,17 +32,18 @@ public class ReportRequest extends BaseOpenmrsObject {
 	private User requestedBy;
 	private Date requestDate;
 	private Status status;
+	private Date evaluationDate = null;
 	private Date evaluateStartDatetime;
 	private Date evaluateCompleteDatetime;
 	private Date renderCompleteDatetime;
 	private String description;
-	
+
 	//*****  CONSTRUCTORS ******
-	
+
 	/**
 	 * Default Constructor
 	 */
-	public ReportRequest() { 
+	public ReportRequest() {
 		super();
 		setUuid(UUID.randomUUID().toString());
 		this.requestDate = new Date();
@@ -61,7 +62,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 	    this.priority = priority;
 	    this.schedule = schedule;
     }
-	
+
 	//*****  INSTANCE METHODS ******
 
 	/**
@@ -74,7 +75,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 		sb.append(" rendered to " + renderingMode);
 		return sb.toString();
 	}
-	
+
 	/**
 	 * @see Object#equals(Object)
 	 */
@@ -91,14 +92,14 @@ public class ReportRequest extends BaseOpenmrsObject {
         }
 		return getUuid().equals(other.getUuid());
 	}
-	
+
 	/**
 	 * @see Object#hashCode()
 	 */
 	public int hashCode() {
         return (getUuid() == null ? super.hashCode() : getUuid().hashCode());
 	}
-	
+
 	//*****  PROPERTY ACCESS ******
 
 	/**
@@ -114,7 +115,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
     /**
      * @return the baseCohort
      */
@@ -128,7 +129,7 @@ public class ReportRequest extends BaseOpenmrsObject {
     public void setBaseCohort(Mapped<CohortDefinition> baseCohort) {
     	this.baseCohort = baseCohort;
     }
-	
+
 	/**
      * @return the reportDefinition
      */
@@ -149,7 +150,7 @@ public class ReportRequest extends BaseOpenmrsObject {
     public RenderingMode getRenderingMode() {
     	return renderingMode;
     }
-	
+
     /**
      * @param renderingMode the renderingMode to set
      */
@@ -184,7 +185,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 	public void setSchedule(String schedule) {
 		this.schedule = schedule;
 	}
-	
+
 	/**
 	 * @return the processAutomatically
 	 */
@@ -226,7 +227,7 @@ public class ReportRequest extends BaseOpenmrsObject {
     public void setRequestDate(Date requestDate) {
     	this.requestDate = requestDate;
     }
-    
+
 	/**
 	 * @return the status
 	 */
@@ -240,7 +241,21 @@ public class ReportRequest extends BaseOpenmrsObject {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	
+
+	/**
+	 * @return the evaluationDate
+	 */
+	public Date getEvaluationDate() {
+		return evaluationDate;
+	}
+
+	/**
+	 * @param evaluationDate the evaluationDate to set
+	 */
+	public void setEvaluationDate(Date evaluationDate) {
+		this.evaluationDate = evaluationDate;
+	}
+
 	/**
 	 * @return the evaluateStartDatetime
 	 */
@@ -316,7 +331,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 		LOW,
 		LOWEST
 	}
-	
+
 	/**
 	 * Represents the Status of a Report
 	 */
@@ -329,7 +344,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 		SAVED,
 		SCHEDULE_COMPLETED
 	}
-	
+
 	/**
 	 * Compares 2 Requests By Priority, in order to determine which should be evaluated first
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
