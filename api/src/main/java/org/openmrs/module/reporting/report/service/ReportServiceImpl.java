@@ -416,7 +416,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
 		try {
 			// Create a new Evaluation Context, setting the base cohort from the request
-			EvaluationContext context = new EvaluationContext();
+			Date evaluationDate = request.getEvaluationDate() == null ? new Date() : request.getEvaluationDate();
+			EvaluationContext context = new EvaluationContext(evaluationDate);
 			context.addContextValue(GENERATED_BY, ObjectUtil.getNameOfUser(request.getRequestedBy()));
 			context.addContextValue(GENERATION_DATE, request.getRequestDate());
 			
