@@ -17,10 +17,17 @@ package org.openmrs.module.reporting.common;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.openmrs.Cohort;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.query.IdSet;
+import org.openmrs.util.OpenmrsUtil;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
+
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 
 /**
  *
@@ -51,4 +58,48 @@ public class ReportingMatchers {
         };
     }
 
+    public static Matcher<IdSet<?>> hasExactlyIds(final Integer... expectedMemberIds) {
+        return new BaseMatcher<IdSet<?>>() {
+            @Override
+            public boolean matches(Object o) {
+                Set<Integer> actual = ((IdSet<?>) o).getMemberIds();
+                return (actual.size() == expectedMemberIds.length) && containsInAnyOrder(expectedMemberIds).matches(actual);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendValue("IdSet with " + expectedMemberIds.length + " members: " + OpenmrsUtil.join(Arrays.asList(expectedMemberIds), ", "));
+            }
+        };
+    }
+
+    public static Matcher<Cohort> isCohortWithExactlyIds(final Integer... expectedMemberIds) {
+        return new BaseMatcher<Cohort>() {
+            @Override
+            public boolean matches(Object o) {
+                Set<Integer> actual = ((Cohort) o).getMemberIds();
+                return (actual.size() == expectedMemberIds.length) && containsInAnyOrder(expectedMemberIds).matches(actual);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendValue("Cohort with " + expectedMemberIds.length + " members: " + OpenmrsUtil.join(Arrays.asList(expectedMemberIds), ", "));
+            }
+        };
+    }
+
+    public static Matcher<Parameter> parameterNamed(final String expectedName) {
+        return new BaseMatcher<Parameter>() {
+            @Override
+            public boolean matches(Object actual) {
+                Parameter parameter = (Parameter) actual;
+                return ((Parameter) actual).getName().equals(expectedName);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendValue("parameter named " + expectedName);
+            }
+        };
+    }
 }
