@@ -16,6 +16,8 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -39,6 +41,8 @@ import java.util.Map;
 @Handler(supports={CohortsWithVaryingParametersDataSetDefinition.class})
 public class CohortsWithVaryingParametersDataSetEvaluator implements DataSetEvaluator {
 
+    private final Log log = LogFactory.getLog(getClass());
+
     private Handlebars handlebars = new Handlebars();
 
     @Autowired
@@ -52,35 +56,53 @@ public class CohortsWithVaryingParametersDataSetEvaluator implements DataSetEval
         for (Mapped<? extends CohortDefinition> mcd : dsd.getCohortDefinitions()) {
             CohortDefinition cd = mcd.getParameterizable();
 
-            Template nameTemplate;
-            try {
-                nameTemplate = handlebars.compileInline(cd.getName());
-            } catch (Exception e) {
-                throw new EvaluationException("error compiling name template", e);
+            Template nameTemplate = null;
+            if (cd.getName() != null) {
+                try {
+                    nameTemplate = handlebars.compileInline(cd.getName());
+                } catch (Exception e) {
+                    throw new EvaluationException("error compiling name template", e);
+                }
             }
-            Template labelTemplate;
-            try {
-                labelTemplate = handlebars.compileInline(cd.getDescription());
-            } catch (Exception e) {
-                throw new EvaluationException("error compiling label template", e);
+
+            Template labelTemplate = null;
+            if (cd.getDescription() != null) {
+                try {
+                    labelTemplate = handlebars.compileInline(cd.getDescription());
+                } catch (Exception e) {
+                    throw new EvaluationException("error compiling label template", e);
+                }
             }
 
             for (Map<String, Object> parameterOption : dsd.getVaryingParameters()) {
                 EvaluationContext contextForVariation = evalContext.shallowCopy();
                 contextForVariation.getParameterValues().putAll(parameterOption);
                 EvaluatedCohort cohort = cohortDefinitionService.evaluate(mcd, contextForVariation);
-                String name;
-                try {
-                    name = nameTemplate.apply(contextForVariation.getParameterValues());
-                } catch (IOException e) {
+
+                String name = null;
+                if (nameTemplate != null) {
+                    try {
+                        name = nameTemplate.apply(contextForVariation.getParameterValues());
+                    } catch (IOException e) {
+                        log.warn("Error evaluating name template", e);
+                    }
+                }
+                if (name == null) {
                     name = cd.getName();
                 }
-                String label;
-                try {
-                    label = labelTemplate.apply(contextForVariation.getParameterValues());
-                } catch (IOException e) {
+
+                String label = null;
+                if (labelTemplate != null) {
+                    try {
+                        label = labelTemplate.apply(contextForVariation.getParameterValues());
+                    } catch (IOException e) {
+                        log.warn("Error evaluating label template", e);
+                    }
+                }
+                if (label == null) {
                     label = cd.getDescription();
                 }
+
                 DataSetColumn column = new DataSetColumn(name, label, EvaluatedCohort.class);
                 results.addData(column, cohort);
             }
