@@ -43,6 +43,8 @@
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.2-FINAL</poiVersion>
 		<groovyVersion>1.8.7</groovyVersion>
+        <jodatimeVersion>2.3</jodatimeVersion>
+        <handlebarsVersion>1.1.2</handlebarsVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
@@ -112,7 +114,19 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.3</version>
+            <version>${jodatimeVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.jknack</groupId>
+            <artifactId>handlebars</artifactId>
+            <version>${handlebarsVersion}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 		<!-- OpenMRS dependencies -->
@@ -156,7 +170,7 @@
 			<version>${openMRSVersion}</version>
 			<type>pom</type>
 			<scope>test</scope>
-		</dependency>
+        </dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
@@ -200,7 +214,7 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>
