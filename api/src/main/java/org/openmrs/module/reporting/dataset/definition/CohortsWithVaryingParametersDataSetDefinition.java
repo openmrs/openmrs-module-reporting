@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Evaluates one or more CohortDefinitions against a predefined varying set of parameters.
+ * For example you might calculate an EncounterCohortDefinition, with varying values of a "locationList" parameter, to
+ * determine patients seen at different locations.
  */
 public class CohortsWithVaryingParametersDataSetDefinition extends BaseDataSetDefinition {
 

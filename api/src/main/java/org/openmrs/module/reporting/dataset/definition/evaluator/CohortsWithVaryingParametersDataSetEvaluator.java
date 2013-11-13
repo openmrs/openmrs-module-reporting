@@ -36,7 +36,11 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- *
+ * Evaluates each CohortDefinition against each set of parameter options.
+ * Produces a MapDataSet whose column names are given by the CohortDefinition's name (which should be a handlebars
+ * template that can refer to parameter values, e.g. "at-{{ location.uuid }}". Labels of the columns in the resulting
+ * data set are given by the CohortDefinition's description (which should be a handlebars template that can refer to
+ * parameter values, e.g. "Registered at {{ location.name }}").
  */
 @Handler(supports={CohortsWithVaryingParametersDataSetDefinition.class})
 public class CohortsWithVaryingParametersDataSetEvaluator implements DataSetEvaluator {
