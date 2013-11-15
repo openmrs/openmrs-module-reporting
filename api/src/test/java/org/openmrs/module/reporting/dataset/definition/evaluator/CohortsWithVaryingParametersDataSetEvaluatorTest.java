@@ -19,12 +19,14 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Cohort;
 import org.openmrs.Location;
 import org.openmrs.api.LocationService;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.MapDataSet;
+import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.definition.CohortsWithVaryingParametersDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -36,6 +38,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -72,11 +75,12 @@ public class CohortsWithVaryingParametersDataSetEvaluatorTest extends BaseModule
     @Test
     public void testEvaluate() throws Exception {
         EncounterCohortDefinition cd = new EncounterCohortDefinition();
-        cd.setName("At {{ locationList.name }}");
+        cd.setName("Has Encounter");
         cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
         CohortsWithVaryingParametersDataSetDefinition dsd = new CohortsWithVaryingParametersDataSetDefinition();
-        dsd.addCohortDefinition(cd);
+        dsd.addColumn(cd);
+        dsd.setRowLabelTemplate("At {{ locationList.name }}");
 
         for (Location location : locationService.getAllLocations()) {
             Map<String, Object> params = new HashMap<String, Object>();
@@ -84,10 +88,19 @@ public class CohortsWithVaryingParametersDataSetEvaluatorTest extends BaseModule
             dsd.addVaryingParameters(params);
         }
 
-        MapDataSet result = (MapDataSet) dsdService.evaluate(dsd, new EvaluationContext());
+        DataSet result = dsdService.evaluate(dsd, new EvaluationContext());
         List<DataSetColumn> columns = result.getMetaData().getColumns();
-        assertCollection(columns, columnMatching("At Never Never Land"), columnMatching("At Unknown Location"), columnMatching("At Xanadu"));
-        assertCollection(result.getData().getColumnValues().values(), isCohortWithExactlyIds(), isCohortWithExactlyIds(7), isCohortWithExactlyIds(7, 20, 21, 22, 23, 24));
+        assertCollection(columns, columnMatching("rowLabel"), columnMatching("Has Encounter"));
+        Iterator<DataSetRow> rowIterator = result.iterator();
+        DataSetRow row = rowIterator.next();
+        assertThat((String) row.getColumnValue("rowLabel"), is("At Never Never Land"));
+        assertThat((Cohort) row.getColumnValue("Has Encounter"), isCohortWithExactlyIds());
+        row = rowIterator.next();
+        assertThat((String) row.getColumnValue("rowLabel"), is("At Unknown Location"));
+        assertThat((Cohort) row.getColumnValue("Has Encounter"), isCohortWithExactlyIds(7));
+        row = rowIterator.next();
+        assertThat((String) row.getColumnValue("rowLabel"), is("At Xanadu"));
+        assertThat((Cohort) row.getColumnValue("Has Encounter"), isCohortWithExactlyIds(7, 20, 21, 22, 23, 24));
     }
 
     private Matcher<DataSetColumn> columnMatching(final String name) {
@@ -109,7 +122,7 @@ public class CohortsWithVaryingParametersDataSetEvaluatorTest extends BaseModule
      * We can't use IsIterableContainingInOrder from Hamcrest because the OpenMRS 1.6.6 version of JUnit contains bad
      * versions of hamcrest classes
      * @param collection
-     * @param items
+     * @param matchers
      */
     private void assertCollection(Collection<?> collection, Matcher... matchers) {
         assertThat(collection.size(), is(matchers.length));

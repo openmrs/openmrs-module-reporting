@@ -14,7 +14,9 @@
 
 package org.openmrs.module.reporting.dataset.definition;
 
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -34,20 +36,23 @@ public class CohortsWithVaryingParametersDataSetDefinition extends BaseDataSetDe
     public static final long serialVersionUID = 1L;
 
     @ConfigurationProperty
-    private List<Mapped<? extends CohortDefinition>> cohortDefinitions;
+    private List<Column> columns;
 
     @ConfigurationProperty
     private List<Map<String, Object>> varyingParameters;
 
-    public List<Mapped<? extends CohortDefinition>> getCohortDefinitions() {
-        if (cohortDefinitions == null) {
-            cohortDefinitions = new ArrayList<Mapped<? extends CohortDefinition>>();
+    @ConfigurationProperty
+    private String rowLabelTemplate;
+
+    public List<Column> getColumns() {
+        if (columns == null) {
+            columns = new ArrayList<Column>();
         }
-        return cohortDefinitions;
+        return columns;
     }
 
-    public void setCohortDefinitions(List<Mapped<? extends CohortDefinition>> cohortDefinitions) {
-        this.cohortDefinitions = cohortDefinitions;
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
     }
 
     public List<Map<String, Object>> getVaryingParameters() {
@@ -62,19 +67,46 @@ public class CohortsWithVaryingParametersDataSetDefinition extends BaseDataSetDe
     }
 
     /**
-     * Will automatically create "straight-through" mappings for any parameters in cd
+     * Will automatically create "straight-through" mappings for any parameters in cd, and takes name and label from
+     * cd.name and cd.description.
      * @param cd
      */
-    public void addCohortDefinition(CohortDefinition cd) {
+    public void addColumn(CohortDefinition cd) {
         Map<String, Object> mappings = new HashMap<String, Object>();
         for (Parameter parameter : cd.getParameters()) {
             mappings.put(parameter.getName(), "${" + parameter.getName() + "}");
         }
-        getCohortDefinitions().add(new Mapped<CohortDefinition>(cd, mappings));
+        getColumns().add(new Column(cd.getName(), cd.getDescription(), new Mapped<CohortDefinition>(cd, mappings)));
     }
 
     public void addVaryingParameters(Map<String, Object> parameterOption) {
         getVaryingParameters().add(parameterOption);
     }
 
+    public void setRowLabelTemplate(String rowLabelTemplate) {
+        this.rowLabelTemplate = rowLabelTemplate;
+    }
+
+    public String getRowLabelTemplate() {
+        return rowLabelTemplate;
+    }
+
+    public class Column extends DataSetColumn {
+
+        private Mapped<? extends CohortDefinition> cohortDefinition;
+
+        public Column(String name, String label, Mapped<CohortDefinition> cohortDefinition) {
+            super(name, label, EvaluatedCohort.class);
+            this.cohortDefinition = cohortDefinition;
+        }
+
+        public Mapped<? extends CohortDefinition> getCohortDefinition() {
+            return cohortDefinition;
+        }
+
+        public void setCohortDefinition(Mapped<? extends CohortDefinition> cohortDefinition) {
+            this.cohortDefinition = cohortDefinition;
+        }
+
+    }
 }
