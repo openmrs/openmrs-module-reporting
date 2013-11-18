@@ -31,7 +31,6 @@ import org.openmrs.PatientState;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Relationship;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
@@ -140,47 +139,51 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 	/** 
 	 * @see DataSetQueryDAO#convertColumn(DataSetColumn, JoinColumnDefinition)
 	*/
-	public Map<Integer, Integer> convertData(Class<?> fromType, String fromJoin, Set<Integer> fromIds, Class<?> toType, String toJoin, Set<Integer> toIds) {	
+	public Map<Integer, Integer> convertData(Class<?> fromType, String fromJoin, Set<Integer> fromIds, Class<?> toType, String toJoin, Set<Integer> toIds) {
 
-		ClassMetadata fromMetadata = sessionFactory.getClassMetadata(fromType);
-		String fromIdProperty = (Patient.class.isAssignableFrom(fromType) ? "patientId" : fromMetadata.getIdentifierPropertyName());
-		String fromEntity = fromType.getSimpleName();
-		String fromAlias = fromEntity.toLowerCase();
-		
-		ClassMetadata toMetadata = sessionFactory.getClassMetadata(toType);
-		String toIdProperty = toMetadata.getIdentifierPropertyName();
-		String toEntity = toType.getSimpleName();
-		String toAlias = toEntity.toLowerCase();
+        if ((fromIds != null && fromIds.size() == 0) || (toIds != null && toIds.size() == 0)) {
+            return new HashMap<Integer, Integer>();
+        }
 
-		StringBuilder hql = new StringBuilder();
-		hql.append("select 	" + toAlias + "." + toIdProperty + ", " + fromAlias + "." + fromIdProperty + " ");
-		hql.append("from	" + fromEntity + " " + fromAlias + ", " + toEntity + " " + toAlias + " ");
-		hql.append("where 	" + fromAlias + "." + fromJoin + " = " + toAlias + "." + toJoin + " ");
-		if (fromIds != null) {
-			hql.append("and " + fromAlias + "." + fromIdProperty + " in (:fromIds) ");
-		}
-		if (toIds != null) {
-			hql.append("and " + toAlias + "." + toIdProperty + " in (:toIds) ");
-		}
-		
-		Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
-		
-		if (fromIds != null) {
-			query.setParameterList("fromIds", fromIds);
-		}
-		if (toIds != null) {
-			query.setParameterList("toIds", toIds);
-		}
-		
-		Map<Integer, Integer> m = new HashMap<Integer, Integer>();
-		for (Object o : query.list()) {
-			Object[] vals = (Object[]) o;
-			m.put((Integer)vals[0], (Integer)vals[1]);
-		}
-		return m;
-	}
-	
-	//***** PROPERTY ACCESS *****
+        ClassMetadata fromMetadata = sessionFactory.getClassMetadata(fromType);
+        String fromIdProperty = (Patient.class.isAssignableFrom(fromType) ? "patientId" : fromMetadata.getIdentifierPropertyName());
+        String fromEntity = fromType.getSimpleName();
+        String fromAlias = fromEntity.toLowerCase();
+
+        ClassMetadata toMetadata = sessionFactory.getClassMetadata(toType);
+        String toIdProperty = toMetadata.getIdentifierPropertyName();
+        String toEntity = toType.getSimpleName();
+        String toAlias = toEntity.toLowerCase();
+
+        StringBuilder hql = new StringBuilder();
+        hql.append("select 	" + toAlias + "." + toIdProperty + ", " + fromAlias + "." + fromIdProperty + " ");
+        hql.append("from	" + fromEntity + " " + fromAlias + ", " + toEntity + " " + toAlias + " ");
+        hql.append("where 	" + fromAlias + "." + fromJoin + " = " + toAlias + "." + toJoin + " ");
+        if (fromIds != null) {
+            hql.append("and " + fromAlias + "." + fromIdProperty + " in (:fromIds) ");
+        }
+        if (toIds != null) {
+            hql.append("and " + toAlias + "." + toIdProperty + " in (:toIds) ");
+        }
+
+        Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
+
+        if (fromIds != null) {
+            query.setParameterList("fromIds", fromIds);
+        }
+        if (toIds != null) {
+            query.setParameterList("toIds", toIds);
+        }
+
+        Map<Integer, Integer> m = new HashMap<Integer, Integer>();
+        for (Object o : query.list()) {
+            Object[] vals = (Object[]) o;
+            m.put((Integer) vals[0], (Integer) vals[1]);
+        }
+        return m;
+    }
+
+    //***** PROPERTY ACCESS *****
 
 	/**
 	 * @return the sessionFactory
