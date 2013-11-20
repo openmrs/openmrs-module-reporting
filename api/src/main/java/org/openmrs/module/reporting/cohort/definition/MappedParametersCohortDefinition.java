@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Allows you to easily expose a cohort definition with different names for its parameters (which typically must be the
+ * same as @ConfigurationProperty-annotated properties.
  */
 public class MappedParametersCohortDefinition extends BaseCohortDefinition {
 
@@ -18,6 +19,13 @@ public class MappedParametersCohortDefinition extends BaseCohortDefinition {
     public MappedParametersCohortDefinition() {
     }
 
+    /**
+     * Example usage:
+     * new MappedParametersCohortDefinition(encounterCD, "onOrAfter", "startDate", "onOrBefore", "endDate");
+     * @param toWrap
+     * @param renamedParameters must have an even number of entries. Each pair should be the is the original parameter
+     *                          name, followed by the new parameter name
+     */
     public MappedParametersCohortDefinition(CohortDefinition toWrap, String... renamedParameters) {
         this(toWrap, toMap(renamedParameters));
     }

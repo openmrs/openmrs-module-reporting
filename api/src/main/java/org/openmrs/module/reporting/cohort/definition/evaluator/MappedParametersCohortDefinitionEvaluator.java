@@ -9,9 +9,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- *
- */
 @Handler(supports = MappedParametersCohortDefinition.class)
 public class MappedParametersCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
