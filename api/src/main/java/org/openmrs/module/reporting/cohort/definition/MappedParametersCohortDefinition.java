@@ -18,6 +18,10 @@ public class MappedParametersCohortDefinition extends BaseCohortDefinition {
     public MappedParametersCohortDefinition() {
     }
 
+    public MappedParametersCohortDefinition(CohortDefinition toWrap, String... renamedParameters) {
+        this(toWrap, toMap(renamedParameters));
+    }
+
     public MappedParametersCohortDefinition(CohortDefinition toWrap, Map<String, String> renamedParameters) {
         Map<String, Object> mappings = new HashMap<String, Object>();
         for (Map.Entry<String, String> entry : renamedParameters.entrySet()) {
@@ -46,4 +50,13 @@ public class MappedParametersCohortDefinition extends BaseCohortDefinition {
     public void setWrapped(Mapped<CohortDefinition> wrapped) {
         this.wrapped = wrapped;
     }
+
+    private static Map<String, String> toMap(String... keysAndValues) {
+        Map<String, String> map = new HashMap<String, String>();
+        for (int i = 0; i < keysAndValues.length; i += 2) {
+            map.put(keysAndValues[i], keysAndValues[i + 1]);
+        }
+        return map;
+    }
+
 }
