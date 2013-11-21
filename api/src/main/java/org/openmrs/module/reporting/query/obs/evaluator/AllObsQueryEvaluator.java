@@ -33,6 +33,7 @@ public class AllObsQueryEvaluator implements ObsQueryEvaluator {
 
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Obs.class);
         criteria.setProjection(Projections.id());
+        criteria.add(Restrictions.eq("voided", false));
         if (context.getBaseCohort() != null) {
             criteria.add(Restrictions.in("person.id", context.getBaseCohort().getMemberIds()));
         }
