@@ -21,9 +21,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import static org.junit.Assert.assertThat;
 
-/**
- *
- */
 public class BasicObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";

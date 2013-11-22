@@ -17,7 +17,7 @@ import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- *
+ * Evaluates a BasicObsQuery
  */
 @Handler(supports = BasicObsQuery.class)
 public class BasicObsQueryEvaluator implements ObsQueryEvaluator {
