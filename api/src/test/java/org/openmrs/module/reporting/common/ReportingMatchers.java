@@ -18,6 +18,7 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openmrs.Cohort;
+import org.openmrs.Person;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.IdSet;
@@ -74,6 +75,26 @@ public class ReportingMatchers {
     }
 
     public static Matcher<Cohort> isCohortWithExactlyIds(final Integer... expectedMemberIds) {
+        return new BaseMatcher<Cohort>() {
+            @Override
+            public boolean matches(Object o) {
+                Set<Integer> actual = ((Cohort) o).getMemberIds();
+                return (actual.size() == expectedMemberIds.length) && containsInAnyOrder(expectedMemberIds).matches(actual);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendValue("Cohort with " + expectedMemberIds.length + " members: " + OpenmrsUtil.join(Arrays.asList(expectedMemberIds), ", "));
+            }
+        };
+    }
+
+    public static Matcher<Cohort> isCohortWithExactlyMembers(Person... expectedMembers) {
+        final Integer[] expectedMemberIds = new Integer[expectedMembers.length];
+        for (int i = 0; i < expectedMembers.length; ++i) {
+            expectedMemberIds[i] = expectedMembers[i].getId();
+        }
+
         return new BaseMatcher<Cohort>() {
             @Override
             public boolean matches(Object o) {

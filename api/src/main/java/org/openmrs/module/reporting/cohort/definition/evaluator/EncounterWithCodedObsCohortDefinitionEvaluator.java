@@ -9,6 +9,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterWithCodedObsCohortDefinition;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,7 @@ public class EncounterWithCodedObsCohortDefinitionEvaluator implements CohortDef
             query.setTimestamp("onOrAfter", cd.getOnOrAfter());
         }
         if (cd.getOnOrBefore() != null) {
-            query.setTimestamp("onOrBefore", cd.getOnOrBefore());
+            query.setTimestamp("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(cd.getOnOrBefore()));
         }
         if (cd.getIncludeCodedValues() != null) {
             query.setParameterList("includeCodedValues", cd.getIncludeCodedValues());
