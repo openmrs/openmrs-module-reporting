@@ -41,7 +41,7 @@ public class BasicObsQueryEvaluator implements ObsQueryEvaluator {
             criteria.add(Restrictions.ge("obsDatetime", query.getOnOrAfter()));
         }
         if (query.getOnOrBefore() != null) {
-            criteria.add(Restrictions.le("obsDatetime", DateUtil.getEndOfDayIfTimeExcluded(query.getOnOrAfter())));
+            criteria.add(Restrictions.le("obsDatetime", DateUtil.getEndOfDayIfTimeExcluded(query.getOnOrBefore())));
         }
 
         if (context.getBaseCohort() != null) {
