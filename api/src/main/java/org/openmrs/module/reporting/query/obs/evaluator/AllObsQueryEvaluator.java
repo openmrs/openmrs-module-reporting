@@ -1,9 +1,5 @@
 package org.openmrs.module.reporting.query.obs.evaluator;
 
-/**
- *
- */
-
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;

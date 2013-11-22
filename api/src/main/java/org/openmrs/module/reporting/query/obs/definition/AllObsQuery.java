@@ -6,7 +6,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.query.BaseQuery;
 
 /**
- *
+ * ObsQuery that gets all obs (respecting the EvaluationContext's base cohort and base obs
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class AllObsQuery extends BaseQuery<Obs> implements ObsQuery {
