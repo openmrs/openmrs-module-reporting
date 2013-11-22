@@ -9,6 +9,8 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
+import org.openmrs.module.reporting.query.obs.ObsIdSet;
 import org.openmrs.module.reporting.query.obs.ObsQueryResult;
 import org.openmrs.module.reporting.query.obs.definition.BasicObsQuery;
 import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
@@ -43,9 +45,22 @@ public class BasicObsQueryEvaluator implements ObsQueryEvaluator {
         }
 
         if (context.getBaseCohort() != null) {
-            criteria.add(Restrictions.in("person.id", context.getBaseCohort().getMemberIds()));
+            if (context.getBaseCohort().size() == 0) {
+                return queryResult;
+            } else {
+                criteria.add(Restrictions.in("person.id", context.getBaseCohort().getMemberIds()));
+            }
         }
-        // TODO limit by baseObs if it's an ObsEvaluationContext
+        if (context instanceof ObsEvaluationContext) {
+            ObsIdSet baseObs = ((ObsEvaluationContext) context).getBaseObs();
+            if (baseObs != null) {
+                if (baseObs.getSize() == 0) {
+                    return queryResult;
+                } else {
+                    criteria.add(Restrictions.in("id", baseObs.getMemberIds()));
+                }
+            }
+        }
 
         for (Object obsId : criteria.list()) {
             queryResult.add((Integer) obsId);
