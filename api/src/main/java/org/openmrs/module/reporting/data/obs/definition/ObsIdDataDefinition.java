@@ -5,7 +5,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- *
+ * Gets Obs.obsId
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class ObsIdDataDefinition extends BaseDataDefinition implements ObsDataDefinition {

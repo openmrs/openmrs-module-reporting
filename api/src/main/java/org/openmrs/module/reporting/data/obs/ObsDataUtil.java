@@ -11,7 +11,7 @@ import org.openmrs.module.reporting.query.obs.service.ObsQueryService;
 import java.util.Set;
 
 /**
- *
+ * Obs Data Utility methods
  */
 public class ObsDataUtil {
 

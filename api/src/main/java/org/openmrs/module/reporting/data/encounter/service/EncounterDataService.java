@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Interface for methods used to manage and evaluate CohortDefinitions
+ * API for evaluating a EncounterDataDefinition across a set of Encounters
  */
 @Transactional
 public interface EncounterDataService extends DefinitionService<EncounterDataDefinition> {

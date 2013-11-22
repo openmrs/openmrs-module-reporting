@@ -7,9 +7,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
-/**
- *
- */
 public class ObsDataServiceImpl extends BaseDefinitionService<ObsDataDefinition> implements ObsDataService {
 
     @Override

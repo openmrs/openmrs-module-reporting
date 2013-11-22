@@ -9,7 +9,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
+ * API for evaluating an ObsDataDefinition across a set of Obs
  */
 @Transactional
 public interface ObsDataService extends DefinitionService<ObsDataDefinition> {

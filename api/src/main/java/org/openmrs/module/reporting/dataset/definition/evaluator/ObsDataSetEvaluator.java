@@ -40,7 +40,7 @@ public class ObsDataSetEvaluator implements DataSetEvaluator {
 
         SimpleDataSet dataSet = new SimpleDataSet(dsd, context);
 
-        // Construct an EncounterEvaluationContext based on the encounter filter
+        // Construct an ObsEvaluationContext based on the obs filter
         ObsIdSet r = null;
         if (dsd.getRowFilters() != null) {
             for (Mapped<? extends ObsQuery> q : dsd.getRowFilters()) {
