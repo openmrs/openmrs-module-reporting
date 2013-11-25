@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -30,6 +27,9 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DataSetDefinition for Producing a DataSet that has one row per Encounter
@@ -79,21 +79,20 @@ public class EncounterDataSetDefinition extends RowPerObjectDataSetDefinition {
 	 * Adds a new Column Definition given the passed parameters
 	 */
 	public void addColumn(String name, DataDefinition dataDefinition, String mappings,  DataConverter... converters) {
-		if (dataDefinition instanceof EncounterDataDefinition) {
-			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converters));
-		}
-		else if (dataDefinition instanceof PatientDataDefinition) {
-			EncounterDataDefinition edd = new PatientToEncounterDataDefinition((PatientDataDefinition) dataDefinition);
-			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
-		}
-		else if (dataDefinition instanceof PersonDataDefinition) {
-			EncounterDataDefinition edd = new PersonToEncounterDataDefinition((PersonDataDefinition) dataDefinition);
-			getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
-		}
-		else {
-			throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
-		}
-	}
+        if (dataDefinition == null) {
+            throw new IllegalArgumentException("Cannot add a null dataDefinition as a column on a DSD");
+        } else if (dataDefinition instanceof EncounterDataDefinition) {
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converters));
+        } else if (dataDefinition instanceof PatientDataDefinition) {
+            EncounterDataDefinition edd = new PatientToEncounterDataDefinition((PatientDataDefinition) dataDefinition);
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
+        } else if (dataDefinition instanceof PersonDataDefinition) {
+            EncounterDataDefinition edd = new PersonToEncounterDataDefinition((PersonDataDefinition) dataDefinition);
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
+        } else {
+            throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
+        }
+    }
 
 	/**
 	 * @see RowPerObjectDataSetDefinition#addColumns(String, RowPerObjectDataSetDefinition, String, DataConverter, TimeQualifier, Integer)
