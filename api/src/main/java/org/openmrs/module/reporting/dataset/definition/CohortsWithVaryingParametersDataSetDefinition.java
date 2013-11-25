@@ -98,7 +98,7 @@ public class CohortsWithVaryingParametersDataSetDefinition extends BaseDataSetDe
 
         public Column(String name, String label, Mapped<CohortDefinition> cohortDefinition) {
             super(name, label, EvaluatedCohort.class);
-            if (label.contains("{{")) {
+            if (label != null && label.contains("{{")) {
                 this.labelTemplate = label;
             }
             this.cohortDefinition = cohortDefinition;
