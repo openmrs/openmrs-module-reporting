@@ -2,7 +2,12 @@ package org.openmrs.module.reporting.template;
 
 import com.github.jknack.handlebars.Options;
 import org.junit.Test;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
+import org.openmrs.api.ConceptService;
 import org.openmrs.messagesource.MessageSourceService;
+
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -26,10 +31,29 @@ public class HandlebarsHelpersTest {
         when(options.hash("prefix", "")).thenReturn(prefix);
         when(options.hash("suffix", "")).thenReturn("");
 
-        HandlebarsHelpers helpers = new HandlebarsHelpers(mss);
+        HandlebarsHelpers helpers = new HandlebarsHelpers(mss, null);
         String message = helpers.message("abc-123-uuid", options);
 
         assertThat(message, is(expected));
+    }
+
+    @Test
+    public void testConceptName() throws Exception {
+        String source = "PIH";
+        String code = "ClinicalVisit";
+        String expected = "Clinical Visit";
+
+        Concept concept = new Concept();
+        concept.addName(new ConceptName(expected, Locale.ENGLISH));
+
+        ConceptService conceptService = mock(ConceptService.class);
+        when(conceptService.getConceptByMapping(code, source)).thenReturn(concept);
+
+        HandlebarsHelpers helpers = new HandlebarsHelpers(null, conceptService);
+        String conceptName = helpers.conceptName(source + ":" + code);
+
+        assertThat(conceptName, is(expected));
+
     }
 
 }

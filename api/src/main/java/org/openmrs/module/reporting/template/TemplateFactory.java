@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.template;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import org.openmrs.api.ConceptService;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.renderer.template.TemplateEvaluationException;
@@ -22,9 +23,10 @@ public class TemplateFactory {
     private Handlebars handlebars = new Handlebars();
 
     @Autowired
-    public TemplateFactory(@Qualifier("messageSourceService") MessageSourceService mss) {
+    public TemplateFactory(@Qualifier("messageSourceService") MessageSourceService mss,
+                           @Qualifier("conceptService") ConceptService conceptService) {
         this.mss = mss;
-        this.handlebars.registerHelpers(new HandlebarsHelpers(mss));
+        this.handlebars.registerHelpers(new HandlebarsHelpers(mss, conceptService));
     }
 
     public Template compileHandlebarsTemplate(String template) {
