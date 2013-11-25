@@ -94,9 +94,13 @@ public class CohortsWithVaryingParametersDataSetDefinition extends BaseDataSetDe
     public class Column extends DataSetColumn {
 
         private Mapped<? extends CohortDefinition> cohortDefinition;
+        private String labelTemplate;
 
         public Column(String name, String label, Mapped<CohortDefinition> cohortDefinition) {
             super(name, label, EvaluatedCohort.class);
+            if (label.contains("{{")) {
+                this.labelTemplate = label;
+            }
             this.cohortDefinition = cohortDefinition;
         }
 
@@ -106,6 +110,14 @@ public class CohortsWithVaryingParametersDataSetDefinition extends BaseDataSetDe
 
         public void setCohortDefinition(Mapped<? extends CohortDefinition> cohortDefinition) {
             this.cohortDefinition = cohortDefinition;
+        }
+
+        public String getLabelTemplate() {
+            return labelTemplate;
+        }
+
+        public void setLabelTemplate(String labelTemplate) {
+            this.labelTemplate = labelTemplate;
         }
 
     }

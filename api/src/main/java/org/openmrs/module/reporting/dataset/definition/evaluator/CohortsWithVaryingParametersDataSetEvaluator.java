@@ -60,6 +60,17 @@ public class CohortsWithVaryingParametersDataSetEvaluator implements DataSetEval
         Template rowLabelTemplate = templateFactory.compileHandlebarsTemplate(dsd.getRowLabelTemplate());
         DataSetColumn rowLabelColumn = new DataSetColumn("rowLabel", "", String.class);
 
+        for (CohortsWithVaryingParametersDataSetDefinition.Column column : dsd.getColumns()) {
+            if (column.getLabelTemplate() != null) {
+                Template template = templateFactory.compileHandlebarsTemplate(column.getLabelTemplate());
+                try {
+                    column.setLabel(template.apply(evalContext.getParameterValues()));
+                } catch (IOException ex) {
+                    throw new EvaluationException("column " + column.getLabelTemplate(), ex);
+                }
+            }
+        }
+
         for (Map<String, Object> parameterOption : dsd.getVaryingParameters()) {
             DataSetRow row = new DataSetRow();
             try {
