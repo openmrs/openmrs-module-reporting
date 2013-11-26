@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.reporting.data.patient.definition;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.reporting.common.Localized;
@@ -24,6 +21,9 @@ import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Patient Identifier Data Definition
@@ -100,14 +100,14 @@ public class PatientIdentifierDataDefinition extends BaseDataDefinition implemen
 	}
 
     /**
-     * @return whether or not to include only the first null value for each patient
+     * @return whether or not to include only the first non-null value for each patient
      */
     public Boolean getIncludeFirstNonNullOnly() {
         return includeFirstNonNullOnly;
     }
 
     /**
-     * @param includeFirstNonNullOnly whether or not to include only the first null value for each patient
+     * @param includeFirstNonNullOnly whether or not to include only the first non-null value for each patient
      */
     public void setIncludeFirstNonNullOnly(Boolean includeFirstNonNullOnly) {
         this.includeFirstNonNullOnly = includeFirstNonNullOnly;
