@@ -13,6 +13,8 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,15 +30,40 @@ public class GroupMemberObsDataEvaluator implements ObsDataEvaluator {
     public EvaluatedObsData evaluate(ObsDataDefinition definition, EvaluationContext context) throws EvaluationException {
         GroupMemberObsDataDefinition def = (GroupMemberObsDataDefinition) definition;
 
-        EvaluatedObsData d = new EvaluatedObsData(definition, context);
+        EvaluatedObsData data = new EvaluatedObsData(definition, context);
 
         Set<Integer> obsIds = ObsDataUtil.getObsIdsForContext(context, false);
 
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Obs.class);
         criteria.add(Restrictions.eq("voided", false));
+        criteria.add(Restrictions.in("obsGroup.id", obsIds));
+        criteria.add(Restrictions.eq("concept", def.getQuestion()));
+        List<Object> results = criteria.list();
 
-        // TODO finish this
-        return null;
+        // create an entry for each obs
+        for (Integer obsId : obsIds) {
+            if (!def.isSingleObs()) {
+                data.addData(obsId, new ArrayList<Obs>());
+            }
+            else {
+                data.addData(obsId, null);
+            }
+        }
+
+        // now populate with actual results
+        for (Object result : results) {
+            Obs obs = (Obs) result;
+            
+            if (!def.isSingleObs()) {
+                ((List<Obs>) data.getData().get(obs.getObsGroup().getId())).add(obs);
+            }
+            else {
+                // note that if there are multiple matching obs and we are in singleObs mode then last one wins
+                data.addData(obs.getObsGroup().getId(), obs);
+            }
+        }
+
+        return data;
     }
 
 }
