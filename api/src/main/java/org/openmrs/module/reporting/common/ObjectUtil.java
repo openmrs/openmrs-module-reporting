@@ -30,6 +30,7 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
@@ -104,7 +105,7 @@ public class ObjectUtil {
      * @param o an OpenmrsMetadata
      * @return a String or null if no locale available
      */
-    public static String getLocalization(OpenmrsMetadata o, MessageSourceService mss){
+    public static String getLocalization(OpenmrsMetadata o){
         if ( o != null ){
             Locale locale = Context.getLocale();
             String simpleName = o.getClass().getSimpleName();
@@ -113,7 +114,7 @@ public class ObjectUtil {
                 simpleName = simpleName.substring(0, underscoreIndex);
             }
             String code = "ui.i18n." + simpleName + ".name." + o.getUuid();
-            String localization = mss.getMessage(code);
+            String localization = MessageUtil.translate(code);
             if (localization == null || localization.equals(code)) {
                 return null;
             } else {
@@ -358,8 +359,7 @@ public class ObjectUtil {
 			}
 		}
 		if (o instanceof OpenmrsMetadata) {
-            MessageSourceService mss = Context.getService(MessageSourceService.class);
-            String name = getLocalization((OpenmrsMetadata)o, mss);
+            String name = getLocalization((OpenmrsMetadata)o);
             if (StringUtils.isBlank( name )){
                 name = ((OpenmrsMetadata) o).getName();
                 if (name == null) {

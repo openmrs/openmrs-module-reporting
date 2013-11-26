@@ -17,8 +17,10 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.openmrs.ConceptClass;
 import org.openmrs.Location;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonName;
 import org.openmrs.User;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -26,14 +28,10 @@ import org.openmrs.test.Verifies;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Collection;
 
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.Matchers.any;
 
 
 /**
@@ -41,8 +39,10 @@ import static org.mockito.Matchers.any;
  */
 public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
 
-    protected static final String XML_STANDARD_DATASET = "org/openmrs/include/standardTestDataset.xml";
-	
+    protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
+
+    protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+
 	@Test
 	public void sortShouldSortSimpleStrings() throws Exception {
 		List<String> list = Arrays.asList(new String[] { "Daniel", "Abbas", "Kizito" });
@@ -236,21 +236,22 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
     public void shouldReturnNullIfNoFormatterPresent() {
         Location location = new Location();
         location.setName("Test name");
-        Assert.assertNull(ObjectUtil.getLocalization(location, Context.getService(MessageSourceService.class)));
+        Assert.assertNull(ObjectUtil.getLocalization(location));
     }
 
     @Test
-    public void shouldReturnLocaleForMetadataObject()  {
-        String locationUuid = "f3a5586e-f06c-4dfb-96b0-6f3451a35e90";
-        String translatedLocation = "Translated Location";
-        MessageSourceService mss = mock(MessageSourceService.class);
-        String code = "ui.i18n.Location.name." + locationUuid;
-        when(mss.getMessage(eq(code))).thenReturn(translatedLocation);
+    @Verifies(value="shouldReturnTheDefaultOpenmrsMetadataNames", method="format(OpenmrsMetadata md)")
+    public void shouldReturnTheDefaultOpenmrsMetadataNames() throws Exception {
+        String metadataName = "Never Never Land";
+        executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+		LocationService locationService = Context.getLocationService();
+		Location location = locationService.getLocation(metadataName);
+        String formattedName = ObjectUtil.format(location);
+        Assert.assertEquals(metadataName, formattedName);
 
-        Location location = new Location();
-        location.setName("Test Location");
-        location.setUuid(locationUuid);
-        Assert.assertEquals(ObjectUtil.getLocalization(location, mss), translatedLocation);
-
+        metadataName = "OpenMRS Identification Number";
+        PatientIdentifierType patientIdentifierType = Context.getPatientService().getPatientIdentifierTypeByName(metadataName);
+        formattedName = ObjectUtil.format(patientIdentifierType);
+        Assert.assertEquals(metadataName, formattedName);
     }
 }
