@@ -99,7 +99,12 @@ public class ObjectUtil {
     	return (isNull(o) ? replacement : o);
     }
 
-    public static String getLocalization(OpenmrsMetadata o){
+    /**
+     * Returns the locale of the passed OpenmrsMetadata object
+     * @param o an OpenmrsMetadata
+     * @return a String or null if no locale available
+     */
+    public static String getLocalization(OpenmrsMetadata o, MessageSourceService mss){
         if ( o != null ){
             Locale locale = Context.getLocale();
             String simpleName = o.getClass().getSimpleName();
@@ -108,7 +113,7 @@ public class ObjectUtil {
                 simpleName = simpleName.substring(0, underscoreIndex);
             }
             String code = "ui.i18n." + simpleName + ".name." + o.getUuid();
-            String localization = Context.getService(MessageSourceService.class).getMessage(code, null, locale);
+            String localization = mss.getMessage(code);
             if (localization == null || localization.equals(code)) {
                 return null;
             } else {
@@ -353,7 +358,8 @@ public class ObjectUtil {
 			}
 		}
 		if (o instanceof OpenmrsMetadata) {
-            String name = getLocalization((OpenmrsMetadata)o);
+            MessageSourceService mss = Context.getService(MessageSourceService.class);
+            String name = getLocalization((OpenmrsMetadata)o, mss);
             if (StringUtils.isBlank( name )){
                 name = ((OpenmrsMetadata) o).getName();
                 if (name == null) {

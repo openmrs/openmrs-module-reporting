@@ -13,20 +13,35 @@
  */
 package org.openmrs.module.reporting.common;
 
-import java.util.Arrays;
-import java.util.List;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
 import org.openmrs.ConceptClass;
+import org.openmrs.Location;
 import org.openmrs.PersonName;
 import org.openmrs.User;
+import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.Verifies;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Collection;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+
 
 /**
  * Tests methods on on ObjectUtil
  */
-public class ObjectUtilTest {
+public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
+
+    protected static final String XML_STANDARD_DATASET = "org/openmrs/include/standardTestDataset.xml";
 	
 	@Test
 	public void sortShouldSortSimpleStrings() throws Exception {
@@ -209,10 +224,33 @@ public class ObjectUtilTest {
 		ConceptClass conceptClass4 = new ConceptClass(2);
 		
 		List<ConceptClass> list = Arrays.asList(new ConceptClass[] { conceptClass1, conceptClass2, conceptClass3, conceptClass4 });
-		list = ObjectUtil.sort((list), "conceptClassId");
+		list = org.openmrs.module.reporting.common.ObjectUtil.sort((list), "conceptClassId");
 		Assert.assertEquals(conceptClass2, list.get(0));
 		Assert.assertEquals(conceptClass4, list.get(1));
 		Assert.assertEquals(conceptClass1, list.get(2));
 		Assert.assertEquals(conceptClass3, list.get(3));
 	}
+
+    @Test
+    @Verifies(value="shouldReturnNullIfNoFormatterPresent", method="getLocalization(OpenmrsMetadata md)")
+    public void shouldReturnNullIfNoFormatterPresent() {
+        Location location = new Location();
+        location.setName("Test name");
+        Assert.assertNull(ObjectUtil.getLocalization(location, Context.getService(MessageSourceService.class)));
+    }
+
+    @Test
+    public void shouldReturnLocaleForMetadataObject()  {
+        String locationUuid = "f3a5586e-f06c-4dfb-96b0-6f3451a35e90";
+        String translatedLocation = "Translated Location";
+        MessageSourceService mss = mock(MessageSourceService.class);
+        String code = "ui.i18n.Location.name." + locationUuid;
+        when(mss.getMessage(eq(code))).thenReturn(translatedLocation);
+
+        Location location = new Location();
+        location.setName("Test Location");
+        location.setUuid(locationUuid);
+        Assert.assertEquals(ObjectUtil.getLocalization(location, mss), translatedLocation);
+
+    }
 }
