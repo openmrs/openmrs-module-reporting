@@ -13,9 +13,7 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import java.util.Map;
-import java.util.Set;
-
+import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
@@ -30,7 +28,10 @@ import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
-/**
+import java.util.Map;
+import java.util.Set;
+
+/**                                 d
  * Evaluates a PatientToEncounterDataDefinition to produce a EncounterData
  */
 @Handler(supports=PatientToEncounterDataDefinition.class, order=50)
@@ -38,15 +39,26 @@ public class PatientToEncounterDataEvaluator implements EncounterDataEvaluator {
 
 	/** 
 	 * @see EncounterDataEvaluator#evaluate(EncounterDataDefinition, EvaluationContext)
-	 * @should return person data by for each patient in the passed cohort
+	 * @should return patient data for each encounter in the passed cohort
 	 */
-	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
-		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
-		PatientToEncounterDataDefinition def = (PatientToEncounterDataDefinition)definition;
-		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def.getJoinedDefinition(), context);
-		DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
-		Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
-		Map<Integer, Integer> convertedIds = dqs.convertData(Patient.class, "patientId", pd.getData().keySet(), Encounter.class, "patient.patientId", encIds);
+	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext encounterEvaluationContext) throws EvaluationException {
+
+        DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
+        EvaluatedEncounterData c = new EvaluatedEncounterData(definition, encounterEvaluationContext);
+		
+        // create a map of encounter ids -> patient ids
+        Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(encounterEvaluationContext, true);
+        Map<Integer, Integer> convertedIds = dqs.convertData(Patient.class, "patientId", null, Encounter.class, "patient.patientId", encIds);
+        
+        // create a new (patient) evaluation context using the retrieved ids
+        EvaluationContext patientEvaluationContext = new EvaluationContext();
+        patientEvaluationContext.setBaseCohort(new Cohort(convertedIds.values()));
+        
+        // evaluate the joined definition via this patient context
+        PatientToEncounterDataDefinition def = (PatientToEncounterDataDefinition) definition;
+		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def.getJoinedDefinition(), patientEvaluationContext);
+
+        // now create the result set by mapping the results in the patient data set to encounter ids
 		for (Integer encId : convertedIds.keySet()) {
 			c.addData(encId, pd.getData().get(convertedIds.get(encId)));
 		}
