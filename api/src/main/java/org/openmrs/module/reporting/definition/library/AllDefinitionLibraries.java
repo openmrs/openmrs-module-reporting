@@ -6,7 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Allows access to all definitions in all libraries
@@ -44,6 +46,19 @@ public class AllDefinitionLibraries {
             }
         }
         return null;
+    }
+
+    /**
+     * @return all the types that return values if you call getDefinitionSummaries(clazz)
+     */
+    public Set<Class<? extends Definition>> getAllDefinitionTypes() {
+        Set<Class<? extends Definition>> types = new LinkedHashSet<Class<? extends Definition>>();
+        if (libraries != null) {
+            for (DefinitionLibrary<?> library : libraries) {
+                types.add((Class<? extends Definition>) library.getDefinitionType());
+            }
+        }
+        return types;
     }
 
     /**

@@ -1,9 +1,12 @@
 package org.openmrs.module.reporting.definition.library;
 
 import org.junit.Test;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -18,6 +21,11 @@ public class AllDefinitionLibrariesComponentTest extends BaseModuleContextSensit
     @Test
     public void testSetup() throws Exception {
         assertThat(libraries.getLibraries().size(), is(2));
+    }
+
+    @Test
+    public void testGetAllDefinitionTypes() throws Exception {
+        assertThat(libraries.getAllDefinitionTypes(), containsInAnyOrder(CohortDefinition.class, PatientDataDefinition.class));
     }
 
 }
