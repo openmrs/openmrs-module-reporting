@@ -13,21 +13,36 @@
  */
 package org.openmrs.module.reporting.common;
 
+import junit.framework.Assert;
+import org.junit.Test;
+import org.openmrs.ConceptClass;
+import org.openmrs.Location;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonName;
+import org.openmrs.User;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.Verifies;
+
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.openmrs.ConceptClass;
-import org.openmrs.PersonName;
-import org.openmrs.User;
 
 /**
  * Tests methods on on ObjectUtil
  */
-public class ObjectUtilTest {
-	
+public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
+
+    protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
+
+    protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+
 	@Test
 	public void sortShouldSortSimpleStrings() throws Exception {
 		List<String> list = Arrays.asList(new String[] { "Daniel", "Abbas", "Kizito" });
@@ -209,10 +224,34 @@ public class ObjectUtilTest {
 		ConceptClass conceptClass4 = new ConceptClass(2);
 		
 		List<ConceptClass> list = Arrays.asList(new ConceptClass[] { conceptClass1, conceptClass2, conceptClass3, conceptClass4 });
-		list = ObjectUtil.sort((list), "conceptClassId");
+		list = org.openmrs.module.reporting.common.ObjectUtil.sort((list), "conceptClassId");
 		Assert.assertEquals(conceptClass2, list.get(0));
 		Assert.assertEquals(conceptClass4, list.get(1));
 		Assert.assertEquals(conceptClass1, list.get(2));
 		Assert.assertEquals(conceptClass3, list.get(3));
 	}
+
+    @Test
+    @Verifies(value="shouldReturnNullIfNoFormatterPresent", method="getLocalization(OpenmrsMetadata md)")
+    public void shouldReturnNullIfNoFormatterPresent() {
+        Location location = new Location();
+        location.setName("Test name");
+        Assert.assertNull(ObjectUtil.getLocalization(location));
+    }
+
+    @Test
+    @Verifies(value="shouldReturnTheDefaultOpenmrsMetadataNames", method="format(OpenmrsMetadata md)")
+    public void shouldReturnTheDefaultOpenmrsMetadataNames() throws Exception {
+        String metadataName = "Never Never Land";
+        executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+		LocationService locationService = Context.getLocationService();
+		Location location = locationService.getLocation(metadataName);
+        String formattedName = ObjectUtil.format(location);
+        Assert.assertEquals(metadataName, formattedName);
+
+        metadataName = "OpenMRS Identification Number";
+        PatientIdentifierType patientIdentifierType = Context.getPatientService().getPatientIdentifierTypeByName(metadataName);
+        formattedName = ObjectUtil.format(patientIdentifierType);
+        Assert.assertEquals(metadataName, formattedName);
+    }
 }

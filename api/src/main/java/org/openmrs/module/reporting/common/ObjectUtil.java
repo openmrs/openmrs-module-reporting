@@ -12,10 +12,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -27,6 +29,8 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
@@ -95,7 +99,30 @@ public class ObjectUtil {
     public static <T extends Object> T nvl(T o, T replacement) {
     	return (isNull(o) ? replacement : o);
     }
-    
+
+    /**
+     * Returns the locale of the passed OpenmrsMetadata object
+     * @param o an OpenmrsMetadata
+     * @return a String or null if no locale available
+     */
+    public static String getLocalization(OpenmrsMetadata o){
+        if ( o != null ){
+            Locale locale = Context.getLocale();
+            String simpleName = o.getClass().getSimpleName();
+            int underscoreIndex = simpleName.indexOf("_$");
+            if (underscoreIndex > 0) {
+                simpleName = simpleName.substring(0, underscoreIndex);
+            }
+            String code = "ui.i18n." + simpleName + ".name." + o.getUuid();
+            String localization = MessageUtil.translate(code);
+            if (localization == null || localization.equals(code)) {
+                return null;
+            } else {
+                return localization;
+            }
+        }
+        return null;
+    }
     /**
      * Returns toString on the passed object if not null, or on replacement otherwise
      */
@@ -332,15 +359,18 @@ public class ObjectUtil {
 			}
 		}
 		if (o instanceof OpenmrsMetadata) {
-			String name = ((OpenmrsMetadata) o).getName();
-			if (name == null) {
-				if (o instanceof ProgramWorkflow) {
-					name = ((ProgramWorkflow)o).getConcept().getDisplayString();
-				}
-				else if (o instanceof ProgramWorkflowState) {
-					name = ((ProgramWorkflowState)o).getConcept().getDisplayString();
-				}
-			}
+            String name = getLocalization((OpenmrsMetadata)o);
+            if (StringUtils.isBlank( name )){
+                name = ((OpenmrsMetadata) o).getName();
+                if (name == null) {
+                    if (o instanceof ProgramWorkflow) {
+                        name = ((ProgramWorkflow)o).getConcept().getDisplayString();
+                    }
+                    else if (o instanceof ProgramWorkflowState) {
+                        name = ((ProgramWorkflowState)o).getConcept().getDisplayString();
+                    }
+                }
+            }
 			return name;
 		}
 		if (o instanceof OpenmrsData) {
