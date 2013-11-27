@@ -1,13 +1,14 @@
 package org.openmrs.module.reporting.cohort.definition;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Localized("reporting.CompositionCohortDefinition")
 public class CompositionCohortDefinition extends BaseCohortDefinition {
@@ -71,6 +72,10 @@ public class CompositionCohortDefinition extends BaseCohortDefinition {
      */
     public void addSearch(String key, CohortDefinition definition, Map<String, Object> mappings) {
     	addSearch(key, new Mapped<CohortDefinition>(definition, mappings));
+    }
+
+    public void addSearch(String key, CohortDefinition definition, String mappings) {
+        addSearch(key, definition, ParameterizableUtil.createParameterMappings(mappings));
     }
 
     /**
