@@ -41,6 +41,7 @@ public class PatientToEncounterDataEvaluator implements EncounterDataEvaluator {
 	 * @see EncounterDataEvaluator#evaluate(EncounterDataDefinition, EvaluationContext)
 	 * @should return patient data for each encounter in the passed cohort
 	 */
+    @Override
 	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext encounterEvaluationContext) throws EvaluationException {
 
         DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
@@ -59,7 +60,7 @@ public class PatientToEncounterDataEvaluator implements EncounterDataEvaluator {
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def.getJoinedDefinition(), patientEvaluationContext);
 
         // now create the result set by mapping the results in the patient data set to encounter ids
-		for (Integer encId : convertedIds.keySet()) {
+		for (Integer encId : encIds) {
 			c.addData(encId, pd.getData().get(convertedIds.get(encId)));
 		}
 		return c;

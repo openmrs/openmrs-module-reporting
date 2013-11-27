@@ -43,6 +43,7 @@ public class PersonToEncounterDataEvaluator implements EncounterDataEvaluator {
 	 * @see EncounterDataEvaluator#evaluate(EncounterDataDefinition, EvaluationContext)
 	 * @should return person data by for each encounter in the passed context
 	 */
+    @Override
 	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext encounterEvaluationContext) throws EvaluationException {
 
         DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
@@ -61,7 +62,7 @@ public class PersonToEncounterDataEvaluator implements EncounterDataEvaluator {
         EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(def.getJoinedDefinition(), personEvaluationContext);
 
         // now create the result set by mapping the results in the person data set to encounter ids
-        for (Integer encId : convertedIds.keySet()) {
+        for (Integer encId : encIds) {
             c.addData(encId, pd.getData().get(convertedIds.get(encId)));
         }
         return c;

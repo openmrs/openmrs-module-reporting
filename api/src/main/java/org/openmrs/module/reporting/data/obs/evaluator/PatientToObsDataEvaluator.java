@@ -25,8 +25,9 @@ import java.util.Set;
 public class PatientToObsDataEvaluator implements ObsDataEvaluator {
 
     /**
-     *  @should return patient data for each obs in the passed cohort
+     *  @should return patient data for each obs in the passed context
      */
+    @Override
     public EvaluatedObsData evaluate(ObsDataDefinition definition, EvaluationContext obsEvaluationContext) throws EvaluationException {
 
         DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
@@ -45,7 +46,7 @@ public class PatientToObsDataEvaluator implements ObsDataEvaluator {
         EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def.getJoinedDefinition(), patientEvaluationContext);
 
         // now create the result set by mapping the results in the patient data set to obs ids
-        for (Integer obsId : convertedIds.keySet()) {
+        for (Integer obsId : obsIds) {
             c.addData(obsId, pd.getData().get(convertedIds.get(obsId)));
         }
         return c;

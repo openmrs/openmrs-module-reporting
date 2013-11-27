@@ -29,6 +29,7 @@ public class PersonToObsDataEvaluator implements ObsDataEvaluator {
     /**
      *  @should return person data for each obs in the passed context
      */
+    @Override
     public EvaluatedObsData evaluate(ObsDataDefinition definition, EvaluationContext obsEvaluationContext) throws EvaluationException {
 
         DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
@@ -47,7 +48,7 @@ public class PersonToObsDataEvaluator implements ObsDataEvaluator {
         EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(def.getJoinedDefinition(), personEvaluationContext);
 
         // now create the result set by mapping the results in the person data set to obs ids
-        for (Integer obsId : convertedIds.keySet()) {
+        for (Integer obsId : obsIds) {
             c.addData(obsId, pd.getData().get(convertedIds.get(obsId)));
         }
         return c;

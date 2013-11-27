@@ -5,7 +5,10 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
+import org.openmrs.module.reporting.data.obs.definition.EncounterToObsDataDefinition;
 import org.openmrs.module.reporting.data.obs.definition.ObsDataDefinition;
+import org.openmrs.module.reporting.data.obs.definition.PatientToObsDataDefinition;
+import org.openmrs.module.reporting.data.obs.definition.PersonToObsDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
@@ -45,18 +48,18 @@ public class ObsDataSetDefinition extends RowPerObjectDataSetDefinition {
         if (dataDefinition instanceof ObsDataDefinition) {
             getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converters));
         }
-//        else if (dataDefinition instanceof EncounterDataDefinition) {
-//            ObsDataDefinition odd = new EncounterToObsDataDefinition((EncounterDataDefinition) dataDefinition);
-//            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, odd, mappings, converters));
-//        }
-//        else if (dataDefinition instanceof PatientDataDefinition) {
-//            ObsDataDefinition odd = new PatientToObsDataDefinition((EncounterDataDefinition) dataDefinition);
-//            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, odd, mappings, converters));
-//        }
-//        else if (dataDefinition instanceof PersonDataDefinition) {
-//            ObsDataDefinition odd = new PersonToObsDataDefinition((EncounterDataDefinition) dataDefinition);
-//            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, odd, mappings, converters));
-//        }
+        else if (dataDefinition instanceof EncounterDataDefinition) {
+            ObsDataDefinition odd = new EncounterToObsDataDefinition((EncounterDataDefinition) dataDefinition);
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, odd, mappings, converters));
+        }
+        else if (dataDefinition instanceof PatientDataDefinition) {
+            ObsDataDefinition odd = new PatientToObsDataDefinition((PatientDataDefinition) dataDefinition);
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, odd, mappings, converters));
+        }
+        else if (dataDefinition instanceof PersonDataDefinition) {
+            ObsDataDefinition odd = new PersonToObsDataDefinition((PersonDataDefinition) dataDefinition);
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, odd, mappings, converters));
+        }
         else {
             throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
         }
