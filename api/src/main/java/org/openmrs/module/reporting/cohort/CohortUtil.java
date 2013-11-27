@@ -1,10 +1,5 @@
 package org.openmrs.module.reporting.cohort;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -13,6 +8,11 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * A utility class for cohort
@@ -145,7 +145,7 @@ public class CohortUtil {
 		int i = 1;
 		for (CohortDefinition cd : definitions) {
 			if (cd != null) {
-				d.addSearch(""+i, cd, null);
+				d.addSearch(""+i, cd, (Map<String, Object>) null);
 				if (s.length() > 0) {
 					s.append(" " + operator + " ");
 				}
@@ -161,11 +161,11 @@ public class CohortUtil {
      */
 	public static CohortDefinition minus(CohortDefinition base, CohortDefinition... toSubtract) {
 		CompositionCohortDefinition d = new CompositionCohortDefinition();
-		d.addSearch("base", base, null);
+		d.addSearch("base", base, (Map<String, Object>) null);
 		StringBuilder s = new StringBuilder("base AND NOT (");
 		int i = 1;
 		for (CohortDefinition cd : toSubtract) {
-			d.addSearch(""+i, cd, null);
+			d.addSearch(""+i, cd, (Map<String, Object>) null);
 			if (i > 1) {
 				s.append(" OR ");
 			}
