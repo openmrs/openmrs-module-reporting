@@ -1,5 +1,7 @@
 package org.openmrs.module.reporting.validator;
 
+import java.util.HashMap;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -9,9 +11,6 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Tests methods on the {@link CohortDefinitionValidator} class.
@@ -41,7 +40,7 @@ public class CompositionCohortDefinitionValidatorTest  extends BaseModuleContext
 	@Verifies(value = "should fail validation if searches is empty", method = "validate(Object,Errors)")
 	public void validate_shouldFailValidationIfSearchesIsEmpty() throws Exception {
 		CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
-		compositionCohortDefinition.setSearches(new HashMap<String, Mapped<? extends CohortDefinition>>());
+		compositionCohortDefinition.setSearches(new HashMap<String, Mapped<CohortDefinition>>());
 		compositionCohortDefinition.setCompositionString("Some Composition String");
 		
 		Errors errors = new BindException(compositionCohortDefinition, "cohortDefinition");
@@ -56,7 +55,7 @@ public class CompositionCohortDefinitionValidatorTest  extends BaseModuleContext
 	@Test
 	@Verifies(value = "should fail validation if composition string is null", method = "validate(Object,Errors)")
 	public void validate_shouldFailValidationIfCompositionStringIsNull() throws Exception {
-		Map<String, Mapped<? extends CohortDefinition>> searches = new HashMap<String, Mapped<? extends CohortDefinition>>();
+		HashMap<String, Mapped<CohortDefinition>> searches = new HashMap<String, Mapped<CohortDefinition>>();
 		searches.put("Some Key", new Mapped());
 		
 		CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
@@ -75,7 +74,7 @@ public class CompositionCohortDefinitionValidatorTest  extends BaseModuleContext
 	@Test
 	@Verifies(value = "should fail validation if composition string is empty", method = "validate(Object,Errors)")
 	public void validate_shouldFailValidationIfCompositionStringIsEmpty() throws Exception {
-		Map<String, Mapped<? extends CohortDefinition>> searches = new HashMap<String, Mapped<? extends CohortDefinition>>();
+		HashMap<String, Mapped<CohortDefinition>> searches = new HashMap<String, Mapped<CohortDefinition>>();
 		searches.put("Some Key", new Mapped());
 		
 		CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
@@ -94,7 +93,7 @@ public class CompositionCohortDefinitionValidatorTest  extends BaseModuleContext
 	@Test
 	@Verifies(value = "should pass validation if all fields are correct", method = "validate(Object,Errors)")
 	public void validate_shouldPassValidationIfAllFieldsAreCorrect() throws Exception {
-		Map<String, Mapped<? extends CohortDefinition>> searches = new HashMap<String, Mapped<? extends CohortDefinition>>();
+		HashMap<String, Mapped<CohortDefinition>> searches = new HashMap<String, Mapped<CohortDefinition>>();
 		searches.put("Some Key", new Mapped<CohortDefinition>());
 		
 		CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();

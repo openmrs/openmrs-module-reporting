@@ -13,6 +13,14 @@
  */
 package org.openmrs.module.reporting.cohort.definition.util;
 
+import java.io.StreamTokenizer;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Stack;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -26,14 +34,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-
-import java.io.StreamTokenizer;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Stack;
 
 /**
  * This class encapsulates the parsing logic necessary to take a String
@@ -93,7 +93,7 @@ public class CohortExpressionParser {
 			}
 			else if (o instanceof String || o instanceof Integer) {
 				log.debug("This refers to a Search, try to find it...");
-				Mapped<? extends CohortDefinition> cd = composition.getSearches().get(o.toString());
+				Mapped<CohortDefinition> cd = composition.getSearches().get(o.toString());
 				if (cd == null || cd.getParameterizable() == null) {
 					throw new MissingDependencyException(o.toString());
 				}

@@ -1,13 +1,13 @@
 package org.openmrs.module.reporting.cohort.definition;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Localized("reporting.CompositionCohortDefinition")
 public class CompositionCohortDefinition extends BaseCohortDefinition {
@@ -19,7 +19,7 @@ public class CompositionCohortDefinition extends BaseCohortDefinition {
 	//***** PROPERTIES *****
 	
 	@ConfigurationProperty(required=true)
-	private Map<String, Mapped<? extends CohortDefinition>> searches = new HashMap<String, Mapped<? extends CohortDefinition>>();
+	private Map<String, Mapped<CohortDefinition>> searches = new HashMap<String, Mapped<CohortDefinition>>();
 	
 	@ConfigurationProperty(required=true)
 	private String compositionString;
@@ -52,9 +52,9 @@ public class CompositionCohortDefinition extends BaseCohortDefinition {
     /**
      * @return the searches
      */
-    public Map<String, Mapped<? extends CohortDefinition>> getSearches() {
+    public Map<String, Mapped<CohortDefinition>> getSearches() {
     	if (searches == null) {
-    		searches = new HashMap<String, Mapped<? extends CohortDefinition>>();
+    		searches = new HashMap<String, Mapped<CohortDefinition>>();
     	}
     	return searches;
     }
@@ -62,7 +62,7 @@ public class CompositionCohortDefinition extends BaseCohortDefinition {
     /**
      * Adds a cohort definition
      */
-    public void addSearch(String key, Mapped<? extends CohortDefinition> mappedDefinition) {
+    public void addSearch(String key, Mapped<CohortDefinition> mappedDefinition) {
     	getSearches().put(key, mappedDefinition);
     }
     
@@ -76,7 +76,7 @@ public class CompositionCohortDefinition extends BaseCohortDefinition {
     /**
      * @param searches the searches to set
      */
-    public void setSearches(Map<String, Mapped<? extends CohortDefinition>> searches) {
+    public void setSearches(Map<String, Mapped<CohortDefinition>> searches) {
     	this.searches = searches;
     }
 }
