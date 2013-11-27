@@ -1,5 +1,7 @@
 package org.openmrs.module.reporting.data.obs.evaluator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -22,6 +24,11 @@ import java.util.Set;
  */
 @Handler(supports=GroupMemberObsDataDefinition.class, order=50)
 public class GroupMemberObsDataEvaluator implements ObsDataEvaluator {
+
+    /**
+     * Logger
+     */
+    protected final Log log = LogFactory.getLog(getClass());
 
     @Autowired
     SessionFactory sessionFactory;
@@ -58,7 +65,12 @@ public class GroupMemberObsDataEvaluator implements ObsDataEvaluator {
                 ((List<Obs>) data.getData().get(obs.getObsGroup().getId())).add(obs);
             }
             else {
+
                 // note that if there are multiple matching obs and we are in singleObs mode then last one wins
+                if (data.getData().get(obs.getObsGroup().getId()) != null) {
+                    log.warn("Multiple matching obs for obsgroup " + obs.getObsGroup() + "... picking one");
+                }
+
                 data.addData(obs.getObsGroup().getId(), obs);
             }
         }
