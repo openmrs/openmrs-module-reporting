@@ -33,7 +33,8 @@
 	<modules>
 		<module>api</module>
 		<module>omod</module>
-	</modules>
+        <module>test-1.9</module>
+    </modules>
 
 	<properties>
 		<openMRSVersion>1.6.6</openMRSVersion>
