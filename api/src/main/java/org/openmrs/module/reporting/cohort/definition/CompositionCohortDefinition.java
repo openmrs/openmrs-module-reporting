@@ -63,8 +63,8 @@ public class CompositionCohortDefinition extends BaseCohortDefinition {
     /**
      * Adds a cohort definition
      */
-    public void addSearch(String key, Mapped<CohortDefinition> mappedDefinition) {
-    	getSearches().put(key, mappedDefinition);
+    public void addSearch(String key, Mapped<? extends CohortDefinition> mappedDefinition) {
+    	getSearches().put(key, (Mapped<CohortDefinition>) mappedDefinition);
     }
     
     /**
@@ -72,10 +72,6 @@ public class CompositionCohortDefinition extends BaseCohortDefinition {
      */
     public void addSearch(String key, CohortDefinition definition, Map<String, Object> mappings) {
     	addSearch(key, new Mapped<CohortDefinition>(definition, mappings));
-    }
-
-    public void addSearch(String key, CohortDefinition definition, String mappings) {
-        addSearch(key, definition, ParameterizableUtil.createParameterMappings(mappings));
     }
 
     /**

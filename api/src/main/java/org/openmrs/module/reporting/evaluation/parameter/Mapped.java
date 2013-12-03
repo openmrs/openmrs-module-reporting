@@ -68,8 +68,16 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 			this.parameterMappings = parameterMappings;
 		}
 	}
-	
-	//***********************
+
+    //***********************
+    // STATIC FACTORY METHOD
+    //***********************
+
+    public static <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
+        return new Mapped(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
+    }
+
+    //***********************
 	// INSTANCE METHODS
 	//***********************
 	
@@ -102,7 +110,7 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	/**
 	 * Adds a new Parameter Mapping to this wrapper class
 	 * @param parameterName - The name of the Parameter to wrap
-	 * @param expression - The expression which Maps to a Parameter Name in the enclosing class
+	 * @param valueOrExpression - The expression which Maps to a Parameter Name in the enclosing class
 	 */
 	public void addParameterMapping(String parameterName, Object valueOrExpression) {
 		parameterMappings.put(parameterName, valueOrExpression);
