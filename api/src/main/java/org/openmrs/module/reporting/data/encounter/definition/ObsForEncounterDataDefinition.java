@@ -14,7 +14,7 @@ import java.util.List;
  * associated with the obs
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class EncounterObsDataDefinition  extends BaseDataDefinition implements EncounterDataDefinition {
+public class ObsForEncounterDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
@@ -24,11 +24,11 @@ public class EncounterObsDataDefinition  extends BaseDataDefinition implements E
     @ConfigurationProperty
     private boolean singleObs = true;
 
-    public EncounterObsDataDefinition() {
+    public ObsForEncounterDataDefinition() {
         super();
     }
 
-    public EncounterObsDataDefinition(String name) {
+    public ObsForEncounterDataDefinition(String name) {
         super(name);
     }
 

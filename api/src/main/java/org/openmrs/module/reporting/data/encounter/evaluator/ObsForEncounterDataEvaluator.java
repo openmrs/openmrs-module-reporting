@@ -10,7 +10,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
-import org.openmrs.module.reporting.data.encounter.definition.EncounterObsDataDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.ObsForEncounterDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Evaluates a EncounterObsDataDefinition to produce EncounterData
+ * Evaluates a ObsForEncounterDataDefinition to produce EncounterData
  */
-@Handler(supports=EncounterObsDataDefinition.class, order=50)
-public class EncounterObsDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ObsForEncounterDataDefinition.class, order=50)
+public class ObsForEncounterDataEvaluator implements EncounterDataEvaluator {
 
     /**
      * Logger
@@ -36,7 +36,7 @@ public class EncounterObsDataEvaluator implements EncounterDataEvaluator {
     @Override
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         
-        EncounterObsDataDefinition def = (EncounterObsDataDefinition) definition;
+        ObsForEncounterDataDefinition def = (ObsForEncounterDataDefinition) definition;
         EvaluatedEncounterData data = new EvaluatedEncounterData();
 
         Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, false);

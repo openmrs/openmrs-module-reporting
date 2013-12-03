@@ -17,7 +17,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
-import org.openmrs.module.reporting.data.encounter.definition.EncounterObsDataDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.ObsForEncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
-public class EncounterObsEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest {
 
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 
@@ -74,7 +74,7 @@ public class EncounterObsEvaluatorTest extends BaseModuleContextSensitiveTest {
         EncounterEvaluationContext context = new EncounterEvaluationContext();
         context.setBaseEncounters(new EncounterIdSet(enc1.getId()));
 
-        EncounterObsDataDefinition def = new EncounterObsDataDefinition();
+        ObsForEncounterDataDefinition def = new ObsForEncounterDataDefinition();
         def.setQuestion(weight);
         def.setSingleObs(true);
         EvaluatedEncounterData results = encounterDataService.evaluate(def, context);
@@ -98,7 +98,7 @@ public class EncounterObsEvaluatorTest extends BaseModuleContextSensitiveTest {
         EncounterEvaluationContext context = new EncounterEvaluationContext();
         context.setBaseEncounters(new EncounterIdSet(enc1.getId()));
 
-        EncounterObsDataDefinition def = new EncounterObsDataDefinition();
+        ObsForEncounterDataDefinition def = new ObsForEncounterDataDefinition();
         def.setQuestion(weight);
         def.setSingleObs(false);
         EvaluatedEncounterData results = encounterDataService.evaluate(def, context);
@@ -128,7 +128,7 @@ public class EncounterObsEvaluatorTest extends BaseModuleContextSensitiveTest {
         EncounterEvaluationContext context = new EncounterEvaluationContext();
         context.setBaseEncounters(new EncounterIdSet(enc1.getId(), enc2.getId()));
 
-        EncounterObsDataDefinition def = new EncounterObsDataDefinition();
+        ObsForEncounterDataDefinition def = new ObsForEncounterDataDefinition();
         def.setQuestion(weight);
         def.setSingleObs(true);
         EvaluatedEncounterData results = encounterDataService.evaluate(def, context);
@@ -156,7 +156,7 @@ public class EncounterObsEvaluatorTest extends BaseModuleContextSensitiveTest {
         EncounterEvaluationContext context = new EncounterEvaluationContext();
         context.setBaseEncounters(new EncounterIdSet(enc1.getId(), enc2.getId()));
 
-        EncounterObsDataDefinition def = new EncounterObsDataDefinition();
+        ObsForEncounterDataDefinition def = new ObsForEncounterDataDefinition();
         def.setQuestion(weight);
         def.setSingleObs(false);
         EvaluatedEncounterData results = encounterDataService.evaluate(def, context);
@@ -184,7 +184,7 @@ public class EncounterObsEvaluatorTest extends BaseModuleContextSensitiveTest {
         EvaluationContext context = new EvaluationContext();
         context.setBaseCohort(new Cohort(patient.getId().toString()));
 
-        EncounterObsDataDefinition def = new EncounterObsDataDefinition();
+        ObsForEncounterDataDefinition def = new ObsForEncounterDataDefinition();
         def.setQuestion(weight);
         def.setSingleObs(true);
         EvaluatedEncounterData results = encounterDataService.evaluate(def, context);
