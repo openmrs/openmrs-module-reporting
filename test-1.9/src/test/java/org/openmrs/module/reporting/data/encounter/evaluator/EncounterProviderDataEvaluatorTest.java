@@ -92,7 +92,7 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
 
         EncounterProviderDataDefinition d = new EncounterProviderDataDefinition();
         d.setEncounterRole(role1);
-        d.setSingleObs(false);
+        d.setSingleProvider(false);
 
         EncounterEvaluationContext encounterEvaluationContext = new EncounterEvaluationContext();
         encounterEvaluationContext.setBaseEncounters(new EncounterIdSet(enc.getId()));
@@ -126,7 +126,7 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
                 .save();
 
         EncounterProviderDataDefinition d = new EncounterProviderDataDefinition();
-        d.setSingleObs(false);
+        d.setSingleProvider(false);
 
         EncounterEvaluationContext encounterEvaluationContext = new EncounterEvaluationContext();
         encounterEvaluationContext.setBaseEncounters(new EncounterIdSet(enc.getId()));
@@ -166,7 +166,7 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
 
         EncounterProviderDataDefinition d = new EncounterProviderDataDefinition();
         d.setEncounterRole(role1);
-        d.setSingleObs(false);
+        d.setSingleProvider(false);
 
         EncounterEvaluationContext encounterEvaluationContext = new EncounterEvaluationContext();
         encounterEvaluationContext.setBaseEncounters(new EncounterIdSet(enc.getId()));
@@ -184,7 +184,7 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
 
         EncounterProviderDataDefinition d = new EncounterProviderDataDefinition();
         d.setEncounterRole(new User());
-        d.setSingleObs(false);
+        d.setSingleProvider(false);
 
         EncounterEvaluationContext encounterEvaluationContext = new EncounterEvaluationContext();
         EvaluatedEncounterData ed = encounterDataService.evaluate(d, encounterEvaluationContext);

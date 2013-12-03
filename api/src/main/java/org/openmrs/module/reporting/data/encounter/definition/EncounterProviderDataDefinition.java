@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.data.encounter.definition;
 
-import org.openmrs.Obs;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
@@ -36,7 +35,7 @@ public class EncounterProviderDataDefinition extends BaseDataDefinition implemen
     private OpenmrsMetadata encounterRole;
 
     @ConfigurationProperty
-    private boolean singleObs = true;
+    private boolean singleProvider = true;
 
 	public EncounterProviderDataDefinition() {
 		super();
@@ -60,16 +59,16 @@ public class EncounterProviderDataDefinition extends BaseDataDefinition implemen
         this.encounterRole = encounterRole;
     }
 
-    public boolean isSingleObs() {
-        return singleObs;
+    public boolean isSingleProvider() {
+        return singleProvider;
     }
 
-    public void setSingleObs(boolean singleObs) {
-        this.singleObs = singleObs;
+    public void setSingleProvider(boolean singleProvider) {
+        this.singleProvider = singleProvider;
     }
 
     @Override
     public Class<?> getDataType() {
-        return singleObs ? Obs.class : List.class;
+        return singleProvider ? OpenmrsMetadata.class : List.class;
     }
 }

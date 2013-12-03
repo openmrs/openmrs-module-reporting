@@ -61,7 +61,7 @@ public class EncounterProviderDataEvaluator implements EncounterDataEvaluator {
 
         // create an entry for each encounter
         for (Integer encId : encIds) {
-            if (!def.isSingleObs()) {
+            if (!def.isSingleProvider()) {
                 data.addData(encId, new ArrayList<OpenmrsMetadata>());
             }
             else {
@@ -74,7 +74,7 @@ public class EncounterProviderDataEvaluator implements EncounterDataEvaluator {
 
             Object[] result = (Object []) r;
 
-            if (!def.isSingleObs()) {
+            if (!def.isSingleProvider()) {
                 ((List<OpenmrsMetadata>) data.getData().get(result[0])).add((OpenmrsMetadata) result[1]);
             }
             else {
