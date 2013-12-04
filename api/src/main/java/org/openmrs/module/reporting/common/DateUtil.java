@@ -1,17 +1,17 @@
 package org.openmrs.module.reporting.common;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
-import org.openmrs.messagesource.MessageSourceService;
 
 /**
  * A utility class for common date operations
@@ -228,12 +228,20 @@ public class DateUtil {
 			throw new RuntimeException("Cannot parse " + s + " into a date using format " + format);
 		}
 	}
-	
-	/**
+
+    /**
+     * @param date
+     * @return date, parsed as "yyyy-MM-dd"
+     */
+    public static Date parseYmd(String date) {
+        return parseDate(date, "yyyy-MM-dd");
+    }
+
+    /**
 	 * Utility method to format a date in the given format
 	 * @param d the date to format
 	 * @param format the DateFormat to use
-	 * @param defaultIfNUll the value to return if the passed date is null
+	 * @param defaultIfNull the value to return if the passed date is null
 	 * @return a String representing the date in the passed format
 	 */
 	public static String formatDate(Date d, String format, String defaultIfNull) {
@@ -264,7 +272,7 @@ public class DateUtil {
 	/**
 	 * 
 	 * @param currentDate
-	 * @param periodType
+	 * @param period
 	 * @return
 	 */
 	public static Date getStartOfPeriod(Date currentDate, int period) {
@@ -315,7 +323,7 @@ public class DateUtil {
 	/**
 	 * 
 	 * @param currentDate
-	 * @param periodType
+	 * @param period
 	 * @return
 	 */
 	public static Date getEndOfPeriod(Date currentDate, int period) {
