@@ -32,9 +32,9 @@ public class HandlebarsHelpersTest {
         when(options.hash("suffix", "")).thenReturn("");
 
         HandlebarsHelpers helpers = new HandlebarsHelpers(mss, null);
-        String message = helpers.message("abc-123-uuid", options);
+        CharSequence message = helpers.message("abc-123-uuid", options);
 
-        assertThat(message, is(expected));
+        assertThat(message.toString(), is(expected));
     }
 
     @Test
