@@ -16,17 +16,19 @@ public class ObsValueTextAsCodedConverter<T extends OpenmrsObject> implements Da
 
     private Class<T> dataType;
 
+    public ObsValueTextAsCodedConverter(){
+    }
+
     public ObsValueTextAsCodedConverter(Class<T> dataType) {
-    
-        if (dataType != Location.class) {
-            throw new IllegalArgumentException("ObValueTextAsCodedConverter only currently supports Location.class");
-        }
-    
         this.dataType = dataType;
     }
 
     @Override
     public Object convert(Object original) {
+
+        if (dataType != Location.class) {
+            throw new IllegalArgumentException("ObValueTextAsCodedConverter only currently supports Location.class");
+        }
 
         Obs obs = (Obs) original;
 
@@ -46,4 +48,9 @@ public class ObsValueTextAsCodedConverter<T extends OpenmrsObject> implements Da
     public Class<?> getDataType() {
         return dataType;
     }
+
+    public void setDataType(Class<T> dataType) {
+        this.dataType = dataType;
+    }
+
 }
