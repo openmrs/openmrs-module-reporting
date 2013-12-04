@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.template;
 
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Options;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
@@ -26,10 +27,14 @@ public class HandlebarsHelpers {
      * @param options
      * @return
      */
-    public String message(String key, Options options) {
+    public CharSequence message(String key, Options options) {
         String fullKey = options.hash("prefix", "") + key + options.hash("suffix", "");
         String localized = mss.getMessage(fullKey);
-        return localized;
+        if (localized == null) {
+            return "";
+        } else {
+            return new Handlebars.SafeString(localized);
+        }
     }
 
     /**
