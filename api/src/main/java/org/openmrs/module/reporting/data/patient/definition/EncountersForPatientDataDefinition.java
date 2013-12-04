@@ -47,6 +47,9 @@ public class EncountersForPatientDataDefinition extends BaseDataDefinition imple
 	
 	@ConfigurationProperty
 	private Date onOrBefore;
+
+    @ConfigurationProperty
+    private boolean activeVisit;
 	
 	//****** CONSTRUCTORS ******
 	
@@ -92,7 +95,15 @@ public class EncountersForPatientDataDefinition extends BaseDataDefinition imple
 		this.which = which;
 	}
 
-	/**
+    public boolean getActiveVisit() {
+        return activeVisit;
+    }
+
+    public void setActiveVisit(boolean activeVisit) {
+        this.activeVisit = activeVisit;
+    }
+
+    /**
 	 * @return the types
 	 */
 	public List<EncounterType> getTypes() {
