@@ -43,11 +43,11 @@ public class HandlebarsHelpers {
      * @param sourceAndCode
      * @return
      */
-    public String conceptName(String sourceAndCode) {
+    public CharSequence conceptName(String sourceAndCode) {
         try {
             String[] split = sourceAndCode.split(":");
             Concept concept = conceptService.getConceptByMapping(split[1], split[0]);
-            return concept.getName().getName();
+            return new Handlebars.SafeString(concept.getName().getName());
         } catch (Exception ex) {
             return sourceAndCode;
         }

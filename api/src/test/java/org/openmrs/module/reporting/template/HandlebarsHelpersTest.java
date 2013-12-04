@@ -50,9 +50,9 @@ public class HandlebarsHelpersTest {
         when(conceptService.getConceptByMapping(code, source)).thenReturn(concept);
 
         HandlebarsHelpers helpers = new HandlebarsHelpers(null, conceptService);
-        String conceptName = helpers.conceptName(source + ":" + code);
+        CharSequence conceptName = helpers.conceptName(source + ":" + code);
 
-        assertThat(conceptName, is(expected));
+        assertThat(conceptName.toString(), is(expected));
 
     }
 
