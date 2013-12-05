@@ -1,7 +1,5 @@
 package org.openmrs.module.reporting.report.definition.service;
 
-import java.util.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -27,6 +25,11 @@ import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefin
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Base Implementation of the ReportService API
@@ -175,6 +178,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 		Map<String, Mapped<? extends DataSetDefinition>> dsds = reportDefinition.getDataSetDefinitions();
 		if (dsds != null) {
 			for (String key : dsds.keySet()) {
+                long start = System.currentTimeMillis();
 				Mapped<? extends DataSetDefinition> pd = dsds.get(key);
 				EvaluationContext childEc = EvaluationContext.cloneForChild(evalContext, pd);
 				childEc.setBaseCohort(baseCohort);
@@ -183,7 +187,8 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 				} catch (Exception ex) {
 					throw new EvaluationException("data set '" + key + "'", ex);
 				}
-			}
+                log.info("Evaluated " + key + " in " + (System.currentTimeMillis() - start) + " ms (in report: " + reportDefinition.getName() + ")");
+            }
 		}
 		
 		return ret;
