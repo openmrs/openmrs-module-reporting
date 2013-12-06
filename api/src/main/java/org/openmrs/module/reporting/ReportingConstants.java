@@ -13,15 +13,16 @@
  */
 package org.openmrs.module.reporting;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Constants required by this module
@@ -116,4 +117,16 @@ public class ReportingConstants {
 	public static final boolean GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS() {
 		return "true".equals(Context.getAdministrationService().getGlobalProperty("reporting.includeDataExportsAsDataSetDefinitions"));
 	}
+    
+    public static final Locale GLOBAL_PROPERTY_DEFAULT_LOCATE() {
+
+        String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.defaultLocale");
+        if (StringUtils.hasText(propertyValue)) {
+            return new Locale(propertyValue);
+        }
+        else {
+            return null;
+        }
+
+    }
 }

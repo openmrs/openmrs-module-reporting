@@ -4,8 +4,9 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openmrs.PersonAddress;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-public class PersonAddressConverterTest {
+public class PersonAddressConverterTest extends BaseModuleContextSensitiveTest {
 	
 	/**
 	 * @see PersonAddressConverter#convert(Object)

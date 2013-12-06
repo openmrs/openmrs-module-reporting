@@ -13,25 +13,25 @@
  */
 package org.openmrs.module.reporting.common;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
 import junit.framework.Assert;
 import org.junit.Test;
+import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
+import org.openmrs.ConceptName;
+import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
+import org.openmrs.Obs;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonName;
 import org.openmrs.User;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 /**
@@ -42,7 +42,7 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 
     protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
-
+    
 	@Test
 	public void sortShouldSortSimpleStrings() throws Exception {
 		List<String> list = Arrays.asList(new String[] { "Daniel", "Abbas", "Kizito" });
@@ -236,7 +236,7 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
     public void shouldReturnNullIfNoFormatterPresent() {
         Location location = new Location();
         location.setName("Test name");
-        Assert.assertNull(ObjectUtil.getLocalization(location));
+        Assert.assertNull(ObjectUtil.getLocalization(location, new Locale("en")));
     }
 
     @Test
@@ -253,5 +253,55 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
         PatientIdentifierType patientIdentifierType = Context.getPatientService().getPatientIdentifierTypeByName(metadataName);
         formattedName = ObjectUtil.format(patientIdentifierType);
         Assert.assertEquals(metadataName, formattedName);
+    }
+
+    @Test
+    public void shouldLocalizedObsBasedOnDefaultLocale() throws Exception {
+        executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        addLocalizedNamesToYesConcept();
+        Assert.assertEquals("YES", ObjectUtil.format(createObsWithValueCodedYes()));
+    }
+
+
+    @Test
+    public void shouldLocalizeObsBasedOnLocaleGlobalProperty() throws Exception {
+        executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        addLocalizedNamesToYesConcept();
+        setGlobalPropertyDefaultReportingLocale("es");
+        Assert.assertEquals("Si", ObjectUtil.format(createObsWithValueCodedYes()));
+    }
+
+
+    // hack to add a few localized names to concept
+    private void addLocalizedNamesToYesConcept() {
+
+        Concept yes = Context.getConceptService().getConcept(7);
+        
+        ConceptName oui = new ConceptName();
+        oui.setName("Oui");
+        oui.setLocale(new Locale("fr"));
+
+        ConceptName si = new ConceptName();
+        si.setName("Si");
+        si.setLocale(new Locale("es"));
+        
+        yes.addName(oui);
+        yes.addName(si);
+        
+        Context.getConceptService().saveConcept(yes);        
+    }
+
+    private Obs createObsWithValueCodedYes() {
+        Obs yes = new Obs();
+        yes.setConcept(Context.getConceptService().getConcept(12));
+        yes.setValueCoded(Context.getConceptService().getConcept(7));
+        return yes;
+    }
+
+    private void setGlobalPropertyDefaultReportingLocale(String locale) {
+        GlobalProperty gp = new GlobalProperty();
+        gp.setProperty("reporting.defaultLocale");
+        gp.setPropertyValue(locale);
+        Context.getAdministrationService().saveGlobalProperty(gp);
     }
 }
