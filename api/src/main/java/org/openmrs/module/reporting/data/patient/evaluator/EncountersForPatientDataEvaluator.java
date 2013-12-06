@@ -73,7 +73,7 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 			m.put("ids", ids);
 		}
 
-        if (def.getActiveVisit()) {
+        if (def.getOnlyInActiveVisit()) {
             hql.append("and		visit.stopDatetime is null ");
         }
 
