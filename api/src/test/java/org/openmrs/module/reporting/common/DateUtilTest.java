@@ -13,18 +13,22 @@
  */
 package org.openmrs.module.reporting.common;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-
 import junit.framework.Assert;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Testing the cohort definition persister.  
@@ -188,6 +192,15 @@ public class DateUtilTest extends BaseModuleContextSensitiveTest {
     @Verifies(value = "should say one month ago even though february is short", method = "getTimespan(Date,Date,null)")
     public void getTimespan_shouldSayOneMonthAgoEvenThoughFebruaryIsShort() throws Exception {
     	Assert.assertEquals("reporting.dateUtil.oneMonth reporting.dateUtil.ago", DateUtil.getTimespan(DateUtil.getDateTime(2009, 3, 15), DateUtil.getDateTime(2009, 2, 15)));
-    }	
-	
+    }
+
+    @Test
+    public void testParseYmdhms() throws Exception {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+
+        assertThat(df.format(DateUtil.parseYmdhms("2008-08-18 14:09:05.1")), is("2008-08-18 14:09:05.1"));
+        assertThat(df.format(DateUtil.parseYmdhms("2008-08-18 14:09:05")), is("2008-08-18 14:09:05.0"));
+        assertThat(df.format(DateUtil.parseYmdhms("2008-08-18")), is("2008-08-18 00:00:00.0"));
+    }
+
 }

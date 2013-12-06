@@ -15,7 +15,6 @@ package org.openmrs.module.reporting.data.encounter.definition;
 
 import org.openmrs.module.reporting.data.ConvertedDataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
-import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 
 /**
  * Implementation of Converted Data Definition for Encounter Data
@@ -29,10 +28,12 @@ public class ConvertedEncounterDataDefinition extends ConvertedDataDefinition<En
 		super();
 	}
 
-	/**
-	 * Default Constructor
-	 */
 	public ConvertedEncounterDataDefinition(String name, EncounterDataDefinition definitionToConvert, DataConverter... converters) {
 		super(name, definitionToConvert, converters);
 	}
+
+    public ConvertedEncounterDataDefinition(EncounterDataDefinition definitionToConvert, DataConverter... converters) {
+        super(null, definitionToConvert, converters);
+    }
+
 }

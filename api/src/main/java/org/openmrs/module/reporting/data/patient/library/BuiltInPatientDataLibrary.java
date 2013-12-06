@@ -16,24 +16,21 @@ package org.openmrs.module.reporting.data.patient.library;
 
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAddress;
+import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
-import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PreferredIdentifierDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.*;
+import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 /**
  * Basic set of patient data columns
@@ -88,6 +85,16 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
         return getBirthdate(new PropertyConverter(Birthdate.class, "estimated"));
     }
 
+    @DocumentedDefinition("ageOnDate.fullYears")
+    public PatientDataDefinition getAgeOnDateYears() {
+        return getAgeOnDate(new PropertyConverter(Age.class, "fullYears"));
+    }
+
+    @DocumentedDefinition("ageOnDate.fullMonths")
+    public PatientDataDefinition getAgeOnDateMonths() {
+        return getAgeOnDate(new PropertyConverter(Age.class, "fullMonths"));
+    }
+
     @DocumentedDefinition("gender")
     public PatientDataDefinition getGender() {
         return new PersonToPatientDataDefinition(new GenderDataDefinition());
@@ -119,6 +126,16 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
         return new ConvertedPatientDataDefinition(
                 new PersonToPatientDataDefinition(
                         new BirthdateDataDefinition()),
+                converters);
+    }
+
+    private PatientDataDefinition getAgeOnDate(DataConverter... converters) {
+        AgeDataDefinition ageDataDefinition = new AgeDataDefinition();
+        ageDataDefinition.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+
+        return new ConvertedPatientDataDefinition(
+                new PersonToPatientDataDefinition(
+                        ageDataDefinition),
                 converters);
     }
 
