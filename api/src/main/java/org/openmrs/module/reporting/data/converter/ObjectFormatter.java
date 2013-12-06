@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
+import java.util.Locale;
+
 import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
@@ -23,6 +25,8 @@ public class ObjectFormatter implements DataConverter {
 	//***** PROPERTIES *****
 	
 	private String specification;
+
+    private Locale locale;
 	
 	//***** CONSTRUCTORS *****
 	
@@ -37,7 +41,27 @@ public class ObjectFormatter implements DataConverter {
 	public ObjectFormatter(String specification) {
 		this.specification = specification;
 	}
-	
+
+    /**
+     * Constructor with locale
+     *
+     * @param locale
+     */
+    public ObjectFormatter(Locale locale) {
+        this.locale = locale;
+    }
+
+    /**
+     * Constructor with specification and locale
+     *
+     * @param specification
+     * @param locale
+     */
+    public ObjectFormatter(String specification, Locale locale) {
+        this.specification = specification;
+        this.locale = locale;
+    }
+
 	//***** INSTANCE METHODS *****
 
 	/** 
@@ -45,7 +69,7 @@ public class ObjectFormatter implements DataConverter {
 	 * @should convert an Object into a nicely formatted text representation
 	 */
 	public Object convert(Object o) {
-		return ObjectUtil.format(o, getSpecification());
+		return ObjectUtil.format(o, getSpecification(), getLocale());
 	}
 	
 	/** 
@@ -77,4 +101,12 @@ public class ObjectFormatter implements DataConverter {
 	public void setSpecification(String specification) {
 		this.specification = specification;
 	}
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
 }

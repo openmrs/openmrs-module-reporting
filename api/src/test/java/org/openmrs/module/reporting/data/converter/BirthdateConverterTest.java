@@ -5,8 +5,9 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-public class BirthdateConverterTest {
+public class BirthdateConverterTest extends BaseModuleContextSensitiveTest {
 	
 	/**
 	 * @see BirthdateConverter#convert(Object)

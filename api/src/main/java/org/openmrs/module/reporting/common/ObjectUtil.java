@@ -29,8 +29,7 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
-import org.openmrs.messagesource.MessageSourceService;
-import org.openmrs.module.reporting.common.MessageUtil;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
@@ -105,16 +104,15 @@ public class ObjectUtil {
      * @param o an OpenmrsMetadata
      * @return a String or null if no locale available
      */
-    public static String getLocalization(OpenmrsMetadata o){
+    public static String getLocalization(OpenmrsMetadata o, Locale locale){
         if ( o != null ){
-            Locale locale = Context.getLocale();
             String simpleName = o.getClass().getSimpleName();
             int underscoreIndex = simpleName.indexOf("_$");
             if (underscoreIndex > 0) {
                 simpleName = simpleName.substring(0, underscoreIndex);
             }
             String code = "ui.i18n." + simpleName + ".name." + o.getUuid();
-            String localization = MessageUtil.translate(code);
+            String localization = Context.getMessageSourceService().getMessage(code, null, locale);
             if (localization == null || localization.equals(code)) {
                 return null;
             } else {
@@ -314,14 +312,30 @@ public class ObjectUtil {
 	 * @return a formatted version of the object suitable for display
 	 */
 	public static String format(Object o) {
-		return format(o, null);
+		return format(o, null, null);
 	}
-	
+
+    /**
+     * @return a formatted version of the object suitable for display
+     */
+    public static String format(Object o, String format) {
+        return format(o, format, null);
+    }
+
 	/**
 	 * @return a formatted version of the object suitable for display
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static String format(Object o, String format) {
+	public static String format(Object o, String format, Locale locale) {
+
+        // if no locale passed in, use locale specified in global property, otherwise context default
+        if (locale == null) {
+            locale = ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCATE();
+        }
+        if (locale == null) {
+            locale = Context.getLocale();
+        }
+
 		if (o == null) { return ""; }
 		if (o instanceof Date) {
 			DateFormat df = Context.getDateFormat();
@@ -341,7 +355,7 @@ public class ObjectUtil {
 		}
 		if (o instanceof IndicatorResult) {
 			IndicatorResult r = (IndicatorResult)o;
-			return format(r.getValue(), format);
+			return format(r.getValue(), format, locale);
 		}
 		if (o instanceof Cohort) {
 			return Integer.toString(((Cohort)o).getSize());
@@ -359,7 +373,7 @@ public class ObjectUtil {
 			}
 		}
 		if (o instanceof OpenmrsMetadata) {
-            String name = getLocalization((OpenmrsMetadata)o);
+            String name = getLocalization((OpenmrsMetadata)o, locale);
             if (StringUtils.isBlank( name )){
                 name = ((OpenmrsMetadata) o).getName();
                 if (name == null) {
@@ -384,7 +398,7 @@ public class ObjectUtil {
 						String propertyName = ret.substring(startIndex+1, endIndex);
 						Object replacement = ReflectionUtil.getPropertyValue(o, propertyName);
 						String newFormat = (replacement != null && formatSplit.length > 1 ? formatSplit[1] : null);
-						replacement = ObjectUtil.format(replacement, newFormat);
+						replacement = ObjectUtil.format(replacement, newFormat, locale);
 						ret = ret.replace("{"+propertyName+"}", nvlStr(replacement, ""));
 						startIndex = ret.indexOf("{");
 						endIndex = ret.indexOf("}", startIndex+1);
@@ -404,8 +418,11 @@ public class ObjectUtil {
 					else if (obs.getValueDatetime() != null) {
 						return format(obs.getValueDatetime());
 					}
+                    else if (obs.getValueCoded() != null) {
+                        return format(obs.getValueCoded().getBestName(locale));
+                    }
 					else {
-						return obs.getValueAsString(Context.getLocale());
+						return obs.getValueAsString(locale);
 					}
 				}
 			}

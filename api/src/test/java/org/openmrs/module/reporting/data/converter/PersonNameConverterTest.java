@@ -4,8 +4,9 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openmrs.PersonName;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-public class PersonNameConverterTest {
+public class PersonNameConverterTest extends BaseModuleContextSensitiveTest {
 	
 	/**
 	 * @see PersonNameConverter#convert(Object)

@@ -113,7 +113,13 @@
 		<property>reporting.runReportCohortFilterMode</property>
 		<defaultValue>showIfNull</defaultValue>
 		<description>Supports the values hide,showIfNull,show which determine whether the cohort selector should be available in the run report page</description>
-	</globalProperty>	
+	</globalProperty>
+
+    <globalProperty>
+        <property>reporting.defaultLocale</property>
+        <defaultValue>en</defaultValue>
+        <description>Default locale to use when formatting report data</description>
+    </globalProperty>
 	
 	<!--  Message Properties -->
 	<messages>
