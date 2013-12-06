@@ -47,6 +47,9 @@ public class EncountersForPatientDataDefinition extends BaseDataDefinition imple
 	
 	@ConfigurationProperty
 	private Date onOrBefore;
+
+    @ConfigurationProperty
+    private boolean onlyInActiveVisit;
 	
 	//****** CONSTRUCTORS ******
 	
@@ -92,7 +95,15 @@ public class EncountersForPatientDataDefinition extends BaseDataDefinition imple
 		this.which = which;
 	}
 
-	/**
+    public boolean getOnlyInActiveVisit() {
+        return onlyInActiveVisit;
+    }
+
+    public void setOnlyInActiveVisit(boolean activeVisit) {
+        this.onlyInActiveVisit = activeVisit;
+    }
+
+    /**
 	 * @return the types
 	 */
 	public List<EncounterType> getTypes() {

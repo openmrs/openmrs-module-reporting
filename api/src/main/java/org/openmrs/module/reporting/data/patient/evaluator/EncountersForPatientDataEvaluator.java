@@ -72,12 +72,16 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 			hql.append("and		encounterType.encounterTypeId in (:ids) ");
 			m.put("ids", ids);
 		}
-		
+
+        if (def.getOnlyInActiveVisit()) {
+            hql.append("and		visit.stopDatetime is null ");
+        }
+
 		if (def.getOnOrAfter() != null) {
 			hql.append("and		encounterDatetime >= :onOrAfter ");
 			m.put("onOrAfter", def.getOnOrAfter());
 		}
-		
+
 		if (def.getOnOrBefore() != null) {
 			hql.append("and		encounterDatetime <= :onOrBefore ");
 			m.put("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getOnOrBefore()));
