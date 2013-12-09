@@ -18,27 +18,11 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
-import org.openmrs.Cohort;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.OpenmrsData;
-import org.openmrs.OpenmrsObject;
-import org.openmrs.Order;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientProgram;
-import org.openmrs.PatientState;
-import org.openmrs.Person;
-import org.openmrs.PersonName;
-import org.openmrs.Relationship;
+import org.openmrs.*;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 
@@ -106,7 +90,10 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		
 		String voidedProperty = (type == Person.class ? "personVoided" : "voided");
 
-        boolean filterInQuery = baseCohort != null && baseCohort.size() < 2000;  // TODO: Change to batch if it is good
+        // the special-case code for filtering in Java if the baseCohort is too big only handles Person or Patient queries
+        // (though we may eventually want to extend it)
+        boolean personOrPatientQuery = type.equals(Patient.class) || type.equals(Person.class);
+        boolean filterInQuery = !personOrPatientQuery || (baseCohort != null && baseCohort.size() < 2000);  // TODO: Change to batch if it is good
         boolean doNotFilterInJava = baseCohort == null || filterInQuery;
 		
 		StringBuilder hql = new StringBuilder();
@@ -125,7 +112,7 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		if(hql.toString().contains(":ids")) {
 			query.setParameterList("ids", baseCohort.getMemberIds());
 		}
-		
+
 		for (Object o : query.list()) {
 			Object[] vals = (Object[]) o;
             Integer ptId = (Integer) vals[0];
