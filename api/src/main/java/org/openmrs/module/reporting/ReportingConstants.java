@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
@@ -28,7 +30,9 @@ import org.springframework.util.StringUtils;
  * Constants required by this module
  */
 public class ReportingConstants {
-	
+
+    protected static final Log log = LogFactory.getLog(ReportingConstants.class);
+
 	public static final String PRIV_VIEW_REPORTS = "View Reports";
 	public static final String PRIV_ADD_REPORTS = "Add Reports";
 	public static final String PRIV_EDIT_REPORTS = "Edit Reports";	
@@ -118,11 +122,17 @@ public class ReportingConstants {
 		return "true".equals(Context.getAdministrationService().getGlobalProperty("reporting.includeDataExportsAsDataSetDefinitions"));
 	}
     
-    public static final Locale GLOBAL_PROPERTY_DEFAULT_LOCATE() {
+    public static final Locale GLOBAL_PROPERTY_DEFAULT_LOCALE() {
 
         String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.defaultLocale");
         if (StringUtils.hasText(propertyValue)) {
-            return new Locale(propertyValue);
+            try {
+                return new Locale(propertyValue);
+            }
+            catch (Exception e) {
+                log.warn("Unable to instantiate default locale", e);
+                return null;
+            }
         }
         else {
             return null;

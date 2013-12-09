@@ -330,7 +330,7 @@ public class ObjectUtil {
 
         // if no locale passed in, use locale specified in global property, otherwise context default
         if (locale == null) {
-            locale = ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCATE();
+            locale = ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCALE();
         }
         if (locale == null) {
             locale = Context.getLocale();
