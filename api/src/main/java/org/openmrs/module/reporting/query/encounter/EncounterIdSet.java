@@ -13,10 +13,11 @@
  */
 package org.openmrs.module.reporting.query.encounter;
 
-import java.util.Set;
-
 import org.openmrs.Encounter;
 import org.openmrs.module.reporting.query.BaseIdSet;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * A Set of Encounter Ids
@@ -30,7 +31,11 @@ public class EncounterIdSet extends BaseIdSet<Encounter> {
     public EncounterIdSet(Set<Integer> memberIds) {
     	setMemberIds(memberIds);
     }
-    
+
+    public EncounterIdSet(List<Integer> memberIds) {
+        add(memberIds.toArray(new Integer[0]));
+    }
+
     public EncounterIdSet(Integer... memberIds) {
     	add(memberIds);
     }
