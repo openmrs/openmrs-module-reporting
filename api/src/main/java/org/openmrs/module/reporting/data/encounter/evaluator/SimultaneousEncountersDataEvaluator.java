@@ -42,24 +42,24 @@ public class SimultaneousEncountersDataEvaluator implements EncounterDataEvaluat
 
         SimultaneousEncountersDataDefinition def = (SimultaneousEncountersDataDefinition) definition;
 
-        String hql = "select enc.id, adt " +
-                "from Encounter enc, Encounter adt " +
-                "where enc.encounterDatetime = adt.encounterDatetime " +
-                "  and enc.patient.id = adt.patient.id " +
-                "  and enc.id != adt.id " +
+        String hql = "select enc.id, other " +
+                "from Encounter enc, Encounter other " +
+                "where enc.encounterDatetime = other.encounterDatetime " +
+                "  and enc.patient.id = other.patient.id " +
+                "  and enc.id != other.id " +
                 "  and enc.voided = false " +
-                "  and adt.voided = false ";
+                "  and other.voided = false ";
         if (def.getEncounterTypeList() != null) {
             if (def.getEncounterTypeList().isEmpty()) {
                 return results;
             }
-            hql += "  and adt.encounterType in (:encounterTypes) ";
+            hql += "  and other.encounterType in (:encounterTypes) ";
         }
         if (encIds != null) {
             hql += "  and enc.id in (:encIds) ";
         }
-        hql += "order by adt.dateCreated asc"; // use the most-recently-entered encounter
-        // hql += "order by ABS(adt.dateCreated - enc.dateCreated) desc"; // use the encounter with the nearest datetime to enc
+        hql += "order by other.dateCreated asc"; // use the most-recently-entered encounter
+        // hql += "order by ABS(other.dateCreated - enc.dateCreated) desc"; // use the encounter with the nearest datetime to enc
 
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         if (def.getEncounterTypeList() != null) {
