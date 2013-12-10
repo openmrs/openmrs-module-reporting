@@ -18,11 +18,27 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
-import org.openmrs.*;
+import org.openmrs.Cohort;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.OpenmrsData;
+import org.openmrs.OpenmrsObject;
+import org.openmrs.Order;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientProgram;
+import org.openmrs.PatientState;
+import org.openmrs.Person;
+import org.openmrs.PersonName;
+import org.openmrs.Relationship;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 
