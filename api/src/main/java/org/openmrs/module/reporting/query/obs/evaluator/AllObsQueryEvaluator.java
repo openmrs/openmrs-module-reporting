@@ -31,12 +31,18 @@ public class AllObsQueryEvaluator implements ObsQueryEvaluator {
         criteria.setProjection(Projections.id());
         criteria.add(Restrictions.eq("voided", false));
         if (context.getBaseCohort() != null) {
+            if (context.getBaseCohort().getSize() == 0) {
+                return queryResult;  // no results if base cohort exists but is empty
+            }
             criteria.add(Restrictions.in("person.id", context.getBaseCohort().getMemberIds()));
         }
         if (context instanceof ObsEvaluationContext) {
             ObsEvaluationContext oec = (ObsEvaluationContext) context;
             ObsIdSet baseObs = oec.getBaseObs();
             if (baseObs != null) {
+                if (baseObs.getSize() == 0) {
+                    return queryResult;  // no results if base obs set exists but is empty
+                }
                 criteria.add(Restrictions.in("id", baseObs.getMemberIds()));
             }
         }
