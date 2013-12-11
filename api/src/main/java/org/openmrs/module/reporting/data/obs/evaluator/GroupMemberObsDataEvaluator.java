@@ -41,6 +41,11 @@ public class GroupMemberObsDataEvaluator implements ObsDataEvaluator {
 
         Set<Integer> obsIds = ObsDataUtil.getObsIdsForContext(context, false);
 
+        // return empty result if no obs to evaluate against
+        if (obsIds.size() == 0) {
+            return data;
+        }
+
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Obs.class);
         criteria.add(Restrictions.eq("voided", false));
         criteria.add(Restrictions.in("obsGroup.id", obsIds));

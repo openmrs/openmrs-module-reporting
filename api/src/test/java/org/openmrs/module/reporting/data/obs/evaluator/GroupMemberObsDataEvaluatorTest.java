@@ -1,11 +1,5 @@
 package org.openmrs.module.reporting.data.obs.evaluator;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -25,6 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -153,6 +153,21 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         assertThat(results.getData().get(obsGroup.getId()), instanceOf(List.class));
         assertThat(((List<Obs>) results.getData().get(obsGroup.getId())).size(), is(0));
 
+    }
+
+    @Test
+    public void testMakeSureWorksIfBaseObsContextIsEmptyList() throws Exception {
+
+        Concept weight = conceptService.getConcept(5089);
+
+        ObsEvaluationContext context = new ObsEvaluationContext();
+        context.setBaseObs(new ObsIdSet());
+
+        GroupMemberObsDataDefinition def = new GroupMemberObsDataDefinition();
+        def.setQuestion(weight);
+        EvaluatedObsData results = obsDataService.evaluate(def, context);
+
+        assertThat(results.getData().size(), is(0));
     }
     
 }
