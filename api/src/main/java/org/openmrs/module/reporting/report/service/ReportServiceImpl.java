@@ -410,6 +410,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		request.setStatus(Status.PROCESSING);
 		request.setEvaluateStartDatetime(new Date());
 		logReportMessage(request, "Starting to process report...");
+
+		Context.flushSession(); // Ensure other threads can see updated request
 		
 		// Construct a new report object to return
 		Report report = new Report(request);
@@ -438,6 +440,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			ReportData reportData = rds.evaluate(request.getReportDefinition(), context);
 			report.setReportData(reportData);
 			request.setEvaluateCompleteDatetime(new Date());
+
+			Context.flushSession(); // Ensure other threads can see updated request
 			
 			// Render the Report if appropriate
 			if (request.getRenderingMode() != null) {
@@ -465,6 +469,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				log.warn("Unable to log reporting error to file.", e);
 			}
 		}
+
+		Context.flushSession(); // Ensure other threads can see updated request
 			
 		// Cache the report
 		logReportMessage(request, "Storing Report Results....");
