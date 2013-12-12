@@ -40,7 +40,12 @@ public class ObsForEncounterDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData data = new EvaluatedEncounterData();
 
         Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, false);
-        
+
+        // just return empty set if input set is empty
+        if (encIds.size() == 0) {
+            return data;
+        }
+
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Obs.class);
         criteria.add(Restrictions.eq("voided", false));
         criteria.add(Restrictions.in("encounter.id", encIds));

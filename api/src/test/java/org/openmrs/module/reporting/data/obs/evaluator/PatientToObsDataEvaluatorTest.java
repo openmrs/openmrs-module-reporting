@@ -1,8 +1,5 @@
 package org.openmrs.module.reporting.data.obs.evaluator;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.PatientIdentifier;
@@ -16,6 +13,9 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDat
 import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
 import org.openmrs.module.reporting.query.obs.ObsIdSet;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class PatientToObsDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -51,6 +51,22 @@ public class PatientToObsDataEvaluatorTest extends BaseModuleContextSensitiveTes
         assertThat((PatientIdentifier) od.getData().get(20), is(Context.getPatientService().getPatient(21).getPatientIdentifier(pit)));
         assertThat((PatientIdentifier) od.getData().get(26), is(Context.getPatientService().getPatient(22).getPatientIdentifier(pit)));
 
+    }
+
+    @Test
+    public void evaluate_shouldReturnEmptySetIfInputObsIdSetIsEmpty() throws Exception {
+
+        PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierType(2);
+        PatientIdentifierDataDefinition pidd = new PatientIdentifierDataDefinition();
+        pidd.setIncludeFirstNonNullOnly(true);
+        pidd.addType(pit);
+
+        PatientToObsDataDefinition d = new PatientToObsDataDefinition(pidd);
+        ObsEvaluationContext context = new ObsEvaluationContext();
+        context.setBaseObs(new ObsIdSet());
+        EvaluatedObsData od = Context.getService(ObsDataService.class).evaluate(d, context);
+
+        assertThat(od.getData().size(), is(0));
     }
 
 }

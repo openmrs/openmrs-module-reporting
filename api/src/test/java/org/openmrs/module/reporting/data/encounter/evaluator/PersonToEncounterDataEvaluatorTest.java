@@ -45,4 +45,15 @@ public class PersonToEncounterDataEvaluatorTest extends BaseModuleContextSensiti
         Assert.assertEquals("1925-02-08", c.convert(ed.getData().get(6)));
 
     }
+
+    @Test
+    public void evaluate_shouldEmptySetIfInputSetEmpty() throws Exception {
+        PersonToEncounterDataDefinition d = new PersonToEncounterDataDefinition(new BirthdateDataDefinition());
+
+        EncounterEvaluationContext context = new EncounterEvaluationContext();
+        context.setBaseEncounters(new EncounterIdSet());
+        EvaluatedEncounterData ed = Context.getService(EncounterDataService.class).evaluate(d, context);
+
+        Assert.assertEquals(0, ed.getData().size());
+    }
 }

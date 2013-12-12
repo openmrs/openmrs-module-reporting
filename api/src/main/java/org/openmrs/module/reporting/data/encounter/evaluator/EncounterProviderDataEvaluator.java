@@ -47,6 +47,13 @@ public class EncounterProviderDataEvaluator implements EncounterDataEvaluator {
 
         EvaluatedEncounterData data = new EvaluatedEncounterData(definition, context);
 
+        Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, false);
+
+        // just return empty set if input set is empty
+        if (encIds.size() == 0) {
+            return data;
+        }
+
         StringBuilder hql = new StringBuilder();
         hql.append("select ep.encounter.id, ep.provider from EncounterProvider as ep ");
         hql.append("where ep.encounter.id in (:ids) and ep.voided='false' ");
@@ -55,7 +62,6 @@ public class EncounterProviderDataEvaluator implements EncounterDataEvaluator {
             hql.append("and ep.encounterRole.id = " + def.getEncounterRole().getId());
         }
 
-        Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, false);
         Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
         query.setParameterList("ids", encIds);
 

@@ -45,4 +45,15 @@ public class PersonToObsEvaluatorTest extends BaseModuleContextSensitiveTest {
         Assert.assertEquals("1997-07-08", c.convert(ed.getData().get(27)));
 
     }
+
+    @Test
+    public void evaluate_shouldEmptySetIfObsSetEmtpy() throws Exception {
+        PersonToObsDataDefinition d = new PersonToObsDataDefinition(new BirthdateDataDefinition());
+
+        ObsEvaluationContext context = new ObsEvaluationContext();
+        context.setBaseObs(new ObsIdSet());
+        EvaluatedObsData ed = Context.getService(ObsDataService.class).evaluate(d, context);
+
+        Assert.assertEquals(0, ed.getData().size());
+    }
 }

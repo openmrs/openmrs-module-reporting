@@ -1,10 +1,5 @@
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -27,6 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -191,6 +191,23 @@ public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest
 
         assertThat(results.getData().size(), is(1));
         assertThat((Obs) results.getData().get(enc1.getId()), is(obs1));
+
+    }
+
+    @Test
+    public void testShouldReturnEmptySetWhenInputSetIsEmpty() throws Exception {
+
+        Concept weight = conceptService.getConcept(5089);
+
+        EncounterEvaluationContext context = new EncounterEvaluationContext();
+        context.setBaseEncounters(new EncounterIdSet());
+
+        ObsForEncounterDataDefinition def = new ObsForEncounterDataDefinition();
+        def.setQuestion(weight);
+        def.setSingleObs(true);
+        EvaluatedEncounterData results = encounterDataService.evaluate(def, context);
+
+        assertThat(results.getData().size(), is(0));
 
     }
 

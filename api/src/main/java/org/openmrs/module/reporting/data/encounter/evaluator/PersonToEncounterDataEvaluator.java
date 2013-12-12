@@ -49,8 +49,14 @@ public class PersonToEncounterDataEvaluator implements EncounterDataEvaluator {
         DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, encounterEvaluationContext);
 
-        // create a map of encounter ids -> patient ids (assumption is that person_id = patient_id)
         Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(encounterEvaluationContext, true);
+
+        // just return empty set if input set is empty
+        if (encIds.size() == 0) {
+            return c;
+        }
+
+        // create a map of encounter ids -> patient ids (assumption is that person_id = patient_id)
         Map<Integer, Integer> convertedIds = dqs.convertData(Patient.class, "patientId", null, Encounter.class, "patient.patientId", encIds);
 
         // create a new (person) evaluation context using the retrieved ids

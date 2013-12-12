@@ -58,4 +58,23 @@ public class SimultaneousEncountersDataEvaluatorTest extends BaseModuleContextSe
         assertThat((Encounter) result.getData().values().iterator().next(), is(associated));
     }
 
+    @Test
+    public void testEvaluate_shouldReturnEmptySetIfInputSetEmpty() throws Exception {
+
+        Patient p1 = testData.randomPatient().save();
+
+        Encounter indexEncounter = testData.randomEncounter().patient(p1).save();
+        Encounter associated = testData.randomEncounter().patient(p1).encounterDatetime(indexEncounter.getEncounterDatetime()).save();
+
+        EncounterEvaluationContext context = new EncounterEvaluationContext();
+        context.setBaseEncounters(new EncounterIdSet());
+
+        SimultaneousEncountersDataDefinition def = new SimultaneousEncountersDataDefinition();
+        def.addEncounterType(associated.getEncounterType());
+
+        EvaluatedEncounterData result = encounterDataService.evaluate(def, context);
+        assertThat(result.getData().size(), is(0));
+    }
+
+
 }

@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
@@ -28,6 +26,8 @@ import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.AllEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.util.OpenmrsUtil;
+
+import java.util.List;
 
 /**
  * The logic that evaluates a {@link AllEncounterQuery} and produces an {@link Query}
@@ -57,10 +57,22 @@ public class AllEncounterQueryEvaluator implements EncounterQueryEvaluator {
 		// TODO: Move this into a service and find a way to make it more efficient
 		StringBuilder sqlQuery = new StringBuilder("select encounter_id from encounter where voided = false");
 		if (context.getBaseCohort() != null) {
+
+            // just return empty set if input set is empty
+            if (context.getBaseCohort().size() == 0) {
+                return queryResult;
+            }
+
 			sqlQuery.append(" and patient_id in (" + context.getBaseCohort().getCommaSeparatedPatientIds() + ")");
 		}
 		if (context instanceof EncounterEvaluationContext) {
 			EncounterEvaluationContext eec = (EncounterEvaluationContext) context;
+
+            // just return empty set if input set is empty
+            if (eec.getBaseEncounters().getMemberIds().size() == 0) {
+                return queryResult;
+            }
+
 			sqlQuery.append(" and encounter_id in (" + OpenmrsUtil.join(eec.getBaseEncounters().getMemberIds(), ",") + ")");
 		}
 		if (context.getLimit() != null) {

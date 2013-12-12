@@ -35,8 +35,14 @@ public class PersonToObsDataEvaluator implements ObsDataEvaluator {
         DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
         EvaluatedObsData c = new EvaluatedObsData(definition, obsEvaluationContext);
 
-        // create a map of obs ids -> person ids
         Set<Integer> obsIds = ObsDataUtil.getObsIdsForContext(obsEvaluationContext, true);
+
+        // just return empty set if input set is empty
+        if (obsIds.size() == 0) {
+            return c;
+        }
+
+        // create a map of obs ids -> person ids
         Map<Integer, Integer> convertedIds = dqs.convertData(Person.class, "personId", null, Obs.class, "person.personId", obsIds);
 
         // create a new (person) evaluation context using the retrieved ids

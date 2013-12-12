@@ -1,9 +1,5 @@
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
@@ -27,6 +23,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Date;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.junit.Assert.assertThat;
 
 public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensitiveTest {
     
@@ -215,5 +215,22 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
         assertThat((Provider) ed.getData().get(enc.getId()), is(provider));
 
     }
-    
+
+    @Test
+    public void shouldReturnEmptySetIfInputSetEmpty() throws Exception {
+
+        EncounterRole role = encounterService.getEncounterRole(1);
+
+        EncounterProviderDataDefinition d = new EncounterProviderDataDefinition();
+        d.setEncounterRole(role);
+
+        EvaluationContext context = new EvaluationContext();
+        context.setBaseCohort(new Cohort());
+
+        EvaluatedEncounterData ed = encounterDataService.evaluate(d, context);
+
+        assertThat(ed.getData().size(), is(0));
+    }
+
+
 }

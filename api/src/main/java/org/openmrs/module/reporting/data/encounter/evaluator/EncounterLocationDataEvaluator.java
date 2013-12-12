@@ -13,6 +13,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Evaluates a EncounterLocationDataDefinition to produce EncounterData
@@ -35,10 +36,17 @@ public class EncounterLocationDataEvaluator implements EncounterDataEvaluator {
 
         EvaluatedEncounterData data = new EvaluatedEncounterData(definition, context);
 
+        Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, false);
+
+        // return empty set if input set is empty
+        if (encIds.size() == 0) {
+            return data;
+        }
+
         StringBuilder hql = new StringBuilder();
         hql.append("select e.encounterId, e.location from Encounter as e where e.encounterId in (:ids)");
         Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
-        query.setParameterList("ids", EncounterDataUtil.getEncounterIdsForContext(context, false));
+        query.setParameterList("ids", encIds);
 
         DataUtil.populate(data, (List<Object[]>) query.list());
         return data;

@@ -33,8 +33,14 @@ public class PatientToObsDataEvaluator implements ObsDataEvaluator {
         DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
         EvaluatedObsData c = new EvaluatedObsData(definition, obsEvaluationContext);
 
-        // create a map of obs ids -> patient ids (note assumption that personId = patientId)
         Set<Integer> obsIds = ObsDataUtil.getObsIdsForContext(obsEvaluationContext, true);
+
+        // just return empty set if input set is empty
+        if (obsIds.size() == 0) {
+            return c;
+        }
+
+        // create a map of obs ids -> patient ids (note assumption that personId = patientId);
         Map<Integer, Integer> convertedIds = dqs.convertData(Person.class, "personId", null, Obs.class, "person.personId", obsIds);
 
         // create a new (patient) evaluation context using the retrieved ids

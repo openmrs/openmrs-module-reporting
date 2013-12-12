@@ -1,9 +1,5 @@
 package org.openmrs.module.reporting.data.obs.evaluator;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Obs;
@@ -21,6 +17,10 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 public class EncounterToObsDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -66,4 +66,19 @@ public class EncounterToObsDataEvaluatorTest extends BaseModuleContextSensitiveT
 
     }
 
+
+    @Test
+    public void evaluate_shouldReturnEmptySetIfObsIdSetIsEmpty() throws Exception {
+
+
+        EncounterToObsDataDefinition d = new EncounterToObsDataDefinition(new EncounterIdDataDefinition());
+
+        ObsEvaluationContext context = new ObsEvaluationContext();
+        context.setBaseObs(new ObsIdSet());
+        EvaluatedObsData od = Context.getService(ObsDataService.class).evaluate(d, context);
+
+        assertThat(od.getData().size(), is(0));
+
+
+    }
 }

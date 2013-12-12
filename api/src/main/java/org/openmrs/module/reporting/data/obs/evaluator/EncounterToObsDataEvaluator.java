@@ -35,8 +35,14 @@ public class EncounterToObsDataEvaluator implements ObsDataEvaluator {
         DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
         EvaluatedObsData c = new EvaluatedObsData(definition, obsEvaluationContext);
 
+        Set<Integer> obsIds = ObsDataUtil.getObsIdsForContext(obsEvaluationContext, false);
+
+        // just return empty set if input set is empty
+        if (obsIds.size() == 0) {
+            return c;
+        }
+
         // create a map of obs ids -> encounter ids (note assumption that personId = patientId)
-        Set<Integer> obsIds = ObsDataUtil.getObsIdsForContext(obsEvaluationContext, true);
         Map<Integer, Integer> convertedIds = dqs.convertData(Encounter.class, "encounterId", null, Obs.class, "encounter.encounterId", obsIds);
 
         // create a new (encounter) evaluation context using the retrieved ids

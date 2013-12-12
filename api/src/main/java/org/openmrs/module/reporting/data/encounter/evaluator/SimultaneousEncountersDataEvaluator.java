@@ -56,6 +56,10 @@ public class SimultaneousEncountersDataEvaluator implements EncounterDataEvaluat
             hql += "  and other.encounterType in (:encounterTypes) ";
         }
         if (encIds != null) {
+            if (encIds.size() == 0) {
+                // just return empty set if input set empty
+                return results;
+            }
             hql += "  and enc.id in (:encIds) ";
         }
         hql += "order by other.dateCreated asc"; // use the most-recently-entered encounter

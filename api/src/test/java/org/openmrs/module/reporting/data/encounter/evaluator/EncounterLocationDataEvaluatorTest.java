@@ -1,8 +1,5 @@
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -15,6 +12,9 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class EncounterLocationDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -59,6 +59,17 @@ public class EncounterLocationDataEvaluatorTest extends BaseModuleContextSensiti
         assertThat(ed.getData().get(4).toString(), is("Unknown Location"));
         assertThat(ed.getData().get(5).toString(), is("Xanadu"));
         assertThat(ed.getData().get(6).toString(), is("Xanadu"));
+    }
+
+    @Test
+    public void evaluate_shouldReturnEmptySetIfInputSetIsEmpty() throws Exception {
+
+        EncounterLocationDataDefinition d = new EncounterLocationDataDefinition();
+        EvaluationContext context = new EvaluationContext();
+        context.setBaseCohort(new Cohort());
+
+        EvaluatedEncounterData ed = Context.getService(EncounterDataService.class).evaluate(d, context);
+        assertThat(ed.getData().size(), is(0));
     }
 
 }
