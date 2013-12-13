@@ -1,8 +1,5 @@
 package org.openmrs.module.reporting.report.task;
 
-import java.util.Date;
-import java.util.TimerTask;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -12,6 +9,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.scheduler.SchedulerConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.TimerTask;
 
 /**
  * Generic superclass for a Reports task
@@ -63,8 +63,12 @@ public abstract class AbstractReportsTask extends TimerTask {
 		}
 		finally {
 			if (Context.isSessionOpen()) {
-				Context.clearSession();
-				Context.closeSession();
+                try {
+                    Context.clearSession();
+                    Context.closeSession();
+                } catch (Exception ex) {
+                    // pass
+                }
 			}
 		}
 	}
