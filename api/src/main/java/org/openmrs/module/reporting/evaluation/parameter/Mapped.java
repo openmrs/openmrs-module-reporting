@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.reporting.evaluation.parameter;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +20,12 @@ import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Provides a Wrapper class for a Parameterizable instance, which
@@ -70,12 +70,31 @@ public class Mapped<T extends Parameterizable> implements Serializable {
 	}
 
     //***********************
-    // STATIC FACTORY METHOD
+    // STATIC FACTORY METHODS
     //***********************
 
     public static <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
         return new Mapped(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
     }
+
+    public static <T extends Parameterizable> Mapped<T> noMappings(T parameterizable) {
+        return new Mapped(parameterizable, null);
+    }
+
+    /**
+     * Maps every parameter "straight through", e.g. "startDate -> ${startDate}"
+     * @param parameterizable
+     * @param <T>
+     * @return
+     */
+    public static <T extends Parameterizable> Mapped<T> mapStraightThrough(T parameterizable) {
+        Map<String, Object> mappings = new HashMap<String, Object>();
+        for (Parameter parameter : parameterizable.getParameters()) {
+            mappings.put(parameter.getName(), "${" + parameter.getName() + "}");
+        }
+        return new Mapped(parameterizable, mappings);
+    }
+
 
     //***********************
 	// INSTANCE METHODS
