@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Cohort;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 /**
@@ -41,7 +43,8 @@ public class SqlUtils {
 	 * with their corresponding values in the parameter map. TODO copied from
 	 * HibernateCohortQueryDAO
 	 * 
-	 * @param preparedStatement
+	 * @param connection
+	 * @param query
 	 * @param paramMap
 	 * @throws SQLException 
 	 */
@@ -221,20 +224,21 @@ public class SqlUtils {
      */
     public static boolean isSelectQuery(String query) {
 
-        String queryInLowerCase = query.toLowerCase().trim();
-
-        if (!query.toLowerCase().trim().startsWith("select")) {
-            return false;
-        } else {
-        	// make sure this isn't a "select into"
-        	Matcher matcher = Pattern.compile("\\sfrom\\s").matcher(queryInLowerCase);  // matches "from" with whitespace character on either side
-        	matcher.find();
-            String selectInto = queryInLowerCase.substring("select ".length(), matcher.start());
-            if ((selectInto != null && selectInto.matches("\\sinto\\s")))   // matches "into" with whitespace character on either side
-                return false;
-        }
-        return true;
-
-    }
+		List<String> updateWords = Arrays.asList("insert", "update", "delete", "alter", "drop", "create", "rename", "into");
+		for (String statement : query.trim().split(";")) {
+			String s = statement.toLowerCase().trim();
+			if (ObjectUtil.notNull(s)) {
+				if (!s.startsWith("select")) {
+					return false;
+				}
+				for (String word : s.split("\\s")) {
+					if (updateWords.contains(word)) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
 
 }
