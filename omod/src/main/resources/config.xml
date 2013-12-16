@@ -120,6 +120,24 @@
         <defaultValue>en</defaultValue>
         <description>Default locale to use when formatting report data</description>
     </globalProperty>
+
+	<!--  Advice Points -->
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.report.definition.service.ReportDefinitionService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.dataset.definition.service.DataSetDefinitionService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.indicator.service.IndicatorService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.cohort.definition.service.CohortDefinitionService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
 	
 	<!--  Message Properties -->
 	<messages>
