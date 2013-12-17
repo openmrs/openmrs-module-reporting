@@ -123,7 +123,19 @@
 
 	<!--  Advice Points -->
 	<advice>
-		<point>${project.parent.groupId}.${project.parent.artifactId}.report.definition.service.ReportDefinitionService</point>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.cohort.definition.service.CohortDefinitionService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.data.obs.service.ObsDataService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.data.patient.service.PatientDataService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.data.person.service.PersonDataService</point>
 		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
 	</advice>
 	<advice>
@@ -135,10 +147,26 @@
 		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
 	</advice>
 	<advice>
-		<point>${project.parent.groupId}.${project.parent.artifactId}.cohort.definition.service.CohortDefinitionService</point>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.indicator.dimension.service.DimensionService</point>
 		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
 	</advice>
-	
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.query.encounter.service.EncounterQueryService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.query.obs.service.ObsQueryService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.query.person.service.PersonQueryService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
+	<advice>
+		<point>${project.parent.groupId}.${project.parent.artifactId}.report.definition.service.ReportDefinitionService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
+	</advice>
+
 	<!--  Message Properties -->
 	<messages>
 		<lang>en</lang>
