@@ -178,7 +178,6 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 		Map<String, Mapped<? extends DataSetDefinition>> dsds = reportDefinition.getDataSetDefinitions();
 		if (dsds != null) {
 			for (String key : dsds.keySet()) {
-                long start = System.currentTimeMillis();
 				Mapped<? extends DataSetDefinition> pd = dsds.get(key);
 				EvaluationContext childEc = EvaluationContext.cloneForChild(evalContext, pd);
 				childEc.setBaseCohort(baseCohort);
@@ -187,8 +186,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 				} catch (Exception ex) {
 					throw new EvaluationException("data set '" + key + "'", ex);
 				}
-                log.info("Evaluated " + key + " in " + (System.currentTimeMillis() - start) + " ms (in report: " + reportDefinition.getName() + ")");
-            }
+			}
 		}
 		
 		return ret;
