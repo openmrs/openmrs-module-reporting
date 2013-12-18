@@ -18,4 +18,5 @@ omod/.classpath
 omod/.project
 omod/.settings/*
 omod/target/*
+test-1.9/target/*
 /.settings
