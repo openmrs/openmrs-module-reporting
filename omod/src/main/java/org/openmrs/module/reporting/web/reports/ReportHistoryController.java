@@ -1,19 +1,5 @@
 package org.openmrs.module.reporting.web.reports;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,6 +36,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ReportHistoryController {
@@ -103,13 +102,15 @@ public class ReportHistoryController {
 		
 		List<RenderingMode> renderingModes = new ArrayList<RenderingMode>();
 		for (ReportRequest reportRequest : history) {
-			for (RenderingMode mode : getReportService().getRenderingModes(reportRequest.getReportDefinition().getParameterizable())) {
-				if (OpenmrsUtil.nullSafeEquals(mode, reportRequest.getRenderingMode())) {
-					reportRequest.setRenderingMode(mode);
-				}
-			}
+            if (!reportRequest.isTransient()) { // we can't do this for in-memory report requests
+                for (RenderingMode mode : getReportService().getRenderingModes(reportRequest.getReportDefinition().getParameterizable())) {
+                    if (OpenmrsUtil.nullSafeEquals(mode, reportRequest.getRenderingMode())) {
+                        reportRequest.setRenderingMode(mode);
+                    }
+                }
+            }
         }
-		model.addAttribute("renderingModes", renderingModes);
+        model.addAttribute("renderingModes", renderingModes);
 	}
 	
 	@RequestMapping("/module/reporting/reports/deleteReportRequest")
@@ -168,11 +169,13 @@ public class ReportHistoryController {
 			request.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "Cannot load report request", WebRequest.SCOPE_SESSION);
 			return "redirect:/module/reporting/reports/reportHistory.form";
 		}
-		for (RenderingMode mode : getReportService().getRenderingModes(req.getReportDefinition().getParameterizable())) {
-			if (OpenmrsUtil.nullSafeEquals(mode, req.getRenderingMode())) {
-				req.setRenderingMode(mode);
-			}
-		}
+        if (!req.isTransient()) {
+            for (RenderingMode mode : getReportService().getRenderingModes(req.getReportDefinition().getParameterizable())) {
+                if (OpenmrsUtil.nullSafeEquals(mode, req.getRenderingMode())) {
+                    req.setRenderingMode(mode);
+                }
+            }
+        }
 		model.addAttribute("request", req);
 		
 		if (req.getStatus() == Status.REQUESTED) {
@@ -221,8 +224,15 @@ public class ReportHistoryController {
 			return new ModelAndView(new RedirectView(linkUrl));
 		}
 		else {
-			String filename = rm.getRenderer().getFilename(req.getReportDefinition().getParameterizable(), rm.getArgument()).replace(" ", "_");
-			response.setContentType(rm.getRenderer().getRenderedContentType(req.getReportDefinition().getParameterizable(), rm.getArgument()));
+            ReportDefinition rd;
+            if (req.isTransient()) {
+                rd = new ReportDefinition();
+                rd.setName("[Transient]");
+            } else {
+                rd = req.getReportDefinition().getParameterizable();
+            }
+            String filename = rm.getRenderer().getFilename(rd, rm.getArgument()).replace(" ", "_");
+			response.setContentType(rm.getRenderer().getRenderedContentType(rd, rm.getArgument()));
 			byte[] data = getReportService().loadRenderedOutput(req);
 			
 			if (data != null) {

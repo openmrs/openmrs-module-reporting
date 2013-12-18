@@ -1,9 +1,5 @@
 package org.openmrs.module.reporting.report;
 
-import java.util.Comparator;
-import java.util.Date;
-import java.util.UUID;
-
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -14,9 +10,16 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.util.OpenmrsUtil;
 
+import java.util.Comparator;
+import java.util.Date;
+import java.util.UUID;
+
 /**
  * Represents a request to run and render a report.
  * (The natural ordering of this class places higher priority requests first, so that it may be used in a PriorityQueue.)
+ *
+ * If a request is for a non-persisted ReportDefinition, then it is a "transient" request. A transient request cannot be
+ * SAVED, and it may not be possible to fully interact with it via the UI.
  */
 public class ReportRequest extends BaseOpenmrsObject {
 
@@ -60,10 +63,20 @@ public class ReportRequest extends BaseOpenmrsObject {
 	    this.baseCohort = baseCohort;
 	    this.renderingMode = renderingMode;
 	    this.priority = priority;
-	    this.schedule = schedule;
+        if (isTransient() && ObjectUtil.notNull(schedule)) {
+            throw new IllegalArgumentException("Cannot schedule a transient ReportRequest");
+        }
+        this.schedule = schedule;
     }
 
 	//*****  INSTANCE METHODS ******
+
+    /**
+     * @return true if this is a ReportRequest for a non-persisted ReportDefinition
+     */
+    public boolean isTransient() {
+        return reportDefinition == null;
+    }
 
 	/**
 	 * @see Object#toString()
@@ -239,8 +252,11 @@ public class ReportRequest extends BaseOpenmrsObject {
 	 * @param status the status to set
 	 */
 	public void setStatus(Status status) {
-		this.status = status;
-	}
+        if (isTransient() && Status.SAVED.equals(status)) {
+            throw new IllegalStateException("Cannot save a transient report request");
+        }
+        this.status = status;
+    }
 
 	/**
 	 * @return the evaluationDate

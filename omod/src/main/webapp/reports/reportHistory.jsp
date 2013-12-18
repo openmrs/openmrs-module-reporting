@@ -90,7 +90,14 @@
 						<td style="display:none"><openmrs:formatDate date="${r.requestDate}" format="yyyy-MM-dd HH:mm:ss"/></td>
 						<td>
 							<a href="reportHistoryOpen.form?uuid=${r.uuid}">
-								${r.reportDefinition.parameterizable.name}
+                                <c:choose>
+                                    <c:when test="${r.transient}">
+                                        <spring:message code="reporting.reportRequest.transient.namePlaceholder"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${r.reportDefinition.parameterizable.name}
+                                    </c:otherwise>
+                                </c:choose>
 							</a>
 						</td>
 						<td style="white-space:nowrap;">

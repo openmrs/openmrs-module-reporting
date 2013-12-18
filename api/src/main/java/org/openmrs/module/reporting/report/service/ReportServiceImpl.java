@@ -1,20 +1,5 @@
 package org.openmrs.module.reporting.report.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,6 +15,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.Timer;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -53,6 +39,22 @@ import org.openmrs.util.OpenmrsUtil;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 /**
  * Base Implementation of the ReportService API
  */
@@ -69,6 +71,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	private ReportDAO reportDAO;
 	private TaskExecutor taskExecutor;
 	private Map<String, Report> reportCache = new LinkedHashMap<String, Report>();
+    private Map<String, Mapped<ReportDefinition>> inMemoryReportDefinitions = new HashMap<String, Mapped<ReportDefinition>>(); // by ReportRequest.uuid
 		
 	/**
 	 * Default constructor
@@ -223,7 +226,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		}
 		reportDAO.purgeReportRequest(request);
 		reportCache.remove(request.getUuid());
-		FileUtils.deleteQuietly(getReportDataFile(request));
+        inMemoryReportDefinitions.remove(request.getUuid());
+        FileUtils.deleteQuietly(getReportDataFile(request));
 		FileUtils.deleteQuietly(getReportErrorFile(request));
 		FileUtils.deleteQuietly(getReportOutputFile(request));
 		FileUtils.deleteQuietly(getReportLogFile(request));
@@ -345,7 +349,12 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				logReportMessage(request, "Report Requested by " + ObjectUtil.getNameOfCurrentUser());
 			}
 		}
-		
+
+        if (request.getReportDefinition().getParameterizable().getId() == null) {
+            inMemoryReportDefinitions.put(request.getUuid(), request.getReportDefinition());
+            request.setReportDefinition(null);
+        }
+
 		request =  Context.getService(ReportService.class).saveReportRequest(request);
 		
 		Integer position = getPositionInQueue(request);
@@ -436,8 +445,16 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		
 			// Evaluate the Report Definition, any EvaluationException thrown by the next line can bubble up; wrapping it won't provide useful information
 			logReportMessage(request, "Evaluating Report Data....");
-			
-			ReportData reportData = rds.evaluate(request.getReportDefinition(), context);
+
+            Mapped<ReportDefinition> reportDefinition = request.getReportDefinition();
+            if (reportDefinition == null) {
+                reportDefinition = inMemoryReportDefinitions.remove(request.getUuid());
+                if (reportDefinition == null) {
+                    throw new IllegalStateException("Tried to run a queued ReportRequest on an in-memory ReportDefinition, but could not find the in-memory definition. Probably the server or reporting module was reloaded after queuing the request.");
+                }
+            }
+
+            ReportData reportData = rds.evaluate(reportDefinition, context);
 			report.setReportData(reportData);
 			request.setEvaluateCompleteDatetime(new Date());
 
@@ -456,6 +473,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	            }
 			}
 			request.setStatus(Status.COMPLETED);
+            logReportMessage(request, "Completed Evaluation and Rendering");
 		}
 		catch (Throwable t) {
 			request.setStatus(Status.FAILED);
@@ -648,7 +666,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		try {
 			File f = getReportLogFile(request);
 			String d = DateUtil.formatDate(new Date(), "EEE dd/MMM/yyyy HH:mm:ss z");
-			ReportUtil.appendStringToFile(f, d + " | " + message);			
+			ReportUtil.appendStringToFile(f, d + " | " + message);
 		}
 		catch (Exception e) {
 			log.warn("Unable to log report message to disk: " + message, e);

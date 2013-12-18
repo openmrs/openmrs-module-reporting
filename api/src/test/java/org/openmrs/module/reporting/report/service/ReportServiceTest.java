@@ -10,6 +10,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.Report;
+import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
@@ -432,4 +433,44 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		Report actual = Context.getService(ReportService.class).runReport(request);
 		Assert.assertEquals(sdf.format(actual.getReportData().getContext().getEvaluationDate()), sdf.format(new Date()));
 	}
+
+    @Test
+    public void queueReport_shouldSupportNonPersistedReportDefinition() throws Exception {
+        SqlDataSetDefinition dsd = new SqlDataSetDefinition();
+        dsd.setSqlQuery("select person_id, birthdate, gender from person where voided = 0");
+        ReportDefinition rd = new ReportDefinition();
+        rd.addDataSetDefinition("dsd", dsd, null);
+
+        ReportRequest request = new ReportRequest(Mapped.map(rd, ""), null, null, null, null);
+
+        ReportService reportService = Context.getService(ReportService.class);
+
+        request = reportService.queueReport(request);
+        reportService.processNextQueuedReports();
+
+        boolean success = false;
+        boolean stop = false;
+        while (!stop) {
+            Thread.sleep(1000);
+
+            List<String> reportLog = reportService.loadReportLog(request);
+            for (String s : reportLog) {
+                if (s.indexOf("Completed Evaluation and Rendering") >= 0) {
+                    success = true;
+                }
+                if (s.indexOf("Report Generation Completed") >= 0) {
+                    stop = true;
+                }
+                if (s.indexOf("Report Evaluation Failed") >= 0) {
+                    stop = true;
+                }
+            }
+        }
+
+        ReportData reportData = reportService.loadReportData(request);
+
+        Assert.assertTrue(success);
+        Assert.assertTrue(reportData.getDataSets().containsKey("dsd"));
+    }
+
 }

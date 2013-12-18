@@ -1,18 +1,5 @@
 package org.openmrs.module.reporting.report.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -37,6 +24,19 @@ import org.openmrs.module.reporting.report.renderer.TextTemplateRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsConstants;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class ReportUtil {
 	
@@ -247,27 +247,29 @@ public class ReportUtil {
 			}	
 		}
 		// Find ReportDesign processors
-		ReportService rs = Context.getService(ReportService.class);
-		ReportDefinition rd = Context.getService(ReportDefinitionService.class).getDefinitionByUuid(request.getReportDefinition().getUuidOfMappedOpenmrsObject());
-		//TODO: REPORT-314.   This is a hack, and should be changed when there's a direct link between reportRequest and reportDesign.
-		//                    i.e., when there's a specific reportDesigns for each possible render, given a reportDefinition
-		if (request.getRenderingMode() != null){
-			List<ReportDesign> rdList = rs.getReportDesigns(rd, request.getRenderingMode().getRenderer().getClass(), false); //this is the join to report definition
-			if (rdList != null){
-				for (ReportDesign d : rdList) {
-					for (ReportProcessorConfiguration rpc : d.getReportProcessors()){
-						for (int i = 0; i < modes.length; i++){
-							ReportProcessorConfiguration.ProcessorMode mode = modes[i];
-							if (mode.equals(rpc.getProcessorMode())){
-								log.debug("runReport matched request renderingMode to reportDesign.rendererType on " + request.getRenderingMode().getRenderer().getClass());
-								processors.add(rpc);
-								break;
-							}	
-						}	
-					}
-				}
-			}
-		}
+        if (!request.isTransient()) {
+            ReportService rs = Context.getService(ReportService.class);
+            ReportDefinition rd = Context.getService(ReportDefinitionService.class).getDefinitionByUuid(request.getReportDefinition().getUuidOfMappedOpenmrsObject());
+            //TODO: REPORT-314.   This is a hack, and should be changed when there's a direct link between reportRequest and reportDesign.
+            //                    i.e., when there's a specific reportDesigns for each possible render, given a reportDefinition
+            if (request.getRenderingMode() != null){
+                List<ReportDesign> rdList = rs.getReportDesigns(rd, request.getRenderingMode().getRenderer().getClass(), false); //this is the join to report definition
+                if (rdList != null){
+                    for (ReportDesign d : rdList) {
+                        for (ReportProcessorConfiguration rpc : d.getReportProcessors()){
+                            for (int i = 0; i < modes.length; i++){
+                                ReportProcessorConfiguration.ProcessorMode mode = modes[i];
+                                if (mode.equals(rpc.getProcessorMode())){
+                                    log.debug("runReport matched request renderingMode to reportDesign.rendererType on " + request.getRenderingMode().getRenderer().getClass());
+                                    processors.add(rpc);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 		return processors;
 	}
 	

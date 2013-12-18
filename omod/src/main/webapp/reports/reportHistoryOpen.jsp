@@ -173,13 +173,15 @@
 							<spring:message code="reporting.viewReport"/>
 						</a>
 					</div>
-					
-					<div class="reportAction status statusCOMPLETED">
-						<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistorySave.form?uuid=${request.uuid}" id="saveReportLink">
-							<img src="<c:url value="/images/save.gif"/>" width="24" height="24" border="0" style="vertical-align:middle"/>
-							<spring:message code="reporting.saveReport"/>
-						</a>
-					</div>
+
+                    <c:if test="${!request.transient}">
+                        <div class="reportAction status statusCOMPLETED">
+                            <a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistorySave.form?uuid=${request.uuid}" id="saveReportLink">
+                                <img src="<c:url value="/images/save.gif"/>" width="24" height="24" border="0" style="vertical-align:middle"/>
+                                <spring:message code="reporting.saveReport"/>
+                            </a>
+                        </div>
+                    </c:if>
 
 					<c:forEach var="processor" items="${onDemandProcessors}">
 						<div class="reportAction status statusCOMPLETED statusSAVED">
@@ -204,12 +206,14 @@
 						</a>
 					</div>
 
-					<div class="reportAction status statusCOMPLETED statusSAVED statusFAILED">
-						<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?copyRequest=${request.uuid}">
-							<img src="<c:url value="/images/play.gif"/>" width="24" height="24" border="0" style="vertical-align:middle"/>
-							<spring:message code="reporting.reportHistory.runAgain"/>
-						</a>
-					</div>
+                    <c:if test="${!request.transient}">
+                        <div class="reportAction status statusCOMPLETED statusSAVED statusFAILED">
+                            <a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?copyRequest=${request.uuid}">
+                                <img src="<c:url value="/images/play.gif"/>" width="24" height="24" border="0" style="vertical-align:middle"/>
+                                <spring:message code="reporting.reportHistory.runAgain"/>
+                            </a>
+                        </div>
+                    </c:if>
 
 					<div class="reportAction">
 						<a href="javascript:deleteRequest('${request.uuid}');">
