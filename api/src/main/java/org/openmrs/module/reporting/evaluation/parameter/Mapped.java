@@ -88,11 +88,19 @@ public class Mapped<T extends Parameterizable> implements Serializable {
      * @return
      */
     public static <T extends Parameterizable> Mapped<T> mapStraightThrough(T parameterizable) {
+        return new Mapped(parameterizable, straightThroughMappings(parameterizable));
+    }
+
+    /**
+     * @param parameterizable
+     * @return a "straight through" Map of each parameter in parameterizable, e.g. "startDate" -> "${startDate}"
+     */
+    public static Map<String, Object> straightThroughMappings(Parameterizable parameterizable) {
         Map<String, Object> mappings = new HashMap<String, Object>();
         for (Parameter parameter : parameterizable.getParameters()) {
             mappings.put(parameter.getName(), "${" + parameter.getName() + "}");
         }
-        return new Mapped(parameterizable, mappings);
+        return mappings;
     }
 
 
