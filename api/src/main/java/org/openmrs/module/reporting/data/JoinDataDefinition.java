@@ -13,12 +13,12 @@
  */
 package org.openmrs.module.reporting.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract Adapter class for exposing one class of Data as applicable for another class of Data
@@ -98,7 +98,9 @@ public abstract class JoinDataDefinition<T extends DataDefinition> extends BaseD
 	 */
 	@Override
 	public String getName() {
-	    if (joinedDefinition != null) {
+        if (super.getName() != null) {
+            return getName();
+        } else if (joinedDefinition != null) {
 	    	return joinedDefinition.getName();
 	    }
 	    return null;
