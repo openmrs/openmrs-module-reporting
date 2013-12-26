@@ -99,7 +99,7 @@ public abstract class JoinDataDefinition<T extends DataDefinition> extends BaseD
 	@Override
 	public String getName() {
         if (super.getName() != null) {
-            return getName();
+            return super.getName();
         } else if (joinedDefinition != null) {
 	    	return joinedDefinition.getName();
 	    }
