@@ -13,23 +13,25 @@
  */
 package org.openmrs.module.reporting;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
+import org.openmrs.Location;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.GlobalPropertyListener;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.Location;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.springframework.util.StringUtils;
-
 /**
  * Constants required by this module
  */
-public class ReportingConstants {
+public class ReportingConstants implements GlobalPropertyListener {
 
     protected static final Log log = LogFactory.getLog(ReportingConstants.class);
 
@@ -121,22 +123,46 @@ public class ReportingConstants {
 	public static final boolean GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS() {
 		return "true".equals(Context.getAdministrationService().getGlobalProperty("reporting.includeDataExportsAsDataSetDefinitions"));
 	}
-    
-    public static final Locale GLOBAL_PROPERTY_DEFAULT_LOCALE() {
 
-        String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.defaultLocale");
-        if (StringUtils.hasText(propertyValue)) {
-            try {
-                return new Locale(propertyValue);
-            }
-            catch (Exception e) {
-                log.warn("Unable to instantiate default locale", e);
-                return null;
-            }
+    public static final String DEFAULT_LOCALE_GP_NAME = "reporting.defaultLocale";
+    private static boolean hasCachedDefaultLocale = false;
+    private static transient Locale cachedDefaultLocale = null;
+
+    // this property is fetched a lot, so we cache it
+    public static final Locale GLOBAL_PROPERTY_DEFAULT_LOCALE() {
+        if (hasCachedDefaultLocale) {
+            return cachedDefaultLocale;
         }
         else {
-            return null;
-        }
+            String propertyValue = Context.getAdministrationService().getGlobalProperty(DEFAULT_LOCALE_GP_NAME);
+            if (StringUtils.hasText(propertyValue)) {
+                try {
+                    cachedDefaultLocale = new Locale(propertyValue);
+                } catch (Exception e) {
+                    log.warn("Unable to instantiate default locale", e);
+                    cachedDefaultLocale = null;
+                }
+            } else {
+                cachedDefaultLocale = null;
+            }
 
+            hasCachedDefaultLocale = true;
+            return cachedDefaultLocale;
+        }
+    }
+
+    @Override
+    public boolean supportsPropertyName(String s) {
+        return DEFAULT_LOCALE_GP_NAME.equals(s);
+    }
+
+    @Override
+    public void globalPropertyChanged(GlobalProperty globalProperty) {
+        hasCachedDefaultLocale = false;
+    }
+
+    @Override
+    public void globalPropertyDeleted(String s) {
+        hasCachedDefaultLocale = false;
     }
 }
