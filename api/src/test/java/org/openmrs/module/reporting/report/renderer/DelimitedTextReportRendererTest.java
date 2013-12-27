@@ -1,0 +1,117 @@
+/*
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+
+package org.openmrs.module.reporting.report.renderer;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveTest {
+
+    @Autowired
+    ReportDefinitionService reportDefinitionService;
+
+    @Test
+    public void getRenderedContentType_shouldBeZipIfMoreThanOneDataSet() throws Exception {
+        DelimitedTextReportRenderer renderer = new CsvReportRenderer();
+        assertThat(renderer.getRenderedContentType(reportDefinitionWithTwoDSDs(), ""), is("application/zip"));
+    }
+
+    @Test
+    public void getRenderedContentType_shouldBeCsvIfOneDataSet() throws Exception {
+        DelimitedTextReportRenderer renderer = new CsvReportRenderer();
+        assertThat(renderer.getRenderedContentType(reportDefinitionWithOneDSD(), ""), is("text/csv"));
+    }
+
+    @Test
+    public void getFilename_shouldBeZipIfMoreThanOneDataSet() throws Exception {
+        DelimitedTextReportRenderer renderer = new CsvReportRenderer();
+        assertTrue(Pattern.matches("Testing_.*\\.zip", renderer.getFilename(reportDefinitionWithTwoDSDs(), "")));
+    }
+
+    @Test
+    public void getFilename_shouldBeCsvIfOneDataSet() throws Exception {
+        DelimitedTextReportRenderer renderer = new CsvReportRenderer();
+        assertTrue(Pattern.matches("Testing_.*\\.csv", renderer.getFilename(reportDefinitionWithOneDSD(), "")));
+    }
+
+    @Test
+    public void render_shouldWritePlainTextIfOneDataSet() throws Exception {
+        DelimitedTextReportRenderer renderer = new CsvReportRenderer();
+        ReportData data = reportDefinitionService.evaluate(reportDefinitionWithOneDSD(), new EvaluationContext());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        renderer.render(data, "", out);
+        assertThat(out.toString(), startsWith("\"PATIENT_ID\""));
+    }
+
+    @Test
+    public void render_shouldWriteZipIfMoreThanOneDataSet() throws Exception {
+        DelimitedTextReportRenderer renderer = new CsvReportRenderer();
+        ReportData data = reportDefinitionService.evaluate(reportDefinitionWithTwoDSDs(), new EvaluationContext());
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        renderer.render(data, "", out);
+
+        ZipInputStream zip = new ZipInputStream(new ByteArrayInputStream(out.toByteArray()));
+        try {
+            ZipEntry entry = zip.getNextEntry();
+            assertThat(entry.getName(), is("collision with tricky tough characters.csv"));
+            entry = zip.getNextEntry();
+            assertThat(entry.getName(), is("collision with tricky tough characters_2.csv"));
+        }
+        finally {
+            IOUtils.closeQuietly(zip);
+        }
+
+        // I also did the following, then manually opened the zip file, and opened the CSVs in LibreOffice. It worked
+        // correctly. I'm commenting it out since it's pointless for automated testing.
+        //   FileOutputStream fos = new FileOutputStream("/tmp/test.zip");
+        //   renderer.render(data, "", fos);
+        //   IOUtils.closeQuietly(fos);
+    }
+
+    private ReportDefinition reportDefinitionWithOneDSD() {
+        ReportDefinition reportDefinition = new ReportDefinition();
+        reportDefinition.setName("Testing");
+        reportDefinition.addDataSetDefinition("one", new SqlDataSetDefinition("one", "description", "select patient_id from patient"), null);
+        return reportDefinition;
+    }
+
+    private ReportDefinition reportDefinitionWithTwoDSDs() {
+        ReportDefinition reportDefinition = new ReportDefinition();
+        reportDefinition.setName("Testing");
+        reportDefinition.addDataSetDefinition("collision with \"tricky\", tough characters", new SqlDataSetDefinition("one", "description", "select patient_id from patient"), null);
+        reportDefinition.addDataSetDefinition("collision with tricky tough characters", new SqlDataSetDefinition("two", "description", "select location_id from location"), null);
+        return reportDefinition;
+    }
+
+}

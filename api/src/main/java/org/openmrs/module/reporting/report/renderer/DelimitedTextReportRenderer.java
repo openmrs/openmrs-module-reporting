@@ -13,14 +13,6 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -32,6 +24,19 @@ import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * ReportRenderer that renders to a delimited text file
@@ -65,8 +70,12 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	 * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getRenderedContentType(ReportDefinition, String)
 	 */
 	public String getRenderedContentType(ReportDefinition model, String argument) {
-		ReportDesign design = getDesign(argument);
-		return "text/" + getFilenameExtension(design);
+        if (model.getDataSetDefinitions().size() > 1) {
+            return "application/zip";
+        } else {
+            ReportDesign design = getDesign(argument);
+            return "text/" + getFilenameExtension(design);
+        }
 	}
 
 	/**
@@ -90,22 +99,51 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	public String getFilename(ReportDefinition reportDefinition, String argument) {
 		ReportDesign design = getDesign(argument);
 		String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-hhmmss");
-		return reportDefinition.getName() + "_" + dateStr + "." + getFilenameExtension(design);
+        String extension = reportDefinition.getDataSetDefinitions().size() > 1 ? "zip" : getFilenameExtension(design);
+		return reportDefinition.getName() + "_" + dateStr + "." + extension;
 	}
+
+    private String getFilenameBaseForName(String definitionName, Set<String> alreadyUsed) {
+        String clean = definitionName.replaceAll("[^a-zA-Z_0-9 ]", "");
+        if (alreadyUsed.contains(clean)) {
+            int i = 2;
+            while (alreadyUsed.contains(clean + "_" + i)) {
+                ++i;
+            }
+            clean = clean + "_" + i;
+        }
+        alreadyUsed.add(clean);
+        return clean;
+    }
 	
 	/**
 	 * @see ReportRenderer#render(ReportData, String, OutputStream)
 	 */
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
-		
-		Writer w = new OutputStreamWriter(out,"UTF-8");
 		DataSet dataset = results.getDataSets().values().iterator().next();
 		
 		ReportDesign design = getDesign(argument);
 		String textDelimiter = getTextDelimiter(design);
 		String fieldDelimiter = getFieldDelimiter(design);
-		
-		List<DataSetColumn> columns = dataset.getMetaData().getColumns();
+
+        if (results.getDataSets().size() > 1) {
+            ZipOutputStream zip = new ZipOutputStream(out);
+            Set<String> usedFilenames = new HashSet<String>();
+            for (Map.Entry<String, DataSet> e : results.getDataSets().entrySet()) {
+                String fn = getFilenameBaseForName(e.getKey(), usedFilenames) + "." + getFilenameExtension(getDesign(argument));
+                zip.putNextEntry(new ZipEntry(fn));
+                writeDataSet(e.getValue(), zip, textDelimiter, fieldDelimiter);
+                zip.closeEntry();
+            }
+            zip.finish();
+        } else {
+            writeDataSet(dataset, out, textDelimiter, fieldDelimiter);
+        }
+	}
+
+    private void writeDataSet(DataSet dataset, OutputStream out, String textDelimiter, String fieldDelimiter) throws IOException {
+        Writer w = new OutputStreamWriter(out, "UTF-8");
+        List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 
 		// header row
 		for (Iterator<DataSetColumn> i = columns.iterator(); i.hasNext();) {
@@ -116,7 +154,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 			}
 		}
 		w.write("\n");
-		
+
 		// data rows
 		for (DataSetRow row : dataset) {
 			for (Iterator<DataSetColumn> i = columns.iterator(); i.hasNext();) {
@@ -143,7 +181,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 			}
 			w.write("\n");
 		}
-		
+
 		w.flush();
 	}
 }
