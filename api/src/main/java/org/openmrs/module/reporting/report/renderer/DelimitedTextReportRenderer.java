@@ -100,9 +100,14 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		ReportDesign design = getDesign(argument);
 		String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-hhmmss");
         String extension = reportDefinition.getDataSetDefinitions().size() > 1 ? "zip" : getFilenameExtension(design);
-		return reportDefinition.getName() + "_" + dateStr + "." + extension;
+		return getFilenameBaseForName(reportDefinition.getName(), new HashSet<String>()) + "_" + dateStr + "." + extension;
 	}
 
+    /**
+     * @param definitionName name to base the returned filename on (e.g. a ReportDefinition name or a data set key)
+     * @param alreadyUsed names that have already been used, and should be avoided; the returned value will be added to this set
+     * @return definitionName, with characters unsuitable for a filename removed, and a suffix added if necessary for uniqueness
+     */
     private String getFilenameBaseForName(String definitionName, Set<String> alreadyUsed) {
         String clean = definitionName.replaceAll("[^a-zA-Z_0-9 ]", "");
         if (alreadyUsed.contains(clean)) {
