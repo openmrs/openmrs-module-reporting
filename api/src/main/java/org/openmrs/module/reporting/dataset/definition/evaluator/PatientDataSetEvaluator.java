@@ -83,25 +83,17 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
 		for (RowPerObjectColumnDefinition cd : dsd.getColumnDefinitions()) {
 
-            System.out.println("evaluating column: " + cd.getName());
-            long l = System.currentTimeMillis();
+			MappedData<? extends PatientDataDefinition> dataDef = (MappedData<? extends PatientDataDefinition>) cd.getDataDefinition();
+			EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(dataDef, ec);
 
-            MappedData<? extends PatientDataDefinition> dataDef = (MappedData<? extends PatientDataDefinition>) cd.getDataDefinition();
-            EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(dataDef, ec);
-
-            System.out.println("...took " + (System.currentTimeMillis() - l) + " ms");
-            l = System.currentTimeMillis();
-
-            for (Integer id : c.getMemberIds()) {
-                for (DataSetColumn column : cd.getDataSetColumns()) {
-                    Object val = data.getData().get(id);
-                    val = DataUtil.convertData(val, dataDef.getConverters());
-                    dataSet.addColumnValue(id, column, val);
-                }
-            }
-
-            System.out.println("...took " + (System.currentTimeMillis() - l) + " ms to set columns in dataset");
-        }
+			for (Integer id : c.getMemberIds()) {
+				for (DataSetColumn column : cd.getDataSetColumns()) {
+					Object val = data.getData().get(id);
+					val = DataUtil.convertData(val, dataDef.getConverters());
+					dataSet.addColumnValue(id, column, val);
+				}
+			}
+		}
 
 		return dataSet;
 	}
