@@ -50,6 +50,10 @@ public abstract class BaseDefinitionLibraryDataDefinition extends BaseDataDefini
         this.parameterValues = parameterValues;
     }
 
+    /**
+     * Sets this.parameters to be the parameters from the referenced definition minus any specified in parameterValues
+     * @param definitionLibraries referenced definition will be loaded from here (by definitionKey)
+     */
     public void loadParameters(AllDefinitionLibraries definitionLibraries) {
         Definition realDefinition = definitionLibraries.getDefinition(null, definitionKey);
 
