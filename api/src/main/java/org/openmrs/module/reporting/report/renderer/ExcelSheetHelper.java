@@ -1,7 +1,5 @@
 package org.openmrs.module.reporting.report.renderer;
 
-import java.util.Date;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
@@ -11,6 +9,8 @@ import org.openmrs.Cohort;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
+
+import java.util.Date;
 
 /**
  * A wrapper around a POI HSSFSheet that lets you interact via
@@ -136,6 +136,8 @@ public class ExcelSheetHelper {
      * @return
      */
     public static String fixSheetName(String name) {
+        name = name.replace("[", "");
+        name = name.replace("]", "");
         name = name.replace(" ", "");
         if (name.length() > 15)
             name = name.substring(0, 15);
