@@ -46,7 +46,7 @@
 		<groovyVersion>1.8.7</groovyVersion>
         <jodatimeVersion>2.3</jodatimeVersion>
         <handlebarsVersion>1.1.2</handlebarsVersion>
-        <openmrsTestutilsVersion>1.0-SNAPSHOT</openmrsTestutilsVersion>
+        <openmrsTestutilsVersion>1.0</openmrsTestutilsVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
