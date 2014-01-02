@@ -49,7 +49,12 @@ public abstract class AbstractReportsTask extends TimerTask {
 		}
 		
 		try {
-			Context.openSession();
+            try {
+			    Context.openSession();
+            } catch (NullPointerException ex) {
+                log.info("Skipping run of " + getClass().getSimpleName() + " because we could not open a session. Probably OpenMRS startup is not yet complete.");
+                return;
+            }
 			currentSession = sessionFactory.getCurrentSession();
 			
 			if (!Context.isAuthenticated()) {
