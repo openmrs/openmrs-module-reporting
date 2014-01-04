@@ -121,7 +121,9 @@
 											${definition.creator}
 										</td>
 										<td width="5%" nowrap="nowrap">
-											<rpt:timespan then="${definition.dateCreated}"/>
+										
+                           <fmt:formatDate value="${definition.dateCreated}" pattern="yyyy-MM-dd HH:mm:ss" />
+											
 										</td>
 										<td align="left" nowrap="nowrap">
 											&nbsp;
