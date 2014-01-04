@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require anyPrivilege="Manage Cohort Definitions,Manage Data Set Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form" />
 <%@ include file="../manage/localHeader.jsp"%>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <script type="text/javascript" charset="utf-8">
 
 	$(document).ready(function() {
@@ -121,7 +121,9 @@
 											${definition.creator}
 										</td>
 										<td width="5%" nowrap="nowrap">
-											<rpt:timespan then="${definition.dateCreated}"/>
+										
+                           <fmt:formatDate value="${definition.dateCreated}" pattern="yyyy-MM-dd HH:mm:ss" />
+											
 										</td>
 										<td align="left" nowrap="nowrap">
 											&nbsp;
