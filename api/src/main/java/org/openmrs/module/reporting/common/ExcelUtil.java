@@ -3,10 +3,11 @@ package org.openmrs.module.reporting.common;
 import java.util.Date;
 import java.util.Set;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.RichTextString;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.openmrs.module.reporting.report.renderer.ExcelStyleHelper;
 
 /**
@@ -19,15 +20,15 @@ public class ExcelUtil {
 	 * @param cell the cell to retrieve the contents for
 	 * @return the contents of the passed cell as a String
 	 */
-	public static String getCellContentsAsString(HSSFCell cell) {
+	public static String getCellContentsAsString(Cell cell) {
     	String contents = "";
     	try {
 	    	switch (cell.getCellType()) {
-	    		case HSSFCell.CELL_TYPE_STRING: 	contents = cell.getRichStringCellValue().toString(); break;
-	    		case HSSFCell.CELL_TYPE_NUMERIC: 	contents = Double.toString(cell.getNumericCellValue()); break;
-	    		case HSSFCell.CELL_TYPE_BOOLEAN:	contents = Boolean.toString(cell.getBooleanCellValue()); break;
-	    		case HSSFCell.CELL_TYPE_FORMULA:	contents = cell.getCellFormula(); break;
-	    		case HSSFCell.CELL_TYPE_ERROR:		contents = Byte.toString(cell.getErrorCellValue()); break;
+	    		case Cell.CELL_TYPE_STRING: 	contents = cell.getRichStringCellValue().toString(); break;
+	    		case Cell.CELL_TYPE_NUMERIC: 	contents = Double.toString(cell.getNumericCellValue()); break;
+	    		case Cell.CELL_TYPE_BOOLEAN:	contents = Boolean.toString(cell.getBooleanCellValue()); break;
+	    		case Cell.CELL_TYPE_FORMULA:	contents = cell.getCellFormula(); break;
+	    		case Cell.CELL_TYPE_ERROR:		contents = Byte.toString(cell.getErrorCellValue()); break;
 	    		default: break;
 	    	}
     	}
@@ -43,8 +44,8 @@ public class ExcelUtil {
 	 * @param cell the cell to set
 	 * @param cellValue the value to set the cell to
 	 */
-	public static void setCellContents(ExcelStyleHelper styleHelper, HSSFCell cell, Object cellValue) {
-		
+	public static void setCellContents(ExcelStyleHelper styleHelper, Cell cell, Object cellValue) {
+		Workbook wb = cell.getSheet().getWorkbook();
 		if (cellValue == null) { cellValue = ""; }
 		if (!cellValue.equals(getCellContentsAsString(cell))) {
 			if (cellValue instanceof Number) {
@@ -52,7 +53,7 @@ public class ExcelUtil {
 				return;
 			}
 			if (cellValue instanceof Date) {
-				if (!HSSFDateUtil.isCellDateFormatted(cell)) {
+				if (!DateUtil.isCellDateFormatted(cell)) {
 					cell.setCellStyle(styleHelper.getStyle("date"));
 				}
 				cell.setCellValue(((Date) cellValue));
@@ -61,15 +62,15 @@ public class ExcelUtil {
 			
 			String cellValueString = ObjectUtil.format(cellValue);
 			try {
-				if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+				if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
 					cell.setCellValue(Boolean.valueOf(cellValueString).booleanValue());
 					return;
 				}
-				if (cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
+				if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
 					cell.setCellFormula(cellValueString);
 					return;
 				}
-				if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+				if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 					cell.setCellValue(Double.parseDouble(cellValueString));
 					return;
 				}
@@ -77,16 +78,16 @@ public class ExcelUtil {
 			catch (Exception e) {}
 			
 			try {
-				cell.setCellValue(new HSSFRichTextString(Integer.toString(Integer.parseInt(cellValueString))));
+				cell.setCellValue(wb.getCreationHelper().createRichTextString(Integer.toString(Integer.parseInt(cellValueString))));
 				return;
 			}
 			catch (Exception e) {}
 			try {
-				cell.setCellValue(new HSSFRichTextString(Double.toString(Double.parseDouble(cellValueString))));
+				cell.setCellValue(wb.getCreationHelper().createRichTextString(Double.toString(Double.parseDouble(cellValueString))));
 				return;
 			}
 			catch (Exception e) {}
-			cell.setCellValue(new HSSFRichTextString(cellValueString));
+			cell.setCellValue(wb.getCreationHelper().createRichTextString(cellValueString));
 			return;
 		}
 		return;
@@ -119,11 +120,11 @@ public class ExcelUtil {
 		return s;
 	}
 	
-	public static String formatRow(HSSFRow row) {
+	public static String formatRow(Row row) {
 		StringBuilder sb = new StringBuilder();
 		if (row != null) {
 			for (int i=0; i<row.getPhysicalNumberOfCells(); i++) {
-				HSSFCell cell = row.getCell(i);
+				Cell cell = row.getCell(i);
 				sb.append((i == 0 ? "" : ", ") + (cell == null ? "" : cell.toString()));
 			}
 		}

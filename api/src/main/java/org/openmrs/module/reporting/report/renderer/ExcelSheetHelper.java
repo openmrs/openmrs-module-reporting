@@ -1,10 +1,11 @@
 package org.openmrs.module.reporting.report.renderer;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.RichTextString;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
@@ -25,11 +26,13 @@ public class ExcelSheetHelper {
 
     int currentRowNum;
     int currentColNum;
-    HSSFSheet sheet;
-    HSSFRow currentRow;
+    Sheet sheet;
+    Workbook workbook;
+    Row currentRow;
     
-    public ExcelSheetHelper(HSSFSheet sheet) {
+    public ExcelSheetHelper(Sheet sheet) {
         this.sheet = sheet;
+        this.workbook = sheet.getWorkbook();
         currentRowNum = 0;
         currentColNum = 0;
     }
@@ -77,42 +80,42 @@ public class ExcelSheetHelper {
      * @param cellValue
      * @param style
      */
-    public void addCell(Object cellValue, HSSFCellStyle style) {
+    public void addCell(Object cellValue, CellStyle style) {
         //System.out.println("Creating cell " + currentRowNum + "," + currentColNum + ": " + cellValue);
         if (currentRow == null) {
             currentRow = sheet.createRow(currentRowNum);
         }
-        HSSFCell cell;
+        Cell cell;
         if (cellValue == null) {
-            cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_BLANK);
+            cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_BLANK);
         } 
         else if (cellValue instanceof Number) {
-            cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
+            cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
             cell.setCellValue(((Number) cellValue).doubleValue());
         } 
         else if (cellValue instanceof Date) {
-            cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
+            cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
             cell.setCellValue((Date) cellValue);
         }
         else if (cellValue instanceof Boolean) {
-            cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_BOOLEAN);
+            cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_BOOLEAN);
             cell.setCellValue((Boolean) cellValue);
         } 
         else if (cellValue instanceof Cohort) {
-        	cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
+        	cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
             cell.setCellValue(((Cohort) cellValue).getSize());
         } 
         else if (cellValue instanceof CohortIndicatorResult) {
-        	cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
+        	cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
             cell.setCellValue(((CohortIndicatorResult) cellValue).getValue().doubleValue());
         } 
         else if (cellValue instanceof CohortIndicatorAndDimensionResult) {
-        	cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_NUMERIC);
+        	cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
             cell.setCellValue(((CohortIndicatorAndDimensionResult) cellValue).getValue().doubleValue());
         } 
         else {
-            cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_STRING);
-            cell.setCellValue(new HSSFRichTextString(ObjectUtil.format(cellValue)));
+            cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_STRING);
+            cell.setCellValue(workbook.getCreationHelper().createRichTextString(ObjectUtil.format(cellValue)));
         } 
         if (style != null) {
             cell.setCellStyle(style);

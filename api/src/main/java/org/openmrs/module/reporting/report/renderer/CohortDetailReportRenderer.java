@@ -26,9 +26,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -206,7 +206,7 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 				for (DataSetRow row : dataset) {
 					for (DataSetColumn column : dataset.getMetaData().getColumns()) {
 						Object cellValue = row.getColumnValue(column);
-	                    HSSFCellStyle style = null;
+	                    CellStyle style = null;
 	                    if (cellValue instanceof Date) {
 	                        style = styleHelper.getStyle("date");
 	                    }
