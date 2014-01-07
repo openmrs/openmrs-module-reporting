@@ -113,7 +113,9 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 		for (Map.Entry<String, Object> e : results.getContext().getParameterValues().entrySet()) {
 			Parameter p = results.getDefinition().getParameter(e.getKey());
 			if (p != null) {
-				String value = (e.getValue() instanceof Date ? Context.getDateFormat().format((Date)e.getValue()) : e.getValue().toString());
+				StringBuilder sb = new StringBuilder();
+				new ObjectUtil().printObject(sb, e.getValue());
+				String value = sb.toString();
 				parameterValues.put(p.getLabelOrName(), value);
 			}
 		}

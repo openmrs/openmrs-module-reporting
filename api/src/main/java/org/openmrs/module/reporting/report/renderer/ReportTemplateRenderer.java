@@ -21,6 +21,7 @@ import java.util.Map;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -205,7 +206,10 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 				replacementValue = new Double(((IndicatorResult) initialValue).getValue().doubleValue());
 			}
 			else {
-				replacementValue = initialValue;
+				StringBuilder sb = new StringBuilder();
+				new ObjectUtil().printObject(sb, initialValue);
+				String value = sb.toString();
+				replacementValue = value;
 			}
 		}
 		return replacementValue;

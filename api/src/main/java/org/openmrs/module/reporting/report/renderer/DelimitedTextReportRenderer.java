@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -173,8 +174,12 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 						w.write(((IndicatorResult) colValue).getValue().toString());
 					}
 					else {
+						StringBuilder sb = new StringBuilder();
+						new ObjectUtil().printObject(sb, colValue);
+						String value = sb.toString();
+						
 						// this check is because a logic EmptyResult .toString() -> null
-						String temp = escape(colValue.toString());
+						String temp = escape(value);
 						if (temp != null)
 							w.write(temp);
 					}

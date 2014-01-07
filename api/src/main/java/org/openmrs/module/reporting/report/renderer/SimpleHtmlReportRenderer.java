@@ -22,6 +22,7 @@ import java.util.List;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -78,7 +79,10 @@ public class SimpleHtmlReportRenderer extends ReportDesignRenderer {
 						if (colValue instanceof Cohort) {
 							w.write(Integer.toString(((Cohort) colValue).size()));
 						} else {
-							w.write(colValue.toString());
+							StringBuilder sb = new StringBuilder();
+							new ObjectUtil().printObject(sb, colValue);
+							String value = sb.toString();
+							w.write(value);
 						}
 					}
 					w.write("</td>");

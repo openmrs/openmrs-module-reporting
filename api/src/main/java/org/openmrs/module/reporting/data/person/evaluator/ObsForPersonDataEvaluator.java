@@ -14,10 +14,16 @@
 package org.openmrs.module.reporting.data.person.evaluator;
 
 import java.util.ArrayList;
+
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmrs.Concept;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Obs;
@@ -103,6 +109,9 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		ListMap<Integer, Obs> obsForPatients = new ListMap<Integer, Obs>();
 		for (Object o : queryResult) {
 			Obs obs = (Obs)o;
+
+			Hibernate.initialize(obs.getConcept());
+			Hibernate.initialize(obs.getConcept().getDatatype());
 			obsForPatients.putInList(obs.getPersonId(), obs);
 		}
 		
