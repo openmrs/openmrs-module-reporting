@@ -31,8 +31,11 @@ import org.openmrs.PatientState;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Relationship;
+import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -83,7 +86,7 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		if (baseCohort != null && baseCohort.isEmpty()) {
 			return ret;
 		}
-		
+
 		ClassMetadata metadata = sessionFactory.getClassMetadata(type);
 		String idPropertyName = metadata.getIdentifierPropertyName();
 		String entityName = type.getSimpleName();
@@ -109,25 +112,38 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
         // the special-case code for filtering in Java if the baseCohort is too big only handles Person or Patient queries
         // (though we may eventually want to extend it)
         boolean personOrPatientQuery = type.equals(Patient.class) || type.equals(Person.class);
-        boolean filterInQuery = !personOrPatientQuery || (baseCohort != null && baseCohort.size() < 2000);  // TODO: Change to batch if it is good
-        boolean doNotFilterInJava = baseCohort == null || filterInQuery;
+        boolean filterEncounters = context.getClass().equals(EncounterEvaluationContext.class)
+                && type.equals(Encounter.class);
+        boolean filterInQuery = (!personOrPatientQuery || (baseCohort != null && baseCohort.size() < 2000))
+                && !filterEncounters;  // TODO: Change to batch if it is good
+        boolean doNotFilterInJava = baseCohort == null || filterInQuery || filterEncounters;
 		
 		StringBuilder hql = new StringBuilder();
 		hql.append("select 	" + idPropertyName + ", " + property + " ");
 		hql.append("from	" + entityName + " " + alias + " ");
 		hql.append("where	" + alias + "." + voidedProperty + " = false ");
-        if (filterInQuery) {
+        if (filterEncounters) {
+            hql.append(" and " + alias + "." + idPropertyName + " in (:ids)");
+        } else if (filterInQuery) {
             for (Class<? extends OpenmrsData> clazz : patientJoinProperties.keySet()) {
                 if (clazz.isAssignableFrom(type) && baseCohort != null) {
                     hql.append(" and " + alias + "." + patientJoinProperties.get(clazz) + " in (:ids)");
                 }
             }
         }
-		
-		Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
-		if(hql.toString().contains(":ids")) {
-			query.setParameterList("ids", baseCohort.getMemberIds());
-		}
+
+        Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
+        if (hql.toString().contains(":ids")) {
+            if (filterEncounters) {
+                try {
+                    query.setParameterList("ids", EncounterDataUtil.getEncounterIdsForContext(context, true));
+                } catch (EvaluationException e) {
+                    throw new RuntimeException(e);
+                }
+            } else if (filterInQuery) {
+                query.setParameterList("ids", baseCohort.getMemberIds());
+            }
+        }
 
 		for (Object o : query.list()) {
 			Object[] vals = (Object[]) o;

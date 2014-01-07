@@ -41,10 +41,6 @@ public class EncounterDatetimeDataEvaluator implements EncounterDataEvaluator {
 		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);		
 		Map<Integer, Object> data = qs.getPropertyValues(Encounter.class, "encounterDatetime", context);
-		Set<Integer> allEncIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
-		if (allEncIds != null) {
-			data.keySet().retainAll(allEncIds);
-		}
 		c.setData(data);
 		return c;
 	}
