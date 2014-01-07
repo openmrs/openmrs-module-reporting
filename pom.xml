@@ -42,7 +42,7 @@
 		<serializationVersion>0.2.7</serializationVersion>
 		<jacksonVersion>1.5.0</jacksonVersion>
 		<quartzVersion>2.1.1</quartzVersion>
-		<poiVersion>3.2-FINAL</poiVersion>
+		<poiVersion>3.9</poiVersion>
 		<groovyVersion>1.8.7</groovyVersion>
         <jodatimeVersion>2.3</jodatimeVersion>
         <handlebarsVersion>1.1.2</handlebarsVersion>
@@ -61,7 +61,6 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>${poiVersion}</version>
-			<scope>compile</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>log4j</groupId>
@@ -231,6 +230,11 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${poiVersion}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
