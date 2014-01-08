@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
 <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
-<openmrs:require privilege="Manage Report Definitions" otherwise="/login.htm" redirect="/module/reporting/reports/manageScheduledReports.form" />
+<openmrs:require privilege="Manage Scheduled Report Tasks" otherwise="/login.htm" redirect="/module/reporting/reports/manageScheduledReports.form" />
 <%@ include file="../run/localHeader.jsp"%>
 
 <openmrs:htmlInclude file="${pageContext.request.contextPath}/moduleResources/reporting/scripts/cron-editing.js"/>
