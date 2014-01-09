@@ -4,8 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -141,6 +143,48 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		Assert.assertEquals(1, cohort.size());
 		Assert.assertTrue(cohort.contains(6));
 	}
+
+	/**
+	 * @see {@link SqlCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should support integer list parameter", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldSupportIntegerSetParameter() throws Exception {
+
+		String sqlQuery = "SELECT distinct patient_id FROM patient WHERE patient_id IN (:patientIdList)";
+		Set<Integer> patientIdList = new HashSet<Integer>();
+		patientIdList.add(new Integer(6));
+		Map<String, Object> parameterValues = new HashMap<String, Object>();
+		parameterValues.put("patientIdList", patientIdList);
+
+		EvaluationContext evaluationContext = new EvaluationContext();
+		evaluationContext.setParameterValues(parameterValues);
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
+
+		Assert.assertEquals(1, cohort.size());
+		Assert.assertTrue(cohort.contains(6));
+	}
+
+	/**
+	 * @see {@link SqlCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should support integer list parameter", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldSupportEmptyIntegerListParameter() throws Exception {
+
+		String sqlQuery = "SELECT distinct patient_id FROM patient WHERE patient_id IN (:patientIdList)";
+		List<Integer> patientIdList = new ArrayList<Integer>();
+		Map<String, Object> parameterValues = new HashMap<String, Object>();
+		parameterValues.put("patientIdList", patientIdList);
+
+		EvaluationContext evaluationContext = new EvaluationContext();
+		evaluationContext.setParameterValues(parameterValues);
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
+
+		Assert.assertEquals(0, cohort.size());
+	}
 	
 	/**
 	 * @see {@link SqlCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
@@ -161,6 +205,46 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 
 		Assert.assertEquals(1, cohort.size());
 		Assert.assertTrue(cohort.contains(6));
+	}
+
+	/**
+	 * @see {@link SqlCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should support patient list parameter", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldSupportPatientSetParameter() throws Exception {
+		String sqlQuery = "SELECT distinct patient_id FROM patient WHERE patient_id IN (:patientList)";
+		Set<Patient> patientList = new HashSet<Patient>();
+		patientList.add(Context.getPatientService().getPatient(new Integer(6)));
+		Map<String, Object> parameterValues = new HashMap<String, Object>();
+		parameterValues.put("patientList", patientList);
+
+		EvaluationContext evaluationContext = new EvaluationContext();
+		evaluationContext.setParameterValues(parameterValues);
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
+
+		Assert.assertEquals(1, cohort.size());
+		Assert.assertTrue(cohort.contains(6));
+	}
+
+	/**
+	 * @see {@link SqlCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should support patient list parameter", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldSupportEmptyPatientListParameter() throws Exception {
+		String sqlQuery = "SELECT distinct patient_id FROM patient WHERE patient_id IN (:patientList)";
+		List<Patient> patientList = new ArrayList<Patient>();
+		Map<String, Object> parameterValues = new HashMap<String, Object>();
+		parameterValues.put("patientList", patientList);
+
+		EvaluationContext evaluationContext = new EvaluationContext();
+		evaluationContext.setParameterValues(parameterValues);
+		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
+
+		Assert.assertEquals(0, cohort.size());
 	}
 	
 	/**
