@@ -22,6 +22,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
@@ -50,6 +51,7 @@ import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
  * Generically useful utility class for working with Objects
@@ -587,7 +589,7 @@ public class ObjectUtil {
 		}
 	}
 
-	private void printResult(StringBuilder sb, Result result) {
+	public void printResult(StringBuilder sb, Result result) {
 	    if (result instanceof EmptyResult)
 	    	return;
 	    if (result.size() < 1) { // for some reason single results seem to have size 0
@@ -607,7 +609,7 @@ public class ObjectUtil {
      * @param sb
      * @param date
      */
-    private void printDate(StringBuilder sb, Date date) {
+	public void printDate(StringBuilder sb, Date date) {
 	    sb.append(Context.getDateFormat().format(date));
     }
 
@@ -617,7 +619,7 @@ public class ObjectUtil {
      * @param sb
      * @param location
      */
-    private void printLocation(StringBuilder sb, Location location) {
+	public void printLocation(StringBuilder sb, Location location) {
 	    sb.append(location.getName());
     }
 
@@ -627,7 +629,7 @@ public class ObjectUtil {
      * @param sb
      * @param encounterType
      */
-    private void printEncounterType(StringBuilder sb, EncounterType encounterType) {
+	public void printEncounterType(StringBuilder sb, EncounterType encounterType) {
 	    sb.append(encounterType.getName());
     }
 
@@ -637,7 +639,7 @@ public class ObjectUtil {
      * @param sb
      * @param u
      */
-    private void printUser(StringBuilder sb, User u) {
+	public void printUser(StringBuilder sb, User u) {
     	sb.append(u.getPersonName());
     }
     
@@ -647,7 +649,7 @@ public class ObjectUtil {
      * @param sb
      * @param u
      */
-    private void printUser(StringBuilder sb, Person u) {
+	public void printUser(StringBuilder sb, Person u) {
         sb.append(u.getPersonName());
     }
     
@@ -657,7 +659,7 @@ public class ObjectUtil {
 	 * @param sb
 	 * @param reportData
 	 */
-	private void printReportData(StringBuilder sb, ReportData reportData) {
+	public void printReportData(StringBuilder sb, ReportData reportData) {
 	    sb.append("<h4>" + reportData.getDefinition().getName() + "</h4>");
 	    for (Map.Entry<String, DataSet> ds : reportData.getDataSets().entrySet()) {
 	    	printDataSet(sb, ds.getKey(), ds.getValue());
@@ -672,7 +674,7 @@ public class ObjectUtil {
 	 * @param title
 	 * @param dataSet
 	 */
-	private void printDataSet(StringBuilder sb, String title, DataSet dataSet) {
+	public void printDataSet(StringBuilder sb, String title, DataSet dataSet) {
 	    sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
 	    List<DataSetColumn> cols = dataSet.getMetaData().getColumns();
 	    sb.append("<thead>");
@@ -718,7 +720,7 @@ public class ObjectUtil {
 	 * @param title
 	 * @param dataSet
 	 */
-	private void printCohortDimensionResult(StringBuilder sb, CohortDimensionResult result) {
+	public void printCohortDimensionResult(StringBuilder sb, CohortDimensionResult result) {
 		sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
 		for (Map.Entry<String, Cohort> e : result.getOptionCohorts().entrySet()) {
 			sb.append("<tr><th align=\"left\">" + e.getKey() + "</th><td>");
@@ -734,20 +736,20 @@ public class ObjectUtil {
 	 * @param sb
 	 * @param cohort
 	 */
-	private void printCohort(StringBuilder sb, Cohort cohort) {
+	public void printCohort(StringBuilder sb, Cohort cohort) {
 		sb.append(cohort.size() + " patients");
     }
 	
-	private void printObsValue(StringBuilder sb, Obs obsValue) {
+	public void printObsValue(StringBuilder sb, Obs obsValue) {
 		sb.append(obsValue.getValueAsString(Context.getLocale()));
     }
 
-	private void printConcept(StringBuilder sb, Concept concept) {
+	public void printConcept(StringBuilder sb, Concept concept) {
 		if (concept.getName() != null)
 			sb.append(concept.getName().getName());
     }
 
-	private void printEncounter(StringBuilder sb, Encounter encounter) {
+	public void printEncounter(StringBuilder sb, Encounter encounter) {
 		printEncounterType(sb, encounter.getEncounterType());
 		sb.append(" @");
 		printLocation(sb, encounter.getLocation());
@@ -757,7 +759,7 @@ public class ObjectUtil {
 		printUser(sb, encounter.getProvider());
     }
 	
-	private void printMap(StringBuilder sb, Map<?, ?> m) {
+	public void printMap(StringBuilder sb, Map<?, ?> m) {
 		if (m != null) {
 			sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
 			for (Map.Entry<?, ?> e : m.entrySet()) {
@@ -781,7 +783,7 @@ public class ObjectUtil {
 	}
 
 
-	private String formatHelper(Object o) {
+	public String formatHelper(Object o) {
 		if (o == null) {
 			return "";
 		}
@@ -795,4 +797,33 @@ public class ObjectUtil {
 	    	return o.toString();
 	    }
     }
+	
+	public void eagerInitializationObs(Obs obs)
+	{
+		if(obs != null && !Hibernate.isInitialized(obs)) {
+			Hibernate.initialize(obs);
+		}
+		if(obs.getConcept() != null && !Hibernate.isInitialized(obs.getConcept())) {
+			Hibernate.initialize(obs.getConcept());
+		}
+		if(obs.getValueCoded() != null && !Hibernate.isInitialized(obs.getValueCoded())) {
+			Hibernate.initialize(obs.getValueCoded());
+		}
+		if(obs.getValueDrug() !=null && !Hibernate.isInitialized(obs.getValueDrug())) {
+			Hibernate.initialize(obs.getValueDrug());
+		}
+		if(obs.getValueCodedName() !=null && !Hibernate.isInitialized(obs.getValueCodedName())) {
+			Hibernate.initialize(obs.getValueCodedName());
+		}
+		if(obs.getConcept() != null && Hibernate.isInitialized(obs.getConcept())) {
+			if(obs.getConcept().getDatatype() != null && !Hibernate.isInitialized(obs.getConcept().getDatatype())) {
+				Hibernate.initialize(obs.getConcept().getDatatype());
+			}
+		}
+		if(obs.getValueCoded() != null && Hibernate.isInitialized(obs.getValueCoded())) {
+			if(obs.getValueCoded().getName() != null && !Hibernate.isInitialized(obs.getValueCoded().getName())) {
+				Hibernate.initialize(obs.getValueCoded().getName());
+			}
+		}
+	}
 }

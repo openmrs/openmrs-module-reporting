@@ -32,6 +32,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ListMap;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
@@ -110,18 +111,21 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		ListMap<Integer, Obs> obsForPatients = new ListMap<Integer, Obs>();
 		for (Object o : queryResult) {
 			Obs obs = (Obs)o;
-
-			Hibernate.initialize(obs.getConcept());
-			Hibernate.initialize(obs.getConcept().getDatatype());
 			obsForPatients.putInList(obs.getPersonId(), obs);
 		}
 		
 		for (Integer pId : obsForPatients.keySet()) {
 			List<Obs> l = obsForPatients.get(pId);
 			if (def.getWhich() == TimeQualifier.LAST || def.getWhich() == TimeQualifier.FIRST) {
-				c.addData(pId, l.get(0));
+				Obs obs = l.get(0);
+				new ObjectUtil().eagerInitializationObs(obs);
+				c.addData(pId, obs);
 			}
 			else {
+				for(Obs obs : l)
+				{
+					new ObjectUtil().eagerInitializationObs(obs);
+				}
 				c.addData(pId, l);
 			}
 		}
