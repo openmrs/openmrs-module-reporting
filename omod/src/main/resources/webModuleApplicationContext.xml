@@ -27,6 +27,7 @@
     	<property name="mappings">
             <props>
            		<prop key="**/cohortIndicatorAndDimensionSpecification.portlet">cohortIndicatorAndDimensionSpecificationPortletController</prop>
+                <prop key="**/multiParameterIterationParameterEdit.portlet">multiParameterIterationParameterEditPortletController</prop>
             	<prop key="**/baseCohortIndicator.portlet">baseCohortIndicatorPortletController</prop>
             	<prop key="**/mappedProperty.portlet">mappedPropertyPortletController</prop>
             	<prop key="**/baseMetadata.portlet">parameterizablePortletController</prop>
@@ -53,7 +54,8 @@
 	<bean id="indicatorFormController" class="org.openmrs.module.reporting.web.controller.IndicatorWizardFormController">
 		<property name="validator" ref="indicatorFormValidator"/>
 	</bean>
-	
+
+    <bean id="multiParameterIterationParameterEditPortletController" class="org.openmrs.module.reporting.web.controller.portlet.MultiParameterIterationParameterEditPortletController" />
 	<bean id="cohortIndicatorAndDimensionSpecificationPortletController" class="org.openmrs.module.reporting.web.controller.portlet.CohortIndicatorAndDimensionSpecificationPortletController" />
 	<bean id="baseCohortIndicatorPortletController" class="org.openmrs.module.reporting.web.controller.portlet.BaseCohortIndicatorPortletController" />
 	<bean id="parameterizablePortletController" class="org.openmrs.module.reporting.web.controller.portlet.ParameterizablePortletController" />
