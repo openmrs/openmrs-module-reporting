@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -98,7 +99,10 @@ public class IndicatorReportRenderer extends ReportDesignRenderer {
 						w.write("<td>" + ((cellValue != null) ? result.getValue() : "n/a") + "</td>");					
 					}
 					else { 
-						w.write("<td>" + ((cellValue != null) ? cellValue : "n/a") + "</td>");					
+						StringBuilder sb = new StringBuilder();
+						new ObjectUtil().printObject(sb, cellValue);
+						String value = sb.toString();
+						w.write("<td>" + ((cellValue != null) ? value : "n/a") + "</td>");					
 					}
 				}
 				w.write("</tr>");

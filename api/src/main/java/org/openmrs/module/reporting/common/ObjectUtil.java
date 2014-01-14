@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,19 +22,36 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
+import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.logic.result.EmptyResult;
+import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.data.BaseData;
+import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
+import org.openmrs.module.reporting.indicator.dimension.CohortDimensionResult;
+import org.openmrs.module.reporting.query.IdSet;
+import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
  * Generically useful utility class for working with Objects
@@ -516,5 +535,319 @@ public class ObjectUtil {
 			IOUtils.closeQuietly(is);
 		}
 		return ret;
+	}
+	
+
+	/**
+	 * Formats anything and prints it to sb. (Delegates to other methods here
+	 * @param sb
+	 * @param o
+	 */
+	public void printObject(StringBuilder sb, Object o) {
+		try {
+			if (o instanceof Result) {
+				printResult(sb, (Result) o);
+			} else if (o instanceof Collection) {
+				for (Iterator<?> i = ((Collection) o).iterator(); i.hasNext(); ) {
+					printObject(sb, i.next());
+					if (i.hasNext())
+						sb.append(", ");
+				}
+			} else if (o instanceof Date) {
+				printDate(sb, (Date) o);
+			} else if (o instanceof Concept) {
+				printConcept(sb, (Concept) o);
+			} else if (o instanceof Obs) {
+				printObsValue(sb, (Obs) o);
+			} else if (o instanceof User) {
+				printUser(sb, (User) o);
+			} else if (o instanceof Encounter) {
+				printEncounter(sb, (Encounter) o);
+			} else if (o instanceof EncounterType) {
+				printEncounterType(sb, (EncounterType) o);
+			} else if (o instanceof Location) {
+				printLocation(sb, (Location) o);
+			} else if (o instanceof ReportData) {
+				printReportData(sb, (ReportData) o);
+			} else if (o instanceof DataSet) {
+				printDataSet(sb, null, (DataSet) o);
+			} else if (o instanceof Cohort) {
+				printCohort(sb, (Cohort) o);
+			} else if (o instanceof CohortDimensionResult) {
+				printCohortDimensionResult(sb, (CohortDimensionResult) o);
+			} else if (o instanceof BaseData) {
+				printMap(sb, ((BaseData)o).getData());
+			} else if (o instanceof IdSet) {
+				printCollection(sb, ((IdSet)o).getMemberIds());
+			} 
+			else {
+				sb.append(ObjectUtil.format(o));
+			}
+		}
+		catch (Exception e) {
+			sb.append(o.toString());
+		}
+	}
+
+	public void printResult(StringBuilder sb, Result result) {
+	    if (result instanceof EmptyResult)
+	    	return;
+	    if (result.size() < 1) { // for some reason single results seem to have size 0
+	    	sb.append(result.toString());
+	    } else {
+	    	for (Iterator<Result> i = result.iterator(); i.hasNext(); ) {
+	    		sb.append(i.next().toString());
+	    		if (i.hasNext())
+	    			sb.append(", ");
+	    	}
+	    }
+    }
+
+	/**
+     * formats a date and prints it to sb
+     * 
+     * @param sb
+     * @param date
+     */
+	public void printDate(StringBuilder sb, Date date) {
+	    sb.append(Context.getDateFormat().format(date));
+    }
+
+	/**
+     * formats a location and prints it to sb
+     * 
+     * @param sb
+     * @param location
+     */
+	public void printLocation(StringBuilder sb, Location location) {
+	    sb.append(location.getName());
+    }
+
+	/**
+     * formats an encounter type and prints it to sb
+     * 
+     * @param sb
+     * @param encounterType
+     */
+	public void printEncounterType(StringBuilder sb, EncounterType encounterType) {
+	    sb.append(encounterType.getName());
+    }
+
+	/**
+     * formats a user and prints it to sb
+     * 
+     * @param sb
+     * @param u
+     */
+	public void printUser(StringBuilder sb, User u) {
+    	sb.append(u.getPersonName());
+    }
+    
+    /**
+     * formats a user and prints it to sb
+     * 
+     * @param sb
+     * @param u
+     */
+	public void printUser(StringBuilder sb, Person u) {
+        sb.append(u.getPersonName());
+    }
+    
+	/**
+	 * Formats a ReportData and prints it to sb
+	 * 
+	 * @param sb
+	 * @param reportData
+	 */
+	public void printReportData(StringBuilder sb, ReportData reportData) {
+	    sb.append("<h4>" + reportData.getDefinition().getName() + "</h4>");
+	    for (Map.Entry<String, DataSet> ds : reportData.getDataSets().entrySet()) {
+	    	printDataSet(sb, ds.getKey(), ds.getValue());
+	    }
+    }
+    
+	
+	/**
+	 * Formats a DataSet and prints it to sb
+	 * 
+	 * @param sb
+	 * @param title
+	 * @param dataSet
+	 */
+	public void printDataSet(StringBuilder sb, String title, DataSet dataSet) {
+	    sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
+	    List<DataSetColumn> cols = dataSet.getMetaData().getColumns();
+	    sb.append("<thead>");
+	    if (org.springframework.util.StringUtils.hasText(title)) {
+	    	sb.append("<tr bgcolor=\"#f0f0f0\"><th colspan=\"" + cols.size() + "\">" + title + "</th></tr>");
+	    }
+	    if (!(dataSet instanceof MapDataSet)) {
+	    	sb.append("<tr>");
+		    for (DataSetColumn col : cols) {
+		    	sb.append("<th>" + col.getLabel() + "</th>");
+		    }
+		    sb.append("</tr>");
+	    }
+	    sb.append("</thead>");
+	    sb.append("<tbody>");
+	    if (dataSet instanceof MapDataSet) {
+	    	MapDataSet map = (MapDataSet) dataSet;
+	    	DataSetRow row = map.getData();
+	    	for (DataSetColumn col : cols) {
+	    		sb.append("<tr><th align=\"left\">")
+	    			.append(Context.getMessageSourceService().getMessage(col.getLabel()))
+	    			.append("</th><td>")
+	    			.append(formatHelper(row.getColumnValue(col)))
+	    			.append("</td></tr>");
+	    	}
+	    } else {
+		    for (DataSetRow row : dataSet) {
+		    	sb.append("<tr>");
+		    	for (DataSetColumn col : cols) {
+		    		sb.append("<td>").append(formatHelper(row.getColumnValue(col))).append("</td>");
+		    	}
+		    	sb.append("</tr>");
+		    }
+	    }
+	    sb.append("</tbody>");
+	    sb.append("</table>");
+    }
+	
+	/**
+	 * Formats a DataSet and prints it to sb
+	 * 
+	 * @param sb
+	 * @param title
+	 * @param dataSet
+	 */
+	public void printCohortDimensionResult(StringBuilder sb, CohortDimensionResult result) {
+		sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
+		for (Map.Entry<String, Cohort> e : result.getOptionCohorts().entrySet()) {
+			sb.append("<tr><th align=\"left\">" + e.getKey() + "</th><td>");
+			printCohort(sb, e.getValue());
+			sb.append("</td></tr>");
+		}
+		sb.append("</table>");
+    }
+	
+	/**
+	 * formats a cohort to sb
+	 * 
+	 * @param sb
+	 * @param cohort
+	 */
+	public void printCohort(StringBuilder sb, Cohort cohort) {
+		sb.append(cohort.size() + " patients");
+    }
+	
+	public void printObsValue(StringBuilder sb, Obs obsValue) {
+		sb.append(obsValue.getValueAsString(Context.getLocale()));
+    }
+
+	public void printConcept(StringBuilder sb, Concept concept) {
+		if (concept.getName() != null)
+			sb.append(concept.getName().getName());
+    }
+
+	public void printEncounter(StringBuilder sb, Encounter encounter) {
+		printEncounterType(sb, encounter.getEncounterType());
+		sb.append(" @");
+		printLocation(sb, encounter.getLocation());
+		sb.append(" | ");
+		printDate(sb, encounter.getEncounterDatetime());
+		sb.append(" | ");
+		printUser(sb, encounter.getProvider());
+    }
+	
+	public void printMap(StringBuilder sb, Map<?, ?> m) {
+		if (m != null) {
+			sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
+			for (Map.Entry<?, ?> e : m.entrySet()) {
+				if(e.getValue() instanceof ArrayList) {
+					ArrayList list = (ArrayList) e.getValue();
+					if(list.get(0) != null && list.get(0) instanceof Obs) {
+						StringBuilder temp = new StringBuilder();
+						printObject(temp, e.getValue());
+						sb.append("<tr><th align=\"left\">" + format(e.getKey()) + "</th><td align=\"left\">" + temp.toString() + "</td></tr>");
+					}
+					else {
+						sb.append("<tr><th align=\"left\">" + format(e.getKey()) + "</th><td align=\"left\">" + format(e.getValue()) + "</td></tr>");
+					}
+				}
+				else {
+					sb.append("<tr><th align=\"left\">" + format(e.getKey()) + "</th><td align=\"left\">" + format(e.getValue()) + "</td></tr>");
+				}
+				
+			}
+			sb.append("</table>");
+		}
+	}
+	
+	private void printCollection(StringBuilder sb, Collection<?> c){
+		if(c != null){
+			sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
+			sb.append("<tr><th align=\"left\">" + Context.getMessageSourceService().getMessage("reporting.ids") + "</th></tr>");
+			for (Object item : c) {
+				sb.append("<tr><td align=\"left\">");
+				printObject(sb, item);
+				sb.append("</td></tr>");
+			}
+			sb.append("</table>");
+		}
+	}
+
+
+	public String formatHelper(Object o) {
+		if (o == null) {
+			return "";
+		}
+		else if (o instanceof Cohort) {
+			return ((Cohort)o).getSize() + " patients";
+		}
+		else if (o instanceof Obs) {
+			StringBuilder sb = new StringBuilder();
+			printObsValue(sb, (Obs) o);
+			return sb.toString();
+		}
+		else if (o instanceof Collection) {
+			StringBuilder sb = new StringBuilder();
+			printObject(sb, o);
+			return sb.toString();
+		}
+	    try {
+	    	Method method = o.getClass().getMethod("getValue");
+	    	return method.invoke(o).toString();
+	    } catch (Exception ex) {
+	    	return o.toString();
+	    }
+    }
+	
+	public void eagerInitializationObs(Obs obs)
+	{
+		if(obs != null && !Hibernate.isInitialized(obs)) {
+			Hibernate.initialize(obs);
+		}
+		if(obs.getConcept() != null && !Hibernate.isInitialized(obs.getConcept())) {
+			Hibernate.initialize(obs.getConcept());
+		}
+		if(obs.getValueCoded() != null && !Hibernate.isInitialized(obs.getValueCoded())) {
+			Hibernate.initialize(obs.getValueCoded());
+		}
+		if(obs.getValueDrug() !=null && !Hibernate.isInitialized(obs.getValueDrug())) {
+			Hibernate.initialize(obs.getValueDrug());
+		}
+		if(obs.getValueCodedName() !=null && !Hibernate.isInitialized(obs.getValueCodedName())) {
+			Hibernate.initialize(obs.getValueCodedName());
+		}
+		if(obs.getConcept() != null && Hibernate.isInitialized(obs.getConcept())) {
+			if(obs.getConcept().getDatatype() != null && !Hibernate.isInitialized(obs.getConcept().getDatatype())) {
+				Hibernate.initialize(obs.getConcept().getDatatype());
+			}
+		}
+		if(obs.getValueCoded() != null && Hibernate.isInitialized(obs.getValueCoded())) {
+			if(obs.getValueCoded().getName() != null && !Hibernate.isInitialized(obs.getValueCoded().getName())) {
+				Hibernate.initialize(obs.getValueCoded().getName());
+			}
+		}
 	}
 }

@@ -111,8 +111,11 @@ public class ExcelSheetHelper {
             cell.setCellValue(((CohortIndicatorAndDimensionResult) cellValue).getValue().doubleValue());
         } 
         else {
+			StringBuilder sb = new StringBuilder();
+			new ObjectUtil().printObject(sb, cellValue);
+			String value = sb.toString();
             cell = currentRow.createCell(currentColNum, HSSFCell.CELL_TYPE_STRING);
-            cell.setCellValue(new HSSFRichTextString(ObjectUtil.format(cellValue)));
+            cell.setCellValue(new HSSFRichTextString(value));
         } 
         if (style != null) {
             cell.setCellStyle(style);

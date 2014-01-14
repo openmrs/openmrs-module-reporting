@@ -18,9 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Hibernate;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ObsActiveList;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.ObsActiveListPersonDataDefinition;
@@ -81,6 +83,7 @@ public class ObsActiveListPersonDataEvaluator implements PersonDataEvaluator {
 		
 		for (Object o : startingObs) {
 			Obs obs = (Obs)o;
+			new ObjectUtil().eagerInitializationObs(obs);
 			ObsActiveList l = (ObsActiveList)evaluatedPersonData.getData().get(obs.getPersonId());
 			if (l == null) {
 				l = new ObsActiveList(obs.getPersonId());
@@ -91,6 +94,7 @@ public class ObsActiveListPersonDataEvaluator implements PersonDataEvaluator {
 		
 		for (Object o : endingObs) {
 			Obs obs = (Obs)o;
+			new ObjectUtil().eagerInitializationObs(obs);
 			ObsActiveList l = (ObsActiveList)evaluatedPersonData.getData().get(obs.getPersonId());
 			if (l == null) {
 				l = new ObsActiveList(obs.getPersonId());

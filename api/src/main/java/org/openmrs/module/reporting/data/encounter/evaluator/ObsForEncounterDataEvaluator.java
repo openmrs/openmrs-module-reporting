@@ -3,10 +3,12 @@ package org.openmrs.module.reporting.data.encounter.evaluator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -65,7 +67,7 @@ public class ObsForEncounterDataEvaluator implements EncounterDataEvaluator {
         // now populate with actual results
         for (Object result : results) {
             Obs obs = (Obs) result;
-
+			new ObjectUtil().eagerInitializationObs(obs);
             if (!def.isSingleObs()) {
                 ((List<Obs>) data.getData().get(obs.getEncounter().getId())).add(obs);
             }

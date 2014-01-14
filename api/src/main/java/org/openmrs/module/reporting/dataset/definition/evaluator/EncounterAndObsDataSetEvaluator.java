@@ -24,6 +24,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
@@ -169,7 +170,7 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 			// build the column header based on the full path (child obs, obs parent, grandparent, etc.)
 			// iterate over all lowest child obs
 			for (Obs obs : e.getObs()) {
-
+				new ObjectUtil().eagerInitializationObs(obs);
 				// lowest child
 				if (obs != null) {
 					
@@ -205,7 +206,7 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 		Map<Concept, Integer> parentMap = new HashMap<Concept, Integer>();
 
 		for (Obs obs : e.getObsAtTopLevel(false)) {
-
+			new ObjectUtil().eagerInitializationObs(obs);
 			Integer occurrence = (parentMap.get(obs.getConcept()) != null) ? parentMap.get(obs.getConcept()) : 0;
 			occurrence++;
 			parentMap.put(obs.getConcept(), occurrence);
@@ -243,6 +244,7 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 
 			Map<Concept, Integer> childMap = new HashMap<Concept, Integer>();
 			for (Obs o : children) {
+				new ObjectUtil().eagerInitializationObs(obs);
 				// check for duplicate concepts among this batch of children
 				Integer occurrence = (childMap.get(o.getConcept()) != null) ? childMap.get(o.getConcept()) : 0;
 				occurrence++;
@@ -314,6 +316,7 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 			for (ObsColumnDescriptor columnKey : allColumns) {
 
 				Obs obs = obsInEncounter.get(columnKey);
+				new ObjectUtil().eagerInitializationObs(obs);
 				String columnName = columnKey.format(columnDisplayFormat, maxColumnHeaderWidth);
 				DataSetColumn obsDsc = new DataSetColumn(columnName, columnName, String.class);
 

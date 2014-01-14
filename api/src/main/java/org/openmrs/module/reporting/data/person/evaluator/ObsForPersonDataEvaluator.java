@@ -10,14 +10,21 @@
  * under the License.
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ *
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
 import java.util.ArrayList;
+
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmrs.Concept;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Obs;
@@ -25,6 +32,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ListMap;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
@@ -109,9 +117,15 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		for (Integer pId : obsForPatients.keySet()) {
 			List<Obs> l = obsForPatients.get(pId);
 			if (def.getWhich() == TimeQualifier.LAST || def.getWhich() == TimeQualifier.FIRST) {
-				c.addData(pId, l.get(0));
+				Obs obs = l.get(0);
+				new ObjectUtil().eagerInitializationObs(obs);
+				c.addData(pId, obs);
 			}
 			else {
+				for(Obs obs : l)
+				{
+					new ObjectUtil().eagerInitializationObs(obs);
+				}
 				c.addData(pId, l);
 			}
 		}
