@@ -763,7 +763,21 @@ public class ObjectUtil {
 		if (m != null) {
 			sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
 			for (Map.Entry<?, ?> e : m.entrySet()) {
-				sb.append("<tr><th align=\"left\">" + format(e.getKey()) + "</th><td align=\"left\">" + format(e.getValue()) + "</td></tr>");
+				if(e.getValue() instanceof ArrayList) {
+					ArrayList list = (ArrayList) e.getValue();
+					if(list.get(0) != null && list.get(0) instanceof Obs) {
+						StringBuilder temp = new StringBuilder();
+						printObject(temp, e.getValue());
+						sb.append("<tr><th align=\"left\">" + format(e.getKey()) + "</th><td align=\"left\">" + temp.toString() + "</td></tr>");
+					}
+					else {
+						sb.append("<tr><th align=\"left\">" + format(e.getKey()) + "</th><td align=\"left\">" + format(e.getValue()) + "</td></tr>");
+					}
+				}
+				else {
+					sb.append("<tr><th align=\"left\">" + format(e.getKey()) + "</th><td align=\"left\">" + format(e.getValue()) + "</td></tr>");
+				}
+				
 			}
 			sb.append("</table>");
 		}
@@ -789,6 +803,16 @@ public class ObjectUtil {
 		}
 		else if (o instanceof Cohort) {
 			return ((Cohort)o).getSize() + " patients";
+		}
+		else if (o instanceof Obs) {
+			StringBuilder sb = new StringBuilder();
+			printObsValue(sb, (Obs) o);
+			return sb.toString();
+		}
+		else if (o instanceof Collection) {
+			StringBuilder sb = new StringBuilder();
+			printObject(sb, o);
+			return sb.toString();
 		}
 	    try {
 	    	Method method = o.getClass().getMethod("getValue");
