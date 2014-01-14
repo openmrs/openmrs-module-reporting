@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.cohort.query.db.hibernate;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1347,7 +1348,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			Object paramValue = paramMap.get(paramName);				
 			
 			// Indicates whether we should bind this parameter in the query 
-			boolean bindParameter = (query.getQueryString().indexOf(":" + paramName) > 0 );
+			boolean bindParameter = (query.getQueryString().indexOf(":" + paramName) > 0);
 					
 			if (bindParameter) { 
 
@@ -1365,18 +1366,21 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 				// OpenmrsObject (e.g. Location)
 				else if (OpenmrsObject.class.isAssignableFrom(paramValue.getClass())) { 					
 					query.setInteger(paramName, ((OpenmrsObject) paramValue).getId());
-				}	
-				// List<OpenmrsObject> (e.g. List<Location>)
-				else if (List.class.isAssignableFrom(paramValue.getClass())) { 
-					// If first element in the list is an OpenmrsObject
-					if (OpenmrsObject.class.isAssignableFrom(((List) paramValue).get(0).getClass())) { 
-						query.setParameterList(paramName, 
-								SqlUtils.openmrsObjectIdListHelper((List<OpenmrsObject>) paramValue));
-					}
-					// a List of Strings, Integers?
-					else { 
-						query.setParameterList(paramName, 
-								SqlUtils.objectListHelper((List<Object>) paramValue));
+				}
+				// Collection<OpenmrsObject> (e.g. List<Location>)
+				else if (Collection.class.isAssignableFrom(paramValue.getClass())) {
+					Collection collection = (Collection) paramValue;
+					if (collection.iterator().hasNext()) {
+						if (OpenmrsObject.class.isAssignableFrom(collection.iterator().next().getClass())) {
+							query.setParameterList(paramName, SqlUtils.openmrsObjectIdListHelper(
+									new ArrayList<OpenmrsObject>((Collection<OpenmrsObject>) paramValue)));
+						} else {
+							// a List of Strings, Integers?
+							query.setParameterList(paramName,
+									SqlUtils.objectListHelper(new ArrayList<Object>((Collection<Object>) paramValue)));
+						}
+					} else {
+						query.setParameter(paramName, null);
 					}
 				}
 				// java.util.Date and subclasses

@@ -121,7 +121,7 @@
 											${definition.creator}
 										</td>
 										<td width="5%" nowrap="nowrap">
-											<rpt:timespan then="${definition.dateCreated}"/>
+										<openmrs:formatDate date="${definition.dateCreated}" format="yyyy-MM-dd HH:mm:ss" />	
 										</td>
 										<td align="left" nowrap="nowrap">
 											&nbsp;

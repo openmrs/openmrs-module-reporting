@@ -66,8 +66,17 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	public String getFieldDelimiter(ReportDesign design) {
 		return design.getPropertyValue("fieldDelimiter", ",");
 	}
-	
-	/**
+
+    /**
+     * Defaults to \r\n, per http://tools.ietf.org/html/rfc4180#page-2
+     * @param design
+     * @return what to end each line with
+     */
+    public String getLineEnding(ReportDesign design) {
+        return design.getPropertyValue("lineDelimiter", "\r\n");
+    }
+
+    /**
 	 * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getRenderedContentType(ReportDefinition, String)
 	 */
 	public String getRenderedContentType(ReportDefinition model, String argument) {
@@ -90,7 +99,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 			return null;
 		}
 		else {
-			return text.replaceAll("\"", "\\\"");
+			return text.replaceAll("\\\"", "\"\"");
 		}
 	}			
 	
@@ -131,6 +140,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		ReportDesign design = getDesign(argument);
 		String textDelimiter = getTextDelimiter(design);
 		String fieldDelimiter = getFieldDelimiter(design);
+        String lineEnding = getLineEnding(design);
 
         if (results.getDataSets().size() > 1) {
             ZipOutputStream zip = new ZipOutputStream(out);
@@ -138,16 +148,16 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
             for (Map.Entry<String, DataSet> e : results.getDataSets().entrySet()) {
                 String fn = getFilenameBaseForName(e.getKey(), usedFilenames) + "." + getFilenameExtension(getDesign(argument));
                 zip.putNextEntry(new ZipEntry(fn));
-                writeDataSet(e.getValue(), zip, textDelimiter, fieldDelimiter);
+                writeDataSet(e.getValue(), zip, textDelimiter, fieldDelimiter, lineEnding);
                 zip.closeEntry();
             }
             zip.finish();
         } else {
-            writeDataSet(dataset, out, textDelimiter, fieldDelimiter);
+            writeDataSet(dataset, out, textDelimiter, fieldDelimiter, lineEnding);
         }
 	}
 
-    private void writeDataSet(DataSet dataset, OutputStream out, String textDelimiter, String fieldDelimiter) throws IOException {
+    private void writeDataSet(DataSet dataset, OutputStream out, String textDelimiter, String fieldDelimiter, String lineEnding) throws IOException {
         Writer w = new OutputStreamWriter(out, "UTF-8");
         List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 
@@ -159,7 +169,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 				w.write(fieldDelimiter);
 			}
 		}
-		w.write("\n");
+		w.write(lineEnding);
 
 		// data rows
 		for (DataSetRow row : dataset) {
@@ -189,7 +199,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 					w.write(fieldDelimiter);
 				}
 			}
-			w.write("\n");
+			w.write(lineEnding);
 		}
 
 		w.flush();
