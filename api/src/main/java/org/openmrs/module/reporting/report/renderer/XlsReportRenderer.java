@@ -15,6 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -83,7 +84,7 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
                     helper.nextRow();
                     for (DataSetColumn column : columnList) {
                     	Object cellValue = row.getColumnValue(column);
-                        HSSFCellStyle style = null;
+                        CellStyle style = null;
                         if (cellValue instanceof Date) {
                             style = styleHelper.getStyle("date");
                         }
