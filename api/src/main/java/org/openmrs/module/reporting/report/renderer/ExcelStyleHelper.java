@@ -10,41 +10,40 @@ import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
- * Helper utility that you wrap around a POI HSSFWorkbook to help manage cell styles
+ * Helper utility that you wrap around a POI Workbook to help manage cell styles
  * 
  * This class was adapted from org.pih.StyleHelper in PIH-EMR.
  */
 @SuppressWarnings("unchecked")
 public class ExcelStyleHelper {
 
-    HSSFWorkbook wb;
+    Workbook wb;
     Map fonts = new HashMap();
     Map styles = new HashMap();
     Collection fontAttributeNames = new HashSet();
     Collection fontAttributeStarting = new ArrayList();
     short dateFormat;
 
-    public ExcelStyleHelper(HSSFWorkbook wb) {
+    public ExcelStyleHelper(Workbook wb) {
         this.wb = wb;
         fontAttributeNames.add("bold");
         fontAttributeNames.add("italic");
         fontAttributeNames.add("underline");
         fontAttributeStarting.add("size=");
-        HSSFDataFormat df = wb.createDataFormat();
+        DataFormat df = wb.createDataFormat();
         dateFormat = df.getFormat("d-mmm-yy");
     }
 
-    public HSSFFont getFont(String s) {
+    public Font getFont(String s) {
         SortedSet att = new TreeSet();
-        for (StringTokenizer st = new StringTokenizer(s, ","); st
-                .hasMoreTokens();) {
+        for (StringTokenizer st = new StringTokenizer(s, ","); st.hasMoreTokens();) {
             String str = st.nextToken().trim().toLowerCase();
             if (str.equals("")) {
                 continue;
@@ -53,18 +52,22 @@ public class ExcelStyleHelper {
         }
         String descriptor = OpenmrsUtil.join(att, ",");
         if (styles.containsKey(descriptor)) {
-            return (HSSFFont) fonts.get(descriptor);
-        } else {
-            HSSFFont font = wb.createFont();
+            return (Font) fonts.get(descriptor);
+        }
+		else {
+            Font font = wb.createFont();
             for (Iterator i = att.iterator(); i.hasNext();) {
                 String str = (String) i.next();
                 if (str.equals("bold")) {
-                    font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                } else if (str.equals("italic")) {
+                    font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+                }
+				else if (str.equals("italic")) {
                     font.setItalic(true);
-                } else if (str.equals("underline")) {
-                    font.setUnderline(HSSFFont.U_SINGLE);
-                } else if (str.startsWith("size=")) {
+                }
+				else if (str.equals("underline")) {
+                    font.setUnderline(Font.U_SINGLE);
+                }
+				else if (str.startsWith("size=")) {
                     str = str.substring(5);
                     font.setFontHeightInPoints(Short.parseShort(str));
                 }
@@ -88,11 +91,10 @@ public class ExcelStyleHelper {
      * @param s
      * @return
      */
-    public HSSFCellStyle getStyle(String s) {
+    public CellStyle getStyle(String s) {
         SortedSet att = new TreeSet();
         SortedSet fontAtts = new TreeSet();
-        for (StringTokenizer st = new StringTokenizer(s, ","); st
-                .hasMoreTokens();) {
+        for (StringTokenizer st = new StringTokenizer(s, ","); st.hasMoreTokens();) {
             String str = st.nextToken().trim().toLowerCase();
             if (str.equals("")) {
                 continue;
@@ -100,7 +102,8 @@ public class ExcelStyleHelper {
             boolean isFont = false;
             if (fontAttributeNames.contains(str)) {
                 isFont = true;
-            } else {
+            }
+			else {
                 for (Iterator i = fontAttributeStarting.iterator(); i.hasNext();) {
                     if (str.startsWith((String) i.next())) {
                         isFont = true;
@@ -115,11 +118,12 @@ public class ExcelStyleHelper {
         allAtts.addAll(fontAtts);
         String descriptor = OpenmrsUtil.join(allAtts, ",");
         if (styles.containsKey(descriptor)) {
-            return (HSSFCellStyle) styles.get(descriptor);
-        } else {
-            HSSFCellStyle style = wb.createCellStyle();
+            return (CellStyle) styles.get(descriptor);
+        }
+		else {
+            CellStyle style = wb.createCellStyle();
             if (fontAtts.size() > 0) {
-                HSSFFont font = getFont(OpenmrsUtil.join(fontAtts, ","));
+                Font font = getFont(OpenmrsUtil.join(fontAtts, ","));
                 style.setFont(font);
             }
             for (Iterator i = att.iterator(); i.hasNext();) {
@@ -130,7 +134,7 @@ public class ExcelStyleHelper {
         }
     }
 
-    public HSSFCellStyle getAugmented(HSSFCellStyle style, String s) {
+    public CellStyle getAugmented(CellStyle style, String s) {
         String desc = null;
         for (Iterator i = styles.entrySet().iterator(); i.hasNext();) {
             Map.Entry e = (Map.Entry) i.next();
@@ -150,35 +154,35 @@ public class ExcelStyleHelper {
         return getStyle(desc);
     }
     
-    private void helper(HSSFCellStyle style, String s) {
+    private void helper(CellStyle style, String s) {
         if (s.equals("wraptext")) {
             style.setWrapText(true);
         } else if (s.startsWith("align=")) {
             s = s.substring(6);
             if (s.equals("left")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+                style.setAlignment(CellStyle.ALIGN_LEFT);
             } else if (s.equals("center")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+                style.setAlignment(CellStyle.ALIGN_CENTER);
             } else if (s.equals("right")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+                style.setAlignment(CellStyle.ALIGN_RIGHT);
             } else if (s.equals("fill")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_FILL);
+                style.setAlignment(CellStyle.ALIGN_FILL);
             }
         } else if (s.startsWith("border=")) {
             s = s.substring(7);
             if (s.equals("all")) {
-                style.setBorderTop(HSSFCellStyle.BORDER_THIN);
-                style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-                style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-                style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+                style.setBorderTop(CellStyle.BORDER_THIN);
+                style.setBorderBottom(CellStyle.BORDER_THIN);
+                style.setBorderLeft(CellStyle.BORDER_THIN);
+                style.setBorderRight(CellStyle.BORDER_THIN);
             } else if (s.equals("top")) {
-                style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+                style.setBorderTop(CellStyle.BORDER_THIN);
             } else if (s.equals("bottom")) {
-                style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+                style.setBorderBottom(CellStyle.BORDER_THIN);
             } else if (s.equals("left")) {
-                style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+                style.setBorderLeft(CellStyle.BORDER_THIN);
             } else if (s.equals("right")) {
-                style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+                style.setBorderRight(CellStyle.BORDER_THIN);
             }
         } else if (s.equals("date")) {
             style.setDataFormat(dateFormat);

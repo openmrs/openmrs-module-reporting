@@ -112,9 +112,7 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("programState", Context.getProgramWorkflowService().getStateByUuid("92584cdc-6a20-4c84-a659-e035e45d36b0"));
 		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
 		ReportData data = rs.evaluate(report, context);
-		
-		CsvReportRenderer csvRenderer = new CsvReportRenderer();
-		csvRenderer.render(data, "thedata", System.out);
+
 		String outFile = System.getProperty("java.io.tmpdir") + File.separator + "test.xls";
 		FileOutputStream fos = new FileOutputStream(outFile);
 		renderer.render(data, "xxx:xls", fos);

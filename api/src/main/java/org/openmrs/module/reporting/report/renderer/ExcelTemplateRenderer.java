@@ -28,14 +28,15 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFConditionalFormatting;
-import org.apache.poi.hssf.usermodel.HSSFConditionalFormattingRule;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellRangeAddress;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.ConditionalFormatting;
+import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ExcelUtil;
@@ -67,7 +68,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	 */
 	public String getFilename(ReportDefinition definition, String argument) {
 		String fileName = super.getFilename(definition, argument);
-		if (!fileName.endsWith(".xls")) {
+		if (!fileName.contains(".xls")) {
 			fileName += ".xls";
 		}
 		return fileName;
@@ -88,7 +89,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		try {
 			log.debug("Attempting to render report with ExcelTemplateRenderer");
 			ReportDesign design = getDesign(argument);
-			HSSFWorkbook wb = getExcelTemplate(design);
+			Workbook wb = getExcelTemplate(design);
 
         	if (wb == null) {
         		XlsReportRenderer xlsRenderer = new XlsReportRenderer();
@@ -108,7 +109,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 
 				for (int sheetNum=0; sheetNum<numberOfSheets; sheetNum++) {
 
-					HSSFSheet currentSheet = wb.getSheetAt(sheetNum);
+					Sheet currentSheet = wb.getSheetAt(sheetNum);
 					String originalSheetName = wb.getSheetName(sheetNum);
 
 					String dataSetName = getRepeatingSheetProperty(sheetNum, repeatSections);
@@ -120,7 +121,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 							DataSetRow dataSetRow = rowIterator.next();
 							dataSetRowNum++;
 							Map<String, Object> newReplacements = getReplacementData(replacements, reportData, design, dataSetName, dataSetRow, dataSetRowNum);
-							HSSFSheet newSheet = (dataSetRowNum == 1 ? currentSheet : wb.cloneSheet(sheetNum));
+							Sheet newSheet = (dataSetRowNum == 1 ? currentSheet : wb.cloneSheet(sheetNum));
 							sheetsToAdd.add(new SheetToAdd(newSheet, sheetNum, originalSheetName, newReplacements));
 						}
 					}
@@ -145,12 +146,12 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	/**
 	 * Clone the sheet at the passed index and replace values as needed
 	 */
-	public HSSFSheet addSheet(HSSFWorkbook wb, SheetToAdd sheetToAdd, Set<String> usedSheetNames, ReportData reportData, ReportDesign design, Map<String, String> repeatSections) {
+	public Sheet addSheet(Workbook wb, SheetToAdd sheetToAdd, Set<String> usedSheetNames, ReportData reportData, ReportDesign design, Map<String, String> repeatSections) {
 
 		String prefix = getExpressionPrefix(design);
 		String suffix = getExpressionSuffix(design);
 
-		HSSFSheet sheet = sheetToAdd.getSheet();
+		Sheet sheet = sheetToAdd.getSheet();
 		sheet.setForceFormulaRecalculation(true);
 		
 		int sheetIndex = wb.getSheetIndex(sheet);
@@ -169,7 +170,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		int totalRows = sheet.getPhysicalNumberOfRows();
 		int rowsFound = 0;
 		for (int rowNum=0; rowsFound < totalRows && rowNum < 50000; rowNum++) {  // check for < 50000 is a hack to prevent infinite loops in edge cases
-			HSSFRow currentRow = sheet.getRow(rowNum);
+			Row currentRow = sheet.getRow(rowNum);
 			log.debug("Handling row: " + ExcelUtil.formatRow(currentRow));
 			if (currentRow != null) {
 				rowsFound++;
@@ -190,7 +191,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				for (DataSetRow dataSetRow : dataSet) {
 					repeatNum++;
 					for (int i=0; i<numRowsToRepeat; i++) {
-						HSSFRow row = (i == 0 ? currentRow : sheet.getRow(rowNum+i));
+						Row row = (i == 0 ? currentRow : sheet.getRow(rowNum+i));
 						if (repeatNum == 1 && row != null && row != currentRow) {
 							rowsFound++;
 						}
@@ -213,7 +214,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		for (int i=0; i<rowsToAdd.size(); i++) {
 			RowToAdd rowToAdd = rowsToAdd.get(i);
 			if (rowToAdd.getRowToClone() != null && rowToAdd.getRowToClone().cellIterator() != null) {
-				HSSFRow addedRow = addRow(wb, sheetToAdd, rowToAdd, i, reportData, design, repeatSections);
+				Row addedRow = addRow(wb, sheetToAdd, rowToAdd, i, reportData, design, repeatSections);
 				log.debug("Wrote row " + i + ": " + ExcelUtil.formatRow(addedRow));
 			}
 		}
@@ -224,13 +225,13 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	/**
 	 * Adds in a Row to the given Sheet
 	 */
-	public HSSFRow addRow(HSSFWorkbook wb, SheetToAdd sheetToAdd, RowToAdd rowToAdd, int rowIndex, ReportData reportData, ReportDesign design, Map<String, String> repeatSections) {
+	public Row addRow(Workbook wb, SheetToAdd sheetToAdd, RowToAdd rowToAdd, int rowIndex, ReportData reportData, ReportDesign design, Map<String, String> repeatSections) {
 		
 		// Create a new row and copy over style attributes from the row to add
-		HSSFRow newRow = sheetToAdd.getSheet().createRow(rowIndex);
-		HSSFRow rowToClone = rowToAdd.getRowToClone();
+		Row newRow = sheetToAdd.getSheet().createRow(rowIndex);
+		Row rowToClone = rowToAdd.getRowToClone();
 		try {
-			HSSFCellStyle rowStyle = rowToClone.getRowStyle();
+			CellStyle rowStyle = rowToClone.getRowStyle();
 			if (rowStyle != null) {
 				newRow.setRowStyle(rowStyle);
 			}
@@ -246,7 +247,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		int totalCells = rowToClone.getPhysicalNumberOfCells();
 		int cellsFound = 0;
 		for (int cellNum=0; cellsFound < totalCells; cellNum++) {
-			HSSFCell currentCell = rowToClone.getCell(cellNum);
+			Cell currentCell = rowToClone.getCell(cellNum);
 			log.debug("Handling cell: " + currentCell);
 			if (currentCell != null) {
 				cellsFound++;
@@ -266,7 +267,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				for (DataSetRow dataSetRow : dataSet) {
 					repeatNum++;
 					for (int i=0; i<numCellsToRepeat; i++) {
-						HSSFCell cell = (i == 0 ? currentCell : rowToClone.getCell(cellNum+i));
+						Cell cell = (i == 0 ? currentCell : rowToClone.getCell(cellNum+i));
 						if (repeatNum == 1 && cell != null && cell != currentCell) {
 							cellsFound++;
 						}
@@ -291,8 +292,8 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 
 		for (int i=0; i<cellsToAdd.size(); i++) {
 			CellToAdd cellToAdd = cellsToAdd.get(i);
-			HSSFCell newCell = newRow.createCell(i);
-			HSSFCell cellToClone = cellToAdd.getCellToClone();
+			Cell newCell = newRow.createCell(i);
+			Cell cellToClone = cellToAdd.getCellToClone();
 			if (cellToClone != null) {
 		    	String contents = ExcelUtil.getCellContentsAsString(cellToClone);
 		    	newCell.setCellStyle(cellToClone.getCellStyle());
@@ -305,12 +306,12 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		    	
 		    	int numFormattings = sheetToAdd.getSheet().getSheetConditionalFormatting().getNumConditionalFormattings();
 				for (int n=0; n<numFormattings; n++) {
-					HSSFConditionalFormatting f = sheetToAdd.getSheet().getSheetConditionalFormatting().getConditionalFormattingAt(n);
+					ConditionalFormatting f = sheetToAdd.getSheet().getSheetConditionalFormatting().getConditionalFormattingAt(n);
 					for (CellRangeAddress add : f.getFormattingRanges()) {
 						
 						if (add.getFirstRow() == rowToAdd.getRowToClone().getRowNum() && add.getLastRow() == rowToClone.getRowNum()) {
 							if (add.getFirstColumn() == cellToClone.getColumnIndex() && add.getLastColumn() == cellToClone.getColumnIndex()) {
-								HSSFConditionalFormattingRule[] rules = new HSSFConditionalFormattingRule[f.getNumberOfRules()];
+								ConditionalFormattingRule[] rules = new ConditionalFormattingRule[f.getNumberOfRules()];
 								for (int j=0; j<f.getNumberOfRules(); j++) {
 									rules[j] = f.getRule(j);
 								}
@@ -335,14 +336,14 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	/**
 	 * @return an Excel Workbook for the given argument
 	 */
-	protected HSSFWorkbook getExcelTemplate(ReportDesign design) throws IOException {
-		HSSFWorkbook wb = null;
+	protected Workbook getExcelTemplate(ReportDesign design) throws IOException {
+		Workbook wb = null;
 		InputStream is = null;
 		try {
 			ReportDesignResource r = getTemplate(design);
 			is = new ByteArrayInputStream(r.getContents());
 			POIFSFileSystem fs = new POIFSFileSystem(is);
-			wb = new HSSFWorkbook(fs);
+			wb = WorkbookFactory.create(fs);
 		}
 		catch (Exception e) {
 			log.warn("No template file found, will use default Excel output");
@@ -408,7 +409,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	 * for example:  repeatSheet0=myIndicatorDataSet would indicate that sheet 0 should be repeated for each row in the dataset
 	 */
 	protected String getRepeatingSheetProperty(int sheetNumber, Map<String, String> repeatingSections) {
-		return repeatingSections.get("repeatSheet" + (int)(sheetNumber+1));
+		return repeatingSections.get("repeatSheet" + (sheetNumber+1));
 	}
 	
 	/**
@@ -416,7 +417,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	 * for example:  repeatSheet0Row7=myPatientDataSet,2 would indicate that rows 7 and 8 in sheet 0 should be repeated for each row in the dataset
 	 */
 	protected String getRepeatingRowProperty(int sheetNumber, int rowNumber, Map<String, String> repeatingSections) {
-		return repeatingSections.get("repeatSheet" + (int)(sheetNumber+1) + "Row" + (int)(rowNumber+1));
+		return repeatingSections.get("repeatSheet" + (sheetNumber+1) + "Row" + (rowNumber+1));
 	}
 	
 	/**
@@ -424,7 +425,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	 * for example:  repeatSheet0Column5=myPatientDataSet,2 would indicate that columns 5 and 6 in sheet 0 should be repeated for each row in the dataset
 	 */
 	protected String getRepeatingColumnProperty(int sheetNumber, int columnNumber, Map<String, String> repeatingSections) {
-		return repeatingSections.get("repeatSheet" + (int)(sheetNumber+1) + "Column" + (int)(columnNumber+1));
+		return repeatingSections.get("repeatSheet" + (sheetNumber+1) + "Column" + (columnNumber+1));
 	}
 	
 	/**
@@ -459,7 +460,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	 */
 	public class SheetToAdd {
 		
-		private HSSFSheet sheet;
+		private Sheet sheet;
 		private Integer originalSheetNum;
 		private String originalSheetName;
 		private Map<String, Object> replacementData;
@@ -467,7 +468,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		/**
 		 * Default Constructor
 		 */
-		public SheetToAdd(HSSFSheet sheet, Integer originalSheetNum, String originalSheetName, Map<String, Object> replacementData) {
+		public SheetToAdd(Sheet sheet, Integer originalSheetNum, String originalSheetName, Map<String, Object> replacementData) {
 			this.sheet = sheet;
 			this.originalSheetNum = originalSheetNum;
 			this.originalSheetName = originalSheetName;
@@ -477,13 +478,13 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		/**
 		 * @return the sheet
 		 */
-		public HSSFSheet getSheet() {
+		public Sheet getSheet() {
 			return sheet;
 		}
 		/**
 		 * @param sheet the sheet to set
 		 */
-		public void setSheet(HSSFSheet sheet) {
+		public void setSheet(Sheet sheet) {
 			this.sheet = sheet;
 		}
 		/**
@@ -529,13 +530,13 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	 */
 	public class RowToAdd {
 		
-		private HSSFRow rowToClone;
+		private Row rowToClone;
 		private Map<String, Object> replacementData;
 		
 		/**
 		 * Default Constructor
 		 */
-		public RowToAdd(HSSFRow rowToClone, Map<String, Object> replacementData) {
+		public RowToAdd(Row rowToClone, Map<String, Object> replacementData) {
 			this.rowToClone = rowToClone;
 			this.replacementData = replacementData;
 		}
@@ -543,13 +544,13 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		/**
 		 * @return the row
 		 */
-		public HSSFRow getRowToClone() {
+		public Row getRowToClone() {
 			return rowToClone;
 		}
 		/**
 		 * @param rowToClone the row to set
 		 */
-		public void setRowToClone(HSSFRow rowToClone) {
+		public void setRowToClone(Row rowToClone) {
 			this.rowToClone = rowToClone;
 		}
 		/**
@@ -571,13 +572,13 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	 */
 	public class CellToAdd {
 		
-		private HSSFCell cellToClone;
+		private Cell cellToClone;
 		private Map<String, Object> replacementData;
 		
 		/**
 		 * Default Constructor
 		 */
-		public CellToAdd(HSSFCell cellToClone, Map<String, Object> replacementData) {
+		public CellToAdd(Cell cellToClone, Map<String, Object> replacementData) {
 			this.cellToClone = cellToClone;
 			this.replacementData = replacementData;
 		}
@@ -585,13 +586,13 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		/**
 		 * @return the cellToClone
 		 */
-		public HSSFCell getCellToClone() {
+		public Cell getCellToClone() {
 			return cellToClone;
 		}
 		/**
 		 * @param cellToClone the cellToClone to set
 		 */
-		public void setCellToClone(HSSFCell cellToClone) {
+		public void setCellToClone(Cell cellToClone) {
 			this.cellToClone = cellToClone;
 		}
 		/**
