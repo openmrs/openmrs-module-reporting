@@ -14,7 +14,7 @@ import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimens
 import java.util.Date;
 
 /**
- * A wrapper around a POI HSSFSheet that lets you interact via
+ * A wrapper around a POI Sheet that lets you interact via
  *  * skipCell
  *  * addCell
  *  * nextRow

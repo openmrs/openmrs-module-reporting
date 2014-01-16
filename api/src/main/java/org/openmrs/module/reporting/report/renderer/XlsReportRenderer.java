@@ -11,11 +11,12 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -61,7 +62,7 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
      */
     public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException {
         ReportDesign design = getDesign(argument);
-    	HSSFWorkbook wb = getExcelTemplate(design);
+    	Workbook wb = getExcelTemplate(design);
         
         if (wb != null) {
         	ExcelTemplateRenderer templateRenderer = new ExcelTemplateRenderer();
@@ -72,7 +73,7 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
             ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
             for (Map.Entry<String, DataSet> e : reportData.getDataSets().entrySet()) {
                 DataSet dataset = e.getValue();
-                HSSFSheet sheet = wb.createSheet(ExcelSheetHelper.fixSheetName(e.getKey()));
+                Sheet sheet = wb.createSheet(ExcelSheetHelper.fixSheetName(e.getKey()));
                 ExcelSheetHelper helper = new ExcelSheetHelper(sheet);
                 List<DataSetColumn> columnList = dataset.getMetaData().getColumns();
                 
@@ -100,14 +101,14 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
 	/**
 	 * @return an Excel Workbook for the given argument
 	 */
-	protected HSSFWorkbook getExcelTemplate(ReportDesign design) throws IOException {
-		HSSFWorkbook wb = null;
+	protected Workbook getExcelTemplate(ReportDesign design) throws IOException {
+		Workbook wb = null;
 		InputStream is = null;
 		try {
 			ReportDesignResource r = getTemplate(design);
 			is = new ByteArrayInputStream(r.getContents());
 			POIFSFileSystem fs = new POIFSFileSystem(is);
-			wb = new HSSFWorkbook(fs);
+			wb = WorkbookFactory.create(fs);
 		}
 		catch (Exception e) {
 			log.debug("No template file found, will use default Excel output");

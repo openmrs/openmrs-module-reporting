@@ -17,7 +17,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
- * Helper utility that you wrap around a POI HSSFWorkbook to help manage cell styles
+ * Helper utility that you wrap around a POI Workbook to help manage cell styles
  * 
  * This class was adapted from org.pih.StyleHelper in PIH-EMR.
  */
@@ -43,8 +43,7 @@ public class ExcelStyleHelper {
 
     public Font getFont(String s) {
         SortedSet att = new TreeSet();
-        for (StringTokenizer st = new StringTokenizer(s, ","); st
-                .hasMoreTokens();) {
+        for (StringTokenizer st = new StringTokenizer(s, ","); st.hasMoreTokens();) {
             String str = st.nextToken().trim().toLowerCase();
             if (str.equals("")) {
                 continue;
@@ -54,17 +53,21 @@ public class ExcelStyleHelper {
         String descriptor = OpenmrsUtil.join(att, ",");
         if (styles.containsKey(descriptor)) {
             return (Font) fonts.get(descriptor);
-        } else {
+        }
+		else {
             Font font = wb.createFont();
             for (Iterator i = att.iterator(); i.hasNext();) {
                 String str = (String) i.next();
                 if (str.equals("bold")) {
                     font.setBoldweight(Font.BOLDWEIGHT_BOLD);
-                } else if (str.equals("italic")) {
+                }
+				else if (str.equals("italic")) {
                     font.setItalic(true);
-                } else if (str.equals("underline")) {
+                }
+				else if (str.equals("underline")) {
                     font.setUnderline(Font.U_SINGLE);
-                } else if (str.startsWith("size=")) {
+                }
+				else if (str.startsWith("size=")) {
                     str = str.substring(5);
                     font.setFontHeightInPoints(Short.parseShort(str));
                 }
@@ -91,8 +94,7 @@ public class ExcelStyleHelper {
     public CellStyle getStyle(String s) {
         SortedSet att = new TreeSet();
         SortedSet fontAtts = new TreeSet();
-        for (StringTokenizer st = new StringTokenizer(s, ","); st
-                .hasMoreTokens();) {
+        for (StringTokenizer st = new StringTokenizer(s, ","); st.hasMoreTokens();) {
             String str = st.nextToken().trim().toLowerCase();
             if (str.equals("")) {
                 continue;
@@ -100,7 +102,8 @@ public class ExcelStyleHelper {
             boolean isFont = false;
             if (fontAttributeNames.contains(str)) {
                 isFont = true;
-            } else {
+            }
+			else {
                 for (Iterator i = fontAttributeStarting.iterator(); i.hasNext();) {
                     if (str.startsWith((String) i.next())) {
                         isFont = true;
@@ -116,7 +119,8 @@ public class ExcelStyleHelper {
         String descriptor = OpenmrsUtil.join(allAtts, ",");
         if (styles.containsKey(descriptor)) {
             return (CellStyle) styles.get(descriptor);
-        } else {
+        }
+		else {
             CellStyle style = wb.createCellStyle();
             if (fontAtts.size() > 0) {
                 Font font = getFont(OpenmrsUtil.join(fontAtts, ","));
