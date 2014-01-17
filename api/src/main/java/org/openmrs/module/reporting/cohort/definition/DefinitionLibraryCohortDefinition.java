@@ -22,6 +22,13 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 import java.util.Map;
 
+/**
+ * Lets you evaluate a {@link org.openmrs.module.reporting.cohort.definition.CohortDefinition} that is looked up in
+ * {@link org.openmrs.module.reporting.definition.library.AllDefinitionLibraries} at evaluation time.
+ *
+ * This allows a report to be built against a key like "maternity patients" whose definition may change as an
+ * implementation adds more encounter types, etc.
+ */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class DefinitionLibraryCohortDefinition extends BaseCohortDefinition {
 

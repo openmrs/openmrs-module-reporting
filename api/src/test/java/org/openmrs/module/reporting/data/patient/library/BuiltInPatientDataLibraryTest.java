@@ -16,6 +16,8 @@ package org.openmrs.module.reporting.data.patient.library;
 
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.common.Age;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
@@ -50,14 +52,35 @@ public class BuiltInPatientDataLibraryTest extends BaseModuleContextSensitiveTes
         test(library.getBirthdateYmd(), "1976-08-25");
     }
 
-    private void test(PatientDataDefinition definition, Object expectedValue) throws EvaluationException {
+    @Test
+    public void testAgeAtStart() throws Exception {
+        // born 1976-08-25
+        Age actual = (Age) eval(library.getAgeAtStart());
+        assertThat(actual.getBirthDate(), is(DateUtil.parseYmd("1976-08-25")));
+        assertThat(actual.getCurrentDate(), is(DateUtil.parseYmd("2013-01-01")));
+    }
+
+    @Test
+    public void testAgeAtEnd() throws Exception {
+        // born 1976-08-25
+        Age actual = (Age) eval(library.getAgeAtEnd());
+        assertThat(actual.getBirthDate(), is(DateUtil.parseYmd("1976-08-25")));
+        assertThat(actual.getCurrentDate(), is(DateUtil.parseYmd("2013-12-31")));
+    }
+
+    private Object eval(PatientDataDefinition definition) throws EvaluationException {
         Cohort cohort = new Cohort(Arrays.asList(7));
 
         EvaluationContext context = new EvaluationContext();
         context.setBaseCohort(cohort);
-
+        context.addParameterValue("startDate", DateUtil.parseYmd("2013-01-01"));
+        context.addParameterValue("endDate", DateUtil.parseYmd("2013-12-31"));
         EvaluatedPatientData data = pds.evaluate(definition, context);
-        Object actualValue = data.getData().get(7);
+        return data.getData().get(7);
+    }
+
+    private void test(PatientDataDefinition definition, Object expectedValue) throws EvaluationException {
+        Object actualValue = eval(definition);
         assertThat(actualValue, is(expectedValue));
     }
 

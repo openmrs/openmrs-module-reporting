@@ -17,7 +17,9 @@ package org.openmrs.module.reporting.data.patient.evaluator;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.ReportingMatchers;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.DefinitionLibraryPatientDataDefinition;
@@ -27,6 +29,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,6 +78,23 @@ public class DefinitionLibraryPatientDataEvaluatorTest extends BaseModuleContext
         EvaluatedPatientData result = service.evaluate(def, context);
         assertThat(result.getData().size(), is(1));
         assertThat((Integer) result.getData().get(7), is(37));
+    }
+
+    @Test
+    public void testEvaluateWithParameterValuesFromContext() throws Exception {
+
+        DefinitionLibraryPatientDataDefinition def = new DefinitionLibraryPatientDataDefinition();
+        def.setDefinitionKey(BuiltInPatientDataLibrary.PREFIX + "ageAtStart");
+
+        Date startDate = DateUtil.parseYmd("2013-12-01");
+
+        EvaluationContext context = new EvaluationContext();
+        context.addParameterValue("startDate", startDate);
+        context.setBaseCohort(new Cohort("7"));
+
+        EvaluatedPatientData result = service.evaluate(def, context);
+        assertThat(result.getData().size(), is(1));
+        assertThat((Age) result.getData().get(7), ReportingMatchers.hasBirthdateAndEffectiveDate(DateUtil.parseYmd("1976-08-25"), startDate));
     }
 
 }

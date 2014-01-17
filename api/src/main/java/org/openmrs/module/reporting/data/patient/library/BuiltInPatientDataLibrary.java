@@ -35,6 +35,7 @@ import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefi
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
@@ -95,27 +96,27 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
 
     @DocumentedDefinition("ageOnDate.fullYears")
     public PatientDataDefinition getAgeOnDateYears() {
-        return getAgeOnDate(new PropertyConverter(Age.class, "fullYears"));
+        return getAgeOnEffectiveDate(new PropertyConverter(Age.class, "fullYears"));
     }
 
     @DocumentedDefinition("ageOnDate.fullMonths")
     public PatientDataDefinition getAgeOnDateMonths() {
-        return getAgeOnDate(new PropertyConverter(Age.class, "fullMonths"));
+        return getAgeOnEffectiveDate(new PropertyConverter(Age.class, "fullMonths"));
     }
 
     @DocumentedDefinition("ageAtStart")
     public PatientDataDefinition getAgeAtStart() {
-        ConvertedPatientDataDefinition ageOnDate = getAgeOnDate();
+        ConvertedPatientDataDefinition ageOnDate = new ConvertedPatientDataDefinition();
         ageOnDate.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        ageOnDate.getDefinitionToConvert().getParameterMappings().put("effectiveDate", "${startDate}");
+        ageOnDate.setDefinitionToConvert(Mapped.<PatientDataDefinition>map(getAgeOnEffectiveDate(), "effectiveDate=${startDate}"));
         return ageOnDate;
     }
 
     @DocumentedDefinition("ageAtEnd")
     public PatientDataDefinition getAgeAtEnd() {
-        ConvertedPatientDataDefinition ageOnDate = getAgeOnDate();
+        ConvertedPatientDataDefinition ageOnDate = new ConvertedPatientDataDefinition();
         ageOnDate.addParameter(new Parameter("endDate", "End Date", Date.class));
-        ageOnDate.getDefinitionToConvert().getParameterMappings().put("effectiveDate", "${endDate}");
+        ageOnDate.setDefinitionToConvert(Mapped.<PatientDataDefinition>map(getAgeOnEffectiveDate(), "effectiveDate=${endDate}"));
         return ageOnDate;
     }
 
@@ -153,7 +154,7 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
                 converters);
     }
 
-    private ConvertedPatientDataDefinition getAgeOnDate(DataConverter... converters) {
+    private ConvertedPatientDataDefinition getAgeOnEffectiveDate(DataConverter... converters) {
         AgeDataDefinition ageDataDefinition = new AgeDataDefinition();
         ageDataDefinition.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
 

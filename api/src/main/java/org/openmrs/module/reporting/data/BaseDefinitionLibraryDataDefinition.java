@@ -21,6 +21,22 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 import java.util.Map;
 
+/**
+ * Base class for all types of data definitions that reference a definition from
+ * {@link org.openmrs.module.reporting.definition.library.AllDefinitionLibraries}, to be looked up at evaluation time.
+ *
+ * The idea is to allow reports to refer to definitions with a level of indirection, so that the concrete implementation
+ * may change over time.
+ *
+ * An example usage would look something like this:
+ *
+ * DefinitionLibraryPatientDataDefinition def = new DefinitionLibraryPatientDataDefinition();
+ * def.setDefinitionKey("lastEncounterBeforeDateAtLocation"); // assume this has parameters onOrBefore and location
+ * def.setParameterValues(buildMap("onOrBefore", DateUtil.parseYMD("2014-01-01"));
+ *
+ * def.loadParameters(allDefinitionLibraries);
+ * // at this point def has one parameter (location) since the value of onOrBefore was provided already
+ */
 public abstract class BaseDefinitionLibraryDataDefinition extends BaseDataDefinition {
 
     @ConfigurationProperty
@@ -34,18 +50,30 @@ public abstract class BaseDefinitionLibraryDataDefinition extends BaseDataDefini
         return Object.class;
     }
 
+    /**
+     * @return the key this definition refers to (in {@link org.openmrs.module.reporting.definition.library.AllDefinitionLibraries}
+     */
     public String getDefinitionKey() {
         return definitionKey;
     }
 
+    /**
+     * @param definitionKey the key this definition refers to (in {@link org.openmrs.module.reporting.definition.library.AllDefinitionLibraries}
+     */
     public void setDefinitionKey(String definitionKey) {
         this.definitionKey = definitionKey;
     }
 
+    /**
+     * @return parameter values to be passed to the referenced definition at evaluation time
+     */
     public Map<String, Object> getParameterValues() {
         return parameterValues;
     }
 
+    /**
+     * @param parameterValues parameter values to be passed to the referenced definition at evaluation time
+     */
     public void setParameterValues(Map<String, Object> parameterValues) {
         this.parameterValues = parameterValues;
     }
