@@ -93,10 +93,10 @@ public class ExcelBuilder {
         else {
             cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_STRING);
         }
+		ExcelUtil.setCellContents(cell, cellValue);
 		if (ObjectUtil.notNull(style)) {
 			ExcelUtil.addStyle(cell, style);
 		}
-		ExcelUtil.setCellContents(cell, cellValue);
         currentColNum++;
 		return this;
     }

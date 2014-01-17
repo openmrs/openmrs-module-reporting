@@ -108,10 +108,8 @@ public class ExcelUtil {
 	 */
 	public static void addStyle(Cell cell, String descriptor) {
 		Workbook wb = cell.getSheet().getWorkbook();
-		CellStyle style = cell.getCellStyle();
-		if (style == null) {
-			style = cell.getSheet().getWorkbook().createCellStyle();
-		}
+		CellStyle style = cell.getSheet().getWorkbook().createCellStyle();
+		style.cloneStyleFrom(cell.getCellStyle());
 		Font font = wb.getFontAt(style.getFontIndex());
 		if (font == null) {
 			font = wb.createFont();
