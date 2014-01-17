@@ -1,14 +1,14 @@
 package org.openmrs.module.reporting.common;
 
-import java.util.Date;
-import java.util.Set;
-
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.RichTextString;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.openmrs.module.reporting.report.renderer.ExcelStyleHelper;
+
+import java.util.Collection;
+import java.util.Date;
 
 /**
  * A utility class for manipulating Excel documents via POI
@@ -33,9 +33,11 @@ public class ExcelUtil {
 	    	}
     	}
     	catch (Exception e) {
-    		contents = cell.getRichStringCellValue().toString();
+			if (cell.getRichStringCellValue() != null) {
+    			contents = cell.getRichStringCellValue().toString();
+			}
     	}
-    	contents = contents.trim();
+		contents = ObjectUtil.nvlStr(contents, "").trim();
     	return contents;
 	}
 	
@@ -44,7 +46,7 @@ public class ExcelUtil {
 	 * @param cell the cell to set
 	 * @param cellValue the value to set the cell to
 	 */
-	public static void setCellContents(ExcelStyleHelper styleHelper, Cell cell, Object cellValue) {
+	public static void setCellContents(Cell cell, Object cellValue) {
 		Workbook wb = cell.getSheet().getWorkbook();
 		if (cellValue == null) { cellValue = ""; }
 		if (!cellValue.equals(getCellContentsAsString(cell))) {
@@ -54,7 +56,7 @@ public class ExcelUtil {
 			}
 			if (cellValue instanceof Date) {
 				if (!DateUtil.isCellDateFormatted(cell)) {
-					cell.setCellStyle(styleHelper.getStyle("date"));
+					addStyle(cell, "date");
 				}
 				cell.setCellValue(((Date) cellValue));
 				return;
@@ -63,7 +65,7 @@ public class ExcelUtil {
 			String cellValueString = ObjectUtil.format(cellValue);
 			try {
 				if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
-					cell.setCellValue(Boolean.valueOf(cellValueString).booleanValue());
+					cell.setCellValue(Boolean.valueOf(cellValueString));
 					return;
 				}
 				if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
@@ -92,12 +94,101 @@ public class ExcelUtil {
 		}
 		return;
 	}
+
+	/**
+	 * Descriptor supports a comma-separated string containing attributes:
+	 *    bold
+	 *    italic
+	 *    underline
+	 *    size=##
+	 *    wraptext
+	 *    border=all | bottom | top | left | right
+	 *    align=center | left | right | fill
+	 *    date
+	 */
+	public static void addStyle(Cell cell, String descriptor) {
+		Workbook wb = cell.getSheet().getWorkbook();
+		CellStyle style = cell.getCellStyle();
+		if (style == null) {
+			style = cell.getSheet().getWorkbook().createCellStyle();
+		}
+		Font font = wb.getFontAt(style.getFontIndex());
+		if (font == null) {
+			font = wb.createFont();
+		}
+		if (ObjectUtil.notNull(descriptor)) {
+			for (String att : descriptor.split(",")) {
+				att = att.toLowerCase().trim();
+				if (att.equals("wraptext")) {
+					style.setWrapText(true);
+				}
+				else if (att.startsWith("align=")) {
+					att = att.substring(6);
+					if (att.equals("left")) {
+						style.setAlignment(CellStyle.ALIGN_LEFT);
+					}
+					else if (att.equals("center")) {
+						style.setAlignment(CellStyle.ALIGN_CENTER);
+					}
+					else if (att.equals("right")) {
+						style.setAlignment(CellStyle.ALIGN_RIGHT);
+					}
+					else if (att.equals("fill")) {
+						style.setAlignment(CellStyle.ALIGN_FILL);
+					}
+				}
+				else if (att.startsWith("border=")) {
+					att = att.substring(7);
+					if (att.equals("all")) {
+						style.setBorderTop(CellStyle.BORDER_THIN);
+						style.setBorderBottom(CellStyle.BORDER_THIN);
+						style.setBorderLeft(CellStyle.BORDER_THIN);
+						style.setBorderRight(CellStyle.BORDER_THIN);
+					}
+					else if (att.equals("top")) {
+						style.setBorderTop(CellStyle.BORDER_THIN);
+					}
+					else if (att.equals("bottom")) {
+						style.setBorderBottom(CellStyle.BORDER_THIN);
+					}
+					else if (att.equals("left")) {
+						style.setBorderLeft(CellStyle.BORDER_THIN);
+					}
+					else if (att.equals("right")) {
+						style.setBorderRight(CellStyle.BORDER_THIN);
+					}
+				}
+				else if (att.equals("date")) {
+					short dateFormat = wb.createDataFormat().getFormat("d-mmm-yy");
+					style.setDataFormat(dateFormat);
+				}
+				else if (att.equals("bold")) {
+					font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+				}
+				else if (att.equals("italic")) {
+					font.setItalic(true);
+				}
+				else if (att.equals("underline")) {
+					font.setUnderline(Font.U_SINGLE);
+				}
+				else if (att.startsWith("size=")) {
+					att = att.substring(5);
+					font.setFontHeightInPoints(Short.parseShort(att));
+				}
+			}
+		}
+		style.setFont(font);
+		cell.setCellStyle(style);
+	}
 	
 	/**
 	 * @return a String, based on the passed String, which is suitable for use as a sheet title
 	 */
 	public static String formatSheetTitle(String s) {
 		s = ObjectUtil.nvlStr(s, "Sheet");
+		s = s.replace("[", "");
+		s = s.replace("]", "");
+		s = s.replace(" ", "");
 		s = (s.length() > 30 ? s.substring(0, 30) : s);
 		return s;
 	}
@@ -106,7 +197,7 @@ public class ExcelUtil {
 	 * @return a String, based on the passed String, which is suitable for use as a sheet title, ensuring that
 	 * it is not in the set of used titles passed in
 	 */
-	public static String formatSheetTitle(String s, Set<String> usedTitles) {
+	public static String formatSheetTitle(String s, Collection<String> usedTitles) {
 		s = formatSheetTitle(s);
 		if (usedTitles.contains(s)) {
 			s = s.length() > 27 ? s.substring(0, 27) : s;
@@ -125,7 +216,7 @@ public class ExcelUtil {
 		if (row != null) {
 			for (int i=0; i<row.getPhysicalNumberOfCells(); i++) {
 				Cell cell = row.getCell(i);
-				sb.append((i == 0 ? "" : ", ") + (cell == null ? "" : cell.toString()));
+				sb.append(i == 0 ? "" : ", ").append(cell == null ? "" : cell.toString());
 			}
 		}
 		return sb.toString();

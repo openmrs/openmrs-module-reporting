@@ -1,23 +1,13 @@
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.common.ExcelBuilder;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -26,6 +16,13 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Report renderer that produces an Excel pre-2007 workbook with one sheet per dataset in the report.
@@ -69,32 +66,23 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
 			templateRenderer.render(reportData, argument, out);
         }
 		else {
-        	wb = new HSSFWorkbook();
-            ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
+			ExcelBuilder excelBuilder = new ExcelBuilder();
             for (Map.Entry<String, DataSet> e : reportData.getDataSets().entrySet()) {
                 DataSet dataset = e.getValue();
-                Sheet sheet = wb.createSheet(ExcelSheetHelper.fixSheetName(e.getKey()));
-                ExcelSheetHelper helper = new ExcelSheetHelper(sheet);
+				excelBuilder.newSheet(e.getKey());
                 List<DataSetColumn> columnList = dataset.getMetaData().getColumns();
-                
-                // Display top header
                 for (DataSetColumn column : columnList) {
-                	helper.addCell(column.getLabel(), styleHelper.getStyle("bold,border=bottom"));
+					excelBuilder.addCell(column.getLabel(), "bold,border=bottom");
                 }
                 for (DataSetRow row : dataset ) {
-                    helper.nextRow();
+					excelBuilder.nextRow();
                     for (DataSetColumn column : columnList) {
                     	Object cellValue = row.getColumnValue(column);
-                        CellStyle style = null;
-                        if (cellValue instanceof Date) {
-                            style = styleHelper.getStyle("date");
-                        }
-                        helper.addCell(cellValue, style);
+                        excelBuilder.addCell(cellValue);
                     }
                 }
             }
-            
-            wb.write(out);
+			excelBuilder.write(out);
         }
     }
 

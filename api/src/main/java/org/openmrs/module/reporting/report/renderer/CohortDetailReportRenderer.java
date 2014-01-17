@@ -13,25 +13,10 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ExcelBuilder;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -53,6 +38,19 @@ import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.serialization.SerializationException;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Supports rendering a series of Cohorts with particular datasets
  */
@@ -70,16 +68,6 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
     	return "text/html";
     }
 
-	/**
-	 * @see ReportRenderer#getLinkUrl(ReportDefinition)
-	 */
-	public String getLinkUrl(ReportDefinition schema) {
-		return null;
-	}
-	
-	/**
-	 * @see ReportRenderer#getFilename(ReportDefinition)
-	 */
 	public String getFilename(ReportDefinition schema, String argument) {
 		String[] split = argument.split(":");
 		return schema.getName() + "." + split[1];
@@ -100,8 +88,7 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 	}
 
 	/**
-	 * @throws  
-	 * @see ReportRenderer#render(ReportData, String, OutputStream)
+	 * @see ReportRenderer#render(org.openmrs.module.reporting.report.ReportData, String, java.io.OutputStream)
 	 */
 	@SuppressWarnings("unchecked")
 	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
@@ -145,7 +132,7 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 			}
 		}
 		
-		Map<String, Mapped<? extends DataSetDefinition>> m = null;
+		Map<String, Mapped<? extends DataSetDefinition>> m;
 		try {
 			ReportingSerializer s = new ReportingSerializer();
 			m = s.deserialize(new String(resource.getContents()), Map.class);
@@ -178,44 +165,35 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 		
 		// Not, render it depending on the argument passed in
 		if ("xls".equalsIgnoreCase(args[1])) {
-	        HSSFWorkbook wb = new HSSFWorkbook();
-	        ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
+	        ExcelBuilder excelBuilder = new ExcelBuilder();
 
 			// For each dataset that is defined to be included, evaluate and include it
 			for (String dataSetKey : datasets.keySet()) {
 				DataSet dataset = datasets.get(dataSetKey);
 				
 				String displayName = cohortLabels.get(dataSetKey);
-		        HSSFSheet sheet = wb.createSheet(ExcelSheetHelper.fixSheetName(displayName));
-	            ExcelSheetHelper helper = new ExcelSheetHelper(sheet);
-				
-	            helper.addCell(displayName, styleHelper.getStyle("bold"));
-	            helper.nextRow();
-	            StringBuilder params = new StringBuilder();
-				for (Iterator<String> i = parameterValues.keySet().iterator(); i.hasNext();) {
-					String key = i.next();
-					params.append(key + ": " + parameterValues.get(key) + (i.hasNext() ? ", " : ""));								
-				}
-				helper.addCell(params.toString());
-				helper.nextRow();
-				helper.nextRow();
+				excelBuilder.newSheet(displayName);
+
+				excelBuilder.addCell(displayName, "bold");
+				excelBuilder.nextRow();
+				excelBuilder.addCell(ObjectUtil.toString(parameterValues, ": ", ", "));
+				excelBuilder.nextRow();
+				excelBuilder.nextRow();
+
 				for (DataSetColumn column : dataset.getMetaData().getColumns()) {
-					helper.addCell(column.getLabel(), styleHelper.getStyle("bold"));
+					excelBuilder.addCell(column.getLabel(), "bold");
 				}
-				helper.nextRow();
+				excelBuilder.nextRow();
+
 				for (DataSetRow row : dataset) {
 					for (DataSetColumn column : dataset.getMetaData().getColumns()) {
 						Object cellValue = row.getColumnValue(column);
-	                    CellStyle style = null;
-	                    if (cellValue instanceof Date) {
-	                        style = styleHelper.getStyle("date");
-	                    }
-	                    helper.addCell(cellValue, style);
+						excelBuilder.addCell(cellValue);
 					}
-					helper.nextRow();
+					excelBuilder.nextRow();
 				}
-			}		
-	        wb.write(out);
+			}
+			excelBuilder.write(out);
 		}
 		else {
 			Writer w = new OutputStreamWriter(out,"UTF-8");

@@ -13,21 +13,10 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
@@ -37,7 +26,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ExcelUtil;
 import org.openmrs.module.reporting.common.Localized;
@@ -49,6 +37,18 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Report Renderer implementation that supports rendering to an Excel template
@@ -285,8 +285,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		}
 		
 		// Now, go through all of the collected cells, and add them back in
-		
-		ExcelStyleHelper styleHelper = new ExcelStyleHelper(wb);
+
 		String prefix = getExpressionPrefix(design);
 		String suffix = getExpressionSuffix(design);
 
@@ -325,7 +324,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		    	
 		    	if (ObjectUtil.notNull(contents)) {
 		    		Object newContents = EvaluationUtil.evaluateExpression(contents, cellToAdd.getReplacementData(), prefix, suffix);
-		    		ExcelUtil.setCellContents(styleHelper, newCell, newContents);
+		    		ExcelUtil.setCellContents(newCell, newContents);
 		    	}
 			}
 		}
