@@ -1,20 +1,27 @@
 package org.openmrs.module.reporting.web.reports;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition.CohortIndicatorAndDimensionColumn;
 import org.openmrs.module.reporting.definition.DefinitionContext;
+import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
+import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
+import org.openmrs.module.reporting.propertyeditor.CohortDefinitionEditor;
 import org.openmrs.module.reporting.propertyeditor.IndicatorEditor;
 import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -34,10 +41,16 @@ import org.springframework.web.context.request.WebRequest;
 public class PeriodIndicatorReportController {
 
 	@InitBinder
-    public void initBinder(WebDataBinder binder) { 
-    	binder.registerCustomEditor(Indicator.class, new IndicatorEditor());
-    }
-	
+	public void initBinder(WebDataBinder binder) { 
+		binder.registerCustomEditor(Indicator.class, new IndicatorEditor());
+		binder.registerCustomEditor(CohortDefinition.class, new CohortDefinitionEditor());
+	}
+
+	@ModelAttribute("cohortQueries")
+	public List<DefinitionSummary> getCohortQueries() {
+		return DefinitionContext.getCohortDefinitionService().getAllDefinitionSummaries(false);
+	}
+
 	@ModelAttribute("indicators")
 	public List<Indicator> getIndicators() {
 		List<Indicator> ret = new ArrayList<Indicator>();
@@ -51,7 +64,7 @@ public class PeriodIndicatorReportController {
 
 	@RequestMapping("/module/reporting/reports/periodIndicatorReport")
 	public void showForm(ModelMap model,
-	                     @RequestParam(value="uuid", required=false) String uuid) {
+						 @RequestParam(value="uuid", required=false) String uuid) {
 		if (uuid == null) {
 			model.addAttribute("report", new PeriodIndicatorReportDefinition());
 		} else {
@@ -69,11 +82,13 @@ public class PeriodIndicatorReportController {
 	
 	@RequestMapping("/module/reporting/reports/periodIndicatorReportSaveColumn")
 	public String addColumn(@RequestParam("uuid") String uuid,
-	                        @RequestParam(value="index", required=false) Integer index,
-	                        @RequestParam("key") String key,
-	                        @RequestParam("displayName") String displayName,
-	                        @RequestParam("indicator") CohortIndicator indicator,
-	                        WebRequest request) {
+							@RequestParam(value="index", required=false) Integer index,
+							@RequestParam("key") String key,
+							@RequestParam("displayName") String displayName,
+							@RequestParam("indicator") CohortIndicator indicator,
+							@RequestParam("cohortQuery") CohortDefinition cohortDefinition,
+							@RequestParam(value = "createFromCohortQuery", required = false) String createFromCohortQuery,
+							WebRequest request) {
 		
 		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 		PeriodIndicatorReportUtil.ensureDataSetDefinition(report);
@@ -89,7 +104,21 @@ public class PeriodIndicatorReportController {
 		}
 		column.setName(key);
 		column.setLabel(displayName);
-		column.setIndicator(new Mapped<CohortIndicator>(indicator, IndicatorUtil.getDefaultParameterMappings()));
+
+		CohortIndicator cohortIndicator;
+		if (createFromCohortQuery == null) {
+			cohortIndicator = indicator;
+		} else {
+			cohortIndicator = new CohortIndicator();
+			cohortIndicator.setName(cohortDefinition.getName() + " indicator");
+			cohortIndicator.setDescription("Automatically generated indicator for cohort: " + cohortDefinition.getName());
+			cohortIndicator.setType(CohortIndicator.IndicatorType.COUNT);
+			cohortIndicator.addParameter(new Parameter("startDate", "startDate", Date.class));
+			cohortIndicator.addParameter(new Parameter("endDate", "endDate", Date.class));
+			cohortIndicator.addParameter(new Parameter("location", "location", Location.class));
+			cohortIndicator.setCohortDefinition(Mapped.mapStraightThrough(cohortDefinition));
+		}
+		column.setIndicator(new Mapped<CohortIndicator>(cohortIndicator, IndicatorUtil.getDefaultParameterMappings()));
 			
 		// special code because I don't think I can do a RequestParam for: Map<String, String> dimensionOptions
 		Map<String, String> dimensionOptions = new HashMap<String, String>();
@@ -111,7 +140,7 @@ public class PeriodIndicatorReportController {
 	
 	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveColumn")
 	public String removeColumn(@RequestParam("uuid") String uuid,
-	                           @RequestParam("key") String key) {
+							   @RequestParam("key") String key) {
 		
 		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 		PeriodIndicatorReportUtil.removeColumn(report, key);
@@ -121,7 +150,7 @@ public class PeriodIndicatorReportController {
 	
 	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveDimension")
 	public String removeDimension(@RequestParam("uuid") String uuid,
-	                              @RequestParam("key") String key) {
+								  @RequestParam("key") String key) {
 		
 		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 		PeriodIndicatorReportUtil.removeDimension(report, key);
