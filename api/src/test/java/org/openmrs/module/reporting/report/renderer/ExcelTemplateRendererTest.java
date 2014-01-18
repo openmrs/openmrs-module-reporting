@@ -113,7 +113,7 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
 		ReportData data = rs.evaluate(report, context);
 
-		String outFile = System.getProperty("java.io.tmpdir") + File.separator + "test.xls";
+		String outFile = System.getProperty("java.io.tmpdir") + File.separator + "excelTemplateRendererTest.xls";
 		FileOutputStream fos = new FileOutputStream(outFile);
 		renderer.render(data, "xxx:xls", fos);
 		fos.close();

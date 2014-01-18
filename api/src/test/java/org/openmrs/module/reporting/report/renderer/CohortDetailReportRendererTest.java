@@ -125,7 +125,7 @@ public class CohortDetailReportRendererTest extends BaseModuleContextSensitiveTe
 		fos.close();
 		
 		// We demonstrate here how we can use this renderer to output to Excel
-		outFile = System.getProperty("java.io.tmpdir") + File.separator + "test.xls";
+		outFile = System.getProperty("java.io.tmpdir") + File.separator + "cohortDetailReportRendererTest.xls";
 		fos = new FileOutputStream(outFile); 
 		renderer.render(data, "xxx:xls", fos);
 		fos.close();

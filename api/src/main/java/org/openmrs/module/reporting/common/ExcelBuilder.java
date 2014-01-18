@@ -117,4 +117,16 @@ public class ExcelBuilder {
 	public void write(OutputStream out) throws IOException {
 		workbook.write(out);
 	}
+
+	public Workbook getWorkbook() {
+		return workbook;
+	}
+
+	public Sheet getCurrentSheet() {
+		return currentSheet;
+	}
+
+	public Row getCurrentRow() {
+		return currentRow;
+	}
 }

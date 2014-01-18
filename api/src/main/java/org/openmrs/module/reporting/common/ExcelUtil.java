@@ -1,5 +1,7 @@
 package org.openmrs.module.reporting.common;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -15,6 +17,8 @@ import java.util.Date;
  */
 public class ExcelUtil {
 
+	protected static Log log = LogFactory.getLog(ExcelUtil.class);
+
 	/**
 	 * Retrieves the contents of the passed cell as a String
 	 * @param cell the cell to retrieve the contents for
@@ -23,14 +27,44 @@ public class ExcelUtil {
 	public static String getCellContentsAsString(Cell cell) {
     	String contents = "";
     	try {
-	    	switch (cell.getCellType()) {
-	    		case Cell.CELL_TYPE_STRING: 	contents = cell.getRichStringCellValue().toString(); break;
-	    		case Cell.CELL_TYPE_NUMERIC: 	contents = Double.toString(cell.getNumericCellValue()); break;
-	    		case Cell.CELL_TYPE_BOOLEAN:	contents = Boolean.toString(cell.getBooleanCellValue()); break;
-	    		case Cell.CELL_TYPE_FORMULA:	contents = cell.getCellFormula(); break;
-	    		case Cell.CELL_TYPE_ERROR:		contents = Byte.toString(cell.getErrorCellValue()); break;
-	    		default: break;
-	    	}
+			if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+				if (ExcelUtil.isCellDateFormatted(cell)) {
+					Date d = cell.getDateCellValue();
+					try {
+						// TODO: Replace this with a library that can handle this properly
+						String df = cell.getCellStyle().getDataFormatString().toUpperCase();
+						df = df.replace("\\", "").replace("\"", "").replace("D", "d").replace("Y", "y");
+						df = df.replace("H", "h").replace(":MM", ":mm").replace("S", "s").replace("AM/PM", "a");
+						return ObjectUtil.format(d, df);
+					}
+					catch (Exception e) {
+						log.warn("Unable to convert excel date format " + cell.getCellStyle().getDataFormatString() + " to Java date format");
+					}
+					return ObjectUtil.format(d);
+				}
+				else {
+					Double d = cell.getNumericCellValue();
+					if (d.intValue() == d.doubleValue()) {
+						return ObjectUtil.format(d.intValue());
+					}
+					return ObjectUtil.format(d);
+				}
+			}
+			else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
+				return ObjectUtil.format(cell.getBooleanCellValue());
+			}
+			else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+				return cell.getCellFormula();
+			}
+			else if (cell.getCellType() == Cell.CELL_TYPE_ERROR) {
+				return Byte.toString(cell.getErrorCellValue());
+			}
+			else if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+				return "";
+			}
+			else {
+				return cell.getRichStringCellValue() != null ? cell.getRichStringCellValue().toString() : cell.getStringCellValue();
+			}
     	}
     	catch (Exception e) {
 			if (cell.getRichStringCellValue() != null) {
@@ -55,7 +89,7 @@ public class ExcelUtil {
 				return;
 			}
 			if (cellValue instanceof Date) {
-				if (!DateUtil.isCellDateFormatted(cell)) {
+				if (!ExcelUtil.isCellDateFormatted(cell)) {
 					addStyle(cell, "date");
 				}
 				cell.setCellValue(((Date) cellValue));
@@ -157,7 +191,7 @@ public class ExcelUtil {
 					}
 				}
 				else if (att.equals("date")) {
-					short dateFormat = wb.createDataFormat().getFormat("d-mmm-yy");
+					short dateFormat = wb.createDataFormat().getFormat("d/mmm/yyyy");
 					style.setDataFormat(dateFormat);
 				}
 				else if (att.equals("bold")) {
@@ -207,6 +241,20 @@ public class ExcelUtil {
 			}
 		}
 		return s;
+	}
+
+	public static boolean isCellDateFormatted(Cell cell) {
+		boolean ret = false;
+		try {
+			ret = DateUtil.isCellDateFormatted(cell);
+		}
+		catch (Exception e){}
+		return ret;
+	}
+
+	public static Font getFont(Cell cell) {
+		CellStyle style = cell.getCellStyle();
+		return cell.getSheet().getWorkbook().getFontAt(style.getFontIndex());
 	}
 	
 	public static String formatRow(Row row) {
