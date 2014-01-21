@@ -26,7 +26,6 @@ import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Set;
 
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -121,22 +120,6 @@ public class ReportingMatchers {
             @Override
             public void describeTo(Description description) {
                 description.appendValue("parameter named " + expectedName);
-            }
-        };
-    }
-
-    public static Matcher<Age> hasBirthdateAndEffectiveDate(final Date birthdate, final Date effectiveDate) {
-        return new BaseMatcher<Age>() {
-            @Override
-            public boolean matches(Object item) {
-                Age actual = (Age) item;
-                return OpenmrsUtil.compare(actual.getBirthDate(), birthdate) == 0 &&
-                        OpenmrsUtil.compare(actual.getCurrentDate(), effectiveDate) == 0;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendValue("age with birthdate " + birthdate + " and effectiveDate " + effectiveDate);
             }
         };
     }

@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.common;
 
+import org.openmrs.util.OpenmrsUtil;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -120,8 +122,22 @@ public class Age {
 		}
 		return age;
 	}
-	
-	/**
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof Age)) {
+            return false;
+        }
+        Age other = (Age) o;
+        return OpenmrsUtil.nullSafeEquals(birthDate, other.birthDate) && OpenmrsUtil.nullSafeEquals(currentDate, other.currentDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return (birthDate != null ? birthDate.hashCode() : 0) + (currentDate != null ? currentDate.hashCode() : 0);
+    }
+
+    /**
 	 * @see Object#toString()
 	 */
 	public String toString() {

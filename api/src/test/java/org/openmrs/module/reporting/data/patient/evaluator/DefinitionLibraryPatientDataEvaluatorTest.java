@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.common.ReportingMatchers;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.DefinitionLibraryPatientDataDefinition;
@@ -94,7 +93,7 @@ public class DefinitionLibraryPatientDataEvaluatorTest extends BaseModuleContext
 
         EvaluatedPatientData result = service.evaluate(def, context);
         assertThat(result.getData().size(), is(1));
-        assertThat((Age) result.getData().get(7), ReportingMatchers.hasBirthdateAndEffectiveDate(DateUtil.parseYmd("1976-08-25"), startDate));
+        assertThat((Age) result.getData().get(7), is(new Age(DateUtil.parseYmd("1976-08-25"), startDate)));
     }
 
 }
