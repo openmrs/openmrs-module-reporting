@@ -34,7 +34,25 @@
 							</c:forEach>
 							$('#addColumnDialog').dialog('open').title(); 
 						});
-						
+
+                        var updateIndicatorLabel = function() {
+                            var labelFieldValNew = $("#indicatorField option:selected").html();
+                            if(labelFieldValNew != '') {
+                                <c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
+                                if($('#dimensionOption_${dimStatus.index}').val() != '') {
+                                    labelFieldValNew += '-${dim.key}';
+                                }
+                                </c:forEach>
+                            }
+                            $("#labelField").val(labelFieldValNew);
+                        }
+
+                        $('#indicatorField').change(updateIndicatorLabel);
+
+                        <c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
+                        $('#dimensionOption_${dimStatus.index}').change(updateIndicatorLabel);
+                        </c:forEach>
+
 						$('#cancelDialogButton').click(function() {
 							$('#addColumnDialog').dialog('close'); 
 						});
