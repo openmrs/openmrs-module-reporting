@@ -16,6 +16,8 @@ package org.openmrs.module.reporting.report.renderer;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
@@ -26,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -97,6 +101,32 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
         //   FileOutputStream fos = new FileOutputStream("/tmp/test.zip");
         //   renderer.render(data, "", fos);
         //   IOUtils.closeQuietly(fos);
+    }
+
+    @Test
+    public void writeDataSet_shouldBeAbleToWriteUtf8() throws Exception {
+        testWriteDataSetAs("UTF-8");
+    }
+
+    @Test
+    public void writeDataSet_shouldBeAbleToWriteLatin1() throws Exception {
+        testWriteDataSetAs("ISO-8859-1");
+    }
+
+    private void testWriteDataSetAs(String characterEncoding) throws IOException {
+        SimpleDataSet ds = new SimpleDataSet(null, null);
+        ds.addColumnValue(0, new DataSetColumn("value", "Value", String.class), "sí");
+
+        DelimitedTextReportRenderer renderer = new CsvReportRenderer();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        renderer.writeDataSet(ds, out, "", ",", "\n", characterEncoding);
+
+        byte[] expected = "value\nsí\n".getBytes(Charset.forName(characterEncoding));
+        byte[] actual = out.toByteArray();
+        assertThat(actual.length, is(expected.length));
+        for (int i = 0; i < actual.length; ++i) {
+            assertThat(actual[i], is(expected[i]));
+        }
     }
 
     private ReportDefinition reportDefinitionWithOneDSD() {

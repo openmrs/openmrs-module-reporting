@@ -46,6 +46,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	transient protected final Log log = LogFactory.getLog(getClass());
 	
 	/**
+     * @param design
 	 * @return the filename extension for the particular type of delimited file
 	 */
 	public String getFilenameExtension(ReportDesign design) {
@@ -53,6 +54,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	}
 	
 	/**
+     * @param design
 	 * @return the delimiter that surrounds each column value, if applicable
 	 */
 	public String getTextDelimiter(ReportDesign design) {
@@ -60,6 +62,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	}
 
 	/**
+     * @param design
 	 * @return the delimiter that separates each column value
 	 */
 	public String getFieldDelimiter(ReportDesign design) {
@@ -73,6 +76,14 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
      */
     public String getLineEnding(ReportDesign design) {
         return design.getPropertyValue("lineDelimiter", "\r\n");
+    }
+
+    /**
+     * @param design
+     * @return
+     */
+    public String getCharacterEncoding(ReportDesign design) {
+        return design.getPropertyValue("characterEncoding", "UTF-8");
     }
 
     /**
@@ -140,6 +151,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		String textDelimiter = getTextDelimiter(design);
 		String fieldDelimiter = getFieldDelimiter(design);
         String lineEnding = getLineEnding(design);
+        String characterEncoding = getCharacterEncoding(design);
 
         if (results.getDataSets().size() > 1) {
             ZipOutputStream zip = new ZipOutputStream(out);
@@ -147,17 +159,28 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
             for (Map.Entry<String, DataSet> e : results.getDataSets().entrySet()) {
                 String fn = getFilenameBaseForName(e.getKey(), usedFilenames) + "." + getFilenameExtension(getDesign(argument));
                 zip.putNextEntry(new ZipEntry(fn));
-                writeDataSet(e.getValue(), zip, textDelimiter, fieldDelimiter, lineEnding);
+                writeDataSet(e.getValue(), zip, textDelimiter, fieldDelimiter, lineEnding, characterEncoding);
                 zip.closeEntry();
             }
             zip.finish();
         } else {
-            writeDataSet(dataset, out, textDelimiter, fieldDelimiter, lineEnding);
+            writeDataSet(dataset, out, textDelimiter, fieldDelimiter, lineEnding, characterEncoding);
         }
 	}
 
-    private void writeDataSet(DataSet dataset, OutputStream out, String textDelimiter, String fieldDelimiter, String lineEnding) throws IOException {
-        Writer w = new OutputStreamWriter(out, "UTF-8");
+    /**
+     * Only visible for testing
+     *
+     * @param dataset
+     * @param out
+     * @param textDelimiter
+     * @param fieldDelimiter
+     * @param lineEnding
+     * @param characterEncoding
+     * @throws IOException
+     */
+    void writeDataSet(DataSet dataset, OutputStream out, String textDelimiter, String fieldDelimiter, String lineEnding, String characterEncoding) throws IOException {
+        Writer w = new OutputStreamWriter(out, characterEncoding);
         List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 
 		// header row
