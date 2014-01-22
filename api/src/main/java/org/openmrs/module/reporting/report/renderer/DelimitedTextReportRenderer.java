@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -80,10 +81,19 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 
     /**
      * @param design
-     * @return
+     * @return character encoding to use when writing the text output
      */
     public String getCharacterEncoding(ReportDesign design) {
         return design.getPropertyValue("characterEncoding", "UTF-8");
+    }
+
+    /**
+     * @param design
+     * @return regex defining characters that should be replaced by ? in output
+     */
+    public Pattern getBlacklistRegex(ReportDesign design) {
+        String blacklistRegex = design.getPropertyValue("blacklistRegex", null);
+        return blacklistRegex == null ? null : Pattern.compile(blacklistRegex);
     }
 
     /**
@@ -99,7 +109,8 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	}
 
 	/**
-	 * Convenience method used to escape a string of text.
+	 * Convenience method used to escape a string of text. Replaces " with "" (per the CSV standard), which is not
+     * necessarily ideal behavior for other use cases.
 	 * 
 	 * @param	text 	The text to escape.
 	 * @return	The escaped text.
@@ -152,6 +163,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		String fieldDelimiter = getFieldDelimiter(design);
         String lineEnding = getLineEnding(design);
         String characterEncoding = getCharacterEncoding(design);
+        Pattern blacklistRegex = getBlacklistRegex(design);
 
         if (results.getDataSets().size() > 1) {
             ZipOutputStream zip = new ZipOutputStream(out);
@@ -159,12 +171,12 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
             for (Map.Entry<String, DataSet> e : results.getDataSets().entrySet()) {
                 String fn = getFilenameBaseForName(e.getKey(), usedFilenames) + "." + getFilenameExtension(getDesign(argument));
                 zip.putNextEntry(new ZipEntry(fn));
-                writeDataSet(e.getValue(), zip, textDelimiter, fieldDelimiter, lineEnding, characterEncoding);
+                writeDataSet(e.getValue(), zip, textDelimiter, fieldDelimiter, lineEnding, characterEncoding, blacklistRegex);
                 zip.closeEntry();
             }
             zip.finish();
         } else {
-            writeDataSet(dataset, out, textDelimiter, fieldDelimiter, lineEnding, characterEncoding);
+            writeDataSet(dataset, out, textDelimiter, fieldDelimiter, lineEnding, characterEncoding, blacklistRegex);
         }
 	}
 
@@ -177,16 +189,18 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
      * @param fieldDelimiter
      * @param lineEnding
      * @param characterEncoding
+     * @param blacklist
      * @throws IOException
      */
-    void writeDataSet(DataSet dataset, OutputStream out, String textDelimiter, String fieldDelimiter, String lineEnding, String characterEncoding) throws IOException {
+    void writeDataSet(DataSet dataset, OutputStream out, String textDelimiter, String fieldDelimiter, String lineEnding,
+                      String characterEncoding, Pattern blacklist) throws IOException {
         Writer w = new OutputStreamWriter(out, characterEncoding);
         List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 
 		// header row
 		for (Iterator<DataSetColumn> i = columns.iterator(); i.hasNext();) {
 			DataSetColumn column = i.next();
-			w.write(textDelimiter + escape(column.getName()) + textDelimiter);
+			w.write(textDelimiter + filterBlacklist(escape(column.getName()), blacklist) + textDelimiter);
 			if (i.hasNext()) {
 				w.write(fieldDelimiter);
 			}
@@ -200,17 +214,22 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 				Object colValue = row.getColumnValue(column);
 				w.write(textDelimiter);
 				if (colValue != null) {
+                    String toPrint;
 					if (colValue instanceof Cohort) {
-						w.write(escape(Integer.toString(((Cohort) colValue).size())));
+                        toPrint = escape(Integer.toString(((Cohort) colValue).size()));
 					} else if (colValue instanceof IndicatorResult) {
-						w.write(((IndicatorResult) colValue).getValue().toString());
+                        toPrint = ((IndicatorResult) colValue).getValue().toString();
 					}
 					else {
 						// this check is because a logic EmptyResult .toString() -> null
 						String temp = escape(colValue.toString());
-						if (temp != null)
-							w.write(temp);
+						if (temp != null) {
+                            toPrint = temp;
+                        } else {
+                            toPrint = "";
+                        }
 					}
+                    w.write(filterBlacklist(toPrint, blacklist));
 				}
 				w.write(textDelimiter);
 				if (i.hasNext()) {
@@ -222,4 +241,17 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 
 		w.flush();
 	}
+
+    /**
+     * @param input
+     * @param blacklist
+     * @return replaces any matches of blacklist in input with ?
+     */
+    private String filterBlacklist(String input, Pattern blacklist) {
+        if (blacklist == null) {
+            return input;
+        }
+        return blacklist.matcher(input).replaceAll("?");
+    }
+
 }

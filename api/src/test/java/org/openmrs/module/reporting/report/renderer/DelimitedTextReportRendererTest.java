@@ -119,7 +119,7 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
 
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        renderer.writeDataSet(ds, out, "", ",", "\n", characterEncoding);
+        renderer.writeDataSet(ds, out, "", ",", "\n", characterEncoding, null);
 
         byte[] expected = "value\nsí\n".getBytes(Charset.forName(characterEncoding));
         byte[] actual = out.toByteArray();
@@ -127,6 +127,29 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
         for (int i = 0; i < actual.length; ++i) {
             assertThat(actual[i], is(expected[i]));
         }
+    }
+
+    @Test
+    public void writeDataSet_shouldFilterBlacklistedCharacters() throws Exception {
+        String actual = writeSingleColumnWithBlacklist("Yes: ÀÁÂÃÄàáâãä, No: ♪�", "[^\\p{InBasicLatin}\\p{InLatin-1Supplement}]");
+        assertThat(actual, is("\"value\"\n\"Yes: ÀÁÂÃÄàáâãä, No: ???\"\n"));
+    }
+
+    @Test
+    public void writeDataSet_shouldNotFilterWithNoBlacklist() throws Exception {
+        String actual = writeSingleColumnWithBlacklist("Yes: ÀÁÂÃÄàáâãä, No: ♪�", null);
+        assertThat(actual, is("\"value\"\n\"Yes: ÀÁÂÃÄàáâãä, No: ♪�\"\n"));
+    }
+
+    private String writeSingleColumnWithBlacklist(String value, String blacklistRegex) throws IOException {
+        SimpleDataSet ds = new SimpleDataSet(null, null);
+        ds.addColumnValue(0, new DataSetColumn("value", "Value", String.class), value);
+
+        DelimitedTextReportRenderer renderer = new CsvReportRenderer();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        renderer.writeDataSet(ds, out, "\"", ",", "\n", "UTF-8", blacklistRegex != null ? Pattern.compile(blacklistRegex) : null);
+
+        return out.toString("UTF-8");
     }
 
     private ReportDefinition reportDefinitionWithOneDSD() {
