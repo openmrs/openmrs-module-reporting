@@ -1,21 +1,5 @@
 package org.openmrs.module.reporting.common;
 
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.text.DateFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -33,6 +17,22 @@ import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
+
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Generically useful utility class for working with Objects
@@ -100,12 +100,12 @@ public class ObjectUtil {
     }
 
     /**
-     * Returns the locale of the passed OpenmrsMetadata object
-     * @param o an OpenmrsMetadata
-     * @return a String or null if no locale available
+     * Returns the localized name of the passed OpenmrsMetadata object
+     * @param o
+     * @return a String or null if no localized name is available
      */
-    public static String getLocalization(OpenmrsMetadata o, Locale locale){
-        if ( o != null ){
+    public static String getLocalization(OpenmrsMetadata o, Locale locale) {
+        if (o != null) {
             String simpleName = o.getClass().getSimpleName();
             int underscoreIndex = simpleName.indexOf("_$");
             if (underscoreIndex > 0) {
@@ -121,6 +121,7 @@ public class ObjectUtil {
         }
         return null;
     }
+
     /**
      * Returns toString on the passed object if not null, or on replacement otherwise
      */
@@ -373,8 +374,8 @@ public class ObjectUtil {
 			}
 		}
 		if (o instanceof OpenmrsMetadata) {
-            String name = getLocalization((OpenmrsMetadata)o, locale);
-            if (StringUtils.isBlank( name )){
+            String name = getLocalization((OpenmrsMetadata) o, locale);
+            if (StringUtils.isBlank(name)) {
                 name = ((OpenmrsMetadata) o).getName();
                 if (name == null) {
                     if (o instanceof ProgramWorkflow) {
