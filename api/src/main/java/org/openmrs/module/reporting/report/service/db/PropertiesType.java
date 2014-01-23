@@ -13,21 +13,20 @@
  */
 package org.openmrs.module.reporting.report.service.db;
 
-import static java.sql.Types.VARCHAR;
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 import java.util.Map;
+import java.util.Properties;
 
-import org.hibernate.HibernateException;
-import org.hibernate.usertype.UserType;
-import org.openmrs.util.OpenmrsUtil;
+import static java.sql.Types.VARCHAR;
 
 /**
  *  A report definition type
@@ -38,15 +37,18 @@ public class PropertiesType implements UserType {
 	 * @see UserType#assemble(Serializable, Object)
 	 */
 	public Object assemble(Serializable cached, Object owner) throws HibernateException {
-		String s = (String) cached;
-		Properties p = new Properties();
+        if (cached == null) {
+            return null;
+        }
 		try {
-			OpenmrsUtil.loadProperties(p, new ByteArrayInputStream(s.getBytes("UTF-8")));
-		}
-		catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Unable to load properties from string", e);
-		}
-		return p;
+            String s = (String) cached;
+            Properties p = new Properties();
+            p.load(new StringReader(s));
+            return p;
+        }
+        catch (IOException e) {
+            throw new IllegalArgumentException("Unable to load properties from string", e);
+        }
 	}
 
 	/** 
@@ -69,19 +71,19 @@ public class PropertiesType implements UserType {
 	 * @see UserType#disassemble(Object)
 	 */
 	public Serializable disassemble(Object value) throws HibernateException {
-		if (value != null) {
-			Properties props = (Properties) value;
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			OpenmrsUtil.storeProperties(props, out, null);
-			try {
-				return out.toString("UTF-8");
-			}
-			catch (UnsupportedEncodingException e) {
-				throw new RuntimeException("Unable to load properties from string", e);
-			}
-		}
-		return null;
-	}
+        if (value == null) {
+            return null;
+        }
+        try {
+            Properties props = (Properties) value;
+            StringWriter sw = new StringWriter();
+            props.store(sw, null);
+            return sw.toString();
+        }
+        catch (IOException e) {
+            throw new IllegalArgumentException("Unable to store properties as string", e);
+        }
+    }
 
 	/** 
 	 * @see UserType#equals(Object, Object)
@@ -109,35 +111,14 @@ public class PropertiesType implements UserType {
 	 */
 	public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
 		String s = rs.getString(names[0]);
-		if (s == null) {
-			return null;
-		}
-		Properties p = new Properties();
-		try {
-			OpenmrsUtil.loadProperties(p, new ByteArrayInputStream(s.getBytes("UTF-8")));
-		}
-		catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Unable to load properties from string", e);
-		}
-		return p;
+        return assemble(s, null);
 	}
 
 	/** 
 	 * @see UserType#nullSafeSet(PreparedStatement, Object, int)
 	 */
 	public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
-		String val = null;
-		if (value != null) {
-			Properties props = (Properties) value;
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			OpenmrsUtil.storeProperties(props, out, null);
-			try {
-				val = out.toString("UTF-8");
-			}
-			catch (UnsupportedEncodingException e) {
-				throw new RuntimeException("Unable to load properties from string", e);
-			}
-		}
+		String val = (String) disassemble(value);
 		st.setString(index, val);
 	}
 
