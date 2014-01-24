@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.definition.library;
 
 import org.junit.Test;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,12 @@ public class AllDefinitionLibrariesComponentTest extends BaseModuleContextSensit
 
     @Test
     public void testSetup() throws Exception {
-        assertThat(libraries.getLibraries().size(), is(2));
+        assertThat(libraries.getLibraries().size(), is(3));
     }
 
     @Test
     public void testGetAllDefinitionTypes() throws Exception {
-        assertThat(libraries.getAllDefinitionTypes(), containsInAnyOrder(CohortDefinition.class, PatientDataDefinition.class));
+        assertThat(libraries.getAllDefinitionTypes(), containsInAnyOrder(CohortDefinition.class, PatientDataDefinition.class, EncounterDataDefinition.class));
     }
 
 }
