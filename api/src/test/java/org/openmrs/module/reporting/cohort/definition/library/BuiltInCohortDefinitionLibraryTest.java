@@ -16,11 +16,17 @@ package org.openmrs.module.reporting.cohort.definition.library;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -87,4 +93,31 @@ public class BuiltInCohortDefinitionLibraryTest {
         assertThat(atLeastAgeOnDate, hasParameter("minAge", Integer.class));
         assertThat(atLeastAgeOnDate, hasProperty("minAgeUnit", is(DurationUnit.YEARS)));
     }
+
+    @Test
+    public void testGetAnyEncounterDuringPeriod() throws Exception {
+        CohortDefinition cd = library.getAnyEncounterDuringPeriod();
+        assertThat(cd, hasParameter("startDate", Date.class));
+        assertThat(cd, hasParameter("endDate", Date.class));
+        assertTrue(cd instanceof MappedParametersCohortDefinition);
+        Mapped<CohortDefinition> wrapped = ((MappedParametersCohortDefinition) cd).getWrapped();
+        assertTrue(wrapped.getParameterizable() instanceof EncounterCohortDefinition);
+        assertThat((String) wrapped.getParameterMappings().get("onOrAfter"), is("${startDate}"));
+        assertThat((String) wrapped.getParameterMappings().get("onOrBefore"), is("${endDate}"));
+    }
+
+    @Test
+    public void testGetAnyEncounterOfTypesDuringPeriod() throws Exception {
+        CohortDefinition cd = library.getAnyEncounterOfTypesDuringPeriod();
+        assertThat(cd, hasParameter("startDate", Date.class));
+        assertThat(cd, hasParameter("endDate", Date.class));
+        assertThat(cd, hasParameter("types", EncounterType.class, List.class));
+        assertTrue(cd instanceof MappedParametersCohortDefinition);
+        Mapped<CohortDefinition> wrapped = ((MappedParametersCohortDefinition) cd).getWrapped();
+        assertTrue(wrapped.getParameterizable() instanceof EncounterCohortDefinition);
+        assertThat((String) wrapped.getParameterMappings().get("onOrAfter"), is("${startDate}"));
+        assertThat((String) wrapped.getParameterMappings().get("onOrBefore"), is("${endDate}"));
+        assertThat((String) wrapped.getParameterMappings().get("encounterTypeList"), is("${types}"));
+    }
+
 }

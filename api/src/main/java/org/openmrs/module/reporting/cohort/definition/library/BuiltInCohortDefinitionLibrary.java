@@ -14,15 +14,19 @@
 
 package org.openmrs.module.reporting.cohort.definition.library;
 
+import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Basic set of cohort definitions
@@ -77,6 +81,23 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
         cd.addParameter(new Parameter("minAge", "Min Age (years)", Integer.class));
         return cd;
+    }
+
+    @DocumentedDefinition("anyEncounterDuringPeriod")
+    public CohortDefinition getAnyEncounterDuringPeriod() {
+        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+        cd.addParameter(new Parameter("onOrAfter", "On or After", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "On or Before", Date.class));
+        return new MappedParametersCohortDefinition(cd, "onOrAfter", "startDate", "onOrBefore", "endDate");
+    }
+
+    @DocumentedDefinition("anyEncounterOfTypesDuringPeriod")
+    public CohortDefinition getAnyEncounterOfTypesDuringPeriod() {
+        EncounterCohortDefinition cd = new EncounterCohortDefinition();
+        cd.addParameter(new Parameter("onOrAfter", "On or After", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "On or Before", Date.class));
+        cd.addParameter(new Parameter("encounterTypeList", "Encounter Types", EncounterType.class, List.class, null));
+        return new MappedParametersCohortDefinition(cd, "onOrAfter", "startDate", "onOrBefore", "endDate", "encounterTypeList", "types");
     }
 
 }
