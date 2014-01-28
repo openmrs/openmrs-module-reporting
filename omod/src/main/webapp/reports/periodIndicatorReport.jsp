@@ -24,7 +24,7 @@
 							title: 'Save column'											
 						});
 						
-						$('.addColumnButton').click(function() { 
+						$('.addColumnButton').click(function() {
 							$('#indexField').val('');
 							$('#keyField').val('');
 							$('#labelField').val('');
@@ -32,9 +32,9 @@
 							<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
 								$('#dimensionOption_${dimStatus.index}').val('');
 							</c:forEach>
-							$('#addColumnDialog').dialog('open').title(); 
+							$('#addColumnDialog').dialog('open');
 						});
-						
+
 						$('#cancelDialogButton').click(function() {
 							$('#addColumnDialog').dialog('close'); 
 						});
@@ -97,9 +97,20 @@
 							"bInfo": false,
 							"bAutoWidth": false
 						} );
-					} ); 
+
+						$('#createFromCohortQueryCheckbox').change(function() {
+							if ($(this).is(':checked')) {
+								$('#createFromIndicator').hide();
+								$('#createFromCohortQuery').show();
+							} else {
+								$('#createFromIndicator').show();
+								$('#createFromCohortQuery').hide();
+							}
+						});
+
+					} );
 				</script>
-			
+
 				<div id="addColumnDialog" style="display: none">
 					<form method="post" action="periodIndicatorReportSaveColumn.form">
 						<input type="hidden" name="uuid" value="${report.uuid}"/>
@@ -113,7 +124,7 @@
 								<td>Label</td>
 								<td><input id="labelField" size="60" type="text" name="displayName"/></td>
 							</tr>
-							<tr>
+							<tr id="createFromIndicator">
 								<td>Indicator</td>
 								<td>
 									<select id="indicatorField" name="indicator">
@@ -125,6 +136,22 @@
 									<span style="font-size:small; text-decoration:italics; padding-left:10px;">
 										<spring:message code="reporting.Report.periodIndicatorReport.indicatorMessage"/>
 									</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<input type="checkbox" id="createFromCohortQueryCheckbox" name="createFromCohortQuery" value="createFromCohortQuery">Create from cohort query
+								</td>
+							</tr>
+							<tr id="createFromCohortQuery" style="display: none;">
+								<td>Cohort query:</td>
+								<td>
+									<select id="cohortQueryField" name="cohortQuery">
+										<option value=""></option>
+										<c:forEach var="query" items="${cohortQueries}">
+											<option value="${query.uuid}">${query.name}</option>
+										</c:forEach>
+									</select>
 								</td>
 							</tr>
 							<c:if test="${fn:length(report.indicatorDataSetDefinition.dimensions) > 0}">
