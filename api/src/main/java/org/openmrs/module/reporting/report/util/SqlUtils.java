@@ -172,7 +172,12 @@ public class SqlUtils {
 							statement.setDate(position, new java.sql.Date(((Date) paramValue).getTime()));
 						}
 					}
-					// String, Integer, et al (this might break since this is a catch all for all other classes)
+					else if (paramValue instanceof Integer || paramValue instanceof Long) {
+						for (Integer position : positions) {
+							statement.setLong(position, (Integer)paramValue);
+						}
+					}
+					// String, et al (this might break since this is a catch all for all other classes)
 					else {
 						for (Integer position : positions) {
 							statement.setString(position, new String(paramValue.toString()));
