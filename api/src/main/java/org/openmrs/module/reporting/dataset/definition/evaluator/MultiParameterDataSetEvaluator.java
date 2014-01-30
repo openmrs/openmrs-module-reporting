@@ -26,13 +26,18 @@ import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinition
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Iterator;
 import java.util.Map;
 
 @Handler(supports={MultiParameterDataSetDefinition.class})
 public class MultiParameterDataSetEvaluator implements DataSetEvaluator {
 
 	public MultiParameterDataSetEvaluator() { }
+
+	@Autowired
+	DataSetDefinitionService dataSetDefinitionService;
 
 	/**
 	 * @throws org.openmrs.module.reporting.evaluation.EvaluationException
@@ -49,26 +54,26 @@ public class MultiParameterDataSetEvaluator implements DataSetEvaluator {
 
 		for (Map<String, Object> iteration: dsd.getIterations()) {
 			EvaluationContext ec = context.shallowCopy();
-			SimpleDataSet ds;
+			DataSet ds;
 			try {
 				Mapped<DataSetDefinition> mapped = new Mapped<DataSetDefinition>();
 				mapped.setParameterizable(dsd.getBaseDefinition());
 				for (Map.Entry<String, Object> param: iteration.entrySet()) {
 					mapped.addParameterMapping(param.getKey(), param.getValue());
 				}
-				ds = (SimpleDataSet) Context.getService(DataSetDefinitionService.class).evaluate(mapped, ec);
+			ds = dataSetDefinitionService.evaluate(mapped, ec);
 			} catch (Exception ex) {
 				throw new EvaluationException("baseDefinition", ex);
 			}
 
-			DataSetRowList rows = ds.getRows();
-			for (DataSetRow dsRow: rows) {
+			Iterator<DataSetRow> iterator = ds.iterator();
+			while (iterator.hasNext()) {
 				DataSetRow row = new DataSetRow();
 				for (Map.Entry<String, Object> param: ds.getContext().getParameterValues().entrySet()) {
 					String columnName = "param: " + param.getKey();
 					row.addColumnValue(new DataSetColumn(columnName, columnName, String.class), param.getValue());
 				}
-				for (Map.Entry<DataSetColumn, Object> entry: dsRow.getColumnValues().entrySet()) {
+				for (Map.Entry<DataSetColumn, Object> entry: iterator.next().getColumnValues().entrySet()) {
 					row.addColumnValue(entry.getKey(), entry.getValue());
 				}
 				ret.addRow(row);

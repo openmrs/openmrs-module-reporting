@@ -60,18 +60,17 @@ public class MultiParameterDataSetDefinition extends BaseDataSetDefinition imple
 	}
 
 	public List<Map<String, Object>> getIterations() {
+
+		return iterations;
+	}
+
+	public void setIterations(List<Map<String, Object>> iterations) {
 		//since XML deserialization creates one instance of map if all keys are the same
 		//we need to ensure each iteration gets it's own instance of map (since it's desired behaviour)
 		List<Map<String, Object>> newIterations = new ArrayList<Map<String, Object>>();
 		for (Map<String, Object> iteration: iterations) {
 			newIterations.add(new HashMap<String, Object>(iteration));
 		}
-		iterations = newIterations;
-
-		return iterations;
-	}
-
-	public void setIterations(List<Map<String, Object>> iterations) {
-		this.iterations = iterations;
+		this.iterations = newIterations;
 	}
 }

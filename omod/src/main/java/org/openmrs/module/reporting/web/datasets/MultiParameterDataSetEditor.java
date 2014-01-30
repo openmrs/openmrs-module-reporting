@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -26,17 +27,19 @@ public class MultiParameterDataSetEditor {
 	@RequestMapping("/module/reporting/datasets/multiParameterDataSetEditor")
 	public void showForm(ModelMap model,
 						 @RequestParam(value="uuid", required=false) String uuid) {
-		model.addAttribute("availableDefinitions", Context.getService(DataSetDefinitionService.class).getAllDefinitions(false));
+		List<DataSetDefinition> allDefinitions = Context.getService(DataSetDefinitionService.class).getAllDefinitions(false);
 		if (uuid == null) {			
 			model.addAttribute("definition", new MultiParameterDataSetDefinition());
 		} else {
 			DataSetDefinition def = Context.getService(DataSetDefinitionService.class).getDefinitionByUuid(uuid);
+			allDefinitions.remove(def);
 			if (def instanceof MultiParameterDataSetDefinition) {
 				model.addAttribute("definition", def);
 			} else {
 				throw new RuntimeException("This definition is not of the right class");
 			} 
 		}
+		model.addAttribute("availableDefinitions", allDefinitions);
 	}
 
 	@RequestMapping("/module/reporting/datasets/multiParameterAddIteration")

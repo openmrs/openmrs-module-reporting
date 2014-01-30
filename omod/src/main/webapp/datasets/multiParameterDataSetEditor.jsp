@@ -148,19 +148,27 @@
                                                 <tbody>
                                                     <c:forEach items="${definition.iterations}" var="iteration" varStatus="iterationStatus">
                                                         <tr>
-                                                            <td nowrap>${iterationStatus.index}</td>
+                                                            <td nowrap style="text-align:center; width:50px;">${iterationStatus.index}</td>
                                                             <td nowrap style="padding-left:5px; padding-right:5px;">
                                                                 <table style="width: 100%">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th>Name</th>
-                                                                            <th>Value</th>
+                                                                            <th style="width: 30%">Name</th>
+                                                                            <th style="width: 70%">Value</th>
+                                                                            <th></th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
                                                                         <c:forEach items="${definition.baseDefinition.parameters}" var="baseDefinitionParam">
                                                                             <tr>
-                                                                                <td>${baseDefinitionParam.label}</td>
+                                                                                <c:choose>
+                                                                                    <c:when test="${not empty baseDefinitionParam.label}">
+                                                                                        <td>${baseDefinitionParam.label}</td>
+                                                                                    </c:when>
+                                                                                    <c:otherwise>
+                                                                                        <td>${baseDefinitionParam.name}</td>
+                                                                                    </c:otherwise>
+                                                                                </c:choose>
                                                                                 <td>${iteration[baseDefinitionParam.name]}</td>
                                                                                 <td>
                                                                                     <a href="#" id="editIterationParameterLink${iterationStatus.index}${baseDefinitionParam.name}">
