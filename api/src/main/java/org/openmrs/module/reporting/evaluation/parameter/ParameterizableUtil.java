@@ -235,6 +235,9 @@ public class ParameterizableUtil {
 							complexParams.put(p.getName(), mappedVal);
 						}
 					}
+					else {
+						fixedParams.put(p.getName(), mappedVal);
+					}
 				}
 				else {
 					fixedParams.put(p.getName(), mappedObjVal);
