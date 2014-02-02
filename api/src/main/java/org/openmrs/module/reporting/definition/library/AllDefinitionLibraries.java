@@ -14,11 +14,16 @@
 
 package org.openmrs.module.reporting.definition.library;
 
+import org.openmrs.module.reporting.cohort.definition.DefinitionLibraryCohortDefinition;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Allows access to all definitions in all libraries
@@ -77,6 +82,23 @@ public class AllDefinitionLibraries {
      */
     List<DefinitionLibrary<?>> getLibraries() {
         return Collections.unmodifiableList(libraries);
+    }
+
+    /**
+     * Constructs a CohortDefinition that references the given key, with the given specified parameter values.
+     * This will cause an underlying library to build the definition (so we can determine its parameters)
+     * but the returned CohortDefinition only has a reference to that definition by key
+     * @param key
+     * @param paramsAndValues must have an even length. Each pair is (String) paramName, (Object) paramValue
+     * @return
+     */
+    public DefinitionLibraryCohortDefinition cohortDefinition(String key, Object... paramsAndValues) {
+        DefinitionLibraryCohortDefinition cd = new DefinitionLibraryCohortDefinition(key);
+        cd.loadParameters(this);
+        for (int i = 0; i < paramsAndValues.length; i += 2) {
+            cd.addParameterValue((String) paramsAndValues[i], paramsAndValues[i + 1]);
+        }
+        return cd;
     }
 
 }
