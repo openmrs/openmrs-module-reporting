@@ -15,14 +15,13 @@
 package org.openmrs.module.reporting.data.patient.definition;
 
 import org.openmrs.module.reporting.data.BaseDefinitionLibraryDataDefinition;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
-import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Lets you evaluate a {@link PatientDataDefinition} that is looked up in
  * {@link org.openmrs.module.reporting.definition.library.AllDefinitionLibraries} at evaluation time
+ *
+ * We intentionally do not define a CachingStrategy since we are just delegating to another definition.
  */
-@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class DefinitionLibraryPatientDataDefinition extends BaseDefinitionLibraryDataDefinition implements PatientDataDefinition {
 
     public DefinitionLibraryPatientDataDefinition() {
