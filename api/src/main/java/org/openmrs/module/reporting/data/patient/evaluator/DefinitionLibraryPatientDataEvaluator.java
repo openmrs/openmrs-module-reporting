@@ -23,10 +23,8 @@ import org.openmrs.module.reporting.definition.library.AllDefinitionLibraries;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Handler(supports = DefinitionLibraryPatientDataDefinition.class)
@@ -43,21 +41,13 @@ public class DefinitionLibraryPatientDataEvaluator implements PatientDataEvaluat
         DefinitionLibraryPatientDataDefinition def = (DefinitionLibraryPatientDataDefinition) definition;
         PatientDataDefinition referencedDefinition = definitionLibraries.getDefinition(PatientDataDefinition.class, def.getDefinitionKey());
 
-        Map<String, Object> definedParameterValues = def.getParameterValues();
-
-        Map<String, Object> mappings = new HashMap<String, Object>();
-        for (Parameter parameter : referencedDefinition.getParameters()) {
-            if (definedParameterValues != null && definedParameterValues.containsKey(parameter.getName())) {
-                mappings.put(parameter.getName(), definedParameterValues.get(parameter.getName()));
-            }
-            else {
-                // no value was specified, so we map it through, e.g. startDate -> ${startDate}
-                mappings.put(parameter.getName(), parameter.getExpression());
+        // parameters without values explicitly set should be mapped straight through
+        Mapped<PatientDataDefinition> mapped = Mapped.mapStraightThrough(referencedDefinition);
+        if (def.getParameterValues() != null) {
+            for (Map.Entry<String, Object> e : def.getParameterValues().entrySet()) {
+                mapped.addParameterMapping(e.getKey(), e.getValue());
             }
         }
-
-        Mapped<PatientDataDefinition> mapped = new Mapped<PatientDataDefinition>(referencedDefinition, mappings);
-
         return patientDataService.evaluate(mapped, context);
     }
 

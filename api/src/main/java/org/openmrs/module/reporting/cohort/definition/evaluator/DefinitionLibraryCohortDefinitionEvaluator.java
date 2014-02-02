@@ -25,6 +25,8 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Map;
+
 @Handler(supports=DefinitionLibraryCohortDefinition.class)
 public class DefinitionLibraryCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
@@ -36,10 +38,16 @@ public class DefinitionLibraryCohortDefinitionEvaluator implements CohortDefinit
 
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
-        DefinitionLibraryCohortDefinition cd = (DefinitionLibraryCohortDefinition) cohortDefinition;
-        CohortDefinition referencedDefinition = definitionLibraries.getDefinition(CohortDefinition.class, cd.getDefinitionKey());
+        DefinitionLibraryCohortDefinition def = (DefinitionLibraryCohortDefinition) cohortDefinition;
+        CohortDefinition referencedDefinition = definitionLibraries.getDefinition(CohortDefinition.class, def.getDefinitionKey());
 
-        Mapped<CohortDefinition> mapped = new Mapped<CohortDefinition>(referencedDefinition, cd.getParameterValues());
+        // parameters without values explicitly defined should be mapped straight through
+        Mapped<CohortDefinition> mapped = Mapped.mapStraightThrough(referencedDefinition);
+        if (def.getParameterValues() != null) {
+            for (Map.Entry<String, Object> e : def.getParameterValues().entrySet()) {
+                mapped.addParameterMapping(e.getKey(), e.getValue());
+            }
+        }
 
         return cohortDefinitionService.evaluate(mapped, context);
     }
