@@ -23,19 +23,30 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ReportingMatchers;
 import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.definition.library.AllDefinitionLibraries;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
+import org.openmrs.module.reporting.indicator.IndicatorResult;
+import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 public class DefinitionLibraryCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 
     @Autowired
     private CohortDefinitionService service;
+
+    @Autowired
+    private IndicatorService indicatorService;
+
+    @Autowired
+    private AllDefinitionLibraries libraries;
 
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 
@@ -67,6 +78,27 @@ public class DefinitionLibraryCohortDefinitionEvaluatorTest extends BaseModuleCo
 
         EvaluatedCohort result = service.evaluate(cd, new EvaluationContext());
         assertThat(result, ReportingMatchers.isCohortWithExactlyIds(6, 22, 23, 24));
+    }
+
+    @Test
+    public void testCachingDoesNotHappenIncorrectly() throws Exception {
+        DefinitionLibraryCohortDefinition cd = libraries.cohortDefinition(BuiltInCohortDefinitionLibrary.PREFIX + "upToAgeOnDate", "maxAge", 35);
+
+        Map<String, Object> params1 = new HashMap<String, Object>();
+        params1.put("effectiveDate", DateUtil.parseYmd("2013-12-01"));
+        CohortIndicator ind1 = new CohortIndicator("one");
+        ind1.setCohortDefinition(cd, params1);
+
+        Map<String, Object> params2 = new HashMap<String, Object>();
+        params2.put("effectiveDate", DateUtil.parseYmd("1960-01-01"));
+        CohortIndicator ind2 = new CohortIndicator("two");
+        ind2.setCohortDefinition(cd, params2);
+
+        EvaluationContext context = new EvaluationContext();
+        IndicatorResult result1 = indicatorService.evaluate(ind1, context);
+        IndicatorResult result2 = indicatorService.evaluate(ind2, context);
+
+        assertThat(result1.getValue(), not(result2.getValue()));
     }
 
 }

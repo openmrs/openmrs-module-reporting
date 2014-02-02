@@ -15,11 +15,10 @@
 package org.openmrs.module.reporting.cohort.definition;
 
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.definition.library.AllDefinitionLibraries;
-import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,8 +27,9 @@ import java.util.Map;
  *
  * This allows a report to be built against a key like "maternity patients" whose definition may change as an
  * implementation adds more encounter types, etc.
+ *
+ * We intentionally do not define a CachingStrategy since we are just delegating to another definition.
  */
-@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class DefinitionLibraryCohortDefinition extends BaseCohortDefinition {
 
     @ConfigurationProperty
@@ -59,6 +59,13 @@ public class DefinitionLibraryCohortDefinition extends BaseCohortDefinition {
 
     public void setParameterValues(Map<String, Object> parameterValues) {
         this.parameterValues = parameterValues;
+    }
+
+    public void addParameterValue(String name, Object value) {
+        if (parameterValues == null) {
+            parameterValues = new HashMap<String, Object>();
+        }
+        parameterValues.put(name, value);
     }
 
     /**
