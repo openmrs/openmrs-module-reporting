@@ -111,13 +111,13 @@ public class BuiltInCohortDefinitionLibraryTest {
         CohortDefinition cd = library.getAnyEncounterOfTypesDuringPeriod();
         assertThat(cd, hasParameter("startDate", Date.class));
         assertThat(cd, hasParameter("endDate", Date.class));
-        assertThat(cd, hasParameter("types", EncounterType.class, List.class));
+        assertThat(cd, hasParameter("encounterTypes", EncounterType.class, List.class));
         assertTrue(cd instanceof MappedParametersCohortDefinition);
         Mapped<CohortDefinition> wrapped = ((MappedParametersCohortDefinition) cd).getWrapped();
         assertTrue(wrapped.getParameterizable() instanceof EncounterCohortDefinition);
         assertThat((String) wrapped.getParameterMappings().get("onOrAfter"), is("${startDate}"));
         assertThat((String) wrapped.getParameterMappings().get("onOrBefore"), is("${endDate}"));
-        assertThat((String) wrapped.getParameterMappings().get("encounterTypeList"), is("${types}"));
+        assertThat((String) wrapped.getParameterMappings().get("encounterTypeList"), is("${encounterTypes}"));
     }
 
 }
