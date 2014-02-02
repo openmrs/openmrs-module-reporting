@@ -42,21 +42,21 @@ public class EvaluationUtil {
     /*
      * ([a-zA-Z_0-9.]+)                      ... (group 1) word made of letters, _, or dot, e.g. "report.start_date"
      *
-     * ((?:\s*[+-/*]\s*\d*\.?\d+[a-zA-Z]?)+) ... (group 2)
+     * ((?:\s*[+-/*]\s*\d*\.?\d+[a-zA-Z]*+)+) ... (group 2)
      *  (?:                               )+    ... means this occurs at least once, but isn't counted as a group
      *     \s*[+-/*]\s*                         ... optional whitespace, operator [+-/*], optional whitespace
      *                 \d*\.?\d+                ... captures either #.# or #
-     *                          [a-zA-Z]?       ... optional single-letter unit
+     *                          [a-zA-Z]*+      ... optional unit (*+ means possessive, zero or more times)
      */
-    private static Pattern expressionPattern = Pattern.compile("([a-zA-Z_0-9.]+)((?:\\s*[+-/*]\\s*\\d*\\.?\\d+[a-zA-Z]?)+)");
+    private static Pattern expressionPattern = Pattern.compile("([a-zA-Z_0-9.]+)((?:\\s*[+-/*]\\s*\\d*\\.?\\d+[a-zA-Z]*+)+)");
 
     /*
-     * ([+-/*])                          ... (group 1) single-character operator
-     *         \s*                       ... optional whitespace
-     *            (\d*\.?\d+)            ... (group 2) captures either #.# or #
-     *                       ([a-zA-Z]?) ... (group 3) optional single-character unit
+     * ([+-/*])                           ... (group 1) single-character operator
+     *         \s*                        ... optional whitespace
+     *            (\d*\.?\d+)             ... (group 2) captures either #.# or #
+     *                       ([a-zA-Z]*+) ... (group 3) optional unit (*+ means possessive, zero or more times)
      */
-    private static Pattern operationPattern = Pattern.compile("([+-/*])\\s*(\\d*\\.?\\d+)([a-zA-Z]?)");
+    private static Pattern operationPattern = Pattern.compile("([+-/*])\\s*(\\d*\\.?\\d+)([a-zA-Z]*+)");
 
     /**
 	 * Returns true if the passed String is an expression that is capable of being evaluated
@@ -216,7 +216,9 @@ public class EvaluationUtil {
                                 unit = "d";
                                 numAsInt *= 7;
                             }
-                            if ("s".equals(unit)) {
+                            if ("ms".equals(unit)) {
+                                paramValueToFormat = DateUtils.addMilliseconds((Date) paramValueToFormat, numAsInt);
+                            } else if ("s".equals(unit)) {
                                 paramValueToFormat = DateUtils.addSeconds((Date) paramValueToFormat, numAsInt);
                             } else if ("h".equals(unit)) {
                                 paramValueToFormat = DateUtils.addHours((Date) paramValueToFormat, numAsInt);

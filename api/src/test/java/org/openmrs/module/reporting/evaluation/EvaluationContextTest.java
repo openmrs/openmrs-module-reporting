@@ -49,6 +49,7 @@ public class EvaluationContextTest extends BaseModuleContextSensitiveTest {
 		assertEquals(evaluate("${report.d1-1m-1w}"), df.parse("2006-12-3 10:30:17:000"));
 		assertEquals(evaluate("${report.d1+36m-10w+24h}"), df.parse("2009-11-02 10:30:17:000"));
 		assertEquals(evaluate("${report.d1 + 36m - 10w + 24h}"), df.parse("2009-11-02 10:30:17:000"));
+        assertEquals(evaluate("${report.d1 + 1m - 1ms}"), df.parse("2007-02-10 10:30:16:999"));
         assertEquals(evaluate("${report.testInt + 1}"), 8);
         assertEquals(evaluate("${report.testInt - 3}"), 4);
         assertEquals(evaluate("${report.testInt * 2}"), 14);
