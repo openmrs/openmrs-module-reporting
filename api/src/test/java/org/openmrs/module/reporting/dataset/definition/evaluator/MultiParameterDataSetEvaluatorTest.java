@@ -77,7 +77,7 @@ public class MultiParameterDataSetEvaluatorTest extends BaseModuleContextSensiti
 
 		SimpleDataSet result = (SimpleDataSet) dataSetDefinitionService.evaluate(multiParameterDataSetDefinition, evaluationContext);
 
-		Assert.assertTrue(result.getMetaData().getColumns().contains(new DataSetColumn("param: maxBirthDate", "param: maxBirthDate", String.class)));
+		Assert.assertTrue(result.getMetaData().getColumns().contains(new DataSetColumn("parameter.maxBirthDate", "parameter.maxBirthDate", String.class)));
 		Assert.assertTrue(result.getMetaData().getColumns().contains(new DataSetColumn("PATIENT_ID", "PATIENT_ID", Integer.class)));
 		Assert.assertTrue(result.getMetaData().getColumns().contains(new DataSetColumn("GENDER", "GENDER", String.class)));
 		Assert.assertTrue(result.getMetaData().getColumns().contains(new DataSetColumn("BIRTHDATE", "BIRTHDATE", Date.class)));
@@ -85,11 +85,11 @@ public class MultiParameterDataSetEvaluatorTest extends BaseModuleContextSensiti
 		Assert.assertEquals(3, result.getRowMap().size());
 
 		// Asserting result parameter for first iteration
-		Assert.assertEquals(firstIterationParameter, result.getRowMap().get(1).getColumnValue("param: maxBirthDate"));
+		Assert.assertEquals(firstIterationParameter, result.getRowMap().get(1).getColumnValue("parameter.maxBirthDate"));
 
 		// Asserting result parameters for second iteration
-		Assert.assertEquals(secondIterationParameter, result.getRowMap().get(2).getColumnValue("param: maxBirthDate"));
-		Assert.assertEquals(secondIterationParameter, result.getRowMap().get(3).getColumnValue("param: maxBirthDate"));
+		Assert.assertEquals(secondIterationParameter, result.getRowMap().get(2).getColumnValue("parameter.maxBirthDate"));
+		Assert.assertEquals(secondIterationParameter, result.getRowMap().get(3).getColumnValue("parameter.maxBirthDate"));
 
 		Date firstDateResult = (Date) result.getRowMap().get(1).getColumnValue("BIRTHDATE");
 		Date secondDateResult = (Date) result.getRowMap().get(2).getColumnValue("BIRTHDATE");

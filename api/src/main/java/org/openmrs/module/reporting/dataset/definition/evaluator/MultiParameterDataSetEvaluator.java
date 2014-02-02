@@ -14,11 +14,9 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.DataSetRowList;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.MultiParameterDataSetDefinition;
@@ -26,6 +24,7 @@ import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinition
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.report.renderer.ReportTemplateRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Iterator;
@@ -56,12 +55,14 @@ public class MultiParameterDataSetEvaluator implements DataSetEvaluator {
 			EvaluationContext ec = context.shallowCopy();
 			DataSet ds;
 			try {
-				Mapped<DataSetDefinition> mapped = new Mapped<DataSetDefinition>();
-				mapped.setParameterizable(dsd.getBaseDefinition());
+                // in case there are parameters not specified in the iteration, we map straight through
+                Mapped<DataSetDefinition> mapped = Mapped.mapStraightThrough(dsd.getBaseDefinition());
+
+                // now override those mappings with parameter values specified in the iteration
 				for (Map.Entry<String, Object> param: iteration.entrySet()) {
 					mapped.addParameterMapping(param.getKey(), param.getValue());
 				}
-			ds = dataSetDefinitionService.evaluate(mapped, ec);
+				ds = dataSetDefinitionService.evaluate(mapped, ec);
 			} catch (Exception ex) {
 				throw new EvaluationException("baseDefinition", ex);
 			}
@@ -70,8 +71,8 @@ public class MultiParameterDataSetEvaluator implements DataSetEvaluator {
 			while (iterator.hasNext()) {
 				DataSetRow row = new DataSetRow();
 				for (Map.Entry<String, Object> param: ds.getContext().getParameterValues().entrySet()) {
-					String columnName = "param: " + param.getKey();
-					row.addColumnValue(new DataSetColumn(columnName, columnName, String.class), param.getValue());
+					String columnName = ReportTemplateRenderer.PARAMETER_PREFIX + ReportTemplateRenderer.SEPARATOR + param.getKey();
+					row.addColumnValue(new DataSetColumn(columnName, columnName, param == null ? Object.class : param.getValue().getClass()), param.getValue());
 				}
 				for (Map.Entry<DataSetColumn, Object> entry: iterator.next().getColumnValues().entrySet()) {
 					row.addColumnValue(entry.getKey(), entry.getValue());

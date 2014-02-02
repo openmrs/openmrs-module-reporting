@@ -17,10 +17,9 @@ import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import java.util.HashMap;
 
 /**
  * This DataSetDefinition wraps a {@link org.openmrs.module.reporting.dataset.definition.DataSetDefinition} and allows you to run it on
@@ -48,6 +47,9 @@ public class MultiParameterDataSetDefinition extends BaseDataSetDefinition imple
 	}
 	
 	public void addIteration(Map<String, Object> iteration) {
+        if (iterations == null) {
+            iterations = new ArrayList<Map<String, Object>>();
+        }
 		iterations.add(iteration);
 	}
 
