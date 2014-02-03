@@ -63,10 +63,14 @@ public class RepeatPerTimePeriodDataSetEvaluator implements DataSetEvaluator {
         DateTime end = new DateTime(((Date) evalContext.getParameterValue("endDate")).getTime());
         while (thisPeriodStart.isBefore(end)) {
             DateTime nextPeriodStart = thisPeriodStart.plus(period.getJodaPeriod());
-            if (nextPeriodStart.isAfter(end)) {
-                nextPeriodStart = end;
+            boolean lastIteration = !nextPeriodStart.isBefore(end); // i.e. nextPeriodStart >= end
+            DateTime thisPeriodEnd;
+            if (lastIteration) {
+                thisPeriodEnd = end;
             }
-            DateTime thisPeriodEnd = nextPeriodStart.minus(Duration.millis(1));
+            else {
+                thisPeriodEnd = nextPeriodStart.minus(Duration.millis(1));
+            }
 
             Map<String, Object> iteration = new HashMap<String, Object>();
             iteration.put("startDate", thisPeriodStart.toDate());

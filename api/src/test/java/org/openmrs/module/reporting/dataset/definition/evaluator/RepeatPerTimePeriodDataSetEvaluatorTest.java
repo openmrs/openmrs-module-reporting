@@ -15,6 +15,7 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.openmrs.Location;
@@ -40,9 +41,19 @@ import static org.mockito.Mockito.verify;
 
 public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTestHelper {
 
+    private DataSetDefinitionService service;
+    private RepeatPerTimePeriodDataSetEvaluator evaluator;
+
+    @Before
+    public void setUp() throws Exception {
+        service = mock(DataSetDefinitionService.class);
+
+        evaluator = new RepeatPerTimePeriodDataSetEvaluator();
+        evaluator.setDataSetDefinitionService(service);
+    }
+
     @Test
     public void testEvaluate() throws Exception {
-        DataSetDefinitionService service = mock(DataSetDefinitionService.class);
         Location aLocation = new Location();
 
         SqlDataSetDefinition baseDsd = new SqlDataSetDefinition();
@@ -57,12 +68,9 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
         dsd.setBaseDefinition(baseDsd);
         dsd.setRepeatPerTimePeriod(TimePeriod.WEEKLY);
 
-        RepeatPerTimePeriodDataSetEvaluator evaluator = new RepeatPerTimePeriodDataSetEvaluator();
-        evaluator.setDataSetDefinitionService(service);
-
         EvaluationContext context = new EvaluationContext();
         context.addParameterValue("startDate", DateUtil.parseYmd("2013-12-01"));
-        context.addParameterValue("endDate", DateUtil.parseYmd("2013-12-31"));
+        context.addParameterValue("endDate", DateUtils.addMilliseconds(DateUtil.parseYmd("2014-01-01"), -1));
         context.addParameterValue("location", aLocation);
 
         evaluator.evaluate(dsd, context);
@@ -97,7 +105,7 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
 
         iteration = new HashMap<String, Object>();
         iteration.put("startDate", DateUtil.parseYmd("2013-12-29"));
-        iteration.put("endDate", DateUtils.addMilliseconds(DateUtil.parseYmd("2013-12-31"), -1));
+        iteration.put("endDate", DateUtils.addMilliseconds(DateUtil.parseYmd("2014-01-01"), -1));
         expectedDelegate.addIteration(iteration);
 
         // verify we delegated as expected
