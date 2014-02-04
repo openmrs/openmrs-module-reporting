@@ -229,19 +229,16 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
         Map<String, Object> iteration = new HashMap<String, Object>();
         iteration.put("startOfPeriod", DateUtil.parseYmd("2013-12-01"));
         iteration.put("endOfPeriod", DateUtils.addMilliseconds(DateUtil.parseYmd("2013-12-02"), -1));
-//        iteration.put("hospital", rwinkwavu);
         expectedDelegate.addIteration(iteration);
 
         iteration = new HashMap<String, Object>();
         iteration.put("startOfPeriod", DateUtil.parseYmd("2013-12-02"));
         iteration.put("endOfPeriod", DateUtils.addMilliseconds(DateUtil.parseYmd("2013-12-03"), -1));
-//        iteration.put("hospital", rwinkwavu);
         expectedDelegate.addIteration(iteration);
 
         iteration = new HashMap<String, Object>();
         iteration.put("startOfPeriod", DateUtil.parseYmd("2013-12-03"));
         iteration.put("endOfPeriod", DateUtils.addMilliseconds(DateUtil.parseYmd("2013-12-04"), -1));
-//        iteration.put("hospital", rwinkwavu);
         expectedDelegate.addIteration(iteration);
 
         // verify we delegated as expected
