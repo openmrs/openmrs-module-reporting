@@ -17,6 +17,7 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TimePeriod;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -25,7 +26,8 @@ import org.openmrs.module.reporting.dataset.definition.RepeatPerTimePeriodDataSe
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.EvaluationUtil;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -49,10 +51,9 @@ public class RepeatPerTimePeriodDataSetEvaluator implements DataSetEvaluator {
     public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws EvaluationException {
         RepeatPerTimePeriodDataSetDefinition dsd = (RepeatPerTimePeriodDataSetDefinition) dataSetDefinition;
 
-        MultiParameterDataSetDefinition delegate = new MultiParameterDataSetDefinition(dsd.getBaseDefinition());
-        for (Parameter parameter : dsd.getParameters()) {
-            delegate.addParameter(parameter);
-        }
+        Mapped<? extends DataSetDefinition> baseMappedDef = dsd.getBaseDefinition();
+
+        MultiParameterDataSetDefinition delegate = new MultiParameterDataSetDefinition(baseMappedDef.getParameterizable());
 
         TimePeriod period = dsd.getRepeatPerTimePeriod();
         if (period == null) {
@@ -60,7 +61,8 @@ public class RepeatPerTimePeriodDataSetEvaluator implements DataSetEvaluator {
         }
 
         DateTime thisPeriodStart = new DateTime(((Date) evalContext.getParameterValue("startDate")).getTime());
-        DateTime end = new DateTime(((Date) evalContext.getParameterValue("endDate")).getTime());
+        DateTime end = new DateTime(DateUtil.getEndOfDayIfTimeExcluded((Date) evalContext.getParameterValue("endDate")).getTime());
+
         while (thisPeriodStart.isBefore(end)) {
             DateTime nextPeriodStart = thisPeriodStart.plus(period.getJodaPeriod());
             boolean lastIteration = !nextPeriodStart.isBefore(end); // i.e. nextPeriodStart >= end
@@ -72,9 +74,23 @@ public class RepeatPerTimePeriodDataSetEvaluator implements DataSetEvaluator {
                 thisPeriodEnd = nextPeriodStart.minus(Duration.millis(1));
             }
 
+            Map<String, Object> startAndEndDate = new HashMap<String, Object>();
+            startAndEndDate.put("startDate", thisPeriodStart.toDate());
+            startAndEndDate.put("endDate", thisPeriodEnd.toDate());
             Map<String, Object> iteration = new HashMap<String, Object>();
-            iteration.put("startDate", thisPeriodStart.toDate());
-            iteration.put("endDate", thisPeriodEnd.toDate());
+            for (Map.Entry<String, Object> entry : baseMappedDef.getParameterMappings().entrySet()) {
+                String iterationParamName = entry.getKey();
+                Object value = entry.getValue();
+                if (value instanceof String) {
+                    Object evaluated = EvaluationUtil.evaluateExpression((String) value, startAndEndDate);
+                    // expressions based on parameters other than startDate/endDate will come out like ${loc} -> "loc"
+                    if (value.equals(EvaluationUtil.EXPRESSION_START + evaluated + EvaluationUtil.EXPRESSION_END)) {
+                        continue;
+                    }
+                    value = evaluated;
+                }
+                iteration.put(iterationParamName, value);
+            }
             delegate.addIteration(iteration);
 
             thisPeriodStart = nextPeriodStart;

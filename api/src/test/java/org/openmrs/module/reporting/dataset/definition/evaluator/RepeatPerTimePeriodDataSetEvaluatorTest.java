@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.dataset.definition.RepeatPerTimePeriodDataSe
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.test.AuthenticatedUserTestHelper;
 
@@ -54,24 +55,19 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
 
     @Test
     public void testEvaluate() throws Exception {
-        Location aLocation = new Location();
-
         SqlDataSetDefinition baseDsd = new SqlDataSetDefinition();
         baseDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         baseDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        baseDsd.addParameter(new Parameter("location", "Location", Location.class));
 
         RepeatPerTimePeriodDataSetDefinition dsd = new RepeatPerTimePeriodDataSetDefinition();
         dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        dsd.addParameter(new Parameter("location", "Location", Location.class));
-        dsd.setBaseDefinition(baseDsd);
+        dsd.setBaseDefinition(Mapped.mapStraightThrough(baseDsd));
         dsd.setRepeatPerTimePeriod(TimePeriod.WEEKLY);
 
         EvaluationContext context = new EvaluationContext();
         context.addParameterValue("startDate", DateUtil.parseYmd("2013-12-01"));
         context.addParameterValue("endDate", DateUtils.addMilliseconds(DateUtil.parseYmd("2014-01-01"), -1));
-        context.addParameterValue("location", aLocation);
 
         evaluator.evaluate(dsd, context);
 
@@ -79,9 +75,6 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
 
         final MultiParameterDataSetDefinition expectedDelegate = new MultiParameterDataSetDefinition();
         expectedDelegate.setBaseDefinition(baseDsd);
-        expectedDelegate.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        expectedDelegate.addParameter(new Parameter("endDate", "End Date", Date.class));
-        expectedDelegate.addParameter(new Parameter("location", "Location", Location.class));
 
         Map<String, Object> iteration = new HashMap<String, Object>();
         iteration.put("startDate", DateUtil.parseYmd("2013-12-01"));
@@ -120,4 +113,146 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
         }), eq(context));
     }
 
+    @Test
+    public void testEvaluateCoversWholeEndDay() throws Exception {
+        SqlDataSetDefinition baseDsd = new SqlDataSetDefinition();
+        baseDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        baseDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        RepeatPerTimePeriodDataSetDefinition dsd = new RepeatPerTimePeriodDataSetDefinition();
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.setBaseDefinition(Mapped.mapStraightThrough(baseDsd));
+        dsd.setRepeatPerTimePeriod(TimePeriod.DAILY);
+
+        EvaluationContext context = new EvaluationContext();
+        context.addParameterValue("startDate", DateUtil.parseYmd("2013-12-01"));
+        context.addParameterValue("endDate", DateUtil.parseYmd("2013-12-01"));
+
+        evaluator.evaluate(dsd, context);
+
+        // set up the delegate DSD we expect to be evaluated
+
+        final MultiParameterDataSetDefinition expectedDelegate = new MultiParameterDataSetDefinition();
+        expectedDelegate.setBaseDefinition(baseDsd);
+
+        Map<String, Object> iteration = new HashMap<String, Object>();
+        iteration.put("startDate", DateUtil.parseYmd("2013-12-01"));
+        iteration.put("endDate", DateUtil.getEndOfDay(DateUtil.parseYmd("2013-12-01")));
+        expectedDelegate.addIteration(iteration);
+
+        // verify we delegated as expected
+
+        verify(service).evaluate(argThat(new ArgumentMatcher<DataSetDefinition>() {
+            @Override
+            public boolean matches(Object argument) {
+                MultiParameterDataSetDefinition actualDelegate = (MultiParameterDataSetDefinition) argument;
+                return actualDelegate.getParameters().equals(expectedDelegate.getParameters())
+                        && actualDelegate.getIterations().equals(expectedDelegate.getIterations());
+            }
+        }), eq(context));
+    }
+
+    @Test
+    public void testEvaluateAddingTime() throws Exception {
+        SqlDataSetDefinition baseDsd = new SqlDataSetDefinition();
+        baseDsd.addParameter(new Parameter("start", "Start Date", Date.class));
+        baseDsd.addParameter(new Parameter("end", "End Date", Date.class));
+
+        RepeatPerTimePeriodDataSetDefinition dsd = new RepeatPerTimePeriodDataSetDefinition();
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.setBaseDefinition(Mapped.map(baseDsd, "start=${startDate+9h},end=${startDate+17h}"));
+        dsd.setRepeatPerTimePeriod(TimePeriod.DAILY);
+
+        EvaluationContext context = new EvaluationContext();
+        context.addParameterValue("startDate", DateUtil.parseYmd("2013-12-01"));
+        context.addParameterValue("endDate", DateUtil.parseYmd("2013-12-02"));
+
+        evaluator.evaluate(dsd, context);
+
+        // set up the delegate DSD we expect to be evaluated
+
+        final MultiParameterDataSetDefinition expectedDelegate = new MultiParameterDataSetDefinition();
+        expectedDelegate.setBaseDefinition(baseDsd);
+
+        Map<String, Object> iteration = new HashMap<String, Object>();
+        iteration.put("start", DateUtil.parseYmdhms("2013-12-01 09:00:00"));
+        iteration.put("end", DateUtil.parseYmdhms("2013-12-01 17:00:00"));
+        expectedDelegate.addIteration(iteration);
+
+        iteration = new HashMap<String, Object>();
+        iteration.put("start", DateUtil.parseYmdhms("2013-12-02 09:00:00"));
+        iteration.put("end", DateUtil.parseYmdhms("2013-12-02 17:00:00"));
+        expectedDelegate.addIteration(iteration);
+
+        // verify we delegated as expected
+
+        verify(service).evaluate(argThat(new ArgumentMatcher<DataSetDefinition>() {
+            @Override
+            public boolean matches(Object argument) {
+                MultiParameterDataSetDefinition actualDelegate = (MultiParameterDataSetDefinition) argument;
+                return actualDelegate.getParameters().equals(expectedDelegate.getParameters())
+                        && actualDelegate.getIterations().equals(expectedDelegate.getIterations());
+            }
+        }), eq(context));
+    }
+
+    @Test
+    public void testEvaluateWithMoreParameters() throws Exception {
+        Location rwinkwavu = new Location();
+
+        SqlDataSetDefinition baseDsd = new SqlDataSetDefinition();
+        baseDsd.addParameter(new Parameter("startOfPeriod", "Start Date", Date.class));
+        baseDsd.addParameter(new Parameter("endOfPeriod", "End Date", Date.class));
+        baseDsd.addParameter(new Parameter("hospital", "Hospital", Location.class));
+
+        RepeatPerTimePeriodDataSetDefinition dsd = new RepeatPerTimePeriodDataSetDefinition();
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.addParameter(new Parameter("location", "Location", Location.class));
+        dsd.setBaseDefinition(Mapped.map(baseDsd, "startOfPeriod=${startDate},endOfPeriod=${endDate},hospital=${location}"));
+        dsd.setRepeatPerTimePeriod(TimePeriod.DAILY);
+
+        EvaluationContext context = new EvaluationContext();
+        context.addParameterValue("startDate", DateUtil.parseYmd("2013-12-01"));
+        context.addParameterValue("endDate", DateUtil.parseYmd("2013-12-03"));
+        context.addParameterValue("location", rwinkwavu);
+
+        evaluator.evaluate(dsd, context);
+
+        // set up the delegate DSD we expect to be evaluated
+
+        final MultiParameterDataSetDefinition expectedDelegate = new MultiParameterDataSetDefinition();
+        expectedDelegate.setBaseDefinition(baseDsd);
+
+        Map<String, Object> iteration = new HashMap<String, Object>();
+        iteration.put("startOfPeriod", DateUtil.parseYmd("2013-12-01"));
+        iteration.put("endOfPeriod", DateUtils.addMilliseconds(DateUtil.parseYmd("2013-12-02"), -1));
+//        iteration.put("hospital", rwinkwavu);
+        expectedDelegate.addIteration(iteration);
+
+        iteration = new HashMap<String, Object>();
+        iteration.put("startOfPeriod", DateUtil.parseYmd("2013-12-02"));
+        iteration.put("endOfPeriod", DateUtils.addMilliseconds(DateUtil.parseYmd("2013-12-03"), -1));
+//        iteration.put("hospital", rwinkwavu);
+        expectedDelegate.addIteration(iteration);
+
+        iteration = new HashMap<String, Object>();
+        iteration.put("startOfPeriod", DateUtil.parseYmd("2013-12-03"));
+        iteration.put("endOfPeriod", DateUtils.addMilliseconds(DateUtil.parseYmd("2013-12-04"), -1));
+//        iteration.put("hospital", rwinkwavu);
+        expectedDelegate.addIteration(iteration);
+
+        // verify we delegated as expected
+
+        verify(service).evaluate(argThat(new ArgumentMatcher<DataSetDefinition>() {
+            @Override
+            public boolean matches(Object argument) {
+                MultiParameterDataSetDefinition actualDelegate = (MultiParameterDataSetDefinition) argument;
+                return actualDelegate.getParameters().equals(expectedDelegate.getParameters())
+                        && actualDelegate.getIterations().equals(expectedDelegate.getIterations());
+            }
+        }), eq(context));
+    }
 }
