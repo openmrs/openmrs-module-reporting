@@ -42,6 +42,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.processor.ReportProcessor;
 import org.openmrs.module.reporting.report.renderer.InteractiveReportRenderer;
+import org.openmrs.module.reporting.report.renderer.MultipleRowReportDesignRenderer;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.db.ReportDAO;
@@ -445,7 +446,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			
 			// Render the Report if appropriate
 			if (request.getRenderingMode() != null) {
-				ReportRenderer renderer = request.getRenderingMode().getRenderer();
+				ReportRenderer renderer = new MultipleRowReportDesignRenderer(request.getRenderingMode().getRenderer());
 				String argument = request.getRenderingMode().getArgument();
 				if (!(renderer instanceof InteractiveReportRenderer)) {
 					logReportMessage(request, "Generating Rendered Report....");
