@@ -15,6 +15,7 @@
 package org.openmrs.module.reporting.definition.library;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -22,10 +23,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implementations of this class can conveniently implement on-the-fly-created reporting definitions, with inline
@@ -142,6 +140,14 @@ public abstract class BaseDefinitionLibrary<T extends Definition> implements Def
             }
         }
         return converters.toArray(new DataConverter[converters.size()]);
+    }
+
+    public class Replacements extends HashMap<String, String> {
+        public Replacements add(String key, Object replacement) {
+            String asString = replacement instanceof OpenmrsObject ? ((OpenmrsObject) replacement).getId().toString() : replacement.toString();
+            super.put(key, asString);
+            return this;
+        }
     }
 
 }
