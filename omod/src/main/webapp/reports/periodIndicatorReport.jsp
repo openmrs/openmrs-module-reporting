@@ -39,8 +39,8 @@
                             var labelFieldValNew = $("#indicatorField option:selected").html();
                             if(labelFieldValNew != '') {
                                 <c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
-                                if($('#dimensionOption_${dimStatus.index}').val() != '') {
-                                    labelFieldValNew += '-' + $('#dimensionOption_${dimStatus.index}').val();
+                                if($('#dimensionOption_${dimStatus.index}').text() != '') {
+                                    labelFieldValNew += '-' + $('#dimensionOption_${dimStatus.index} option:selected').text();
                                 }
                                 </c:forEach>
                             }
