@@ -12,15 +12,12 @@
 		
 				$('#parameterizableSelector${model.id}').change(function(event){
 					var currVal = $(this).val();
-					var newKeyObj = $('#${model.id}NewKey').val();
-					var newKey = '';
-					if (newKeyObj) {
-						newKey = newKeyObj;
-					}
+					var currLabel = $("option:selected", this).html().replace(/\s+/g, '-');
 					if (currVal != '') {
-						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|currentKey=${model.currentKey}|newKey='+newKey+'|mode=edit|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|mappedUuid='+currVal+'"/>';
+						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|currentKey=${model.currentKey}|newKey='+currLabel+'|mode=edit|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|mappedUuid='+currVal+'"/>';
 					}
 					else {
+                        $('#${model.id}NewKey').val('');
 						$("#mapParameterSection${model.id}").html('');
 						$("#mappedUuidField${model.id}").val('');
 					}
