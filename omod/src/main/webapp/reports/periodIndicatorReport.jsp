@@ -29,6 +29,7 @@
 							$('#keyField').val('');
 							$('#labelField').val('');
 							$('#indicatorField').val('');
+							$('#cohortQueryField').val('');
 							<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
 								$('#dimensionOption_${dimStatus.index}').val('');
 							</c:forEach>
@@ -36,7 +37,11 @@
 						});
 
                         var updateIndicatorLabel = function() {
-                            var labelFieldValNew = $("#indicatorField option:selected").html();
+                            var labelFieldValNew = $("#indicatorField option:selected").text();
+							if ($('#createFromCohortQueryCheckbox').is(':checked')) {
+								labelFieldValNew = $("#cohortQueryField option:selected").text();
+							}
+
                             if(labelFieldValNew != '') {
                                 <c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
                                 if($('#dimensionOption_${dimStatus.index}').text() != '') {
@@ -48,6 +53,7 @@
                         }
 
                         $('#indicatorField').change(updateIndicatorLabel);
+						$('#cohortQueryField').change(updateIndicatorLabel);
 
                         <c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
                        		$('#dimensionOption_${dimStatus.index}').change(updateIndicatorLabel);
