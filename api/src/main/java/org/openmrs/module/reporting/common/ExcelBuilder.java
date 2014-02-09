@@ -95,7 +95,7 @@ public class ExcelBuilder {
         }
 		ExcelUtil.setCellContents(cell, cellValue);
 		if (ObjectUtil.notNull(style)) {
-			ExcelUtil.addStyle(cell, style);
+			ExcelUtil.setStyle(cell, style);
 		}
         currentColNum++;
 		return this;

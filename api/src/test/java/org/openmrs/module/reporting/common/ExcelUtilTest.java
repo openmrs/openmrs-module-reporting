@@ -79,24 +79,24 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("This is a String", ExcelUtil.getCellContentsAsString(cell));
 
 		Assert.assertEquals(Font.BOLDWEIGHT_NORMAL, ExcelUtil.getFont(cell).getBoldweight());
-		ExcelUtil.addStyle(cell, "bold");
+		ExcelUtil.setStyle(cell, "bold");
 		Assert.assertEquals(Font.BOLDWEIGHT_BOLD, ExcelUtil.getFont(cell).getBoldweight());
 
 		Assert.assertFalse(ExcelUtil.getFont(cell).getItalic());
 		Assert.assertEquals(Font.U_NONE, ExcelUtil.getFont(cell).getUnderline());
-		ExcelUtil.addStyle(cell, "italic,underline");
+		ExcelUtil.setStyle(cell, "italic,underline");
 		Assert.assertTrue(ExcelUtil.getFont(cell).getItalic());
 		Assert.assertEquals(Font.U_SINGLE, ExcelUtil.getFont(cell).getUnderline());
 
 		int fontSize = ExcelUtil.getFont(cell).getFontHeightInPoints() + 1;
-		ExcelUtil.addStyle(cell, "size="+fontSize);
+		ExcelUtil.setStyle(cell, "size="+fontSize);
 		Assert.assertEquals((short)fontSize, ExcelUtil.getFont(cell).getFontHeightInPoints());
 
 		// Test other styles
 		Assert.assertFalse(cell.getCellStyle().getWrapText());
 		Assert.assertEquals(CellStyle.ALIGN_GENERAL, cell.getCellStyle().getAlignment());
 		Assert.assertEquals(CellStyle.BORDER_NONE, cell.getCellStyle().getBorderBottom());
-		ExcelUtil.addStyle(cell, "wraptext,align=center,border=bottom");
+		ExcelUtil.setStyle(cell, "wraptext,align=center,border=bottom");
 		Assert.assertTrue(cell.getCellStyle().getWrapText());
 		Assert.assertEquals(CellStyle.ALIGN_CENTER, cell.getCellStyle().getAlignment());
 		Assert.assertEquals(CellStyle.BORDER_THIN, cell.getCellStyle().getBorderBottom());
@@ -104,7 +104,7 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 		// Test Date
 		Date date = DateUtil.getDateTime(2013, 10, 31);
 		cell.setCellValue(date);
-		ExcelUtil.addStyle(cell, "date");
+		ExcelUtil.setStyle(cell, "date");
 		Assert.assertEquals(Cell.CELL_TYPE_NUMERIC, cell.getCellType());
 		Assert.assertTrue(ExcelUtil.isCellDateFormatted(cell));
 		Assert.assertEquals("31/Oct/2013", ExcelUtil.getCellContentsAsString(cell));
@@ -115,22 +115,22 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 
 		Assert.assertEquals("TestSheet", ExcelUtil.formatSheetTitle("TestSheet"));
 		Assert.assertEquals("Sheet", ExcelUtil.formatSheetTitle(null));
-		Assert.assertEquals("IllegalCharacters", ExcelUtil.formatSheetTitle("Illegal [Characters]"));
-		Assert.assertEquals("Thisisatitlewithover30characte", ExcelUtil.formatSheetTitle("This is a title with over 30 characters"));
+		Assert.assertEquals("Illegal Characters", ExcelUtil.formatSheetTitle("Illegal [Characters]"));
+		Assert.assertEquals("This is a title with over 31 ch", ExcelUtil.formatSheetTitle("This is a title with over 31 characters"));
 
 		Set<String> usedTitles = new HashSet<String>();
-		String startingTitle = "Thisisonetitlewith30characters";
+		String startingTitle = "Starting Title With Too Many Characters";
 
 		String title1 = ExcelUtil.formatSheetTitle(startingTitle, usedTitles);
-		Assert.assertEquals(startingTitle, title1);
+		Assert.assertEquals("Starting Title With Too Many Ch", title1);
 		usedTitles.add(title1);
 
 		String title2 = ExcelUtil.formatSheetTitle(startingTitle, usedTitles);
-		Assert.assertEquals("Thisisonetitlewith30charact-1", title2);
+		Assert.assertEquals("Starting Title With Too Many-1", title2);
 		usedTitles.add(title2);
 
 		String title3 = ExcelUtil.formatSheetTitle(startingTitle, usedTitles);
-		Assert.assertEquals("Thisisonetitlewith30charact-2", title3);
+		Assert.assertEquals("Starting Title With Too Many-2", title3);
 		usedTitles.add(title3);
 	}
 

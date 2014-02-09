@@ -11,11 +11,17 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A utility class for manipulating Excel documents via POI
  */
 public class ExcelUtil {
+
+	public static final String[] ILLEGAL_CHARS = {":", "\\", "*", "?", "/", "[", "]"};
+
+	private static Map<String, CellStyle> styleCache = new HashMap<String, CellStyle>();
 
 	protected static Log log = LogFactory.getLog(ExcelUtil.class);
 
@@ -74,7 +80,7 @@ public class ExcelUtil {
 		contents = ObjectUtil.nvlStr(contents, "").trim();
     	return contents;
 	}
-	
+
 	/**
 	 * Sets the passed cell to the passed value
 	 * @param cell the cell to set
@@ -90,7 +96,7 @@ public class ExcelUtil {
 			}
 			if (cellValue instanceof Date) {
 				if (!ExcelUtil.isCellDateFormatted(cell)) {
-					addStyle(cell, "date");
+					formatAsDate(cell);
 				}
 				cell.setCellValue(((Date) cellValue));
 				return;
@@ -129,6 +135,14 @@ public class ExcelUtil {
 		return;
 	}
 
+	public static void formatAsDate(Cell cell) {
+		Workbook wb = cell.getSheet().getWorkbook();
+		CellStyle style = wb.createCellStyle();
+		style.cloneStyleFrom(cell.getCellStyle());
+		style.setDataFormat(wb.createDataFormat().getFormat("d/mmm/yyyy"));
+		cell.setCellStyle(style);
+	}
+
 	/**
 	 * Descriptor supports a comma-separated string containing attributes:
 	 *    bold
@@ -140,91 +154,92 @@ public class ExcelUtil {
 	 *    align=center | left | right | fill
 	 *    date
 	 */
-	public static void addStyle(Cell cell, String descriptor) {
-		Workbook wb = cell.getSheet().getWorkbook();
-		CellStyle style = cell.getSheet().getWorkbook().createCellStyle();
-		style.cloneStyleFrom(cell.getCellStyle());
-		Font font = wb.getFontAt(style.getFontIndex());
-		if (font == null) {
-			font = wb.createFont();
-		}
-		if (ObjectUtil.notNull(descriptor)) {
-			for (String att : descriptor.split(",")) {
-				att = att.toLowerCase().trim();
-				if (att.equals("wraptext")) {
-					style.setWrapText(true);
-				}
-				else if (att.startsWith("align=")) {
-					att = att.substring(6);
-					if (att.equals("left")) {
-						style.setAlignment(CellStyle.ALIGN_LEFT);
+	public static void setStyle(Cell cell, String descriptor) {
+		CellStyle style = styleCache.get(descriptor);
+		if (style == null) {
+			Workbook wb = cell.getSheet().getWorkbook();
+			style = wb.createCellStyle();
+			style.cloneStyleFrom(cell.getCellStyle());
+			Font font = wb.createFont();
+			if (ObjectUtil.notNull(descriptor)) {
+				for (String att : descriptor.split(",")) {
+					att = att.toLowerCase().trim();
+					if (att.equals("wraptext")) {
+						style.setWrapText(true);
 					}
-					else if (att.equals("center")) {
-						style.setAlignment(CellStyle.ALIGN_CENTER);
+					else if (att.startsWith("align=")) {
+						att = att.substring(6);
+						if (att.equals("left")) {
+							style.setAlignment(CellStyle.ALIGN_LEFT);
+						}
+						else if (att.equals("center")) {
+							style.setAlignment(CellStyle.ALIGN_CENTER);
+						}
+						else if (att.equals("right")) {
+							style.setAlignment(CellStyle.ALIGN_RIGHT);
+						}
+						else if (att.equals("fill")) {
+							style.setAlignment(CellStyle.ALIGN_FILL);
+						}
 					}
-					else if (att.equals("right")) {
-						style.setAlignment(CellStyle.ALIGN_RIGHT);
+					else if (att.startsWith("border=")) {
+						att = att.substring(7);
+						if (att.equals("all")) {
+							style.setBorderTop(CellStyle.BORDER_THIN);
+							style.setBorderBottom(CellStyle.BORDER_THIN);
+							style.setBorderLeft(CellStyle.BORDER_THIN);
+							style.setBorderRight(CellStyle.BORDER_THIN);
+						}
+						else if (att.equals("top")) {
+							style.setBorderTop(CellStyle.BORDER_THIN);
+						}
+						else if (att.equals("bottom")) {
+							style.setBorderBottom(CellStyle.BORDER_THIN);
+						}
+						else if (att.equals("left")) {
+							style.setBorderLeft(CellStyle.BORDER_THIN);
+						}
+						else if (att.equals("right")) {
+							style.setBorderRight(CellStyle.BORDER_THIN);
+						}
 					}
-					else if (att.equals("fill")) {
-						style.setAlignment(CellStyle.ALIGN_FILL);
+					else if (att.equals("date")) {
+						short dateFormat = wb.createDataFormat().getFormat("d/mmm/yyyy");
+						style.setDataFormat(dateFormat);
 					}
-				}
-				else if (att.startsWith("border=")) {
-					att = att.substring(7);
-					if (att.equals("all")) {
-						style.setBorderTop(CellStyle.BORDER_THIN);
-						style.setBorderBottom(CellStyle.BORDER_THIN);
-						style.setBorderLeft(CellStyle.BORDER_THIN);
-						style.setBorderRight(CellStyle.BORDER_THIN);
+					else if (att.equals("bold")) {
+						font.setBoldweight(Font.BOLDWEIGHT_BOLD);
 					}
-					else if (att.equals("top")) {
-						style.setBorderTop(CellStyle.BORDER_THIN);
+					else if (att.equals("italic")) {
+						font.setItalic(true);
 					}
-					else if (att.equals("bottom")) {
-						style.setBorderBottom(CellStyle.BORDER_THIN);
+					else if (att.equals("underline")) {
+						font.setUnderline(Font.U_SINGLE);
 					}
-					else if (att.equals("left")) {
-						style.setBorderLeft(CellStyle.BORDER_THIN);
+					else if (att.startsWith("size=")) {
+						att = att.substring(5);
+						font.setFontHeightInPoints(Short.parseShort(att));
 					}
-					else if (att.equals("right")) {
-						style.setBorderRight(CellStyle.BORDER_THIN);
-					}
-				}
-				else if (att.equals("date")) {
-					short dateFormat = wb.createDataFormat().getFormat("d/mmm/yyyy");
-					style.setDataFormat(dateFormat);
-				}
-				else if (att.equals("bold")) {
-					font.setBoldweight(Font.BOLDWEIGHT_BOLD);
-				}
-				else if (att.equals("italic")) {
-					font.setItalic(true);
-				}
-				else if (att.equals("underline")) {
-					font.setUnderline(Font.U_SINGLE);
-				}
-				else if (att.startsWith("size=")) {
-					att = att.substring(5);
-					font.setFontHeightInPoints(Short.parseShort(att));
 				}
 			}
+			style.setFont(font);
+			styleCache.put(descriptor, style);
 		}
-		style.setFont(font);
 		cell.setCellStyle(style);
 	}
-	
+
 	/**
 	 * @return a String, based on the passed String, which is suitable for use as a sheet title
 	 */
 	public static String formatSheetTitle(String s) {
 		s = ObjectUtil.nvlStr(s, "Sheet");
-		s = s.replace("[", "");
-		s = s.replace("]", "");
-		s = s.replace(" ", "");
-		s = (s.length() > 30 ? s.substring(0, 30) : s);
+		for (String illegal : ILLEGAL_CHARS) {
+			s = s.replace(illegal, "");
+		}
+		s = (s.length() > 31 ? s.substring(0, 31) : s);
 		return s;
 	}
-	
+
 	/**
 	 * @return a String, based on the passed String, which is suitable for use as a sheet title, ensuring that
 	 * it is not in the set of used titles passed in
@@ -232,7 +247,7 @@ public class ExcelUtil {
 	public static String formatSheetTitle(String s, Collection<String> usedTitles) {
 		s = formatSheetTitle(s);
 		if (usedTitles.contains(s)) {
-			s = s.length() > 27 ? s.substring(0, 27) : s;
+			s = s.length() > 28 ? s.substring(0, 28) : s;
 			for (int i=1; ; i++) {
 				String attempt = s + "-" + i;
 				if (!usedTitles.contains(attempt)) {
