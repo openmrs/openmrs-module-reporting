@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.common;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -13,7 +14,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Excel Helper class that facilitates creating rows and columns in a workbook
@@ -26,6 +29,8 @@ public class ExcelBuilder {
 	private Row currentRow = null;
 	private int currentRowNum = 0;
 	private int currentColNum = 0;
+
+	private Map<String, CellStyle> styleCache = new HashMap<String, CellStyle>();
     
     public ExcelBuilder() {
 		workbook = new HSSFWorkbook();
@@ -95,7 +100,12 @@ public class ExcelBuilder {
         }
 		ExcelUtil.setCellContents(cell, cellValue);
 		if (ObjectUtil.notNull(style)) {
-			ExcelUtil.setStyle(cell, style);
+			CellStyle cellStyle = styleCache.get(style);
+			if (cellStyle == null) {
+				cellStyle = ExcelUtil.createCellStyle(workbook, style);
+				styleCache.put(style, cellStyle);
+			}
+			cell.setCellStyle(cellStyle);
 		}
         currentColNum++;
 		return this;

@@ -11,8 +11,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A utility class for manipulating Excel documents via POI
@@ -20,8 +18,6 @@ import java.util.Map;
 public class ExcelUtil {
 
 	public static final String[] ILLEGAL_CHARS = {":", "\\", "*", "?", "/", "[", "]"};
-
-	private static Map<String, CellStyle> styleCache = new HashMap<String, CellStyle>();
 
 	protected static Log log = LogFactory.getLog(ExcelUtil.class);
 
@@ -154,78 +150,72 @@ public class ExcelUtil {
 	 *    align=center | left | right | fill
 	 *    date
 	 */
-	public static void setStyle(Cell cell, String descriptor) {
-		CellStyle style = styleCache.get(descriptor);
-		if (style == null) {
-			Workbook wb = cell.getSheet().getWorkbook();
-			style = wb.createCellStyle();
-			style.cloneStyleFrom(cell.getCellStyle());
-			Font font = wb.createFont();
-			if (ObjectUtil.notNull(descriptor)) {
-				for (String att : descriptor.split(",")) {
-					att = att.toLowerCase().trim();
-					if (att.equals("wraptext")) {
-						style.setWrapText(true);
+	public static CellStyle createCellStyle(Workbook wb, String descriptor) {
+		CellStyle style = wb.createCellStyle();
+		Font font = wb.createFont();
+		if (ObjectUtil.notNull(descriptor)) {
+			for (String att : descriptor.split(",")) {
+				att = att.toLowerCase().trim();
+				if (att.equals("wraptext")) {
+					style.setWrapText(true);
+				}
+				else if (att.startsWith("align=")) {
+					att = att.substring(6);
+					if (att.equals("left")) {
+						style.setAlignment(CellStyle.ALIGN_LEFT);
 					}
-					else if (att.startsWith("align=")) {
-						att = att.substring(6);
-						if (att.equals("left")) {
-							style.setAlignment(CellStyle.ALIGN_LEFT);
-						}
-						else if (att.equals("center")) {
-							style.setAlignment(CellStyle.ALIGN_CENTER);
-						}
-						else if (att.equals("right")) {
-							style.setAlignment(CellStyle.ALIGN_RIGHT);
-						}
-						else if (att.equals("fill")) {
-							style.setAlignment(CellStyle.ALIGN_FILL);
-						}
+					else if (att.equals("center")) {
+						style.setAlignment(CellStyle.ALIGN_CENTER);
 					}
-					else if (att.startsWith("border=")) {
-						att = att.substring(7);
-						if (att.equals("all")) {
-							style.setBorderTop(CellStyle.BORDER_THIN);
-							style.setBorderBottom(CellStyle.BORDER_THIN);
-							style.setBorderLeft(CellStyle.BORDER_THIN);
-							style.setBorderRight(CellStyle.BORDER_THIN);
-						}
-						else if (att.equals("top")) {
-							style.setBorderTop(CellStyle.BORDER_THIN);
-						}
-						else if (att.equals("bottom")) {
-							style.setBorderBottom(CellStyle.BORDER_THIN);
-						}
-						else if (att.equals("left")) {
-							style.setBorderLeft(CellStyle.BORDER_THIN);
-						}
-						else if (att.equals("right")) {
-							style.setBorderRight(CellStyle.BORDER_THIN);
-						}
+					else if (att.equals("right")) {
+						style.setAlignment(CellStyle.ALIGN_RIGHT);
 					}
-					else if (att.equals("date")) {
-						short dateFormat = wb.createDataFormat().getFormat("d/mmm/yyyy");
-						style.setDataFormat(dateFormat);
-					}
-					else if (att.equals("bold")) {
-						font.setBoldweight(Font.BOLDWEIGHT_BOLD);
-					}
-					else if (att.equals("italic")) {
-						font.setItalic(true);
-					}
-					else if (att.equals("underline")) {
-						font.setUnderline(Font.U_SINGLE);
-					}
-					else if (att.startsWith("size=")) {
-						att = att.substring(5);
-						font.setFontHeightInPoints(Short.parseShort(att));
+					else if (att.equals("fill")) {
+						style.setAlignment(CellStyle.ALIGN_FILL);
 					}
 				}
+				else if (att.startsWith("border=")) {
+					att = att.substring(7);
+					if (att.equals("all")) {
+						style.setBorderTop(CellStyle.BORDER_THIN);
+						style.setBorderBottom(CellStyle.BORDER_THIN);
+						style.setBorderLeft(CellStyle.BORDER_THIN);
+						style.setBorderRight(CellStyle.BORDER_THIN);
+					}
+					else if (att.equals("top")) {
+						style.setBorderTop(CellStyle.BORDER_THIN);
+					}
+					else if (att.equals("bottom")) {
+						style.setBorderBottom(CellStyle.BORDER_THIN);
+					}
+					else if (att.equals("left")) {
+						style.setBorderLeft(CellStyle.BORDER_THIN);
+					}
+					else if (att.equals("right")) {
+						style.setBorderRight(CellStyle.BORDER_THIN);
+					}
+				}
+				else if (att.equals("date")) {
+					short dateFormat = wb.createDataFormat().getFormat("d/mmm/yyyy");
+					style.setDataFormat(dateFormat);
+				}
+				else if (att.equals("bold")) {
+					font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+				}
+				else if (att.equals("italic")) {
+					font.setItalic(true);
+				}
+				else if (att.equals("underline")) {
+					font.setUnderline(Font.U_SINGLE);
+				}
+				else if (att.startsWith("size=")) {
+					att = att.substring(5);
+					font.setFontHeightInPoints(Short.parseShort(att));
+				}
 			}
-			style.setFont(font);
-			styleCache.put(descriptor, style);
 		}
-		cell.setCellStyle(style);
+		style.setFont(font);
+		return style;
 	}
 
 	/**

@@ -79,24 +79,24 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("This is a String", ExcelUtil.getCellContentsAsString(cell));
 
 		Assert.assertEquals(Font.BOLDWEIGHT_NORMAL, ExcelUtil.getFont(cell).getBoldweight());
-		ExcelUtil.setStyle(cell, "bold");
+		cell.setCellStyle(ExcelUtil.createCellStyle(wb, "bold"));
 		Assert.assertEquals(Font.BOLDWEIGHT_BOLD, ExcelUtil.getFont(cell).getBoldweight());
 
 		Assert.assertFalse(ExcelUtil.getFont(cell).getItalic());
 		Assert.assertEquals(Font.U_NONE, ExcelUtil.getFont(cell).getUnderline());
-		ExcelUtil.setStyle(cell, "italic,underline");
+		cell.setCellStyle(ExcelUtil.createCellStyle(wb, "italic,underline"));
 		Assert.assertTrue(ExcelUtil.getFont(cell).getItalic());
 		Assert.assertEquals(Font.U_SINGLE, ExcelUtil.getFont(cell).getUnderline());
 
 		int fontSize = ExcelUtil.getFont(cell).getFontHeightInPoints() + 1;
-		ExcelUtil.setStyle(cell, "size="+fontSize);
+		cell.setCellStyle(ExcelUtil.createCellStyle(wb, "size="+fontSize));
 		Assert.assertEquals((short)fontSize, ExcelUtil.getFont(cell).getFontHeightInPoints());
 
 		// Test other styles
 		Assert.assertFalse(cell.getCellStyle().getWrapText());
 		Assert.assertEquals(CellStyle.ALIGN_GENERAL, cell.getCellStyle().getAlignment());
 		Assert.assertEquals(CellStyle.BORDER_NONE, cell.getCellStyle().getBorderBottom());
-		ExcelUtil.setStyle(cell, "wraptext,align=center,border=bottom");
+		cell.setCellStyle(ExcelUtil.createCellStyle(wb, "wraptext,align=center,border=bottom"));
 		Assert.assertTrue(cell.getCellStyle().getWrapText());
 		Assert.assertEquals(CellStyle.ALIGN_CENTER, cell.getCellStyle().getAlignment());
 		Assert.assertEquals(CellStyle.BORDER_THIN, cell.getCellStyle().getBorderBottom());
@@ -104,7 +104,7 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 		// Test Date
 		Date date = DateUtil.getDateTime(2013, 10, 31);
 		cell.setCellValue(date);
-		ExcelUtil.setStyle(cell, "date");
+		ExcelUtil.formatAsDate(cell);
 		Assert.assertEquals(Cell.CELL_TYPE_NUMERIC, cell.getCellType());
 		Assert.assertTrue(ExcelUtil.isCellDateFormatted(cell));
 		Assert.assertEquals("31/Oct/2013", ExcelUtil.getCellContentsAsString(cell));
