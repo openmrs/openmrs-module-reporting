@@ -15,7 +15,7 @@
 package org.openmrs.module.reporting.data.patient.library;
 
 import org.openmrs.PatientIdentifier;
-import org.openmrs.PersonAddress;
+import org.openmrs.PersonName;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.common.VitalStatus;
@@ -29,8 +29,8 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinit
 import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PreferredIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
@@ -84,14 +84,19 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
         return getPreferredName("middleName");
     }
 
+	@DocumentedDefinition("birthdate")
+	public PatientDataDefinition getBirthdate() {
+		return getBirthdate();
+	}
+
     @DocumentedDefinition("birthdate.ymd")
     public PatientDataDefinition getBirthdateYmd() {
-        return getBirthdate(new BirthdateConverter("yyyy-MM-dd"));
+        return convert(getBirthdate(), new BirthdateConverter("yyyy-MM-dd"));
     }
 
     @DocumentedDefinition("birthdate.estimated")
     public PatientDataDefinition getBirthdateEstimated() {
-        return getBirthdate(new PropertyConverter(Birthdate.class, "estimated"));
+        return convert(getBirthdate(), new PropertyConverter(Birthdate.class, "estimated"));
     }
 
     @DocumentedDefinition("ageOnDate.fullYears")
@@ -147,41 +152,29 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
 
     // helpers
 
-    private PatientDataDefinition getBirthdate(DataConverter... converters) {
-        return new ConvertedPatientDataDefinition(
-                new PersonToPatientDataDefinition(
-                        new BirthdateDataDefinition()),
-                converters);
-    }
+	protected PatientDataDefinition convert(PatientDataDefinition pdd, DataConverter... converters) {
+		return new ConvertedPatientDataDefinition(pdd, converters);
+	}
 
-    private ConvertedPatientDataDefinition getAgeOnEffectiveDate(DataConverter... converters) {
+	protected PatientDataDefinition convert(PersonDataDefinition pdd, DataConverter... converters) {
+		return new ConvertedPatientDataDefinition(new PersonToPatientDataDefinition(pdd), converters);
+	}
+
+    protected PatientDataDefinition getAgeOnEffectiveDate(DataConverter... converters) {
         AgeDataDefinition ageDataDefinition = new AgeDataDefinition();
         ageDataDefinition.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-
-        return new ConvertedPatientDataDefinition(
-                new PersonToPatientDataDefinition(
-                        ageDataDefinition),
-                converters);
+		return convert(ageDataDefinition, converters);
     }
 
-    private PatientDataDefinition getVitalStatus(DataConverter... converters) {
-        return new ConvertedPatientDataDefinition(
-                new PersonToPatientDataDefinition(
-                        new VitalStatusDataDefinition()),
-                converters);
+    protected PatientDataDefinition getVitalStatus(DataConverter... converters) {
+        return convert(new VitalStatusDataDefinition(), converters);
     }
 
-    private PatientDataDefinition getPreferredIdentifier(DataConverter... converters) {
-        return new ConvertedPatientDataDefinition(
-                new PreferredIdentifierDataDefinition(),
-                converters);
+	protected PatientDataDefinition getPreferredIdentifier(DataConverter... converters) {
+        return convert(new PreferredIdentifierDataDefinition(), converters);
     }
 
-    private PatientDataDefinition getPreferredName(String property) {
-        return new ConvertedPatientDataDefinition(
-                new PersonToPatientDataDefinition(
-                        new PreferredNameDataDefinition()),
-                new PropertyConverter(PersonAddress.class, property));
+	protected PatientDataDefinition getPreferredName(String property) {
+        return convert(new PreferredNameDataDefinition(), new PropertyConverter(PersonName.class, property));
     }
-
 }
