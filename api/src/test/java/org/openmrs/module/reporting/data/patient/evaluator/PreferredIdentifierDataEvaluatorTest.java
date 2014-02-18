@@ -48,9 +48,43 @@ public class PreferredIdentifierDataEvaluatorTest extends BaseModuleContextSensi
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
 		
 		Assert.assertEquals(3, pd.getData().size()); // TODO: Is this what we want, or do we want all 4 patients returned, with potential null results?
-		Assert.assertEquals("101-6", ((PatientIdentifier)pd.getData().get(2)).getIdentifier());
+		Assert.assertEquals("101-6", getIdentifier(pd, 2));
 		Assert.assertNull(pd.getData().get(6));
-		Assert.assertEquals("6TS-4", ((PatientIdentifier)pd.getData().get(7)).getIdentifier());
-		Assert.assertEquals("7TU-8",  ((PatientIdentifier)pd.getData().get(8)).getIdentifier());
+		Assert.assertEquals("6TS-4", getIdentifier(pd, 7));
+		Assert.assertEquals("7TU-8",  getIdentifier(pd, 8));
+	}
+
+	/**
+	 * @see PatientIdentifierDataEvaluator#evaluate(PatientDataDefinition,EvaluationContext)
+	 * @verifies should limit the returned identifier to the configured location if set
+	 */
+	@Test
+	public void evaluate_shouldLimitTheReturnedIdentifierToTheConfiguredLocationIfSet() throws Exception {
+
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2,6,7,8"));
+
+		PreferredIdentifierDataDefinition d = new PreferredIdentifierDataDefinition();
+		d.setIdentifierType(Context.getPatientService().getPatientIdentifierType(2));
+		d.setLocation(Context.getLocationService().getLocation(1));
+
+		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
+		Assert.assertNull(getIdentifier(pd, 6));
+
+		d.setLocation(null);
+		pd = Context.getService(PatientDataService.class).evaluate(d, context);
+		Assert.assertEquals("12345K", getIdentifier(pd, 6));
+
+		d.setLocation(Context.getLocationService().getLocation(3));
+		pd = Context.getService(PatientDataService.class).evaluate(d, context);
+		Assert.assertEquals("12345K", getIdentifier(pd, 6));
+	}
+
+	private String getIdentifier(EvaluatedPatientData pd, Integer pId) {
+		PatientIdentifier pi = (PatientIdentifier)pd.getData().get(pId);
+		if (pi != null) {
+			return pi.getIdentifier();
+		}
+		return null;
 	}
 }

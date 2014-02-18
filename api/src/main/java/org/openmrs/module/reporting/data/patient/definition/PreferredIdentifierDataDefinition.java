@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.data.patient.definition;
 
+import org.openmrs.Location;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.reporting.common.Localized;
@@ -33,6 +34,9 @@ public class PreferredIdentifierDataDefinition extends BaseDataDefinition implem
 	
 	@ConfigurationProperty(required=true)
 	private PatientIdentifierType identifierType;
+
+	@ConfigurationProperty(required=false)
+	private Location location;
 	
 	//****** CONSTRUCTORS ******
 	
@@ -62,17 +66,19 @@ public class PreferredIdentifierDataDefinition extends BaseDataDefinition implem
 	
 	//****** PROPERTY ACCESS ******
 
-	/**
-	 * @return the identifierType
-	 */
 	public PatientIdentifierType getIdentifierType() {
 		return identifierType;
 	}
 
-	/**
-	 * @param identifierType the identifierType to set
-	 */
 	public void setIdentifierType(PatientIdentifierType identifierType) {
 		this.identifierType = identifierType;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 }

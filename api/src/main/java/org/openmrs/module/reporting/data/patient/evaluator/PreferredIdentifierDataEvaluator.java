@@ -36,6 +36,7 @@ public class PreferredIdentifierDataEvaluator implements PatientDataEvaluator {
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
 	 * @should return the preferred identifier of the passed type for each patient in the passed context
+	 * @should limit the returned identifier to the configured location if set
 	 */
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		
@@ -47,24 +48,33 @@ public class PreferredIdentifierDataEvaluator implements PatientDataEvaluator {
 		}
 		
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		
+
 		StringBuilder hql = new StringBuilder();
-		hql.append("from 		PatientIdentifier ");
-		hql.append("where 		voided = false ");
-		if (context.getBaseCohort() != null) {
-			hql.append("and 		patient.patientId in (:patientIds) ");
-		}
-		hql.append("and 		identifierType.patientIdentifierTypeId = :idType ");
-		hql.append("order by 	preferred asc");
 		Map<String, Object> m = new HashMap<String, Object>();
+
+		hql.append("select		pi.patient.patientId, pi ");
+		hql.append("from		PatientIdentifier as pi ");
+		hql.append("where 		voided = false ");
+		hql.append("and 		pi.identifierType = :idType ");
+		m.put("idType", def.getIdentifierType());
+
 		if (context.getBaseCohort() != null) {
+			hql.append("and 	pi.patient.patientId in (:patientIds) ");
 			m.put("patientIds", context.getBaseCohort());
 		}
-		m.put("idType", def.getIdentifierType().getPatientIdentifierTypeId());
+
+		if (def.getLocation() != null) {
+			hql.append("and 	pi.location = :location) ");
+			m.put("location", def.getLocation());
+		}
+
+		// Order to ensure that the preferred is based on the preferred flag first, dateCreated second
+		hql.append("order by 	pi.preferred asc, pi.dateCreated asc");
+
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
 		for (Object o : queryResult) {
-			PatientIdentifier pi = (PatientIdentifier)o;
-			c.addData(pi.getPatient().getPatientId(), pi);  // TODO: This is probably inefficient.  Try to improve this with HQL
+			Object[] parts = (Object[]) o;
+			c.addData((Integer)parts[0], parts[1]);
 		}
 		return c;
 	}
