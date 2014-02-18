@@ -29,6 +29,7 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinit
 import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PreferredIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
@@ -86,17 +87,17 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
 
 	@DocumentedDefinition("birthdate")
 	public PatientDataDefinition getBirthdate() {
-		return getBirthdate();
+		return getBirthdateConverted();
 	}
 
     @DocumentedDefinition("birthdate.ymd")
     public PatientDataDefinition getBirthdateYmd() {
-        return convert(getBirthdate(), new BirthdateConverter("yyyy-MM-dd"));
+        return convert(getBirthdateConverted(), new BirthdateConverter("yyyy-MM-dd"));
     }
 
     @DocumentedDefinition("birthdate.estimated")
     public PatientDataDefinition getBirthdateEstimated() {
-        return convert(getBirthdate(), new PropertyConverter(Birthdate.class, "estimated"));
+        return convert(getBirthdateConverted(), new PropertyConverter(Birthdate.class, "estimated"));
     }
 
     @DocumentedDefinition("ageOnDate.fullYears")
@@ -158,6 +159,10 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
 
 	protected PatientDataDefinition convert(PersonDataDefinition pdd, DataConverter... converters) {
 		return new ConvertedPatientDataDefinition(new PersonToPatientDataDefinition(pdd), converters);
+	}
+
+	private PatientDataDefinition getBirthdateConverted(DataConverter... converters) {
+		return convert(new BirthdateDataDefinition(), converters);
 	}
 
     protected PatientDataDefinition getAgeOnEffectiveDate(DataConverter... converters) {
