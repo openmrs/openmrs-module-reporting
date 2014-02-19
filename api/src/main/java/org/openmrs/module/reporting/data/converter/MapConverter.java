@@ -28,6 +28,7 @@ public class MapConverter implements DataConverter {
 	private String entrySeparator;
 	private DataConverter keyConverter;
 	private DataConverter valueConverter;
+	private boolean includeNullValues;
 
 	//***** CONSTRUCTORS *****
 
@@ -45,7 +46,6 @@ public class MapConverter implements DataConverter {
 		this.keyConverter = keyConverter;
 		this.valueConverter = valueConverter;
 	}
-
 
 	//***** INSTANCE METHODS *****
 
@@ -66,10 +66,12 @@ public class MapConverter implements DataConverter {
 				if (valueConverter != null) {
 					val = valueConverter.convert(val);
 				}
-				if (ret.length() > 0) {
-					ret.append(ObjectUtil.nvlStr(entrySeparator, ","));
+				if (ObjectUtil.notNull(val) || includeNullValues) {
+					if (ret.length() > 0) {
+						ret.append(ObjectUtil.nvlStr(entrySeparator, ","));
+					}
+					ret.append(key).append(ObjectUtil.nvlStr(keyValueSeparator, ":")).append(val);
 				}
-				ret.append(key).append(ObjectUtil.nvlStr(keyValueSeparator, ":")).append(val);
 			}
 			return ret.toString();
 		}
@@ -122,5 +124,13 @@ public class MapConverter implements DataConverter {
 
 	public void setValueConverter(DataConverter valueConverter) {
 		this.valueConverter = valueConverter;
+	}
+
+	public boolean isIncludeNullValues() {
+		return includeNullValues;
+	}
+
+	public void setIncludeNullValues(boolean includeNullValues) {
+		this.includeNullValues = includeNullValues;
 	}
 }

@@ -37,6 +37,17 @@ public class MapConverterTest {
 		checkVal(c, "A1:oui,A2:non", "A1", Boolean.TRUE, "A2", Boolean.FALSE);
 	}
 
+	@Test
+	public void convert_shouldHandleNulls() throws Exception {
+		MapConverter c = new MapConverter();
+		checkVal(c, "Key1:Value1", "Key1", "Value1", "Key2", null);
+		c.setIncludeNullValues(true);
+		checkVal(c, "Key1:Value1,Key2:null", "Key1", "Value1", "Key2", null);
+		c.setIncludeNullValues(false);
+		c.setValueConverter(new ExistenceConverter("Here", "Not here"));
+		checkVal(c, "Key1:Here,Key2:Not here", "Key1", "Value1", "Key2", null);
+	}
+
 	private void checkVal(MapConverter converter, String expected, Object...keyVals) {
 		Map<Object, Object> m = new LinkedHashMap<Object, Object>();
 		for (int i=0; i< keyVals.length; i+=2) {
