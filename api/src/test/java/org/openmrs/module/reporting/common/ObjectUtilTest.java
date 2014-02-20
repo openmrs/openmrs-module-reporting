@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.common;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import junit.framework.Assert;
 import org.junit.Test;
@@ -270,6 +271,21 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
         setGlobalPropertyDefaultReportingLocale("es");
         Assert.assertEquals("Si", ObjectUtil.format(createObsWithValueCodedYes()));
     }
+
+	@Test
+	public void shouldCreateAMapFromAString() throws Exception {
+		String toParse = "Key1=Value1,Key2=Value2";
+		Map<String, String> m = ObjectUtil.toMap(toParse);
+		Assert.assertEquals(2, m.size());
+		Assert.assertEquals("Value1", m.get("Key1"));
+		Assert.assertEquals("Value2", m.get("Key2"));
+
+		toParse = "Key1:Value1|Key2:Value2";
+		m = ObjectUtil.toMap(toParse, ":", "|");
+		Assert.assertEquals(2, m.size());
+		Assert.assertEquals("Value1", m.get("Key1"));
+		Assert.assertEquals("Value2", m.get("Key2"));
+	}
 
 
     // hack to add a few localized names to concept

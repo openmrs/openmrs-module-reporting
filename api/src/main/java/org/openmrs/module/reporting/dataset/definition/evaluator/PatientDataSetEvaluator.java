@@ -34,6 +34,7 @@ import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -82,6 +83,13 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 
 		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
 		for (RowPerObjectColumnDefinition cd : dsd.getColumnDefinitions()) {
+
+			if (log.isDebugEnabled()) {
+				log.debug("Evaluating column: " + cd.getName());
+				log.debug("With Data Definition: " + DefinitionUtil.format(cd.getDataDefinition().getParameterizable()));
+				log.debug("With Mappings: " + cd.getDataDefinition().getParameterMappings());
+				log.debug("With Parameters: " + ec.getParameterValues());
+			}
 
 			MappedData<? extends PatientDataDefinition> dataDef = (MappedData<? extends PatientDataDefinition>) cd.getDataDefinition();
 			EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(dataDef, ec);

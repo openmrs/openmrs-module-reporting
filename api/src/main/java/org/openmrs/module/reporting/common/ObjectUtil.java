@@ -29,10 +29,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * Generically useful utility class for working with Objects
@@ -54,6 +56,31 @@ public class ObjectUtil {
 		}
 		return sb.toString();
     }
+
+	/**
+	 * @param toParse the string to parse into a Map<String, String>
+	 * @param keyValueSeparator the string that separates the entries for the Map, if null defaults to "="
+	 * @param entrySeparator the string that separates each key/value pair in the Map, if null defaults to ","
+	 * @return
+	 */
+	public static Map<String, String> toMap(String toParse, String keyValueSeparator, String entrySeparator) {
+		Map<String, String> ret = new LinkedHashMap<String, String>();
+		if (notNull(toParse)) {
+			for (String entry : StringUtils.splitByWholeSeparator(toParse, nvlStr(entrySeparator, ","))) {
+				String[] keyValue = StringUtils.splitByWholeSeparator(entry, nvlStr(keyValueSeparator, "="), 2);
+				ret.put(keyValue[0], keyValue[1]);
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * @param toParse the string to parse into a Map<String, String>. Expected format is key1=value1,key2=value2...
+	 * @return
+	 */
+	public static Map<String, String> toMap(String toParse) {
+		return toMap(toParse, "=", ",");
+	}
     
 	/**
 	 * Returns a String representation of the passed Map

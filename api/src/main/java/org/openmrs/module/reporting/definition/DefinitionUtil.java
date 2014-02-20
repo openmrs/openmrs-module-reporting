@@ -39,6 +39,14 @@ import org.openmrs.util.HandlerUtil;
 public class DefinitionUtil {
 	
 	private static Log log = LogFactory.getLog(DefinitionUtil.class);
+
+	public static String format(Definition d) {
+		StringBuilder sb = new StringBuilder();
+		for (Property p : getConfigurationProperties(d)) {
+			sb.append(sb.length() > 0 ? "," : "").append(p.getDisplayName()).append("=").append(p.getValue());
+		}
+		return d.getClass().getSimpleName() + "[" + sb.toString() + "]";
+	}
 	
 	/**
 	 * Utility method which takes in an Object and returns a List of {@link Property}s
