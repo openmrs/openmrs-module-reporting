@@ -42,6 +42,9 @@ public class PersonDataServiceImpl extends BaseDefinitionService<PersonDataDefin
 	 */
 	@Transactional(readOnly = true)
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
+			return new EvaluatedPersonData(definition, context);
+		}
 		return (EvaluatedPersonData)super.evaluate(definition, context);
 	}
 	
