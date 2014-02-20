@@ -171,7 +171,9 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		int rowsFound = 0;
 		for (int rowNum=0; rowsFound < totalRows && rowNum < 50000; rowNum++) {  // check for < 50000 is a hack to prevent infinite loops in edge cases
 			Row currentRow = sheet.getRow(rowNum);
-			log.debug("Handling row: " + ExcelUtil.formatRow(currentRow));
+            if (log.isDebugEnabled()) {
+			    log.debug("Handling row: " + ExcelUtil.formatRow(currentRow));
+            }
 			if (currentRow != null) {
 				rowsFound++;
 			}
@@ -197,7 +199,9 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 						}
 						Map<String, Object> newReplacements = getReplacementData(sheetToAdd.getReplacementData(), reportData, design, dataSetName, dataSetRow, repeatNum);
 						rowsToAdd.add(new RowToAdd(row, newReplacements));
-						log.debug("Adding " + ExcelUtil.formatRow(row) + " with dataSetRow: " + dataSetRow);
+                        if (log.isDebugEnabled()) {
+						    log.debug("Adding " + ExcelUtil.formatRow(row) + " with dataSetRow: " + dataSetRow);
+                        }
 					}
 				}
 				if(numRowsToRepeat > 1) {
@@ -206,7 +210,9 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			}
 			else {
 				rowsToAdd.add(new RowToAdd(currentRow, sheetToAdd.getReplacementData()));
-				log.debug("Adding row: " + ExcelUtil.formatRow(currentRow));
+                if (log.isDebugEnabled()) {
+				    log.debug("Adding row: " + ExcelUtil.formatRow(currentRow));
+                }
 			}
 		}
 
@@ -215,7 +221,9 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			RowToAdd rowToAdd = rowsToAdd.get(i);
 			if (rowToAdd.getRowToClone() != null && rowToAdd.getRowToClone().cellIterator() != null) {
 				Row addedRow = addRow(wb, sheetToAdd, rowToAdd, i, reportData, design, repeatSections);
-				log.debug("Wrote row " + i + ": " + ExcelUtil.formatRow(addedRow));
+                if (log.isDebugEnabled()) {
+				    log.debug("Wrote row " + i + ": " + ExcelUtil.formatRow(addedRow));
+                }
 			}
 		}
 
