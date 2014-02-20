@@ -85,7 +85,7 @@ public class ExcelUtil {
 	public static void setCellContents(Cell cell, Object cellValue) {
 		Workbook wb = cell.getSheet().getWorkbook();
 		if (cellValue == null) { cellValue = ""; }
-		if (!cellValue.equals(getCellContentsAsString(cell))) {
+		if (!cellHasValueSet(cell) || !cellValue.equals(getCellContentsAsString(cell))) {
 			if (cellValue instanceof Number) {
 				cell.setCellValue(((Number) cellValue).doubleValue());
 				return;
@@ -131,7 +131,20 @@ public class ExcelUtil {
 		return;
 	}
 
-	public static void formatAsDate(Cell cell) {
+    /**
+     * @param cell
+     * @return whether this cell has had a value set on it before
+     */
+    public static boolean cellHasValueSet(Cell cell) {
+        try {
+            cell.toString();
+            return true;
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    public static void formatAsDate(Cell cell) {
 		Workbook wb = cell.getSheet().getWorkbook();
 		CellStyle style = wb.createCellStyle();
 		style.cloneStyleFrom(cell.getCellStyle());

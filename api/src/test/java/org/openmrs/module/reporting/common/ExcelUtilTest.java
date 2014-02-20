@@ -35,6 +35,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Testing the ExcelUtil class.
  */
@@ -134,7 +137,19 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 		usedTitles.add(title3);
 	}
 
-	protected Workbook loadWorkbookFromResource(String resource) {
+    @Test
+    public void shouldCheckWhetherCellValueIsSet() throws Exception {
+        ExcelBuilder builder = new ExcelBuilder();
+        builder.newSheet("Sheet1");
+        builder.addCell("One");
+
+        assertFalse(ExcelUtil.cellHasValueSet(builder.getCurrentRow().getCell(1)));
+
+        builder.addCell("Two");
+        assertTrue(ExcelUtil.cellHasValueSet(builder.getCurrentRow().getCell(1)));
+    }
+
+    protected Workbook loadWorkbookFromResource(String resource) {
 		InputStream is = null;
 		try {
 			is = OpenmrsClassLoader.getInstance().getResourceAsStream(resource);

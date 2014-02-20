@@ -16,13 +16,15 @@ package org.openmrs.module.reporting.common;
 import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Testing the ExcelBuilder class.
@@ -74,7 +76,6 @@ public class ExcelBuilderTest extends BaseModuleContextSensitiveTest {
 		fos.close();
 	}
 
-    @Ignore
     @Test
     public void shouldSupportEmptyStringCellContents() throws Exception {
         ExcelBuilder excelBuilder = new ExcelBuilder();
@@ -82,11 +83,7 @@ public class ExcelBuilderTest extends BaseModuleContextSensitiveTest {
 
         excelBuilder.addCell("");
 
-        System.out.println(ExcelUtil.formatRow(excelBuilder.getCurrentRow()));
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        excelBuilder.write(baos);
-        Assert.assertTrue(baos.size() > 0);
+        assertThat(ExcelUtil.formatRow(excelBuilder.getCurrentRow()), is(""));
     }
 
 }
