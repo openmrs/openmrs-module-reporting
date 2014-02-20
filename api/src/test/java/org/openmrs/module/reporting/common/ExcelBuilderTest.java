@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.common;
 import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -72,4 +73,20 @@ public class ExcelBuilderTest extends BaseModuleContextSensitiveTest {
 		excelBuilder.write(fos);
 		fos.close();
 	}
+
+    @Ignore
+    @Test
+    public void shouldSupportEmptyStringCellContents() throws Exception {
+        ExcelBuilder excelBuilder = new ExcelBuilder();
+        excelBuilder.newSheet("SheetOne");
+
+        excelBuilder.addCell("");
+
+        System.out.println(ExcelUtil.formatRow(excelBuilder.getCurrentRow()));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        excelBuilder.write(baos);
+        Assert.assertTrue(baos.size() > 0);
+    }
+
 }
