@@ -9,6 +9,7 @@ import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
+import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -439,6 +440,12 @@ public class ObjectUtil {
 				}
 				catch (Exception e) {
 					log.warn("Unable to get property using converter with format: " + format, e);
+				}
+			}
+			else if (o instanceof Person) {
+				Person p = (Person)o;
+				if (p.getPersonName() != null) {
+					return p.getPersonName().getFullName();
 				}
 			}
 			else {
