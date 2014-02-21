@@ -64,12 +64,12 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		StringBuilder hql = new StringBuilder();
 		hql.append("select 		pi.patient.patientId, pi ");
 		hql.append("from 		PatientIdentifier as pi ");
-		hql.append("where 		voided = false ");
+		hql.append("where 		pi.voided = false ");
 		if (context.getBaseCohort() != null) {
-			hql.append("and 		patient.patientId in (:patientIds) ");
+			hql.append("and 		pi.patient.patientId in (:patientIds) ");
 		}
-		hql.append("and 		identifierType.patientIdentifierTypeId in (:idTypes) ");
-		hql.append("order by 	preferred desc");
+		hql.append("and 		pi.identifierType.patientIdentifierTypeId in (:idTypes) ");
+		hql.append("order by 	pi.preferred desc");
 
 		Map<String, Object> m = new HashMap<String, Object>();
 		if (context.getBaseCohort() != null) {

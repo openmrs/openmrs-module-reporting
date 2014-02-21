@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
@@ -34,7 +35,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 /**
  * Generically useful utility class for working with Objects
@@ -414,6 +414,10 @@ public class ObjectUtil {
                 }
             }
 			return name;
+		}
+		if (o instanceof Concept) {
+			Concept c = (Concept)o;
+			return c.getBestName(locale).getName();
 		}
 		if (o instanceof OpenmrsData) {
 			if (ObjectUtil.notNull(format)) {

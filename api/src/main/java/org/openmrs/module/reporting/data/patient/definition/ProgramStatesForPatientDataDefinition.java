@@ -16,7 +16,9 @@ package org.openmrs.module.reporting.data.patient.definition;
 import java.util.Date;
 import java.util.List;
 
+import org.openmrs.Location;
 import org.openmrs.PatientState;
+import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -37,9 +39,15 @@ public class ProgramStatesForPatientDataDefinition extends BaseDataDefinition im
 	
 	@ConfigurationProperty
 	private TimeQualifier which;
+
+	@ConfigurationProperty
+	private ProgramWorkflow workflow;
 	
-	@ConfigurationProperty(required=true)
+	@ConfigurationProperty
 	private ProgramWorkflowState state;
+
+	@ConfigurationProperty
+	private Location location;
 	
 	@ConfigurationProperty
 	private Date activeOnDate;
@@ -101,6 +109,20 @@ public class ProgramStatesForPatientDataDefinition extends BaseDataDefinition im
 	}
 
 	/**
+	 * @return the workflow
+	 */
+	public ProgramWorkflow getWorkflow() {
+		return workflow;
+	}
+
+	/**
+	 * @param workflow the workflow to set
+	 */
+	public void setWorkflow(ProgramWorkflow workflow) {
+		this.workflow = workflow;
+	}
+
+	/**
 	 * @return the state
 	 */
 	public ProgramWorkflowState getState() {
@@ -112,6 +134,20 @@ public class ProgramStatesForPatientDataDefinition extends BaseDataDefinition im
 	 */
 	public void setState(ProgramWorkflowState state) {
 		this.state = state;
+	}
+
+	/**
+	 * @return the location
+	 */
+	public Location getLocation() {
+		return location;
+	}
+
+	/**
+	 * @param location the location to set
+	 */
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 	/**

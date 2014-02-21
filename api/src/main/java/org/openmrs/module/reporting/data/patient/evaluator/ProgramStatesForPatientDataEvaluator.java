@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.PatientState;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -29,6 +25,10 @@ import org.openmrs.module.reporting.data.patient.definition.ProgramStatesForPati
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Evaluates an ProgramStatesForPatientDataDefinition to produce a PatientData
@@ -60,60 +60,61 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		
 		StringBuilder hql = new StringBuilder();
 		Map<String, Object> m = new HashMap<String, Object>();
-		
-		hql.append("select		patientState ");
-		hql.append("from 		PatientState as patientState ");
-		hql.append("inner join	patientState.state as state ");
-		
-		if (context.getBaseCohort() != null) {
-			hql.append("inner join	patientState.patientProgram as patientProgram ");
-			hql.append("inner join	patientProgram.patient as patient ");
-			hql.append("where 		patient.patientId in (:patientIds) ");
-			m.put("patientIds", context.getBaseCohort());
-			hql.append("and ");
-		}
-		else {
-			hql.append("where ");
-		}
-		hql.append("			patientState.voided = false ");
-		hql.append("and 		state.programWorkflowStateId = :stateId ");
-		m.put("stateId", def.getState().getProgramWorkflowStateId());
 
+		hql.append("select 		ps.patientProgram.patient.patientId, ps ");
+		hql.append("from 		PatientState as ps ");
+		hql.append("where 		ps.voided = false ");
+		if (context.getBaseCohort() != null) {
+			hql.append("and 	ps.patientProgram.patient.patientId in (:patientIds) ");
+			m.put("patientIds", context.getBaseCohort());
+		}
+		if (def.getWorkflow() != null) {
+			hql.append("and 	ps.state.programWorkflow = :workflow ");
+			m.put("workflow", def.getWorkflow());
+		}
+		if (def.getState() != null) {
+			hql.append("and 	ps.state = :state ");
+			m.put("state", def.getState());
+		}
+		if (def.getLocation() != null) {
+			hql.append("and 	ps.patientProgram.location = :location ");
+			m.put("location", def.getLocation());
+		}
 		if (def.getStartedOnOrBefore() != null) {
-			hql.append("and		patientState.startDate <= :startedOnOrBefore ");
+			hql.append("and		ps.startDate <= :startedOnOrBefore ");
 			m.put("startedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getStartedOnOrBefore()));
 		}
-		
 		if (def.getStartedOnOrAfter() != null) {
-			hql.append("and		patientState.startDate >= :startedOnOrAfter ");
+			hql.append("and		ps.startDate >= :startedOnOrAfter ");
 			m.put("startedOnOrAfter", def.getStartedOnOrAfter());
 		}
-		
 		if (def.getEndedOnOrBefore() != null) {
-			hql.append("and		patientState.endDate <= :endedOnOrBefore ");
+			hql.append("and		ps.endDate <= :endedOnOrBefore ");
 			m.put("endedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getEndedOnOrBefore()));
 		}
-		
 		if (def.getEndedOnOrAfter() != null) {
-			hql.append("and		patientState.endDate >= :endedOnOrAfter ");
+			hql.append("and		ps.endDate >= :endedOnOrAfter ");
 			m.put("endedOnOrAfter", def.getEndedOnOrAfter());
 		}
-		
 		if (def.getActiveOnDate() != null) {
-			hql.append("and		patientState.startDate <= :startedOnOrBefore ");
-			hql.append("and		(patientState.endDate is null or patientState.endDate >= :endedOnOrAfter) ");
+			hql.append("and		ps.startDate <= :startedOnOrBefore ");
+			hql.append("and		(ps.endDate is null or ps.endDate >= :endedOnOrAfter) ");
 			m.put("startedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getActiveOnDate()));
 			m.put("endedOnOrAfter", def.getActiveOnDate());
 		}
 		
-		hql.append("order by 	patientState.startDate " + (def.getWhich() == TimeQualifier.LAST ? "desc" : "asc"));
+		hql.append("order by 	ps.startDate " + (def.getWhich() == TimeQualifier.LAST ? "desc" : "asc"));
 		
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
-		
+
 		ListMap<Integer, PatientState> statesForPatients = new ListMap<Integer, PatientState>();
 		for (Object o : queryResult) {
-			PatientState ps = (PatientState)o;
-			statesForPatients.putInList(ps.getPatientProgram().getPatient().getPatientId(), ps); // TODO: Make this more efficient via HQL
+			Object[] parts = (Object[]) o;
+			if (parts.length == 2) {
+				Integer pId = (Integer) parts[0];
+				PatientState pi = (PatientState) parts[1];
+				statesForPatients.putInList(pId, pi);
+			}
 		}
 		
 		for (Integer pId : statesForPatients.keySet()) {
