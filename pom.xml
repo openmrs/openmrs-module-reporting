@@ -40,6 +40,7 @@
 		<openMRSVersion>1.6.6</openMRSVersion>
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
 		<serializationVersion>0.2.7</serializationVersion>
+		<calculationVersion>1.1</calculationVersion>
 		<jacksonVersion>1.5.0</jacksonVersion>
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.9</poiVersion>
@@ -52,7 +53,6 @@
 		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
-		<calculationVersion>1.0</calculationVersion>
 	</properties>
 
 	<dependencies>
