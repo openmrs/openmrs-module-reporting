@@ -95,7 +95,7 @@ public class EncounterDataSetDefinition extends RowPerObjectDataSetDefinition {
     }
 
 	/**
-	 * @see RowPerObjectDataSetDefinition#addColumns(String, RowPerObjectDataSetDefinition, String, DataConverter, TimeQualifier, Integer)
+	 * @see RowPerObjectDataSetDefinition#addColumns(String, RowPerObjectDataSetDefinition, String, TimeQualifier, Integer, DataConverter...)
 	 */
 	@Override
 	public void addColumns(String name, RowPerObjectDataSetDefinition dataSetDefinition, String mappings, 
@@ -107,8 +107,15 @@ public class EncounterDataSetDefinition extends RowPerObjectDataSetDefinition {
 	/**
 	 * Add a new row filter with the passed parameter mappings
 	 */
+	public void addRowFilter(Mapped<EncounterQuery> filter) {
+		getRowFilters().add(filter);
+	}
+
+	/**
+	 * Add a new row filter with the passed parameter mappings
+	 */
 	public void addRowFilter(EncounterQuery filter, String mappings) {
-		getRowFilters().add(new Mapped<EncounterQuery>(filter, ParameterizableUtil.createParameterMappings(mappings)));
+		addRowFilter(new Mapped<EncounterQuery>(filter, ParameterizableUtil.createParameterMappings(mappings)));
 	}
 	
     //***** PROPERTY ACCESS *****

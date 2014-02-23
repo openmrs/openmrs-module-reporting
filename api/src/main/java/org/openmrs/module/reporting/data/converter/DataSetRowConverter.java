@@ -38,7 +38,7 @@ public class DataSetRowConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convert(Object)
 	 * @should convert a DataSetRow to the value in the column with the configured name
 	 */
 	public Object convert(Object original) {
