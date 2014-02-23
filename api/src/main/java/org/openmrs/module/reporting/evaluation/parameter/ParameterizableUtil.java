@@ -130,7 +130,7 @@ public class ParameterizableUtil {
 	 * Map<String, Mapped<Parameterizable>>
 	 * Map<String, Mapped<? extends Parameterizable>>
 	 * 
-	 * @param object the Parameterizable to retrieve the value from
+	 * @param obj the Parameterizable to retrieve the value from
 	 * @param property the property
 	 * @param collectionKey if a Map or Collection, the key by which to retrieve the value
 	 * @return the matching Parameterizable type
@@ -271,4 +271,28 @@ public class ParameterizableUtil {
 		}
 	}
 
+	/**
+	 * This method takes in a copyFrom Definition that we wish to copy all parameters from,
+	 * and adds them all to the passed copyTo Definition, before returning a Mapped containing
+	 * the copyFrom Definition and the parameter mappings that relate it to copyTo
+	 */
+	public static <T extends Definition> Mapped<T> copyAndMap(T copyFrom, Definition copyTo, Map<String, String> renamedParameters) {
+		Map<String, Object> mappings = new HashMap<String, Object>();
+		for (Parameter p : copyFrom.getParameters()) {
+			String paramName = p.getName();
+			if (renamedParameters != null && renamedParameters.containsKey(paramName)) {
+				paramName = renamedParameters.get(paramName);
+			}
+			mappings.put(p.getName(), "${" + paramName + "}");
+			Parameter newParameter = new Parameter();
+			newParameter.setName(paramName);
+			newParameter.setLabel(p.getLabel());
+			newParameter.setType(p.getType());
+			newParameter.setCollectionType(p.getCollectionType());
+			newParameter.setDefaultValue(p.getDefaultValue());
+			newParameter.setWidgetConfiguration(p.getWidgetConfiguration());
+			copyTo.addParameter(newParameter);
+		}
+		return new Mapped<T>(copyFrom, mappings);
+	}
 }
