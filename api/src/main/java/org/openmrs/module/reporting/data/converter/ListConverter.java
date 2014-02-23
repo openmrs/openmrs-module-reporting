@@ -29,6 +29,7 @@ public class ListConverter implements DataConverter {
 	
 	private TimeQualifier whichItems;
 	private Integer maxNumberOfItems;
+	private Integer specificItemIndex; // 0-based index of specific item in List to return
 	private Class<?> typeOfItem;
 	
 	//***** CONSTRUCTORS *****
@@ -43,17 +44,31 @@ public class ListConverter implements DataConverter {
 		this.maxNumberOfItems = maxNumberOfItems;
 		this.typeOfItem = typeOfItem;
 	}
+
+	/**
+	 * Full Constructor
+	 */
+	public ListConverter(Integer specificItemIndex, Class<?> typeOfItem) {
+		this.specificItemIndex = specificItemIndex;
+		this.typeOfItem = typeOfItem;
+	}
 	
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convert(Object)
 	 * @should convert a Date into a String with the passed format
 	 */
 	@SuppressWarnings("rawtypes")
 	public Object convert(Object original) {
 		List l = (List) original;
 		if (l != null) {
+			// First handle the case where a specific item from the list is requested by index
+			if (specificItemIndex != null) {
+				return (l.size() > specificItemIndex ? l.get(specificItemIndex) : null);
+			}
+
+			// Next, handle the case where a certain number of items from the beginning or end of the list is requested
 			TimeQualifier which = ObjectUtil.nvl(whichItems, TimeQualifier.ANY);
 			int max = (maxNumberOfItems == null || maxNumberOfItems > l.size() ? l.size() : maxNumberOfItems);
 			if (which != TimeQualifier.FIRST) {
@@ -64,7 +79,7 @@ public class ListConverter implements DataConverter {
 			}
 			else {
 				List<Object> ret = new ArrayList<Object>();
-				for (int i=0; i<=max; i++) {
+				for (int i=0; i<max; i++) {
 					ret.add(l.get(i));
 				}
 				return ret;				
@@ -77,8 +92,10 @@ public class ListConverter implements DataConverter {
 	 * @see DataConverter#getDataType()
 	 */
 	public Class<?> getDataType() {
-		if (maxNumberOfItems == null || maxNumberOfItems > 1) {
-			return List.class;
+		if (specificItemIndex == null) {
+			if (maxNumberOfItems == null || maxNumberOfItems > 1) {
+				return List.class;
+			}
 		}
 		return typeOfItem;
 	}
@@ -92,44 +109,34 @@ public class ListConverter implements DataConverter {
 	
 	//***** PROPERTY ACCESS *****
 
-	/**
-	 * @return the whichItems
-	 */
 	public TimeQualifier getWhichItems() {
 		return whichItems;
 	}
 
-	/**
-	 * @param whichItems the whichItems to set
-	 */
 	public void setWhichItems(TimeQualifier whichItems) {
 		this.whichItems = whichItems;
 	}
 
-	/**
-	 * @return the maxNumberOfItems
-	 */
 	public Integer getMaxNumberOfItems() {
 		return maxNumberOfItems;
 	}
 
-	/**
-	 * @param maxNumberOfItems the maxNumberOfItems to set
-	 */
 	public void setMaxNumberOfItems(Integer maxNumberOfItems) {
 		this.maxNumberOfItems = maxNumberOfItems;
 	}
 
-	/**
-	 * @return the typeOfItem
-	 */
+	public Integer getSpecificItemIndex() {
+		return specificItemIndex;
+	}
+
+	public void setSpecificItemIndex(Integer specificItemIndex) {
+		this.specificItemIndex = specificItemIndex;
+	}
+
 	public Class<?> getTypeOfItem() {
 		return typeOfItem;
 	}
 
-	/**
-	 * @param typeOfItem the typeOfItem to set
-	 */
 	public void setTypeOfItem(Class<?> typeOfItem) {
 		this.typeOfItem = typeOfItem;
 	}
