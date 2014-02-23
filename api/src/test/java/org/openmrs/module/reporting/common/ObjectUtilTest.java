@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptName;
+import org.openmrs.Encounter;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.Obs;
@@ -287,6 +288,13 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
 		Assert.assertEquals("Value2", m.get("Key2"));
 	}
 
+	@Test
+	public void shouldFormatMultiplePropertiesOnOpenmrsData() {
+		// <encounter encounter_id="3" encounter_type="2" patient_id="7" location_id="1" form_id="1" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="6519d653-393b-4118-9c83-a3715b82d4ac"/>
+		Encounter e = Context.getEncounterService().getEncounter(3);
+		String s = ObjectUtil.format(e, "Encounter {encounterId} has type {encounterType} and date {encounterDatetime|yyyy-MM-dd}");
+		Assert.assertEquals("Encounter 3 has type Emergency and date 2008-08-01", s);
+	}
 
     // hack to add a few localized names to concept
     private void addLocalizedNamesToYesConcept() {

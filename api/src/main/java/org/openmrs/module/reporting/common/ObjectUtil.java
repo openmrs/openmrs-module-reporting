@@ -422,17 +422,18 @@ public class ObjectUtil {
 		}
 		if (o instanceof OpenmrsData) {
 			if (ObjectUtil.notNull(format)) {
-				String[] formatSplit = format.split("\\|");
-				String ret = formatSplit[0];
+				String ret = format;
 				try {
 					int startIndex = ret.indexOf("{");
 					int endIndex = ret.indexOf("}", startIndex+1);
 					while (startIndex != -1 && endIndex != -1) {
-						String propertyName = ret.substring(startIndex+1, endIndex);
+						String propertyAndFormat = ret.substring(startIndex+1, endIndex);
+						String[] formatSplit = propertyAndFormat.split("\\|");
+						String propertyName = formatSplit[0];
 						Object replacement = ReflectionUtil.getPropertyValue(o, propertyName);
 						String newFormat = (replacement != null && formatSplit.length > 1 ? formatSplit[1] : null);
 						replacement = ObjectUtil.format(replacement, newFormat, locale);
-						ret = ret.replace("{"+propertyName+"}", nvlStr(replacement, ""));
+						ret = ret.replace("{"+propertyAndFormat+"}", nvlStr(replacement, ""));
 						startIndex = ret.indexOf("{");
 						endIndex = ret.indexOf("}", startIndex+1);
 					}
