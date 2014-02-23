@@ -86,8 +86,10 @@ public class ProgramStatesForPatientDataDefinition extends BaseDataDefinition im
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
-		if (which == TimeQualifier.LAST || which == TimeQualifier.FIRST || activeOnDate != null) {
-			return PatientState.class;
+		if (state != null || workflow != null) {
+			if (which == TimeQualifier.LAST || which == TimeQualifier.FIRST || activeOnDate != null) {
+				return PatientState.class;
+			}
 		}
 		return List.class;
 	}
