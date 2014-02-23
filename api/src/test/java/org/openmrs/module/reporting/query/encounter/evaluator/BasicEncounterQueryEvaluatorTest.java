@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
 import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -68,5 +69,27 @@ public class BasicEncounterQueryEvaluatorTest extends BaseModuleContextSensitive
         EncounterQueryResult result = encounterQueryService.evaluate(query, context);
         assertThat(result, hasExactlyIds(enc2.getId(), enc4.getId())); // 3 is excluded, since it wasn't in base encounters
     }
+
+	@Test
+	public void testShouldFilterByEncounterTypes() throws Exception {
+		Patient patient = data.randomPatient().save();
+
+		Encounter enc1 = data.randomEncounter().patient(patient).encounterType("Scheduled").save();
+		Encounter enc2 = data.randomEncounter().patient(patient).encounterType("Emergency").save();
+		Encounter enc3 = data.randomEncounter().patient(patient).encounterType("Emergency").save();
+
+		EncounterEvaluationContext context = new EncounterEvaluationContext();
+		context.setBaseEncounters(new EncounterIdSet(enc1.getId(), enc2.getId(), enc3.getId()));
+
+		BasicEncounterQuery query = new BasicEncounterQuery();
+
+		query.addEncounterType(Context.getEncounterService().getEncounterType("Scheduled"));
+		EncounterQueryResult result = encounterQueryService.evaluate(query, context);
+		assertThat(result, hasExactlyIds(enc1.getId()));
+
+		query.addEncounterType(Context.getEncounterService().getEncounterType("Emergency"));
+		result = encounterQueryService.evaluate(query, context);
+		assertThat(result, hasExactlyIds(enc1.getId(), enc2.getId(), enc3.getId()));
+	}
 
 }

@@ -15,21 +15,26 @@
 package org.openmrs.module.reporting.query.encounter.definition;
 
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.query.BaseQuery;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Lets you query for encounters based on simple properties on Encounter
- * TODO add more properties to query on
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class BasicEncounterQuery extends BaseQuery<Encounter> implements EncounterQuery {
 
     public static final long serialVersionUID = 1L;
+
+	@ConfigurationProperty
+	public List<EncounterType> encounterTypes;
 
     @ConfigurationProperty
     public Date onOrAfter;
@@ -37,7 +42,22 @@ public class BasicEncounterQuery extends BaseQuery<Encounter> implements Encount
     @ConfigurationProperty
     public Date onOrBefore;
 
-    public Date getOnOrAfter() {
+	public List<EncounterType> getEncounterTypes() {
+		return encounterTypes;
+	}
+
+	public void setEncounterTypes(List<EncounterType> encounterTypes) {
+		this.encounterTypes = encounterTypes;
+	}
+
+	public void addEncounterType(EncounterType encounterType) {
+		if (encounterTypes == null) {
+			encounterTypes = new ArrayList<EncounterType>();
+		}
+		encounterTypes.add(encounterType);
+	}
+
+	public Date getOnOrAfter() {
         return onOrAfter;
     }
 

@@ -50,6 +50,9 @@ public class BasicEncounterQueryEvaluator implements EncounterQueryEvaluator {
         criteria.setProjection(Projections.id());
         criteria.add(Restrictions.eq("voided", false));
 
+		if (query.getEncounterTypes() != null) {
+			criteria.add(Restrictions.in("encounterType", query.getEncounterTypes()));
+		}
         if (query.getOnOrAfter() != null) {
             criteria.add(Restrictions.ge("encounterDatetime", query.getOnOrAfter()));
         }
