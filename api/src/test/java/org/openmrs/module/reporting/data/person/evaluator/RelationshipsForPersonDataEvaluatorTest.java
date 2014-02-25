@@ -90,18 +90,18 @@ public class RelationshipsForPersonDataEvaluatorTest extends BaseModuleContextSe
 	public void evaluate_shouldReturnRelationshipsByAorB() throws Exception {
 
 		EvaluationContext context = new EvaluationContext();
-		context.setBaseCohort(new Cohort("7"));
 
 		RelationshipsForPersonDataDefinition d = new RelationshipsForPersonDataDefinition();
-		d.setRelationshipTypes(Arrays.asList(getDoctorPatientType()));
 
 		d.setValuesArePersonA(Boolean.FALSE);
+		d.setValuesArePersonB(Boolean.TRUE);
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
 		Assert.assertNull(getRelationships(pd, 7));
 
-		d.setValuesArePersonB(Boolean.TRUE);
+		d.setValuesArePersonA(Boolean.TRUE);
+		d.setValuesArePersonB(Boolean.FALSE);
 		pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(1, getRelationships(pd, 7).size());
+		Assert.assertEquals(3, getRelationships(pd, 7).size());
 	}
 
 	protected RelationshipType getDoctorPatientType() {
