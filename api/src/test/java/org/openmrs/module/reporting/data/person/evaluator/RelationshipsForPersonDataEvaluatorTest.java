@@ -95,11 +95,11 @@ public class RelationshipsForPersonDataEvaluatorTest extends BaseModuleContextSe
 		RelationshipsForPersonDataDefinition d = new RelationshipsForPersonDataDefinition();
 		d.setRelationshipTypes(Arrays.asList(getDoctorPatientType()));
 
-		d.setPersonBIncluded(Boolean.FALSE);
+		d.setValuesArePersonA(Boolean.FALSE);
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
 		Assert.assertNull(getRelationships(pd, 7));
 
-		d.setPersonBIncluded(Boolean.TRUE);
+		d.setValuesArePersonB(Boolean.TRUE);
 		pd = Context.getService(PersonDataService.class).evaluate(d, context);
 		Assert.assertEquals(1, getRelationships(pd, 7).size());
 	}

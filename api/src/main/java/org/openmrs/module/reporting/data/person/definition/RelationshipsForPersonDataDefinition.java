@@ -36,10 +36,10 @@ public class RelationshipsForPersonDataDefinition extends BaseDataDefinition imp
 	private List<RelationshipType> relationshipTypes;
 
 	@ConfigurationProperty
-	private Boolean personAIncluded = Boolean.TRUE;
+	private Boolean valuesArePersonA = Boolean.TRUE;
 
 	@ConfigurationProperty
-	private Boolean personBIncluded = Boolean.TRUE;
+	private Boolean valuesArePersonB = Boolean.TRUE;
 
 	//****** CONSTRUCTORS ******
 
@@ -83,19 +83,19 @@ public class RelationshipsForPersonDataDefinition extends BaseDataDefinition imp
 		relationshipTypes.add(relationshipType);
 	}
 
-	public Boolean getPersonAIncluded() {
-		return personAIncluded;
+	public Boolean getValuesArePersonA() {
+		return valuesArePersonA;
 	}
 
-	public void setPersonAIncluded(Boolean personAIncluded) {
-		this.personAIncluded = personAIncluded;
+	public void setValuesArePersonA(Boolean valuesArePersonA) {
+		this.valuesArePersonA = valuesArePersonA;
 	}
 
-	public Boolean getPersonBIncluded() {
-		return personBIncluded;
+	public Boolean getValuesArePersonB() {
+		return valuesArePersonB;
 	}
 
-	public void setPersonBIncluded(Boolean personBIncluded) {
-		this.personBIncluded = personBIncluded;
+	public void setValuesArePersonB(Boolean valuesArePersonB) {
+		this.valuesArePersonB = valuesArePersonB;
 	}
 }

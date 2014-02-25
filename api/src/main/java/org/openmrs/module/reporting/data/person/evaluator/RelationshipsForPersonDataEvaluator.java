@@ -46,15 +46,15 @@ public class RelationshipsForPersonDataEvaluator implements PersonDataEvaluator 
 		if (def.getRelationshipTypes() != null && def.getRelationshipTypes().isEmpty()) {
 			return pd;
 		}
-		if (!def.getPersonAIncluded() && !def.getPersonBIncluded()) {
+		if (!def.getValuesArePersonA() && !def.getValuesArePersonB()) {
 			return pd;
 		}
 
-		if (def.getPersonAIncluded()) {
-			addRelationshipsForPerson(pd, "A");
-		}
-		if (def.getPersonBIncluded()) {
+		if (def.getValuesArePersonA()) {
 			addRelationshipsForPerson(pd, "B");
+		}
+		if (def.getValuesArePersonB()) {
+			addRelationshipsForPerson(pd, "A");
 		}
 
 		return pd;
