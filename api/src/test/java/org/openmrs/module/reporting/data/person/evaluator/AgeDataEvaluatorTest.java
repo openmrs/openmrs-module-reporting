@@ -61,4 +61,25 @@ public class AgeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(4, ((Age)pd.getData().get(6)).getFullYears().intValue());
 		Assert.assertEquals(35, ((Age)pd.getData().get(7)).getFullYears().intValue());
 	}
+
+	@Test
+	public void evaluate_shouldOnlyCalculateAgeUpToDeathDate() throws Exception {
+		AgeDataDefinition d = new AgeDataDefinition();
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("20"));
+
+		d.setEffectiveDate(DateUtil.getDateTime(2014,3,1));
+		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
+		Assert.assertEquals(80, ((Age) pd.getData().get(20)).getFullYears().intValue());
+
+		d.setEffectiveDate(null);
+		pd = Context.getService(PersonDataService.class).evaluate(d, context);
+		Assert.assertEquals(80, ((Age) pd.getData().get(20)).getFullYears().intValue());
+
+		d.setEffectiveDate(DateUtil.getDateTime(2000,3,1));
+		pd = Context.getService(PersonDataService.class).evaluate(d, context);
+		Assert.assertEquals(75, ((Age) pd.getData().get(20)).getFullYears().intValue());
+	}
+
+
 }
