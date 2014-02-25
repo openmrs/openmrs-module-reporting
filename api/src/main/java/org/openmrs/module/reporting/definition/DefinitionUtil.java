@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.reporting.definition;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
@@ -32,6 +28,10 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.util.HandlerUtil;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides utility methods useful for Definitions
@@ -73,12 +73,10 @@ public class DefinitionUtil {
     	List<Property> ret = new ArrayList<Property>();
     	
     	if (classToCheck != null) {
-    		log.debug("In class: " + classToCheck.getName());
-    		
+
 			// If this class extends another class, then inspect all inherited field values as well
 	    	Class superclass = classToCheck.getSuperclass();
 	    	if (superclass != null) {
-	    		log.debug("Checking superclass: " + superclass);
 	    		ret.addAll(getConfigurationProperties(superclass, classInstance));
 	    	}
     		
@@ -123,8 +121,6 @@ public class DefinitionUtil {
 					}
 
     				Property p = new Property(f, value, ann.required(), displayName, groupName, ann.displayFormat(), ann.displayAttributes());
-    				if (log.isDebugEnabled())
-    					log.debug("Adding: " + p);
     				ret.add(p);
     			}
 	    	}
@@ -135,8 +131,7 @@ public class DefinitionUtil {
 	/**
 	 * Utility method which takes in a Definition instance and returns a
 	 * new instance with identical properties for any that are annotated as {@link ConfigurationProperty}
-	 * @param classToCheck - The class to look at for annotated fields.
-	 * @param classInstance - The instance to look at for default values.
+	 * @param instanceToClone - The Definition to clone
 	 * @return - A new instance with all Parameter-based properties cloned
 	 */
 	@SuppressWarnings("unchecked")
