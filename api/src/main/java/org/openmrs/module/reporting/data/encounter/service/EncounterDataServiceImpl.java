@@ -46,7 +46,7 @@ public class EncounterDataServiceImpl extends BaseDefinitionService<EncounterDat
 	}
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
 	public EvaluatedEncounterData evaluate(Mapped<? extends EncounterDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException {

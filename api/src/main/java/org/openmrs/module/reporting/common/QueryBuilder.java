@@ -3,7 +3,6 @@ package org.openmrs.module.reporting.common;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class QueryBuilder {
 	/**
 	 * Executes the query and returns the result
 	 */
-	public List<Object> execute() {
+	public List<?> execute() {
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
 		return qs.executeHqlQuery(query.toString(), parameters);
 	}

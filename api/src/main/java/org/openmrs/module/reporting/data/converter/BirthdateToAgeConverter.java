@@ -43,7 +43,7 @@ public class BirthdateToAgeConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convert(Object)
 	 * @should convert a birthdate to an age on the configured date
 	 */
 	public Object convert(Object original) {

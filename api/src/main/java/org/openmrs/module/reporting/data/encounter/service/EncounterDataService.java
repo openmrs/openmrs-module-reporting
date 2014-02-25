@@ -35,7 +35,7 @@ public interface EncounterDataService extends DefinitionService<EncounterDataDef
 	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
 	public EvaluatedEncounterData evaluate(Mapped<? extends EncounterDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException;
