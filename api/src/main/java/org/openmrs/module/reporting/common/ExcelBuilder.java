@@ -98,7 +98,10 @@ public class ExcelBuilder {
         else {
             cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_STRING);
         }
-		ExcelUtil.setCellContents(cell, cellValue);
+
+		if (ObjectUtil.isNull(style) && cellValue instanceof Date) {
+			style = "date";
+		}
 		if (ObjectUtil.notNull(style)) {
 			CellStyle cellStyle = styleCache.get(style);
 			if (cellStyle == null) {
@@ -107,6 +110,7 @@ public class ExcelBuilder {
 			}
 			cell.setCellStyle(cellStyle);
 		}
+		ExcelUtil.setCellContents(cell, cellValue);
         currentColNum++;
 		return this;
     }

@@ -26,34 +26,23 @@ public class ExcelUtil {
 	 * @param cell the cell to retrieve the contents for
 	 * @return the contents of the passed cell as a String
 	 */
-	public static String getCellContentsAsString(Cell cell) {
-    	String contents = "";
+	public static Object getCellContents(Cell cell) {
+    	Object contents = "";
     	try {
 			if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 				if (ExcelUtil.isCellDateFormatted(cell)) {
-					Date d = cell.getDateCellValue();
-					try {
-						// TODO: Replace this with a library that can handle this properly
-						String df = cell.getCellStyle().getDataFormatString().toUpperCase();
-						df = df.replace("\\", "").replace("\"", "").replace("D", "d").replace("Y", "y");
-						df = df.replace("H", "h").replace(":MM", ":mm").replace("S", "s").replace("AM/PM", "a");
-						return ObjectUtil.format(d, df);
-					}
-					catch (Exception e) {
-						log.warn("Unable to convert excel date format " + cell.getCellStyle().getDataFormatString() + " to Java date format");
-					}
-					return ObjectUtil.format(d);
+					return cell.getDateCellValue();
 				}
 				else {
 					Double d = cell.getNumericCellValue();
 					if (d.intValue() == d.doubleValue()) {
-						return ObjectUtil.format(d.intValue());
+						return Integer.valueOf(d.intValue());
 					}
-					return ObjectUtil.format(d);
+					return d;
 				}
 			}
 			else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
-				return ObjectUtil.format(cell.getBooleanCellValue());
+				return cell.getBooleanCellValue();
 			}
 			else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
 				return cell.getCellFormula();
@@ -73,7 +62,9 @@ public class ExcelUtil {
     			contents = cell.getRichStringCellValue().toString();
 			}
     	}
-		contents = ObjectUtil.nvlStr(contents, "").trim();
+		if (contents instanceof String) {
+			contents = ObjectUtil.nvlStr(contents, "").trim();
+		}
     	return contents;
 	}
 
@@ -85,15 +76,12 @@ public class ExcelUtil {
 	public static void setCellContents(Cell cell, Object cellValue) {
 		Workbook wb = cell.getSheet().getWorkbook();
 		if (cellValue == null) { cellValue = ""; }
-		if (!cellHasValueSet(cell) || !cellValue.equals(getCellContentsAsString(cell))) {
+		if (!cellHasValueSet(cell) || !cellValue.equals(getCellContents(cell))) {
 			if (cellValue instanceof Number) {
 				cell.setCellValue(((Number) cellValue).doubleValue());
 				return;
 			}
 			if (cellValue instanceof Date) {
-				if (!ExcelUtil.isCellDateFormatted(cell)) {
-					formatAsDate(cell);
-				}
 				cell.setCellValue(((Date) cellValue));
 				return;
 			}
@@ -150,6 +138,14 @@ public class ExcelUtil {
 		style.cloneStyleFrom(cell.getCellStyle());
 		style.setDataFormat(wb.createDataFormat().getFormat("d/mmm/yyyy"));
 		cell.setCellStyle(style);
+	}
+
+	public static double getDateAsNumber(Date d) {
+		return DateUtil.getExcelDate(d);
+	}
+
+	public static Date getNumberAsDate(double d) {
+		return DateUtil.getJavaDate(d);
 	}
 
 	/**

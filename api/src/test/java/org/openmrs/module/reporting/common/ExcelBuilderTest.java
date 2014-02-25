@@ -22,6 +22,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Date;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -62,12 +63,9 @@ public class ExcelBuilderTest extends BaseModuleContextSensitiveTest {
 	public void shouldSupportMoreThan4000StyledCells() throws Exception {
 		ExcelBuilder excelBuilder = new ExcelBuilder();
 		for (int i=0; i<10000; i++) {
-			if (i % 2 == 0) {
-				excelBuilder.addCell("Row " + i, "bold");
-			}
-			else {
-				excelBuilder.addCell("Row " + i, "italic,underline");
-			}
+			excelBuilder.addCell("Row " + i, "bold");
+			excelBuilder.addCell(new Date());
+			excelBuilder.addCell("Value " + i, "italic,underline");
 			excelBuilder.nextRow();
 		}
 		String outFile = System.getProperty("java.io.tmpdir") + File.separator + "shouldSupportMoreThan4000StyledCells.xls";

@@ -302,7 +302,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			Cell newCell = newRow.createCell(i);
 			Cell cellToClone = cellToAdd.getCellToClone();
 			if (cellToClone != null) {
-		    	String contents = ExcelUtil.getCellContentsAsString(cellToClone);
+		    	Object contents = ExcelUtil.getCellContents(cellToClone);
 		    	newCell.setCellStyle(cellToClone.getCellStyle());
 		    	try {
 		    		newCell.setCellFormula(cellToClone.getCellFormula());
@@ -331,8 +331,10 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				}	
 		    	
 		    	if (ObjectUtil.notNull(contents)) {
-		    		Object newContents = EvaluationUtil.evaluateExpression(contents, cellToAdd.getReplacementData(), prefix, suffix);
-		    		ExcelUtil.setCellContents(newCell, newContents);
+					if (contents instanceof String) {
+		    			contents = EvaluationUtil.evaluateExpression(contents.toString(), cellToAdd.getReplacementData(), prefix, suffix);
+					}
+		    		ExcelUtil.setCellContents(newCell, contents);
 		    	}
 			}
 		}
