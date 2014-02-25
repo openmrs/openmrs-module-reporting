@@ -72,8 +72,7 @@ public class RelationshipsForPersonDataEvaluator implements PersonDataEvaluator 
 		qb.addIfNotNull("and	r.relationshipType in (:types) ", "types", rpd.getRelationshipTypes());
 		qb.addIfNotNull("and	r." + keyPerson + ".personId in (:patientIds)", "patientIds", pd.getContext().getBaseCohort());
 
-		List<Object> results = qb.execute();
-		for (Object o : results) {
+		for (Object o : qb.execute()) {
 			Object[] parts = (Object[]) o;
 			Integer pId = (Integer) parts[0];
 			Relationship r = (Relationship) parts[1];
