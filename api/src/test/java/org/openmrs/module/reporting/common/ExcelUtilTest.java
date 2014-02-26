@@ -14,22 +14,17 @@
 package org.openmrs.module.reporting.common;
 
 import junit.framework.Assert;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.util.OpenmrsClassLoader;
 
-import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,7 +42,7 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void shouldGetCellContents() throws Exception {
-		Workbook wb = loadWorkbookFromResource("org/openmrs/module/reporting/common/ExcelUtilTest.xls");
+		Workbook wb = ExcelUtil.loadWorkbookFromResource("org/openmrs/module/reporting/common/ExcelUtilTest.xls");
 		Sheet sheet = wb.getSheet("Testing");
 		testCellContentsToTheRightOf(sheet, "String", "This is a String");
 		testCellContentsToTheRightOf(sheet, "Bold String", "This is a bold String");
@@ -61,7 +56,7 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void shouldSetCellContents() throws Exception {
-		Workbook wb = loadWorkbookFromResource("org/openmrs/module/reporting/common/ExcelUtilTest.xls");
+		Workbook wb = ExcelUtil.loadWorkbookFromResource("org/openmrs/module/reporting/common/ExcelUtilTest.xls");
 		Sheet sheet = wb.getSheet("Testing");
 		Date testDate = DateUtil.getDateTime(1999,3,17);
 		int testDateExcel = (int)ExcelUtil.getDateAsNumber(testDate);
@@ -76,7 +71,7 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void shouldAddStyle() throws Exception {
-		Workbook wb = loadWorkbookFromResource("org/openmrs/module/reporting/common/ExcelUtilTest.xls");
+		Workbook wb = ExcelUtil.loadWorkbookFromResource("org/openmrs/module/reporting/common/ExcelUtilTest.xls");
 		Sheet sheet = wb.getSheet("Testing");
 
 		// Test Fonts
@@ -150,21 +145,6 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
         builder.addCell("Two");
         assertTrue(ExcelUtil.cellHasValueSet(builder.getCurrentRow().getCell(1)));
     }
-
-    protected Workbook loadWorkbookFromResource(String resource) {
-		InputStream is = null;
-		try {
-			is = OpenmrsClassLoader.getInstance().getResourceAsStream(resource);
-			POIFSFileSystem fs = new POIFSFileSystem(is);
-			return WorkbookFactory.create(fs);
-		}
-		catch (Exception e) {
-			throw new RuntimeException("Unable to load excel workbook from resource", e);
-		}
-		finally {
-			IOUtils.closeQuietly(is);
-		}
-	}
 
 	protected void testCellContentsToTheRightOf(Sheet sheet, String contentsBefore, Object contentsToTest) {
 		Cell c = getCellToTheRightOf(sheet, contentsBefore);

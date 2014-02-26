@@ -1,14 +1,20 @@
 package org.openmrs.module.reporting.common;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.openmrs.util.OpenmrsClassLoader;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
 
@@ -280,5 +286,43 @@ public class ExcelUtil {
 			}
 		}
 		return sb.toString();
+	}
+
+	public static Workbook loadWorkbookFromInputStream(InputStream is) {
+		try {
+			POIFSFileSystem fs = new POIFSFileSystem(is);
+			return WorkbookFactory.create(fs);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Unable to load excel workbook from resource", e);
+		}
+	}
+
+	public static Workbook loadWorkbookFromResource(String resource) {
+		InputStream is = null;
+		try {
+			is = OpenmrsClassLoader.getInstance().getResourceAsStream(resource);
+			return loadWorkbookFromInputStream(is);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Unable to load excel workbook from resourceL " + resource, e);
+		}
+		finally {
+			IOUtils.closeQuietly(is);
+		}
+	}
+
+	public static Workbook loadWorkbookFromFile(String path) {
+		InputStream is = null;
+		try {
+			is = new FileInputStream(path);
+			return loadWorkbookFromInputStream(is);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Unable to load excel workbook from file: " + path, e);
+		}
+		finally {
+			IOUtils.closeQuietly(is);
+		}
 	}
 }

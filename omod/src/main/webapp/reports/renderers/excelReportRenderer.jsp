@@ -69,8 +69,10 @@
 		$radioButtons.change(function() {
 			if ( $( this ).attr( 'value' ) == 'org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer' ) {
 				$( '#reportDesignForm table.formTable td.customOutputSection' ).show();
+				$( '#xlsReportRendererProperties').hide();
 			} else {
 				$( '#reportDesignForm table.formTable td.customOutputSection' ).hide();
+				$( '#xlsReportRendererProperties').show();
 			}
 		} );
 		$checkedRadioButton.change();		
@@ -205,6 +207,16 @@
         		<input type="radio" name="rendererType" value="org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer">
         		<span class=""><spring:message code="reporting.ExcelTemplateRenderer.customOutput"/></span>  
       		</td>
+			<td align="left" valign="top" id="xlsReportRendererProperties" style="padding-left:15px;">
+				<table padding="5">
+					<tr>
+						<td>
+							<input type="checkbox" name="includeDataSetNameAndParameters" value="true" ${includeDataSetNameAndParameters ? 'checked' : ''}/>
+							<spring:message code="reporting.ExcelReportRenderer.includeDataSetHeader"/>
+						</td>
+					</tr>
+				</table>
+			</td>
       		<td align="left" valign="top" class="customOutputSection">
       			<span class="metadataField"><spring:message code="reporting.ExcelReportRenderer.expressions"/></span>
       			<span class="description"><spring:message code="reporting.ExcelReportRenderer.expressions.description"/></span>

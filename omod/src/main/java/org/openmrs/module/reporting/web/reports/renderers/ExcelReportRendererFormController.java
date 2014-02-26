@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringUtils;
 
+import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,6 +88,11 @@ public class ExcelReportRendererFormController {
 		configurableExpressions.put("expressionPrefix", rendererType.getExpressionPrefix(design));
 		configurableExpressions.put("expressionSuffix", rendererType.getExpressionSuffix(design));
 
+		if (rendererType instanceof XlsReportRenderer) {
+			XlsReportRenderer xlsRptRenderer = (XlsReportRenderer)rendererType;
+			model.addAttribute("includeDataSetNameAndParameters", xlsRptRenderer.getIncludeDataSetNameAndParameters(design));
+		}
+
 		String pathToRemove = "/" + WebConstants.WEBAPP_NAME;
     	if (StringUtils.isEmpty(successUrl)) {
     		successUrl = "/module/reporting/reports/manageReportDesigns.form";
@@ -119,6 +125,7 @@ public class ExcelReportRendererFormController {
 					@RequestParam(required=false, value="resourceId") String resourceId,
 					@RequestParam(required=false, value="expressionPrefix") String expressionPrefix,
 					@RequestParam(required=false, value="expressionSuffix") String expressionSuffix,
+					@RequestParam(required=false, value="includeDataSetNameAndParameters") String includeDataSetNameAndParameters,
 					@RequestParam(required=true,  value="successUrl") String successUrl
 	) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		ReportService rs = Context.getService(ReportService.class);
@@ -189,8 +196,15 @@ public class ExcelReportRendererFormController {
 	    	if(!StringUtils.isEmpty(expressionSuffix) && !expressionSuffix.equals(type.getExpressionSuffix(design))) {
 	    		props.setProperty("expressionSuffix", expressionSuffix);
 	    	}
-	    	
+
 	    	design.setProperties(props);
+		}
+		else {
+			Properties p = new Properties();
+			if ("true".equals(includeDataSetNameAndParameters)) {
+				p.setProperty(XlsReportRenderer.INCLUDE_DATASET_NAME_AND_PARAMETERS_PROPERTY, "true");
+			}
+			design.setProperties(p);
 		}
 
     	

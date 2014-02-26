@@ -9,9 +9,11 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ExcelBuilder;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
@@ -32,6 +34,8 @@ import java.util.Map;
 public class XlsReportRenderer extends ReportTemplateRenderer {
 
 	private Log log = LogFactory.getLog(this.getClass());
+
+	public static String INCLUDE_DATASET_NAME_AND_PARAMETERS_PROPERTY = "includeDataSetNameAndParameters";
 	
 	public XlsReportRenderer() { }
     
@@ -70,6 +74,19 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
             for (Map.Entry<String, DataSet> e : reportData.getDataSets().entrySet()) {
                 DataSet dataset = e.getValue();
 				excelBuilder.newSheet(e.getKey());
+
+				if (getIncludeDataSetNameAndParameters(design)) {
+					String displayName = ObjectUtil.nvlStr(dataset.getDefinition().getName(), e.getKey());
+					excelBuilder.addCell(displayName, "bold");
+					excelBuilder.nextRow();
+					for (Parameter p : dataset.getDefinition().getParameters()) {
+						excelBuilder.addCell(p.getLabelOrName() + ":", "align=right");
+						excelBuilder.addCell(ObjectUtil.format(dataset.getContext().getParameterValue(p.getName())));
+						excelBuilder.nextRow();
+					}
+					excelBuilder.nextRow();
+				}
+
                 List<DataSetColumn> columnList = dataset.getMetaData().getColumns();
                 for (DataSetColumn column : columnList) {
 					excelBuilder.addCell(column.getLabel(), "bold,border=bottom");
@@ -85,6 +102,13 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
 			excelBuilder.write(out);
         }
     }
+
+	/**
+	 * @return true if the Excel output should include the data set name and parameters in the top rows
+	 */
+	public boolean getIncludeDataSetNameAndParameters(ReportDesign design) {
+		return "true".equalsIgnoreCase(design.getPropertyValue(INCLUDE_DATASET_NAME_AND_PARAMETERS_PROPERTY, ""));
+	}
 
 	/**
 	 * @return an Excel Workbook for the given argument
