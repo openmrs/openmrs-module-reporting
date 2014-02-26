@@ -38,7 +38,8 @@ public class ObsDataSetEvaluator implements DataSetEvaluator {
         ObsDataSetDefinition dsd = (ObsDataSetDefinition) dataSetDefinition;
         context = ObjectUtil.nvl(context, new EvaluationContext());
 
-        SimpleDataSet dataSet = new SimpleDataSet(dsd, context);
+		SimpleDataSet dataSet = new SimpleDataSet(dsd, context);
+		dataSet.setSortCriteria(dsd.getSortCriteria());
 
         // Construct an ObsEvaluationContext based on the obs filter
         ObsIdSet r = null;

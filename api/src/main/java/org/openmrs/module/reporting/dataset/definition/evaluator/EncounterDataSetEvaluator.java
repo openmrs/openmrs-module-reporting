@@ -60,8 +60,9 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 		
 		EncounterDataSetDefinition dsd = (EncounterDataSetDefinition) dataSetDefinition;
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		
+
 		SimpleDataSet dataSet = new SimpleDataSet(dsd, context);
+		dataSet.setSortCriteria(dsd.getSortCriteria());
 		
 		// Construct an EncounterEvaluationContext based on the encounter filter
 		EncounterIdSet r = null;
