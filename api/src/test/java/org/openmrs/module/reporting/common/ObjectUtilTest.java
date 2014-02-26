@@ -266,13 +266,14 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
         Assert.assertEquals("YES", ObjectUtil.format(createObsWithValueCodedYes()));
     }
 
-
     @Test
     public void shouldLocalizeObsBasedOnLocaleGlobalProperty() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
         addLocalizedNamesToYesConcept();
+		String previousLocale = TestUtil.getGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME);
 		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, "es");
         Assert.assertEquals("Si", ObjectUtil.format(createObsWithValueCodedYes()));
+		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, previousLocale);
     }
 
 	@Test
@@ -300,6 +301,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
 
 	@Test
 	public void shouldFormatDateWithAppropriateFormat() {
+		String previousLocale = TestUtil.getGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME);
+		String previousFormat = TestUtil.getGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT);
+
 		Date d = DateUtil.getDateTime(2014,1,14);
 		Assert.assertEquals("14-Jan-2014", ObjectUtil.format(d, "dd-MMM-yyyy"));
 		Assert.assertEquals("14/01/2014", ObjectUtil.format(d));
@@ -307,6 +311,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
 		Assert.assertEquals("January 14, 2014", ObjectUtil.format(d));
 		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, "es");
 		Assert.assertEquals("enero 14, 2014", ObjectUtil.format(d));
+
+		TestUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT, previousFormat);
+		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, previousLocale);
 	}
 
     // hack to add a few localized names to concept

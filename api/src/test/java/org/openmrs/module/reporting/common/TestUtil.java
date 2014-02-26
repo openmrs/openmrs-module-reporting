@@ -70,6 +70,10 @@ public class TestUtil {
 		return props.getProperty(testDatasetName);
 	}
 
+	public static String getGlobalProperty(String propertyName) {
+		return Context.getAdministrationService().getGlobalProperty(propertyName);
+	}
+
 	public static void updateGlobalProperty(String propertyName, String propertyValue) {
 		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(propertyName);
 		if (gp == null) {
