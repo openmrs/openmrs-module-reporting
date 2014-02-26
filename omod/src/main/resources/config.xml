@@ -103,7 +103,6 @@
 		<defaultValue>false</defaultValue>
 		<description>If reportingcompatibility is installed, this indicates whether data exports should be exposed as Dataset Definitions</description>
 	</globalProperty>
-	
 	<globalProperty>
 		<property>reporting.preferredIdentifierTypes</property>
 		<defaultValue></defaultValue>
@@ -114,7 +113,19 @@
 		<defaultValue>showIfNull</defaultValue>
 		<description>Supports the values hide,showIfNull,show which determine whether the cohort selector should be available in the run report page</description>
 	</globalProperty>
-
+	<globalProperty>
+		<property>reporting.dataEvaluationBatchSize</property>
+		<defaultValue>1000</defaultValue>
+		<description>
+			This determines whether to run evaluators for Data in batches and what the size of those batches should be.
+			A value of less than or equal to 0 indicates that no batching is desired.
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>reporting.defaultDateFormat</property>
+		<defaultValue>dd/MMM/yyyy</defaultValue>
+		<description>Default date format to use when formatting report data</description>
+	</globalProperty>
     <globalProperty>
         <property>reporting.defaultLocale</property>
         <defaultValue>en</defaultValue>

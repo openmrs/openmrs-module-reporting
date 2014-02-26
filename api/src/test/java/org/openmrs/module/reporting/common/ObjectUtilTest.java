@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.common;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,6 +33,7 @@ import org.openmrs.PersonName;
 import org.openmrs.User;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -269,7 +271,7 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
     public void shouldLocalizeObsBasedOnLocaleGlobalProperty() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
         addLocalizedNamesToYesConcept();
-        setGlobalPropertyDefaultReportingLocale("es");
+		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, "es");
         Assert.assertEquals("Si", ObjectUtil.format(createObsWithValueCodedYes()));
     }
 
@@ -296,6 +298,17 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
 		Assert.assertEquals("Encounter 3 has type Emergency and date 2008-08-01", s);
 	}
 
+	@Test
+	public void shouldFormatDateWithAppropriateFormat() {
+		Date d = DateUtil.getDateTime(2014,1,14);
+		Assert.assertEquals("14-Jan-2014", ObjectUtil.format(d, "dd-MMM-yyyy"));
+		Assert.assertEquals("14/01/2014", ObjectUtil.format(d));
+		TestUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT, "MMMM dd, yyyy");
+		Assert.assertEquals("January 14, 2014", ObjectUtil.format(d));
+		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, "es");
+		Assert.assertEquals("enero 14, 2014", ObjectUtil.format(d));
+	}
+
     // hack to add a few localized names to concept
     private void addLocalizedNamesToYesConcept() {
 
@@ -320,12 +333,5 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
         yes.setConcept(Context.getConceptService().getConcept(12));
         yes.setValueCoded(Context.getConceptService().getConcept(7));
         return yes;
-    }
-
-    private void setGlobalPropertyDefaultReportingLocale(String locale) {
-        GlobalProperty gp = new GlobalProperty();
-        gp.setProperty("reporting.defaultLocale");
-        gp.setPropertyValue(locale);
-        Context.getAdministrationService().saveGlobalProperty(gp);
     }
 }

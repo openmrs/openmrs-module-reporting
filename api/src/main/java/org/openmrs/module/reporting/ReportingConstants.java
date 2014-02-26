@@ -24,9 +24,12 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Constants required by this module
@@ -35,37 +38,35 @@ public class ReportingConstants implements GlobalPropertyListener {
 
     protected static final Log log = LogFactory.getLog(ReportingConstants.class);
 
-	public static final String PRIV_VIEW_REPORTS = "View Reports";
-	public static final String PRIV_ADD_REPORTS = "Add Reports";
-	public static final String PRIV_EDIT_REPORTS = "Edit Reports";	
-	public static final String PRIV_DELETE_REPORTS = "Delete Reports";	
-	public static final String PRIV_RUN_REPORTS = "Run Reports";	
-	public static final String PRIV_VIEW_REPORT_OBJECTS = "View Report Objects";	
-	public static final String PRIV_ADD_REPORT_OBJECTS = "Add Report Objects";	
-	public static final String PRIV_EDIT_REPORT_OBJECTS = "Edit Report Objects";	
-	public static final String PRIV_DELETE_REPORT_OBJECTS = "Delete Report Objects";
+	private static transient Map<String, Object> gpCache = new HashMap<String, Object>();
 
-	public static final String REPORT_OBJECT_TYPE_PATIENTFILTER = "Patient Filter";
-	public static final String REPORT_OBJECT_TYPE_PATIENTSEARCH = "Patient Search";
-	public static final String REPORT_OBJECT_TYPE_PATIENTDATAPRODUCER = "Patient Data Producer";
-	
-	public static final String GLOBAL_PROPERTY_REPORT_XML_MACROS = "report.xmlMacros";
+	// Global Property Names
+	public static final String GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES = "reporting.preferredIdentifierTypes";
 	public static final String GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS = "report.deleteReportsAgeInHours";
-	
+	public static final String GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN = "reporting.maxReportsToRun";
+	public static final String GLOBAL_PROPERTY_MAX_CACHED_REPORTS = "reporting.maxCachedReports";
+	public static final String GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE = "reporting.dataEvaluationBatchSize";
+	public static final String GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS = "reporting.includeDataExportsAsDataSetDefinitions";
+	public static final String GLOBAL_PROPERTY_RUN_REPORT_COHORT_FILTER_MODE = "reporting.runReportCohortFilterMode";
+	public static final String GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT = "reporting.defaultDateFormat";
+	public static final String DEFAULT_LOCALE_GP_NAME = "reporting.defaultLocale";
+
+	public static final List<String> CACHED_PROPERTIES = Arrays.asList(GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT, DEFAULT_LOCALE_GP_NAME);
+
+	// Constants used within sessions to key report data that can be retrieved
 	public static final String OPENMRS_REPORT_DATA = "__openmrs_report_data";
 	public static final String OPENMRS_REPORT_ARGUMENT = "__openmrs_report_argument";
 	public static final String OPENMRS_LAST_REPORT_URL = "__openmrs_last_report_url";
-	public static final String OPENMRS_HIDE_REPORT_LINK = "__openmrs_hide_report_link";
 
 	// Some default parameters used by multiple reporting objects 
 	public static final Parameter START_DATE_PARAMETER = new Parameter("startDate", "Start date", Date.class);
 	public static final Parameter END_DATE_PARAMETER = new Parameter("endDate", "End date", Date.class);
 	public static final Parameter LOCATION_PARAMETER = new Parameter("location", "Location", Location.class);
 
-    // Semi-Constants defined through global properties
+    // Global property accessor methods
 	
 	public static final List<PatientIdentifierType> GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES() {
-		String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.preferredIdentifierTypes");
+		String propertyValue = Context.getAdministrationService().getGlobalProperty(GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES);
 		List<PatientIdentifierType> pits = new ArrayList<PatientIdentifierType>();
 		if (StringUtils.hasText(propertyValue)) {
 			for (String s : propertyValue.split("\\|")) {
@@ -76,93 +77,102 @@ public class ReportingConstants implements GlobalPropertyListener {
 		}
 		return pits;
 	}
-	
+
 	public static final int GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN() {
-		String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.maxReportsToRun");
-		if (StringUtils.hasText(propertyValue)) {
-			try {
-				return Integer.parseInt(propertyValue);
-			}
-			catch (Exception e) {
-				// Do nothing
-			}
-		}
-		return 2;
+		return getPropertyValueAsInt(GLOBAL_PROPERTY_MAX_REPORTS_TO_RUN, 2);
 	}
 	
 	public static final int GLOBAL_PROPERTY_MAX_CACHED_REPORTS() {
-		String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.maxCachedReports");
-		if (StringUtils.hasText(propertyValue)) {
-			try {
-				return Integer.parseInt(propertyValue);
-			}
-			catch (Exception e) {
-				// Do nothing
-			}
-		}
-		return 10;
+		return getPropertyValueAsInt(GLOBAL_PROPERTY_MAX_CACHED_REPORTS, 10);
 	}
 
-	/**
-	 * @return for data definition evaluations, this determines whether to run these in batches and what the
-	 * size of those batches should be.  A value of <= 0 indicates that no batching is desired.
-	 */
 	public static final int GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE() {
-		String propertyValue = Context.getAdministrationService().getGlobalProperty("reporting.dataEvaluationBatchSize");
-		if (StringUtils.hasText(propertyValue)) {
-			try {
-				return Integer.parseInt(propertyValue);
-			}
-			catch (Exception e) {
-				// Do nothing
-			}
-		}
-		return 1000;
+		return getPropertyValueAsInt(GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE, 1000);
 	}
 	
 	public static final boolean GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS() {
-		return "true".equals(Context.getAdministrationService().getGlobalProperty("reporting.includeDataExportsAsDataSetDefinitions"));
+		return getPropertyValueAsBoolean(GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS, false);
 	}
-
-    public static final String DEFAULT_LOCALE_GP_NAME = "reporting.defaultLocale";
-    private static boolean hasCachedDefaultLocale = false;
-    private static transient Locale cachedDefaultLocale = null;
 
     // this property is fetched a lot, so we cache it
     public static final Locale GLOBAL_PROPERTY_DEFAULT_LOCALE() {
-        if (hasCachedDefaultLocale) {
-            return cachedDefaultLocale;
+        if (gpCache.containsKey(DEFAULT_LOCALE_GP_NAME)) {
+            return (Locale)gpCache.get(DEFAULT_LOCALE_GP_NAME);
         }
         else {
-            String propertyValue = Context.getAdministrationService().getGlobalProperty(DEFAULT_LOCALE_GP_NAME);
-            if (StringUtils.hasText(propertyValue)) {
-                try {
-                    cachedDefaultLocale = new Locale(propertyValue);
-                } catch (Exception e) {
-                    log.warn("Unable to instantiate default locale", e);
-                    cachedDefaultLocale = null;
-                }
-            } else {
-                cachedDefaultLocale = null;
-            }
-
-            hasCachedDefaultLocale = true;
-            return cachedDefaultLocale;
+			Locale locale = getPropertyValueAsLocale(DEFAULT_LOCALE_GP_NAME, null);
+			gpCache.put(DEFAULT_LOCALE_GP_NAME, locale);
+			return locale;
         }
     }
 
+	// this property is fetched a lot, so we cache it
+	public static final String GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT() {
+		if (gpCache.containsKey(GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT)) {
+			return (String)gpCache.get(GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT);
+		}
+		else {
+			String df = getPropertyValueAsString(GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT);
+			gpCache.put(GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT, df);
+			return df;
+		}
+	}
+
     @Override
     public boolean supportsPropertyName(String s) {
-        return DEFAULT_LOCALE_GP_NAME.equals(s);
+		return CACHED_PROPERTIES.contains(s);
     }
 
     @Override
     public void globalPropertyChanged(GlobalProperty globalProperty) {
-        hasCachedDefaultLocale = false;
+        gpCache.clear();
     }
 
     @Override
     public void globalPropertyDeleted(String s) {
-        hasCachedDefaultLocale = false;
+		gpCache.clear();
     }
+
+	private static String getPropertyValueAsString(String propertyName) {
+		return Context.getAdministrationService().getGlobalProperty(propertyName);
+	}
+
+	private static int getPropertyValueAsInt(String propertyName, int defaultValue) {
+		String propertyValue = getPropertyValueAsString(propertyName);
+		if (StringUtils.hasText(propertyValue)) {
+			try {
+				return Integer.parseInt(propertyValue);
+			}
+			catch (Exception e) {
+				log.warn("Invalid setting <" + propertyValue + "> found for global property: " + propertyName + ".  An Integer is required.  Using default of " + defaultValue);
+			}
+		}
+		return defaultValue;
+	}
+
+	private static boolean getPropertyValueAsBoolean(String propertyName, boolean defaultValue) {
+		String propertyValue = getPropertyValueAsString(GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS);
+		if (StringUtils.hasText(propertyValue)) {
+			try {
+				return Boolean.parseBoolean(propertyValue);
+			}
+			catch (Exception e) {
+				log.warn("Invalid setting <" + propertyValue + "> found for global property: " + propertyName + ".  A Boolean is required.  Using default of " + defaultValue);
+			}
+		}
+		return defaultValue;
+	}
+
+	private static Locale getPropertyValueAsLocale(String propertyName, Locale defaultValue) {
+		String propertyValue = getPropertyValueAsString(propertyName);
+		if (StringUtils.hasText(propertyValue)) {
+			try {
+				return new Locale(propertyValue);
+			}
+			catch (Exception e) {
+				log.warn("Invalid setting <" + propertyValue + "> found for global property: " + propertyName + ".  A Locale is required.  Using default of " + defaultValue);
+			}
+		}
+		return defaultValue;
+	}
 }

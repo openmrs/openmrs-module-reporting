@@ -365,14 +365,27 @@ public class ObjectUtil {
             locale = Context.getLocale();
         }
 
-		if (o == null) { return ""; }
+		if (o == null) {
+			return "";
+		}
+
 		if (o instanceof Date) {
-			DateFormat df = Context.getDateFormat();
-			if (ObjectUtil.notNull(format)) {
-				df = new SimpleDateFormat(format);
+			DateFormat df = null;
+			String formatString = ObjectUtil.nvl(format, ReportingConstants.GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT());
+			if (ObjectUtil.notNull(formatString)) {
+				try {
+					df = new SimpleDateFormat(formatString, locale);
+				}
+				catch (Exception e) {
+					log.warn("Invalid date format <" + formatString + "> specified, using defaults.");
+				}
+			}
+			if (df == null) {
+				df = Context.getDateFormat();
 			}
 			return df.format((Date)o);
 		}
+
 		if (o instanceof Map) {
 			return toString((Map)o, nvl(format, ","));
 		}
