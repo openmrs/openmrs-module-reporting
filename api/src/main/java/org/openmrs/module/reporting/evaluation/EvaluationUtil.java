@@ -152,6 +152,23 @@ public class EvaluationUtil {
 		}
 		return null;
 	}
+
+	/**
+	 * This can be used to retrieve the parameter name that may be included within a parameter expression
+	 * If the expression has no expression-like syntax to remove, it simply returns the expression
+	 * For example ${startDate} and ${startDate+1d} would both return "startDate"
+	 *
+	 * @param expression a parameter expression to check
+	 * @return the unadorned parameter value that is contained within the passed expression.
+	 */
+	public static String parseParameterNameFromExpression(String expression) {
+		expression = EvaluationUtil.stripExpression(expression);
+		Matcher matcher = expressionPattern.matcher(expression);
+		if (matcher.matches()) {
+			return matcher.group(1);
+		}
+		return expression;
+	}
 		
 	/**
 	 * This method will parse the passed expression and return a value based on the following

@@ -284,6 +284,7 @@ public class ParameterizableUtil {
 				paramName = renamedParameters.get(paramName);
 			}
 			mappings.put(p.getName(), "${" + paramName + "}");
+			paramName = EvaluationUtil.parseParameterNameFromExpression(paramName);
 			Parameter newParameter = new Parameter();
 			newParameter.setName(paramName);
 			newParameter.setLabel(p.getLabel());

@@ -107,6 +107,19 @@ public class EvaluationContextTest extends BaseModuleContextSensitiveTest {
 		assertEquals(evaluate("${start_of_last_month}", context), df.parse("2006-12-01 00:00:00:000"));
 		assertEquals(evaluate("${end_of_last_month}", context), df.parse("2006-12-31 23:59:59:999"));
 	}
+
+	@Test
+	public void shouldParseParameterNameFromExpression() throws Exception {
+		assertEquals("startDate", parseParameter("${startDate}"));
+		assertEquals("report.d1", parseParameter("${report.d1 - 17s}"));
+		assertEquals("endDate", parseParameter("${endDate-15d}"));
+		assertEquals("reportDate", parseParameter("${reportDate - 15d}"));
+		assertEquals("reportDate", parseParameter("${reportDate- 15d}"));
+		assertEquals("reportDate", parseParameter("${reportDate -1ms}"));
+		assertEquals("reportDate.d1", parseParameter("${reportDate.d1-1m-1w}"));
+		assertEquals("reportDate", parseParameter("reportDate"));
+		assertEquals("startDate", parseParameter("startDate"));
+	}
 	
 	/**
 	 * Helper method to evaluate an expression
@@ -132,5 +145,8 @@ public class EvaluationContextTest extends BaseModuleContextSensitiveTest {
 	public Object evaluate(String expression) throws Exception {
 		return evaluate(expression, new EvaluationContext());
 	}
-	
+
+	public String parseParameter(String expression) {
+		return EvaluationUtil.parseParameterNameFromExpression(expression);
+	}
 }
