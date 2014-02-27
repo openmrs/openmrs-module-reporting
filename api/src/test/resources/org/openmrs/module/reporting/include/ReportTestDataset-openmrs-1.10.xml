@@ -388,13 +388,18 @@
   <patient_program patient_program_id="7" patient_id="8" program_id="3" date_enrolled="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 11:55:55.0" voided="false" changed_by="1" date_changed="2008-08-18 11:58:20.0" uuid="53292615-7f93-48c4-b672-76459dcdaedc"/>
   <patient_program patient_program_id="8" patient_id="2" program_id="1" date_enrolled="2010-03-10 00:00:00.0" creator="1" date_created="2008-08-18 11:40:48.0" changed_by="1" date_changed="2008-08-18 12:29:29.0" voided="false" uuid="b75462a0-4c92-abce-b8bc-e98b38b76534"/>
   <patient_program patient_program_id="9" patient_id="7" program_id="1" date_enrolled="2008-08-04 00:00:00.0" creator="1" date_created="2008-08-18 11:40:48.0" changed_by="1" date_changed="2008-08-18 12:29:29.0" voided="false" uuid="b75462a0-4c92-abce-b8bc-e98b38a36534"/>
+  <patient_program patient_program_id="10" patient_id="23" program_id="1" date_enrolled="2012-04-01 00:00:00.0" date_completed="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" changed_by="1" date_changed="2012-05-15 00:00:00.0" voided="false" uuid="b75462b9-4c92-1122-b8bc-e98b38a36534"/>
+  <patient_program patient_program_id="11" patient_id="23" program_id="1" date_enrolled="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" changed_by="1" date_changed="2012-05-15 00:00:00.0" voided="false" uuid="b75462b9-4c92-abce-b8bc-e98c38a36534"/>
 
   <patient_state patient_state_id="1" patient_program_id="1" state="2" start_date="2008-08-08" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37eaa"/>
   <patient_state patient_state_id="2" patient_program_id="6" state="6" start_date="2008-08-11" end_date="2009-12-31" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37ebb"/>
   <patient_state patient_state_id="3" patient_program_id="6" state="7" start_date="2009-12-31" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37ecc"/>
   <patient_state patient_state_id="4" patient_program_id="7" state="6" start_date="2008-08-01" end_date="2008-12-15" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37edd"/>
   <patient_state patient_state_id="5" patient_program_id="7" state="8" start_date="2008-12-15" end_date="2009-11-01" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37eee"/>
-  
+  <patient_state patient_state_id="6" patient_program_id="10" state="1" start_date="2012-04-01 00:00:00.0" end_date="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" voided="false" uuid="ea89debb-23cc-4840-aafe-63d199c37eaa"/>
+  <patient_state patient_state_id="7" patient_program_id="10" state="2" start_date="2012-05-15 00:00:00.0" end_date="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" voided="false" uuid="ea89abaa-23cc-4840-92fe-63d199c37eaa"/>
+  <patient_state patient_state_id="8" patient_program_id="11" state="1" start_date="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" voided="false" uuid="ea89debb-23cc-4833-92fe-63d199c37eaa"/>
+
   <!-- 2 relationship_type --> 
   <relationship_type relationship_type_id="1" a_is_to_b="Doctor" b_is_to_a="Patient" preferred="0" weight="0" description="Relationship from a primary care provider to the patient" creator="1" date_created="2007-05-04 09:59:22.0" uuid="6d9002ea-a99b-4889-af78-82d48c57a119" retired="false"/>
   <relationship_type relationship_type_id="5" a_is_to_b="Parent" b_is_to_a="Child" preferred="0" weight="0" description="parent and child" creator="1" date_created="2008-08-15 15:55:18.0" uuid="2a5f4ff4-a179-4b8a-aa4c-40f71956eaaa" retired="false"/>

@@ -217,6 +217,24 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 
 	/**
 	 * @see ProgramStatesForPatientDataEvaluator#evaluate(PatientDataDefinition,EvaluationContext)
+	 * @verifies return the first patient state by start date and program enrollment date
+	 */
+	@Test
+	public void evaluate_shouldReturnTheLastPatientStateByStateStartDateAndEnrollmentDate() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("23"));
+
+		ProgramStatesForPatientDataDefinition def = new ProgramStatesForPatientDataDefinition();
+		def.setWhich(TimeQualifier.LAST);
+		def.setState(Context.getProgramWorkflowService().getState(1));
+
+		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
+		Assert.assertEquals(8, ((PatientState)pd.getData().get(23)).getPatientStateId().intValue());
+	}
+
+
+	/**
+	 * @see ProgramStatesForPatientDataEvaluator#evaluate(PatientDataDefinition,EvaluationContext)
 	 * @verifies return a list of patient states for each patient
 	 */
 	@SuppressWarnings("rawtypes")
