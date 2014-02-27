@@ -7,8 +7,8 @@
 
 <style type="text/css">
     .alt { background-color: #EEE; }
-    .hover { background-color: #DED; }
-    .althover { background-color: #EFE; }        
+    .hover { background-color: #B0BED9; }
+    .althover { background-color: #B0BED9; }
 </style>
 
 <script type="text/javascript">
