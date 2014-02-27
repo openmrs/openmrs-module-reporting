@@ -130,7 +130,13 @@ public class EvaluationContext implements PatientCalculationContext {
 			}
 			Object paramVal = m.get(paramName);
 			if (paramVal instanceof String) {
-				paramVal = EvaluationUtil.evaluateExpression(paramVal.toString(), initialContext);
+				String paramValStr = (String)paramVal;
+				paramVal = EvaluationUtil.evaluateExpression(paramValStr, initialContext);
+
+				// Treat mappings that are not found as null parameter values
+				if (EvaluationUtil.isExpression(paramValStr) && EvaluationUtil.stripExpression(paramValStr).equals(paramVal)) {
+					paramVal = null;
+				}
 			}
 			ec.addParameterValue(paramName, paramVal);
 		}

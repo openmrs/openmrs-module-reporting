@@ -64,6 +64,11 @@ public class Parameter implements Serializable {
 	 * The default value given to this parameter.
 	 */
 	private Object defaultValue;
+
+	/**
+	 * Indicates whether this parameter is required, or should accept a value of null.  Default to required = true.
+	 */
+	private boolean required = true;
 	
 	/**
 	 * Configuration properties that will be sent to the widgets to control how they are configured and displayed
@@ -276,10 +281,35 @@ public class Parameter implements Serializable {
 	}
 
 	/**
+	 * @return the required
+	 */
+	public boolean isRequired() {
+		return required;
+	}
+
+	/**
+	 * @param required the required value to set
+	 */
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
+
+	/**
 	 * @return the widgetConfiguration
 	 */
 	public Properties getWidgetConfiguration() {
 		return widgetConfiguration;
+	}
+
+	/**
+	 * @param propertyName the widgetConfiguration property to set
+	 * @param propertyValue the widgetConfiguration value to set
+	 */
+	public void addToWidgetConfiguration(String propertyName, String propertyValue) {
+		if (widgetConfiguration == null) {
+			widgetConfiguration = new Properties();
+		}
+		widgetConfiguration.setProperty(propertyName, propertyValue);
 	}
 	
 	/**

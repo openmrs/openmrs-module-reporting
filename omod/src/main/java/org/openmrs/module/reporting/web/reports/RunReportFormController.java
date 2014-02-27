@@ -89,7 +89,9 @@ public class RunReportFormController extends SimpleFormController implements Val
 			Set<String> requiredParams = new HashSet<String>();
 			if (reportDefinition.getParameters() != null) {
 				for (Parameter parameter : reportDefinition.getParameters()) {
-					requiredParams.add(parameter.getName());
+					if (parameter.isRequired()) {
+						requiredParams.add(parameter.getName());
+					}
 				}
 			}
 			
@@ -195,18 +197,19 @@ public class RunReportFormController extends SimpleFormController implements Val
 			for (Parameter parameter : reportDefinition.getParameters()) {
 				Object value = null;
 				String expression = null;
-				if(command.getExpressions() != null && ObjectUtil.notNull(command.getExpressions().get(parameter.getName())))
+				if (command.getExpressions() != null && ObjectUtil.notNull(command.getExpressions().get(parameter.getName()))) {
 					expression = command.getExpressions().get(parameter.getName());
-				else
+				}
+				else {
 					value = command.getUserEnteredParams().get(parameter.getName());
-				
+				}
 				if (ObjectUtil.notNull(value) || ObjectUtil.notNull(expression)) {
 					try {
 						if (StringUtils.hasText(expression))
 							value = expression;
 						else
 							value = WidgetUtil.parseInput(value, parameter.getType(), parameter.getCollectionType());
-						
+
 						params.put(parameter.getName(), value);
 					}
 					catch (Exception ex) {
