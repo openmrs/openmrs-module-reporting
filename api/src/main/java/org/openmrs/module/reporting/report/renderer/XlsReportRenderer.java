@@ -80,9 +80,12 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
 					excelBuilder.addCell(displayName, "bold");
 					excelBuilder.nextRow();
 					for (Parameter p : dataset.getDefinition().getParameters()) {
-						excelBuilder.addCell(p.getLabelOrName() + ":", "align=right");
-						excelBuilder.addCell(ObjectUtil.format(dataset.getContext().getParameterValue(p.getName())));
-						excelBuilder.nextRow();
+						Object parameterValue = dataset.getContext().getParameterValue(p.getName());
+						if (ObjectUtil.notNull(parameterValue)) {
+							excelBuilder.addCell(p.getLabelOrName() + ":", "align=right");
+							excelBuilder.addCell(ObjectUtil.format(parameterValue));
+							excelBuilder.nextRow();
+						}
 					}
 					excelBuilder.nextRow();
 				}

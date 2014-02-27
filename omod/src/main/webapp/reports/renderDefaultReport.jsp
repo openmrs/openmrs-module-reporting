@@ -55,7 +55,7 @@ $(document).ready(function(){
 				<c:set var="dataSetKey" value="${dataSetDefinitionEntry.key}"/>
 				<c:set var="dataSet" value="${__openmrs_report_data.dataSets[dataSetKey]}"/>
 				<div id="tabs-${itemStatus.index}">
-					<table class="dataset" cellpadding="2" style="border: 1px solid black; width:100%;">
+					<table class="dataset" cellpadding="2" style="border: 1px solid black; font-size: 0.8em; width:100%;">
 						<c:choose>
 							<c:when test="${rpt:instanceOf(dataSet, 'org.openmrs.module.reporting.dataset.MapDataSet')}">
 								<c:choose>
