@@ -126,6 +126,9 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
 			wb = WorkbookFactory.create(fs);
 		}
 		catch (Exception e) {
+			if (!design.getResources().isEmpty()) {
+				throw new RenderingException("There was an error loading the Excel template", e);
+			}
 			log.debug("No template file found, will use default Excel output");
 		}
 		finally {

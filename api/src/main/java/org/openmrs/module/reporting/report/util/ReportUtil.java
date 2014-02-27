@@ -1,18 +1,5 @@
 package org.openmrs.module.reporting.report.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -37,6 +24,19 @@ import org.openmrs.module.reporting.report.renderer.TextTemplateRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsConstants;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class ReportUtil {
 	
@@ -158,6 +158,20 @@ public class ReportUtil {
 			IOUtils.closeQuietly(out);
 		}
 	}
+
+	public static byte[] readByteArrayFromResource(String resourcePath) {
+		InputStream is = null;
+		try {
+			is = OpenmrsClassLoader.getInstance().getResourceAsStream(resourcePath);
+			return IOUtils.toByteArray(is);
+		}
+		catch (Exception e) {
+			throw new IllegalArgumentException("Error reading resource from the classpath", e);
+		}
+		finally {
+			IOUtils.closeQuietly(is);
+		}
+	}
 	
 	/**
 	 * Looks up a resource on the class path, and returns a RenderingMode based on it
@@ -165,15 +179,6 @@ public class ReportUtil {
 	 * @throws UnsupportedEncodingException
 	 */
 	public static RenderingMode renderingModeFromResource(String label, String resourceName) {
-		InputStreamReader reader;
-		
-		try {
-			reader = new InputStreamReader(OpenmrsClassLoader.getInstance().getResourceAsStream(resourceName), "UTF-8");
-		}
-		catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("Error reading template from stream", e);
-		}
-		
 		final ReportDesign design = new ReportDesign();
 		ReportDesignResource resource = new ReportDesignResource();
 		resource.setName("template");
@@ -186,15 +191,10 @@ public class ReportUtil {
 			}
 		}
 		resource.setContentType(contentType);
-		ReportRenderer renderer = null;
-		try {
-			resource.setContents(IOUtils.toByteArray(reader, "UTF-8"));
-		}
-		catch (Exception e) {
-			throw new RuntimeException("Error reading template from stream", e);
-		}
-		
+		resource.setContents(readByteArrayFromResource(resourceName));
 		design.getResources().add(resource);
+
+		ReportRenderer renderer = null;
 		if ("xls".equals(extension)) {
 			renderer = new ExcelTemplateRenderer() {
 				
@@ -227,6 +227,13 @@ public class ReportUtil {
 		catch (ClassNotFoundException e) {
 			throw new APIException(e);
 		}
+	}
+
+	/**
+	 * @return a path like "org/openmrs/module/reporting/report/util" given the class ReportUtil.class
+	 */
+	public static String getPackageAsPath(Class<?> clazz) {
+		return clazz.getPackage().getName().replace(".", "/");
 	}
 	
 	/**

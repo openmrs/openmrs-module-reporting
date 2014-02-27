@@ -148,6 +148,15 @@ public class CohortIndicatorAndDimensionDataSetDefinition extends BaseDataSetDef
 	public void addSpecification(CohortIndicatorAndDimensionSpecification specification) {
 		getSpecifications().add(specification);
 	}
+
+	public void addSpecification(String indicatorNumber, String label, Mapped<CohortIndicator> indicator, Map<String, List<String>> dimensionOptions) {
+		CohortIndicatorAndDimensionSpecification s = new CohortIndicatorAndDimensionSpecification();
+		s.setIndicatorNumber(indicatorNumber);
+		s.setLabel(label);
+		s.setIndicator(indicator);
+		s.setDimensionOptions(dimensionOptions);
+		addSpecification(s);
+	}
     
     //***** INNER CLASSES *****
 
