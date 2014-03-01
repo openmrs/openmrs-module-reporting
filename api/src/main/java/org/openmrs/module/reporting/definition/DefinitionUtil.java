@@ -43,7 +43,7 @@ public class DefinitionUtil {
 	public static String format(Definition d) {
 		StringBuilder sb = new StringBuilder();
 		for (Property p : getConfigurationProperties(d)) {
-			sb.append(sb.length() > 0 ? "," : "").append(p.getDisplayName()).append("=").append(p.getValue());
+			sb.append(sb.length() > 0 ? "," : "").append(p.getDisplayName()).append("=").append(ObjectUtil.format(p.getValue()));
 		}
 		return d.getClass().getSimpleName() + "[" + sb.toString() + "]";
 	}
