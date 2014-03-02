@@ -24,6 +24,7 @@ import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinition
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.renderer.ReportTemplateRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -70,9 +71,10 @@ public class MultiParameterDataSetEvaluator implements DataSetEvaluator {
 			Iterator<DataSetRow> iterator = ds.iterator();
 			while (iterator.hasNext()) {
 				DataSetRow row = new DataSetRow();
-				for (Map.Entry<String, Object> param: ds.getContext().getParameterValues().entrySet()) {
-					String columnName = ReportTemplateRenderer.PARAMETER_PREFIX + ReportTemplateRenderer.SEPARATOR + param.getKey();
-					row.addColumnValue(new DataSetColumn(columnName, columnName, param == null ? Object.class : param.getValue().getClass()), param.getValue());
+				for (Parameter p : dsd.getBaseDefinition().getParameters()) {
+					Object paramValue = ds.getContext().getParameterValue(p.getName());
+					String columnName = ReportTemplateRenderer.PARAMETER_PREFIX + ReportTemplateRenderer.SEPARATOR + p.getName();
+					row.addColumnValue(new DataSetColumn(columnName, p.getLabelOrName(), p.getType()), paramValue);
 				}
 				for (Map.Entry<DataSetColumn, Object> entry: iterator.next().getColumnValues().entrySet()) {
 					row.addColumnValue(entry.getKey(), entry.getValue());
