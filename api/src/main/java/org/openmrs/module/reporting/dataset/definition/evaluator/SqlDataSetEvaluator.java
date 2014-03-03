@@ -105,7 +105,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 				column.setDataType(Context.loadClass(rsmd.getColumnClassName(i)));
 				column.setLabel(rsmd.getColumnLabel(i));
 				dataSet.getMetaData().addColumn(column);
-				if ("patient_id".equals(rsmd.getColumnName(i))) {
+				if ("patient_id".equalsIgnoreCase(rsmd.getColumnName(i))) {
 					patientIdColumnIndex = i;
 				}
 			}

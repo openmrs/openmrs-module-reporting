@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.serializer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -14,6 +15,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -112,5 +114,17 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("Name has changed", ((CohortIndicator) out).getCohortDefinition().getParameterizable().getName());
 		Assert.assertEquals("07/08/2009", ((CohortIndicator) out).getCohortDefinition().getParameterMappings().get("onDate"));
     }
+
+	@Test
+	public void testMapConverters() throws Exception {
+		ReportingSerializer rs = new ReportingSerializer();
+		List<Map<String, String>> maps = new ArrayList<Map<String, String>>();
+		maps.add(ObjectUtil.toMap("cat=gato,dog=perro"));
+		maps.add(ObjectUtil.toMap("cat=meow,dog=woof"));
+		String serialized = rs.serialize(maps);
+		List<Map<String, String>> newMaps = rs.deserialize(serialized, List.class);
+		Assert.assertEquals("cat=gato,dog=perro", ObjectUtil.toString(newMaps.get(0), "=", ","));
+		Assert.assertEquals("cat=meow,dog=woof", ObjectUtil.toString(newMaps.get(1), "=", ","));
+	}
 	
 }
