@@ -1,14 +1,7 @@
 package org.openmrs.module.reporting.report.definition.service;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.cohort.definition.util.CohortFilter;
-import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
@@ -27,17 +20,13 @@ import org.openmrs.module.reporting.report.service.ReportService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Base Implementation of the ReportService API
  */
 @Transactional
 public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDefinition> implements ReportDefinitionService {
-
-	protected static Log log = LogFactory.getLog(ReportDefinitionServiceImpl.class);
 	
 	/**
 	 * @see DefinitionService#getDefinitionType()
@@ -59,7 +48,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	}
 	
 	/**
-	 * @see ReportDefinitionService#getReportDefinition(Integer)
+	 * @see ReportDefinitionService#getDefinition(Integer)
 	 */
 	@Transactional(readOnly=true)
 	public ReportDefinition getDefinition(Integer id) {
@@ -124,7 +113,6 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	
 	/**
 	 * @see DefinitionService#purgeDefinition(Definition)
-	 * 
 	 * @should purge report designs
 	 */
 	@Transactional
@@ -157,39 +145,8 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	 */
 	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
-	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext evalContext) throws EvaluationException {
-		
-		log.debug("Evaluating report: " + reportDefinition + "(" + evalContext.getParameterValues() + ")");
-		
-		ReportData ret = new ReportData();
-		Map<String, DataSet> data = new LinkedHashMap<String, DataSet>();
-		ret.setDataSets(data);
-		ret.setDefinition(reportDefinition);
-		ret.setContext(evalContext);
-		
-		Cohort baseCohort;
-		try {
-			baseCohort = CohortFilter.filter(evalContext, reportDefinition.getBaseCohortDefinition());
-		} catch (Exception ex) {
-			throw new EvaluationException("baseCohort", ex);
-		}
-		
-		DataSetDefinitionService dss = Context.getService(DataSetDefinitionService.class);
-		Map<String, Mapped<? extends DataSetDefinition>> dsds = reportDefinition.getDataSetDefinitions();
-		if (dsds != null) {
-			for (String key : dsds.keySet()) {
-				Mapped<? extends DataSetDefinition> pd = dsds.get(key);
-				EvaluationContext childEc = EvaluationContext.cloneForChild(evalContext, pd);
-				childEc.setBaseCohort(baseCohort);
-				try {
-					data.put(key, dss.evaluate(pd.getParameterizable(), childEc));
-				} catch (Exception ex) {
-					throw new EvaluationException("data set '" + key + "'", ex);
-				}
-			}
-		}
-		
-		return ret;
+	public ReportData evaluate(ReportDefinition definition, EvaluationContext context) throws EvaluationException {
+		return (ReportData) super.evaluate(definition, context);
 	}
 	
 	/**

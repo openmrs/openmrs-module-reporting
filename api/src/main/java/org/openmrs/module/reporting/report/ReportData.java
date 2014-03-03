@@ -13,12 +13,13 @@
  */
 package org.openmrs.module.reporting.report;
 
-import java.util.Map;
-
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Report Data obtained from evaluating a ReportDefinition with a given EvaluationContext.
@@ -33,7 +34,15 @@ public class ReportData implements Evaluated<ReportDefinition> {
 	
 	//***** CONSTRUCTORS *****
 	
-	public ReportData() { }	
+	public ReportData() { }
+
+	/**
+	 * Default Constructor which creates an empty ReportData for the given definition and context
+	 */
+	public ReportData(ReportDefinition definition, EvaluationContext context) {
+		this.definition = definition;
+		this.context = context;
+	}
 
 	//***** PROPERTY ACCESS *****
 
@@ -41,6 +50,9 @@ public class ReportData implements Evaluated<ReportDefinition> {
 	 * @return the dataSets
 	 */
 	public Map<String, DataSet> getDataSets() {
+		if (dataSets == null) {
+			dataSets = new LinkedHashMap<String, DataSet>();
+		}
 		return dataSets;
 	}
 

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -81,6 +82,17 @@ public class ObjectUtil {
 	 */
 	public static Map<String, String> toMap(String toParse) {
 		return toMap(toParse, "=", ",");
+	}
+
+	/**
+	 * @return Map<String, Object> given passed keys and values.  Will convert keys to String if needed
+	 */
+	public static Map<String, Object> toMap(Object...keysAndValues) {
+		Map<String, Object> m = new HashMap<String, Object>();
+		for (int i=0; i<keysAndValues.length; i+=2) {
+			m.put(keysAndValues[i].toString(), keysAndValues[i+1]);
+		}
+		return m;
 	}
     
 	/**
