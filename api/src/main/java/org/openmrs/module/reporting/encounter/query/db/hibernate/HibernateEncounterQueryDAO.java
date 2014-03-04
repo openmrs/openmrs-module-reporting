@@ -13,30 +13,31 @@
  */
 package org.openmrs.module.reporting.encounter.query.db.hibernate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.encounter.query.db.EncounterQueryDAO;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
- * Hibernate specific dao for the {@link EncounterQueryService} All calls should
+ * Hibernate specific dao for the EncounterQueryService All calls should
  * be made on the EncounterQueryService object:
  * Context.getService(EncounterQueryService.class)
  * 
  * @implements EncounterQueryDAO
- * @see EncounterQueryService
  */
 
 public class HibernateEncounterQueryDAO implements EncounterQueryDAO {
@@ -71,36 +72,43 @@ public class HibernateEncounterQueryDAO implements EncounterQueryDAO {
 
 		if (cohort != null && cohort.size() == 0) {
 			return new ArrayList<Encounter>();
-		} else {
-
-			// default query			
+		}
+		else {
 			Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Encounter.class);
-			
-			// this "where clause" is only necessary if patients were passed in
-			if (cohort != null)
-				criteria.add(Restrictions.in("patientId", cohort.getMemberIds()));
+
+			Criteria patientCriteria = criteria.createCriteria("patient");
+			patientCriteria.add(Restrictions.eq("voided", false));
+
+			if (cohort != null) {
+				patientCriteria.add(Restrictions.in("patient.patientId", cohort.getMemberIds()));
+			}
 
 			criteria.add(Restrictions.eq("voided", false));
 
-			if (encounterTypes != null && encounterTypes.size() > 0)
+			if (encounterTypes != null && encounterTypes.size() > 0) {
 				criteria.add(Restrictions.in("encounterType", encounterTypes));
+			}
 
-			if (forms != null && forms.size() > 0)
+			if (forms != null && forms.size() > 0) {
 				criteria.add(Restrictions.in("form", forms));
+			}
 
-			if (encounterDatetimeOnOrAfter != null)
+			if (encounterDatetimeOnOrAfter != null) {
 				criteria.add(Expression.ge("encounterDatetime", encounterDatetimeOnOrAfter));
-			if (encounterDatetimeOnOrBefore != null)
+			}
+
+			if (encounterDatetimeOnOrBefore != null) {
 				criteria.add(Expression.le("encounterDatetime", DateUtil.getEndOfDayIfTimeExcluded(encounterDatetimeOnOrBefore)));
+			}
 
-			criteria.addOrder(org.hibernate.criterion.Order.asc("patientId"));
+			patientCriteria.addOrder(Order.asc("patientId"));
 
-			if (whichEncounterQualifier != null && whichEncounterQualifier.equals(TimeQualifier.LAST))
-				criteria.addOrder(org.hibernate.criterion.Order.desc("encounterDatetime"));
-			else
-				criteria.addOrder(org.hibernate.criterion.Order.asc("encounterDatetime"));
-
-			criteria.createCriteria("patient").add(Restrictions.eq("voided", false));
+			if (whichEncounterQualifier != null && whichEncounterQualifier.equals(TimeQualifier.LAST)) {
+				criteria.addOrder(Order.desc("encounterDatetime"));
+			}
+			else {
+				criteria.addOrder(Order.asc("encounterDatetime"));
+			}
 			
 			return criteria.list();
 		}
