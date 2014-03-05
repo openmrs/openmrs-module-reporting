@@ -43,7 +43,7 @@ public class ChainedConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convert(Object)
 	 */
 	public Object convert(Object original) {
 		Object o = original;
