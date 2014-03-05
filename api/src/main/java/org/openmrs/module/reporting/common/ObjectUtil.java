@@ -9,6 +9,7 @@ import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.ProgramWorkflow;
@@ -54,7 +55,7 @@ public class ObjectUtil {
 			if (sb.length() > 0) {
 				sb.append(entrySeparator);
 			}
-		    sb.append(e.getKey() + keyValueSeparator + e.getValue());
+		    sb.append(ObjectUtil.format(e.getKey()) + keyValueSeparator + ObjectUtil.format(e.getValue()));
 		}
 		return sb.toString();
     }
@@ -363,134 +364,174 @@ public class ObjectUtil {
         return format(o, format, null);
     }
 
+	public static String formatDate(Date d, String format, Locale locale) {
+		DateFormat df = null;
+		String formatString = ObjectUtil.nvl(format, ReportingConstants.GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT());
+		if (ObjectUtil.notNull(formatString)) {
+			try {
+				df = new SimpleDateFormat(formatString, locale);
+			}
+			catch (Exception e) {
+				log.warn("Invalid date format <" + format + "> specified, using defaults.");
+			}
+		}
+		if (df == null) {
+			df = Context.getDateFormat();
+		}
+		return df.format(d);
+	}
+
+	public static String formatNumber(Number n, String format, Locale locale) {
+		if (notNull(format)) {
+			NumberFormat nf = NumberFormat.getInstance();
+			nf.setGroupingUsed(false);
+			try {
+				nf.setMinimumFractionDigits(Integer.parseInt(format));
+				nf.setMaximumFractionDigits(Integer.parseInt(format));
+				return nf.format(n);
+			}
+			catch (Exception e) {
+				log.warn("Invalid number format <" + format + "> specified, using defaults.");
+			}
+		}
+		return n.toString();
+	}
+
+	public static String formatMetadata(OpenmrsMetadata metadata, String format, Locale locale) {
+		String name = getLocalization(metadata, locale);
+		if (StringUtils.isBlank(name)) {
+			name = metadata.getName();
+			if (name == null) {
+				if (metadata instanceof ProgramWorkflow) {
+					name = formatConcept(((ProgramWorkflow)metadata).getConcept(), format, locale);
+				}
+				else if (metadata instanceof ProgramWorkflowState) {
+					name = formatConcept(((ProgramWorkflowState)metadata).getConcept(), format, locale);
+				}
+			}
+		}
+		if (StringUtils.isBlank(name)) {
+			return nullSafeToString(metadata);
+		}
+		return name;
+	}
+
+	public static String formatConcept(Concept c, String format, Locale locale) {
+		return c.getBestName(locale).getName();
+	}
+
+	public static String formatOpenmrsData(OpenmrsData d, String format, Locale locale) {
+		if (ObjectUtil.notNull(format)) {
+			String ret = format;
+			try {
+				int startIndex = ret.indexOf("{");
+				int endIndex = ret.indexOf("}", startIndex+1);
+				while (startIndex != -1 && endIndex != -1) {
+					String propertyAndFormat = ret.substring(startIndex+1, endIndex);
+					String[] formatSplit = propertyAndFormat.split("\\|");
+					String propertyName = formatSplit[0];
+					Object replacement = ReflectionUtil.getPropertyValue(d, propertyName);
+					String newFormat = (replacement != null && formatSplit.length > 1 ? formatSplit[1] : null);
+					replacement = ObjectUtil.format(replacement, newFormat, locale);
+					ret = ret.replace("{"+propertyAndFormat+"}", nvlStr(replacement, ""));
+					startIndex = ret.indexOf("{");
+					endIndex = ret.indexOf("}", startIndex+1);
+				}
+				return ret;
+			}
+			catch (Exception e) {
+				log.warn("Unable to get property using converter with format: " + format, e);
+			}
+		}
+		else if (d instanceof Person) {
+			Person p = (Person)d;
+			if (p.getPersonName() != null) {
+				return p.getPersonName().getFullName();
+			}
+		}
+		else {
+			if (d instanceof Obs) {
+				Obs obs = (Obs)d;
+				if (obs.getValueNumeric() != null) {
+					return formatNumber(obs.getValueNumeric(), format, locale);
+				}
+				else if (obs.getValueDatetime() != null) {
+					return formatDate(obs.getValueDatetime(), format, locale);
+				}
+				else if (obs.getValueCoded() != null) {
+					return formatConcept(obs.getValueCoded(), format, locale);
+				}
+				else {
+					return obs.getValueAsString(locale);
+				}
+			}
+		}
+		return nullSafeToString(d);
+	}
+
+	public static String nullSafeToString(OpenmrsObject o) {
+		try {
+			return o.toString();
+		}
+		catch (Exception e) {
+			log.debug("Exception calling toString on " + o.getClass().getSimpleName(), e);
+		}
+		return o.getUuid();
+	}
+
 	/**
 	 * @return a formatted version of the object suitable for display
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static String format(Object o, String format, Locale locale) {
 
-        // if no locale passed in, use locale specified in global property, otherwise context default
-        if (locale == null) {
-            locale = ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCALE();
-        }
-        if (locale == null) {
-            locale = Context.getLocale();
-        }
-
-		if (o == null) {
-			return "";
-		}
-
-		if (o instanceof Date) {
-			DateFormat df = null;
-			String formatString = ObjectUtil.nvl(format, ReportingConstants.GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT());
-			if (ObjectUtil.notNull(formatString)) {
-				try {
-					df = new SimpleDateFormat(formatString, locale);
-				}
-				catch (Exception e) {
-					log.warn("Invalid date format <" + formatString + "> specified, using defaults.");
-				}
+		try {
+			// if no locale passed in, use locale specified in global property, otherwise context default
+			if (locale == null) {
+				locale = ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCALE();
 			}
-			if (df == null) {
-				df = Context.getDateFormat();
+			if (locale == null) {
+				locale = Context.getLocale();
 			}
-			return df.format((Date)o);
-		}
-
-		if (o instanceof Map) {
-			return toString((Map)o, nvl(format, ","));
-		}
-		if (o instanceof Collection) {
-			return OpenmrsUtil.join((Collection)o, nvl(format, ","));
-		}
-		if (o instanceof Object[]) {
-			return toString(nvl(format, ","), (Object[])o);
-		}
-		if (o instanceof IndicatorResult) {
-			IndicatorResult r = (IndicatorResult)o;
-			return format(r.getValue(), format, locale);
-		}
-		if (o instanceof Cohort) {
-			return Integer.toString(((Cohort)o).getSize());
-		}
-		if (o instanceof Number) {
-			if (notNull(format)) {
-				NumberFormat nf = NumberFormat.getInstance();
-				nf.setGroupingUsed(false);
-				try {
-					nf.setMinimumFractionDigits(Integer.parseInt(format));
-					nf.setMaximumFractionDigits(Integer.parseInt(format));
-				}
-				catch (Exception e) {}
-				return nf.format((Number)o);
+			if (o == null) {
+				return "";
+			}
+			if (o instanceof Date) {
+				return formatDate((Date)o, format, locale);
+			}
+			if (o instanceof Map) {
+				return toString((Map)o, nvl(format, ","));
+			}
+			if (o instanceof Collection) {
+				return OpenmrsUtil.join((Collection)o, nvl(format, ","));
+			}
+			if (o instanceof Object[]) {
+				return toString(nvl(format, ","), (Object[])o);
+			}
+			if (o instanceof IndicatorResult) {
+				return format(((IndicatorResult)o).getValue(), format, locale);
+			}
+			if (o instanceof Cohort) {
+				return Integer.toString(((Cohort)o).getSize());
+			}
+			if (o instanceof Number) {
+				return formatNumber((Number)o, format, locale);
+			}
+			if (o instanceof OpenmrsMetadata) {
+				return formatMetadata((OpenmrsMetadata)o, format, locale);
+			}
+			if (o instanceof Concept) {
+				return formatConcept((Concept)o, format, locale);
+			}
+			if (o instanceof OpenmrsData) {
+				return formatOpenmrsData((OpenmrsData)o, format, locale);
 			}
 		}
-		if (o instanceof OpenmrsMetadata) {
-            String name = getLocalization((OpenmrsMetadata) o, locale);
-            if (StringUtils.isBlank(name)) {
-                name = ((OpenmrsMetadata) o).getName();
-                if (name == null) {
-                    if (o instanceof ProgramWorkflow) {
-                        name = ((ProgramWorkflow)o).getConcept().getDisplayString();
-                    }
-                    else if (o instanceof ProgramWorkflowState) {
-                        name = ((ProgramWorkflowState)o).getConcept().getDisplayString();
-                    }
-                }
-            }
-			return name;
+		catch (Exception e) {
+			log.warn("Unable to format " + o.getClass().getSimpleName());
 		}
-		if (o instanceof Concept) {
-			Concept c = (Concept)o;
-			return c.getBestName(locale).getName();
-		}
-		if (o instanceof OpenmrsData) {
-			if (ObjectUtil.notNull(format)) {
-				String ret = format;
-				try {
-					int startIndex = ret.indexOf("{");
-					int endIndex = ret.indexOf("}", startIndex+1);
-					while (startIndex != -1 && endIndex != -1) {
-						String propertyAndFormat = ret.substring(startIndex+1, endIndex);
-						String[] formatSplit = propertyAndFormat.split("\\|");
-						String propertyName = formatSplit[0];
-						Object replacement = ReflectionUtil.getPropertyValue(o, propertyName);
-						String newFormat = (replacement != null && formatSplit.length > 1 ? formatSplit[1] : null);
-						replacement = ObjectUtil.format(replacement, newFormat, locale);
-						ret = ret.replace("{"+propertyAndFormat+"}", nvlStr(replacement, ""));
-						startIndex = ret.indexOf("{");
-						endIndex = ret.indexOf("}", startIndex+1);
-					}
-					return ret;
-				}
-				catch (Exception e) {
-					log.warn("Unable to get property using converter with format: " + format, e);
-				}
-			}
-			else if (o instanceof Person) {
-				Person p = (Person)o;
-				if (p.getPersonName() != null) {
-					return p.getPersonName().getFullName();
-				}
-			}
-			else {
-				if (o instanceof Obs) {
-					Obs obs = (Obs)o;
-					if (obs.getValueNumeric() != null) {
-						return format(obs.getValueNumeric());
-					}
-					else if (obs.getValueDatetime() != null) {
-						return format(obs.getValueDatetime());
-					}
-                    else if (obs.getValueCoded() != null) {
-                        return format(obs.getValueCoded().getBestName(locale));
-                    }
-					else {
-						return obs.getValueAsString(locale);
-					}
-				}
-			}
+		if (o instanceof OpenmrsObject) {
+			return nullSafeToString((OpenmrsObject)o);
 		}
 		return o.toString();
 	}
