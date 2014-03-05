@@ -128,9 +128,11 @@ $(document).ready(function(){
 											<tr>
 												<td style="white-space:nowrap;">
 													${col.name}&nbsp;
+												</td>
+												<td style="width:100%">
 													<spring:message code="${col.label}" text="${col.label}"/>
 												</td>
-												<td>
+												<td style="white-space:nowrap;">
 													<c:if test="${showUrl}"><a style="text-decoration: underline" href="${url}"></c:if>
 													<rpt:format object="${columnValue}"/>
 													<c:if test="${showUrl}"></a></c:if>
