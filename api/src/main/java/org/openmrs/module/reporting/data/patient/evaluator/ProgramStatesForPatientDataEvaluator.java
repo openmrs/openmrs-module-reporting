@@ -103,10 +103,10 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 			m.put("endedOnOrAfter", def.getActiveOnDate());
 		}
 		if (def.getWhich() == TimeQualifier.LAST) {
-			hql.append("order by ps.startDate desc ps.patientProgram.dateEnrolled desc");
+			hql.append("order by ps.startDate desc, ps.patientProgram.dateEnrolled desc");
 		}
-		else if (def.getWhich() == TimeQualifier.FIRST) {
-			hql.append("order by ps.startDate asc ps.patientProgram.dateEnrolled asc");
+		else {
+			hql.append("order by ps.startDate asc, ps.patientProgram.dateEnrolled asc");
 		}
 
 		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
