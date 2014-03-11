@@ -101,4 +101,24 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
         service.evaluate(dataSetDefinition, context);
     }
 
+	/**
+	 * @see {@link SqlDataSetEvaluator#evaluate(DataSetDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should handle boolean parameters", method = "evaluate(DataSetDefinition,EvaluationContext)")
+	public void evaluate_shouldHandleBooleanParameters() throws EvaluationException {
+		SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
+		String query = "select name from location where retired = :Retired order by name";
+		dataSetDefinition.setSqlQuery(query);
+		EvaluationContext context = new EvaluationContext(new Date());
+		context.addParameterValue("Retired", Boolean.TRUE);
+
+		SimpleDataSet ds = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
+		Assert.assertEquals(1, ds.getRows().size());
+
+		context.addParameterValue("Retired", Boolean.FALSE);
+
+		ds = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
+		Assert.assertEquals(2, ds.getRows().size());
+	}
 }

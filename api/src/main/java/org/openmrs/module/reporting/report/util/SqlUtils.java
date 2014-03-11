@@ -177,6 +177,11 @@ public class SqlUtils {
 							statement.setLong(position, (Integer)paramValue);
 						}
 					}
+					else if (paramValue instanceof Boolean) {
+						for (Integer position : positions) {
+							statement.setBoolean(position, (Boolean)paramValue);
+						}
+					}
 					// String, et al (this might break since this is a catch all for all other classes)
 					else {
 						for (Integer position : positions) {
