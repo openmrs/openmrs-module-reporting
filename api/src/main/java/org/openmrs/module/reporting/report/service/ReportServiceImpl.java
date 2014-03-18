@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.report.service;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -677,12 +678,13 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 
 		// If there is no rendered output, serialize the raw data to file, otherwise write the rendered output to file
 		if (report.getRenderedOutput() == null) {
-			try {
+            BufferedOutputStream out = null;
+            try {
                 File reportDataFile = getReportDataFile(report.getRequest());
                 log.info(timer.logInterval("About to serialize the ReportData to " + reportDataFile.getPath()));
 
+                out = new BufferedOutputStream(new FileOutputStream(reportDataFile));
                 ReportingSerializer serializer = (ReportingSerializer) Context.getSerializationService().getSerializer(ReportingSerializer.class);
-                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(reportDataFile));
                 serializer.serializeToStream(report.getReportData(), out);
 
 				log.info(timer.logInterval("Serialized the report data to disk"));
@@ -691,7 +693,10 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				success = false;
 				log.warn("An error occurred writing report data to disk", e);
 			}
-		}
+            finally {
+                IOUtils.closeQuietly(out);
+            }
+        }
 		else {
 			try {
 				ReportUtil.writeByteArrayToFile(getReportOutputFile(report.getRequest()), report.getRenderedOutput());
