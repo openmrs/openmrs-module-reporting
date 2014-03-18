@@ -1,11 +1,5 @@
 package org.openmrs.module.reporting.serializer;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.ProgramWorkflowState;
@@ -23,6 +17,16 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 	
@@ -126,5 +130,14 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("cat=gato,dog=perro", ObjectUtil.toString(newMaps.get(0), "=", ","));
 		Assert.assertEquals("cat=meow,dog=woof", ObjectUtil.toString(newMaps.get(1), "=", ","));
 	}
-	
+
+    @Test
+    public void testSerializeToStream() throws Exception {
+        Object object = "Test";
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ReportingSerializer rs = new ReportingSerializer();
+        rs.serializeToStream(object, out);
+
+        assertThat(out.toString("UTF-8"), is("<string>Test</string>"));
+    }
 }
