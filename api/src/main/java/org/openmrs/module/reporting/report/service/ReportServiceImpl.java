@@ -672,21 +672,21 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		
 		boolean success = true;
 		Timer timer = Timer.start();
-		
-		// Serialize the raw data to file
-		try {
-			String serializedData = Context.getSerializationService().serialize(report.getReportData(), ReportingSerializer.class);
-			log.info(timer.logInterval("Serialized the ReportData"));
-			ReportUtil.writeStringToFile(getReportDataFile(report.getRequest()), serializedData);
-			log.info(timer.logInterval("Persisted the report data to disk"));
+
+		// If there is no rendered output, serialize the raw data to file, otherwise write the rendered output to file
+		if (report.getRenderedOutput() == null) {
+			try {
+				String serializedData = Context.getSerializationService().serialize(report.getReportData(), ReportingSerializer.class);
+				log.info(timer.logInterval("Serialized the ReportData"));
+				ReportUtil.writeStringToFile(getReportDataFile(report.getRequest()), serializedData);
+				log.info(timer.logInterval("Persisted the report data to disk"));
+			}
+			catch (Exception e) {
+				success = false;
+				log.warn("An error occurred writing report data to disk", e);
+			}
 		}
-		catch (Exception e) {
-			success = false;
-			log.warn("An error occurred writing report data to disk", e);
-		}
-		
-		// Write the output to file
-		if (report.getRenderedOutput() != null) {
+		else {
 			try {
 				ReportUtil.writeByteArrayToFile(getReportOutputFile(report.getRequest()), report.getRenderedOutput());
 				log.info(timer.logInterval("Persisted the report output to disk"));
