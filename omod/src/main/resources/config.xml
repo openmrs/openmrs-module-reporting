@@ -192,6 +192,7 @@
 	<mappingFiles>
 		ReportDesign.hbm.xml
 		ReportRequest.hbm.xml
+		IdsetMember.hbm.xml
 	</mappingFiles>
 	
 	<!-- dwr -->

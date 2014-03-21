@@ -49,7 +49,7 @@ public class EncounterToObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         Patient patient = data.randomPatient().save();
         Obs obsWithoutEncounter =  data.obs().obsDatetime(new Date()).person(patient)
                 .concept(Context.getConceptService().getConcept(5089))
-                .location(Context.getLocationService().getLocation(1))
+                .location(Context.getLocationService().getLocation(1)).value(350)
                 .save();
 
         EncounterToObsDataDefinition d = new EncounterToObsDataDefinition(new EncounterIdDataDefinition());

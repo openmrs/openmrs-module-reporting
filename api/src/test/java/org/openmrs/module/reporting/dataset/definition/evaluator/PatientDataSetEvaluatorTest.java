@@ -117,7 +117,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
 		Assert.assertEquals(35, dataset.getColumnValue(2, "Age At Start"));
 		Assert.assertEquals(36, dataset.getColumnValue(2, "Age At End"));
-		DataSetUtil.printDataSet(dataset, System.out);
+		//DataSetUtil.printDataSet(dataset, System.out);
 	}
 	
 	@Test
@@ -162,7 +162,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		d.addSortCriteria("Last Encounter Date", SortDirection.ASC);
 		
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
-		DataSetUtil.printDataSet(dataset, System.out);
+		//DataSetUtil.printDataSet(dataset, System.out);
 	}
 	
 	@Test
@@ -179,7 +179,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		d.addColumns("Last 3 Encounters", encounterDataSet, null, TimeQualifier.LAST, 3);
 		
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
-		DataSetUtil.printDataSet(dataset, System.out);
+		//DataSetUtil.printDataSet(dataset, System.out);
 	}
 	
 	//***** UTILITY METHODS *****

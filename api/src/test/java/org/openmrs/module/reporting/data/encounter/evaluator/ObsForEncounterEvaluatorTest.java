@@ -68,8 +68,8 @@ public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc1 = data.randomEncounter().patient(patient).save();
-        Obs obs1 = data.obs().concept(weight).encounter(enc1).save();
-        Obs obs2 = data.obs().concept(cd4).encounter(enc1).save();
+        Obs obs1 = data.obs().concept(weight).value(60).encounter(enc1).save();
+        Obs obs2 = data.obs().concept(cd4).value(350).encounter(enc1).save();
 
         EncounterEvaluationContext context = new EncounterEvaluationContext();
         context.setBaseEncounters(new EncounterIdSet(enc1.getId()));
@@ -92,8 +92,8 @@ public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc1 = data.randomEncounter().patient(patient).save();
-        Obs obs1 = data.obs().concept(weight).encounter(enc1).save();
-        Obs obs2 = data.obs().concept(weight).encounter(enc1).save();
+        Obs obs1 = data.obs().concept(weight).value(60).encounter(enc1).save();
+        Obs obs2 = data.obs().concept(weight).value(62).encounter(enc1).save();
 
         EncounterEvaluationContext context = new EncounterEvaluationContext();
         context.setBaseEncounters(new EncounterIdSet(enc1.getId()));
@@ -119,8 +119,8 @@ public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc1 = data.randomEncounter().patient(patient).save();
-        Obs obs1 = data.obs().concept(weight).encounter(enc1).save();
-        Obs obs2 = data.obs().concept(cd4).encounter(enc1).save();
+        Obs obs1 = data.obs().concept(weight).value(60).encounter(enc1).save();
+        Obs obs2 = data.obs().concept(cd4).value(350).encounter(enc1).save();
 
         // add another encounter with no obs
         Encounter enc2 = data.randomEncounter().patient(patient).save();
@@ -147,8 +147,8 @@ public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc1 = data.randomEncounter().patient(patient).save();
-        Obs obs1 = data.obs().concept(weight).encounter(enc1).save();
-        Obs obs2 = data.obs().concept(weight).encounter(enc1).save();
+        Obs obs1 = data.obs().concept(weight).value(60).encounter(enc1).save();
+        Obs obs2 = data.obs().concept(weight).value(60).encounter(enc1).save();
 
         // add another encounter with no obs
         Encounter enc2 = data.randomEncounter().patient(patient).save();
@@ -177,8 +177,8 @@ public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc1 = data.randomEncounter().patient(patient).save();
-        Obs obs1 = data.obs().concept(weight).encounter(enc1).save();
-        Obs obs2 = data.obs().concept(cd4).encounter(enc1).save();
+        Obs obs1 = data.obs().concept(weight).value(60).encounter(enc1).save();
+        Obs obs2 = data.obs().concept(cd4).value(350).encounter(enc1).save();
 
         // set a cohort, not a set of encounter ids
         EvaluationContext context = new EvaluationContext();

@@ -175,4 +175,8 @@ public class ReportingConstants implements GlobalPropertyListener {
 		}
 		return defaultValue;
 	}
+
+	public static void clearGlobalPropertyCache() {
+		gpCache.clear();
+	}
 }

@@ -351,5 +351,22 @@
 			where 	renderer_type = 'org.openmrs.module.reporting.web.renderers.IndicatorReportWebRenderer';
 		</sql>
 	</changeSet>
-        
+
+	<changeSet id="reporting_id_set_1" author="mseaton">
+		<preConditions onFail="MARK_RAN">
+			<not><tableExists tableName="reporting_idset" /></not>
+		</preConditions>
+		<comment>
+			Create table to persist idset members during evaluations
+		</comment>
+		<createTable tableName="reporting_idset">
+			<column name="idset_key" type="char(40)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="member_id" type="int">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
 </databaseChangeLog>

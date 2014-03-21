@@ -99,8 +99,7 @@ public class ReportDashboardController {
 				else if (result instanceof Cohort) {
 					selectedCohort = (Cohort) result;
 				} 
-				
-				System.out.println("Result is of type " + result.getClass().getName());
+
 				model.addAttribute("selectedCohort", selectedCohort);
 				
 				model.addAttribute("patients", Context.getPatientSetService().getPatients(selectedCohort.getMemberIds()));	

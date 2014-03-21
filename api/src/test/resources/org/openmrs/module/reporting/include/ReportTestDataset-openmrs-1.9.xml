@@ -116,7 +116,7 @@
   <concept_name concept_id="792" name="D4T+3TC+NVP" locale="en" creator="1" date_created="2008-08-15 14:05:56.0" concept_name_id="2478" voided="false" uuid="d8c3d99f-f2d7-4775-9453-d7eb9935eb6f" locale_preferred="true"/>
   <concept_name concept_id="8" name="N" locale="en" creator="1" date_created="2008-08-15 13:53:31.0" concept_name_id="2479" voided="false" uuid="0ae52990-0c41-4591-8caa-31ed6a3dffa8" locale_preferred="true"/>
   <concept_name concept_id="792" name="TRIOMUNE-30" locale="en" creator="1" date_created="2008-08-15 14:05:56.0" concept_name_id="2480" voided="false" uuid="726f9e6d-bc7e-4a78-8741-c7d644d704cc" locale_preferred="true"/>
-  <concept_name concept_id="7" name="Y" locale="en" creator="1" date_created="2008-08-15 13:52:53.0" concept_name_id="2481" voided="false" uuid="0631be3b-e338-4505-a876-ef3310f65896" locale_preferred="true"/>
+  <concept_name concept_id="7" name="Y" locale="en" creator="1" date_created="2008-08-15 13:52:53.0" concept_name_id="2481" voided="false" uuid="0631be3b-e338-4505-a876-ef3310f65896" locale_preferred="false"/>
   <concept_name concept_id="24" name="COMMON MEDICATIONS" locale="en" creator="1" date_created="2008-08-18 12:38:58.0" concept_name_id="2482" voided="false" uuid="b4ebf4f6-50b3-4e78-82b1-7d192a7ede92" locale_preferred="true"/>
   <concept_name concept_id="10001" name="MEDICATIONS STARTED" locale="en" creator="1" date_created="2008-08-18 12:38:58.0" concept_name_id="10001" voided="false" uuid="b4ebf4f6-1111-4e78-82b1-7d192a7ede92" locale_preferred="true"/>
   <concept_name concept_id="10002" name="MEDICATIONS STOPPED" locale="en" creator="1" date_created="2008-08-18 12:38:58.0" concept_name_id="10001" voided="false" uuid="b4ebf4f6-1112-4e78-82b1-7d192a7ede92" locale_preferred="true"/>

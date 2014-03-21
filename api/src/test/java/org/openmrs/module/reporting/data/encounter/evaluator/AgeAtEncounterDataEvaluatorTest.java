@@ -51,8 +51,8 @@ public class AgeAtEncounterDataEvaluatorTest extends BaseModuleContextSensitiveT
 
         EvaluatedEncounterData result = encounterDataService.evaluate(new AgeAtEncounterDataDefinition(), context);
         assertThat(result.getData().size(), is(1));
-        assertThat(((Age) result.getData().get(3)).getBirthDate(), is(DateUtil.parseYmd("1976-08-25")));
-        assertThat(((Age) result.getData().get(3)).getCurrentDate(), is(DateUtil.parseYmd("2008-08-01")));
+        assertThat(((Age) result.getData().get(3)).getBirthDate().getTime(), is(DateUtil.parseYmd("1976-08-25").getTime()));
+        assertThat(((Age) result.getData().get(3)).getCurrentDate().getTime(), is(DateUtil.parseYmd("2008-08-01").getTime()));
     }
 
 }

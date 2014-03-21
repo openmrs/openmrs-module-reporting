@@ -4,13 +4,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.common.QueryBuilder;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.ObsForEncounterDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,30 +39,27 @@ public class ObsForEncounterDataEvaluator implements EncounterDataEvaluator {
             return data;
         }
 
-		QueryBuilder qb = new QueryBuilder();
-		qb.addClause("select 	obs.encounter.encounterId, obs");
-		qb.addClause("from		Obs as obs");
-		qb.addClause("where		voided = false");
-		qb.addClause("and		concept = :question").withParameter("question", def.getQuestion());
-		if (encIds != null) {
-			qb.addClause("and	encounter.encounterId in (:encIds)").withParameter("encIds", encIds);
+		// Create an entry for each encounter
+		for (Integer encId : encIds) {
+			if (!def.isSingleObs()) {
+				data.addData(encId, new ArrayList<Obs>());
+			}
+			else {
+				data.addData(encId, null);
+			}
 		}
-		List<Object[]> results = (List<Object[]>)qb.execute();
 
-        // Create an entry for each encounter
-        for (Integer encId : encIds) {
-            if (!def.isSingleObs()) {
-                data.addData(encId, new ArrayList<Obs>());
-            }
-            else {
-                data.addData(encId, null);
-            }
-        }
+		HqlQueryBuilder qb = new HqlQueryBuilder();
+		qb.select("obs.encounter.encounterId, obs");
+		qb.from(Obs.class, "obs");
+		qb.whereEqual("obs.voided", false);
+		qb.whereEqual("obs.concept", def.getQuestion());
+		qb.whereEqual("obs.encounter.encounterId", encIds); // TODO: Should we just join on the 2 individual sets in the context?
 
-        // Now populate with actual results
-        for (Object[] result : results) {
-            Integer encId = (Integer)result[0];
-			Obs obs = (Obs)result[1];
+		List<Object[]> result = Context.getService(EvaluationService.class).evaluateToList(qb);
+        for (Object[] row : result) {
+            Integer encId = (Integer)row[0];
+			Obs obs = (Obs)row[1];
 
             if (!def.isSingleObs()) {
                 ((List<Obs>) data.getData().get(encId)).add(obs);

@@ -45,7 +45,6 @@ public class PersonDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		
 		dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, pec);
 		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
-		System.out.println("Gender for 7: " + dataset.getColumnValue(7, "Sexe"));
 		Assert.assertNull(dataset.getColumnValue(7, "Sexe"));
 		Assert.assertEquals(4, dataset.getRows().size());
 		*/

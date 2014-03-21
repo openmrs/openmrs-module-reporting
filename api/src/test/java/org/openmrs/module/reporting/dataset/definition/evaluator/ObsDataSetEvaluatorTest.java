@@ -53,11 +53,12 @@ public class ObsDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 
         // pick a concept that has no existing obs in the test dataset
         Concept concept = conceptService.getConcept(10002);
+		Concept valueCoded = conceptService.getConcept(792);
         
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient).save();
-        Obs obs1 = data.obs().concept(concept).encounter(enc).save();
-        Obs obs2 = data.obs().concept(concept).encounter(enc).save();
+        Obs obs1 = data.obs().concept(concept).value(valueCoded).encounter(enc).save();
+        Obs obs2 = data.obs().concept(concept).value(valueCoded).encounter(enc).save();
 
         ObsDataSetDefinition dsd = new ObsDataSetDefinition();
 

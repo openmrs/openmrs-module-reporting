@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.reporting.evaluation.service" >
+
+	<class name="IdsetMember" table="reporting_idset">
+		<composite-id>
+			<key-property name="key" type="string" column="idset_key"/>
+			<key-property name="memberId" type="int" column="member_id"/>
+		</composite-id>
+	</class>
+
+</hibernate-mapping>

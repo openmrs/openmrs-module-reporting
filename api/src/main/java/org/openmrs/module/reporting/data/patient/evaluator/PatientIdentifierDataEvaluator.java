@@ -122,11 +122,11 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		public int compare(PatientIdentifier pi1, PatientIdentifier pi2) {
 			int c1 = idTypes.indexOf(pi1.getIdentifierType());
 			int c2 = idTypes.indexOf(pi2.getIdentifierType());
-			if (c1 != c2) {
+			if (c1 == c2) {
 				c1 = pi1.getPreferred() == Boolean.TRUE ? 0 : 1;
 				c2 = pi2.getPreferred() == Boolean.TRUE ? 0 : 1;
 			}
-			return c2-c1;
+			return c1-c2;
 		}
 	}
 }

@@ -82,6 +82,6 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 		d.addColumn("Age At End", ageOnDateData, "effectiveDate=${endDate}");  // Test a column with a different parameter mapping
 		
 		DataSet dataset = Context.getService(DataSetDefinitionService.class).evaluate(d, context);
-		DataSetUtil.printDataSet(dataset, System.out);
+		//DataSetUtil.printDataSet(dataset, System.out);
 	}
 }

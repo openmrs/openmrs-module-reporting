@@ -74,7 +74,6 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		CollectionConverter drugOrderListConverter = new CollectionConverter(new ObjectFormatter("{drug}"), true, null);
 		ObjectFormatter drugOrderFormatter = new ObjectFormatter(" + ");
 		ChainedConverter c = new ChainedConverter(drugOrderListConverter, drugOrderFormatter);
-		System.out.println("History: " + c.convert(history));
 	}
 
 	/**
