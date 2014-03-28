@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <!-- Obs for patients -->
+  
+  <!-- Encounter 13 : Patient 100 -->
+  <!-- TUBERCULOSIS DRUG SENSITIVITY TEST CONSTRUCT: TUBERCULOSIS DRUG SENSITIVITY TEST RESULT: RESISTANT TO TUBERCULOSIS DRUG: ETHIONAMIDE  -->
+  <obs obs_id="132" encounter_id="13" person_id="100" concept_id="3040" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="93bf1d82-e1fe-11df-9195-001e377eb6de" />
+  <obs obs_id="133" encounter_id="13" person_id="100" concept_id="3025" obs_group_id="132" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="6a668cf2-5eec-11e0-a058-f0def12f6b00" />
+  <obs obs_id="134" encounter_id="13" person_id="100" concept_id="1441" obs_group_id="133" value_coded="1414" obs_datetime="2006-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="5d131fc2-5eee-11e0-a058-f0def12f6b00" />
+</dataset>

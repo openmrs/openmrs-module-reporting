@@ -28,10 +28,12 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DrugOrderSet;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
+//import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition1_10;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Evaluates an DrugOrdersForPatientDataDefinition to produce a PatientData
@@ -51,7 +53,8 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 	 * @should return drug orders completed on or after a given date
 	 */
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
-		
+
+        //@Autowired
 		DrugOrdersForPatientDataDefinition def = (DrugOrdersForPatientDataDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		

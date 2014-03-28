@@ -9,14 +9,14 @@
 	<description>Parent project for Reporting</description>
 
 	<url>http://openmrs.org</url>
-	
+
 	<scm>
 		<connection>scm:git:https://github.com/openmrs/openmrs-module-reporting/</connection>
 		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-reporting/</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-reporting/</url>
 	  <tag>HEAD</tag>
   </scm>
-	
+
 	<distributionManagement>
         <repository>
             <id>openmrs-repo-modules</id>
@@ -34,6 +34,7 @@
 		<module>api</module>
 		<module>omod</module>
         <module>test-1.9</module>
+        <module>api-1.10</module>
     </modules>
 
 	<properties>
@@ -207,7 +208,7 @@
 			<version>${htmlwidgetsVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
