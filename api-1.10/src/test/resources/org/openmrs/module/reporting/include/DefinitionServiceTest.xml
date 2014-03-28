@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<serialized_object serialized_object_id="1"
+		name="Patients in 2006 by indicators" type="org.openmrs.module.reporting.dataset.definition.DataSetDefinition"
+		subtype="org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensionDataSetDefinition"
+		serialization_class="org.openmrs.module.reporting.serializer.ReportingSerializer"
+		creator="1" date_created="2013-01-10 14:45:49" retired="false"
+		uuid="bb1dc014-82a0-4847-8bcd-f74f91282e8d"
+		serialized_data="&lt;org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensionDataSetDefinition id=&quot;1&quot; uuid=&quot;bb1dc014-82a0-4847-8bcd-f74f91282e8d&quot; retired=&quot;false&quot;&gt;
+  &lt;name&gt;Patients in 2006 by indicators&lt;/name&gt;
+  &lt;description&gt;&lt;/description&gt;
+  &lt;parameters id=&quot;2&quot;/&gt;
+  &lt;id&gt;31&lt;/id&gt;
+  &lt;dimensions id=&quot;3&quot;&gt;
+    &lt;entry&gt;
+      &lt;string&gt;age&lt;/string&gt;
+      &lt;org.openmrs.module.reporting.evaluation.parameter.Mapped id=&quot;4&quot;&gt;
+        &lt;parameterizable class=&quot;org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension&quot; id=&quot;5&quot; uuid=&quot;cb5c3e1e-c65a-42a2-a01d-834d11525ece&quot;/&gt;
+        &lt;parameterMappings id=&quot;6&quot;/&gt;
+      &lt;/org.openmrs.module.reporting.evaluation.parameter.Mapped&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+      &lt;string&gt;gender&lt;/string&gt;
+      &lt;org.openmrs.module.reporting.evaluation.parameter.Mapped id=&quot;7&quot;&gt;
+        &lt;parameterizable class=&quot;org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension&quot; id=&quot;8&quot; uuid=&quot;0786e9d3-1892-442b-aac6-f3eabbbeb16f&quot;/&gt;
+        &lt;parameterMappings id=&quot;9&quot;/&gt;
+      &lt;/org.openmrs.module.reporting.evaluation.parameter.Mapped&gt;
+    &lt;/entry&gt;
+  &lt;/dimensions&gt;
+  &lt;specifications id=&quot;10&quot;&gt;
+    &lt;org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensionDataSetDefinition_-CohortIndicatorAndDimensionSpecification id=&quot;11&quot;&gt;
+      &lt;indicatorNumber&gt;1&lt;/indicatorNumber&gt;
+      &lt;label&gt;patients&lt;/label&gt;
+      &lt;indicator id=&quot;12&quot;&gt;
+        &lt;parameterizable class=&quot;org.openmrs.module.reporting.indicator.CohortIndicator&quot; id=&quot;13&quot; uuid=&quot;75fb7857-817e-43b0-9338-c1b5f48db856&quot;/&gt;
+        &lt;parameterMappings id=&quot;14&quot;/&gt;
+      &lt;/indicator&gt;
+      &lt;dimensionOptions class=&quot;linked-hash-map&quot; id=&quot;15&quot;&gt;
+        &lt;entry&gt;
+          &lt;string&gt;age&lt;/string&gt;
+          &lt;list id=&quot;16&quot;&gt;
+            &lt;string&gt;Adults&lt;/string&gt;
+            &lt;string&gt;Children&lt;/string&gt;
+          &lt;/list&gt;
+        &lt;/entry&gt;
+        &lt;entry&gt;
+          &lt;string&gt;gender&lt;/string&gt;
+          &lt;list id=&quot;17&quot;&gt;
+            &lt;string&gt;Males&lt;/string&gt;
+            &lt;string&gt;Females&lt;/string&gt;
+          &lt;/list&gt;
+        &lt;/entry&gt;
+      &lt;/dimensionOptions&gt;
+    &lt;/org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensionDataSetDefinition_-CohortIndicatorAndDimensionSpecification&gt;
+  &lt;/specifications&gt;
+&lt;/org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensionDataSetDefinition&gt;" />
+</dataset>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<htmlform>
+	<macros>
+		paperFormId = (Fill this in)
+		headerColor =#009d8e
+		fontOnHeaderColor = white
+	</macros>
+
+	<style>
+		.section {
+			border: 1px solid $headerColor;
+			padding: 2px;
+			text-align: left;
+			margin-bottom: 1em;
+		}
+		.sectionHeader {
+			background-color: $headerColor;
+			color: $fontOnHeaderColor;
+			display: block;
+			padding: 2px;
+			font-weight: bold;
+		}
+		table.baseline-aligned td {
+			vertical-align: baseline;
+		}
+	</style>
+
+	<span style="float:right">Paper Form ID: $paperFormId</span>
+	<h2>Love Rita HTML Form (v1.0)</h2>
+
+	<section headerLabel="1. Encounter Details">
+		<table class="baseline-aligned">
+			<tr>
+				<td>Date:</td>
+				<td><encounterDate default="today"/></td>
+			</tr>
+			<tr>
+				<td>Location:</td>
+				<td><encounterLocation/></td>
+			</tr>
+			<tr>
+				<td>Provider:</td>
+				<td><encounterProvider/></td>
+			</tr>
+		</table>
+	</section>
+<section headerLabel="2. Obs Details">
+
+<table>
+ <obsgroup groupingConceptId="3985">
+       <tr><td>Mitral Valve Findings</td></tr>
+       <tr>
+               <td>Stenosis: <obs conceptId="3893" answerConceptIds="1901, 3894, 1903, 1900" answerLabels="Mild,Moderate to Severe,Severe,Moderate"/></td>
+       </tr>
+ </obsgroup>
+<obsgroup groupingConceptId="3986">
+      <tr><td>Aortic Valve Findings</td></tr>
+      <tr>
+            <td>Stenosis: <obs conceptId="3893" answerConceptIds="1901, 3894, 1903, 1900" answerLabels="Mild,Moderate to Severe,Severe,Moderate"/></td>
+       </tr>
+     <tr>
+           <td><obs conceptId="3944" labelText="Peak Aortic Valve Velocity:"/></td>
+     </tr>
+<tr>
+            <td>Regurgitation: <obs conceptId="3982" answerConceptIds="1900,1901, 1903, 3894,3898" answerLabels="Moderate, Mild,Severe, Moderate, Moderate to Severe, Trivial"/></td>
+       </tr>
+<tr>
+            <td><obs conceptId="5089" labelText="Weight:"/></td>
+       </tr>
+</obsgroup>
+<tr>
+            <td><obs conceptId="5090" labelText="Height:"/></td>
+       </tr>
+<tr>
+            <td>HIV Test Result: <obs conceptId="2169" answerConceptIds="1138,3083,664,703,2224" answerLabels="Indeterminate, Waiting For Results,Negative, Positive, Moderate to Severe, No Test"/></td>
+       </tr>
+</table>
+</section>
+
+<section headerLabel="3. Symptoms">
+<table>
+<obsgroup groupingConceptId="1292">
+       <tr><td>Functional Review of Symptoms</td></tr>
+       <tr>
+               <td>Symptom Present: <obs conceptId="1293" answerConceptIds="16" answerLabels="Diarrhea"/></td>
+       </tr>
+       <tr>
+               <td>Symptom Present: <obs conceptId="1293" answerConceptIds="620" answerLabels="Headache"/></td>
+       </tr>
+     <tr>
+               <td>Symptom Absent: <obs conceptId="1734" answerConceptIds="16" answerLabels="Diarrhea"/></td>
+       </tr>
+       <tr>
+               <td>Symptom Absent: <obs conceptId="1734" answerConceptIds="620" answerLabels="Headache"/></td>
+       </tr>
+ </obsgroup>
+
+<obsgroup groupingConceptId="1292">
+       <tr><td>Functional Review of Symptoms</td></tr>
+       <tr>
+               <td>Symptom Present: <obs conceptId="1293" answerConceptIds="861" answerLabels="Hearing Difficulties"/></td>
+       </tr>
+       <tr>
+               <td>Symptom Comment: <obs conceptId="1736"/></td>
+       </tr>
+ </obsgroup>
+   </table>
+
+</section>
+	<submit/>
+</htmlform>

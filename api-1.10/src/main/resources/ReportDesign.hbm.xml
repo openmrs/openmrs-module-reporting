@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.reporting.report" >
+
+	<class name="ReportDesign" table="reporting_report_design">
+		<id name="id" type="int" column="id" unsaved-value="0"><generator class="native" /></id>
+		<property name="uuid" type="string" length="38" not-null="true" />
+		<property name="name" type="string" not-null="true" />
+		<property name="description" type="string" />
+		<property name="reportDefinition" type="org.openmrs.module.reporting.report.service.db.ReportDefinitionType" not-null="true" column="report_definition_uuid" />
+		<property name="rendererType" type="class" length="255" column="renderer_type" not-null="true" />
+		<property name="properties" type="org.openmrs.module.reporting.report.service.db.PropertiesType" column="properties" />
+		<set name="resources" lazy="true" cascade="all-delete-orphan" inverse="true" access="field" order-by="name asc">
+			<key column="report_design_id" not-null="true" />
+			<one-to-many class="ReportDesignResource" />
+		</set>
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />
+		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" />
+		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
+		<property name="dateChanged" type="java.util.Date" column="date_changed" />		
+		<property name="retired" type="java.lang.Boolean" length="1" not-null="true"/>
+		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
+		<property name="dateRetired" type="java.util.Date" column="date_retired" />	
+		<property name="retireReason" type="string" column="retire_reason" />
+		<set name="reportProcessors" lazy="true"  cascade="all-delete-orphan,evict" inverse="true" access="field" order-by="id asc">
+			<key column="report_design_id" not-null="false" />
+			<one-to-many class="ReportProcessorConfiguration" />
+		</set>
+	</class>
+	
+	<class name="ReportDesignResource" table="reporting_report_design_resource">
+		<id name="id" type="int" column="id" unsaved-value="0"><generator class="native" /></id>
+		<property name="uuid" type="string" length="38" not-null="true" />
+		<property name="name" type="string" not-null="true" />
+		<property name="description" type="string" />
+		<many-to-one name="reportDesign" class="ReportDesign" column="report_design_id" not-null="true" />
+		<property name="contentType" type="string" column="content_type" />
+		<property name="extension" type="string" column="extension" />
+		<property name="contents" type="binary" column="contents" />
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />
+		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" />
+		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
+		<property name="dateChanged" type="java.util.Date" column="date_changed" />		
+		<property name="retired" type="java.lang.Boolean" length="1" not-null="true"/>
+		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
+		<property name="dateRetired" type="java.util.Date" column="date_retired" />	
+		<property name="retireReason" type="string" column="retire_reason" />
+	</class>
+	
+	<class name="ReportProcessorConfiguration" table="reporting_report_processor"  batch-size="50">
+		<id name="id" type="int" column="id" unsaved-value="0"><generator class="native" /></id>
+		<property name="uuid" type="string" length="38" not-null="true" />
+		<property name="name" type="string" not-null="true" />
+		<property name="description" type="string" />
+		<property name="processorType" type="string" length="255" column="processor_type" not-null="true" />
+		<property name="configuration" type="org.openmrs.module.reporting.report.service.db.PropertiesType" column="configuration" />
+		<property name="runOnSuccess" type="java.lang.Boolean" column="run_on_success" length="1" not-null="true"/>
+		<property name="runOnError" type="java.lang.Boolean" column="run_on_error" length="1" not-null="true"/>
+		<property name="processorMode" column="processor_mode" not-null="true">
+            <type name="org.openmrs.module.reporting.report.service.db.GenericEnumUserType">
+                <param name="enumClass">org.openmrs.module.reporting.report.ReportProcessorConfiguration$ProcessorMode</param>
+            </type>
+        </property>
+        <many-to-one name="reportDesign" column="report_design_id" class="ReportDesign" not-null="false" lazy="false"/>
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />
+		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" />
+		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
+		<property name="dateChanged" type="java.util.Date" column="date_changed" />		
+		<property name="retired" type="java.lang.Boolean" length="1" not-null="true"/>
+		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
+		<property name="dateRetired" type="java.util.Date" column="date_retired" />	
+		<property name="retireReason" type="string" column="retire_reason" />
+	</class>
+		
+</hibernate-mapping>

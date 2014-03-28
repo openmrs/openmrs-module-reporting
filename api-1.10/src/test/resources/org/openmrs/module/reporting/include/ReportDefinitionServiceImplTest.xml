@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<serialized_object serialized_object_id="79"
+		name="Patients created in 2006"
+		type="org.openmrs.module.reporting.dataset.definition.DataSetDefinition"
+		subtype="org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition"
+		serialization_class="org.openmrs.module.reporting.serializer.ReportingSerializer"
+		creator="1" date_created="2013-01-10 14:45:49" retired="false"
+		uuid="d9c79890-7ea9-41b1-a068-b5b99ca3d593"
+		serialized_data="&lt;org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition id=&quot;1&quot; uuid=&quot;d9c79890-7ea9-41b1-a068-b5b99ca3d593&quot; retired=&quot;false&quot;&gt;
+  &lt;name&gt;Patients created in 2006&lt;/name&gt;
+  &lt;description&gt;&lt;/description&gt;
+  &lt;creator id=&quot;2&quot; uuid=&quot;842f4bae-1692-11df-97a5-7038c432aabf&quot;/&gt;
+  &lt;dateCreated id=&quot;3&quot;&gt;2013-01-22 12:08:27 UTC&lt;/dateCreated&gt;
+  &lt;parameters id=&quot;5&quot;/&gt;
+  &lt;id&gt;79&lt;/id&gt;
+  &lt;sqlQuery&gt;&lt;/sqlQuery&gt;
+&lt;/org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition&gt;" />
+	<serialized_object serialized_object_id="80"
+		name="Patients in 2006" type="org.openmrs.module.reporting.report.definition.ReportDefinition"
+		subtype="org.openmrs.module.reporting.report.definition.ReportDefinition"
+		serialization_class="org.openmrs.module.reporting.serializer.ReportingSerializer"
+		creator="1" date_created="2013-01-10 14:45:49" retired="false"
+		uuid="c11f5354-9567-4cc5-b3ef-163e28873926"
+		serialized_data="&lt;org.openmrs.module.reporting.report.definition.ReportDefinition id=&quot;1&quot; uuid=&quot;c11f5354-9567-4cc5-b3ef-163e28873926&quot; retired=&quot;false&quot;&gt;
+  &lt;name&gt;Patients in 2006&lt;/name&gt;
+  &lt;description&gt;&lt;/description&gt;
+  &lt;creator id=&quot;2&quot; uuid=&quot;842f4bae-1692-11df-97a5-7038c432aabf&quot;/&gt;
+  &lt;dateCreated id=&quot;3&quot;&gt;2013-01-22 12:08:51 UTC&lt;/dateCreated&gt;
+  &lt;parameters id=&quot;5&quot;/&gt;
+  &lt;id&gt;80&lt;/id&gt;
+  &lt;dataSetDefinitions class=&quot;linked-hash-map&quot; id=&quot;6&quot;&gt;
+    &lt;entry&gt;
+      &lt;string&gt;patients&lt;/string&gt;
+      &lt;org.openmrs.module.reporting.evaluation.parameter.Mapped id=&quot;7&quot;&gt;
+        &lt;parameterizable class=&quot;org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition&quot; id=&quot;8&quot; uuid=&quot;d9c79890-7ea9-41b1-a068-b5b99ca3d593&quot;/&gt;
+        &lt;parameterMappings id=&quot;9&quot;/&gt;
+      &lt;/org.openmrs.module.reporting.evaluation.parameter.Mapped&gt;
+    &lt;/entry&gt;
+  &lt;/dataSetDefinitions&gt;
+&lt;/org.openmrs.module.reporting.report.definition.ReportDefinition&gt;" />
+	<reporting_report_design id="2"
+		uuid="c7a82b63-1066-4c1d-9b43-b405851fc467" name="Patients in 2006"
+		report_definition_uuid="c11f5354-9567-4cc5-b3ef-163e28873926"
+		renderer_type="org.openmrs.module.reporting.report.renderer.CsvReportRenderer"
+		properties="#Mon Jan 21 14:08:47 CET 2013" creator="1"
+		date_created="2013-01-21 14:08:47" retired="0" />
+</dataset>

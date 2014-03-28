@@ -185,9 +185,9 @@
   <drug drug_id="3" concept_id="88" name="Aspirin" combination="false" dose_strength="325.0" units="mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="05ec820a-d297-44e3-be6e-698531d9dd3f"/>
   <drug drug_id="11" concept_id="3" name="NyQuil" combination="true" units="" creator="1" date_created="2008-08-15 15:34:03.0" retired="true" uuid="7e2323fa-0fa0-461f-9b59-6765997d849e"/>
 
-  <drug_order order_id="1" drug_inventory_id="3" dose="325.0" dose_units="50" frequency="1" as_needed="false" />
-  <drug_order order_id="2" drug_inventory_id="2" dose="1.0" dose_units="51" frequency="1" as_needed="false" />
-  <drug_order order_id="3" drug_inventory_id="2" dose="2.0" dose_units="51" frequency="1" as_needed="false" />
+  <drug_order order_id="1" drug_inventory_id="3" dose="325.0" dose_units="50" frequency="1" as_needed="false"/>
+  <drug_order order_id="2" drug_inventory_id="2" dose="1.0" dose_units="51" frequency="1" as_needed="false"/>
+  <drug_order order_id="3" drug_inventory_id="2" dose="2.0" dose_units="51" frequency="1" as_needed="false"/>
   <drug_order order_id="4" drug_inventory_id="3" dose="325.0" dose_units="50" frequency="1" as_needed="false" />
   <drug_order order_id="5" drug_inventory_id="3" dose="325.0" dose_units="50" frequency="1" as_needed="false" />
 
@@ -356,9 +356,9 @@
   <obs obs_id="31" person_id="22" concept_id="5497" encounter_id="10" obs_datetime="2009-09-19 00:00:00.0" location_id="2" value_numeric="51.0" comments="" creator="1" date_created="2009-09-19 12:35:30.0" voided="false" uuid="4ed07356-2452-102d-96e4-000c29c2a5d7"/>
 
   <orders order_id="1" order_number="1" concept_id="88" orderer="1" instructions="" start_date="2008-08-08 00:00:00.0"  creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="7" uuid="921de0a3-05c4-444a-be03-e01b4c4b9142"/>
-  <orders order_id="2" order_number="2" concept_id="792" orderer="1" instructions="" start_date="2008-08-01 00:00:00.0"  creator="1" date_created="2008-08-19 12:21:59.0" voided="false" patient_id="2" uuid="dfca4077-493c-496b-8312-856ee5d1cc26"/>
+  <orders order_id="2" order_number="2" concept_id="792" orderer="1" instructions="" start_date="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-19 12:21:59.0" voided="false" patient_id="2" uuid="dfca4077-493c-496b-8312-856ee5d1cc26"/>
   <orders order_id="3" order_number="2" concept_id="792" orderer="1" instructions="" start_date="2008-08-08 00:00:00.0"  creator="1" date_created="2008-08-19 12:22:45.0" voided="false" patient_id="2" uuid="e3d621f0-a4d5-47d1-a4e1-5ace3f66d43a"/>
-  <orders order_id="4" order_number="2" concept_id="88" orderer="1" instructions="" start_date="2007-12-03 00:00:00.0" creator="1" date_created="2008-08-19 12:23:21.0" voided="false" patient_id="2" uuid="047b7424-6f33-4357-823c-420f316bb039"/>
+  <orders order_id="4" order_number="2" concept_id="88" orderer="1" instructions="" start_date="2007-12-03 00:00:00.0"  creator="1" date_created="2008-08-19 12:23:21.0" voided="false" patient_id="2" uuid="047b7424-6f33-4357-823c-420f316bb039"/>
   <orders order_id="5" order_number="2" concept_id="88" orderer="1" instructions="" start_date="2008-08-19 00:00:00.0"  creator="1" date_created="2008-08-19 12:24:10.0" voided="false" patient_id="2" uuid="0c96f25c-4949-4f72-9931-d808fbc226db"/>
 
   <!-- 3 program --> 
@@ -388,25 +388,18 @@
   <patient_program patient_program_id="7" patient_id="8" program_id="3" date_enrolled="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 11:55:55.0" voided="false" changed_by="1" date_changed="2008-08-18 11:58:20.0" uuid="53292615-7f93-48c4-b672-76459dcdaedc"/>
   <patient_program patient_program_id="8" patient_id="2" program_id="1" date_enrolled="2010-03-10 00:00:00.0" creator="1" date_created="2008-08-18 11:40:48.0" changed_by="1" date_changed="2008-08-18 12:29:29.0" voided="false" uuid="b75462a0-4c92-abce-b8bc-e98b38b76534"/>
   <patient_program patient_program_id="9" patient_id="7" program_id="1" date_enrolled="2008-08-04 00:00:00.0" creator="1" date_created="2008-08-18 11:40:48.0" changed_by="1" date_changed="2008-08-18 12:29:29.0" voided="false" uuid="b75462a0-4c92-abce-b8bc-e98b38a36534"/>
-  <patient_program patient_program_id="10" patient_id="23" program_id="1" date_enrolled="2012-04-01 00:00:00.0" date_completed="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" changed_by="1" date_changed="2012-05-15 00:00:00.0" voided="false" uuid="b75462b9-4c92-1122-b8bc-e98b38a36534"/>
-  <patient_program patient_program_id="11" patient_id="23" program_id="1" date_enrolled="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" changed_by="1" date_changed="2012-05-15 00:00:00.0" voided="false" uuid="b75462b9-4c92-abce-b8bc-e98c38a36534"/>
 
   <patient_state patient_state_id="1" patient_program_id="1" state="2" start_date="2008-08-08" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37eaa"/>
   <patient_state patient_state_id="2" patient_program_id="6" state="6" start_date="2008-08-11" end_date="2009-12-31" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37ebb"/>
   <patient_state patient_state_id="3" patient_program_id="6" state="7" start_date="2009-12-31" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37ecc"/>
   <patient_state patient_state_id="4" patient_program_id="7" state="6" start_date="2008-08-01" end_date="2008-12-15" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37edd"/>
   <patient_state patient_state_id="5" patient_program_id="7" state="8" start_date="2008-12-15" end_date="2009-11-01" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37eee"/>
-  <patient_state patient_state_id="6" patient_program_id="10" state="1" start_date="2012-04-01 00:00:00.0" end_date="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" voided="false" uuid="ea89debb-23cc-4840-aafe-63d199c37eaa"/>
-  <patient_state patient_state_id="7" patient_program_id="10" state="2" start_date="2012-05-15 00:00:00.0" end_date="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" voided="false" uuid="ea89abaa-23cc-4840-92fe-63d199c37eaa"/>
-  <patient_state patient_state_id="8" patient_program_id="11" state="1" start_date="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" voided="false" uuid="ea89debb-23cc-4833-92fe-63d199c37eaa"/>
-
+  
   <!-- 2 relationship_type --> 
   <relationship_type relationship_type_id="1" a_is_to_b="Doctor" b_is_to_a="Patient" preferred="0" weight="0" description="Relationship from a primary care provider to the patient" creator="1" date_created="2007-05-04 09:59:22.0" uuid="6d9002ea-a99b-4889-af78-82d48c57a119" retired="false"/>
   <relationship_type relationship_type_id="5" a_is_to_b="Parent" b_is_to_a="Child" preferred="0" weight="0" description="parent and child" creator="1" date_created="2008-08-15 15:55:18.0" uuid="2a5f4ff4-a179-4b8a-aa4c-40f71956eaaa" retired="false"/>
-  <relationship relationship_id="3" person_a="23" relationship="5" person_b="7" creator="1" date_created="2008-08-18 11:53:50.0" voided="false" uuid="8c0a3d9c-bf61-496b-95b0-72e6bc4a2c83"/>
-  <relationship relationship_id="4" person_a="24" relationship="5" person_b="7" creator="1" date_created="2008-08-19 11:53:50.0" voided="false" uuid="8c0a3d9c-bf61-496b-95b0-72e6bc4a2d83"/>
-
-	<!-- 2 relationship -->
+  
+  <!-- 2 relationship --> 
   <relationship relationship_id="1" person_a="502" relationship="1" person_b="2" creator="1" date_created="2008-08-18 11:50:15.0" voided="false" uuid="c18717dd-5d78-4a0e-84fc-ee62c5f0676a"/>
   <relationship relationship_id="2" person_a="502" relationship="1" person_b="7" creator="1" date_created="2008-08-18 11:53:50.0" voided="false" uuid="8c0a3d9c-bf61-496b-95b0-72e6bc4a2b83"/>
 
