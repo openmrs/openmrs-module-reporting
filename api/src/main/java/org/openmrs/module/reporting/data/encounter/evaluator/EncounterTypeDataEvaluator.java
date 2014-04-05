@@ -31,21 +31,10 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
  * Evaluates a EncounterTypeDataDefinition to produce a EncounterData
  */
 @Handler(supports=EncounterTypeDataDefinition.class, order=50)
-public class EncounterTypeDataEvaluator implements EncounterDataEvaluator {
+public class EncounterTypeDataEvaluator extends EncounterPropertyDataEvaluator {
 
-	/** 
-	 * @see EncounterDataEvaluator#evaluate(EncounterDataDefinition, EvaluationContext)
-	 * @should return all encounter types given the passed context
-	 */
-	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
-		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);		
-		Map<Integer, Object> data = qs.getPropertyValues(Encounter.class, "encounterType", context);
-		Set<Integer> allEncIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
-		if (allEncIds != null) {
-			data.keySet().retainAll(allEncIds);
-		}
-		c.setData(data);
-		return c;
+	@Override
+	public String getPropertyName() {
+		return "encounterType";
 	}
 }

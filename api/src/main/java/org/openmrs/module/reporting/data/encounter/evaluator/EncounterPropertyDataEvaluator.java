@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -11,15 +11,10 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
 import org.openmrs.Encounter;
-import org.openmrs.User;
-import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.common.AuditInfo;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
-import org.openmrs.module.reporting.data.encounter.definition.AuditInfoEncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -28,41 +23,34 @@ import org.openmrs.module.reporting.evaluation.querybuilder.HibernateQueryBuilde
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
+import java.util.Map;
 
-@Handler(supports= AuditInfoEncounterDataDefinition.class)
-public class AuditInfoEncounterDataEvaluator implements EncounterDataEvaluator {
+/**
+ * Evaluates a EncounterDatetimeDataDefinition to produce a EncounterData
+ */
+public abstract class EncounterPropertyDataEvaluator implements EncounterDataEvaluator {
 
-    @Autowired
-    private EvaluationService evaluationService;
+	@Autowired
+	private EvaluationService evaluationService;
 
-    @Override
-    public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        EvaluatedEncounterData result = new EvaluatedEncounterData(definition, context);
+	public abstract String getPropertyName();
 
+	/**
+	 * @see org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator#evaluate(org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @should return all encounter datetimes given the passed context
+	 */
+	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
+		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 		HibernateQueryBuilder q = new HibernateQueryBuilder();
-		q.select("dateCreated", "creator", "dateChanged", "changedBy");
-		q.select("voided", "dateVoided", "voidedBy", "voidReason", "encounterId");
+		q.select("encounterId", getPropertyName());
 		q.from(Encounter.class);
 		q.innerJoin("patient", "patient");
 		q.whereIdIn("patient.patientId", context.getBaseCohort());
 		if (context instanceof EncounterEvaluationContext) {
 			q.whereIdIn("encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
 		}
-
-        for (Object[] row : evaluationService.evaluateToList(q)) {
-            AuditInfo auditInfo = new AuditInfo();
-            auditInfo.setDateCreated((Date) row[0]);
-            auditInfo.setCreator((User) row[1]);
-            auditInfo.setDateChanged((Date) row[2]);
-            auditInfo.setChangedBy((User) row[3]);
-            auditInfo.setVoided((Boolean) row[4]);
-            auditInfo.setDateVoided((Date) row[5]);
-            auditInfo.setVoidedBy((User) row[6]);
-            auditInfo.setVoidReason((String) row[7]);
-            result.addData((Integer) row[8], auditInfo);
-        }
-
-        return result;
-    }
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		c.setData(data);
+		return c;
+	}
 }

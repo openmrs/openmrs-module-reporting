@@ -14,7 +14,6 @@
 package org.openmrs.module.reporting.evaluation.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
@@ -49,7 +48,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Override
 	public List<Object[]> evaluateToList(QueryBuilder queryBuilder) {
 		List<Object[]> ret = new ArrayList<Object[]>();
-		for (Object resultRow : list(queryBuilder)) {
+		for (Object resultRow : queryBuilder.listResults(getSessionFactory())) {
 			if (resultRow instanceof Object[]) {
 				ret.add((Object[])resultRow);
 			}
@@ -66,7 +65,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Override
 	public <T> List<T> evaluateToList(QueryBuilder queryBuilder, Class<T> type) {
 		List<T> ret = new ArrayList<T>();
-		for (Object resultRow : list(queryBuilder)) {
+		for (Object resultRow : queryBuilder.listResults(getSessionFactory())) {
 			if (resultRow instanceof Object[]) {
 				throw new IllegalArgumentException("Unable to evaluate to a single value list. Exactly one column must be defined.");
 			}
@@ -81,7 +80,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Override
 	public <K, V> Map<K, V> evaluateToMap(QueryBuilder queryBuilder, Class<K> keyType, Class<V> valueType) {
 		Map<K, V> ret = new HashMap<K, V>();
-		for (Object resultRow : list(queryBuilder)) {
+		for (Object resultRow : queryBuilder.listResults(getSessionFactory())) {
 			boolean found = false;
 			if (resultRow instanceof Object[]) {
 				Object[] results = (Object[])resultRow;
@@ -95,21 +94,6 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * @return a Hibernate List.  Clients are required to determine whether or not elements of
-	 * these lists are Objects of certain types, Arrays, etc.  We hide this and expose methods
-	 * that make these return type values more explicit.
-	 */
-	protected List<?> list(QueryBuilder queryBuilder) {
-		SessionFactory sessionFactory = Context.getRegisteredComponents(SessionFactory.class).get(0);
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
-		List l = queryBuilder.buildQuery(sessionFactory).list();
-		stopWatch.stop();
-		log.debug("Primary query executed in: " + stopWatch.toString());
-		return l;
 	}
 
 	/**
@@ -233,6 +217,10 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 		currentIdSetKeys.clear();
 		administrationService.executeSQL("delete from reporting_idset", false);
 
+	}
+
+	private SessionFactory getSessionFactory() {
+		return Context.getRegisteredComponents(SessionFactory.class).get(0);
 	}
 
 	//***** PROPERTY ACCESS *****

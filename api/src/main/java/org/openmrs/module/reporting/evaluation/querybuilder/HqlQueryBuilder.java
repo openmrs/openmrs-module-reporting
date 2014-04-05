@@ -1,13 +1,16 @@
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.Cohort;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.Voidable;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.query.IdSet;
@@ -31,25 +34,38 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	private Class<? extends OpenmrsObject> rootType;
 	private String rootAlias;
-	private List<DataSetColumn> registeredColumns = new ArrayList<DataSetColumn>();
+	private boolean includeVoided = false;
+	private List<String> columns = new ArrayList<String>();
+	private List<String> joinClauses = new ArrayList<String>();
 	private List<String> clauses = new ArrayList<String>();
 	private Map<String, Set<Integer>> idClauses = new LinkedHashMap<String, Set<Integer>>();
 	private Map<String, Object> parameters = new HashMap<String, Object>();
-	private List<Object> orderBy = new ArrayList<Object>();
+	private List<String> orderBy = new ArrayList<String>();
 	private int positionIndex = 1;
 
 	//***** CONSTRUCTORS *****
 
-	public HqlQueryBuilder() { }
+	public HqlQueryBuilder() {
+		this(false);
+	}
+
+	public HqlQueryBuilder(boolean includeVoided) {
+		this.includeVoided = includeVoided;
+	}
 
 	//***** BUILDER METHODS *****
 
 	/**
-	 * Adds a new clause to the query
+	 * This is where you specify what columns you want your query to return
+	 * You can specify the column in property dot notation relative to the typeToQuery specified in the Constructor
+	 * You can also specify a column alias by appending it to the column name after a colon
+	 * For example, if you wanted to return the birthdate column from person with alias "bd",
+	 * you would add "birthdate:bd".  If you wanted to add the name of the encounter type associated with an
+	 * Encounter, with alias "type", you would add "encounterType.name:type"
 	 */
-	public HqlQueryBuilder select(String...columns) {
-		for (String column : columns) {
-			registeredColumns.add(new DataSetColumn(column, column, Object.class)); // TODO: Figure out data type, alias
+	public HqlQueryBuilder select(String... columnNames) {
+		for (String column : columnNames) {
+			columns.add(column);
 		}
 		return this;
 	}
@@ -61,6 +77,19 @@ public class HqlQueryBuilder implements QueryBuilder {
 	public HqlQueryBuilder from(Class<? extends OpenmrsObject> rootType, String rootAlias) {
 		this.rootType = rootType;
 		this.rootAlias = rootAlias;
+		if (!includeVoided && Voidable.class.isAssignableFrom(rootType)) {
+			whereEqual((ObjectUtil.notNull(rootAlias) ? rootAlias + "." : "")+"voided", false);
+		}
+		return this;
+	}
+
+	public HqlQueryBuilder innerJoin(String property, String alias) {
+		joinClauses.add("inner join " + property + " as " + alias);
+		return this;
+	}
+
+	public HqlQueryBuilder leftOuterJoin(String property, String alias) {
+		joinClauses.add("left outer join " + property + " as " + alias);
 		return this;
 	}
 
@@ -169,7 +198,9 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	public HqlQueryBuilder whereGreaterOrEqualTo(String propertyName, Object propertyValue) {
-		where(propertyName + " >= :" + nextPositionIndex()).withValue(propertyValue);
+		if (propertyValue != null) {
+			where(propertyName + " >= :" + nextPositionIndex()).withValue(propertyValue);
+		}
 		return this;
 	}
 
@@ -215,12 +246,29 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	@Override
 	public List<DataSetColumn> getColumns() {
-		return registeredColumns;
+		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
+		for (String s : columns) {
+			String[] split = s.split("\\:");
+			if (split.length > 1) {
+				l.add(new DataSetColumn(split[1], split[1], Object.class));
+			}
+			else {
+				l.add(new DataSetColumn(split[0], split[0], Object.class));
+			}
+		}
+		return l;
 	}
 
-	/**
-	 * @see QueryBuilder#buildQuery(org.hibernate.SessionFactory)
-	 */
+	@Override
+	public List<?> listResults(SessionFactory sessionFactory) {
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		List l = buildQuery(sessionFactory).list();
+		stopWatch.stop();
+		log.debug("Primary query executed in: " + stopWatch.toString());
+		return l;
+	}
+
 	public Query buildQuery(SessionFactory sessionFactory) {
 
 		if ((positionIndex-1) != parameters.size()) {
@@ -241,12 +289,20 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 		// Create query string
 		StringBuilder q = new StringBuilder();
-		for (DataSetColumn c : registeredColumns) {
-			q.append(q.length() == 0 ? "select " : ", ").append(c.getName());
+		for (String s : columns) {
+			String[] split = s.split("\\:");
+			q.append(q.length() == 0 ? "select " : ", ");
+			q.append(split[0]);
+			if (split.length > 1) {
+				q.append(" as ").append(split[1]);
+			}
 		}
 		q.append(" from ").append(rootType.getSimpleName());
 		if (rootAlias != null) {
 			q.append(" as ").append(rootAlias);
+		}
+		for (String join : joinClauses) {
+			q.append(" ").append(join);
 		}
 		for (int i=0; i<clauses.size(); i++) {
 			q.append(i == 0 ? " where " : " and ").append(clauses.get(i));
@@ -256,8 +312,8 @@ public class HqlQueryBuilder implements QueryBuilder {
 		}
 
 		String queryString = q.toString();
-		log.debug("Building query: " + queryString);
-		log.debug("With parameters: " + parameters);
+		System.out.println("Building query: " + queryString);
+		System.out.println("With parameters: " + parameters);
 
 		Query query = sessionFactory.getCurrentSession().createQuery(queryString);
 		for (Map.Entry<String, Object> e : parameters.entrySet()) {

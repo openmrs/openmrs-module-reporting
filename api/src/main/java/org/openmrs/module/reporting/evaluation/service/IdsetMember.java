@@ -22,16 +22,16 @@ import java.io.Serializable;
  */
 public class IdsetMember implements Serializable {
 
-    private Integer key;
+    private String key;
     private Integer memberId;
 
 	public IdsetMember() {}
 
-	public Integer getKey() {
+	public String getKey() {
 		return key;
 	}
 
-	public void setKey(Integer key) {
+	public void setKey(String key) {
 		this.key = key;
 	}
 

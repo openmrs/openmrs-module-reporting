@@ -27,7 +27,7 @@ public interface QueryBuilder {
 	public List<DataSetColumn> getColumns();
 
 	/**
-	 * Generate a Query that can be evaluated
+	 * Run the query and return the full result set as a List of Object[]
 	 */
-	public Query buildQuery(SessionFactory sessionFactory);
+	public List<?> listResults(SessionFactory sessionFactory);
 }

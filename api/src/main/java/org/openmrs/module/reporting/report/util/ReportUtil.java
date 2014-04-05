@@ -286,4 +286,18 @@ public class ReportUtil {
 	public static boolean isOpenmrsVersionOnePointNineAndAbove() {
 		return ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, "1.9.0");
 	}
+
+	public static void printTableContents(String tableName, String...columnNames) {
+		StringBuilder sb = new StringBuilder();
+		if (columnNames == null || columnNames.length == 0) {
+			sb.append("select * ");
+		}
+		else {
+			for (String columnName : columnNames) {
+				sb.append(sb.length() == 0 ? "select " : ", ").append(columnName);
+			}
+		}
+		sb.append(" from ").append(tableName);
+		System.out.println(tableName + ": " + Context.getAdministrationService().executeSQL(sb.toString(), true));
+	}
 }
