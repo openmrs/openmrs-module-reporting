@@ -40,7 +40,7 @@ import java.util.Set;
 /**
  * Tests for the EvaluationContext expression parsing
  */
-public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
+public class CriteriaQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 
@@ -56,7 +56,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void select_shouldSelectTheConfiguredColumns() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("personId", "gender").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
 		List<Object[]> results = evaluationService.evaluateToList(q);
 		testSize(results, 2);
@@ -66,14 +66,14 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void from_shouldNotRequireAnAlias() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("personId", "gender").from(Person.class);
 		evaluationService.evaluateToList(q);
 	}
 
 	@Test
 	public void from_shouldAllowAnAlias() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("p.personId", "p.gender").from(Person.class, "p").whereIn("p.personId", 2, 7);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 2);
@@ -81,21 +81,21 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void from_shouldExcludedVoidedByDefault() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("patientIdentifierId").from(PatientIdentifier.class);
 		testSize(evaluationService.evaluateToList(q), 12);
 	}
 
 	@Test
 	public void from_shouldSupportIncludingVoided() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder(true);
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder(true);
 		q.select("patientIdentifierId").from(PatientIdentifier.class);
 		testSize(evaluationService.evaluateToList(q), 13);
 	}
 
 	@Test
 	public void where_shouldSupportAnArbitraryConstraint() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		SimpleExpression females = Restrictions.eq("gender", "F");
 		q.select("p.personId", "p.gender").from(Person.class, "p").where(females).whereIn("personId", 2, 7);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
@@ -104,7 +104,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereNull_shouldConstrainAgainstNullValues() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder(true);
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder(true);
 		q.select("personId").from(Person.class).whereNull("birthdate");
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 5);
@@ -112,7 +112,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereEqual_shouldNotConstrainIfValuesAreNull() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("personId").from(Person.class).whereEqual("gender", null).whereIn("personId", 2, 7);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 2);
@@ -120,7 +120,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereEqual_shouldConstrainAgainstExactDatetimeIfNotMidnight() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("person.personId").from(PersonAddress.class).whereEqual("dateCreated", DateUtil.getDateTime(2008,8,15,15,46,47,0));
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 1);
@@ -128,7 +128,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereEqual_shouldConstrainAgainstAnyTimeDuringDateIfMidnight() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("person.personId").from(PersonAddress.class).whereEqual("dateCreated", DateUtil.getDateTime(2008,8,15));
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 2);
@@ -136,7 +136,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereEqual_shouldConstrainAgainstASimpleValue() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("person.personId").from(PersonAddress.class).whereEqual("cityVillage", "Gucha");
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 1);
@@ -144,7 +144,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereEqual_shouldConstrainAgainstAnOpenmrsObject() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		Person person2 = Context.getPersonService().getPerson(2);
 		q.select("p.gender").from(PersonAddress.class).innerJoin("person","p").whereEqual("person", person2);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
@@ -154,7 +154,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereEqual_shouldConstrainByCohort() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		Cohort c = new Cohort("2,7");
 		q.select("p.gender").from(PersonAddress.class).innerJoin("person", "p").whereEqual("p.personId", c);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
@@ -163,7 +163,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereEqual_shouldConstrainByIdSet() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		PatientIdSet idSet = new PatientIdSet(2,7);
 		q.select("p.gender").from(PersonAddress.class).innerJoin("person","p").whereEqual("p.personId", idSet);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
@@ -172,7 +172,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereEqual_shouldConstrainByCollection() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		Set<Integer> idSet = new HashSet<Integer>(Arrays.asList(2,7));
 		q.select("p.gender").from(PersonAddress.class).innerJoin("person","p").whereEqual("p.personId", idSet);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
@@ -181,7 +181,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereEqual_shouldConstrainByArray() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		Integer[] idSet = {2,7};
 		q.select("p.gender").from(PersonAddress.class).innerJoin("person","p").whereEqual("p.personId", idSet);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
@@ -190,7 +190,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereIdIn_shouldConstrainByCohort() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		Cohort c = new Cohort("2,7");
 		q.select("p.gender").from(PersonAddress.class).innerJoin("person", "p").whereIdIn("p.personId", c);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
@@ -199,7 +199,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereIdIn_shouldConstrainByIdSet() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		IdSet idSet = new PatientIdSet(2,7);
 		q.select("p.gender").from(PersonAddress.class).innerJoin("person","p").whereIdIn("p.personId", idSet);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
@@ -208,7 +208,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereIn_shouldConstrainByCollection() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		Set<Integer> idSet = new HashSet<Integer>(Arrays.asList(2,7));
 		q.select("p.gender").from(PersonAddress.class).innerJoin("person", "p").whereIn("p.personId", idSet);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
@@ -217,7 +217,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereIn_shouldConstrainByArray() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		Integer[] idSet = {2,7};
 		q.select("p.gender").from(PersonAddress.class).innerJoin("person", "p").whereIn("p.personId", idSet);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
@@ -226,7 +226,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereLike_shouldConstrainByLike() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("p.patientId").from(PatientIdentifier.class).innerJoin("patient","p").whereLike("identifier", "101%");
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 2);
@@ -234,7 +234,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereGreater_shouldConstrainColumnsGreaterThanValue() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder(true);
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder(true);
 		q.select("personId").from(Person.class).whereGreater("personId", 501);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 2);
@@ -242,7 +242,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereGreaterOrEqualTo_shouldConstrainColumnsGreaterOrEqualToValue() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder(true);
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder(true);
 		q.select("personId").from(Person.class).whereGreaterOrEqualTo("personId", 501);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 3);
@@ -250,7 +250,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereLess_shouldConstrainColumnsLessThanValue() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder(true);
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder(true);
 		q.select("personId").from(Person.class).whereLess("personId", 9);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 5);
@@ -258,7 +258,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereLess_shouldConstrainDateByEndOfDayIfMidnightPassedIn() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("personAddressId").from(PersonAddress.class).whereLess("dateCreated", DateUtil.getDateTime(2008,8,15));
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 6);
@@ -266,7 +266,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereLess_shouldConstrainDateByExactTimeIfNotMidnight() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("personAddressId").from(PersonAddress.class).whereLess("dateCreated", DateUtil.getDateTime(2008,8,15,15,46,0,0));
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 4);
@@ -274,7 +274,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereLessOrEqualTo_shouldConstrainColumnsLessOrEqualToValue() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder(true);
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder(true);
 		q.select("personId").from(Person.class).whereLessOrEqualTo("personId", 9);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 6);
@@ -282,7 +282,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereLessOrEqualTo_shouldConstrainDateByEndOfDayIfMidnightPassedIn() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("personAddressId").from(PersonAddress.class).whereLessOrEqualTo("dateCreated", DateUtil.getDateTime(2008,8,15));
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 6);
@@ -290,7 +290,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereLessOrEqualTo_shouldConstrainDateByExactTimeIfNotMidnight() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("personAddressId").from(PersonAddress.class).whereLessOrEqualTo("dateCreated", DateUtil.getDateTime(2008,8,15,15,46,47,0));
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 5);
@@ -298,7 +298,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void whereBetweenInclusive_shouldConstrainBetweenValues() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("personId").from(Person.class).whereBetweenInclusive("personId", 20, 30);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 5);
@@ -306,7 +306,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void orderAsc_shouldOrderAscending() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("personId").from(Person.class).whereBetweenInclusive("personId", 20, 22).orderAsc("personId");
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testRow(rows, 1, 20);
@@ -316,7 +316,7 @@ public class HibernateQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void orderDesc_shouldOrderDescending() throws Exception {
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("personId").from(Person.class).whereBetweenInclusive("personId", 20, 22).orderDesc("personId");
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testRow(rows, 1, 22);

@@ -19,7 +19,7 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefin
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
-import org.openmrs.module.reporting.evaluation.querybuilder.HibernateQueryBuilder;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,13 +41,12 @@ public abstract class EncounterPropertyDataEvaluator implements EncounterDataEva
 	 */
 	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
-		q.select("encounterId", getPropertyName());
-		q.from(Encounter.class);
-		q.innerJoin("patient", "patient");
-		q.whereIdIn("patient.patientId", context.getBaseCohort());
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("e.encounterId", "e."+getPropertyName());
+		q.from(Encounter.class, "e");
+		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
 		if (context instanceof EncounterEvaluationContext) {
-			q.whereIdIn("encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
+			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
 		}
 		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
 		c.setData(data);

@@ -32,8 +32,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	protected Log log = LogFactory.getLog(getClass());
 
-	private Class<? extends OpenmrsObject> rootType;
-	private String rootAlias;
+	private Map<String, Class<? extends OpenmrsObject>> fromTypes = new LinkedHashMap<String, Class<? extends OpenmrsObject>>();
 	private boolean includeVoided = false;
 	private List<String> columns = new ArrayList<String>();
 	private List<String> joinClauses = new ArrayList<String>();
@@ -70,15 +69,14 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return this;
 	}
 
-	public HqlQueryBuilder from(Class<? extends OpenmrsObject> rootType) {
-		return from(rootType, null);
+	public HqlQueryBuilder from(Class<? extends OpenmrsObject> fromType) {
+		return from(fromType, null);
 	}
 
-	public HqlQueryBuilder from(Class<? extends OpenmrsObject> rootType, String rootAlias) {
-		this.rootType = rootType;
-		this.rootAlias = rootAlias;
-		if (!includeVoided && Voidable.class.isAssignableFrom(rootType)) {
-			whereEqual((ObjectUtil.notNull(rootAlias) ? rootAlias + "." : "")+"voided", false);
+	public HqlQueryBuilder from(Class<? extends OpenmrsObject> fromType, String fromAlias) {
+		fromTypes.put(fromAlias, fromType);
+		if (!includeVoided && Voidable.class.isAssignableFrom(fromType)) {
+			whereEqual((ObjectUtil.notNull(fromAlias) ? fromAlias + "." : "")+"voided", false);
 		}
 		return this;
 	}
@@ -150,14 +148,24 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	public HqlQueryBuilder whereIn(String propertyName, Object... values) {
 		if (values != null) {
-			where(propertyName + " in (:" + nextPositionIndex() + ")").withValue(values);
+			if (values.length == 0) {
+				where("1=0");
+			}
+			else {
+				where(propertyName + " in (:" + nextPositionIndex() + ")").withValue(values);
+			}
 		}
 		return this;
 	}
 
 	public HqlQueryBuilder whereIn(String propertyName, Collection<?> values) {
 		if (values != null) {
-			where(propertyName + " in (:" + nextPositionIndex() + ")").withValue(values);
+			if (values.isEmpty()) {
+				where("1=0");
+			}
+			else {
+				where(propertyName + " in (:" + nextPositionIndex() + ")").withValue(values);
+			}
 		}
 		return this;
 	}
@@ -277,13 +285,17 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 		for (String idProperty : idClauses.keySet()) {
 			Set<Integer> idSet = idClauses.get(idProperty);
-			String idSetKey = Context.getService(EvaluationService.class).generateKey(idSet);
-			boolean isPersisted = Context.getService(EvaluationService.class).isInUse(idSetKey);
-			if (isPersisted) {
-				where(idProperty + " in ( select memberId from IdsetMember where key = '" + idSetKey + "' )");
+			if (idSet.isEmpty()) {
+				where("1=0");
 			}
 			else {
-				where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(idSet);
+				String idSetKey = Context.getService(EvaluationService.class).generateKey(idSet);
+				boolean isPersisted = Context.getService(EvaluationService.class).isInUse(idSetKey);
+				if (isPersisted) {
+					where(idProperty + " in ( select memberId from IdsetMember where key = '" + idSetKey + "' )");
+				} else {
+					where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(idSet);
+				}
 			}
 		}
 
@@ -297,9 +309,14 @@ public class HqlQueryBuilder implements QueryBuilder {
 				q.append(" as ").append(split[1]);
 			}
 		}
-		q.append(" from ").append(rootType.getSimpleName());
-		if (rootAlias != null) {
-			q.append(" as ").append(rootAlias);
+		List<String> aliases = new ArrayList<String>(fromTypes.keySet());
+		for (int i=0; i<aliases.size(); i++) {
+			String alias = aliases.get(i);
+			q.append(i == 0 ? " from " : ", ");
+			q.append(fromTypes.get(alias).getSimpleName());
+			if (ObjectUtil.notNull(alias)) {
+				q.append(" as ").append(alias);
+			}
 		}
 		for (String join : joinClauses) {
 			q.append(" ").append(join);
@@ -312,8 +329,8 @@ public class HqlQueryBuilder implements QueryBuilder {
 		}
 
 		String queryString = q.toString();
-		System.out.println("Building query: " + queryString);
-		System.out.println("With parameters: " + parameters);
+		log.debug("Building query: " + queryString);
+		log.debug("With parameters: " + parameters);
 
 		Query query = sessionFactory.getCurrentSession().createQuery(queryString);
 		for (Map.Entry<String, Object> e : parameters.entrySet()) {

@@ -5,18 +5,17 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.ObsForEncounterDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Evaluates a ObsForEncounterDataDefinition to produce EncounterData
@@ -32,44 +31,35 @@ public class ObsForEncounterDataEvaluator implements EncounterDataEvaluator {
         ObsForEncounterDataDefinition def = (ObsForEncounterDataDefinition) definition;
         EvaluatedEncounterData data = new EvaluatedEncounterData();
 
-        Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, false);
-
-        // just return empty set if input set is empty
-        if (encIds.size() == 0) {
-            return data;
-        }
-
-		// Create an entry for each encounter
-		for (Integer encId : encIds) {
-			if (!def.isSingleObs()) {
-				data.addData(encId, new ArrayList<Obs>());
-			}
-			else {
-				data.addData(encId, null);
-			}
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("obs.encounter.encounterId, obs");
+		q.from(Obs.class, "obs");
+		q.whereEqual("obs.concept", def.getQuestion());
+		q.whereIdIn("obs.person.personId", context.getBaseCohort());
+		if (context instanceof EncounterEvaluationContext) {
+			q.whereIdIn("obs.encounter.encounterId", ((EncounterEvaluationContext) context).getBaseEncounters());
 		}
 
-		HqlQueryBuilder qb = new HqlQueryBuilder();
-		qb.select("obs.encounter.encounterId, obs");
-		qb.from(Obs.class, "obs");
-		qb.whereEqual("obs.voided", false);
-		qb.whereEqual("obs.concept", def.getQuestion());
-		qb.whereEqual("obs.encounter.encounterId", encIds); // TODO: Should we just join on the 2 individual sets in the context?
-
-		List<Object[]> result = Context.getService(EvaluationService.class).evaluateToList(qb);
+		List<Object[]> result = Context.getService(EvaluationService.class).evaluateToList(q);
         for (Object[] row : result) {
-            Integer encId = (Integer)row[0];
+            Integer encounterId = (Integer)row[0];
 			Obs obs = (Obs)row[1];
 
-            if (!def.isSingleObs()) {
-                ((List<Obs>) data.getData().get(encId)).add(obs);
-            }
-            else {
-				if (data.getData().get(encId) != null) {
-					log.warn("Multiple matching obs for encounter <" + encId + ">. The last one will be returned.");
+			if (!def.isSingleObs()) {
+				List l = (List) data.getData().get(encounterId);
+				if (l == null) {
+					l = new ArrayList();
+					data.getData().put(encounterId, l);
 				}
-                data.addData(encId, obs);
-            }
+				l.add(obs);
+			}
+			else {
+				// If there are multiple matching providers and we are in singleProvider mode then last one wins
+				if (data.getData().get(encounterId) != null) {
+					log.warn("Multiple matching obs for encounter " + encounterId + "... picking one");
+				}
+				data.addData(encounterId, obs);
+			}
         }
 
         return data;

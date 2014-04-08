@@ -9,7 +9,7 @@ import org.openmrs.Person;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
-import org.openmrs.module.reporting.evaluation.querybuilder.HibernateQueryBuilder;
+import org.openmrs.module.reporting.evaluation.querybuilder.CriteriaQueryBuilder;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void evaluateToList_shouldEvaluateAQueryToAMultiValueList() throws Exception {
-		HibernateQueryBuilder queryBuilder = new HibernateQueryBuilder();
+		CriteriaQueryBuilder queryBuilder = new CriteriaQueryBuilder();
 		queryBuilder.select("personId", "gender").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
 		List<Object[]> l = evaluationService.evaluateToList(queryBuilder);
 		Assert.assertEquals(2, l.get(0)[0]);
@@ -53,7 +53,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void evaluateToList_shouldEvaluateAQueryToASingleValueList() throws Exception {
-		HibernateQueryBuilder queryBuilder = new HibernateQueryBuilder();
+		CriteriaQueryBuilder queryBuilder = new CriteriaQueryBuilder();
 		queryBuilder.select("gender").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
 		List<String> genders = evaluationService.evaluateToList(queryBuilder, String.class);
 		Assert.assertEquals("M", genders.get(0));
@@ -64,14 +64,14 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	@ExpectedException(IllegalArgumentException.class)
 	public void evaluateToList_shouldThrowAnExceptionWithIncorrectNumberOfColumns() {
-		HibernateQueryBuilder queryBuilder = new HibernateQueryBuilder();
+		CriteriaQueryBuilder queryBuilder = new CriteriaQueryBuilder();
 		queryBuilder.select("personId", "gender").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
 		evaluationService.evaluateToList(queryBuilder, String.class);
 	}
 
 	@Test
 	public void evaluateToMap_shouldEvaluateAQueryToAMap() throws Exception {
-		HibernateQueryBuilder queryBuilder = new HibernateQueryBuilder();
+		CriteriaQueryBuilder queryBuilder = new CriteriaQueryBuilder();
 		queryBuilder.select("personId", "gender").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
 		Map<Integer, String> m = evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class);
 		Assert.assertEquals(m.get(2), "M");
@@ -81,7 +81,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	@ExpectedException(IllegalArgumentException.class)
 	public void evaluateToMap_shouldThrowAnExceptionWithIncorrectNumberOfColumns() {
-		HibernateQueryBuilder queryBuilder = new HibernateQueryBuilder();
+		CriteriaQueryBuilder queryBuilder = new CriteriaQueryBuilder();
 		queryBuilder.select("personId", "gender", "birthdate").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
 		evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class);
 	}

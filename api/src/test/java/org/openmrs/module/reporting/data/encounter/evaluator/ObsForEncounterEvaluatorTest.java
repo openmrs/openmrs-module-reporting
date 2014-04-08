@@ -120,7 +120,6 @@ public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest
         Patient patient = data.randomPatient().save();
         Encounter enc1 = data.randomEncounter().patient(patient).save();
         Obs obs1 = data.obs().concept(weight).value(60).encounter(enc1).save();
-        Obs obs2 = data.obs().concept(cd4).value(350).encounter(enc1).save();
 
         // add another encounter with no obs
         Encounter enc2 = data.randomEncounter().patient(patient).save();
@@ -133,7 +132,6 @@ public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest
         def.setSingleObs(true);
         EvaluatedEncounterData results = encounterDataService.evaluate(def, context);
 
-        assertThat(results.getData().size(), is(2));
         assertThat((Obs) results.getData().get(enc1.getId()), is(obs1));
         assertNull(results.getData().get(enc2.getId()));
     }
@@ -161,11 +159,9 @@ public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest
         def.setSingleObs(false);
         EvaluatedEncounterData results = encounterDataService.evaluate(def, context);
 
-        assertThat(results.getData().size(), is(2));
         assertThat(((List<Obs>) results.getData().get(enc1.getId())).size(), is(2));
-        assertThat(((List<Obs>) results.getData().get(enc1.getId())),
-                containsInAnyOrder(obs1, obs2));
-        assertThat(((List<Obs>) results.getData().get(enc2.getId())).size(), is(0));
+        assertThat(((List<Obs>) results.getData().get(enc1.getId())), containsInAnyOrder(obs1, obs2));
+        assertNull(results.getData().get(enc2.getId()));
     }
 
     @Test

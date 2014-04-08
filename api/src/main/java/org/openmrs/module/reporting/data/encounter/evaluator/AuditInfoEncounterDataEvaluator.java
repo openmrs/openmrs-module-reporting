@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefin
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
-import org.openmrs.module.reporting.evaluation.querybuilder.HibernateQueryBuilder;
+import org.openmrs.module.reporting.evaluation.querybuilder.CriteriaQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,7 +40,7 @@ public class AuditInfoEncounterDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData result = new EvaluatedEncounterData(definition, context);
 
-		HibernateQueryBuilder q = new HibernateQueryBuilder();
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
 		q.select("dateCreated", "creator", "dateChanged", "changedBy");
 		q.select("voided", "dateVoided", "voidedBy", "voidReason", "encounterId");
 		q.from(Encounter.class);
