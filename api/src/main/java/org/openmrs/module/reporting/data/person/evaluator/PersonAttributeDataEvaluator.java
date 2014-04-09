@@ -13,26 +13,28 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.PersonAttribute;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.patient.evaluator.PatientDataEvaluator;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
 
 /**
  * Evaluates a PersonAttributeDataDefinition to produce a PatientData
  */
 @Handler(supports=PersonAttributeDataDefinition.class, order=50)
 public class PersonAttributeDataEvaluator implements PersonDataEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
@@ -47,30 +49,15 @@ public class PersonAttributeDataEvaluator implements PersonDataEvaluator {
 			return c;
 		}
 		
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		
-		StringBuilder hql = new StringBuilder();
-		hql.append("select 		pa.person.personId, pa ");
-		hql.append("from 		PersonAttribute pa ");
-		hql.append("where 		voided = false ");
-		if (context.getBaseCohort() != null) {
-			hql.append("and 		pa.person.personId in (:patientIds) ");
-		}
-		hql.append("and 		pa.attributeType.personAttributeTypeId = :idType ");
-		Map<String, Object> m = new HashMap<String, Object>();
-		if (context.getBaseCohort() != null) {
-			m.put("patientIds", context.getBaseCohort());
-		}
-		m.put("idType", def.getPersonAttributeType().getPersonAttributeTypeId());
-		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
-		for (Object o : queryResult) {
-			Object[] parts = (Object[]) o;
-			if (parts.length == 2) {
-				Integer pId = (Integer) parts[0];
-				PersonAttribute pa = (PersonAttribute) parts[1];
-				c.addData(pId, pa);
-			}
-		}
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("pa.person.personId", "pa");
+		q.from(PersonAttribute.class, "pa");
+		q.whereIdIn("pa.person.personId", context.getBaseCohort());
+		q.whereEqual("pa.attributeType", def.getPersonAttributeType());
+
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		c.setData(data);
+
 		return c;
 	}
 }

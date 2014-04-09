@@ -13,20 +13,21 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.Date;
-import java.util.Map;
-
 import org.openmrs.Concept;
 import org.openmrs.Person;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.CriteriaQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Evaluates a VitalStatusDataDefinition to produce a PersonData
@@ -34,25 +35,27 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 @Handler(supports=VitalStatusDataDefinition.class, order=50)
 public class VitalStatusDataEvaluator implements PersonDataEvaluator {
 
+	@Autowired
+	EvaluationService evaluationService;
+
 	/** 
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
 	 * @should return the vital status by person
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		Map<Integer, Object> deadData = qs.getPropertyValues(Person.class, "dead", context);
-		Map<Integer, Object> deathDateData = qs.getPropertyValues(Person.class, "deathDate", context);
-		Map<Integer, Object> causeOfDeathData = qs.getPropertyValues(Person.class, "causeOfDeath", context);
 
-		for (Integer pId : deadData.keySet()) {
-			Boolean dead = deadData.get(pId) == Boolean.TRUE;
-			Date deathDate = null;
-			Concept causeOfDeath = null;
-			if (dead) {
-				deathDate = (Date)deathDateData.get(pId);
-				causeOfDeath = (Concept) causeOfDeathData.get(pId);
-			}
+		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
+		q.select("p.personId", "p.dead", "p.deathDate", "p.causeOfDeath");
+		q.from(Person.class, "p");
+		q.whereIdIn("p.personId", context.getBaseCohort());
+
+		List<Object[]> results = evaluationService.evaluateToList(q);
+		for (Object[] row : results) {
+			Integer pId = (Integer)row[0];
+			boolean dead = (row[1] == Boolean.TRUE);
+			Date deathDate = (dead ? (Date)row[2] : null);
+			Concept causeOfDeath = (dead ? (Concept)row[3] : null);
 			c.addData(pId, new VitalStatus(dead, deathDate, causeOfDeath));
 		}
 

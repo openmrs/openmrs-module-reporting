@@ -13,19 +13,18 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.PersonAddress;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredAddressDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
 
 /**
  * Evaluates a PreferredAddressDataDefinition to produce a PersonData
@@ -33,27 +32,29 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 @Handler(supports=PreferredAddressDataDefinition.class, order=50)
 public class PreferredAddressDataEvaluator implements PersonDataEvaluator {
 
+	@Autowired
+	EvaluationService evaluationService;
+
 	/** 
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
 	 * @should return the preferred address for all persons
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		Map<String, Object> m = new HashMap<String, Object>();
-		
-		String hql = "from PersonAddress where voided = false ";
-		if (context.getBaseCohort() != null) {
-			hql += "and person.personId in (:personIds) ";
-			m.put("personIds", context.getBaseCohort());
-		}
-		hql += "order by preferred asc";
 
-		List<Object> queryResult = qs.executeHqlQuery(hql, m);
-		for (Object o : queryResult) {
-			PersonAddress pa = (PersonAddress)o;
-			c.addData(pa.getPerson().getPersonId(), pa);  // TODO: This is probably inefficient.  Try to improve this
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
+			return c;
 		}
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("pa.person.personId", "pa");
+		q.from(PersonAddress.class, "pa");
+		q.whereIdIn("pa.person.personId", context.getBaseCohort());
+		q.orderAsc("pa.preferred");
+
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		c.setData(data);
+
 		return c;
 	}
 }

@@ -15,7 +15,6 @@ package org.openmrs.module.reporting.data.person.evaluator;
 
 import org.openmrs.Relationship;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.RelationshipsForPersonDataDefinition;
@@ -23,6 +22,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,9 @@ import java.util.List;
  */
 @Handler(supports=RelationshipsForPersonDataDefinition.class, order=50)
 public class RelationshipsForPersonDataEvaluator implements PersonDataEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/**
 	 * @see org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator#evaluate(org.openmrs.module.reporting.data.person.definition.PersonDataDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
@@ -74,7 +77,7 @@ public class RelationshipsForPersonDataEvaluator implements PersonDataEvaluator 
 		qb.whereIn("r.relationshipType", rpd.getRelationshipTypes());
 		qb.whereIdIn("r."+keyPerson+".personId", pd.getContext().getBaseCohort());
 
-		List<Object[]> result = Context.getService(EvaluationService.class).evaluateToList(qb);
+		List<Object[]> result = evaluationService.evaluateToList(qb);
 		for (Object[] row : result) {
 			Integer pId = (Integer) row[0];
 			Relationship r = (Relationship) row[1];
