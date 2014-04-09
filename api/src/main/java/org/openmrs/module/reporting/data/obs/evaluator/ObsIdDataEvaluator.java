@@ -9,15 +9,11 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 @Handler(supports=ObsIdDataDefinition.class, order=50)
-public class ObsIdDataEvaluator implements ObsDataEvaluator {
+public class ObsIdDataEvaluator extends ObsPropertyDataEvaluator {
 
-    @Override
-    public EvaluatedObsData evaluate(ObsDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        EvaluatedObsData d = new EvaluatedObsData(definition, context);
-        for (Integer obsId : ObsDataUtil.getObsIdsForContext(context, false)) {
-            d.addData(obsId, obsId);
-        }
-        return d;
-    }
+	@Override
+	public String getPropertyName() {
+		return "obsId";
+	}
 
 }

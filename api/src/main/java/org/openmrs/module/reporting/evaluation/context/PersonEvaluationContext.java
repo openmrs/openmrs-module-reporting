@@ -14,8 +14,13 @@
 package org.openmrs.module.reporting.evaluation.context;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
+import org.openmrs.OpenmrsData;
+import org.openmrs.Person;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.module.reporting.query.person.PersonIdSet;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 
@@ -75,6 +80,15 @@ public class PersonEvaluationContext extends EvaluationContext {
 	// *******************
 	// INSTANCE METHODS 
 	// *******************
+
+	@Override
+	public Map<Class<? extends OpenmrsData>, IdSet<?>> getAllBaseIdSets() {
+		Map<Class<? extends OpenmrsData>, IdSet<?>> ret = super.getAllBaseIdSets();
+		if (getBasePersons() != null) {
+			ret.put(Person.class, getBasePersons());
+		}
+		return ret;
+	}
 	
 	/**
 	 * @return a shallow copy of the current instance

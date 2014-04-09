@@ -64,19 +64,21 @@ public class PersonToEncounterDataEvaluator implements EncounterDataEvaluator {
 
 		Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
 
-        // create a new (person) evaluation context using the retrieved ids
-        PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext();
-		personEvaluationContext.setBaseCohort(new Cohort(convertedIds.values()));
-        personEvaluationContext.setBasePersons(new PersonIdSet(new HashSet<Integer>(convertedIds.values())));
+		if (!convertedIds.keySet().isEmpty()) {
+			// create a new (person) evaluation context using the retrieved ids
+			PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext();
+			personEvaluationContext.setBaseCohort(new Cohort(convertedIds.values()));
+			personEvaluationContext.setBasePersons(new PersonIdSet(new HashSet<Integer>(convertedIds.values())));
 
-        // evaluate the joined definition via this person context
-        PersonToEncounterDataDefinition def = (PersonToEncounterDataDefinition) definition;
-        EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(def.getJoinedDefinition(), personEvaluationContext);
+			// evaluate the joined definition via this person context
+			PersonToEncounterDataDefinition def = (PersonToEncounterDataDefinition) definition;
+			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(def.getJoinedDefinition(), personEvaluationContext);
 
-        // now create the result set by mapping the results in the person data set to encounter ids
-        for (Integer encId : convertedIds.keySet()) {
-            c.addData(encId, pd.getData().get(convertedIds.get(encId)));
-        }
+			// now create the result set by mapping the results in the person data set to encounter ids
+			for (Integer encId : convertedIds.keySet()) {
+				c.addData(encId, pd.getData().get(convertedIds.get(encId)));
+			}
+		}
 
         return c;
 

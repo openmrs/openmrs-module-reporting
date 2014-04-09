@@ -60,18 +60,20 @@ public class PatientToEncounterDataEvaluator implements EncounterDataEvaluator {
 		}
 
         Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
-        
-        // Create a new (patient) evaluation context using the retrieved ids
-        EvaluationContext patientEvaluationContext = new EvaluationContext();
-        patientEvaluationContext.setBaseCohort(new Cohort(convertedIds.values()));
-        
-        // evaluate the joined definition via this patient context
-        PatientToEncounterDataDefinition def = (PatientToEncounterDataDefinition) definition;
-		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def.getJoinedDefinition(), patientEvaluationContext);
 
-        // now create the result set by mapping the results in the patient data set to encounter ids
-		for (Integer encId : convertedIds.keySet()) {
-			c.addData(encId, pd.getData().get(convertedIds.get(encId)));
+		if (!convertedIds.keySet().isEmpty()) {
+			// Create a new (patient) evaluation context using the retrieved ids
+			EvaluationContext patientEvaluationContext = new EvaluationContext();
+			patientEvaluationContext.setBaseCohort(new Cohort(convertedIds.values()));
+
+			// evaluate the joined definition via this patient context
+			PatientToEncounterDataDefinition def = (PatientToEncounterDataDefinition) definition;
+			EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def.getJoinedDefinition(), patientEvaluationContext);
+
+			// now create the result set by mapping the results in the patient data set to encounter ids
+			for (Integer encId : convertedIds.keySet()) {
+				c.addData(encId, pd.getData().get(convertedIds.get(encId)));
+			}
 		}
 
 		return c;

@@ -21,8 +21,8 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
+import org.openmrs.module.reporting.query.IdSet;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -141,19 +141,9 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Override
 	public List<String> startUsing(EvaluationContext context) {
 		List<String> idSetsAdded = new ArrayList<String>();
-		if (context.getBaseCohort() != null) {
-			Set<Integer> ids = context.getBaseCohort().getMemberIds();
-			if (!ids.isEmpty()) {
-				idSetsAdded.add(startUsing(ids));
-			}
-		}
-		if (context instanceof EncounterEvaluationContext) {
-			EncounterEvaluationContext eec = (EncounterEvaluationContext)context;
-			if (eec.getBaseEncounters() != null) {
-				Set<Integer> ids = eec.getBaseEncounters().getMemberIds();
-				if (!ids.isEmpty()) {
-					idSetsAdded.add(startUsing(ids));
-				}
+		for (IdSet<?> idSet : context.getAllBaseIdSets().values()) {
+			if (idSet != null && !idSet.getMemberIds().isEmpty()) {
+				idSetsAdded.add(startUsing(idSet.getMemberIds()));
 			}
 		}
 		return idSetsAdded;
@@ -191,19 +181,9 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Transactional
 	@Override
 	public void stopUsing(EvaluationContext context) {
-		if (context.getBaseCohort() != null) {
-			Set<Integer> ids = context.getBaseCohort().getMemberIds();
-			if (!ids.isEmpty()) {
-				stopUsing(generateKey(ids));
-			}
-		}
-		if (context instanceof EncounterEvaluationContext) {
-			EncounterEvaluationContext eec = (EncounterEvaluationContext)context;
-			if (eec.getBaseEncounters() != null) {
-				Set<Integer> ids = eec.getBaseEncounters().getMemberIds();
-				if (!ids.isEmpty()) {
-					stopUsing(generateKey(ids));
-				}
+		for (IdSet<?> idSet : context.getAllBaseIdSets().values()) {
+			if (idSet != null && !idSet.getMemberIds().isEmpty()) {
+				stopUsing(generateKey(idSet.getMemberIds()));
 			}
 		}
 	}
