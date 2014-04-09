@@ -13,30 +13,29 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Evaluates an EncountersForPatientDataDefinition to produce a PatientData
  */
 @Handler(supports=EncountersForPatientDataDefinition.class, order=50)
 public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
@@ -50,55 +49,35 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
 			return c;
 		}
-		
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		
-		StringBuilder hql = new StringBuilder();
-		Map<String, Object> m = new HashMap<String, Object>();
-		
-		hql.append("from 		Encounter ");
-		hql.append("where 		voided = false ");
-		
-		if (context.getBaseCohort() != null) {
-			hql.append("and 		patient.patientId in (:patientIds) ");
-			m.put("patientIds", context.getBaseCohort());
-		}
-		
-		if (def.getTypes() != null && !def.getTypes().isEmpty()) {
-			List<Integer> ids = new ArrayList<Integer>();
-			for (EncounterType encType : def.getTypes()) {
-				ids.add(encType.getEncounterTypeId());
-			}
-			hql.append("and		encounterType.encounterTypeId in (:ids) ");
-			m.put("ids", ids);
-		}
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("e.patient.patientId", "e");
+		q.from(Encounter.class, "e");
+		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
+		q.whereIn("e.encounterType", def.getTypes());
+		q.whereGreaterOrEqualTo("e.encounterDatetime", def.getOnOrAfter());
+		q.whereLessOrEqualTo("e.encounterDatetime", def.getOnOrBefore());
 
         if (def.getOnlyInActiveVisit()) {
-            hql.append("and		visit.stopDatetime is null ");
+			q.whereNull("e.visit.stopDatetime");
         }
 
-		if (def.getOnOrAfter() != null) {
-			hql.append("and		encounterDatetime >= :onOrAfter ");
-			m.put("onOrAfter", def.getOnOrAfter());
+		if (def.getWhich() == TimeQualifier.LAST) {
+			q.orderDesc("encounterDatetime");
 		}
-
-		if (def.getOnOrBefore() != null) {
-			hql.append("and		encounterDatetime <= :onOrBefore ");
-			m.put("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getOnOrBefore()));
+		else {
+			q.orderAsc("encounterDatetime");
 		}
 		
-		hql.append("order by 	encounterDatetime " + (def.getWhich() == TimeQualifier.LAST ? "desc" : "asc"));
+		List<Object[]> queryResult = evaluationService.evaluateToList(q);
 		
-		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
-		
-		ListMap<Integer, Encounter> encsForPatients = new ListMap<Integer, Encounter>();
-		for (Object o : queryResult) {
-			Encounter e = (Encounter)o;
-			encsForPatients.putInList(e.getPatientId(), e);
+		ListMap<Integer, Encounter> encountersForPatients = new ListMap<Integer, Encounter>();
+		for (Object[] row : queryResult) {
+			encountersForPatients.putInList((Integer)row[0], (Encounter)row[1]);
 		}
 		
-		for (Integer pId : encsForPatients.keySet()) {
-			List<Encounter> l = encsForPatients.get(pId);
+		for (Integer pId : encountersForPatients.keySet()) {
+			List<Encounter> l = encountersForPatients.get(pId);
 			if (def.getWhich() == TimeQualifier.LAST || def.getWhich() == TimeQualifier.FIRST) {
 				c.addData(pId, l.get(0));
 			}

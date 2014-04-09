@@ -13,27 +13,29 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.PatientState;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
-import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.CurrentPatientStateDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Evaluates a CurrentPatientStateDataDefinition to produce a PatientData
  */
 @Handler(supports=CurrentPatientStateDataDefinition.class, order=50)
 public class CurrentPatientStateDataEvaluator implements PatientDataEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
@@ -47,32 +49,21 @@ public class CurrentPatientStateDataEvaluator implements PatientDataEvaluator {
 		if ((context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) || def.getWorkflow() == null) {
 			return c;
 		}
-		
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		
-		StringBuilder hql = new StringBuilder();
-		Map<String, Object> m = new HashMap<String, Object>();
-		
-		hql.append("from 		PatientState ");
-		hql.append("where 		voided = false ");
-		if (context.getBaseCohort() != null) {
-			hql.append("and 		patientProgram.patient.patientId in (:patientIds) ");
-		}
-		hql.append("and 		state.programWorkflow.programWorkflowId = :workflowId ");
-		hql.append("and 		(startDate is null or startDate <= :effectiveDate )");
-		hql.append("and 		(endDate is null or endDate > :effectiveDate) ");
-		hql.append("order by	startDate asc ");
 
-		if (context.getBaseCohort() != null) {
-			m.put("patientIds", context.getBaseCohort());
-		}
-		m.put("workflowId", def.getWorkflow().getProgramWorkflowId());
-		m.put("effectiveDate", ObjectUtil.nvl(def.getEffectiveDate(), new Date()));
-		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
-		for (Object o : queryResult) {
-			PatientState ps = (PatientState)o;
-			c.addData(ps.getPatientProgram().getPatient().getPatientId(), ps);  // TODO: This is probably inefficient.  Try to improve this with HQL
-		}
+		Date effectiveDate = ObjectUtil.nvl(def.getEffectiveDate(), new Date());
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("ps.patientProgram.patient.patientId", "ps");
+		q.from(PatientState.class, "ps");
+		q.whereLessOrEqualToOrNull("ps.startDate", effectiveDate);
+		q.whereGreaterOrNull("ps.endDate", effectiveDate);
+		q.whereEqual("ps.state.programWorkflow", def.getWorkflow());
+		q.whereIdIn("ps.patientProgram.patient.patientId", context.getBaseCohort());
+		q.orderAsc("ps.startDate");
+
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		c.setData(data);
+
 		return c;
 	}
 }

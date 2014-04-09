@@ -30,6 +30,11 @@ import java.util.Set;
  */
 public class HqlQueryBuilder implements QueryBuilder {
 
+	protected static String PARENTHESIS_START = "(";
+	protected static String PARENTHESIS_END = ")";
+	protected static String AND = "and";
+	protected static String OR = "or";
+
 	protected Log log = LogFactory.getLog(getClass());
 
 	private Map<String, Class<? extends OpenmrsObject>> fromTypes = new LinkedHashMap<String, Class<? extends OpenmrsObject>>();
@@ -104,6 +109,34 @@ public class HqlQueryBuilder implements QueryBuilder {
 	 */
 	public HqlQueryBuilder whereNull(String propertyName) {
 		where(propertyName + " is null");
+		return this;
+	}
+
+	/**
+	 * Restricts the query for where the value of the passed property name is not null
+	 */
+	public HqlQueryBuilder whereNotNull(String propertyName) {
+		where(propertyName + " is not null");
+		return this;
+	}
+
+	public HqlQueryBuilder startGroup() {
+		clauses.add(PARENTHESIS_START);
+		return this;
+	}
+
+	public HqlQueryBuilder and() {
+		clauses.add(AND);
+		return this;
+	}
+
+	public HqlQueryBuilder or() {
+		clauses.add(OR);
+		return this;
+	}
+
+	public HqlQueryBuilder endGroup() {
+		clauses.add(PARENTHESIS_END);
 		return this;
 	}
 
@@ -205,6 +238,13 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return this;
 	}
 
+	public HqlQueryBuilder whereGreaterOrNull(String propertyName, Object propertyValue) {
+		if (propertyValue != null) {
+			where("(" + propertyName + " is null or " + propertyName + " > :" + nextPositionIndex() + ")").withValue(propertyValue);
+		}
+		return this;
+	}
+
 	public HqlQueryBuilder whereGreaterOrEqualTo(String propertyName, Object propertyValue) {
 		if (propertyValue != null) {
 			where(propertyName + " >= :" + nextPositionIndex()).withValue(propertyValue);
@@ -228,6 +268,16 @@ public class HqlQueryBuilder implements QueryBuilder {
 				propertyValue = DateUtil.getEndOfDayIfTimeExcluded((Date) propertyValue);
 			}
 			where(propertyName + " <= :" + nextPositionIndex()).withValue(propertyValue);
+		}
+		return this;
+	}
+
+	public HqlQueryBuilder whereLessOrEqualToOrNull(String propertyName, Object propertyValue) {
+		if (propertyValue != null) {
+			if (propertyValue instanceof Date) {
+				propertyValue = DateUtil.getEndOfDayIfTimeExcluded((Date) propertyValue);
+			}
+			where("(" + propertyName + " is null or " + propertyName + " <= :" + nextPositionIndex() + ")").withValue(propertyValue);
 		}
 		return this;
 	}
@@ -321,9 +371,28 @@ public class HqlQueryBuilder implements QueryBuilder {
 		for (String join : joinClauses) {
 			q.append(" ").append(join);
 		}
+
+		String nextOperator = "where";
 		for (int i=0; i<clauses.size(); i++) {
-			q.append(i == 0 ? " where " : " and ").append(clauses.get(i));
+			String clause = clauses.get(i);
+			q.append(" ");
+			if (!AND.equalsIgnoreCase(clause) && !OR.equalsIgnoreCase(clause)) {
+				if (!PARENTHESIS_END.equalsIgnoreCase(clause)) {
+					q.append(nextOperator);
+				}
+				q.append(" ").append(clause);
+			}
+			if (PARENTHESIS_START.equalsIgnoreCase(clause)) {
+				nextOperator = "";
+			}
+			else if (OR.equalsIgnoreCase(clause)) {
+				nextOperator = OR;
+			}
+			else {
+				nextOperator = AND;
+			}
 		}
+
 		for (int i=0; i<orderBy.size(); i++) {
 			q.append(i == 0 ? " order by " : ", ").append(orderBy.get(i));
 		}

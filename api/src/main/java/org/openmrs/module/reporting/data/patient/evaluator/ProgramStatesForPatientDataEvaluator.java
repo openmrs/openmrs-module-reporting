@@ -15,26 +15,27 @@ package org.openmrs.module.reporting.data.patient.evaluator;
 
 import org.openmrs.PatientState;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramStatesForPatientDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Evaluates an ProgramStatesForPatientDataDefinition to produce a PatientData
  */
 @Handler(supports=ProgramStatesForPatientDataDefinition.class, order=50)
 public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
@@ -55,70 +56,36 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
 			return c;
 		}
-		
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		
-		StringBuilder hql = new StringBuilder();
-		Map<String, Object> m = new HashMap<String, Object>();
 
-		hql.append("select 		ps.patientProgram.patient.patientId, ps ");
-		hql.append("from 		PatientState as ps ");
-		hql.append("where 		ps.voided = false ");
-		if (context.getBaseCohort() != null) {
-			hql.append("and 	ps.patientProgram.patient.patientId in (:patientIds) ");
-			m.put("patientIds", context.getBaseCohort());
-		}
-		if (def.getWorkflow() != null) {
-			hql.append("and 	ps.state.programWorkflow = :workflow ");
-			m.put("workflow", def.getWorkflow());
-		}
-		if (def.getState() != null) {
-			hql.append("and 	ps.state = :state ");
-			m.put("state", def.getState());
-		}
-		if (def.getLocation() != null) {
-			hql.append("and 	ps.patientProgram.location = :location ");
-			m.put("location", def.getLocation());
-		}
-		if (def.getStartedOnOrBefore() != null) {
-			hql.append("and		ps.startDate <= :startedOnOrBefore ");
-			m.put("startedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getStartedOnOrBefore()));
-		}
-		if (def.getStartedOnOrAfter() != null) {
-			hql.append("and		ps.startDate >= :startedOnOrAfter ");
-			m.put("startedOnOrAfter", def.getStartedOnOrAfter());
-		}
-		if (def.getEndedOnOrBefore() != null) {
-			hql.append("and		ps.endDate <= :endedOnOrBefore ");
-			m.put("endedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getEndedOnOrBefore()));
-		}
-		if (def.getEndedOnOrAfter() != null) {
-			hql.append("and		ps.endDate >= :endedOnOrAfter ");
-			m.put("endedOnOrAfter", def.getEndedOnOrAfter());
-		}
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("ps.patientProgram.patient.patientId", "ps");
+		q.from(PatientState.class, "ps");
+		q.whereIdIn("ps.patientProgram.patient.patientId", context.getBaseCohort());
+		q.whereEqual("ps.state.programWorkflow", def.getWorkflow());
+		q.whereEqual("ps.state", def.getState());
+		q.whereEqual("ps.patientProgram.location", def.getLocation());
+		q.whereGreaterOrEqualTo("ps.startDate", def.getStartedOnOrAfter());
+		q.whereLessOrEqualTo("ps.startDate", def.getStartedOnOrBefore());
+		q.whereGreaterOrEqualTo("ps.endDate", def.getEndedOnOrAfter());
+		q.whereLessOrEqualTo("ps.endDate", def.getEndedOnOrBefore());
+
 		if (def.getActiveOnDate() != null) {
-			hql.append("and		ps.startDate <= :startedOnOrBefore ");
-			hql.append("and		(ps.endDate is null or ps.endDate >= :endedOnOrAfter) ");
-			m.put("startedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getActiveOnDate()));
-			m.put("endedOnOrAfter", def.getActiveOnDate());
+			q.whereLessOrEqualTo("ps.startDate", def.getActiveOnDate());
+			q.whereGreaterOrNull("ps.endDate", def.getActiveOnDate());
 		}
+
 		if (def.getWhich() == TimeQualifier.LAST) {
-			hql.append("order by ps.startDate desc, ps.patientProgram.dateEnrolled desc");
+			q.orderDesc("ps.startDate").orderDesc("ps.patientProgram.dateEnrolled");
 		}
 		else {
-			hql.append("order by ps.startDate asc, ps.patientProgram.dateEnrolled asc");
+			q.orderAsc("ps.startDate").orderAsc("ps.patientProgram.dateEnrolled");
 		}
 
-		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
+		List<Object[]> queryResult = evaluationService.evaluateToList(q);
 
 		ListMap<Integer, PatientState> statesForPatients = new ListMap<Integer, PatientState>();
-		for (Object o : queryResult) {
-			Object[] parts = (Object[]) o;
-			if (parts.length == 2) {
-				Integer pId = (Integer) parts[0];
-				PatientState pi = (PatientState) parts[1];
-				statesForPatients.putInList(pId, pi);
-			}
+		for (Object[] row : queryResult) {
+			statesForPatients.putInList((Integer)row[0], (PatientState)row[1]);
 		}
 		
 		for (Integer pId : statesForPatients.keySet()) {
