@@ -398,8 +398,10 @@ public class HqlQueryBuilder implements QueryBuilder {
 		}
 
 		String queryString = q.toString();
-		log.debug("Building query: " + queryString);
-		log.debug("With parameters: " + parameters);
+		if (log.isDebugEnabled()) {
+			log.debug("Building query: " + queryString);
+			log.debug("With parameters: " + parameters);
+		}
 
 		Query query = sessionFactory.getCurrentSession().createQuery(queryString);
 		for (Map.Entry<String, Object> e : parameters.entrySet()) {

@@ -16,10 +16,13 @@ package org.openmrs.module.reporting.data.patient.definition;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Patient ID Data Definition
  */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.PatientIdDataDefinition")
 public class PatientIdDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
