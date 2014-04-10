@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleUtil;
@@ -299,5 +300,14 @@ public class ReportUtil {
 		}
 		sb.append(" from ").append(tableName);
 		System.out.println(tableName + ": " + Context.getAdministrationService().executeSQL(sb.toString(), true));
+	}
+
+	public static void updateGlobalProperty(String propertyName, String propertyValue) {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(propertyName);
+		if (gp == null) {
+			gp = new GlobalProperty(propertyName);
+		}
+		gp.setPropertyValue(propertyValue);
+		Context.getAdministrationService().saveGlobalProperty(gp);
 	}
 }
