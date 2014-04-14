@@ -63,10 +63,10 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
         }
 
 		if (def.getWhich() == TimeQualifier.LAST) {
-			q.orderDesc("encounterDatetime");
+			q.orderDesc("e.encounterDatetime");
 		}
 		else {
-			q.orderAsc("encounterDatetime");
+			q.orderAsc("e.encounterDatetime");
 		}
 		
 		List<Object[]> queryResult = evaluationService.evaluateToList(q);

@@ -60,10 +60,10 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		q.whereGreaterOrEqualTo("o.obsDatetime", def.getOnOrAfter());
 		q.whereLessOrEqualTo("o.obsDatetime", def.getOnOrBefore());
 		if (def.getWhich() == TimeQualifier.LAST) {
-			q.orderDesc("obsDatetime");
+			q.orderDesc("o.obsDatetime");
 		}
 		else {
-			q.orderAsc("obsDatetime");
+			q.orderAsc("o.obsDatetime");
 		}
 
 		List<Object[]> queryResult = evaluationService.evaluateToList(q);
