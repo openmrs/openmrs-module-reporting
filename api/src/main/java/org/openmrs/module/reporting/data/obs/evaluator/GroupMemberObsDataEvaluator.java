@@ -37,8 +37,7 @@ public class GroupMemberObsDataEvaluator implements ObsDataEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("o.obsGroup.id", "o");
 		q.from(Obs.class, "o");
-		q.whereEqual("voided", false);
-		q.whereEqual("concept", def.getQuestion());
+		q.whereEqual("o.concept", def.getQuestion());
 		q.whereIdIn("o.obsGroup.personId", context.getBaseCohort());
 		if (context instanceof ObsEvaluationContext) {
 			q.whereIdIn("o.obsGroup.id", ((ObsEvaluationContext)context).getBaseObs());

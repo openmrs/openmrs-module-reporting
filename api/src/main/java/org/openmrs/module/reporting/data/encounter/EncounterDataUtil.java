@@ -71,7 +71,7 @@ public class EncounterDataUtil {
 
 	public static Set<Integer> getEncounterIdsForPatients(Set<Integer> patientIds) {
 		HqlQueryBuilder qb = new HqlQueryBuilder();
-		qb.select("encounterId").from(Encounter.class, null).whereIdIn("patient.patientId", patientIds);
+		qb.select("e.encounterId").from(Encounter.class, "e").whereIdIn("e.patient.patientId", patientIds);
 		List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
 		return new HashSet<Integer>(ids);
 	}

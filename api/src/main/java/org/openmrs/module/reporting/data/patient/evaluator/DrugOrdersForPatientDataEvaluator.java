@@ -81,45 +81,45 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 
 		if (def.getDrugsToInclude() != null && concepts != null) {
 			q.startGroup();
-			q.whereIn("drug", def.getDrugsToInclude());
+			q.whereIn("do.drug", def.getDrugsToInclude());
 			q.or();
-			q.whereIn("concept", concepts);
+			q.whereIn("do.concept", concepts);
 			q.endGroup();
 		}
 		else if (def.getDrugsToInclude() != null) {
-			q.whereIn("drug", def.getDrugsToInclude());
+			q.whereIn("do.drug", def.getDrugsToInclude());
 		}
 		else if (concepts != null) {
-			q.whereIn("concept", concepts);
+			q.whereIn("do.concept", concepts);
 		}
 		
 		if (def.getActiveOnDate() != null) {
-			q.whereLessOrEqualTo("startDate", def.getActiveOnDate());
-			q.whereGreaterOrNull("autoExpireDate", def.getActiveOnDate());
-			q.whereGreaterOrNull("discontinuedDate", def.getActiveOnDate());
+			q.whereLessOrEqualTo("do.startDate", def.getActiveOnDate());
+			q.whereGreaterOrNull("do.autoExpireDate", def.getActiveOnDate());
+			q.whereGreaterOrNull("do.discontinuedDate", def.getActiveOnDate());
 		}
 		
 		if (def.getStartedOnOrBefore() != null) {
-			q.whereLessOrEqualTo("startDate", def.getStartedOnOrBefore());
+			q.whereLessOrEqualTo("do.startDate", def.getStartedOnOrBefore());
 		}
 		
 		if (def.getStartedOnOrAfter() != null) {
-			q.whereGreaterOrEqualTo("startDate", def.getStartedOnOrAfter());
+			q.whereGreaterOrEqualTo("do.startDate", def.getStartedOnOrAfter());
 		}
 		
 		if (def.getCompletedOnOrBefore() != null) {
 			q.startGroup();
-			q.whereLessOrEqualTo("autoExpireDate", def.getCompletedOnOrBefore());
+			q.whereLessOrEqualTo("do.autoExpireDate", def.getCompletedOnOrBefore());
 			q.or();
-			q.whereLessOrEqualTo("discontinuedDate", def.getCompletedOnOrBefore());
+			q.whereLessOrEqualTo("do.discontinuedDate", def.getCompletedOnOrBefore());
 			q.endGroup();
 		}
 
 		if (def.getCompletedOnOrAfter() != null) {
 			q.startGroup();
-			q.whereGreaterOrEqualTo("autoExpireDate", def.getCompletedOnOrAfter());
+			q.whereGreaterOrEqualTo("do.autoExpireDate", def.getCompletedOnOrAfter());
 			q.or();
-			q.whereGreaterOrEqualTo("discontinuedDate", def.getCompletedOnOrAfter());
+			q.whereGreaterOrEqualTo("do.discontinuedDate", def.getCompletedOnOrAfter());
 			q.endGroup();
 		}
 		

@@ -13,6 +13,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.module.reporting.evaluation.service.IdsetMember;
 import org.openmrs.module.reporting.query.IdSet;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	protected Log log = LogFactory.getLog(getClass());
 
-	private Map<String, Class<? extends OpenmrsObject>> fromTypes = new LinkedHashMap<String, Class<? extends OpenmrsObject>>();
+	private Map<String, Class<?>> fromTypes = new LinkedHashMap<String, Class<?>>();
 	private boolean includeVoided = false;
 	private List<String> columns = new ArrayList<String>();
 	private List<String> joinClauses = new ArrayList<String>();
@@ -74,11 +75,11 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return this;
 	}
 
-	public HqlQueryBuilder from(Class<? extends OpenmrsObject> fromType) {
+	public HqlQueryBuilder from(Class<?> fromType) {
 		return from(fromType, null);
 	}
 
-	public HqlQueryBuilder from(Class<? extends OpenmrsObject> fromType, String fromAlias) {
+	public HqlQueryBuilder from(Class<?> fromType, String fromAlias) {
 		fromTypes.put(fromAlias, fromType);
 		if (!includeVoided && Voidable.class.isAssignableFrom(fromType)) {
 			whereEqual((ObjectUtil.notNull(fromAlias) ? fromAlias + "." : "")+"voided", false);
@@ -333,6 +334,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");
 		}
 
+		int idClauseNum = 0;
 		for (String idProperty : idClauses.keySet()) {
 			Set<Integer> idSet = idClauses.get(idProperty);
 			if (idSet.isEmpty()) {
@@ -342,7 +344,10 @@ public class HqlQueryBuilder implements QueryBuilder {
 				String idSetKey = Context.getService(EvaluationService.class).generateKey(idSet);
 				boolean isPersisted = Context.getService(EvaluationService.class).isInUse(idSetKey);
 				if (isPersisted) {
-					where(idProperty + " in ( select memberId from IdsetMember where key = '" + idSetKey + "' )");
+					String alias = "_id_"+idClauseNum++;
+					from(IdsetMember.class, alias);
+					where(idProperty + " = " + alias + ".memberId");
+					whereEqual(alias + ".key", idSetKey);
 				} else {
 					where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(idSet);
 				}
