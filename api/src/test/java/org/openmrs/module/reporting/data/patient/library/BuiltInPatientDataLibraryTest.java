@@ -27,6 +27,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Calendar;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -56,16 +57,22 @@ public class BuiltInPatientDataLibraryTest extends BaseModuleContextSensitiveTes
     public void testAgeAtStart() throws Exception {
         // born 1976-08-25
         Age actual = (Age) eval(library.getAgeAtStart());
-        assertThat(actual.getBirthDate(), is(DateUtil.parseYmd("1976-08-25")));
-        assertThat(actual.getCurrentDate(), is(DateUtil.parseYmd("2013-01-01")));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(actual.getBirthDate());
+        assertThat(cal.getTime(), is(DateUtil.parseYmd("1976-08-25")));
+        cal.setTime(actual.getCurrentDate());
+        assertThat(cal.getTime(), is(DateUtil.parseYmd("2013-01-01")));
     }
 
     @Test
     public void testAgeAtEnd() throws Exception {
         // born 1976-08-25
         Age actual = (Age) eval(library.getAgeAtEnd());
-        assertThat(actual.getBirthDate(), is(DateUtil.parseYmd("1976-08-25")));
-        assertThat(actual.getCurrentDate(), is(DateUtil.parseYmd("2013-12-31")));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(actual.getBirthDate());
+        assertThat(cal.getTime(), is(DateUtil.parseYmd("1976-08-25")));
+        cal.setTime(actual.getCurrentDate());
+        assertThat(cal.getTime(), is(DateUtil.parseYmd("2013-12-31")));
     }
 
     private Object eval(PatientDataDefinition definition) throws EvaluationException {

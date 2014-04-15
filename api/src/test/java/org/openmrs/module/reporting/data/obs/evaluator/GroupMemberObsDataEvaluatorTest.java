@@ -57,8 +57,8 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient).save();
-        Obs obsMember1 = data.obs().concept(weight).encounter(enc).save();
-        Obs obsMember2 = data.obs().concept(cd4).encounter(enc).save();
+        Obs obsMember1 = data.obs().concept(weight).value(170).encounter(enc).save();
+        Obs obsMember2 = data.obs().concept(cd4).value(810).encounter(enc).save();
         Obs obsGroup = data.obs().concept(groupConcept).encounter(enc)
                 .member(obsMember1).member(obsMember2).save();
 
@@ -85,8 +85,8 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient).save();
-        Obs obsMember1 = data.obs().concept(weight).encounter(enc).save();
-        Obs obsMember2 = data.obs().concept(weight).encounter(enc).save();
+        Obs obsMember1 = data.obs().concept(weight).value(170).encounter(enc).save();
+        Obs obsMember2 = data.obs().concept(weight).value(180).encounter(enc).save();
         Obs obsGroup = data.obs().concept(groupConcept).encounter(enc)
                 .member(obsMember1).member(obsMember2).save();
 
@@ -115,7 +115,7 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         // create an obs group with no members
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient).save();
-        Obs obsGroup = data.obs().concept(groupConcept).encounter(enc).save();
+        Obs obsGroup = data.obs().concept(groupConcept).value(new Concept(7)).encounter(enc).save();
 
         ObsEvaluationContext context = new ObsEvaluationContext();
         context.setBaseObs(new ObsIdSet(obsGroup.getId()));
@@ -139,7 +139,7 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         // create an obs group with no members
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient).save();
-        Obs obsGroup = data.obs().concept(groupConcept).encounter(enc).save();
+        Obs obsGroup = data.obs().concept(groupConcept).value(new Concept(7)).encounter(enc).save();
 
         ObsEvaluationContext context = new ObsEvaluationContext();
         context.setBaseObs(new ObsIdSet(obsGroup.getId()));

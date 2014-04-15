@@ -55,7 +55,7 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
 			return c;
 		}
-		
+
 		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
 		
 		StringBuilder hql = new StringBuilder();
@@ -65,8 +65,8 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		hql.append("from 		PatientState as ps ");
 		hql.append("where 		ps.voided = false ");
 		if (context.getBaseCohort() != null) {
-			hql.append("and 	ps.patientProgram.patient.patientId in (:patientIds) ");
-			m.put("patientIds", context.getBaseCohort());
+			hql.append("and 	ps.patientProgram.patient.personId in (:personIds) ");
+			m.put("personIds", context.getBaseCohort());
 		}
 		if (def.getWorkflow() != null) {
 			hql.append("and 	ps.state.programWorkflow = :workflow ");

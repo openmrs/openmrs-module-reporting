@@ -27,6 +27,8 @@ import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Calendar;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -51,8 +53,12 @@ public class AgeAtEncounterDataEvaluatorTest extends BaseModuleContextSensitiveT
 
         EvaluatedEncounterData result = encounterDataService.evaluate(new AgeAtEncounterDataDefinition(), context);
         assertThat(result.getData().size(), is(1));
-        assertThat(((Age) result.getData().get(3)).getBirthDate(), is(DateUtil.parseYmd("1976-08-25")));
-        assertThat(((Age) result.getData().get(3)).getCurrentDate(), is(DateUtil.parseYmd("2008-08-01")));
+        Calendar cal = Calendar.getInstance();
+        //this should essentially ignore the time zone
+        cal.setTime(((Age) result.getData().get(3)).getBirthDate());
+        assertThat(cal.getTime(), is(DateUtil.parseYmd("1976-08-25")));
+        cal.setTime(((Age) result.getData().get(3)).getCurrentDate());
+        assertThat(cal.getTime(), is(DateUtil.parseYmd("2008-08-01")));
     }
 
 }

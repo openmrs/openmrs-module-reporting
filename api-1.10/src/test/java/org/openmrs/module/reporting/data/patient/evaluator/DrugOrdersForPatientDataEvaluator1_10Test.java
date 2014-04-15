@@ -1,0 +1,257 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+package org.openmrs.module.reporting.data.patient.evaluator;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.openmrs.Cohort;
+import org.openmrs.api.OrderService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DrugOrderSet;
+import org.openmrs.module.reporting.data.converter.ChainedConverter;
+import org.openmrs.module.reporting.data.converter.CollectionConverter;
+import org.openmrs.module.reporting.data.converter.ObjectFormatter;
+import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
+import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.service.PatientDataService;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+
+/**
+ * DrugOrdersForPatientData1_10Evaluator tests
+ */
+public class DrugOrdersForPatientDataEvaluator1_10Test extends BaseModuleContextSensitiveTest {
+	
+	protected static final String XML_1_10_DATASET_PATH = "org/openmrs/module/reporting/include/ReportTestDataset-openmrs-1.10.xml";
+	
+	/**
+	 * Run this before each unit test in this class. The "@Before" method in
+	 * {@link org.openmrs.test.BaseContextSensitiveTest} is run right before this method.
+	 * 
+	 * @throws Exception
+	 */
+	@Before
+	public void setup() throws Exception {
+		executeDataSet(XML_1_10_DATASET_PATH);
+	}
+	
+	/**
+	 * @see DrugOrdersForPatientDataEvaluator1_10#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
+	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @verifies return drug orders restricted by drug
+	 */
+	@Test
+	public void evaluate_shouldReturnDrugOrdersRestrictedByDrug() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+		
+		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
+		def.addDrugToInclude(Context.getConceptService().getDrug(2));
+		DrugOrderSet history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData()
+		        .get(2);
+		assertEquals(2, history.size());
+		
+		def.addDrugToInclude(Context.getConceptService().getDrug(3));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(5, history.size());
+		
+		CollectionConverter drugOrderListConverter = new CollectionConverter(new ObjectFormatter("{drug}"), true, null);
+		ObjectFormatter drugOrderFormatter = new ObjectFormatter(" + ");
+		ChainedConverter c = new ChainedConverter(drugOrderListConverter, drugOrderFormatter);
+	}
+	
+	/**
+	 * @see DrugOrdersForPatientDataEvaluator1_10#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
+	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @verifies return drug orders restricted by drug concept
+	 */
+	@Test
+	public void evaluate_shouldReturnDrugOrdersRestrictedByDrugConcept() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+		
+		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
+		def.addDrugConceptToInclude(Context.getConceptService().getConcept(792));
+		EvaluatedPatientData evaluated = Context.getService(PatientDataService.class).evaluate(def, context);
+		DrugOrderSet history = (DrugOrderSet) evaluated.getData().get(2);
+		assertEquals(2, history.size());
+		
+		def.addDrugConceptToInclude(Context.getConceptService().getConcept(88));
+		evaluated = Context.getService(PatientDataService.class).evaluate(def, context);
+		history = (DrugOrderSet) evaluated.getData().get(2);
+		assertEquals(5, history.size());
+	}
+	
+	/**
+	 * @see DrugOrdersForPatientDataEvaluator1_10#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
+	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @verifies return drug orders restricted by drug concept set
+	 */
+	@Test
+	public void evaluate_shouldReturnDrugOrdersRestrictedByDrugConceptSet() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+		
+		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
+		def.addDrugConceptSetToInclude(Context.getConceptService().getConcept(24));
+		DrugOrderSet history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData()
+		        .get(2);
+		assertEquals(5, history.size());
+	}
+	
+	/**
+	 * @see DrugOrdersForPatientDataEvaluator1_10#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
+	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @verifies return drug orders active on a particular date
+	 */
+	@Test
+	public void evaluate_shouldReturnDrugOrdersActiveOnAParticularDate() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+		
+		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
+		
+		def.setActiveOnDate(DateUtil.getDateTime(2008, 8, 5));
+		DrugOrderSet history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData()
+		        .get(2);
+		assertEquals(2, history.size());
+		OrderService os = Context.getOrderService();
+		assertTrue(history.contains(os.getOrder(2)));
+		assertTrue(history.contains(os.getOrder(444)));
+		
+		// Edge case where a drug is changed on this date
+		def.setActiveOnDate(DateUtil.getDateTime(2008, 8, 8));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(2, history.size());
+		assertTrue(history.contains(os.getOrder(3)));
+		assertTrue(history.contains(os.getOrder(444)));
+		
+		def.setActiveOnDate(DateUtil.getDateTime(2008, 8, 19));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(3, history.size());
+		assertTrue(history.contains(os.getOrder(3)));
+		assertTrue(history.contains(os.getOrder(5)));
+		assertTrue(history.contains(os.getOrder(444)));
+	}
+	
+	/**
+	 * @see DrugOrdersForPatientDataEvaluator1_10#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
+	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @verifies return drug orders started on or before a given date
+	 */
+	@Test
+	public void evaluate_shouldReturnDrugOrdersStartedOnOrBeforeAGivenDate() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+		
+		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
+		
+		def.setStartedOnOrBefore(DateUtil.getDateTime(2008, 7, 1));
+		DrugOrderSet history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData()
+		        .get(2);
+		assertEquals(2, history.size());
+		
+		def.setStartedOnOrBefore(DateUtil.getDateTime(2008, 8, 1));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(3, history.size());
+		
+		def.setStartedOnOrBefore(DateUtil.getDateTime(2008, 9, 1));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(5, history.size());
+	}
+	
+	/**
+	 * @see DrugOrdersForPatientDataEvaluator1_10#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
+	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @verifies return drug orders started on or after a given date
+	 */
+	@Test
+	public void evaluate_shouldReturnDrugOrdersStartedOnOrAfterAGivenDate() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+		
+		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
+		
+		def.setStartedOnOrAfter(DateUtil.getDateTime(2007, 8, 1));
+		DrugOrderSet history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData()
+		        .get(2);
+		assertEquals(5, history.size());
+		
+		def.setStartedOnOrAfter(DateUtil.getDateTime(2008, 8, 1));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(3, history.size());
+		
+		def.setStartedOnOrAfter(DateUtil.getDateTime(2008, 8, 19));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(1, history.size());
+	}
+	
+	/**
+	 * @see DrugOrdersForPatientDataEvaluator1_10#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
+	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @verifies return drug orders completed on or before a given date
+	 */
+	@Test
+	public void evaluate_shouldReturnDrugOrdersCompletedOnOrBeforeAGivenDate() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+		
+		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
+		
+		def.setCompletedOnOrBefore(DateUtil.getDateTime(2007, 8, 7));
+		DrugOrderSet history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData()
+		        .get(2);
+		assertNull(history);
+		
+		def.setCompletedOnOrBefore(DateUtil.getDateTime(2008, 8, 7));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(1, history.size());
+		
+		def.setCompletedOnOrBefore(DateUtil.getDateTime(2008, 8, 8));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(2, history.size());
+	}
+	
+	/**
+	 * @see DrugOrdersForPatientDataEvaluator1_10#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
+	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @verifies return drug orders completed on or after a given date
+	 */
+	@Test
+	public void evaluate_shouldReturnDrugOrdersCompletedOnOrAfterAGivenDate() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(new Cohort("2"));
+		
+		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
+		
+		def.setCompletedOnOrAfter(DateUtil.getDateTime(2009, 8, 7));
+		DrugOrderSet history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData()
+		        .get(2);
+		Assert.assertNull(history);
+		
+		def.setCompletedOnOrAfter(DateUtil.getDateTime(2008, 8, 7));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(1, history.size());
+		
+		def.setCompletedOnOrAfter(DateUtil.getDateTime(2007, 8, 7));
+		history = (DrugOrderSet) Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
+		assertEquals(2, history.size());
+	}
+}

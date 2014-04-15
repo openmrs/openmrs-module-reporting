@@ -30,6 +30,9 @@ import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -59,12 +62,21 @@ public class AuditInfoEncounterDataEvaluatorTest extends BaseModuleContextSensit
         assertThat(result.getData().size(), is(1));
         AuditInfo auditInfo = (AuditInfo) result.getData().get(encounter.getId());
         assertThat(auditInfo.getCreator(), is(encounter.getCreator()));
-        assertThat(auditInfo.getDateCreated(), is(encounter.getDateCreated()));
+        Calendar cal = Calendar.getInstance();
+        //this should essentially ignore the time zone
+        cal.setTime(auditInfo.getDateCreated());
+        assertThat(cal.getTime(), is(encounter.getDateCreated()));
         assertThat(auditInfo.getChangedBy(), is(encounter.getChangedBy()));
-        assertThat(auditInfo.getDateChanged(), is(encounter.getDateChanged()));
+        cal.setTime(auditInfo.getDateChanged());
+        assertThat(cal.getTime(), is(encounter.getDateChanged()));
         assertThat(auditInfo.getVoided(), is(encounter.getVoided()));
         assertThat(auditInfo.getVoidedBy(), is(encounter.getVoidedBy()));
-        assertThat(auditInfo.getDateVoided(), is(encounter.getDateVoided()));
+        Date dateVoided = auditInfo.getDateVoided();
+        if(dateVoided != null){
+            cal.setTime(dateVoided);
+            dateVoided = cal.getTime();
+        }
+        assertThat(dateVoided, is(encounter.getDateVoided()));
         assertThat(auditInfo.getVoidReason(), is(encounter.getVoidReason()));
 
     }

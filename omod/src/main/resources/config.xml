@@ -23,6 +23,13 @@
 	   	<require_module version="${calculationVersion}">org.openmrs.calculation</require_module>
 	</require_modules>
 
+    <conditionalResources>
+        <conditionalResource>
+            <path>/lib/${project.parent.artifactId}-api-1.10*</path>
+            <openmrsVersion>1.10</openmrsVersion>
+        </conditionalResource>
+    </conditionalResources>
+
 	<!-- Extensions -->
 	<extension>
 		<point>org.openmrs.admin.list</point>

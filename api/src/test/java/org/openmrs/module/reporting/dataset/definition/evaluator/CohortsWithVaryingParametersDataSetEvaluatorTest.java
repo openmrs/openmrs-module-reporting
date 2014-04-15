@@ -103,7 +103,7 @@ public class CohortsWithVaryingParametersDataSetEvaluatorTest extends BaseModule
         assertThat((Cohort) row.getColumnValue("Has Encounter"), isCohortWithExactlyIds(7, 20, 21, 22, 23, 24));
     }
 
-    private Matcher<DataSetColumn> columnMatching(final String name) {
+    protected Matcher<DataSetColumn> columnMatching(final String name) {
         return new BaseMatcher<DataSetColumn>() {
             @Override
             public boolean matches(Object o) {
@@ -124,7 +124,7 @@ public class CohortsWithVaryingParametersDataSetEvaluatorTest extends BaseModule
      * @param collection
      * @param matchers
      */
-    private void assertCollection(Collection<?> collection, Matcher... matchers) {
+    protected void assertCollection(Collection<?> collection, Matcher... matchers) {
         assertThat(collection.size(), is(matchers.length));
         List items = new ArrayList(collection);
         for (int i = 0; i < matchers.length; ++i) {
