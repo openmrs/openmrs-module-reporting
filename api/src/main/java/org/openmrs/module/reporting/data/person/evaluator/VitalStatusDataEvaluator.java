@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.querybuilder.CriteriaQueryBuilder;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -45,9 +45,10 @@ public class VitalStatusDataEvaluator implements PersonDataEvaluator {
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
-		q.select("p.personId", "p.dead", "p.deathDate", "p.causeOfDeath");
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("p.personId", "p.dead", "p.deathDate", "cod");
 		q.from(Person.class, "p");
+		q.leftOuterJoin("p.causeOfDeath", "cod");
 		q.whereIdIn("p.personId", context.getBaseCohort());
 
 		List<Object[]> results = evaluationService.evaluateToList(q);

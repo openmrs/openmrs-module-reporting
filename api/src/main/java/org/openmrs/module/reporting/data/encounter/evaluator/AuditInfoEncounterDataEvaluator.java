@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefin
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
-import org.openmrs.module.reporting.evaluation.querybuilder.CriteriaQueryBuilder;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,28 +40,30 @@ public class AuditInfoEncounterDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData result = new EvaluatedEncounterData(definition, context);
 
-		CriteriaQueryBuilder q = new CriteriaQueryBuilder();
-		q.select("dateCreated", "creator", "dateChanged", "changedBy");
-		q.select("voided", "dateVoided", "voidedBy", "voidReason", "encounterId");
-		q.from(Encounter.class);
-		q.innerJoin("patient", "patient");
-		q.whereIdIn("patient.patientId", context.getBaseCohort());
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("e.dateCreated", "creator", "e.dateChanged", "changedBy");
+		q.select("e.voided", "e.dateVoided", "voidedBy", "e.voidReason", "e.encounterId");
+		q.from(Encounter.class, "e");
+		q.leftOuterJoin("e.creator", "creator");
+		q.leftOuterJoin("e.changedBy", "changedBy");
+		q.leftOuterJoin("e.voidedBy", "voidedBy");
+		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
 		if (context instanceof EncounterEvaluationContext) {
-			q.whereIdIn("encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
+			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
 		}
 
-        for (Object[] row : evaluationService.evaluateToList(q)) {
-            AuditInfo auditInfo = new AuditInfo();
-            auditInfo.setDateCreated((Date) row[0]);
-            auditInfo.setCreator((User) row[1]);
-            auditInfo.setDateChanged((Date) row[2]);
-            auditInfo.setChangedBy((User) row[3]);
-            auditInfo.setVoided((Boolean) row[4]);
-            auditInfo.setDateVoided((Date) row[5]);
-            auditInfo.setVoidedBy((User) row[6]);
-            auditInfo.setVoidReason((String) row[7]);
-            result.addData((Integer) row[8], auditInfo);
-        }
+		for (Object[] row : evaluationService.evaluateToList(q)) {
+			AuditInfo auditInfo = new AuditInfo();
+			auditInfo.setDateCreated((Date) row[0]);
+			auditInfo.setCreator((User) row[1]);
+			auditInfo.setDateChanged((Date) row[2]);
+			auditInfo.setChangedBy((User) row[3]);
+			auditInfo.setVoided((Boolean) row[4]);
+			auditInfo.setDateVoided((Date) row[5]);
+			auditInfo.setVoidedBy((User) row[6]);
+			auditInfo.setVoidReason((String) row[7]);
+			result.addData((Integer) row[8], auditInfo);
+		}
 
         return result;
     }
