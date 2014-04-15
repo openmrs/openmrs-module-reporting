@@ -78,6 +78,7 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 			r = Context.getService(EncounterQueryService.class).evaluate(new AllEncounterQuery(), context);
 		}
 		EncounterEvaluationContext eec = new EncounterEvaluationContext(context, r);
+		eec.setBaseCohort(null); // We can do this because the encounterIdSet is already limited by these
 
 		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
 		for (RowPerObjectColumnDefinition cd : dsd.getColumnDefinitions()) {
