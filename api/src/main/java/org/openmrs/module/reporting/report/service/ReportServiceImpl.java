@@ -68,7 +68,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	// Private variables
 	private ReportDAO reportDAO;
 	private TaskExecutor taskExecutor;
-	private Map<String, Report> reportCache = new LinkedHashMap<String, Report>();
+	private Map<String, Report> reportCache = Collections.synchronizedMap(new LinkedHashMap<String, Report>());
 		
 	/**
 	 * Default constructor
@@ -633,7 +633,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				r.setPersisted(true);
 			}
 		}
-		if (reportCache.size() >= ReportingConstants.GLOBAL_PROPERTY_MAX_CACHED_REPORTS()) {
+		if (reportCache.size() > 0 && reportCache.size() >= ReportingConstants.GLOBAL_PROPERTY_MAX_CACHED_REPORTS()) {
 			Iterator<String> i = reportCache.keySet().iterator();
 			i.next();
 			i.remove();
