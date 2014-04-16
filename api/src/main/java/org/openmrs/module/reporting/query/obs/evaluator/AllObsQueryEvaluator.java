@@ -1,59 +1,54 @@
 package org.openmrs.module.reporting.query.obs.evaluator;
 
-import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.query.obs.ObsIdSet;
 import org.openmrs.module.reporting.query.obs.ObsQueryResult;
 import org.openmrs.module.reporting.query.obs.definition.AllObsQuery;
 import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 @Handler(supports= AllObsQuery.class)
 public class AllObsQueryEvaluator implements ObsQueryEvaluator {
 
     @Autowired
-    SessionFactory sessionFactory;
+	EvaluationService evaluationService;
 
     @Override
     public ObsQueryResult evaluate(ObsQuery definition, EvaluationContext context) {
         context = ObjectUtil.nvl(context, new EvaluationContext());
         AllObsQuery query = (AllObsQuery) definition;
-        ObsQueryResult queryResult = new ObsQueryResult(query, context);
+        ObsQueryResult result = new ObsQueryResult(query, context);
 
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Obs.class);
-        criteria.setProjection(Projections.id());
-        criteria.add(Restrictions.eq("voided", false));
-        if (context.getBaseCohort() != null) {
-            if (context.getBaseCohort().getSize() == 0) {
-                return queryResult;  // no results if base cohort exists but is empty
-            }
-            criteria.add(Restrictions.in("person.id", context.getBaseCohort().getMemberIds()));
-        }
-        if (context instanceof ObsEvaluationContext) {
-            ObsEvaluationContext oec = (ObsEvaluationContext) context;
-            ObsIdSet baseObs = oec.getBaseObs();
-            if (baseObs != null) {
-                if (baseObs.getSize() == 0) {
-                    return queryResult;  // no results if base obs set exists but is empty
-                }
-                criteria.add(Restrictions.in("id", baseObs.getMemberIds()));
-            }
-        }
-        if (context.getLimit() != null) {
-            criteria.setMaxResults(context.getLimit());
-        }
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
+			return result;
+		}
+		if (context instanceof ObsEvaluationContext) {
+			ObsIdSet basObs = ((ObsEvaluationContext) context).getBaseObs();
+			if (basObs != null && basObs.getMemberIds().isEmpty()) {
+				return result;
+			}
+		}
 
-        for (Object o : criteria.list()) {
-            queryResult.add((Integer) o);
-        }
-        return queryResult;
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("o.obsId");
+		q.from(Obs.class, "o");
+		q.whereIdIn("o.personId", context.getBaseCohort());
+		if (context instanceof ObsEvaluationContext) {
+			q.whereIdIn("o.obsId", ((ObsEvaluationContext)context).getBaseObs());
+		}
+
+		List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
+		result.getMemberIds().addAll(results);
+
+		return result;
     }
 
 }
