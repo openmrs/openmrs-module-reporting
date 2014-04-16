@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.data.obs.evaluator;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
@@ -57,8 +58,8 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient).save();
-        Obs obsMember1 = data.obs().concept(weight).encounter(enc).save();
-        Obs obsMember2 = data.obs().concept(cd4).encounter(enc).save();
+        Obs obsMember1 = data.obs().concept(weight).value(60).encounter(enc).save();
+        Obs obsMember2 = data.obs().concept(cd4).value(350).encounter(enc).save();
         Obs obsGroup = data.obs().concept(groupConcept).encounter(enc)
                 .member(obsMember1).member(obsMember2).save();
 
@@ -85,8 +86,8 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient).save();
-        Obs obsMember1 = data.obs().concept(weight).encounter(enc).save();
-        Obs obsMember2 = data.obs().concept(weight).encounter(enc).save();
+        Obs obsMember1 = data.obs().concept(weight).value(60).encounter(enc).save();
+        Obs obsMember2 = data.obs().concept(weight).value(62).encounter(enc).save();
         Obs obsGroup = data.obs().concept(groupConcept).encounter(enc)
                 .member(obsMember1).member(obsMember2).save();
 
@@ -107,6 +108,7 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
     }
 
     @Test
+	@Ignore // Ignoring this test for now, since in 1.9 the ObsValidator doesn't allow empty obs groups to be saved
     public void testMakeSureEmptySingleEntryEvenIfNoMatchingObsInGroup() throws Exception {
 
         Concept groupConcept = conceptService.getConcept(10001);
@@ -131,7 +133,8 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
     }
 
     @Test
-    public void testMakeSureEmptyListEntryEvenIfNoMatchingObsInGroup() throws Exception {
+	@Ignore // Ignoring this test for now, since in 1.9 the ObsValidator doesn't allow empty obs groups to be saved
+	public void testMakeSureEmptyListEntryEvenIfNoMatchingObsInGroup() throws Exception {
 
         Concept groupConcept = conceptService.getConcept(10001);
         Concept weight = conceptService.getConcept(5089);

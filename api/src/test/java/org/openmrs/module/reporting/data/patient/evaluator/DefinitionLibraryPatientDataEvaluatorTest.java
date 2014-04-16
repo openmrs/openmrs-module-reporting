@@ -93,7 +93,9 @@ public class DefinitionLibraryPatientDataEvaluatorTest extends BaseModuleContext
 
         EvaluatedPatientData result = service.evaluate(def, context);
         assertThat(result.getData().size(), is(1));
-        assertThat((Age) result.getData().get(7), is(new Age(DateUtil.parseYmd("1976-08-25"), startDate)));
+		Age ageResult = (Age) result.getData().get(7);
+        assertThat(ageResult.getBirthDate().getTime(), is(DateUtil.parseYmd("1976-08-25").getTime()));
+		assertThat(ageResult.getCurrentDate(), is(startDate));
     }
 
 }

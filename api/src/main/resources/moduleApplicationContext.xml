@@ -60,6 +60,30 @@
 			</list>
 		</property>
 	</bean>
+
+	<bean id="reportingEvaluationService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager"><ref bean="transactionManager"/></property>
+		<property name="target">
+			<bean class="org.openmrs.module.reporting.evaluation.service.EvaluationServiceImpl">
+				<property name="administrationService"><ref bean="adminService"/></property>
+			</bean>
+		</property>
+		<property name="preInterceptors">
+			<ref bean="serviceInterceptors" />
+		</property>
+		<property name="transactionAttributeSource">
+			<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+		</property>
+	</bean>
+
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list merge="true">
+				<value>org.openmrs.module.reporting.evaluation.service.EvaluationService</value>
+				<ref bean="reportingEvaluationService"/>
+			</list>
+		</property>
+	</bean>
 	
 	<bean id="reportingReportDefinitionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager"><ref bean="transactionManager"/></property>

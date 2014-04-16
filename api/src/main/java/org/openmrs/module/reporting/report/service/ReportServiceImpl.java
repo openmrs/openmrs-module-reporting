@@ -71,7 +71,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	// Private variables
 	private ReportDAO reportDAO;
 	private TaskExecutor taskExecutor;
-	private Map<String, Report> reportCache = new LinkedHashMap<String, Report>();
+	private Map<String, Report> reportCache = Collections.synchronizedMap(new LinkedHashMap<String, Report>());
 		
 	/**
 	 * Default constructor
@@ -102,7 +102,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 
 	/** 
-	 * @see ReportService#getAllReportDesigns(Integer, boolean)
+	 * @see ReportService#getReportDesigns(ReportDefinition, Class, boolean)
 	 */
 	public List<ReportDesign> getReportDesigns(ReportDefinition reportDefinition, Class<? extends ReportRenderer> rendererType, 
 											   boolean includeRetired) throws APIException {
@@ -131,7 +131,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
-	 * @see ReportService#getPreferredReportRenderer()
+	 * @see ReportService#getReportRenderer(String)
 	 */
 	public ReportRenderer getReportRenderer(String className) {
 		try { 
@@ -148,7 +148,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
-	 * @see ReportService#getPreferredReportRenderer()
+	 * @see ReportService#getPreferredReportRenderer(Class)
 	 */
 	public ReportRenderer getPreferredReportRenderer(Class<Object> supportedType) {
 		return HandlerUtil.getPreferredHandler(ReportRenderer.class, supportedType);
@@ -200,7 +200,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 
 	/**
-	 * @see ReportService#getReportRequests(ReportDefinition, Date, Date, Status)
+	 * @see ReportService#getReportRequests(ReportDefinition, Date, Date, Status[])
 	 */
 	@Transactional(readOnly=true)
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses) {
@@ -208,7 +208,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 
 	/**
-	 * @see ReportService#getReportRequests(ReportDefinition, Date, Date, Integer, Status)
+	 * @see ReportService#getReportRequests(ReportDefinition, Date, Date, Integer, Status[])
 	 */
 	@Transactional(readOnly=true)
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses) {
@@ -271,7 +271,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 
 	/**
-	 * @see ReportService#getReportProcessorConfigurations(ReportDefinition, Date, Date, Status)
+	 * @see ReportService#getReportProcessorConfigurations(Class)
 	 */
 	public List<ReportProcessorConfiguration> getReportProcessorConfigurations(Class<? extends ReportProcessor> processorType) {
 		List<ReportProcessorConfiguration> ret = new ArrayList<ReportProcessorConfiguration>();
@@ -636,7 +636,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				r.setPersisted(true);
 			}
 		}
-		if (reportCache.size() >= ReportingConstants.GLOBAL_PROPERTY_MAX_CACHED_REPORTS()) {
+		if (reportCache.size() > 0 && reportCache.size() >= ReportingConstants.GLOBAL_PROPERTY_MAX_CACHED_REPORTS()) {
 			Iterator<String> i = reportCache.keySet().iterator();
 			i.next();
 			i.remove();

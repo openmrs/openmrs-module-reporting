@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
@@ -41,11 +42,16 @@ import org.openmrs.test.Verifies;
 /**
  * Tests methods on on ObjectUtil
  */
-public class ObjectUtilTest extends BaseModuleContextSensitiveTest{
+public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 
     protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+
+	@Before
+	public void setupObjectUtilTest() {
+		ReportingConstants.clearGlobalPropertyCache();
+	}
     
 	@Test
 	public void sortShouldSortSimpleStrings() throws Exception {

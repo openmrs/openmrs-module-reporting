@@ -15,16 +15,15 @@ package org.openmrs.module.reporting.data.person.evaluator;
 
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +31,9 @@ import java.util.Map;
  */
 @Handler(supports = PreferredNameDataDefinition.class, order = 50)
 public class PreferredNameDataEvaluator implements PersonDataEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/**
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
@@ -42,30 +44,20 @@ public class PreferredNameDataEvaluator implements PersonDataEvaluator {
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-		if (context != null && context.getBaseCohort() != null && !context.getBaseCohort().isEmpty()) {
-			DataSetQueryService qs = Context.getService(DataSetQueryService.class);
 
-			// orders all person names so preferred comes last for each person id
-			String hql = "select pn.person.personId, pn" +
-					" from PersonName as pn" +
-					" where voided = false " +
-					" and pn.person.personId in (:personIds)" +
-					" order by preferred asc";
-
-			Map<String, Object> m = new HashMap<String, Object>();
-			m.put("personIds", context.getBaseCohort());
-
-			// overwrite person name for each person, finishing with the preferred if it exists
-			List<Object> queryResult = qs.executeHqlQuery(hql, m);
-			for (Object o : queryResult) {
-				Object[] parts = (Object[]) o;
-				if (parts.length == 2) {
-					Integer pId = (Integer) parts[0];
-					PersonName pn = (PersonName) parts[1];
-					c.addData(pId, pn);
-				}
-			}
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
+			return c;
 		}
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("pn.person.personId", "pn");
+		q.from(PersonName.class, "pn");
+		q.whereIdIn("pn.person.personId", context.getBaseCohort());
+		q.orderAsc("pn.preferred");
+
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		c.setData(data);
+
 		return c;
 	}
 }

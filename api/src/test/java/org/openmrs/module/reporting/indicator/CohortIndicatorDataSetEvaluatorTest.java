@@ -53,7 +53,6 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		gender.addCohortDefinition("male", male, null);
 		
 		CohortDimensionResult results = (CohortDimensionResult)Context.getService(DimensionService.class).evaluate(gender, new EvaluationContext());
-		System.out.println("Results: " + results.getOptionCohorts());
 		
 		InProgramCohortDefinition inProgram = new InProgramCohortDefinition();
 		inProgram.setPrograms(Collections.singletonList(Context.getProgramWorkflowService().getProgram(2)));
@@ -68,9 +67,6 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		
 		MapDataSet ds = (MapDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dsd, null);
 		DataSetRow row = ds.getData();
-		for (DataSetColumn column : row.getColumnValues().keySet()) {
-			System.out.println(column + ": " + row.getColumnValue(column));
-		}
 		
 		Assert.assertEquals(2, ((IndicatorResult) ds.getData().getColumnValue("1")).getValue().intValue());
 		Assert.assertEquals(1, ((IndicatorResult) ds.getData().getColumnValue("1.a")).getValue().intValue());

@@ -14,70 +14,55 @@
 
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
+import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.SimultaneousEncountersDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @Handler(supports= SimultaneousEncountersDataDefinition.class, order=50)
 public class SimultaneousEncountersDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private EvaluationService evaluationService;
 
     @Override
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        EvaluatedEncounterData results = new EvaluatedEncounterData(definition, context);
 
-        Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
-
+		EvaluatedEncounterData results = new EvaluatedEncounterData(definition, context);
         SimultaneousEncountersDataDefinition def = (SimultaneousEncountersDataDefinition) definition;
 
-        String hql = "select enc.id, other " +
-                "from Encounter enc, Encounter other " +
-                "where enc.encounterDatetime = other.encounterDatetime " +
-                "  and enc.patient.id = other.patient.id " +
-                "  and enc.id != other.id " +
-                "  and enc.voided = false " +
-                "  and other.voided = false ";
-        if (def.getEncounterTypeList() != null) {
-            if (def.getEncounterTypeList().isEmpty()) {
-                return results;
-            }
-            hql += "  and other.encounterType in (:encounterTypes) ";
-        }
-        if (encIds != null) {
-            if (encIds.size() == 0) {
-                // just return empty set if input set empty
-                return results;
-            }
-            hql += "  and enc.id in (:encIds) ";
-        }
-        hql += "order by other.dateCreated asc"; // use the most-recently-entered encounter
-        // hql += "order by ABS(other.dateCreated - enc.dateCreated) desc"; // use the encounter with the nearest datetime to enc
+		if (def.getEncounterTypeList() != null && def.getEncounterTypeList().isEmpty()) {
+			return results;
+		}
 
-        Query query = sessionFactory.getCurrentSession().createQuery(hql);
-        if (def.getEncounterTypeList() != null) {
-            query.setParameterList("encounterTypes", def.getEncounterTypeList());
-        }
-        if (encIds != null) {
-            query.setParameterList("encIds", encIds);
-        }
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("enc.id", "other");
+		q.from(Encounter.class, "enc").from(Encounter.class, "other");
+		q.where("enc.encounterDatetime = other.encounterDatetime");
+		q.where("enc.patient.id = other.patient.id");
+		q.where("enc.id != other.id");
+		q.whereEqual("enc.voided", false);
+		q.whereEqual("other.voided", false);
+		q.whereIn("other.encounterType", def.getEncounterTypeList());
+		q.whereIdIn("enc.patient.id", context.getBaseCohort());
+		if (context instanceof EncounterEvaluationContext) {
+			q.whereIdIn("enc.id", ((EncounterEvaluationContext)context).getBaseEncounters());
+		}
+		q.orderAsc("other.dateCreated");  // use the most-recently-entered encounter
 
-        for (Object[] row : (List<Object[]>) query.list()) {
-            results.addData((Integer) row[0], row[1]);
-        }
+		Map<Integer, Object> data  = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		results.setData(data);
 
-        return results;
+		return results;
     }
 
 }

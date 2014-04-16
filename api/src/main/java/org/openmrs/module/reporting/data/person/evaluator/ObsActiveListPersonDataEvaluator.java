@@ -13,27 +13,31 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObsActiveList;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.ObsActiveListPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Evaluates an ObsActiveListPersonDataDefinition to produce a PersonData
  */
 @Handler(supports = ObsActiveListPersonDataDefinition.class, order = 50)
 public class ObsActiveListPersonDataEvaluator implements PersonDataEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 	
 	/**
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
@@ -52,53 +56,44 @@ public class ObsActiveListPersonDataEvaluator implements PersonDataEvaluator {
 			return evaluatedPersonData;
 		}
 		
-		DataSetQueryService queryService = Context.getService(DataSetQueryService.class);
-		
 		// Retrieve all Observations for each patient, for all added and removed Concepts
+		List<Object[]> startingObs = getObs(context.getBaseCohort(), def.getStartingConcepts());
+		List<Object[]> endingObs = getObs(context.getBaseCohort(), def.getEndingConcepts());
 		
-		StringBuilder hql = new StringBuilder();
-		Map<String, Object> m = new HashMap<String, Object>();
-		
-		hql.append("from Obs ");
-		hql.append("where voided = false ");
-		hql.append("and concept in (:concepts) ");
-
-		if (context.getBaseCohort() != null) {
-			hql.append("and personId in (:patientIds) ");
-			m.put("patientIds", context.getBaseCohort());
-		}
-		
-		List<Object> startingObs = new ArrayList<Object>();
-		List<Object> endingObs = new ArrayList<Object>();
-		
-		m.put("concepts", def.getStartingConcepts());
-		startingObs = queryService.executeHqlQuery(hql.toString(), m);
-		
-		if (def.getEndingConcepts() != null && !def.getEndingConcepts().isEmpty()) {
-			m.put("concepts", def.getEndingConcepts());
-			endingObs = queryService.executeHqlQuery(hql.toString(), m);
-		}
-		
-		for (Object o : startingObs) {
-			Obs obs = (Obs)o;
-			ObsActiveList l = (ObsActiveList)evaluatedPersonData.getData().get(obs.getPersonId());
+		for (Object[] row : startingObs) {
+			Integer pId = (Integer)row[0];
+			Obs obs = (Obs)row[1];
+			ObsActiveList l = (ObsActiveList)evaluatedPersonData.getData().get(pId);
 			if (l == null) {
-				l = new ObsActiveList(obs.getPersonId());
-				evaluatedPersonData.addData(obs.getPersonId(), l);
+				l = new ObsActiveList(pId);
+				evaluatedPersonData.addData(pId, l);
 			}
 			l.addStartingObs(obs);
 		}
-		
-		for (Object o : endingObs) {
-			Obs obs = (Obs)o;
-			ObsActiveList l = (ObsActiveList)evaluatedPersonData.getData().get(obs.getPersonId());
+
+		for (Object[] row : endingObs) {
+			Integer pId = (Integer)row[0];
+			Obs obs = (Obs)row[1];
+			ObsActiveList l = (ObsActiveList)evaluatedPersonData.getData().get(pId);
 			if (l == null) {
-				l = new ObsActiveList(obs.getPersonId());
-				evaluatedPersonData.addData(obs.getPersonId(), l);
+				l = new ObsActiveList(pId);
+				evaluatedPersonData.addData(pId, l);
 			}
 			l.addEndingObs(obs);
 		}
 		
 		return evaluatedPersonData;
+	}
+
+	public List<Object[]> getObs(Cohort c, List<Concept> concepts) {
+		if (concepts == null || concepts.isEmpty()) {
+			return new ArrayList<Object[]>();
+		}
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("o.personId", "o");
+		q.from(Obs.class, "o");
+		q.whereIdIn("o.personId", c);
+		q.whereIn("o.concept", concepts);
+		return evaluationService.evaluateToList(q);
 	}
 }

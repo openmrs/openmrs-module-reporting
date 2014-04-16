@@ -14,20 +14,19 @@
 
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.hibernate.SQLQuery;
-import org.hibernate.SessionFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.data.DataUtil;
 import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.SqlEncounterDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,24 +36,30 @@ import java.util.Set;
 public class SqlEncounterDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
-    SessionFactory sessionFactory;
+	EvaluationService evaluationService;
 
     @Override
-    public EvaluatedEncounterData evaluate(EncounterDataDefinition def, EvaluationContext ctx) throws EvaluationException {
+    public EvaluatedEncounterData evaluate(EncounterDataDefinition def, EvaluationContext context) throws EvaluationException {
         SqlEncounterDataDefinition definition = (SqlEncounterDataDefinition) def;
-        EncounterEvaluationContext context = (EncounterEvaluationContext) ctx;
-
         EvaluatedEncounterData data = new EvaluatedEncounterData(definition, context);
+
+		// TODO: Support IdSetMember joining
 
         Set<Integer> encounterIds = EncounterDataUtil.getEncounterIdsForContext(context, false);
         if (encounterIds.size() == 0) {
             return data;
         }
 
-        SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(definition.getSql());
-        query.setParameterList("encounterIds", encounterIds);
+		SqlQueryBuilder q = new SqlQueryBuilder();
+		q.append(definition.getSql());
+		for (Parameter p : definition.getParameters()) {
+			q.addParameter(p.getName(), context.getParameterValue(p.getName()));
+		}
+		q.addParameter("encounterIds", encounterIds);
 
-        DataUtil.populate(data, (List<Object[]>) query.list());
+		Map<Integer, Object> results = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		data.setData(results);
+
         return data;
     }
 

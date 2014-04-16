@@ -56,16 +56,16 @@ public class BuiltInPatientDataLibraryTest extends BaseModuleContextSensitiveTes
     public void testAgeAtStart() throws Exception {
         // born 1976-08-25
         Age actual = (Age) eval(library.getAgeAtStart());
-        assertThat(actual.getBirthDate(), is(DateUtil.parseYmd("1976-08-25")));
-        assertThat(actual.getCurrentDate(), is(DateUtil.parseYmd("2013-01-01")));
+        assertThat(actual.getBirthDate().getTime(), is(DateUtil.parseYmd("1976-08-25").getTime()));
+        assertThat(actual.getCurrentDate().getTime(), is(DateUtil.parseYmd("2013-01-01").getTime()));
     }
 
     @Test
     public void testAgeAtEnd() throws Exception {
         // born 1976-08-25
         Age actual = (Age) eval(library.getAgeAtEnd());
-        assertThat(actual.getBirthDate(), is(DateUtil.parseYmd("1976-08-25")));
-        assertThat(actual.getCurrentDate(), is(DateUtil.parseYmd("2013-12-31")));
+        assertThat(actual.getBirthDate().getTime(), is(DateUtil.parseYmd("1976-08-25").getTime()));
+        assertThat(actual.getCurrentDate().getTime(), is(DateUtil.parseYmd("2013-12-31").getTime()));
     }
 
     private Object eval(PatientDataDefinition definition) throws EvaluationException {

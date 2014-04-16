@@ -15,8 +15,7 @@ package org.openmrs.module.reporting.data.patient.evaluator;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -65,7 +64,7 @@ public class EncountersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		d.addType(Context.getEncounterService().getEncounterType(1));
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
-		Assert.assertEquals(2, ((List)pd.getData().get(7)).size());
+		Assert.assertEquals(2, ((List) pd.getData().get(7)).size());
 		Assert.assertNull(pd.getData().get(21));
 		
 		d.addType(Context.getEncounterService().getEncounterType(2));

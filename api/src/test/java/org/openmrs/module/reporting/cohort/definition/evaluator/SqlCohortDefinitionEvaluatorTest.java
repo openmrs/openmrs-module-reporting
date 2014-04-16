@@ -1,14 +1,5 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
@@ -33,10 +24,18 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
-import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -337,8 +336,6 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 
 		DataSet ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, context);
 		DataSetRow row = ds.iterator().next();
-
-		System.out.println(ReportUtil.toCsv(ds));
 
 		Assert.assertEquals("5", row.getColumnValue("1").toString());
 		Assert.assertEquals("1", row.getColumnValue("2").toString());

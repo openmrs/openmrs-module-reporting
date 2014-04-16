@@ -13,8 +13,7 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -74,7 +73,6 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		CollectionConverter drugOrderListConverter = new CollectionConverter(new ObjectFormatter("{drug}"), true, null);
 		ObjectFormatter drugOrderFormatter = new ObjectFormatter(" + ");
 		ChainedConverter c = new ChainedConverter(drugOrderListConverter, drugOrderFormatter);
-		System.out.println("History: " + c.convert(history));
 	}
 
 	/**

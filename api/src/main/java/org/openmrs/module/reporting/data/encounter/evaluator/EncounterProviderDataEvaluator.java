@@ -2,21 +2,21 @@ package org.openmrs.module.reporting.data.encounter.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-import org.openmrs.OpenmrsMetadata;
+import org.openmrs.EncounterProvider;
+import org.openmrs.Provider;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterProviderDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Evaluates a EncounterProviderDataDefinition
@@ -25,15 +25,10 @@ import java.util.Set;
 @Handler(supports=EncounterProviderDataDefinition.class, order=50)
 public class EncounterProviderDataEvaluator implements EncounterDataEvaluator {
 
-
-    /**
-     * Logger
-     */
     protected final Log log = LogFactory.getLog(getClass());
 
-
     @Autowired
-    private SessionFactory sessionFactory;
+    private EvaluationService evaluationService;
     
     @Override
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
@@ -47,53 +42,37 @@ public class EncounterProviderDataEvaluator implements EncounterDataEvaluator {
 
         EvaluatedEncounterData data = new EvaluatedEncounterData(definition, context);
 
-        Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, false);
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("ep.encounter.id", "ep.provider");
+		q.from(EncounterProvider.class, "ep");
+		q.whereEqual("ep.encounterRole", def.getEncounterRole());
 
-        // just return empty set if input set is empty
-        if (encIds.size() == 0) {
-            return data;
-        }
+		q.whereIdIn("ep.encounter.patient.patientId", context.getBaseCohort());
+		if (context instanceof EncounterEvaluationContext) {
+			q.whereIdIn("ep.encounter.encounterId", ((EncounterEvaluationContext) context).getBaseEncounters());
+		}
 
-        StringBuilder hql = new StringBuilder();
-        hql.append("select ep.encounter.id, ep.provider from EncounterProvider as ep ");
-        hql.append("where ep.encounter.id in (:ids) and ep.voided='false' ");
-        
-        if (def.getEncounterRole() != null) {
-            hql.append("and ep.encounterRole.id = " + def.getEncounterRole().getId());
-        }
+		for (Object[] result : evaluationService.evaluateToList(q)) {
+			Integer encounterId = (Integer)result[0];
+			Provider provider = (Provider)result[1];
 
-        Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
-        query.setParameterList("ids", encIds);
-
-        // create an entry for each encounter
-        for (Integer encId : encIds) {
-            if (!def.isSingleProvider()) {
-                data.addData(encId, new ArrayList<OpenmrsMetadata>());
-            }
-            else {
-                data.addData(encId, null);
-            }
-        }
-
-        // now populate with actual results
-        for (Object r : query.list()) {
-
-            Object[] result = (Object []) r;
-
-            if (!def.isSingleProvider()) {
-                ((List<OpenmrsMetadata>) data.getData().get(result[0])).add((OpenmrsMetadata) result[1]);
-            }
-            else {
-
-                // note that if there are multiple matching providers and we are in singleProvider mode then last one wins
-                if (data.getData().get(result[0]) != null) {
-                    log.warn("Multiple matching providers for encounter " + result[0] + "... picking one");
+			if (!def.isSingleProvider()) {
+				List l = (List) data.getData().get(encounterId);
+				if (l == null) {
+					l = new ArrayList();
+					data.getData().put(encounterId, l);
+				}
+				l.add(provider);
+			}
+			else {
+                // If there are multiple matching providers and we are in singleProvider mode then last one wins
+                if (data.getData().get(encounterId) != null) {
+                    log.warn("Multiple matching providers for encounter " + encounterId + "... picking one");
                 }
-
-                data.addData((Integer) result[0], result[1]);
+                data.addData(encounterId, provider);
             }
         }
 
-        return data;
-    }
+		return data;
+	}
 }

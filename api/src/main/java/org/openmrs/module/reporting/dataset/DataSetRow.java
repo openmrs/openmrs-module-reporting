@@ -38,7 +38,6 @@ public class DataSetRow implements Serializable {
 	/**
 	 * Retrieves the value for the row given the passed column
 	 * @param column
-	 * @param value
 	 */
 	public Object getColumnValue(DataSetColumn column) {
 		return getColumnValues().get(column);

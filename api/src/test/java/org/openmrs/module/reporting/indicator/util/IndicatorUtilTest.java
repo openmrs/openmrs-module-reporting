@@ -72,7 +72,6 @@ public class IndicatorUtilTest {
 	
 			Set<String> options = new HashSet<String>(IndicatorUtil.compileColumnDimensionOptions(toInclude));
 			Assert.assertEquals(59, options.size());
-			System.out.println("Total number of options added: " + options.size());
 		}
 
 		{
@@ -83,7 +82,6 @@ public class IndicatorUtilTest {
 	
 			Set<String> options = new HashSet<String>(IndicatorUtil.compileColumnDimensionOptions(toInclude));
 			Assert.assertEquals(26, options.size());
-			System.out.println("Total number of options added: " + options.size());
 		}
 		
 		{
@@ -93,10 +91,6 @@ public class IndicatorUtilTest {
 	
 			Set<String> options = new HashSet<String>(IndicatorUtil.compileColumnDimensionOptions(toInclude));
 			Assert.assertEquals(8, options.size());
-			System.out.println("Total number of options added: " + options.size());
-			for (String option : options) {
-				System.out.println(option);
-			}
 		}
 	}
 }

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -90,6 +91,8 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 				log.debug("With Mappings: " + cd.getDataDefinition().getParameterMappings());
 				log.debug("With Parameters: " + ec.getParameterValues());
 			}
+			StopWatch sw = new StopWatch();
+			sw.start();
 
 			MappedData<? extends PatientDataDefinition> dataDef = (MappedData<? extends PatientDataDefinition>) cd.getDataDefinition();
 			EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(dataDef, ec);
@@ -100,6 +103,11 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 					val = DataUtil.convertData(val, dataDef.getConverters());
 					dataSet.addColumnValue(id, column, val);
 				}
+			}
+
+			sw.stop();
+			if (log.isDebugEnabled()) {
+				log.debug("Evaluated column. Duration: " + sw.toString());
 			}
 		}
 

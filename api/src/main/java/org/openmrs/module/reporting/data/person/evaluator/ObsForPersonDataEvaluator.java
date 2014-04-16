@@ -13,31 +13,29 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.openmrs.EncounterType;
-import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Evaluates an ObsForPersonDataDefinition to produce a PersonData
  */
 @Handler(supports=ObsForPersonDataDefinition.class, order=50)
 public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/** 
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
@@ -51,59 +49,28 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
 			return c;
 		}
-		
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		
-		StringBuilder hql = new StringBuilder();
-		Map<String, Object> m = new HashMap<String, Object>();
-		
-		hql.append("from 		Obs ");
-		hql.append("where 		voided = false ");
-		
-		if (context.getBaseCohort() != null) {
-			hql.append("and 		personId in (:patientIds) ");
-			m.put("patientIds", context.getBaseCohort());
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("o.personId", "o");
+		q.from(Obs.class, "o");
+		q.whereIdIn("o.personId", context.getBaseCohort());
+		q.whereEqual("o.concept", def.getQuestion());
+		q.whereIn("o.encounter.encounterType", def.getEncounterTypeList());
+		q.whereIn("o.encounter.form", def.getFormList());
+		q.whereGreaterOrEqualTo("o.obsDatetime", def.getOnOrAfter());
+		q.whereLessOrEqualTo("o.obsDatetime", def.getOnOrBefore());
+		if (def.getWhich() == TimeQualifier.LAST) {
+			q.orderDesc("o.obsDatetime");
 		}
-		
-		hql.append("and 		concept.conceptId = :question ");
-		m.put("question", def.getQuestion().getConceptId());
-		
-		if (def.getEncounterTypeList() != null && !def.getEncounterTypeList().isEmpty()) {
-			List<Integer> ids = new ArrayList<Integer>();
-			for (EncounterType encType : def.getEncounterTypeList()) {
-				ids.add(encType.getEncounterTypeId());
-			}
-			hql.append("and		encounter.encounterType.encounterTypeId in (:encounterTypeIds) ");
-			m.put("encounterTypeIds", ids);
+		else {
+			q.orderAsc("o.obsDatetime");
 		}
-		
-		if (def.getFormList() != null && !def.getFormList().isEmpty()) {
-			List<Integer> ids = new ArrayList<Integer>();
-			for (Form encForm : def.getFormList()) {
-				ids.add(encForm.getFormId());
-			}
-			hql.append("and		encounter.form.formId in (:formIds) ");
-			m.put("formIds", ids);
-		}
-		
-		if (def.getOnOrAfter() != null) {
-			hql.append("and		obsDatetime >= :onOrAfter ");
-			m.put("onOrAfter", def.getOnOrAfter());
-		}
-		
-		if (def.getOnOrBefore() != null) {
-			hql.append("and		obsDatetime <= :onOrBefore ");
-			m.put("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getOnOrBefore()));
-		}
-		
-		hql.append("order by 	obsDatetime " + (def.getWhich() == TimeQualifier.LAST ? "desc" : "asc"));
-		
-		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
+
+		List<Object[]> queryResult = evaluationService.evaluateToList(q);
 		
 		ListMap<Integer, Obs> obsForPatients = new ListMap<Integer, Obs>();
-		for (Object o : queryResult) {
-			Obs obs = (Obs)o;
-			obsForPatients.putInList(obs.getPersonId(), obs);
+		for (Object[] row : queryResult) {
+			obsForPatients.putInList((Integer)row[0], (Obs)row[1]);
 		}
 		
 		for (Integer pId : obsForPatients.keySet()) {

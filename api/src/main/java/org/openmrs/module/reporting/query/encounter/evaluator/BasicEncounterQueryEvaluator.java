@@ -14,17 +14,14 @@
 
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
-import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.BasicEncounterQuery;
@@ -37,7 +34,7 @@ import java.util.List;
 public class BasicEncounterQueryEvaluator implements EncounterQueryEvaluator {
 
     @Autowired
-    private SessionFactory sessionFactory;
+	EvaluationService evaluationService;
 
     @Override
     public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) throws EvaluationException {
@@ -46,41 +43,30 @@ public class BasicEncounterQueryEvaluator implements EncounterQueryEvaluator {
         BasicEncounterQuery query = (BasicEncounterQuery) definition;
         EncounterQueryResult result = new EncounterQueryResult(query, context);
 
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Encounter.class);
-        criteria.setProjection(Projections.id());
-        criteria.add(Restrictions.eq("voided", false));
-
-		if (query.getEncounterTypes() != null) {
-			criteria.add(Restrictions.in("encounterType", query.getEncounterTypes()));
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
+			return result;
 		}
-        if (query.getOnOrAfter() != null) {
-            criteria.add(Restrictions.ge("encounterDatetime", query.getOnOrAfter()));
-        }
-        if (query.getOnOrBefore() != null) {
-            criteria.add(Restrictions.le("encounterDatetime", DateUtil.getEndOfDayIfTimeExcluded(query.getOnOrBefore())));
-        }
+		if (context instanceof EncounterEvaluationContext) {
+			EncounterIdSet baseEncounters = ((EncounterEvaluationContext) context).getBaseEncounters();
+			if (baseEncounters != null && baseEncounters.getMemberIds().isEmpty()) {
+				return result;
+			}
+		}
 
-        if (context.getBaseCohort() != null) {
-            if (context.getBaseCohort().size() == 0) {
-                return result;
-            } else {
-                criteria.add(Restrictions.in("patient.id", context.getBaseCohort().getMemberIds()));
-            }
-        }
-        if (context instanceof EncounterEvaluationContext) {
-            EncounterIdSet baseEncounters = ((EncounterEvaluationContext) context).getBaseEncounters();
-            if (baseEncounters != null) {
-                if (baseEncounters.getSize() == 0) {
-                    return result;
-                } else {
-                    criteria.add(Restrictions.in("id", baseEncounters.getMemberIds()));
-                }
-            }
-        }
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("e.encounterId");
+		q.from(Encounter.class, "e");
+		q.whereIn("e.encounterType", query.getEncounterTypes());
+		q.whereGreaterOrEqualTo("e.encounterDatetime", query.getOnOrAfter());
+		q.whereLessOrEqualTo("e.encounterDatetime", query.getOnOrBefore());
+		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
+		if (context instanceof EncounterEvaluationContext) {
+			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
+		}
 
-        for (Integer encounterId : ((List<Integer>) criteria.list())) {
-            result.add(encounterId);
-        }
+		List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
+		result.getMemberIds().addAll(results);
+
         return result;
     }
 }

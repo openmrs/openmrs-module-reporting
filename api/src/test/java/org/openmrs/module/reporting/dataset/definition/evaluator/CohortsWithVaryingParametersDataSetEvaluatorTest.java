@@ -82,9 +82,10 @@ public class CohortsWithVaryingParametersDataSetEvaluatorTest extends BaseModule
         dsd.addColumn(cd);
         dsd.setRowLabelTemplate("At {{ locationList.name }}");
 
-        for (Location location : locationService.getAllLocations()) {
+		String[] locationNames = {"Never Never Land", "Unknown Location", "Xanadu"};
+        for (String locationName : locationNames) {
             Map<String, Object> params = new HashMap<String, Object>();
-            params.put("locationList", location);
+            params.put("locationList", locationService.getLocation(locationName));
             dsd.addVaryingParameters(params);
         }
 

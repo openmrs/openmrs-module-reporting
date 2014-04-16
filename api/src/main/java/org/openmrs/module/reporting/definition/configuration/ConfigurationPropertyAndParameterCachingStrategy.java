@@ -42,7 +42,7 @@ public class ConfigurationPropertyAndParameterCachingStrategy extends Configurat
 		for (String paramName : paramNames) {
 			Object value = context.getParameterValue(paramName);
 			if (value != null) {
-				cacheKey += "&"+paramName+"="+value.toString();
+				cacheKey += "&"+paramName+"="+getStringValue(value);
 			}
 		}
 		return cacheKey;

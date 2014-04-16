@@ -13,15 +13,19 @@
  */
 package org.openmrs.module.reporting.definition.configuration;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
+import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 import org.openmrs.module.reporting.evaluation.caching.CachingStrategy;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Represents a strategy for caching a particular object in the EvaluationContext.  You would typically 
@@ -40,12 +44,27 @@ public class ConfigurationPropertyCachingStrategy implements CachingStrategy  {
 			throw new IllegalArgumentException("Unable to getCacheKey for object that is null");
 		}
 		List<Property> props = DefinitionUtil.getConfigurationProperties(definition);
-		Map<String, Object> m = new TreeMap<String, Object>();
+		Map<String, String> m = new TreeMap<String, String>();
 		for (Property p : props) {
 			if (p.getValue() != null) {
-				m.put(p.getField().getName(), p.getValue());
+				m.put(p.getField().getName(), getStringValue(p.getValue()));
 			}
 		}
 		return definition.getClass().getName() + m.toString();
+	}
+
+	protected String getStringValue(Object o) {
+		if (o instanceof OpenmrsObject) {
+			return ((OpenmrsObject)o).getUuid();
+		}
+		if (o instanceof Collection) {
+			List<String> l = new ArrayList<String>();
+			for (Object item : ((Collection)o)) {
+				l.add(getStringValue(item));
+			}
+			Collections.sort(l);
+			return l.toString();
+		}
+		return o.toString();
 	}
 }

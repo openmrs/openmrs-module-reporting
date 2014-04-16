@@ -13,31 +13,30 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.Concept;
-import org.openmrs.ConceptSet;
-import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DrugOrderSet;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Evaluates an DrugOrdersForPatientDataDefinition to produce a PatientData
  */
 @Handler(supports=DrugOrdersForPatientDataDefinition.class, order=50)
 public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/** 
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
@@ -59,95 +58,81 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 			return c;
 		}
 		
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);
-		
-		StringBuilder hql = new StringBuilder();
-		Map<String, Object> m = new HashMap<String, Object>();
-		
-		hql.append("from 		DrugOrder ");
-		hql.append("where 		voided = false ");
-		
-		if (context.getBaseCohort() != null) {
-			hql.append("and 	patient.patientId in (:patientIds) ");
-			m.put("patientIds", context.getBaseCohort());
-		}
-		
-		List<Integer> drugIds = new ArrayList<Integer>();
-		List<Integer> conceptIds = new ArrayList<Integer>();
-		
-		if (def.getDrugsToInclude() != null) {
-			for (Drug d : def.getDrugsToInclude()) {
-				drugIds.add(d.getDrugId());
-			}
-		}
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("do.patient.patientId", "do");
+		q.from(DrugOrder.class, "do");
+		q.whereIdIn("do.patient.patientId", context.getBaseCohort());
+
+		List<Concept> concepts = null;
+
 		if (def.getDrugConceptsToInclude() != null) {
-			for (Concept concept : def.getDrugConceptsToInclude()) {
-				conceptIds.add(concept.getConceptId());
-			}
+			concepts = def.getDrugConceptsToInclude();
 		}
 		if (def.getDrugConceptSetsToInclude() != null) {
-			for (Concept concept : def.getDrugConceptSetsToInclude()) {
-				if (concept.isSet()) {
-					for (ConceptSet setMember : concept.getConceptSets()) {
-						conceptIds.add(setMember.getConcept().getConceptId());
-					}
+			if (concepts == null) {
+				concepts = new ArrayList<Concept>();
+			}
+			for (Concept conceptSet : def.getDrugConceptSetsToInclude()) {
+				if (conceptSet.isSet()) {
+					concepts.addAll(conceptSet.getSetMembers());
 				}
 			}
 		}
-		
-		if (drugIds.size() > 0 && conceptIds.size() > 0) {
-			hql.append("and 	( drug.drugId in (:drugIds) or concept.conceptId in (:conceptIds) ) ");
-			m.put("drugIds", drugIds);
-			m.put("conceptIds", conceptIds);
+
+		if (def.getDrugsToInclude() != null && concepts != null) {
+			q.startGroup();
+			q.whereIn("do.drug", def.getDrugsToInclude());
+			q.or();
+			q.whereIn("do.concept", concepts);
+			q.endGroup();
 		}
-		else if (drugIds.size() > 0) {
-			hql.append("and 	drug.drugId in (:drugIds) ");
-			m.put("drugIds", drugIds);			
+		else if (def.getDrugsToInclude() != null) {
+			q.whereIn("do.drug", def.getDrugsToInclude());
 		}
-		else if (conceptIds.size() > 0) {
-			hql.append("and 	concept.conceptId in (:conceptIds) ");
-			m.put("conceptIds", conceptIds);		
+		else if (concepts != null) {
+			q.whereIn("do.concept", concepts);
 		}
 		
 		if (def.getActiveOnDate() != null) {
-			hql.append("and		startDate <= :activeOnDate ");
-			hql.append("and		(autoExpireDate is null or autoExpireDate > :activeOnDate) ");
-			hql.append("and		(discontinuedDate is null or discontinuedDate > :activeOnDate) ");
-			m.put("activeOnDate", DateUtil.getEndOfDayIfTimeExcluded(def.getActiveOnDate()));
+			q.whereLessOrEqualTo("do.startDate", def.getActiveOnDate());
+			q.whereGreaterOrNull("do.autoExpireDate", def.getActiveOnDate());
+			q.whereGreaterOrNull("do.discontinuedDate", def.getActiveOnDate());
 		}
 		
 		if (def.getStartedOnOrBefore() != null) {
-			hql.append("and		startDate <= :startedOnOrBefore ");
-			m.put("startedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getStartedOnOrBefore()));
+			q.whereLessOrEqualTo("do.startDate", def.getStartedOnOrBefore());
 		}
 		
 		if (def.getStartedOnOrAfter() != null) {
-			hql.append("and		startDate >= :startedOnOrAfter ");
-			m.put("startedOnOrAfter", def.getStartedOnOrAfter());
+			q.whereGreaterOrEqualTo("do.startDate", def.getStartedOnOrAfter());
 		}
 		
 		if (def.getCompletedOnOrBefore() != null) {
-			hql.append("and		( (autoExpireDate is not null and autoExpireDate <= :completedOnOrBefore) or ");
-			hql.append("		  (discontinuedDate is not null and discontinuedDate <= :completedOnOrBefore) ) ");
-			m.put("completedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(def.getCompletedOnOrBefore()));
+			q.startGroup();
+			q.whereLessOrEqualTo("do.autoExpireDate", def.getCompletedOnOrBefore());
+			q.or();
+			q.whereLessOrEqualTo("do.discontinuedDate", def.getCompletedOnOrBefore());
+			q.endGroup();
 		}
-		
+
 		if (def.getCompletedOnOrAfter() != null) {
-			hql.append("and		( (autoExpireDate is not null and autoExpireDate >= :completedOnOrAfter) or ");
-			hql.append("		  (discontinuedDate is not null and discontinuedDate >= :completedOnOrAfter) ) ");
-			m.put("completedOnOrAfter", DateUtil.getEndOfDayIfTimeExcluded(def.getCompletedOnOrAfter()));
+			q.startGroup();
+			q.whereGreaterOrEqualTo("do.autoExpireDate", def.getCompletedOnOrAfter());
+			q.or();
+			q.whereGreaterOrEqualTo("do.discontinuedDate", def.getCompletedOnOrAfter());
+			q.endGroup();
 		}
 		
-		List<Object> queryResult = qs.executeHqlQuery(hql.toString(), m);
-		for (Object o : queryResult) {
-			DrugOrder drugOrder = (DrugOrder)o;
-			Integer pId = drugOrder.getPatient().getPatientId(); // TODO: Make this more efficient via HQL
-			DrugOrderSet h = (DrugOrderSet)c.getData().get(pId);
-			if (h == null) {
-				h = new DrugOrderSet();
-				c.addData(pId, h);
+		List<Object[]> results = evaluationService.evaluateToList(q);
+		for (Object[] row : results) {
+			Integer pId = (Integer)row[0];
+			DrugOrder drugOrder = (DrugOrder)row[1];
+			DrugOrderSet drugOrderSet = (DrugOrderSet)c.getData().get(pId);
+			if (drugOrderSet == null) {
+				drugOrderSet = new DrugOrderSet();
+				c.addData(pId, drugOrderSet);
 			}
-			h.add(drugOrder);
+			drugOrderSet.add(drugOrder);
 		}
 		
 		return c;

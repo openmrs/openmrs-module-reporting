@@ -13,13 +13,11 @@
  */
 package org.openmrs.module.reporting.definition.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
@@ -33,9 +31,13 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base Implementation of the DefinitionService API. Note that any subclasses that want
@@ -256,7 +258,15 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * actual evaluators.  Examples might include running the evaluators in batches, etc
 	 */
 	protected Evaluated<T> executeEvaluator(DefinitionEvaluator<T> evaluator, T definition, EvaluationContext context) throws EvaluationException {
-		return evaluator.evaluate(definition, context);
+		List<String> ownedIdSets = Context.getService(EvaluationService.class).startUsing(context);
+		try {
+			return evaluator.evaluate(definition, context);
+		}
+		finally {
+			for (String idSetKey : ownedIdSets) {
+				Context.getService(EvaluationService.class).stopUsing(idSetKey);
+			}
+		}
 	}
 	
 	/**

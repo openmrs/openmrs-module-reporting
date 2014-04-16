@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleUtil;
@@ -285,5 +286,28 @@ public class ReportUtil {
 	 */
 	public static boolean isOpenmrsVersionOnePointNineAndAbove() {
 		return ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, "1.9.0");
+	}
+
+	public static void printTableContents(String tableName, String...columnNames) {
+		StringBuilder sb = new StringBuilder();
+		if (columnNames == null || columnNames.length == 0) {
+			sb.append("select * ");
+		}
+		else {
+			for (String columnName : columnNames) {
+				sb.append(sb.length() == 0 ? "select " : ", ").append(columnName);
+			}
+		}
+		sb.append(" from ").append(tableName);
+		System.out.println(tableName + ": " + Context.getAdministrationService().executeSQL(sb.toString(), true));
+	}
+
+	public static void updateGlobalProperty(String propertyName, String propertyValue) {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(propertyName);
+		if (gp == null) {
+			gp = new GlobalProperty(propertyName);
+		}
+		gp.setPropertyValue(propertyValue);
+		Context.getAdministrationService().saveGlobalProperty(gp);
 	}
 }
