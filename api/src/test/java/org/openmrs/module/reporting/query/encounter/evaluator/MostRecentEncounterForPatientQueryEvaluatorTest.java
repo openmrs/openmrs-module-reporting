@@ -13,47 +13,39 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
-import java.util.Collections;
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.context.Context;
+import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.MostRecentEncounterForPatientQuery;
+import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 public class MostRecentEncounterForPatientQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
-	
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
-	
-	private final Integer patientId = 7;
-	
-	private EncounterService es;
+
+	@Autowired
+	TestDataManager tdm;
+
+	@Autowired
+	EncounterQueryService encounterQueryService;
 	
 	@Before
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
-		es = Context.getEncounterService();
-	}
-	
-	private Encounter buildEncounter() {
-		Encounter enc = new Encounter();
-		enc.setLocation(Context.getLocationService().getLocation(1));
-		enc.setEncounterType(es.getEncounterType(1));
-		enc.setPatient(Context.getPatientService().getPatient(patientId));
-		return enc;
 	}
 	
 	/**
@@ -62,17 +54,16 @@ public class MostRecentEncounterForPatientQueryEvaluatorTest extends BaseModuleC
 	@Test
 	@Verifies(value = "should find an encounter on the onOrBefore date if passed in time is at midnight", method = "evaluate(EncounterQuery,EvaluationContext)")
 	public void evaluate_shouldFindAnEncounterOnTheOnOrBeforeDateIfPassedInTimeIsAtMidnight() throws Exception {
-		Encounter enc = buildEncounter();
+
 		Date date = new Date();
-		enc.setEncounterDatetime(date);
-		es.saveEncounter(enc);
+		Encounter enc = tdm.encounter().location(1).encounterType(1).encounterDatetime(date).patient(7).save();
 		
 		MostRecentEncounterForPatientQuery query = new MostRecentEncounterForPatientQuery();
 		query.setOnOrBefore(DateUtil.getStartOfDay(date));
-		Cohort cohort = new Cohort(Collections.singleton(patientId));
+		Cohort cohort = new Cohort("7");
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(cohort);
-		EncounterQueryResult result = new MostRecentEncounterForPatientQueryEvaluator().evaluate(query, context);
+		EncounterQueryResult result = encounterQueryService.evaluate(query, context);
 		Assert.assertEquals(enc.getEncounterId(), result.getMemberIds().iterator().next());
 	}
 	

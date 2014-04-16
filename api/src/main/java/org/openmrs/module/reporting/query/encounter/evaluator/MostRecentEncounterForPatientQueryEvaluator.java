@@ -13,24 +13,22 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.MostRecentEncounterForPatientQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
 
 /**
  * The logic that evaluates a {@link MostRecentEncounterForPatientQueryEvaluator} and produces an {@link EncounterQueryResult}
@@ -39,6 +37,9 @@ import org.openmrs.module.reporting.query.encounter.definition.MostRecentEncount
 public class MostRecentEncounterForPatientQueryEvaluator implements EncounterQueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
+
+	@Autowired
+	EvaluationService evaluationService;
 	
 	/**
 	 * Public constructor
@@ -54,49 +55,21 @@ public class MostRecentEncounterForPatientQueryEvaluator implements EncounterQue
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		MostRecentEncounterForPatientQuery query = (MostRecentEncounterForPatientQuery) definition;
 		EncounterQueryResult queryResult = new EncounterQueryResult(query, context);
-		
-		// TODO: Move this into a service and find a way to make it more efficient
-		StringBuilder q = new StringBuilder();
-		Map<String, Object> params = new HashMap<String, Object>();
-		
-		q.append("select 	encounterId, patient.patientId ");
-		q.append("from 		Encounter ");
-		q.append("where 	voided = false ");
-		if (query.getEncounterTypes() != null) {
-			q.append("and 		encounterType in (:encounterTypes) ");
-			params.put("encounterTypes", query.getEncounterTypes());
-		}
-		if (query.getOnOrAfter() != null) {
-			q.append("and encounterDatetime >= :onOrAfter ");
-			params.put("onOrAfter", query.getOnOrAfter());
-		}
-		if (query.getOnOrBefore() != null) {
-			q.append("and encounterDatetime <= :onOrBefore ");
-			params.put("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(query.getOnOrBefore()));
-		}
-		if (context.getBaseCohort() != null) {
-			q.append(" and patient.patientId in (:patientIds) ");
-			params.put("patientIds", context.getBaseCohort().getMemberIds());
-		}
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("e.patient.patientId", "e.encounterId");
+		q.from(Encounter.class, "e");
+		q.whereIn("e.encounterType", query.getEncounterTypes());
+		q.whereGreaterOrEqualTo("e.encounterDatetime", query.getOnOrAfter());
+		q.whereLessOrEqualTo("e.encounterDatetime", query.getOnOrBefore());
+		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
 		if (context instanceof EncounterEvaluationContext) {
-			EncounterEvaluationContext eec = (EncounterEvaluationContext) context;
-			if (eec.getBaseEncounters() != null) {
-				q.append(" and encounterId in (:encounterIds) ");
-				params.put("encounterIds", eec.getBaseEncounters().getMemberIds());
-			}
+			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
 		}
-		q.append("order by encounterDatetime asc ");
-		if (context.getLimit() != null) {
-			q.append(" limit " + context.getLimit());
-		}
-		
-		List<Object> ret = Context.getService(DataSetQueryService.class).executeHqlQuery(q.toString(), params);
-		Map<Integer, Integer> pIdToEncId = new HashMap<Integer, Integer>();
-		for (Object o : ret) {
-			Object[] row = (Object[]) o;
-			pIdToEncId.put((Integer)row[1], (Integer)row[0]);
-		}
-		queryResult.setMemberIds(new HashSet<Integer>(pIdToEncId.values()));
+		q.orderAsc("e.encounterDatetime");
+
+		Map<Integer, Integer> pIdToEncId = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
+		queryResult.getMemberIds().addAll(pIdToEncId.values());
 		return queryResult;
 	}
 }
