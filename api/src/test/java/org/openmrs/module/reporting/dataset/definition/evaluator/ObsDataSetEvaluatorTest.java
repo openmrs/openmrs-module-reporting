@@ -56,8 +56,8 @@ public class ObsDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
         
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient).save();
-        Obs obs1 = data.obs().concept(concept).encounter(enc).save();
-        Obs obs2 = data.obs().concept(concept).encounter(enc).save();
+        Obs obs1 = data.obs().concept(concept).value(new Concept(8)).encounter(enc).save();
+        Obs obs2 = data.obs().concept(concept).value(new Concept(8)).encounter(enc).save();
 
         ObsDataSetDefinition dsd = new ObsDataSetDefinition();
 

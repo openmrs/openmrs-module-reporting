@@ -48,7 +48,7 @@ public class EncounterToObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         // add an "encounterless" obs to make sure that is handled correctly
         Patient patient = data.randomPatient().save();
         Obs obsWithoutEncounter =  data.obs().obsDatetime(new Date()).person(patient)
-                .concept(Context.getConceptService().getConcept(5089))
+                .concept(Context.getConceptService().getConcept(5089)).value(170)
                 .location(Context.getLocationService().getLocation(1))
                 .save();
 
