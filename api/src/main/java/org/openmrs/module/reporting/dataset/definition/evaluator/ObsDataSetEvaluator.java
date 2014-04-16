@@ -53,8 +53,9 @@ public class ObsDataSetEvaluator implements DataSetEvaluator {
             r = obsQueryService.evaluate(new AllObsQuery(), context);
         }
         ObsEvaluationContext eec = new ObsEvaluationContext(context, r);
+		eec.setBaseCohort(null); // We can do this because the obsIdSet is already limited by these
 
-        // Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
+		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
         for (RowPerObjectColumnDefinition cd : dsd.getColumnDefinitions()) {
 
             MappedData<? extends ObsDataDefinition> dataDef = (MappedData<? extends ObsDataDefinition>) cd.getDataDefinition();

@@ -15,22 +15,27 @@ package org.openmrs.module.reporting.evaluation;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.Cohort;
+import org.openmrs.OpenmrsData;
+import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.module.reporting.cohort.CohortUtil;
+import org.openmrs.module.reporting.cohort.PatientIdSet;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
+import org.openmrs.module.reporting.query.IdSet;
 
 /**
  * The EvaluationContext provides the following capabilities: 
@@ -167,6 +172,14 @@ public class EvaluationContext implements PatientCalculationContext {
 		}
 		sb.append("]");
 		return sb.toString();
+	}
+
+	public Map<Class<? extends OpenmrsData>, IdSet<?>> getAllBaseIdSets() {
+		Map<Class<? extends OpenmrsData>, IdSet<?>> ret = new LinkedHashMap<Class<? extends OpenmrsData>, IdSet<?>>();
+		if (getBaseCohort() != null) {
+			ret.put(Patient.class, new PatientIdSet(getBaseCohort().getMemberIds()));
+		}
+		return ret;
 	}
 	
 	/**

@@ -13,15 +13,10 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.Map;
-
-import org.openmrs.Person;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
@@ -29,23 +24,24 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
  * Evaluates a PersonIdDataDefinition to produce a PersonData
  */
 @Handler(supports=PersonIdDataDefinition.class, order=50)
-public class PersonIdDataEvaluator implements PersonDataEvaluator {
+public class PersonIdDataEvaluator extends PersonPropertyDataEvaluator {
 
-	/** 
+	@Override
+	public String getPropertyName() {
+		return "personId";
+	}
+
+	/**
 	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
 	 * @should return patientIds for all patients in the the passed context
 	 */
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-		if (context.getBaseCohort() != null) {
-			for (Integer pId : context.getBaseCohort().getMemberIds()) {
-				c.addData(pId, pId);
-			}
+		if (context.getBaseCohort() == null) {
+			return super.evaluate(definition, context);
 		}
-		else {
-			DataSetQueryService qs = Context.getService(DataSetQueryService.class);		
-			Map<Integer, Object> data = qs.getPropertyValues(Person.class, "personId", context);
-			c.setData(data);
+		for (Integer pId : context.getBaseCohort().getMemberIds()) {
+			c.addData(pId, pId);
 		}
 		return c;
 	}

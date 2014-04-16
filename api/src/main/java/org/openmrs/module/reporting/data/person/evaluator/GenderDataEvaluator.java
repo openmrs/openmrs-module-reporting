@@ -13,33 +13,17 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import java.util.Map;
-
-import org.openmrs.Person;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * Evaluates a GenderDataDefinition to produce a PersonData
  */
 @Handler(supports=GenderDataDefinition.class, order=50)
-public class GenderDataEvaluator implements PersonDataEvaluator {
+public class GenderDataEvaluator extends PersonPropertyDataEvaluator {
 
-	/** 
-	 * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
-	 * @should return all genders for all persons
-	 */
-	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
-		EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);		
-		Map<Integer, Object> data = qs.getPropertyValues(Person.class, "gender", context);
-		c.setData(data);
-		return c;
+	@Override
+	public String getPropertyName() {
+		return "gender";
 	}
 }

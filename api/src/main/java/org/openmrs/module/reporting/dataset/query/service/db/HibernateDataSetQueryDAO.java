@@ -31,8 +31,8 @@ import org.openmrs.PatientState;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Relationship;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.query.IdSet;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -65,6 +65,9 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 			}
 			else if (e.getValue() instanceof Cohort) {
 				q.setParameterList(e.getKey(), ((Cohort)e.getValue()).getMemberIds());
+			}
+			else if (e.getValue() instanceof IdSet) {
+				q.setParameterList(e.getKey(), ((IdSet)e.getValue()).getMemberIds());
 			}
 			else {
 				q.setParameter(e.getKey(), e.getValue());
@@ -140,7 +143,7 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 	}
 	
 	/** 
-	 * @see DataSetQueryDAO#convertColumn(DataSetColumn, JoinColumnDefinition)
+	 * @see DataSetQueryDAO#convertData(Class, String, java.util.Set, Class, String, java.util.Set)
 	*/
 	public Map<Integer, Integer> convertData(Class<?> fromType, String fromJoin, Set<Integer> fromIds, Class<?> toType, String toJoin, Set<Integer> toIds) {
 

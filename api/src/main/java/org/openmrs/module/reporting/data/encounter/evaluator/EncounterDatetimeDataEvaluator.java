@@ -13,39 +13,17 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
-import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
-import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * Evaluates a EncounterDatetimeDataDefinition to produce a EncounterData
  */
 @Handler(supports=EncounterDatetimeDataDefinition.class, order=50)
-public class EncounterDatetimeDataEvaluator implements EncounterDataEvaluator {
+public class EncounterDatetimeDataEvaluator extends EncounterPropertyDataEvaluator {
 
-	/** 
-	 * @see EncounterDataEvaluator#evaluate(EncounterDataDefinition, EvaluationContext)
-	 * @should return all encounter datetimes given the passed context
-	 */
-	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
-		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
-		DataSetQueryService qs = Context.getService(DataSetQueryService.class);		
-		Map<Integer, Object> data = qs.getPropertyValues(Encounter.class, "encounterDatetime", context);
-		Set<Integer> allEncIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
-		if (allEncIds != null) {
-			data.keySet().retainAll(allEncIds);
-		}
-		c.setData(data);
-		return c;
+	@Override
+	public String getPropertyName() {
+		return "encounterDatetime";
 	}
 }

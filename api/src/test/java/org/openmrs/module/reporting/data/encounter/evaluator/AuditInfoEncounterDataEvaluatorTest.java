@@ -59,9 +59,9 @@ public class AuditInfoEncounterDataEvaluatorTest extends BaseModuleContextSensit
         assertThat(result.getData().size(), is(1));
         AuditInfo auditInfo = (AuditInfo) result.getData().get(encounter.getId());
         assertThat(auditInfo.getCreator(), is(encounter.getCreator()));
-        assertThat(auditInfo.getDateCreated(), is(encounter.getDateCreated()));
+        assertThat(auditInfo.getDateCreated().getTime(), is(encounter.getDateCreated().getTime()));
         assertThat(auditInfo.getChangedBy(), is(encounter.getChangedBy()));
-        assertThat(auditInfo.getDateChanged(), is(encounter.getDateChanged()));
+        assertThat(auditInfo.getDateChanged().getTime(), is(encounter.getDateChanged().getTime()));
         assertThat(auditInfo.getVoided(), is(encounter.getVoided()));
         assertThat(auditInfo.getVoidedBy(), is(encounter.getVoidedBy()));
         assertThat(auditInfo.getDateVoided(), is(encounter.getDateVoided()));

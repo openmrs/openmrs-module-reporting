@@ -14,15 +14,15 @@
 package org.openmrs.module.reporting.data.encounter;
 
 import org.openmrs.Cohort;
-import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.common.QueryBuilder;
+import org.openmrs.Encounter;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,13 +48,7 @@ public class EncounterDataUtil {
 
 		// Retrieve the encounters for the baseCohort if specified
 		if (patIds != null) {
-			Set<Integer> encIdsForPatIds = new HashSet<Integer>();
-			int batchSize = ReportingConstants.GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE();
-			List<Integer> ids = new ArrayList<Integer>(patIds.getMemberIds());
-			for (int i=0; i<ids.size(); i+=batchSize) {
-				List<Integer> batchList = ids.subList(i, i + Math.min(batchSize, ids.size()-i));
-				encIdsForPatIds.addAll(getEncounterIdsForPatients(batchList));
-			}
+			Set<Integer> encIdsForPatIds = getEncounterIdsForPatients(patIds.getMemberIds());
 			if (encIds == null) {
 				encIds = new EncounterIdSet(encIdsForPatIds);
 			}
@@ -75,18 +69,10 @@ public class EncounterDataUtil {
 		return getEncounterIdsForPatients(null);
 	}
 
-	public static Set<Integer> getEncounterIdsForPatients(Collection<Integer> patientIds) {
-		Set<Integer> ret = new HashSet<Integer>();
-		if (patientIds != null && patientIds.isEmpty()) {
-			return ret;
-		}
-		QueryBuilder qb = new QueryBuilder();
-		qb.addClause("select 	encounterId from Encounter");
-		qb.addClause("where 	voided = false and patient.voided = false");
-		if (patientIds != null) {
-			qb.addClause("and 		patient.patientId in (:patIds)").withParameter("patIds", patientIds);
-		}
-		ret.addAll((List<Integer>) qb.execute());
-		return ret;
+	public static Set<Integer> getEncounterIdsForPatients(Set<Integer> patientIds) {
+		HqlQueryBuilder qb = new HqlQueryBuilder();
+		qb.select("e.encounterId").from(Encounter.class, "e").whereIdIn("e.patient.patientId", patientIds);
+		List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
+		return new HashSet<Integer>(ids);
 	}
 }

@@ -15,12 +15,14 @@ package org.openmrs.module.reporting.data.person.evaluator;
 
 import org.openmrs.Relationship;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.common.QueryBuilder;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.RelationshipsForPersonDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,9 @@ import java.util.List;
  */
 @Handler(supports=RelationshipsForPersonDataDefinition.class, order=50)
 public class RelationshipsForPersonDataEvaluator implements PersonDataEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/**
 	 * @see org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator#evaluate(org.openmrs.module.reporting.data.person.definition.PersonDataDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
@@ -65,17 +70,17 @@ public class RelationshipsForPersonDataEvaluator implements PersonDataEvaluator 
 		RelationshipsForPersonDataDefinition rpd = (RelationshipsForPersonDataDefinition)pd.getDefinition();
 		String keyPerson = "person"+whichPerson.toUpperCase();
 
-		QueryBuilder qb = new QueryBuilder();
-		qb.addClause("select 	r."+keyPerson+".personId, r");
-		qb.addClause("from 		Relationship as r");
-		qb.addClause("where 	r.voided = false");
-		qb.addIfNotNull("and	r.relationshipType in (:types) ", "types", rpd.getRelationshipTypes());
-		qb.addIfNotNull("and	r." + keyPerson + ".personId in (:patientIds)", "patientIds", pd.getContext().getBaseCohort());
+		HqlQueryBuilder qb = new HqlQueryBuilder();
+		qb.select("r."+keyPerson+".personId", "r");
+		qb.from(Relationship.class, "r");
+		qb.whereEqual("r.voided", false);
+		qb.whereIn("r.relationshipType", rpd.getRelationshipTypes());
+		qb.whereIdIn("r."+keyPerson+".personId", pd.getContext().getBaseCohort());
 
-		for (Object o : qb.execute()) {
-			Object[] parts = (Object[]) o;
-			Integer pId = (Integer) parts[0];
-			Relationship r = (Relationship) parts[1];
+		List<Object[]> result = evaluationService.evaluateToList(qb);
+		for (Object[] row : result) {
+			Integer pId = (Integer) row[0];
+			Relationship r = (Relationship) row[1];
 			List<Relationship> l = (List<Relationship>)pd.getData().get(pId);
 			if (l == null) {
 				l = new ArrayList<Relationship>();

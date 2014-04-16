@@ -13,10 +13,10 @@
  */
 package org.openmrs.module.reporting.query;
 
+import org.openmrs.OpenmrsObject;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import org.openmrs.OpenmrsObject;
 
 /**
  * Encapsulates a set of OpenmrsObject ids
@@ -34,15 +34,17 @@ public abstract class BaseIdSet<T extends OpenmrsObject> implements IdSet<T> {
     }
     
     public BaseIdSet(Set<Integer> memberIds) {
+		this();
     	setMemberIds(memberIds);
     }
     
     public BaseIdSet(Integer... memberIds) {
+		this();
     	add(memberIds);
     }
     
     //***** PROPERTY ACCESS *****
-	
+
 	/**
 	 * @return the memberIds
 	 */
@@ -77,7 +79,7 @@ public abstract class BaseIdSet<T extends OpenmrsObject> implements IdSet<T> {
 	}
 
 	/**
-	 * @see IdSet#size()
+	 * @see IdSet#getSize() ()
 	 */
 	public int getSize() {
 		return getMemberIds().size();

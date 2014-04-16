@@ -13,9 +13,9 @@
  */
 package org.openmrs.module.reporting.query;
 
-import java.util.Set;
-
 import org.openmrs.OpenmrsObject;
+
+import java.util.Set;
 
 /**
  * IdSet Interface

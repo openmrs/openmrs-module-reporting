@@ -25,18 +25,10 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
  * Evaluates a EncounterIdDataDefinition to produce a EncounterData
  */
 @Handler(supports=EncounterIdDataDefinition.class, order=50)
-public class EncounterIdDataEvaluator implements EncounterDataEvaluator {
+public class EncounterIdDataEvaluator extends EncounterPropertyDataEvaluator {
 
-	/** 
-	 * @see EncounterDataEvaluator#evaluate(EncounterDataDefinition, EvaluationContext)
-	 * @should return encounterIds for the patients given an EvaluationContext
-	 * @should return encounterIds for the encounters given an EncounterEvaluationContext
-	 */
-	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
-		EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
-		for (Integer encId : EncounterDataUtil.getEncounterIdsForContext(context, false)) {
-			c.addData(encId, encId);
-		}
-		return c;
+	@Override
+	public String getPropertyName() {
+		return "encounterId";
 	}
 }

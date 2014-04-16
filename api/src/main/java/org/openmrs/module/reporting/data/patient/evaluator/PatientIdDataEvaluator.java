@@ -13,15 +13,10 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.Map;
-
-import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
@@ -29,23 +24,24 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
  * Evaluates a PatientIdDataDefinition to produce a PatientData
  */
 @Handler(supports=PatientIdDataDefinition.class, order=50)
-public class PatientIdDataEvaluator implements PatientDataEvaluator {
+public class PatientIdDataEvaluator extends PatientPropertyDataEvaluator {
 
-	/** 
+	@Override
+	public String getPropertyName() {
+		return "patientId";
+	}
+
+	/**
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
 	 * @should return patientIds for all patients in the the passed context
 	 */
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		EvaluatedPatientData c = new EvaluatedPatientData(definition, context);
-		if (context.getBaseCohort() != null) {
-			for (Integer pId : context.getBaseCohort().getMemberIds()) {
-				c.addData(pId, pId);
-			}
+		if (context.getBaseCohort() == null) {
+			return super.evaluate(definition, context);
 		}
-		else {
-			DataSetQueryService qs = Context.getService(DataSetQueryService.class);		
-			Map<Integer, Object> data = qs.getPropertyValues(Patient.class, "patientId", context);
-			c.setData(data);
+		for (Integer pId : context.getBaseCohort().getMemberIds()) {
+			c.addData(pId, pId);
 		}
 		return c;
 	}

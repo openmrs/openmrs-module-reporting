@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
@@ -29,6 +30,7 @@ import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
@@ -76,20 +78,37 @@ public class EncounterDataSetEvaluator implements DataSetEvaluator {
 			r = Context.getService(EncounterQueryService.class).evaluate(new AllEncounterQuery(), context);
 		}
 		EncounterEvaluationContext eec = new EncounterEvaluationContext(context, r);
+		eec.setBaseCohort(null); // We can do this because the encounterIdSet is already limited by these
 
 		// Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
 		for (RowPerObjectColumnDefinition cd : dsd.getColumnDefinitions()) {
 
+			if (log.isDebugEnabled()) {
+				log.debug("Evaluating column: " + cd.getName());
+				log.debug("With Data Definition: " + DefinitionUtil.format(cd.getDataDefinition().getParameterizable()));
+				log.debug("With Mappings: " + cd.getDataDefinition().getParameterMappings());
+				log.debug("With Parameters: " + eec.getParameterValues());
+			}
+
+			StopWatch sw = new StopWatch();
+			sw.start();
+
 			MappedData<? extends EncounterDataDefinition> dataDef = (MappedData<? extends EncounterDataDefinition>) cd.getDataDefinition();
 			EvaluatedEncounterData data = Context.getService(EncounterDataService.class).evaluate(dataDef, eec);
-			
+
 			DataSetColumn column = new DataSetColumn(cd.getName(), cd.getName(), dataDef.getParameterizable().getDataType()); // TODO: Support One-Many column definition to column
-			
+
 			for (Integer id : r.getMemberIds()) {
 				Object val = data.getData().get(id);
 				val = DataUtil.convertData(val, dataDef.getConverters());
 				dataSet.addColumnValue(id, column, val);
 			}
+			
+			sw.stop();
+			if (log.isDebugEnabled()) {
+				log.debug("Added encounter column: " + sw.toString());
+			}
+
 		}
 
 		return dataSet;

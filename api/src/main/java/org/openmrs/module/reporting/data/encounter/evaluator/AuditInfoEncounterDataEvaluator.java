@@ -14,72 +14,57 @@
 
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
 import org.openmrs.Encounter;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.AuditInfo;
-import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.AuditInfoEncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 @Handler(supports= AuditInfoEncounterDataDefinition.class)
 public class AuditInfoEncounterDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private EvaluationService evaluationService;
 
     @Override
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData result = new EvaluatedEncounterData(definition, context);
 
-        Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("e.dateCreated", "creator", "e.dateChanged", "changedBy");
+		q.select("e.voided", "e.dateVoided", "voidedBy", "e.voidReason", "e.encounterId");
+		q.from(Encounter.class, "e");
+		q.leftOuterJoin("e.creator", "creator");
+		q.leftOuterJoin("e.changedBy", "changedBy");
+		q.leftOuterJoin("e.voidedBy", "voidedBy");
+		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
+		if (context instanceof EncounterEvaluationContext) {
+			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
+		}
 
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Encounter.class);
-        if (encIds != null) {
-            if (encIds.size() == 0) {
-                return result;
-            }
-            criteria.add(Restrictions.in("id", encIds));
-        }
-        criteria.setProjection(Projections.projectionList()
-                .add(Property.forName("dateCreated"))
-                .add(Property.forName("creator"))
-                .add(Property.forName("dateChanged"))
-                .add(Property.forName("changedBy"))
-                .add(Property.forName("voided"))
-                .add(Property.forName("dateVoided"))
-                .add(Property.forName("voidedBy"))
-                .add(Property.forName("voidReason"))
-                .add(Property.forName("encounterId")));
-
-
-        for (Object[] row : (List<Object[]>) criteria.list()) {
-            AuditInfo auditInfo = new AuditInfo();
-            auditInfo.setDateCreated((Date) row[0]);
-            auditInfo.setCreator((User) row[1]);
-            auditInfo.setDateChanged((Date) row[2]);
-            auditInfo.setChangedBy((User) row[3]);
-            auditInfo.setVoided((Boolean) row[4]);
-            auditInfo.setDateVoided((Date) row[5]);
-            auditInfo.setVoidedBy((User) row[6]);
-            auditInfo.setVoidReason((String) row[7]);
-            result.addData((Integer) row[8], auditInfo);
-        }
+		for (Object[] row : evaluationService.evaluateToList(q)) {
+			AuditInfo auditInfo = new AuditInfo();
+			auditInfo.setDateCreated((Date) row[0]);
+			auditInfo.setCreator((User) row[1]);
+			auditInfo.setDateChanged((Date) row[2]);
+			auditInfo.setChangedBy((User) row[3]);
+			auditInfo.setVoided((Boolean) row[4]);
+			auditInfo.setDateVoided((Date) row[5]);
+			auditInfo.setVoidedBy((User) row[6]);
+			auditInfo.setVoidReason((String) row[7]);
+			result.addData((Integer) row[8], auditInfo);
+		}
 
         return result;
     }
-
 }

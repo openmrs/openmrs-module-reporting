@@ -105,9 +105,7 @@ public class RenderReportFormController {
 				
 				for (ReportDesign d : Context.getService(ReportService.class).getReportDesigns(reportDefinition, null, false)) {
 					ReportRenderer r = d.getRendererType().newInstance();
-					System.out.println("-------Rendering design: " + d.getName() + "--------");
 					r.render(reportData, d.getUuid(), System.out);
-					System.out.println("---------------");
 				}
 				
 				if ("csv".equalsIgnoreCase(format)) { 

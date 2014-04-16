@@ -13,25 +13,26 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
+import org.openmrs.Cohort;
 import org.openmrs.Encounter;
-import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.PersonToEncounterDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.query.person.PersonIdSet;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Evaluates a PersonToEncounterDataDefinition to produce a EncounterData
@@ -39,38 +40,46 @@ import java.util.Set;
 @Handler(supports=PersonToEncounterDataDefinition.class, order=50)
 public class PersonToEncounterDataEvaluator implements EncounterDataEvaluator {
 
+	@Autowired
+	EvaluationService evaluationService;
+
 	/** 
 	 * @see EncounterDataEvaluator#evaluate(EncounterDataDefinition, EvaluationContext)
 	 * @should return person data by for each encounter in the passed context
 	 */
     @Override
-	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext encounterEvaluationContext) throws EvaluationException {
+	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
 
-        DataSetQueryService dqs = Context.getService(DataSetQueryService.class);
-        EvaluatedEncounterData c = new EvaluatedEncounterData(definition, encounterEvaluationContext);
+        EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(encounterEvaluationContext, true);
+		// create a map of encounter ids -> patient ids
 
-        // just return empty set if input set is empty
-        if (encIds.size() == 0) {
-            return c;
-        }
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("e.encounterId", "e.patient.patientId");
+		q.from(Encounter.class, "e");
+		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
+		if (context instanceof EncounterEvaluationContext) {
+			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext) context).getBaseEncounters());
+		}
 
-        // create a map of encounter ids -> patient ids (assumption is that person_id = patient_id)
-        Map<Integer, Integer> convertedIds = dqs.convertData(Patient.class, "patientId", null, Encounter.class, "patient.patientId", encIds);
+		Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
 
-        // create a new (person) evaluation context using the retrieved ids
-        PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext();
-        personEvaluationContext.setBasePersons(new PersonIdSet(new HashSet(convertedIds.values())));
+		if (!convertedIds.keySet().isEmpty()) {
+			// create a new (person) evaluation context using the retrieved ids
+			PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext();
+			personEvaluationContext.setBaseCohort(new Cohort(convertedIds.values()));
+			personEvaluationContext.setBasePersons(new PersonIdSet(new HashSet<Integer>(convertedIds.values())));
 
-        // evaluate the joined definition via this person context
-        PersonToEncounterDataDefinition def = (PersonToEncounterDataDefinition) definition;
-        EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(def.getJoinedDefinition(), personEvaluationContext);
+			// evaluate the joined definition via this person context
+			PersonToEncounterDataDefinition def = (PersonToEncounterDataDefinition) definition;
+			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(def.getJoinedDefinition(), personEvaluationContext);
 
-        // now create the result set by mapping the results in the person data set to encounter ids
-        for (Integer encId : encIds) {
-            c.addData(encId, pd.getData().get(convertedIds.get(encId)));
-        }
+			// now create the result set by mapping the results in the person data set to encounter ids
+			for (Integer encId : convertedIds.keySet()) {
+				c.addData(encId, pd.getData().get(convertedIds.get(encId)));
+			}
+		}
+
         return c;
 
 	}

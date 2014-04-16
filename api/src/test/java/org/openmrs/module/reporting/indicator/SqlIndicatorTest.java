@@ -87,7 +87,6 @@ public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 			//unpack the report
 			DataSetRow row = ds.getRows().iterator().next();
 			for (Map.Entry<String, Object> column : row.getColumnValuesByKey().entrySet() ){
-				//System.out.println(column.getKey() + " " + ((Number) column.getValue()).toString());
 				if (column.getKey().equals("indicator_1"))
 					Assert.assertTrue(column.getValue().toString().equals("251"));
 				if (column.getKey().equals("indicator_2"))
@@ -252,7 +251,6 @@ public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
 			} catch (Exception ex){
 				decimalError = ex.getCause().getMessage();
 			}
-			//System.out.println(decimalError);
 			Assert.assertTrue(decimalError.contains("FRACTION indicator type is not currently supported by SimpleIndicatorResult"));
 	}
 	

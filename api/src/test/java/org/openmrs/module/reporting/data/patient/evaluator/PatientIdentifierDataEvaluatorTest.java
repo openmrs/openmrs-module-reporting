@@ -13,16 +13,12 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
-import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
@@ -64,22 +60,22 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 		context.setBaseCohort(new Cohort("2"));
 		
 		PatientIdentifierDataDefinition d = new PatientIdentifierDataDefinition();
-		d.addType(Context.getPatientService().getPatientIdentifierType(1)); // "101"
-		d.addType(Context.getPatientService().getPatientIdentifierType(2)); // "101-6", preferred
+		d.addType(Context.getPatientService().getPatientIdentifierType(1)); // "101-6", preferred
+		d.addType(Context.getPatientService().getPatientIdentifierType(2)); // "101"
 		
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
 		
 		Object o = pd.getData().get(2);
 		List<PatientIdentifier> identifiers = (List<PatientIdentifier>) o;
 		Assert.assertEquals(3, identifiers.size());
-		Assert.assertEquals("102", identifiers.get(0).getIdentifier());
-		Assert.assertEquals("101", identifiers.get(1).getIdentifier());
-		Assert.assertEquals("101-6", identifiers.get(2).getIdentifier());
+		Assert.assertEquals("101-6", identifiers.get(0).getIdentifier());
+		Assert.assertEquals("102", identifiers.get(1).getIdentifier());
+		Assert.assertEquals("101", identifiers.get(2).getIdentifier());
 
         d.setIncludeFirstNonNullOnly(true);
         pd = Context.getService(PatientDataService.class).evaluate(d, context);
         o = pd.getData().get(2);
-        Assert.assertEquals("102", ((PatientIdentifier)o).getIdentifier());
+        Assert.assertEquals("101-6", ((PatientIdentifier)o).getIdentifier());
 	}
 
 	/**
@@ -95,8 +91,8 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 		PatientIdentifierType pi2 = Context.getPatientService().getPatientIdentifierType(2);
 
 		PatientIdentifierDataDefinition d = new PatientIdentifierDataDefinition();
-		d.addType(pi2); // "101-6", preferred
-		d.addType(pi1); // "101"
+		d.addType(pi2); // "101"
+		d.addType(pi1); // "101-6", preferred
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
 
@@ -121,8 +117,8 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 		PatientIdentifierType pi2 = Context.getPatientService().getPatientIdentifierType(2);
 
 		PatientIdentifierDataDefinition d = new PatientIdentifierDataDefinition();
-		d.addType(pi2); // "101-6", preferred
-		d.addType(pi1); // "101"
+		d.addType(pi2); // "101"
+		d.addType(pi1); // "101-6", preferred
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
 

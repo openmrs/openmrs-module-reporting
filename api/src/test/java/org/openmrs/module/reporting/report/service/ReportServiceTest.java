@@ -123,7 +123,6 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		ReportRequest request = new ReportRequest(mappedReport, null, mode, Priority.HIGHEST, null);
 		Report report = Context.getService(ReportService.class).runReport(request);
 		String s = new String(report.getRenderedOutput());
-		System.out.println(s);
 	}
 
 
