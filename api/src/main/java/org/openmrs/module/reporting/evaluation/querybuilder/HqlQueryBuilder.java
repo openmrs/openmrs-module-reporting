@@ -6,7 +6,6 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.Cohort;
-import org.openmrs.OpenmrsObject;
 import org.openmrs.Voidable;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -344,11 +343,22 @@ public class HqlQueryBuilder implements QueryBuilder {
 				String idSetKey = Context.getService(EvaluationService.class).generateKey(idSet);
 				boolean isPersisted = Context.getService(EvaluationService.class).isInUse(idSetKey);
 				if (isPersisted) {
+
+					/*
+					 As of MySql 5.6, this is better implemented as a sub-select
+					 eg. where(idProperty + " in ( select memberId from IdsetMember where key = '" + idSetKey + "' )");
+					 However, MySql 5.5 does not perform well with this and the majority of implementations are still on 5.5
+					 The approach here (using a cross-join) seems to work, though seems to be very slow if more than one are used in the same query.
+					 Not 100% sure why this is, but pre-calculating to one set of ids per query results in best performance at the moment
+					*/
+
 					String alias = "_id_"+idClauseNum++;
 					from(IdsetMember.class, alias);
 					where(idProperty + " = " + alias + ".memberId");
 					whereEqual(alias + ".key", idSetKey);
-				} else {
+
+				}
+				else {
 					where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(idSet);
 				}
 			}
