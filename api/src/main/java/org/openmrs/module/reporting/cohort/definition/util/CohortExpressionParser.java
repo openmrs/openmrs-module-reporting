@@ -187,7 +187,7 @@ public class CohortExpressionParser {
 				throw new RuntimeException("Can only handle Cohorts and Operators.  Unable to handle class: " + o.getClass());
 			}
 		}
-		log.debug("Done.  Returning: " + ret.getSize());
+		log.debug("Done.  Returning: " + (ret == null ? null : ret.getSize()));
 		return ret;
 	}
 	
