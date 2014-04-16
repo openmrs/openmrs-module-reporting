@@ -13,22 +13,18 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.openmrs.Location;
-import org.openmrs.PatientIdentifierType;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientIdentifierCohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Evaluates a PatientIdentifierCohortDefinition and produces a Cohort
@@ -36,74 +32,56 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 @Handler(supports={PatientIdentifierCohortDefinition.class})
 public class PatientIdentifierCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
+	@Autowired
+	EvaluationService evaluationService;
+
 	/**
 	 * Default Constructor
 	 */
 	public PatientIdentifierCohortDefinitionEvaluator() {}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
      * @should return patients who have identifiers of the passed types
      * @should return patients who have identifiers matching the passed locations
      * @should return patients who have identifiers matching the passed text
      * @should return patients who have identifiers matching the passed regular expression
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	
-    	PatientIdentifierCohortDefinition picd = (PatientIdentifierCohortDefinition) cohortDefinition;
 
-		StringBuilder hql = new StringBuilder();
-		Map<String, Object> params = new HashMap<String, Object>();
-		
-		hql.append("select 	patient.patientId");
-		
-		hql.append(ObjectUtil.notNull(picd.getRegexToMatch()) ? ", identifier " : " ");
-		
-		hql.append("from	PatientIdentifier ");
-		hql.append("where	voided = false ");
-		
-		if (picd.getTypesToMatch() != null) {
-			Set<Integer> typeIds = new HashSet<Integer>();
-			for (PatientIdentifierType t : picd.getTypesToMatch()) {
-				typeIds.add(t.getPatientIdentifierTypeId());
-			}
-			hql.append("and identifierType.patientIdentifierTypeId in (:idTypes) ");
-			params.put("idTypes", typeIds);
+		PatientIdentifierCohortDefinition picd = (PatientIdentifierCohortDefinition) cohortDefinition;
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+		EvaluatedCohort ret = new EvaluatedCohort(null, picd, context);
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("pi.patient.patientId");
+		if (ObjectUtil.notNull(picd.getRegexToMatch())) {
+			q.select("pi.identifier");
 		}
-		
-		if (picd.getLocationsToMatch() != null) {
-			Set<Integer> locationIds = new HashSet<Integer>();
-			for (Location l : picd.getLocationsToMatch()) {
-				locationIds.add(l.getLocationId());
-			}
-			hql.append("and location.locationId in (:locationIds) ");
-			params.put("locationIds", locationIds);
-		}
+		q.from(PatientIdentifier.class, "pi");
+		q.whereIn("pi.identifierType", picd.getTypesToMatch());
+		q.whereIn("pi.location", picd.getLocationsToMatch());
 		
 		if (ObjectUtil.notNull(picd.getTextToMatch())) {
 			if (picd.getTextToMatch().contains("%")) {
-				hql.append("and identifier like :textToMatch ");
+				q.whereLike("pi.identifier", picd.getTextToMatch());
 			}
 			else {
-				hql.append("and identifier = :textToMatch ");
-			}
-			params.put("textToMatch", picd.getTextToMatch());
-		}
-		
-		List<Object> results = Context.getService(DataSetQueryService.class).executeHqlQuery(hql.toString(), params);
-		EvaluatedCohort ret = new EvaluatedCohort(null, picd, context);
-		
-		if (ObjectUtil.notNull(picd.getRegexToMatch())) { // Query will return an array containing patientId and identifier
-			for (Object o : results) {
-				Object[] row = (Object[])o;
-				if (row.length == 2 && row[1] != null && row[1].toString().matches(picd.getRegexToMatch())) {
-					ret.addMember((Integer)row[0]);
-				}
+				q.whereEqual("pi.identifier", picd.getTextToMatch());
 			}
 		}
-		else { // Query returns only a patientId
-			for (Object o : results) {
-				ret.addMember((Integer)o);
+
+		q.whereIdIn("pi.patient.patientId", context.getBaseCohort());
+
+		List<Object[]> results = evaluationService.evaluateToList(q);
+
+		for (Object[] row : results) {
+			boolean include = true;
+			if (ObjectUtil.notNull(picd.getRegexToMatch())) {
+				include = (row.length == 2 && row[1] != null && row[1].toString().matches(picd.getRegexToMatch()));
+			}
+			if (include) {
+				ret.addMember((Integer)row[0]);
 			}
 		}
 		

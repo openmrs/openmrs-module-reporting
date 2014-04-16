@@ -31,8 +31,8 @@ public class AllObsQueryEvaluator implements ObsQueryEvaluator {
 			return result;
 		}
 		if (context instanceof ObsEvaluationContext) {
-			ObsIdSet basObs = ((ObsEvaluationContext) context).getBaseObs();
-			if (basObs != null && basObs.getMemberIds().isEmpty()) {
+			ObsIdSet ids = ((ObsEvaluationContext) context).getBaseObs();
+			if (ids != null && ids.getMemberIds().isEmpty()) {
 				return result;
 			}
 		}

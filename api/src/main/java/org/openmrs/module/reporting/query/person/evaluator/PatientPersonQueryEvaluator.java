@@ -21,18 +21,21 @@ import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.query.Query;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PatientPersonQuery;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * The logic that evaluates a {@link PatientPersonQuery} and produces an {@link Query}
+ * The logic that evaluates a {@link PatientPersonQuery} and produces an {@link PatientPersonQuery}
  */
 @Handler(supports=PatientPersonQuery.class)
 public class PatientPersonQueryEvaluator implements PersonQueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
+
+	@Autowired
+	CohortDefinitionService cohortDefinitionService;
 	
 	/**
 	 * Public constructor
@@ -45,7 +48,7 @@ public class PatientPersonQueryEvaluator implements PersonQueryEvaluator {
 	 */
 	public PersonQueryResult evaluate(PersonQuery definition, EvaluationContext context) throws EvaluationException {
 		PatientPersonQuery query = (PatientPersonQuery) definition;
-		EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(query.getPatientQuery(), context);
+		EvaluatedCohort c = cohortDefinitionService.evaluate(query.getPatientQuery(), context);
 		PersonQueryResult r = new PersonQueryResult(query, context);
 		r.setMemberIds(c.getMemberIds());
 		return r;

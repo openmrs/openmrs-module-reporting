@@ -32,7 +32,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 	public SqlQueryBuilder() { }
 
 	public SqlQueryBuilder append(String clause) {
-		query.append(clause);
+		query.append(clause).append(" ");
 		return this;
 	}
 

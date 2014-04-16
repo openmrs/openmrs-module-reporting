@@ -36,7 +36,7 @@ public class CompositionCohortDefinitionEvaluator implements CohortDefinitionEva
 
 	/**
      * @throws EvaluationException 
-	 * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+	 * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
     	CompositionCohortDefinition composition = (CompositionCohortDefinition) cohortDefinition;

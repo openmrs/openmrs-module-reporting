@@ -1,113 +1,81 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import org.hibernate.SQLQuery;
-import org.hibernate.SessionFactory;
-import org.openmrs.Cohort;
-import org.openmrs.Concept;
-import org.openmrs.OpenmrsObject;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterWithCodedObsCohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Handler(supports = EncounterWithCodedObsCohortDefinition.class)
 public class EncounterWithCodedObsCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private EvaluationService evaluationService;
 
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
+
         EncounterWithCodedObsCohortDefinition cd = (EncounterWithCodedObsCohortDefinition) cohortDefinition;
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+		EvaluatedCohort ret = new EvaluatedCohort(null, cd, context);
 
-        String sql = "select distinct e.patient_id \n" +
-                "from encounter e \n" +
-                (cd.isIncludeNoObsValue() ? "left outer" : "inner") + " join obs o \n" +
-                "  on e.encounter_id = o.encounter_id \n" +
-                "  and o.voided = false \n";
+		SqlQueryBuilder q = new SqlQueryBuilder();
+		q.append("select distinct e.patient_id");
+		q.append("from encounter e");
+		q.append((cd.isIncludeNoObsValue() ? "left outer" : "inner") + " join obs o");
+        q.append("on e.encounter_id = o.encounter_id and o.voided = false");
         if (cd.getConcept() != null) {
-            sql += "  and o.concept_id = :concept \n";
+			q.append("and o.concept_id = :concept").addParameter("concept", cd.getConcept());
         }
-        sql += "where e.voided = false \n";
+        q.append("where e.voided = false");
         if (cd.getEncounterTypeList() != null) {
-            sql += "  and e.encounter_type in (:encounterTypeList) \n";
+           q.append("and e.encounter_type in (:etList)").addParameter("etList", cd.getEncounterTypeList());
         }
         if (cd.getLocationList() != null) {
-            sql += "  and e.location_id in (:locationList) \n";
+			q.append("and e.location_id in (:locationList)").addParameter("locationList", cd.getLocationList());
         }
-        sql += valueCodedClause(cd.isIncludeNoObsValue(), cd.getIncludeCodedValues(), cd.getExcludeCodedValues());
+
+		if (cd.isIncludeNoObsValue() && cd.getIncludeCodedValues() == null && cd.getExcludeCodedValues() == null) {
+			q.append("and o.value_coded is null");
+		}
+		if (cd.getIncludeCodedValues() != null) {
+			if (cd.isIncludeNoObsValue()) {
+				q.append("and (o.value_coded is null or o.value_coded in (:includeCodedValues))");
+			}
+			else {
+				q.append("and o.value_coded in (:includeCodedValues)");
+			}
+			q.addParameter("includeCodedValues", cd.getIncludeCodedValues());
+		}
+		if (cd.getExcludeCodedValues() != null) {
+			if (cd.isIncludeNoObsValue()) {
+				q.append("and (o.value_coded is null or o.value_coded not in (:excludeCodedValues))");
+			}
+			else {
+				q.append("and o.value_coded not in (:excludeCodedValues)");
+			}
+			q.addParameter("excludeCodedValues", cd.getExcludeCodedValues());
+		}
+
         if (cd.getOnOrAfter() != null) {
-            sql += "  and e.encounter_datetime >= :onOrAfter \n";
+			q.append("and e.encounter_datetime >= :onOrAfter").addParameter("onOrAfter", cd.getOnOrAfter());
         }
         if (cd.getOnOrBefore() != null) {
-            sql += "  and e.encounter_datetime <= :onOrBefore \n";
+			q.append("and e.encounter_datetime <= :onOrBefore").addParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(cd.getOnOrBefore()));
         }
 
-        SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
-        if (cd.getConcept() != null) {
-            query.setInteger("concept", cd.getConcept().getId());
-        }
-        if (cd.getEncounterTypeList() != null) {
-            query.setParameterList("encounterTypeList", idList(cd.getEncounterTypeList()));
-        }
-        if (cd.getLocationList() != null) {
-            query.setParameterList("locationList", idList(cd.getLocationList()));
-        }
-        if (cd.getOnOrAfter() != null) {
-            query.setTimestamp("onOrAfter", cd.getOnOrAfter());
-        }
-        if (cd.getOnOrBefore() != null) {
-            query.setTimestamp("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(cd.getOnOrBefore()));
-        }
-        if (cd.getIncludeCodedValues() != null) {
-            query.setParameterList("includeCodedValues", cd.getIncludeCodedValues());
-        }
-        if (cd.getExcludeCodedValues() != null) {
-            query.setParameterList("excludeCodedValues", cd.getExcludeCodedValues());
-        }
+		List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
+		ret.setMemberIds(new HashSet<Integer>(results));
 
-        Cohort c = new Cohort();
-        for (Integer i : (List<Integer>) query.list()){
-            c.addMember(i);
-        }
-        return new EvaluatedCohort(c, cohortDefinition, context);
+		return ret;
     }
-
-    private List<Integer> idList(List<? extends OpenmrsObject> in) {
-        List<Integer> ids = new ArrayList<Integer>(in.size());
-        for (OpenmrsObject o : in) {
-            ids.add(o.getId());
-        }
-        return ids;
-    }
-
-    private String valueCodedClause(boolean includeNoObsValue, List<Concept> includeCodedValues, List<Concept> excludeCodedValues) {
-        if (includeNoObsValue && includeCodedValues == null && excludeCodedValues == null) {
-            return "and o.value_coded is null";
-        }
-        String clause = "";
-        if (includeCodedValues != null) {
-            if (includeNoObsValue) {
-                clause += " and (o.value_coded is null or o.value_coded in (:includeCodedValues)) ";
-            } else {
-                clause += " and o.value_coded in (:includeCodedValues) ";
-            }
-        }
-        if (excludeCodedValues != null) {
-            if (includeNoObsValue) {
-                clause += " and (o.value_coded is null or o.value_coded not in (:excludeCodedValues)) ";
-            } else {
-                clause += " and o.value_coded not in (:excludeCodedValues) ";
-            }
-        }
-        return clause;
-    }
-
 }

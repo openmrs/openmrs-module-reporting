@@ -13,28 +13,34 @@
  */
 package org.openmrs.module.reporting.query.person.evaluator;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Person;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.module.reporting.query.person.PersonIdSet;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.AllPersonQuery;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
-import org.openmrs.util.OpenmrsUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
- * The logic that evaluates a {@link AllPersonQuery} and produces an {@link QueryResult}
+ * The logic that evaluates a {@link AllPersonQuery} and produces an {@link PersonQueryResult}
  */
 @Handler(supports=AllPersonQuery.class)
 public class AllPersonQueryEvaluator implements PersonQueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
+
+	@Autowired
+	EvaluationService evaluationService;
 	
 	/**
 	 * Public constructor
@@ -51,25 +57,29 @@ public class AllPersonQueryEvaluator implements PersonQueryEvaluator {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		AllPersonQuery query = (AllPersonQuery) definition;
-		PersonQueryResult queryResult = new PersonQueryResult(query, context);
-		
-		// TODO: Move this into a service and find a way to make it more efficient
-		StringBuilder sqlQuery = new StringBuilder("select person_id from person where voided = false");
-		if (context.getBaseCohort() != null) {
-			sqlQuery.append(" and person_id in (" + context.getBaseCohort().getCommaSeparatedPatientIds() + ")");
+		PersonQueryResult result = new PersonQueryResult(query, context);
+
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
+			return result;
 		}
 		if (context instanceof PersonEvaluationContext) {
-			PersonEvaluationContext eec = (PersonEvaluationContext) context;
-			sqlQuery.append(" and person_id in (" + OpenmrsUtil.join(eec.getBasePersons().getMemberIds(), ",") + ")");
+			PersonIdSet ids = ((PersonEvaluationContext) context).getBasePersons();
+			if (ids != null && ids.getMemberIds().isEmpty()) {
+				return result;
+			}
 		}
-		if (context.getLimit() != null) {
-			sqlQuery.append(" limit " + context.getLimit());
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("p.personId");
+		q.from(Person.class, "p");
+		q.whereIdIn("p.personId", context.getBaseCohort());
+		if (context instanceof PersonEvaluationContext) {
+			q.whereIdIn("p.personId", ((PersonEvaluationContext)context).getBasePersons());
 		}
-		
-		List<List<Object>> ret = Context.getAdministrationService().executeSQL(sqlQuery.toString(), true);
-		for (List<Object> l : ret) {
-			queryResult.add((Integer)l.get(0));
-		}
-		return queryResult;
+
+		List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
+		result.getMemberIds().addAll(results);
+
+		return result;
 	}
 }
