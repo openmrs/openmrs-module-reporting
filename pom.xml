@@ -150,6 +150,12 @@
 			<version>${openMRSVersion}</version>
 			<type>jar</type>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -159,6 +165,12 @@
 			<type>jar</type>
 			<scope>test</scope>
 			<classifier>tests</classifier>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
