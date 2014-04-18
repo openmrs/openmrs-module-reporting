@@ -20,7 +20,6 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
@@ -62,10 +61,7 @@ public class MostRecentEncounterForPatientQueryEvaluator implements EncounterQue
 		q.whereIn("e.encounterType", query.getEncounterTypes());
 		q.whereGreaterOrEqualTo("e.encounterDatetime", query.getOnOrAfter());
 		q.whereLessOrEqualTo("e.encounterDatetime", query.getOnOrBefore());
-		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
-		if (context instanceof EncounterEvaluationContext) {
-			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
-		}
+		q.whereEncounterIn("e.encounterId", context);
 		q.orderAsc("e.encounterDatetime");
 
 		Map<Integer, Integer> pIdToEncId = evaluationService.evaluateToMap(q, Integer.class, Integer.class);

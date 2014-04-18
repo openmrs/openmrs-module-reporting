@@ -40,7 +40,7 @@ public class ScriptedCohortDefinitionEvaluator implements CohortDefinitionEvalua
 	}
 	
 	/**
-	 * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+	 * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
 	 */
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 		ScriptedCohortDefinition scriptedCohortDefinition = (ScriptedCohortDefinition) cohortDefinition;

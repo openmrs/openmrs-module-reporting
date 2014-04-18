@@ -57,10 +57,7 @@ public class PersonToEncounterDataEvaluator implements EncounterDataEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("e.encounterId", "e.patient.patientId");
 		q.from(Encounter.class, "e");
-		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
-		if (context instanceof EncounterEvaluationContext) {
-			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext) context).getBaseEncounters());
-		}
+		q.whereEncounterIn("e.encounterId", context);
 
 		Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
 

@@ -44,10 +44,7 @@ public abstract class ObsPropertyDataEvaluator implements ObsDataEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("o.obsId", "o."+getPropertyName());
 		q.from(Obs.class, "o");
-		q.whereIdIn("o.personId", context.getBaseCohort());
-		if (context instanceof ObsEvaluationContext) {
-			q.whereIdIn("o.obsId", ((ObsEvaluationContext)context).getBaseObs());
-		}
+		q.whereObsIn("o.obsId", context);
 		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
 		c.setData(data);
 		return c;

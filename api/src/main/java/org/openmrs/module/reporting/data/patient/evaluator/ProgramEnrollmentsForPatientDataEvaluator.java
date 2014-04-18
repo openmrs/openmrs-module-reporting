@@ -60,7 +60,7 @@ public class ProgramEnrollmentsForPatientDataEvaluator implements PatientDataEva
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("pp.patient.patientId", "pp");
 		q.from(PatientProgram.class, "pp");
-		q.whereIdIn("pp.patient.patientId", context.getBaseCohort());
+		q.wherePatientIn("pp.patient.patientId", context);
 		q.whereEqual("pp.program", def.getProgram());
 		q.whereGreaterOrEqualTo("pp.dateEnrolled", def.getEnrolledOnOrAfter());
 		q.whereLessOrEqualTo("pp.dateEnrolled", def.getEnrolledOnOrBefore());

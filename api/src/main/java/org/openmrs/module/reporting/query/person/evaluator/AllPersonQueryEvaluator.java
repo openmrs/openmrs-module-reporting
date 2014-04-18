@@ -72,10 +72,7 @@ public class AllPersonQueryEvaluator implements PersonQueryEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("p.personId");
 		q.from(Person.class, "p");
-		q.whereIdIn("p.personId", context.getBaseCohort());
-		if (context instanceof PersonEvaluationContext) {
-			q.whereIdIn("p.personId", ((PersonEvaluationContext)context).getBasePersons());
-		}
+		q.wherePersonIn("p.personId", context);
 
 		List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
 		result.getMemberIds().addAll(results);

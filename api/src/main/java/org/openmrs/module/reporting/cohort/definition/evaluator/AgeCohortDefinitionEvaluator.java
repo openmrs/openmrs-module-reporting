@@ -34,7 +34,7 @@ public class AgeCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	public AgeCohortDefinitionEvaluator() {}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
      * @should return only patients born on or before the evaluation date
      * @should return only non voided patients
      * @should return only patients in the given age range

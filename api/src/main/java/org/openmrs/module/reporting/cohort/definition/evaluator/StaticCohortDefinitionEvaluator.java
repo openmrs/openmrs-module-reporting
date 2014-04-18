@@ -32,7 +32,7 @@ public class StaticCohortDefinitionEvaluator implements CohortDefinitionEvaluato
 	public StaticCohortDefinitionEvaluator() {}
 
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	Cohort c = ((StaticCohortDefinition) cohortDefinition).getCohort();

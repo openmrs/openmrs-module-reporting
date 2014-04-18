@@ -40,10 +40,7 @@ public class AllObsQueryEvaluator implements ObsQueryEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("o.obsId");
 		q.from(Obs.class, "o");
-		q.whereIdIn("o.personId", context.getBaseCohort());
-		if (context instanceof ObsEvaluationContext) {
-			q.whereIdIn("o.obsId", ((ObsEvaluationContext)context).getBaseObs());
-		}
+		q.whereObsIn("o.obsId", context);
 
 		List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
 		result.getMemberIds().addAll(results);

@@ -46,21 +46,17 @@ public class PreferredIdentifierDataEvaluator implements PatientDataEvaluator {
 			return c;
 		}
 
-		HqlQueryBuilder query = new HqlQueryBuilder();
-		query.select("pi.patient.patientId", "pi");
-		query.from(PatientIdentifier.class, "pi");
-		query.whereEqual("pi.voided", false);
-		query.whereEqual("pi.identifierType", def.getIdentifierType());
-		query.whereEqual("pi.location", def.getLocation());
-
-		if (context.getBaseCohort() != null) {
-			query.whereIdIn("pi.patient.patientId", context.getBaseCohort().getMemberIds());
-		}
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("pi.patient.patientId", "pi");
+		q.from(PatientIdentifier.class, "pi");
+		q.whereEqual("pi.identifierType", def.getIdentifierType());
+		q.whereEqual("pi.location", def.getLocation());
+		q.wherePatientIn("pi.patient.patientId", context);
 
 		// Order to ensure that the preferred is based on the preferred flag first, dateCreated second
-		query.orderAsc("pi.preferred").orderAsc("pi.dateCreated");
+		q.orderAsc("pi.preferred").orderAsc("pi.dateCreated");
 
-		Map<Integer, Object> m = Context.getService(EvaluationService.class).evaluateToMap(query, Integer.class, Object.class);
+		Map<Integer, Object> m = Context.getService(EvaluationService.class).evaluateToMap(q, Integer.class, Object.class);
 		c.setData(m);
 
 		return c;

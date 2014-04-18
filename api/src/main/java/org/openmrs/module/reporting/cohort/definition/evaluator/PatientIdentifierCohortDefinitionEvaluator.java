@@ -71,7 +71,7 @@ public class PatientIdentifierCohortDefinitionEvaluator implements CohortDefinit
 			}
 		}
 
-		q.whereIdIn("pi.patient.patientId", context.getBaseCohort());
+		q.wherePatientIn("pi.patient.patientId", context);
 
 		List<Object[]> results = evaluationService.evaluateToList(q);
 

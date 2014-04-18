@@ -47,7 +47,7 @@ public class BirthdateDataEvaluator implements PersonDataEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("p.personId", "p.birthdate", "p.birthdateEstimated");
 		q.from(Person.class, "p");
-		q.whereIdIn("p.personId", context.getBaseCohort());
+		q.wherePersonIn("p.personId", context);
 
 		List<Object[]> results = evaluationService.evaluateToList(q);
 		for (Object[] row : results) {

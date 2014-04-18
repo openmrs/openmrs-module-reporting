@@ -53,7 +53,7 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("o.personId", "o");
 		q.from(Obs.class, "o");
-		q.whereIdIn("o.personId", context.getBaseCohort());
+		q.wherePersonIn("o.personId", context);
 		q.whereEqual("o.concept", def.getQuestion());
 		q.whereIn("o.encounter.encounterType", def.getEncounterTypeList());
 		q.whereIn("o.encounter.form", def.getFormList());

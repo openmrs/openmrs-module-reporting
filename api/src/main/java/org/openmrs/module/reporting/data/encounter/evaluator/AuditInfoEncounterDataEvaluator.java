@@ -47,10 +47,7 @@ public class AuditInfoEncounterDataEvaluator implements EncounterDataEvaluator {
 		q.leftOuterJoin("e.creator", "creator");
 		q.leftOuterJoin("e.changedBy", "changedBy");
 		q.leftOuterJoin("e.voidedBy", "voidedBy");
-		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
-		if (context instanceof EncounterEvaluationContext) {
-			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
-		}
+		q.whereEncounterIn("e.encounterId", context);
 
 		for (Object[] row : evaluationService.evaluateToList(q)) {
 			AuditInfo auditInfo = new AuditInfo();

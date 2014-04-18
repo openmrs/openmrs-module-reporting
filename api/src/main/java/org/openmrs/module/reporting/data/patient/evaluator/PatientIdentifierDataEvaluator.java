@@ -58,7 +58,7 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("pi.patient.patientId", "pi");
 		q.from(PatientIdentifier.class, "pi");
-		q.whereIdIn("pi.patient.patientId", context.getBaseCohort());
+		q.wherePatientIn("pi.patient.patientId", context);
 		q.whereIn("pi.identifierType", def.getTypes());
 		q.orderDesc("pi.preferred");
 

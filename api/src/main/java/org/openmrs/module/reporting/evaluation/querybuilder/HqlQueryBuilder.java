@@ -10,7 +10,11 @@ import org.openmrs.Voidable;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
+import org.openmrs.module.reporting.data.obs.ObsDataUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.evaluation.service.IdsetMember;
 import org.openmrs.module.reporting.query.IdSet;
@@ -21,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -163,11 +168,11 @@ public class HqlQueryBuilder implements QueryBuilder {
 			else {
 				if (propertyValue instanceof Cohort) {
 					Cohort c = (Cohort) propertyValue;
-					whereIdIn(propertyName, c);
+					whereIn(propertyName, c.getMemberIds());
 				}
 				else if (propertyValue instanceof IdSet) {
 					IdSet idSet = (IdSet) propertyValue;
-					whereIdIn(propertyName, idSet);
+					whereIn(propertyName, idSet.getMemberIds());
 				}
 				else if (propertyValue instanceof Object[]) {
 					whereIn(propertyName, Arrays.asList((Object[])propertyValue));
@@ -178,18 +183,6 @@ public class HqlQueryBuilder implements QueryBuilder {
 				else {
 					where(propertyName + " = :" + nextPositionIndex()).withValue(propertyValue);
 				}
-			}
-		}
-		return this;
-	}
-
-	public HqlQueryBuilder whereIn(String propertyName, Object... values) {
-		if (values != null) {
-			if (values.length == 0) {
-				where("1=0");
-			}
-			else {
-				where(propertyName + " in (:" + nextPositionIndex() + ")").withValue(values);
 			}
 		}
 		return this;
@@ -207,23 +200,77 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return this;
 	}
 
-	public HqlQueryBuilder whereIdIn(String propertyName, Cohort cohort) {
-		if (cohort != null) {
-			whereIdIn(propertyName, cohort.getMemberIds());
+	public HqlQueryBuilder whereInAny(String propertyName, Object... values) {
+		if (values != null) {
+			if (values.length == 0) {
+				where("1=0");
+			}
+			else {
+				where(propertyName + " in (:" + nextPositionIndex() + ")").withValue(values);
+			}
 		}
 		return this;
 	}
 
-	public HqlQueryBuilder whereIdIn(String propertyName, IdSet idSet) {
-		if (idSet != null) {
-			whereIdIn(propertyName, idSet.getMemberIds());
+	public HqlQueryBuilder wherePatientIn(String propertyName, EvaluationContext context) {
+		if (context != null) {
+			if (context.getBaseCohort() != null) {
+				whereIdIn(propertyName, context.getBaseCohort().getMemberIds());
+			}
 		}
 		return this;
 	}
 
-	public HqlQueryBuilder whereIdIn(String propertyName, Set<Integer> ids) {
+	public HqlQueryBuilder wherePersonIn(String propertyName, EvaluationContext context) {
+		if (context != null) {
+			Set<Integer> memberIds = null;
+			if (context.getBaseCohort() != null) {
+				memberIds = new HashSet<Integer>(context.getBaseCohort().getMemberIds());
+			}
+			if (context instanceof PersonEvaluationContext) {
+				PersonEvaluationContext pec = (PersonEvaluationContext)context;
+				if (pec.getBasePersons() != null) {
+					if (memberIds != null) {
+						memberIds.retainAll(pec.getBasePersons().getMemberIds());
+					}
+					else {
+						memberIds = new HashSet<Integer>(pec.getBasePersons().getMemberIds());
+					}
+				}
+			}
+			whereIdIn(propertyName, memberIds);
+		}
+		return this;
+	}
+
+	public HqlQueryBuilder whereEncounterIn(String propertyName, EvaluationContext context) {
+		if (context != null) {
+			Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
+			whereIdIn(propertyName, encIds);
+		}
+		return this;
+	}
+
+	public HqlQueryBuilder whereObsIn(String propertyName, EvaluationContext context) {
+		if (context != null) {
+			Set<Integer> obsIds = ObsDataUtil.getObsIdsForContext(context, true);
+			whereIdIn(propertyName, obsIds);
+		}
+		return this;
+	}
+
+	/**
+	 * Constrain the passed id property against a set of values.
+	 * This method may only be called once per instance of HqlQueryBuilder.
+	 */
+	protected HqlQueryBuilder whereIdIn(String propertyName, Set<Integer> ids) {
 		if (ids != null) {
-			idClauses.put(propertyName, ids);
+			if (idClauses.isEmpty()) {
+				idClauses.put(propertyName, ids);
+			}
+			else {
+				throw new IllegalStateException("You can only associate one IdSet per query.");
+			}
 		}
 		return this;
 	}
@@ -491,7 +538,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 						whereEqual(alias + ".key", idSetKey);
 					}
 					else {
-						System.out.println("Using sub-query to constrain " + idProperty + ".  This is likely very slow.");
+						log.warn("Using sub-query to constrain " + idProperty + ".  This is likely very slow.");
 						addSubQueryAgainstIdSetMember(idProperty, idSetKey);
 					}
 				}

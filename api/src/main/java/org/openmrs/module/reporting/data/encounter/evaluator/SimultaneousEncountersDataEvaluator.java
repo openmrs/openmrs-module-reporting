@@ -53,10 +53,7 @@ public class SimultaneousEncountersDataEvaluator implements EncounterDataEvaluat
 		q.whereEqual("enc.voided", false);
 		q.whereEqual("other.voided", false);
 		q.whereIn("other.encounterType", def.getEncounterTypeList());
-		q.whereIdIn("enc.patient.id", context.getBaseCohort());
-		if (context instanceof EncounterEvaluationContext) {
-			q.whereIdIn("enc.id", ((EncounterEvaluationContext)context).getBaseEncounters());
-		}
+		q.whereEncounterIn("enc.id", context);
 		q.orderAsc("other.dateCreated");  // use the most-recently-entered encounter
 
 		Map<Integer, Object> data  = evaluationService.evaluateToMap(q, Integer.class, Object.class);

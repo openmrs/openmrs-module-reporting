@@ -18,7 +18,6 @@ import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +43,7 @@ public abstract class EncounterPropertyDataEvaluator implements EncounterDataEva
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("e.encounterId", "e."+getPropertyName());
 		q.from(Encounter.class, "e");
-		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
-		if (context instanceof EncounterEvaluationContext) {
-			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
-		}
+		q.whereEncounterIn("e.encounterId", context);
 		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
 		c.setData(data);
 		return c;

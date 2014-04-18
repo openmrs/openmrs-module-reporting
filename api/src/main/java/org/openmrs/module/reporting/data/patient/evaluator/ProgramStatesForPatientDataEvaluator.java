@@ -60,7 +60,7 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("ps.patientProgram.patient.patientId", "ps");
 		q.from(PatientState.class, "ps");
-		q.whereIdIn("ps.patientProgram.patient.patientId", context.getBaseCohort());
+		q.wherePatientIn("ps.patientProgram.patient.patientId", context);
 		q.whereEqual("ps.state.programWorkflow", def.getWorkflow());
 		q.whereEqual("ps.state", def.getState());
 		q.whereEqual("ps.patientProgram.location", def.getLocation());

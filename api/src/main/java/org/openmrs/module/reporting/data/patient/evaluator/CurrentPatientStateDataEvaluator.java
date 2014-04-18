@@ -58,7 +58,7 @@ public class CurrentPatientStateDataEvaluator implements PatientDataEvaluator {
 		q.whereLessOrEqualToOrNull("ps.startDate", effectiveDate);
 		q.whereGreaterOrNull("ps.endDate", effectiveDate);
 		q.whereEqual("ps.state.programWorkflow", def.getWorkflow());
-		q.whereIdIn("ps.patientProgram.patient.patientId", context.getBaseCohort());
+		q.wherePatientIn("ps.patientProgram.patient.patientId", context);
 		q.orderAsc("ps.startDate");
 
 		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);

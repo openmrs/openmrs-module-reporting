@@ -44,7 +44,7 @@ public abstract class PersonPropertyDataEvaluator implements PersonDataEvaluator
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("p.personId", "p."+getPropertyName());
 		q.from(Person.class, "p");
-		q.whereIdIn("p.personId", context.getBaseCohort());
+		q.wherePersonIn("p.personId", context);
 		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
 		c.setData(data);
 		return c;

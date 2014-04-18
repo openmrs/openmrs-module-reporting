@@ -49,7 +49,7 @@ public class PreferredAddressDataEvaluator implements PersonDataEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("pa.person.personId", "pa");
 		q.from(PersonAddress.class, "pa");
-		q.whereIdIn("pa.person.personId", context.getBaseCohort());
+		q.wherePersonIn("pa.person.personId", context);
 		q.orderAsc("pa.preferred");
 
 		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);

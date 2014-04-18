@@ -59,10 +59,7 @@ public class BasicEncounterQueryEvaluator implements EncounterQueryEvaluator {
 		q.whereIn("e.encounterType", query.getEncounterTypes());
 		q.whereGreaterOrEqualTo("e.encounterDatetime", query.getOnOrAfter());
 		q.whereLessOrEqualTo("e.encounterDatetime", query.getOnOrBefore());
-		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
-		if (context instanceof EncounterEvaluationContext) {
-			q.whereIdIn("e.encounterId", ((EncounterEvaluationContext)context).getBaseEncounters());
-		}
+		q.whereEncounterIn("e.encounterId", context);
 
 		List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
 		result.getMemberIds().addAll(results);

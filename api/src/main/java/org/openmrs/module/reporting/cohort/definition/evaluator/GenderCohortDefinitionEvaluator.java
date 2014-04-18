@@ -34,7 +34,7 @@ public class GenderCohortDefinitionEvaluator implements CohortDefinitionEvaluato
 	public GenderCohortDefinitionEvaluator() {}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
      * 
      * @should return all non voided patients when all are included
      * @should return male patients when males are included

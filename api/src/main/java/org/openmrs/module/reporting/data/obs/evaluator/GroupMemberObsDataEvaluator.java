@@ -38,10 +38,7 @@ public class GroupMemberObsDataEvaluator implements ObsDataEvaluator {
 		q.select("o.obsGroup.id", "o");
 		q.from(Obs.class, "o");
 		q.whereEqual("o.concept", def.getQuestion());
-		q.whereIdIn("o.obsGroup.personId", context.getBaseCohort());
-		if (context instanceof ObsEvaluationContext) {
-			q.whereIdIn("o.obsGroup.id", ((ObsEvaluationContext)context).getBaseObs());
-		}
+		q.whereObsIn("o.obsGroup.id", context);
 
 		List<Object[]> result = Context.getService(EvaluationService.class).evaluateToList(q);
 		for (Object[] row : result) {

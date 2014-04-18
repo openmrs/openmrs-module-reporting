@@ -53,7 +53,7 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("e.patient.patientId", "e");
 		q.from(Encounter.class, "e");
-		q.whereIdIn("e.patient.patientId", context.getBaseCohort());
+		q.wherePatientIn("e.patient.patientId", context);
 		q.whereIn("e.encounterType", def.getTypes());
 		q.whereGreaterOrEqualTo("e.encounterDatetime", def.getOnOrAfter());
 		q.whereLessOrEqualTo("e.encounterDatetime", def.getOnOrBefore());

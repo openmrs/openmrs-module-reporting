@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
@@ -57,8 +56,8 @@ public class ObsActiveListPersonDataEvaluator implements PersonDataEvaluator {
 		}
 		
 		// Retrieve all Observations for each patient, for all added and removed Concepts
-		List<Object[]> startingObs = getObs(context.getBaseCohort(), def.getStartingConcepts());
-		List<Object[]> endingObs = getObs(context.getBaseCohort(), def.getEndingConcepts());
+		List<Object[]> startingObs = getObs(def.getStartingConcepts(), context);
+		List<Object[]> endingObs = getObs(def.getEndingConcepts(), context);
 		
 		for (Object[] row : startingObs) {
 			Integer pId = (Integer)row[0];
@@ -85,14 +84,14 @@ public class ObsActiveListPersonDataEvaluator implements PersonDataEvaluator {
 		return evaluatedPersonData;
 	}
 
-	public List<Object[]> getObs(Cohort c, List<Concept> concepts) {
+	public List<Object[]> getObs(List<Concept> concepts, EvaluationContext context) {
 		if (concepts == null || concepts.isEmpty()) {
 			return new ArrayList<Object[]>();
 		}
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("o.personId", "o");
 		q.from(Obs.class, "o");
-		q.whereIdIn("o.personId", c);
+		q.wherePersonIn("o.personId", context);
 		q.whereIn("o.concept", concepts);
 		return evaluationService.evaluateToList(q);
 	}

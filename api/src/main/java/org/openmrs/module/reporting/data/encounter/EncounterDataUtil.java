@@ -17,7 +17,6 @@ import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
@@ -36,7 +35,7 @@ public class EncounterDataUtil {
 	 * @return the base set of encounter ids relevant for the passed EvaluationContext or null for all encounter ids
 	 * If returnNullForAllEncounterIds is false, then this will return all encounter ids in the system if unconstrained by the context
 	 */
-	public static Set<Integer> getEncounterIdsForContext(EvaluationContext context, boolean returnNullForAllEncounterIds) throws EvaluationException {
+	public static Set<Integer> getEncounterIdsForContext(EvaluationContext context, boolean returnNullForAllEncounterIds) {
 
 		Cohort patIds = context.getBaseCohort();
 		EncounterIdSet encIds = (context instanceof EncounterEvaluationContext ? ((EncounterEvaluationContext)context).getBaseEncounters() : null);
@@ -70,8 +69,12 @@ public class EncounterDataUtil {
 	}
 
 	public static Set<Integer> getEncounterIdsForPatients(Set<Integer> patientIds) {
+		EvaluationContext context = new EvaluationContext();
+		if (patientIds != null) {
+			context.setBaseCohort(new Cohort(patientIds));
+		}
 		HqlQueryBuilder qb = new HqlQueryBuilder();
-		qb.select("e.encounterId").from(Encounter.class, "e").whereIdIn("e.patient.patientId", patientIds);
+		qb.select("e.encounterId").from(Encounter.class, "e").wherePatientIn("e.patient.patientId", context);
 		List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
 		return new HashSet<Integer>(ids);
 	}

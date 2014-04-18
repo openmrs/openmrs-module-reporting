@@ -10,7 +10,6 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefin
 import org.openmrs.module.reporting.data.encounter.definition.EncounterProviderDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +45,7 @@ public class EncounterProviderDataEvaluator implements EncounterDataEvaluator {
 		q.select("ep.encounter.id", "ep.provider");
 		q.from(EncounterProvider.class, "ep");
 		q.whereEqual("ep.encounterRole", def.getEncounterRole());
-
-		q.whereIdIn("ep.encounter.patient.patientId", context.getBaseCohort());
-		if (context instanceof EncounterEvaluationContext) {
-			q.whereIdIn("ep.encounter.encounterId", ((EncounterEvaluationContext) context).getBaseEncounters());
-		}
+		q.whereEncounterIn("ep.encounter.encounterId", context);
 
 		for (Object[] result : evaluationService.evaluateToList(q)) {
 			Integer encounterId = (Integer)result[0];

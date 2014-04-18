@@ -10,7 +10,6 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefin
 import org.openmrs.module.reporting.data.encounter.definition.ObsForEncounterDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 
@@ -35,10 +34,7 @@ public class ObsForEncounterDataEvaluator implements EncounterDataEvaluator {
 		q.select("obs.encounter.encounterId, obs");
 		q.from(Obs.class, "obs");
 		q.whereEqual("obs.concept", def.getQuestion());
-		q.whereIdIn("obs.person.personId", context.getBaseCohort());
-		if (context instanceof EncounterEvaluationContext) {
-			q.whereIdIn("obs.encounter.encounterId", ((EncounterEvaluationContext) context).getBaseEncounters());
-		}
+		q.whereEncounterIn("obs.encounter.encounterId", context);
 
 		List<Object[]> result = Context.getService(EvaluationService.class).evaluateToList(q);
         for (Object[] row : result) {

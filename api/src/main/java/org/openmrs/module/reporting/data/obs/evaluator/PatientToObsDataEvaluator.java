@@ -40,10 +40,7 @@ public class PatientToObsDataEvaluator implements ObsDataEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("o.obsId", "o.personId");
 		q.from(Obs.class, "o");
-		q.whereIdIn("o.personId", context.getBaseCohort());
-		if (context instanceof ObsEvaluationContext) {
-			q.whereIdIn("o.obsId", ((ObsEvaluationContext) context).getBaseObs());
-		}
+		q.whereObsIn("o.obsId", context);
 
 		Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
 

@@ -44,7 +44,7 @@ public abstract class PatientPropertyDataEvaluator implements PatientDataEvaluat
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("p.patientId", "p."+getPropertyName());
 		q.from(Patient.class, "p");
-		q.whereIdIn("p.patientId", context.getBaseCohort());
+		q.wherePatientIn("p.patientId", context);
 		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
 		c.setData(data);
 		return c;

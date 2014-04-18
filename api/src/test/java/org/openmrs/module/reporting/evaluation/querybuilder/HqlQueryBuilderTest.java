@@ -27,7 +27,6 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
-import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -57,7 +56,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void select_shouldSelectTheConfiguredColumns() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
-		q.select("personId", "gender").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
+		q.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
 		List<Object[]> results = evaluationService.evaluateToList(q);
 		testSize(results, 2);
 		testRow(results, 1, 2, "M");
@@ -74,7 +73,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void from_shouldAllowAnAlias() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
-		q.select("p.personId", "p.gender").from(Person.class, "p").whereIn("p.personId", 2, 7);
+		q.select("p.personId", "p.gender").from(Person.class, "p").whereInAny("p.personId", 2, 7);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 2);
 	}
@@ -121,7 +120,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void where_shouldSupportAnArbitraryConstraint() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
-		q.select("p.personId", "p.gender").from(Person.class, "p").where("gender = 'F'").whereIn("personId", 2, 7);
+		q.select("p.personId", "p.gender").from(Person.class, "p").where("gender = 'F'").whereInAny("personId", 2, 7);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 1);
 	}
@@ -137,7 +136,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void whereEqual_shouldNotConstrainIfValuesAreNull() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
-		q.select("personId").from(Person.class).whereEqual("gender", null).whereIn("personId", 2, 7);
+		q.select("personId").from(Person.class).whereEqual("gender", null).whereInAny("personId", 2, 7);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 2);
 	}
@@ -213,24 +212,6 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	}
 
 	@Test
-	public void whereIdIn_shouldConstrainByCohort() throws Exception {
-		HqlQueryBuilder q = new HqlQueryBuilder();
-		Cohort c = new Cohort("2,7");
-		q.select("person.gender").from(PersonAddress.class).whereIdIn("person.personId", c);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
-		testSize(rows, 2);
-	}
-
-	@Test
-	public void whereIdIn_shouldConstrainByIdSet() throws Exception {
-		HqlQueryBuilder q = new HqlQueryBuilder();
-		IdSet idSet = new PatientIdSet(2,7);
-		q.select("person.gender").from(PersonAddress.class).whereIdIn("person.personId", idSet);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
-		testSize(rows, 2);
-	}
-
-	@Test
 	public void whereIn_shouldConstrainByCollection() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		Set<Integer> idSet = new HashSet<Integer>(Arrays.asList(2,7));
@@ -243,7 +224,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereIn_shouldConstrainByArray() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		Integer[] idSet = {2,7};
-		q.select("person.gender").from(PersonAddress.class).whereIn("person.personId", idSet);
+		q.select("person.gender").from(PersonAddress.class).whereInAny("person.personId", idSet);
 		List<Object[]> rows = evaluationService.evaluateToList(q);
 		testSize(rows, 2);
 	}

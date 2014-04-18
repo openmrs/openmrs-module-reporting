@@ -39,7 +39,7 @@ public class PersonAttributeCohortDefinitionEvaluator implements CohortDefinitio
 	public PersonAttributeCohortDefinitionEvaluator() {}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	

@@ -61,7 +61,7 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("do.patient.patientId", "do");
 		q.from(DrugOrder.class, "do");
-		q.whereIdIn("do.patient.patientId", context.getBaseCohort());
+		q.wherePatientIn("do.patient.patientId", context);
 
 		List<Concept> concepts = null;
 

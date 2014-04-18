@@ -42,7 +42,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void evaluateToList_shouldEvaluateAQueryToAMultiValueList() throws Exception {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
-		queryBuilder.select("personId", "gender").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
+		queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
 		List<Object[]> l = evaluationService.evaluateToList(queryBuilder);
 		Assert.assertEquals(2, l.get(0)[0]);
 		Assert.assertEquals(7, l.get(1)[0]);
@@ -54,7 +54,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void evaluateToList_shouldEvaluateAQueryToASingleValueList() throws Exception {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
-		queryBuilder.select("gender").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
+		queryBuilder.select("gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
 		List<String> genders = evaluationService.evaluateToList(queryBuilder, String.class);
 		Assert.assertEquals("M", genders.get(0));
 		Assert.assertEquals("F", genders.get(1));
@@ -65,14 +65,14 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	@ExpectedException(IllegalArgumentException.class)
 	public void evaluateToList_shouldThrowAnExceptionWithIncorrectNumberOfColumns() {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
-		queryBuilder.select("personId", "gender").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
+		queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
 		evaluationService.evaluateToList(queryBuilder, String.class);
 	}
 
 	@Test
 	public void evaluateToMap_shouldEvaluateAQueryToAMap() throws Exception {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
-		queryBuilder.select("personId", "gender").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
+		queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
 		Map<Integer, String> m = evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class);
 		Assert.assertEquals(m.get(2), "M");
 		Assert.assertEquals(m.get(7), "F");
@@ -82,7 +82,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	@ExpectedException(IllegalArgumentException.class)
 	public void evaluateToMap_shouldThrowAnExceptionWithIncorrectNumberOfColumns() {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
-		queryBuilder.select("personId", "gender", "birthdate").from(Person.class).whereIn("personId", 2, 7).orderAsc("personId");
+		queryBuilder.select("personId", "gender", "birthdate").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
 		evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class);
 	}
 

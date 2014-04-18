@@ -49,7 +49,7 @@ public class VitalStatusDataEvaluator implements PersonDataEvaluator {
 		q.select("p.personId", "p.dead", "p.deathDate", "cod");
 		q.from(Person.class, "p");
 		q.leftOuterJoin("p.causeOfDeath", "cod");
-		q.whereIdIn("p.personId", context.getBaseCohort());
+		q.wherePersonIn("p.personId", context);
 
 		List<Object[]> results = evaluationService.evaluateToList(q);
 		for (Object[] row : results) {

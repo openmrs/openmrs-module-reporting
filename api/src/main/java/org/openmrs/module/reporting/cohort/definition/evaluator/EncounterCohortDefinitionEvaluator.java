@@ -34,7 +34,7 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
 	public EncounterCohortDefinitionEvaluator() {}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
      * 
      * @should return all patients with encounters if all arguments to cohort definition are empty
      * @should return correct patients when all non grouping parameters are set

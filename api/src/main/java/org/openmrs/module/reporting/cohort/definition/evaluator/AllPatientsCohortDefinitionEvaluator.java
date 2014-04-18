@@ -32,7 +32,7 @@ public class AllPatientsCohortDefinitionEvaluator implements CohortDefinitionEva
 	public AllPatientsCohortDefinitionEvaluator() {}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+     * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
      * @should return all non-voided patients, optionally limited to those in the passed context
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
