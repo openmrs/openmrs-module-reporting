@@ -15,11 +15,13 @@ import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.evaluation.service.IdsetMember;
 import org.openmrs.module.reporting.query.IdSet;
 
+import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,8 @@ import java.util.Set;
  * Helper class for building and executing an HQL query with parameters
  */
 public class HqlQueryBuilder implements QueryBuilder {
+
+	public static int MAXIMUM_RECOMMENDED_IN_CLAUSE_SIZE = 5000;
 
 	protected static String PARENTHESIS_START = "(";
 	protected static String PARENTHESIS_END = ")";
@@ -333,36 +337,8 @@ public class HqlQueryBuilder implements QueryBuilder {
 			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");
 		}
 
-		int idClauseNum = 0;
-		for (String idProperty : idClauses.keySet()) {
-			Set<Integer> idSet = idClauses.get(idProperty);
-			if (idSet.isEmpty()) {
-				where("1=0");
-			}
-			else {
-				String idSetKey = Context.getService(EvaluationService.class).generateKey(idSet);
-				boolean isPersisted = Context.getService(EvaluationService.class).isInUse(idSetKey);
-				if (isPersisted) {
-
-					/*
-					 As of MySql 5.6, this is better implemented as a sub-select
-					 eg. where(idProperty + " in ( select memberId from IdsetMember where key = '" + idSetKey + "' )");
-					 However, MySql 5.5 does not perform well with this and the majority of implementations are still on 5.5
-					 The approach here (using a cross-join) seems to work, though seems to be very slow if more than one are used in the same query.
-					 Not 100% sure why this is, but pre-calculating to one set of ids per query results in best performance at the moment
-					*/
-
-					String alias = "_id_"+idClauseNum++;
-					from(IdsetMember.class, alias);
-					where(idProperty + " = " + alias + ".memberId");
-					whereEqual(alias + ".key", idSetKey);
-
-				}
-				else {
-					where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(idSet);
-				}
-			}
-		}
+		// Apply the idset clauses to the query.  Happens here because the method used is determined at execution time.
+		applyIdSetClausesToQuery(sessionFactory);
 
 		// Create query string
 		StringBuilder q = new StringBuilder();
@@ -447,11 +423,111 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return this;
 	}
 
+	protected void addSubQueryAgainstIdSetMember(String idProperty, String idSetKey) {
+		where(idProperty + " in ( select memberId from IdsetMember where key = '" + idSetKey + "' )");
+	}
+
+	protected void applyIdSetClausesToQuery(SessionFactory sessionFactory) {
+
+		List<Object[]> persistedIdSets = new ArrayList<Object[]>();
+
+		// First apply any idsets that are empty or that are not persisted to the database
+		for (String idProperty : idClauses.keySet()) {
+			Set<Integer> idSet = idClauses.get(idProperty);
+			if (idSet.isEmpty()) {
+				where("1=0");
+			}
+			else {
+				String idSetKey = Context.getService(EvaluationService.class).generateKey(idSet);
+				boolean isPersisted = Context.getService(EvaluationService.class).isInUse(idSetKey);
+				if (isPersisted) {
+					persistedIdSets.add(new Object[]{idProperty, idSetKey, idSet});
+				}
+				else {
+					if (idSet.size() > MAXIMUM_RECOMMENDED_IN_CLAUSE_SIZE) {
+						log.warn("Adding in constraint against " + idSet.size() + " is not recommended.  This may fail.");
+					}
+					where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(idSet);
+				}
+			}
+		}
+
+		// Now apply any constraints for idsets that are persisted to the database
+		if (!persistedIdSets.isEmpty()) {
+
+			// Try to handle as many constraints by use of in clauses, either with sub-queries or not
+
+			boolean subQueriesPreferred = checkIfSubQueriesPreferred(sessionFactory);
+
+			for (Iterator<Object[]> i = persistedIdSets.iterator(); i.hasNext();) {
+				Object[] idSetData = i.next();
+				String idProperty = (String)idSetData[0];
+				String idSetKey = (String)idSetData[1];
+				Set<Integer> idSet = (Set<Integer>)idSetData[2];
+
+				if (subQueriesPreferred) {
+					addSubQueryAgainstIdSetMember(idProperty, idSetKey);
+					i.remove();
+				}
+				else if (idSet.size() <= MAXIMUM_RECOMMENDED_IN_CLAUSE_SIZE) {
+					where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(idSet);
+					i.remove();
+				}
+			}
+
+			// If there are any remaining, try using a cross-join if there is only one.
+			// If there is more than one, default to using sub-queries
+
+			if (!persistedIdSets.isEmpty()) {
+				for (Iterator<Object[]> i = persistedIdSets.iterator(); i.hasNext();) {
+					Object[] idSetData = i.next();
+					String idProperty = (String) idSetData[0];
+					String idSetKey = (String) idSetData[1];
+
+					if (persistedIdSets.size() == 1) {
+						String alias = "_idset_";
+						from(IdsetMember.class, alias);
+						where(idProperty + " = " + alias + ".memberId");
+						whereEqual(alias + ".key", idSetKey);
+					}
+					else {
+						System.out.println("Using sub-query to constrain " + idProperty + ".  This is likely very slow.");
+						addSubQueryAgainstIdSetMember(idProperty, idSetKey);
+					}
+				}
+			}
+		}
+	}
+
 	protected String nextPositionIndex() {
 		return "param"+positionIndex++;
 	}
 
 	protected String lastPositionIndex() {
 		return "param"+(positionIndex-1);
+	}
+
+	/**
+	 * If there are any persisted id sets to join against, determine the optimal strategy for this
+	 * We assume that a sub-query is optimal as the default.  However, for MySQL prior to 5.6, this is slow
+	 * and a cross-join is much faster if we are only dealing with a single idset,
+	 * so we will code in a particular special handling for this case.
+	 * Other exceptions for other database types and versions can be added here subsequently as needed.
+	 */
+	protected boolean checkIfSubQueriesPreferred(SessionFactory sessionFactory) {
+		try {
+			DatabaseMetaData databaseMetaData = sessionFactory.getCurrentSession().connection().getMetaData();
+			String dbName = databaseMetaData.getDatabaseProductName().toLowerCase().trim();
+			int dbMajorVersion = databaseMetaData.getDatabaseMajorVersion();
+			int dbMinorVersion = databaseMetaData.getDatabaseMinorVersion();
+			log.debug("Creating sub-query for " + dbName + " version " + dbMajorVersion + "." + dbMinorVersion);
+			if (dbName.contains("mysql") && dbMajorVersion <= 5 && dbMinorVersion < 6) {
+				return false;
+			}
+		}
+		catch (Exception e) {
+			log.warn("Unable to retrieve database metadata for current session");
+		}
+		return true;
 	}
 }
