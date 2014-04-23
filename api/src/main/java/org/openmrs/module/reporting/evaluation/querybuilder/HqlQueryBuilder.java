@@ -18,6 +18,7 @@ import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.evaluation.service.IdsetMember;
 import org.openmrs.module.reporting.query.IdSet;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
@@ -494,7 +495,9 @@ public class HqlQueryBuilder implements QueryBuilder {
 					if (idSet.size() > MAXIMUM_RECOMMENDED_IN_CLAUSE_SIZE) {
 						log.warn("Adding in constraint against " + idSet.size() + " is not recommended.  This may fail.");
 					}
-					where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(idSet);
+
+					// Here we build the in clause manually due to some known hibernate performance issues
+					where(idProperty + " in (" + OpenmrsUtil.join(idSet, ",") + ")");
 				}
 			}
 		}

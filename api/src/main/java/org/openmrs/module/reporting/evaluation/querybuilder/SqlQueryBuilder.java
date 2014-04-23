@@ -9,13 +9,16 @@ import org.openmrs.Cohort;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.query.IdSet;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Helper class for building and executing an HQL query with parameters
@@ -93,7 +96,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 
 	public Query buildQuery(SessionFactory sessionFactory) {
 
-		String queryString = query.toString();
+		String queryString = preProcessQuery();
 		log.debug("Building query: " + queryString);
 		log.debug("With parameters: " + getParameters());
 
@@ -109,6 +112,35 @@ public class SqlQueryBuilder implements QueryBuilder {
 		}
 
 		return query;
+	}
+
+	/**
+	 * Here we pre-process id-set parameters such that we pass a constructed in clause
+	 * to Hibernate, rather than relying on Hibernate to do this from the passed list
+	 * The reason is due to some reported performance issues with this in Hibernate
+	 */
+	private String preProcessQuery() {
+		String ret = query.toString();
+		for (Iterator<String> i = getParameters().keySet().iterator(); i.hasNext();) {
+			String paramName = i.next();
+			Object paramValue = getParameters().get(paramName);
+			if (paramValue != null) {
+				Set<Integer> memberIds = null;
+				if (paramValue instanceof Cohort) {
+					memberIds = ((Cohort) paramValue).getMemberIds();
+				}
+				if (paramValue instanceof IdSet) {
+					memberIds = ((IdSet) paramValue).getMemberIds();
+				}
+				if (memberIds != null) {
+					String idClause = OpenmrsUtil.join(memberIds, ",");
+					ret = ret.replace("(:" + paramName + ")", "(" + idClause + ")"); // where id in (:ids)
+					ret = ret.replace(":" + paramName, idClause); // where id in :ids
+					i.remove();
+				}
+			}
+		}
+		return ret;
 	}
 
 	private Object normalizeParameterValue(Object value) {

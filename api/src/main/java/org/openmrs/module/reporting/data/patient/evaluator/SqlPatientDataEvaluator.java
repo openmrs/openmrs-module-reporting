@@ -30,17 +30,16 @@ public class SqlPatientDataEvaluator implements PatientDataEvaluator {
 
 		// TODO: Support IdSetMember joining
 
-        Set<Integer> memberIds = context.getBaseCohort().getMemberIds();
-        if (memberIds != null && memberIds.size() == 0) {
-            return data;
-        }
+		if (context.getBaseCohort() == null || context.getBaseCohort().size() == 0) {
+			return data;
+		}
 
 		SqlQueryBuilder q = new SqlQueryBuilder();
 		q.append(def.getSql());
 		for (Parameter p : definition.getParameters()) {
 			q.addParameter(p.getName(), context.getParameterValue(p.getName()));
 		}
-		q.addParameter("patientIds", memberIds);
+		q.addParameter("patientIds", context.getBaseCohort());
 
 		Map<Integer, Object> results = evaluationService.evaluateToMap(q, Integer.class, Object.class);
 		data.setData(results);
