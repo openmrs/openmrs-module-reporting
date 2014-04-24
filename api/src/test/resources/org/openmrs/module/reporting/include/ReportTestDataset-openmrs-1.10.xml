@@ -79,10 +79,10 @@
   <concept_description concept_description_id="13" concept_id="20" description="When did the patient receive the food package?" locale="en" creator="1" date_created="2008-08-18 12:33:37.0" uuid="78441eab-42d0-408e-8577-ed369e56aa79"/>
   <concept_description concept_description_id="14" concept_id="23" description="Holder for all things edible" locale="en" creator="1" date_created="2008-08-18 12:38:58.0" uuid="0a7e860b-d73c-4033-be1e-2053ee025c5b"/>
 
-  <concept_reference_map concept_map_id="1" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" concept_id="5089"/>
-  <concept_reference_map concept_map_id="2" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" concept_id="5497"/>
-  <concept_reference_map concept_map_id="3" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" concept_id="5089"/>
-  <concept_reference_map concept_map_id="4" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" concept_id="5497"/>
+  <concept_reference_map concept_map_id="1" concept_reference_term_id="1" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" concept_id="5089" uuid="1a7e860b-d73c-5099-be1e-2053ee025c5b" />
+  <concept_reference_map concept_map_id="2" concept_reference_term_id="2" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" concept_id="5497" uuid="2a7e860b-d73c-5099-be1e-2053ee025c5b" />
+  <concept_reference_map concept_map_id="3" concept_reference_term_id="3" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" concept_id="5089" uuid="3a7e860b-d73c-5099-be1e-2053ee025c5b" />
+  <concept_reference_map concept_map_id="4" concept_reference_term_id="4" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" concept_id="5497" uuid="4a7e860b-d73c-5099-be1e-2053ee025c5b" />
 
   <concept_name concept_id="5089" name="WEIGHT (KG)" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="1439" voided="false" uuid="9bc5693a-f558-40c9-8177-145a4b119ca7" locale_preferred="true"/>
   <concept_name concept_id="5497" name="CD4 COUNT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="1847" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5a7d6a1" locale_preferred="true"/>
@@ -241,9 +241,9 @@
   <person_address person_address_id="9350" person_id="6" preferred="false" address1="" address2="" city_village="" state_province="" postal_code="" country="" latitude="" longitude="" creator="1" date_created="2008-08-18 11:44:02.0" voided="false" void_reason="" uuid="96144109-6125-4a52-92a0-2564716bee8e"/>
 
   <!-- 3 person_attribute_type -->
-  <person_attribute_type person_attribute_type_id="1" name="Race" description="Group of persons related by common descent or heredity" format="java.lang.String" searchable="false" creator="1" date_created="2007-05-04 09:59:23.0" retired="true" retired_by="1" date_retired="2008-08-15 00:00:00.0" retire_reason="test" uuid="b3b6d540-a32e-44c7-91b3-292d97667518"/>
-  <person_attribute_type person_attribute_type_id="2" name="Birthplace" description="Location of persons birth" format="java.lang.String" searchable="false" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="54fc8400-1683-4d71-a1ac-98d40836ff7c"/>
-  <person_attribute_type person_attribute_type_id="8" name="Civil Status" description="Marriage status of this person" format="org.openmrs.Concept" searchable="false" creator="1" date_created="2008-08-15 15:53:36.0" retired="false" uuid="a0f5521c-dbbd-4c10-81b2-1b7ab18330df"/>
+  <person_attribute_type person_attribute_type_id="1" name="Race" description="Group of persons related by common descent or heredity" format="java.lang.String" searchable="false" creator="1" date_created="2007-05-04 09:59:23.0" retired="true" retired_by="1" date_retired="2008-08-15 00:00:00.0" retire_reason="test" uuid="b3b6d540-a32e-44c7-91b3-292d97667518" sort_weight="1" />
+  <person_attribute_type person_attribute_type_id="2" name="Birthplace" description="Location of persons birth" format="java.lang.String" searchable="false" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="54fc8400-1683-4d71-a1ac-98d40836ff7c" sort_weight="3" />
+  <person_attribute_type person_attribute_type_id="8" name="Civil Status" description="Marriage status of this person" format="org.openmrs.Concept" searchable="false" creator="1" date_created="2008-08-15 15:53:36.0" retired="false" uuid="a0f5521c-dbbd-4c10-81b2-1b7ab18330df" sort_weight="2" />
   
   <!-- person_attribute --> 
   <person_attribute person_attribute_id="1" person_id="501" person_attribute_type_id="1" value="Yachting" creator="1" date_created="2008-08-15 15:46:47.0" voided="false" uuid="0768f3da-b692-44b7-a33f-abf2c450474e"/>
@@ -413,9 +413,6 @@
   <role role="Provider" description="General privileges held by all providers" uuid="3480cb6d-c291-46c8-8d3a-96dc33d199fb"/>
 
   <user_role user_id="501" role="Provider"/>
-
-  <!-- pwd = test4Test -->
-  <users user_id="501" system_id="2-6" username="bruno" password="b4091b0010a67d47724b9ff1d65254cdc51abe75a2d3475870635f03ace3cb76b77ad5f2e4807f18a41c86f0b77e4398cf6b87eb1a1605ee10728ab9eba3bcd7" salt="e6a8913b24ea161d448b6f1bf1afaedf2edce6a21ce6d1bc4403897dfb33666c97b8b453a0eb23433983aede24e3c2a04601c0350db5f4c124cfab4ef157488c" secret_question="" creator="1" date_created="2008-08-15 15:46:47.0" changed_by="1" date_changed="2008-08-15 15:47:07.0" retired="true" retire_reason="Test purposes"/>
 
   <global_property property="locale.allowed.list" property_value="en" uuid="4f55827e-26fe-102b-80cb-0017a47871b3"/>
   
