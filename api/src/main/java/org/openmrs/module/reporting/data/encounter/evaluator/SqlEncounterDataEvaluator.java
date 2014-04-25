@@ -43,8 +43,6 @@ public class SqlEncounterDataEvaluator implements EncounterDataEvaluator {
         SqlEncounterDataDefinition definition = (SqlEncounterDataDefinition) def;
         EvaluatedEncounterData data = new EvaluatedEncounterData(definition, context);
 
-		// TODO: Support IdSetMember joining
-
         Set<Integer> encounterIds = EncounterDataUtil.getEncounterIdsForContext(context, false);
         if (encounterIds.size() == 0) {
             return data;

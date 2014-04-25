@@ -12,7 +12,6 @@ import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Expects that the SQL query returns two columns, an Integer
@@ -27,8 +26,6 @@ public class SqlPatientDataEvaluator implements PatientDataEvaluator {
     public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
         SqlPatientDataDefinition def = (SqlPatientDataDefinition) definition;
         EvaluatedPatientData data = new EvaluatedPatientData(def, context);
-
-		// TODO: Support IdSetMember joining
 
 		if (context.getBaseCohort() == null || context.getBaseCohort().size() == 0) {
 			return data;
