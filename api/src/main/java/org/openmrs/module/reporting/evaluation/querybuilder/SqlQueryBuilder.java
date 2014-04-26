@@ -133,10 +133,13 @@ public class SqlQueryBuilder implements QueryBuilder {
 					memberIds = ((IdSet) paramValue).getMemberIds();
 				}
 				if (memberIds != null) {
-					String idClause = OpenmrsUtil.join(memberIds, ",");
-					ret = ret.replace("(:" + paramName + ")", "(" + idClause + ")"); // where id in (:ids)
-					ret = ret.replace(":" + paramName, idClause); // where id in :ids
-					i.remove();
+					String toMatch = ":"+paramName;
+					if (ret.contains(toMatch)) {
+						String idClause = OpenmrsUtil.join(memberIds, ",");
+						ret = ret.replace("(" + toMatch + ")", "(" + idClause + ")"); // where id in (:ids)
+						ret = ret.replace(toMatch, idClause); // where id in :ids
+						i.remove();
+					}
 				}
 			}
 		}
