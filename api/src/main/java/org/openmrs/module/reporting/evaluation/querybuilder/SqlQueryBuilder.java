@@ -135,8 +135,8 @@ public class SqlQueryBuilder implements QueryBuilder {
 				if (memberIds != null) {
 					String toMatch = ":"+paramName;
 					if (ret.contains(toMatch)) {
-						String idClause = OpenmrsUtil.join(memberIds, ",");
-						ret = ret.replace("(" + toMatch + ")", "(" + idClause + ")"); // where id in (:ids)
+						String idClause = "(" + OpenmrsUtil.join(memberIds, ",") + ")";
+						ret = ret.replace("(" + toMatch + ")", idClause); // where id in (:ids)
 						ret = ret.replace(toMatch, idClause); // where id in :ids
 						i.remove();
 					}
