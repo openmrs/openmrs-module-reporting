@@ -27,7 +27,12 @@ public class ReportingTimerTask extends TimerTask {
 	 */
 	@Override
 	public final void run() {
-		createAndRunTask();
+		if (daemonToken != null) {
+			createAndRunTask();
+		}
+		else {
+			log.warn("Not running scheduled task as DaemonToken is null.");
+		}
 	}
 
 	/**
@@ -35,12 +40,12 @@ public class ReportingTimerTask extends TimerTask {
 	 */
 	public void createAndRunTask() {
 		try {
-			log.warn("Running reporting task: " + getTaskClass().getSimpleName());
+			log.info("Running reporting task: " + getTaskClass().getSimpleName());
 			task = getTaskClass().newInstance();
 			task.setScheduledExecutionTime(System.currentTimeMillis());
 			task.setSessionFactory(sessionFactory);
 			Daemon.runInDaemonThreadAndWait(task, daemonToken);
-			log.warn("Completed reporting task: " + getTaskClass().getSimpleName());
+			log.info("Completed reporting task: " + getTaskClass().getSimpleName());
 		}
 		catch (Exception e) {
 			log.error("An error occurred while running scheduled reporting task", e);
