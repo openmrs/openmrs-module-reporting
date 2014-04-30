@@ -116,13 +116,7 @@
 						<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
 					</bean>
 				</property>
-				<property name="taskExecutor">
-					<bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-						<property name="corePoolSize" value="5" />
-						<property name="maxPoolSize" value="10" />
-						<property name="queueCapacity" value="25" />
-					</bean>
-				</property>
+				<property name="runQueuedReportsTask" ref="runQueuedReportsTask"/>
 			</bean>
 		</property>
 		<property name="preInterceptors">
@@ -493,39 +487,53 @@
 			</list>
 		</property>
 	</bean>
-	
-	<bean id="queueScheduledReportsTask" class="org.openmrs.module.reporting.report.task.QueueScheduledReportsTask"/>
-	<bean id="runQueuedReportsTask" class="org.openmrs.module.reporting.report.task.RunQueuedReportsTask"/>
-	<bean id="deleteOldReportsTask" class="org.openmrs.module.reporting.report.task.DeleteOldReportsTask"/>
-	<bean id="persistCachedReportsTask" class="org.openmrs.module.reporting.report.task.PersistCachedReportsTask"/>
 
-	<bean id="queueScheduledReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	<bean id="queueScheduledReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
+		<property name="taskClass" value="org.openmrs.module.reporting.report.task.QueueScheduledReportsTask"/>
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+
+	<bean id="runQueuedReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
+		<property name="taskClass" value="org.openmrs.module.reporting.report.task.RunQueuedReportsTask"/>
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+
+	<bean id="deleteOldReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
+		<property name="taskClass" value="org.openmrs.module.reporting.report.task.DeleteOldReportsTask"/>
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+
+	<bean id="persistCachedReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
+		<property name="taskClass" value="org.openmrs.module.reporting.report.task.PersistCachedReportsTask"/>
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+
+	<bean id="queueScheduledReportsTimerTask" class="org.springframework.scheduling.concurrent.ScheduledExecutorTask">
 	    <property name="delay" value="10000" /> <!-- delay 10 seconds -->
 	    <property name="period" value="60000" /> <!-- run every minute -->
-	    <property name="timerTask" ref="queueScheduledReportsTask"/>
+	    <property name="runnable" ref="queueScheduledReportsTask"/>
 	</bean>
 
-	<bean id="runQueuedReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	<bean id="runQueuedReportsTimerTask" class="org.springframework.scheduling.concurrent.ScheduledExecutorTask">
 		<property name="delay" value="10000" /> <!-- delay 10 seconds -->
 	    <property name="period" value="60000" /> <!-- run every minute -->
-	    <property name="timerTask" ref="runQueuedReportsTask"/>
+	    <property name="runnable" ref="runQueuedReportsTask"/>
 	</bean>
 	
-	<bean id="deleteOldReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	<bean id="deleteOldReportsTimerTask" class="org.springframework.scheduling.concurrent.ScheduledExecutorTask">
 		<property name="delay" value="10000" /> <!-- delay 10 seconds -->
 	    <property name="period" value="3600000" /> <!-- run every hour -->
-	    <property name="timerTask" ref="deleteOldReportsTask"/>
+	    <property name="runnable" ref="deleteOldReportsTask"/>
 	</bean>
 	
-	<bean id="persistCachedReportsTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	<bean id="persistCachedReportsTimerTask" class="org.springframework.scheduling.concurrent.ScheduledExecutorTask">
 		<property name="delay" value="10000" /> <!-- delay 10 seconds -->
 	    <property name="period" value="60000" /> <!-- run every minute -->
-	    <property name="timerTask" ref="persistCachedReportsTask"/>
+	    <property name="runnable" ref="persistCachedReportsTask"/>
 	</bean>
-	
-	
-	<bean id="reportingTimerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
-	    <property name="scheduledTimerTasks">
+
+	<bean id="reportingTimerFactory" class="org.springframework.scheduling.concurrent.ScheduledExecutorFactoryBean">
+	    <property name="scheduledExecutorTasks">
 	        <list>
 	            <ref bean="queueScheduledReportsTimerTask"/>
 	            <ref bean="runQueuedReportsTimerTask"/>
