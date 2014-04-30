@@ -18,7 +18,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 /**
  * Data converter which provides a replacement value null values
  */
-public class NullValueConverter implements DataConverter  {
+public class NullValueConverter extends DataConverter  {
 
 	//***** PROPERTIES *****
 
@@ -41,10 +41,10 @@ public class NullValueConverter implements DataConverter  {
 	//***** INSTANCE METHODS *****
 
 	/**
-	 * @see org.openmrs.module.reporting.data.converter.DataConverter#convert(Object)
+	 * @see org.openmrs.module.reporting.data.converter.DataConverter#convertObject(Object)
 	 * @should convert a null value to the configured replacement value
 	 */
-	public Object convert(Object original) {
+	protected Object convertObject(Object original) {
 		return ObjectUtil.nvl(original, nullReplacement);
 	}
 

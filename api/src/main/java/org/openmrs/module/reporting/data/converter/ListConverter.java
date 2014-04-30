@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 /**
  * List data converter
  */
-public class ListConverter implements DataConverter {
+public class ListConverter extends DataConverter {
 	
 	//***** PROPERTIES *****
 	
@@ -56,11 +56,11 @@ public class ListConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convert(Object)
+	 * @see DataConverter#convertObject(Object)
 	 * @should convert a Date into a String with the passed format
 	 */
 	@SuppressWarnings("rawtypes")
-	public Object convert(Object original) {
+	protected Object convertObject(Object original) {
 		List l = (List) original;
 		if (l != null) {
 			// First handle the case where a specific item from the list is requested by index

@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Combines multiple converters together
  */
-public class ChainedConverter implements DataConverter {
+public class ChainedConverter extends DataConverter {
 		
 	//***** PROPERTIES *****
 	
@@ -43,13 +43,13 @@ public class ChainedConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convert(Object)
+	 * @see DataConverter#convertObject(Object)
 	 */
-	public Object convert(Object original) {
+	protected Object convertObject(Object original) {
 		Object o = original;
 		if (converters != null) {
 			for (DataConverter converter : getConverters()) {
-				o = converter.convert(o);
+				o = converter.convertObject(o);
 			}
 		}
 		return o;

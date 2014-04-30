@@ -18,7 +18,7 @@ import org.openmrs.module.reporting.dataset.DataSetRow;
 /**
  * List data converter
  */
-public class DataSetRowConverter implements DataConverter {
+public class DataSetRowConverter extends DataConverter {
 	
 	//***** PROPERTIES *****
 	
@@ -38,10 +38,10 @@ public class DataSetRowConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convert(Object)
+	 * @see DataConverter#convertObject(Object)
 	 * @should convert a DataSetRow to the value in the column with the configured name
 	 */
-	public Object convert(Object original) {
+	protected Object convertObject(Object original) {
 		if (original != null) {
 			DataSetRow dsr = (DataSetRow)original;
 			return dsr.getColumnValue(getColumnName());

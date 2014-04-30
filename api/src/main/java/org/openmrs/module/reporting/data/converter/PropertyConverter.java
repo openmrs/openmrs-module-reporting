@@ -19,7 +19,7 @@ import org.openmrs.module.reporting.common.ReflectionUtil;
 /**
  * Property data converter
  */
-public class PropertyConverter implements DataConverter {
+public class PropertyConverter extends DataConverter {
 	
 	//***** PROPERTIES *****
 	
@@ -41,11 +41,11 @@ public class PropertyConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convertObject(Object)
 	 * @should convert an Object into it's property whose name is the configured propertyName
 	 * @should convert an Object into it's string representation if not propertyName is configured
 	 */
-	public Object convert(Object o) {
+	protected Object convertObject(Object o) {
 		String propertyName = ObjectUtil.nvl(getPropertyName(), "");
 		if (o != null) {
 			if (ObjectUtil.isNull(propertyName)) {

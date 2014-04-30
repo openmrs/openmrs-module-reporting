@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Collection converter
  */
-public class MapElementConverter implements DataConverter {
+public class MapElementConverter extends DataConverter {
 
 	//***** PROPERTIES *****
 
@@ -43,11 +43,11 @@ public class MapElementConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/**
-	 * @see DataConverter#convert(Object)
+	 * @see DataConverter#convertObject(Object)
 	 * @should convert a Map into a String
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Object convert(Object original) {
+	protected Object convertObject(Object original) {
 		if (original != null) {
 			Map<Object, Object> m = (Map<Object, Object>)original;
 			Object item = m.get(key);

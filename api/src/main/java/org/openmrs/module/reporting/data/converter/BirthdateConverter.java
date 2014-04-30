@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 /**
  * Date data converter
  */
-public class BirthdateConverter implements DataConverter {
+public class BirthdateConverter extends DataConverter {
 	
 	//***** PROPERTIES *****
 	
@@ -65,10 +65,10 @@ public class BirthdateConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convert(Object)
+	 * @see DataConverter#convertObject(Object)
 	 * @should convert a Birthdate into a String with the passed format
 	 */
-	public String convert(Object original) {
+	public String convertObject(Object original) {
 		Birthdate bd = (Birthdate) original;
 		if (bd != null && bd.getBirthdate() != null) {
 			if (bd.isEstimated()) {

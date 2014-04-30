@@ -16,7 +16,7 @@ package org.openmrs.module.reporting.data.converter;
 /**
  * Boolean data converter
  */
-public class BooleanConverter implements DataConverter  {
+public class BooleanConverter extends DataConverter  {
 	
 	//***** PROPERTIES *****
 	
@@ -43,10 +43,10 @@ public class BooleanConverter implements DataConverter  {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convertObject(Object)
 	 * @should convert a Boolean to a configured text representation
 	 */
-	public Object convert(Object original) {
+	protected Object convertObject(Object original) {
 		Boolean b = (Boolean) original;
 		if (b == Boolean.TRUE) {
 			return trueFormat;

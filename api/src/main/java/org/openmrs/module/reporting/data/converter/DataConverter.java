@@ -16,20 +16,28 @@ package org.openmrs.module.reporting.data.converter;
 /**
  * Base converter, to provide a simple means of formatting Data values
  */
-public interface DataConverter {
+public abstract class DataConverter {
 	
 	/**
 	 * Converter the passed object from one datatype to another
 	 */
-	public Object convert(Object original);
-	
+	protected abstract Object convertObject(Object original);
+
+    public final Object convert(Object original) {
+        try {
+            return convertObject(original);
+        }
+        catch (Exception e) {
+            throw new ConversionException(original, this.getClass(), e);
+        }
+    }
 	/**
 	 * @return the data type that this converters from
 	 */
-	public Class<?> getInputDataType();
+	public abstract Class<?> getInputDataType();
 	
 	/**
 	 * Return the datatype that this converters to
 	 */
-	public Class<?> getDataType();
+	public abstract Class<?> getDataType();
 }

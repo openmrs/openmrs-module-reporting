@@ -20,7 +20,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 /**
  * Formats any object into a String representation
  */
-public class ObjectFormatter implements DataConverter {
+public class ObjectFormatter extends DataConverter {
 	
 	//***** PROPERTIES *****
 	
@@ -65,10 +65,10 @@ public class ObjectFormatter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convertObject(Object) (Object)
 	 * @should convert an Object into a nicely formatted text representation
 	 */
-	public Object convert(Object o) {
+	protected Object convertObject(Object o) {
 		return ObjectUtil.format(o, getSpecification(), getLocale());
 	}
 	
