@@ -31,10 +31,12 @@ import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 
 /**
  * DrugOrdersForPatientDataEvaluator tests
  */
+@SkipBaseSetup
 public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
@@ -50,6 +52,8 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 	@Before
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        initializeInMemoryDatabase();
+	    authenticate();
 	}
 	
 	/**
@@ -135,7 +139,7 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		
 		def.setActiveOnDate(DateUtil.getDateTime(2008, 8, 19));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(2, history.size());		
+		Assert.assertEquals(2, history.size());
 	}
 
 	/**
@@ -159,7 +163,7 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		
 		def.setStartedOnOrBefore(DateUtil.getDateTime(2008, 9, 1));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(4, history.size());	
+		Assert.assertEquals(4, history.size());
 	}
 
 	/**

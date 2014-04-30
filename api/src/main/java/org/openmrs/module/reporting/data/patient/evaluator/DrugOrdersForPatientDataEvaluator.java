@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.data.patient.evaluator;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.reporting.common.DrugOrderSet;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
@@ -24,6 +25,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -34,6 +36,11 @@ import java.util.List;
  */
 @Handler(supports=DrugOrdersForPatientDataDefinition.class, order=50)
 public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
+
+    private static final String NEW_STOP_DATE_FIELD_NAME = "dateStopped";
+
+    private static final String ORDER_STOP_DATE_FIELD_NAME = (ModuleUtil.compareVersion(
+            OpenmrsConstants.OPENMRS_VERSION_SHORT, "1.10") > -1) ? NEW_STOP_DATE_FIELD_NAME : "discontinuedDate";
 
 	@Autowired
 	EvaluationService evaluationService;
@@ -62,6 +69,9 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 		q.select("do.patient.patientId", "do");
 		q.from(DrugOrder.class, "do");
 		q.wherePatientIn("do.patient.patientId", context);
+        if (NEW_STOP_DATE_FIELD_NAME.equals(ORDER_STOP_DATE_FIELD_NAME)) {
+            q.where("do.action != 'DISCONTINUED'");
+        }
 
 		List<Concept> concepts = null;
 
@@ -96,7 +106,7 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 		if (def.getActiveOnDate() != null) {
 			q.whereLessOrEqualTo("do.startDate", def.getActiveOnDate());
 			q.whereGreaterOrNull("do.autoExpireDate", def.getActiveOnDate());
-			q.whereGreaterOrNull("do.discontinuedDate", def.getActiveOnDate());
+			q.whereGreaterOrNull("do."+ORDER_STOP_DATE_FIELD_NAME, def.getActiveOnDate());
 		}
 		
 		if (def.getStartedOnOrBefore() != null) {
@@ -111,7 +121,7 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 			q.startGroup();
 			q.whereLessOrEqualTo("do.autoExpireDate", def.getCompletedOnOrBefore());
 			q.or();
-			q.whereLessOrEqualTo("do.discontinuedDate", def.getCompletedOnOrBefore());
+			q.whereLessOrEqualTo("do."+ORDER_STOP_DATE_FIELD_NAME, def.getCompletedOnOrBefore());
 			q.endGroup();
 		}
 
@@ -119,7 +129,7 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 			q.startGroup();
 			q.whereGreaterOrEqualTo("do.autoExpireDate", def.getCompletedOnOrAfter());
 			q.or();
-			q.whereGreaterOrEqualTo("do.discontinuedDate", def.getCompletedOnOrAfter());
+			q.whereGreaterOrEqualTo("do."+ORDER_STOP_DATE_FIELD_NAME, def.getCompletedOnOrAfter());
 			q.endGroup();
 		}
 		
