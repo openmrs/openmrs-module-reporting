@@ -25,6 +25,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 /**
  * Logic-Based Data Definition
  */
+@Deprecated
 @Caching(strategy=ConfigurationPropertyAndParameterCachingStrategy.class)
 @Localized("reporting.LogicDataDefinition")
 public class LogicDataDefinition extends BaseDataDefinition implements PatientDataDefinition {

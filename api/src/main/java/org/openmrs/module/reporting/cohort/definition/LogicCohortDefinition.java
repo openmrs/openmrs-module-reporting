@@ -24,6 +24,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 /**
  * A {@link CohortDefinition} based on a Logic query
  */
+@Deprecated
 @Caching(strategy=ConfigurationPropertyAndParameterCachingStrategy.class)
 @Localized("reporting.LogicCohortDefinition")
 public class LogicCohortDefinition extends BaseCohortDefinition {

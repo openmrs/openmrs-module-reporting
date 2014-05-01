@@ -26,6 +26,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 /**
  * Evaluates a Logic query and returns a Cohort
  */
+@Deprecated
 @Handler(supports={LogicCohortDefinition.class})
 public class LogicCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	

@@ -41,6 +41,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 /**
  * Prepares a {@link LazyPageableDataSet} that will lazily evaluate LogicDataSetDefinitions
  */
+@Deprecated
 @Handler(supports={LogicDataSetDefinition.class})
 public class LogicDataSetEvaluator implements LazyPageableDataSetEvaluator {
 

@@ -11,6 +11,7 @@ import org.openmrs.logic.LogicException;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.util.OpenmrsConstants;
 
+@Deprecated
 public class LogicUtil {
 	
 	/**
