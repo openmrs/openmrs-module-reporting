@@ -88,9 +88,13 @@ public class SqlQueryBuilder implements QueryBuilder {
 	public List<?> listResults(SessionFactory sessionFactory) {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		List l = buildQuery(sessionFactory).list();
+		Query query = buildQuery(sessionFactory);
+		stopWatch.split();
+		log.debug("Query built in: " + stopWatch.toSplitString());
+		List l = query.list();
+		stopWatch.split();
+		log.debug("Query executed in: " + stopWatch.toSplitString());
 		stopWatch.stop();
-		log.debug("Primary query executed in: " + stopWatch.toString());
 		return l;
 	}
 

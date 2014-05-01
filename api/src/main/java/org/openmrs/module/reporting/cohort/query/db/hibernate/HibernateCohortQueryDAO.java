@@ -663,56 +663,6 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
 		return ret;
 	}
-
-	/**
-     * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingProgramEnrollment(java.util.List, java.util.Date, java.util.Date, java.util.Date, java.util.Date)
-     */
-    public Cohort getPatientsHavingProgramEnrollment(List<Program> programs, Date enrolledOnOrAfter,
-                                                     Date enrolledOnOrBefore, Date completedOnOrAfter,
-                                                     Date completedOnOrBefore) {
-		List<Integer> programIds = new ArrayList<Integer>();
-		for (Program program : programs)
-			programIds.add(program.getProgramId());
-
-		// Create SQL query
-		StringBuilder sql = new StringBuilder();
-		sql.append("select pp.patient_id ");
-		sql.append("from patient_program pp ");
-		sql.append("  inner join patient p on pp.patient_id = p.patient_id ");
-		sql.append("where pp.voided = false and p.voided = false ");
-
-		// Create a list of clauses
-		if (programIds != null && !programIds.isEmpty())
-			sql.append(" and pp.program_id in (:programIds) ");
-		if (enrolledOnOrAfter != null)
-			sql.append(" and pp.date_enrolled >= :enrolledOnOrAfter ");
-		if (enrolledOnOrBefore != null)
-			sql.append(" and pp.date_enrolled <= :enrolledOnOrBefore ");
-		if (completedOnOrAfter != null)
-			sql.append(" and pp.date_completed >= :completedOnOrAfter ");
-		if (completedOnOrBefore != null)
-			sql.append(" and pp.date_completed <= :completedOnOrBefore ");
-
-		sql.append(" group by pp.patient_id ");
-		log.debug("query: " + sql);
-
-		// Execute query
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
-
-		if (programIds != null && !programIds.isEmpty())
-			query.setParameterList("programIds", programIds);
-		if (enrolledOnOrAfter != null)
-			query.setTimestamp("enrolledOnOrAfter", enrolledOnOrAfter);
-		if (enrolledOnOrBefore != null)
-			query.setTimestamp("enrolledOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(enrolledOnOrBefore));
-		if (completedOnOrAfter != null)
-			query.setTimestamp("completedOnOrAfter", completedOnOrAfter);
-		if (completedOnOrBefore != null)
-			query.setTimestamp("completedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(completedOnOrBefore));
-
-		return new Cohort(query.list());
-    }
-
     
 	/**
      * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsInProgram(java.util.List, java.util.Date, java.util.Date)
