@@ -18,6 +18,8 @@ import java.util.Map;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -54,7 +56,11 @@ public class CohortIndicator extends BaseIndicator {
     
     @ConfigurationProperty
     private Class<? extends Aggregator> aggregator;
-    
+
+	@ConfigurationProperty
+	private Mapped<? extends PatientDataDefinition> dataToAggregate;
+
+	@Deprecated
     @ConfigurationProperty
     private String logicExpression;
 
@@ -109,6 +115,7 @@ public class CohortIndicator extends BaseIndicator {
     /**
      * Constructs a new Logic Indicator
      */
+	@Deprecated
     public static CohortIndicator newLogicIndicator(String name,
     												Mapped<? extends CohortDefinition> cohortDefinition,  
     												Mapped<? extends CohortDefinition> locationFilter,
@@ -235,6 +242,7 @@ public class CohortIndicator extends BaseIndicator {
 	/**
 	 * @return the logicExpression
 	 */
+	@Deprecated
 	public String getLogicExpression() {
 		return logicExpression;
 	}
@@ -242,8 +250,23 @@ public class CohortIndicator extends BaseIndicator {
 	/**
 	 * @param logicExpression the logicExpression to set
 	 */
+	@Deprecated
 	public void setLogicExpression(String logicExpression) {
 		this.logicExpression = logicExpression;
+	}
+
+	/**
+	 * @return the dataToAggregate
+	 */
+	public Mapped<? extends PatientDataDefinition> getDataToAggregate() {
+		return dataToAggregate;
+	}
+
+	/**
+	 * @param dataToAggregate the dataToAggregate to set
+	 */
+	public void setDataToAggregate(Mapped<? extends PatientDataDefinition> dataToAggregate) {
+		this.dataToAggregate = dataToAggregate;
 	}
 
 	/**

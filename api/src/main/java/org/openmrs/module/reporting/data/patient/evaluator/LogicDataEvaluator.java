@@ -32,6 +32,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 /**
  * Evaluates a LogicDataDefinition to produce a PatientData
  */
+@Deprecated
 @Handler(supports=LogicDataDefinition.class, order=50)
 public class LogicDataEvaluator implements PatientDataEvaluator {
 

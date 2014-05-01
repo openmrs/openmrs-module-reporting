@@ -34,6 +34,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 /**
  * A data set definition where each column is a logic expression
  */
+@Deprecated
 @Caching(strategy=ConfigurationPropertyAndParameterCachingStrategy.class)
 @Localized("reporting.LogicDataSetDefinition")
 public class LogicDataSetDefinition extends BaseDataSetDefinition implements PageableDataSetDefinition {

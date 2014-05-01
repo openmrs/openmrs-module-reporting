@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.reporting.indicator.evaluator;
 
-import java.util.Date;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -25,12 +22,17 @@ import org.openmrs.logic.LogicCriteria;
 import org.openmrs.logic.LogicException;
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
+import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Evaluates a CohortIndicator and produces a result of all dimensions to Numeric results
@@ -98,6 +100,19 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 			result.setCohort(cohort);
 		} catch (Exception ex) {
 			throw new EvaluationException("numerator/cohort", ex);
+		}
+
+		if (cid.getDataToAggregate() != null) {
+			try {
+				PatientDataService pds = Context.getService(PatientDataService.class);
+				EvaluatedPatientData patientData = pds.evaluate(cid.getDataToAggregate(), context);
+				for (Integer pId : patientData.getData().keySet()) {
+					result.addLogicResult(pId, (Number) patientData.getData().get(pId));
+				}
+			}
+			catch (Exception e) {
+				throw new EvaluationException("dataToAggregate: " + cid.getDataToAggregate(), e);
+			}
 		}
 		
 		// Evaluate Logic Criteria
