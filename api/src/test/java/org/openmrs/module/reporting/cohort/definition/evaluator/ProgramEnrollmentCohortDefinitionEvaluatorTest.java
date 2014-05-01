@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import java.util.Collections;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +28,8 @@ import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.util.Collections;
 
 public class ProgramEnrollmentCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -181,5 +181,18 @@ public class ProgramEnrollmentCohortDefinitionEvaluatorTest extends BaseModuleCo
 		cd.setPrograms(Collections.singletonList(pp.getProgram()));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertTrue(c.contains(pp.getPatient().getPatientId()));
+	}
+
+	/**
+	 * @see {@link ProgramEnrollmentCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should return patients enrolled at the given locations", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldReturnPatientsEnrolledAtTheGivenLocations() throws Exception {
+		ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
+		cd.setPrograms(Collections.singletonList(Context.getProgramWorkflowService().getProgram(1)));
+		cd.setLocationList(Collections.singletonList(Context.getLocationService().getLocation(1)));
+		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, new EvaluationContext());
+		Assert.assertEquals(2, c.size());
 	}
 }

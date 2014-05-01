@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -33,6 +34,9 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
 
 	@ConfigurationProperty(group="completionDate")
 	private Date completedOnOrBefore;
+
+	@ConfigurationProperty(group="location")
+	private List<Location> locationList;
 	
 	/**
 	 * Default constructor
@@ -63,7 +67,14 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
 			for (Program p : programs) {
 				ret.append(p.getName() + " ");
 			}
-		}		
+		}
+
+		if (locationList != null && locationList.size() > 0) {
+			ret.append(" at ");
+			for (Location l : locationList) {
+				ret.append(l.getName() + " ");
+			}
+		}
 		return ret.toString();
 	}
 	
@@ -145,5 +156,19 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
      */
     public void setCompletedOnOrBefore(Date completedOnOrBefore) {
     	this.completedOnOrBefore = completedOnOrBefore;
-    }    
+    }
+
+	/**
+	 * @return the locationList
+	 */
+	public List<Location> getLocationList() {
+		return locationList;
+	}
+
+	/**
+	 * @param locationList the locationList to set
+	 */
+	public void setLocationList(List<Location> locationList) {
+		this.locationList = locationList;
+	}
 }
