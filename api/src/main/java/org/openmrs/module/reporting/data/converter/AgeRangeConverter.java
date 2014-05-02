@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 /**
  * Converts an Age to one of a series of defined Age Ranges
  */
-public class AgeRangeConverter extends DataConverter {
+public class AgeRangeConverter extends DataConverterBase {
 	
 	//***** PROPERTIES *****
 	
@@ -36,7 +36,7 @@ public class AgeRangeConverter extends DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convertObject(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 * @should convert an Age to a matching defined Age Range
 	 * @should return null if the Age does not fall within an Age Range
 	 */
@@ -51,14 +51,14 @@ public class AgeRangeConverter extends DataConverter {
 	}
 	
 	/** 
-	 * @see DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Age.class;
 	}
 	
 	/** 
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return String.class;

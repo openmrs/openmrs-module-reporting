@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Collection converter
  */
-public class MapElementConverter extends DataConverter {
+public class MapElementConverter extends DataConverterBase {
 
 	//***** PROPERTIES *****
 
@@ -43,7 +43,7 @@ public class MapElementConverter extends DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/**
-	 * @see DataConverter#convertObject(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 * @should convert a Map into a String
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -62,14 +62,14 @@ public class MapElementConverter extends DataConverter {
 	}
 
 	/**
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return Object.class;
 	}
 
 	/**
-	 * @see DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Map.class;

@@ -5,7 +5,7 @@ import java.util.Collection;
 /**
  * Returns the count of elements in a collection
  */
-public class CountConverter extends DataConverter {
+public class CountConverter extends DataConverterBase {
 
     private boolean returnNullInsteadOfZero = false;
 

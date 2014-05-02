@@ -19,7 +19,7 @@ import org.openmrs.module.reporting.common.ReflectionUtil;
 /**
  * Property data converter
  */
-public class PropertyConverter extends DataConverter {
+public class PropertyConverter extends DataConverterBase {
 	
 	//***** PROPERTIES *****
 	
@@ -41,7 +41,7 @@ public class PropertyConverter extends DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convertObject(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 * @should convert an Object into it's property whose name is the configured propertyName
 	 * @should convert an Object into it's string representation if not propertyName is configured
 	 */
@@ -57,7 +57,7 @@ public class PropertyConverter extends DataConverter {
 	}
 	
 	/** 
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		if (typeToConvert != null) {
@@ -74,7 +74,7 @@ public class PropertyConverter extends DataConverter {
 	}
 	
 	/** 
-	 * @see DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return typeToConvert;

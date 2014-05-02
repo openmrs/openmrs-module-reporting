@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Combines multiple converters together
  */
-public class ChainedConverter extends DataConverter {
+public class ChainedConverter extends DataConverterBase {
 		
 	//***** PROPERTIES *****
 	
@@ -43,20 +43,20 @@ public class ChainedConverter extends DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convertObject(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 */
 	protected Object convertObject(Object original) {
 		Object o = original;
 		if (converters != null) {
 			for (DataConverter converter : getConverters()) {
-				o = converter.convertObject(o);
+				o = converter.convert(o);
 			}
 		}
 		return o;
 	}
 	
 	/** 
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		if (converters.size() > 0) {
@@ -66,7 +66,7 @@ public class ChainedConverter extends DataConverter {
 	}
 	
 	/** 
-	 * @see DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		if (converters.size() > 0) {

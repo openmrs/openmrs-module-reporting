@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Collection converter
  */
-public class CollectionConverter extends DataConverter {
+public class CollectionConverter extends DataConverterBase {
 	
 	//***** PROPERTIES *****
 	
@@ -51,7 +51,7 @@ public class CollectionConverter extends DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convertObject(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 * @should convert a Date into a String with the passed format
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -73,14 +73,14 @@ public class CollectionConverter extends DataConverter {
 	}
 
 	/** 
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return Collection.class;
 	}
 	
 	/** 
-	 * @see DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Collection.class;

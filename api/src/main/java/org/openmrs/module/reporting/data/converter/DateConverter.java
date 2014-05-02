@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 /**
  * Date data converter
  */
-public class DateConverter extends DataConverter {
+public class DateConverter extends DataConverterBase {
 	
 	//***** PROPERTIES *****
 	
@@ -68,7 +68,7 @@ public class DateConverter extends DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convertObject(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 * @should convert a Date into a String with the passed format
 	 */
 	protected Object convertObject(Object original) {
@@ -88,7 +88,7 @@ public class DateConverter extends DataConverter {
 	}
 
 	/** 
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		if (dateFormat != null) {
@@ -98,7 +98,7 @@ public class DateConverter extends DataConverter {
 	}
 	
 	/** 
-	 * @see DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Date.class;

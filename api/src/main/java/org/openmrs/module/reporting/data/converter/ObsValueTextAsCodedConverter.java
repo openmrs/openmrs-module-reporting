@@ -12,7 +12,7 @@ import org.openmrs.api.context.Context;
  *
  * @param <T>
  */
-public class ObsValueTextAsCodedConverter<T extends OpenmrsObject> extends DataConverter {
+public class ObsValueTextAsCodedConverter<T extends OpenmrsObject> extends DataConverterBase {
 
     private Class<T> dataType;
 

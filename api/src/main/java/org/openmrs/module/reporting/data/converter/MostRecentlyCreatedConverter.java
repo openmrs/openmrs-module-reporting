@@ -22,7 +22,7 @@ import java.util.Collection;
 /**
  * Gets the most-recently-created element of a collection of Auditable.
  */
-public class MostRecentlyCreatedConverter extends DataConverter {
+public class MostRecentlyCreatedConverter extends DataConverterBase {
 
     private Class<?> typeOfItem;
 

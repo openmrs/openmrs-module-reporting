@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Collection converter
  */
-public class MapConverter extends DataConverter {
+public class MapConverter extends DataConverterBase {
 
 	//***** PROPERTIES *****
 
@@ -50,7 +50,7 @@ public class MapConverter extends DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/**
-	 * @see org.openmrs.module.reporting.data.converter.DataConverter#convertObject(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 * @should convert a Map into a String
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -79,14 +79,14 @@ public class MapConverter extends DataConverter {
 	}
 
 	/**
-	 * @see org.openmrs.module.reporting.data.converter.DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return String.class;
 	}
 
 	/**
-	 * @see org.openmrs.module.reporting.data.converter.DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Map.class;

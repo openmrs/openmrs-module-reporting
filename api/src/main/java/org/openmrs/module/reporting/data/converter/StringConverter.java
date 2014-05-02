@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 /**
  * String data converter
  */
-public class StringConverter extends DataConverter  {
+public class StringConverter extends DataConverterBase {
 	
 	//***** PROPERTIES *****
 	
@@ -46,7 +46,7 @@ public class StringConverter extends DataConverter  {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convertObject(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 * @should convert an Object to a configured String representation
 	 */
 	protected Object convertObject(Object original) {
@@ -55,14 +55,14 @@ public class StringConverter extends DataConverter  {
 	}
 	
 	/** 
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return String.class;
 	}
 	
 	/** 
-	 * @see DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Object.class;

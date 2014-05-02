@@ -2,15 +2,15 @@ package org.openmrs.module.reporting.data.converter;
 
 import org.junit.Test;
 
-public class DataConverterTest {
+public class DataConverterBaseTest {
 
     @Test (expected = ConversionException.class)
     public void convert_shouldThrowConversionExceptionWhenUnableToConvertObject() {
         getDataConverter().convert(new Object());
     }
 
-    private DataConverter getDataConverter() {
-        return new DataConverter() {
+    private DataConverterBase getDataConverter() {
+        return new DataConverterBase() {
             @Override
             protected Object convertObject(Object original) {
                 throw new RuntimeException();

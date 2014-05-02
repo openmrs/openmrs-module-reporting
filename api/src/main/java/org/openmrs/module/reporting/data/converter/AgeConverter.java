@@ -23,7 +23,7 @@ import java.util.Date;
 /**
  * Converts a Birthdate into an Age
  */
-public class AgeConverter extends DataConverter {
+public class AgeConverter extends DataConverterBase {
 	
 	public static String YEARS = "{y}";
 	public static String YEARS_TO_ONE_DECIMAL_PLACE = "{y:1}";
@@ -47,7 +47,7 @@ public class AgeConverter extends DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convertObject(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 * @should convert an Age to integer years
 	 * @should convert an Age to integer months
 	 * @should convert an Age to a formatted string
@@ -97,7 +97,7 @@ public class AgeConverter extends DataConverter {
     }
 
     /**
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		String s = ObjectUtil.nvl(getFormat(), YEARS);
@@ -108,7 +108,7 @@ public class AgeConverter extends DataConverter {
 	}
 	
 	/** 
-	 * @see DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Age.class;
