@@ -92,4 +92,25 @@ public class BasicEncounterQueryEvaluatorTest extends BaseModuleContextSensitive
 		assertThat(result, hasExactlyIds(enc1.getId(), enc2.getId(), enc3.getId()));
 	}
 
+	@Test
+	public void testShouldFilterByLocations() throws Exception {
+		Patient patient = data.randomPatient().save();
+
+		Encounter enc1 = data.randomEncounter().patient(patient).location("Xanadu").save();
+		Encounter enc2 = data.randomEncounter().patient(patient).location("Never Never Land").save();
+		Encounter enc3 = data.randomEncounter().patient(patient).location("Never Never Land").save();
+
+		EncounterEvaluationContext context = new EncounterEvaluationContext();
+		context.setBaseEncounters(new EncounterIdSet(enc1.getId(), enc2.getId(), enc3.getId()));
+
+		BasicEncounterQuery query = new BasicEncounterQuery();
+
+		query.addLocation(Context.getLocationService().getLocation("Xanadu"));
+		EncounterQueryResult result = encounterQueryService.evaluate(query, context);
+		assertThat(result, hasExactlyIds(enc1.getId()));
+
+		query.addLocation(Context.getLocationService().getLocation("Never Never Land"));
+		result = encounterQueryService.evaluate(query, context);
+		assertThat(result, hasExactlyIds(enc1.getId(), enc2.getId(), enc3.getId()));
+	}
 }

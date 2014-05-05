@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.query.encounter.definition;
 
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
@@ -41,6 +42,9 @@ public class BasicEncounterQuery extends BaseQuery<Encounter> implements Encount
 
     @ConfigurationProperty
     public Date onOrBefore;
+
+	@ConfigurationProperty
+	private List<Location> locationList;
 
 	public List<EncounterType> getEncounterTypes() {
 		return encounterTypes;
@@ -73,4 +77,18 @@ public class BasicEncounterQuery extends BaseQuery<Encounter> implements Encount
         this.onOrBefore = onOrBefore;
     }
 
+	public List<Location> getLocationList() {
+		return locationList;
+	}
+
+	public void setLocationList(List<Location> locationList) {
+		this.locationList = locationList;
+	}
+
+	public void addLocation(Location location) {
+		if (locationList == null) {
+			locationList = new ArrayList<Location>();
+		}
+		locationList.add(location);
+	}
 }
