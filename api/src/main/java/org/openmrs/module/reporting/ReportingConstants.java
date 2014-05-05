@@ -51,7 +51,9 @@ public class ReportingConstants implements GlobalPropertyListener {
 	public static final String GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT = "reporting.defaultDateFormat";
 	public static final String DEFAULT_LOCALE_GP_NAME = "reporting.defaultLocale";
 
-	public static final List<String> CACHED_PROPERTIES = Arrays.asList(GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT, DEFAULT_LOCALE_GP_NAME);
+	public static final List<String> CACHED_PROPERTIES = Arrays.asList(
+			GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT, DEFAULT_LOCALE_GP_NAME, GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE
+	);
 
 	// Constants used within sessions to key report data that can be retrieved
 	public static final String OPENMRS_REPORT_DATA = "__openmrs_report_data";
@@ -87,7 +89,14 @@ public class ReportingConstants implements GlobalPropertyListener {
 	}
 
 	public static final int GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE() {
-		return getPropertyValueAsInt(GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE, 1000);
+		if (gpCache.containsKey(GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE)) {
+			return (Integer)gpCache.get(GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE);
+		}
+		else {
+			int ret = getPropertyValueAsInt(GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE, 1000);
+			gpCache.put(GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE, ret);
+			return ret;
+		}
 	}
 	
 	public static final boolean GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS() {
