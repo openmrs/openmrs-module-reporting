@@ -43,7 +43,7 @@ public class ExistenceConverter implements DataConverter  {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverter#convert(Object)
 	 * @should convert a Boolean to a configured text representation
 	 */
 	public Object convert(Object original) {
