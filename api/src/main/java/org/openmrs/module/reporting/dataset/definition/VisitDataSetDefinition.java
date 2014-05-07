@@ -20,11 +20,6 @@ import java.util.List;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
-import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
-import org.openmrs.module.reporting.data.encounter.definition.PatientToEncounterDataDefinition;
-import org.openmrs.module.reporting.data.encounter.definition.PersonToEncounterDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -49,8 +44,6 @@ public class VisitDataSetDefinition extends RowPerObjectDataSetDefinition {
     public List<Class<? extends DataDefinition>> getSupportedDataDefinitionTypes() {
         List<Class<? extends DataDefinition>> l = new ArrayList<Class<? extends DataDefinition>>();
         l.add(VisitDataDefinition.class);
-        l.add(PersonDataDefinition.class);
-        l.add(PatientDataDefinition.class);
         return l;
     }
 
@@ -61,14 +54,9 @@ public class VisitDataSetDefinition extends RowPerObjectDataSetDefinition {
         if (dataDefinition instanceof VisitDataDefinition) {
             getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converters));
         }
-        else if (dataDefinition instanceof PatientDataDefinition) {
-            EncounterDataDefinition edd = new PatientToEncounterDataDefinition((PatientDataDefinition) dataDefinition);
-            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
-        }
-        else if (dataDefinition instanceof PersonDataDefinition) {
-            EncounterDataDefinition edd = new PersonToEncounterDataDefinition((PersonDataDefinition) dataDefinition);
-            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
-        }
+
+        // TODO support other data definition types
+
         else {
             throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
         }
