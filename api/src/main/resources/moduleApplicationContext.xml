@@ -249,7 +249,29 @@
 			</list>
 		</property>
 	</bean>
-	
+
+    <bean id="reportingVisitQueryService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager"><ref bean="transactionManager"/></property>
+        <property name="target">
+            <bean class="org.openmrs.module.reporting.query.visit.service.VisitQueryServiceImpl"/>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.reporting.query.visit.service.VisitQueryService</value>
+                <ref bean="reportingVisitQueryService"/>
+            </list>
+        </property>
+    </bean>
+
 	<bean id="reportingEncounterQueryService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager"><ref bean="transactionManager"/></property>
 		<property name="target">
