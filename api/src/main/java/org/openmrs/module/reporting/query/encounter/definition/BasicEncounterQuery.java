@@ -16,7 +16,9 @@ package org.openmrs.module.reporting.query.encounter.definition;
 
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
@@ -35,7 +37,16 @@ public class BasicEncounterQuery extends BaseQuery<Encounter> implements Encount
     public static final long serialVersionUID = 1L;
 
 	@ConfigurationProperty
+	private TimeQualifier which;
+
+	@ConfigurationProperty
+	private Integer whichNumber;
+
+	@ConfigurationProperty
 	public List<EncounterType> encounterTypes;
+
+	@ConfigurationProperty
+	public List<Form> forms;
 
     @ConfigurationProperty
     public Date onOrAfter;
@@ -45,6 +56,22 @@ public class BasicEncounterQuery extends BaseQuery<Encounter> implements Encount
 
 	@ConfigurationProperty
 	private List<Location> locationList;
+
+	public TimeQualifier getWhich() {
+		return which;
+	}
+
+	public void setWhich(TimeQualifier which) {
+		this.which = which;
+	}
+
+	public Integer getWhichNumber() {
+		return whichNumber;
+	}
+
+	public void setWhichNumber(Integer whichNumber) {
+		this.whichNumber = whichNumber;
+	}
 
 	public List<EncounterType> getEncounterTypes() {
 		return encounterTypes;
@@ -59,6 +86,21 @@ public class BasicEncounterQuery extends BaseQuery<Encounter> implements Encount
 			encounterTypes = new ArrayList<EncounterType>();
 		}
 		encounterTypes.add(encounterType);
+	}
+
+	public List<Form> getForms() {
+		return forms;
+	}
+
+	public void setForms(List<Form> forms) {
+		this.forms = forms;
+	}
+
+	public void addForm(Form form) {
+		if (forms == null) {
+			forms = new ArrayList<Form>();
+		}
+		forms.add(form);
 	}
 
 	public Date getOnOrAfter() {

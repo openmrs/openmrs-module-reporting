@@ -156,20 +156,20 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 			Assert.assertEquals(3, ((List) pd.getData().get(7)).size());
 		}
 		
-		//By limiting by a first form (with form_id="2") we shouldn't get any Obs because there is no encounter with form_id="2" in our test dataset
+		//By limiting by a first form (with form_id="3") we shouldn't get any Obs because there is no encounter with form_id="3" in our test dataset
 		{
 			ObsForPersonDataDefinition d = new ObsForPersonDataDefinition();
 			d.setQuestion(Context.getConceptService().getConcept(5089));
-			d.addForm(new Form(2));
+			d.addForm(new Form(3));
 			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
 			Assert.assertNull(pd.getData().get(7));
 		}
 		
-		//By limiting by a second form (with form_id="1") we get back 3 Obs because all encounters in our test dataset for the specified Obs question have been entered through this form
+		//By limiting by a second form (with form_id="2") we get back 3 Obs because all encounters in our test dataset for the specified Obs question have been entered through this form
 		{
 			ObsForPersonDataDefinition d = new ObsForPersonDataDefinition();
 			d.setQuestion(Context.getConceptService().getConcept(5089));
-			d.addForm(new Form(1));
+			d.addForm(new Form(2));
 			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
 			Assert.assertEquals(3, ((List) pd.getData().get(7)).size());
 		}

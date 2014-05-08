@@ -192,9 +192,9 @@
   <drug_order order_id="4" drug_inventory_id="3" dose="325.0" units="mg" frequency="1/day x 7 days/week" prn="false" complex="false"/>
   <drug_order order_id="5" drug_inventory_id="3" dose="325.0" units="mg" frequency="1/day x 7 days/week" prn="false" complex="false"/>
 
-  <encounter encounter_id="3" encounter_type="2" patient_id="7" location_id="1" form_id="1" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="6519d653-393b-4118-9c83-a3715b82d4ac"/>
-  <encounter encounter_id="4" encounter_type="1" patient_id="7" location_id="1" form_id="1" encounter_datetime="2008-08-15 00:00:00.0" creator="1" date_created="2008-08-18 14:22:17.0" voided="false" void_reason="" uuid="eec646cb-c847-45a7-98bc-91c8c4f70add"/>
-  <encounter encounter_id="5" encounter_type="1" patient_id="7" location_id="2" form_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 11:34:40.0" voided="false" void_reason="" uuid="e403fafb-e5e4-42d0-9d11-4f52e89d148c"/>
+  <encounter encounter_id="3" encounter_type="2" patient_id="7" location_id="1" form_id="2" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="6519d653-393b-4118-9c83-a3715b82d4ac"/>
+  <encounter encounter_id="4" encounter_type="1" patient_id="7" location_id="1" form_id="2" encounter_datetime="2008-08-15 00:00:00.0" creator="1" date_created="2008-08-18 14:22:17.0" voided="false" void_reason="" uuid="eec646cb-c847-45a7-98bc-91c8c4f70add"/>
+  <encounter encounter_id="5" encounter_type="1" patient_id="7" location_id="2" form_id="2" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 11:34:40.0" voided="false" void_reason="" uuid="e403fafb-e5e4-42d0-9d11-4f52e89d148c"/>
   <encounter encounter_id="6" encounter_type="6" patient_id="20" location_id="2" form_id="1" encounter_datetime="2009-08-19 00:00:00.0" creator="1" date_created="2008-08-19 12:34:40.0" voided="false" void_reason="" uuid="ab2ea68f-c4cf-11de-a970-6ab447468ce9"/>
   <encounter encounter_id="7" encounter_type="6" patient_id="21" location_id="2" form_id="1" encounter_datetime="2009-08-19 00:00:00.0" creator="1" date_created="2008-08-19 13:34:40.0" voided="false" void_reason="" uuid="b19fd008-c4cf-11de-a970-6ab447468ce9"/>
   <encounter encounter_id="8" encounter_type="6" patient_id="21" location_id="2" form_id="1" encounter_datetime="2009-09-19 00:00:00.0" creator="1" date_created="2008-08-19 14:34:40.0" voided="false" void_reason="" uuid="b78d2fc9-c4cf-11de-a970-6ab447468ce9"/>
@@ -213,6 +213,7 @@
   <field field_id="1" name="Some concept" description="This is a test field" field_type="1" concept_id="3" table_name="" default_value="" select_multiple="false" creator="1" date_created="2006-07-18 11:03:31.0" retired="false" uuid="db016b7d-39a5-4911-89da-0eefbfef7cb2"/>
 
   <form form_id="1" name="Basic Form" version="0.1" build="0" published="0" description="Test form" creator="1" date_created="2005-08-07 00:00:00.0" changed_by="1" date_changed="2007-10-24 14:51:53.0" retired="false" retired_reason="" uuid="d9218f76-6c39-45f4-8efa-4c5c6c199f50"/>
+  <form form_id="2" name="Intake Form" version="0.1" build="0" published="0" description="Intake form" creator="1" date_created="2005-08-07 00:00:00.0" changed_by="1" date_changed="2007-10-24 14:51:53.0" retired="false" retired_reason="" uuid="d1518f76-6c39-45f4-8efa-4c5c6c199f50"/>
 
   <form_field form_field_id="2" form_id="1" field_id="1" field_number="1" field_part="" required="false" changed_by="1" date_changed="2006-07-18 11:11:53.0" creator="1" date_created="2006-07-18 11:04:36.0" sort_weight="10.0" uuid="1c822b7b-7840-463d-ba70-e0c8338a4c2d"/>
   <form_field form_field_id="3" form_id="1" field_id="1" field_number="2" field_part="" required="false" changed_by="1" date_changed="2006-07-18 11:12:05.0" creator="1" date_created="2006-07-18 11:06:52.0" sort_weight="20.0" uuid="1d26a18a-3f72-42e1-b6a2-59ab6494afb2"/>

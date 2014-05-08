@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
-import java.util.Date;
-import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.PatientIdentifierType;
@@ -24,9 +22,11 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Definition of an EncounterAndObs DataSet
- * @see EncounterAndObsDataSetEvaluator
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.EncounterAndObsDataSetDefinition")
@@ -87,7 +87,7 @@ public class EncounterAndObsDataSetDefinition extends BaseDataSetDefinition {
 	}
 
 	/**
-	 * @param patientProperties the patientProperties to set
+	 * @param encounterTypes the encounterTypes to set
 	 */
 	public void setEncounterTypes(List<EncounterType> encounterTypes) {
 		this.encounterTypes = encounterTypes;
@@ -101,7 +101,7 @@ public class EncounterAndObsDataSetDefinition extends BaseDataSetDefinition {
 	}
 
 	/**
-	 * @param form the form to set
+	 * @param forms the forms to set
 	 */
 	public void setForms(List<Form> forms) {
 		this.forms = forms;
