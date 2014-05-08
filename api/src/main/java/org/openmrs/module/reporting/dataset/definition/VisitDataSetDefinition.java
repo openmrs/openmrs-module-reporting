@@ -31,9 +31,7 @@ import org.openmrs.module.reporting.query.visit.definition.VisitQuery;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- */
+
 public class VisitDataSetDefinition extends RowPerObjectDataSetDefinition {
 
     public static final long serialVersionUID = 1L;

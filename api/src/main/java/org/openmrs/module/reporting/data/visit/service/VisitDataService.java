@@ -19,6 +19,7 @@ import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -29,5 +30,8 @@ public interface VisitDataService extends DefinitionService<VisitDataDefinition>
 
     @Transactional(readOnly = true)
     public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException;
+
+    @Transactional(readOnly = true)
+    public EvaluatedVisitData evaluate(Mapped<? extends VisitDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException;
 
 }

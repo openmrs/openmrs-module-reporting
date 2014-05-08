@@ -19,6 +19,8 @@ import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *  Base Implementation of the VisitDataService API
@@ -33,6 +35,11 @@ public class VisitDataServiceImpl extends BaseDefinitionService<VisitDataDefinit
     @Override
     public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException {
         return (EvaluatedVisitData) super.evaluate(definition, context);
+    }
+
+    @Transactional(readOnly = true)
+    public EvaluatedVisitData evaluate(Mapped<? extends VisitDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException {
+        return (EvaluatedVisitData) super.evaluate(mappedDefinition, context);
     }
 
 }
