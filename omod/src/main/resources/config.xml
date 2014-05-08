@@ -162,7 +162,7 @@
 		<class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
 	</advice>
     <advice>
-        <point>${project.parent.groupId}.${project.parent.artifactId}.query.encounter.service.VisitQueryService</point>
+        <point>${project.parent.groupId}.${project.parent.artifactId}.query.visit.service.VisitQueryService</point>
         <class>${project.parent.groupId}.${project.parent.artifactId}.evaluation.EvaluationProfiler</class>
     </advice>
 	<advice>
