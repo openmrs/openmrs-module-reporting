@@ -13,13 +13,15 @@
  */
 package org.openmrs.module.reporting.dataset;
 
-import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.apache.commons.io.IOUtils;
 import org.openmrs.module.reporting.common.ObjectUtil;
+
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility methods for working with Data Sets
@@ -81,4 +83,13 @@ public class DataSetUtil {
 			throw new RuntimeException("Unable to write dataset to outputstream", e);
 		}
 	}
+
+
+    public static List<Map<String, Object>> simplify(DataSet dataSet) {
+        List<Map<String, Object>> simplified = new ArrayList<Map<String, Object>>();
+        for (DataSetRow row : dataSet) {
+            simplified.add(row.getColumnValuesByKey());
+        }
+        return simplified;
+    }
 }
