@@ -14,18 +14,22 @@
 
 package org.openmrs.module.reporting.dataset.definition;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.data.visit.definition.PatientToVisitDataDefinition;
+import org.openmrs.module.reporting.data.visit.definition.PersonToVisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.query.visit.definition.VisitQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -40,10 +44,26 @@ public class VisitDataSetDefinition extends RowPerObjectDataSetDefinition {
     private List<Mapped<? extends VisitQuery>> rowFilters;
 
 
+    /**
+     * Default Constructor
+     */
+    public VisitDataSetDefinition() {
+        super();
+    }
+
+    /**
+     * Public constructor
+     */
+    public VisitDataSetDefinition(String name) {
+        super(name);
+    }
+
     @Override
     public List<Class<? extends DataDefinition>> getSupportedDataDefinitionTypes() {
         List<Class<? extends DataDefinition>> l = new ArrayList<Class<? extends DataDefinition>>();
         l.add(VisitDataDefinition.class);
+        l.add(PatientDataDefinition.class);
+        l.add(PersonDataDefinition.class);
         return l;
     }
 
@@ -51,15 +71,21 @@ public class VisitDataSetDefinition extends RowPerObjectDataSetDefinition {
      * Adds a new Column Definition given the passed parameters
      */
     public void addColumn(String name, DataDefinition dataDefinition, String mappings,  DataConverter... converters) {
-        if (dataDefinition instanceof VisitDataDefinition) {
+
+        if (dataDefinition == null) {
+            throw new IllegalArgumentException("Cannot add a null dataDefinition as a column on a DSD");
+        } else if (dataDefinition instanceof VisitDataDefinition) {
             getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, dataDefinition, mappings, converters));
-        }
-
-        // TODO support other data definition types
-
-        else {
+        } else if (dataDefinition instanceof PatientDataDefinition) {
+            VisitDataDefinition visitDataDefinition = new PatientToVisitDataDefinition((PatientDataDefinition) dataDefinition);
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, visitDataDefinition, mappings, converters));
+        } else if (dataDefinition instanceof PersonDataDefinition) {
+            VisitDataDefinition visitDataDefinition = new PersonToVisitDataDefinition((PersonDataDefinition) dataDefinition);
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, visitDataDefinition, mappings, converters));
+        } else {
             throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
         }
+
     }
 
 

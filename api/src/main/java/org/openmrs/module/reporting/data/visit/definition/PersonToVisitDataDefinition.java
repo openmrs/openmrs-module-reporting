@@ -15,37 +15,37 @@
 package org.openmrs.module.reporting.data.visit.definition;
 
 import org.openmrs.module.reporting.data.JoinDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 
-/**
- * Adapter class for exposing a Patient Data Definition as an Visit Data Definition
- */
-public class PatientToVisitDataDefinition extends JoinDataDefinition<PatientDataDefinition> implements VisitDataDefinition {
+public class PersonToVisitDataDefinition extends JoinDataDefinition<PersonDataDefinition> implements VisitDataDefinition {
+
 
     /**
      * Default Constructor
      */
-    public PatientToVisitDataDefinition() {
+    public PersonToVisitDataDefinition() {
         super();
     }
 
     /**
      * Default Constructor
      */
-    public PatientToVisitDataDefinition(PatientDataDefinition joinedDataDefinition) {
+    public PersonToVisitDataDefinition(PersonDataDefinition joinedDataDefinition) {
         super(joinedDataDefinition);
     }
 
     /**
      * Constructor to populate name
      */
-    public PatientToVisitDataDefinition(String name, PatientDataDefinition joinedDataDefinition) {
+    public PersonToVisitDataDefinition(String name, PersonDataDefinition joinedDataDefinition) {
         super(name, joinedDataDefinition);
     }
 
 
     @Override
-    public Class<PatientDataDefinition> getJoinedDefinitionType() {
-        return PatientDataDefinition.class;
+    public Class<PersonDataDefinition> getJoinedDefinitionType() {
+        return PersonDataDefinition.class;
     }
+
+
 }

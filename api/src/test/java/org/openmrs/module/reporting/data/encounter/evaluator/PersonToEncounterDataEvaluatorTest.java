@@ -33,6 +33,7 @@ public class PersonToEncounterDataEvaluatorTest extends BaseModuleContextSensiti
 
     @Test
     public void evaluate_shouldReturnPersonDataByForEachEncounterInContext() throws Exception {
+
         PersonToEncounterDataDefinition d = new PersonToEncounterDataDefinition(new BirthdateDataDefinition());
 
         EncounterEvaluationContext context = new EncounterEvaluationContext();
@@ -48,6 +49,7 @@ public class PersonToEncounterDataEvaluatorTest extends BaseModuleContextSensiti
 
     @Test
     public void evaluate_shouldEmptySetIfInputSetEmpty() throws Exception {
+
         PersonToEncounterDataDefinition d = new PersonToEncounterDataDefinition(new BirthdateDataDefinition());
 
         EncounterEvaluationContext context = new EncounterEvaluationContext();
