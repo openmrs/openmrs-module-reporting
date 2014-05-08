@@ -13,16 +13,8 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import junit.framework.Assert;
-
 import org.apache.commons.lang.StringUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -50,11 +42,18 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 import org.openmrs.test.Verifies;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 /**
  * Tests the evaluation of an EncounterAndObsDataSetEvaluator
  */
-@SkipBaseSetup
 @Ignore
+@SkipBaseSetup
 public class EncounterAndObsDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
     
     protected static final String XML_BASE_DATASET = "org/openmrs/module/reporting/include/EncounterAndObsTestBaseDataset.xml";
@@ -622,29 +621,6 @@ public class EncounterAndObsDataSetEvaluatorTest extends BaseModuleContextSensit
 		// Basic Dimensions of Rows and Columns
 		Assert.assertEquals(5, result.getRows().size());  // test Quantity
 		Assert.assertEquals(17, result.getMetaData().getColumnCount()); // 5 (standard) + 4 (obs) * 3 (value, date, group)
-		
-		SimpleDateFormat sdf =  new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss") ;
-		
-		Integer lastPatientId = null;
-		Date lastEncounterDatetime = null;
-		
-		for (DataSetRow row : result.getRows()) {
-			Integer patientId = (Integer)row.getColumnValue("INTERNAL_PATIENT_ID");
-			Date encounterDatetime = sdf.parse(row.getColumnValue("ENCOUNTER_DATETIME").toString());
-			
-			// test WhichEncounter
-			if(lastPatientId != null) {
-				if(lastPatientId == patientId) {
-					Assert.assertTrue(encounterDatetime.before(lastEncounterDatetime) || encounterDatetime.equals(lastEncounterDatetime));
-				} else {
-					Assert.assertTrue(patientId > (lastPatientId) || patientId == lastPatientId);
-				}
-			}
-			
-			lastPatientId = patientId;
-			lastEncounterDatetime = encounterDatetime;
-			
-		}
 	}
 	
 	/**

@@ -13,32 +13,19 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Form;
+import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
-import org.openmrs.Person;
-import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -47,8 +34,23 @@ import org.openmrs.module.reporting.dataset.column.ObsColumnDescriptor;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EncounterAndObsDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EncounterAndObsDataSetDefinition.ColumnDisplayFormat;
-import org.openmrs.module.reporting.encounter.query.service.EncounterQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
+import org.openmrs.module.reporting.query.encounter.definition.BasicEncounterQuery;
+import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
+import org.openmrs.util.OpenmrsUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * The logic that evaluates a {@link EncounterAndObsDataSetDefinition} and
@@ -56,12 +58,18 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  * 
  * @see EncounterAndObsDataSetDefinition
  */
-//@Handler(supports = { EncounterAndObsDataSetDefinition.class })  This is explicitly commented out because we are not ready to release and suppor this yet
+//@Handler(supports = { EncounterAndObsDataSetDefinition.class })
 public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 
 	protected static final Log log = LogFactory.getLog(EncounterAndObsDataSetEvaluator.class);
 
 	private static final String EMPTY = "";
+
+	@Autowired
+	EncounterQueryService encounterQueryService;
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/**
 	 * Public constructor
@@ -73,17 +81,36 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 * @should evaluate an EncounterAndObsDataSetDefinition
 	 */
-	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
-
-		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 
 		EncounterAndObsDataSetDefinition definition = (EncounterAndObsDataSetDefinition) dataSetDefinition;
-		Date encounterDatetimeOnOrBefore = definition.getEncounterDatetimeOnOrBefore();
-		Date encounterDatetimeOnOrAfter = definition.getEncounterDatetimeOnOrAfter();
-		TimeQualifier whichEncounterQualifier = definition.getWhichEncounterQualifier();
-		List<EncounterType> encounterTypes = definition.getEncounterTypes();
-		List<Form> forms = definition.getForms();
-		Integer quantity = definition.getQuantity();
+		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+		Cohort cohort = context.getBaseCohort();
+		if (context.getLimit() != null) {
+			CohortUtil.limitCohort(cohort, context.getLimit());
+		}
+
+		// Retrieve the rows for the dataset
+
+		BasicEncounterQuery encounterQuery = new BasicEncounterQuery();
+		encounterQuery.setWhich(definition.getWhichEncounterQualifier());
+		encounterQuery.setWhichNumber(definition.getQuantity());
+		encounterQuery.setEncounterTypes(definition.getEncounterTypes());
+		encounterQuery.setForms(definition.getForms());
+		encounterQuery.setOnOrBefore(definition.getEncounterDatetimeOnOrBefore());
+		encounterQuery.setOnOrAfter(definition.getEncounterDatetimeOnOrAfter());
+
+		EncounterQueryResult encounterIdRows = encounterQueryService.evaluate(encounterQuery, context);
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		EncounterEvaluationContext eec = new EncounterEvaluationContext();
+		eec.setBaseEncounters(encounterIdRows);
+		q.from(Encounter.class, "e").whereEncounterIn("e.encounterId", eec);
+		List<Encounter> encounters = evaluationService.evaluateToList(q, Encounter.class);
+
+		// Determine what columns to display in the dataset
+
 		List<EncounterAndObsDataSetDefinition.ObsOptionalColumn> optionalColumns = definition.getOptionalColumns();
 		List<PatientIdentifierType> patientIdentifierTypes = definition.getPatientIdentifierTypes();
 		List<EncounterAndObsDataSetDefinition.ColumnDisplayFormat> columnDisplayFormat = definition.getColumnDisplayFormat();
@@ -100,19 +127,6 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 		if(columnDisplayFormat.size() == 0) {
 			columnDisplayFormat.add(EncounterAndObsDataSetDefinition.ColumnDisplayFormat.ID);
 		}
-
-		context = ObjectUtil.nvl(context, new EvaluationContext());
-		Cohort cohort = context.getBaseCohort();
-
-		if (context.getLimit() != null) {
-			CohortUtil.limitCohort(cohort, context.getLimit());
-		}
-
-		if (quantity == null && whichEncounterQualifier != null && !whichEncounterQualifier.equals(TimeQualifier.ANY))
-			quantity = 1;
-
-		List<Encounter> encounters = Context.getService(EncounterQueryService.class).getEncounters(cohort, encounterTypes, forms,
-				encounterDatetimeOnOrAfter, encounterDatetimeOnOrBefore, whichEncounterQualifier, quantity);
 
 		// section index should be added here
 		
@@ -141,15 +155,7 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 	 * org.openmrs.module.reporting.common.ColumnDisplayFormat and corresponding
 	 * obs. Column headers must be unique to avoid clobbering. As such, duplicate
 	 * concepts are given a unique occurrence number. Top level obs are handled
-	 * in this method whereas children are handled in {@link
-	 * #populateFieldMap(Map<Obs, Integer> fieldMap, Obs obs)}
-	 * 
-	 * @param dataSet
-	 * @param encounters
-	 * @param patientIdentifierTypes
-	 * @param optionalColumns
-	 * @param columnDisplayFormat
-	 * @param maxColumnHeaderWidth
+	 * in this method whereas children are handled
 	 * @return DataSet with columnheaders and values filled in for the report
 	 */
 	public Map<Encounter, Map<ObsColumnDescriptor, Obs>> populateFieldMap(List<Encounter> encounters) {
@@ -274,7 +280,10 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 			
 			DataSetRow row = new DataSetRow();
 
-			String providerName = getProviderNameFromEncounter(encounter);
+			List<String> providerNames = new ArrayList<String>();
+			for (EncounterProvider ep : encounter.getEncounterProviders()) {
+				providerNames.add(ep.getProvider().getName());
+			}
 
 			// Add the standard columns for encounters
 			DataSetColumn c1 = new DataSetColumn(ObjectUtil.trimStringIfNeeded("ENCOUNTER_ID", maxColumnHeaderWidth), ObjectUtil.trimStringIfNeeded("ENCOUNTER_ID", maxColumnHeaderWidth), Integer.class);
@@ -284,9 +293,8 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 			DataSetColumn c3 = new DataSetColumn(ObjectUtil.trimStringIfNeeded("LOCATION", maxColumnHeaderWidth), ObjectUtil.trimStringIfNeeded("LOCATION", maxColumnHeaderWidth), String.class);
 			row.addColumnValue(c3, (encounter.getLocation() != null) ? encounter.getLocation().getName() : EMPTY);
 			DataSetColumn c4 = new DataSetColumn(ObjectUtil.trimStringIfNeeded("PROVIDER", maxColumnHeaderWidth), ObjectUtil.trimStringIfNeeded("PROVIDER", maxColumnHeaderWidth), String.class);
-			row.addColumnValue(c4, providerName);
-			DataSetColumn c5 = new DataSetColumn(ObjectUtil.trimStringIfNeeded("INTERNAL_PATIENT_ID", maxColumnHeaderWidth), ObjectUtil.trimStringIfNeeded("INTERNAL_PATIENT_ID", maxColumnHeaderWidth),
-					Integer.class);
+			row.addColumnValue(c4, OpenmrsUtil.join(providerNames, ", "));
+			DataSetColumn c5 = new DataSetColumn(ObjectUtil.trimStringIfNeeded("INTERNAL_PATIENT_ID", maxColumnHeaderWidth), ObjectUtil.trimStringIfNeeded("INTERNAL_PATIENT_ID", maxColumnHeaderWidth), Integer.class);
 			row.addColumnValue(c5, encounter.getPatient() != null ? encounter.getPatient().getPatientId() : EMPTY);
 
 			if (patientIdentifierTypes != null) {
@@ -372,23 +380,5 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 		}
 		return dataSet;
 		
-	}
-	
-	private String getProviderNameFromEncounter(Encounter encounter) {
-		// User == 1.5 but superclass is Person Person == 1.6 but
-		// superclass is not Person
-		String providerName = EMPTY;
-		try {
-			Method m = Encounter.class.getMethod("getProvider", null);
-			Object o = m.invoke(encounter, null);
-			if (o instanceof Person) {
-				providerName = ((Person) o).getPersonName().toString();
-			} else if (o instanceof User) {
-				providerName = ((User) o).getPersonName().toString();
-			}
-		} catch (Exception ex) {
-			log.error("Error getting ProviderName", ex);
-		}
-		return providerName;
 	}
 }

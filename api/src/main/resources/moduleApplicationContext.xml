@@ -472,36 +472,6 @@
 		</property>
 	</bean>
 	
-	<bean id="encounterQueryDAO" class="org.openmrs.module.reporting.encounter.query.db.hibernate.HibernateEncounterQueryDAO">
-		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
-	</bean>
-	
-	<bean id="reportingOldEncounterQueryService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-		<property name="transactionManager"><ref bean="transactionManager"/></property>
-		<property name="target">
-			<bean class="org.openmrs.module.reporting.encounter.query.service.EncounterQueryServiceImpl">
-				<property name="encounterQueryDAO">
-					<ref bean="encounterQueryDAO" />
-				</property>	
-			</bean>
-		</property>
-		<property name="preInterceptors">
-			<ref bean="serviceInterceptors" />
-		</property>
-		<property name="transactionAttributeSource">
-			<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
-		</property>
-	</bean>					
-
-    <bean parent="serviceContext">
-		<property name="moduleService">
-			<list>
-				<value>org.openmrs.module.reporting.encounter.query.service.EncounterQueryService</value> <!-- service interface name -->
-				<ref bean="reportingOldEncounterQueryService"/>
-			</list>
-		</property>
-	</bean>
-	
 	<bean class="org.openmrs.validator.ValidateUtil">
 		<property name="validators">
 			<list>
