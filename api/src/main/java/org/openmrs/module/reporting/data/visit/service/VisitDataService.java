@@ -19,12 +19,15 @@ import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
+ * API for evaluating a VisitDataDefinition across a set of Visits
  */
+@Transactional
 public interface VisitDataService extends DefinitionService<VisitDataDefinition> {
 
+    @Transactional(readOnly = true)
     public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException;
 
 }

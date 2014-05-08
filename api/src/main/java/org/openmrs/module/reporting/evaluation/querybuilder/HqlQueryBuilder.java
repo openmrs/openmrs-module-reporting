@@ -12,6 +12,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.data.obs.ObsDataUtil;
+import org.openmrs.module.reporting.data.visit.VisitDataUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
@@ -251,6 +252,14 @@ public class HqlQueryBuilder implements QueryBuilder {
 		}
 		return this;
 	}
+
+    public HqlQueryBuilder whereVisitIn(String propertyName, EvaluationContext context) {
+        if (context != null) {
+            Set<Integer> visitIds = VisitDataUtil.getVisitIdsForContext(context, true);
+            whereIdIn(propertyName, visitIds);
+        }
+        return this;
+    }
 
 	public HqlQueryBuilder whereObsIn(String propertyName, EvaluationContext context) {
 		if (context != null) {
