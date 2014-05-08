@@ -19,12 +19,10 @@ import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.definition.service.BaseDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.springframework.stereotype.Component;
 
 /**
- *
+ *  Base Implementation of the VisitDataService API
  */
-@Component
 public class VisitDataServiceImpl extends BaseDefinitionService<VisitDataDefinition> implements VisitDataService {
 
     @Override
@@ -36,4 +34,5 @@ public class VisitDataServiceImpl extends BaseDefinitionService<VisitDataDefinit
     public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException {
         return (EvaluatedVisitData) super.evaluate(definition, context);
     }
+
 }
