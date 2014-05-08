@@ -55,6 +55,7 @@
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
 	</properties>
 
+
 	<dependencies>
 
 		<dependency>
