@@ -26,10 +26,23 @@ public class EvaluatedVisitData extends VisitData implements Evaluated<VisitData
     private VisitDataDefinition definition;
     private EvaluationContext context;
 
+    //***** CONSTRUCTORS *****
+
+    /**
+     * Default Constructor
+     */
+    public EvaluatedVisitData() {
+        super();
+    }
+
+    /**
+     * Full Constructor
+     */
     public EvaluatedVisitData(VisitDataDefinition definition, EvaluationContext context) {
         this.definition = definition;
         this.context = context;
     }
+
 
     public VisitDataDefinition getDefinition() {
         return definition;
