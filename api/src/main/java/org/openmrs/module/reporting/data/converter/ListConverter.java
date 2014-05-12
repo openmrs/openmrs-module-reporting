@@ -63,6 +63,7 @@ public class ListConverter implements DataConverter {
 	public Object convert(Object original) {
 		List l = (List) original;
 		if (l != null) {
+			l = new ArrayList(l);
 			// First handle the case where a specific item from the list is requested by index
 			if (specificItemIndex != null) {
 				return (l.size() > specificItemIndex ? l.get(specificItemIndex) : null);
