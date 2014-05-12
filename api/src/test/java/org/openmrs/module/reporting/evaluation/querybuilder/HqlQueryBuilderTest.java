@@ -21,12 +21,15 @@ import org.openmrs.Cohort;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.PatientIdSet;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.module.reporting.query.visit.VisitIdSet;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -328,6 +331,19 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		testRow(rows, 2, 21);
 		testRow(rows, 3, 20);
 	}
+
+    @Test
+    public void whereVisitId_shouldConstrainByVisit() throws Exception {
+        HqlQueryBuilder q = new HqlQueryBuilder();
+        VisitEvaluationContext context = new VisitEvaluationContext();
+        context.setBaseVisits(new VisitIdSet(Arrays.asList(2,3,4)));
+        q.select("visitId").from(Visit.class).whereVisitIn("visitId", context);
+        List<Object[]> rows = evaluationService.evaluateToList(q);
+        testSize(rows, 3);
+        testRow(rows, 1, 2);
+        testRow(rows, 2, 3);
+        testRow(rows, 3, 4);
+    }
 
 	// Utility methods
 

@@ -13,137 +13,107 @@
  */
 package org.openmrs.module.reporting.common;
 
+import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.joda.time.Years;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
  * Represents an Age as of a certain date
  */
 public class Age {
-	
+
 	/**
 	 * Units that the age can be returned in
 	 */
 	public enum Unit {
 		YEARS, MONTHS
 	}
-	
+
 	//***********************
 	// PROPERTIES
 	//***********************
-	
-	private Date birthDate;
-	private Date currentDate;
-	
+
+	private DateTime birthDate;
+	private DateTime currentDate;
+
 	//***********************
 	// CONSTRUCTORS
 	//***********************
-	
+
 	/**
 	 * Full Constructor
 	 */
 	public Age(Date birthDate) {
 		this(birthDate, new Date());
 	}
-	
+
 	/**
 	 * Full Constructor
 	 */
 	public Age(Date birthDate, Date currentDate) {
-		this.birthDate = birthDate;
-		this.currentDate = currentDate;
+		setBirthDate(birthDate);
+		setCurrentDate(currentDate);
 	}
-	
+
 	//***********************
-	// INSTANCE METHOS
+	// INSTANCE METHODS
 	//***********************
-	
+
 	/**
 	 * Return the age in full years
 	 */
 	public Integer getFullYears() {
-		Integer age = null;
 		if (birthDate != null) {
-			Calendar today = Calendar.getInstance();
-			today.setTime(ObjectUtil.nvl(currentDate, new Date()));
-			Calendar bday = Calendar.getInstance();
-			bday.setTime(birthDate);
-			
-			age = today.get(Calendar.YEAR) - bday.get(Calendar.YEAR);
-			
-			// Adjust age when today's date is before the person's birthday
-			int todaysMonth = today.get(Calendar.MONTH);
-			int bdayMonth = bday.get(Calendar.MONTH);
-			int todaysDay = today.get(Calendar.DAY_OF_MONTH);
-			int bdayDay = bday.get(Calendar.DAY_OF_MONTH);
-			
-			if (todaysMonth < bdayMonth || (todaysMonth == bdayMonth && todaysDay < bdayDay)) {
-				age--;
-			}
+			return Years.yearsBetween(birthDate, currentDate).getYears();
 		}
-		return age;
+		return null;
 	}
-	
+
 	/**
 	 * Return the age in full months
 	 */
 	public Integer getFullMonths() {
 		if (birthDate != null) {
-			return getFullYears() * 12 + getFullMonthsSinceLastBirthday();
+			return Months.monthsBetween(birthDate, currentDate).getMonths();
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Return the age in full months since last birthday
 	 */
 	public Integer getFullMonthsSinceLastBirthday() {
-		Integer age = null;
 		if (birthDate != null) {
-			Calendar today = Calendar.getInstance();
-			today.setTime(ObjectUtil.nvl(currentDate, new Date()));
-			Calendar bday = Calendar.getInstance();
-			bday.setTime(birthDate);
-
-			age = today.get(Calendar.MONTH) - bday.get(Calendar.MONTH);
-			if (age < 0) {
-				age += 12;
-			}
-			
-			// Adjust age when today's date is before the person's birthday
-			int todaysDay = today.get(Calendar.DAY_OF_MONTH);
-			int bdayDay = bday.get(Calendar.DAY_OF_MONTH);
-			
-			if (todaysDay < bdayDay) {
-				age--;
-			}
+			int fullMonths = getFullMonths();
+			return fullMonths % 12;
 		}
-		return age;
+		return null;
 	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || !(o instanceof Age)) {
-            return false;
-        }
-        Age other = (Age) o;
-        return OpenmrsUtil.nullSafeEquals(birthDate, other.birthDate) && OpenmrsUtil.nullSafeEquals(currentDate, other.currentDate);
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Age)) {
+			return false;
+		}
+		Age other = (Age) o;
+		return OpenmrsUtil.nullSafeEquals(getBirthDate(), other.getBirthDate()) && OpenmrsUtil.nullSafeEquals(getCurrentDate(), other.getCurrentDate());
+	}
 
-    @Override
-    public int hashCode() {
-        return (birthDate != null ? birthDate.hashCode() : 0) + (currentDate != null ? currentDate.hashCode() : 0);
-    }
+	@Override
+	public int hashCode() {
+		return (getBirthDate() != null ? getBirthDate().hashCode() : 0) + (getCurrentDate() != null ? getCurrentDate().hashCode() : 0);
+	}
 
-    /**
+	/**
 	 * @see Object#toString()
 	 */
 	public String toString() {
 		return ObjectUtil.nvlStr(getFullYears(), "");
 	}
-	
+
 	//***********************
 	// PROPERTY ACCESS
 	//***********************
@@ -152,27 +122,27 @@ public class Age {
 	 * @return the birthDate
 	 */
 	public Date getBirthDate() {
-		return birthDate;
+		return birthDate.toDate();
 	}
 
 	/**
 	 * @param birthDate the birthDate to set
 	 */
 	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
+		this.birthDate = new DateTime(birthDate);
 	}
 
 	/**
 	 * @return the currentDate
 	 */
 	public Date getCurrentDate() {
-		return currentDate;
+		return currentDate.toDate();
 	}
 
 	/**
 	 * @param currentDate the currentDate to set
 	 */
 	public void setCurrentDate(Date currentDate) {
-		this.currentDate = currentDate;
+		this.currentDate = new DateTime(currentDate);
 	}
 }

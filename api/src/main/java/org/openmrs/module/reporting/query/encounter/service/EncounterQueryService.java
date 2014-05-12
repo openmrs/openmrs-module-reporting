@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Interface for methods used to manage and evaluate CohortDefinitions
+ * Interface for methods used to manage and evaluate EncounterQueries
  */
 @Transactional
 public interface EncounterQueryService extends DefinitionService<EncounterQuery> {
@@ -35,7 +35,7 @@ public interface EncounterQueryService extends DefinitionService<EncounterQuery>
 	public EncounterQueryResult evaluate(EncounterQuery query, EvaluationContext context) throws EvaluationException;
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)
 	public EncounterQueryResult evaluate(Mapped<? extends EncounterQuery> mappedQuery, EvaluationContext context) throws EvaluationException;

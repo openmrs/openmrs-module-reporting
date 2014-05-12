@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>reporting</artifactId>
-	<version>0.8.3-SNAPSHOT</version>
+	<version>0.9.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Reporting</name>
 	<description>Parent project for Reporting</description>
@@ -47,13 +47,14 @@
 		<groovyVersion>1.8.7</groovyVersion>
         <jodatimeVersion>2.3</jodatimeVersion>
         <handlebarsVersion>1.1.2</handlebarsVersion>
-        <openmrsTestutilsVersion>1.1</openmrsTestutilsVersion>
+        <openmrsTestutilsVersion>1.2</openmrsTestutilsVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
 	</properties>
+
 
 	<dependencies>
 

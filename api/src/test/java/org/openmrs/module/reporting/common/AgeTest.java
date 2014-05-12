@@ -41,6 +41,24 @@ public class AgeTest {
         assertFalse(age.equals(null)); // should not throw an exception
     }
 
+	@Test
+	public void testGetFullMonths() throws Exception {
+		Age age = new Age(DateUtil.getDateTime(1965,3,23), DateUtil.getDateTime(2014,3,6));
+		assertThat(age.getFullMonths(), is(587));
+	}
+
+	@Test
+	public void testGetFullYears() throws Exception {
+		Age age = new Age(DateUtil.getDateTime(1965,3,23), DateUtil.getDateTime(2014,3,6));
+		assertThat(age.getFullYears(), is(48));
+	}
+
+	@Test
+	public void testGetFullMonthsSinceLastBirthday() throws Exception {
+		Age age = new Age(DateUtil.getDateTime(1965,3,23), DateUtil.getDateTime(2014,3,6));
+		assertThat(age.getFullMonthsSinceLastBirthday(), is(11));
+	}
+
     @Test
     public void testHashCode() throws Exception {
         Date d1 = DateUtil.parseYmd("2001-02-03");
@@ -54,8 +72,6 @@ public class AgeTest {
         assertThat(hashCode, is(not(new Age(d1, d3).hashCode())));
         assertThat(hashCode, is(not(new Age(d2, d3).hashCode())));
         assertThat(hashCode, is(not(new Age(null, null).hashCode())));
-
-        assertThat(new Age(null).hashCode(), is(not(new Age(null, null).hashCode())));
     }
 
 }

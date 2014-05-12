@@ -22,8 +22,15 @@ public abstract class ReportingTask implements Runnable {
 
 	@Override
 	public void run() {
-		currentSession = sessionFactory.getCurrentSession();
-		executeTask();
+		try {
+			log.info("Running reporting task: " + getClass().getSimpleName());
+			currentSession = sessionFactory.getCurrentSession();
+			executeTask();
+			log.info("Completed reporting task: " + getClass().getSimpleName());
+		}
+		catch (Exception e) {
+			log.error("An error occurred while running reporting task: " + getClass(), e);
+		}
 	}
 
 	/**

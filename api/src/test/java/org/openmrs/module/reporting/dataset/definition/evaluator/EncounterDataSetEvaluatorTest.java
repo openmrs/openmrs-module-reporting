@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.util.Date;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
@@ -36,6 +34,8 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+
+import java.util.Date;
 
 /**
  * Test the EncounterDataSetDefinition
@@ -82,6 +82,6 @@ public class EncounterDataSetEvaluatorTest extends BaseModuleContextSensitiveTes
 		d.addColumn("Age At End", ageOnDateData, "effectiveDate=${endDate}");  // Test a column with a different parameter mapping
 		
 		DataSet dataset = Context.getService(DataSetDefinitionService.class).evaluate(d, context);
-		//DataSetUtil.printDataSet(dataset, System.out);
+		DataSetUtil.printDataSet(dataset, System.out);
 	}
 }

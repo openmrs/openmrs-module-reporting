@@ -22,6 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
@@ -92,4 +93,80 @@ public class BasicEncounterQueryEvaluatorTest extends BaseModuleContextSensitive
 		assertThat(result, hasExactlyIds(enc1.getId(), enc2.getId(), enc3.getId()));
 	}
 
+	@Test
+	public void testShouldFilterByForms() throws Exception {
+
+		EncounterEvaluationContext context = new EncounterEvaluationContext();
+		context.setBaseEncounters(new EncounterIdSet(3,4,5,6,7,8,9));
+		BasicEncounterQuery query = new BasicEncounterQuery();
+
+		query.addForm(Context.getFormService().getForm("Intake Form"));
+		EncounterQueryResult result = encounterQueryService.evaluate(query, context);
+		assertThat(result, hasExactlyIds(3,4,5));
+
+		query.addForm(Context.getFormService().getForm("Basic Form"));
+		result = encounterQueryService.evaluate(query, context);
+		assertThat(result, hasExactlyIds(3,4,5,6,7,8,9));
+	}
+
+	@Test
+	public void testShouldFilterByLocations() throws Exception {
+		Patient patient = data.randomPatient().save();
+
+		Encounter enc1 = data.randomEncounter().patient(patient).location("Xanadu").save();
+		Encounter enc2 = data.randomEncounter().patient(patient).location("Never Never Land").save();
+		Encounter enc3 = data.randomEncounter().patient(patient).location("Never Never Land").save();
+
+		EncounterEvaluationContext context = new EncounterEvaluationContext();
+		context.setBaseEncounters(new EncounterIdSet(enc1.getId(), enc2.getId(), enc3.getId()));
+
+		BasicEncounterQuery query = new BasicEncounterQuery();
+
+		query.addLocation(Context.getLocationService().getLocation("Xanadu"));
+		EncounterQueryResult result = encounterQueryService.evaluate(query, context);
+		assertThat(result, hasExactlyIds(enc1.getId()));
+
+		query.addLocation(Context.getLocationService().getLocation("Never Never Land"));
+		result = encounterQueryService.evaluate(query, context);
+		assertThat(result, hasExactlyIds(enc1.getId(), enc2.getId(), enc3.getId()));
+	}
+
+	@Test
+	public void testShouldFilterByWhich() throws Exception {
+		Patient patient1 = data.randomPatient().save();
+		Encounter enc1 = data.randomEncounter().encounterDatetime("2014-01-01").patient(patient1).save();
+		Encounter enc2 = data.randomEncounter().encounterDatetime("2014-02-01").patient(patient1).save();
+		Encounter enc3 = data.randomEncounter().encounterDatetime("2014-03-01").patient(patient1).save();
+		Patient patient2 = data.randomPatient().save();
+		Encounter enc4 = data.randomEncounter().encounterDatetime("2014-04-01").patient(patient2).save();
+
+		EncounterEvaluationContext context = new EncounterEvaluationContext();
+		context.setBaseEncounters(new EncounterIdSet(enc1.getId(), enc2.getId(), enc3.getId(), enc4.getId()));
+
+		{
+			BasicEncounterQuery query = new BasicEncounterQuery();
+			query.setWhich(TimeQualifier.LAST);
+			query.setWhichNumber(2);
+			EncounterQueryResult result = encounterQueryService.evaluate(query, context);
+			assertThat(result, hasExactlyIds(enc2.getId(), enc3.getId(), enc4.getId()));
+		}
+		{
+			BasicEncounterQuery query = new BasicEncounterQuery();
+			query.setWhich(TimeQualifier.FIRST);
+			query.setWhichNumber(1);
+			EncounterQueryResult result = encounterQueryService.evaluate(query, context);
+			assertThat(result, hasExactlyIds(enc1.getId(), enc4.getId()));
+		}
+		{
+			BasicEncounterQuery query = new BasicEncounterQuery();
+			query.setWhich(TimeQualifier.FIRST);
+			EncounterQueryResult result = encounterQueryService.evaluate(query, context);
+			assertThat(result, hasExactlyIds(enc1.getId(), enc4.getId()));
+		}
+		{
+			BasicEncounterQuery query = new BasicEncounterQuery();
+			EncounterQueryResult result = encounterQueryService.evaluate(query, context);
+			assertThat(result, hasExactlyIds(enc1.getId(), enc2.getId(), enc3.getId(), enc4.getId()));
+		}
+	}
 }

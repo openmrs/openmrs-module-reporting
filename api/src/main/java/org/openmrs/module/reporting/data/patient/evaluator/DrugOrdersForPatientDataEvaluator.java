@@ -70,7 +70,7 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 		q.from(DrugOrder.class, "do");
 		q.wherePatientIn("do.patient.patientId", context);
         if (NEW_STOP_DATE_FIELD_NAME.equals(ORDER_STOP_DATE_FIELD_NAME)) {
-            q.where("do.action != 'DISCONTINUED'");
+            q.where("do.action != 'DISCONTINUE'");
         }
 
 		List<Concept> concepts = null;
