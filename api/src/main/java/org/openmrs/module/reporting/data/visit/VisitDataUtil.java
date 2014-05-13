@@ -18,6 +18,7 @@ import java.util.Set;
  */
 public class VisitDataUtil {
 
+
     /**
      * @return the base set of visit ids relevant for the passed EvaluationContext or null for all visit ids
      * If returnNullForAllVisitIds is false, then this will return all visit ids in the system if unconstrained by the context
