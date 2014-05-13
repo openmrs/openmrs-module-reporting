@@ -152,6 +152,16 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	/**
+	 * Generally you will not need to use this method, as the various "whereXyz" methods handle it for you,
+	 * but in the event that you have added a custom where clause that requires parameters, you can specify the
+	 * value(s) of these parameters using this method
+	 */
+	public HqlQueryBuilder withValue(String parameterName, Object value) {
+		parameters.put(parameterName, value);
+		return this;
+	}
+
+	/**
 	 * Restricts the query for where the value of the passed property equals the passed value
 	 */
 	public HqlQueryBuilder whereEqual(String propertyName, Object propertyValue) {
