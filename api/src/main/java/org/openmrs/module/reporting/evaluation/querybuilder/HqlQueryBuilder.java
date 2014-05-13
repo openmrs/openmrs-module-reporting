@@ -404,7 +404,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	public Query buildQuery(SessionFactory sessionFactory) {
 
-		if ((positionIndex-1) != parameters.size()) {
+		if ((positionIndex-1) > parameters.size()) {
 			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");
 		}
 
