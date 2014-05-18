@@ -70,33 +70,33 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
     @DocumentedDefinition(value = "upToAgeOnDate", definition = "Patients whose age is <= $maxAge years on $effectiveDate")
     public AgeCohortDefinition getUpToAgeOnDate() {
         AgeCohortDefinition cd = new AgeCohortDefinition();
-        cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-        cd.addParameter(new Parameter("maxAge", "Max Age (years)", Integer.class));
+        cd.addParameter(new Parameter("effectiveDate", "reporting.parameter.effectiveDate", Date.class));
+        cd.addParameter(new Parameter("maxAge", "reporting.parameter.maxAgeInYears", Integer.class));
         return cd;
     }
 
     @DocumentedDefinition(value = "atLeastAgeOnDate", definition = "Patients whose age is >= $minAge years on $effectiveDate")
     public AgeCohortDefinition getAtLeastAgeOnDate() {
         AgeCohortDefinition cd = new AgeCohortDefinition();
-        cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-        cd.addParameter(new Parameter("minAge", "Min Age (years)", Integer.class));
+        cd.addParameter(new Parameter("effectiveDate", "reporting.parameter.effectiveDate", Date.class));
+        cd.addParameter(new Parameter("minAge", "reporting.parameter.minAgeInYears", Integer.class));
         return cd;
     }
 
     @DocumentedDefinition("anyEncounterDuringPeriod")
     public CohortDefinition getAnyEncounterDuringPeriod() {
         EncounterCohortDefinition cd = new EncounterCohortDefinition();
-        cd.addParameter(new Parameter("onOrAfter", "On or After", Date.class));
-        cd.addParameter(new Parameter("onOrBefore", "On or Before", Date.class));
+        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
         return new MappedParametersCohortDefinition(cd, "onOrAfter", "startDate", "onOrBefore", "endDate");
     }
 
     @DocumentedDefinition("anyEncounterOfTypesDuringPeriod")
     public CohortDefinition getAnyEncounterOfTypesDuringPeriod() {
         EncounterCohortDefinition cd = new EncounterCohortDefinition();
-        cd.addParameter(new Parameter("onOrAfter", "On or After", Date.class));
-        cd.addParameter(new Parameter("onOrBefore", "On or Before", Date.class));
-        cd.addParameter(new Parameter("encounterTypeList", "Encounter Types", EncounterType.class, List.class, null));
+        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        cd.addParameter(new Parameter("encounterTypeList", "reporting.parameter.encounterTypeList", EncounterType.class, List.class, null));
         return new MappedParametersCohortDefinition(cd, "onOrAfter", "startDate", "onOrBefore", "endDate", "encounterTypeList", "encounterTypes");
     }
 

@@ -113,7 +113,7 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
     @DocumentedDefinition("ageAtStart")
     public PatientDataDefinition getAgeAtStart() {
         ConvertedPatientDataDefinition ageOnDate = new ConvertedPatientDataDefinition();
-        ageOnDate.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        ageOnDate.addParameter(new Parameter("startDate", "reporting.parameter.startDate", Date.class));
         ageOnDate.setDefinitionToConvert(Mapped.<PatientDataDefinition>map(getAgeOnEffectiveDate(), "effectiveDate=${startDate}"));
         return ageOnDate;
     }
@@ -121,7 +121,7 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
     @DocumentedDefinition("ageAtEnd")
     public PatientDataDefinition getAgeAtEnd() {
         ConvertedPatientDataDefinition ageOnDate = new ConvertedPatientDataDefinition();
-        ageOnDate.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ageOnDate.addParameter(new Parameter("endDate", "reporting.parameter.endDate", Date.class));
         ageOnDate.setDefinitionToConvert(Mapped.<PatientDataDefinition>map(getAgeOnEffectiveDate(), "effectiveDate=${endDate}"));
         return ageOnDate;
     }
@@ -167,7 +167,7 @@ public class BuiltInPatientDataLibrary extends BaseDefinitionLibrary<PatientData
 
     protected PatientDataDefinition getAgeOnEffectiveDate(DataConverter... converters) {
         AgeDataDefinition ageDataDefinition = new AgeDataDefinition();
-        ageDataDefinition.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+        ageDataDefinition.addParameter(new Parameter("effectiveDate", "reporting.parameter.effectiveDate", Date.class));
 		return convert(ageDataDefinition, converters);
     }
 
