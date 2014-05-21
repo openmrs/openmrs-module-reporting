@@ -13,17 +13,10 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ScriptedCompositionPatientDataDefinition;
@@ -31,6 +24,13 @@ import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Evaluates a ScriptedCompositionPatientDataDefinition to produce a PatientData
@@ -75,7 +75,7 @@ public class ScriptedCompositionPatientDataDefinitionEvaluator implements Patien
 
 		Cohort baseCohort = context.getBaseCohort();
 		if (baseCohort == null) {
-			baseCohort = Context.getPatientSetService().getAllPatients();
+            baseCohort = Cohorts.allPatients(context);
 		}
 
 		for (Integer pId : baseCohort.getMemberIds()) { //iterate across all patients

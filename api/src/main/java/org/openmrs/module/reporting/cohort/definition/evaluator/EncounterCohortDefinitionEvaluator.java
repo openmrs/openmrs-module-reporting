@@ -16,11 +16,13 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * Evaluates an EncounterCohortDefinition and produces a Cohort
@@ -46,7 +48,8 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
      * @should find patients with encounters on the onOrBefore date if passed in time is at midnight
      * @should find patients with encounters created on the specified date if passed in time is at midnight
      */
-    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+    @Override
+    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
     	EncounterCohortDefinition cd = (EncounterCohortDefinition) cohortDefinition;
     	
     	Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingEncounters(
@@ -58,7 +61,7 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
     	if (cd.isReturnInverse() == Boolean.TRUE) {
     		Cohort baseCohort = context.getBaseCohort();
     		if (baseCohort == null) {
-    			baseCohort = Context.getPatientSetService().getAllPatients();
+    			baseCohort = Cohorts.allPatients(context);
     		}
     		c = Cohort.subtract(baseCohort, c);
     	}

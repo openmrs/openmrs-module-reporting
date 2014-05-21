@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,14 +27,20 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.CohortUtil;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The logic that evaluates a {@link SimplePatientDataSetDefinition} and produces an {@link DataSet}
@@ -69,7 +70,7 @@ public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 
 		// By default, get all patients
 		if (cohort == null) {
-			cohort = Context.getPatientSetService().getAllPatients();
+			cohort = Cohorts.allPatients(context);
 		}
 					
 		if (context.getLimit() != null) {

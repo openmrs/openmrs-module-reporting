@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -52,7 +53,7 @@ public class CohortDimensionEvaluator implements DimensionEvaluator {
 		
 		Cohort baseCohort = context.getBaseCohort();
 		if (baseCohort == null) {
-			baseCohort = Context.getPatientSetService().getAllPatients();
+			baseCohort = Cohorts.allPatients(context);
 		}
 		
 		Cohort totalDimensions = new Cohort();

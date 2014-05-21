@@ -1,14 +1,5 @@
 package org.openmrs.module.reporting.web.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -17,6 +8,7 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.CohortUtil;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
@@ -41,6 +33,14 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ReportDashboardController {
@@ -204,7 +204,7 @@ public class ReportDashboardController {
     	EvaluationContext evalContext = new EvaluationContext();
     	Cohort tempCohort = null;
     	if (genderCohort != null || ageCohort != null) {
-    		selectedCohort = CohortUtil.limitCohort(Context.getPatientSetService().getAllPatients(), 238);    		
+    		selectedCohort = CohortUtil.limitCohort(Cohorts.allPatients(evalContext), 238);
     		if (genderCohort != null && genderCohort.equals("male")) {
 	    		tempCohort = getGenderCohort(evalContext, "M");
 	    		selectedCohort = Cohort.intersect(selectedCohort, tempCohort);
@@ -232,7 +232,7 @@ public class ReportDashboardController {
 	    	}
     	}    	
     	else if (ageCohort == null && genderCohort == null) { 
-    		selectedCohort = CohortUtil.limitCohort(Context.getPatientSetService().getAllPatients(), 238);
+    		selectedCohort = CohortUtil.limitCohort(Cohorts.allPatients(evalContext), 238);
     		selectedCohorts.add("All patients");
     	}
     	
@@ -320,7 +320,7 @@ public class ReportDashboardController {
 		model.addAttribute("females", getGenderCohort(evaluationContext, "F"));    	
 		model.addAttribute("adults", getAgeCohort(evaluationContext, 15, 150, new Date()));
 		model.addAttribute("children", getAgeCohort(evaluationContext, 0, 14, new Date()));				
-		model.addAttribute("all", Context.getPatientSetService().getAllPatients());
+		model.addAttribute("all", Cohorts.allPatients(evaluationContext));
 
 		Map<Program, Cohort> programCohortMap = new HashMap<Program, Cohort>();
 		for (Program program : programs) {

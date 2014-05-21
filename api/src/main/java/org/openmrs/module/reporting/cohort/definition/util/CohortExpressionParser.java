@@ -13,20 +13,13 @@
  */
 package org.openmrs.module.reporting.cohort.definition.util;
 
-import java.io.StreamTokenizer;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Stack;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.api.PatientSetService.BooleanOperator;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -34,6 +27,14 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+
+import java.io.StreamTokenizer;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Stack;
 
 /**
  * This class encapsulates the parsing logic necessary to take a String
@@ -137,7 +138,7 @@ public class CohortExpressionParser {
 						Cohort baseCohort = context.getBaseCohort();
 						Cohort currentCohort = (Cohort)o;
 						if (baseCohort == null) {
-							baseCohort = Context.getPatientSetService().getAllPatients();
+							baseCohort = Cohorts.allPatients(context);
 						}
 						log.debug("Originally a Cohort of size " + currentCohort.size());
 						log.debug("With base Cohort of size " + baseCohort.size());

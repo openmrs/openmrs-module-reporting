@@ -54,4 +54,14 @@ public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDef
 	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException {
 		return (EvaluatedCohort)super.evaluate(definition, context);
 	}
+
+    /**
+     * @see CohortDefinitionService#evaluateBypassingExclusionOfTestPatients(org.openmrs.module.reporting.cohort.definition.CohortDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public EvaluatedCohort evaluateBypassingExclusionOfTestPatients(CohortDefinition definition, EvaluationContext context) throws EvaluationException {
+        return (EvaluatedCohort) super.evaluateBypassingExclusionOfTestPatients(definition, context);
+    }
+
 }

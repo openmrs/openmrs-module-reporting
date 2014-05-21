@@ -39,4 +39,21 @@ public interface CohortDefinitionService extends DefinitionService<CohortDefinit
 	 */
 	@Transactional(readOnly = true)
 	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException;
+
+    /**
+     * IF YOU ARE A NORMAL CONSUMER OF THE API, DO NOT CALL THIS METHOD! THE CORRECT CONSUMER-FACING METHOD IS
+     * {@link #evaluate(org.openmrs.module.reporting.cohort.definition.CohortDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)}
+     *
+     * This method performs the logic of the evaluate method, but it bypasses the logic to exclude test patients. This
+     * is used internally by the reporting framework in special cases, e.g. to determine <em>which</em> patients are
+     * test patients.
+     *
+     * @param definition
+     * @param context
+     * @return
+     * @throws EvaluationException
+     */
+    @Transactional(readOnly = true)
+    public EvaluatedCohort evaluateBypassingExclusionOfTestPatients(CohortDefinition definition, EvaluationContext context) throws EvaluationException;
+
 }

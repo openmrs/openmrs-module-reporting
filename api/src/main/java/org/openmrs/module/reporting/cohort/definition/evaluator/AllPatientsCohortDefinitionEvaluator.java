@@ -38,6 +38,12 @@ public class AllPatientsCohortDefinitionEvaluator implements CohortDefinitionEva
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	EvaluatedCohort c = new EvaluatedCohort(context.getBaseCohort(), cohortDefinition, context);
     	if (context.getBaseCohort() == null) {
+            // Everywhere else in the reporting module we call Cohorts.allPatients(EvaluationContext) to get the list
+            // of all patients, but in this one place we intentionally call the underlying OpenMRS method. This avoids
+            // infinite recursion, since the Cohorts.allPatients method delegates to this evaluator.
+            //
+            // As long as API consumers don't directly call this evaluator, but go through CohortDefinitionService,
+            // they will correctly have test patients excluded.
     		c.setMemberIds(Context.getPatientSetService().getAllPatients().getMemberIds());
     	}
     	return c;

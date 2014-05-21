@@ -20,6 +20,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.logic.LogicService;
 import org.openmrs.logic.result.Result;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
@@ -208,9 +209,10 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#executeLogicQuery(java.lang.String, java.util.Map, org.openmrs.Cohort)
 	 */
 	public Cohort executeLogicQuery(String logicExpression, Map<String, Object> parameters, Cohort baseCohort) {
-		if (baseCohort == null)
-			baseCohort = Context.getPatientSetService().getAllPatients();
-		
+		if (baseCohort == null) {
+            baseCohort = Cohorts.allPatients(null);
+        }
+
 	    LogicService logicService = Context.getLogicService();
 	    /*
 	     * The following code should read:

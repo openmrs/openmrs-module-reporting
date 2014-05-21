@@ -131,6 +131,11 @@
         <defaultValue>en</defaultValue>
         <description>Default locale to use when formatting report data</description>
     </globalProperty>
+    <globalProperty>
+        <property>reporting.testPatientsCohortDefinition</property>
+        <defaultValue></defaultValue>
+        <description>Points to a cohort definition representing all test/fake patients that you want to exclude from all queries and reports. You may set this to the UUID of a saved cohort definition, or to "library:keyInADefinitionLibrary"</description>
+    </globalProperty>
 
 	<!--  Advice Points -->
 	<advice>

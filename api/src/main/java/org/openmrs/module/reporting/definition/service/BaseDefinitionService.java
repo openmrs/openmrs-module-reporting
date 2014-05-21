@@ -19,6 +19,11 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
+import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
@@ -207,40 +212,99 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 */
 	@SuppressWarnings("unchecked")
 	public Evaluated<T> evaluate(T definition, EvaluationContext context) throws EvaluationException {
-		
-		// Ensure context is not null
-		context = ObjectUtil.nvl(context, new EvaluationContext());
-		
-		// Retrieve QueryEvaluator which can evaluate this Query
-		DefinitionEvaluator<T> evaluator = DefinitionUtil.getPreferredEvaluator(definition);
-		
-		// Clone Query and set all properties from the Parameters in the EvaluationContext
-		T clonedDefinition = DefinitionUtil.cloneDefinitionWithContext(definition, context);
-		
-		String cacheKey = EvaluationUtil.getCacheKey(clonedDefinition, context);
-		
-		// Retrieve from cache if possible, otherwise evaluate
-		Evaluated<T> evaluationResult = null;
-		if (cacheKey != null) {
-			evaluationResult = (Evaluated<T>) context.getFromCache(cacheKey);
-			if (evaluationResult == null) {
-				log.debug("No cached value with key <" + cacheKey + ">.  Evaluating.");
-				evaluationResult = executeEvaluator(evaluator, clonedDefinition, context);
-				context.addToCache(cacheKey, evaluationResult);
-			}
-			else {
-				log.debug("Retrieved cached value with key <" + cacheKey + "> = " + evaluationResult);
-			}
-		}
 
-		if (evaluationResult == null) {
-			evaluationResult = executeEvaluator(evaluator, clonedDefinition, context);
-		}
-		
-		return evaluationResult;
-	}
-	
-	/**
+        context = ObjectUtil.nvl(context, new EvaluationContext());
+
+        // This is a cross-cutting entry point for all evaluations in the reporting module, so doing this here covers
+        // all scenarios
+        ensureNoTestPatients(context);
+
+        return evaluateBypassingExclusionOfTestPatients(definition, context);
+    }
+
+    /**
+     * IF YOU ARE A NORMAL CONSUMER OF THE API, DO NOT CALL THIS METHOD! THE CORRECT CONSUMER-FACING METHOD IS:
+     * {@link #evaluate(org.openmrs.module.reporting.evaluation.Definition, org.openmrs.module.reporting.evaluation.EvaluationContext)}
+     *
+     * This method performs the logic of the evaluate method, but it bypasses the logic to exclude test patients. This
+     * is used internally by the reporting framework in special cases, e.g. to determine <em>which</em> patients are
+     * test patients.
+     *
+     * (This method will only be visible to an API consumer if a service interface explicitly exposes it, and this
+     * should only be done for CohortDefinitionService.)
+     *
+     * @param definition
+     * @param context
+     * @return
+     * @throws EvaluationException
+     */
+    public Evaluated<T> evaluateBypassingExclusionOfTestPatients(T definition, EvaluationContext context) throws EvaluationException {
+
+        // Retrieve QueryEvaluator which can evaluate this Query
+        DefinitionEvaluator<T> evaluator = DefinitionUtil.getPreferredEvaluator(definition);
+
+        // Clone Query and set all properties from the Parameters in the EvaluationContext
+        T clonedDefinition = DefinitionUtil.cloneDefinitionWithContext(definition, context);
+
+        String cacheKey = EvaluationUtil.getCacheKey(clonedDefinition, context);
+
+        // Retrieve from cache if possible, otherwise evaluate
+        Evaluated<T> evaluationResult = null;
+        if (cacheKey != null) {
+            evaluationResult = (Evaluated<T>) context.getFromCache(cacheKey);
+            if (evaluationResult == null) {
+                log.debug("No cached value with key <" + cacheKey + ">.  Evaluating.");
+                evaluationResult = executeEvaluator(evaluator, clonedDefinition, context);
+                context.addToCache(cacheKey, evaluationResult);
+            } else {
+                log.debug("Retrieved cached value with key <" + cacheKey + "> = " + evaluationResult);
+            }
+        }
+
+        if (evaluationResult == null) {
+            evaluationResult = executeEvaluator(evaluator, clonedDefinition, context);
+        }
+
+        return evaluationResult;
+    }
+
+    /**
+     * Ensures that if a "test patients" cohort definition is configured, that no test patients are included in this
+     * evaluation context.
+     * If the context has a baseCohort defined, we remove those patients ids
+     * @param context
+     */
+    private void ensureNoTestPatients(EvaluationContext context) throws EvaluationException {
+        CohortDefinition testPatientsDefinition = ReportingConstants.GLOBAL_PROPERTY_TEST_PATIENTS_COHORT_DEFINITION();
+        if (testPatientsDefinition == null) {
+            // if no "test patients" cohort definition is configured, we do nothing
+            return;
+        }
+        else {
+            CohortDefinitionService cohortDefinitionService = Context.getService(CohortDefinitionService.class);
+            EvaluatedCohort testPatients = cohortDefinitionService.evaluateBypassingExclusionOfTestPatients(testPatientsDefinition, context);
+            if (testPatients.size() == 0) {
+                // if there are no test patients in the system, we do nothing
+                return;
+            }
+
+            if (context.getBaseCohort() == null) {
+                // set a base cohort of "all patients" minus "test patients"
+                EvaluatedCohort allPatients = cohortDefinitionService.evaluateBypassingExclusionOfTestPatients(new AllPatientsCohortDefinition(), context);
+                allPatients.getMemberIds().removeAll(testPatients.getMemberIds());
+                context.setBaseCohort(allPatients);
+            }
+            else {
+                // remove test patients from the existing baseCohort, and if this results in any changes, clear the cache
+                boolean changed = context.getBaseCohort().getMemberIds().removeAll(testPatients.getMemberIds());
+                if (changed) {
+                    context.clearCache();
+                }
+            }
+        }
+    }
+
+    /**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
 	@Transactional(readOnly = true)

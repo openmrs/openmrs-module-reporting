@@ -13,16 +13,16 @@
  */
 package org.openmrs.module.reporting.dataset;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PageableDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.evaluator.DataSetEvaluator;
 import org.openmrs.module.reporting.dataset.definition.evaluator.LazyPageableDataSetEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This is a {@link DataSet} that allows you to request the rows for a subset of the
@@ -56,9 +56,9 @@ public class LazyPageableDataSet implements PageableDataSet {
 		if (evalContext.getBaseCohort() != null) {
 			cohortPatientIds = new ArrayList<Integer>(evalContext.getBaseCohort().getMemberIds());
 		} else {
-			cohortPatientIds = new ArrayList<Integer>(Context.getPatientSetService().getAllPatients().getMemberIds());
+            cohortPatientIds = new ArrayList<Integer>(Cohorts.allPatients(evalContext).getMemberIds());
 		}
-		
+
 		dataSetMetadata = definition.getDataSetMetadata();
 	}
 	

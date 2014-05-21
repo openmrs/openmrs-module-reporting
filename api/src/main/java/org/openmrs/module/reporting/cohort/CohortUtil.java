@@ -76,8 +76,8 @@ public class CohortUtil {
     				: Integer.parseInt(Context.getAdministrationService().getGlobalProperty("reporting.preview.cohortSize", "100"));
     	
 		Cohort randomCohort = new Cohort();
-    
-		Cohort tempCohort = Context.getPatientSetService().getAllPatients();
+
+        Cohort tempCohort = Cohorts.allPatients(null);
 
 		Random random = new Random();
 		

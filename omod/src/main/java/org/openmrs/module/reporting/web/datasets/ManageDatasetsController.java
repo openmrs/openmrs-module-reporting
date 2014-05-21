@@ -1,14 +1,5 @@
 package org.openmrs.module.reporting.web.datasets;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,6 +7,7 @@ import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -40,6 +32,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ManageDatasetsController {
@@ -199,7 +199,7 @@ public class ManageDatasetsController {
 
 	    	// If we don't have a cohort yet, just get all patients
 	    	if (cohort == null || cohortId.equals("0")) 
-	    		cohort = Context.getPatientSetService().getAllPatients();
+	    		cohort = Cohorts.allPatients(null);
 
 	    	
 	    	// Step 3 Set up the evaluation context
@@ -338,21 +338,21 @@ public class ManageDatasetsController {
      */
     public Cohort evaluateCohort(String uuid) throws EvaluationException {
     	EvaluationContext evaluationContext = new EvaluationContext();
-		Cohort cohort = Context.getPatientSetService().getAllPatients();
-		evaluationContext.setBaseCohort(cohort);
+        Cohort cohort = Cohorts.allPatients(evaluationContext);
+        evaluationContext.setBaseCohort(cohort);
     	CohortDefinition cohortDefinition = null;    	
-    	if (StringUtils.isNotEmpty(uuid)) { 
-    		cohortDefinition = 
+    	if (StringUtils.isNotEmpty(uuid)) {
+    		cohortDefinition =
     			Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
     		if (cohortDefinition != null) {
     			try {
-	    			cohort = 
+	    			cohort =
 	    				Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
     			} catch (Exception ex) {
     				throw new EvaluationException("cohort", ex);
     			}
     		}
-    	}     		    	
+    	}
     	return cohort;
     } 
 }

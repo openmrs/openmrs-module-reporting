@@ -101,4 +101,21 @@ public class AllDefinitionLibraries {
         return cd;
     }
 
+    /**
+     * The normal way to do this should be to just define an @Component that implements DefinitionLibrary.
+     * This method should only be used for testing -- we may not decide to preserve it.
+     * @param library
+     */
+    public void addLibrary(DefinitionLibrary<?> library) {
+        libraries.add(library);
+    }
+
+    /**
+     * Cleans up after having manually added a library with #addLibrary
+     * @param library
+     */
+    public void removeLibrary(DefinitionLibrary<?> library) {
+        libraries.remove(library);
+    }
+
 }

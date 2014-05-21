@@ -18,13 +18,14 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition.CohortDataSetColumn;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
@@ -65,9 +66,9 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 				throw new EvaluationException("row definition for row=" + col.getRowName() + " , col=" + col.getColumnName(), ex);
 			}
 			if (rowCohort == null) {
-				rowCohort = Context.getPatientSetService().getAllPatients();
+                rowCohort = Cohorts.allPatients(context);
 			}
-			
+
 			Cohort colCohort;
 			try {
 				colCohort = (col.getColumnDefinition() == null ? context.getBaseCohort() : cds.evaluate(col.getColumnDefinition(), context));
@@ -75,7 +76,7 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 				throw new EvaluationException("column definition for row=" + col.getRowName() + " , col=" + col.getColumnName(), ex);
 			}
 			if (colCohort == null) {
-				colCohort = Context.getPatientSetService().getAllPatients();
+				colCohort = Cohorts.allPatients(context);
 			}
 			
 			Cohort c = Cohort.intersect(rowCohort, colCohort);
