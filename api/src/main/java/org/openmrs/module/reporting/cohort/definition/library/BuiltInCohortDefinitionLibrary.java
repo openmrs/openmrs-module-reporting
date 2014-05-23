@@ -67,7 +67,7 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         return unknownGender;
     }
 
-    @DocumentedDefinition(value = "upToAgeOnDate", definition = "Patients whose age is <= $maxAge years on $effectiveDate")
+    @DocumentedDefinition("upToAgeOnDate")
     public AgeCohortDefinition getUpToAgeOnDate() {
         AgeCohortDefinition cd = new AgeCohortDefinition();
         cd.addParameter(new Parameter("effectiveDate", "reporting.parameter.effectiveDate", Date.class));
@@ -75,7 +75,7 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         return cd;
     }
 
-    @DocumentedDefinition(value = "atLeastAgeOnDate", definition = "Patients whose age is >= $minAge years on $effectiveDate")
+    @DocumentedDefinition("atLeastAgeOnDate")
     public AgeCohortDefinition getAtLeastAgeOnDate() {
         AgeCohortDefinition cd = new AgeCohortDefinition();
         cd.addParameter(new Parameter("effectiveDate", "reporting.parameter.effectiveDate", Date.class));
@@ -94,8 +94,8 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
     @DocumentedDefinition("anyEncounterOfTypesDuringPeriod")
     public CohortDefinition getAnyEncounterOfTypesDuringPeriod() {
         EncounterCohortDefinition cd = new EncounterCohortDefinition();
-        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
-        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.startDate", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.endDate", Date.class));
         cd.addParameter(new Parameter("encounterTypeList", "reporting.parameter.encounterTypeList", EncounterType.class, List.class, null));
         return new MappedParametersCohortDefinition(cd, "onOrAfter", "startDate", "onOrBefore", "endDate", "encounterTypeList", "encounterTypes");
     }
