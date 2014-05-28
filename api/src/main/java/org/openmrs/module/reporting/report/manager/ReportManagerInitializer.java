@@ -51,7 +51,7 @@ public class ReportManagerInitializer {
 	@Autowired
     private AdministrationService adminService;
 
-	@Autowired
+	@Autowired(required = false)
 	private List<ReportManager> reportManagers;
 
 	/**
