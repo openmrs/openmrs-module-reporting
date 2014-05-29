@@ -61,28 +61,30 @@ public class AgeRange {
 	 * Returns true if an age is within the given range
 	 */
 	public Boolean isInRange(Age age) {
-		Unit minAgeUnit = ObjectUtil.nvl(getMinAgeUnit(), Unit.YEARS);
-		Unit maxAgeUnit = ObjectUtil.nvl(getMaxAgeUnit(), Unit.YEARS);
 		Integer ageMonths = age.getFullMonths();
 		Integer ageYears = age.getFullYears();
-		if (minAgeUnit == Unit.MONTHS) {
-			if (ageMonths < minAge) {
-				return false;
+		if (minAge != null) {
+			Unit minAgeUnit = ObjectUtil.nvl(getMinAgeUnit(), Unit.YEARS);
+			if (minAgeUnit == Unit.MONTHS) {
+				if (ageMonths < minAge) {
+					return false;
+				}
+			} else {
+				if (ageYears < minAge) {
+					return false;
+				}
 			}
 		}
-		else {
-			if (ageYears < minAge) {
-				return false;
-			}
-		}
-		if (maxAgeUnit == Unit.MONTHS) {
-			if (ageMonths > maxAge) {
-				return false;
-			}
-		}
-		else {
-			if (ageYears > maxAge) {
-				return false;
+		if (maxAge != null) {
+			Unit maxAgeUnit = ObjectUtil.nvl(getMaxAgeUnit(), Unit.YEARS);
+			if (maxAgeUnit == Unit.MONTHS) {
+				if (ageMonths > maxAge) {
+					return false;
+				}
+			} else {
+				if (ageYears > maxAge) {
+					return false;
+				}
 			}
 		}
 		return true;
