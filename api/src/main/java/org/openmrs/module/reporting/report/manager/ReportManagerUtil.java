@@ -17,61 +17,37 @@ package org.openmrs.module.reporting.report.manager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
-import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
+import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.openmrs.module.reporting.report.util.ReportUtil;
 
 import java.util.List;
 
 /**
- * This class contains the logic necessary to set-up and tear down any reports registered as
- * ReportManager components automatically
+ * This class contains the logic necessary to set-up and tear down a report defined as a ReportManager
  */
-@Component
-public class ReportManagerInitializer {
+public class ReportManagerUtil {
 
-	protected Log log = LogFactory.getLog(getClass());
-
-	@Autowired
-    private ReportService reportService;
-
-	@Autowired
-    private ReportDefinitionService reportDefinitionService;
-
-	@Autowired
-    private SerializedObjectDAO serializedObjectDAO;
-
-	@Autowired
-    private AdministrationService adminService;
-
-	@Autowired(required = false)
-	private List<ReportManager> reportManagers;
-
-	/**
-	 * Primary method called when registered reports should be re-built and saved to the database
-	 */
-    public void setupReports() {
-		if (reportManagers != null) {
-			for (ReportManager rm : reportManagers) {
-				setupReport(rm);
-			}
-		}
-    }
+	protected static Log log = LogFactory.getLog(ReportManagerUtil.class);
 
 	/**
 	 * Sets up a single report, overwriting the existing report if the version is greater
+	 * Typical usage would be for a module that defines one or more reports via ReportManagers
+	 * to install these in the started() method of their activator by calling this method on each
+	 * ReportManager in turn.
 	 */
-	public void setupReport(ReportManager rm) {
+	public static void setupReport(ReportManager rm) {
 
 		String gpName = "reporting.reportManager." + rm.getUuid() + ".version";
-		GlobalProperty gp = adminService.getGlobalPropertyObject(gpName);
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(gpName);
 		if (gp == null) {
 			gp = new GlobalProperty(gpName, "");
 		}
@@ -81,7 +57,8 @@ public class ReportManagerInitializer {
 			ReportDefinition reportDefinition = rm.constructReportDefinition();
 			log.info("Updating " + reportDefinition.getName() + " to version " + rm.getVersion());
 
-			ReportDefinition existing = reportDefinitionService.getDefinitionByUuid(reportDefinition.getUuid());
+			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+			ReportDefinition existing = rds.getDefinitionByUuid(reportDefinition.getUuid());
 			if (existing != null) {
 				// we need to overwrite the existing, rather than purge-and-recreate, to avoid deleting old ReportRequests
 				log.debug("Overwriting existing ReportDefinition");
@@ -91,6 +68,7 @@ public class ReportManagerInitializer {
 			else {
 				// incompatible class changes for a serialized object could mean that getting the definition returns null
 				// and some serialization error gets logged. In that case we want to overwrite the invalid serialized definition
+				SerializedObjectDAO serializedObjectDAO = Context.getRegisteredComponents(SerializedObjectDAO.class).get(0);
 				SerializedObject invalidSerializedObject = serializedObjectDAO.getSerializedObjectByUuid(reportDefinition.getUuid());
 				if (invalidSerializedObject != null) {
 					reportDefinition.setId(invalidSerializedObject.getId());
@@ -98,9 +76,10 @@ public class ReportManagerInitializer {
 				}
 			}
 
-			reportDefinitionService.saveDefinition(reportDefinition);
+			rds.saveDefinition(reportDefinition);
 
 			// purging a ReportDesign doesn't trigger any extra logic, so we can just purge-and-recreate here
+			ReportService reportService = Context.getService(ReportService.class);
 			List<ReportDesign> existingDesigns = reportService.getReportDesigns(reportDefinition, null, true);
 			if (existingDesigns.size() > 0) {
 				log.debug("Deleting " + existingDesigns.size() + " old designs for " + reportDefinition.getName());
@@ -115,7 +94,51 @@ public class ReportManagerInitializer {
 			}
 
 			gp.setPropertyValue(rm.getVersion());
-			adminService.saveGlobalProperty(gp);
+			Context.getAdministrationService().saveGlobalProperty(gp);
 		}
+	}
+
+	/**
+	 * @return a new ReportDesign for an Excel template, using a file on the classpath as the template
+	 */
+	public static ReportDesign createExcelTemplateDesign(String reportDesignUuid, ReportDefinition reportDefinition, String resourcePath) {
+		ReportDesign design = new ReportDesign();
+		design.setUuid(reportDesignUuid);
+		design.setName("Excel");
+		design.setReportDefinition(reportDefinition);
+		design.setRendererType(XlsReportRenderer.class);
+		ReportDesignResource resource = new ReportDesignResource();
+		resource.setName("template");
+		resource.setExtension("xls");
+		resource.setContentType("application/vnd.ms-excel");
+		resource.setContents(ReportUtil.readByteArrayFromResource(resourcePath));
+		resource.setReportDesign(design);
+		design.addResource(resource);
+		return design;
+	}
+
+	/**
+	 * @return a new ReportDesign for a standard Excel output
+	 */
+	public static ReportDesign createExcelDesign(String reportDesignUuid, ReportDefinition reportDefinition) {
+		ReportDesign design = new ReportDesign();
+		design.setUuid(reportDesignUuid);
+		design.setName("Excel");
+		design.setReportDefinition(reportDefinition);
+		design.setRendererType(XlsReportRenderer.class);
+		design.addPropertyValue(XlsReportRenderer.INCLUDE_DATASET_NAME_AND_PARAMETERS_PROPERTY, "true");
+		return design;
+	}
+
+	/**
+	 * @return a new ReportDesign for a standard CSV output
+	 */
+	public static ReportDesign createCsvReportDesign(String reportDesignUuid, ReportDefinition reportDefinition) {
+		ReportDesign design = new ReportDesign();
+		design.setUuid(reportDesignUuid);
+		design.setName("CSV");
+		design.setReportDefinition(reportDefinition);
+		design.setRendererType(CsvReportRenderer.class);
+		return design;
 	}
 }

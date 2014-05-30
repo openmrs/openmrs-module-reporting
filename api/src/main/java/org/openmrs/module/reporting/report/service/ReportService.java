@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.Report;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -64,7 +63,7 @@ public interface ReportService extends OpenmrsService {
 	 * Each input parameter can be null, restricting the returned results only if it is not null.  This allows you
 	 * to retrieve all ReportDesigns by ReportDefinition, by RendererType, by retired status, or a combination of these
 	 * criteria.
-	 * @param reportDefinitionId if not null, only {@link ReportDesign}s for this {@link ReportDefinition} will be returned
+	 * @param reportDefinition if not null, only {@link ReportDesign}s for this {@link ReportDefinition} will be returned
 	 * @param rendererType if not null, only {@link ReportDesign}s for this {@link ReportRenderer} type will be returned
 	 * @param includeRetired if true, indicates that retired {@link ReportDesign}s should also be included
 	 * @return a List<ReportDesign> object containing all of the {@link ReportDesign}s
@@ -244,9 +243,8 @@ public interface ReportService extends OpenmrsService {
 	 * but if they queue it they should do so with HIGHEST priority.
 	 * </pre>
 	 * 
-	 * @param request
+	 * @param request the report request to run
 	 * @return the result of running the report.
-	 * @throws EvaluationException if the report could not be evaluated
 	 * 
 	 * @should set uuid on the request
 	 * @should render the report if a plain renderer is specified
@@ -331,8 +329,8 @@ public interface ReportService extends OpenmrsService {
 	
 	/**
 	 * Saves the passed message to disk for the given report, in order to have a record of the report generation
-	 * @param report
-	 * @param message
+	 * @param request the request to save a message for
+	 * @param message the message to save
 	 */
 	@Transactional(readOnly = true)
 	public void logReportMessage(ReportRequest request, String message);

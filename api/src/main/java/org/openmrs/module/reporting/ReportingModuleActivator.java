@@ -19,7 +19,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.DaemonToken;
 import org.openmrs.module.DaemonTokenAware;
-import org.openmrs.module.reporting.report.manager.ReportManagerInitializer;
 import org.openmrs.module.reporting.report.task.ReportingTimerTask;
 import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 
@@ -33,9 +32,6 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
 	@Override
 	public void started() {
 		log.info("Reporting Module Started...");
-
-		// Automatically set up any reports that are registered as ReportManagers
-		Context.getRegisteredComponents(ReportManagerInitializer.class).get(0).setupReports();
 	}
 
 	@Override

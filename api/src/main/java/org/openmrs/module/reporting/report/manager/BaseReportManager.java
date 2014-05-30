@@ -14,13 +14,10 @@
 
 package org.openmrs.module.reporting.report.manager;
 
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Base implementation of ReportManager that provides some common method implementations
@@ -33,23 +30,5 @@ public abstract class BaseReportManager implements ReportManager {
 	@Override
 	public List<Parameter> getParameters() {
 		return new ArrayList<Parameter>();
-	}
-
-	/**
-	 * @return by default, no specific privilege is required
-	 */
-	@Override
-	public String getRequiredPrivilege() {
-		return null;
-	}
-
-	/**
-	 * @return by default, return a new EvaluationContext with straight-through parameter mappings
-	 */
-	@Override
-	public EvaluationContext initializeContext(Map<String, Object> parameters) {
-		EvaluationContext context = new EvaluationContext();
-		context.setParameterValues(parameters == null ? new HashMap<String, Object>() : parameters);
-		return context;
 	}
 }

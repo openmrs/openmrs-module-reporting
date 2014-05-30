@@ -13,13 +13,11 @@
  */
 package org.openmrs.module.reporting.report.manager;
 
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This is the base interface that should be implemented by any
@@ -49,20 +47,6 @@ public interface ReportManager {
 	List<Parameter> getParameters();
 
 	/**
-	 * @return the privilege required to view or evaluate this report or null if no specific privilege required
-	 */
-	String getRequiredPrivilege();
-
-	/**
-	 * This method provides a mechanism to validate input parameters,
-	 * transform input parameters, or provide any other custom logic
-	 * needed to set up the appropriate EvaluationContext that should
-	 * be used when running this report.
-	 * @return the EvaluationContext to use for the report.
-	 */
-	EvaluationContext initializeContext(Map<String, Object> parameters);
-
-	/**
 	 * @return a ReportDefinition that may be persisted or run
 	 */
 	ReportDefinition constructReportDefinition();
@@ -81,5 +65,4 @@ public interface ReportManager {
      * @return what version of this report we are at
      */
     String getVersion();
-
 }
