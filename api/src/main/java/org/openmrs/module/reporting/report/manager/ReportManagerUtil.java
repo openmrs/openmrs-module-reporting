@@ -39,6 +39,19 @@ public class ReportManagerUtil {
 	protected static Log log = LogFactory.getLog(ReportManagerUtil.class);
 
 	/**
+	 * Convenience method that can be used to automatically set up all ReportManager classes
+	 * that extend the passed in interface and are registered spring beans.
+	 * This enables a module author to create an interface or base class for all of their module's reports,
+	 * and annotate each of these as a Component, and call this single method to set them all up in their
+	 * Activator.
+	 */
+	public static void setupAllReports(Class<? extends ReportManager> reportManagerClass) {
+		for (ReportManager reportManager : Context.getRegisteredComponents(reportManagerClass)) {
+			setupReport(reportManager);
+		}
+	}
+
+	/**
 	 * Sets up a single report, overwriting the existing report if the version is greater
 	 * Typical usage would be for a module that defines one or more reports via ReportManagers
 	 * to install these in the started() method of their activator by calling this method on each
