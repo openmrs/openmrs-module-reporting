@@ -16,8 +16,8 @@ package org.openmrs.module.reporting.evaluation.service;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -39,7 +39,6 @@ import java.util.Set;
 public class EvaluationServiceImpl extends BaseOpenmrsService implements EvaluationService {
 
 	private transient Log log = LogFactory.getLog(this.getClass());
-	private AdministrationService administrationService;
 	private List<String> currentIdSetKeys = Collections.synchronizedList(new ArrayList<String>());
 
 	/**
@@ -127,7 +126,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 				Integer id = i.next();
 				q.append("('").append(idSetKey).append("',").append(id).append(")").append(i.hasNext() ? "," : "");
 			}
-			administrationService.executeSQL(q.toString(), false);  // TODO: Use a SqlQuery implementation to save this
+			executeUpdate(q.toString());
 			log.debug("Persisted idset: " + idSetKey + "; size: " + ids.size() + "; total active: " + currentIdSetKeys.size());
 		}
 		currentIdSetKeys.add(idSetKey);
@@ -155,7 +154,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Override
 	public boolean isInUse(String idSetKey) {
 		String existQuery = "select count(*) from reporting_idset where idset_key = '"+idSetKey+"'";
-		String check = administrationService.executeSQL(existQuery, true).get(0).get(0).toString();
+		String check = executeUniqueResult(existQuery).toString();
 		return !check.equals("0");
 	}
 
@@ -168,8 +167,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 		int indexToRemove = currentIdSetKeys.lastIndexOf(idSetKey);
 		currentIdSetKeys.remove(indexToRemove);
 		if (!currentIdSetKeys.contains(idSetKey)) {
-			String q = "delete from reporting_idset where idset_key = '" + idSetKey + "'";
-			administrationService.executeSQL(q, false);  // TODO: Use a SqlQuery implementation to save this
+			executeUpdate("delete from reporting_idset where idset_key = '" + idSetKey + "'");
 			currentIdSetKeys.remove(idSetKey);
 			log.debug("Deleted idset: " + idSetKey + "; total active: " + currentIdSetKeys.size());
 		}
@@ -195,21 +193,21 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Override
 	public void resetAllIdSets() {
 		currentIdSetKeys.clear();
-		administrationService.executeSQL("delete from reporting_idset", false);
+		executeUpdate("delete from reporting_idset");
 
+	}
+
+	private Object executeUniqueResult(String sql) {
+		Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
+		return query.uniqueResult();
+	}
+
+	private void executeUpdate(String sql) {
+		Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
+		query.executeUpdate();
 	}
 
 	private SessionFactory getSessionFactory() {
 		return Context.getRegisteredComponents(SessionFactory.class).get(0);
-	}
-
-	//***** PROPERTY ACCESS *****
-
-	public AdministrationService getAdministrationService() {
-		return administrationService;
-	}
-
-	public void setAdministrationService(AdministrationService administrationService) {
-		this.administrationService = administrationService;
 	}
 }

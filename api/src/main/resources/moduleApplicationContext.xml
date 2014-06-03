@@ -64,9 +64,7 @@
 	<bean id="reportingEvaluationService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager"><ref bean="transactionManager"/></property>
 		<property name="target">
-			<bean class="org.openmrs.module.reporting.evaluation.service.EvaluationServiceImpl">
-				<property name="administrationService"><ref bean="adminService"/></property>
-			</bean>
+			<bean class="org.openmrs.module.reporting.evaluation.service.EvaluationServiceImpl"/>
 		</property>
 		<property name="preInterceptors">
 			<ref bean="serviceInterceptors" />
