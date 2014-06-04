@@ -77,7 +77,7 @@ public class CohortUtil {
     	
 		Cohort randomCohort = new Cohort();
 
-        Cohort tempCohort = Cohorts.allPatients(null);
+        Cohort tempCohort = Cohorts.allPatients();
 
 		Random random = new Random();
 		

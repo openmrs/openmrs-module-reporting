@@ -28,6 +28,17 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 public class Cohorts {
 
     /**
+     * If your use case allows it you should always use #allPatients(EvaluationContext); this method will not cache
+     * results, which can significantly impact efficiency.
+     *
+     * @return All non-test patients in the system (with test patients excluded per the global property
+     * {@link org.openmrs.module.reporting.ReportingConstants#GLOBAL_PROPERTY_TEST_PATIENTS_COHORT_DEFINITION}
+     */
+    public static EvaluatedCohort allPatients() {
+        return allPatients(null);
+    }
+
+    /**
      * @param context optional (used to return a cached value if possible)
      * @return All non-test patients in the system (with test patients excluded per the global property
      * {@link org.openmrs.module.reporting.ReportingConstants#GLOBAL_PROPERTY_TEST_PATIENTS_COHORT_DEFINITION}
