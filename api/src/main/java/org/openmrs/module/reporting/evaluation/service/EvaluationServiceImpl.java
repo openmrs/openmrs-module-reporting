@@ -23,7 +23,11 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.openmrs.module.reporting.query.IdSet;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +46,17 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	private List<String> currentIdSetKeys = Collections.synchronizedList(new ArrayList<String>());
 
 	/**
+     * Since we need to insert/delete into the reporting_idset tables even during the course of read-only transactions,
+     * (and we need this to be committed as quickly as possible to avoid deadlocks due to table locking), we
+     * programmatically open and close the smallest possible transaction
+     */
+    private PlatformTransactionManager transactionManager;
+
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
+
+    /**
 	 * @see EvaluationService#evaluateToList(QueryBuilder)
 	 */
 	@Override
@@ -115,21 +130,22 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 			return null;
 		}
 		String idSetKey = generateKey(ids);
-		if (isInUse(idSetKey)) {
-			log.debug("Attempting to persist an IdSet that has previously been persisted.  Using existing values.");
-			// TODO: As an additional check here, we could confirm that they are the same by loading into memory
-		}
-		else {
-			StringBuilder q = new StringBuilder();
-			q.append("insert into reporting_idset (idset_key, member_id) values ");
-			for (Iterator<Integer> i = ids.iterator(); i.hasNext(); ) {
-				Integer id = i.next();
-				q.append("('").append(idSetKey).append("',").append(id).append(")").append(i.hasNext() ? "," : "");
-			}
-			executeUpdate(q.toString());
-			log.debug("Persisted idset: " + idSetKey + "; size: " + ids.size() + "; total active: " + currentIdSetKeys.size());
-		}
-		currentIdSetKeys.add(idSetKey);
+        synchronized (currentIdSetKeys) {
+            if (isInUse(idSetKey)) {
+                log.debug("Attempting to persist an IdSet that has previously been persisted.  Using existing values.");
+                // TODO: As an additional check here, we could confirm that they are the same by loading into memory
+            } else {
+                StringBuilder q = new StringBuilder();
+                q.append("insert into reporting_idset (idset_key, member_id) values ");
+                for (Iterator<Integer> i = ids.iterator(); i.hasNext(); ) {
+                    Integer id = i.next();
+                    q.append("('").append(idSetKey).append("',").append(id).append(")").append(i.hasNext() ? "," : "");
+                }
+                executeUpdateInNewTransaction(q.toString());
+                log.debug("Persisted idset: " + idSetKey + "; size: " + ids.size() + "; total active: " + currentIdSetKeys.size());
+            }
+            currentIdSetKeys.add(idSetKey);
+        }
 		return idSetKey;
 	}
 
@@ -164,13 +180,15 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Transactional
 	@Override
 	public void stopUsing(String idSetKey) {
-		int indexToRemove = currentIdSetKeys.lastIndexOf(idSetKey);
-		currentIdSetKeys.remove(indexToRemove);
-		if (!currentIdSetKeys.contains(idSetKey)) {
-			executeUpdate("delete from reporting_idset where idset_key = '" + idSetKey + "'");
-			currentIdSetKeys.remove(idSetKey);
-			log.debug("Deleted idset: " + idSetKey + "; total active: " + currentIdSetKeys.size());
-		}
+        synchronized (currentIdSetKeys) {
+            int indexToRemove = currentIdSetKeys.lastIndexOf(idSetKey);
+            currentIdSetKeys.remove(indexToRemove);
+            if (!currentIdSetKeys.contains(idSetKey)) {
+                executeUpdateInNewTransaction("delete from reporting_idset where idset_key = '" + idSetKey + "'");
+                currentIdSetKeys.remove(idSetKey);
+                log.debug("Deleted idset: " + idSetKey + "; total active: " + currentIdSetKeys.size());
+            }
+        }
 	}
 
 	/**
@@ -193,7 +211,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Override
 	public void resetAllIdSets() {
 		currentIdSetKeys.clear();
-		executeUpdate("delete from reporting_idset");
+		executeUpdateInNewTransaction("delete from reporting_idset");
 
 	}
 
@@ -202,10 +220,17 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 		return query.uniqueResult();
 	}
 
-	private void executeUpdate(String sql) {
-		Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
-		query.executeUpdate();
-	}
+    private void executeUpdateInNewTransaction(String sql) {
+        TransactionStatus tx = transactionManager.getTransaction(new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW));
+        try {
+            Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
+            query.executeUpdate();
+            transactionManager.commit(tx);
+        } catch (Exception ex) {
+            transactionManager.rollback(tx);
+            throw new IllegalStateException("Failed to execute sql: " + sql, ex);
+        }
+    }
 
 	private SessionFactory getSessionFactory() {
 		return Context.getRegisteredComponents(SessionFactory.class).get(0);
