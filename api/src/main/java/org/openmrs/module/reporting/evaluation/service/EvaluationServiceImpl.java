@@ -23,11 +23,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.openmrs.module.reporting.query.IdSet;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,18 +39,7 @@ import java.util.Set;
 public class EvaluationServiceImpl extends BaseOpenmrsService implements EvaluationService {
 
 	private transient Log log = LogFactory.getLog(this.getClass());
-	private List<String> currentIdSetKeys = Collections.synchronizedList(new ArrayList<String>());
-
-	/**
-     * Since we need to insert/delete into the reporting_idset tables even during the course of read-only transactions,
-     * (and we need this to be committed as quickly as possible to avoid deadlocks due to table locking), we
-     * programmatically open and close the smallest possible transaction
-     */
-    private PlatformTransactionManager transactionManager;
-
-    public void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
-    }
+	private final List<String> currentIdSetKeys = Collections.synchronizedList(new ArrayList<String>());
 
     /**
 	 * @see EvaluationService#evaluateToList(QueryBuilder)
@@ -141,7 +126,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
                     Integer id = i.next();
                     q.append("('").append(idSetKey).append("',").append(id).append(")").append(i.hasNext() ? "," : "");
                 }
-                executeUpdateInNewTransaction(q.toString());
+                executeUpdate(q.toString());
                 log.debug("Persisted idset: " + idSetKey + "; size: " + ids.size() + "; total active: " + currentIdSetKeys.size());
             }
             currentIdSetKeys.add(idSetKey);
@@ -169,9 +154,9 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	 */
 	@Override
 	public boolean isInUse(String idSetKey) {
-		String existQuery = "select count(*) from reporting_idset where idset_key = '"+idSetKey+"'";
-		String check = executeUniqueResult(existQuery).toString();
-		return !check.equals("0");
+        synchronized (currentIdSetKeys) {
+            return currentIdSetKeys.contains(idSetKey);
+        }
 	}
 
 	/**
@@ -184,7 +169,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
             int indexToRemove = currentIdSetKeys.lastIndexOf(idSetKey);
             currentIdSetKeys.remove(indexToRemove);
             if (!currentIdSetKeys.contains(idSetKey)) {
-                executeUpdateInNewTransaction("delete from reporting_idset where idset_key = '" + idSetKey + "'");
+                executeUpdate("delete from reporting_idset where idset_key = '" + idSetKey + "'");
                 currentIdSetKeys.remove(idSetKey);
                 log.debug("Deleted idset: " + idSetKey + "; total active: " + currentIdSetKeys.size());
             }
@@ -210,26 +195,15 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Transactional
 	@Override
 	public void resetAllIdSets() {
-		currentIdSetKeys.clear();
-		executeUpdateInNewTransaction("delete from reporting_idset");
-
-	}
-
-	private Object executeUniqueResult(String sql) {
-		Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
-		return query.uniqueResult();
-	}
-
-    private void executeUpdateInNewTransaction(String sql) {
-        TransactionStatus tx = transactionManager.getTransaction(new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW));
-        try {
-            Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
-            query.executeUpdate();
-            transactionManager.commit(tx);
-        } catch (Exception ex) {
-            transactionManager.rollback(tx);
-            throw new IllegalStateException("Failed to execute sql: " + sql, ex);
+        synchronized (currentIdSetKeys) {
+            currentIdSetKeys.clear();
+            executeUpdate("delete from reporting_idset");
         }
+	}
+
+    private void executeUpdate(String sql) {
+        Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
+        query.executeUpdate();
     }
 
 	private SessionFactory getSessionFactory() {
