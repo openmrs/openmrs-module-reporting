@@ -211,6 +211,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * @see DefinitionEvaluator#evaluate(Definition, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
 	public Evaluated<T> evaluate(T definition, EvaluationContext context) throws EvaluationException {
 
         context = ObjectUtil.nvl(context, new EvaluationContext());
