@@ -27,7 +27,24 @@ public class IdsetMember implements Serializable {
 
 	public IdsetMember() {}
 
-	public String getKey() {
+    @Override
+    public int hashCode() {
+        int result = 23;
+        result = 37 * result + key.hashCode();
+        result = 37 * result + memberId.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IdsetMember) {
+            IdsetMember that = (IdsetMember)obj;
+            return this.getKey().equals(that.getKey()) && this.getMemberId().equals(that.getMemberId());
+        }
+        return false;
+    }
+
+    public String getKey() {
 		return key;
 	}
 
