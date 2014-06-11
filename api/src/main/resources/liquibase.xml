@@ -369,4 +369,18 @@
 		</createTable>
 	</changeSet>
 
+    <changeSet id="reporting_id_set_2" author="mseaton">
+        <preConditions onFail="MARK_RAN"><not><primaryKeyExists tableName="reporting_idset"/></not></preConditions>
+        <comment>Adding composite primary key to reporting_idset table</comment>
+        <addPrimaryKey tableName="reporting_idset" columnNames="idset_key, member_id" constraintName="reporting_idset_primary_key"/>
+    </changeSet>
+
+    <changeSet id="reporting_id_set_3" author="mseaton">
+        <preConditions onFail="MARK_RAN"><not><indexExists indexName="reporting_idset_key_index"/></not></preConditions>
+        <comment>Adding index on idset_key to reporting_idset table</comment>
+        <createIndex tableName="reporting_idset" unique="false" indexName="reporting_idset_key_index" >
+            <column name="idset_key" />
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
