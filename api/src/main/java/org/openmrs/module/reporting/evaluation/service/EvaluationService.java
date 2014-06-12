@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.evaluation.service;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +54,7 @@ public interface EvaluationService extends OpenmrsService {
 	 * Get the key that can be used to uniquely reference this id set in temporary storage
 	 */
 	@Transactional
-	public String generateKey(Set<Integer> ids);
+	public String generateKey(EvaluationIdSet idSet);
 
 	/**
 	 * Indicate that you require joining against a particular set of ids, and that they
@@ -61,7 +62,7 @@ public interface EvaluationService extends OpenmrsService {
 	 * Returns the key that can be used to reference this id set at a later point in time
 	 */
 	@Transactional
-	public String startUsing(Set<Integer> ids);
+	public String startUsing(EvaluationIdSet idSet);
 
 	/**
 	 * Indicate that you require using the different base id sets contained in the passed EvaluationContext

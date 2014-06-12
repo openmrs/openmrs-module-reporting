@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
@@ -21,6 +20,7 @@ import org.hibernate.SessionFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.openmrs.module.reporting.query.IdSet;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Implementation of the EvaluationService interface
@@ -95,22 +94,20 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 		return ret;
 	}
 
-	/**
-	 * @see EvaluationService#generateKey(Set)
-	 */
-	@Override
-	public String generateKey(Set<Integer> ids) {
-		List<Integer> l = new ArrayList<Integer>(ids);
-		Collections.sort(l);
-		return DigestUtils.shaHex(l.toString());
-	}
+    /**
+     * @see EvaluationService#generateKey(EvaluationIdSet)
+     */
+    @Override
+    public String generateKey(EvaluationIdSet idSet) {
+		return idSet.getEvaluationKey();
+    }
 
 	/**
-	 * @see EvaluationService#startUsing(Set)
+	 * @see EvaluationService#startUsing(EvaluationIdSet)
 	 */
 	@Transactional
 	@Override
-	public String startUsing(Set<Integer> ids) {
+	public String startUsing(EvaluationIdSet ids) {
 		if (ids == null || ids.isEmpty()) {
 			return null;
 		}
@@ -119,7 +116,8 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
             if (isInUse(idSetKey)) {
                 log.debug("Attempting to persist an IdSet that has previously been persisted.  Using existing values.");
                 // TODO: As an additional check here, we could confirm that they are the same by loading into memory
-            } else {
+            }
+            else {
                 StringBuilder q = new StringBuilder();
                 q.append("insert into reporting_idset (idset_key, member_id) values ");
                 for (Iterator<Integer> i = ids.iterator(); i.hasNext(); ) {
@@ -143,7 +141,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 		List<String> idSetsAdded = new ArrayList<String>();
 		for (IdSet<?> idSet : context.getAllBaseIdSets().values()) {
 			if (idSet != null && !idSet.getMemberIds().isEmpty()) {
-				idSetsAdded.add(startUsing(idSet.getMemberIds()));
+				idSetsAdded.add(startUsing(new EvaluationIdSet(context.getEvaluationId(), idSet.getMemberIds())));
 			}
 		}
 		return idSetsAdded;
@@ -184,7 +182,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	public void stopUsing(EvaluationContext context) {
 		for (IdSet<?> idSet : context.getAllBaseIdSets().values()) {
 			if (idSet != null && !idSet.getMemberIds().isEmpty()) {
-				stopUsing(generateKey(idSet.getMemberIds()));
+				stopUsing(generateKey(new EvaluationIdSet(context.getEvaluationId(), idSet.getMemberIds())));
 			}
 		}
 	}
