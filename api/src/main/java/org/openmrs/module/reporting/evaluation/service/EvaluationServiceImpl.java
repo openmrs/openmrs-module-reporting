@@ -20,6 +20,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.openmrs.module.reporting.query.IdSet;
@@ -111,7 +112,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Transactional
 	@Override
 	public String startUsing(Set<Integer> ids) {
-		if (ids == null || ids.isEmpty()) {
+		if (ids == null || ids.isEmpty() || !ReportingConstants.GLOBAL_PROPERTY_IDSET_JOINING_ENABLED()) {
 			return null;
 		}
 		String idSetKey = generateKey(ids);
@@ -119,7 +120,8 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
             if (isInUse(idSetKey)) {
                 log.debug("Attempting to persist an IdSet that has previously been persisted.  Using existing values.");
                 // TODO: As an additional check here, we could confirm that they are the same by loading into memory
-            } else {
+            }
+            else {
                 StringBuilder q = new StringBuilder();
                 q.append("insert into reporting_idset (idset_key, member_id) values ");
                 for (Iterator<Integer> i = ids.iterator(); i.hasNext(); ) {
@@ -143,7 +145,10 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 		List<String> idSetsAdded = new ArrayList<String>();
 		for (IdSet<?> idSet : context.getAllBaseIdSets().values()) {
 			if (idSet != null && !idSet.getMemberIds().isEmpty()) {
-				idSetsAdded.add(startUsing(idSet.getMemberIds()));
+				String key = startUsing(idSet.getMemberIds());
+				if (key != null) {
+					idSetsAdded.add(key);
+				}
 			}
 		}
 		return idSetsAdded;
@@ -165,15 +170,19 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Transactional
 	@Override
 	public void stopUsing(String idSetKey) {
-        synchronized (currentIdSetKeys) {
-            int indexToRemove = currentIdSetKeys.lastIndexOf(idSetKey);
-            currentIdSetKeys.remove(indexToRemove);
-            if (!currentIdSetKeys.contains(idSetKey)) {
-                executeUpdate("delete from reporting_idset where idset_key = '" + idSetKey + "'");
-                currentIdSetKeys.remove(idSetKey);
-                log.debug("Deleted idset: " + idSetKey + "; total active: " + currentIdSetKeys.size());
-            }
-        }
+		if (idSetKey != null) {
+			synchronized (currentIdSetKeys) {
+				int indexToRemove = currentIdSetKeys.lastIndexOf(idSetKey);
+				if (indexToRemove != -1) {
+					currentIdSetKeys.remove(indexToRemove);
+				}
+				if (!currentIdSetKeys.contains(idSetKey)) {
+					executeUpdate("delete from reporting_idset where idset_key = '" + idSetKey + "'");
+					currentIdSetKeys.remove(idSetKey);
+					log.debug("Deleted idset: " + idSetKey + "; total active: " + currentIdSetKeys.size());
+				}
+			}
+		}
 	}
 
 	/**

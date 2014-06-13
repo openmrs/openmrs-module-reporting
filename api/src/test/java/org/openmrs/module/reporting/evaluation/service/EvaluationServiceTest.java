@@ -6,11 +6,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Person;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
+import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
@@ -37,6 +40,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 		evaluationService.resetAllIdSets();
+		ReportUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_IDSET_JOINING_ENABLED, "true");
 	}
 
 	@Test
@@ -195,6 +199,18 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 		checkNumIdsPersisted(0);
 	}
 
+	@Test
+	public void startUsing_shouldNotPersistIdSetsIfDisabled() throws Exception {
+		ReportUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_IDSET_JOINING_ENABLED, "false");
+		Set<Integer> idSet1 = new HashSet<Integer>(Arrays.asList(2,7));
+		String key = evaluationService.generateKey(idSet1);
+		checkIdSetMembers(key);
+		evaluationService.startUsing(idSet1);
+		checkIdSetMembers(key);
+		evaluationService.stopUsing(key);
+		checkIdSetMembers(key);
+	}
+
 	protected void checkNumIdsPersisted(int numExpected) {
 		String hql = "select memberId from IdsetMember";
 		List ret = sessionFactory.getCurrentSession().createQuery(hql).list();
@@ -209,6 +225,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 			Assert.assertFalse(evaluationService.isInUse(key));
 		}
 		else {
+			Assert.assertEquals("Expected " + ObjectUtil.format(expectedValues) + " but found " + ret, expectedValues.length, ret.size());
 			for (int i = 0; i < expectedValues.length; i++) {
 				Assert.assertEquals(expectedValues[i], ret.get(i));
 			}

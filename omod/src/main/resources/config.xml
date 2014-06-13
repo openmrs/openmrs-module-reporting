@@ -136,6 +136,11 @@
         <defaultValue></defaultValue>
         <description>Points to a cohort definition representing all test/fake patients that you want to exclude from all queries and reports. You may set this to the UUID of a saved cohort definition, or to "library:keyInADefinitionLibrary"</description>
     </globalProperty>
+    <globalProperty>
+        <property>reporting.idsetJoiningEnabled</property>
+        <defaultValue>true</defaultValue>
+        <description>If false, will disable the built in use of the reporting_idset table to join against base id sets</description>
+    </globalProperty>
 
 	<!--  Advice Points -->
 	<advice>
