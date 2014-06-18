@@ -10,6 +10,7 @@ import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
@@ -19,10 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
@@ -92,9 +91,9 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void generateKey_shouldGenerateUniqueKeysForEachIdSet() throws Exception {
-		Set<Integer> idSet1 = new HashSet<Integer>(Arrays.asList(10,20));
-		Set<Integer> idSet2 = new HashSet<Integer>(Arrays.asList(5,10,15));
-		Set<Integer> idSet3 = new HashSet<Integer>(Arrays.asList(20,10));
+		EvaluationIdSet idSet1 = createIdSet(10,20);
+		EvaluationIdSet idSet2 = createIdSet(5,10,15);
+		EvaluationIdSet idSet3 = createIdSet(20,10);
 
 		Assert.assertEquals(evaluationService.generateKey(idSet1), evaluationService.generateKey(idSet1));
 		Assert.assertNotEquals(evaluationService.generateKey(idSet1), evaluationService.generateKey(idSet2));
@@ -103,7 +102,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void startUsing_shouldPersistIdSetToTemporaryTableWhenYouStartUsingIt() throws Exception {
-		Set<Integer> idSet1 = new HashSet<Integer>(Arrays.asList(2,7));
+		EvaluationIdSet idSet1 = createIdSet(2,7);
 		String key = evaluationService.generateKey(idSet1);
 		checkIdSetMembers(key);
 		evaluationService.startUsing(idSet1);
@@ -114,11 +113,11 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void startUsing_shouldPersistAllIdSetsInEvaluationContext() throws Exception {
-		Set<Integer> pIds = new HashSet<Integer>(Arrays.asList(2,7));
-		String pIdKey = evaluationService.generateKey(pIds);
-
+		List<Integer> pIds = Arrays.asList(2, 7);
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort(pIds));
+
+		String pIdKey = evaluationService.generateKey(new EvaluationIdSet(context.getEvaluationId(), pIds));
 
 		checkIdSetMembers(pIdKey);
 		evaluationService.startUsing(context);
@@ -126,12 +125,14 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 		evaluationService.stopUsing(pIdKey);
 		checkIdSetMembers(pIdKey);
 
-		Set<Integer> encIds = new HashSet<Integer>(Arrays.asList(100,200));
-		String encIdKey = evaluationService.generateKey(encIds);
-
+		List<Integer> encIds = Arrays.asList(100, 200);
 		EncounterEvaluationContext eec = new EncounterEvaluationContext();
 		eec.setBaseCohort(new Cohort(pIds));
 		eec.setBaseEncounters(new EncounterIdSet(encIds));
+
+		pIdKey = evaluationService.generateKey(new EvaluationIdSet(eec.getEvaluationId(), pIds));
+		String encIdKey = evaluationService.generateKey(new EvaluationIdSet(eec.getEvaluationId(), encIds));
+
 		checkIdSetMembers(pIdKey);
 		checkIdSetMembers(encIdKey);
 		evaluationService.startUsing(eec);
@@ -144,7 +145,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void startUsing_shouldNotPersistIdSetToTemporaryTableIfYouAreAlreadyUsingIt() throws Exception {
-		Set<Integer> pIds = new HashSet<Integer>(Arrays.asList(2,7));
+		EvaluationIdSet pIds = createIdSet(2,7);
 		evaluationService.startUsing(pIds);
 		checkNumIdsPersisted(2);
 		evaluationService.startUsing(pIds);
@@ -154,7 +155,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void isInUse_shouldReturnTrueIfIdSetIsInUse() throws Exception {
-		Set<Integer> pIds = new HashSet<Integer>(Arrays.asList(2,7));
+		EvaluationIdSet pIds = createIdSet(2,7);
 		String key = evaluationService.generateKey(pIds);
 		Assert.assertFalse(evaluationService.isInUse(key));
 		evaluationService.startUsing(pIds);
@@ -165,7 +166,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void stopUsing_shouldRemoveIdSetFromTemporaryTableIfEveryoneIsDoneUsingIt() throws Exception {
-		Set<Integer> pIds = new HashSet<Integer>(Arrays.asList(2,7));
+		EvaluationIdSet pIds = createIdSet(2,7);
 		String key = evaluationService.generateKey(pIds);
 		Assert.assertFalse(evaluationService.isInUse(key));
 		evaluationService.startUsing(pIds);
@@ -176,7 +177,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void stopUsing_shouldNotRemoveIdSetFromTemporaryTableIfSomeoneIsUsingIt() throws Exception {
-		Set<Integer> pIds = new HashSet<Integer>(Arrays.asList(2,7));
+		EvaluationIdSet pIds = createIdSet(2,7);
 		String key = evaluationService.generateKey(pIds);
 		Assert.assertFalse(evaluationService.isInUse(key));
 		evaluationService.startUsing(pIds);
@@ -190,9 +191,9 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void resetAllIdSets_shouldRemoveAnyIdSet() throws Exception {
-		evaluationService.startUsing(new HashSet<Integer>(Arrays.asList(2,7)));
-		evaluationService.startUsing(new HashSet<Integer>(Arrays.asList(1,8)));
-		evaluationService.startUsing(new HashSet<Integer>(Arrays.asList(2,7,1,8)));
+		evaluationService.startUsing(createIdSet(2,7));
+		evaluationService.startUsing(createIdSet(1,8));
+		evaluationService.startUsing(createIdSet(2, 7, 1, 8));
 		org.openmrs.test.TestUtil.printOutTableContents(getConnection(), "reporting_idset");
 		checkNumIdsPersisted(8);
 		evaluationService.resetAllIdSets();
@@ -202,10 +203,10 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void startUsing_shouldNotPersistIdSetsIfDisabled() throws Exception {
 		ReportUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_IDSET_JOINING_ENABLED, "false");
-		Set<Integer> idSet1 = new HashSet<Integer>(Arrays.asList(2,7));
-		String key = evaluationService.generateKey(idSet1);
+		EvaluationIdSet idSet = createIdSet(2,7);
+		String key = evaluationService.generateKey(idSet);
 		checkIdSetMembers(key);
-		evaluationService.startUsing(idSet1);
+		evaluationService.startUsing(idSet);
 		checkIdSetMembers(key);
 		evaluationService.stopUsing(key);
 		checkIdSetMembers(key);
@@ -225,11 +226,15 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 			Assert.assertFalse(evaluationService.isInUse(key));
 		}
 		else {
-			Assert.assertEquals("Expected " + ObjectUtil.format(expectedValues) + " but found " + ret, expectedValues.length, ret.size());
+			Assert.assertEquals("Expected " + ObjectUtil.format(expectedValues) + " but only found " + ret, expectedValues.length, ret.size());
 			for (int i = 0; i < expectedValues.length; i++) {
 				Assert.assertEquals(expectedValues[i], ret.get(i));
 			}
 			Assert.assertTrue(evaluationService.isInUse(key));
 		}
+	}
+
+	protected EvaluationIdSet createIdSet(Integer... ids) {
+		return new EvaluationIdSet("TEST", Arrays.asList(ids));
 	}
 }

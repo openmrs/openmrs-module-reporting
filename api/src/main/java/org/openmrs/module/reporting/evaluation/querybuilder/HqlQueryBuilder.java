@@ -1,6 +1,5 @@
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
@@ -15,6 +14,8 @@ import org.openmrs.module.reporting.data.obs.ObsDataUtil;
 import org.openmrs.module.reporting.data.visit.VisitDataUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
+import org.openmrs.module.reporting.evaluation.EvaluationLogger;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.evaluation.service.IdsetMember;
@@ -22,17 +23,7 @@ import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.sql.DatabaseMetaData;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Helper class for building and executing an HQL query with parameters
@@ -53,10 +44,12 @@ public class HqlQueryBuilder implements QueryBuilder {
 	private List<String> columns = new ArrayList<String>();
 	private List<String> joinClauses = new ArrayList<String>();
 	private List<String> clauses = new ArrayList<String>();
-	private Map<String, Set<Integer>> idClauses = new LinkedHashMap<String, Set<Integer>>();
+	private Map<String, EvaluationIdSet> idClauses = new LinkedHashMap<String, EvaluationIdSet>();
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<String> orderBy = new ArrayList<String>();
 	private int positionIndex = 1;
+
+	private String builtQueryString = null;
 
 	//***** CONSTRUCTORS *****
 
@@ -227,7 +220,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	public HqlQueryBuilder wherePatientIn(String propertyName, EvaluationContext context) {
 		if (context != null) {
 			if (context.getBaseCohort() != null) {
-				whereIdIn(propertyName, context.getBaseCohort().getMemberIds());
+				whereIdIn(propertyName, new EvaluationIdSet(context.getEvaluationId(), context.getBaseCohort().getMemberIds()));
 			}
 		}
 		return this;
@@ -250,7 +243,9 @@ public class HqlQueryBuilder implements QueryBuilder {
 					}
 				}
 			}
-			whereIdIn(propertyName, memberIds);
+			if (memberIds != null) {
+				whereIdIn(propertyName, new EvaluationIdSet(context.getEvaluationId(), memberIds));
+			}
 		}
 		return this;
 	}
@@ -258,7 +253,9 @@ public class HqlQueryBuilder implements QueryBuilder {
 	public HqlQueryBuilder whereEncounterIn(String propertyName, EvaluationContext context) {
 		if (context != null) {
 			Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
-			whereIdIn(propertyName, encIds);
+			if (encIds != null) {
+				whereIdIn(propertyName, new EvaluationIdSet(context.getEvaluationId(), encIds));
+			}
 		}
 		return this;
 	}
@@ -266,7 +263,9 @@ public class HqlQueryBuilder implements QueryBuilder {
     public HqlQueryBuilder whereVisitIn(String propertyName, EvaluationContext context) {
         if (context != null) {
             Set<Integer> visitIds = VisitDataUtil.getVisitIdsForContext(context, true);
-            whereIdIn(propertyName, visitIds);
+			if (visitIds != null) {
+				whereIdIn(propertyName, new EvaluationIdSet(context.getEvaluationId(), visitIds));
+			}
         }
         return this;
     }
@@ -274,7 +273,9 @@ public class HqlQueryBuilder implements QueryBuilder {
 	public HqlQueryBuilder whereObsIn(String propertyName, EvaluationContext context) {
 		if (context != null) {
 			Set<Integer> obsIds = ObsDataUtil.getObsIdsForContext(context, true);
-			whereIdIn(propertyName, obsIds);
+			if (obsIds != null) {
+				whereIdIn(propertyName, new EvaluationIdSet(context.getEvaluationId(), obsIds));
+			}
 		}
 		return this;
 	}
@@ -283,10 +284,10 @@ public class HqlQueryBuilder implements QueryBuilder {
 	 * Constrain the passed id property against a set of values.
 	 * This method may only be called once per instance of HqlQueryBuilder.
 	 */
-	protected HqlQueryBuilder whereIdIn(String propertyName, Set<Integer> ids) {
-		if (ids != null) {
+	protected HqlQueryBuilder whereIdIn(String propertyName, EvaluationIdSet evaluationIdSet) {
+		if (evaluationIdSet != null) {
 			if (idClauses.isEmpty()) {
-				idClauses.put(propertyName, ids);
+				idClauses.put(propertyName, evaluationIdSet);
 			}
 			else {
 				throw new IllegalStateException("You can only associate one IdSet per query.");
@@ -390,16 +391,33 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	@Override
 	public List<?> listResults(SessionFactory sessionFactory) {
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
+		List l = null;
 		Query query = buildQuery(sessionFactory);
-		stopWatch.split();
-		log.debug("Query built in: " + stopWatch.toSplitString());
-		List l = query.list();
-		stopWatch.split();
-		log.debug("Query executed in: " + stopWatch.toSplitString());
-		stopWatch.stop();
+		EvaluationLogger.logBeforeEvent("hqlQuery", toString());
+		try {
+			l = query.list();
+		}
+		catch (Exception e) {
+			EvaluationLogger.logAfterEvent("hqlQuery", "Error: " + e.getMessage());
+		}
+		EvaluationLogger.logAfterEvent("hqlQuery", "Execution complete: " + l.size() + " results");
 		return l;
+	}
+
+	@Override
+	public String toString() {
+		if (builtQueryString == null) {
+			return super.toString();
+		}
+		String ret = builtQueryString;
+		for (String paramName : parameters.keySet()) {
+			String paramVal = ObjectUtil.format(parameters.get(paramName));
+			ret = ret.replace(":"+paramName, paramVal);
+		}
+		if (ret.length() > 500) {
+			ret = ret.substring(0, 450) + " <...> " + ret.substring(ret.length() - 50);
+		}
+		return ret;
 	}
 
 	public Query buildQuery(SessionFactory sessionFactory) {
@@ -459,13 +477,10 @@ public class HqlQueryBuilder implements QueryBuilder {
 			q.append(i == 0 ? " order by " : ", ").append(orderBy.get(i));
 		}
 
-		String queryString = q.toString();
-		if (log.isDebugEnabled()) {
-			log.debug("Building query: " + queryString);
-			log.debug("With parameters: " + parameters);
-		}
+		builtQueryString = q.toString();
 
-		Query query = sessionFactory.getCurrentSession().createQuery(queryString);
+		Query query = sessionFactory.getCurrentSession().createQuery(builtQueryString);
+
 		for (Map.Entry<String, Object> e : parameters.entrySet()) {
 			if (e.getValue() instanceof Collection) {
 				query.setParameterList(e.getKey(), (Collection)e.getValue());
@@ -504,7 +519,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 		// First apply any idsets that are empty or that are not persisted to the database
 		for (String idProperty : idClauses.keySet()) {
-			Set<Integer> idSet = idClauses.get(idProperty);
+			EvaluationIdSet idSet = idClauses.get(idProperty);
 			if (idSet.isEmpty()) {
 				where("1=0");
 			}
@@ -536,14 +551,14 @@ public class HqlQueryBuilder implements QueryBuilder {
 				Object[] idSetData = i.next();
 				String idProperty = (String)idSetData[0];
 				String idSetKey = (String)idSetData[1];
-				Set<Integer> idSet = (Set<Integer>)idSetData[2];
+				EvaluationIdSet evaluationIdSet = (EvaluationIdSet)idSetData[2];
 
 				if (subQueriesPreferred) {
 					addSubQueryAgainstIdSetMember(idProperty, idSetKey);
 					i.remove();
 				}
-				else if (idSet.size() <= MAXIMUM_RECOMMENDED_IN_CLAUSE_SIZE) {
-					where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(idSet);
+				else if (evaluationIdSet.size() <= MAXIMUM_RECOMMENDED_IN_CLAUSE_SIZE) {
+					where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(evaluationIdSet);
 					i.remove();
 				}
 			}

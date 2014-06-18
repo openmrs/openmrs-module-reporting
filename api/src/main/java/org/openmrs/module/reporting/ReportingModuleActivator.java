@@ -19,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.DaemonToken;
 import org.openmrs.module.DaemonTokenAware;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.report.task.ReportingTimerTask;
 import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 
@@ -31,20 +32,16 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
 
 	@Override
 	public void started() {
+		resetAllIdSets();
+		ReportingTimerTask.setEnabled(true);
 		log.info("Reporting Module Started...");
 	}
 
 	@Override
 	public void willStop() {
-		// Stop any scheduled tasks
-		for (ReportingTimerTask task : Context.getRegisteredComponents(ReportingTimerTask.class)) {
-			task.cancel();
-		}
-
-		//Some report requests may be running in a task executor so we need to stop them as well.
-		for (RunQueuedReportsTask task : RunQueuedReportsTask.getCurrentlyRunningRequests().values()) {
-			task.cancelTask();
-		}
+		cancelAllScheduledTasks();
+		cancelCurrentlyRunningReportRequests();
+		resetAllIdSets();
 	}
 
 	@Override
@@ -55,5 +52,45 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
 	@Override
 	public void setDaemonToken(DaemonToken token) {
 		ReportingTimerTask.setDaemonToken(token);
+	}
+
+	/**
+	 * Cancels all scheduled tasks
+	 */
+	private void cancelAllScheduledTasks() {
+		for (ReportingTimerTask task : Context.getRegisteredComponents(ReportingTimerTask.class)) {
+			try {
+				task.cancel();
+			}
+			catch (Exception e) {
+				log.warn("An exception occurred while trying to stop reporting task " + task.getTaskClass().getSimpleName(), e);
+			}
+		}
+	}
+
+	/**
+	 * Cancels all currently running report requests
+	 */
+	private void cancelCurrentlyRunningReportRequests() {
+		for (RunQueuedReportsTask task : RunQueuedReportsTask.getCurrentlyRunningRequests().values()) {
+			try {
+				task.cancelTask();
+			}
+			catch (Exception e) {
+				log.warn("An exception occurred while trying to stop currently running reports", e);
+			}
+		}
+	}
+
+	/**
+	 * Clear out the reporting idset table
+	 */
+	private void resetAllIdSets() {
+		try {
+			Context.getService(EvaluationService.class).resetAllIdSets();
+		}
+		catch (Exception e) {
+			log.warn("An exception occurred while trying to reset all id sets", e);
+		}
 	}
 }

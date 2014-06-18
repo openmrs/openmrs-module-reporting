@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.evaluation.service;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,7 @@ public interface EvaluationService extends OpenmrsService {
 	/**
 	 * Evaluates the passed QueryBuilder and returns the results as a List of Object[]
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Object[]> evaluateToList(QueryBuilder queryBuilder);
 
 	/**
@@ -38,7 +39,7 @@ public interface EvaluationService extends OpenmrsService {
 	 * This requires a query that evaluates to exactly one column.  More than one column
 	 * returned will result in an IllegalArgumentException
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public <T> List<T> evaluateToList(QueryBuilder queryBuilder, Class<T> type);
 
 	/**
@@ -46,14 +47,14 @@ public interface EvaluationService extends OpenmrsService {
 	 * This requires a query that evaluates to exactly two columns.  More or less than two columns
 	 * will result in an IllegalArgumentException
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public <K, V> Map<K, V> evaluateToMap(QueryBuilder queryBuilder, Class<K> keyType, Class<V> valueType);
 
 	/**
 	 * Get the key that can be used to uniquely reference this id set in temporary storage
 	 */
 	@Transactional
-	public String generateKey(Set<Integer> ids);
+	public String generateKey(EvaluationIdSet idSet);
 
 	/**
 	 * Indicate that you require joining against a particular set of ids, and that they
@@ -61,7 +62,7 @@ public interface EvaluationService extends OpenmrsService {
 	 * Returns the key that can be used to reference this id set at a later point in time
 	 */
 	@Transactional
-	public String startUsing(Set<Integer> ids);
+	public String startUsing(EvaluationIdSet idSet);
 
 	/**
 	 * Indicate that you require using the different base id sets contained in the passed EvaluationContext
@@ -72,7 +73,6 @@ public interface EvaluationService extends OpenmrsService {
 	/**
 	 * Returns true of an IdSet with the passed idSetKey is already persisted to temporary storage
 	 */
-	@Transactional
 	public boolean isInUse(String idSetKey);
 
 	/**

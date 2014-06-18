@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,6 +55,13 @@ public class EvaluationContext implements PatientCalculationContext {
 	// *******************
 	// PROPERTIES 
 	// *******************
+
+    /**
+     * Internally used to refer to the evaluation context instances used for a particular evaluation.
+     * This will be set when an evaluation context is constructed, and copied through to child
+     * evaluation contexts when nested definitions are evaluated.
+     */
+    private String evaluationId;
 	
 	// Set a limit on the number of rows to evaluate 
 	private Integer limit;
@@ -89,6 +97,7 @@ public class EvaluationContext implements PatientCalculationContext {
 	 */
 	public EvaluationContext(Date evaluationDate) {
 		this.evaluationDate = evaluationDate;
+        this.evaluationId = UUID.randomUUID().toString();
 		addContextValue("now", evaluationDate);
 		addContextValue("start_of_today", DateUtil.getStartOfDay(evaluationDate));
 		addContextValue("end_of_today", DateUtil.getEndOfDay(evaluationDate));
@@ -102,6 +111,7 @@ public class EvaluationContext implements PatientCalculationContext {
 	 * Constructs a new EvaluationContext given the passed EvaluationContext
 	 */
 	public EvaluationContext(EvaluationContext context) {
+        this.evaluationId = context.getEvaluationId();
 		this.setEvaluationDate(context.getEvaluationDate());
 		this.setLimit(context.getLimit());
 		this.setBaseCohort(context.getBaseCohort());
@@ -165,7 +175,7 @@ public class EvaluationContext implements PatientCalculationContext {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(getClass().getSimpleName()+"[evaluationDate=" + evaluationDate);
+		sb.append(getClass().getSimpleName()+"-"+evaluationId+"[evaluationDate=" + evaluationDate);
 		for (Map.Entry<String, Object> e : getParameterValues().entrySet()) {
 			if (e.getValue() != null)
 				sb.append("," + e.getKey() + "->" + e.getValue() + " (" + e.getValue().getClass().getSimpleName() + ")");
@@ -378,5 +388,11 @@ public class EvaluationContext implements PatientCalculationContext {
 		clearCache();
 		this.evaluationDate = evaluationDate;
 	}
-	
+
+	/**
+	 * @return the evaluationId
+	 */
+    public String getEvaluationId() {
+        return evaluationId;
+    }
 }

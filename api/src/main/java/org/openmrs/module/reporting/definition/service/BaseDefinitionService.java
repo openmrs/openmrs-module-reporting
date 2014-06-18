@@ -33,6 +33,7 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.EvaluationLogger;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -325,7 +326,18 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	protected Evaluated<T> executeEvaluator(DefinitionEvaluator<T> evaluator, T definition, EvaluationContext context) throws EvaluationException {
 		List<String> ownedIdSets = Context.getService(EvaluationService.class).startUsing(context);
 		try {
-			return evaluator.evaluate(definition, context);
+			EvaluationLogger.logBeforeEvent("executeEvaluator", DefinitionUtil.format(definition));
+			Evaluated<T> ret = evaluator.evaluate(definition, context);
+			EvaluationLogger.logAfterEvent("executeEvaluator", "Evaluation complete.");
+			return ret;
+		}
+		catch (EvaluationException e) {
+			EvaluationLogger.logAfterEvent("executeEvaluator", "Error: " + e.getMessage());
+			throw e;
+		}
+		catch (RuntimeException e) {
+			EvaluationLogger.logAfterEvent("executeEvaluator", "Error: " + e.getMessage());
+			throw e;
 		}
 		finally {
 			for (String idSetKey : ownedIdSets) {

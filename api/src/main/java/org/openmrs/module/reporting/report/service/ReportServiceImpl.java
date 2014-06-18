@@ -61,7 +61,6 @@ import java.util.Vector;
  */
 public class ReportServiceImpl extends BaseOpenmrsService implements ReportService {
 
-	private static final String REPORT_RESULTS_DIR = "REPORT_RESULTS";
 	public static final String GENERATED_BY = "generatedBy";
 	public static final String GENERATION_DATE = "generationDate";
 	
@@ -302,7 +301,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see ReportService#getReportDataFile(ReportRequest)
 	 */
 	public File getReportDataFile(ReportRequest request) {
-		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
 		return new File(dir, request.getUuid() + ".reportdata.gz");
 	}
 	
@@ -310,7 +309,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see ReportService#getReportErrorFile(ReportRequest)
 	 */
 	public File getReportErrorFile(ReportRequest request) {
-		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
 		return new File(dir, request.getUuid() + ".reporterror");
 	}
 	
@@ -318,7 +317,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see ReportService#getReportOutputFile(ReportRequest)
 	 */
 	public File getReportOutputFile(ReportRequest request) {
-		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
 		return new File(dir, request.getUuid() + ".reportoutput");
 	}
 	
@@ -326,7 +325,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see ReportService#getReportOutputFile(ReportRequest)
 	 */
 	public File getReportLogFile(ReportRequest request) {
-		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(REPORT_RESULTS_DIR);
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
 		return new File(dir, request.getUuid() + ".reportlog");
 	}
 	
