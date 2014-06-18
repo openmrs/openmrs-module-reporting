@@ -1,6 +1,5 @@
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
@@ -16,6 +15,7 @@ import org.openmrs.module.reporting.data.visit.VisitDataUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
+import org.openmrs.module.reporting.evaluation.EvaluationLogger;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.evaluation.service.IdsetMember;
@@ -48,6 +48,8 @@ public class HqlQueryBuilder implements QueryBuilder {
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<String> orderBy = new ArrayList<String>();
 	private int positionIndex = 1;
+
+	private String builtQueryString = null;
 
 	//***** CONSTRUCTORS *****
 
@@ -389,16 +391,33 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	@Override
 	public List<?> listResults(SessionFactory sessionFactory) {
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
+		List l = null;
 		Query query = buildQuery(sessionFactory);
-		stopWatch.split();
-		log.debug("Query built in: " + stopWatch.toSplitString());
-		List l = query.list();
-		stopWatch.split();
-		log.debug("Query executed in: " + stopWatch.toSplitString());
-		stopWatch.stop();
+		EvaluationLogger.logBeforeEvent("hqlQuery", toString());
+		try {
+			l = query.list();
+		}
+		catch (Exception e) {
+			EvaluationLogger.logAfterEvent("hqlQuery", "Error: " + e.getMessage());
+		}
+		EvaluationLogger.logAfterEvent("hqlQuery", "Execution complete: " + l.size() + " results");
 		return l;
+	}
+
+	@Override
+	public String toString() {
+		if (builtQueryString == null) {
+			return super.toString();
+		}
+		String ret = builtQueryString;
+		for (String paramName : parameters.keySet()) {
+			String paramVal = ObjectUtil.format(parameters.get(paramName));
+			ret = ret.replace(":"+paramName, paramVal);
+		}
+		if (ret.length() > 500) {
+			ret = ret.substring(0, 450) + " <...> " + ret.substring(ret.length() - 50);
+		}
+		return ret;
 	}
 
 	public Query buildQuery(SessionFactory sessionFactory) {
@@ -458,13 +477,10 @@ public class HqlQueryBuilder implements QueryBuilder {
 			q.append(i == 0 ? " order by " : ", ").append(orderBy.get(i));
 		}
 
-		String queryString = q.toString();
-		if (log.isDebugEnabled()) {
-			log.debug("Building query: " + queryString);
-			log.debug("With parameters: " + parameters);
-		}
+		builtQueryString = q.toString();
 
-		Query query = sessionFactory.getCurrentSession().createQuery(queryString);
+		Query query = sessionFactory.getCurrentSession().createQuery(builtQueryString);
+
 		for (Map.Entry<String, Object> e : parameters.entrySet()) {
 			if (e.getValue() instanceof Collection) {
 				query.setParameterList(e.getKey(), (Collection)e.getValue());

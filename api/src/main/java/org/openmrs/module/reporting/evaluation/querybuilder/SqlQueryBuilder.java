@@ -1,13 +1,14 @@
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.Cohort;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.evaluation.EvaluationLogger;
 import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -29,6 +30,8 @@ public class SqlQueryBuilder implements QueryBuilder {
 
 	private StringBuilder query = new StringBuilder();
 	private Map<String, Object> parameters = new HashMap<String, Object>();
+
+	private String builtQueryString = null;
 
 	//***** CONSTRUCTORS *****
 
@@ -86,25 +89,40 @@ public class SqlQueryBuilder implements QueryBuilder {
 
 	@Override
 	public List<?> listResults(SessionFactory sessionFactory) {
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
+		List l = null;
 		Query query = buildQuery(sessionFactory);
-		stopWatch.split();
-		log.debug("Query built in: " + stopWatch.toSplitString());
-		List l = query.list();
-		stopWatch.split();
-		log.debug("Query executed in: " + stopWatch.toSplitString());
-		stopWatch.stop();
+		EvaluationLogger.logBeforeEvent("sqlQuery", toString());
+		try {
+			l = query.list();
+		}
+		catch (Exception e) {
+			EvaluationLogger.logAfterEvent("sqlQuery", "Error: " + e.getMessage());
+		}
+		EvaluationLogger.logAfterEvent("sqlQuery", "Execution complete: " + l.size() + " results");
 		return l;
+	}
+
+	@Override
+	public String toString() {
+		if (builtQueryString == null) {
+			return super.toString();
+		}
+		String ret = builtQueryString;
+		for (String paramName : parameters.keySet()) {
+			String paramVal = ObjectUtil.format(normalizeParameterValue(parameters.get(paramName)));
+			ret = ret.replace(":"+paramName, paramVal);
+		}
+		if (ret.length() > 500) {
+			ret = ret.substring(0, 450) + " <...> " + ret.substring(ret.length() - 50);
+		}
+		return ret;
 	}
 
 	public Query buildQuery(SessionFactory sessionFactory) {
 
-		String queryString = preProcessQuery();
-		log.debug("Building query: " + queryString);
-		log.debug("With parameters: " + getParameters());
+		builtQueryString = preProcessQuery();
 
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(queryString);
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(builtQueryString);
 		for (Map.Entry<String, Object> e : getParameters().entrySet()) {
 			Object value = normalizeParameterValue(e.getValue());
 			if (value instanceof Collection) {

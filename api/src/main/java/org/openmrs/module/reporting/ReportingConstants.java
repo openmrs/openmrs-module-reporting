@@ -69,6 +69,10 @@ public class ReportingConstants implements GlobalPropertyListener {
 	public static final Parameter END_DATE_PARAMETER = new Parameter("endDate", "End date", Date.class);
 	public static final Parameter LOCATION_PARAMETER = new Parameter("location", "Location", Location.class);
 
+	// Directories used by the module
+	public static final String REPORT_RESULTS_DIRECTORY_NAME = "REPORT_RESULTS";
+	public static final String EVALUATION_LOG_DIRECTORY_NAME = "EVALUATION_LOGS";
+
     // Global property accessor methods
 	
 	public static final List<PatientIdentifierType> GLOBAL_PROPERTY_PREFERRED_IDENTIFIER_TYPES() {
