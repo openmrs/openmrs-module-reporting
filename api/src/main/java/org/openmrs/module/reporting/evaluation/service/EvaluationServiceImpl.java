@@ -23,7 +23,11 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.openmrs.module.reporting.query.IdSet;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,10 +44,23 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	private transient Log log = LogFactory.getLog(this.getClass());
 	private final List<String> currentIdSetKeys = Collections.synchronizedList(new ArrayList<String>());
 
+
+	/**
+	 * Since we need to insert/delete into the reporting_idset tables even during the course of read-only transactions,
+	 * (and we need this to be committed as quickly as possible to avoid deadlocks due to table locking), we
+	 * programmatically open and close the smallest possible transaction
+	 */
+	private PlatformTransactionManager transactionManager;
+
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
     /**
 	 * @see EvaluationService#evaluateToList(QueryBuilder)
 	 */
 	@Override
+	@Transactional(readOnly = true)
 	public List<Object[]> evaluateToList(QueryBuilder queryBuilder) {
 		List<Object[]> ret = new ArrayList<Object[]>();
 		for (Object resultRow : queryBuilder.listResults(getSessionFactory())) {
@@ -61,6 +78,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	 * @see EvaluationService#evaluateToList(QueryBuilder, Class)
 	 */
 	@Override
+	@Transactional(readOnly = true)
 	public <T> List<T> evaluateToList(QueryBuilder queryBuilder, Class<T> type) {
 		List<T> ret = new ArrayList<T>();
 		for (Object resultRow : queryBuilder.listResults(getSessionFactory())) {
@@ -76,6 +94,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	 * @see EvaluationService#evaluateToMap(QueryBuilder, Class, Class)
 	 */
 	@Override
+	@Transactional(readOnly = true)
 	public <K, V> Map<K, V> evaluateToMap(QueryBuilder queryBuilder, Class<K> keyType, Class<V> valueType) {
 		Map<K, V> ret = new HashMap<K, V>();
 		for (Object resultRow : queryBuilder.listResults(getSessionFactory())) {
@@ -113,8 +132,9 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 		}
 		String idSetKey = generateKey(ids);
         synchronized (currentIdSetKeys) {
+			log.debug("Start using: " + idSetKey);
             if (isInUse(idSetKey)) {
-                log.debug("Attempting to persist an IdSet that has previously been persisted.  Using existing values.");
+				log.debug("Attempting to persist an IdSet that has previously been persisted.  Using existing values.");
                 // TODO: As an additional check here, we could confirm that they are the same by loading into memory
             }
             else {
@@ -124,10 +144,12 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
                     Integer id = i.next();
                     q.append("('").append(idSetKey).append("',").append(id).append(")").append(i.hasNext() ? "," : "");
                 }
+				log.debug("Executing idset insert: " + idSetKey);
                 executeUpdate(q.toString());
-                log.debug("Persisted idset: " + idSetKey + "; size: " + ids.size() + "; total active: " + currentIdSetKeys.size());
+				log.debug("Persisted idset: " + idSetKey + "; size: " + ids.size() + "; total active: " + currentIdSetKeys.size());
             }
             currentIdSetKeys.add(idSetKey);
+			log.debug("End Start using: " + idSetKey);
         }
 		return idSetKey;
 	}
@@ -164,13 +186,16 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Override
 	public void stopUsing(String idSetKey) {
         synchronized (currentIdSetKeys) {
+			log.debug("Stop using: " + idSetKey);
             int indexToRemove = currentIdSetKeys.lastIndexOf(idSetKey);
             currentIdSetKeys.remove(indexToRemove);
             if (!currentIdSetKeys.contains(idSetKey)) {
+				log.debug("Executing idset delete: " + idSetKey);
                 executeUpdate("delete from reporting_idset where idset_key = '" + idSetKey + "'");
                 currentIdSetKeys.remove(idSetKey);
-                log.debug("Deleted idset: " + idSetKey + "; total active: " + currentIdSetKeys.size());
+				log.debug("Deleted idset: " + idSetKey + "; total active: " + currentIdSetKeys.size());
             }
+			log.debug("End Stop using: " + idSetKey);
         }
 	}
 
@@ -200,9 +225,17 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	}
 
     private void executeUpdate(String sql) {
-        Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
-        query.executeUpdate();
-    }
+		TransactionStatus tx = transactionManager.getTransaction(new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW));
+		try {
+			Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
+			query.executeUpdate();
+			transactionManager.commit(tx);
+		}
+		catch (Exception ex) {
+			transactionManager.rollback(tx);
+			throw new IllegalStateException("Failed to execute sql: " + sql, ex);
+		}
+	}
 
 	private SessionFactory getSessionFactory() {
 		return Context.getRegisteredComponents(SessionFactory.class).get(0);

@@ -31,7 +31,7 @@ public interface EvaluationService extends OpenmrsService {
 	/**
 	 * Evaluates the passed QueryBuilder and returns the results as a List of Object[]
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Object[]> evaluateToList(QueryBuilder queryBuilder);
 
 	/**
@@ -39,7 +39,7 @@ public interface EvaluationService extends OpenmrsService {
 	 * This requires a query that evaluates to exactly one column.  More than one column
 	 * returned will result in an IllegalArgumentException
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public <T> List<T> evaluateToList(QueryBuilder queryBuilder, Class<T> type);
 
 	/**
@@ -47,7 +47,7 @@ public interface EvaluationService extends OpenmrsService {
 	 * This requires a query that evaluates to exactly two columns.  More or less than two columns
 	 * will result in an IllegalArgumentException
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public <K, V> Map<K, V> evaluateToMap(QueryBuilder queryBuilder, Class<K> keyType, Class<V> valueType);
 
 	/**
@@ -73,7 +73,6 @@ public interface EvaluationService extends OpenmrsService {
 	/**
 	 * Returns true of an IdSet with the passed idSetKey is already persisted to temporary storage
 	 */
-	@Transactional
 	public boolean isInUse(String idSetKey);
 
 	/**

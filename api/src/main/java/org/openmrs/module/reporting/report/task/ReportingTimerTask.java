@@ -15,6 +15,7 @@ public class ReportingTimerTask extends TimerTask {
 	
 	private final Log log = LogFactory.getLog(getClass());
 	private static DaemonToken daemonToken;
+	private static boolean enabled = false;
 	private ReportingTask task;
 
 	//***** PROPERTIES THAT NEED TO BE SET ON EACH INSTANCE
@@ -27,11 +28,11 @@ public class ReportingTimerTask extends TimerTask {
 	 */
 	@Override
 	public final void run() {
-		if (daemonToken != null) {
+		if (daemonToken != null && enabled) {
 			createAndRunTask();
 		}
 		else {
-			log.warn("Not running scheduled task as DaemonToken is null.");
+			log.debug("Not running scheduled task. DaemonToken = " + daemonToken + "; enabled = " + enabled);
 		}
 	}
 
@@ -81,5 +82,13 @@ public class ReportingTimerTask extends TimerTask {
 	 */
 	public static void setDaemonToken(DaemonToken token) {
 		daemonToken = token;
+	}
+
+	public static boolean isEnabled() {
+		return enabled;
+	}
+
+	public static void setEnabled(boolean enabled) {
+		ReportingTimerTask.enabled = enabled;
 	}
 }
