@@ -25,13 +25,11 @@ import java.util.List;
 /**
  * Base Implementation of the ReportService API
  */
-@Transactional
 public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDefinition> implements ReportDefinitionService {
 	
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	@Transactional(readOnly=true)
 	public Class<ReportDefinition> getDefinitionType() {
 		return ReportDefinition.class;
 	}
@@ -39,7 +37,6 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see DefinitionService#getDefinitionTypes()
 	 */
-	@Transactional(readOnly=true)
 	public List<Class<? extends ReportDefinition>> getDefinitionTypes() {
 		List<Class<? extends ReportDefinition>> ret = new ArrayList<Class<? extends ReportDefinition>>();
 		ret.add(ReportDefinition.class);
@@ -99,6 +96,7 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see DefinitionService#getDefinitions(String, boolean)
 	 */
+	@Transactional(readOnly=true)
 	public List<ReportDefinition> getDefinitions(String name, boolean exactMatchOnly) {
 		return getService().getDefinitions(ReportDefinition.class, name, exactMatchOnly);
 	}
@@ -134,7 +132,6 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/** 
 	 * @see ReportDefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly=true)
 	@Override
 	public ReportData evaluate(Mapped<? extends ReportDefinition> definition, EvaluationContext context) throws EvaluationException {
 		return (ReportData) super.evaluate(definition, context);
@@ -143,7 +140,6 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 	/**
 	 * @see ReportDefinitionService#evaluate(ReportDefinition, EvaluationContext)
 	 */
-	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
 	public ReportData evaluate(ReportDefinition definition, EvaluationContext context) throws EvaluationException {
 		return (ReportData) super.evaluate(definition, context);

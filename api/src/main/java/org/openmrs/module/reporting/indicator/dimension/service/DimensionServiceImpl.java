@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Base Implementation of DimensionService
  */
-@Transactional
 public class DimensionServiceImpl extends BaseDefinitionService<Dimension> implements DimensionService {
 
 	protected static Log log = LogFactory.getLog(DimensionServiceImpl.class);

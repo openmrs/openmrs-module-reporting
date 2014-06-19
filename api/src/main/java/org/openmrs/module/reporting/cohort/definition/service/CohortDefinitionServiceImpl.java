@@ -21,18 +21,15 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *  Base Implementation of the CohortDefinitionService API
  */
-@Transactional
 public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDefinition> implements CohortDefinitionService {
 	
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	@Transactional(readOnly = true)
 	public Class<CohortDefinition> getDefinitionType() {
 		return CohortDefinition.class;
 	}
@@ -40,25 +37,22 @@ public class CohortDefinitionServiceImpl extends BaseDefinitionService<CohortDef
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws EvaluationException {
 		return (EvaluatedCohort)super.evaluate(definition, context);
 	}
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	@Override
 	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException {
 		return (EvaluatedCohort)super.evaluate(definition, context);
 	}
 
     /**
-     * @see CohortDefinitionService#evaluateBypassingExclusionOfTestPatients(org.openmrs.module.reporting.cohort.definition.CohortDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+     * @see CohortDefinitionService#evaluateBypassingExclusionOfTestPatients(CohortDefinition, EvaluationContext)
      */
-    @Transactional(readOnly = true)
     @Override
     public EvaluatedCohort evaluateBypassingExclusionOfTestPatients(CohortDefinition definition, EvaluationContext context) throws EvaluationException {
         return (EvaluatedCohort) super.evaluateBypassingExclusionOfTestPatients(definition, context);

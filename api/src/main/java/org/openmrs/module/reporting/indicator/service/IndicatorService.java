@@ -20,23 +20,19 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Contains methods pertaining to creating/updating/deleting/retiring/registering/evaluating Indicators
  */
-@Transactional
 public interface IndicatorService extends DefinitionService<Indicator> {
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public IndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException;
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public IndicatorResult evaluate(Mapped<? extends Indicator> indicator, EvaluationContext context) throws EvaluationException;
 }

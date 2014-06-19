@@ -20,24 +20,20 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Interface for methods used to manage and evaluate CohortDefinitions
  */
-@Transactional
 public interface CohortDefinitionService extends DefinitionService<CohortDefinition> {
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException;
 
     /**
@@ -47,13 +43,7 @@ public interface CohortDefinitionService extends DefinitionService<CohortDefinit
      * This method performs the logic of the evaluate method, but it bypasses the logic to exclude test patients. This
      * is used internally by the reporting framework in special cases, e.g. to determine <em>which</em> patients are
      * test patients.
-     *
-     * @param definition
-     * @param context
-     * @return
-     * @throws EvaluationException
      */
-    @Transactional(readOnly = true)
     public EvaluatedCohort evaluateBypassingExclusionOfTestPatients(CohortDefinition definition, EvaluationContext context) throws EvaluationException;
 
 }

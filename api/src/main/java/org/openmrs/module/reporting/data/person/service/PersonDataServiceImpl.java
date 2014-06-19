@@ -21,7 +21,6 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *  Base Implementation of the PersonDataService API
@@ -31,7 +30,6 @@ public class PersonDataServiceImpl extends BaseDefinitionService<PersonDataDefin
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	@Transactional(readOnly = true)
 	public Class<PersonDataDefinition> getDefinitionType() {
 		return PersonDataDefinition.class;
 	}
@@ -40,7 +38,6 @@ public class PersonDataServiceImpl extends BaseDefinitionService<PersonDataDefin
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 * @should evaluate a person data definition
 	 */
-	@Transactional(readOnly = true)
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
 			return new EvaluatedPersonData(definition, context);
@@ -49,9 +46,8 @@ public class PersonDataServiceImpl extends BaseDefinitionService<PersonDataDefin
 	}
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public EvaluatedPersonData evaluate(Mapped<? extends PersonDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException {
 		return (EvaluatedPersonData)super.evaluate(mappedDefinition, context);
 	}

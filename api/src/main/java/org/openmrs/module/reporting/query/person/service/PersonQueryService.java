@@ -20,23 +20,19 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Interface for methods used to manage and evaluate CohortDefinitions
  */
-@Transactional
 public interface PersonQueryService extends DefinitionService<PersonQuery> {
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public PersonQueryResult evaluate(PersonQuery query, EvaluationContext context) throws EvaluationException;
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public PersonQueryResult evaluate(Mapped<? extends PersonQuery> mappedQuery, EvaluationContext context) throws EvaluationException;
 }

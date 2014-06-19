@@ -20,23 +20,19 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Interface for methods used to manage and evaluate CohortDefinitions
+ * Interface for methods used to manage and evaluate PatientDataDefinitions
  */
-@Transactional
 public interface PatientDataService extends DefinitionService<PatientDataDefinition> {
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public EvaluatedPatientData evaluate(Mapped<? extends PatientDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException;
 }

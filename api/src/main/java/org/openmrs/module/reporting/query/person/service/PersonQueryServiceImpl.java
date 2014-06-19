@@ -21,7 +21,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *  Base Implementation of the PersonQueryService API
@@ -31,7 +30,6 @@ public class PersonQueryServiceImpl extends BaseDefinitionService<PersonQuery> i
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	@Transactional(readOnly = true)
 	public Class<PersonQuery> getDefinitionType() {
 		return PersonQuery.class;
 	}
@@ -40,15 +38,13 @@ public class PersonQueryServiceImpl extends BaseDefinitionService<PersonQuery> i
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 * @should evaluate a person query
 	 */
-	@Transactional(readOnly = true)
 	public PersonQueryResult evaluate(PersonQuery query, EvaluationContext context) throws EvaluationException {
 		return (PersonQueryResult)super.evaluate(query, context);
 	}
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public PersonQueryResult evaluate(Mapped<? extends PersonQuery> mappedQuery, EvaluationContext context) throws EvaluationException {
 		return (PersonQueryResult)super.evaluate(mappedQuery, context);
 	}
