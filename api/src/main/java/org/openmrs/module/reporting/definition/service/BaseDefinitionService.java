@@ -324,12 +324,21 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * actual evaluators.  Examples might include running the evaluators in batches, etc
 	 */
 	protected Evaluated<T> executeEvaluator(DefinitionEvaluator<T> evaluator, T definition, EvaluationContext context) throws EvaluationException {
-		List<String> ownedIdSets = Context.getService(EvaluationService.class).startUsing(context);
+		Evaluated<T> ret = null;
 		try {
 			EvaluationLogger.logBeforeEvent("executeEvaluator", DefinitionUtil.format(definition));
-			Evaluated<T> ret = evaluator.evaluate(definition, context);
-			EvaluationLogger.logAfterEvent("executeEvaluator", "Evaluation complete.");
-			return ret;
+			List<String> ownedIdSets = null;
+			try {
+				ownedIdSets = Context.getService(EvaluationService.class).startUsing(context);
+				ret = evaluator.evaluate(definition, context);
+			}
+			finally {
+				if (ownedIdSets != null) {
+					for (String idSetKey : ownedIdSets) {
+						Context.getService(EvaluationService.class).stopUsing(idSetKey);
+					}
+				}
+			}
 		}
 		catch (EvaluationException e) {
 			EvaluationLogger.logAfterEvent("executeEvaluator", "Error: " + e.getMessage());
@@ -339,11 +348,8 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 			EvaluationLogger.logAfterEvent("executeEvaluator", "Error: " + e.getMessage());
 			throw e;
 		}
-		finally {
-			for (String idSetKey : ownedIdSets) {
-				Context.getService(EvaluationService.class).stopUsing(idSetKey);
-			}
-		}
+		EvaluationLogger.logAfterEvent("executeEvaluator", "Evaluation complete.");
+		return ret;
 	}
 	
 	/**

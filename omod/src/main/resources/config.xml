@@ -141,6 +141,12 @@
         <defaultValue>true</defaultValue>
         <description>If false, will disable the built in use of the reporting_idset table to join against base id sets</description>
     </globalProperty>
+    <globalProperty>
+        <property>reporting.evaluationLoggerEnabled</property>
+        <defaultValue>true</defaultValue>
+        <description>If false, will disable the built in use of the evaluation logger to log evaluation information for performance diagnostics</description>
+    </globalProperty>
+
 
 	<!--  Advice Points -->
 	<advice>

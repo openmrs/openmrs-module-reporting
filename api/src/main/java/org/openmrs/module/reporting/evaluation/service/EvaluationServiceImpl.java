@@ -22,6 +22,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
+import org.openmrs.module.reporting.evaluation.EvaluationLogger;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.openmrs.module.reporting.query.IdSet;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -128,30 +129,41 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Transactional
 	@Override
 	public String startUsing(EvaluationIdSet ids) {
-		if (ids == null || ids.isEmpty() || !ReportingConstants
-				.GLOBAL_PROPERTY_IDSET_JOINING_ENABLED()) {
+		if (ids == null || ids.isEmpty() || !ReportingConstants.GLOBAL_PROPERTY_IDSET_JOINING_ENABLED()) {
 			return null;
 		}
 		String idSetKey = generateKey(ids);
         synchronized (currentIdSetKeys) {
-			log.debug("Start using: " + idSetKey);
-            if (isInUse(idSetKey)) {
-                log.debug("Attempting to persist an IdSet that has previously been persisted.  Using existing values.");
-                // TODO: As an additional check here, we could confirm that they are the same by loading into memory
-            }
-            else {
-                StringBuilder q = new StringBuilder();
-                q.append("insert into reporting_idset (idset_key, member_id) values ");
-                for (Iterator<Integer> i = ids.iterator(); i.hasNext(); ) {
-                    Integer id = i.next();
-                    q.append("('").append(idSetKey).append("',").append(id).append(")").append(i.hasNext() ? "," : "");
-                }
-				log.debug("Executing idset insert: " + idSetKey);
-                executeUpdate(q.toString());
-				log.debug("Persisted idset: " + idSetKey + "; size: " + ids.size() + "; total active: " + currentIdSetKeys.size());
-            }
-            currentIdSetKeys.add(idSetKey);
-			log.debug("End Start using: " + idSetKey);
+			EvaluationLogger.logBeforeEvent("startUsingIdSet", idSetKey);
+			try {
+				if (isInUse(idSetKey)) {
+					log.debug("Attempting to persist an IdSet that has previously been persisted.  Using existing values.");
+					Query testQuery = getSessionFactory().getCurrentSession().createSQLQuery("select count(*) from reporting_idset where idset_key = '" + idSetKey + "'");
+					Object testQueryResult = testQuery.uniqueResult();
+					if (!testQueryResult.toString().equals(Integer.toString(ids.size()))) {
+						throw new IllegalStateException("***** EXPECTED " + ids.size() + " IN THE DB, BUT QUERY RETURNED " + testQueryResult);
+					}
+					// TODO: As an additional check here, we could confirm that they are the same by loading into memory
+				} else {
+					StringBuilder q = new StringBuilder();
+					q.append("insert into reporting_idset (idset_key, member_id) values ");
+					for (Iterator<Integer> i = ids.iterator(); i.hasNext(); ) {
+						Integer id = i.next();
+						q.append("('").append(idSetKey).append("',").append(id).append(")").append(i.hasNext() ? "," : "");
+					}
+					EvaluationLogger.logBeforeEvent("insertIdSet", idSetKey + "; size: " + ids.size());
+					try {
+						executeUpdate(q.toString());
+					}
+					finally {
+						EvaluationLogger.logAfterEvent("insertIdSet", idSetKey);
+					}
+				}
+				currentIdSetKeys.add(idSetKey);
+			}
+			finally {
+				EvaluationLogger.logAfterEvent("startUsingIdSet", idSetKey);
+			}
         }
 		return idSetKey;
 	}
@@ -192,18 +204,26 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	public void stopUsing(String idSetKey) {
 		if (idSetKey != null) {
 			synchronized (currentIdSetKeys) {
-				log.debug("Stop using: " + idSetKey);
-				int indexToRemove = currentIdSetKeys.lastIndexOf(idSetKey);
-				if (indexToRemove != -1) {
-					currentIdSetKeys.remove(indexToRemove);
+				EvaluationLogger.logBeforeEvent("stopUsingIdSet", idSetKey);
+				try {
+					int indexToRemove = currentIdSetKeys.lastIndexOf(idSetKey);
+					if (indexToRemove != -1) {
+						currentIdSetKeys.remove(indexToRemove);
+					}
+					if (!currentIdSetKeys.contains(idSetKey)) {
+						EvaluationLogger.logBeforeEvent("deleteIdSet", idSetKey);
+						try {
+							executeUpdate("delete from reporting_idset where idset_key = '" + idSetKey + "'");
+							currentIdSetKeys.remove(idSetKey);
+						}
+						finally {
+							EvaluationLogger.logAfterEvent("deleteIdSet", idSetKey);
+						}
+					}
 				}
-				if (!currentIdSetKeys.contains(idSetKey)) {
-					log.debug("Executing idset delete: " + idSetKey);
-					executeUpdate("delete from reporting_idset where idset_key = '" + idSetKey + "'");
-					currentIdSetKeys.remove(idSetKey);
-					log.debug("Deleted idset: " + idSetKey + "; total active: " + currentIdSetKeys.size());
+				finally {
+					EvaluationLogger.logAfterEvent("stopUsingIdSet", idSetKey);
 				}
-				log.debug("End Stop using: " + idSetKey);
 			}
 		}
 	}

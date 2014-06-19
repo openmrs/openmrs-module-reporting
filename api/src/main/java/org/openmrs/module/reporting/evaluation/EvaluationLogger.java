@@ -40,53 +40,77 @@ import java.util.Date;
  */
 public class EvaluationLogger {
 
-	//***** STATIC *****
+	//***** STATIC VARIABLES *****
 
+	public static final String EVALUATION_LOG_FILE_PREFIX = "evaluation-";
 	protected static final Log log = LogFactory.getLog(EvaluationLogger.class);
-	private static ThreadLocal<EvaluationLogger> activeEvaluations = new ThreadLocal<EvaluationLogger>();
-	private static ThreadLocal<Integer> numNestedEvaluations = new ThreadLocal<Integer>();
+	private static ThreadLocal<EvaluationLog> activeEvaluations = new ThreadLocal<EvaluationLog>();
 	private static long nextEvaluationLoggerId = 1;
 
+	//***** PUBLIC STATIC METHODS *****
+
+	/**
+	 * This method should be invoked just before the event that you wish to log information about.
+	 * This method should never be used on it's own, but should always be called in conjunction with a
+	 * subsequent call to logAfterEvent(String, String)
+	 */
 	public static void logBeforeEvent(String eventCode, String message) {
-		EvaluationLogger logger = activeEvaluations.get();
-		if (logger == null) {
-			logger = new EvaluationLogger();
-			activeEvaluations.set(logger);
-			numNestedEvaluations.set(0);
-			writeToLog(createLogEntry("start", "EVALUATION_STARTED", ObjectUtil.format(Context.getAuthenticatedUser()), logger));
+		if (ReportingConstants.GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED()) {
+			EvaluationLog logger = activeEvaluations.get();
+			if (logger == null) {
+				logger = new EvaluationLog();
+				activeEvaluations.set(logger);
+				writeToLog(createLogEntry("start", "EVALUATION_STARTED", ObjectUtil.format(Context.getAuthenticatedUser()), logger));
+			}
+			logger.incrementNumNestedEvaluations();
+			logger.resetEventStartTime();
+			writeToLog(createLogEntry("before", eventCode, message, logger));
 		}
-		numNestedEvaluations.set(numNestedEvaluations.get() + 1);
-		logger.resetEventStartTime();
-		writeToLog(createLogEntry("before", eventCode, message, logger));
 	}
 
+	/**
+	 * This method should be invoked just after the event that you wish to log information about.
+	 * This method should never be used on it's own, but should always be called in conjunction with a
+	 * prior call to logBeforeEvent(String, String)
+	 */
 	public static void logAfterEvent(String eventCode, String message) {
-		EvaluationLogger logger = activeEvaluations.get();
-		int count = numNestedEvaluations.get() - 1;
-		message = createLogEntry("after", eventCode, message, logger);
-		if (count == 0) {
-			writeToLog(message);
-			writeToLog(createLogEntry("end", "EVALUATION_COMPLETED", logger.getOverallTime(), logger));
-			numNestedEvaluations.remove();
-			activeEvaluations.remove();
-		}
-		else {
-			numNestedEvaluations.set(count);
-			writeToLog(message);
+		if (ReportingConstants.GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED()) {
+			EvaluationLog logger = activeEvaluations.get();
+			logger.decrementNumNestedEvaluations();
+			writeToLog(createLogEntry("after", eventCode, message, logger));
+			if (logger.getNumNestedEvaluations() == 0) {
+				writeToLog(createLogEntry("end", "EVALUATION_COMPLETED", DateUtil.getTimeElapsed(logger.getOverallTimeElapsed()), logger));
+				activeEvaluations.remove();
+			}
 		}
 	}
 
-	protected static String createLogEntry(String when, String eventCode, String message, EvaluationLogger logger) {
+	/**
+	 * This returns the directory in which all Evaluation Logs are written
+	 */
+	public static File getLogDirectory() {
+		File baseDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
+		File dir = new File(baseDir, ReportingConstants.EVALUATION_LOG_DIRECTORY_NAME);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		return dir;
+	}
+
+	//**** PROTECTED STATIC METHODS *****
+
+	protected static String createLogEntry(String when, String eventCode, String message, EvaluationLog logger) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(when).append("\t").append(eventCode).append("\t");
-		sb.append(logger.getEventTime()).append("\t");
-		sb.append(logger.getOverallTime()).append("\t");
+		sb.append(DateUtil.getTimeElapsed(logger.getEventTimeElapsed())).append("\t");
+		sb.append(logger.getEventTimeElapsed()).append("\t");
+		sb.append(logger.getOverallTimeElapsed()).append("\t");
 		sb.append(message);
 		return sb.toString();
 	}
 
 	protected static synchronized void writeToLog(String message) {
-		EvaluationLogger logger = activeEvaluations.get();
+		EvaluationLog logger = activeEvaluations.get();
 		StringBuilder s = new StringBuilder();
 		s.append(logger.evaluationLoggerId).append("\t").append(formatDate(new Date())).append("\t").append(message);
 		writeLineToFile(logger.getLogFile(), s.toString());
@@ -95,15 +119,6 @@ public class EvaluationLogger {
 
 	protected static synchronized long getNextEvaluationLoggerId() {
 		return nextEvaluationLoggerId++;
-	}
-
-	public static File getLogDirectory() {
-		File baseDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
-		File dir = new File(baseDir, ReportingConstants.EVALUATION_LOG_DIRECTORY_NAME);
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
-		return dir;
 	}
 
 	protected static String formatDate(Date d) {
@@ -125,55 +140,65 @@ public class EvaluationLogger {
 		}
 	}
 
-	protected static String formatTime(long fromTime) {
-		long diff = System.currentTimeMillis() - fromTime;
-		StringBuilder sb = new StringBuilder();
-		int hrs = (int) (diff / (1000*60*60));
-		if (hrs > 0) {
-			sb.append(hrs + "h ");
-			diff = diff - (hrs * 1000*60*60);
+	//***** Utility class to assist with tracking a particular evaluation progress *****
+
+	public static class EvaluationLog {
+
+		private Long evaluationLoggerId;
+		private long overallStartTime;
+		private long eventStartTime;
+		private int numNestedEvaluations = 0;
+		private String logFileName = "";
+
+		public EvaluationLog() {
+			evaluationLoggerId = getNextEvaluationLoggerId();
+			overallStartTime = System.currentTimeMillis();
+			resetEventStartTime();
+			logFileName = EVALUATION_LOG_FILE_PREFIX + DateUtil.formatDate(new Date(eventStartTime), "yyyyMMdd") + ".log";
 		}
-		int mins = (int) (diff / (1000*60));
-		if (mins > 0) {
-			sb.append(mins + "m ");
-			diff = diff - (mins * 1000*60);
+
+		public Long getEvaluationLoggerId() {
+			return evaluationLoggerId;
 		}
-		int secs = (int) (diff / 1000);
-		if (secs > 0) {
-			sb.append(secs + "s ");
-			diff = diff - (secs * 1000);
+
+		public long getOverallStartTime() {
+			return overallStartTime;
 		}
-		sb.append(diff + " ms");
-		return sb.toString();
-	}
 
-	//***** INSTANCE *****
+		public long getEventStartTime() {
+			return eventStartTime;
+		}
 
-	private Long evaluationLoggerId;
-	private long overallStartTime;
-	private long eventStartTime;
-	private String logFileName = "";
+		public int getNumNestedEvaluations() {
+			return numNestedEvaluations;
+		}
 
-	private EvaluationLogger() {
-		evaluationLoggerId = getNextEvaluationLoggerId();
-		overallStartTime = System.currentTimeMillis();
-		resetEventStartTime();
-		logFileName = "evaluation-" + DateUtil.formatDate(new Date(eventStartTime), "yyyyMMdd") + ".log";
-	}
+		public void incrementNumNestedEvaluations() {
+			this.numNestedEvaluations++;
+		}
 
-	public File getLogFile() {
-		return new File(getLogDirectory(), logFileName);
-	}
+		public void decrementNumNestedEvaluations() {
+			this.numNestedEvaluations--;
+		}
 
-	public String getOverallTime() {
-		return formatTime(overallStartTime);
-	}
+		public String getLogFileName() {
+			return logFileName;
+		}
 
-	public String getEventTime() {
-		return formatTime(eventStartTime);
-	}
+		public File getLogFile() {
+			return new File(getLogDirectory(), logFileName);
+		}
 
-	public void resetEventStartTime() {
-		eventStartTime = System.currentTimeMillis();
+		public long getOverallTimeElapsed() {
+			return System.currentTimeMillis() - overallStartTime;
+		}
+
+		public long getEventTimeElapsed() {
+			return System.currentTimeMillis() - eventStartTime;
+		}
+
+		public void resetEventStartTime() {
+			eventStartTime = System.currentTimeMillis();
+		}
 	}
 }

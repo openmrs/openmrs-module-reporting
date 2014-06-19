@@ -467,4 +467,28 @@ public class DateUtil {
 		}
 		return count;
 	}
+
+	/**
+	 * @return a formatted display of time elapsed between fromTime and toTime including hours, minutes, seconds, and milliseconds
+	 */
+	public static String getTimeElapsed(long duration) {
+		StringBuilder sb = new StringBuilder();
+		int hrs = (int) (duration / (1000*60*60));
+		if (hrs > 0) {
+			sb.append(hrs + "h ");
+			duration = duration - (hrs * 1000*60*60);
+		}
+		int mins = (int) (duration / (1000*60));
+		if (mins > 0) {
+			sb.append(mins + "m ");
+			duration = duration - (mins * 1000*60);
+		}
+		int secs = (int) (duration / 1000);
+		if (secs > 0) {
+			sb.append(secs + "s ");
+			duration = duration - (secs * 1000);
+		}
+		sb.append(duration + " ms");
+		return sb.toString();
+	}
 }
