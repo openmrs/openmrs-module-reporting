@@ -24,10 +24,10 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Expects that the SQL query returns two columns, an Integer
@@ -43,8 +43,8 @@ public class SqlEncounterDataEvaluator implements EncounterDataEvaluator {
         SqlEncounterDataDefinition definition = (SqlEncounterDataDefinition) def;
         EvaluatedEncounterData data = new EvaluatedEncounterData(definition, context);
 
-        Set<Integer> encounterIds = EncounterDataUtil.getEncounterIdsForContext(context, false);
-        if (encounterIds.size() == 0) {
+        EncounterIdSet encounterIds = new EncounterIdSet(EncounterDataUtil.getEncounterIdsForContext(context, false));
+        if (encounterIds.getSize() == 0) {
             return data;
         }
 
