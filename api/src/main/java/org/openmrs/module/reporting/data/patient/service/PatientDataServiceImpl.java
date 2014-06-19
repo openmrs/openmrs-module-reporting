@@ -91,7 +91,7 @@ public class PatientDataServiceImpl extends BaseDefinitionService<PatientDataDef
 				StopWatch timer = new StopWatch();
 				timer.start();
 
-				EvaluatedPatientData batchData = (EvaluatedPatientData)evaluator.evaluate(definition, batchContext);
+				EvaluatedPatientData batchData = (EvaluatedPatientData)super.executeEvaluator(evaluator, definition, batchContext);
 				ret.getData().putAll(batchData.getData());
 
 				timer.stop();
