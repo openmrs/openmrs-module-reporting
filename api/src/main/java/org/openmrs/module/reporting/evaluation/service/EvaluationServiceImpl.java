@@ -25,11 +25,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
 import org.openmrs.module.reporting.evaluation.EvaluationLogger;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.openmrs.module.reporting.query.IdSet;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,18 +41,6 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 
 	private transient Log log = LogFactory.getLog(this.getClass());
 	private final List<String> currentIdSetKeys = Collections.synchronizedList(new ArrayList<String>());
-
-
-	/**
-	 * Since we need to insert/delete into the reporting_idset tables even during the course of read-only transactions,
-	 * (and we need this to be committed as quickly as possible to avoid deadlocks due to table locking), we
-	 * programmatically open and close the smallest possible transaction
-	 */
-	private PlatformTransactionManager transactionManager;
-
-	public void setTransactionManager(PlatformTransactionManager transactionManager) {
-		this.transactionManager = transactionManager;
-	}
 
     /**
 	 * @see EvaluationService#evaluateToList(QueryBuilder)
@@ -254,16 +238,8 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	}
 
     private void executeUpdate(String sql) {
-		TransactionStatus tx = transactionManager.getTransaction(new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW));
-		try {
-			Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
-			query.executeUpdate();
-			transactionManager.commit(tx);
-		}
-		catch (Exception ex) {
-			transactionManager.rollback(tx);
-			throw new IllegalStateException("Failed to execute sql: " + sql, ex);
-		}
+		Query query = getSessionFactory().getCurrentSession().createSQLQuery(sql);
+		query.executeUpdate();
 	}
 
 	private SessionFactory getSessionFactory() {

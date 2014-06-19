@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.definition.service;
 
-import java.util.List;
-
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
@@ -25,10 +23,11 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Interface for methods used to manage and evaluate Definitions
  */
-@Transactional
 public interface DefinitionService<T extends Definition> extends OpenmrsService {
 	
 	/**
@@ -133,7 +132,6 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @param context context to use during evaluation
 	 * @return the evaluated definition
 	 */
-	@Transactional(readOnly = true)
 	public Evaluated<T> evaluate(Mapped<? extends T> definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
@@ -143,6 +141,5 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @param context context to use during evaluation
 	 * @return the evaluated definition
 	 */
-	@Transactional(readOnly = true)
 	public Evaluated<T> evaluate(T definition, EvaluationContext context) throws EvaluationException;
 }

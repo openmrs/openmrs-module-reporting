@@ -49,7 +49,6 @@ import java.util.List;
  * Base Implementation of the DefinitionService API. Note that any subclasses that want
  * {@link #getAllDefinitionSummaries(boolean)} to perform well need to override it.
  */
-@Transactional
 public abstract class BaseDefinitionService<T extends Definition> extends BaseOpenmrsService implements DefinitionService<T> {
 	
 	protected static Log log = LogFactory.getLog(BaseDefinitionService.class);
@@ -80,6 +79,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * @see DefinitionService#getDefinition(Class, Integer)
 	 */
 	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
 	public <D extends T> D getDefinition(Class<D> type, Integer id) throws APIException {
 		return (D) getPersister(type).getDefinition(id);
 	}
@@ -88,6 +88,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * @see DefinitionService#getDefinitionByUuid(String)
 	 */
 	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
 	public T getDefinitionByUuid(String uuid) throws APIException {
 		for (DefinitionPersister<?> p : getAllPersisters()) {
 			T d = (T) p.getDefinitionByUuid(uuid);
@@ -102,6 +103,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * @see DefinitionService#getAllDefinitions(boolean)
 	 */
 	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
 	public List<T> getAllDefinitions(boolean includeRetired) {
 		List<T> ret = new ArrayList<T>();
 		for (DefinitionPersister<?> p : getAllPersisters()) {
@@ -113,6 +115,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	/**
 	 * @see DefinitionService#getNumberOfDefinitions(boolean)
 	 */
+	@Transactional(readOnly = true)
 	public int getNumberOfDefinitions(boolean includeRetired) {
 		int i = 0;
 		for (DefinitionPersister<?> p : getAllPersisters()) {
@@ -146,6 +149,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	/**
 	 * @see DefinitionService#purgeDefinition(Definition)
 	 */
+	@Transactional
 	@SuppressWarnings("unchecked")
 	public void purgeDefinition(T definition) {
 		getPersister((Class<T>) definition.getClass()).purgeDefinition(definition);
@@ -194,6 +198,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * 
 	 * @see org.openmrs.module.reporting.definition.service.DefinitionService#getAllDefinitionSummaries(boolean)
 	 */
+	@Transactional(readOnly = true)
 	public List<DefinitionSummary> getAllDefinitionSummaries(boolean includeRetired) {
 		List<DefinitionSummary> ret = new ArrayList<DefinitionSummary>();
 		for (T def : getAllDefinitions(includeRetired)) {
@@ -212,7 +217,6 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 * @see DefinitionEvaluator#evaluate(Definition, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
-    @Transactional(readOnly = true)
 	public Evaluated<T> evaluate(T definition, EvaluationContext context) throws EvaluationException {
 
         context = ObjectUtil.nvl(context, new EvaluationContext());
@@ -309,7 +313,6 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
     /**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public Evaluated<T> evaluate(Mapped<? extends T> definition, EvaluationContext context) throws EvaluationException {
 		if (definition == null || definition.getParameterizable() == null) {
 			throw new MissingDependencyException();

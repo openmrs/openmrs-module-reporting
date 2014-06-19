@@ -22,12 +22,10 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Base Implementation of IndicatorService
  */
-@Transactional
 public class IndicatorServiceImpl extends BaseDefinitionService<Indicator> implements IndicatorService {
 
 	protected static Log log = LogFactory.getLog(IndicatorServiceImpl.class);
@@ -35,7 +33,6 @@ public class IndicatorServiceImpl extends BaseDefinitionService<Indicator> imple
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	@Transactional(readOnly = true)
 	public Class<Indicator> getDefinitionType() {
 		return Indicator.class;
 	}
@@ -43,7 +40,6 @@ public class IndicatorServiceImpl extends BaseDefinitionService<Indicator> imple
 	/** 
 	 * @see IndicatorService#evaluate(Indicator, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	@Override
 	public IndicatorResult evaluate(Indicator definition, EvaluationContext context) throws EvaluationException {
 		return (IndicatorResult)super.evaluate(definition, context);
@@ -52,7 +48,6 @@ public class IndicatorServiceImpl extends BaseDefinitionService<Indicator> imple
 	/** 
 	 * @see IndicatorService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	@Override
 	public IndicatorResult evaluate(Mapped<? extends Indicator> definition, EvaluationContext context) throws EvaluationException {
 		return (IndicatorResult) super.evaluate(definition, context);

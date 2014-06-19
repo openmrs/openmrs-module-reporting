@@ -20,32 +20,27 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * ReportService API
  */
-@Transactional
 public interface ReportDefinitionService extends DefinitionService<ReportDefinition> {
 	
 	/**
 	 * Retrieve a ReportDefinition by id primary key
 	 */
-	@Transactional(readOnly = true)
 	public ReportDefinition getDefinition(Integer id);
 	
 	/**
 	 * This method evaluates a ReportDefinition object for the given EvaluationContext and returns a ReportData
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * This method evaluates a ReportDefinition object for the given EvaluationContext and returns a ReportData
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public ReportData evaluate(Mapped<? extends ReportDefinition> reportDefinition, EvaluationContext context) throws EvaluationException;
 }
 

@@ -22,12 +22,10 @@ import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Default implementation of the DataSetDefinitionService.
  */
-@Transactional
 public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetDefinition> implements DataSetDefinitionService {
 
 	protected Log log = LogFactory.getLog(this.getClass());
@@ -35,7 +33,6 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	@Transactional(readOnly=true)
 	public Class<DataSetDefinition> getDefinitionType() {
 		return DataSetDefinition.class;
 	}
@@ -43,7 +40,6 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	/**
 	 * @see DataSetDefinitionService#evaluate(DataSetDefinition, EvaluationContext)
 	 */
-	@Transactional(readOnly=true)
 	@Override
 	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws EvaluationException {
 		return (DataSet)super.evaluate(definition, context);
@@ -52,7 +48,6 @@ public class DataSetDefinitionServiceImpl extends BaseDefinitionService<DataSetD
 	/** 
 	 * @see DataSetDefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly=true)
 	@Override
 	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws EvaluationException {
 		return (DataSet)super.evaluate(definition, context);

@@ -40,7 +40,6 @@ public class PatientDataServiceImpl extends BaseDefinitionService<PatientDataDef
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	@Transactional(readOnly = true)
 	public Class<PatientDataDefinition> getDefinitionType() {
 		return PatientDataDefinition.class;
 	}
@@ -49,15 +48,13 @@ public class PatientDataServiceImpl extends BaseDefinitionService<PatientDataDef
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 * @should evaluate a patient data definition
 	 */
-	@Transactional(readOnly = true)
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		return (EvaluatedPatientData)super.evaluate(definition, context);
 	}
 	
 	/**
-	 * @see DefinitionService#evaluate(org.openmrs.module.reporting.evaluation.parameter.Mapped, org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public EvaluatedPatientData evaluate(Mapped<? extends PatientDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException {
 		return (EvaluatedPatientData)super.evaluate(mappedDefinition, context);
 	}

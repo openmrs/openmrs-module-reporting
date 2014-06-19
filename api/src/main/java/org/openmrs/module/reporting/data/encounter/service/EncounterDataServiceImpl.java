@@ -21,7 +21,6 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *  Base Implementation of the EncounterDataService API
@@ -31,7 +30,6 @@ public class EncounterDataServiceImpl extends BaseDefinitionService<EncounterDat
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	@Transactional(readOnly = true)
 	public Class<EncounterDataDefinition> getDefinitionType() {
 		return EncounterDataDefinition.class;
 	}
@@ -40,7 +38,6 @@ public class EncounterDataServiceImpl extends BaseDefinitionService<EncounterDat
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 * @should evaluate an encounter data definition
 	 */
-	@Transactional(readOnly = true)
 	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
 		return (EvaluatedEncounterData)super.evaluate(definition, context);
 	}
@@ -48,7 +45,6 @@ public class EncounterDataServiceImpl extends BaseDefinitionService<EncounterDat
 	/**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public EvaluatedEncounterData evaluate(Mapped<? extends EncounterDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException {
 		return (EvaluatedEncounterData)super.evaluate(mappedDefinition, context);
 	}

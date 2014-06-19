@@ -15,12 +15,10 @@ package org.openmrs.module.reporting.indicator.dimension.service;
 
 import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Contains methods pertaining to creating/updating/deleting/retiring/registering/evaluating Dimensions
  */
-@Transactional
 public interface DimensionService extends DefinitionService<Dimension> {
 	
 }

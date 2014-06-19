@@ -21,7 +21,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *  Base Implementation of the EncounterQueryService API
@@ -31,7 +30,6 @@ public class EncounterQueryServiceImpl extends BaseDefinitionService<EncounterQu
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	@Transactional(readOnly = true)
 	public Class<EncounterQuery> getDefinitionType() {
 		return EncounterQuery.class;
 	}
@@ -40,15 +38,13 @@ public class EncounterQueryServiceImpl extends BaseDefinitionService<EncounterQu
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 * @should evaluate an encounter query
 	 */
-	@Transactional(readOnly = true)
 	public EncounterQueryResult evaluate(EncounterQuery query, EvaluationContext context) throws EvaluationException {
 		return (EncounterQueryResult)super.evaluate(query, context);
 	}
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public EncounterQueryResult evaluate(Mapped<? extends EncounterQuery> mappedQuery, EvaluationContext context) throws EvaluationException {
 		return (EncounterQueryResult)super.evaluate(mappedQuery, context);
 	}

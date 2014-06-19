@@ -20,23 +20,19 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.query.obs.ObsQueryResult;
 import org.openmrs.module.reporting.query.obs.definition.ObsQuery;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Interface for methods used to manage and evaluate CohortDefinitions
  */
-@Transactional
 public interface ObsQueryService extends DefinitionService<ObsQuery> {
 	
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public ObsQueryResult evaluate(ObsQuery query, EvaluationContext context) throws EvaluationException;
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public ObsQueryResult evaluate(Mapped<? extends ObsQuery> mappedQuery, EvaluationContext context) throws EvaluationException;
 }

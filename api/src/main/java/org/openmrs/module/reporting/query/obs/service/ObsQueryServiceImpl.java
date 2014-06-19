@@ -31,7 +31,6 @@ public class ObsQueryServiceImpl extends BaseDefinitionService<ObsQuery> impleme
 	/**
 	 * @see DefinitionService#getDefinitionType()
 	 */
-	@Transactional(readOnly = true)
 	public Class<ObsQuery> getDefinitionType() {
 		return ObsQuery.class;
 	}
@@ -40,15 +39,13 @@ public class ObsQueryServiceImpl extends BaseDefinitionService<ObsQuery> impleme
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 * @should evaluate an obs query
 	 */
-	@Transactional(readOnly = true)
 	public ObsQueryResult evaluate(ObsQuery query, EvaluationContext context) throws EvaluationException {
 		return (ObsQueryResult)super.evaluate(query, context);
 	}
 	
 	/**
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
+	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
-	@Transactional(readOnly = true)
 	public ObsQueryResult evaluate(Mapped<? extends ObsQuery> mappedQuery, EvaluationContext context) throws EvaluationException {
 		return (ObsQueryResult)super.evaluate(mappedQuery, context);
 	}
