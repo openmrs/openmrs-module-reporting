@@ -18,8 +18,10 @@ import java.lang.reflect.Method;
 import java.util.Properties;
 
 import org.hibernate.Hibernate;
+import org.hibernate.SessionFactory;
 import org.hibernate.type.Type;
 import org.hibernate.type.TypeFactory;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 
 
@@ -96,5 +98,12 @@ public class HibernateUtil {
 	        throw new RuntimeException("Error calling sqlType() method on " + type, ex);
         }
     }
-	
+
+	/**
+	 * @return true if the current hibernate session contains the passed object
+	 */
+	public static boolean sessionContains(OpenmrsObject object) {
+		SessionFactory sf = Context.getRegisteredComponents(SessionFactory.class).get(0);
+		return sf != null && sf.getCurrentSession() != null && sf.getCurrentSession().contains(object);
+	}
 }

@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.Obs;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
@@ -417,7 +418,16 @@ public class ObjectUtil {
 	}
 
 	public static String formatConcept(Concept c, String format, Locale locale) {
-		return c.getBestName(locale).getName();
+		if (!HibernateUtil.sessionContains(c)) {
+			return "Concept#"+c.getId();
+		}
+		ConceptName name = c.getName(locale, false);
+		if (name != null) {
+			return name.getName();
+		}
+		else {
+			return "Concept#"+c.getId();
+		}
 	}
 
 	public static String formatOpenmrsData(OpenmrsData d, String format, Locale locale) {

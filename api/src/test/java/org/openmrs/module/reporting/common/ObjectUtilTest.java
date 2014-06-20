@@ -19,14 +19,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptName;
 import org.openmrs.Encounter;
-import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.PatientIdentifierType;
@@ -322,6 +321,16 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, previousLocale);
 	}
 
+	@Test
+	public void shouldFormatConcept() throws Exception {
+		Concept wt = Context.getConceptService().getConcept(5089);
+		Assert.assertEquals("WEIGHT (KG)", ObjectUtil.format(wt));
+		LoadConceptThread t = new LoadConceptThread(5497);
+		t.start();
+		t.join();
+		Assert.assertEquals("Concept#5497", ObjectUtil.format(t.getConcept()));
+	}
+
     // hack to add a few localized names to concept
     private void addLocalizedNamesToYesConcept() {
 
@@ -347,4 +356,28 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
         yes.setValueCoded(Context.getConceptService().getConcept(7));
         return yes;
     }
+
+	private class LoadConceptThread extends Thread {
+		Integer conceptId = null;
+		Concept cd4 = null;
+
+		public LoadConceptThread(Integer conceptId) {
+			this.conceptId = conceptId;
+		}
+
+		public void run() {
+			try {
+				Context.openSession();
+				Context.authenticate("admin", "test");
+				cd4 = Context.getConceptService().getConcept(conceptId);
+			}
+			finally {
+				Context.clearSession();
+				Context.closeSession();
+			}
+		}
+		public Concept getConcept() {
+			return cd4;
+		}
+	}
 }
