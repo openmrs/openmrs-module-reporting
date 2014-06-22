@@ -13,11 +13,10 @@
  */
 package org.openmrs.module.reporting.query.visit.evaluator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.visit.VisitDataUtil;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.query.Query;
@@ -31,15 +30,8 @@ import org.openmrs.module.reporting.query.visit.definition.VisitQuery;
 @Handler(supports=AllVisitQuery.class)
 public class AllVisitQueryEvaluator implements VisitQueryEvaluator {
 
-    protected Log log = LogFactory.getLog(this.getClass());
-
     /**
-     * Public constructor
-     */
-    public AllVisitQueryEvaluator() { }
-
-    /**
-     * @see VisitQueryEvaluator#evaluate(VisitQuery, EvaluationContext)
+     * @see VisitQueryEvaluator#evaluate(Definition, EvaluationContext)
      * @should return all of the visit ids for all patients in the defined query
      * @should filter results by patient and visit given an VisitEvaluationContext
      * @should filter results by patient given an EvaluationContext

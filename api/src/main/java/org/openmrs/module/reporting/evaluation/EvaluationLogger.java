@@ -99,7 +99,7 @@ public class EvaluationLogger {
 
 	//**** PROTECTED STATIC METHODS *****
 
-	protected static String createLogEntry(String when, String eventCode, String message, EvaluationLog logger) {
+	protected static synchronized String createLogEntry(String when, String eventCode, String message, EvaluationLog logger) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(when).append("\t").append(eventCode).append("\t");
 		sb.append(DateUtil.getTimeElapsed(logger.getEventTimeElapsed())).append("\t");

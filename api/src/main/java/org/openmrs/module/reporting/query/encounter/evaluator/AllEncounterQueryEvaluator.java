@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
@@ -30,14 +28,7 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
  */
 @Handler(supports=AllEncounterQuery.class)
 public class AllEncounterQueryEvaluator implements EncounterQueryEvaluator {
-	
-	protected Log log = LogFactory.getLog(this.getClass());
-	
-	/**
-	 * Public constructor
-	 */
-	public AllEncounterQueryEvaluator() { }
-	
+
 	/**
 	 * @see EncounterQueryEvaluator#evaluate(EncounterQuery, EvaluationContext)
 	 * @should return all of the encounter ids for all patients in the defined query
