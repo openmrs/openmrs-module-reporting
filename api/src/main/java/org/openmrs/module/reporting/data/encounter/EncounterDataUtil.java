@@ -47,7 +47,11 @@ public class EncounterDataUtil {
 
 		// Retrieve the encounters for the baseCohort if specified
 		if (patIds != null) {
-			Set<Integer> encIdsForPatIds = getEncounterIdsForPatients(patIds.getMemberIds());
+
+			HqlQueryBuilder qb = new HqlQueryBuilder();
+			qb.select("e.encounterId").from(Encounter.class, "e").wherePatientIn("e.patient.patientId", context);
+			List<Integer> encIdsForPatIds = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
+
 			if (encIds == null) {
 				encIds = new EncounterIdSet(encIdsForPatIds);
 			}
@@ -65,17 +69,8 @@ public class EncounterDataUtil {
 		if (returnNullForAllEncounterIds) {
 			return null;
 		}
-		return getEncounterIdsForPatients(null);
-	}
 
-	public static Set<Integer> getEncounterIdsForPatients(Set<Integer> patientIds) {
-		EvaluationContext context = new EvaluationContext();
-		if (patientIds != null) {
-			context.setBaseCohort(new Cohort(patientIds));
-		}
-		HqlQueryBuilder qb = new HqlQueryBuilder();
-		qb.select("e.encounterId").from(Encounter.class, "e").wherePatientIn("e.patient.patientId", context);
-		List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
-		return new HashSet<Integer>(ids);
+		HqlQueryBuilder qb = new HqlQueryBuilder().select("e.encounterId").from(Encounter.class, "e");
+		return new HashSet<Integer>(Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class));
 	}
 }

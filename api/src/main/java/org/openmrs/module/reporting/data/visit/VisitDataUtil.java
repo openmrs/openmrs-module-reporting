@@ -47,7 +47,11 @@ public class VisitDataUtil {
 
         // Retrieve the visits for the baseCohort if specified
         if (patIds != null) {
-            Set<Integer> visitIdsForPatients = getVisitIdsForPatients(patIds.getMemberIds());
+
+			HqlQueryBuilder qb = new HqlQueryBuilder();
+			qb.select("v.visitId").from(Visit.class, "v").wherePatientIn("v.patient.patientId", context);
+			List<Integer> visitIdsForPatients = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
+
             if (visitIds == null) {
                 visitIds = new VisitIdSet(visitIdsForPatients);
             }
@@ -65,18 +69,8 @@ public class VisitDataUtil {
         if (returnNullForAllVisitIds) {
             return null;
         }
-        return getVisitIdsForPatients(null);
-    }
 
-    public static Set<Integer> getVisitIdsForPatients(Set<Integer> patientIds) {
-        EvaluationContext context = new EvaluationContext();
-        if (patientIds != null) {
-            context.setBaseCohort(new Cohort(patientIds));
-        }
-        HqlQueryBuilder qb = new HqlQueryBuilder();
-        qb.select("v.visitId").from(Visit.class, "v").wherePatientIn("v.patient.patientId", context);
-        List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
-        return new HashSet<Integer>(ids);
+		HqlQueryBuilder qb = new HqlQueryBuilder().select("v.visitId").from(Visit.class, "v");
+		return new HashSet<Integer>(Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class));
     }
-
 }

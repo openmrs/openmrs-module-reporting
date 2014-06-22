@@ -13,10 +13,11 @@
  */
 package org.openmrs.module.reporting.query.obs;
 
-import java.util.Set;
-
 import org.openmrs.Obs;
 import org.openmrs.module.reporting.query.BaseIdSet;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * A Set of Obs Ids
@@ -30,6 +31,10 @@ public class ObsIdSet extends BaseIdSet<Obs> {
     public ObsIdSet(Set<Integer> memberIds) {
     	setMemberIds(memberIds);
     }
+
+	public ObsIdSet(List<Integer> memberIds) {
+		add(memberIds.toArray(new Integer[0]));
+	}
     
     public ObsIdSet(Integer... memberIds) {
     	add(memberIds);

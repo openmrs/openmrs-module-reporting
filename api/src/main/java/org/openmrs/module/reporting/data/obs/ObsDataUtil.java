@@ -45,9 +45,13 @@ public class ObsDataUtil {
 			return new HashSet<Integer>();
 		}
 
-		// Retrieve the obs for the baseCohort if specified
+		// Retrieve the visits for the baseCohort if specified
 		if (patIds != null) {
-			Set<Integer> obsIdsForPatIds = getObsIdsForPatients(patIds.getMemberIds());
+
+			HqlQueryBuilder qb = new HqlQueryBuilder();
+			qb.select("o.obsId").from(Obs.class, "o").wherePatientIn("o.personId", context);
+			List<Integer> obsIdsForPatIds = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
+
 			if (obsIds == null) {
 				obsIds = new ObsIdSet(obsIdsForPatIds);
 			}
@@ -61,22 +65,13 @@ public class ObsDataUtil {
 			return obsIds.getMemberIds();
 		}
 
-		// Otherwise, all obs are needed, so return appropriate value
+		// Otherwise, all visit are needed, so return appropriate value
 		if (returnNullForAllObsIds) {
 			return null;
 		}
-		return getObsIdsForPatients(null);
-	}
 
-	public static Set<Integer> getObsIdsForPatients(Set<Integer> patientIds) {
-		EvaluationContext context = new EvaluationContext();
-		if (patientIds != null) {
-			context.setBaseCohort(new Cohort(patientIds));
-		}
-		HqlQueryBuilder qb = new HqlQueryBuilder();
-		qb.select("o.obsId").from(Obs.class, "o").wherePatientIn("o.personId", context);
-		List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
-		return new HashSet<Integer>(ids);
+		HqlQueryBuilder qb = new HqlQueryBuilder().select("o.obsId").from(Obs.class, "o");
+		return new HashSet<Integer>(Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class));
 	}
 
 }

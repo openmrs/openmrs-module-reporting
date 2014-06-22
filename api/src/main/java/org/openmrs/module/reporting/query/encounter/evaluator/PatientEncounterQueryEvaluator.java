@@ -55,10 +55,16 @@ public class PatientEncounterQueryEvaluator implements EncounterQueryEvaluator {
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		PatientEncounterQuery query = (PatientEncounterQuery) definition;
 		EncounterQueryResult queryResult = new EncounterQueryResult(query, context);
-		
+
+		// Calculate the patients for this query
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(query.getPatientQuery(), context);
 
-		Set<Integer> ret = EncounterDataUtil.getEncounterIdsForPatients(c.getMemberIds());
+		// Get all of the encounters for all of these patients
+		EvaluationContext ec = new EvaluationContext();
+		ec.setBaseCohort(c);
+		Set<Integer> ret = EncounterDataUtil.getEncounterIdsForContext(ec, false);
+
+		// Limit that to only the passed in encounters if relevant
 		if (context instanceof EncounterEvaluationContext) {
 			EncounterEvaluationContext eec = (EncounterEvaluationContext) context;
 			if (eec.getBaseEncounters() != null) {
