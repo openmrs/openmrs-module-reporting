@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.api.context.Context;
@@ -25,6 +20,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -36,8 +32,6 @@ import java.util.Map;
  * Implementation of the EvaluationService interface
  */
 public class EvaluationServiceImpl extends BaseOpenmrsService implements EvaluationService {
-
-	private transient Log log = LogFactory.getLog(this.getClass());
 
     /**
 	 * @see EvaluationService#evaluateToList(QueryBuilder, EvaluationContext)
@@ -104,12 +98,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 		List ret;
 
 		// Due to hibernate bug HHH-2166, we need to make sure the HqlSqlWalker logger is not at DEBUG or TRACE level
-		Logger hqlSqlWalkerLogger = LogManager.getLogger("org.hibernate.hql.ast.HqlSqlWalker");
-		Level hqlSqlWalkerLoggerStartingLevel = hqlSqlWalkerLogger.getLevel();
-		Level hqlSqlWalkerEffectiveLevel = hqlSqlWalkerLogger.getEffectiveLevel();
-		if (hqlSqlWalkerEffectiveLevel == Level.TRACE || hqlSqlWalkerEffectiveLevel == Level.DEBUG) {
-			hqlSqlWalkerLogger.setLevel(Level.INFO);
-		}
+		OpenmrsUtil.applyLogLevel("org.hibernate.hql.ast.HqlSqlWalker", "WARN");
 
 		// Build the query, and profile how long it takes to execute
 		Query query = qb.buildQuery(getSessionFactory());
@@ -123,9 +112,6 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 			throw e;
 		}
 		profiler.logAfter("EXECUTING_QUERY", "Completed successfully with " + ret.size() + " results");
-
-		// Reset the log level if needed
-		hqlSqlWalkerLogger.setLevel(hqlSqlWalkerLoggerStartingLevel);
 
 		return ret;
 	}
