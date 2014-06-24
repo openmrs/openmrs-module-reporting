@@ -70,8 +70,8 @@ public class EvaluationProfiler {
 	/**
 	 * Logs an error during an event
 	 */
-	public void logError(String eventCode, Throwable t) {
-		log(ERROR, eventCode, t.getMessage());
+	public void logError(String eventCode, String message, Throwable t) {
+		log(ERROR, eventCode, message + ": " + t.getMessage());
 	}
 
 	/**

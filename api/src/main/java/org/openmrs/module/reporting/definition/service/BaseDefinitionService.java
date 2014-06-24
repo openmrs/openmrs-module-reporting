@@ -327,22 +327,23 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	protected Evaluated<T> executeEvaluator(DefinitionEvaluator<T> evaluator, T definition, EvaluationContext context) throws EvaluationException {
 		Evaluated<T> ret = null;
 		EvaluationProfiler profiler = new EvaluationProfiler(context);
+		String formattedDefinition = DefinitionUtil.format(definition);
 		if (context.getEvaluationLevel() == 1) {
 			profiler.logBefore("EVALUATION_STARTED", Context.getAuthenticatedUser().getDisplayString());
 		}
-		profiler.logBefore("EVALUATING_DEFINITION", DefinitionUtil.format(definition));
+		profiler.logBefore("EVALUATING_DEFINITION", formattedDefinition);
 		try {
 			ret = evaluator.evaluate(definition, context);
 		}
 		catch (EvaluationException e) {
-			profiler.logError("EVALUATING_DEFINITION", e);
+			profiler.logError("EVALUATING_DEFINITION", formattedDefinition, e);
 			throw e;
 		}
 		catch (Throwable t) {
-			profiler.logError("EVALUATING_DEFINITION", t);
+			profiler.logError("EVALUATING_DEFINITION", formattedDefinition, t);
 			throw new EvaluationException("Error evaluating", t);
 		}
-		profiler.logAfter("EVALUATING_DEFINITION", "Evaluation Complete");
+		profiler.logAfter("EVALUATING_DEFINITION", formattedDefinition);
 		if (context.getEvaluationLevel() == 1) {
 			profiler.logAfter("EVALUATION_COMPLETED", profiler.getTimeElapsedFromStart());
 			context.clearCache();

@@ -108,7 +108,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 			ret = query.list();
 		}
 		catch (RuntimeException e) {
-			profiler.logError("EXECUTING_QUERY", e);
+			profiler.logError("EXECUTING_QUERY", qb.toString(), e);
 			throw e;
 		}
 		profiler.logAfter("EXECUTING_QUERY", "Completed successfully with " + ret.size() + " results");
