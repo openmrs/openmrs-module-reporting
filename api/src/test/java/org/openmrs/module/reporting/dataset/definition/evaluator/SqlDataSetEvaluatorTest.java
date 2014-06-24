@@ -1,13 +1,9 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.util.Arrays;
-import java.util.Date;
-
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -19,6 +15,9 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.util.Arrays;
+import java.util.Date;
 
 
 public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -90,7 +89,7 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	/**
 	 * @see {@link SqlDataSetEvaluator#evaluate(DataSetDefinition,EvaluationContext)}
 	 */
-	@Test(expected=IllegalDatabaseAccessException.class)
+	@Test(expected=EvaluationException.class)
     @Verifies(value = "should protect SQL Query Against database modifications", method = "evaluate(DataSetDefinition,EvaluationContext)")
     public void evaluate_shouldProtectSQLQueryAgainstDatabaseModifications() throws EvaluationException {
         SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
