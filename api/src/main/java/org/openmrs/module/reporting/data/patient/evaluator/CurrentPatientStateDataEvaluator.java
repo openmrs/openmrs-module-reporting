@@ -61,7 +61,7 @@ public class CurrentPatientStateDataEvaluator implements PatientDataEvaluator {
 		q.wherePatientIn("ps.patientProgram.patient.patientId", context);
 		q.orderAsc("ps.startDate");
 
-		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		c.setData(data);
 
 		return c;

@@ -38,7 +38,7 @@ public class SqlPatientDataEvaluator implements PatientDataEvaluator {
 		}
 		q.addParameter("patientIds", context.getBaseCohort());
 
-		Map<Integer, Object> results = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> results = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		data.setData(results);
 
 		return data;

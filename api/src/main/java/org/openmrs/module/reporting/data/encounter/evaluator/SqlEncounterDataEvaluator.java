@@ -55,7 +55,7 @@ public class SqlEncounterDataEvaluator implements EncounterDataEvaluator {
 		}
 		q.addParameter("encounterIds", encounterIds);
 
-		Map<Integer, Object> results = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> results = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		data.setData(results);
 
         return data;

@@ -62,7 +62,7 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		q.whereIn("pi.identifierType", def.getTypes());
 		q.orderDesc("pi.preferred");
 
-		List<Object[]> queryResult = evaluationService.evaluateToList(q);
+		List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
 		
 		ListMap<Integer, PatientIdentifier> patIds = new ListMap<Integer, PatientIdentifier>();
 		for (Object[] row : queryResult) {

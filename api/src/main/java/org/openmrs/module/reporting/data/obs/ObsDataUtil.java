@@ -50,7 +50,7 @@ public class ObsDataUtil {
 
 			HqlQueryBuilder qb = new HqlQueryBuilder();
 			qb.select("o.obsId").from(Obs.class, "o").wherePatientIn("o.personId", context);
-			List<Integer> obsIdsForPatIds = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
+			List<Integer> obsIdsForPatIds = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class, context);
 
 			if (obsIds == null) {
 				obsIds = new ObsIdSet(obsIdsForPatIds);
@@ -71,7 +71,7 @@ public class ObsDataUtil {
 		}
 
 		HqlQueryBuilder qb = new HqlQueryBuilder().select("o.obsId").from(Obs.class, "o");
-		return new HashSet<Integer>(Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class));
+		return new HashSet<Integer>(Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class, context));
 	}
 
 }

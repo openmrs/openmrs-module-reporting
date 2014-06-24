@@ -69,7 +69,7 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 			q.orderAsc("e.encounterDatetime");
 		}
 		
-		List<Object[]> queryResult = evaluationService.evaluateToList(q);
+		List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
 		
 		ListMap<Integer, Encounter> encountersForPatients = new ListMap<Integer, Encounter>();
 		for (Object[] row : queryResult) {

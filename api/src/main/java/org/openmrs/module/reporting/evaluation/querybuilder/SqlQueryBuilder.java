@@ -8,7 +8,6 @@ import org.openmrs.Cohort;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.evaluation.EvaluationLogger;
 import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -88,21 +87,6 @@ public class SqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
-	public List<?> listResults(SessionFactory sessionFactory) {
-		List l = null;
-		Query query = buildQuery(sessionFactory);
-		EvaluationLogger.logBeforeEvent("sqlQuery", toString());
-		try {
-			l = query.list();
-		}
-		catch (Exception e) {
-			EvaluationLogger.logAfterEvent("sqlQuery", "Error: " + e.getMessage());
-		}
-		EvaluationLogger.logAfterEvent("sqlQuery", "Execution complete: " + l.size() + " results");
-		return l;
-	}
-
-	@Override
 	public String toString() {
 		if (builtQueryString == null) {
 			return super.toString();
@@ -118,6 +102,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 		return ret;
 	}
 
+	@Override
 	public Query buildQuery(SessionFactory sessionFactory) {
 
 		builtQueryString = preProcessQuery();

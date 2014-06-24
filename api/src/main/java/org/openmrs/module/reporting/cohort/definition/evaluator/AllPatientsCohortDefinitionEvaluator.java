@@ -55,7 +55,7 @@ public class AllPatientsCohortDefinitionEvaluator implements CohortDefinitionEva
             // they will correctly have test patients excluded.
 
             HqlQueryBuilder query = new HqlQueryBuilder().select("p.patientId").from(Patient.class, "p");
-            List<Integer> ptIds = evaluationService.evaluateToList(query, Integer.class);
+            List<Integer> ptIds = evaluationService.evaluateToList(query, Integer.class, context);
 
             c.setMemberIds(new HashSet<Integer>(ptIds));
         }

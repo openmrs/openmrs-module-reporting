@@ -66,7 +66,7 @@ public class BasicEncounterQueryEvaluator implements EncounterQueryEvaluator {
 		q.whereEncounterIn("e.encounterId", context);
 
 		if (query.getWhich() == null || query.getWhich() == TimeQualifier.ANY) {
-			List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
+			List<Integer> results = evaluationService.evaluateToList(q, Integer.class, context);
 			result.getMemberIds().addAll(results);
 		}
 		else {
@@ -81,7 +81,7 @@ public class BasicEncounterQueryEvaluator implements EncounterQueryEvaluator {
 
 			ListMap<Integer, Integer> foundEncountersForPatients = new ListMap<Integer, Integer>();
 			int maxNumPerPatient = ObjectUtil.nvl(query.getWhichNumber(), 1);
-			for (Object[] row : evaluationService.evaluateToList(q)) {
+			for (Object[] row : evaluationService.evaluateToList(q, context)) {
 				Integer encounterId = (Integer)row[0];
 				Integer patientId = (Integer)row[1];
 				foundEncountersForPatients.putInList(patientId, encounterId);

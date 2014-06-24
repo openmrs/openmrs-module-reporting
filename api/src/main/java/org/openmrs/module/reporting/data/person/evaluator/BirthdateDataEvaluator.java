@@ -49,7 +49,7 @@ public class BirthdateDataEvaluator implements PersonDataEvaluator {
 		q.from(Person.class, "p");
 		q.wherePersonIn("p.personId", context);
 
-		List<Object[]> results = evaluationService.evaluateToList(q);
+		List<Object[]> results = evaluationService.evaluateToList(q, context);
 		for (Object[] row : results) {
 			Integer pId = (Integer)row[0];
 			Date birthdate = (Date)row[1];

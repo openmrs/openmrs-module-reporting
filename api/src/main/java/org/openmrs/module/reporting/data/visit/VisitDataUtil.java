@@ -50,7 +50,7 @@ public class VisitDataUtil {
 
 			HqlQueryBuilder qb = new HqlQueryBuilder();
 			qb.select("v.visitId").from(Visit.class, "v").wherePatientIn("v.patient.patientId", context);
-			List<Integer> visitIdsForPatients = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
+			List<Integer> visitIdsForPatients = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class, context);
 
             if (visitIds == null) {
                 visitIds = new VisitIdSet(visitIdsForPatients);
@@ -71,6 +71,6 @@ public class VisitDataUtil {
         }
 
 		HqlQueryBuilder qb = new HqlQueryBuilder().select("v.visitId").from(Visit.class, "v");
-		return new HashSet<Integer>(Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class));
+		return new HashSet<Integer>(Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class, context));
     }
 }

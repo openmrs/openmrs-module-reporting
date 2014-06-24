@@ -52,7 +52,7 @@ public class PreferredAddressDataEvaluator implements PersonDataEvaluator {
 		q.wherePersonIn("pa.person.personId", context);
 		q.orderAsc("pa.preferred");
 
-		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		c.setData(data);
 
 		return c;

@@ -74,7 +74,7 @@ public class AllPersonQueryEvaluator implements PersonQueryEvaluator {
 		q.from(Person.class, "p");
 		q.wherePersonIn("p.personId", context);
 
-		List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
+		List<Integer> results = evaluationService.evaluateToList(q, Integer.class, context);
 		result.getMemberIds().addAll(results);
 
 		return result;

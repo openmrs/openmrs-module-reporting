@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -38,6 +32,11 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.query.IdSet;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * The EvaluationContext provides the following capabilities: 
  * 	- A baseCohort, i.e. the universe of patients relevant to this context (defaults to all patients) 
@@ -51,18 +50,20 @@ public class EvaluationContext implements PatientCalculationContext {
 	
 	/* Logger */
 	protected static Log log = LogFactory.getLog(EvaluationContext.class);
+
+	private static long nextEvaluationId = 1;
+
+	private static synchronized long getNextEvaluationId() {
+		return nextEvaluationId++;
+	}
 	
 	// *******************
 	// PROPERTIES 
 	// *******************
 
-    /**
-     * Internally used to refer to the evaluation context instances used for a particular evaluation.
-     * This will be set when an evaluation context is constructed, and copied through to child
-     * evaluation contexts when nested definitions are evaluated.
-     */
-    private String evaluationId;
-	
+	// An id, similar to a threadId, that is passed from parent to child evaluation context, and can be used to keep track of a particular evaluation
+	private long evaluationId;
+
 	// Set a limit on the number of rows to evaluate 
 	private Integer limit;
 	
@@ -80,6 +81,9 @@ public class EvaluationContext implements PatientCalculationContext {
 	
 	// Stores the date for which the Evaluation Context was constructed
 	private Date evaluationDate;
+
+	// Stores an integer representing the evaluation level of this context.  If this context is evaluating a non-nested definition, this will be 1
+	private int evaluationLevel;
 	
 	// *******************
 	// CONSTRUCTORS 
@@ -97,7 +101,8 @@ public class EvaluationContext implements PatientCalculationContext {
 	 */
 	public EvaluationContext(Date evaluationDate) {
 		this.evaluationDate = evaluationDate;
-        this.evaluationId = UUID.randomUUID().toString();
+		this.evaluationId = getNextEvaluationId();
+		this.evaluationLevel = 1;
 		addContextValue("now", evaluationDate);
 		addContextValue("start_of_today", DateUtil.getStartOfDay(evaluationDate));
 		addContextValue("end_of_today", DateUtil.getEndOfDay(evaluationDate));
@@ -111,8 +116,9 @@ public class EvaluationContext implements PatientCalculationContext {
 	 * Constructs a new EvaluationContext given the passed EvaluationContext
 	 */
 	public EvaluationContext(EvaluationContext context) {
-        this.evaluationId = context.getEvaluationId();
 		this.setEvaluationDate(context.getEvaluationDate());
+		this.evaluationId = context.getEvaluationId();
+		this.evaluationLevel = context.getEvaluationLevel() + 1;
 		this.setLimit(context.getLimit());
 		this.setBaseCohort(context.getBaseCohort());
 		this.getParameterValues().putAll(context.getParameterValues());
@@ -321,26 +327,26 @@ public class EvaluationContext implements PatientCalculationContext {
 	public boolean containsParameter(String parameterName) {
 		return getParameterValues().containsKey(parameterName);
 	}
-	
+
 	/**
 	 * Add a parameter value for the given parameter name
-	 * 
+	 *
 	 * @param parameterName
 	 * @param value
 	 */
 	public void addParameterValue(String parameterName, Object value) {
 		getParameterValues().put(parameterName, value);
 	}
-	
+
 	/**
 	 * Retrieve a Parameter by Name
-	 * 
+	 *
 	 * @param parameterName
 	 */
 	public Object getParameterValue(String parameterName) {
 		return getParameterValues().get(parameterName);
 	}
-	
+
 	/**
 	 * @return the baseCohort
 	 */
@@ -350,7 +356,7 @@ public class EvaluationContext implements PatientCalculationContext {
 		}
 		return baseCohort;
 	}
-	
+
 	/**
 	 * @param baseCohort the baseCohort
 	 */
@@ -365,7 +371,7 @@ public class EvaluationContext implements PatientCalculationContext {
 	public Integer getLimit() {
 		return limit;
 	}
-	
+
 	/**
 	 * @param limit the limit
 	 */
@@ -373,14 +379,14 @@ public class EvaluationContext implements PatientCalculationContext {
 		clearCache();
 		this.limit = limit;
 	}
-	
+
 	/**
 	 * @return the evaluationDate
 	 */
 	public Date getEvaluationDate() {
 		return evaluationDate;
 	}
-	
+
 	/**
 	 * @param evaluationDate the evaluationDate to set
 	 */
@@ -392,7 +398,14 @@ public class EvaluationContext implements PatientCalculationContext {
 	/**
 	 * @return the evaluationId
 	 */
-    public String getEvaluationId() {
-        return evaluationId;
-    }
+	public long getEvaluationId() {
+		return evaluationId;
+	}
+
+	/**
+	 * @return the evaluationLevel
+	 */
+	public int getEvaluationLevel() {
+		return evaluationLevel;
+	}
 }

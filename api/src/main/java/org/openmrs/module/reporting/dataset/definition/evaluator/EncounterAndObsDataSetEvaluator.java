@@ -107,7 +107,7 @@ public class EncounterAndObsDataSetEvaluator implements DataSetEvaluator {
 		EncounterEvaluationContext eec = new EncounterEvaluationContext();
 		eec.setBaseEncounters(encounterIdRows);
 		q.from(Encounter.class, "e").whereEncounterIn("e.encounterId", eec);
-		List<Encounter> encounters = evaluationService.evaluateToList(q, Encounter.class);
+		List<Encounter> encounters = evaluationService.evaluateToList(q, Encounter.class, context);
 
 		// Determine what columns to display in the dataset
 

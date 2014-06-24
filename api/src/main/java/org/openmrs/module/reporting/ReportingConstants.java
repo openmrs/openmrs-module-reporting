@@ -53,13 +53,12 @@ public class ReportingConstants implements GlobalPropertyListener {
 	public static final String GLOBAL_PROPERTY_RUN_REPORT_COHORT_FILTER_MODE = "reporting.runReportCohortFilterMode";
 	public static final String GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT = "reporting.defaultDateFormat";
     public static final String GLOBAL_PROPERTY_TEST_PATIENTS_COHORT_DEFINITION = "reporting.testPatientsCohortDefinition";
-	public static final String GLOBAL_PROPERTY_IDSET_JOINING_ENABLED = "reporting.idsetJoiningEnabled";
 	public static final String GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED = "reporting.evaluationLoggerEnabled";
 	public static final String DEFAULT_LOCALE_GP_NAME = "reporting.defaultLocale";
 
 	public static final List<String> CACHED_PROPERTIES = Arrays.asList(
 			GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT, DEFAULT_LOCALE_GP_NAME, GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE,
-			GLOBAL_PROPERTY_IDSET_JOINING_ENABLED, GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED
+			GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED
 	);
 
 	// Constants used within sessions to key report data that can be retrieved
@@ -164,17 +163,6 @@ public class ReportingConstants implements GlobalPropertyListener {
         }
         return cohortDefinition;
     }
-
-	public static final boolean GLOBAL_PROPERTY_IDSET_JOINING_ENABLED() {
-		if (gpCache.containsKey(GLOBAL_PROPERTY_IDSET_JOINING_ENABLED)) {
-			return (Boolean)gpCache.get(GLOBAL_PROPERTY_IDSET_JOINING_ENABLED);
-		}
-		else {
-			boolean ret = getPropertyValueAsBoolean(GLOBAL_PROPERTY_IDSET_JOINING_ENABLED, true);
-			gpCache.put(GLOBAL_PROPERTY_IDSET_JOINING_ENABLED, ret);
-			return ret;
-		}
-	}
 
 	public static final boolean GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED() {
 		if (gpCache.containsKey(GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED)) {

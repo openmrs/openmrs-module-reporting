@@ -54,6 +54,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -70,7 +71,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	// Private variables
 	private ReportDAO reportDAO;
 	private ReportingTimerTask runQueuedReportsTask;
-	private Map<String, Report> reportCache = Collections.synchronizedMap(new LinkedHashMap<String, Report>());
+	private Map<String, CachedReportData> reportCache = Collections.synchronizedMap(new LinkedHashMap<String, CachedReportData>());
 		
 	/**
 	 * Default constructor
@@ -385,8 +386,9 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see ReportService#saveReport(Report, String)
 	 */
 	public Report saveReport(Report report, String description) {
-		boolean isPersisted = persistReportToDisk(report);
-		if (isPersisted) {
+		String reportRequestUuid = report.getRequest().getUuid();
+		CachedReportData cachedData = persistCachedReportDataToDisk(reportRequestUuid);
+		if (cachedData.isPersisted()) {
 			ReportRequest request = Context.getService(ReportService.class).getReportRequest(report.getRequest().getId());
 			request.setStatus(Status.SAVED);
 			request.setDescription(description);
@@ -396,7 +398,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			return report;
 		}
 		else {
-			throw new ReportingException("Unable to save Report due to error saving Report to disk");
+			throw new ReportingException("Unable to save Report due to error saving Report Data to disk");
 		}
 	}
 	
@@ -440,22 +442,32 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			logReportMessage(request, "Evaluating Report Data....");
 			
 			ReportData reportData = rds.evaluate(request.getReportDefinition(), context);
-			report.setReportData(reportData);
 			request.setEvaluateCompleteDatetime(new Date());
-
 			Context.flushSession(); // Ensure other threads can see updated request
-			
-			// Render the Report if appropriate
+
+			// Determine whether or not to render report data to bytes or to cache the raw data
+			boolean renderReportDataToBytes = false;
 			if (request.getRenderingMode() != null) {
 				ReportRenderer renderer = request.getRenderingMode().getRenderer();
+				renderReportDataToBytes = !(renderer instanceof InteractiveReportRenderer);
+			}
+
+			if (renderReportDataToBytes) {
+				logReportMessage(request, "Generating Rendered Report....");
+				ReportRenderer renderer = request.getRenderingMode().getRenderer();
 				String argument = request.getRenderingMode().getArgument();
-				if (!(renderer instanceof InteractiveReportRenderer)) {
-					logReportMessage(request, "Generating Rendered Report....");
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-		            renderer.render(reportData, argument, out);
-		            report.setRenderedOutput(out.toByteArray());
-		            request.setRenderCompleteDatetime(new Date());
-	            }
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				renderer.render(reportData, argument, out);
+				report.setRenderedOutput(out.toByteArray());
+				request.setRenderCompleteDatetime(new Date());
+
+				logReportMessage(request, "Writing the report output to disk");
+				ReportUtil.writeByteArrayToFile(getReportOutputFile(report.getRequest()), report.getRenderedOutput());
+			}
+			else {
+				logReportMessage(request, "Caching Report Results....");
+				report.setReportData(reportData);
+				cacheReportData(request.getUuid(), reportData);
 			}
 			request.setStatus(Status.COMPLETED);
 		}
@@ -466,6 +478,9 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				StringWriter sw = new StringWriter();
 				t.printStackTrace(new PrintWriter(sw));
 				report.setErrorMessage(sw.toString());
+
+				logReportMessage(request, "Writing the report error to disk");
+				ReportUtil.writeStringToFile(getReportErrorFile(report.getRequest()), report.getErrorMessage());
 			}
 			catch (Exception e) {
 				log.warn("Unable to log reporting error to file.", e);
@@ -473,10 +488,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		}
 
 		Context.flushSession(); // Ensure other threads can see updated request
-			
-		// Cache the report
-		logReportMessage(request, "Storing Report Results....");
-		cacheReport(report);
+
 		Context.getService(ReportService.class).saveReportRequest(request);
 		
 		// Find applicable global processors
@@ -506,30 +518,26 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		
 		return report;
 	}
-	 
-	/**
-	 * @see ReportService#getCachedReports()
-	 */
-	public Map<String, Report> getCachedReports() {
-		return new LinkedHashMap<String, Report>(reportCache);
-	}
 	
 	/**
 	 * Loads the ReportData previously generated Report for the given ReportRequest, first checking the cache
 	 */
 	public ReportData loadReportData(ReportRequest request) {
 		log.debug("Loading ReportData for ReportRequest");
-		Report report = reportCache.get(request.getUuid());
-		if (report != null) {
-			return report.getReportData();
+		CachedReportData cachedData = reportCache.get(request.getUuid());
+		if (cachedData != null) {
+			return cachedData.getReportData();
 		}
 		try {
 			long t1 = System.currentTimeMillis();
-			String s = ReportUtil.readStringFromFile(getReportDataFile(request));
-			ReportData reportData = Context.getSerializationService().deserialize(s, ReportData.class, ReportingSerializer.class);
-			long t2 = System.currentTimeMillis();
-			log.info("Loaded and Deserialized ReportData from file in " + (int)((t2-t1)/1000) + " seconds");
-			return reportData;
+			File reportDataFile = getReportDataFile(request);
+			if (reportDataFile.exists()) {
+				String s = ReportUtil.readStringFromFile(reportDataFile);
+				ReportData reportData = Context.getSerializationService().deserialize(s, ReportData.class, ReportingSerializer.class);
+				long t2 = System.currentTimeMillis();
+				log.info("Loaded and Deserialized ReportData from file in " + (int) ((t2 - t1) / 1000) + " seconds");
+				return reportData;
+			}
 		}
 		catch (Exception e) {
 			log.warn("Failed to load ReportData from disk for request " + request + " due to " + e.getMessage());
@@ -538,16 +546,15 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
-	 * Loads the Rendered Output for a previously generated Report for the given ReportRequest, first checking the cache
+	 * Loads the Rendered Output for a previously generated Report for the given ReportRequest
 	 */
 	public byte[] loadRenderedOutput(ReportRequest request) {
 		log.debug("Loading Rendered Output for ReportRequest");
-		Report report = reportCache.get(request.getUuid());
-		if (report != null) {
-			return report.getRenderedOutput();
-		}
 		try {
-			return ReportUtil.readByteArrayFromFile(getReportOutputFile(request));
+			File outputFile = getReportOutputFile(request);
+			if (outputFile.exists()) {
+				return ReportUtil.readByteArrayFromFile(outputFile);
+			}
 		}
 		catch (Exception e) {
 			log.warn("Failed to load Rendered Output from disk for request " + request + " due to " + e.getMessage());
@@ -561,7 +568,10 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public String loadReportError(ReportRequest request) {
 		log.debug("Loading Report Error Output for ReportRequest");
 		try {
-			return ReportUtil.readStringFromFile(getReportErrorFile(request));
+			File errorFile = getReportErrorFile(request);
+			if (errorFile != null) {
+				return ReportUtil.readStringFromFile(errorFile);
+			}
 		}
 		catch (Exception e) {
 			log.warn("Failed to load Report Error from disk for request " + request + " due to " + e.getMessage());
@@ -575,7 +585,10 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public List<String> loadReportLog(ReportRequest request) {
 		log.debug("Loading Report Log for ReportRequest");
 		try {
-			return ReportUtil.readLinesFromFile(getReportLogFile(request));
+			File logFile = getReportLogFile(request);
+			if (logFile != null) {
+				return ReportUtil.readLinesFromFile(logFile);
+			}
 		}
 		catch (Exception e) {
 			log.warn("Failed to load Report Log from disk for request " + request + " due to " + e.getMessage());
@@ -588,14 +601,10 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	public Report loadReport(ReportRequest request) {
 		log.info("Loading Report for ReportRequest");
-		Report report = reportCache.get(request.getUuid());
-		if (report == null) {
-			report = new Report(request);
-			report.setReportData(loadReportData(request));
-			report.setRenderedOutput(loadRenderedOutput(request));
-			report.setPersisted(true);
-			cacheReport(report);
-		}
+		Report report = new Report(request);
+		report.setReportData(loadReportData(request));
+		report.setRenderedOutput(loadRenderedOutput(request));
+		report.setErrorMessage(loadReportError(request));
 		return report;
 	}
 	
@@ -629,11 +638,9 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see ReportService#persistCachedReports()
 	 */
 	public synchronized void persistCachedReports() {
-		for (Report r : reportCache.values()) {
-			if (!r.isPersisted()) {
-				persistReportToDisk(r);
-				r.setPersisted(true);
-			}
+		Set<String> cachedRequests = reportCache.keySet();
+		for (String reportRequestUuid : cachedRequests) {
+			persistCachedReportDataToDisk(reportRequestUuid);
 		}
 		if (reportCache.size() > 0 && reportCache.size() >= ReportingConstants.GLOBAL_PROPERTY_MAX_CACHED_REPORTS()) {
 			Iterator<String> i = reportCache.keySet().iterator();
@@ -660,72 +667,44 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	//***** PRIVATE UTILITY METHODS *****
 	
 	/**
-	 * @param report the Report to cache
+	 * @param requestUuid the uuid of the ReportRequest that was evaluated
+	 * @param reportData the data to cache
 	 */
-	protected synchronized void cacheReport(Report report) {
-		reportCache.put(report.getRequest().getUuid(), report);
+	protected synchronized void cacheReportData(String requestUuid, ReportData reportData) {
+		CachedReportData cachedData = new CachedReportData(reportData);
+		reportCache.put(requestUuid, cachedData);
 	}
-	
+
+
 	/**
-	 * Saves the passed Report to disk within 3 separate files containing report data, output, and errors
-	 * @return true if the report was successfully persisted to disk, false otherwise
+	 * Saves the CachedReportData to disk
 	 */
-	protected boolean persistReportToDisk(Report report) {
-		
-		boolean success = true;
-		Timer timer = Timer.start();
-
-		// If there is no rendered output, serialize the raw data to file, otherwise write the rendered output to file
-		if (report.getRenderedOutput() == null) {
-            BufferedOutputStream out = null;
-            try {
-                File reportDataFile = getReportDataFile(report.getRequest());
-                log.info(timer.logInterval("About to serialize the ReportData to " + reportDataFile.getPath()));
-
-                out = new BufferedOutputStream(new FileOutputStream(reportDataFile));
-                ReportingSerializer serializer = (ReportingSerializer) Context.getSerializationService().getSerializer(ReportingSerializer.class);
-                serializer.serializeToStream(report.getReportData(), out);
-
-				log.info(timer.logInterval("Serialized the report data to disk"));
-			}
-			catch (Exception e) {
-				success = false;
-				log.warn("An error occurred writing report data to disk", e);
-			}
-            finally {
-                IOUtils.closeQuietly(out);
-            }
-        }
+	protected CachedReportData persistCachedReportDataToDisk(String reportRequestUuid) {
+		CachedReportData cachedData = reportCache.get(reportRequestUuid);
+		if (cachedData.isPersisted()) {
+			log.debug("Cached Data is already persisted, returning");
+		}
 		else {
+			ReportRequest request = getReportRequestByUuid(reportRequestUuid);
+			BufferedOutputStream out = null;
 			try {
-				ReportUtil.writeByteArrayToFile(getReportOutputFile(report.getRequest()), report.getRenderedOutput());
-				log.info(timer.logInterval("Persisted the report output to disk"));
-			}
-			catch (Exception e) {
-				success = false;
-				log.warn("An error occurred writing report output to disk", e);
-			}
-		}
-		
-		// Write the error to file
-		if (report.getErrorMessage() != null) {
-			try {
-				ReportUtil.writeStringToFile(getReportErrorFile(report.getRequest()), report.getErrorMessage());
-				log.info(timer.logInterval("Persisted the report error to disk"));
-			}
-			catch (Exception e) {
-				success = false;
-				log.warn("An error occurred writing report error to disk", e);
+				Timer timer = Timer.start();
+				File reportDataFile = getReportDataFile(request);
+				log.info(timer.logInterval("About to serialize the ReportData to " + reportDataFile.getPath()));
+				out = new BufferedOutputStream(new FileOutputStream(reportDataFile));
+				ReportingSerializer serializer = (ReportingSerializer) Context.getSerializationService().getSerializer(ReportingSerializer.class);
+				serializer.serializeToStream(cachedData.getReportData(), out);
+				log.info(timer.logInterval("Serialized the report data to disk"));
+				cachedData.setPersisted(true);
+			} catch (Exception e) {
+				log.warn("An error occurred writing report data to disk", e);
+			} finally {
+				IOUtils.closeQuietly(out);
 			}
 		}
-		
-		if (success) {
-			report.setPersisted(true);
-		}
-		
-		return success;
+		return cachedData;
 	}
-	
+
 	//***** PROPERTY ACCESS *****
 
 	public ReportDAO getReportDAO() {
@@ -742,5 +721,33 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 
 	public void setRunQueuedReportsTask(ReportingTimerTask runQueuedReportsTask) {
 		this.runQueuedReportsTask = runQueuedReportsTask;
+	}
+
+	//***** INNER CLASS FOR CACHING *****
+
+	private class CachedReportData {
+		private boolean persisted = false;
+		private ReportData reportData;
+
+		public CachedReportData(ReportData reportData) {
+			this.reportData = reportData;
+			this.setPersisted(false);
+		}
+
+		public boolean isPersisted() {
+			return persisted;
+		}
+
+		public void setPersisted(boolean persisted) {
+			this.persisted = persisted;
+		}
+
+		public ReportData getReportData() {
+			return reportData;
+		}
+
+		public void setReportData(ReportData reportData) {
+			this.reportData = reportData;
+		}
 	}
 }

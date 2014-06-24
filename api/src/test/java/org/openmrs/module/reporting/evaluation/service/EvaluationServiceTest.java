@@ -4,22 +4,14 @@ import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Cohort;
 import org.openmrs.Person;
-import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
-import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
-import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
-import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -38,15 +30,13 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
-		evaluationService.resetAllIdSets();
-		ReportUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_IDSET_JOINING_ENABLED, "true");
 	}
 
 	@Test
 	public void evaluateToList_shouldEvaluateAQueryToAMultiValueList() throws Exception {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
-		List<Object[]> l = evaluationService.evaluateToList(queryBuilder);
+		List<Object[]> l = evaluationService.evaluateToList(queryBuilder, new EvaluationContext());
 		Assert.assertEquals(2, l.get(0)[0]);
 		Assert.assertEquals(7, l.get(1)[0]);
 		Assert.assertEquals("M", l.get(0)[1]);
@@ -58,7 +48,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	public void evaluateToList_shouldEvaluateAQueryToASingleValueList() throws Exception {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
-		List<String> genders = evaluationService.evaluateToList(queryBuilder, String.class);
+		List<String> genders = evaluationService.evaluateToList(queryBuilder, String.class, new EvaluationContext());
 		Assert.assertEquals("M", genders.get(0));
 		Assert.assertEquals("F", genders.get(1));
 		Assert.assertEquals(2, genders.size());
@@ -69,14 +59,14 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	public void evaluateToList_shouldThrowAnExceptionWithIncorrectNumberOfColumns() {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
-		evaluationService.evaluateToList(queryBuilder, String.class);
+		evaluationService.evaluateToList(queryBuilder, String.class, new EvaluationContext());
 	}
 
 	@Test
 	public void evaluateToMap_shouldEvaluateAQueryToAMap() throws Exception {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
-		Map<Integer, String> m = evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class);
+		Map<Integer, String> m = evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class, new EvaluationContext());
 		Assert.assertEquals(m.get(2), "M");
 		Assert.assertEquals(m.get(7), "F");
 	}
@@ -86,155 +76,6 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	public void evaluateToMap_shouldThrowAnExceptionWithIncorrectNumberOfColumns() {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("personId", "gender", "birthdate").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
-		evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class);
-	}
-
-	@Test
-	public void generateKey_shouldGenerateUniqueKeysForEachIdSet() throws Exception {
-		EvaluationIdSet idSet1 = createIdSet(10,20);
-		EvaluationIdSet idSet2 = createIdSet(5,10,15);
-		EvaluationIdSet idSet3 = createIdSet(20,10);
-
-		Assert.assertEquals(evaluationService.generateKey(idSet1), evaluationService.generateKey(idSet1));
-		Assert.assertNotEquals(evaluationService.generateKey(idSet1), evaluationService.generateKey(idSet2));
-		Assert.assertEquals(evaluationService.generateKey(idSet1), evaluationService.generateKey(idSet3));
-	}
-
-	@Test
-	public void startUsing_shouldPersistIdSetToTemporaryTableWhenYouStartUsingIt() throws Exception {
-		EvaluationIdSet idSet1 = createIdSet(2,7);
-		String key = evaluationService.generateKey(idSet1);
-		checkIdSetMembers(key);
-		evaluationService.startUsing(idSet1);
-		checkIdSetMembers(key, 2, 7);
-		evaluationService.stopUsing(key);
-		checkIdSetMembers(key);
-	}
-
-	@Test
-	public void startUsing_shouldPersistAllIdSetsInEvaluationContext() throws Exception {
-		List<Integer> pIds = Arrays.asList(2, 7);
-		EvaluationContext context = new EvaluationContext();
-		context.setBaseCohort(new Cohort(pIds));
-
-		String pIdKey = evaluationService.generateKey(new EvaluationIdSet(context.getEvaluationId(), pIds));
-
-		checkIdSetMembers(pIdKey);
-		evaluationService.startUsing(context);
-		checkIdSetMembers(pIdKey, 2, 7);
-		evaluationService.stopUsing(pIdKey);
-		checkIdSetMembers(pIdKey);
-
-		List<Integer> encIds = Arrays.asList(100, 200);
-		EncounterEvaluationContext eec = new EncounterEvaluationContext();
-		eec.setBaseCohort(new Cohort(pIds));
-		eec.setBaseEncounters(new EncounterIdSet(encIds));
-
-		pIdKey = evaluationService.generateKey(new EvaluationIdSet(eec.getEvaluationId(), pIds));
-		String encIdKey = evaluationService.generateKey(new EvaluationIdSet(eec.getEvaluationId(), encIds));
-
-		checkIdSetMembers(pIdKey);
-		checkIdSetMembers(encIdKey);
-		evaluationService.startUsing(eec);
-		checkIdSetMembers(pIdKey, 2, 7);
-		checkIdSetMembers(encIdKey, 100, 200);
-		evaluationService.stopUsing(eec);
-		checkIdSetMembers(pIdKey);
-		checkIdSetMembers(encIdKey);
-	}
-
-	@Test
-	public void startUsing_shouldNotPersistIdSetToTemporaryTableIfYouAreAlreadyUsingIt() throws Exception {
-		EvaluationIdSet pIds = createIdSet(2,7);
-		evaluationService.startUsing(pIds);
-		checkNumIdsPersisted(2);
-		evaluationService.startUsing(pIds);
-		checkNumIdsPersisted(2);
-		evaluationService.stopUsing(evaluationService.generateKey(pIds));
-	}
-
-	@Test
-	public void isInUse_shouldReturnTrueIfIdSetIsInUse() throws Exception {
-		EvaluationIdSet pIds = createIdSet(2,7);
-		String key = evaluationService.generateKey(pIds);
-		Assert.assertFalse(evaluationService.isInUse(key));
-		evaluationService.startUsing(pIds);
-		Assert.assertTrue(evaluationService.isInUse(key));
-		evaluationService.stopUsing(key);
-		Assert.assertFalse(evaluationService.isInUse(key));
-	}
-
-	@Test
-	public void stopUsing_shouldRemoveIdSetFromTemporaryTableIfEveryoneIsDoneUsingIt() throws Exception {
-		EvaluationIdSet pIds = createIdSet(2,7);
-		String key = evaluationService.generateKey(pIds);
-		Assert.assertFalse(evaluationService.isInUse(key));
-		evaluationService.startUsing(pIds);
-		Assert.assertTrue(evaluationService.isInUse(key));
-		evaluationService.stopUsing(key);
-		Assert.assertFalse(evaluationService.isInUse(key));
-	}
-
-	@Test
-	public void stopUsing_shouldNotRemoveIdSetFromTemporaryTableIfSomeoneIsUsingIt() throws Exception {
-		EvaluationIdSet pIds = createIdSet(2,7);
-		String key = evaluationService.generateKey(pIds);
-		Assert.assertFalse(evaluationService.isInUse(key));
-		evaluationService.startUsing(pIds);
-		evaluationService.startUsing(pIds);
-		Assert.assertTrue(evaluationService.isInUse(key));
-		evaluationService.stopUsing(key);
-		Assert.assertTrue(evaluationService.isInUse(key));
-		evaluationService.stopUsing(key);
-		Assert.assertFalse(evaluationService.isInUse(key));
-	}
-
-	@Test
-	public void resetAllIdSets_shouldRemoveAnyIdSet() throws Exception {
-		evaluationService.startUsing(createIdSet(2,7));
-		evaluationService.startUsing(createIdSet(1,8));
-		evaluationService.startUsing(createIdSet(2, 7, 1, 8));
-		org.openmrs.test.TestUtil.printOutTableContents(getConnection(), "reporting_idset");
-		checkNumIdsPersisted(8);
-		evaluationService.resetAllIdSets();
-		checkNumIdsPersisted(0);
-	}
-
-	@Test
-	public void startUsing_shouldNotPersistIdSetsIfDisabled() throws Exception {
-		ReportUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_IDSET_JOINING_ENABLED, "false");
-		EvaluationIdSet idSet = createIdSet(2,7);
-		String key = evaluationService.generateKey(idSet);
-		checkIdSetMembers(key);
-		evaluationService.startUsing(idSet);
-		checkIdSetMembers(key);
-		evaluationService.stopUsing(key);
-		checkIdSetMembers(key);
-	}
-
-	protected void checkNumIdsPersisted(int numExpected) {
-		String hql = "select memberId from IdsetMember";
-		List ret = sessionFactory.getCurrentSession().createQuery(hql).list();
-		Assert.assertEquals("Expected " + numExpected + " but got " + ret.size() + ": " + ret, numExpected, ret.size());
-	}
-
-	protected void checkIdSetMembers(String key, Integer...expectedValues) {
-		String hql = "select memberId from IdsetMember" + (key == null ? "" : " where key = '" + key + "'") + " order by memberId";
-		List ret = sessionFactory.getCurrentSession().createQuery(hql).list();
-		if (expectedValues == null || expectedValues.length == 0) {
-			Assert.assertEquals(0, ret.size());
-			Assert.assertFalse(evaluationService.isInUse(key));
-		}
-		else {
-			Assert.assertEquals("Expected " + ObjectUtil.format(expectedValues) + " but only found " + ret, expectedValues.length, ret.size());
-			for (int i = 0; i < expectedValues.length; i++) {
-				Assert.assertEquals(expectedValues[i], ret.get(i));
-			}
-			Assert.assertTrue(evaluationService.isInUse(key));
-		}
-	}
-
-	protected EvaluationIdSet createIdSet(Integer... ids) {
-		return new EvaluationIdSet("TEST", Arrays.asList(ids));
+		evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class, new EvaluationContext());
 	}
 }

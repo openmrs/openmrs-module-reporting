@@ -45,7 +45,7 @@ public abstract class ObsPropertyDataEvaluator implements ObsDataEvaluator {
 		q.select("o.obsId", "o."+getPropertyName());
 		q.from(Obs.class, "o");
 		q.whereObsIn("o.obsId", context);
-		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		c.setData(data);
 		return c;
 	}

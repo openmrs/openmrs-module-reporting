@@ -33,14 +33,12 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.EvaluationLogger;
+import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,7 +159,7 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	@Transactional(readOnly = true)
 	public T getDefinition(String uuid, Class<? extends T> type) {
 		T ret = null;
-		if (StringUtils.hasText(uuid)) {
+		if (ObjectUtil.notNull(uuid)) {
 			ret = getDefinitionByUuid(uuid);
 		}
 		if (ret == null) {
@@ -328,30 +326,27 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 	 */
 	protected Evaluated<T> executeEvaluator(DefinitionEvaluator<T> evaluator, T definition, EvaluationContext context) throws EvaluationException {
 		Evaluated<T> ret = null;
+		EvaluationProfiler profiler = new EvaluationProfiler(context);
+		if (context.getEvaluationLevel() == 1) {
+			profiler.logBefore("EVALUATION_STARTED", Context.getAuthenticatedUser().getDisplayString());
+		}
+		profiler.logBefore("EVALUATING_DEFINITION", DefinitionUtil.format(definition));
 		try {
-			EvaluationLogger.logBeforeEvent("executeEvaluator", DefinitionUtil.format(definition));
-			List<String> ownedIdSets = null;
-			try {
-				ownedIdSets = Context.getService(EvaluationService.class).startUsing(context);
-				ret = evaluator.evaluate(definition, context);
-			}
-			finally {
-				if (ownedIdSets != null) {
-					for (String idSetKey : ownedIdSets) {
-						Context.getService(EvaluationService.class).stopUsing(idSetKey);
-					}
-				}
-			}
+			ret = evaluator.evaluate(definition, context);
 		}
 		catch (EvaluationException e) {
-			EvaluationLogger.logAfterEvent("executeEvaluator", "Error: " + e.getMessage());
+			profiler.logError("EVALUATING_DEFINITION", e);
 			throw e;
 		}
-		catch (RuntimeException e) {
-			EvaluationLogger.logAfterEvent("executeEvaluator", "Error: " + e.getMessage());
-			throw e;
+		catch (Throwable t) {
+			profiler.logError("EVALUATING_DEFINITION", t);
+			throw new EvaluationException("Error evaluating", t);
 		}
-		EvaluationLogger.logAfterEvent("executeEvaluator", "Evaluation complete.");
+		profiler.logAfter("EVALUATING_DEFINITION", "Evaluation Complete");
+		if (context.getEvaluationLevel() == 1) {
+			profiler.logAfter("EVALUATION_COMPLETED", profiler.getTimeElapsedFromStart());
+			context.clearCache();
+		}
 		return ret;
 	}
 	

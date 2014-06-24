@@ -64,7 +64,7 @@ public class MostRecentEncounterForPatientQueryEvaluator implements EncounterQue
 		q.whereEncounterIn("e.encounterId", context);
 		q.orderAsc("e.encounterDatetime");
 
-		Map<Integer, Integer> pIdToEncId = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
+		Map<Integer, Integer> pIdToEncId = evaluationService.evaluateToMap(q, Integer.class, Integer.class, context);
 		queryResult.getMemberIds().addAll(pIdToEncId.values());
 		return queryResult;
 	}

@@ -73,7 +73,7 @@ public class PatientIdentifierCohortDefinitionEvaluator implements CohortDefinit
 
 		q.wherePatientIn("pi.patient.patientId", context);
 
-		List<Object[]> results = evaluationService.evaluateToList(q);
+		List<Object[]> results = evaluationService.evaluateToList(q, context);
 
 		for (Object[] row : results) {
 			boolean include = true;

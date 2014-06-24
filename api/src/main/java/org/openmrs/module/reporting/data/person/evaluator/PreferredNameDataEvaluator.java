@@ -55,7 +55,7 @@ public class PreferredNameDataEvaluator implements PersonDataEvaluator {
 		q.wherePersonIn("pn.person.personId", context);
 		q.orderAsc("pn.preferred");
 
-		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		c.setData(data);
 
 		return c;

@@ -44,7 +44,7 @@ public abstract class EncounterPropertyDataEvaluator implements EncounterDataEva
 		q.select("e.encounterId", "e."+getPropertyName());
 		q.from(Encounter.class, "e");
 		q.whereEncounterIn("e.encounterId", context);
-		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		c.setData(data);
 		return c;
 	}

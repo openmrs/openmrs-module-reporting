@@ -14,75 +14,144 @@
 
 package org.openmrs.module.reporting.evaluation;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.util.OpenmrsUtil;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.Date;
 
 /**
- * Advice class to profile all evaluate methods in definition services. Outputs TRACE level log messages with timing
- * information. To view those messages ensure that that the EvaluationProfiler logger is set to TRACE.
+ * Class that can be used to profile the time a method takes to execute
+ * Outputs TRACE level log messages with timing information.
+ * To view those messages ensure that that the EvaluationProfiler logger is set to TRACE.
  */
-public class EvaluationProfiler implements MethodInterceptor {
+public class EvaluationProfiler {
 
 	protected static final Log log = LogFactory.getLog(EvaluationProfiler.class);
+	public static final String EVALUATION_LOG_FILE_PREFIX = "evaluation-";
 
-	protected static ThreadLocal<Integer> level = new ThreadLocal<Integer>();
+	public static final String BEFORE = "BEFORE";
+	public static final String ERROR = "ERROR";
+	public static final String AFTER = "AFTER";
+
+	//***** INSTANCE VARIABLES *****
+
+	private EvaluationContext context;
+	private long overallStartTime;
+	private long lastStartTime;
+	private File logFile;
+
+	//***** CONSTRUCTOR *****
+
+	public EvaluationProfiler(EvaluationContext context) {
+		this.context = context;
+		this.overallStartTime = System.currentTimeMillis();
+		this.lastStartTime = overallStartTime;
+		this.logFile = new File(getLogDirectory(), EVALUATION_LOG_FILE_PREFIX + DateUtil.formatDate(new Date(overallStartTime), "yyyyMMdd") + ".log");
+	}
+
+	// ***** INSTANCE METHODS *****
 
 	/**
-	 * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
+	 * Logs the start of an event
 	 */
-	@Override
-	public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-		if (methodInvocation.getMethod().getName().equals("evaluate") && log.isTraceEnabled()) {
-			Definition definition = getDefinition(methodInvocation.getArguments()[0]);
-			String name = definition.getName() != null ? definition.getName() : "?";
-			String label = definition.getClass().getSimpleName() + " [" + name + "]";
+	public void logBefore(String eventCode, String message) {
+		log(BEFORE, eventCode, message);
+	}
 
-			return timed(methodInvocation, label);
+	/**
+	 * Logs an error during an event
+	 */
+	public void logError(String eventCode, Throwable t) {
+		log(ERROR, eventCode, t.getMessage());
+	}
+
+	/**
+	 * Logs the end of an event
+	 */
+	public void logAfter(String eventCode, String message) {
+		log(AFTER, eventCode, message);
+	}
+
+	/**
+	 * @return the overall time elapsed from the time the profiler was instantiated until now
+	 */
+	public String getTimeElapsedFromStart() {
+		return DateUtil.getTimeElapsed(System.currentTimeMillis() - overallStartTime);
+	}
+
+	/**
+	 * Logs an event, including with log4j and to the report evaluation log file
+	 */
+	private synchronized void log(String when, String eventCode, String message) {
+		long logTime = System.currentTimeMillis();
+		try {
+			StringBuilder sb = new StringBuilder();
+			appendToLine(sb, Long.toString(context.getEvaluationId()));
+			appendToLine(sb, DateUtil.formatDate(new Date(logTime), "yyyy-MM-dd HH:mm:ss.S"));
+			appendToLine(sb, StringUtils.repeat(">", context.getEvaluationLevel()));
+			appendToLine(sb, when);
+			appendToLine(sb, eventCode);
+			if (AFTER.equals(when)) {
+				appendToLine(sb, DateUtil.getTimeElapsed(logTime - lastStartTime));
+				appendToLine(sb, DateUtil.getTimeElapsed(logTime - overallStartTime));
+			}
+			else {
+				if (BEFORE.equals(when)) {
+					lastStartTime = logTime;
+				}
+				appendToLine(sb, "");
+				appendToLine(sb, "");
+			}
+			sb.append(message);
+			if (log.isTraceEnabled()) {
+				log.trace(sb.toString());
+			}
+			if (ReportingConstants.GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED()) {
+				PrintWriter out = null;
+				try {
+					out = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)));
+					out.println(sb.toString());
+				}
+				catch (Exception e) {
+					log.debug("Unable to write message to file", e);
+				}
+				finally {
+					IOUtils.closeQuietly(out);
+				}
+			}
 		}
-		else {
-			return methodInvocation.proceed();
+		catch (Exception e) {
+			log.trace("An error occurred logging an evaluation event", e);
 		}
 	}
 
 	/**
-	 * Times the given method invocation and logs the result
-	 * @param methodInvocation the method invocation
-	 * @param label the label for log output
-	 * @return the invocation result
+	 * Utility method to add new lines to the log file
 	 */
-	protected Object timed(MethodInvocation methodInvocation, String label) throws Throwable {
-		int currentLevel = level.get() != null ? level.get() : 1;
-		level.set(currentLevel + 1);
-
-		long start = System.currentTimeMillis();
-		Object result = methodInvocation.proceed();
-		long timeTaken = System.currentTimeMillis() - start;
-
-		level.set(currentLevel);
-
-		log.trace(StringUtils.repeat('>', currentLevel) + " " + timeTaken + " ms to evaluate " + label);
-
-		return result;
+	protected void appendToLine(StringBuilder sb, String text) {
+		sb.append(text).append("\t");
 	}
 
+	//***** STATIC METHODS *****
+
 	/**
-	 * Gets the definition argument of an invocation of evaluate
-	 * @param arg a definition or a mapped definition
-	 * @return the definition
+	 * This returns the directory in which all Evaluation Logs are written
 	 */
-	protected Definition getDefinition(Object arg) {
-		if (arg instanceof Definition) {
-			return (Definition) arg;
+	public static File getLogDirectory() {
+		File baseDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
+		File dir = new File(baseDir, ReportingConstants.EVALUATION_LOG_DIRECTORY_NAME);
+		if (!dir.exists()) {
+			dir.mkdirs();
 		}
-		else if (arg instanceof Mapped) {
-			return (Definition) ((Mapped) arg).getParameterizable();
-		}
-		else {
-			throw new RuntimeException("Invalid argument passed to evaluate method");
-		}
+		return dir;
 	}
 }

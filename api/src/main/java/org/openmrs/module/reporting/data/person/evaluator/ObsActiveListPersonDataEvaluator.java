@@ -93,6 +93,6 @@ public class ObsActiveListPersonDataEvaluator implements PersonDataEvaluator {
 		q.from(Obs.class, "o");
 		q.wherePersonIn("o.personId", context);
 		q.whereIn("o.concept", concepts);
-		return evaluationService.evaluateToList(q);
+		return evaluationService.evaluateToList(q, context);
 	}
 }

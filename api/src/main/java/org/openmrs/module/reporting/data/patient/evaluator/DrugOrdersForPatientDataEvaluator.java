@@ -133,7 +133,7 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 			q.endGroup();
 		}
 		
-		List<Object[]> results = evaluationService.evaluateToList(q);
+		List<Object[]> results = evaluationService.evaluateToList(q, context);
 		for (Object[] row : results) {
 			Integer pId = (Integer)row[0];
 			DrugOrder drugOrder = (DrugOrder)row[1];

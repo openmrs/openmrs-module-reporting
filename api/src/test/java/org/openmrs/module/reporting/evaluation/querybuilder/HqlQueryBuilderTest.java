@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.cohort.PatientIdSet;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.query.visit.VisitIdSet;
@@ -60,7 +61,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void select_shouldSelectTheConfiguredColumns() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
-		List<Object[]> results = evaluationService.evaluateToList(q);
+		List<Object[]> results = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(results, 2);
 		testRow(results, 1, 2, "M");
 		testRow(results, 2, 7, "F");
@@ -70,14 +71,14 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void from_shouldNotRequireAnAlias() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("personId", "gender").from(Person.class);
-		evaluationService.evaluateToList(q);
+		evaluationService.evaluateToList(q, new EvaluationContext());
 	}
 
 	@Test
 	public void from_shouldAllowAnAlias() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("p.personId", "p.gender").from(Person.class, "p").whereInAny("p.personId", 2, 7);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -85,14 +86,14 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void from_shouldExcludedVoidedByDefault() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("patientIdentifierId").from(PatientIdentifier.class);
-		testSize(evaluationService.evaluateToList(q), 12);
+		testSize(evaluationService.evaluateToList(q, new EvaluationContext()), 12);
 	}
 
 	@Test
 	public void from_shouldSupportIncludingVoided() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder(true);
 		q.select("patientIdentifierId").from(PatientIdentifier.class);
-		testSize(evaluationService.evaluateToList(q), 13);
+		testSize(evaluationService.evaluateToList(q, new EvaluationContext()), 13);
 	}
 
 	@Test
@@ -100,7 +101,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		// This does an implicit inner join apparently, ugh
 		q.select("p.personAddressId", "p.changedBy").from(PersonAddress.class, "p");
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 1);
 	}
 
@@ -108,7 +109,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void leftOuterJoin_shouldJoin() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("p.personAddressId", "c").from(PersonAddress.class, "p").leftOuterJoin("p.changedBy", "c");
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 7);
 	}
 
@@ -116,7 +117,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void innerJoin_shouldJoin() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("p.personAddressId", "c").from(PersonAddress.class, "p").innerJoin("p.changedBy", "c");
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 1);
 	}
 
@@ -124,7 +125,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void where_shouldSupportAnArbitraryConstraint() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("p.personId", "p.gender").from(Person.class, "p").where("gender = 'F'").whereInAny("personId", 2, 7);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 1);
 	}
 
@@ -132,7 +133,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereNull_shouldConstrainAgainstNullValues() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder(true);
 		q.select("personId").from(Person.class).whereNull("birthdate");
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 5);
 	}
 
@@ -140,7 +141,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereEqual_shouldNotConstrainIfValuesAreNull() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("personId").from(Person.class).whereEqual("gender", null).whereInAny("personId", 2, 7);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -148,7 +149,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereEqual_shouldConstrainAgainstExactDatetimeIfNotMidnight() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("person.personId").from(PersonAddress.class).whereEqual("dateCreated", DateUtil.getDateTime(2008,8,15,15,46,47,0));
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 1);
 	}
 
@@ -156,7 +157,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereEqual_shouldConstrainAgainstAnyTimeDuringDateIfMidnight() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("person.personId").from(PersonAddress.class).whereEqual("dateCreated", DateUtil.getDateTime(2008,8,15));
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -164,7 +165,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereEqual_shouldConstrainAgainstASimpleValue() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("person.personId").from(PersonAddress.class).whereEqual("cityVillage", "Gucha");
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 1);
 	}
 
@@ -173,7 +174,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		Person person2 = Context.getPersonService().getPerson(2);
 		q.select("person.gender").from(PersonAddress.class).whereEqual("person", person2);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 1);
 		testRow(rows, 1, "M");
 	}
@@ -183,7 +184,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		Cohort c = new Cohort("2,7");
 		q.select("person.gender").from(PersonAddress.class).whereEqual("person.personId", c);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -192,7 +193,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		PatientIdSet idSet = new PatientIdSet(2,7);
 		q.select("person.gender").from(PersonAddress.class).whereEqual("person.personId", idSet);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -201,7 +202,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		Set<Integer> idSet = new HashSet<Integer>(Arrays.asList(2,7));
 		q.select("person.gender").from(PersonAddress.class).whereEqual("person.personId", idSet);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -210,7 +211,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		Integer[] idSet = {2,7};
 		q.select("person.gender").from(PersonAddress.class).whereEqual("person.personId", idSet);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -219,7 +220,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		Set<Integer> idSet = new HashSet<Integer>(Arrays.asList(2,7));
 		q.select("person.gender").from(PersonAddress.class).whereIn("person.personId", idSet);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -228,7 +229,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		Integer[] idSet = {2,7};
 		q.select("person.gender").from(PersonAddress.class).whereInAny("person.personId", idSet);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -236,7 +237,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereLike_shouldConstrainByLike() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("patient.patientId").from(PatientIdentifier.class).whereLike("identifier", "101%");
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -244,7 +245,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereGreater_shouldConstrainColumnsGreaterThanValue() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder(true);
 		q.select("personId").from(Person.class).whereGreater("personId", 501);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 2);
 	}
 
@@ -252,7 +253,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereGreaterOrEqualTo_shouldConstrainColumnsGreaterOrEqualToValue() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder(true);
 		q.select("personId").from(Person.class).whereGreaterOrEqualTo("personId", 501);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 3);
 	}
 
@@ -260,7 +261,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereLess_shouldConstrainColumnsLessThanValue() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder(true);
 		q.select("personId").from(Person.class).whereLess("personId", 9);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 5);
 	}
 
@@ -268,7 +269,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereLess_shouldConstrainDateByEndOfDayIfMidnightPassedIn() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("personAddressId").from(PersonAddress.class).whereLess("dateCreated", DateUtil.getDateTime(2008,8,15));
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 6);
 	}
 
@@ -276,7 +277,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereLess_shouldConstrainDateByExactTimeIfNotMidnight() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("personAddressId").from(PersonAddress.class).whereLess("dateCreated", DateUtil.getDateTime(2008,8,15,15,46,0,0));
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 4);
 	}
 
@@ -284,7 +285,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereLessOrEqualTo_shouldConstrainColumnsLessOrEqualToValue() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder(true);
 		q.select("personId").from(Person.class).whereLessOrEqualTo("personId", 9);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 6);
 	}
 
@@ -292,7 +293,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereLessOrEqualTo_shouldConstrainDateByEndOfDayIfMidnightPassedIn() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("personAddressId").from(PersonAddress.class).whereLessOrEqualTo("dateCreated", DateUtil.getDateTime(2008,8,15));
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 6);
 	}
 
@@ -300,7 +301,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereLessOrEqualTo_shouldConstrainDateByExactTimeIfNotMidnight() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("personAddressId").from(PersonAddress.class).whereLessOrEqualTo("dateCreated", DateUtil.getDateTime(2008,8,15,15,46,47,0));
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 5);
 	}
 
@@ -308,7 +309,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void whereBetweenInclusive_shouldConstrainBetweenValues() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("personId").from(Person.class).whereBetweenInclusive("personId", 20, 30);
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 5);
 	}
 
@@ -316,7 +317,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void orderAsc_shouldOrderAscending() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("personId").from(Person.class).whereBetweenInclusive("personId", 20, 22).orderAsc("personId");
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testRow(rows, 1, 20);
 		testRow(rows, 2, 21);
 		testRow(rows, 3, 22);
@@ -326,7 +327,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void orderDesc_shouldOrderDescending() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("personId").from(Person.class).whereBetweenInclusive("personId", 20, 22).orderDesc("personId");
-		List<Object[]> rows = evaluationService.evaluateToList(q);
+		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testRow(rows, 1, 22);
 		testRow(rows, 2, 21);
 		testRow(rows, 3, 20);
@@ -338,7 +339,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
         VisitEvaluationContext context = new VisitEvaluationContext();
         context.setBaseVisits(new VisitIdSet(Arrays.asList(2,3,4)));
         q.select("visitId").from(Visit.class).whereVisitIn("visitId", context);
-        List<Object[]> rows = evaluationService.evaluateToList(q);
+        List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
         testSize(rows, 3);
         testRow(rows, 1, 2);
         testRow(rows, 2, 3);
@@ -372,7 +373,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("pa.person.personId", "pa").from(PersonAddress.class, "pa");
 		System.out.println("******************* Running test query");
-		List<Object[]> results = evaluationService.evaluateToList(q);
+		List<Object[]> results = evaluationService.evaluateToList(q, new EvaluationContext());
 		for (Object[] row : results) {
 			System.out.println(ObjectUtil.toString(",", row));
 		}

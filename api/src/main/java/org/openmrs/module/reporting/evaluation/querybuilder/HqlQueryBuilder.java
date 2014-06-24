@@ -6,7 +6,6 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Voidable;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
@@ -14,16 +13,20 @@ import org.openmrs.module.reporting.data.obs.ObsDataUtil;
 import org.openmrs.module.reporting.data.visit.VisitDataUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
-import org.openmrs.module.reporting.evaluation.EvaluationLogger;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
-import org.openmrs.module.reporting.evaluation.service.EvaluationService;
-import org.openmrs.module.reporting.evaluation.service.IdsetMember;
 import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.sql.DatabaseMetaData;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Helper class for building and executing an HQL query with parameters
@@ -44,7 +47,6 @@ public class HqlQueryBuilder implements QueryBuilder {
 	private List<String> columns = new ArrayList<String>();
 	private List<String> joinClauses = new ArrayList<String>();
 	private List<String> clauses = new ArrayList<String>();
-	private Map<String, EvaluationIdSet> idClauses = new LinkedHashMap<String, EvaluationIdSet>();
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<String> orderBy = new ArrayList<String>();
 	private int positionIndex = 1;
@@ -220,7 +222,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	public HqlQueryBuilder wherePatientIn(String propertyName, EvaluationContext context) {
 		if (context != null) {
 			if (context.getBaseCohort() != null) {
-				whereIdIn(propertyName, new EvaluationIdSet(context.getEvaluationId(), context.getBaseCohort().getMemberIds()));
+				whereIdIn(propertyName, context.getBaseCohort().getMemberIds());
 			}
 		}
 		return this;
@@ -244,7 +246,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 				}
 			}
 			if (memberIds != null) {
-				whereIdIn(propertyName, new EvaluationIdSet(context.getEvaluationId(), memberIds));
+				whereIdIn(propertyName, memberIds);
 			}
 		}
 		return this;
@@ -254,7 +256,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 		if (context != null) {
 			Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
 			if (encIds != null) {
-				whereIdIn(propertyName, new EvaluationIdSet(context.getEvaluationId(), encIds));
+				whereIdIn(propertyName, encIds);
 			}
 		}
 		return this;
@@ -264,7 +266,7 @@ public class HqlQueryBuilder implements QueryBuilder {
         if (context != null) {
             Set<Integer> visitIds = VisitDataUtil.getVisitIdsForContext(context, true);
 			if (visitIds != null) {
-				whereIdIn(propertyName, new EvaluationIdSet(context.getEvaluationId(), visitIds));
+				whereIdIn(propertyName, visitIds);
 			}
         }
         return this;
@@ -274,7 +276,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 		if (context != null) {
 			Set<Integer> obsIds = ObsDataUtil.getObsIdsForContext(context, true);
 			if (obsIds != null) {
-				whereIdIn(propertyName, new EvaluationIdSet(context.getEvaluationId(), obsIds));
+				whereIdIn(propertyName, obsIds);
 			}
 		}
 		return this;
@@ -284,13 +286,14 @@ public class HqlQueryBuilder implements QueryBuilder {
 	 * Constrain the passed id property against a set of values.
 	 * This method may only be called once per instance of HqlQueryBuilder.
 	 */
-	protected HqlQueryBuilder whereIdIn(String propertyName, EvaluationIdSet evaluationIdSet) {
-		if (evaluationIdSet != null) {
-			if (idClauses.isEmpty()) {
-				idClauses.put(propertyName, evaluationIdSet);
+	protected HqlQueryBuilder whereIdIn(String propertyName, Collection<Integer> ids) {
+		if (ids != null) {
+			if (ids.isEmpty()) {
+				where("1=0");
 			}
 			else {
-				throw new IllegalStateException("You can only associate one IdSet per query.");
+				// Here we build the in clause manually due to some known hibernate performance issues
+				where(propertyName + " in (" + OpenmrsUtil.join(ids, ",") + ")");
 			}
 		}
 		return this;
@@ -390,21 +393,6 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
-	public List<?> listResults(SessionFactory sessionFactory) {
-		List l = null;
-		Query query = buildQuery(sessionFactory);
-		EvaluationLogger.logBeforeEvent("hqlQuery", toString());
-		try {
-			l = query.list();
-		}
-		catch (Exception e) {
-			EvaluationLogger.logAfterEvent("hqlQuery", "Error: " + e.getMessage());
-		}
-		EvaluationLogger.logAfterEvent("hqlQuery", "Execution complete: " + l.size() + " results");
-		return l;
-	}
-
-	@Override
 	public String toString() {
 		if (builtQueryString == null) {
 			return super.toString();
@@ -420,14 +408,12 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return ret;
 	}
 
+	@Override
 	public Query buildQuery(SessionFactory sessionFactory) {
 
 		if ((positionIndex-1) > parameters.size()) {
 			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");
 		}
-
-		// Apply the idset clauses to the query.  Happens here because the method used is determined at execution time.
-		applyIdSetClausesToQuery(sessionFactory);
 
 		// Create query string
 		StringBuilder q = new StringBuilder();
@@ -509,113 +495,11 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return this;
 	}
 
-	protected void addSubQueryAgainstIdSetMember(String idProperty, String idSetKey) {
-		where(idProperty + " in ( select memberId from IdsetMember where key = '" + idSetKey + "' )");
-	}
-
-	protected void applyIdSetClausesToQuery(SessionFactory sessionFactory) {
-
-		List<Object[]> persistedIdSets = new ArrayList<Object[]>();
-
-		// First apply any idsets that are empty or that are not persisted to the database
-		for (String idProperty : idClauses.keySet()) {
-			EvaluationIdSet idSet = idClauses.get(idProperty);
-			if (idSet.isEmpty()) {
-				where("1=0");
-			}
-			else {
-				String idSetKey = Context.getService(EvaluationService.class).generateKey(idSet);
-				boolean isPersisted = Context.getService(EvaluationService.class).isInUse(idSetKey);
-				if (isPersisted) {
-					persistedIdSets.add(new Object[]{idProperty, idSetKey, idSet});
-				}
-				else {
-					if (idSet.size() > MAXIMUM_RECOMMENDED_IN_CLAUSE_SIZE) {
-						log.warn("Adding in constraint against " + idSet.size() + " is not recommended.  This may fail.");
-					}
-
-					// Here we build the in clause manually due to some known hibernate performance issues
-					where(idProperty + " in (" + OpenmrsUtil.join(idSet, ",") + ")");
-				}
-			}
-		}
-
-		// Now apply any constraints for idsets that are persisted to the database
-		if (!persistedIdSets.isEmpty()) {
-
-			// Try to handle as many constraints by use of in clauses, either with sub-queries or not
-
-			boolean subQueriesPreferred = checkIfSubQueriesPreferred(sessionFactory);
-
-			for (Iterator<Object[]> i = persistedIdSets.iterator(); i.hasNext();) {
-				Object[] idSetData = i.next();
-				String idProperty = (String)idSetData[0];
-				String idSetKey = (String)idSetData[1];
-				EvaluationIdSet evaluationIdSet = (EvaluationIdSet)idSetData[2];
-
-				if (subQueriesPreferred) {
-					addSubQueryAgainstIdSetMember(idProperty, idSetKey);
-					i.remove();
-				}
-				else if (evaluationIdSet.size() <= MAXIMUM_RECOMMENDED_IN_CLAUSE_SIZE) {
-					where(idProperty + " in (:" + nextPositionIndex() + ")").withValue(evaluationIdSet);
-					i.remove();
-				}
-			}
-
-			// If there are any remaining, try using a cross-join if there is only one.
-			// If there is more than one, default to using sub-queries
-
-			if (!persistedIdSets.isEmpty()) {
-				for (Iterator<Object[]> i = persistedIdSets.iterator(); i.hasNext();) {
-					Object[] idSetData = i.next();
-					String idProperty = (String) idSetData[0];
-					String idSetKey = (String) idSetData[1];
-
-					if (persistedIdSets.size() == 1) {
-						String alias = "_idset_";
-						from(IdsetMember.class, alias);
-						where(idProperty + " = " + alias + ".memberId");
-						whereEqual(alias + ".key", idSetKey);
-					}
-					else {
-						log.warn("Using sub-query to constrain " + idProperty + ".  This is likely very slow.");
-						addSubQueryAgainstIdSetMember(idProperty, idSetKey);
-					}
-				}
-			}
-		}
-	}
-
 	protected String nextPositionIndex() {
 		return "param"+positionIndex++;
 	}
 
 	protected String lastPositionIndex() {
 		return "param"+(positionIndex-1);
-	}
-
-	/**
-	 * If there are any persisted id sets to join against, determine the optimal strategy for this
-	 * We assume that a sub-query is optimal as the default.  However, for MySQL prior to 5.6, this is slow
-	 * and a cross-join is much faster if we are only dealing with a single idset,
-	 * so we will code in a particular special handling for this case.
-	 * Other exceptions for other database types and versions can be added here subsequently as needed.
-	 */
-	protected boolean checkIfSubQueriesPreferred(SessionFactory sessionFactory) {
-		try {
-			DatabaseMetaData databaseMetaData = sessionFactory.getCurrentSession().connection().getMetaData();
-			String dbName = databaseMetaData.getDatabaseProductName().toLowerCase().trim();
-			int dbMajorVersion = databaseMetaData.getDatabaseMajorVersion();
-			int dbMinorVersion = databaseMetaData.getDatabaseMinorVersion();
-			log.debug("Creating sub-query for " + dbName + " version " + dbMajorVersion + "." + dbMinorVersion);
-			if (dbName.contains("mysql") && dbMajorVersion <= 5 && dbMinorVersion < 6) {
-				return false;
-			}
-		}
-		catch (Exception e) {
-			log.warn("Unable to retrieve database metadata for current session");
-		}
-		return true;
 	}
 }

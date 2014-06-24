@@ -51,7 +51,7 @@ public class VitalStatusDataEvaluator implements PersonDataEvaluator {
 		q.leftOuterJoin("p.causeOfDeath", "cod");
 		q.wherePersonIn("p.personId", context);
 
-		List<Object[]> results = evaluationService.evaluateToList(q);
+		List<Object[]> results = evaluationService.evaluateToList(q, context);
 		for (Object[] row : results) {
 			Integer pId = (Integer)row[0];
 			boolean dead = (row[1] == Boolean.TRUE);

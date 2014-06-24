@@ -49,7 +49,7 @@ public class AuditInfoEncounterDataEvaluator implements EncounterDataEvaluator {
 		q.leftOuterJoin("e.voidedBy", "voidedBy");
 		q.whereEncounterIn("e.encounterId", context);
 
-		for (Object[] row : evaluationService.evaluateToList(q)) {
+		for (Object[] row : evaluationService.evaluateToList(q, context)) {
 			AuditInfo auditInfo = new AuditInfo();
 			auditInfo.setDateCreated((Date) row[0]);
 			auditInfo.setCreator((User) row[1]);

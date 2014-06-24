@@ -56,7 +56,7 @@ public class PreferredIdentifierDataEvaluator implements PatientDataEvaluator {
 		// Order to ensure that the preferred is based on the preferred flag first, dateCreated second
 		q.orderAsc("pi.preferred").orderAsc("pi.dateCreated");
 
-		Map<Integer, Object> m = Context.getService(EvaluationService.class).evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> m = Context.getService(EvaluationService.class).evaluateToMap(q, Integer.class, Object.class, context);
 		c.setData(m);
 
 		return c;

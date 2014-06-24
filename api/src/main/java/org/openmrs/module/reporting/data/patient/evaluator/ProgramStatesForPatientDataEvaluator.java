@@ -81,7 +81,7 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 			q.orderAsc("ps.startDate").orderAsc("ps.patientProgram.dateEnrolled");
 		}
 
-		List<Object[]> queryResult = evaluationService.evaluateToList(q);
+		List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
 
 		ListMap<Integer, PatientState> statesForPatients = new ListMap<Integer, PatientState>();
 		for (Object[] row : queryResult) {

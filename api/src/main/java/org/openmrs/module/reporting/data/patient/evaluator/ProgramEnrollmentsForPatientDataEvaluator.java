@@ -79,7 +79,7 @@ public class ProgramEnrollmentsForPatientDataEvaluator implements PatientDataEva
 			q.orderAsc("pp.dateEnrolled");
 		}
 		
-		List<Object[]> queryResult = evaluationService.evaluateToList(q);
+		List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
 		
 		ListMap<Integer, PatientProgram> enrollmentsForPatients = new ListMap<Integer, PatientProgram>();
 		for (Object[] row : queryResult) {

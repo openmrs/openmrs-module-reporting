@@ -48,7 +48,7 @@ public class BasicObsQueryEvaluator implements ObsQueryEvaluator {
 		q.whereLessOrEqualTo("o.obsDatetime", query.getOnOrBefore());
 		q.whereObsIn("o.obsId", context);
 
-		List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
+		List<Integer> results = evaluationService.evaluateToList(q, Integer.class, context);
 		result.getMemberIds().addAll(results);
 
 		return result;

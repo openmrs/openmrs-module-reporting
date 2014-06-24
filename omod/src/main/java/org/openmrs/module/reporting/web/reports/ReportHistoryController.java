@@ -1,19 +1,5 @@
 package org.openmrs.module.reporting.web.reports;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,6 +36,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ReportHistoryController {
@@ -98,8 +97,6 @@ public class ReportHistoryController {
 		Collections.sort(history, new PriorityComparator());
 		Collections.reverse(history);
 		model.addAttribute("history", history);
-		
-		model.addAttribute("cached", getReportService().getCachedReports().keySet());
 		
 		List<RenderingMode> renderingModes = new ArrayList<RenderingMode>();
 		for (ReportRequest reportRequest : history) {

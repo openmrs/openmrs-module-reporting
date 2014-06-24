@@ -66,7 +66,7 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 			q.orderAsc("o.obsDatetime");
 		}
 
-		List<Object[]> queryResult = evaluationService.evaluateToList(q);
+		List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
 		
 		ListMap<Integer, Obs> obsForPatients = new ListMap<Integer, Obs>();
 		for (Object[] row : queryResult) {

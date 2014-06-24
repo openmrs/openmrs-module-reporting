@@ -15,13 +15,11 @@ package org.openmrs.module.reporting.evaluation.service;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationIdSet;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * DataSetEvaluation DAO Queries
@@ -32,7 +30,7 @@ public interface EvaluationService extends OpenmrsService {
 	 * Evaluates the passed QueryBuilder and returns the results as a List of Object[]
 	 */
 	@Transactional(readOnly = true)
-	public List<Object[]> evaluateToList(QueryBuilder queryBuilder);
+	public List<Object[]> evaluateToList(QueryBuilder queryBuilder, EvaluationContext context);
 
 	/**
 	 * Evaluates the passed QueryBuilder and returns as a List of Objects of the passed type
@@ -40,7 +38,7 @@ public interface EvaluationService extends OpenmrsService {
 	 * returned will result in an IllegalArgumentException
 	 */
 	@Transactional(readOnly = true)
-	public <T> List<T> evaluateToList(QueryBuilder queryBuilder, Class<T> type);
+	public <T> List<T> evaluateToList(QueryBuilder queryBuilder, Class<T> type, EvaluationContext context);
 
 	/**
 	 * Evaluates the passed QueryBuilder and returns as a Map of Objects of the passed types
@@ -48,48 +46,5 @@ public interface EvaluationService extends OpenmrsService {
 	 * will result in an IllegalArgumentException
 	 */
 	@Transactional(readOnly = true)
-	public <K, V> Map<K, V> evaluateToMap(QueryBuilder queryBuilder, Class<K> keyType, Class<V> valueType);
-
-	/**
-	 * Get the key that can be used to uniquely reference this id set in temporary storage
-	 */
-	@Transactional
-	public String generateKey(EvaluationIdSet idSet);
-
-	/**
-	 * Indicate that you require joining against a particular set of ids, and that they
-	 * should be made available to your calling code until you call the stopUsing method
-	 * Returns the key that can be used to reference this id set at a later point in time
-	 */
-	@Transactional
-	public String startUsing(EvaluationIdSet idSet);
-
-	/**
-	 * Indicate that you require using the different base id sets contained in the passed EvaluationContext
-	 */
-	@Transactional
-	public List<String> startUsing(EvaluationContext context);
-
-	/**
-	 * Returns true of an IdSet with the passed idSetKey is already persisted to temporary storage
-	 */
-	public boolean isInUse(String idSetKey);
-
-	/**
-	 * Remove the passed idSet from temporary storage
-	 */
-	@Transactional
-	public void stopUsing(String idSetKey);
-
-	/**
-	 * Indicate that you are finished using the different base id sets contained in the passed EvaluationContext
-	 */
-	@Transactional
-	public void stopUsing(EvaluationContext context);
-
-	/**
-	 * Removes all persisted IdSets, for example as a sanity check whe
-	 */
-	@Transactional
-	public void resetAllIdSets();
+	public <K, V> Map<K, V> evaluateToMap(QueryBuilder queryBuilder, Class<K> keyType, Class<V> valueType, EvaluationContext context);
 }

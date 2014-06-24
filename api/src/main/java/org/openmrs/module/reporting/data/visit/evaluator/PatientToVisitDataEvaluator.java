@@ -42,7 +42,7 @@ public class PatientToVisitDataEvaluator  implements VisitDataEvaluator {
         q.from(Visit.class, "v");
         q.whereVisitIn("v.visitId", context);
 
-        Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
+        Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class, context);
 
         if (!convertedIds.keySet().isEmpty()) {
             // Create a new (patient) evaluation context using the retrieved ids

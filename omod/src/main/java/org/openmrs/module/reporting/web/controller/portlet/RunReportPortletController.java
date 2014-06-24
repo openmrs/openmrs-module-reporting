@@ -1,12 +1,10 @@
 package org.openmrs.module.reporting.web.controller.portlet;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.module.reporting.report.service.ReportService;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 
 public class RunReportPortletController extends ReportingPortletController {
@@ -26,10 +24,6 @@ public class RunReportPortletController extends ReportingPortletController {
 	    	 * model.put("reportDefinitions", Context.getService(ReportDefinitionService.class).getAllDefinitions(false)); 
 	    	 */
 	    	model.put("reportDefinitions", Context.getService(ReportDefinitionService.class).getAllDefinitionSummaries(false));
-	    }
-
-	    if (model.get("cachedReports") == null) {
-	    	model.put("cachedReports", Context.getService(ReportService.class).getCachedReports());
 	    }
     }
 

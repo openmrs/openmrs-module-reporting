@@ -73,7 +73,7 @@ public class EncounterWithCodedObsCohortDefinitionEvaluator implements CohortDef
 			q.append("and e.encounter_datetime <= :onOrBefore").addParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(cd.getOnOrBefore()));
         }
 
-		List<Integer> results = evaluationService.evaluateToList(q, Integer.class);
+		List<Integer> results = evaluationService.evaluateToList(q, Integer.class, context);
 		ret.setMemberIds(new HashSet<Integer>(results));
 
 		return ret;

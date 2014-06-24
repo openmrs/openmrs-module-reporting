@@ -45,7 +45,7 @@ public abstract class PatientPropertyDataEvaluator implements PatientDataEvaluat
 		q.select("p.patientId", "p."+getPropertyName());
 		q.from(Patient.class, "p");
 		q.wherePatientIn("p.patientId", context);
-		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		c.setData(data);
 		return c;
 	}

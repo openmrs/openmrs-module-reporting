@@ -14,8 +14,10 @@
 
 package org.openmrs.module.reporting.evaluation;
 
+import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.WriterAppender;
 import org.junit.After;
@@ -24,12 +26,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Tests for {@link EvaluationProfiler}
@@ -38,6 +42,9 @@ public class EvaluationProfilerTest extends BaseModuleContextSensitiveTest {
 
 	protected EvaluationProfiler profiler1, profiler2;
 
+	protected Logger logger;
+	protected Level startingLevel;
+	protected List<Appender> startingAppenders = new ArrayList<Appender>();
 	protected StringWriter logOutput;
 
 	/**
@@ -45,16 +52,17 @@ public class EvaluationProfilerTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Before
 	public void setup() {
-		profiler1 = new EvaluationProfiler();
-		profiler2 = new EvaluationProfiler();
-
+		profiler1 = new EvaluationProfiler(new EvaluationContext());
+		profiler2 = new EvaluationProfiler(new EvaluationContext());
 		logOutput = new StringWriter();
-
-		Context.addAdvice(CohortDefinitionService.class, profiler2);
-		Context.addAdvice(IndicatorService.class, profiler1);
-
-		LogManager.getLogger(EvaluationProfiler.class).setLevel(Level.TRACE);
-		LogManager.getLogger(EvaluationProfiler.class).addAppender(new WriterAppender(new PatternLayout("%p %m"), logOutput));
+		logger = LogManager.getLogger(EvaluationProfiler.class);
+		startingLevel = logger.getLevel();
+		logger.setLevel(Level.TRACE);
+		for (Enumeration e = logger.getAllAppenders(); e.hasMoreElements();) {
+			startingAppenders.add((Appender)e.nextElement());
+		}
+		logger.removeAllAppenders();
+		logger.addAppender(new WriterAppender(new PatternLayout("%m%n"), logOutput));
 	}
 
 	/**
@@ -62,11 +70,10 @@ public class EvaluationProfilerTest extends BaseModuleContextSensitiveTest {
 	 */
 	@After
 	public void cleanup() {
-		Context.removeAdvice(CohortDefinitionService.class, profiler1);
-		Context.removeAdvice(IndicatorService.class, profiler2);
-
-		LogManager.getLogger(EvaluationProfiler.class).setLevel(Level.INFO);
-		LogManager.getLogger(EvaluationProfiler.class).removeAllAppenders();
+		logger.setLevel(startingLevel);
+		for (Appender appender : startingAppenders) {
+			logger.addAppender(appender);
+		}
 	}
 
 	@Test
@@ -80,9 +87,13 @@ public class EvaluationProfilerTest extends BaseModuleContextSensitiveTest {
 
 		Context.getService(IndicatorService.class).evaluate(count, null);
 
-		Assert.assertTrue(logOutput.toString().matches(
-				"TRACE >> \\d+ ms to evaluate GenderCohortDefinition \\[males\\]" +
-				"TRACE > \\d+ ms to evaluate CohortIndicator \\[\\?\\]")
-		);
+		String[] split = logOutput.toString().split(System.getProperty("line.separator"));
+		Assert.assertEquals(6, split.length);
+		Assert.assertTrue(split[0].contains("EVALUATION_STARTED"));
+		Assert.assertTrue(split[1].contains(">"));
+		Assert.assertTrue(split[1].contains("CohortIndicator"));
+		Assert.assertTrue(split[2].contains(">>"));
+		Assert.assertTrue(split[2].contains("GenderCohortDefinition[males]"));
+		Assert.assertTrue(split[5].contains("EVALUATION_COMPLETED"));
 	}
 }

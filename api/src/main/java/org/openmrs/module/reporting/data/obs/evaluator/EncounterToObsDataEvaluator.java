@@ -44,7 +44,7 @@ public class EncounterToObsDataEvaluator implements ObsDataEvaluator {
 		q.from(Obs.class, "o");
 		q.whereObsIn("o.obsId", context);
 
-		Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
+		Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class, context);
 
 		if (!convertedIds.keySet().isEmpty()) {
 

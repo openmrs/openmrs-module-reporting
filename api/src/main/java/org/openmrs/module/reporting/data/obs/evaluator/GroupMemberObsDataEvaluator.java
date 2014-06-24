@@ -40,7 +40,7 @@ public class GroupMemberObsDataEvaluator implements ObsDataEvaluator {
 		q.whereEqual("o.concept", def.getQuestion());
 		q.whereObsIn("o.obsGroup.id", context);
 
-		List<Object[]> result = Context.getService(EvaluationService.class).evaluateToList(q);
+		List<Object[]> result = Context.getService(EvaluationService.class).evaluateToList(q, context);
 		for (Object[] row : result) {
 			Integer obsGroupId = (Integer)row[0];
 			Obs obs = (Obs)row[1];

@@ -77,7 +77,7 @@ public class RelationshipsForPersonDataEvaluator implements PersonDataEvaluator 
 		qb.whereIn("r.relationshipType", rpd.getRelationshipTypes());
 		qb.wherePersonIn("r."+keyPerson+".personId", pd.getContext());
 
-		List<Object[]> result = evaluationService.evaluateToList(qb);
+		List<Object[]> result = evaluationService.evaluateToList(qb, pd.getContext());
 		for (Object[] row : result) {
 			Integer pId = (Integer) row[0];
 			Relationship r = (Relationship) row[1];

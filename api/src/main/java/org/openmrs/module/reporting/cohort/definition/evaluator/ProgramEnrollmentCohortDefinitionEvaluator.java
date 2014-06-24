@@ -51,7 +51,7 @@ public class ProgramEnrollmentCohortDefinitionEvaluator implements CohortDefinit
 		q.whereIn("pp.location", cd.getLocationList());
 		q.wherePatientIn("p.patientId", context);
 
-		List<Integer> pIds = evaluationService.evaluateToList(q, Integer.class);
+		List<Integer> pIds = evaluationService.evaluateToList(q, Integer.class, context);
 		return new EvaluatedCohort(new Cohort(pIds), cohortDefinition, context);
 	}
 	

@@ -45,7 +45,7 @@ public class PersonToVisitDataEvaluator implements VisitDataEvaluator {
         q.from(Visit.class, "v");
         q.whereVisitIn("v.visitId", context);
 
-        Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
+        Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class, context);
 
         if (!convertedIds.keySet().isEmpty()) {
             PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext();

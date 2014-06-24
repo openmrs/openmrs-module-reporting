@@ -85,7 +85,6 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		ReportRenderer renderer = new TsvReportRenderer();
 		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), Priority.NORMAL, null);
 		Report result = Context.getService(ReportService.class).runReport(request);
-		Assert.assertNotNull(result.getReportData());
 		Assert.assertNotNull(result.getRenderedOutput());
 	}
 

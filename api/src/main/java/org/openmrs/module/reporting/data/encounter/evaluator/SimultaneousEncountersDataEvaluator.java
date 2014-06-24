@@ -56,7 +56,7 @@ public class SimultaneousEncountersDataEvaluator implements EncounterDataEvaluat
 		q.whereEncounterIn("enc.id", context);
 		q.orderAsc("other.dateCreated");  // use the most-recently-entered encounter
 
-		Map<Integer, Object> data  = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> data  = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		results.setData(data);
 
 		return results;

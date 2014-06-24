@@ -19,7 +19,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.DaemonToken;
 import org.openmrs.module.DaemonTokenAware;
-import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.report.task.ReportingTimerTask;
 import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 
@@ -32,7 +31,6 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
 
 	@Override
 	public void started() {
-		resetAllIdSets();
 		ReportingTimerTask.setEnabled(true);
 		log.info("Reporting Module Started...");
 	}
@@ -41,7 +39,6 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
 	public void willStop() {
 		cancelAllScheduledTasks();
 		cancelCurrentlyRunningReportRequests();
-		resetAllIdSets();
 	}
 
 	@Override
@@ -79,18 +76,6 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
 			catch (Exception e) {
 				log.warn("An exception occurred while trying to stop currently running reports", e);
 			}
-		}
-	}
-
-	/**
-	 * Clear out the reporting idset table
-	 */
-	private void resetAllIdSets() {
-		try {
-			Context.getService(EvaluationService.class).resetAllIdSets();
-		}
-		catch (Exception e) {
-			log.warn("An exception occurred while trying to reset all id sets", e);
 		}
 	}
 }

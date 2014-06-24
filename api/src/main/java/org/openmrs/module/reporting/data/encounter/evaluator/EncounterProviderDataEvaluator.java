@@ -47,7 +47,7 @@ public class EncounterProviderDataEvaluator implements EncounterDataEvaluator {
 		q.whereEqual("ep.encounterRole", def.getEncounterRole());
 		q.whereEncounterIn("ep.encounter.encounterId", context);
 
-		for (Object[] result : evaluationService.evaluateToList(q)) {
+		for (Object[] result : evaluationService.evaluateToList(q, context)) {
 			Integer encounterId = (Integer)result[0];
 			Provider provider = (Provider)result[1];
 

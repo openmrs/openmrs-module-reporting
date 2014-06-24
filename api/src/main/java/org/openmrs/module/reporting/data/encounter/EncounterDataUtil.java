@@ -50,7 +50,7 @@ public class EncounterDataUtil {
 
 			HqlQueryBuilder qb = new HqlQueryBuilder();
 			qb.select("e.encounterId").from(Encounter.class, "e").wherePatientIn("e.patient.patientId", context);
-			List<Integer> encIdsForPatIds = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
+			List<Integer> encIdsForPatIds = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class, context);
 
 			if (encIds == null) {
 				encIds = new EncounterIdSet(encIdsForPatIds);
@@ -71,6 +71,6 @@ public class EncounterDataUtil {
 		}
 
 		HqlQueryBuilder qb = new HqlQueryBuilder().select("e.encounterId").from(Encounter.class, "e");
-		return new HashSet<Integer>(Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class));
+		return new HashSet<Integer>(Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class, context));
 	}
 }

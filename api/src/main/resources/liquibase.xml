@@ -352,35 +352,10 @@
 		</sql>
 	</changeSet>
 
-	<changeSet id="reporting_id_set_1" author="mseaton">
-		<preConditions onFail="MARK_RAN">
-			<not><tableExists tableName="reporting_idset" /></not>
-		</preConditions>
-		<comment>
-			Create table to persist idset members during evaluations
-		</comment>
-		<createTable tableName="reporting_idset">
-			<column name="idset_key" type="char(40)">
-				<constraints nullable="false"/>
-			</column>
-			<column name="member_id" type="int">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
-	</changeSet>
-
-    <changeSet id="reporting_id_set_2" author="mseaton">
-        <preConditions onFail="MARK_RAN"><not><primaryKeyExists tableName="reporting_idset"/></not></preConditions>
-        <comment>Adding composite primary key to reporting_idset table</comment>
-        <addPrimaryKey tableName="reporting_idset" columnNames="idset_key, member_id" constraintName="reporting_idset_primary_key"/>
-    </changeSet>
-
-    <changeSet id="reporting_id_set_3" author="mseaton">
-        <preConditions onFail="MARK_RAN"><not><indexExists indexName="reporting_idset_key_index"/></not></preConditions>
-        <comment>Adding index on idset_key to reporting_idset table</comment>
-        <createIndex tableName="reporting_idset" unique="false" indexName="reporting_idset_key_index" >
-            <column name="idset_key" />
-        </createIndex>
+    <changeSet id="reporting_id_set_cleanup" author="mseaton">
+        <preConditions onFail="MARK_RAN"><tableExists tableName="reporting_idset" /></preConditions>
+        <comment>Removing reporting_idset table that is no longer used</comment>
+        <dropTable tableName="reporting_idset"/>
     </changeSet>
 
 </databaseChangeLog>

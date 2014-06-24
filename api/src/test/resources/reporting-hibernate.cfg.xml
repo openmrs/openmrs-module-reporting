@@ -7,6 +7,5 @@
 	<session-factory>
 		<mapping resource="ReportDesign.hbm.xml"/>
 		<mapping resource="ReportRequest.hbm.xml"/>
-		<mapping resource="IdsetMember.hbm.xml"/>
 	</session-factory>
 </hibernate-configuration>

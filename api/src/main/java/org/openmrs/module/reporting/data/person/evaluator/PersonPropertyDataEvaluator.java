@@ -45,7 +45,7 @@ public abstract class PersonPropertyDataEvaluator implements PersonDataEvaluator
 		q.select("p.personId", "p."+getPropertyName());
 		q.from(Person.class, "p");
 		q.wherePersonIn("p.personId", context);
-		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		c.setData(data);
 		return c;
 	}

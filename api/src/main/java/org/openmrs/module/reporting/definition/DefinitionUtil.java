@@ -41,16 +41,27 @@ public class DefinitionUtil {
 	private static Log log = LogFactory.getLog(DefinitionUtil.class);
 
 	public static String format(Definition d) {
-		try {
-			StringBuilder sb = new StringBuilder();
-			for (Property p : getConfigurationProperties(d)) {
-				sb.append(sb.length() > 0 ? "," : "").append(p.getDisplayName()).append("=").append(ObjectUtil.format(p.getValue()));
+		StringBuilder sb = new StringBuilder();
+		sb.append(d.getClass().getSimpleName()).append("[");
+		if (ObjectUtil.notNull(d.getName())) {
+			sb.append(d.getName());
+		}
+		else {
+			StringBuilder configStr = new StringBuilder();
+			try {
+				for (Property p : getConfigurationProperties(d)) {
+					if (ObjectUtil.notNull(p.getValue())) {
+						configStr.append(configStr.length() > 0 ? "," : "").append(p.getDisplayName()).append("=").append(ObjectUtil.format(p.getValue()));
+					}
+				}
+				sb.append(configStr);
 			}
-			return d.getClass().getSimpleName() + "[" + sb.toString() + "]";
+			catch (Exception e) {
+				sb.append("?");
+			}
 		}
-		catch (Exception e) {
-		}
-		return d.getClass().getSimpleName() + (d.getName() != null ? " (" + d.getName() + ")" : "");
+		sb.append("]");
+		return sb.toString();
 	}
 	
 	/**

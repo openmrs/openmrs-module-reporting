@@ -44,7 +44,7 @@ public abstract class VisitPropertyDataEvaluator implements VisitDataEvaluator {
         q.select("v.visitId", "v."+getPropertyName());
         q.from(Visit.class, "v");
         q.whereVisitIn("v.visitId", context);
-        Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+        Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
         c.setData(data);
         return c;
     }

@@ -55,7 +55,7 @@ public class PersonAttributeDataEvaluator implements PersonDataEvaluator {
 		q.wherePersonIn("pa.person.personId", context);
 		q.whereEqual("pa.attributeType", def.getPersonAttributeType());
 
-		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+		Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
 		c.setData(data);
 
 		return c;
