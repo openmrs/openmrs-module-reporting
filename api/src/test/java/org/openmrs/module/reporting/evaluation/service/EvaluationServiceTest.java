@@ -4,7 +4,9 @@ import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Encounter;
 import org.openmrs.Person;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
@@ -12,6 +14,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,5 +80,16 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("personId", "gender", "birthdate").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
 		evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class, new EvaluationContext());
+	}
+
+	@Test
+	public void listResults_shouldNotStackOverflowOnLargeInClauses() throws Exception {
+		List<Integer> bigIdSet = new ArrayList<Integer>();
+		for (int i=1; i<= 100000; i++) {
+			bigIdSet.add(i);
+		}
+		HqlQueryBuilder hql = new HqlQueryBuilder();
+		hql.select("e.encounterDatetime").from(Encounter.class, "e").whereIdIn("e.patient.patientId", bigIdSet);
+		Context.getService(EvaluationService.class).evaluateToList(hql, new EvaluationContext());
 	}
 }

@@ -286,7 +286,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	 * Constrain the passed id property against a set of values.
 	 * This method may only be called once per instance of HqlQueryBuilder.
 	 */
-	protected HqlQueryBuilder whereIdIn(String propertyName, Collection<Integer> ids) {
+	public HqlQueryBuilder whereIdIn(String propertyName, Collection<Integer> ids) {
 		if (ids != null) {
 			if (ids.isEmpty()) {
 				where("1=0");
