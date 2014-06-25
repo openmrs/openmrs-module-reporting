@@ -333,6 +333,13 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("Concept#5497", ObjectUtil.format(t.getConcept()));
 	}
 
+    @Test
+    public void shouldNotFailIfNoMessageSourceBeanPresent() throws Exception {
+        ObjectUtil.setMessageSource(null);
+        Location location = Context.getLocationService().getLocation(2);
+        Assert.assertEquals("Xanadu", ObjectUtil.format(location));
+    }
+
     // hack to add a few localized names to concept
     private void addLocalizedNamesToYesConcept() {
 

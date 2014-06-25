@@ -168,7 +168,9 @@ public class ObjectUtil {
                 simpleName = simpleName.substring(0, underscoreIndex);
             }
             String code = "ui.i18n." + simpleName + ".name." + o.getUuid();
-            String localization = messageSource.getMessage(code, null, locale);
+            String localization = messageSource != null
+                    ? messageSource.getMessage(code, null, locale)
+                    : Context.getMessageSourceService().getMessage(code, null, locale);
             if (localization == null || localization.equals(code)) {
                 return null;
             } else {
