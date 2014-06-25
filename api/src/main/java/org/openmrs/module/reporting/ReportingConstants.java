@@ -169,7 +169,7 @@ public class ReportingConstants implements GlobalPropertyListener {
 			return (Boolean)gpCache.get(GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED);
 		}
 		else {
-			boolean ret = getPropertyValueAsBoolean(GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED, true);
+			boolean ret = getPropertyValueAsBoolean(GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED, false);
 			gpCache.put(GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED, ret);
 			return ret;
 		}

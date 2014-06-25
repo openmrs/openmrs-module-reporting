@@ -138,7 +138,7 @@
     </globalProperty>
     <globalProperty>
         <property>reporting.evaluationLoggerEnabled</property>
-        <defaultValue>true</defaultValue>
+        <defaultValue>false</defaultValue>
         <description>If false, will disable the built in use of the evaluation logger to log evaluation information for performance diagnostics</description>
     </globalProperty>
 
