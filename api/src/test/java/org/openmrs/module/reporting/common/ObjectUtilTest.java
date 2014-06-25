@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.reporting.common;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +28,15 @@ import org.openmrs.User;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.ReportingModuleActivator;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -49,7 +50,8 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void setupObjectUtilTest() {
-		ReportingConstants.clearGlobalPropertyCache();
+        new ReportingModuleActivator().contextRefreshed();
+        ReportingConstants.clearGlobalPropertyCache();
 	}
     
 	@Test
