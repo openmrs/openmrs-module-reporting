@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
+import org.springframework.context.MessageSource;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -46,6 +47,19 @@ import java.util.Properties;
 public class ObjectUtil {
 	
 	protected static Log log = LogFactory.getLog(ObjectUtil.class);
+
+    private static MessageSource messageSource;
+
+    /**
+     * The core MessageSourceService.getMessage() are needlessly transactional (and hence slow if you need to look up
+     * thousands of messages). We use the underlying Spring MessageSource bean instead, and wire it in from this
+     * module's activator.
+     * @see https://issues.openmrs.org/browse/TRUNK-4410
+     * @param messageSource
+     */
+    public static void setMessageSource(MessageSource instance) {
+        messageSource = instance;
+    }
 
 	/**
 	 * Returns a String representation of the passed Map
@@ -154,7 +168,7 @@ public class ObjectUtil {
                 simpleName = simpleName.substring(0, underscoreIndex);
             }
             String code = "ui.i18n." + simpleName + ".name." + o.getUuid();
-            String localization = Context.getMessageSourceService().getMessage(code, null, locale);
+            String localization = messageSource.getMessage(code, null, locale);
             if (localization == null || localization.equals(code)) {
                 return null;
             } else {
