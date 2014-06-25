@@ -16,11 +16,10 @@ package org.openmrs.module.reporting;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.messagesource.impl.MessageSourceServiceImpl;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.DaemonToken;
 import org.openmrs.module.DaemonTokenAware;
-import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.report.task.ReportingTimerTask;
 import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 
@@ -33,13 +32,8 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
 
     @Override
     public void contextRefreshed() {
-        MessageSourceServiceImpl messageSource = Context.getRegisteredComponents(MessageSourceServiceImpl.class).get(0);
-        if (messageSource == null) {
-            log.error("Programming Error! As a workaround for REPORT-677 we are directly accessing a specific Spring " +
-                    "bean that we assume to be available. If you are seeing this error, it means our assumption is " +
-                    "wrong in the OpenMRS version you are running. Please report this.");
-        }
-        ObjectUtil.setMessageSource(messageSource);
+		// This will ensure that the MessageUtil picks back up the current active message source
+		MessageUtil.setMessageSource(null);
     }
 
     @Override

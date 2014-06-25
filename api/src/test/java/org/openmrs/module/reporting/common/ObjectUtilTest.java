@@ -335,7 +335,7 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 
     @Test
     public void shouldNotFailIfNoMessageSourceBeanPresent() throws Exception {
-        ObjectUtil.setMessageSource(null);
+        MessageUtil.setMessageSource(null);
         Location location = Context.getLocationService().getLocation(2);
         Assert.assertEquals("Xanadu", ObjectUtil.format(location));
     }

@@ -3,6 +3,9 @@ package org.openmrs.module.reporting.common;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.springframework.context.MessageSource;
+
+import java.util.Locale;
 
 /**
  * A utility class for common messaging and localization methods
@@ -10,28 +13,52 @@ import org.openmrs.api.context.Context;
 public class MessageUtil {
 	
 	protected static Log log = LogFactory.getLog(MessageUtil.class);
+
+	private static MessageSource messageSource;
 	
 	/**
-	 * Return the translation for the given key
-	 * @param s the key to lookup
-	 * @return the translation of the given key
+	 * @param messageCode the messageCode to lookup
+	 * @should return the translation for the given messageCode for the context locale
+	 * @should return the messageCode if no translation is found
 	 */
-	public static String translate(String s) {
-    	return Context.getMessageSourceService().getMessage(s);
+	public static String translate(String messageCode) {
+    	return translate(messageCode, null, messageCode, Context.getLocale());
     }
-	
+
 	/**
-	 * Return the translation for the given key
-	 * Returns the replacement value if no suitable translation is found
+	 * @param messageCode the messageCode to lookup
+	 * @should return the translation for the given messageCode for the context locale
+	 * @should return the messageCode if no translation is found
 	 */
-	public static String translate(String s, String replacement) {
-		if (ObjectUtil.notNull(s)) {
-			String t = translate(s);
-			if (ObjectUtil.notNull(t) && !ObjectUtil.areEqualStr(s, t)) {
-				return t;
-			}
-		}
-		return replacement;
+	public static String translate(String messageCode, Locale locale) {
+		return translate(messageCode, null, messageCode, locale);
+	}
+
+	/**
+	 * @param messageCode the messageCode to lookup
+	 * @should return the translation for the given messageCode for the context locale
+	 * @should return the defaultMessage if no translation is found
+	 */
+	public static String translate(String messageCode, String defaultMessage) {
+		return translate(messageCode, null, defaultMessage, Context.getLocale());
+	}
+
+	/**
+	 * @param messageCode the messageCode to lookup
+	 * @should return the translation for the given messageCode for the given locale
+	 * @should return the defaultMessage if no translation is found
+	 */
+	public static String translate(String messageCode, String defaultMessage, Locale locale) {
+		return translate(messageCode, null, defaultMessage, locale);
+	}
+
+	/**
+	 * @param messageCode the messageCode to lookup
+	 * @should Return the translation for the given messageCode for the given arguments and locale
+	 * @should return the defaultValue if no translation is found
+	 */
+	public static String translate(String messageCode, Object[] args, String defaultMessage, Locale locale) {
+		return getMessageSource().getMessage(messageCode, args, defaultMessage, locale);
 	}
 	
 	/**
@@ -44,5 +71,22 @@ public class MessageUtil {
 			label = MessageUtil.translate(l.value(), label);
 		}
 		return label;
+	}
+
+	/**
+	 * @return the active message source, returning from the cache if present, otherwise from the service
+	 */
+	public static MessageSource getMessageSource() {
+		if (messageSource == null) {
+			messageSource = Context.getMessageSourceService().getActiveMessageSource();
+		}
+		return messageSource;
+	}
+
+	/**
+	 * @param messageSource enables configuring a specific message source to be used, or to reset the cached value
+	 */
+	public static void setMessageSource(MessageSource messageSource) {
+		MessageUtil.messageSource = messageSource;
 	}
 }

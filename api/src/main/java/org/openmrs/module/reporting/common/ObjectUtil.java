@@ -48,19 +48,6 @@ public class ObjectUtil {
 	
 	protected static Log log = LogFactory.getLog(ObjectUtil.class);
 
-    private static MessageSource messageSource;
-
-    /**
-     * The core MessageSourceService.getMessage() are needlessly transactional (and hence slow if you need to look up
-     * thousands of messages). We use the underlying Spring MessageSource bean instead, and wire it in from this
-     * module's activator.
-     * @see https://issues.openmrs.org/browse/TRUNK-4410
-     * @param messageSource
-     */
-    public static void setMessageSource(MessageSource instance) {
-        messageSource = instance;
-    }
-
 	/**
 	 * Returns a String representation of the passed Map
 	 */
@@ -168,14 +155,10 @@ public class ObjectUtil {
                 simpleName = simpleName.substring(0, underscoreIndex);
             }
             String code = "ui.i18n." + simpleName + ".name." + o.getUuid();
-            String localization = messageSource != null
-                    ? messageSource.getMessage(code, null, locale)
-                    : Context.getMessageSourceService().getMessage(code, null, locale);
-            if (localization == null || localization.equals(code)) {
-                return null;
-            } else {
-                return localization;
-            }
+            String localization = MessageUtil.translate(code, null, locale);
+            if (localization != null && !localization.equals(code)) {
+				return localization;
+			}
         }
         return null;
     }
