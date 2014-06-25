@@ -8,12 +8,12 @@ import org.openmrs.Cohort;
 import org.openmrs.Voidable;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
-import org.openmrs.module.reporting.data.obs.ObsDataUtil;
-import org.openmrs.module.reporting.data.visit.VisitDataUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
+import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
+import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -175,14 +175,14 @@ public class HqlQueryBuilder implements QueryBuilder {
 			else {
 				if (propertyValue instanceof Cohort) {
 					Cohort c = (Cohort) propertyValue;
-					whereIn(propertyName, c.getMemberIds());
+					whereIdIn(propertyName, c.getMemberIds());
 				}
 				else if (propertyValue instanceof IdSet) {
 					IdSet idSet = (IdSet) propertyValue;
-					whereIn(propertyName, idSet.getMemberIds());
+					whereIdIn(propertyName, idSet.getMemberIds());
 				}
 				else if (propertyValue instanceof Object[]) {
-					whereIn(propertyName, Arrays.asList((Object[])propertyValue));
+					whereIn(propertyName, Arrays.asList((Object[]) propertyValue));
 				}
 				else if (propertyValue instanceof Collection) {
 					whereIn(propertyName, (Collection)propertyValue);
@@ -254,29 +254,50 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	public HqlQueryBuilder whereEncounterIn(String propertyName, EvaluationContext context) {
 		if (context != null) {
-			Set<Integer> encIds = EncounterDataUtil.getEncounterIdsForContext(context, true);
-			if (encIds != null) {
-				whereIdIn(propertyName, encIds);
+			String baseProperty = prepareBaseIdProperty(propertyName, "encounterId");
+			if (context.getBaseCohort() != null) {
+				String patientProperty = baseProperty + "patient.patientId";
+				whereIdIn(patientProperty, context.getBaseCohort().getMemberIds());
+			}
+			if (context instanceof EncounterEvaluationContext) {
+				EncounterEvaluationContext eec = (EncounterEvaluationContext) context;
+				if (eec.getBaseEncounters() != null) {
+					whereIdIn(baseProperty + "encounterId", eec.getBaseEncounters().getMemberIds());
+				}
 			}
 		}
 		return this;
 	}
 
     public HqlQueryBuilder whereVisitIn(String propertyName, EvaluationContext context) {
-        if (context != null) {
-            Set<Integer> visitIds = VisitDataUtil.getVisitIdsForContext(context, true);
-			if (visitIds != null) {
-				whereIdIn(propertyName, visitIds);
+		if (context != null) {
+			String baseProperty = prepareBaseIdProperty(propertyName, "visitId");
+			if (context.getBaseCohort() != null) {
+				String patientProperty = baseProperty + "patient.patientId";
+				whereIdIn(patientProperty, context.getBaseCohort().getMemberIds());
 			}
-        }
-        return this;
+			if (context instanceof VisitEvaluationContext) {
+				VisitEvaluationContext vec = (VisitEvaluationContext) context;
+				if (vec.getBaseVisits() != null) {
+					whereIdIn(baseProperty + "visitId", vec.getBaseVisits().getMemberIds());
+				}
+			}
+		}
+		return this;
     }
 
 	public HqlQueryBuilder whereObsIn(String propertyName, EvaluationContext context) {
 		if (context != null) {
-			Set<Integer> obsIds = ObsDataUtil.getObsIdsForContext(context, true);
-			if (obsIds != null) {
-				whereIdIn(propertyName, obsIds);
+			String baseProperty = prepareBaseIdProperty(propertyName, "obsId");
+			if (context.getBaseCohort() != null) {
+				String patientProperty = baseProperty + "personId";
+				whereIdIn(patientProperty, context.getBaseCohort().getMemberIds());
+			}
+			if (context instanceof ObsEvaluationContext) {
+				ObsEvaluationContext oec = (ObsEvaluationContext) context;
+				if (oec.getBaseObs() != null) {
+					whereIdIn(baseProperty + "obsId", oec.getBaseObs().getMemberIds());
+				}
 			}
 		}
 		return this;
@@ -501,5 +522,21 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	protected String lastPositionIndex() {
 		return "param"+(positionIndex-1);
+	}
+
+	protected String prepareBaseIdProperty(String pathToStrip, String idToStripIfPresent) {
+		if (pathToStrip.endsWith(idToStripIfPresent)) {
+			pathToStrip = pathToStrip.substring(0, pathToStrip.length() - idToStripIfPresent.length());
+		}
+		else if (pathToStrip.endsWith(".id")) {
+			pathToStrip = pathToStrip.substring(0, pathToStrip.length() - 2);
+		}
+		else if (pathToStrip.equals("id")) {
+			pathToStrip = "";
+		}
+		if (pathToStrip.length() > 0 && !pathToStrip.endsWith(".")) {
+			pathToStrip += ".";
+		}
+		return pathToStrip;
 	}
 }
