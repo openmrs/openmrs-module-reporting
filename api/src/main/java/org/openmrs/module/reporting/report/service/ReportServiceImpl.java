@@ -388,18 +388,16 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public Report saveReport(Report report, String description) {
 		String reportRequestUuid = report.getRequest().getUuid();
 		CachedReportData cachedData = persistCachedReportDataToDisk(reportRequestUuid);
-		if (cachedData.isPersisted()) {
-			ReportRequest request = Context.getService(ReportService.class).getReportRequest(report.getRequest().getId());
-			request.setStatus(Status.SAVED);
-			request.setDescription(description);
-			Context.getService(ReportService.class).saveReportRequest(request);
-			logReportMessage(request, "Report Saved");
-			report.setRequest(request);
-			return report;
-		}
-		else {
+		if (cachedData != null && !cachedData.isPersisted()) {
 			throw new ReportingException("Unable to save Report due to error saving Report Data to disk");
 		}
+		ReportRequest request = Context.getService(ReportService.class).getReportRequest(report.getRequest().getId());
+		request.setStatus(Status.SAVED);
+		request.setDescription(description);
+		Context.getService(ReportService.class).saveReportRequest(request);
+		logReportMessage(request, "Report Saved");
+		report.setRequest(request);
+		return report;
 	}
 	
 	/**
@@ -681,25 +679,26 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	protected CachedReportData persistCachedReportDataToDisk(String reportRequestUuid) {
 		CachedReportData cachedData = reportCache.get(reportRequestUuid);
-		if (cachedData.isPersisted()) {
-			log.debug("Cached Data is already persisted, returning");
-		}
-		else {
-			ReportRequest request = getReportRequestByUuid(reportRequestUuid);
-			BufferedOutputStream out = null;
-			try {
-				Timer timer = Timer.start();
-				File reportDataFile = getReportDataFile(request);
-				log.info(timer.logInterval("About to serialize the ReportData to " + reportDataFile.getPath()));
-				out = new BufferedOutputStream(new FileOutputStream(reportDataFile));
-				ReportingSerializer serializer = (ReportingSerializer) Context.getSerializationService().getSerializer(ReportingSerializer.class);
-				serializer.serializeToStream(cachedData.getReportData(), out);
-				log.info(timer.logInterval("Serialized the report data to disk"));
-				cachedData.setPersisted(true);
-			} catch (Exception e) {
-				log.warn("An error occurred writing report data to disk", e);
-			} finally {
-				IOUtils.closeQuietly(out);
+		if (cachedData != null) {
+			if (cachedData.isPersisted()) {
+				log.debug("Cached Data is already persisted, returning");
+			} else {
+				ReportRequest request = getReportRequestByUuid(reportRequestUuid);
+				BufferedOutputStream out = null;
+				try {
+					Timer timer = Timer.start();
+					File reportDataFile = getReportDataFile(request);
+					log.info(timer.logInterval("About to serialize the ReportData to " + reportDataFile.getPath()));
+					out = new BufferedOutputStream(new FileOutputStream(reportDataFile));
+					ReportingSerializer serializer = (ReportingSerializer) Context.getSerializationService().getSerializer(ReportingSerializer.class);
+					serializer.serializeToStream(cachedData.getReportData(), out);
+					log.info(timer.logInterval("Serialized the report data to disk"));
+					cachedData.setPersisted(true);
+				} catch (Exception e) {
+					log.warn("An error occurred writing report data to disk", e);
+				} finally {
+					IOUtils.closeQuietly(out);
+				}
 			}
 		}
 		return cachedData;

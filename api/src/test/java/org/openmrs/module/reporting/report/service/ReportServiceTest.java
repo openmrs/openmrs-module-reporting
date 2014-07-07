@@ -430,4 +430,16 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		Report actual = Context.getService(ReportService.class).runReport(request);
 		Assert.assertEquals(sdf.format(actual.getReportData().getContext().getEvaluationDate()), sdf.format(new Date()));
 	}
+
+	@Test
+	public void saveReport_shouldSaveSuccessfullyIfNotCached() throws Exception {
+		ReportDefinition def = new ReportDefinition();
+		SqlDataSetDefinition dsd = new SqlDataSetDefinition();
+		dsd.setSqlQuery("select count(*) from patient");
+		def.addDataSetDefinition("patients", dsd, null);
+		ReportRenderer renderer = new TsvReportRenderer();
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), Priority.NORMAL, null);
+		Report result = Context.getService(ReportService.class).runReport(request);
+		Context.getService(ReportService.class).saveReport(result, "Test Saving");
+	}
 }
