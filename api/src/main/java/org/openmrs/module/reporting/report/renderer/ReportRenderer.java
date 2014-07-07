@@ -13,12 +13,13 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
+import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
-
-import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * Takes a ReportDefinition and renders it.
@@ -46,11 +47,11 @@ public interface ReportRenderer {
 	public String getRenderedContentType(ReportDefinition definition, String argument);
 	
 	/**
-	 * @param definition
+	 * @param request
 	 * @param argument Argument from the RenderingMode that the user selected
 	 * @return Suggested filename to save the rendered report as.
 	 */
-	public String getFilename(ReportDefinition definition, String argument);
+	public String getFilename(ReportRequest request, String argument);
 
 	/**
 	 * Render the report's data to a stream

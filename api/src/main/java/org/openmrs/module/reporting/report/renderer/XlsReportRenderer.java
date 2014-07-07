@@ -17,6 +17,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.io.ByteArrayInputStream;
@@ -47,10 +48,11 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
     }
 
 	/**
-	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
+	 * @see ReportRenderer#getFilename(ReportRequest, String)
 	 */
-	public String getFilename(ReportDefinition definition, String argument) {
-		String fileName = super.getFilename(definition, argument);
+    @Override
+	public String getFilename(ReportRequest request, String argument) {
+		String fileName = super.getFilename(request, argument);
 		if (!fileName.endsWith(".xls")) {
 			fileName += ".xls";
 		}

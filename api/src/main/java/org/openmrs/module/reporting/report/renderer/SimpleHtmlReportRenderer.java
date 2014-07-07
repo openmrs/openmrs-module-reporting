@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.List;
-
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
@@ -26,7 +20,14 @@ import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.List;
 
 /**
  * A Default Renderer Implementation that aims to support all ReportDefinitions
@@ -43,10 +44,11 @@ public class SimpleHtmlReportRenderer extends ReportDesignRenderer {
     }
 	
 	/**
-	 * @see ReportRenderer#getFilename(ReportDefinition)
+	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest, String)
 	 */
-	public String getFilename(ReportDefinition schema, String argument) {
-		return schema.getName() + ".html";
+    @Override
+	public String getFilename(ReportRequest request, String argument) {
+		return getFilenameBase(request, argument) + ".html";
 	}
 	
 	/**

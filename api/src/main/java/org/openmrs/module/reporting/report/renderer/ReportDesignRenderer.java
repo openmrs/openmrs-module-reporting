@@ -13,14 +13,23 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.template.TemplateFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.ReportDesign;
-import org.openmrs.module.reporting.report.service.ReportService;
+import java.util.Map;
 
 /**
  * Renderers which use design files to influence the rendered report output
@@ -28,9 +37,12 @@ import org.openmrs.module.reporting.report.service.ReportService;
  */
 public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
 
-	public static final String SORT_WEIGHT_PROPERTY = "sortWeight";
+    private transient Log log = LogFactory.getLog(this.getClass());
 
-	/** 
+	public static final String SORT_WEIGHT_PROPERTY = "sortWeight";
+    public static final String FILENAME_BASE_PROPERTY = "filenameBase";
+
+    /**
 	 * @see ReportRenderer#getRenderingModes(ReportDefinition)
 	 */
 	public Collection<RenderingMode> getRenderingModes(ReportDefinition definition) {
@@ -56,4 +68,33 @@ public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
 		ReportDesign design = Context.getService(ReportService.class).getReportDesignByUuid(argument); 
 		return design != null ? design : new ReportDesign();
 	}
+
+    /**
+     * Helper method that subclasses can use in their getFilename method, that does generates the base
+     * of the filename (with no extension) based on a "filenameTemplate" design argument, which defaults
+     * to "{{definition.name}}_{{dateYmd}}-{{timeHms}}"
+     * @param request
+     * @param argument
+     * @return
+     */
+    protected String getFilenameBase(ReportRequest request, String argument) {
+        ReportDesign d = getDesign(argument);
+        String template = d.getPropertyValue(FILENAME_BASE_PROPERTY, "{{request.reportDefinition.parameterizable.name}}_{{formatDate request.evaluateStartDatetime \"yyyy-MM-dd\"}}_{{formatDate request.evaluateStartDatetime \"HH:mm:ss\"}}");
+
+        Map templateModel = new HashMap();
+        templateModel.put("request", request);
+        templateModel.put("argument", argument);
+
+        TemplateFactory templateFactory = Context.getRegisteredComponents(TemplateFactory.class).get(0);
+        try {
+            return templateFactory.evaluateHandlebarsTemplate(template, templateModel);
+        } catch (EvaluationException e) {
+            log.error("Error evaluating filenameBase template: " + template, e);
+
+            // fall back to old behavior
+            String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-hhmmss");
+            return request.getReportDefinition().getParameterizable().getName() + "_" + dateStr;
+        }
+    }
+
 }

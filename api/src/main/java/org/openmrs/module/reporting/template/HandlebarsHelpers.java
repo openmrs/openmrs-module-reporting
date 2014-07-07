@@ -5,6 +5,10 @@ import com.github.jknack.handlebars.Options;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.module.reporting.ReportingConstants;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Any method in this class that returns a String (or CharSequence) will be exposed as a helper for handlebars templates
@@ -51,6 +55,24 @@ public class HandlebarsHelpers {
         } catch (Exception ex) {
             return sourceAndCode;
         }
+    }
+
+    /**
+     * This will be exposed as a handlebars helper.
+     * Usage is like: {{ formatDate request.evaluateStartDatetime "yyyyMMdd" }}
+     * @param date
+     * @param dateFormat defaults to "yyyy-MM-dd"
+     * @return
+     */
+    public CharSequence formatDate(Date date, String dateFormat) {
+        if (date == null) {
+            return "";
+        }
+        if (dateFormat == null) {
+            dateFormat = "yyyy-MM-dd";
+        }
+        SimpleDateFormat df = new SimpleDateFormat(dateFormat, ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCALE());
+        return df.format(date);
     }
 
 }

@@ -13,14 +13,8 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -28,7 +22,12 @@ import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Abstract super-class for all Renderer classes that render utilizing a ReportTemplate
@@ -58,12 +57,11 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	}
 	
 	/** 
-	 * @see ReportRenderer#getFilename(ReportDefinition, String)
+	 * @see ReportRenderer#getFilename(ReportRequest, String)
 	 */
-	public String getFilename(ReportDefinition definition, String argument) {
+	public String getFilename(ReportRequest request, String argument) {
+        String fileName = getFilenameBase(request, argument);
 		ReportDesign d = getDesign(argument);
-		String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-hhmmss");
-		String fileName = definition.getName() + "_" + dateStr;
 		ReportDesignResource template = getTemplate(d);
 		if (template != null) {
 			return fileName + "." + template.getExtension();

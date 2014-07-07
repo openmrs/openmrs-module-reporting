@@ -218,7 +218,7 @@ public class ReportHistoryController {
 			return new ModelAndView(new RedirectView(linkUrl));
 		}
 		else {
-			String filename = rm.getRenderer().getFilename(req.getReportDefinition().getParameterizable(), rm.getArgument()).replace(" ", "_");
+			String filename = rm.getRenderer().getFilename(req, rm.getArgument()).replace(" ", "_");
 			response.setContentType(rm.getRenderer().getRenderedContentType(req.getReportDefinition().getParameterizable(), rm.getArgument()));
 			byte[] data = getReportService().loadRenderedOutput(req);
 			

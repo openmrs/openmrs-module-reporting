@@ -13,6 +13,13 @@
  */
 package org.openmrs.module.reporting.report.processor;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.reporting.report.Report;
+import org.openmrs.module.reporting.report.renderer.ReportRenderer;
+import org.springframework.stereotype.Component;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,13 +29,6 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.reporting.report.Report;
-import org.openmrs.module.reporting.report.renderer.ReportRenderer;
-import org.springframework.stereotype.Component;
 
 /**
  * A ReportProcessor which saves the rendered report to disk
@@ -72,7 +72,7 @@ public class DiskReportProcessor implements ReportProcessor {
 			}
 			
 			ReportRenderer renderer = report.getRequest().getRenderingMode().getRenderer();
-			String fileName = renderer.getFilename(report.getReportData().getDefinition(), null);
+			String fileName = renderer.getFilename(report.getRequest(), null);
 			String fileNameWithoutExt = fileName.substring(0, fileName.indexOf('.'));
 			String extension = fileName.substring(fileName.indexOf('.') + 1);
 			

@@ -20,7 +20,9 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -59,13 +61,13 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
     @Test
     public void getFilename_shouldBeZipIfMoreThanOneDataSet() throws Exception {
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
-        assertTrue(Pattern.matches("Testing_.*\\.zip", renderer.getFilename(reportDefinitionWithTwoDSDs(), "")));
+        assertTrue(Pattern.matches("Testing_.*\\.zip", renderer.getFilename(requestFor(reportDefinitionWithTwoDSDs()), "")));
     }
 
     @Test
     public void getFilename_shouldBeCsvIfOneDataSet() throws Exception {
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
-        assertTrue(Pattern.matches("Testing_.*\\.csv", renderer.getFilename(reportDefinitionWithOneDSD(), "")));
+        assertTrue(Pattern.matches("Testing_.*\\.csv", renderer.getFilename(requestFor(reportDefinitionWithOneDSD()), "")));
     }
 
     @Test
@@ -165,6 +167,12 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
         reportDefinition.addDataSetDefinition("collision with \"tricky\", tough characters", new SqlDataSetDefinition("one", "description", "select patient_id from patient"), null);
         reportDefinition.addDataSetDefinition("collision with tricky tough characters", new SqlDataSetDefinition("two", "description", "select location_id from location"), null);
         return reportDefinition;
+    }
+
+    private ReportRequest requestFor(ReportDefinition definition) {
+        ReportRequest request = new ReportRequest();
+        request.setReportDefinition(Mapped.noMappings(definition));
+        return request;
     }
 
 }

@@ -13,14 +13,15 @@
  */
 package org.openmrs.module.reporting.web.renderers;
 
+import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.renderer.RenderingException;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.List;
-
-import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.renderer.RenderingException;
 
 /**
  * An abstract Web Renderer implementation that stubs all render methods.
@@ -28,17 +29,19 @@ import org.openmrs.module.reporting.report.renderer.RenderingException;
 public abstract class AbstractWebReportRenderer implements WebReportRenderer {
 		
 	/**
-     * @see org.openmrs.report.ReportRenderer#getRenderedContentType(org.openmrs.report.ReportDefinition, java.lang.String)
+     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
      */
+    @Override
     public String getRenderedContentType(ReportDefinition reportDefinition, String argument) {
     	return "text/html";
     }
 
 	/**
-	 * @see org.openmrs.report.ReportRenderer#getFilename(org.openmrs.report.ReportDefinition)
+     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest, String)
 	 */
-	public String getFilename(ReportDefinition schema, String argument) {
-		return schema.getName() + ".html";
+    @Override
+	public String getFilename(ReportRequest request, String argument) {
+		return request.getReportDefinition().getParameterizable().getName() + ".html";
 	}
 
 	public List<String> getDisplayColumns() { return null; }	

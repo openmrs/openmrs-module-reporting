@@ -16,20 +16,19 @@ package org.openmrs.module.reporting.report.renderer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -125,13 +124,13 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	}			
 	
 	/**
-	 * @see ReportRenderer#getFilename(ReportDefinition, String)
+	 * @see ReportRenderer#getFilename(ReportRequest, String)
 	 */
-	public String getFilename(ReportDefinition reportDefinition, String argument) {
+    @Override
+	public String getFilename(ReportRequest request, String argument) {
 		ReportDesign design = getDesign(argument);
-		String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-hhmmss");
-        String extension = reportDefinition.getDataSetDefinitions().size() > 1 ? "zip" : getFilenameExtension(design);
-		return getFilenameBaseForName(reportDefinition.getName(), new HashSet<String>()) + "_" + dateStr + "." + extension;
+        String extension = request.getReportDefinition().getParameterizable().getDataSetDefinitions().size() > 1 ? "zip" : getFilenameExtension(design);
+		return getFilenameBaseForName(getFilenameBase(request, argument), new HashSet<String>()) + "." + extension;
 	}
 
     /**
@@ -140,7 +139,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
      * @return definitionName, with characters unsuitable for a filename removed, and a suffix added if necessary for uniqueness
      */
     private String getFilenameBaseForName(String definitionName, Set<String> alreadyUsed) {
-        String clean = definitionName.replaceAll("[^a-zA-Z_0-9 ]", "");
+        String clean = definitionName.replaceAll("[\\\\/:\"*?<>|#%&{}<>$!'@+`|=]", "");
         if (alreadyUsed.contains(clean)) {
             int i = 2;
             while (alreadyUsed.contains(clean + "_" + i)) {

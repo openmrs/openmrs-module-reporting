@@ -33,6 +33,7 @@ import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimens
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
@@ -68,9 +69,10 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
     	return "text/html";
     }
 
-	public String getFilename(ReportDefinition schema, String argument) {
+    @Override
+	public String getFilename(ReportRequest request, String argument) {
 		String[] split = argument.split(":");
-		return schema.getName() + "." + split[1];
+		return getFilenameBase(request, argument) + "." + split[1];
 	}
 	
 	/**

@@ -1,18 +1,17 @@
 package org.openmrs.module.reporting.web.controller.portlet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class ReportHistoryPortletController extends ReportingPortletController {
@@ -45,8 +44,7 @@ public class ReportHistoryPortletController extends ReportingPortletController {
 				isWebRenderer.put(r, true);
 			} else {
 				try {
-					String filename = r.getRenderingMode().getRenderer().getFilename(r.getReportDefinition().getParameterizable(),
-					    r.getRenderingMode().getArgument());
+					String filename = r.getRenderingMode().getRenderer().getFilename(r, r.getRenderingMode().getArgument());
 					filename = filename.substring(filename.lastIndexOf('.') + 1);
 					filename = filename.toUpperCase();
 					shortNames.put(r, filename);

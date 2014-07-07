@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.List;
-
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.Localized;
@@ -26,7 +20,14 @@ import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.List;
 
 /**
  * ReportRenderer that renders to a default XML format
@@ -36,10 +37,11 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 public class XmlReportRenderer extends ReportDesignRenderer {
 	
 	/**
-	 * @see ReportRenderer#getFilename(ReportDefinition, String)
+	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest, String)
 	 */
-	public String getFilename(ReportDefinition reportDefinition, String argument) {
-		return reportDefinition.getName() + ".xml";
+    @Override
+	public String getFilename(ReportRequest request, String argument) {
+		return getFilenameBase(request, argument) + ".xml";
 	}
 	
 	/**
