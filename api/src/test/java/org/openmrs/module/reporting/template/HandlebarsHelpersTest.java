@@ -7,6 +7,7 @@ import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptService;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Date;
 import java.util.Locale;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 /**
  *
  */
-public class HandlebarsHelpersTest {
+public class HandlebarsHelpersTest extends BaseModuleContextSensitiveTest {
 
     @Test
     public void testMessage() throws Exception {

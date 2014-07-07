@@ -164,7 +164,7 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
     private ReportDefinition reportDefinitionWithTwoDSDs() {
         ReportDefinition reportDefinition = new ReportDefinition();
         reportDefinition.setName("Testing");
-        reportDefinition.addDataSetDefinition("collision with \"tricky\", tough characters", new SqlDataSetDefinition("one", "description", "select patient_id from patient"), null);
+        reportDefinition.addDataSetDefinition("collision with \"tricky!\" tough characters", new SqlDataSetDefinition("one", "description", "select patient_id from patient"), null);
         reportDefinition.addDataSetDefinition("collision with tricky tough characters", new SqlDataSetDefinition("two", "description", "select location_id from location"), null);
         return reportDefinition;
     }

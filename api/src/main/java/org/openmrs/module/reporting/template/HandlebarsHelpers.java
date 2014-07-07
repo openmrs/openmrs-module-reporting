@@ -9,6 +9,7 @@ import org.openmrs.module.reporting.ReportingConstants;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Any method in this class that returns a String (or CharSequence) will be exposed as a helper for handlebars templates
@@ -71,7 +72,8 @@ public class HandlebarsHelpers {
         if (dateFormat == null) {
             dateFormat = "yyyy-MM-dd";
         }
-        SimpleDateFormat df = new SimpleDateFormat(dateFormat, ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCALE());
+        Locale locale = ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCALE();
+        SimpleDateFormat df = locale == null ? new SimpleDateFormat(dateFormat) : new SimpleDateFormat(dateFormat, locale);
         return df.format(date);
     }
 
