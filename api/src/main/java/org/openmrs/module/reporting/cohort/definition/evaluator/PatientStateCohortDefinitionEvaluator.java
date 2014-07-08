@@ -14,19 +14,26 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
+import org.openmrs.PatientState;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
-import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Evaluates an PatientStateCohortDefinition and produces a Cohort
  */
 @Handler(supports={PatientStateCohortDefinition.class})
 public class PatientStateCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+
+	@Autowired
+	EvaluationService evaluationService;
 
 	/**
 	 * Default Constructor
@@ -43,12 +50,22 @@ public class PatientStateCohortDefinitionEvaluator implements CohortDefinitionEv
 	 * @should find patients in specified states on the before end date if passed in time is at midnight
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	PatientStateCohortDefinition d = (PatientStateCohortDefinition) cohortDefinition;
-    	Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingStates(d.getStates(),
-    		d.getStartedOnOrAfter(),
-    		d.getStartedOnOrBefore(),
-    		d.getEndedOnOrAfter(),
-    		d.getEndedOnOrBefore());
-    	return new EvaluatedCohort(c, cohortDefinition, context);
+
+		PatientStateCohortDefinition def = (PatientStateCohortDefinition) cohortDefinition;
+
+		HqlQueryBuilder qb = new HqlQueryBuilder();
+		qb.select("ps.patientProgram.patient.patientId");
+		qb.from(PatientState.class, "ps");
+		qb.whereIn("ps.state", def.getStates());
+		qb.whereGreaterOrEqualTo("ps.startDate", def.getStartedOnOrAfter());
+		qb.whereLessOrEqualTo("ps.startDate", def.getStartedOnOrBefore());
+		qb.whereGreaterOrEqualTo("ps.endDate", def.getEndedOnOrAfter());
+		qb.whereLessOrEqualTo("ps.endDate", def.getEndedOnOrBefore());
+		qb.whereIn("ps.patientProgram.location", def.getLocationList());
+		qb.wherePatientIn("ps.patientProgram.patient.patientId", context);
+
+		List<Integer> pIds = evaluationService.evaluateToList(qb, Integer.class, context);
+
+    	return new EvaluatedCohort(new Cohort(pIds), cohortDefinition, context);
     }
 }

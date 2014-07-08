@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import java.util.Collections;
+import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,6 +31,7 @@ import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+import org.openmrs.util.OpenmrsUtil;
 
 public class PatientStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -181,5 +183,18 @@ public class PatientStateCohortDefinitionEvaluatorTest extends BaseModuleContext
 		cd.setStates(Collections.singletonList(patientState.getState()));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertTrue(c.contains(patientState.getPatientProgram().getPatient().getPatientId()));
+	}
+
+	/**
+	 * @see {@link PatientStateCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should find patients in specified states for the specified locations", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldFindPatientsInSpecifiedStatesForTheSpecifiedLocations() throws Exception {
+		PatientStateCohortDefinition cd = new PatientStateCohortDefinition();
+		cd.addLocation(Context.getLocationService().getLocation(1));
+		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertEquals(3, c.size());
+		Assert.assertEquals("2,7,23", OpenmrsUtil.join(new TreeSet<Integer>(c.getMemberIds()), ","));
 	}
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.openmrs.Location;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -49,6 +50,9 @@ public class PatientStateCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group="endedDate")
 	private Date endedOnOrBefore;
 
+	@ConfigurationProperty(group="location")
+	private List<Location> locationList;
+
 	//***** CONSTRUCTORS *****
 
 	/**
@@ -79,7 +83,13 @@ public class PatientStateCohortDefinition extends BaseCohortDefinition {
 			ret.append(" in ");
 			for (ProgramWorkflowState s : states)
 				ret.append(s.getName() + " ");
-		}		
+		}
+		if (locationList != null && locationList.size() > 0) {
+			ret.append(" at ");
+			for (Location l : locationList) {
+				ret.append(l.getName() + " ");
+			}
+		}
 		return ret.toString();
 	}
 
@@ -165,5 +175,28 @@ public class PatientStateCohortDefinition extends BaseCohortDefinition {
     public void setEndedOnOrBefore(Date endedOnOrBefore) {
     	this.endedOnOrBefore = endedOnOrBefore;
     }
-    
+
+	/**
+	 * @return the locationList
+	 */
+	public List<Location> getLocationList() {
+		return locationList;
+	}
+
+	/**
+	 * @param location a location to filter the results by
+	 */
+	public void addLocation(Location location) {
+		if (locationList == null) {
+			locationList = new ArrayList<Location>();
+		}
+		locationList.add(location);
+	}
+
+	/**
+	 * @param locationList the locationList to set
+	 */
+	public void setLocationList(List<Location> locationList) {
+		this.locationList = locationList;
+	}
 }
