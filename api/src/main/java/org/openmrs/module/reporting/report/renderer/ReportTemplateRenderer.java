@@ -57,10 +57,11 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	}
 	
 	/** 
-	 * @see ReportRenderer#getFilename(ReportRequest, String)
+	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest)
 	 */
-	public String getFilename(ReportRequest request, String argument) {
-        String fileName = getFilenameBase(request, argument);
+	public String getFilename(ReportRequest request) {
+        String argument = request.getRenderingMode().getArgument();
+        String fileName = getFilenameBase(request);
 		ReportDesign d = getDesign(argument);
 		ReportDesignResource template = getTemplate(d);
 		if (template != null) {

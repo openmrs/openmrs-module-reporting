@@ -72,7 +72,7 @@ public class DiskReportProcessor implements ReportProcessor {
 			}
 			
 			ReportRenderer renderer = report.getRequest().getRenderingMode().getRenderer();
-			String fileName = renderer.getFilename(report.getRequest(), null);
+			String fileName = renderer.getFilename(report.getRequest());
 			String fileNameWithoutExt = fileName.substring(0, fileName.indexOf('.'));
 			String extension = fileName.substring(fileName.indexOf('.') + 1);
 			

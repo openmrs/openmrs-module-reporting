@@ -61,13 +61,13 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
     @Test
     public void getFilename_shouldBeZipIfMoreThanOneDataSet() throws Exception {
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
-        assertTrue(Pattern.matches("Testing_.*\\.zip", renderer.getFilename(requestFor(reportDefinitionWithTwoDSDs()), "")));
+        assertTrue(Pattern.matches("Testing_.*\\.zip", renderer.getFilename(requestFor(reportDefinitionWithTwoDSDs()))));
     }
 
     @Test
     public void getFilename_shouldBeCsvIfOneDataSet() throws Exception {
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
-        assertTrue(Pattern.matches("Testing_.*\\.csv", renderer.getFilename(requestFor(reportDefinitionWithOneDSD()), "")));
+        assertTrue(Pattern.matches("Testing_.*\\.csv", renderer.getFilename(requestFor(reportDefinitionWithOneDSD()))));
     }
 
     @Test
@@ -172,6 +172,7 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
     private ReportRequest requestFor(ReportDefinition definition) {
         ReportRequest request = new ReportRequest();
         request.setReportDefinition(Mapped.noMappings(definition));
+        request.setRenderingMode(new RenderingMode());
         return request;
     }
 

@@ -25,8 +25,9 @@ public class ReportDesignRendererTest extends BaseModuleContextSensitiveTest {
         ReportRequest request = new ReportRequest();
         request.setEvaluateStartDatetime(DateUtil.parseYmdhms("2014-07-01 18:30:15"));
         request.setReportDefinition(Mapped.noMappings(definition));
+        request.setRenderingMode(new RenderingMode());
 
-        String filenameBase = new TestReportDesignRenderer().getFilenameBase(request, null);
+        String filenameBase = new TestReportDesignRenderer().getFilenameBase(request);
         assertThat(filenameBase, is("Test Report_2014-07-01_18:30:15"));
     }
 
@@ -38,13 +39,14 @@ public class ReportDesignRendererTest extends BaseModuleContextSensitiveTest {
         ReportRequest request = new ReportRequest();
         request.setEvaluateStartDatetime(DateUtil.parseYmdhms("2014-07-01 18:30:15"));
         request.setReportDefinition(Mapped.noMappings(definition));
+        request.setRenderingMode(new RenderingMode());
 
         ReportDesign design = new ReportDesign();
         design.addPropertyValue(ReportDesignRenderer.FILENAME_BASE_PROPERTY, "{{formatDate request.evaluateStartDatetime \"yyyyMMdd\"}}-{{request.reportDefinition.parameterizable.name}}");
 
         TestReportDesignRenderer renderer = new TestReportDesignRenderer();
         renderer.setDesign(design);
-        String filenameBase = renderer.getFilenameBase(request, null);
+        String filenameBase = renderer.getFilenameBase(request);
         assertThat(filenameBase, is("20140701-Test Report"));
     }
 
@@ -73,7 +75,7 @@ public class ReportDesignRendererTest extends BaseModuleContextSensitiveTest {
         }
 
         @Override
-        public String getFilename(ReportRequest request, String argument) {
+        public String getFilename(ReportRequest request) {
             return null;
         }
 

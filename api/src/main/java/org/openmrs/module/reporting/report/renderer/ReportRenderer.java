@@ -48,10 +48,9 @@ public interface ReportRenderer {
 	
 	/**
 	 * @param request
-	 * @param argument Argument from the RenderingMode that the user selected
 	 * @return Suggested filename to save the rendered report as.
 	 */
-	public String getFilename(ReportRequest request, String argument);
+	public String getFilename(ReportRequest request);
 
 	/**
 	 * Render the report's data to a stream

@@ -70,9 +70,10 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
     }
 
     @Override
-	public String getFilename(ReportRequest request, String argument) {
+	public String getFilename(ReportRequest request) {
+        String argument = request.getRenderingMode().getArgument();
 		String[] split = argument.split(":");
-		return getFilenameBase(request, argument) + "." + split[1];
+		return getFilenameBase(request) + "." + split[1];
 	}
 	
 	/**

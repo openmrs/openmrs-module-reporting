@@ -37,11 +37,11 @@ import java.util.List;
 public class XmlReportRenderer extends ReportDesignRenderer {
 	
 	/**
-	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest, String)
+	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest)
 	 */
     @Override
-	public String getFilename(ReportRequest request, String argument) {
-		return getFilenameBase(request, argument) + ".xml";
+	public String getFilename(ReportRequest request) {
+		return getFilenameBase(request) + ".xml";
 	}
 	
 	/**

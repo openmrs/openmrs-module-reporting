@@ -74,10 +74,10 @@ public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
      * of the filename (with no extension) based on a "filenameTemplate" design argument, which defaults
      * to "{{definition.name}}_{{dateYmd}}-{{timeHms}}"
      * @param request
-     * @param argument
      * @return
      */
-    protected String getFilenameBase(ReportRequest request, String argument) {
+    protected String getFilenameBase(ReportRequest request) {
+        String argument = request.getRenderingMode().getArgument();
         ReportDesign d = getDesign(argument);
         String template = d.getPropertyValue(FILENAME_BASE_PROPERTY, "{{request.reportDefinition.parameterizable.name}}_{{formatDate request.evaluateStartDatetime \"yyyy-MM-dd_HH:mm:ss\"}}");
 

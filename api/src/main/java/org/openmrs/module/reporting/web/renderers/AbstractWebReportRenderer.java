@@ -37,10 +37,10 @@ public abstract class AbstractWebReportRenderer implements WebReportRenderer {
     }
 
 	/**
-     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest, String)
+     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest)
 	 */
     @Override
-	public String getFilename(ReportRequest request, String argument) {
+	public String getFilename(ReportRequest request) {
 		return request.getReportDefinition().getParameterizable().getName() + ".html";
 	}
 

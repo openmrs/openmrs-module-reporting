@@ -46,11 +46,11 @@ public class IndicatorReportRenderer extends ReportDesignRenderer {
     }
 
 	/**
-	 * @see ReportRenderer#getFilename(ReportRequest, String)
+	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest)
 	 */
     @Override
-	public String getFilename(ReportRequest request, String argument) {
-		return getFilenameBase(request, argument) + ".html";
+	public String getFilename(ReportRequest request) {
+		return getFilenameBase(request) + ".html";
 	}
 
 	/**

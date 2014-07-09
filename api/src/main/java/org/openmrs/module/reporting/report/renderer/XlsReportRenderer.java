@@ -48,11 +48,11 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
     }
 
 	/**
-	 * @see ReportRenderer#getFilename(ReportRequest, String)
+	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest)
 	 */
     @Override
-	public String getFilename(ReportRequest request, String argument) {
-		String fileName = super.getFilename(request, argument);
+	public String getFilename(ReportRequest request) {
+		String fileName = super.getFilename(request);
 		if (!fileName.endsWith(".xls")) {
 			fileName += ".xls";
 		}

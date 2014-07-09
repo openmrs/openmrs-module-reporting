@@ -124,13 +124,14 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 	}			
 	
 	/**
-	 * @see ReportRenderer#getFilename(ReportRequest, String)
+	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.ReportRequest)
 	 */
     @Override
-	public String getFilename(ReportRequest request, String argument) {
-		ReportDesign design = getDesign(argument);
+	public String getFilename(ReportRequest request) {
+        String argument = request.getRenderingMode().getArgument();
+        ReportDesign design = getDesign(argument);
         String extension = request.getReportDefinition().getParameterizable().getDataSetDefinitions().size() > 1 ? "zip" : getFilenameExtension(design);
-		return getFilenameBaseForName(getFilenameBase(request, argument), new HashSet<String>()) + "." + extension;
+		return getFilenameBaseForName(getFilenameBase(request), new HashSet<String>()) + "." + extension;
 	}
 
     /**
