@@ -79,7 +79,7 @@ public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
      */
     protected String getFilenameBase(ReportRequest request, String argument) {
         ReportDesign d = getDesign(argument);
-        String template = d.getPropertyValue(FILENAME_BASE_PROPERTY, "{{request.reportDefinition.parameterizable.name}}_{{formatDate request.evaluateStartDatetime \"yyyy-MM-dd\"}}_{{formatDate request.evaluateStartDatetime \"HH:mm:ss\"}}");
+        String template = d.getPropertyValue(FILENAME_BASE_PROPERTY, "{{request.reportDefinition.parameterizable.name}}_{{formatDate request.evaluateStartDatetime \"yyyy-MM-dd_HH:mm:ss\"}}");
 
         Map templateModel = new HashMap();
         templateModel.put("request", request);
@@ -89,10 +89,10 @@ public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
         try {
             return templateFactory.evaluateHandlebarsTemplate(template, templateModel);
         } catch (EvaluationException e) {
-            log.error("Error evaluating filenameBase template: " + template, e);
+            log.warn("Error evaluating filenameBase template (using default instead): " + template, e);
 
             // fall back to old behavior
-            String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-hhmmss");
+            String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-HHmmss");
             return request.getReportDefinition().getParameterizable().getName() + "_" + dateStr;
         }
     }
