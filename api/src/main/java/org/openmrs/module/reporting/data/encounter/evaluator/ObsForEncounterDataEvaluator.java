@@ -50,7 +50,7 @@ public class ObsForEncounterDataEvaluator implements EncounterDataEvaluator {
 				l.add(obs);
 			}
 			else {
-				// If there are multiple matching providers and we are in singleProvider mode then last one wins
+				// If there are multiple matching obs and we are in singleObs mode then last one wins
 				if (data.getData().get(encounterId) != null) {
 					log.warn("Multiple matching obs for encounter " + encounterId + "... picking one");
 				}
