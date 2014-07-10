@@ -70,7 +70,7 @@ public class ReportDesignRendererTest extends BaseModuleContextSensitiveTest {
         }
 
         @Override
-        public String getRenderedContentType(ReportDefinition definition, String argument) {
+        public String getRenderedContentType(ReportRequest request) {
             return null;
         }
 

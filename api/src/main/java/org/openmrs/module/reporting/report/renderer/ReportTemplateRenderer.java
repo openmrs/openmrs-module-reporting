@@ -23,7 +23,6 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.ReportRequest;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -71,10 +70,10 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	}
 	
 	/** 
-	 * @see ReportRenderer#getRenderedContentType(ReportDefinition, String)
+	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportRequest)
 	 */
-	public String getRenderedContentType(ReportDefinition definition, String argument) {
-		ReportDesign d = getDesign(argument);
+	public String getRenderedContentType(ReportRequest request) {
+		ReportDesign d = getDesign(request.getRenderingMode().getArgument());
 		ReportDesignResource template = getTemplate(d);
 		if (template != null) {
 			return template.getContentType();

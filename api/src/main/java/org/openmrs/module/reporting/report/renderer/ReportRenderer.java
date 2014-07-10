@@ -40,11 +40,10 @@ public interface ReportRenderer {
 	
 	/**
 	 * The content-type that will be rendered
-	 * @param definition The ReportDefinition to render
-	 * @param argument Argument from the RenderingMode that the user selected
+	 * @param request The ReportRequest to render
 	 * @return the <code>String</code> representation of the rendered content type
 	 */
-	public String getRenderedContentType(ReportDefinition definition, String argument);
+	public String getRenderedContentType(ReportRequest request);
 	
 	/**
 	 * @param request

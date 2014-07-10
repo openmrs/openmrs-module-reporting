@@ -18,7 +18,6 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.ReportRequest;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,9 +40,9 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
 	public XlsReportRenderer() { }
     
     /**
-     * @see ReportRenderer#getRenderedContentType(ReportDefinition, String)
+     * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportRequest)
      */
-    public String getRenderedContentType(ReportDefinition schema, String argument) {
+    public String getRenderedContentType(ReportRequest request) {
         return "application/vnd.ms-excel";
     }
 

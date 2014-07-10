@@ -21,7 +21,6 @@ import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportRequest;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -45,9 +44,9 @@ public class XmlReportRenderer extends ReportDesignRenderer {
 	}
 	
 	/**
-	 * @see ReportRenderer#getRenderedContentType(ReportDefinition, String)
+	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportRequest)
 	 */
-	public String getRenderedContentType(ReportDefinition schema, String argument) {
+	public String getRenderedContentType(ReportRequest request) {
 		return "text/xml";
 	}
 	

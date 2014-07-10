@@ -13,13 +13,6 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -37,9 +30,16 @@ import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.renderer.template.TemplateEngine;
 import org.openmrs.module.reporting.report.renderer.template.TemplateEngineManager;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Report Renderer implementation that supports rendering of a text template
@@ -57,10 +57,10 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 	}
 
 	/**
-	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
+	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportRequest)
 	 */
-	public String getRenderedContentType(ReportDefinition schema, String argument) {
-		String contentType = super.getRenderedContentType(schema, argument);
+	public String getRenderedContentType(ReportRequest request) {
+		String contentType = super.getRenderedContentType(request);
 		if (StringUtils.isEmpty(contentType)) {
 			contentType = "text/html";
 		}

@@ -1,6 +1,5 @@
 package org.openmrs.module.reporting.report;
 
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
 /**
@@ -37,9 +36,7 @@ public class Report {
 	 */
 	public String getOutputContentType() {
 		ReportRenderer renderer = request.getRenderingMode().getRenderer();
-		ReportDefinition definition = request.getReportDefinition().getParameterizable();
-		String argument = request.getRenderingMode().getArgument();
-		return renderer.getRenderedContentType(definition, argument);
+		return renderer.getRenderedContentType(request);
 	}
 	
 	//***** PROPERTY ACCESS *****

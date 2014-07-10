@@ -37,7 +37,6 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.ReportRequest;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -77,9 +76,10 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	}
 
 	/**
-	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
+	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportRequest)
+     * @param request
 	 */
-	public String getRenderedContentType(ReportDefinition definition, String argument) {
+	public String getRenderedContentType(ReportRequest request) {
 		return "application/vnd.ms-excel";
 	}
 

@@ -15,7 +15,6 @@ package org.openmrs.module.reporting.web.renderers;
 
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportRequest;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingException;
 
 import java.io.IOException;
@@ -29,10 +28,10 @@ import java.util.List;
 public abstract class AbstractWebReportRenderer implements WebReportRenderer {
 		
 	/**
-     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
+     * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportRequest)
      */
     @Override
-    public String getRenderedContentType(ReportDefinition reportDefinition, String argument) {
+    public String getRenderedContentType(ReportRequest request) {
     	return "text/html";
     }
 

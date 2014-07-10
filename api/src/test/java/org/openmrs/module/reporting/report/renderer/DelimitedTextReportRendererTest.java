@@ -49,13 +49,13 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
     @Test
     public void getRenderedContentType_shouldBeZipIfMoreThanOneDataSet() throws Exception {
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
-        assertThat(renderer.getRenderedContentType(reportDefinitionWithTwoDSDs(), ""), is("application/zip"));
+        assertThat(renderer.getRenderedContentType(requestFor(reportDefinitionWithTwoDSDs())), is("application/zip"));
     }
 
     @Test
     public void getRenderedContentType_shouldBeCsvIfOneDataSet() throws Exception {
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
-        assertThat(renderer.getRenderedContentType(reportDefinitionWithOneDSD(), ""), is("text/csv"));
+        assertThat(renderer.getRenderedContentType(requestFor(reportDefinitionWithOneDSD())), is("text/csv"));
     }
 
     @Test

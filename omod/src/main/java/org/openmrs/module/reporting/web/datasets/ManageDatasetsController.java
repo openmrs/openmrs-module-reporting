@@ -18,11 +18,14 @@ import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
+import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.SimpleHtmlReportRenderer;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
@@ -289,7 +292,9 @@ public class ManageDatasetsController {
 	    	
 	    	// Step 6
 	    	// Write rendered data to response
-	    	response.setContentType(renderer.getRenderedContentType(reportDefinition, null));
+            RenderingMode renderingMode = new RenderingMode(renderer, "", "", 0);
+            ReportRequest request = new ReportRequest(Mapped.noMappings(reportDefinition), null, renderingMode, ReportRequest.Priority.NORMAL, null);
+            response.setContentType(renderer.getRenderedContentType(request));
 			response.setHeader("Content-Disposition", "attachment; filename=\"" + dataSetDefinition.getName() + "." + format + "\"");  	    	
 	    	renderer.render(reportData, null, response.getOutputStream());
 	    	response.getOutputStream().close();

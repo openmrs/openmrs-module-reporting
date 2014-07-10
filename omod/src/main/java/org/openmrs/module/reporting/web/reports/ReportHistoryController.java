@@ -219,7 +219,7 @@ public class ReportHistoryController {
 		}
 		else {
 			String filename = rm.getRenderer().getFilename(req).replace(" ", "_");
-			response.setContentType(rm.getRenderer().getRenderedContentType(req.getReportDefinition().getParameterizable(), rm.getArgument()));
+			response.setContentType(rm.getRenderer().getRenderedContentType(req));
 			byte[] data = getReportService().loadRenderedOutput(req);
 			
 			if (data != null) {

@@ -23,7 +23,6 @@ import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportRequest;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -96,13 +95,14 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
     }
 
     /**
-	 * @see org.openmrs.module.reporting.report.renderer.ReportRenderer#getRenderedContentType(ReportDefinition, String)
+	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportRequest)
+     * @param request
 	 */
-	public String getRenderedContentType(ReportDefinition model, String argument) {
-        if (model.getDataSetDefinitions().size() > 1) {
+	public String getRenderedContentType(ReportRequest request) {
+        if (request.getReportDefinition().getParameterizable().getDataSetDefinitions().size() > 1) {
             return "application/zip";
         } else {
-            ReportDesign design = getDesign(argument);
+            ReportDesign design = getDesign(request.getRenderingMode().getArgument());
             return "text/" + getFilenameExtension(design);
         }
 	}

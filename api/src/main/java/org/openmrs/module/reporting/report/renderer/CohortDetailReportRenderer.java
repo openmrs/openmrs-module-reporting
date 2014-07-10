@@ -60,10 +60,11 @@ import java.util.Map;
 public class CohortDetailReportRenderer extends ReportDesignRenderer {
 	
 	/**
-     * @see ReportRenderer#getRenderedContentType(ReportDefinition, String)
+     * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportRequest)
+     * @param request
      */
-    public String getRenderedContentType(ReportDefinition schema, String argument) {
-		if ("excel".equalsIgnoreCase(argument)) {
+    public String getRenderedContentType(ReportRequest request) {
+		if ("excel".equalsIgnoreCase(request.getRenderingMode().getArgument())) {
 			return "application/vnd.ms-excel";
 		}
     	return "text/html";
