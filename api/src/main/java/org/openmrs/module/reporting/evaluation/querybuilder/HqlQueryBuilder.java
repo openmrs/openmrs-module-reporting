@@ -48,6 +48,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	private List<String> joinClauses = new ArrayList<String>();
 	private List<String> clauses = new ArrayList<String>();
 	private Map<String, Object> parameters = new HashMap<String, Object>();
+	private List<String> groupBy = new ArrayList<String>();
 	private List<String> orderBy = new ArrayList<String>();
 	private int positionIndex = 1;
 
@@ -388,6 +389,11 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return this;
 	}
 
+	public HqlQueryBuilder groupBy(String propertyName) {
+		groupBy.add(propertyName);
+		return this;
+	}
+
 	public HqlQueryBuilder orderAsc(String propertyName) {
 		orderBy.add(propertyName + " asc");
 		return this;
@@ -478,6 +484,10 @@ public class HqlQueryBuilder implements QueryBuilder {
 			else {
 				nextOperator = AND;
 			}
+		}
+
+		for (int i=0; i<groupBy.size(); i++) {
+			q.append(i == 0 ? " group by " : ", ").append(groupBy.get(i));
 		}
 
 		for (int i=0; i<orderBy.size(); i++) {

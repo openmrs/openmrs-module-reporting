@@ -358,6 +358,13 @@ public class DateUtil {
 		return currentDate;
 		
 	}
+
+	public static Date adjustDate(Date dateToAdjust, int numToAdjust, int fieldToAdjust) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(dateToAdjust);
+		c.add(fieldToAdjust, numToAdjust);
+		return c.getTime();
+	}
 	
 	
 	public static Date getEndOfWeek(Date currentDate) { 		
