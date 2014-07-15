@@ -75,4 +75,15 @@ public class QueryUtil {
 		}
 		return ret;
 	}
+
+	/**
+	 * @return an IdSet that is the first idset minus the idsets that follow it
+	 */
+	public static <T extends OpenmrsObject> IdSet<T> subtract(IdSet<T> base, IdSet<T>... toSubtract) {
+		IdSet<T> ret = base.clone();
+		for (IdSet<T> s : toSubtract) {
+			ret.getMemberIds().removeAll(s.getMemberIds());
+		}
+		return ret;
+	}
 }

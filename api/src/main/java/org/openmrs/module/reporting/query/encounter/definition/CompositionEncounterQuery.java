@@ -11,22 +11,22 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.reporting.cohort.definition;
+package org.openmrs.module.reporting.query.encounter.definition;
 
-import org.openmrs.Patient;
+import org.openmrs.Encounter;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.query.CompositionQuery;
 
 /**
- * Supports the evaluation of a composition of cohort definitions
+ * Supports the evaluation of a composition of encounter queries
  */
-@Localized("reporting.CompositionCohortDefinition")
-public class CompositionCohortDefinition extends CompositionQuery<CohortDefinition, Patient> implements CohortDefinition {
+@Localized("reporting.CompositionEncounterQuery")
+public class CompositionEncounterQuery extends CompositionQuery<EncounterQuery, Encounter> implements EncounterQuery {
 
     /**
      * Default Constructor
      */
-	public CompositionCohortDefinition() {
+	public CompositionEncounterQuery() {
 		super();
 	}
 }

@@ -40,6 +40,7 @@ import java.util.Stack;
  * This class encapsulates the parsing logic necessary to take a String
  * expression and parse it into a List<Object>.  The parser
  */
+@Deprecated
 public class CohortExpressionParser {
 	
 	protected static final Log log = LogFactory.getLog(CohortExpressionParser.class);
@@ -69,8 +70,8 @@ public class CohortExpressionParser {
 	 * @throws EvaluationException
 	 */
 	public static Cohort evaluate(CompositionCohortDefinition composition, EvaluationContext context) throws EvaluationException {
-		List<Object> tokens = CohortExpressionParser.parseIntoTokens(composition.getCompositionString());
-		return CohortExpressionParser.evaluate(tokens, composition, context);
+		List<Object> tokens = parseIntoTokens(composition.getCompositionString());
+		return evaluate(tokens, composition, context);
 	}
 	
 	/**
