@@ -16,10 +16,14 @@ package org.openmrs.module.reporting.query;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.module.reporting.common.BooleanOperator;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,6 +51,46 @@ public abstract class CompositionQuery<Q extends Query<T>, T extends OpenmrsObje
      */
 	public CompositionQuery() {
 		super();
+	}
+
+	//***** INSTANCE METHODS *****
+
+	/**
+	 * This method allows for setting the composition string and query elements based on the passed in arguments
+	 */
+	public void initializeFromElements(Object...elements) {
+		StringBuilder s = new StringBuilder();
+		int definitionCount = 0;
+		for (Object o : elements) {
+			String key = o.toString();
+			if (o instanceof Query) {
+				Q q = (Q)o;
+				definitionCount++;
+				key = Integer.toString(definitionCount);
+				for (Parameter p : q.getParameters()) {
+					if (getParameter(p.getName()) == null) {
+						addParameter(p);
+					}
+				}
+				addSearch(key, Mapped.mapStraightThrough(q));
+			}
+			s.append(s.length() > 0 ? " " : "").append(key);
+		}
+		setCompositionString(s.toString());
+	}
+
+	/**
+	 * This method will initialize this CompositionQuery with the passed Queries all combined with the passed boolean operator
+	 */
+	public void initializeFromQueries(BooleanOperator booleanOperator, Q...elements) {
+		List<Object> l = new ArrayList<Object>();
+		for (Q q : elements) {
+			if (!l.isEmpty()) {
+				l.add(booleanOperator);
+			}
+			l.add(q);
+		}
+		initializeFromElements(l.toArray());
 	}
 	
 	//***** PROPERTY ACCESS *****

@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.query.evaluator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.module.reporting.common.BooleanOperator;
 import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -25,8 +26,6 @@ import org.openmrs.module.reporting.query.CompositionQuery;
 import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.module.reporting.query.Query;
 import org.openmrs.module.reporting.query.QueryUtil;
-import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
-import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 
 import java.io.StreamTokenizer;
 import java.io.StringReader;
@@ -50,10 +49,6 @@ public abstract class CompositionQueryEvaluator<Q extends Query<T>, T extends Op
 	public static final List<Character> CLOSE_PARENTHESES_WORDS = Arrays.asList(')',']','}');
 	public static final List<Character> CHARACTER_WORDS = Arrays.asList('+','!','(','[','{',')',']','}');
 	public static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(Integer.class, BooleanOperator.class, Query.class, List.class);
-
-	public enum BooleanOperator {
-		AND, OR, NOT;
-	}
 
 	/**
 	 * Default Constructor
