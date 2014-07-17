@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.query;
 
 import org.openmrs.OpenmrsObject;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -70,7 +71,14 @@ public abstract class BaseIdSet<T extends OpenmrsObject> implements IdSet<T> {
 			getMemberIds().add(memberId);
 		}
 	}
-	
+
+	/**
+	 * @param memberIds to add to the Query
+	 */
+	public void addAll(Collection<Integer> memberIds) {
+		getMemberIds().addAll(memberIds);
+	}
+
 	/**
 	 * @see IdSet#contains(Integer)
 	 */
