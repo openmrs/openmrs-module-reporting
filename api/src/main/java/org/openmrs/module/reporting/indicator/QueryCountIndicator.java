@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.query.Query;
 /**
  * Query-based indicator
  */
-@Localized("reporting.CohortIndicator")
+@Localized("reporting.QueryCountIndicator")
 public class QueryCountIndicator extends BaseIndicator {
 
     //***** PROPERTIES *****

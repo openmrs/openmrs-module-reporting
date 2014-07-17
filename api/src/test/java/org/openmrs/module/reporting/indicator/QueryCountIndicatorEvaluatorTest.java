@@ -30,7 +30,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.HashMap;
 
 /**
- * test class for testing evaluation of SQLIndicators
+ * test class for testing evaluation of QueryCountIndicators
  */
 public class QueryCountIndicatorEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
