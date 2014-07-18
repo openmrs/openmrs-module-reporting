@@ -46,6 +46,13 @@ public class EvaluatedCohort extends PatientIdSet implements Evaluated<CohortDef
 	public EvaluatedCohort() {
 		super();
 	}
+
+	/**
+	 * Constructor for definition and context
+	 */
+	public EvaluatedCohort(CohortDefinition definition, EvaluationContext context) {
+		this(null, definition, context);
+	}
 	
 	/**
 	 * Full Constructor

@@ -365,7 +365,10 @@ public class DateUtil {
 		c.add(fieldToAdjust, numToAdjust);
 		return c.getTime();
 	}
-	
+
+	public static Date adjustDate(Date dateToAdjust, int numToAdjust, DurationUnit numUnits) {
+		return adjustDate(dateToAdjust, numToAdjust * numUnits.getFieldQuantity(), numUnits.getCalendarField());
+	}
 	
 	public static Date getEndOfWeek(Date currentDate) { 		
 		return getEndOfCalendarPeriod(currentDate, Calendar.DAY_OF_WEEK);
