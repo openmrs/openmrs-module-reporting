@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.common;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -108,17 +109,21 @@ public class ExcelUtil {
 				}
 			}
 			catch (Exception e) {}
-			
-			try {
-				cell.setCellValue(wb.getCreationHelper().createRichTextString(Integer.toString(Integer.parseInt(cellValueString))));
-				return;
+
+			if (!cellValueString.matches(".*[a-zA-Z]+.*")) {
+				try {
+					cell.setCellValue(wb.getCreationHelper().createRichTextString(Integer.toString(Integer.parseInt(cellValueString))));
+					return;
+				}
+				catch (Exception e) {
+				}
+				try {
+					cell.setCellValue(wb.getCreationHelper().createRichTextString(Double.toString(Double.parseDouble(cellValueString))));
+					return;
+				}
+				catch (Exception e) {
+				}
 			}
-			catch (Exception e) {}
-			try {
-				cell.setCellValue(wb.getCreationHelper().createRichTextString(Double.toString(Double.parseDouble(cellValueString))));
-				return;
-			}
-			catch (Exception e) {}
 			cell.setCellValue(wb.getCreationHelper().createRichTextString(cellValueString));
 			return;
 		}
