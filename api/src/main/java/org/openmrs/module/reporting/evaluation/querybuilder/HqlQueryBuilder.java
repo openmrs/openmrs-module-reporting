@@ -8,6 +8,7 @@ import org.openmrs.Cohort;
 import org.openmrs.Voidable;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
@@ -51,8 +52,6 @@ public class HqlQueryBuilder implements QueryBuilder {
 	private List<String> groupBy = new ArrayList<String>();
 	private List<String> orderBy = new ArrayList<String>();
 	private int positionIndex = 1;
-
-	private String builtQueryString = null;
 
 	//***** CONSTRUCTORS *****
 
@@ -389,6 +388,30 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return this;
 	}
 
+	public HqlQueryBuilder where(String propertyName, RangeComparator operator, Object value) {
+		if (operator != null && value != null) {
+			if (operator.equals(RangeComparator.EQUAL)) {
+				whereEqual(propertyName, value);
+			}
+			else if (operator.equals(RangeComparator.GREATER_EQUAL)) {
+				whereGreaterOrEqualTo(propertyName, value);
+			}
+			else if (operator.equals(RangeComparator.GREATER_THAN)) {
+				whereGreater(propertyName, value);
+			}
+			else if (operator.equals(RangeComparator.LESS_EQUAL)) {
+				whereLessOrEqualTo(propertyName, value);
+			}
+			else if (operator.equals(RangeComparator.LESS_THAN)) {
+				whereLess(propertyName, value);
+			}
+			else {
+				throw new IllegalArgumentException("Unknown operator: " + operator);
+			}
+		}
+		return this;
+	}
+
 	public HqlQueryBuilder groupBy(String propertyName) {
 		groupBy.add(propertyName);
 		return this;
@@ -421,10 +444,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	@Override
 	public String toString() {
-		if (builtQueryString == null) {
-			return super.toString();
-		}
-		String ret = builtQueryString;
+		String ret = getQueryString();
 		for (String paramName : parameters.keySet()) {
 			String paramVal = ObjectUtil.format(parameters.get(paramName));
 			ret = ret.replace(":"+paramName, paramVal);
@@ -435,9 +455,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return ret;
 	}
 
-	@Override
-	public Query buildQuery(SessionFactory sessionFactory) {
-
+	protected String getQueryString() {
 		if ((positionIndex-1) > parameters.size()) {
 			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");
 		}
@@ -494,9 +512,17 @@ public class HqlQueryBuilder implements QueryBuilder {
 			q.append(i == 0 ? " order by " : ", ").append(orderBy.get(i));
 		}
 
-		builtQueryString = q.toString();
+		return q.toString();
+	}
 
-		Query query = sessionFactory.getCurrentSession().createQuery(builtQueryString);
+	@Override
+	public Query buildQuery(SessionFactory sessionFactory) {
+
+		if ((positionIndex-1) > parameters.size()) {
+			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");
+		}
+
+		Query query = sessionFactory.getCurrentSession().createQuery(getQueryString());
 
 		for (Map.Entry<String, Object> e : parameters.entrySet()) {
 			if (e.getValue() instanceof Collection) {

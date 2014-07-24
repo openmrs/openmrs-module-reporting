@@ -138,6 +138,13 @@ public class DateRange {
 	//***********************
 	// INSTANCE METHODS
 	//***********************
+
+	/**
+	 * @return true if the passed Date is contained within this date range
+	 */
+	public boolean contains(Date d) {
+		return DateRange.isWithin(this, d);
+	}
 	
 	/** 
 	 * @see Object#toString()
