@@ -40,8 +40,8 @@ public class PatientPersonQuery extends BaseQuery<Person> implements PersonQuery
 	/**
 	 * Full Constructor
 	 */
-	public PatientPersonQuery(CohortDefinition patientQuery) { 
-		this.patientQuery = patientQuery;
+	public PatientPersonQuery(CohortDefinition patientQuery) {
+		setPatientQuery(patientQuery);
 	}
 
 	//***** INSTANCE METHODS *****
@@ -67,5 +67,6 @@ public class PatientPersonQuery extends BaseQuery<Person> implements PersonQuery
 	 */
 	public void setPatientQuery(CohortDefinition patientQuery) {
 		this.patientQuery = patientQuery;
+		this.setParameters(patientQuery.getParameters());
 	}
 }

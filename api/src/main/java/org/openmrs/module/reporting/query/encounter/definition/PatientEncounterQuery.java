@@ -41,7 +41,7 @@ public class PatientEncounterQuery extends BaseQuery<Encounter> implements Encou
 	 * Full Constructor
 	 */
 	public PatientEncounterQuery(CohortDefinition patientQuery) { 
-		this.patientQuery = patientQuery;
+		setPatientQuery(patientQuery);
 	}
 
 	//***** INSTANCE METHODS *****
@@ -52,6 +52,8 @@ public class PatientEncounterQuery extends BaseQuery<Encounter> implements Encou
 	public String toString() {
 		return "Encounter Patient Query";
 	}
+
+
 	
 	//***** PROPERTY ACCESS *****
 	
@@ -67,5 +69,6 @@ public class PatientEncounterQuery extends BaseQuery<Encounter> implements Encou
 	 */
 	public void setPatientQuery(CohortDefinition patientQuery) {
 		this.patientQuery = patientQuery;
+		this.setParameters(patientQuery.getParameters());
 	}
 }
