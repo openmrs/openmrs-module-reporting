@@ -15,7 +15,12 @@ package org.openmrs.module.reporting.query.encounter.definition;
 
 import org.openmrs.Encounter;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.query.CompositionQuery;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Supports the evaluation of a composition of encounter queries
@@ -23,10 +28,26 @@ import org.openmrs.module.reporting.query.CompositionQuery;
 @Localized("reporting.CompositionEncounterQuery")
 public class CompositionEncounterQuery extends CompositionQuery<EncounterQuery, Encounter> implements EncounterQuery {
 
+	@ConfigurationProperty
+	private Map<String, Mapped<EncounterQuery>> searches;
+
     /**
      * Default Constructor
      */
 	public CompositionEncounterQuery() {
 		super();
+	}
+
+	@Override
+	public Map<String, Mapped<EncounterQuery>> getSearches() {
+		if (searches == null) {
+			searches = new HashMap<String, Mapped<EncounterQuery>>();
+		}
+		return searches;
+	}
+
+	@Override
+	public void setSearches(Map<String, Mapped<EncounterQuery>> searches) {
+		this.searches = searches;
 	}
 }

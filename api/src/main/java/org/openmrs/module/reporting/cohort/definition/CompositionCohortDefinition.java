@@ -15,7 +15,12 @@ package org.openmrs.module.reporting.cohort.definition;
 
 import org.openmrs.Patient;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.query.CompositionQuery;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Supports the evaluation of a composition of cohort definitions
@@ -23,10 +28,26 @@ import org.openmrs.module.reporting.query.CompositionQuery;
 @Localized("reporting.CompositionCohortDefinition")
 public class CompositionCohortDefinition extends CompositionQuery<CohortDefinition, Patient> implements CohortDefinition {
 
+	@ConfigurationProperty
+	private Map<String, Mapped<CohortDefinition>> searches;
+
     /**
      * Default Constructor
      */
 	public CompositionCohortDefinition() {
 		super();
+	}
+
+	@Override
+	public Map<String, Mapped<CohortDefinition>> getSearches() {
+		if (searches == null) {
+			searches = new HashMap<String, Mapped<CohortDefinition>>();
+		}
+		return searches;
+	}
+
+	@Override
+	public void setSearches(Map<String, Mapped<CohortDefinition>> searches) {
+		this.searches = searches;
 	}
 }

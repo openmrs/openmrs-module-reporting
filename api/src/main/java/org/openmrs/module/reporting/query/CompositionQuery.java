@@ -22,7 +22,6 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,9 +36,6 @@ public abstract class CompositionQuery<Q extends Query<T>, T extends OpenmrsObje
 	protected transient Log log = LogFactory.getLog(getClass());
 
 	//***** PROPERTIES *****
-
-	@ConfigurationProperty(required=true)
-	private Map<String, Mapped<Q>> searches = new HashMap<String, Mapped<Q>>();
 
 	@ConfigurationProperty(required=true)
 	private String compositionString;
@@ -112,12 +108,12 @@ public abstract class CompositionQuery<Q extends Query<T>, T extends OpenmrsObje
     /**
      * @return the searches
      */
-    public Map<String, Mapped<Q>> getSearches() {
-    	if (searches == null) {
-    		searches = new HashMap<String, Mapped<Q>>();
-    	}
-    	return searches;
-    }
+    public abstract Map<String, Mapped<Q>> getSearches();
+
+	/**
+	 * @param searches the searches to set
+	 */
+	public abstract void setSearches(Map<String, Mapped<Q>> searches);
     
     /**
      * Adds a cohort definition
@@ -131,12 +127,5 @@ public abstract class CompositionQuery<Q extends Query<T>, T extends OpenmrsObje
      */
     public void addSearch(String key, Q definition, Map<String, Object> mappings) {
     	addSearch(key, new Mapped<Q>(definition, mappings));
-    }
-
-    /**
-     * @param searches the searches to set
-     */
-    public void setSearches(Map<String, Mapped<Q>> searches) {
-    	this.searches = searches;
     }
 }
