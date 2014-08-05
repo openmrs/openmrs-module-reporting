@@ -32,7 +32,7 @@ public class PreferredIdentifierDataDefinition extends BaseDataDefinition implem
 	
 	//***** PROPERTIES *****
 	
-	@ConfigurationProperty(required=true)
+	@ConfigurationProperty(required=false)
 	private PatientIdentifierType identifierType;
 
 	@ConfigurationProperty(required=false)

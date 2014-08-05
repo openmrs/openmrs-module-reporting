@@ -42,7 +42,7 @@ public class PreferredIdentifierDataEvaluator implements PatientDataEvaluator {
 		PreferredIdentifierDataDefinition def = (PreferredIdentifierDataDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
-		if ((context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) || def.getIdentifierType() == null) {
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
 			return c;
 		}
 
