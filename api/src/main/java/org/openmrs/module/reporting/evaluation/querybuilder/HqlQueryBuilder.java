@@ -322,7 +322,11 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	public HqlQueryBuilder whereLike(String propertyName, Object propertyValue) {
 		if (propertyValue != null) {
-			where(propertyName + " like :" + nextPositionIndex()).withValue(propertyValue);
+			String s = propertyValue.toString();
+			if (s.indexOf("%") == -1) {
+				s = "%" + s  + "%";
+			}
+			where(propertyName + " like :" + nextPositionIndex()).withValue(s);
 		}
 		return this;
 	}
