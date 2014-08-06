@@ -21,7 +21,6 @@ import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.util.OpenmrsUtil;
-import org.springframework.context.MessageSource;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -312,6 +311,32 @@ public class ObjectUtil {
 				if (Character.isLetterOrDigit(c)) {
 					sb.append((nextUpper ? Character.toUpperCase(c) : Character.toLowerCase(c)));
 					nextUpper = false;
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Returns a readable string based on the passed camelCase representation
+	 */
+	public static String fromCamelCase(String s) {
+		StringBuilder sb = new StringBuilder();
+		if (ObjectUtil.notNull(s)) {
+			char[] chars = s.toCharArray();
+			boolean inNumber = false;
+			for (int i = 0; i < chars.length; i++) {
+				char c = chars[i];
+				if (i == 0) {
+					sb.append(Character.toUpperCase(c));
+				}
+				else {
+					boolean isLetter = Character.isLetter(c);
+					if (Character.isUpperCase(c) || (!isLetter && !inNumber) || (isLetter && inNumber)) {
+						sb.append(" ");
+					}
+					inNumber = !Character.isLetter(c);
+					sb.append(c);
 				}
 			}
 		}

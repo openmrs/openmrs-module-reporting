@@ -16,6 +16,8 @@ package org.openmrs.module.reporting.definition.library;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.module.reporting.common.MessageUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -23,7 +25,11 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Implementations of this class can conveniently implement on-the-fly-created reporting definitions, with inline
@@ -55,15 +61,25 @@ public abstract class BaseDefinitionLibrary<T extends Definition> implements Def
             @SuppressWarnings("unchecked")
             T definition = (T) method.invoke(this);
 
-            DocumentedDefinition documented = method.getAnnotation(DocumentedDefinition.class);
-            String key = getKeyPrefix() + documented.value();
+			DocumentedDefinition documented = method.getAnnotation(DocumentedDefinition.class);
+			String definitionCode = getDocumentedDefinitionKey(method);
+
+            String key = getKeyPrefix() + definitionCode;
             String name = documented.name();
             if (StringUtils.isEmpty(name)) {
-                name = key + ".name";
+				name = key + ".name";
+				String translatedName = MessageUtil.translate(name);
+				if (translatedName.equals(name)) {
+					name = ObjectUtil.fromCamelCase(definitionCode);
+				}
             }
             String description = documented.definition();
             if (StringUtils.isEmpty(description)) {
                 description = key + ".description";
+				String translatedDescription = MessageUtil.translate(description);
+				if (translatedDescription.equals(description)) {
+					description = "";
+				}
             }
             definition.setUuid(key);
             definition.setName(name);
@@ -76,13 +92,28 @@ public abstract class BaseDefinitionLibrary<T extends Definition> implements Def
 
     private Method findMethod(String annotationValue) {
         for (Method candidate : this.getClass().getMethods()) {
-            DocumentedDefinition annotation = candidate.getAnnotation(DocumentedDefinition.class);
-            if (annotation != null && annotation.value().equals(annotationValue)) {
+			String definitionKey = getDocumentedDefinitionKey(candidate);
+            if (definitionKey != null && definitionKey.equals(annotationValue)) {
                 return candidate;
             }
         }
         return null;
     }
+
+	private String getDocumentedDefinitionKey(Method method) {
+		String definitionKey = null;
+		DocumentedDefinition annotation = method.getAnnotation(DocumentedDefinition.class);
+		if (annotation != null) {
+			definitionKey = (annotation == null ? "" : annotation.value());
+			if (ObjectUtil.isNull(definitionKey)) {
+				definitionKey = method.getName();
+				if (definitionKey.startsWith("get")) {
+					definitionKey = definitionKey.substring(3);
+				}
+			}
+		}
+		return definitionKey;
+	}
 
     @Override
     public List<LibraryDefinitionSummary> getDefinitionSummaries() {
@@ -90,16 +121,17 @@ public abstract class BaseDefinitionLibrary<T extends Definition> implements Def
         for (Method candidate : this.getClass().getMethods()) {
             DocumentedDefinition annotation = candidate.getAnnotation(DocumentedDefinition.class);
             if (annotation != null) {
-                summaries.add(summarize(annotation, buildDefinition(candidate)));
+                summaries.add(summarize(candidate));
             }
         }
         return summaries;
     }
 
-    private LibraryDefinitionSummary summarize(DocumentedDefinition annotation, T definition) {
+    private LibraryDefinitionSummary summarize(Method method) {
         LibraryDefinitionSummary summary = new LibraryDefinitionSummary();
+		T definition = buildDefinition(method);
         summary.setType(definition.getClass().getName());
-        summary.setKey(getKeyPrefix() + annotation.value());
+        summary.setKey(getKeyPrefix() + getDocumentedDefinitionKey(method));
         summary.setName(definition.getName());
         summary.setDescription(definition.getDescription());
         summary.setParameters(definition.getParameters());

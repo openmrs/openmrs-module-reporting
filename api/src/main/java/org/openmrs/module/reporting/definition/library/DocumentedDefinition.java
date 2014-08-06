@@ -29,7 +29,7 @@ public @interface DocumentedDefinition {
     /**
      * @return this, with a prefix, will be the uuid of this definition
      */
-    String value();
+    String value() default "";
 
     /**
      * Default will end up being value() + ".name"

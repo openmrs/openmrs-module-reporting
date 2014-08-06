@@ -22,7 +22,7 @@ public class AllDefinitionLibrariesComponentTest extends BaseModuleContextSensit
 
     @Test
     public void testSetup() throws Exception {
-        assertThat(libraries.getLibraries().size(), is(4));
+        assertThat(libraries.getLibraries().size(), is(5)); // One of these is a Test library
     }
 
     @Test
