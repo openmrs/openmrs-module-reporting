@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.cohort.definition;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -45,6 +46,9 @@ public class ObsInEncounterCohortDefinition extends BaseCohortDefinition {
 
 	@ConfigurationProperty
 	private Date encounterOnOrBefore;
+
+	@ConfigurationProperty
+	private List<Location> encounterLocations;
 
 	@ConfigurationProperty
 	private Concept question;
@@ -95,6 +99,14 @@ public class ObsInEncounterCohortDefinition extends BaseCohortDefinition {
 
 	public void setEncounterOnOrBefore(Date encounterOnOrBefore) {
 		this.encounterOnOrBefore = encounterOnOrBefore;
+	}
+
+	public List<Location> getEncounterLocations() {
+		return encounterLocations;
+	}
+
+	public void setEncounterLocations(List<Location> encounterLocations) {
+		this.encounterLocations = encounterLocations;
 	}
 
 	public Concept getQuestion() {

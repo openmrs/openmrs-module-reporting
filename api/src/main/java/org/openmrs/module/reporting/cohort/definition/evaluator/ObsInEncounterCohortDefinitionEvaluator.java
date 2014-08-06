@@ -55,6 +55,7 @@ public class ObsInEncounterCohortDefinitionEvaluator implements CohortDefinition
 		encQuery.select("e.patient.patientId, e.encounterId");
 		encQuery.from(Encounter.class, "e");
 		encQuery.whereIn("e.encounterType", cd.getEncounterTypes());
+		encQuery.whereIn("e.location", cd.getEncounterLocations());
 		encQuery.whereGreaterOrEqualTo("e.encounterDatetime", cd.getEncounterOnOrAfter());
 		encQuery.whereLessOrEqualTo("e.encounterDatetime", cd.getEncounterOnOrBefore());
 		encQuery.whereEncounterIn("e.encounterId", context);
@@ -69,7 +70,6 @@ public class ObsInEncounterCohortDefinitionEvaluator implements CohortDefinition
 		if (cd.getWhichEncounter() == TimeQualifier.LAST || cd.getWhichEncounter() == TimeQualifier.FIRST) {
 			Map<Integer, Integer> encountersByPatient = evaluationService.evaluateToMap(encQuery, Integer.class, Integer.class, context);
 			encountersToInclude.addAll(encountersByPatient.values());
-			System.out.println("encounter_id for 63602: " + encountersByPatient.get(63602));
 		}
 		else {
 			List<Integer> encounters = evaluationService.evaluateToList(encQuery, Integer.class, context);
