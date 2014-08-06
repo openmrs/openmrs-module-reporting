@@ -122,7 +122,10 @@ public class CustomMessageSource extends AbstractMessageSource implements Mutabl
 		PresentationMessageMap pmm = new PresentationMessageMap(Locale.ENGLISH);
 		Properties messages = ObjectUtil.loadPropertiesFromClasspath("messages.properties");
 		for (String code : messages.stringPropertyNames()) {
-			pmm.put(code, new PresentationMessage(code, Locale.ENGLISH, messages.getProperty(code), null));
+			String message = messages.getProperty(code);
+			message = message.replace("{{", "'{{'");
+			message = message.replace("}}", "'}}'");
+			pmm.put(code, new PresentationMessage(code, Locale.ENGLISH, message, null));
 		}
 		cache.put(Locale.ENGLISH, pmm);
 	}
