@@ -42,10 +42,13 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
     private static final String ORDER_STOP_DATE_FIELD_NAME = (ModuleUtil.compareVersion(
             OpenmrsConstants.OPENMRS_VERSION_SHORT, "1.10") > -1) ? NEW_STOP_DATE_FIELD_NAME : "discontinuedDate";
 
+	private static final String ORDER_ACTIVATION_DATE_FIELD_NAME = (ModuleUtil.compareVersion(
+	    OpenmrsConstants.OPENMRS_VERSION_SHORT, "1.10") > -1) ? "dateActivated" : "startDate";
+	
 	@Autowired
 	EvaluationService evaluationService;
 
-	/** 
+	/**
 	 * @see PatientDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
 	 * @should return drug orders restricted by drug
 	 * @should return drug orders restricted by drug concept
@@ -104,17 +107,17 @@ public class DrugOrdersForPatientDataEvaluator implements PatientDataEvaluator {
 		}
 		
 		if (def.getActiveOnDate() != null) {
-			q.whereLessOrEqualTo("do.startDate", def.getActiveOnDate());
+			q.whereLessOrEqualTo("do." + ORDER_ACTIVATION_DATE_FIELD_NAME, def.getActiveOnDate());
 			q.whereGreaterOrNull("do.autoExpireDate", def.getActiveOnDate());
 			q.whereGreaterOrNull("do."+ORDER_STOP_DATE_FIELD_NAME, def.getActiveOnDate());
 		}
 		
 		if (def.getStartedOnOrBefore() != null) {
-			q.whereLessOrEqualTo("do.startDate", def.getStartedOnOrBefore());
+			q.whereLessOrEqualTo("do." + ORDER_ACTIVATION_DATE_FIELD_NAME, def.getStartedOnOrBefore());
 		}
 		
 		if (def.getStartedOnOrAfter() != null) {
-			q.whereGreaterOrEqualTo("do.startDate", def.getStartedOnOrAfter());
+			q.whereGreaterOrEqualTo("do." + ORDER_ACTIVATION_DATE_FIELD_NAME, def.getStartedOnOrAfter());
 		}
 		
 		if (def.getCompletedOnOrBefore() != null) {
