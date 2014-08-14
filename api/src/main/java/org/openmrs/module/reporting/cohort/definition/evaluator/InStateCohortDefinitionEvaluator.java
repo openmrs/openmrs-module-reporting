@@ -1,25 +1,25 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import java.util.Date;
-
 import org.openmrs.Cohort;
+import org.openmrs.PatientState;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InStateCohortDefinition;
-import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.List;
 
 
 @Handler(supports={InStateCohortDefinition.class})
 public class InStateCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	
-	/**
-	 * Default constructor
-	 */
-	public InStateCohortDefinitionEvaluator() {
-	}
+	@Autowired
+	EvaluationService evaluationService;
 	
 	/**
 	 * @see org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator#evaluate(org.openmrs.module.reporting.cohort.definition.CohortDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
@@ -30,14 +30,28 @@ public class InStateCohortDefinitionEvaluator implements CohortDefinitionEvaluat
 	 * @should find patients in a state on the onOrBefore date if passed in time is at midnight
 	 */
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-		InStateCohortDefinition definition = (InStateCohortDefinition) cohortDefinition;
-		Date onOrAfter = definition.getOnOrAfter();
-		Date onOrBefore = definition.getOnOrBefore();
-		if (definition.getOnDate() != null) {
-			onOrAfter = definition.getOnDate();
-			onOrBefore = definition.getOnDate();
+		InStateCohortDefinition cd = (InStateCohortDefinition) cohortDefinition;
+
+		Date onOrAfter = cd.getOnDate() != null ? cd.getOnDate() : cd.getOnOrAfter();
+		Date onOrBefore = cd.getOnDate() != null ? cd.getOnDate() : cd.getOnOrBefore();
+
+		// By default, return patients who are actively enrolled "now" if no other date constraints are given
+		if (onOrAfter == null && onOrBefore == null) {
+			onOrAfter = context.getEvaluationDate();
+			onOrBefore = context.getEvaluationDate();
 		}
-		Cohort c = Context.getService(CohortQueryService.class).getPatientsInStates(definition.getStates(), onOrAfter, onOrBefore);
-		return new EvaluatedCohort(c, cohortDefinition, context);
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("distinct ps.patientProgram.patient.patientId");
+		q.from(PatientState.class, "ps");
+		q.wherePatientIn("ps.patientProgram.patient.patientId", context);
+		q.whereEqual("ps.patientProgram.patient.voided", false);
+		q.whereIn("ps.state", cd.getStates());
+		q.whereIn("ps.patientProgram.location", cd.getLocations());
+		q.whereLessOrEqualTo("ps.startDate", onOrBefore);
+		q.whereGreaterEqualOrNull("ps.endDate", onOrAfter);
+
+		List<Integer> pIds = evaluationService.evaluateToList(q, Integer.class, context);
+		return new EvaluatedCohort(new Cohort(pIds), cd, context);
 	}	
 }

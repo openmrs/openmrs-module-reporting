@@ -1,14 +1,15 @@
 package org.openmrs.module.reporting.cohort.definition;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Query for whether the patient was in a program on a date or date range
@@ -31,6 +32,9 @@ public class InProgramCohortDefinition extends BaseCohortDefinition {
 
 	@ConfigurationProperty(group="onDateGroup")
 	private Date onDate;
+
+	@ConfigurationProperty(group="locationGroup")
+	private List<Location> locations;
 
 	/**
 	 * Default constructor
@@ -102,4 +106,25 @@ public class InProgramCohortDefinition extends BaseCohortDefinition {
     public void setOnDate(Date onDate) {
     	this.onDate = onDate;
     }
+
+	/**
+	 * @return the locations
+	 */
+	public List<Location> getLocations() {
+		return locations;
+	}
+
+	/**
+	 * @param locations
+	 */
+	public void setLocations(List<Location> locations) {
+		this.locations = locations;
+	}
+
+	public void addLocation(Location location) {
+		if (locations == null) {
+			locations = new ArrayList<Location>();
+		}
+		locations.add(location);
+	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.openmrs.Location;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -31,6 +32,9 @@ public class InStateCohortDefinition extends BaseCohortDefinition {
 
 	@ConfigurationProperty(group="onDateGroup")
 	private Date onDate;
+
+	@ConfigurationProperty(group="locationGroup")
+	private List<Location> locations;
 
 	/**
 	 * Default constructor
@@ -108,5 +112,24 @@ public class InStateCohortDefinition extends BaseCohortDefinition {
     	this.onDate = onDate;
     }
 
-	
+	/**
+	 * @return the locations
+	 */
+	public List<Location> getLocations() {
+		return locations;
+	}
+
+	/**
+	 * @param locations
+	 */
+	public void setLocations(List<Location> locations) {
+		this.locations = locations;
+	}
+
+	public void addLocation(Location location) {
+		if (locations == null) {
+			locations = new ArrayList<Location>();
+		}
+		locations.add(location);
+	}
 }

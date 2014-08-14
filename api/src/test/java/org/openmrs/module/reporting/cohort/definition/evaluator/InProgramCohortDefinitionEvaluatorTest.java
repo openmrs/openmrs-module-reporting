@@ -114,4 +114,37 @@ public class InProgramCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertFalse(c.contains(pp.getPatient().getPatientId()));
 	}
+
+	/**
+	 * @see {@link InProgramCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should return patients enrolled in the given programs at the given locations", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldReturnPatientsEnrolledInTheGivenProgramsAtTheGivenLocations() throws Exception {
+		InProgramCohortDefinition cd = new InProgramCohortDefinition();
+		cd.addProgram(Context.getProgramWorkflowService().getProgram(1));
+		cd.setOnOrAfter(DateUtil.getDateTime(2000, 1, 1));
+		cd.setOnOrBefore(DateUtil.getDateTime(2014, 1, 1));
+		cd.addLocation(Context.getLocationService().getLocation(1));
+		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertTrue(c.contains(2));
+		Assert.assertTrue(c.contains(23));
+		Assert.assertEquals(2, c.getSize());
+	}
+
+	/**
+	 * @see {@link InProgramCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+	 */
+	@Test
+	@Verifies(value = "should return patients enrolled at evaluation date if no other dates supplied", method = "evaluate(CohortDefinition,EvaluationContext)")
+	public void evaluate_shouldReturnPatientsEnrolledAtEvaluationDateIfNoOtherDatesSupplied() throws Exception {
+		InProgramCohortDefinition cd = new InProgramCohortDefinition();
+		cd.addProgram(Context.getProgramWorkflowService().getProgram(1));
+		cd.addLocation(Context.getLocationService().getLocation(1));
+		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, new EvaluationContext(DateUtil.getDateTime(2000, 1, 1)));
+		Assert.assertEquals(0, c.getSize());
+		c = Context.getService(CohortDefinitionService.class).evaluate(cd, new EvaluationContext(DateUtil.getDateTime(2009, 1, 1)));
+		Assert.assertTrue(c.contains(2));
+		Assert.assertEquals(1, c.getSize());
+	}
 }

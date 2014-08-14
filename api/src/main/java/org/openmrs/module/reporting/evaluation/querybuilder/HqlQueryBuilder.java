@@ -21,6 +21,7 @@ import org.openmrs.util.OpenmrsUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,8 +34,6 @@ import java.util.Set;
  * Helper class for building and executing an HQL query with parameters
  */
 public class HqlQueryBuilder implements QueryBuilder {
-
-	public static int MAXIMUM_RECOMMENDED_IN_CLAUSE_SIZE = 5000;
 
 	protected static String PARENTHESIS_START = "(";
 	protected static String PARENTHESIS_END = ")";
@@ -74,9 +73,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	 * Encounter, with alias "type", you would add "encounterType.name:type"
 	 */
 	public HqlQueryBuilder select(String... columnNames) {
-		for (String column : columnNames) {
-			columns.add(column);
-		}
+		Collections.addAll(columns, columnNames);
 		return this;
 	}
 
@@ -341,6 +338,13 @@ public class HqlQueryBuilder implements QueryBuilder {
 	public HqlQueryBuilder whereGreaterOrNull(String propertyName, Object propertyValue) {
 		if (propertyValue != null) {
 			where("(" + propertyName + " is null or " + propertyName + " > :" + nextPositionIndex() + ")").withValue(propertyValue);
+		}
+		return this;
+	}
+
+	public HqlQueryBuilder whereGreaterEqualOrNull(String propertyName, Object propertyValue) {
+		if (propertyValue != null) {
+			where("(" + propertyName + " is null or " + propertyName + " >= :" + nextPositionIndex() + ")").withValue(propertyValue);
 		}
 		return this;
 	}
