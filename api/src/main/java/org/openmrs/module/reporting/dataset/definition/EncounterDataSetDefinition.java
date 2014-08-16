@@ -107,7 +107,7 @@ public class EncounterDataSetDefinition extends RowPerObjectDataSetDefinition {
 	/**
 	 * Add a new row filter with the passed parameter mappings
 	 */
-	public void addRowFilter(Mapped<EncounterQuery> filter) {
+	public void addRowFilter(Mapped<? extends EncounterQuery> filter) {
 		getRowFilters().add(filter);
 	}
 

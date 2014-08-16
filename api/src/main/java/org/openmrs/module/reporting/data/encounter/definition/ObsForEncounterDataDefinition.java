@@ -18,7 +18,7 @@ public class ObsForEncounterDataDefinition extends BaseDataDefinition implements
 
     public static final long serialVersionUID = 1L;
 
-    @ConfigurationProperty(required=true)
+    @ConfigurationProperty
     private Concept question;
 
     @ConfigurationProperty
