@@ -178,6 +178,11 @@ public class RunReportFormController extends SimpleFormController implements Val
 				String uuid = request.getParameter("reportId");
 				ReportDefinition reportDefinition = rds.getDefinitionByUuid(uuid);
 				command.setReportDefinition(reportDefinition);
+				for (Parameter p : reportDefinition.getParameters()) {
+					if (p.getDefaultValue() != null) {
+						command.getUserEnteredParams().put(p.getName(), p.getDefaultValue());
+					}
+				}
 			}
 			command.setRenderingModes(reportService.getRenderingModes(command.getReportDefinition()));
 		}
