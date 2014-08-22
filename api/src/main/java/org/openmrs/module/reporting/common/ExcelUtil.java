@@ -1,17 +1,29 @@
 package org.openmrs.module.reporting.common;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.formula.FormulaParser;
+import org.apache.poi.ss.formula.FormulaParsingWorkbook;
+import org.apache.poi.ss.formula.FormulaRenderer;
+import org.apache.poi.ss.formula.FormulaRenderingWorkbook;
+import org.apache.poi.ss.formula.FormulaType;
+import org.apache.poi.ss.formula.ptg.AreaPtg;
+import org.apache.poi.ss.formula.ptg.Ptg;
+import org.apache.poi.ss.formula.ptg.RefPtgBase;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openmrs.util.OpenmrsClassLoader;
 
 import java.io.FileInputStream;
@@ -328,6 +340,66 @@ public class ExcelUtil {
 		}
 		finally {
 			IOUtils.closeQuietly(is);
+		}
+	}
+
+	public static void copyFormula(Cell fromCell, Cell toCell) {
+		if (fromCell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+			if (!fromCell.isPartOfArrayFormulaGroup()) {
+				Sheet sheet = fromCell.getSheet();
+				Workbook workbook = sheet.getWorkbook();
+				String formula = fromCell.getCellFormula();
+				int shiftRows = toCell.getRowIndex() - fromCell.getRowIndex();
+				int shiftCols = toCell.getColumnIndex() - fromCell.getColumnIndex();
+
+				FormulaParsingWorkbook fpw = null;
+				FormulaRenderingWorkbook frw = null;
+				if (workbook instanceof HSSFWorkbook) {
+					HSSFEvaluationWorkbook evaluationWorkbook = HSSFEvaluationWorkbook.create((HSSFWorkbook)workbook);
+					fpw = evaluationWorkbook;
+					frw = evaluationWorkbook;
+				}
+				else if (workbook instanceof XSSFWorkbook) {
+					XSSFEvaluationWorkbook evaluationWorkbook = XSSFEvaluationWorkbook.create((XSSFWorkbook)workbook);
+					fpw = evaluationWorkbook;
+					frw = evaluationWorkbook;
+				}
+
+				if (fpw != null) {
+					Ptg[] ptgs = FormulaParser.parse(formula, fpw, FormulaType.CELL, workbook.getSheetIndex(sheet));
+
+					for (Ptg ptg : ptgs) {
+						// Handle cell references
+						if (ptg instanceof RefPtgBase) {
+							RefPtgBase ref = (RefPtgBase) ptg;
+							if (ref.isColRelative()) {
+								ref.setColumn(ref.getColumn() + shiftCols);
+							}
+							if (ref.isRowRelative()) {
+								ref.setRow(ref.getRow() + shiftRows);
+							}
+						}
+						// Handle range references
+						else if (ptg instanceof AreaPtg) {
+							AreaPtg ref = (AreaPtg) ptg;
+							if (ref.isFirstColRelative()) {
+								ref.setFirstColumn(ref.getFirstColumn() + shiftCols);
+							}
+							if (ref.isLastColRelative()) {
+								ref.setLastColumn(ref.getLastColumn() + shiftCols);
+							}
+							if (ref.isFirstRowRelative()) {
+								ref.setFirstRow(ref.getFirstRow() + shiftRows);
+							}
+							if (ref.isLastRowRelative()) {
+								ref.setLastRow(ref.getLastRow() + shiftRows);
+							}
+						}
+					}
+					formula = FormulaRenderer.toFormulaString(frw, ptgs);
+					toCell.setCellFormula(formula);
+				}
+			}
 		}
 	}
 }

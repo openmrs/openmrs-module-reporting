@@ -308,12 +308,6 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 			if (cellToClone != null) {
 		    	Object contents = ExcelUtil.getCellContents(cellToClone);
 		    	newCell.setCellStyle(cellToClone.getCellStyle());
-		    	try {
-		    		newCell.setCellFormula(cellToClone.getCellFormula());
-		    	}
-		    	catch (Exception e) {
-		    		// Do nothing here.  I don't know why POI throw exceptions here when the cell is not a formula, but this suppresses them...
-		    	}
 		    	
 		    	int numFormattings = sheetToAdd.getSheet().getSheetConditionalFormatting().getNumConditionalFormattings();
 				for (int n=0; n<numFormattings; n++) {
@@ -351,6 +345,8 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 					}
 		    		ExcelUtil.setCellContents(newCell, contents);
 		    	}
+
+				ExcelUtil.copyFormula(cellToClone, newCell);
 			}
 		}
 
