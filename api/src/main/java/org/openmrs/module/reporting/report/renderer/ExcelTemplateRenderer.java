@@ -299,6 +299,8 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		String prefix = getExpressionPrefix(design);
 		String suffix = getExpressionSuffix(design);
 
+		List<CellRangeAddress> newMergedRegions = new ArrayList<CellRangeAddress>();
+
 		for (int i=0; i<cellsToAdd.size(); i++) {
 			CellToAdd cellToAdd = cellsToAdd.get(i);
 			Cell newCell = newRow.createCell(i);
@@ -330,7 +332,18 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 							}
 						}
 					}
-				}	
+				}
+
+				int numMergedRegions = sheetToAdd.getSheet().getNumMergedRegions();
+				for (int n=0; n<numMergedRegions; n++) {
+					CellRangeAddress add = sheetToAdd.getSheet().getMergedRegion(n);
+					int rowNum = rowToClone.getRowNum();
+					if (add.getFirstRow() == rowNum && add.getLastRow() == rowNum) {
+						if (add.getFirstColumn() == cellToClone.getColumnIndex()) {
+							newMergedRegions.add(new CellRangeAddress(rowNum, rowNum, i, i+add.getNumberOfCells()-1));
+						}
+					}
+				}
 		    	
 		    	if (ObjectUtil.notNull(contents)) {
 					if (contents instanceof String) {
@@ -339,6 +352,10 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		    		ExcelUtil.setCellContents(newCell, contents);
 		    	}
 			}
+		}
+
+		for (CellRangeAddress mergedRegion : newMergedRegions) {
+			sheetToAdd.getSheet().addMergedRegion(mergedRegion);
 		}
 		
 		return newRow;
