@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.reporting.report.definition;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.Localized;
@@ -25,7 +22,10 @@ import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This class represents the metadata that describes a particular report that can be evaluated.
@@ -33,7 +33,7 @@ import org.openmrs.module.reporting.report.service.ReportService;
  * of an {@link EvaluationContext}.  Evaluating a report generally means evaluating all of the
  * {@link DataSetDefinition}s it contains, resulting in a {@link ReportData}.
  * 
- * @see {@link ReportService#evaluate(ReportDefinition, Cohort, EvaluationContext)}
+ * @see {@link ReportDefinitionService#evaluate(ReportDefinition, EvaluationContext)}
  */
 @Localized("reporting.ReportDefinition")
 public class ReportDefinition extends BaseDefinition {
@@ -47,7 +47,7 @@ public class ReportDefinition extends BaseDefinition {
 	private Integer id;
 	
 	@ConfigurationProperty
-	private Mapped<CohortDefinition> baseCohortDefinition;
+	private Mapped<? extends CohortDefinition> baseCohortDefinition;
 	
 	@ConfigurationProperty
 	private Map<String, Mapped<? extends DataSetDefinition>> dataSetDefinitions;
@@ -143,19 +143,20 @@ public class ReportDefinition extends BaseDefinition {
 	/**
 	 * @return the baseCohortDefinition
 	 */
-	public Mapped<CohortDefinition> getBaseCohortDefinition() {
+	public Mapped<? extends CohortDefinition> getBaseCohortDefinition() {
 		return baseCohortDefinition;
 	}
 
 	/**
 	 * @param baseCohortDefinition the baseCohortDefinition to set
 	 */
-	public void setBaseCohortDefinition(Mapped<CohortDefinition> baseCohortDefinition) {
+	public void setBaseCohortDefinition(Mapped<? extends CohortDefinition> baseCohortDefinition) {
 		this.baseCohortDefinition = baseCohortDefinition;
 	}
 	
 	/**
-	 * @param baseCohortDefinition the baseCohortDefinition to set
+	 * @param cohortDefinition the baseCohortDefinition to set
+	 * @param cohortDefinition the baseCohortDefinition to set
 	 */
 	public void setBaseCohortDefinition(CohortDefinition cohortDefinition, Map<String, Object> mappings) { 
 		this.baseCohortDefinition = new Mapped<CohortDefinition>(cohortDefinition, mappings);

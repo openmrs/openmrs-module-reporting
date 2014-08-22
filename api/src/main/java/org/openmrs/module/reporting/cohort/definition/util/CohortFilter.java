@@ -35,10 +35,10 @@ public class CohortFilter {
 	 * @return - The intersection of the Cohorts produced by each evaluated CohortDefinitions
 	 * @throws EvaluationException if any of the passed definitions could not be evaluated
 	 */
-	public static Cohort filter(EvaluationContext context, Mapped<CohortDefinition>... definitions) throws EvaluationException {
+	public static Cohort filter(EvaluationContext context, Mapped<? extends CohortDefinition>... definitions) throws EvaluationException {
 		Cohort ret = context.getBaseCohort();
 		if (definitions != null) {
-			for (Mapped<CohortDefinition> d : definitions) {
+			for (Mapped<? extends CohortDefinition> d : definitions) {
 				if (d != null) {
 					Cohort c = Context.getService(CohortDefinitionService.class).evaluate(d, context);
 					if (ret == null) {
