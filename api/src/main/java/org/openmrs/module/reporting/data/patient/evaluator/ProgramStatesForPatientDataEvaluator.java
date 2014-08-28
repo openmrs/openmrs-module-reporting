@@ -75,10 +75,10 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		}
 
 		if (def.getWhich() == TimeQualifier.LAST) {
-			q.orderDesc("ps.startDate").orderDesc("ps.patientProgram.dateEnrolled");
+			q.orderDesc("ps.startDate").orderDesc("ps.patientProgram.dateEnrolled").orderDesc("ps.dateCreated");
 		}
 		else {
-			q.orderAsc("ps.startDate").orderAsc("ps.patientProgram.dateEnrolled");
+			q.orderAsc("ps.startDate").orderAsc("ps.patientProgram.dateEnrolled").orderAsc("ps.dateCreated");
 		}
 
 		List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
