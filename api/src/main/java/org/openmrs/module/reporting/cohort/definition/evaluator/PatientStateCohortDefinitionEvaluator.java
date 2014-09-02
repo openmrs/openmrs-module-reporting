@@ -62,6 +62,7 @@ public class PatientStateCohortDefinitionEvaluator implements CohortDefinitionEv
 		qb.whereGreaterOrEqualTo("ps.endDate", def.getEndedOnOrAfter());
 		qb.whereLessOrEqualTo("ps.endDate", def.getEndedOnOrBefore());
 		qb.whereIn("ps.patientProgram.location", def.getLocationList());
+		qb.whereEqual("ps.patientProgram.patient.voided", false);
 		qb.wherePatientIn("ps.patientProgram.patient.patientId", context);
 
 		List<Integer> pIds = evaluationService.evaluateToList(qb, Integer.class, context);
