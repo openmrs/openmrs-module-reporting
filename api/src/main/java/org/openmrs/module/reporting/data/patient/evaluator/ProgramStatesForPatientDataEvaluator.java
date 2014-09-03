@@ -26,6 +26,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -74,13 +75,6 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 			q.whereGreaterOrNull("ps.endDate", def.getActiveOnDate());
 		}
 
-		if (def.getWhich() == TimeQualifier.LAST) {
-			q.orderDesc("ps.startDate").orderDesc("ps.patientProgram.dateEnrolled").orderDesc("ps.dateCreated");
-		}
-		else {
-			q.orderAsc("ps.startDate").orderAsc("ps.patientProgram.dateEnrolled").orderAsc("ps.dateCreated");
-		}
-
 		List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
 
 		ListMap<Integer, PatientState> statesForPatients = new ListMap<Integer, PatientState>();
@@ -90,8 +84,10 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		
 		for (Integer pId : statesForPatients.keySet()) {
 			List<PatientState> l = statesForPatients.get(pId);
+			Collections.sort(l);
 			if (def.getDataType() == PatientState.class) {
-				c.addData(pId, l.get(0));
+				PatientState ps = (def.getWhich() == TimeQualifier.LAST ? l.get(l.size()-1) : l.get(0));
+				c.addData(pId, ps);
 			}
 			else {
 				c.addData(pId, l);
