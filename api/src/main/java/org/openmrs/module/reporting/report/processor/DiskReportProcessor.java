@@ -73,22 +73,22 @@ public class DiskReportProcessor implements ReportProcessor {
 			
 			ReportRenderer renderer = report.getRequest().getRenderingMode().getRenderer();
 			String fileName = renderer.getFilename(report.getRequest());
-			String fileNameWithoutExt = fileName.substring(0, fileName.indexOf('.'));
-			String extension = fileName.substring(fileName.indexOf('.') + 1);
+			String fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
+			String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
 			
 			if ("true".equals(configuration.getProperty(COMPRESS_OUTPUT))) {
 				ZipOutputStream zos = null;
 				try {
 					File file = getUniqueFileName(folderName, fileNameWithoutExt, "zip");
 					zos = new ZipOutputStream(new FileOutputStream(file));
-					ZipEntry zipEntry = new ZipEntry(report.getReportData().getDefinition().getName());
+					ZipEntry zipEntry = new ZipEntry(report.getRequest().getReportDefinition().getParameterizable().getName());
 					zos.putNextEntry(zipEntry);
 					zos.write(report.getRenderedOutput());
 					zos.closeEntry();
 					return;
 				}
 				catch (Exception ex) {
-					log.error("Failed to compress report: " + report.getReportData().getDefinition().getName(), ex);
+					log.error("Failed to compress report: " + report.getRequest().getReportDefinition().getParameterizable().getName(), ex);
 				}
 				finally {
 					IOUtils.closeQuietly(zos);
