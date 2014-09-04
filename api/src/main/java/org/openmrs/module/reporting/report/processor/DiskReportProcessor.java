@@ -62,13 +62,16 @@ public class DiskReportProcessor implements ReportProcessor {
 		try {
 			String folderName = configuration.getProperty(SAVE_LOCATION);
 			File folder = new File(folderName);
-			if (!folder.isDirectory()) {
+
+			if (folder.exists() && !folder.isDirectory()) {
 				throw new IllegalArgumentException(folderName + " is not a valid folder");
 			}
 			
 			//Create the folder if it does not exist
 			if (!folder.exists()) {
-				folder.mkdir();
+				if(!folder.mkdir()) {
+                    throw new IllegalArgumentException(folderName + " could not be created");
+                }
 			}
 			
 			ReportRenderer renderer = report.getRequest().getRenderingMode().getRenderer();
