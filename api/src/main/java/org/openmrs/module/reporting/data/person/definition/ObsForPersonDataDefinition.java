@@ -20,6 +20,7 @@ import java.util.List;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -46,6 +47,9 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
 	
 	@ConfigurationProperty(group="whichEncounter")
 	private List<EncounterType> encounterTypeList;
+
+	@ConfigurationProperty(group="whichEncounter")
+	private List<Location> locationList;
 	
 	@ConfigurationProperty(group="whichEncounter")
 	private List<Form> formList;
@@ -131,8 +135,8 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
     public List<EncounterType> getEncounterTypeList() {
     	return encounterTypeList;
     }
-	
-    /**
+
+	/**
      * @param encounterTypeList the encounterTypeList to set
      */
     public void setEncounterTypeList(List<EncounterType> encounterTypeList) {
@@ -148,6 +152,30 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
     	}
     	encounterTypeList.add(encounterType);
     }
+
+	/**
+	 * @return the locationList
+	 */
+	public List<Location> getLocationList() {
+		return locationList;
+	}
+
+	/**
+	 * @param locationList the locationList to set
+	 */
+	public void setLocationList(List<Location> locationList) {
+		this.locationList = locationList;
+	}
+
+	/**
+	 * @param location the location to add to the list
+	 */
+	public void addLocation(Location location) {
+		if (locationList == null) {
+			locationList = new ArrayList<Location>();
+		}
+		locationList.add(location);
+	}
     
 	/**
      * @return the formList

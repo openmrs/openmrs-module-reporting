@@ -56,6 +56,7 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		q.wherePersonIn("o.personId", context);
 		q.whereEqual("o.concept", def.getQuestion());
 		q.whereIn("o.encounter.encounterType", def.getEncounterTypeList());
+		q.whereIn("o.encounter.location", def.getLocationList());
 		q.whereIn("o.encounter.form", def.getFormList());
 		q.whereGreaterOrEqualTo("o.obsDatetime", def.getOnOrAfter());
 		q.whereLessOrEqualTo("o.obsDatetime", def.getOnOrBefore());
