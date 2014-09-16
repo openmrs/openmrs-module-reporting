@@ -14,10 +14,9 @@
 package org.openmrs.module.reporting.report.renderer;
 
 import org.junit.Test;
-import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +36,13 @@ public class CsvReportRendererTest extends BaseModuleContextSensitiveTest {
 
     @Test
     public void testCsvStandardBehavior() throws Exception {
-        ReportDefinition reportDefinition = new ReportDefinition();
-        reportDefinition.setName("Testing");
-        reportDefinition.addDataSetDefinition("testing", new SqlDataSetDefinition("one", "sql", "select patient_id, 'Say \"What?\"' as withquote from patient where patient_id=2"), null);
+        ReportData data = new ReportData();
+		SimpleDataSet dataSet = new SimpleDataSet(null, null);
+		dataSet.addColumnValue(0, new DataSetColumn("PATIENT_ID", "PATIENT_ID", Integer.class), 2);
+		dataSet.addColumnValue(0, new DataSetColumn("WITHQUOTE", "WITHQUOTE", String.class), "Say \"What?\"");
+		data.getDataSets().put("data", dataSet);
 
-        CsvReportRenderer renderer = new CsvReportRenderer();
-        ReportData data = reportDefinitionService.evaluate(reportDefinition, new EvaluationContext());
-
+		CsvReportRenderer renderer = new CsvReportRenderer();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         renderer.render(data, "", out);
         // should be as follows (with \r\n line breaks):

@@ -35,7 +35,9 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 /**
  * Provides access to a variety of common SQL functionality
+ * @deprecated use SqlQueryBuilder instead
  */
+@Deprecated
 public class SqlUtils {
 	
 	/**

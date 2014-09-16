@@ -76,7 +76,7 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
         ReportData data = reportDefinitionService.evaluate(reportDefinitionWithOneDSD(), new EvaluationContext());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         renderer.render(data, "", out);
-        assertThat(out.toString(), startsWith("\"PATIENT_ID\""));
+		assertThat(out.toString().toLowerCase(), startsWith("\"patient_id\""));
     }
 
     @Test

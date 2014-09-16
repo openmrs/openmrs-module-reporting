@@ -15,7 +15,6 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.MultiParameterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
@@ -77,10 +76,10 @@ public class MultiParameterDataSetEvaluatorTest extends BaseModuleContextSensiti
 
 		SimpleDataSet result = (SimpleDataSet) dataSetDefinitionService.evaluate(multiParameterDataSetDefinition, evaluationContext);
 
-		Assert.assertTrue(result.getMetaData().getColumns().contains(new DataSetColumn("parameter.maxBirthDate", "parameter.maxBirthDate", String.class)));
-		Assert.assertTrue(result.getMetaData().getColumns().contains(new DataSetColumn("PATIENT_ID", "PATIENT_ID", Integer.class)));
-		Assert.assertTrue(result.getMetaData().getColumns().contains(new DataSetColumn("GENDER", "GENDER", String.class)));
-		Assert.assertTrue(result.getMetaData().getColumns().contains(new DataSetColumn("BIRTHDATE", "BIRTHDATE", Date.class)));
+		Assert.assertNotNull(result.getMetaData().getColumn("parameter.maxBirthDate"));
+		Assert.assertNotNull(result.getMetaData().getColumn("PATIENT_ID"));
+		Assert.assertNotNull(result.getMetaData().getColumn("GENDER"));
+		Assert.assertNotNull(result.getMetaData().getColumn("BIRTHDATE"));
 
 		Assert.assertEquals(3, result.getRowMap().size());
 

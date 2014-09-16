@@ -64,21 +64,21 @@ public class EvaluationProfiler {
 	 * Logs the start of an event
 	 */
 	public void logBefore(String eventCode, String message) {
-		log(BEFORE, eventCode, message);
+		log(BEFORE, eventCode, message, null);
 	}
 
 	/**
 	 * Logs an error during an event
 	 */
 	public void logError(String eventCode, String message, Throwable t) {
-		log(ERROR, eventCode, message + ": " + t.getMessage());
+		log(ERROR, eventCode, message + ": " + t.getMessage(), t);
 	}
 
 	/**
 	 * Logs the end of an event
 	 */
 	public void logAfter(String eventCode, String message) {
-		log(AFTER, eventCode, message);
+		log(AFTER, eventCode, message, null);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class EvaluationProfiler {
 	/**
 	 * Logs an event, including with log4j and to the report evaluation log file
 	 */
-	private synchronized void log(String when, String eventCode, String message) {
+	private synchronized void log(String when, String eventCode, String message, Throwable t) {
 		long logTime = System.currentTimeMillis();
 		try {
 			StringBuilder sb = new StringBuilder();
@@ -112,7 +112,10 @@ public class EvaluationProfiler {
 				appendToLine(sb, "");
 			}
 			sb.append(message);
-			if (log.isTraceEnabled()) {
+			if (ERROR.equals(when) && log.isErrorEnabled()) {
+				log.error(sb.toString(), t);
+			}
+			else if (log.isTraceEnabled()) {
 				log.trace(sb.toString());
 			}
 			if (ReportingConstants.GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED()) {

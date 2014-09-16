@@ -43,7 +43,7 @@ public class SimpleDataSetMetaData implements DataSetMetaData {
 	 */
 	public DataSetColumn getColumn(String columnName) {
 		for (DataSetColumn column : getColumns()) {
-			if (column.getName().equals(columnName)) {
+			if (column.getName().equalsIgnoreCase(columnName)) {
 				return column;
 			}
 		}
@@ -87,7 +87,7 @@ public class SimpleDataSetMetaData implements DataSetMetaData {
 	}
 	
 	/**
-	 * @param column the column to remove
+	 * @param columnName the column to remove
 	 */
 	public void removeColumn(String columnName) {
 		removeColumn(getColumn(columnName));
