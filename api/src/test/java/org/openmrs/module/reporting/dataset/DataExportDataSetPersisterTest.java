@@ -15,7 +15,7 @@ package org.openmrs.module.reporting.dataset;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

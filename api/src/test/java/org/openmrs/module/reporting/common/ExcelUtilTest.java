@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.common;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.Cell;

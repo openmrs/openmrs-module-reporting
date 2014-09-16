@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;

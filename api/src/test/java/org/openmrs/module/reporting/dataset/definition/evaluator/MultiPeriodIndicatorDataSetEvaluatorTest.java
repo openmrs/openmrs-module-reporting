@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.openmrs.Location;
@@ -92,9 +92,9 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		for (DataSetRow row : result) {
 			Date rowStartDate = (Date) row.getColumnValue("startDate");
 			if (rowStartDate.compareTo(june1) < 0) {
-				Assert.assertEquals("Should be 1 patient before June", 1d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue());
+				Assert.assertEquals("Should be 1 patient before June", 1d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue(), 0);
 			} else {
-				Assert.assertEquals("Should be 0 patients after June", 0d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue());
+				Assert.assertEquals("Should be 0 patients after June", 0d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue(), 0);
 			}
 		}
 	}

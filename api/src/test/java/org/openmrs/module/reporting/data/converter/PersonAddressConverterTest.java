@@ -1,6 +1,6 @@
 package org.openmrs.module.reporting.data.converter;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.openmrs.PersonAddress;

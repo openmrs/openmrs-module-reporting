@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;

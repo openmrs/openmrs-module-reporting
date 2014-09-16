@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.report.util;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.StringReader;

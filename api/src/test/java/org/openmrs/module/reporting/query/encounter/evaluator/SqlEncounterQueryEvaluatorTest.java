@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

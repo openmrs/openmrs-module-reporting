@@ -15,7 +15,7 @@ package org.openmrs.module.reporting.definition.converter;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
