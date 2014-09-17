@@ -13,14 +13,12 @@
  */
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
-import org.openmrs.util.OpenmrsUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -33,22 +31,22 @@ import java.util.Map;
  */
 public class EvaluationServiceImpl extends BaseOpenmrsService implements EvaluationService {
 
+	/**
+	 * @see EvaluationService#getColumns(QueryBuilder)
+	*/
+	@Override
+	@Transactional(readOnly = true)
+	public List<DataSetColumn> getColumns(QueryBuilder queryBuilder) {
+		return queryBuilder.getColumns(getSessionFactory());
+	}
+
     /**
 	 * @see EvaluationService#evaluateToList(QueryBuilder, EvaluationContext)
 	 */
 	@Override
 	@Transactional(readOnly = true)
 	public List<Object[]> evaluateToList(QueryBuilder queryBuilder, EvaluationContext context) {
-		List<Object[]> ret = new ArrayList<Object[]>();
-		for (Object resultRow : listResults(queryBuilder, context)) {
-			if (resultRow instanceof Object[]) {
-				ret.add((Object[])resultRow);
-			}
-			else {
-				ret.add(new Object[]{resultRow});
-			}
-		}
-		return ret;
+		return queryBuilder.evaluateToList(getSessionFactory(), context);
 	}
 
 	/**
@@ -58,11 +56,12 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Transactional(readOnly = true)
 	public <T> List<T> evaluateToList(QueryBuilder queryBuilder, Class<T> type, EvaluationContext context) {
 		List<T> ret = new ArrayList<T>();
-		for (Object resultRow : listResults(queryBuilder, context)) {
-			if (resultRow instanceof Object[]) {
+		List<Object[]> rawResults = evaluateToList(queryBuilder, context);
+		for (Object[] resultRow : rawResults) {
+			if (resultRow.length != 1) {
 				throw new IllegalArgumentException("Unable to evaluate to a single value list. Exactly one column must be defined.");
 			}
-			ret.add((T)resultRow);
+			ret.add((T)resultRow[0]);
 		}
 		return ret;
 	}
@@ -74,45 +73,13 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	@Transactional(readOnly = true)
 	public <K, V> Map<K, V> evaluateToMap(QueryBuilder queryBuilder, Class<K> keyType, Class<V> valueType, EvaluationContext context) {
 		Map<K, V> ret = new HashMap<K, V>();
-		for (Object resultRow : listResults(queryBuilder, context)) {
-			boolean found = false;
-			if (resultRow instanceof Object[]) {
-				Object[] results = (Object[])resultRow;
-				if (results.length == 2) {
-					ret.put((K)results[0], (V)results[1]);
-					found = true;
-				}
-			}
-			if (!found) {
+		List<Object[]> rawResults = evaluateToList(queryBuilder, context);
+		for (Object[] resultRow : rawResults) {
+			if (resultRow.length != 2) {
 				throw new IllegalArgumentException("Unable to evaluate to a map. Exactly two columns must be defined.");
 			}
+			ret.put((K) resultRow[0], (V) resultRow[1]);
 		}
-		return ret;
-	}
-
-	/**
-	 * Convenience method for executing a query and timing the execution
-	 */
-	protected List listResults(QueryBuilder qb, EvaluationContext context) {
-
-		List ret;
-
-		// Due to hibernate bug HHH-2166, we need to make sure the HqlSqlWalker logger is not at DEBUG or TRACE level
-		OpenmrsUtil.applyLogLevel("org.hibernate.hql.ast.HqlSqlWalker", "WARN");
-
-		// Build the query, and profile how long it takes to execute
-		Query query = qb.buildQuery(getSessionFactory());
-		EvaluationProfiler profiler = new EvaluationProfiler(context);
-		profiler.logBefore("EXECUTING_QUERY", qb.toString());
-		try {
-			ret = query.list();
-		}
-		catch (RuntimeException e) {
-			profiler.logError("EXECUTING_QUERY", qb.toString(), e);
-			throw e;
-		}
-		profiler.logAfter("EXECUTING_QUERY", "Completed successfully with " + ret.size() + " results");
-
 		return ret;
 	}
 

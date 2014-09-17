@@ -231,6 +231,13 @@ public class ObjectUtil {
     	}
     	return false;
     }
+
+	/**
+	 * Return a String in which the first occurrence of toReplace was replaced with replaceWith
+	 */
+	public static String replaceFirst(String inputString, String toReplace, String replaceWith) {
+		return StringUtils.replaceOnce(inputString, toReplace, replaceWith);
+	}
     
     /**
      * Returns the first non-null value in the passed array

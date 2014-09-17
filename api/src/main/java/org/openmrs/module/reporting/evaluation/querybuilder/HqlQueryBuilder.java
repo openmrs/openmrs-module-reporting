@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.type.Type;
 import org.openmrs.Cohort;
 import org.openmrs.Voidable;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -11,6 +12,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
@@ -436,18 +438,45 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
-	public List<DataSetColumn> getColumns() {
+	public List<DataSetColumn> getColumns(SessionFactory sessionFactory) {
 		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
-		for (String s : columns) {
-			String[] split = s.split("\\:");
-			if (split.length > 1) {
-				l.add(new DataSetColumn(split[1], split[1], Object.class));
-			}
-			else {
-				l.add(new DataSetColumn(split[0], split[0], Object.class));
-			}
+		Query q = buildQuery(sessionFactory);
+		String[] returnAliases = q.getReturnAliases();
+		Type[] returnTypes = q.getReturnTypes();
+		for (int i=0; i<returnAliases.length; i++) {
+			DataSetColumn column = new DataSetColumn();
+			column.setName(returnAliases[i]);
+			column.setLabel(returnAliases[i]);
+			column.setDataType(returnTypes[i].getReturnedClass());
+			l.add(column);
 		}
 		return l;
+	}
+
+	@Override
+	public List<Object[]> evaluateToList(SessionFactory sessionFactory, EvaluationContext context) {
+		// Due to hibernate bug HHH-2166, we need to make sure the HqlSqlWalker logger is not at DEBUG or TRACE level
+		OpenmrsUtil.applyLogLevel("org.hibernate.hql.ast.HqlSqlWalker", "WARN");
+		EvaluationProfiler profiler = new EvaluationProfiler(context);
+		profiler.logBefore("EXECUTING_QUERY", toString());
+		List<Object[]> ret = new ArrayList<Object[]>();
+		try {
+			Query q = buildQuery(sessionFactory);
+			for (Object resultRow : q.list()) {
+				if (resultRow instanceof Object[]) {
+					ret.add((Object[]) resultRow);
+				}
+				else {
+					ret.add(new Object[]{resultRow});
+				}
+			}
+		}
+		catch (RuntimeException e) {
+			profiler.logError("EXECUTING_QUERY", toString(), e);
+			throw e;
+		}
+		profiler.logAfter("EXECUTING_QUERY", "Completed successfully with " + ret.size() + " results");
+		return ret;
 	}
 
 	@Override
@@ -523,8 +552,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return q.toString();
 	}
 
-	@Override
-	public Query buildQuery(SessionFactory sessionFactory) {
+	protected Query buildQuery(SessionFactory sessionFactory) {
 
 		if ((positionIndex-1) > parameters.size()) {
 			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");

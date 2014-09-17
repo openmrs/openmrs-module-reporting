@@ -14,19 +14,9 @@
 
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.io.StringReader;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.SessionFactory;
-import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -35,10 +25,11 @@ import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.report.util.SqlScriptParser;
-import org.openmrs.module.reporting.report.util.SqlUtils;
-import org.openmrs.util.DatabaseUpdater;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * The logic that evaluates a {@link SqlDataSetDefinition} and produces an {@link DataSet}
@@ -48,15 +39,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SqlDataSetEvaluator implements DataSetEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
-	
+
 	@Autowired
-	private SessionFactory sessionFactory;
-	
+	private EvaluationService evaluationService;
+
 	/**
 	 * Public constructor
 	 */
 	public SqlDataSetEvaluator() { }
-	
+
 	/**
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 * @should evaluate a SQLDataSetDefinition
@@ -65,72 +56,61 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 	 * @should protect SQL Query Against database modifications
 	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
-		
+
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		
+
 		SqlDataSetDefinition sqlDsd = (SqlDataSetDefinition) dataSetDefinition;
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
-		
-		// By default, get all patients
-		Cohort cohort = context.getBaseCohort();
-				
-		Connection connection = null;
-		try {
-			connection = sessionFactory.getCurrentSession().connection();
-			ResultSet resultSet = null;
 
-			String sqlQuery = sqlDsd.getSqlQuery();
-			sqlQuery = SqlScriptParser.parse(new StringReader(sqlQuery))[0];
-			
-			// if the user asked for only a subset, append a "limit" clause to the query so that 
-			// the query runs faster in the database
-			if (context.getLimit() != null && !sqlQuery.contains(" limit ")) {
-				if (sqlQuery.endsWith(";"))
-					sqlQuery = sqlQuery.substring(0, sqlQuery.length() - 1);
-				// this is safe to simply append because limit is always the last clause in queries
-				sqlQuery += " limit " + context.getLimit();
-			}
-			
-			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery, context.getParameterValues());
-			boolean result = statement.execute();
-			if (result) {
-				resultSet = statement.getResultSet();
-			}
-			
-			int patientIdColumnIndex = -1;
-			ResultSetMetaData rsmd = resultSet.getMetaData();
-			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-				DataSetColumn column = new DataSetColumn();
-				column.setName(rsmd.getColumnLabel(i));
-				column.setDataType(Context.loadClass(rsmd.getColumnClassName(i)));
-				column.setLabel(rsmd.getColumnLabel(i));
-				dataSet.getMetaData().addColumn(column);
-				if ("patient_id".equalsIgnoreCase(rsmd.getColumnName(i))) {
-					patientIdColumnIndex = i;
+		SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+
+		String sqlQuery = sqlDsd.getSqlQuery();
+
+		// We don't need the final semi-colon if it exists
+		if (sqlQuery.endsWith(";")) {
+			sqlQuery = sqlQuery.substring(0, sqlQuery.length() - 1);
+		}
+
+		// Add a limit clause if necessary
+		if (context.getLimit() != null && !sqlQuery.contains(" limit ")) {
+			sqlQuery += " limit " + context.getLimit();
+		}
+
+		queryBuilder.append(sqlQuery);
+		queryBuilder.setParameters(context.getParameterValues());
+
+		List<Object[]> results = evaluationService.evaluateToList(queryBuilder, context);
+		List<DataSetColumn> columns = evaluationService.getColumns(queryBuilder);
+
+		if (context.getBaseCohort() != null && !context.getBaseCohort().isEmpty()) {
+			int patientIdColumn = -1;
+			for (int i=0; i<columns.size(); i++) {
+				if ("patient_id".equalsIgnoreCase(columns.get(i).getName())) {
+					patientIdColumn = i;
 				}
 			}
-			
-			while (resultSet.next()) {
-				// Limit the DataSet to only patient in the base cohort, if there exists a column named "patientId"
-				if (patientIdColumnIndex > 0) {
-					Integer patientId = resultSet.getInt(patientIdColumnIndex);
-					if (cohort != null && !cohort.contains(patientId)) {
-						continue;
+			if (patientIdColumn >= 0) {
+				for (Object[] row : results) {
+					if (context.getBaseCohort().contains((Integer)row[patientIdColumn])) {
+						addRow(dataSet, row, columns);
 					}
 				}
-				DataSetRow dataSetRow = new DataSetRow();
-				for (DataSetColumn column : dataSet.getMetaData().getColumns()) {
-					dataSetRow.addColumnValue(column, resultSet.getObject(column.getName()));
-				}
-				dataSet.addRow(dataSetRow);
 			}
 		}
-		catch (IllegalDatabaseAccessException ie) {
-			throw ie;
+		else {
+			for (Object[] row : results) {
+				addRow(dataSet, row, columns);
+			}
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+
 		return dataSet;
+	}
+
+	public void addRow(SimpleDataSet dataSet, Object[] row, List<DataSetColumn> columns) {
+		DataSetRow dataSetRow = new DataSetRow();
+		for (int i=0; i<columns.size(); i++) {
+			dataSetRow.addColumnValue(columns.get(i), row[i]);
+		}
+		dataSet.addRow(dataSetRow);
 	}
 }

@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -16,8 +17,10 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 
 public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -118,6 +121,23 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("Retired", Boolean.FALSE);
 
 		ds = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
+		Assert.assertEquals(2, ds.getRows().size());
+	}
+
+	@Test
+	public void evaluate_shouldHandleMetadataListParameters() throws Exception {
+		SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
+		String query = "select encounter_id, encounter_datetime, location_id from encounter where location_id in (:locations)";
+		dataSetDefinition.setSqlQuery(query);
+
+		List<Location> locationList = new ArrayList<Location>();
+		locationList.add(Context.getLocationService().getLocation(1));
+		locationList.add(Context.getLocationService().getLocation(3));
+
+		EvaluationContext context = new EvaluationContext();
+		context.addParameterValue("locations", locationList);
+
+		SimpleDataSet ds = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
 		Assert.assertEquals(2, ds.getRows().size());
 	}
 }

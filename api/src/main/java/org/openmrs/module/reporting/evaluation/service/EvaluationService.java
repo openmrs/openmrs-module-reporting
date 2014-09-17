@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.evaluation.service;
 
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,12 @@ import java.util.Map;
  * DataSetEvaluation DAO Queries
  */
 public interface EvaluationService extends OpenmrsService {
+
+	/**
+	 * Returns the columns that the query builder returns
+	*/
+	@Transactional(readOnly = true)
+	public List<DataSetColumn> getColumns(QueryBuilder queryBuilder);
 
 	/**
 	 * Evaluates the passed QueryBuilder and returns the results as a List of Object[]

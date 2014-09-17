@@ -53,10 +53,10 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void getColumns_shouldReturnTheConfiguredColumns() throws Exception {
 		SqlQueryBuilder q = new SqlQueryBuilder();
 		q.append("select p.person_id id, p.gender, p.birthdate as bd from person p where voided = 0");
-		List<DataSetColumn> columns = q.getColumns();
-		Assert.assertEquals("id", columns.get(0).getName());
-		Assert.assertEquals("gender", columns.get(1).getName());
-		Assert.assertEquals("bd", columns.get(2).getName());
+		List<DataSetColumn> columns = evaluationService.getColumns(q);
+		Assert.assertEquals("id", columns.get(0).getName().toLowerCase());
+		Assert.assertEquals("gender", columns.get(1).getName().toLowerCase());
+		Assert.assertEquals("bd", columns.get(2).getName().toLowerCase());
 	}
 
 	@Test
@@ -121,6 +121,41 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		q.addParameter("cohort", baseCohort);
 		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
 		Assert.assertEquals(3, result.size());
+	}
+
+	@Test
+	public void buildQuery_shouldHandleComments() throws Exception {
+		SqlQueryBuilder q = new SqlQueryBuilder();
+		q.append("-- This query selects genders for the given cohort\n");
+		q.append("select p.gender from person p where p.person_id in (:cohort)");
+		Cohort baseCohort = new Cohort("2,6,7");
+		q.addParameter("cohort", baseCohort);
+		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
+		Assert.assertEquals(3, result.size());
+	}
+
+	@Test
+	public void buildQuery_shouldSupportParametersThatStartWithSameSequence() throws Exception {
+		SqlQueryBuilder q = new SqlQueryBuilder();
+		q.append("select patient_id from patient where patient_id = :patient24 and patient_id <> :patient2");
+		q.addParameter("patient2", 2);
+		q.addParameter("patient24", 24);
+		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
+		Assert.assertEquals(1, result.size());
+	}
+
+	@Test
+	public void buildQuery_shouldSupportMultipleParametersWithSameName() throws Exception {
+		SqlQueryBuilder q = new SqlQueryBuilder();
+		String repeatingClause = "(value_coded = :concept and value_datetime > :fromDate and value_datetime < :toDate)";
+		q.append("select obs_id from obs where ").append(repeatingClause);
+		for (int i=0; i<100; i++) {
+			q.append(" and ").append(repeatingClause);
+		}
+		q.addParameter("concept", 5097);
+		q.addParameter("fromDate", DateUtil.getDateTime(2011, 1, 1));
+		q.addParameter("toDate", DateUtil.getDateTime(2011, 12, 31));
+		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
 	}
 
 	@Override
