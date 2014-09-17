@@ -13,300 +13,112 @@
  */
 package org.openmrs.module.reporting.indicator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.Fraction;
 import org.openmrs.module.reporting.common.TestUtil;
-import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.module.reporting.dataset.definition.SimpleIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
-import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.ExpectedException;
+
+import java.math.BigDecimal;
 
 /**
- * test class for testing evaluation of SQLIndicators
+ * Test class for testing evaluation of SQLIndicators
  */
-public class SqlIndicatorTest  extends BaseModuleContextSensitiveTest {
+public class SqlIndicatorTest extends BaseModuleContextSensitiveTest {
 
-	
-	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
-	
-	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
-	
-	/**
-	 * Run this before each unit test in this class. The "@Before" method in
-	 * {@link BaseContextSensitiveTest} is run right before this method.
-	 * 
-	 * @throws Exception
-	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
-	}
-	
-	@Test
-	public void sqlIndicator_shouldEvaluateSqlIndicator() throws Exception { 
-		
-			//build indicators
-			SqlIndicator indicator = new SqlIndicator();
-			String sql = "SELECT distinct(251) as res from patient";
-			indicator.setSql(sql);
-			
-			SqlIndicator indicator2 = new SqlIndicator();
-			String sql2 = "SELECT distinct(0.7154) as res2 from patient";
-			indicator2.setSql(sql2);
-			
-			//build simpleDataSetDefintiion
-			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
-			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, null));
-			d.addColumn("indicator_2", "indicator_2_label", new Mapped<Indicator>(indicator2, null));
-			
-			//build a report
-			ReportDefinition rd = new ReportDefinition();
-			rd.addDataSetDefinition(d, null);
-			
-			//run the report
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, null), new EvaluationContext());
-			SimpleDataSet ds = (SimpleDataSet) data.getDataSets().values().iterator().next();
-			
-			//unpack the report
-			DataSetRow row = ds.getRows().iterator().next();
-			for (Map.Entry<String, Object> column : row.getColumnValuesByKey().entrySet() ){
-				if (column.getKey().equals("indicator_1"))
-					Assert.assertTrue(column.getValue().toString().equals("251"));
-				if (column.getKey().equals("indicator_2"))
-					Assert.assertTrue(column.getValue().toString().equals("0.7154"));
-			}	
-	}
-	
-	//TODO:  test divide by zero
-	@Test
-	public void sqlIndicator_shouldEvaluateSqlIndicatorDivideByZero() throws Exception { 
-		
-			//build indicators
-			SqlIndicator indicator = new SqlIndicator();
-			String sql = "SELECT distinct(4736) as res from patient";
-			indicator.setSql(sql);
-
-			String sql2 = "SELECT distinct(0) as res2 from patient";
-			indicator.setDenominatorSql(sql2);
-			
-			//build simpleDataSetDefintiion
-			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
-			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, null));
-			
-			//build a report
-			ReportDefinition rd = new ReportDefinition();
-			rd.addDataSetDefinition(d, null);
-			
-			//run the report
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, null), new EvaluationContext());
-			SimpleDataSet ds = (SimpleDataSet) data.getDataSets().values().iterator().next();
-			
-			//unpack the report
-			DataSetRow row = ds.getRows().iterator().next();
-			Assert.assertTrue(row.getColumnValuesByKey().entrySet().iterator().next().getValue().toString().contains("N/A")); //represents divide by 0
-	}
-	
-	
-	@Test
-	public void sqlIndicator_shouldEvaluateSqlIndicatorNullNumerator() throws Exception { 
-		
-			//build indicators
-			SqlIndicator indicator = new SqlIndicator();
-			String sql = "SELECT distinct(null) as res from patient";
-			indicator.setSql(sql);
-
-			String sql2 = "SELECT distinct(55) as res2 from patient";
-			indicator.setDenominatorSql(sql2);
-			
-			//build simpleDataSetDefintiion
-			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
-			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, null));
-			
-			//build a report
-			ReportDefinition rd = new ReportDefinition();
-			rd.addDataSetDefinition(d, null);
-			
-			//run the report
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, null), new EvaluationContext());
-			SimpleDataSet ds = (SimpleDataSet) data.getDataSets().values().iterator().next();
-			
-			//unpack the report
-			DataSetRow row = ds.getRows().iterator().next();
-			Assert.assertTrue(row.getColumnValuesByKey().entrySet().iterator().next().getValue().toString().contains("NaN")); //represents missing data
+		executeDataSet("org/openmrs/module/reporting/include/" + new TestUtil().getTestDatasetFilename("ReportTestDataset"));
 	}
 
+	@Autowired
+	IndicatorService indicatorService;
 	
 	@Test
-	public void sqlIndicator_shouldEvaluateSqlIndicatorNullDenominator() throws Exception { 
-		
-			//build indicators
-			SqlIndicator indicator = new SqlIndicator();
-			String sql = "SELECT distinct(55) as res from patient";
-			indicator.setSql(sql);
-
-			String sql2 = "SELECT distinct(null) as res2 from patient";
-			indicator.setDenominatorSql(sql2);
-			
-			//build simpleDataSetDefintiion
-			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
-			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, null));
-			
-			//build a report
-			ReportDefinition rd = new ReportDefinition();
-			rd.addDataSetDefinition(d, null);
-			
-			//run the report
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, null), new EvaluationContext());
-			SimpleDataSet ds = (SimpleDataSet) data.getDataSets().values().iterator().next();
-			
-			//unpack the report
-			DataSetRow row = ds.getRows().iterator().next();
-			Assert.assertTrue(row.getColumnValuesByKey().entrySet().iterator().next().getValue().toString().contains("N/A"));  //represents divide by 0
+	public void sqlIndicator_shouldEvaluateSqlIndicator() throws Exception {
+		assertIndicatorValue("SELECT distinct(251) as res from patient", 251);
+		assertIndicatorValue("SELECT distinct(0.7154) as res from patient", 0.7154);
 	}
-	
-	//TODO:  test that parameters work
+
+	@Test
+	public void sqlIndicator_shouldEvaluateSqlIndicatorDivideByZero() throws Exception {
+		SqlIndicator indicator = new SqlIndicator();
+		indicator.setSql("SELECT distinct(4736) as res from patient");
+		indicator.setDenominatorSql("SELECT distinct(0) as res2 from patient");
+		assertIndicatorValue(indicator, new Fraction(4736, 0));
+	}
+
+	@Test
+	public void sqlIndicator_shouldEvaluateSqlIndicatorNullNumerator() throws Exception {
+		assertIndicatorValue("SELECT distinct(null) as res from patient", Double.NaN);
+	}
+
+	@Test
+	public void sqlIndicator_shouldEvaluateSqlIndicatorNullDenominator() throws Exception {
+		assertIndicatorValue("SELECT distinct(55) as res from patient", "SELECT distinct(null) as res from patient", 55);
+	}
+
 	@Test
 	public void sqlIndicator_shouldEvaluateSqlIndicatorUsesParameters() throws Exception {
-			
-			List<Parameter> params= new ArrayList<Parameter>();
-			params.add(new Parameter("numValue", "num label", Integer.class));
-			params.add(new Parameter("denValue", "den label", Integer.class));
+		SqlIndicator indicator = new SqlIndicator();
+		indicator.addParameter(new Parameter("numValue", "numValue", Integer.class));
+		indicator.addParameter(new Parameter("denValue", "denValue", Integer.class));
+		indicator.setSql("SELECT patient_id from patient where patient_id = :numValue");
+		indicator.setDenominatorSql("SELECT patient_id from patient where patient_id = :denValue");
 
-			Map<String, Object> paramMappings = ParameterizableUtil.createParameterMappings("numValue=${numValue},denValue=${denValue}");
+		EvaluationContext context = new EvaluationContext();
+		context.addParameterValue("numValue", 6);
+		context.addParameterValue("denValue", 24);
 
-			//build a report
-			ReportDefinition rd = new ReportDefinition();
-			rd.addParameters(params);
-
-			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
-			d.addParameters(params);
-			rd.addDataSetDefinition(d, paramMappings);
-
-			SqlIndicator indicator = new SqlIndicator();
-			indicator.addParameters(params);
-			indicator.setSql("SELECT patient_id from patient where patient_id = :numValue");
-			indicator.setDenominatorSql("SELECT patient_id from patient where patient_id = :denValue");
-
-			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, ParameterizableUtil.createParameterMappings("numValue=${numValue},denValue=${denValue}")));
-
-			EvaluationContext context = new EvaluationContext();
-			context.addParameterValue("numValue", new Integer(6));
-			context.addParameterValue("denValue", new Integer(24));
-			
-			//run the report
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			ReportData data = rds.evaluate(rd, context);
-			SimpleDataSet ds = (SimpleDataSet) data.getDataSets().values().iterator().next();
-			
-			//unpack the report
-			DataSetRow row = ds.getRows().iterator().next();
-			Assert.assertTrue(row.getColumnValuesByKey().entrySet().iterator().next().getValue().toString().contains("25%"));  //represents divide by 0
+		assertIndicatorValue(indicator, new Fraction(6, 24), context);
 	}
-	
-	
+
 	@Test
-	public void sqlIndicator_shouldEvaluateSqlIndicatorDecimals() throws Exception { 
-		
-			//build indicators
-			SqlIndicator indicator = new SqlIndicator();
-			String sql = "SELECT distinct(.222) as res from patient";
-			indicator.setSql(sql);
-			
-			String sql2 = "SELECT distinct(.44) as res2 from patient";
-			indicator.setDenominatorSql(sql2);
-			
-			//build simpleDataSetDefintiion
-			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
-			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, null));
-			
-			//build a report
-			ReportDefinition rd = new ReportDefinition();
-			rd.addDataSetDefinition(d, null);
-			
-			//run the report
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			String decimalError = "";
-			try {
-				ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, null), new EvaluationContext()); //throws Exception because we can't currently pass decimals as numerators or denominators
-			} catch (Exception ex){
-				decimalError = ex.getCause().getMessage();
-			}
-			Assert.assertTrue(decimalError.contains("FRACTION indicator type is not currently supported by SimpleIndicatorResult"));
+	@ExpectedException(RuntimeException.class)
+	public void sqlIndicator_shouldEvaluateSqlIndicatorDecimals() throws Exception {
+		assertIndicatorValue("SELECT distinct(.222) as res from patient", "SELECT distinct(.44) as res2 from patient", null);
 	}
 	
 	@Test
-	public void sqlIndicator_shouldNotAllowQueriesThatReturnMoreThanOneColumn() throws Exception { 
-		
-			//build indicators
-			SqlIndicator indicator = new SqlIndicator();
-			String sql = "SELECT distinct(.222) as res, 33 as res2 from patient";  ///2 columns returned by sql.
-			indicator.setSql(sql);
-
-			
-			//build simpleDataSetDefintiion
-			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
-			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, null));
-			
-			//build a report
-			ReportDefinition rd = new ReportDefinition();
-			rd.addDataSetDefinition(d, null);
-			
-			//run the report
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			String errorCaught = "";
-			try {
-				ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, null), new EvaluationContext()); //throws Exception because we can't currently pass decimals as numerators or denominators
-			} catch (Exception ex){
-				errorCaught = ex.getCause().getMessage();
-			}
-			Assert.assertTrue(errorCaught.contains("The query that you're using in your indicator should only return 1 column"));
+	@ExpectedException(EvaluationException.class)
+	public void sqlIndicator_shouldNotAllowQueriesThatReturnMoreThanOneColumn() throws Exception {
+		assertIndicatorValue("SELECT distinct(.222) as res, 33 as res2 from patient", null);
 	}
 	
 	@Test
-	public void sqlIndicator_shouldNotAllowQueriesThatReturnMoreThanOneRow() throws Exception { 
-		
-			//build indicators
-			SqlIndicator indicator = new SqlIndicator();
-			String sql = "SELECT person_id from person";  ///returns more than 1 row
-			indicator.setSql(sql);
+	@ExpectedException(EvaluationException.class)
+	public void sqlIndicator_shouldNotAllowQueriesThatReturnMoreThanOneRow() throws Exception {
+		assertIndicatorValue("SELECT person_id from person", null);
+	}
 
-			
-			//build simpleDataSetDefintiion
-			SimpleIndicatorDataSetDefinition d = new SimpleIndicatorDataSetDefinition();
-			d.addColumn("indicator_1", "indicator_1_label", new Mapped<Indicator>(indicator, null));
-			
-			//build a report
-			ReportDefinition rd = new ReportDefinition();
-			rd.addDataSetDefinition(d, null);
-			
-			//run the report
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			String errorCaught = "";
-			try {
-				ReportData data = rds.evaluate(new Mapped<ReportDefinition>(rd, null), new EvaluationContext()); //throws Exception because we can't currently pass decimals as numerators or denominators
-			} catch (Exception ex){
-				errorCaught = ex.getCause().getMessage();
-			}
-			Assert.assertTrue(errorCaught.contains("The query that you're using in your indicator should only return 1 row."));
+	protected void assertIndicatorValue(SqlIndicator indicator, Number expectedValue, EvaluationContext context) throws Exception {
+		SimpleIndicatorResult r = (SimpleIndicatorResult)indicatorService.evaluate(indicator, context);
+		Number result = r.getValue();
+		if (result instanceof BigDecimal) {
+			result = result.doubleValue();
+		}
+		Assert.assertEquals(expectedValue, result);
+	}
+
+	protected void assertIndicatorValue(SqlIndicator indicator, Number expectedValue) throws Exception {
+		assertIndicatorValue(indicator, expectedValue, new EvaluationContext());
+	}
+
+	protected void assertIndicatorValue(String numeratorSql, Number expectedValue) throws Exception {
+		assertIndicatorValue(numeratorSql, null, expectedValue);
+	}
+
+	protected void assertIndicatorValue(String numeratorSql, String denominatorSql, Number expectedValue) throws Exception {
+		SqlIndicator indicator = new SqlIndicator();
+		indicator.setSql(numeratorSql);
+		indicator.setDenominatorSql(denominatorSql);
+		assertIndicatorValue(indicator, expectedValue);
 	}
 }

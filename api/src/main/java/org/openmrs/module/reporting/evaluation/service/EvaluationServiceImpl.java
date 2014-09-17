@@ -83,6 +83,19 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 		return ret;
 	}
 
+	@Override
+	public <T> T evaluateToObject(QueryBuilder queryBuilder, Class<T> type, EvaluationContext context) {
+		List<Object[]> rawResults = evaluateToList(queryBuilder, context);
+		if (rawResults.size() != 1) {
+			throw new IllegalArgumentException("Unable to evaluate to a single value. Exactly one row must be returned by query.");
+		}
+		Object[] row = rawResults.get(0);
+		if (row.length != 1) {
+			throw new IllegalArgumentException("Unable to evaluate to a single value. Exactly one column must be defined.");
+		}
+		return (T)row[0];
+	}
+
 	/**
 	 * @return the sessionFactory
 	 */

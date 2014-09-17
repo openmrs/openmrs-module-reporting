@@ -54,4 +54,10 @@ public interface EvaluationService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	public <K, V> Map<K, V> evaluateToMap(QueryBuilder queryBuilder, Class<K> keyType, Class<V> valueType, EvaluationContext context);
+
+	/**
+	 * Evaluates the passed QueryBuilder and returns a single object result, throwing an exception if more than one row or more than one column is found
+	 */
+	@Transactional(readOnly = true)
+	public <T> T evaluateToObject(QueryBuilder queryBuilder, Class<T> type, EvaluationContext context);
 }

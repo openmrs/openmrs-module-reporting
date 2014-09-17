@@ -48,17 +48,21 @@ public class SimpleIndicatorResult implements IndicatorResult {
 	 * @param indicatorResult
 	 * @return
 	 */
-	public static Number getResultValue(SimpleIndicatorResult indicatorResult){
-		if (indicatorResult.getNumeratorResult() == null)
+	public static Number getResultValue(SimpleIndicatorResult indicatorResult) {
+		if (indicatorResult.getNumeratorResult() == null) {
 			return Double.NaN;
+		}
 		else if (indicatorResult.getDenominatorResult() == null) {
 			return indicatorResult.getNumeratorResult();
-		} else {
-			if (Math.rint(indicatorResult.getNumeratorResult().doubleValue()) == indicatorResult.getNumeratorResult().doubleValue()
-					&& Math.rint(indicatorResult.getDenominatorResult().doubleValue()) == indicatorResult.getDenominatorResult().doubleValue()) //check for whole numbers
-				return new Fraction(indicatorResult.getNumeratorResult().intValue(),indicatorResult.getDenominatorResult().intValue());
-			else
+		}
+		else {
+			if (Math.rint(indicatorResult.getNumeratorResult().doubleValue()) == indicatorResult.getNumeratorResult().doubleValue() &&
+				Math.rint(indicatorResult.getDenominatorResult().doubleValue()) == indicatorResult.getDenominatorResult().doubleValue()) { //check for whole numbers
+				return new Fraction(indicatorResult.getNumeratorResult().intValue(), indicatorResult.getDenominatorResult().intValue());
+			}
+			else {
 				throw new RuntimeException("FRACTION indicator type is not currently supported by SimpleIndicatorResult if your numerator and denominator are not whole numbers.  If you are returning decimals in your queries, try changing your queries to use the samllest possible units.");
+			}
 		}
 	}
 	
