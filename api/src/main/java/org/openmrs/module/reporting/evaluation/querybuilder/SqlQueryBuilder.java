@@ -56,7 +56,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 
 	public SqlQueryBuilder(String sql, Map<String, Object> parameters) {
 		this(sql);
-		setParameters(parameters);
+		this.parameters = parameters;
 	}
 
 	//***** INSTANCE METHODS *****
@@ -232,10 +232,15 @@ public class SqlQueryBuilder implements QueryBuilder {
 			StringBuilder replacementValue = new StringBuilder("?");
 			if (parameterValue instanceof Collection) {
 				Collection c = (Collection)parameterValue;
-				for (Iterator i = c.iterator(); i.hasNext();) {
-					i.next();
-					if (i.hasNext()) {
-						replacementValue.append(",?");
+				if (c.isEmpty()) {
+					replacementValue = new StringBuilder("");
+				}
+				else {
+					for (Iterator i = c.iterator(); i.hasNext(); ) {
+						i.next();
+						if (i.hasNext()) {
+							replacementValue.append(",?");
+						}
 					}
 				}
 			}

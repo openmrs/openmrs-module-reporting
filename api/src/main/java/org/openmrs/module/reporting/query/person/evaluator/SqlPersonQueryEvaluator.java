@@ -56,8 +56,6 @@ public class SqlPersonQueryEvaluator implements PersonQueryEvaluator {
 
 		PersonIdSet personIds = new PersonIdSet(PersonDataUtil.getPersonIdsForContext(context, false));
 
-		System.out.println("Person Ids: " + personIds.getMemberIds());
-
 		if (personIds.getSize() == 0) {
 			return queryResult;
 		}

@@ -13,17 +13,18 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import java.io.StringReader;
-
-import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
-import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.report.util.SqlScriptParser;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Evaluates a SQL query and returns a Cohort
@@ -31,10 +32,8 @@ import org.openmrs.module.reporting.report.util.SqlScriptParser;
 @Handler(supports={SqlCohortDefinition.class})
 public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
-	/**
-	 * Default Constructor
-	 */
-	public SqlCohortDefinitionEvaluator() {}
+	@Autowired
+	EvaluationService evaluationService;
 	
 	/**
      * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
@@ -49,13 +48,26 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
      * @should should protect SQL Query Against database modifications
      */
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+		context = ObjectUtil.nvl(context, new EvaluationContext());
     	SqlCohortDefinition sqlCohortDefinition = (SqlCohortDefinition) cohortDefinition;
-    	CohortQueryService cqs = Context.getService(CohortQueryService.class);
-    	String sql = SqlScriptParser.parse(new StringReader(sqlCohortDefinition.getQuery()))[0];
-    	Cohort c = cqs.executeSqlQuery(sql, context.getParameterValues());
+		EvaluatedCohort ret = new EvaluatedCohort(sqlCohortDefinition, context);
+
+		// Return an empty result if the base cohort is not-null and empty
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
+			return ret;
+		}
+
+		SqlQueryBuilder qb = new SqlQueryBuilder(sqlCohortDefinition.getQuery(), context.getParameterValues());
+		if (sqlCohortDefinition.getQuery().contains(":patientIds")) {
+			qb.addParameter("patientIds", context.getBaseCohort());
+		}
+
+		List<Integer> l = evaluationService.evaluateToList(qb, Integer.class, context);
     	if (context.getBaseCohort() != null) {
-    		c = Cohort.intersect(c, context.getBaseCohort());
+    		l.retainAll(context.getBaseCohort().getMemberIds());
     	}
-    	return new EvaluatedCohort(c, cohortDefinition, context);
+		ret.setMemberIds(new HashSet<Integer>(l));
+
+		return ret;
     }
 }
