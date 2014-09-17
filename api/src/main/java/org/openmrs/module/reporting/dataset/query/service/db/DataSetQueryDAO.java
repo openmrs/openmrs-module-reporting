@@ -24,6 +24,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 /**
  * DataSetEvaluation DAO Queries
  */
+@Deprecated
 public interface DataSetQueryDAO {
 	
 	/** 

@@ -9,6 +9,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetUtil;
+import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -101,5 +102,23 @@ public class MySqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 			DataSet dataSet = Context.getService(DataSetDefinitionService.class).evaluate(dsd, context);
 			DataSetUtil.printDataSet(dataSet, System.out);
 		}
+	}
+
+	/**
+	 * This test fails, demonstrating that it is not currently possible to execute modifications to the DB
+	 * due to the use of "executeQuery" in the SqlQueryBuilder.
+	 */
+	@Test
+	public void evaluate_shouldSupportOnTheFlyStoredProcedures() throws Exception {
+		SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
+		StringBuilder query = new StringBuilder();
+		query.append("CREATE PROCEDURE temp_procedure() \n");
+		query.append("SELECT uuid(); \n");
+		query.append("CALL temp_procedure(); \n");
+		query.append("DROP PROCEDURE temp_procedure; ");
+		dataSetDefinition.setSqlQuery(query.toString());
+
+		SimpleDataSet ds = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, new EvaluationContext());
+		DataSetUtil.printDataSet(ds, System.out);
 	}
 }

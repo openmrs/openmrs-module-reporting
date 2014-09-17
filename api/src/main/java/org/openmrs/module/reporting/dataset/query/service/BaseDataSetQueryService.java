@@ -13,16 +13,17 @@
  */
 package org.openmrs.module.reporting.dataset.query.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.dataset.query.service.db.DataSetQueryDAO;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+@Deprecated
 public class BaseDataSetQueryService implements DataSetQueryService {
 
 	protected static final Log log = LogFactory.getLog(BaseDataSetQueryService.class);
@@ -48,7 +49,7 @@ public class BaseDataSetQueryService implements DataSetQueryService {
 	}
 	
 	/** 
-	 * @see DataSetQueryService#convertData()
+	 * @see DataSetQueryService#convertData(Class, String, Set, Class, String, Set)
 	*/
 	public Map<Integer, Integer> convertData(Class<?> fromType, String fromJoin, Set<Integer> fromIds, Class<?> toType, String toJoin, Set<Integer> toIds) {
 		return dao.convertData(fromType, fromJoin, fromIds, toType, toJoin, toIds);

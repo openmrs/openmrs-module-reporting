@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * DataSetEvaluation DAO Queries
  */
+@Deprecated
 @Transactional(readOnly=true)
 public interface DataSetQueryService {
 	

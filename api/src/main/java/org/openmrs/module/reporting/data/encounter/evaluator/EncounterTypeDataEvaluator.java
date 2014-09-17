@@ -13,19 +13,8 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
-import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
-import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterTypeDataDefinition;
-import org.openmrs.module.reporting.dataset.query.service.DataSetQueryService;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * Evaluates a EncounterTypeDataDefinition to produce a EncounterData
