@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Expects that the SQL query returns two columns, an Integer
+ * Expects that the SQL query returns two columns:
+ *   the first should be an Integer representing patientId
+ *   the second should be the data you wish to retrieve for each patient
+ * Expects that you use "patientIds" within your query to limit by the base cohort in the evaluation context:
+ *   eg. "select date_created from patient where patient_id in (:patientIds)"
  */
 @Handler(supports= SqlPatientDataDefinition.class)
 public class SqlPatientDataEvaluator implements PatientDataEvaluator {

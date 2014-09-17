@@ -30,7 +30,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Expects that the SQL query returns two columns, an Integer
+ * Expects that the SQL query returns two columns:
+ *   the first should be an Integer returning the encounterId
+ *   the second should be the data you wish to retrieve for each Encounter
+ * Expects that you use "encounterIds" within your query to limit by the base id set in the evaluation context:
+ *   eg. "select encounter_datetime from encounter where encounter_id in (:encounterIds)"
  */
 @Handler(supports=SqlEncounterDataDefinition.class)
 public class SqlEncounterDataEvaluator implements EncounterDataEvaluator {
