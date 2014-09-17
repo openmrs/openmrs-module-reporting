@@ -10,12 +10,12 @@ import org.openmrs.Voidable;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.data.person.PersonDataUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
-import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.util.OpenmrsUtil;
@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -229,23 +228,9 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	public HqlQueryBuilder wherePersonIn(String propertyName, EvaluationContext context) {
 		if (context != null) {
-			Set<Integer> memberIds = null;
-			if (context.getBaseCohort() != null) {
-				memberIds = new HashSet<Integer>(context.getBaseCohort().getMemberIds());
-			}
-			if (context instanceof PersonEvaluationContext) {
-				PersonEvaluationContext pec = (PersonEvaluationContext)context;
-				if (pec.getBasePersons() != null) {
-					if (memberIds != null) {
-						memberIds.retainAll(pec.getBasePersons().getMemberIds());
-					}
-					else {
-						memberIds = new HashSet<Integer>(pec.getBasePersons().getMemberIds());
-					}
-				}
-			}
-			if (memberIds != null) {
-				whereIdIn(propertyName, memberIds);
+			Set<Integer> personIds = PersonDataUtil.getPersonIdsForContext(context, true);
+			if (personIds != null) {
+				whereIdIn(propertyName, personIds);
 			}
 		}
 		return this;

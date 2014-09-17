@@ -14,7 +14,6 @@
 package org.openmrs.module.reporting.query.person.evaluator;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
@@ -24,27 +23,17 @@ import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
 import org.openmrs.module.reporting.query.person.service.PersonQueryService;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Test the evaluation of the SqlPersonQuery
  */
 public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
-	
-	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
-	
-	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
-	
-	/**
-	 * Run this before each unit test in this class. The "@Before" method in
-	 * {@link BaseContextSensitiveTest} is run right before this method.
-	 * 
-	 * @throws Exception
-	 */
+
 	@Before
 	public void setup() throws Exception {
-		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+		executeDataSet("org/openmrs/module/reporting/include/" + new TestUtil().getTestDatasetFilename("ReportTestDataset"));
 	}
 	
 	@Test

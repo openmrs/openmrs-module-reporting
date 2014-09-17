@@ -49,6 +49,18 @@ public class SqlQueryBuilder implements QueryBuilder {
 
 	public SqlQueryBuilder() { }
 
+	public SqlQueryBuilder(String sql) {
+		this();
+		append(sql);
+	}
+
+	public SqlQueryBuilder(String sql, Map<String, Object> parameters) {
+		this(sql);
+		setParameters(parameters);
+	}
+
+	//***** INSTANCE METHODS *****
+
 	public SqlQueryBuilder append(String clause) {
 		clause = StringUtils.stripComments(clause);
 		queryClauses.add(clause);

@@ -115,4 +115,9 @@ public abstract class BaseIdSet<T extends OpenmrsObject> implements IdSet<T> {
 			throw new RuntimeException("Error while cloning an IdSet", e);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return getMemberIds().toString();
+	}
 }

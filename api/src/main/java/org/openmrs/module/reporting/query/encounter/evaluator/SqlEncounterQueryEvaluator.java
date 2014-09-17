@@ -13,29 +13,25 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.SessionFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.data.encounter.EncounterDataUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
-import org.openmrs.module.reporting.query.Query;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
-import org.openmrs.module.reporting.report.util.SqlUtils;
-import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
- * The logic that evaluates a {@link SqlEncounterQuery} and produces an {@link Query}
+ * The logic that evaluates a {@link SqlEncounterQuery} and produces an {@link EncounterQueryResult}
  */
 @Handler(supports=SqlEncounterQuery.class)
 public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
@@ -43,7 +39,7 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	@Autowired
-	private SessionFactory sessionFactory;
+	private EvaluationService evaluationService;
 	
 	/**
 	 * Public constructor
@@ -59,57 +55,26 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) throws EvaluationException {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		SqlEncounterQuery queryDefinition = (SqlEncounterQuery) definition;
-		EncounterQueryResult queryResult = new EncounterQueryResult(queryDefinition, context);
-		
-		// TODO: Probably need to fix this
-		StringBuilder sqlQuery = new StringBuilder(queryDefinition.getQuery());
-		boolean whereFound = sqlQuery.indexOf("where") != -1;
-		if (context.getBaseCohort() != null) {
-			if (context.getBaseCohort().isEmpty()) {
-				return queryResult;
-			}
-			whereFound = true;
-			sqlQuery.append(whereFound ? " and " : " where ");
-			sqlQuery.append("patient_id in (" + context.getBaseCohort().getCommaSeparatedPatientIds() + ")");
-		}
-		if (context instanceof EncounterEvaluationContext) {
-			EncounterEvaluationContext eec = (EncounterEvaluationContext) context;
-			if (eec.getBaseEncounters() != null) {
-				if (eec.getBaseEncounters().isEmpty()) {
-					return queryResult;
-				}
-				sqlQuery.append(whereFound ? " and " : " where ");
-				sqlQuery.append("encounter_id in (" + OpenmrsUtil.join(eec.getBaseEncounters().getMemberIds(), ",") + ")");
-			}
-		}
-		if (context.getLimit() != null) {
-			sqlQuery.append(" limit " + context.getLimit());
-		}
-		
-		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
-		Connection connection = null;
-		try {
-			connection = sessionFactory.getCurrentSession().connection();
-			ResultSet resultSet = null;
-			
-			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery.toString(), context.getParameterValues());
-			boolean result = statement.execute();
+		SqlEncounterQuery sqlEncounterQuery = (SqlEncounterQuery) definition;
+		EncounterQueryResult queryResult = new EncounterQueryResult(sqlEncounterQuery, context);
 
-			if (!result) {
-				throw new EvaluationException("Unable to evaluate sql query");
-			}
-			resultSet = statement.getResultSet();
-			while (resultSet.next()) {
-				queryResult.add(resultSet.getInt(1));
-			}
+		EncounterIdSet encounterIds = new EncounterIdSet(EncounterDataUtil.getEncounterIdsForContext(context, false));
+		if (encounterIds.getSize() == 0) {
+			return queryResult;
 		}
-		catch (IllegalDatabaseAccessException ie) {
-			throw ie;
+
+		SqlQueryBuilder qb = new SqlQueryBuilder();
+		qb.append(sqlEncounterQuery.getQuery());
+		qb.setParameters(context.getParameterValues());
+
+		if (sqlEncounterQuery.getQuery().contains(":encounterIds")) {
+			qb.addParameter("encounterIds", encounterIds);
 		}
-		catch (Exception e) {
-			throw new EvaluationException("Unable to evaluate sql query", e);
-		}
+
+		List<Integer> l = evaluationService.evaluateToList(qb, Integer.class, context);
+		l.retainAll(encounterIds.getMemberIds());
+		queryResult.addAll(l);
+
 		return queryResult;
 	}
 }

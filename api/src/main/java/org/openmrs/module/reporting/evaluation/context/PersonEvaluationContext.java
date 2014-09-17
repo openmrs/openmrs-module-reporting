@@ -109,6 +109,7 @@ public class PersonEvaluationContext extends EvaluationContext {
 	 * @param basePersons the basePersons to set
 	 */
 	public void setBasePersons(PersonIdSet basePersons) {
+		clearCache();
 		this.basePersons = basePersons;
 	}
 }

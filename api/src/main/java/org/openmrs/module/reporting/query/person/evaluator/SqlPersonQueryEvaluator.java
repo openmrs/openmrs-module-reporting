@@ -13,28 +13,23 @@
  */
 package org.openmrs.module.reporting.query.person.evaluator;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.SessionFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.data.person.PersonDataUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.query.Query;
+import org.openmrs.module.reporting.query.person.PersonIdSet;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
-import org.openmrs.module.reporting.report.util.SqlUtils;
-import org.openmrs.util.DatabaseUpdater;
-import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * The logic that evaluates a {@link SqlPersonQuery} and produces an {@link Query}
@@ -45,12 +40,7 @@ public class SqlPersonQueryEvaluator implements PersonQueryEvaluator {
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	@Autowired
-	private SessionFactory sessionFactory;
-	
-	/**
-	 * Public constructor
-	 */
-	public SqlPersonQueryEvaluator() { }
+	private EvaluationService evaluationService;
 	
 	/**
 	 * @see PersonQueryEvaluator#evaluate(PersonQuery, EvaluationContext)
@@ -61,58 +51,35 @@ public class SqlPersonQueryEvaluator implements PersonQueryEvaluator {
 	public PersonQueryResult evaluate(PersonQuery definition, EvaluationContext context) throws EvaluationException {
 		
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		SqlPersonQuery queryDefinition = (SqlPersonQuery) definition;
-		PersonQueryResult queryResult = new PersonQueryResult(queryDefinition, context);
-		
-		// TODO: Probably need to fix this
-		Set<Integer> personIds = null;
-		if (context instanceof PersonEvaluationContext) {
-			PersonEvaluationContext pec = (PersonEvaluationContext) context;
-			if (pec.getBasePersons() != null) {
-				personIds = pec.getBasePersons().getMemberIds();
-			}
+		SqlPersonQuery sqlPersonQuery = (SqlPersonQuery) definition;
+		PersonQueryResult queryResult = new PersonQueryResult(sqlPersonQuery, context);
+
+		PersonIdSet personIds = new PersonIdSet(PersonDataUtil.getPersonIdsForContext(context, false));
+
+		System.out.println("Person Ids: " + personIds.getMemberIds());
+
+		if (personIds.getSize() == 0) {
+			return queryResult;
 		}
-		if (personIds == null) {
-			if (context.getBaseCohort() != null) {
-				personIds = context.getBaseCohort().getMemberIds();
-			}
+
+		SqlQueryBuilder qb = new SqlQueryBuilder();
+		qb.append(sqlPersonQuery.getQuery());
+		qb.setParameters(context.getParameterValues());
+
+		if (sqlPersonQuery.getQuery().contains(":personIds")) {
+			qb.addParameter("personIds", personIds);
 		}
-		
-		StringBuilder sqlQuery = new StringBuilder(queryDefinition.getQuery());
-		boolean whereFound = sqlQuery.indexOf("where") != -1;
+
+		if (sqlPersonQuery.getQuery().contains(":patientIds")) {
+			qb.addParameter("patientIds", personIds);
+		}
+
+		List<Integer> l = evaluationService.evaluateToList(qb, Integer.class, context);
 		if (personIds != null) {
-			whereFound = true;
-			sqlQuery.append(whereFound ? " and " : " where ");
-			sqlQuery.append("person_id in (" + OpenmrsUtil.join(personIds, ",") + ")");
+			l.retainAll(personIds.getMemberIds());
 		}
+		queryResult.addAll(l);
 
-		if (context.getLimit() != null) {
-			sqlQuery.append(" limit " + context.getLimit());
-		}
-		
-		// TODO: Consolidate this, the cohort, and the dataset implementations and improve them
-		Connection connection = null;
-		try {
-			connection = sessionFactory.getCurrentSession().connection();
-			ResultSet resultSet = null;
-			
-			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery.toString(), context.getParameterValues());
-			boolean result = statement.execute();
-
-			if (!result) {
-				throw new EvaluationException("Unable to evaluate sql query");
-			}
-			resultSet = statement.getResultSet();
-			while (resultSet.next()) {
-				queryResult.add(resultSet.getInt(1));
-			}
-		}
-		catch (IllegalDatabaseAccessException ie) {
-			throw ie;
-		}
-		catch (Exception e) {
-			throw new EvaluationException("Unable to evaluate sql query", e);
-		}
 		return queryResult;
 	}
 }
