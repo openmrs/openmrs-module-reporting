@@ -11,10 +11,9 @@
 	<url>http://openmrs.org</url>
 	
 	<scm>
-		<connection>scm:git:https://github.com/openmrs/openmrs-module-reporting/</connection>
-		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-reporting/</developerConnection>
+		<connection>scm:git:git@github.com:openmrs/openmrs-module-reporting.git</connection>
+		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-reporting.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-reporting/</url>
-	  <tag>0.9.2</tag>
   </scm>
 	
 	<distributionManagement>
@@ -371,6 +370,11 @@
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<tagNameFormat>@{project.version}</tagNameFormat>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.9.1</version>
 				</plugin>
 
 				<plugin>
