@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
+import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -14,8 +15,10 @@ import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+import org.springframework.test.annotation.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,9 +102,16 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
         EvaluationContext context = new EvaluationContext(new Date());
         String query = "update person set gender='F'";
         dataSetDefinition.setSqlQuery(query);
-        DataSetDefinitionService service = (DataSetDefinitionService) Context.getService(DataSetDefinitionService.class);
-        service.evaluate(dataSetDefinition, context);
+        Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
     }
+
+	@Test
+	@ExpectedException(EvaluationException.class)
+	public void buildQuery_shouldThrowAnExceptionIfDuplicateColumnsExist() throws EvaluationException {
+		SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
+		dataSetDefinition.setSqlQuery("select patient_id, patient_id from patient");
+		Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, new EvaluationContext());
+	}
 
 	/**
 	 * @see {@link SqlDataSetEvaluator#evaluate(DataSetDefinition,EvaluationContext)}

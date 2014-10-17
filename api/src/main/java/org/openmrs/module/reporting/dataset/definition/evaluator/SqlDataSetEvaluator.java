@@ -25,11 +25,14 @@ import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The logic that evaluates a {@link SqlDataSetDefinition} and produces an {@link DataSet}
@@ -55,7 +58,7 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 	 * @should evaluate a SQLDataSetDefinition with in statement
 	 * @should protect SQL Query Against database modifications
 	 */
-	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) {
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 
@@ -79,8 +82,19 @@ public class SqlDataSetEvaluator implements DataSetEvaluator {
 		queryBuilder.append(sqlQuery);
 		queryBuilder.setParameters(context.getParameterValues());
 
-		List<Object[]> results = evaluationService.evaluateToList(queryBuilder, context);
 		List<DataSetColumn> columns = evaluationService.getColumns(queryBuilder);
+
+		// Validate that all defined columns have unique names
+		Set<String> foundNames = new HashSet<String>();
+		for (DataSetColumn column : columns) {
+			String name = column.getName().toUpperCase();
+			if (foundNames.contains(name)) {
+				throw new EvaluationException("Invalid query specified.  There are two columns named '" + name + "'");
+			}
+			foundNames.add(name);
+		}
+
+		List<Object[]> results = evaluationService.evaluateToList(queryBuilder, context);
 
 		if (context.getBaseCohort() != null && !context.getBaseCohort().isEmpty()) {
 			int patientIdColumn = -1;
