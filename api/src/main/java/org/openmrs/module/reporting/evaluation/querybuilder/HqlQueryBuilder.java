@@ -487,11 +487,16 @@ public class HqlQueryBuilder implements QueryBuilder {
 		for (String s : columns) {
 			String[] split = s.split("\\:");
 			q.append(q.length() == 0 ? "select " : ", ");
-			q.append(split[0]);
+			q.append(split[0]).append(" as ");
 			if (split.length > 1) {
-				q.append(" as ").append(split[1]);
+				q.append(split[1]);
+			}
+			else {
+				String[] propertySplit = split[0].split("\\.");
+				q.append(propertySplit[propertySplit.length-1]);
 			}
 		}
+
 		List<String> aliases = new ArrayList<String>(fromTypes.keySet());
 		for (int i=0; i<aliases.size(); i++) {
 			String alias = aliases.get(i);
