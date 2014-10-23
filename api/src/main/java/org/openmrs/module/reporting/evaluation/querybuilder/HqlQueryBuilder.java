@@ -30,6 +30,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Helper class for building and executing an HQL query with parameters
@@ -493,7 +495,8 @@ public class HqlQueryBuilder implements QueryBuilder {
 			}
 			else {
 				String[] propertySplit = split[0].split("\\.");
-				q.append(propertySplit[propertySplit.length-1]);
+                String name = getFirstWord(propertySplit[propertySplit.length - 1]);
+                q.append(name);
 			}
 		}
 
@@ -542,7 +545,14 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return q.toString();
 	}
 
-	protected Query buildQuery(SessionFactory sessionFactory) {
+    private String getFirstWord(String name) {
+        Pattern pattern = Pattern.compile("([A-Za-z]+).*");
+        Matcher matcher = pattern.matcher(name);
+        matcher.matches();
+        return matcher.group(1);
+    }
+
+    protected Query buildQuery(SessionFactory sessionFactory) {
 
 		if ((positionIndex-1) > parameters.size()) {
 			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");

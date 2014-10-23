@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
@@ -378,4 +379,12 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 			System.out.println(ObjectUtil.toString(",", row));
 		}
 	}
+
+    @Test
+    public void testAliasRegression() throws Exception {
+        HqlQueryBuilder query = new HqlQueryBuilder();
+        query.select("a.patientId", "case a.patientId when 1 then true else false end");
+        query.from(Patient.class, "a");
+        evaluationService.evaluateToMap(query, Integer.class, Boolean.class, new EvaluationContext());
+    }
 }
