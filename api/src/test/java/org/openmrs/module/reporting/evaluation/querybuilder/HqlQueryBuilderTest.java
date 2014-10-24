@@ -15,7 +15,6 @@ package org.openmrs.module.reporting.evaluation.querybuilder;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
@@ -26,8 +25,8 @@ import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.PatientIdSet;
 import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
@@ -347,6 +346,51 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
         testRow(rows, 3, 4);
     }
 
+	@Test
+	public void testAliasUsingSeparator() throws Exception {
+		HqlQueryBuilder query = new HqlQueryBuilder();
+		query.select("a.patientId:pId");
+		query.from(Patient.class, "a");
+		List<DataSetColumn> columns = evaluationService.getColumns(query);
+		Assert.assertEquals("pId", columns.get(0).getName());
+		evaluationService.evaluateToList(query, new EvaluationContext());
+	}
+
+	@Test
+	public void testImplicitAliasForProperty() throws Exception {
+		HqlQueryBuilder query = new HqlQueryBuilder();
+		query.select("p.personId", "p.gender", "p.birthdate");
+		query.from(Person.class, "p");
+		List<DataSetColumn> columns = evaluationService.getColumns(query);
+		Assert.assertEquals("personId", columns.get(0).getName());
+		Assert.assertEquals("gender", columns.get(1).getName());
+		Assert.assertEquals("birthdate", columns.get(2).getName());
+		evaluationService.evaluateToList(query, new EvaluationContext());
+	}
+
+	@Test
+	public void testExplicitAliasForProperty() throws Exception {
+		HqlQueryBuilder query = new HqlQueryBuilder();
+		query.select("p.personId as pId", "p.gender", "p.birthdate as dob");
+		query.from(Person.class, "p");
+		List<DataSetColumn> columns = evaluationService.getColumns(query);
+		Assert.assertEquals("pId", columns.get(0).getName());
+		Assert.assertEquals("gender", columns.get(1).getName());
+		Assert.assertEquals("dob", columns.get(2).getName());
+		evaluationService.evaluateToList(query, new EvaluationContext());
+	}
+
+    @Test
+    public void testDefaultAliasForComplexQuery() throws Exception {
+        HqlQueryBuilder query = new HqlQueryBuilder();
+        query.select("a.patientId", "case a.patientId when 1 then true else false end");
+        query.from(Patient.class, "a");
+		List<DataSetColumn> columns = evaluationService.getColumns(query);
+		Assert.assertEquals("patientId", columns.get(0).getName());
+		Assert.assertEquals("1", columns.get(1).getName());
+		evaluationService.evaluateToList(query, new EvaluationContext());
+    }
+
 	// Utility methods
 
 	protected void testSize(List<Object[]> results, int size) {
@@ -364,27 +408,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	@Override
 	public Properties getRuntimeProperties() {
 		Properties p = super.getRuntimeProperties();
-		//p.setProperty("hibernate.show_sql", "true");
+		p.setProperty("hibernate.show_sql", "false");
 		return p;
 	}
-
-	@Test
-	@Ignore
-	public void testHqlGeneration() throws Exception {
-		HqlQueryBuilder q = new HqlQueryBuilder();
-		q.select("pa.person.personId", "pa").from(PersonAddress.class, "pa");
-		System.out.println("******************* Running test query");
-		List<Object[]> results = evaluationService.evaluateToList(q, new EvaluationContext());
-		for (Object[] row : results) {
-			System.out.println(ObjectUtil.toString(",", row));
-		}
-	}
-
-    @Test
-    public void testAliasRegression() throws Exception {
-        HqlQueryBuilder query = new HqlQueryBuilder();
-        query.select("a.patientId", "case a.patientId when 1 then true else false end");
-        query.from(Patient.class, "a");
-        evaluationService.evaluateToMap(query, Integer.class, Boolean.class, new EvaluationContext());
-    }
 }

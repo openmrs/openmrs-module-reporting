@@ -349,6 +349,23 @@ public class ObjectUtil {
 		}
 		return sb.toString();
 	}
+
+	/**
+	 * Check whether the given String contains whitespace
+	 * @param s the String to check (may be <code>null</code>)
+	 * @return <code>true</code> if the String is not empty and contains at least 1 whitespace character
+	 * @see java.lang.Character#isWhitespace
+	 */
+	public static boolean containsWhitespace(String s) {
+		if (s != null) {
+			for (char c : s.toCharArray()) {
+				if (Character.isWhitespace(c)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	/**
 	 * Utility method to add an Object to a List if another passed Object is not null

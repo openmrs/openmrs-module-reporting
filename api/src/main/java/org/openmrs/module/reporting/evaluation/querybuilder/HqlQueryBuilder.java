@@ -30,8 +30,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Helper class for building and executing an HQL query with parameters
@@ -489,15 +487,18 @@ public class HqlQueryBuilder implements QueryBuilder {
 		for (String s : columns) {
 			String[] split = s.split("\\:");
 			q.append(q.length() == 0 ? "select " : ", ");
-			q.append(split[0]).append(" as ");
+			String column = split[0];
+
+			// Determine an alias to use if not supplied to derive appropriate column naming
+			String columnAlias = null;
 			if (split.length > 1) {
-				q.append(split[1]);
+				columnAlias = split[1];
 			}
-			else {
+			else if (!ObjectUtil.containsWhitespace(column)) {
 				String[] propertySplit = split[0].split("\\.");
-                String name = getFirstWord(propertySplit[propertySplit.length - 1]);
-                q.append(name);
+				columnAlias = propertySplit[propertySplit.length - 1];
 			}
+			q.append(column).append(columnAlias != null ? " as " + columnAlias : "");
 		}
 
 		List<String> aliases = new ArrayList<String>(fromTypes.keySet());
@@ -544,13 +545,6 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 		return q.toString();
 	}
-
-    private String getFirstWord(String name) {
-        Pattern pattern = Pattern.compile("([A-Za-z]+).*");
-        Matcher matcher = pattern.matcher(name);
-        matcher.matches();
-        return matcher.group(1);
-    }
 
     protected Query buildQuery(SessionFactory sessionFactory) {
 
