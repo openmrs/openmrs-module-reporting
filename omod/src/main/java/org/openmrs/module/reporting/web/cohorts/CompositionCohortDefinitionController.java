@@ -58,7 +58,6 @@ public class CompositionCohortDefinitionController {
 
 		CompositionCohortDefinition clone = new CompositionCohortDefinition();
 		clone.setId(null);
-		clone.setUuid(null);
 		clone.setName(name);
 		clone.setDescription(description);
 		clone.setParameters(from.getParameters());
