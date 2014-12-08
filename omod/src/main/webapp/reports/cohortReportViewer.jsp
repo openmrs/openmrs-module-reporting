@@ -27,7 +27,7 @@
 <div id="page"><!-- -->
 	<div id="container"><!--  -->
 	
-		<h1>Simple Cohort Report</h1>
+		<h1><spring:message code="reporting.cohort.simpleReport"/></h1>
 		<div>
 			<form id="form65" name="form65" class="wufoo topLabel" autocomplete="off"
 				method="post" action="${pageContext.request.contextPath}/module/reporting/renderCohortReport.form">		
@@ -47,10 +47,10 @@
 							</span>
 						</li>
 						<li>
-							<label class="desc" for="locationId">Location</label>
+							<label class="desc" for="locationId"><spring:message code="reporting.locations.location"/></label>
 							<select name="locationId">
-								<option value="0">All Locations</option>
-								<option value="0">--------------------------------</option>
+								<option value="0"><spring:message code="reporting.locations.all"/></option>
+								<option value="0"><spring:message code="reporting.dashes"/></option>
 								<c:forEach var="location" items="${locations}">
 									<option value="${location.locationId}">${location.name}</option>
 								</c:forEach>

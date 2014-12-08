@@ -54,10 +54,10 @@ $(document).ready(function() {
 						<input type="hidden" id="mode" name="mode" value="${param.mode}"/>
 						
 						<fieldset style="padding: 25px; width: 100%;">
-							<legend>Step 1.  Configure your dataset</legend>
+							<legend><spring:message code="reporting.datasets.configure"/></legend>
 							<span>
 								<select id="dataset-select" name="dataSetId">	
-									<option value="">Choose a dataset definition ...</option>					
+									<option value=""><spring:message code="reporting.datasets.chooseDefinition"/></option>					
 									<c:forEach var="dsdOption" items="${dataSetDefinitions}">
 										<c:if test="${empty dsdOption.parameters && !empty dsdOption.uuid}">
 											<c:set var="isSelected"></c:set>
@@ -75,7 +75,7 @@ $(document).ready(function() {
 							</span>
 							<span>				
 								<select id="cohort-select" name="cohortId">					
-									<option value="all">All patients</option>						
+									<option value="all"><spring:message code="reporting.dashboard.allPatients"/></option>						
 									<c:forEach var="cdOption" items="${cohortDefinitions}" >
 										<c:if test="${empty cdOption.parameters && !empty cdOption.uuid}">
 											<c:set var="isSelected"></c:set>
@@ -110,11 +110,11 @@ $(document).ready(function() {
 					
 					<c:if test="${!empty dataSet}">
 						<fieldset style="padding: 25px; margin-bottom: 50px; width: 100%;">
-							<legend>Step 2.  Preview your dataset</legend>
+							<legend><spring:message code="reporting.datasets.previewDataset"/>t</legend>
 		
 							
 							<div align="right">
-								<strong>Download:</strong> 
+								<strong><spring:message code="reporting.datasets.download"/></strong> 
 								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=csv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">csv</a> |
 								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=tsv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">tsv</a> |
 								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xml&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">xml</a> |
@@ -131,13 +131,12 @@ $(document).ready(function() {
 												<c:otherwise>${cohort.size}</c:otherwise>
 											</c:choose>
 										</c:set>
-										Returned <strong>${param.limit} records </strong>
-										from the <strong>${dataSetDefinition.name}</strong>								
+										<spring:message code="reporting.datasets.return"/>								
 											<c:choose>
 												<c:when test="${!empty cohortDefinition}">
-													filtered by  the <strong>${cohortDefinition.name}</strong> cohort definition.</c:when>
+													<spring:message code="reporting.datasets.filtered"/></c:when>
 												<c:otherwise>
-													showing <strong>all active patients</strong> in the database.
+													<spring:message code="reporting.datasets.showing"/>
 												</c:otherwise>
 											</c:choose>
 									</c:if>

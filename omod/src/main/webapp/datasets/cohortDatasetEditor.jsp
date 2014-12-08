@@ -18,12 +18,12 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Cohort DataSet Editor</h1>
+		<h1><spring:message code="reporting.datasets.dataSetEditor"/></h1>
 		
 		<c:choose>
 			
 			<c:when test="${dsd.id == null}">
-				<b class="boxHeader">Create New Cohort DataSet</b>
+				<b class="boxHeader"><spring:message code="reporting.datasets.createCohort"/></b>
 				<div class="box">
 					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition|size=380|mode=edit|dialog=false|cancelUrl=../definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition|successUrl=/module/reporting/datasets/cohortDatasetEditor.form?type=org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition&uuid=uuid" />
 				</div>

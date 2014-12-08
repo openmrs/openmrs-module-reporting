@@ -62,11 +62,11 @@
 		<table class="reporting-data-table display">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Type</th>
-					<th>Creator</th>
-					<th>Created</th>
+					<th><spring:message code="reporting.Report.name"/></th>
+					<th><spring:message code="reporting.Report.description"/></th>
+					<th><spring:message code="reporting.datasets.type"/></th>
+					<th><spring:message code="reporting.definition.creator"/></th>
+					<th><spring:message code="reporting.definition.created"/></th>
 					<th align="center" width="1%">Actions</th>
 				</tr>
 			</thead>

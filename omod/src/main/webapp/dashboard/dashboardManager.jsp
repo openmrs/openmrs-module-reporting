@@ -92,7 +92,7 @@ $(function() {
 <div id="page" style="display:block;">
 	<div id="container">
 	
-		<h1>Reporting Dashboard</h1>
+		<h1><spring:message code="reporting.dashboard.reportingDashboard"/></h1>
 	
 	
 		<div id="portal">
@@ -100,18 +100,18 @@ $(function() {
 
 			<div class="column">	
 				<div class="portlet">
-					<div class="portlet-header">Reports</div>
+					<div class="portlet-header"><spring:message code="reporting.dashboard.reports"/></div>
 					<div class="portlet-content">							
 						<form method="post" action="">	
 						
 							<c:if test="${empty reportDefinitions}">
-								There are no reports in the system yet.
+								<spring:message code="reporting.dashboard.reportingDashboard.none"/>
 							</c:if>	
 							<table id="report-table" class="display">
 								<thead>
 									<tr>
-										<th>Report Name</th>
-										<th>Created</th>
+										<th><spring:message code="reporting.dashboard.reportName"/></th>
+										<th><spring:message code="reporting.dashboard.created"/></th>
 									</tr>
 								</thead>
 								<tbody>					
@@ -119,7 +119,7 @@ $(function() {
 										<c:if test="${varStatus.index < 5}">
 											<tr>
 												<td>
-													${reportDefinition.name}<br/>
+													<spring:message code="reporting.dashboard.reportDefinition.name"/><br/>
 												</td>											
 												<td nowrap>
 													<rpt:timespan then="${reportDefinition.dateCreated}"/>
@@ -148,42 +148,42 @@ $(function() {
 	
 				<!--  Cohort Breakdown Portlet -->		
 				<div class="portlet">
-					<div class="portlet-header">Cohort Breakdown</div>
+					<div class="portlet-header"><spring:message code="reporting.dashboard.cohortBreakdown"/></div>
 					<div class="portlet-content">
 					
 						<span>
-							There are <strong><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard?cohort=all">${all.size}</a></strong> patients in the EMR.
+							<spring:message code="reporting.dashboard.patientsInEMR"/>
 						</span>
 					
 						<div id="cohort-breakdown-tabs" class="ui-tabs-hide">			
 							<ul>
-				                <li><a href="#cohort-gender-breakdown-tab"><span>Gender</span></a></li>
-				                <li><a href="#cohort-age-breakdown-tab"><span>Age</span></a></li>
-				                <li><a href="#cohort-program-breakdown-tab"><span>Program</span></a></li>
+				                <li><a href="#cohort-gender-breakdown-tab"><span><spring:message code="reporting.dashboardProperty.gender"/></span></a></li>
+				                <li><a href="#cohort-age-breakdown-tab"><span><spring:message code="reporting.dashboardProperty.age"/></span></a></li>
+				                <li><a href="#cohort-program-breakdown-tab"><span><spring:message code="reporting.dashboard.program"/></span></a></li>
 				            </ul>
 						
 							<div id="cohort-gender-breakdown-tab">						
 								<div align="center">
 									<div id="genderBarChart"></div>
-									<span><em>Gender breakdown</em></span>
+									<span><em><spring:message code="reporting.dashboard.genderBreakdown"/></em></span>
 									<table id="gender-breakdown-table" class="display">
 										<thead>
 											<tr>
-												<th width="80%">Gender</th>
+												<th width="80%">reporting.dashboardProperty.gender</th>
 												<th>#</th>
 												<th>%</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td>Male</td>
+												<td><spring:message code="reporting.dashboardProperty.gender.male"/></td>
 												<td><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form?cohort=males">${males.size}</a></td>
 												<td>
 													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${males.size / all.size}"/>													
 												</td>
 											</tr>
 											<tr>
-												<td>Female</td>
+												<td><spring:message code="reporting.dashboardProperty.gender.female"/></td>
 												<td><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form?cohort=females">${females.size}</a></td>
 												<td>
 													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${females.size / all.size}"/>													
@@ -192,8 +192,8 @@ $(function() {
 										</tbody>
 										<tfoot>
 											<tr>
-												<th>Total</th>													
-												<th>${males.size + females.size}</th>
+												<th><spring:message code="reporting.dashboard.total"/></th>													
+												<th><spring:message code="reporting.dashboard.totalGender"/></th>
 												<th>
 													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${(males.size + females.size) / all.size}"/>													
 												</th>
@@ -212,21 +212,21 @@ $(function() {
 									<table id="age-breakdown-table" class="display">
 										<thead>
 											<tr>
-												<th width="80%">Age</th>
+												<th width="80%"><spring:message code="reporting.dashboardProperty.age"/></th>
 												<th>#</th>
 												<th>%</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td>Adult</td>
+												<td><spring:message code="reporting.dashboardProperty.age.adult"/></td>
 												<td><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form?cohort=adults">${adults.size}</a></td>
 												<td>
 													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${adults.size / all.size}"/>													
 												</td>
 											</tr>
 											<tr>
-												<td>Child</td>
+												<td><spring:message code="reporting.dashboardProperty.age.child"/></td>
 												<td><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form?cohort=children">${children.size}</a></td>
 												<td>
 													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${children.size / all.size}"/>
@@ -235,8 +235,8 @@ $(function() {
 										</tbody>
 										<tfoot>
 											<tr>
-												<th>Total</th>										
-												<th>${children.size + adults.size}</th>
+												<th><spring:message code="reporting.dashboard.total"/></th>										
+												<th><spring:message code="reporting.dashboard.totalAge"/></th>
 												<th>
 													<fmt:formatNumber type="percent" maxFractionDigits="2" value="${(children.size + adults.size) / all.size}"/>
 												</th>
@@ -251,11 +251,11 @@ $(function() {
 							<div id="cohort-program-breakdown-tab">	
 								<div align="center">	
 									<div id="programBarChart"></div>
-									<span><em>Program breakdown</em></span>
+									<span><em><spring:message code="reporting.dashboard.programBreakdown"/></em></span>
 									<table id="program-breakdown-table" class="display">
 										<thead>
 											<tr>
-												<th width="80%">Program</th>
+												<th width="80%"><spring:message code="reporting.dashboard.program"/></th>
 												<th>#</th>
 												<th>%</th>
 											</tr>
@@ -263,7 +263,7 @@ $(function() {
 										<tbody>																							
 											<c:forEach var="entry" items="${programCohortMap}">
 												<tr>
-													<td>${entry.key.name}</td>
+													<td><spring:message code="reporting.dashboard.entry.key.name"/></td>
 													<td><a href="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form?cohort=${entry.key.name}">${entry.value.size}</a></td>
 													<td>
 														<fmt:formatNumber type="percent" maxFractionDigits="2" value="${entry.value.size / all.size}"/>
@@ -292,7 +292,7 @@ $(function() {
 					<div class="portlet-header">Data Set Viewer</div>
 					<div class="portlet-content">			
 						<span>
-							Download a data snapshot for an existing dataset and cohort.
+							<spring:message code="reporting.dashboard.downloadData"/>
 						</span>
 						
 						<div align="center">
@@ -302,14 +302,14 @@ $(function() {
 									<li>
 										<div>						
 											<select name='cohortUuid' disabled>
-												<option value="">All patients</option>
+												<option value=""><spring:message code="reporting.dashboard.allPatients"/></option>
 											</select>
 										</div>
 									</li>														
 									<li>
 										<div>
 											<select id='dataset-definition-uuid' name='uuid'>
-												<option value="">Choose a dataset</option>
+												<option value=""><spring:message code="reporting.dashboard.chooseDataset"/>t</option>
 												<c:forEach var='datasetDefinition' items='${datasetDefinitions}'>
 													<option value="${datasetDefinition.uuid}">${datasetDefinition.name}</option>
 												</c:forEach>												
@@ -335,10 +335,10 @@ $(function() {
 				</div><!-- portlet -->
 			
 				<div class="portlet">
-					<div class="portlet-header">Lab Report Viewer</div>
+					<div class="portlet-header"><spring:message code="reporting.dashboard.labReportViewer"/></div>
 					<div class="portlet-content">			
 						<span>
-							Download the lab result report for a given period and location.
+							<spring:message code="reporting.dashboard.downloadResult"/>
 						</span>
 			
 						<div align="left" style="padding: 10px; margin-left:100px">					

@@ -48,7 +48,7 @@
 
 	<div id="container">
 		
-		<h1>Indicator Manager</h1>
+		<h1><spring:message code="reporting.indicators.manager"/></h1>
 
 		<div id="navigation">
 			<c:url var="cohortIndicatorImage" value="/moduleResources/reporting/images/indicator-interval-period.png"/>
@@ -68,10 +68,10 @@
 			<table id="table-indicator-list" class="reporting-data-table display">
 				<thead>
 					<tr>
-						<th nowrap>Actions</th>
-						<th nowrap>Name</th>
-						<th nowrap>Created by</th>
-						<th nowrap>Last Modified</th>					
+						<th nowrap><spring:message code="reporting.datasets.actions"/></th>
+						<th nowrap><spring:message code="reporting.datasets.name"/></th>
+						<th nowrap><spring:message code="reporting.EncounterCohortDefinition.createdBy"/></th>
+						<th nowrap><spring:message code="reporting.indicators.lastModified"/></th>					
 					</tr>
 				</thead>
 				<tbody>

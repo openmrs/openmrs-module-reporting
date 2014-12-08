@@ -38,7 +38,7 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Report Design Manager</h1>
+		<h1><spring:message code="reporting.designManager"/></h1>
 		<wgt:widget id="rendererType" name="rendererType" type="org.openmrs.module.reporting.report.renderer.ReportDesignRenderer"/>
 		<input id="designAddLink" href="#" type="button" value="<spring:message code="reporting.manage.createNew"/>"/>
 		<br/>
@@ -46,10 +46,10 @@
 		<table id="report-design-table" class="display" >
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Report Definition</th>
-					<th>Renderer Type</th>
+					<th><spring:message code="reporting.reportDesign.name"/></th>
+					<th><spring:message code="reporting.reportDesign.description"/></th>
+					<th><spring:message code="reporting.reportDesign.reportDefinition"/></th>
+					<th><spring:message code="reporting.reportDesign.renderType"/></th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>

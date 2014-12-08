@@ -18,7 +18,7 @@ $(document).ready(function() {
 <div id="page">
 	<div id="container">
 		<div align="center">
-			Your parameter was created successfully.
+			<spring:message code="reporting.parameters.success"/>
 			<br/>
 			<input id="close-parameter-button" type="button" name="action" value="Close"/>								
 		

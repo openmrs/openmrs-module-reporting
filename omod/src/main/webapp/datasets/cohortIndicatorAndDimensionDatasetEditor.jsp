@@ -95,21 +95,21 @@
 					<br/>
 					<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 					<br/>
-					<b class="boxHeader">Dimensions</b>
+					<b class="boxHeader"><spring:message code="reporting.datasets.dimensions"/></b>
 					<div class="box">
 						<table id="dimensions-table" width="100%">
 							<thead>
 								<tr>
-									<th>Key</th>
-									<th>Dimension</th>
+									<th><spring:message code="reporting.datasets.key"/></th>
+									<th><spring:message code="reporting.datasets.dimension"/></th>
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
 							<tbody>
 								<c:forEach var="dim" varStatus="dimStatus" items="${dsd.dimensions}">
 									<tr>
-										<td nowrap>${dim.key}</td>
-										<td width="100%">${dim.value.parameterizable.name}</td>
+										<td nowrap><spring:message code="reporting.datasets.dim.key"/></td>
+										<td width="100%"><spring:message code="reporting.datasets.dim.value.parameterizable.name"/></td>
 										<td nowrap>
 											&nbsp;
 											<a href="#" id="${model.portletUUID}EditDimLink${dimStatus.index}">
@@ -136,7 +136,7 @@
 					<br/>
 					<button id="previewButton">
 						<img src="<c:url value="/images/play.gif"/>" border="0"/>
-						Preview
+						<spring:message code="reporting.datasets.preview"/>
 					</button>
 					<button id="closeButton">
 						<spring:message code="general.close"/>
@@ -144,7 +144,7 @@
 				</td>
 				<td>
 					<b class="boxHeader" style="font-weight:bold; text-align:right;">
-						<span style="float:left;">Indicators</span><br/>
+						<span style="float:left;"><spring:message code="reporting.datasets.indicators"/></span><br/>
 					</b>			
 					<div class="box">
 						<div align="center" style="padding:10px;">
@@ -155,11 +155,11 @@
 								<table id="indicators-table">
 									<thead>
 										<tr>
-											<th style="text-align:left; border-bottom:1px solid black; white-space:nowrap;">Indicator #</th>
-											<th style="text-align:left; border-bottom:1px solid black;">Label</th>
-											<th style="text-align:left; border-bottom:1px solid black;">Indicator</th>
-											<th style="text-align:left; border-bottom:1px solid black;">Dimensions</th>
-											<th style="text-align:left; border-bottom:1px solid black;">Actions</th>
+											<th style="text-align:left; border-bottom:1px solid black; white-space:nowrap;"><spring:message code="reporting.datasets.indicatorNum"/></th>
+											<th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.datasets.label"/></th>
+											<th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.datasets.indicator"/></th>
+											<th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.datasets.dimensions"/></th>
+											<th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.datasets.actions"/></th>
 										</tr>
 									</thead>
 									<tbody>

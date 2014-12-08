@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 
-You have generated the report 
+<spring:message code="reporting.viewer.generated"/>
 
-${model}
+<spring:message code="reporting.viewer.model"/>
 
-Report Data ${model.reportData}
+<spring:message code="reporting.viewer.data"/>

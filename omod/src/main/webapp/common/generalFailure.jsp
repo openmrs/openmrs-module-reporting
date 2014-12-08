@@ -30,17 +30,17 @@
 	<h2><spring:message code="reporting.general.error.title"/></h2>
 	
 	<p>
-		We have failed you.  We're sorry.
+		<spring:message code="reporting.weHaveFailed"/>
 	</p>
 		
 
 
 	<ul>
-		<li>HTTP Status Code: <strong> <%= request.getAttribute("javax.servlet.error.status_code") %></strong></li>
-		<li>Request URI: <i><%= request.getAttribute("javax.servlet.error.request_uri") %></i></li>
-		<li>Exception Type: <strong><%= request.getAttribute("javax.servlet.error.exception_type") %></strong></li>
-		<li>Exception: <%= request.getAttribute("javax.servlet.error.exception") %></li>
-		<li>Message: <%= request.getAttribute("javax.servlet.error.message") %></li>
+		<li><spring:message code="reporting.statusCode"/></li>
+		<li><spring:message code="reporting.requestURI"/></li>
+		<li><spring:message code="reporting.exceptionType"/></li>
+		<li><spring:message code="reporting.exception"/></li>
+		<li><spring:message code="reporting.failureMessage"/></li>
 	
 	<% 
 			// MSR/ERROR Session attributes are removed after being displayed
@@ -119,8 +119,8 @@
 	</ul>
 
 	<br /><br />
-	Consult the <a href="<%= request.getContextPath() %>/help.htm">help document</a>. <br />
-	Contact your friendly neighborhood administrator if it cannot be resolved.
+	<spring:message code="reporting.helpDocs"/><br />
+	<spring:message code="reporting.contactAdmin"/>
 
 <%		
 	} catch (Exception ex) { 

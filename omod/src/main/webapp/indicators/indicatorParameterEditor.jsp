@@ -9,7 +9,7 @@
 <div id="page">
 	<div id="container">
 		
-		<h1>Indicator Parameter Editor</h1>
+		<h1><spring:message code="reporting.indicators.paramEditor"/></h1>
 
 		<springform:errors path="parameter.type"></springform:errors>
 
@@ -45,9 +45,9 @@
 							<table id="indicator-parameter-mapping-table" >
 								<thead>
 									<tr>
-										<th>parameters to map</th>
-										<th>inherit from cohort definition</th>
-										<th>choose from indicator</th>
+										<th><spring:message code="reporting.indicators.paramToMap"/></th>
+										<th><spring:message code="reporting.indicators.inherit"/></th>
+										<th><spring:message code="reporting.indicators.chooseFromIndicator"/></th>
 									</tr>
 								</thead>	
 								<tbody>										

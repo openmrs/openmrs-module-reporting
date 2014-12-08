@@ -15,10 +15,10 @@
 		<table class="reporting-data-table display" style="size:smaller;">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Creator</th>
-					<th>Created</th>
-					<th align="center" width="1%">Actions</th>
+					<th><spring:message code="reporting.datasets.name"/></th>
+					<th><spring:message code="reporting.definition.creator"/></th>
+					<th><spring:message code="reporting.definition.created"/></th>
+					<th align="center" width="1%"><spring:message code="reporting.datasets.actions"/></th>
 				</tr>
 			</thead>
 			<tbody>

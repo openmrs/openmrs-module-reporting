@@ -141,15 +141,15 @@
 						<input type="hidden" id="indexField" name="index" value=""/>
 						<table>
 							<tr>
-								<td>Indicator Number</td>
+								<td><spring:message code="reporting.indicatorNum"/></td>
 								<td><input id="keyField" size="30" maxlength="10" type="text" name="key"/></td>
 							</tr>
 							<tr>
-								<td>Label</td>
+								<td><spring:message code="reporting.datasets.label"/></td>
 								<td><input id="labelField" size="60" type="text" name="displayName"/></td>
 							</tr>
 							<tr id="createFromIndicator">
-								<td>Indicator</td>
+								<td><spring:message code="reporting.datasets.indicator"/></td>
 								<td>
 									<select id="indicatorField" name="indicator">
 										<option value=""></option>
@@ -168,7 +168,7 @@
 								</td>
 							</tr>
 							<tr id="createFromCohortQuery" style="display: none;">
-								<td>Cohort query:</td>
+								<td><spring:message code="reporting.cohort.query"/></td>
 								<td>
 									<select id="cohortQueryField" name="cohortQuery">
 										<option value=""></option>
@@ -180,7 +180,7 @@
 							</tr>
 							<c:if test="${fn:length(report.indicatorDataSetDefinition.dimensions) > 0}">
 								<tr valign="top">
-									<td>Dimensions</td>
+									<td><spring:message code="reporting.datasets.dimensions"/></td>
 									<td>
 										<table>
 											<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
@@ -224,8 +224,8 @@
 								<table id="dimensions-table">
 									<thead>
 										<tr>
-											<th>Key</th>
-											<th>Dimension</th>
+											<th><spring:message code="reporting.datasets.key"/></th>
+											<th><spring:message code="reporting.datasets.dimension"/></th>
 											<th>&nbsp;</th>
 										</tr>
 									</thead>
@@ -282,10 +282,10 @@
 								<table id="column-table" width="100%">
 									<thead>
 										<tr>
-											<th>Ind. #</th>
-											<th>Label</th>
-											<th>Indicator</th>
-											<th>Dimensions</th>
+											<th><spring:message code="reporting.indicator.number"/></th>
+											<th><spring:message code="reporting.datasets.label"/></th>
+											<th><spring:message code="reporting.datasets.indicator"/></th>
+											<th><spring:message code="reporting.datasets.dimensions"/></th>
 											<th>&nbsp;</th>
 										</tr>
 									</thead>

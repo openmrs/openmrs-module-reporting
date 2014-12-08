@@ -55,9 +55,9 @@ $(document).ready(function() {
 	<table width="100%">
 		<tr>
 			<td width="33%" valign="middle">
-				<span style="color: white; font-size: 1.5em;"><strong>Cohort Analysis Dashboard</strong></span></td>
+				<span style="color: white; font-size: 1.5em;"><strong><spring:message code="reporting.dashboardHeader"/></strong></span></td>
 			<td align="right" valign="middle">
-				<span style="color: white;"><strong>(returned ${fn:length(patients)} patients)</strong></span>			
+				<span style="color: white;"><strong><spring:message code="reporting.dashboardHeader.numPatients"/></strong></span>			
 			</td>
 		</tr>
 	</table>
@@ -68,39 +68,39 @@ $(document).ready(function() {
 			<div id="cohortFilterColumn">					
 				<form action="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form"
 					<div style="height: 95%; overflow: auto;">
-						<h3><a href="#">Age</a></h3>
+						<h3><a href="#"><spring:message code="reporting.dashboardProperty.age"/></a></h3>
 						<div>
 						
 							<p>
 								<!--  org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition:minAge=0:maxAge=2:effectiveDate=today -->
-								<input type="checkbox" name="ageCohort" value="infant" <c:if test="${param.ageCohort=='infant'}">checked</c:if>/>Infant (0 - 2 yrs)<br/>
-								<input type="checkbox"  name="ageCohort" value="child" <c:if test="${param.ageCohort=='child'}">checked</c:if>/>Child (2 - 15 yrs)<br/>				
-								<input type="checkbox" name="ageCohort" value="adult" <c:if test="${param.ageCohort=='adult'}">checked</c:if>/>Adult (15+ yrs)<br/>
+								<input type="checkbox" name="ageCohort" value="infant" <c:if test="${param.ageCohort=='infant'}">checked</c:if>/><spring:message code="reporting.dashboardProperty.age.infant"/><br/>
+								<input type="checkbox"  name="ageCohort" value="child" <c:if test="${param.ageCohort=='child'}">checked</c:if>/><spring:message code="reporting.dashboardProperty.age.child"/><br/>				
+								<input type="checkbox" name="ageCohort" value="adult" <c:if test="${param.ageCohort=='adult'}">checked</c:if>/><spring:message code="reporting.dashboardProperty.age.adult"/><br/>
 							</p>
 						</div>		
-						<h3><a href="#">Gender</a></h3>
+						<h3><a href="#"><spring:message code="reporting.dashboardProperty.gender"/></a></h3>
 						<div>
 							<p>
 								<!--  org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition:minAge=0:maxAge=2:effectiveDate=today -->
-								<input type="checkbox" name="genderCohort" value="male" <c:if test="${param.genderCohort=='male'}">checked</c:if>/>Male<br/>
-								<input type="checkbox" name="genderCohort" value="female" <c:if test="${param.genderCohort=='female'}">checked</c:if>/>Female
+								<input type="checkbox" name="genderCohort" value="male" <c:if test="${param.genderCohort=='male'}">checked</c:if>/><spring:message code="reporting.dashboardProperty.gender.male"/><br/>
+								<input type="checkbox" name="genderCohort" value="female" <c:if test="${param.genderCohort=='female'}">checked</c:if>/><spring:message code="reporting.dashboardProperty.gender.female"/>
 							</p>					
 						</div>		
 
-						<h3><a href="#">Currently enrolled in ...</a></h3>
+						<h3><a href="#"><spring:message code="reporting.dashboardProperty.program"/></a></h3>
 						<div>
 							<p>
 								<c:forEach var="program" items="${programs}">
-									<input type="checkbox" name="programCohort" value="${program.name}"/> ${program.name}<br/>							
+									<input type="checkbox" name="programCohort" value="${program.name}"/> <spring:message code="reporting.dashboardProperty.program.name"/><br/>							
 								</c:forEach>						
 							</p>
 						</div>
 <!--  						
-						<h3><a href="#">Health Center</a></h3>
+						<h3><a href="#"><spring:message code="reporting.dashboardProperty.location"/></a></h3>
 						<div>
 							<p>
 								<c:forEach var="location" items="${locations}">
-									<input type="checkbox" name="locationCohort" value="${location.name}"/> ${location.name}<br/>							
+									<input type="checkbox" name="locationCohort" value="${location.name}"/> <spring:message code="reporting.dashboardProperty.location.name"/><br/>							
 								</c:forEach>						
 							</p>						
 						</div>
@@ -115,9 +115,9 @@ $(document).ready(function() {
 
 <!-- 
 					<div style="border-top: 1px solid black; height: 25%;" >				
-						<h3><a href="#">Cohort Summary</a></h3>
+						<h3><a href="#"><spring:message code="reporting.dashboardProperty.summary"/></a></h3>
 						<span>
-							There are <strong>${selectedCohort.size}</strong> patients in the current cohort.
+							<spring:message code="reporting.dashboardProperty.cohortSummary"/>
 						</span>
 						<div id="summary"></div>					
 					</div>
@@ -174,16 +174,16 @@ $(document).ready(function() {
 												</td>
 												<td width="90%" valign="top" align="left" >
 													<div style="border-bottom: 1px solid black;">
-														<strong>${patient.givenName} ${patient.familyName}</strong>													
+														<strong><spring:message code="reporting.dashboardProperty.patientName"/></strong>													
 													</div>																										
 													<table border="0">
 														<tr>
-															<td nowrap>HIV Program:</td>
-															<td><strong>ON ARVs </strong></td>
+															<td nowrap><spring:message code="reporting.dashboardProperty.program.HIV"/></td>
+															<td><strong><spring:message code="reporting.dashboardProperty.program.onARVs"/></strong></td>
 														</tr>
 														<tr>
 															<td width="15%" nowrap>
-																Born:
+																<spring:message code="reporting.dashboardProperty.age.born"/>
 															</td>
 															<td>													
 																<strong>
@@ -197,12 +197,12 @@ $(document).ready(function() {
 															</td>
 														</tr>
 														<tr>
-															<td nowrap>Gender:</td>
+															<td nowrap><spring:message code="reporting.dashboardProperty.chooseGender"/></td>
 															<td>
 																<strong>															
 																	<c:choose>
-																		<c:when test="${patient.gender=='M'}">male</c:when>
-																		<c:when test="${patient.gender=='F'}">female</c:when>
+																		<c:when test="${patient.gender=='M'}"><spring:message code="reporting.dashboardProperty.gender.male"/></c:when>
+																		<c:when test="${patient.gender=='F'}"><spring:message code="reporting.dashboardProperty.gender.female"/></c:when>
 																		<c:otherwise>Other</c:otherwise>
 																	</c:choose>															
 																</strong>

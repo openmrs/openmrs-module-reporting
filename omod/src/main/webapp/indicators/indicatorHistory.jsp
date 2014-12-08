@@ -11,7 +11,7 @@
 			${query.indicators[0].name}
 		</c:when>
 		<c:otherwise>
-			History of Indicators
+			<spring:message code="reporting.indicators.history"/>
 		</c:otherwise>
 	</c:choose>
 </h2>
@@ -31,7 +31,7 @@
 	<table>
 		<tr>
 			<td align="right">
-				Where?
+				<spring:message code="reporting.indicators.where"/>
 			</td>
 			<td colspan="2">
 				<springform:select path="location">
@@ -45,7 +45,7 @@
 		</tr>
 		<tr>
 			<td align="right">
-				Date Range?
+				<spring:message code="reporting.indicators.dateRange"/>
 			</td>
 			<td>
 				<wgt:widget id="startDate" name="startDate" type="java.util.Date" defaultValue="${query.startDate}" />
@@ -58,7 +58,7 @@
 		</tr>
 		<tr valign="top">
 			<td align="right">
-				Which Indicators?
+				<spring:message code="reporting.indicators.whichIndicators"/>
 			</td>
 			<td colspan="2">
 				<wgt:widget id="indicators" name="indicators" type="java.util.List" genericTypes="org.openmrs.module.reporting.indicator.Indicator" defaultValue="${query.indicators}"/>
@@ -84,7 +84,7 @@
 <div style="margin: 20px;">
 <table>
 	<tr>
-		<td align="right" valign="top">Indicators:</td>
+		<td align="right" valign="top"><spring:message code="reporting.indicators"/></td>
 		<td><div id="indicatorHistoryLegend"></div></td>
 	</tr>
 </table>

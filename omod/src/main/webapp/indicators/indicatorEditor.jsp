@@ -199,13 +199,13 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 	<div id="container">
 	
 	
-		<h1>Indicator Editor</h1>
+		<h1><spring:message code="reporting.indicators.editor"/></h1>
 	
 		<br/>
 	
 		<div id="indicator-tabs" class="ui-tabs-hide">			
 			<ul>
-                <li><a href="#indicator-basic-tab"><span>Basic</span></a></li>
+                <li><a href="#indicator-basic-tab"><span><spring:message code="reporting.indicators.basic"/></span></a></li>
             </ul>
 			<div id="indicator-basic-tab">
 				<form method="post" id="saveIndicatorForm" 
@@ -220,7 +220,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							   	 =============================================================== --%>
 						
 							<li>
-								<label class="desc" for="name">Name</label>
+								<label class="desc" for="name"><spring:message code="reporting.datasets.name"/></label>
 								<div>
 									<input id="name" name="name" type="text" class="field text large" 
 										value="${indicator.name}" size="20" tabindex="1" />
@@ -257,7 +257,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							   	 =============================================================== --%>
 							
 							<li>
-								<label class="desc" for="indicator">Define your indicator</label>
+								<label class="desc" for="indicator"><spring:message code="reporting.indicators.define"/></label>
 								<div>								
 									<span id="cohortDefinitionSpan">
 										${indicator.cohortDefinition.parameterizable.name}
@@ -288,12 +288,12 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 								<a id="hide-parameter-mapping" href="#">Hide</a>
 								<div id="parameter-mapping" style="display:none;">
 									<fieldset>								
-										<legend>Parameter Mapping</legend>									
+										<legend><spring:message code="reporting.indicators.paramMapping"/></legend>									
 										<div>
 											<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}" varStatus="varstatus">
 												<strong>${parameter.name}</strong>:
 												<select>
-													<option>(choose a parameter mapping)</option>
+													<option><spring:message code="reporting.indicators.chooseParamMapping"/></option>
 													<c:forEach var="mappedParameter" items="${indicator.parameters}">										
 														<option>${mappedParameter.name}</option>
 													</c:forEach>
@@ -331,13 +331,13 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 									<table id="cohort-definition-parameter-table" class="display">
 										<thead>
 											<tr>
-												<th align="left">Edit</th>
-												<th align="left">Name</th>
-												<th align="left">Label</th>
-												<th align="left">Type</th>
-												<th align="left">Collection Type</th>
-												<th align="left">Default Value</th>
-												<th align="left">Delete</th>
+												<th align="left"><spring:message code="reporting.indicators.edit"/></th>
+												<th align="left"><spring:message code="reporting.datasets.name"/></th>
+												<th align="left"><spring:message code="reporting.datasets.label"/></th>
+												<th align="left">Type reporting.datasets.type</th>
+												<th align="left"><spring:message code="reporting.indicators.collectionType"/></th>
+												<th align="left"><spring:message code="reporting.indicators.defaultVal"/></th>
+												<th align="left"><spring:message code="reporting.indicators.delete"/></th>
 											</tr>	
 										</thead>
 										<tbody>
