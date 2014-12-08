@@ -15,7 +15,7 @@
 	<input type="submit" value="Guardar"/>
 </form>
 
-Chosen: <pre id="theValue">${ fn:replace(fn:replace(serialized, "<", "&lt;"), ">", "&gt;") }</pre>
+<spring:message code="reporting.mapping.chosenParam"/><pre id="theValue">${ fn:replace(fn:replace(serialized, "<", "&lt;"), ">", "&gt;") }</pre>
 
 <c:if test="${ not empty serialized }">
     <script>

@@ -60,16 +60,16 @@ $(document).ready(function() {
 <div id="page"><!-- -->
 	<div id="container"><!--  -->
 
-		<h1> Rwanda Reports </h1>
+		<h1><spring:message code="reporting.rwanda.report"/></h1>
 		
 		
 		<div id="sample-report-tabs" class="ui-tabs-hide">			
 			<ul>
-                <li><a href="#sample-lab-report-tab"><span>Rwanda Lab Report</span></a></li>
+                <li><a href="#sample-lab-report-tab"><span><spring:message code="reporting.rwanda.labReport"/></span></a></li>
                 <li><a href="#more"><span>More ...</span></a></li>
                 <!-- 
-                <li><a href="#sample-cohort-report-tab"><span>Sample Cohort Report</span></a></li>
-                <li><a href="#sample-indicator-report-tab"><span>Sample Indicator Report</span></a></li>
+                <li><a href="#sample-cohort-report-tab"><span><spring:message code="reporting.sample.cohortReport"/></span></a></li>
+                <li><a href="#sample-indicator-report-tab"><span><spring:message code="reporting.sample.indicatorReport"/></span></a></li>
                  -->
             </ul>
 	
@@ -121,16 +121,16 @@ $(document).ready(function() {
 				</div>
 			</div>
 			<div id="more">		
-				<i>More reports to come ...</i>		
+				<i><spring:message code="reporting.sample.moreToCome"/></i>		
 			</div>
 	        <!-- 
 				<div id="sample-cohort-report-tab">		
-					<i>the sample cohort report is not supported yet</i>		
+					<i><spring:message code="reporting.sample.cohortNotSupported"/></i>		
 				</div>
 				
 				
 				<div id="sample-indicator-report-tab">		
-					<i>the sample indicator report is not supported yet</i>		
+					<i><spring:message code="reporting.sample.indicatorNotSupported"/></i>		
 				</div>
 			-->		
 			

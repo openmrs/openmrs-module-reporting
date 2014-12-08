@@ -44,7 +44,7 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Report Editor</h1>
+		<h1><spring:message code="reporting.report.reportEditor"/></h1>
 		
 		<c:choose>
 			
@@ -95,7 +95,7 @@
 							</button>
 						</td>
 						<td valign="top" style="width:65%; padding-left:20px;">
-							<b class="boxHeader">Dataset Definitions</b>
+							<b class="boxHeader"><spring:message code="reporting.dataset.definitions"/></b>
 							
 							<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
 								<div style="display:none; width:100%" id="dsdView${dsdStatus.index}">

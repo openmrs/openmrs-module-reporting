@@ -47,7 +47,7 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Dimension Editor</h1>
+		<h1><spring:message code="reporting.indicators.dimensionEditor"/></h1>
 		
 		<c:choose>
 			
@@ -75,8 +75,8 @@
 								<table id="options-table">
 									<thead>
 										<tr>
-											<th>Key</th>
-											<th>Cohort Definition</th>
+											<th><spring:message code="reporting.datasets.key"/></th>
+											<th><spring:message code="reporting.indicators.cohortDef"/></th>
 											<th>&nbsp;</th>
 										</tr>
 									</thead>

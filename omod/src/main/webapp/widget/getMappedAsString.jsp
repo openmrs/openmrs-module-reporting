@@ -33,7 +33,7 @@ $(document).ready(function() {
 </script>
 
 <form method="post" id="valueAndMappingsForm">
-    Choose a ${ param.label }:
+    <spring:message code="reporting.mapping.chooseA"/> ${ param.label }:
     <select name="valueUuid" id="valueUuid">
         <option value=""></option>
 	    <c:forEach var="opt" items="${ valueOptions }">
@@ -43,7 +43,7 @@ $(document).ready(function() {
 	
 	<c:if test="${ not empty selectedValue }">
         <div>
-            <h4>Specify Parameter Values</h4>
+            <h4><spring:message code="reporting.mapping.paramValues"/></h4>
 	        <c:choose>
 	            <c:when test="${ not empty selectedValue.parameters }">
                     <table>
@@ -79,8 +79,8 @@ $(document).ready(function() {
 </form>
 
 <c:if test="${ not empty serializedResult }">
-    (The save callback should close the dialog, so you should not see this.)<br/><br/>
-    The result is:<br/>
+    <spring:message code="reporting.mapping.saveCallbackDialog"/><br/><br/>
+    <spring:message code="reporting.mapping.result"/><br/>
     <pre>${ fn:replace(fn:replace(serializedResult, "<", "&lt;"), ">", "&gt;") }</pre>
     <script>
         window.parent.${ param.saveCallback }('<spring:message javaScriptEscape="true" text="${ serializedResult }"/>', ${ jsResult });

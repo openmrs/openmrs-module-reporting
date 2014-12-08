@@ -4,7 +4,7 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Create Row-Per-Patient Logic Report</h1>
+		<h1><spring:message code="reporting.report.createLogic"/></h1>
 		<form method="post" action="logicReportCreate.form">
 			<table>
 				<tr>

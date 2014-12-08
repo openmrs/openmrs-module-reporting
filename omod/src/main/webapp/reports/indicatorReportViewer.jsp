@@ -27,7 +27,7 @@
 <div id="page"><!-- -->
 	<div id="container"><!--  -->
 	
-		<h1>Simple Indicator Report</h1>
+		<h1><spring:message code="reporting.cohort.simpleReport"/></h1>
 		<div>
 			<form id="form65" name="form65" class="wufoo topLabel" autocomplete="off"
 				method="post" action="${pageContext.request.contextPath}/module/reporting/renderIndicatorReport.form">		
@@ -56,7 +56,7 @@
 						</li>
 					</ul>
 					
-					<h2>Report Parameters</h2>
+					<h2><spring:message code="reporting.reportParams"/></h2>
 					<ul>
 						<c:forEach var="parameter" items="${reportDefinition.parameters}" varStatus="varStatus">
 							<li>
@@ -68,10 +68,10 @@
 						</c:forEach>
 					</ul>
 					
-					<h2>Report Renderer</h2>					
+					<h2><spring:message code="reporting.reportRenderer"/></h2>					
 					<ul>						
 						<li>
-							<label class="desc" for="renderType">Choose a renderer:</label>
+							<label class="desc" for="renderType"><spring:message code="reporting.report.chooseARenderer"/></label>
 							<span>
 								<input type="radio" name="renderType" value="XLS" checked> XLS
 								<input type="radio" name="renderType" value="CSV"> CSV

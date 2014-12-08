@@ -63,7 +63,7 @@ $(document).ready(function() {
 						<li>
 							<div class="errors"> 
 								<font color="red"> 
-									<h3><u>Please correct the following errors</u></h3>   
+									<h3><u><spring:message code="reporting.indicators.correctErrors"/></u></h3>   
 									<ul class="none">
 										<c:forEach items="${errors.allErrors}" var="error">
 											<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
@@ -90,7 +90,7 @@ $(document).ready(function() {
 						<hr/>
 					</li>				
 					<li>
-						<span># of Patients returned:</span>
+						<span><spring:message code="reporting.indicators.numberPatients"/></span>
 						
 						<span>
 							<c:choose>

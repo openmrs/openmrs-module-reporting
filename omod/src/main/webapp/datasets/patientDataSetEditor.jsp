@@ -131,8 +131,8 @@ function submitColumnOrder(sortable) {
 		<table>
 			<tr>
 				<th><spring:message code="general.name"/></th>
-				<th>Label</th>
-				<th>Type</th>
+				<th><spring:message code="reporting.datasets.label"/></th>
+				<th><spring:message code="reporting.datasets.type"/></th>
 				<th></th>
 			</tr>
 			<c:forEach var="p" items="${ dsd.parameters }">
@@ -163,7 +163,7 @@ function submitColumnOrder(sortable) {
 	<br/>
 	
 	<div class="boxHeader">
-		Row Filters
+		<spring:message code="reporting.datasets.rowFilters"/>
 		<input type="button" id="addFilterButton" value="<spring:message code="general.add"/>"/>
 	</div>
 	<div class="box">
@@ -175,7 +175,7 @@ function submitColumnOrder(sortable) {
 				<table>
 					<tr>
 						<th><spring:message code="general.name"/></th>
-						<th>Mappings</th>
+						<th><spring:message code="reporting.datasets.mappings"/></th>
 						<th></th>
 					</tr>
 					<c:forEach var="mappedFilter" items="${ dsd.rowFilters }" varStatus="iter">
@@ -308,12 +308,12 @@ function submitColumnOrder(sortable) {
 		<form id="add-column-form" method="post" action="patientDataSetEditor-addColumn.form" style="background-color: #e0e0e0">
 			<table>
 				<tr>
-					<td>Label</td>
+					<td><spring:message code="reporting.datasets.label"/></td>
 					<td><input type="text" name="label"/></td>
 					<td></td>
 				</tr>
 				<tr>
-					<td>Definition</td>
+					<td><spring:message code="reporting.datasets.definition"/></td>
 					<td><rptTag:chooseDataDefinition id="addCol" formFieldName="columnDefinition" types="${dataDefinitionTypes}"/></td>
 					<td></td>
 				</tr>

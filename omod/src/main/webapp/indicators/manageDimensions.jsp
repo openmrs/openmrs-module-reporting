@@ -37,7 +37,7 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Dimensions Manager</h1>
+		<h1><spring:message code="reporting.indicators.dimensionsManager"/></h1>
 		
 		<spring:message code="reporting.manage.createNew"/>:
 		<input type="button" value="Dimension" onClick="window.location='editCohortDefinitionDimension.form';"/>
@@ -45,10 +45,10 @@
 		<table class="reporting-data-table display" >
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Options</th>
-					<th>Remove</th>
+					<th><spring:message code="reporting.datasets.name"/></th>
+					<th><spring:message code="reporting.datasets.description"/></th>
+					<th><spring:message code="reporting.indicators.options"/></th>
+					<th><spring:message code="reporting.indicators.remove"/></th>
 				</tr>
 			</thead>
 			<tbody>

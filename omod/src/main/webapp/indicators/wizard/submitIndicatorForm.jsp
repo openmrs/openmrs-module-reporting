@@ -8,12 +8,12 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Create a new cohort indicator</h1>
+		<h1><spring:message code="reporting.indicators.create"/></h1>
 		
 			
 		<form action="<c:url value="/module/reporting/indicators/indicatorWizard.form"/>" method="post">			
 			<fieldset>
-			<legend>Step 4</legend>			
+			<legend><spring:message code="reporting.indicators.step4"/></legend>			
 				<div>
 					<ul>		
 						<li>

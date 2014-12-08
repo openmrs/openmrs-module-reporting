@@ -111,7 +111,7 @@ $(document).ready(function() {
 		<div class="errors"> 
 			<spring:hasBindErrors name="indicatorReport">  
 				<font color="red"> 
-					<h3><u>Please correct the following errors</u></h3>   
+					<h3><u><spring:message code="reporting.indicators.correctErrors"/></u></h3>   
 					<ul class="none">
 						<c:forEach items="${errors.allErrors}" var="error">
 							<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
@@ -121,7 +121,7 @@ $(document).ready(function() {
 			</spring:hasBindErrors>
 		</div>
 	
-		<h1>Indicator Report Editor</h1>
+		<h1><spring:message code="reporting.indicators.reportEditor"/></h1>
 
 		<div id="report-schema-tabs" class="ui-tabs-hide">			
 			<ul>
@@ -139,13 +139,13 @@ $(document).ready(function() {
 						<ul>
 							<li>
 							
-								<label class="desc" for="name">Name</label>	
+								<label class="desc" for="name"><spring:message code="reporting.datasets.name"/></label>	
 								<div>								
 									<springform:input path="reportDefinition.name" tabindex="1" cssClass="field text medium" size="100"/>								
 								</div>
 							</li>
 							<li>
-								<label class="desc" for="description">Description</label>	
+								<label class="desc" for="description"><spring:message code="reporting.datasets.description"/></label>	
 								<div>
 									<springform:textarea path="reportDefinition.description" tabindex="2" cssClass="field text medium" cols="120"/> 
 								</div>
@@ -181,10 +181,10 @@ $(document).ready(function() {
 									<table id="report-schema-indicator-table">
 										<thead>
 											<tr>
-												<th>Key</th>
-												<th>Display Name</th>
-												<th>Indicator</th>
-												<th>Result</th>
+												<th><spring:message code="reporting.datasets.key"/></th>
+												<th><spring:message code="reporting.displayName"/></th>
+												<th><spring:message code="reporting.datasets.indicator"/></th>
+												<th><spring:message code="reporting.result"/></th>
 											</tr>
 										</thead>
 										<tbody>																				
@@ -232,7 +232,7 @@ $(document).ready(function() {
 			<div id="" style="display:none">			
 				<h2>${indicatorReport.reportDefinition.name}</h2>
 				<p>
-					Design your report by adding new indicators below.
+					<spring:message code="reporting.design"/>
 				</p>
 				
 				<springform:form id="saveForm" commandName="indicatorReport.reportDefinition" method="POST">						
@@ -265,7 +265,7 @@ $(document).ready(function() {
 									--%>					
 								<!-- Hide the parameter mapping behind a modal dialog window -->
 								<!-- 
-								<br/><strong>Parameter Mapping</strong>
+								<br/><strong><spring:message code="reporting.indicators.paramMapping"/></strong>
 								<c:if test="${empty indicator.parameters}"><i>There are no parameters for this indicator</c:if>
 								<c:forEach var="parameter" items="${indicator.parameters}">
 									${parameter.label}	(${parameter.name})				
@@ -349,7 +349,7 @@ $(document).ready(function() {
 						</form>
 					</c:when>
 					<c:otherwise>
-						Please create your report first.
+						<spring:message code="reporting.create.reportFirst"/>
 					</c:otherwise>
 					
 				</c:choose>

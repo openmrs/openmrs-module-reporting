@@ -82,7 +82,7 @@ $(document).ready(function() {
 
 	<div id="container">
 		
-		<h1>Period Indicator Editor</h1>
+		<h1><spring:message code="reporting.indicators.periodEditor"/></h1>
 
 		<div id="navigation">
 		

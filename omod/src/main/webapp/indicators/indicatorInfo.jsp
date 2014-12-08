@@ -10,11 +10,11 @@
 <div style="float:left">
 	<table class="indInfo">
 		<tr>
-			<td>Title</td>
-			<td><h2>${indicator.name}</h2></td>
+			<td><spring:message code="reporting.indicators.title"/></td>
+			<td><h2><spring:message code="reporting.indicators.indicator.name"/></h2></td>
 		</tr>
 		<tr>
-			<td>Description</td>
+			<td><spring:message code="reporting.indicators."/></td>
 			<td>
 				<h4>
 					<c:if test="${empty indicator.description}">
@@ -32,7 +32,7 @@
 		<tr valign="top">
 			<td>
 				<fieldset>
-					<legend>Cohort Definition</legend>
+					<legend><spring:message code="reporting.indicators.cohortDef"/></legend>
 					${indicator.cohortDefinition.parameterizable.name}<br/>
 					<small>
 						<c:forEach var="m" items="${indicator.cohortDefinition.parameterMappings}">
@@ -48,8 +48,8 @@
 					</fieldset>
 				</c:if>
 				<fieldset>
-					<legend>Dimensions</legend>
-					<small>To Do</small>
+					<legend><spring:message code="reporting.datasets.dimension"/></legend>
+					<small><spring:message code="reporting.indicators.toDo"/></small>
 				</fieldset>
 			</td>
 		</tr>

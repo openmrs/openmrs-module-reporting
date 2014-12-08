@@ -36,10 +36,10 @@
 		<h1>
 			<c:choose>
 				<c:when test="${definition.id == null}">
-					Create New Logic DataSet
+					<spring:message code="reporting.datasets.createLogic"/>
 				</c:when>
 				<c:otherwise>
-					Edit Logic DataSet: ${definition.name}
+					<spring:message code="reporting.datasets.editLogic"/>
 				</c:otherwise>
 			</c:choose>
 		</h1>
@@ -47,31 +47,31 @@
 		<form method="post" action="logicDataSetEditorSave.form">
 			<input type="hidden" name="uuid" value="${definition.uuid}"/>
 			<div id="accordion">
-				<h3><a href="#">Name and Description</a></h3>
+				<h3><a href="#"><spring:message code="reporting.datasets.nameAndDesc"/></a></h3>
 				<div>
 					<table>
 						<tr valign="top">
-							<th>Name</th>
+							<th><spring:message code="reporting.datasets.name"/></th>
 							<td><input type="text" name="name"
 									value="<spring:message javaScriptEscape='true' text='${definition.name}' />"/></td>
 						</tr>
 						<tr valign="top">
-							<th>Description</th>
+							<th><spring:message code="reporting.datasets.description"/></th>
 							<td><textarea name="description"><spring:message javaScriptEscape='true' text='${definition.description}' /></textarea></td>
 						</tr>
 					</table>				
 				</div>
 	
-				<h3><a href="#">Columns</a></h3>
+				<h3><a href="#"><spring:message code="reporting.datasets.columns"/></a></h3>
 				<div>
 					<table id="sortable">
 						<thead>
 							<tr>
 								<th></th>
-								<th>Name</th>
-								<th>Label</th>
-								<th>Logic</th>
-								<th>Format</th>
+								<th><spring:message code="reporting.datasets.name"/></th>
+								<th><spring:message code="reporting.datasets.label"/></th>
+								<th><spring:message code="reporting.datasets.logic"/></th>
+								<th><spring:message code="reporting.datasets.format"/></th>
 							</tr>
 						</thead>
 						<tbody class="sortable-content">
@@ -108,9 +108,9 @@
 									<td><input class="suggestTokens" type="text" name="columnLogic" size="50"/></td>
 									<td>
 										<select name="columnFormat">
-											<option value="">Value</option>
-											<option value="date">Date</option>
-											<option value="boolean">Boolean (X)</option>
+											<option value=""><spring:message code="reporting.datasets.value"/></option>
+											<option value="date"><spring:message code="reporting.datasets.date"/></option>
+											<option value="boolean"><spring:message code="reporting.datasets.boolean"/></option>
 											<c:forEach items="${conceptNameTags}" var="tag">
 												<option value="concept:${tag.tag}">Concept (${tag.tag})</option>
 											</c:forEach>

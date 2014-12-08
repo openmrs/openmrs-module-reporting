@@ -125,7 +125,7 @@
 								<div class="box">
                                     <div align="center" style="padding:10px;">
                                         <p>
-                                            <label>Base dataset:</label>
+                                            <label><spring:message code="reporting.datasets.base"/></label>
                                             <select id="baseDefinitionSelect">
                                                 <option value="0">--- Choose base definition ---</option>
                                                 <c:forEach items="${availableDefinitions}" var="availableDef">
@@ -134,15 +134,15 @@
                                             </select>
                                         </p>
                                         <c:if test="${empty definition.iterations}">
-                                            <span>No iterations added yet.</span>
+                                            <span><spring:message code="reporting.datasets.noIterations"/></span>
                                         </c:if>
                                         <c:if test="${!empty definition.iterations}">
                                             <table id="iterations-table" style="width: 100%">
                                                 <thead>
                                                     <tr>
-                                                        <th style="text-align:left; border-bottom:1px solid black; white-space:nowrap; width: 50px;">Iteration #</th>
-                                                        <th style="text-align:left; border-bottom:1px solid black;">Parameters</th>
-                                                        <th style="text-align:left; border-bottom:1px solid black;">Actions</th>
+                                                        <th style="text-align:left; border-bottom:1px solid black; white-space:nowrap; width: 50px;"><spring:message code="reporting.datasets.iterationNum"/></th>
+                                                        <th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.datasets.params"/></th>
+                                                        <th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.datasets.actions"/></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -153,8 +153,8 @@
                                                                 <table style="width: 100%">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th style="width: 30%">Name</th>
-                                                                            <th style="width: 70%">Value</th>
+                                                                            <th style="width: 30%"><spring:message code="reporting.datasets.name"/></th>
+                                                                            <th style="width: 70%"><spring:message code="reporting.datasets.value"/></th>
                                                                             <th></th>
                                                                         </tr>
                                                                     </thead>

@@ -71,14 +71,13 @@ function init(){
 		document.getElementById('save-button').style.display='';		
 	}
 </script>
-<title>Indicator Details</title>
+<title><spring:message code="reporting.indicators.details"/></title>
 </head>
 <body onLoad="init()" class="body">
 <h2>
 <div id="title-edit" style="float: left"
 	class="ui-widget ui-widget-content ui-corner-all">
-<div class="display" id="title" onclick="showEdit()">Patient
-Dataset #1</div>
+<div class="display" id="title" onclick="showEdit()"><spring:message code="reporting.indicators.patient1"/></div>
 </h2>
 <div class="ui-icon ui-icon-pencil" onclick="showEdit()"
 	id="save-button"></div>
@@ -95,36 +94,35 @@ Dataset #1</div>
 <span /> <br />
 <!--  Option bar -->
 <div class="option-bar"><span id="show"><b>Show: </b><a
-	href="#">HIV positive patients</a></span> <span id="display-option"><b>Display:
-</b><i>25</i> , <a href="#">50</a>, <a href="#">100</a> patients at a time</span><span
+	href="#"><spring:message code="reporting.indicators.HIV"/></a></span> <span id="display-option"><b><spring:message code="reporting.indicators.display"/>
+</b><i><spring:message code="reporting.indicators.display.25"/></i> , <a href="#"><spring:message code="reporting.indicators.display.50"/></a>, <a href="#"><spring:message code="reporting.indicators.display.100"/></a><spring:message code="reporting.indicators.patients"/></span><span
 	id="save-option"><input class="ui-state-default ui-corner-all"
-	type="button" width="50px" value="Save" /></span> <span id="order-option"><b>Sort
-By: <a href="#">Patient ID</a> </b></span> 
-<span id="export-option"><b>Export As: </b>
-	<a href="#">CSV</a> , 
-	<a href="#">TSV</a>, 
-	<a href="#">XML</a></span></div>
+	type="button" width="50px" value="Save" /></span> <span id="order-option"><b><spring:message code="reporting.indicators.sort"/><a href="#"><spring:message code="reporting.indicators.patientID"/></a> </b></span> 
+<span id="export-option"><b><spring:message code="reporting.indicators.export"/></b>
+	<a href="#"><spring:message code="reporting.indicators.CSV"/></a> , 
+	<a href="#"><spring:message code="reporting.indicators.TSV"/></a>, 
+	<a href="#"><spring:message code="reporting.indicators.XML"/></a></span></div>
 
 <span /> <!--<br/>-->
 
 <table id="table-dataset" class="display">
 	<thead>
 		<tr>
-			<th><u>PATIENT ID</u></th>
-			<th><u>GIVEN NAME</u></th>
-			<th><u>LAST NAME</u></th>
-			<th><u>GENDER</u></th>
-			<th><u>BIRTHDATE</u></th>
-			<th><u>HEALTH CENTER</u></th>
-			<th><u><a href="#" id="dialog_link" onClick="popup()">ADD</a></u></th>
+			<th><u><spring:message code="reporting.indicators.PATIENTID"/></u></th>
+			<th><u><spring:message code="reporting.indicators.GIVENNAME"/></u></th>
+			<th><u><spring:message code="reporting.indicators.LASTNAME"/></u></th>
+			<th><u><spring:message code="reporting.indicators.GENDER"/></u></th>
+			<th><u><spring:message code="reporting.indicators.BIRTHDATE"/></u></th>
+			<th><u><spring:message code="reporting.indicators.HEALTHCENTER"/></u></th>
+			<th><u><a href="#" id="dialog_link" onClick="popup()"><spring:message code="reporting.indicators.ADD"/></a></u></th>
 		</tr>
 		<tr class="center">
-			<td>NUMERIC</td>
-			<td>STRING</td>
-			<td>STRING</td>
-			<td>STRING</td>
-			<td>DATE/TIME</td>
-			<td>STRING</td>
+			<td><spring:message code="reporting.indicators.NUMERIC"/></td>
+			<td><spring:message code="reporting.indicators.STRING"/></td>
+			<td><spring:message code="reporting.indicators.STRING"/></td>
+			<td><spring:message code="reporting.indicators.STRING"/></td>
+			<td><spring:message code="reporting.indicators.dateTime"/></td>
+			<td><spring:message code="reporting.indicators.STRING"/></td>
 			<td>..</td>
 		</tr>
 	</thead>
@@ -136,36 +134,36 @@ By: <a href="#">Patient ID</a> </b></span>
 			<td>
 				<c:choose>
 					<c:when test="${i % 2 == 0}">
-						Matt
+						<spring:message code="reporting.indicators.matt"/>
 					</c:when> 
 					<c:otherwise>
-		           		Kingsted
+		           		<spring:message code="reporting.indicators.kingsted"/>
 		          	</c:otherwise>
 	          	</c:choose>
           	</td>
 			<td><c:choose>
 					<c:when test="${i % 2 == 0}">
-						Kurt
+						<spring:message code="reporting.indicators.kurt"/>
 					</c:when> 
 					<c:otherwise>
-		           		Broomer
+		           		<spring:message code="reporting.indicators.broomer"/>
 		          	</c:otherwise>
 	          	</c:choose></td>
 			<td><c:choose>
 					<c:when test="${i % 2 == 0}">
-						Male
+						<spring:message code="reporting.dashboardProperty.gender.male"/>
 					</c:when> 
 					<c:otherwise>
-		           		Female
+		           		<spring:message code="reporting.dashboardProperty.gender.female"/>
 		          	</c:otherwise>
 	          	</c:choose></td>
 			<td>${i}-08-1978</td>
 			<td><c:choose>
 					<c:when test="${i % 2 == 0}">
-						Madison
+						<spring:message code="reporting.indicators.madison"/>
 					</c:when> 
 					<c:otherwise>
-		           		Boston
+		           		<spring:message code="reporting.indicators.boston"/>
 		          	</c:otherwise>
 	          	</c:choose></td>
 			<td>..</td>
@@ -177,36 +175,36 @@ By: <a href="#">Patient ID</a> </b></span>
 			<td>
 				<c:choose>
 					<c:when test="${i % 2 == 0}">
-						Matt
+						<spring:message code="reporting.indicators.matt"/>
 					</c:when> 
 					<c:otherwise>
-		           		Kingsted
+		           		<spring:message code="reporting.indicators.kingsted"/>
 		          	</c:otherwise>
 	          	</c:choose>
           	</td>
 			<td><c:choose>
 					<c:when test="${i % 2 == 0}">
-						Broomer
+						<spring:message code="reporting.indicators.broomer"/>
 					</c:when> 
 					<c:otherwise>
-		           		Kurt
+		           		<spring:message code="reporting.indicators.kurt"/>
 		          	</c:otherwise>
 	          	</c:choose></td>
 			<td><c:choose>
 					<c:when test="${i % 2 == 0}">
-						Male
+						<spring:message code="reporting.dashboardProperty.gender.male"/>
 					</c:when> 
 					<c:otherwise>
-		           		Female
+		           		<spring:message code="reporting.dashboardProperty.gender.female"/>
 		          	</c:otherwise>
 	          	</c:choose></td>
 			<td>${i}-08-1978</td>
 			<td><c:choose>
 					<c:when test="${i % 2 == 0}">
-						Boston
+						<spring:message code="reporting.indicators.boston"/>
 					</c:when> 
 					<c:otherwise>
-		           		Madison
+		           		<spring:message code="reporting.indicators.madison"/>
 		          	</c:otherwise>
 	          	</c:choose></td>
 			<td>..</td>
