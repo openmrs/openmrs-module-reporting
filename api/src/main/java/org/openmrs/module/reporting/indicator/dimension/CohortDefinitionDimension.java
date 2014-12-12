@@ -14,9 +14,9 @@
 package org.openmrs.module.reporting.indicator.dimension;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -69,7 +69,7 @@ public class CohortDefinitionDimension extends BaseDefinition implements CohortD
     }
     
 	/**
-     * @param cohortDefinition - The CohortDefinition to add
+     * @param definition - The CohortDefinition to add
      */
     public void addCohortDefinition(String key, CohortDefinition definition, Map<String, Object> mappings) {
     	if (IndicatorUtil.containsIgnoreCase(getCohortDefinitions().keySet(), key)) {
@@ -79,7 +79,7 @@ public class CohortDefinitionDimension extends BaseDefinition implements CohortD
     }
 
 	/**
-     * @param cohortDefinition - The CohortDefinition to add
+     * @param definition - The CohortDefinition to add
      */
     public void addCohortDefinition(String key, Mapped<CohortDefinition> definition) {
     	if (IndicatorUtil.containsIgnoreCase(getCohortDefinitions().keySet(), key)) {
@@ -109,7 +109,7 @@ public class CohortDefinitionDimension extends BaseDefinition implements CohortD
      */
     public Map<String, Mapped<CohortDefinition>> getCohortDefinitions() {
     	if (cohortDefinitions == null) {
-    		cohortDefinitions = new HashMap<String, Mapped<CohortDefinition>>();
+    		cohortDefinitions = new TreeMap<String, Mapped<CohortDefinition>>();
     	}
     	return cohortDefinitions;
     }
