@@ -12,12 +12,13 @@
 			"bSort": true,
 			"bInfo": true,
 			"bAutoWidth": false,
-			"aoColumns": [{ "bSortable": true },
+			"aoColumns": [{ "bSortable": false },
 			              { "bSortable": true },
 			      		  { "bSortable": true },
 			              { "bSortable": false }]
-		} );			
-	
+		} );
+        $("#indicatorNameColumn").click();
+
 		$("#cohort-indicator-wizard-form").click(function(event){ 
 			showReportingDialog({ 
 				title: 'Add cohort indicator',
@@ -69,7 +70,7 @@
 				<thead>
 					<tr>
 						<th nowrap>Actions</th>
-						<th nowrap>Name</th>
+						<th id="indicatorNameColumn" nowrap>Name</th>
 						<th nowrap>Created by</th>
 						<th nowrap>Last Modified</th>					
 					</tr>
@@ -116,6 +117,7 @@
 								</span>
 							</td>
 							<td width="65%">
+                                <span style="display:none">${indicator.name}</span>
 								<c:url var="simpleIndicatorImage" value="/moduleResources/reporting/images/indicator-type-simple.png"/>
 								<c:url var="fractionIndicatorImage" value="/moduleResources/reporting/images/indicator-type-fraction.png"/>
 								<c:url var="customIndicatorImage" value="/moduleResources/reporting/images/indicator-type-custom.png"/>
@@ -141,7 +143,7 @@
 										<img src="${simpleIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>												
 									</c:otherwise>
 								</c:choose>						
-								<a href="${editUrl}">${indicator.name}</a>								
+								<a href="${editUrl}">${indicator.name}</a>
 							</td>	
 							<td nowrap width="10%" align="center">
 								${indicator.creator}
