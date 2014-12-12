@@ -48,7 +48,7 @@
 				<c:forEach var="dim" varStatus="dimStatus" items="${dsd.dimensions}">
 					$("#${model.portletUUID}EditDimLink${dimStatus.index}").click(function(event){ 
 						showReportingDialog({
-							title: 'Dimension: ${dim.key}',
+							title: 'Dimension: <spring:message javaScriptEscape="true" text="${dim.key}"/>',
 							url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${dsd['class'].name}|uuid=${dsd.uuid}|property=dimensions|currentKey=${dim.key}|mode=edit"/>',
 							successCallback: function() { window.location.reload(true); }
 						});
@@ -59,19 +59,19 @@
 				<c:forEach var="ind" varStatus="indStatus" items="${dsd.specifications}">
 					$("#editIndicatorLink${indStatus.index}").click(function(event){ 
 						showReportingDialog({
-							title: 'Indicator: ${ind.indicatorNumber} - ${ind.label}',
+							title: 'Indicator: <spring:message javaScriptEscape="true" text="${ind.indicatorNumber}"/> - <spring:message javaScriptEscape="true" text="${ind.label}"/>',
 							url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedIndicatorPortlet&url=cohortIndicatorAndDimensionSpecification&parameters=dsdUuid=${dsd.uuid}|index=${indStatus.index}|mode=edit"/>',
 							successCallback: function() { window.location.reload(true); }
 						});
 					});
 					$("#removeIndicatorLink${indStatus.index}").click(function(event){ 			
-						if (confirm('Please confirm you wish to remove ${ind.indicatorNumber} - ${ind.label}')) {
+						if (confirm('Please confirm you wish to remove <spring:message javaScriptEscape="true" text="${ind.indicatorNumber}"/> - <spring:message javaScriptEscape="true" text="${ind.label}"/>')) {
 							document.location.href='<c:url value="cohortIndicatorAndDimensionRemoveIndicator.form?index=${indStatus.index}&dsdUuid=${dsd.uuid}"/>';
 						}
 					});
 					$("#viewDimensionColumns${indStatus.index}").click(function(event){ 
 						showReportingDialog({
-							title: 'Indicator and Dimension Details: ${ind.indicatorNumber} - ${ind.label}',
+							title: 'Indicator and Dimension Details: <spring:message javaScriptEscape="true" text="${ind.indicatorNumber}"/> - <spring:message javaScriptEscape="true" text="${ind.label}"/>',
 							url: '<c:url value="/module/reporting/viewPortlet.htm?id=cohortIndicatorAndDimensionPortlet&url=cohortIndicatorAndDimensionSpecification&parameters=dsdUuid=${dsd.uuid}|index=${indStatus.index}|mode=details"/>',
 							successCallback: function() { window.location.reload(true); }
 						});
