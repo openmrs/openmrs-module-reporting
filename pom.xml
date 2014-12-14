@@ -347,6 +347,10 @@
 					<configuration>
 						<!-- Some tests are locale specific -->
 						<argLine>-Duser.language=en -Duser.region=US</argLine>
+						<!-- Bamboo agents require a different tmp folder -->
+						<systemPropertyVariables>
+							<java.io.tmpdir>${java.io.tmpdir}</java.io.tmpdir>
+						</systemPropertyVariables>
 					</configuration>
 				</plugin>
 
