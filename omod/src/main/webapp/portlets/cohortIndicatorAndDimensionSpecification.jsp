@@ -83,7 +83,7 @@
 		
 				$('#mapParametersFormSubmitButton_${model.id}').click(function(event){
 					var existingKeys = [<c:forEach items="${model.existingKeys}" var="c" varStatus="cStat">'${c}'<c:if test="${!cStat.last}">,</c:if></c:forEach>];
-					var initialNum = '${model.specification.indicatorNumber}';
+					var initialNum = '<spring:message javaScriptEscape="true" text="${model.specification.indicatorNumber}"/>';
 					var newNum = $('#indicatorNumber${model.id}').val();
 					if (initialNum != newNum) {
 						for (var i=0; i<existingKeys.length; i++) {
