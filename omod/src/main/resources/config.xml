@@ -151,7 +151,11 @@
 		<lang>fr</lang>
 		<file>messages_fr.properties</file>
 	</messages>
-		
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
+			
 	<!-- Hibernate Mappings -->
 	<mappingFiles>
 		ReportDesign.hbm.xml
