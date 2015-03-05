@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>reporting</artifactId>
-	<version>0.9.3</version>
+	<version>0.9.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Reporting</name>
 	<description>Parent project for Reporting</description>
@@ -14,7 +14,7 @@
 		<connection>scm:git:git@github.com:openmrs/openmrs-module-reporting.git</connection>
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-reporting.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-reporting/</url>
-    <tag>0.9.3</tag>
+    <tag>HEAD</tag>
   </scm>
 	
 	<distributionManagement>
