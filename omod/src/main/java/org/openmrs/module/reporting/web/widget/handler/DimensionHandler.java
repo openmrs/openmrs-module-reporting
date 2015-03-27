@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.web.widget.handler;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetConfig;
@@ -19,7 +20,7 @@ public class DimensionHandler extends CodedHandler {
 	@Override
 	public void populateOptions(WidgetConfig config, CodedWidget widget) {
 		for (Dimension d : Context.getService(DimensionService.class).getAllDefinitions(false)) {
-			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
+			widget.addOption(new Option(d.getUuid(), StringEscapeUtils.escapeHtml(d.getName()), null, d), config);
 		}
 	}
 	

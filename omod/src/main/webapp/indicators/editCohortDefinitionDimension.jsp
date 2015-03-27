@@ -84,7 +84,7 @@
 										<c:forEach var="cd" varStatus="cdStatus" items="${dimension.cohortDefinitions}">
 											<tr>
 												<td nowrap>${cd.key}</td>
-												<td>${cd.value.parameterizable.name}</td>
+												<td><c:out value="${cd.value.parameterizable.name}" /></td>
 												<td nowrap>
 													&nbsp;
 													<a href="#" id="${model.portletUUID}EditDimLink${cdStatus.index}">

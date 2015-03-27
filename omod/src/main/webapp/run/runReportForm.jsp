@@ -29,8 +29,8 @@ function toggleInputElements( idPrefix ){
 <div id="page">
 	<div id="container">
 		<div>
-			<h1>${report.reportDefinition.name}</h1>
-			<h2>${report.reportDefinition.description}</h2>
+			<h1><c:out value="${report.reportDefinition.name}" /></h1>
+			<h2><c:out value="${report.reportDefinition.description}" /></h2>
 			
 			<table style="width:100%;">
 				<tr>

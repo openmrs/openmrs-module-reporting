@@ -63,8 +63,8 @@ $(document).ready(function() {
 	<div id="container">
 		<div id="wrapper">
 			<c:if test="${empty results}">
-				<span><h2>${parameterizable.name}</h2></span>
-				<span><h3>${parameterizable.description}</h3></span>
+				<span><h2><c:out value="${parameterizable.name}" /></h2></span>
+				<span><h3><c:out value="${parameterizable.description}" /></h3></span>
 				
 				
 					<%-- <c:url var="postUrl" value='/module/reporting/reports/renderReport.form'/>--%>

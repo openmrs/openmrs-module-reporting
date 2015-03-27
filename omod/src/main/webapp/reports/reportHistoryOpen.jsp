@@ -45,8 +45,8 @@
 
 <div id="page">
 	<div id="container">
-		<h1>${reportDefinition.name}</h1>
-		<small>${reportDefinition.description}</small>
+		<h1><c:out value="${reportDefinition.name}" /></h1>
+		<small><c:out value="${reportDefinition.description}" /></small>
 		<br/>
 		<table style="width:100%; padding:10px;">
 			<tr>
@@ -70,7 +70,7 @@
 						<table class="requestTable">
 							<c:forEach var="p" items="${reportDefinition.parameters}">
 								<tr>
-									<td>${p.label}: </td>
+									<td><c:out value="${p.label}" />: </td>
 									<td><rpt:format object="${request.reportDefinition.parameterMappings[p.name]}"/></td>
 								</tr>
 							</c:forEach>
@@ -79,12 +79,12 @@
 								<td>
 									<c:choose>
 										<c:when test="${!empty request.baseCohort}">
-											${request.baseCohort.parameterizable.name}
+											<c:out value="${request.baseCohort.parameterizable.name}" />
 											<table class="small" cellspacing="0" cellpadding="0">
 												<c:forEach var="p" items="${request.baseCohort.parameterizable.parameters}">
 													<tr valign="top">
 														<td class="faded" align="right">
-															${p.label}:
+															<c:out value="${p.label}" />:
 														</td>
 														<td>
 															<rpt:format object="${report.baseCohort.parameterMappings[p.name]}"/>
@@ -99,7 +99,7 @@
 							</tr>
 							<tr>
 								<td><spring:message code="reporting.reportRequest.outputFormat"/>: </td>
-								<td>${request.renderingMode.label}</td>
+								<td><c:out value="${request.renderingMode.label}" /></td>
 							</tr>
 						</table>		
 					</fieldset>
@@ -110,11 +110,11 @@
 							<table class="requestTable">
 								<c:forEach items="${automaticProcessors}" var="processor">
 									<tr>
-										<td valign="top"><li>${processor.name}</li></td>
+										<td valign="top"><li><c:out value="${processor.name}" /></li></td>
 										<td>
 											<small>
 												<c:forEach items="${processor.configuration}" var="entry">
-													${entry.key}: ${entry.value}<br/>
+													<c:out value="${entry.key}" />: <c:out value="${entry.value}" /><br/>
 												</c:forEach>
 											</small>
 										</td>

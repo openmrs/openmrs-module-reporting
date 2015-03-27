@@ -154,7 +154,7 @@
 									<select id="indicatorField" name="indicator">
 										<option value=""></option>
 										<c:forEach var="ind" items="${indicators}">
-											<option value="${ind.uuid}">${ind.name}</option>
+											<option value="${ind.uuid}"><c:out value="${ind.name}" /> </option>
 										</c:forEach>
 									</select>
 									<span style="font-size:small; text-decoration:italics; padding-left:10px;">
@@ -173,7 +173,7 @@
 									<select id="cohortQueryField" name="cohortQuery">
 										<option value=""></option>
 										<c:forEach var="query" items="${cohortQueries}">
-											<option value="${query.uuid}">${query.name}</option>
+											<option value="${query.uuid}"><c:out value="${query.name}" /></option>
 										</c:forEach>
 									</select>
 								</td>
@@ -186,13 +186,13 @@
 											<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
 												<tr>
 													<td align="right">
-														${dim.key}:
+														<c:out value="${dim.key}" />:
 													</td>
 													<td>
 														<select id="dimensionOption_${dimStatus.index}" name="dimensionOption_${dim.key}">
 															<option value="">all</option>
 															<c:forEach var="dimOpt" items="${dim.value.parameterizable.cohortDefinitions}">
-																<option value="${dimOpt.key}">${dimOpt.key}</option>
+																<option value="${dimOpt.key}"><c:out value="${dimOpt.key}" /> </option>
 															</c:forEach>
 															<option value="?">unclassified</option>
 														</select>
@@ -232,8 +232,8 @@
 									<tbody>
 										<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
 											<tr>
-												<td nowrap>${dim.key}</td>
-												<td width="100%">${dim.value.parameterizable.name}</td>
+												<td nowrap><c:out value="${dim.key}" /> </td>
+												<td width="100%"><c:out value="${dim.value.parameterizable.name}" /></td>
 												<td nowrap>
 													&nbsp;
 													<a href="#" id="${model.portletUUID}EditDimLink${dimStatus.index}">
@@ -292,9 +292,9 @@
 									<tbody>
 										<c:forEach var="col" varStatus="colStatus" items="${report.indicatorDataSetDefinition.columns}">
 											<tr>
-												<td>${col.name}</td>
-												<td>${col.label}</td>
-												<td>${col.indicator.parameterizable.name}</td>
+												<td><c:out value="${col.name}" /></td>
+												<td><c:out value="${col.label}" /></td>
+												<td><c:out value="${col.indicator.parameterizable.name}" /></td>
 												<td>
 													<c:forEach var="dimOpt" items="${col.dimensionOptions}">
 														${dimOpt.key}=${dimOpt.value} <br/>

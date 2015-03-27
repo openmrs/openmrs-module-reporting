@@ -24,7 +24,7 @@
 			<tbody>
 				<c:forEach items="${model.requests}" var="rr" varStatus="rrStatus">
 					<tr>
-						<td style="display:none;">${rrStatus.index}</td>
+						<td style="display:none;"><c:out value="${rrStatus.index}" /> </td>
 						<td align="center">
 							<c:choose>
 								<c:when test="${rr.status == 'FAILED'}">
@@ -37,7 +37,7 @@
 						</td>
 						<td>
 							<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistoryOpen.form?uuid=${rr.uuid}">
-								${rr.reportDefinition.parameterizable.name}
+								<c:out value="${rr.reportDefinition.parameterizable.name}" /> 
 							</a>
 						</td>
 						<td>
@@ -90,7 +90,7 @@
 					<c:forEach var="p" items="${rr.reportDefinition.parameterizable.parameters}">
 						<tr valign="top">
 							<td class="faded" align="right">
-								${p.label}:
+								<c:out value="${p.label}" />:
 							</td>
 							<td>
 								<rpt:format object="${rr.reportDefinition.parameterMappings[p.name]}"/>

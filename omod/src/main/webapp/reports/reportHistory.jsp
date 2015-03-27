@@ -90,21 +90,21 @@
 						<td style="display:none"><openmrs:formatDate date="${r.requestDate}" format="yyyy-MM-dd HH:mm:ss"/></td>
 						<td>
 							<a href="reportHistoryOpen.form?uuid=${r.uuid}">
-								${r.reportDefinition.parameterizable.name}
+								<c:out value="${r.reportDefinition.parameterizable.name}" />
 							</a>
 						</td>
 						<td style="white-space:nowrap;">
 							<table class="small">
 								<c:forEach var="p" items="${r.reportDefinition.parameterizable.parameters}">
 									<tr>
-										<td>${p.label}:</td>
+										<td><c:out value="${p.label}" />:</td>
 										<td><rpt:format object="${r.reportDefinition.parameterMappings[p.name]}"/></td>
 									</tr>
 								</c:forEach>
 							</table>
 		 				</td>
 		 				<td>
-		 					${r.renderingMode.label}
+		 					<c:out value="${r.renderingMode.label}" />
 		 				</td>
 						<td style="white-space:nowrap;">
 							<openmrs:formatDate date="${r.requestDate}" format="dd/MMM/yyyy HH:mm"/><br/>

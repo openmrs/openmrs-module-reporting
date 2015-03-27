@@ -56,7 +56,7 @@ $(document).ready(function() {
 			<table height="100%">
 				<tr valign="top">
 					<td style="padding-right: 1em">
-						<h4>${parameterizable.name}</h4>
+						<h4> <c:out value="${parameterizable.name}" /></h4>
 						<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
 						<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
 							<input type="hidden" name="action" value="preview"/>
@@ -80,7 +80,7 @@ $(document).ready(function() {
 							<ul>									
 								<c:forEach var="parameter" items="${parameterizable.parameters}">				
 									<li>
-										<label class="desc" for="${parameter.name}">${parameter.label}</label>
+										<label class="desc" for="${parameter.name}"><c:out value="${parameter.label}" /> </label>
 										<div>
 											<c:choose>
 												<c:when test="${parameter.collectionType != null}">

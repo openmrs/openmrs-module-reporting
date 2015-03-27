@@ -24,7 +24,7 @@
 <c:if test="${showDecoration}">
 	<div class="portlet">
 		<div class="portlet-header">
-			${portletTitle}
+			<c:out value="${portletTitle}" />
 		</div>
 		<div class="portlet-content">
 </c:if>
@@ -34,12 +34,12 @@
 		<tr>
 			<td width="100%">
 				<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?reportId=${r.uuid}">
-					${r.name}
+					<c:out value="${r.name}" />
 				</a>
 			</td>
 			<c:if test="${showDescription}">
 				<td class="small">
-					${r.description}
+					<c:out value="${r.description}" />
 				</td>
 			</c:if>
 		</tr>
