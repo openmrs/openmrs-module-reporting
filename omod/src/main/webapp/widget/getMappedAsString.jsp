@@ -3,6 +3,8 @@
 <%@ include file="/WEB-INF/template/headerMinimal.jsp"%>
 <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
+<spring:htmlEscape defaultHtmlEscape="false" />
+
 <script>
 $(document).ready(function() {
 	$('#valueUuid').change(function() {
