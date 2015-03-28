@@ -88,7 +88,7 @@
 			<c:when test="${empty cohortDefinition.uuid || empty cohortDefinition.name}">
 				(unsaved <rpt:displayLabel type="${cohortDefinition['class'].name}"/>)
 			</c:when>
-			<c:otherwise>${cohortDefinition.name}</c:otherwise>
+			<c:otherwise><c:out value="${cohortDefinition.name}" /> </c:otherwise>
 		</c:choose>
 	</h1>
 

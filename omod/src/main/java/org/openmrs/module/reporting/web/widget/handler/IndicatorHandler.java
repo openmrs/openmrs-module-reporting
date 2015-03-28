@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.web.widget.handler;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetConfig;
@@ -23,6 +24,8 @@ import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
 import org.openmrs.module.htmlwidgets.web.html.Option;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
+
+
 
 /**
  * FieldGenHandler for Enumerated Types
@@ -43,7 +46,7 @@ public class IndicatorHandler extends CodedHandler {
 			l = Context.getService(IndicatorService.class).getAllDefinitions(false);
 		}
 		for (Indicator d : l) {
-			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
+			widget.addOption(new Option(d.getUuid(),StringEscapeUtils.escapeHtml(d.getName()), null, d), config);
 		}
 	}
 	

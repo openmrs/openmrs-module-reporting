@@ -86,7 +86,7 @@
 			<c:when test="${empty definition.uuid || empty definition.name}">
 				(unsaved <rpt:displayLabel type="${definition['class'].name}"/>)
 			</c:when>
-			<c:otherwise>${definition.name}</c:otherwise>
+			<c:otherwise><c:out value="${definition.name}" /> </c:otherwise>
 		</c:choose>
 	</h1>
 

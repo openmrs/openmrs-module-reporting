@@ -297,7 +297,7 @@
 												<td><c:out value="${col.indicator.parameterizable.name}" /></td>
 												<td>
 													<c:forEach var="dimOpt" items="${col.dimensionOptions}">
-														${dimOpt.key}=${dimOpt.value} <br/>
+														<c:out value="${dimOpt.key}" />=<c:out value="${dimOpt.value}" /> <br/>
 													</c:forEach>
 												</td>
 												<td>
