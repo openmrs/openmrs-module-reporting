@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.propertyeditor.ReportDefinitionEditor;
@@ -23,6 +24,7 @@ import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 import org.openmrs.module.reporting.web.util.AjaxUtil;
 import org.openmrs.propertyeditor.UserEditor;
+import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -135,7 +137,10 @@ public class ReportHistoryController {
 		Map<String, Object> statusMap = new HashMap<String, Object>();
 		statusMap.put("status", status);
 		statusMap.put("log", reportLog);
-		model.addAttribute("json", AjaxUtil.toJson(statusMap));
+
+		// This is needed due to differences in Spring versions in OpenMRS core and how Spring handles JSON
+		Object json = ModuleUtil.compareVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, "1.11") >= 0 ? statusMap : AjaxUtil.toJson(statusMap);
+		model.addAttribute("json", json);
 		
 		return "/module/reporting/json";
 	}
