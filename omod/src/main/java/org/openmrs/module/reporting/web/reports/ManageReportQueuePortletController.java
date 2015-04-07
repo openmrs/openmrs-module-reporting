@@ -61,15 +61,17 @@ public class ManageReportQueuePortletController extends ReportingPortletControll
 	private Integer getQueuePosition(ReportRequest reportRequest, ReportService rs) {
 		List<String> logs = rs.loadReportLog(reportRequest);
 		Integer position = null;
-		for (String log : logs) {
-			log = log.trim();
-			if (log.indexOf("position") > -1) {
-				String[] tokens = log.split(" ");
-				try {
-					position = Integer.valueOf(tokens[tokens.length - 1]);
-				}
-				catch (NumberFormatException e) {
-					//ignore
+		if (logs != null) {
+			for (String log : logs) {
+				log = log.trim();
+				if (log.indexOf("position") > -1) {
+					String[] tokens = log.split(" ");
+					try {
+						position = Integer.valueOf(tokens[tokens.length - 1]);
+					}
+					catch (NumberFormatException e) {
+						//ignore
+					}
 				}
 			}
 		}
