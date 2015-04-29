@@ -13,7 +13,15 @@
  */
 package org.openmrs.module.reporting.data;
 
+import org.openmrs.Person;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.person.PersonData;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.data.person.service.PersonDataService;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
+import org.openmrs.module.reporting.query.person.PersonIdSet;
 
 import java.util.List;
 
@@ -59,4 +67,19 @@ public class DataUtil {
         }
     }
 
+	/**
+	 * @return the result of evaluating the given definition against the given person, cast to the given type
+	 */
+	public static <T> T evaluateForPerson(PersonDataDefinition definition, Person person, Class<T> type) {
+		PersonEvaluationContext context = new PersonEvaluationContext();
+		context.setBasePersons(new PersonIdSet(person.getPersonId()));
+		PersonDataService service = Context.getService(PersonDataService.class);
+		try {
+			PersonData data = service.evaluate(definition, context);
+			return (T) data.getData().get(person.getPersonId());
+		}
+		catch (EvaluationException e) {
+			throw new IllegalArgumentException("Unable to evaluate definition for person", e);
+		}
+	}
 }
