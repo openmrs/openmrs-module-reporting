@@ -173,6 +173,23 @@ public class ReportUtil {
 			IOUtils.closeQuietly(is);
 		}
 	}
+
+	/**
+	 * Given a location on the classpath, return the contents of this resource as a String
+	 */
+	public static String readStringFromResource(String resourceName) {
+		InputStream is = null;
+		try {
+			is = OpenmrsClassLoader.getInstance().getResourceAsStream(resourceName);
+			return IOUtils.toString(is, "UTF-8");
+		}
+		catch (Exception e) {
+			throw new IllegalArgumentException("Unable to load resource: " + resourceName, e);
+		}
+		finally {
+			IOUtils.closeQuietly(is);
+		}
+	}
 	
 	/**
 	 * Looks up a resource on the class path, and returns a RenderingMode based on it
