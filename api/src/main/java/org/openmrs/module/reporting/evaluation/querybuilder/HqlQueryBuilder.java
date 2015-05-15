@@ -51,6 +51,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<String> groupBy = new ArrayList<String>();
 	private List<String> orderBy = new ArrayList<String>();
+	private Integer limit = null;
 	private int positionIndex = 1;
 
 	//***** CONSTRUCTORS *****
@@ -422,6 +423,11 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return this;
 	}
 
+	public HqlQueryBuilder limit(Integer limitNumber) {
+		limit = limitNumber;
+		return this;
+	}
+
 	@Override
 	public List<DataSetColumn> getColumns(SessionFactory sessionFactory) {
 		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
@@ -570,6 +576,10 @@ public class HqlQueryBuilder implements QueryBuilder {
 			else {
 				query.setParameter(e.getKey(), e.getValue());
 			}
+		}
+
+		if (limit != null) {
+			query.setMaxResults(limit);
 		}
 
 		return query;
