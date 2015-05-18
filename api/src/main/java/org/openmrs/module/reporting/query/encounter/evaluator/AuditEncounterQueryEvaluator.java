@@ -59,6 +59,7 @@ public class AuditEncounterQueryEvaluator implements EncounterQueryEvaluator {
 		q.whereIn("e.encounterType", query.getEncounterTypes());
 		q.whereGreaterOrEqualTo("e.dateCreated", query.getCreatedOnOrAfter());
 		q.whereLessOrEqualTo("e.dateCreated", query.getCreatedOnOrBefore());
+        q.whereEqual("e.patient.voided", false);
 		q.whereEncounterIn("e.encounterId", context);
 		q.orderDesc("e.dateCreated");
 		q.limit(query.getLatestCreatedNumber());
