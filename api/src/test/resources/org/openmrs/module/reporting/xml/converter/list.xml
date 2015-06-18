@@ -1,0 +1,6 @@
+<sample>
+    <parameters>
+        <parameter name="startDate" label="Start Date"/>
+        <parameter name="endDate" label="End Date"/>
+    </parameters>
+</sample>
