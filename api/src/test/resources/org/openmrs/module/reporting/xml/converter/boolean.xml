@@ -1,0 +1,4 @@
+<sample booleanObjectAttribute="true" booleanPrimitiveAttribute="true">
+    <booleanObjectElement>true</booleanObjectElement>
+    <booleanPrimitiveElement>true</booleanPrimitiveElement>
+</sample>

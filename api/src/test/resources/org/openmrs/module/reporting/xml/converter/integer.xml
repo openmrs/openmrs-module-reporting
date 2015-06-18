@@ -1,0 +1,4 @@
+<sample integerAttribute="10" intAttribute="20">
+    <integerElement>30</integerElement>
+    <intElement>40</intElement>
+</sample>

@@ -1,0 +1,4 @@
+<sample doubleObjectAttribute="10.1" doublePrimitiveAttribute="20.2">
+    <doubleObjectElement>30.3</doubleObjectElement>
+    <doublePrimitiveElement>40.4</doublePrimitiveElement>
+</sample>

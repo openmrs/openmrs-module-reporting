@@ -1,0 +1,17 @@
+<sqlDataSet name="Patients Created During Period">
+    <parameters>
+        <parameter name="startDate" label="Start Date" type="java.util.Date"/>
+        <parameter name="endDate" label="End Date" type="java.util.Date"/>
+    </parameters>
+    <sqlQuery>
+        <![CDATA[
+            select 	pn.given_name, pn.family_name, n.gender, n.birthdate, n.date_created, u.username as created_by
+            from 	patient p, person_name pn, person n, users u
+            where 	p.patient_id = n.person_id
+            and 	pn.person_id = n.person_id
+            and 	u.user_id = n.creator
+            and	    n.date_created >= :startOfWeek
+            and	    n.date_created <= :endOfWeek
+        ]]>
+    </sqlQuery>
+</sqlDataSet>

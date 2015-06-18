@@ -1,0 +1,7 @@
+<sample stringAttribute="My Query">
+    <stringElement>
+        <![CDATA[
+            select count(*) from patient where voided = 0
+        ]]>
+    </stringElement>
+</sample>

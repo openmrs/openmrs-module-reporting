@@ -1,0 +1,1 @@
+<parameter name="searchStrings" label="Search Strings" required="false" type="java.lang.String" collectionType="java.util.List"/>
