@@ -1,0 +1,10 @@
+<sample>
+    <parameters>
+        <entry key="p1">
+            <parameter name="startDate" label="Start Date"/>
+        </entry>
+        <entry key="p2">
+            <parameter name="endDate" label="End Date"/>
+        </entry>
+    </parameters>
+</sample>
