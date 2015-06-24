@@ -1,0 +1,11 @@
+<report name="Test Report">
+
+    <description>
+        Here is a longer description of the report
+    </description>
+
+    <parameters>
+        <parameter name="reportDate" label="Report Date" type="java.util.Date"/>
+    </parameters>
+
+</report>

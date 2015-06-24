@@ -5,6 +5,8 @@ import com.thoughtworks.xstream.converters.basic.DateConverter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.xml.converter.DefinitionConverter;
 import org.openmrs.module.reporting.xml.converter.StringToObjectMapConverter;
 
 import java.util.Date;
@@ -16,7 +18,22 @@ public class XmlReportUtil {
     public static XStream getXStream() {
         XStream xstream = new XStream(new DomDriver());
         xstream.alias("parameter", Parameter.class);
+        xstream.alias("report", ReportDefinition.class);
+        xstream.aliasField("dataSets", ReportDefinition.class, "dataSetDefinitions");
         xstream.alias("sqlDataSet", SqlDataSetDefinition.class);
+
+        // TODO
+        // Iterate across all evaluators, get all supported definitions, fpr all types
+        // For each, register appropriate alias and iterate over configuration properties
+        // For each configuration property, register a converter that uses reflection to pass in
+        //  - the type of the class containing the configuration property
+        //  - the fieldName of the configuration property
+        //  - the converter itself should be a wrapper that first looks for an attribute whose value contains ${}
+        //    and if it finds it, adds an appropriate parameter to the definition and mapping to the mapped
+        //  - it should then delegate to the appropriate underlying converter if it doesn't contain this
+        //  - returns a mapped if appropriate, otherwise just returns the result of the converter
+
+
 
         // Whenever possible we want to allow simple types to be specified as either attributes or nested elements for readability and simplicity
         xstream.alias("boolean", Boolean.class);
@@ -36,6 +53,8 @@ public class XmlReportUtil {
 
         // Almost all of the Maps we are converting into have Strings as keys, so we'll register this as the default
         xstream.registerConverter(new StringToObjectMapConverter(xstream.getMapper()));
+
+        xstream.registerConverter(new DefinitionConverter(xstream.getMapper()));
 
         return xstream;
     }
