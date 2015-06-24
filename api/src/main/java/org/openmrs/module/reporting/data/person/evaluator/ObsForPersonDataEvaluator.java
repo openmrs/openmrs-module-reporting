@@ -60,6 +60,9 @@ public class ObsForPersonDataEvaluator implements PersonDataEvaluator {
 		q.whereIn("o.encounter.form", def.getFormList());
 		q.whereGreaterOrEqualTo("o.obsDatetime", def.getOnOrAfter());
 		q.whereLessOrEqualTo("o.obsDatetime", def.getOnOrBefore());
+        q.whereGreaterOrEqualTo("o.valueDatetime", def.getValueDatetimeOrAfter());
+        q.whereLessOrEqualTo("o.valueDatetime", def.getValueDatetimeOnOrBefore());
+
 		if (def.getWhich() == TimeQualifier.LAST) {
 			q.orderDesc("o.obsDatetime");
 		}

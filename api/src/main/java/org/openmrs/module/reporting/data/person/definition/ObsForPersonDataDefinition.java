@@ -59,6 +59,12 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
 	
 	@ConfigurationProperty
 	private Date onOrBefore;
+
+    @ConfigurationProperty
+    private Date valueDatetimeOrAfter;
+
+    @ConfigurationProperty
+    private Date valueDatetimeOnOrBefore;
 	
 	//****** CONSTRUCTORS ******
 	
@@ -228,4 +234,20 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
 	public void setOnOrBefore(Date onOrBefore) {
 		this.onOrBefore = onOrBefore;
 	}
+
+    public Date getValueDatetimeOrAfter() {
+        return valueDatetimeOrAfter;
+    }
+
+    public void setValueDatetimeOrAfter(Date valueDatetimeOrAfter) {
+        this.valueDatetimeOrAfter = valueDatetimeOrAfter;
+    }
+
+    public Date getValueDatetimeOnOrBefore() {
+        return valueDatetimeOnOrBefore;
+    }
+
+    public void setValueDatetimeOnOrBefore(Date valueDatetimeOnOrBefore) {
+        this.valueDatetimeOnOrBefore = valueDatetimeOnOrBefore;
+    }
 }
