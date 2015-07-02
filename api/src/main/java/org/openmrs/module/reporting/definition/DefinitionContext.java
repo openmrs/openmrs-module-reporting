@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.reporting.definition;
 
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -30,6 +27,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Provides convenient access to common Definition Services
@@ -106,11 +106,10 @@ public class DefinitionContext {
 	
 	/**
 	 * Evaluates the passed Mapped Definition for the given EvaluationContext
-	 * @see DefinitionService#evaluate(Mapped<Definition>, EvaluationContext)
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Definition> Evaluated<T> evaluate(Mapped<? extends T> definition, EvaluationContext context) throws EvaluationException {
-		Class<T> c = (Class<T>)definition.getClass();
+		Class<T> c = (Class<T>)definition.getParameterizable().getClass();
 		return getDefinitionService(c).evaluate(definition, context);
 	}
 	

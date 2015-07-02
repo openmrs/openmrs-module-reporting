@@ -1,15 +1,14 @@
 package org.openmrs.module.reporting.xml.converter;
 
-import com.thoughtworks.xstream.XStream;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.util.ReportUtil;
-import org.openmrs.module.reporting.xml.XmlReportUtil;
+import org.openmrs.module.reporting.xml.XmlReportSerializer;
 
 import static org.hamcrest.CoreMatchers.is;
 
-public class DefinitionConverterTest {
+public class DefinitionConverterTest extends BaseConverterTest {
 
     protected String getXml() {
         return ReportUtil.readStringFromResource("org/openmrs/module/reporting/xml/converter/definition.xml");
@@ -17,8 +16,8 @@ public class DefinitionConverterTest {
 
     @Test
     public void testMarshall() throws Exception {
-        XStream xstream = XmlReportUtil.getXStream();
-        ReportDefinition rd = (ReportDefinition)xstream.fromXML(getXml());
+        XmlReportSerializer serializer = getSerializer();
+        ReportDefinition rd = serializer.fromXml(ReportDefinition.class, getXml());
         Assert.assertThat(rd.getName(), is("Test Report"));
         Assert.assertThat(rd.getDescription().trim(), is("Here is a longer description of the report"));
         Assert.assertThat(rd.getParameters().size(), is(1));

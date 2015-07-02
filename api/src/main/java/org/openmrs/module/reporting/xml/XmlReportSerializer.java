@@ -3,29 +3,42 @@ package org.openmrs.module.reporting.xml;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.DateConverter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.xml.converter.DefinitionConverter;
 import org.openmrs.module.reporting.xml.converter.StringToObjectMapConverter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class XmlReportUtil {
+public class XmlReportSerializer {
 
-    public static XStream getXStream() {
-        XStream xstream = new XStream(new DomDriver());
+    private XStream xstream;
+
+    public XmlReportSerializer() {
+
+        xstream = new XStream(new DomDriver());
         xstream.alias("parameter", Parameter.class);
         xstream.alias("report", ReportDefinition.class);
         xstream.aliasField("dataSets", ReportDefinition.class, "dataSetDefinitions");
-        xstream.alias("sqlDataSet", SqlDataSetDefinition.class);
 
-        // TODO
         // Iterate across all evaluators, get all supported definitions, fpr all types
         // For each, register appropriate alias and iterate over configuration properties
         // For each configuration property, register a converter that uses reflection to pass in
+        for (Class<? extends Definition> type : getSupportedDefinitionTypes()) {
+            xstream.alias(getAlias(type), type);
+        }
+
+        // TODO
+
         //  - the type of the class containing the configuration property
         //  - the fieldName of the configuration property
         //  - the converter itself should be a wrapper that first looks for an attribute whose value contains ${}
@@ -55,7 +68,43 @@ public class XmlReportUtil {
         xstream.registerConverter(new StringToObjectMapConverter(xstream.getMapper()));
 
         xstream.registerConverter(new DefinitionConverter(xstream.getMapper()));
+    }
 
-        return xstream;
+    public void alias(String alias, Class type) {
+        xstream.alias(alias, type);
+    }
+
+    public <T> T fromXml(Class<T> type, String xml) {
+        return (T)xstream.fromXML(xml);
+    }
+
+    /**
+     * @return all Definition classes registered with the system
+     */
+    public List<Class<? extends Definition>> getSupportedDefinitionTypes() {
+        List<Class<? extends Definition>> ret = new ArrayList<Class<? extends Definition>>();
+        for (DefinitionEvaluator evaluator : Context.getRegisteredComponents(DefinitionEvaluator.class)) {
+            Handler handlerAnnotation = evaluator.getClass().getAnnotation(Handler.class);
+            if (handlerAnnotation != null) {
+                Class<?>[] types = handlerAnnotation.supports();
+                if (types != null) {
+                    for (Class<?> type : types) {
+                        ret.add((Class<? extends Definition>)type);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @return an alias that is the uncapitalized simple name of the class.  If a definition, remove "Definition" from the end
+     */
+    public String getAlias(Class<?> type) {
+        String alias = StringUtils.uncapitalize(type.getSimpleName());
+        if (Definition.class.isAssignableFrom(type) && alias.endsWith("Definition")) {
+            alias = alias.substring(0, alias.lastIndexOf("Definition"));
+        }
+        return alias;
     }
 }
