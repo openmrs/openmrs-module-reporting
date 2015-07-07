@@ -7,7 +7,7 @@ import java.util.List;
  * Takes a collection of objects and returns valueIfPresent
  * if the valueToCheck is in the collection, valueIfNotPresent otherwise
  */
-public class CollectionElementConverter implements DataConverter {
+public class CollectionElementConverter extends DataConverterBase {
 
 	Object valueToCheck;
 	Object valueIfPresent;
@@ -22,7 +22,7 @@ public class CollectionElementConverter implements DataConverter {
     }
 
     @Override
-    public Object convert(Object original) {
+    protected Object convertObject(Object original) {
 		Collection<?> c = (Collection<?>)original;
 		if (c != null && c.contains(valueToCheck)) {
 			return valueIfPresent;

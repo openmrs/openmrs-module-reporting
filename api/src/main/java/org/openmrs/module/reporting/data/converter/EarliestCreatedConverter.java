@@ -23,7 +23,7 @@ import java.util.Collection;
 
  * Gets the first-created element of a collection of Auditable.
  */
-public class EarliestCreatedConverter implements DataConverter {
+public class EarliestCreatedConverter extends DataConverterBase {
 
     private Class<?> typeOfItem;
 
@@ -32,7 +32,7 @@ public class EarliestCreatedConverter implements DataConverter {
     }
 
     @Override
-    public Object convert(Object original) {
+    protected Object convertObject(Object original) {
         Collection c = (Collection) original;
         if (c == null) {
             return null;

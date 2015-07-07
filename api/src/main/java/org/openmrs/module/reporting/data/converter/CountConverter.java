@@ -5,7 +5,7 @@ import java.util.Collection;
 /**
  * Returns the count of elements in a collection
  */
-public class CountConverter implements DataConverter {
+public class CountConverter extends DataConverterBase {
 
     private boolean returnNullInsteadOfZero = false;
 
@@ -17,7 +17,7 @@ public class CountConverter implements DataConverter {
     }
 
     @Override
-    public Object convert(Object original) {
+    protected Object convertObject(Object original) {
         Collection c = (Collection) original;
         int size = c == null ? 0 : c.size();
         return (returnNullInsteadOfZero && size == 0) ? null : size;

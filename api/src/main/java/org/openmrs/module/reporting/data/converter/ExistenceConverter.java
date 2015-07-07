@@ -18,7 +18,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 /**
  * Data converter which provides a replacement value for non-null and null values
  */
-public class ExistenceConverter implements DataConverter  {
+public class ExistenceConverter extends DataConverterBase {
 	
 	//***** PROPERTIES *****
 	
@@ -43,22 +43,22 @@ public class ExistenceConverter implements DataConverter  {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convert(Object)
+	 * @see DataConverterBase#convertObject(Object) (Object)
 	 * @should convert a Boolean to a configured text representation
 	 */
-	public Object convert(Object original) {
+	protected Object convertObject(Object original) {
 		return ObjectUtil.decode(original, nullValue, notNullValue);
 	}
 	
 	/** 
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return Object.class;
 	}
 	
 	/** 
-	 * @see DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Object.class;

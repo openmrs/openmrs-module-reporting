@@ -47,7 +47,7 @@ public class ObsValueTextAsCodedConverterTest extends BaseModuleContextSensitive
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfTypeOtherThanLocation() {
         ObsValueTextAsCodedConverter converter = new ObsValueTextAsCodedConverter<Patient>(Patient.class);
-        converter.convert(new Obs());
+        converter.convertObject(new Obs());
     }
 
 }

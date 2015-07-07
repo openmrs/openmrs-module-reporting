@@ -12,7 +12,7 @@ import org.openmrs.api.context.Context;
  *
  * @param <T>
  */
-public class ObsValueTextAsCodedConverter<T extends OpenmrsObject> implements DataConverter {
+public class ObsValueTextAsCodedConverter<T extends OpenmrsObject> extends DataConverterBase {
 
     private Class<T> dataType;
 
@@ -24,7 +24,7 @@ public class ObsValueTextAsCodedConverter<T extends OpenmrsObject> implements Da
     }
 
     @Override
-    public Object convert(Object original) {
+    protected Object convertObject(Object original) {
 
         if (dataType != Location.class) {
             throw new IllegalArgumentException("ObValueTextAsCodedConverter only currently supports Location.class");

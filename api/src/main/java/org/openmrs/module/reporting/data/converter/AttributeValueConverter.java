@@ -20,7 +20,7 @@ import org.openmrs.util.OpenmrsClassLoader;
 /**
  * Date data converter
  */
-public class AttributeValueConverter implements DataConverter {
+public class AttributeValueConverter extends DataConverterBase {
 	
 	//***** PROPERTIES *****
 	
@@ -40,11 +40,11 @@ public class AttributeValueConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#converter(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 * @should convert a serialized attribute value into its hydrated object form
 	 * @should return the passed in value if it is not attributable
 	 */
-	public Object convert(Object original) {
+	protected Object convertObject(Object original) {
 		String value = (String) original;
 		if (value != null) {
 			try {
@@ -62,7 +62,7 @@ public class AttributeValueConverter implements DataConverter {
 	}
 	
 	/** 
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		try {
@@ -74,7 +74,7 @@ public class AttributeValueConverter implements DataConverter {
 	}
 	
 	/** 
-	 * @see DataConverter#getInputDataType()
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return String.class;

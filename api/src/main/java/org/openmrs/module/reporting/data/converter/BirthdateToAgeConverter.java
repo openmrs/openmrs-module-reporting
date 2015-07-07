@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 /**
  * Converters a Birthdate into an Age
  */
-public class BirthdateToAgeConverter implements DataConverter {
+public class BirthdateToAgeConverter extends DataConverterBase {
 	
 	//***** PROPERTIES *****
 	
@@ -43,10 +43,10 @@ public class BirthdateToAgeConverter implements DataConverter {
 	//***** INSTANCE METHODS *****
 
 	/** 
-	 * @see DataConverter#convert(Object)
+	 * @see DataConverterBase#convertObject(Object)
 	 * @should convert a birthdate to an age on the configured date
 	 */
-	public Object convert(Object original) {
+	protected Object convertObject(Object original) {
 		Birthdate birthdate = (Birthdate) original;
 		if (birthdate != null) {
 			return new Age(birthdate.getBirthdate(), effectiveDate);
@@ -55,14 +55,14 @@ public class BirthdateToAgeConverter implements DataConverter {
 	}
 	
 	/** 
-	 * @see DataConverter#getDataType()
+	 * @see DataConverterBase#getDataType()
 	 */
 	public Class<?> getDataType() {
 		return Age.class;
 	}
-	
-	/** 
-	 * @see DataConverter#getInputDataType()
+
+	/**
+	 * @see DataConverterBase#getInputDataType()
 	 */
 	public Class<?> getInputDataType() {
 		return Birthdate.class;
