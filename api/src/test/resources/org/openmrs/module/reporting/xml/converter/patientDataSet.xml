@@ -1,0 +1,12 @@
+<patientDataSet name="Male Adults on Date">
+
+    <parameters>
+        <parameter name="date" label="Date" type="java.util.Date"/>
+    </parameters>
+
+    <rowFilters>
+        <ageCohort minAge="15" effectiveDate="${date}"/>
+        <genderCohort maleIncluded="true"/>
+    </rowFilters>
+
+</patientDataSet>

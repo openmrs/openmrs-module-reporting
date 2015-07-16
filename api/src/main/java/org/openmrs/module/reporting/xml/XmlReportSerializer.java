@@ -6,17 +6,27 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.ReflectionUtil;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.xml.converter.CollectionOfMappedConverter;
 import org.openmrs.module.reporting.xml.converter.DefinitionConverter;
+import org.openmrs.module.reporting.xml.converter.StringToMappedMapConverter;
 import org.openmrs.module.reporting.xml.converter.StringToObjectMapConverter;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class XmlReportSerializer {
@@ -29,24 +39,6 @@ public class XmlReportSerializer {
         xstream.alias("parameter", Parameter.class);
         xstream.alias("report", ReportDefinition.class);
         xstream.aliasField("dataSets", ReportDefinition.class, "dataSetDefinitions");
-
-        // Iterate across all evaluators, get all supported definitions, fpr all types
-        // For each, register appropriate alias and iterate over configuration properties
-        // For each configuration property, register a converter that uses reflection to pass in
-        for (Class<? extends Definition> type : getSupportedDefinitionTypes()) {
-            xstream.alias(getAlias(type), type);
-        }
-
-        // TODO
-
-        //  - the type of the class containing the configuration property
-        //  - the fieldName of the configuration property
-        //  - the converter itself should be a wrapper that first looks for an attribute whose value contains ${}
-        //    and if it finds it, adds an appropriate parameter to the definition and mapping to the mapped
-        //  - it should then delegate to the appropriate underlying converter if it doesn't contain this
-        //  - returns a mapped if appropriate, otherwise just returns the result of the converter
-
-
 
         // Whenever possible we want to allow simple types to be specified as either attributes or nested elements for readability and simplicity
         xstream.alias("boolean", Boolean.class);
@@ -67,7 +59,41 @@ public class XmlReportSerializer {
         // Almost all of the Maps we are converting into have Strings as keys, so we'll register this as the default
         xstream.registerConverter(new StringToObjectMapConverter(xstream.getMapper()));
 
-        xstream.registerConverter(new DefinitionConverter(xstream.getMapper()));
+        // Iterate across all evaluators, get all supported definitions, fpr all types
+        // For each, register appropriate alias and iterate over configuration properties
+        // For each configuration property, register a converter that uses reflection to pass in
+        for (Class<? extends Definition> type : getSupportedDefinitionTypes()) {
+            xstream.alias(getAlias(type), type);
+            for (Field f : getConfigurationProperties(type)) {
+                if (Mapped.class.isAssignableFrom(f.getType())) {
+                    xstream.registerLocalConverter(type, f.getName(), new DefinitionConverter(true, xstream.getMapper()));
+                }
+                else if (Collection.class.isAssignableFrom(f.getType())) {
+                    Type[] genericTypes = ReflectionUtil.getGenericTypes(f);
+                    if (genericTypes.length > 0) {
+                        if (ParameterizedType.class.isAssignableFrom(genericTypes[0].getClass())) {
+                            Class genericType = (Class)((ParameterizedType)genericTypes[0]).getRawType();
+                            if (Mapped.class.isAssignableFrom(genericType)) {
+                                xstream.registerLocalConverter(type, f.getName(), new CollectionOfMappedConverter(xstream.getMapper()));
+                            }
+                        }
+                    }
+                }
+                else if (Map.class.isAssignableFrom(f.getType())) {
+                    Type[] genericTypes = ReflectionUtil.getGenericTypes(f);
+                    if (genericTypes.length > 0) {
+                        if (genericTypes[0] == String.class) {
+                            if (ParameterizedType.class.isAssignableFrom(genericTypes[1].getClass())) {
+                                Class genericType = (Class)((ParameterizedType)genericTypes[1]).getRawType();
+                                if (Mapped.class.isAssignableFrom(genericType)) {
+                                    xstream.registerLocalConverter(type, f.getName(), new StringToMappedMapConverter(xstream.getMapper()));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void alias(String alias, Class type) {
@@ -76,6 +102,17 @@ public class XmlReportSerializer {
 
     public <T> T fromXml(Class<T> type, String xml) {
         return (T)xstream.fromXML(xml);
+    }
+
+    /**
+     * @return an alias that is the uncapitalized simple name of the class.  If a definition, remove "Definition" from the end
+     */
+    public String getAlias(Class<?> type) {
+        String alias = StringUtils.uncapitalize(type.getSimpleName());
+        if (Definition.class.isAssignableFrom(type) && alias.endsWith("Definition")) {
+            alias = alias.substring(0, alias.lastIndexOf("Definition"));
+        }
+        return alias;
     }
 
     /**
@@ -97,14 +134,18 @@ public class XmlReportSerializer {
         return ret;
     }
 
-    /**
-     * @return an alias that is the uncapitalized simple name of the class.  If a definition, remove "Definition" from the end
-     */
-    public String getAlias(Class<?> type) {
-        String alias = StringUtils.uncapitalize(type.getSimpleName());
-        if (Definition.class.isAssignableFrom(type) && alias.endsWith("Definition")) {
-            alias = alias.substring(0, alias.lastIndexOf("Definition"));
+    public List<Field> getConfigurationProperties(Class<? extends Definition> type) {
+        List<Field> ret = new ArrayList<Field>();
+        Class superclass = type.getSuperclass();
+        if (superclass != null) {
+            ret.addAll(getConfigurationProperties(superclass));
         }
-        return alias;
+        for (Field f : type.getDeclaredFields()) {
+            ConfigurationProperty ann = f.getAnnotation(ConfigurationProperty.class);
+            if (ann != null) {
+                ret.add(f);
+            }
+        }
+        return ret;
     }
 }

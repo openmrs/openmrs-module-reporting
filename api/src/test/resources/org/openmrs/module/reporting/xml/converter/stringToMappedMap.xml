@@ -1,0 +1,8 @@
+<report name="Simple Test Report">
+
+    <dataSets>
+        <sqlDataSet name="Num Patients" sqlQuery="select count(*) from patient where voided = 0"/>
+        <sqlDataSet name="Num Encounters" sqlQuery="select count(*) from encounter where voided = 0"/>
+    </dataSets>
+
+</report>

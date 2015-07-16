@@ -10,21 +10,33 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.EvaluationUtil;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This Converter is meant to handle top-level definitions that are not mapped.
  */
 public class DefinitionConverter implements Converter {
 
+    private boolean mapped = false;
     private Mapper mapper;
 
     public DefinitionConverter(Mapper mapper) {
+        this(false, mapper);
+    }
+
+    public DefinitionConverter(boolean mapped, Mapper mapper) {
+        this.mapped = mapped;
         this.mapper = mapper;
     }
 
     @Override
     public boolean canConvert(Class type) {
-        return Definition.class.isAssignableFrom(type);
+        return Definition.class.isAssignableFrom(type) || Mapped.class.isAssignableFrom(type);
     }
 
     @Override
@@ -34,8 +46,22 @@ public class DefinitionConverter implements Converter {
 
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+
         Definition d = getDefinitionInstance(context);
-        setPropertiesFromAttributes(d, reader);
+        Map<String, Object> mappings = new HashMap<String, Object>();
+
+        for (int i=0; i<reader.getAttributeCount(); i++) {
+            String attributeName = reader.getAttributeName(i);
+            String attributeValueString = reader.getAttribute(i);
+            if (EvaluationUtil.isExpression(attributeValueString)) {
+                d.addParameter(new Parameter(attributeName, attributeName, getPropertyType(d, attributeName))); // TODO: Support collections
+                mappings.put(attributeName, attributeValueString);
+            }
+            else {
+                setPropertyValueFromString(d, attributeName, attributeValueString);
+            }
+        }
+
         while (reader.hasMoreChildren()) {
             reader.moveDown();
 
@@ -47,18 +73,11 @@ public class DefinitionConverter implements Converter {
 
             reader.moveUp();
         }
-        return d;
-    }
 
-    /**
-     * Set all properties on an object with any defined attributes in the current node
-     */
-    protected void setPropertiesFromAttributes(Object o, HierarchicalStreamReader reader) {
-        for (int i=0; i<reader.getAttributeCount(); i++) {
-            String attributeName = reader.getAttributeName(i);
-            String attributeValueString = reader.getAttribute(i);
-            setPropertyValueFromString(o, attributeName, attributeValueString);
+        if (mapped) {
+            return new Mapped(d, mappings);
         }
+        return d;
     }
 
     /**
