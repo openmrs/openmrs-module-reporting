@@ -25,6 +25,7 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeD
 import org.openmrs.module.reporting.data.encounter.definition.EncounterIdDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterLocationDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterTypeDataDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterVisitDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.PatientToEncounterDataDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
@@ -62,6 +63,9 @@ public class BuiltInEncounterDataLibrary extends BaseDefinitionLibrary<Encounter
     public EncounterDataDefinition getEncounterDatetime() {
         return new EncounterDatetimeDataDefinition();
     }
+
+    @DocumentedDefinition("encounterVisit")
+    public EncounterDataDefinition getEncounterVisit() { return new EncounterVisitDataDefinition(); }
 
     @DocumentedDefinition("encounterType.name")
     public EncounterDataDefinition getEncounterTypeName() {
