@@ -63,10 +63,17 @@
 				<constraints nullable="false" />
 			</column>
 		</addColumn>
-		<sql>
+		<!--<sql>
 			UPDATE reporting_report_design rd
 			LEFT JOIN serialized_object so ON rd.report_definition_id = so.serialized_object_id
 			SET rd.report_definition_uuid = so.uuid;
+		</sql> -->
+		<sql>
+			UPDATE reporting_report_design SET report_definition_uuid =
+				(SELECT serialized_object.uuid
+				FROM serialized_object
+				LEFT JOIN reporting_report_design ON serialized_object_id = report_definition_id
+				WHERE serialized_object_id = serialized_object.serialized_object_id)
 		</sql>
 	</changeSet>
 
