@@ -117,7 +117,7 @@
 		
 		<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>			
 			<b class="boxHeader" style="font-weight:bold; text-align:right;">
-				<span style="float:left;">${model.label}</span>
+				<span style="float:left;"><c:out value="${model.label}" /> </span>
 				<a style="color:lightyellow; font-weight:bold;" href="#" id="${model.portletUUID}AddLink">[+] Add</a>
 			</b>			
 			<div class="box">
@@ -135,8 +135,8 @@
 						</tr>
 						<c:forEach items="${model.obj.parameters}" var="p" varStatus="paramStatus">
 							<tr>
-								<td nowrap>${p.name}</td>
-								<td width="100%">${p.label}</td>
+								<td nowrap><c:out value="${p.name}" /> </td>
+								<td width="100%"><c:out value="${p.label}" /></td>
 								<td nowrap>
 									<c:choose>
 										<c:when test="${p.collectionType != null}">

@@ -47,7 +47,7 @@
 			<td style="border-bottom: 1px #c0c0c0 solid; white-space: nowrap;">
 				<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistoryOpen.form?uuid=${r.uuid}">
 					<img src='<c:url value="${openImageFilename}"/>' border="0" width="16" height="16"/>
-					${r.reportDefinition.parameterizable.name}
+					<c:out value="${r.reportDefinition.parameterizable.name}" />
 				</a>
 				<br/>
 				<c:if test="${r.description != null}">
@@ -55,7 +55,7 @@
 						<span class="faded">
 							Description:
 						</span>
-						${r.description}
+						<c:out value="${r.description}" />
 					</span>
 				</c:if>
 			</td>
@@ -64,7 +64,7 @@
 					<c:forEach var="p" items="${r.reportDefinition.parameterMappings}">
 						<tr valign="top">
 							<td class="faded" align="right">
-								${p.key}:
+								<c:out value="${p.key}" />:
 							</td>
 							<td>
 								<rpt:format object="${p.value}"/>

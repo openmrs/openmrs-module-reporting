@@ -57,10 +57,10 @@
 				<c:forEach items="${reportDesigns}" var="design" varStatus="designStatus">
 					<tr>
 						<td width="20%" nowrap="true">
-							<a id="${design.uuid}DesignEditLink" href="#">${design.name}</a>
+							<a id="${design.uuid}DesignEditLink" href="#"><c:out value="${design.name}" /> </a>
 						</td>
-						<td>${design.description}</td>
-						<td width="20%">${design.reportDefinition.name}</td>
+						<td><c:out value="${design.description}" /></td>
+						<td width="20%"><c:out value="${design.reportDefinition.name}" /></td>
 						<td width="20%"><rpt:displayLabel type="${design.rendererType.name}"/></td>
 						<td width="5%" align="center"><a id="${design.uuid}DesignRemoveLink" href="#">
 							<img src='<c:url value="/images/trash.gif"/>' border="0"/>

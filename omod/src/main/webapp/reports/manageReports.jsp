@@ -85,16 +85,16 @@
 
 					<tr>
 						<td width="20%" nowrap>
-							${reportDefinition.name}
+							<c:out value="${reportDefinition.name}" /> 
 						</td>
 						<td width="20%">
-							${reportDefinition.description}
+							<c:out value="${reportDefinition.description}" /> 
 						</td>
 						<td width="10%" nowrap>
 							<rpt:displayLabel type="${reportDefinition['class'].name}"/>
 						</td>
 						<td width="5%" nowrap>
-							${reportDefinition.creator}
+							<c:out value="${reportDefinition.creator}" /> 
 						</td>
 						<td width="5%" nowrap>
 							<rpt:timespan then="${reportDefinition.dateCreated}"/>

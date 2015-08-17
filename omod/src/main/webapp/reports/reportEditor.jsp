@@ -78,8 +78,8 @@
 										</tr>
 										<c:forEach items="${designs}" var="design" varStatus="designStatus">
 											<tr>
-												<td nowrap><a href="#edit" id="${design.uuid}DesignEditLink">${design.name}</a></td>
-												<td width="100%">${design.rendererType.simpleName}</td>
+												<td nowrap><a href="#edit" id="${design.uuid}DesignEditLink"><c:out value="${design.name}" /> </a></td>
+												<td width="100%"><c:out value="${design.rendererType.simpleName}" /> </td>
 												<td nowrap align="center"><a href="#" id="${design.uuid}DesignRemoveLink">[X]</a></td>
 											</tr>
 										</c:forEach>
@@ -102,7 +102,7 @@
 									<table style="font-size:smaller; color:grey; border:1px solid black;">
 										<tr>
 											<th colspan="7">
-												${dsd.value.parameterizable.name}
+												<c:out value="${dsd.value.parameterizable.name}" /> 
 												(<a href="../definition/editDefinition.form?type=${dsd.value.parameterizable['class'].name}&uuid=${dsd.value.parameterizable.uuid}">Edit this Definition</a>)
 											</th>
 										</tr>
@@ -112,7 +112,7 @@
 													<th>&nbsp;</th>
 												</c:if>
 												<c:forEach items="${dsd.value.parameterizable.columns}" var="columnEntry" varStatus="colStatus">
-													<th style="border-bottom:1px solid black;">${columnEntry.key}</th>
+													<th style="border-bottom:1px solid black;"><c:out value="${columnEntry.key}" /> </th>
 												</c:forEach>
 											</tr>
 											<c:choose>
@@ -124,7 +124,7 @@
 												<c:otherwise>
 													<c:forEach items="${dsd.value.parameterizable.rows}" var="rowEntry" varStatus="rowStatus">
 														<tr>
-															<th>${rowEntry.key}</th>
+															<th><c:out value="${rowEntry.key}" /> </th>
 															<c:forEach items="${dsd.value.parameterizable.columns}" var="columnEntry" varStatus="colStatus">
 																<td style="border-bottom:1px solid black;">...</td>
 															</c:forEach>

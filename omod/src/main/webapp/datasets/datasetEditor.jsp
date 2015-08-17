@@ -57,7 +57,7 @@
 			<c:when test="${empty dataSetDefinition.uuid}">
 				Unsaved DataSet Definition
 			</c:when>
-			<c:otherwise>${dataSetDefinition.name}</c:otherwise>
+			<c:otherwise><c:out value="${dataSetDefinition.name}" /> </c:otherwise>
 		</c:choose>
 	</h1>
 
@@ -75,7 +75,7 @@
 						</li>
 						<li>
 							<label class="desc" for="description">Description</label>
-							<textarea id="description" class="field text short" cols="50" rows="10" tabindex="3" name="description">${dataSetDefinition.description}</textarea>
+							<textarea id="description" class="field text short" cols="50" rows="10" tabindex="3" name="description"><c:out value="${dataSetDefinition.description}" /> </textarea>
 						</li>
 						<li>
 							<label class="desc" for="type">Type</label>
@@ -88,13 +88,13 @@
 						<li>
 							<c:forEach items="${groupedProperties}" var="entry" varStatus="entryStatus">
 								<fieldset>
-									<c:if test="${!empty entry.key}"><legend>${entry.key}</legend></c:if>
+									<c:if test="${!empty entry.key}"><legend><c:out value="${entry.key}" /> </legend></c:if>
 									<table id="cohort-definition-property-table">
 										<c:forEach items="${entry.value}" var="p" varStatus="varStatus">
 	
 											<tr>
 												<td valign="top" nowrap="true">
-													${p.displayName}
+													<c:out value="${p.displayName}" /> 
 													<c:if test="${p.required}"><span style="color:red;">*</span></c:if>
 												</td>
 												<td style="vertical-align:top;">

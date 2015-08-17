@@ -115,10 +115,10 @@
 							<c:forEach items="${definitions}" var="entry" varStatus="entryStatus">
 								<c:forEach items="${entry.value}" var="definition" varStatus="definitionStatus">
 									<tr class="definitionRow">
-										<td>${definition.name}</td>
+										<td><c:out value="${definition.name}" /></td>
 										<td><rpt:displayLabel type="${entry.key.name}"/></td>
 										<td width="5%" nowrap="nowrap">
-											${definition.creator}
+											<c:out value="${definition.creator}" />
 										</td>
 										<td width="5%" nowrap="nowrap">
 										<openmrs:formatDate date="${definition.dateCreated}" format="yyyy-MM-dd HH:mm:ss" />	

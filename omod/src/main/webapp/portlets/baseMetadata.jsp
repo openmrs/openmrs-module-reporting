@@ -52,7 +52,7 @@
 				</c:if>		
 				<div class="metadataField">
 					<label class="desc" for="description">Description</label>			
-					<textarea id="description" cols="80" rows="10" tabindex="2" name="description">${model.obj.description}</textarea>
+					<textarea id="description" cols="80" rows="10" tabindex="2" name="description"><c:out value="${model.obj.description}" /> </textarea>
 				</div>
 			</div>
 			<hr style="color:blue;"/>
@@ -79,13 +79,13 @@
 		
 		<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
 			<b class="boxHeader" style="font-weight:bold; text-align:right;">
-				<span style="float:left;">${model.label}</span>
+				<span style="float:left;"><c:out value="${model.label}" /> </span>
 				<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
 			</b>
 			<div class="box">
 				<div class="metadataForm">
 					<div class="metadataField">
-						<label class="inline">Name:</label>${model.obj.name}
+						<label class="inline">Name:</label> <c:out value="${model.obj.name}" /> 
 					</div>
 					<c:if test="${model.showType != 'false'}">
 						<div class="metadataField">
@@ -97,7 +97,7 @@
 						<label class="inline">Description:</label>
 						<c:choose>
 							<c:when test="${!empty model.obj.description}">
-								${model.obj.description}
+								<c:out value="${model.obj.description}" /> 
 							</c:when>
 							<c:otherwise>
 								<i><spring:message code="reporting.none"/></i>							

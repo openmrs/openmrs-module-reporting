@@ -25,7 +25,7 @@
 			<tr>
 				<td>
 					<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?reportId=${r.uuid}">
-						${r.name}
+						<c:out value="${r.name}" /> 
 					</a>
 				</td>
 			</tr>

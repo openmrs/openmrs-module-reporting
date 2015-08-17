@@ -67,7 +67,7 @@
 						</div>
 						<div class="metadataField">
 							<label class="desc" for="description">Description</label>			
-							<textarea id="description" cols="40" rows="10" tabindex="2" name="description">${model.indicator.description}</textarea>
+							<textarea id="description" cols="40" rows="10" tabindex="2" name="description"><c:out value="${model.indicator.description}" /></textarea>
 						</div>
 						<div class="metadataField">
 							<label class="desc" for="indicatorType">Indicator Type</label>
@@ -77,7 +77,7 @@
 							<div class="metadataField">
 								<label class="desc" for="parameters">Include Standard Parameters</label>
 								<c:forEach items="${model.indicator.parameters}" var="p">
-									<input type="checkbox" name="parameters" value="${p.name}" checked/> ${p.name}
+									<input type="checkbox" name="parameters" value="${p.name}" checked/> <c:out value="${p.name}" />
 									&nbsp;&nbsp;&nbsp;
 								</c:forEach>
 							</div>
@@ -109,28 +109,28 @@
 		
 		<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
 			<b class="boxHeader" style="font-weight:bold; text-align:right;">
-				<span style="float:left;">${model.label}</span>
+				<span style="float:left;"><c:out value="${model.label}" /></span>
 				<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
 			</b>
 			<div class="box">
 				<c:choose>
 					<c:when test="${model.subfields == 'logic'}">
 						<div style="padding-bottom:5px;">
-							<b>Aggregator:&nbsp;&nbsp;</b>${model.aggregatorName}
+							<b>Aggregator:&nbsp;&nbsp;</b><c:out value="${model.aggregatorName}" />
 						</div>
 						<div style="padding-bottom:5px;">
-							<b>LogicExpression:&nbsp;&nbsp;</b>${model.indicator.logicExpression}
+							<b>LogicExpression:&nbsp;&nbsp;</b><c:out value="${model.indicator.logicExpression}" />
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div style="padding-bottom:5px;">
-							<b>Name:&nbsp;&nbsp;</b>${model.indicator.name}
+							<b>Name:&nbsp;&nbsp;</b><c:out value="${model.indicator.name}" />
 						</div>
 						<div style="padding-bottom:5px;">
-							<b>Description:&nbsp;&nbsp;</b>${model.indicator.description}
+							<b>Description:&nbsp;&nbsp;</b><c:out value="${model.indicator.description}" />
 						</div>
 						<div style="padding-bottom:5px;">
-							<b>Indicator Type:&nbsp;&nbsp;</b>${model.indicator.type}
+							<b>Indicator Type:&nbsp;&nbsp;</b><c:out value="${model.indicator.type}" />
 						</div>					
 					</c:otherwise>
 				</c:choose>

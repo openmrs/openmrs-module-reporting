@@ -58,7 +58,7 @@ span.cancel{
 					<c:forEach var="parameter" items="${reportRequest.reportDefinition.parameterizable.parameters}">
 						<tr valign="top">
 							<td class="faded" align="right">
-								${parameter.labelOrName}:
+								<c:out value="${parameter.labelOrName}" />:
 							</td>
 							<td><rpt:format object="${reportRequest.reportDefinition.parameterMappings[parameter.name]}"/></td>
 						</tr>
