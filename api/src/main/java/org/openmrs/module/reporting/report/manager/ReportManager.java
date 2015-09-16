@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.report.manager;
 
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.util.List;
@@ -56,6 +57,12 @@ public interface ReportManager {
      * @return the ReportDesigns under which this report can be evaluated
      */
     List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition);
+
+    /**
+     * @param reportDefinition this will be the same ReportDefinition returned by an earlier call to #constructReportDefinition
+     * @return the ReportRequests that should be automatically scheduled for execution
+     */
+    List<ReportRequest> constructScheduledRequests(ReportDefinition reportDefinition);
 
     /**
      * This is used to determine whether to build/save the report definition on module startup. Version should be something

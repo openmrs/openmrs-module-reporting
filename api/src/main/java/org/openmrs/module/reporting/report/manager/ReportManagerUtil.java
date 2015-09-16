@@ -22,6 +22,7 @@ import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
@@ -105,6 +106,22 @@ public class ReportManagerUtil {
 			for (ReportDesign design : designs) {
 				reportService.saveReportDesign(design);
 			}
+
+            // Update scheduled report requests
+            for (ReportRequest rrTemplate : rm.constructScheduledRequests(reportDefinition)) {
+                ReportRequest existingRequest = reportService.getReportRequestByUuid(rrTemplate.getUuid());
+                if (existingRequest == null) {
+                    reportService.queueReport(rrTemplate);
+                }
+                else {
+                    existingRequest.setReportDefinition(rrTemplate.getReportDefinition());
+                    existingRequest.setPriority(rrTemplate.getPriority());
+                    existingRequest.setProcessAutomatically(rrTemplate.isProcessAutomatically());
+                    existingRequest.setRenderingMode(rrTemplate.getRenderingMode());
+                    existingRequest.setSchedule(rrTemplate.getSchedule());
+                    reportService.saveReportRequest(existingRequest);
+                }
+            }
 
 			gp.setPropertyValue(rm.getVersion());
 			Context.getAdministrationService().saveGlobalProperty(gp);

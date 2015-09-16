@@ -15,6 +15,8 @@
 package org.openmrs.module.reporting.report.manager;
 
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,4 +33,12 @@ public abstract class BaseReportManager implements ReportManager {
 	public List<Parameter> getParameters() {
 		return new ArrayList<Parameter>();
 	}
+
+    /**
+     * @return by default, no requests are automatically scheduled
+     */
+    @Override
+    public List<ReportRequest> constructScheduledRequests(ReportDefinition reportDefinition) {
+        return new ArrayList<ReportRequest>();
+    }
 }
