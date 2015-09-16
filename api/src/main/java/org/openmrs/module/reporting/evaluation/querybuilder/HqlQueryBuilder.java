@@ -503,6 +503,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 			else if (!ObjectUtil.containsWhitespace(column)) {
 				String[] propertySplit = split[0].split("\\.");
 				columnAlias = propertySplit[propertySplit.length - 1];
+                columnAlias = columnAlias.replace("(", "").replace(")", "");
 			}
 			q.append(column).append(columnAlias != null ? " as " + columnAlias : "");
 		}

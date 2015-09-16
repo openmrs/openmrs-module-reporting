@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
@@ -148,7 +149,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void whereEqual_shouldConstrainAgainstExactDatetimeIfNotMidnight() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
-		q.select("person.personId").from(PersonAddress.class).whereEqual("dateCreated", DateUtil.getDateTime(2008,8,15,15,46,47,0));
+		q.select("person.personId").from(PersonAddress.class).whereEqual("dateCreated", DateUtil.getDateTime(2008, 8, 15, 15, 46, 47, 0));
 		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
 		testSize(rows, 1);
 	}
@@ -389,6 +390,18 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("patientId", columns.get(0).getName());
 		Assert.assertEquals("1", columns.get(1).getName());
 		evaluationService.evaluateToList(query, new EvaluationContext());
+    }
+
+    @Test
+    public void testDefaultAliasForAggregation() throws Exception {
+        HqlQueryBuilder query = new HqlQueryBuilder();
+        query.select("o.person.personId", "max(o.valueNumeric)");
+        query.from(Obs.class, "o");
+        query.groupBy("o.person.personId");
+        List<DataSetColumn> columns = evaluationService.getColumns(query);
+        Assert.assertEquals("personId", columns.get(0).getName());
+        Assert.assertEquals("valueNumeric", columns.get(1).getName());
+        evaluationService.evaluateToList(query, new EvaluationContext());
     }
 
 	// Utility methods
