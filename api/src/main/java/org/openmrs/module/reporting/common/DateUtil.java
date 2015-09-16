@@ -108,8 +108,8 @@ public class DateUtil {
 	public static Date getStartOfMonth(Date d, int monthAdjustment) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(getStartOfDay(d));
+        c.add(Calendar.MONTH, monthAdjustment);
 		c.set(Calendar.DATE, 1);
-		c.add(Calendar.MONTH, monthAdjustment);
 		return c.getTime();
 	}
 
@@ -120,11 +120,10 @@ public class DateUtil {
 	public static Date getEndOfMonth(Date d, int monthAdjustment) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(getEndOfDay(d));
+        c.add(Calendar.MONTH, monthAdjustment);
 		c.set(Calendar.DATE, c.getActualMaximum(Calendar.DATE));
-		c.add(Calendar.MONTH, monthAdjustment);
 		return c.getTime();
 	}
-
 	
 	/**
 	 * Get a string that represents the time span that has elapsed 
