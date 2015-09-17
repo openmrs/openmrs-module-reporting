@@ -67,48 +67,56 @@ public class ReportManagerUtil {
 		}
 
 		if (rm.getVersion().contains("-SNAPSHOT") || !gp.getPropertyValue().equals(rm.getVersion())) {
-
 			ReportDefinition reportDefinition = rm.constructReportDefinition();
-			log.info("Updating " + reportDefinition.getName() + " to version " + rm.getVersion());
+            List<ReportDesign> reportDesigns = rm.constructReportDesigns(reportDefinition);
+            List<ReportRequest> scheduledRequests = rm.constructScheduledRequests(reportDefinition);
+            log.info("Updating " + reportDefinition.getName() + " to version " + rm.getVersion());
+            setupReportDefinition(reportDefinition, reportDesigns, scheduledRequests);
+			gp.setPropertyValue(rm.getVersion());
+			Context.getAdministrationService().saveGlobalProperty(gp);
+		}
+	}
 
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			ReportDefinition existing = rds.getDefinitionByUuid(reportDefinition.getUuid());
-			if (existing != null) {
-				// we need to overwrite the existing, rather than purge-and-recreate, to avoid deleting old ReportRequests
-				log.debug("Overwriting existing ReportDefinition");
-				reportDefinition.setId(existing.getId());
-				Context.evictFromSession(existing);
-			}
-			else {
-				// incompatible class changes for a serialized object could mean that getting the definition returns null
-				// and some serialization error gets logged. In that case we want to overwrite the invalid serialized definition
-				SerializedObjectDAO serializedObjectDAO = Context.getRegisteredComponents(SerializedObjectDAO.class).get(0);
-				SerializedObject invalidSerializedObject = serializedObjectDAO.getSerializedObjectByUuid(reportDefinition.getUuid());
-				if (invalidSerializedObject != null) {
-					reportDefinition.setId(invalidSerializedObject.getId());
-					Context.evictFromSession(invalidSerializedObject);
-				}
-			}
+    public static void setupReportDefinition(ReportDefinition reportDefinition, List<ReportDesign> designs, List<ReportRequest> scheduledRequests) {
+        ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+        ReportDefinition existing = rds.getDefinitionByUuid(reportDefinition.getUuid());
+        if (existing != null) {
+            // we need to overwrite the existing, rather than purge-and-recreate, to avoid deleting old ReportRequests
+            log.debug("Overwriting existing ReportDefinition");
+            reportDefinition.setId(existing.getId());
+            Context.evictFromSession(existing);
+        }
+        else {
+            // incompatible class changes for a serialized object could mean that getting the definition returns null
+            // and some serialization error gets logged. In that case we want to overwrite the invalid serialized definition
+            SerializedObjectDAO serializedObjectDAO = Context.getRegisteredComponents(SerializedObjectDAO.class).get(0);
+            SerializedObject invalidSerializedObject = serializedObjectDAO.getSerializedObjectByUuid(reportDefinition.getUuid());
+            if (invalidSerializedObject != null) {
+                reportDefinition.setId(invalidSerializedObject.getId());
+                Context.evictFromSession(invalidSerializedObject);
+            }
+        }
+        rds.saveDefinition(reportDefinition);
 
-			rds.saveDefinition(reportDefinition);
+        // purging a ReportDesign doesn't trigger any extra logic, so we can just purge-and-recreate here
+        ReportService reportService = Context.getService(ReportService.class);
+        List<ReportDesign> existingDesigns = reportService.getReportDesigns(reportDefinition, null, true);
+        if (existingDesigns.size() > 0) {
+            log.debug("Deleting " + existingDesigns.size() + " old designs for " + reportDefinition.getName());
+            for (ReportDesign design : existingDesigns) {
+                reportService.purgeReportDesign(design);
+            }
+        }
 
-			// purging a ReportDesign doesn't trigger any extra logic, so we can just purge-and-recreate here
-			ReportService reportService = Context.getService(ReportService.class);
-			List<ReportDesign> existingDesigns = reportService.getReportDesigns(reportDefinition, null, true);
-			if (existingDesigns.size() > 0) {
-				log.debug("Deleting " + existingDesigns.size() + " old designs for " + reportDefinition.getName());
-				for (ReportDesign design : existingDesigns) {
-					reportService.purgeReportDesign(design);
-				}
-			}
+        if (designs != null) {
+            for (ReportDesign design : designs) {
+                reportService.saveReportDesign(design);
+            }
+        }
 
-			List<ReportDesign> designs = rm.constructReportDesigns(reportDefinition);
-			for (ReportDesign design : designs) {
-				reportService.saveReportDesign(design);
-			}
-
-            // Update scheduled report requests
-            for (ReportRequest rrTemplate : rm.constructScheduledRequests(reportDefinition)) {
+        // Update scheduled report requests
+        if (scheduledRequests != null) {
+            for (ReportRequest rrTemplate : scheduledRequests) {
                 ReportRequest existingRequest = reportService.getReportRequestByUuid(rrTemplate.getUuid());
                 if (existingRequest == null) {
                     reportService.queueReport(rrTemplate);
@@ -122,11 +130,8 @@ public class ReportManagerUtil {
                     reportService.saveReportRequest(existingRequest);
                 }
             }
-
-			gp.setPropertyValue(rm.getVersion());
-			Context.getAdministrationService().saveGlobalProperty(gp);
-		}
-	}
+        }
+    }
 
 	/**
 	 * @return a new ReportDesign for an Excel template, using a file on the classpath as the template
