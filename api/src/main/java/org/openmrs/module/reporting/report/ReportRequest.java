@@ -1,9 +1,5 @@
 package org.openmrs.module.reporting.report;
 
-import java.util.Comparator;
-import java.util.Date;
-import java.util.UUID;
-
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -13,6 +9,10 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.util.OpenmrsUtil;
+
+import java.util.Comparator;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Represents a request to run and render a report.
@@ -70,10 +70,14 @@ public class ReportRequest extends BaseOpenmrsObject {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(reportDefinition);
-		sb.append(" rendered to " + renderingMode);
-		return sb.toString();
+        StringBuilder sb = new StringBuilder("Report Request (" + getUuid() + ")");
+        if (reportDefinition != null && reportDefinition.getParameterizable() != null) {
+            sb.append("for " + reportDefinition.getParameterizable().getName());
+        }
+        if (renderingMode != null && renderingMode.getRenderer() != null) {
+            sb.append(" to " + renderingMode.getRenderer().getClass().getSimpleName());
+        }
+        return sb.toString();
 	}
 
 	/**
