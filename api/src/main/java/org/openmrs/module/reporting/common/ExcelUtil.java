@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
@@ -28,6 +29,7 @@ import org.openmrs.util.OpenmrsClassLoader;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.PushbackInputStream;
 import java.util.Collection;
 import java.util.Date;
 
@@ -305,10 +307,24 @@ public class ExcelUtil {
 		return sb.toString();
 	}
 
+    /**
+     * Load a workbook from an InputStream.
+     * The conditional logic is in order to support differences in xls and xlsx formats
+     * See: http://stackoverflow.com/questions/26729618/read-xlsx-file-using-poifsfilesystem
+     */
 	public static Workbook loadWorkbookFromInputStream(InputStream is) {
 		try {
-			POIFSFileSystem fs = new POIFSFileSystem(is);
-			return WorkbookFactory.create(fs);
+            if (!is.markSupported()) {
+                is = new PushbackInputStream(is, 8);
+            }
+
+            if (POIFSFileSystem.hasPOIFSHeader(is)) {
+                POIFSFileSystem fs = new POIFSFileSystem(is);
+                return WorkbookFactory.create(fs);
+            }
+            else {
+                return new XSSFWorkbook(OPCPackage.open(is));
+            }
 		}
 		catch (Exception e) {
 			throw new RuntimeException("Unable to load excel workbook from resource", e);

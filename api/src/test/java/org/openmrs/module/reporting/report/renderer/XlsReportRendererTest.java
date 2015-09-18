@@ -125,4 +125,29 @@ public class XlsReportRendererTest extends BaseModuleContextSensitiveTest {
 		return ExcelUtil.loadWorkbookFromFile(outFile);
 	}
 
+    @Test
+    public void renderToXlsWithPassword() throws Exception {
+
+        ReportDefinition rd = getReportDefinition();
+        ReportData data = reportDefinitionService.evaluate(rd, new EvaluationContext());
+
+        final ReportDesign design = new ReportDesign();
+        design.setName("TestDesign");
+        design.setReportDefinition(rd);
+        design.setRendererType(XlsReportRenderer.class);
+        Properties props = new Properties();
+        props.setProperty(XlsReportRenderer.PASSWORD_PROPERTY, "foobar");
+        design.setProperties(props);
+
+        XlsReportRenderer renderer = new XlsReportRenderer() {
+            public ReportDesign getDesign(String argument) {
+                return design;
+            }
+        };
+
+        String outFile = System.getProperty("java.io.tmpdir") + File.separator + "renderToXlsWithPassword"+".xls";
+        FileOutputStream fos = new FileOutputStream(outFile);
+        renderer.render(data, "xxx:xls", fos);
+        fos.close();
+    }
 }
