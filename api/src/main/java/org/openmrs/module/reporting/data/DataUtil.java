@@ -13,12 +13,20 @@
  */
 package org.openmrs.module.reporting.data;
 
+import org.openmrs.Cohort;
+import org.openmrs.Encounter;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.patient.PatientData;
+import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.PersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.query.person.PersonIdSet;
@@ -82,4 +90,21 @@ public class DataUtil {
 			throw new IllegalArgumentException("Unable to evaluate definition for person", e);
 		}
 	}
+
+    /**
+     * @return the result of evaluating the given definition against the given patient, cast to the given type
+     */
+    public static <T> T evaluateForPatient(PatientDataDefinition definition, Integer patientId, Class<T> type) {
+        EvaluationContext context = new EvaluationContext();
+        Cohort c = new Cohort();
+        c.addMember(patientId);
+        context.setBaseCohort(c);
+        try {
+            PatientData data = Context.getService(PatientDataService.class).evaluate(definition, context);
+            return (T)data.getData().get(patientId);
+        }
+        catch (EvaluationException e) {
+            throw new IllegalArgumentException("Unable to evaluate definition for patient", e);
+        }
+    }
 }
