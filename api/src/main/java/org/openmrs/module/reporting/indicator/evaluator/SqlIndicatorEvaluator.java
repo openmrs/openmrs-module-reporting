@@ -27,8 +27,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.SessionFactory;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -39,7 +39,6 @@ import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.SimpleIndicatorResult;
 import org.openmrs.module.reporting.indicator.SqlIndicator;
 import org.openmrs.module.reporting.report.util.SqlUtils;
-import org.openmrs.util.DatabaseUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -51,7 +50,7 @@ public class SqlIndicatorEvaluator implements IndicatorEvaluator {
 	protected Log log = LogFactory.getLog(this.getClass());	
 	
 	@Autowired
-	private SessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 	
 
 	 public SimpleIndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException {

@@ -6,10 +6,10 @@ import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.scheduler.SchedulerConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,7 +23,7 @@ public abstract class AbstractReportsTask extends TimerTask {
 	// Per REPORT-368, we need to avoid locking the admin user account if the scheduler.password GP is wrong.
 	private static Date lastFailedLogin = null;
 	
-	private static SessionFactory sessionFactory;
+	private static DbSessionFactory sessionFactory;
 	
 	private volatile Session currentSession;
 	
@@ -34,11 +34,11 @@ public abstract class AbstractReportsTask extends TimerTask {
 	public abstract void execute();
 	
 	@Autowired
-    public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		//Store it in a static variable so that you can instantiate tasks with 'new'.
-    	AbstractReportsTask.sessionFactory = sessionFactory;
-    }
-
+		AbstractReportsTask.sessionFactory = sessionFactory;
+	}
+	
 	/**
 	 * @see TimerTask#run()
 	 */
@@ -46,7 +46,7 @@ public abstract class AbstractReportsTask extends TimerTask {
 	public final void run() {
 		try {
 			Context.openSession();
-			currentSession = sessionFactory.getCurrentSession();
+			currentSession = (Session) sessionFactory.getCurrentSession();
 			
 			if (!Context.isAuthenticated()) {
 				authenticate();
@@ -70,8 +70,7 @@ public abstract class AbstractReportsTask extends TimerTask {
 		if (session != null && session.isOpen()) {
 			session.close();
 			log.info("Reporting task has been cancelled");
-		}
-        else {
+		} else {
 			log.warn("Failed to cancel the reporting task");
 		}
 	}
@@ -95,7 +94,9 @@ public abstract class AbstractReportsTask extends TimerTask {
 			Context.authenticate(userName, password);
 		}
 		catch (ContextAuthenticationException e) {
-			log.warn("Error authenticating '" + userName + "' user. Please ensure you scheduler username and password are configured correctly in your global properties");
+			log.warn("Error authenticating '"
+			        + userName
+			        + "' user. Please ensure you scheduler username and password are configured correctly in your global properties");
 			lastFailedLogin = new Date();
 		}
 	}

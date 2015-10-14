@@ -5,6 +5,7 @@
 *.war
 *.ear
 *.iml
+*~
 
 .classpath
 .idea
@@ -19,3 +20,4 @@ omod/.project
 omod/.settings/*
 omod/target/*
 /.settings
+bin/

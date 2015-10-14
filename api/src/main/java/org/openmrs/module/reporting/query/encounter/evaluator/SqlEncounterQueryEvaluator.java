@@ -19,8 +19,8 @@ import java.sql.ResultSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.SessionFactory;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -37,18 +37,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * The logic that evaluates a {@link SqlEncounterQuery} and produces an {@link Query}
  */
-@Handler(supports=SqlEncounterQuery.class)
+@Handler(supports = SqlEncounterQuery.class)
 public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	@Autowired
-	private SessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 	
 	/**
 	 * Public constructor
 	 */
-	public SqlEncounterQueryEvaluator() { }
+	public SqlEncounterQueryEvaluator() {
+	}
 	
 	/**
 	 * @see EncounterQueryEvaluator#evaluate(EncounterQuery, EvaluationContext)
@@ -93,9 +94,10 @@ public class SqlEncounterQueryEvaluator implements EncounterQueryEvaluator {
 			connection = sessionFactory.getCurrentSession().connection();
 			ResultSet resultSet = null;
 			
-			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery.toString(), context.getParameterValues());
+			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery.toString(),
+			    context.getParameterValues());
 			boolean result = statement.execute();
-
+			
 			if (!result) {
 				throw new EvaluationException("Unable to evaluate sql query");
 			}

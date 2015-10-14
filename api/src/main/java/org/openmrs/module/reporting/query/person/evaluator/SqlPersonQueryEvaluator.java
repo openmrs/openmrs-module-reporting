@@ -20,8 +20,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.SessionFactory;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -32,25 +32,25 @@ import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
 import org.openmrs.module.reporting.report.util.SqlUtils;
-import org.openmrs.util.DatabaseUpdater;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The logic that evaluates a {@link SqlPersonQuery} and produces an {@link Query}
  */
-@Handler(supports=SqlPersonQuery.class)
+@Handler(supports = SqlPersonQuery.class)
 public class SqlPersonQueryEvaluator implements PersonQueryEvaluator {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	@Autowired
-	private SessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 	
 	/**
 	 * Public constructor
 	 */
-	public SqlPersonQueryEvaluator() { }
+	public SqlPersonQueryEvaluator() {
+	}
 	
 	/**
 	 * @see PersonQueryEvaluator#evaluate(PersonQuery, EvaluationContext)
@@ -85,7 +85,7 @@ public class SqlPersonQueryEvaluator implements PersonQueryEvaluator {
 			sqlQuery.append(whereFound ? " and " : " where ");
 			sqlQuery.append("person_id in (" + OpenmrsUtil.join(personIds, ",") + ")");
 		}
-
+		
 		if (context.getLimit() != null) {
 			sqlQuery.append(" limit " + context.getLimit());
 		}
@@ -96,9 +96,10 @@ public class SqlPersonQueryEvaluator implements PersonQueryEvaluator {
 			connection = sessionFactory.getCurrentSession().connection();
 			ResultSet resultSet = null;
 			
-			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery.toString(), context.getParameterValues());
+			PreparedStatement statement = SqlUtils.prepareStatement(connection, sqlQuery.toString(),
+			    context.getParameterValues());
 			boolean result = statement.execute();
-
+			
 			if (!result) {
 				throw new EvaluationException("Unable to evaluate sql query");
 			}

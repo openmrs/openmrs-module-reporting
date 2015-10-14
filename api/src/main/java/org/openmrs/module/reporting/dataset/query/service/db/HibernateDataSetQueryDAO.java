@@ -22,7 +22,6 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
@@ -37,20 +36,21 @@ import org.openmrs.PatientState;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Relationship;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
-
+	
 	protected static final Log log = LogFactory.getLog(HibernateDataSetQueryDAO.class);
-
+	
 	//***** PROPERTIES *****
 	
-	private SessionFactory sessionFactory;
-
+	private DbSessionFactory sessionFactory;
+	
 	//***** INSTANCE METHODS *****
 	
-	/** 
+	/**
 	 * @see DataSetQueryDAO#executeHqlQuery(String, Map<String, Object>)
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -58,25 +58,23 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		Query q = sessionFactory.getCurrentSession().createQuery(hqlQuery);
 		for (Map.Entry<String, Object> e : parameterValues.entrySet()) {
 			if (e.getValue() instanceof Collection) {
-				q.setParameterList(e.getKey(), (Collection)e.getValue());
-			}
-			else if (e.getValue() instanceof Object[]) {
-				q.setParameterList(e.getKey(), (Object[])e.getValue());
-			}
-			else if (e.getValue() instanceof Cohort) {
-				q.setParameterList(e.getKey(), ((Cohort)e.getValue()).getMemberIds());
-			}
-			else {
+				q.setParameterList(e.getKey(), (Collection) e.getValue());
+			} else if (e.getValue() instanceof Object[]) {
+				q.setParameterList(e.getKey(), (Object[]) e.getValue());
+			} else if (e.getValue() instanceof Cohort) {
+				q.setParameterList(e.getKey(), ((Cohort) e.getValue()).getMemberIds());
+			} else {
 				q.setParameter(e.getKey(), e.getValue());
 			}
 		}
 		return q.list();
 	}
 	
-	/** 
+	/**
 	 * @see DataSetQueryDAO#getPropertyValues(Class, String, EvaluationContext)
 	 */
-	public Map<Integer, Object> getPropertyValues(Class<? extends OpenmrsObject> type, String property, EvaluationContext context) {
+	public Map<Integer, Object> getPropertyValues(Class<? extends OpenmrsObject> type, String property,
+	        EvaluationContext context) {
 		Map<Integer, Object> ret = new HashMap<Integer, Object>();
 		
 		Cohort baseCohort = context.getBaseCohort();
@@ -84,7 +82,7 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 			return ret;
 		}
 		
-		ClassMetadata metadata = sessionFactory.getClassMetadata(type);
+		ClassMetadata metadata = sessionFactory.getHibernateSessionFactory().getClassMetadata(type);
 		String idPropertyName = metadata.getIdentifierPropertyName();
 		String entityName = type.getSimpleName();
 		String alias = entityName.toLowerCase();
@@ -117,32 +115,34 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		}
 		
 		Query query = sessionFactory.getCurrentSession().createQuery(hql.toString());
-		if(hql.toString().contains(":ids")) {
+		if (hql.toString().contains(":ids")) {
 			query.setParameterList("ids", baseCohort.getMemberIds());
 		}
 		
 		for (Object o : query.list()) {
 			Object[] vals = (Object[]) o;
-			ret.put((Integer)vals[0], vals[1]);
+			ret.put((Integer) vals[0], vals[1]);
 		}
 		return ret;
 	}
 	
-	/** 
+	/**
 	 * @see DataSetQueryDAO#convertColumn(DataSetColumn, JoinColumnDefinition)
-	*/
-	public Map<Integer, Integer> convertData(Class<?> fromType, String fromJoin, Set<Integer> fromIds, Class<?> toType, String toJoin, Set<Integer> toIds) {	
-
-		ClassMetadata fromMetadata = sessionFactory.getClassMetadata(fromType);
-		String fromIdProperty = (Patient.class.isAssignableFrom(fromType) ? "patientId" : fromMetadata.getIdentifierPropertyName());
+	 */
+	public Map<Integer, Integer> convertData(Class<?> fromType, String fromJoin, Set<Integer> fromIds, Class<?> toType,
+	        String toJoin, Set<Integer> toIds) {
+		
+		ClassMetadata fromMetadata = sessionFactory.getHibernateSessionFactory().getClassMetadata(fromType);
+		String fromIdProperty = (Patient.class.isAssignableFrom(fromType) ? "patientId" : fromMetadata
+		        .getIdentifierPropertyName());
 		String fromEntity = fromType.getSimpleName();
 		String fromAlias = fromEntity.toLowerCase();
 		
-		ClassMetadata toMetadata = sessionFactory.getClassMetadata(toType);
+		ClassMetadata toMetadata = sessionFactory.getHibernateSessionFactory().getClassMetadata(toType);
 		String toIdProperty = toMetadata.getIdentifierPropertyName();
 		String toEntity = toType.getSimpleName();
 		String toAlias = toEntity.toLowerCase();
-
+		
 		StringBuilder hql = new StringBuilder();
 		hql.append("select 	" + toAlias + "." + toIdProperty + ", " + fromAlias + "." + fromIdProperty + " ");
 		hql.append("from	" + fromEntity + " " + fromAlias + ", " + toEntity + " " + toAlias + " ");
@@ -166,24 +166,24 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 		Map<Integer, Integer> m = new HashMap<Integer, Integer>();
 		for (Object o : query.list()) {
 			Object[] vals = (Object[]) o;
-			m.put((Integer)vals[0], (Integer)vals[1]);
+			m.put((Integer) vals[0], (Integer) vals[1]);
 		}
 		return m;
 	}
 	
 	//***** PROPERTY ACCESS *****
-
+	
 	/**
 	 * @return the sessionFactory
 	 */
-	public SessionFactory getSessionFactory() {
+	public DbSessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
-
+	
 	/**
 	 * @param sessionFactory the sessionFactory to set
 	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 }

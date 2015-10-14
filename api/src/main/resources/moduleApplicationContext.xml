@@ -95,7 +95,7 @@
 			<bean class="org.openmrs.module.reporting.report.service.ReportServiceImpl">
 				<property name="reportDAO">
 					<bean class="org.openmrs.module.reporting.report.service.db.HibernateReportDAO">
-						<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+						<property name="sessionFactory"><ref bean="dbSessionFactory"/></property>	
 					</bean>
 				</property>
 				<property name="taskExecutor">
@@ -357,11 +357,11 @@
 	</bean>
 
 	<bean id="cohortQueryDAO" class="org.openmrs.module.reporting.cohort.query.db.hibernate.HibernateCohortQueryDAO">
-		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+		<property name="sessionFactory"><ref bean="dbSessionFactory"/></property>	
 	</bean>		
 	
 	<bean id="dataSetQueryDAO" class="org.openmrs.module.reporting.dataset.query.service.db.HibernateDataSetQueryDAO">
-		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+		<property name="sessionFactory"><ref bean="dbSessionFactory"/></property>	
 	</bean>
 	
 	<bean id="reportingCohortQueryService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -417,7 +417,7 @@
 	</bean>
 	
 	<bean id="encounterQueryDAO" class="org.openmrs.module.reporting.encounter.query.db.hibernate.HibernateEncounterQueryDAO">
-		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+		<property name="sessionFactory"><ref bean="dbSessionFactory"/></property>	
 	</bean>
 	
 	<bean id="reportingOldEncounterQueryService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
