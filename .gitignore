@@ -5,6 +5,7 @@
 *.war
 *.ear
 *.iml
+*~
 
 .classpath
 .idea

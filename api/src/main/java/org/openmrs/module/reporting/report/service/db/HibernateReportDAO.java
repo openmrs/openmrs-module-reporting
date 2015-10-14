@@ -23,6 +23,7 @@ import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
@@ -36,7 +37,7 @@ import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 public class HibernateReportDAO implements ReportDAO {
 	
 	//***** PROPERTIES *****
-	private SessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 	
 	//***** INSTANCE METHODS *****
 	
@@ -227,14 +228,14 @@ public class HibernateReportDAO implements ReportDAO {
 	/**
 	 * @return the sessionFactory
 	 */
-	public SessionFactory getSessionFactory() {
+	public DbSessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
 	/**
 	 * @param sessionFactory the sessionFactory to set
 	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 }

@@ -1,22 +1,22 @@
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.hibernate.SessionFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
@@ -25,7 +25,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
 	@Autowired
-	SessionFactory sessionFactory;
+	DbSessionFactory sessionFactory;
 
 	@Autowired
 	EvaluationService evaluationService;
