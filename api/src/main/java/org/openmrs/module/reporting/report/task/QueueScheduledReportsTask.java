@@ -45,6 +45,7 @@ public class QueueScheduledReportsTask extends ReportingTask {
 					newRequest.setPriority(scheduledReport.getPriority());
 					newRequest.setDescription(scheduledReport.getDescription());
 					newRequest.setProcessAutomatically(true);
+                    newRequest.setMinimumDaysToPreserve(scheduledReport.getMinimumDaysToPreserve());
 					getReportService().saveReportRequest(newRequest);
 				}
 

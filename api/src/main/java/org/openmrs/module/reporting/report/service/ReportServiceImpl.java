@@ -617,18 +617,39 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		catch (Exception ex) {
 			log.warn("Illegal value for " + ReportingConstants.GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS + " global property. Using default value of 72.", ex);
 		}
+
+        log.debug("In Delete Old Report Requests");
+
 		if (ageInHoursToDelete <= 0) {
+            log.warn("Non-positive number configured (" + ageInHoursToDelete + ") for " + ReportingConstants.GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS + ". Not deleting any.");
 			return;
 		}
+
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.HOUR, -1*ageInHoursToDelete);
-		for (ReportRequest request : getReportRequests(null, null, cal.getTime(), Status.COMPLETED,Status.FAILED)) {
-			try {
-				purgeReportRequest(request);
-			}
-			catch (Exception e) {
-				log.warn("Unable to delete old report request: " + request, e);
-			}
+        Date now = new Date();
+
+        log.debug("Checking for reports older than " + ageInHoursToDelete + " hours. Request date before " + cal.getTime());
+
+        List<ReportRequest> oldRequests = getReportRequests(null, null, cal.getTime(), Status.COMPLETED, Status.FAILED);
+
+        log.debug("Found " + oldRequests.size() + " requests that qualify");
+
+		for (ReportRequest request : oldRequests) {
+            log.debug("Checking request" + request.getUuid());
+
+            int daysSinceRequest = DateUtil.getDaysBetween(request.getRequestDate(), now);
+            log.debug("Days since request = " + daysSinceRequest + " and minimum days to preserve configured to " + request.getMinimumDaysToPreserve());
+
+            if (request.getMinimumDaysToPreserve() == null || request.getMinimumDaysToPreserve() < daysSinceRequest) {
+                log.info("Request qualifies for deletion.  Deleting: " + request.getUuid());
+                try {
+                    purgeReportRequest(request);
+                }
+                catch (Exception e) {
+                    log.warn("Unable to delete old report request: " + request, e);
+                }
+            }
 		}
     }
 	
