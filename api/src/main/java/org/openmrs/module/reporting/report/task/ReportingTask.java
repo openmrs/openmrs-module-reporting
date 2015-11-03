@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.report.service.ReportService;
 
@@ -14,7 +15,7 @@ public abstract class ReportingTask implements Runnable {
 	
 	private transient final Log log = LogFactory.getLog(getClass());
 	
-	private volatile Session currentSession;
+	private volatile DbSession currentSession;
 	
 	// Properties that should be set on this task when it is instantiated, before it is run
 	
@@ -26,7 +27,7 @@ public abstract class ReportingTask implements Runnable {
 	public void run() {
 		try {
 			log.info("Running reporting task: " + getClass().getSimpleName());
-			currentSession = sessionFactory.getHibernateSessionFactory().getCurrentSession();
+			currentSession = sessionFactory.getCurrentSession();
 			executeTask();
 			log.info("Completed reporting task: " + getClass().getSimpleName());
 		}
@@ -45,7 +46,7 @@ public abstract class ReportingTask implements Runnable {
 	 */
 	public void cancelTask() {
 		log.info("Attempting to cancel " + getClass().getSimpleName());
-		Session session = currentSession;
+		DbSession session = currentSession;
 		if (session != null && session.isOpen()) {
 			session.close();
 			log.info(getClass().getSimpleName() + " task has been cancelled");
