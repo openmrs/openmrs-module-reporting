@@ -237,6 +237,18 @@
 		</addColumn>
 	</changeSet>
 
+    <changeSet id="reporting_report_request_4" author="mseaton">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="reporting_report_request" columnName="minimum_days_to_preserve"/></not>
+        </preConditions>
+        <comment>
+            Add minimum_days_to_preserve property to ReportRequest
+        </comment>
+        <addColumn tableName="reporting_report_request">
+            <column name="minimum_days_to_preserve" type="int"/>
+        </addColumn>
+    </changeSet>
+
 	<!--  REPORTING REPORT PROCESSOR SCHEMA -->
 
 	<changeSet id="reporting_report_processor_1" author="mseaton">

@@ -36,6 +36,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 	private Date evaluateStartDatetime;
 	private Date evaluateCompleteDatetime;
 	private Date renderCompleteDatetime;
+    private Integer minimumDaysToPreserve;
 	private String description;
 
 	//*****  CONSTRUCTORS ******
@@ -302,7 +303,21 @@ public class ReportRequest extends BaseOpenmrsObject {
 		this.renderCompleteDatetime = renderCompleteDatetime;
 	}
 
-	/**
+    /**
+     * @return the minimumDaysToPreserve
+     */
+    public Integer getMinimumDaysToPreserve() {
+        return minimumDaysToPreserve;
+    }
+
+    /**
+     * @param minimumDaysToPreserve the minimumDaysToPreserve to set
+     */
+    public void setMinimumDaysToPreserve(Integer minimumDaysToPreserve) {
+        this.minimumDaysToPreserve = minimumDaysToPreserve;
+    }
+
+    /**
 	 * @return the description
 	 */
 	public String getDescription() {
