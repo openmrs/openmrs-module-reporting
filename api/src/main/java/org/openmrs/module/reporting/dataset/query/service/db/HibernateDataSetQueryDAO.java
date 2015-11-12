@@ -22,7 +22,6 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
@@ -57,7 +56,7 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<Object> executeHqlQuery(String hqlQuery, Map<String, Object> parameterValues) {
-		Query q = sessionFactory.getHibernateSessionFactory().getCurrentSession().createQuery(hqlQuery);
+		Query q = sessionFactory.getCurrentSession().createQuery(hqlQuery);
 		for (Map.Entry<String, Object> e : parameterValues.entrySet()) {
 			if (e.getValue() instanceof Collection) {
 				q.setParameterList(e.getKey(), (Collection)e.getValue());
