@@ -90,6 +90,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	 * @see SerializedDefinitionService#getSupportedDefinitionTypes()
 	 */
     @SuppressWarnings("unchecked")
+    @Authorized
 	public List<Class<Definition>> getSupportedDefinitionTypes() {
 		List<Class<Definition>> d = new ArrayList<Class<Definition>>();
 		for (Class<? extends OpenmrsObject> c : dao.getSupportedTypes()) {
@@ -103,6 +104,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	/**
      * @see SerializedDefinitionService#getDefinition(Class, Integer)
      */
+    @Authorized
     public <T extends Definition> T getDefinition(Class<T> definitionType, Integer id) {
     	SerializedObject so = dao.getSerializedObject(id);
     	try {
@@ -118,6 +120,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	/**
      * @see SerializedDefinitionService#getDefinitionByUuid(Class, String)
      */
+    @Authorized
     public <T extends Definition> T getDefinitionByUuid(Class<T> definitionType, String uuid) {
     	SerializedObject so = dao.getSerializedObjectByUuid(uuid);
     	try {
@@ -133,6 +136,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     /**
      * @see SerializedDefinitionService#getAllDefinitions(Class, boolean)
      */
+    @Authorized
     public <T extends Definition> List<T> getAllDefinitions(Class<T> definitionType, boolean includeRetired) {
     	List<T> ret = new ArrayList<T>();
     	for (SerializedObject so : dao.getAllSerializedObjects(definitionType, includeRetired)) {
@@ -150,6 +154,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     /**
      * @see SerializedDefinitionService#getAllDefinitionSummaries(Class, boolean)
      */
+    @Authorized
     public <T extends Definition> List<DefinitionSummary> getAllDefinitionSummaries(Class<T> definitionType,
                                                                                     boolean includeRetired) {
     	List<DefinitionSummary> ret = new ArrayList<DefinitionSummary>();
@@ -167,6 +172,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     /**
      * @see SerializedDefinitionService#getInvalidDefinitions(boolean)
      */
+    @Authorized
     public List<SerializedObject> getInvalidDefinitions(boolean includeRetired) {
     	List<SerializedObject> ret = new ArrayList<SerializedObject>();
     	for (Class<Definition> clazz : getSupportedDefinitionTypes()) {
@@ -178,6 +184,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     /**
      * @see SerializedDefinitionService#getInvalidDefinitions(Class, boolean)
      */
+    @Authorized
     public <T extends Definition> List<SerializedObject> getInvalidDefinitions(Class<T> definitionType, boolean includeRetired) {
     	List<SerializedObject> ret = new ArrayList<SerializedObject>();
     	for (SerializedObject so : dao.getAllSerializedObjects(definitionType, includeRetired)) {
@@ -195,6 +202,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     /**
      * @see SerializedDefinitionService#getNumberOfDefinitions(Class, boolean)
      */
+    @Authorized
 	public <T extends Definition> int getNumberOfDefinitions(Class<T> definitionType, boolean includeRetired) {
 		return dao.getAllSerializedObjects(definitionType, includeRetired).size();
 	}
@@ -202,6 +210,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	/**
      * @see SerializedDefinitionService#getDefinitions(Class, String, boolean)
      */
+    @Authorized
 	public <T extends Definition> List<T> getDefinitions(Class<T> definitionType, String name, boolean exactMatchOnly) {
     	List<T> ret = new ArrayList<T>();
     	for (SerializedObject so : dao.getAllSerializedObjectsByName(definitionType, name, exactMatchOnly)) {
@@ -260,6 +269,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	/** 
 	 * @see SerializedDefinitionService#getSerializedDefinitionByUuid(String)
 	 */
+    @Authorized
 	public SerializedObject getSerializedDefinitionByUuid(String uuid) {
 		return dao.getSerializedObjectByUuid(uuid);
 	}
