@@ -13,26 +13,25 @@
  */
 package org.openmrs.module.reporting.definition.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Auditable;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.ExceptionUtil;
-import org.openmrs.module.reporting.cohort.definition.persister.CohortDefinitionPersister;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  *  Base Implementation of the ReportingService API
@@ -201,7 +200,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	}
 
 	/**
-     * @see CohortDefinitionPersister#getCohortDefinitionByName(String, boolean)
+     * @see SerializedDefinitionService#getDefinitions(Class, String, boolean)
      */
 	public <T extends Definition> List<T> getDefinitions(Class<T> definitionType, String name, boolean exactMatchOnly) {
     	List<T> ret = new ArrayList<T>();
@@ -220,6 +219,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	/**
 	 * @see SerializedDefinitionService#saveDefinition(Definition)
 	 */
+    @Authorized
     public <T extends Definition> T saveDefinition(T definition) {
     	//TODO This setting of audit fields can be safely removed after TRUNK-3876 is fixed.
 		//check if existing definition
@@ -243,6 +243,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     /**
      * @see SerializedDefinitionService#purgeDefinition(Definition)
      */
+    @Authorized
     public <T extends Definition> void purgeDefinition(T definition) {
     	dao.purgeObject(definition.getId());
     }
@@ -250,6 +251,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	/** 
 	 * @see SerializedDefinitionService#purgeDefinition(String)
 	 */
+    @Authorized
 	public void purgeDefinition(String uuid) {
 		SerializedObject obj = dao.getSerializedObjectByUuid(uuid);
 		dao.purgeObject(obj.getId());
@@ -265,6 +267,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
 	/** 
 	 * @see SerializedDefinitionService#saveSerializedDefinition(SerializedObject)
 	 */
+    @Authorized
 	public void saveSerializedDefinition(SerializedObject serializedDefinition) {
 		Definition d = dao.convertSerializedObject(Definition.class, serializedDefinition);
 		dao.saveObject(d);
