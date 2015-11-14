@@ -492,14 +492,6 @@
 			</list>
 		</property>
 	</bean>
-	
-	<bean class="org.openmrs.validator.ValidateUtil">
-		<property name="validators">
-			<list>
-				<bean class="org.openmrs.module.reporting.validator.CohortDefinitionValidator"/>
-			</list>
-		</property>
-	</bean>
 
 	<bean id="queueScheduledReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
 		<property name="taskClass" value="org.openmrs.module.reporting.report.task.QueueScheduledReportsTask"/>
