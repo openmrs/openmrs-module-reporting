@@ -13,18 +13,18 @@
  */
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.hibernate.SessionFactory;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation of the EvaluationService interface
@@ -99,7 +99,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	/**
 	 * @return the sessionFactory
 	 */
-	private SessionFactory getSessionFactory() {
-		return Context.getRegisteredComponents(SessionFactory.class).get(0);
+	private DbSessionFactory getSessionFactory() {
+		return Context.getRegisteredComponents(DbSessionFactory.class).get(0);
 	}
 }

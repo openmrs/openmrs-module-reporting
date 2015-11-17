@@ -1,12 +1,23 @@
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.hibernate.type.Type;
 import org.openmrs.Cohort;
 import org.openmrs.Voidable;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
@@ -19,17 +30,6 @@ import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.util.OpenmrsUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Helper class for building and executing an HQL query with parameters
@@ -429,7 +429,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
-	public List<DataSetColumn> getColumns(SessionFactory sessionFactory) {
+	public List<DataSetColumn> getColumns(DbSessionFactory sessionFactory) {
 		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
 		Query q = buildQuery(sessionFactory);
 		String[] returnAliases = q.getReturnAliases();
@@ -445,7 +445,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
-	public List<Object[]> evaluateToList(SessionFactory sessionFactory, EvaluationContext context) {
+	public List<Object[]> evaluateToList(DbSessionFactory sessionFactory, EvaluationContext context) {
 		// Due to hibernate bug HHH-2166, we need to make sure the HqlSqlWalker logger is not at DEBUG or TRACE level
 		OpenmrsUtil.applyLogLevel("org.hibernate.hql.ast.HqlSqlWalker", "WARN");
 		EvaluationProfiler profiler = new EvaluationProfiler(context);
@@ -553,7 +553,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return q.toString();
 	}
 
-    protected Query buildQuery(SessionFactory sessionFactory) {
+    protected Query buildQuery(DbSessionFactory sessionFactory) {
 
 		if ((positionIndex-1) > parameters.size()) {
 			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");

@@ -1,18 +1,5 @@
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
-import liquibase.util.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.SessionFactory;
-import org.openmrs.Cohort;
-import org.openmrs.OpenmrsObject;
-import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
-import org.openmrs.module.reporting.query.IdSet;
-import org.openmrs.util.OpenmrsUtil;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,6 +19,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
+import liquibase.util.StringUtils;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
+import org.openmrs.OpenmrsObject;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
+import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
+import org.openmrs.module.reporting.query.IdSet;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Helper class for building and executing an HQL query with parameters
@@ -95,7 +96,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 	  * Uses a Prepared Statement to produce ResultSetMetadata in order to return accurate column information
 	 */
 	@Override
-	public List<DataSetColumn> getColumns(SessionFactory sessionFactory) {
+	public List<DataSetColumn> getColumns(DbSessionFactory sessionFactory) {
 		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
 		PreparedStatement statement = null;
 		try {
@@ -119,7 +120,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
-	public List<Object[]> evaluateToList(SessionFactory sessionFactory, EvaluationContext context) {
+	public List<Object[]> evaluateToList(DbSessionFactory sessionFactory, EvaluationContext context) {
 		List<Object[]> ret = new ArrayList<Object[]>();
 		PreparedStatement statement = null;
 		EvaluationProfiler profiler = new EvaluationProfiler(context);

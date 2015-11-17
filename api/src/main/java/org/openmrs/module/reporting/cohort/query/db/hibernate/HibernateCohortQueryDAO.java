@@ -1,11 +1,23 @@
 package org.openmrs.module.reporting.cohort.query.db.hibernate;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
@@ -23,6 +35,7 @@ import org.openmrs.api.PatientSetService.Modifier;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.Cohorts;
@@ -38,19 +51,6 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
 	protected static final Log log = LogFactory.getLog(HibernateCohortQueryDAO.class);
@@ -58,9 +58,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	/**
 	 * Hibernate session factory
 	 */
-	private SessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
