@@ -111,7 +111,7 @@
 			<bean class="org.openmrs.module.reporting.report.service.ReportServiceImpl">
 				<property name="reportDAO">
 					<bean class="org.openmrs.module.reporting.report.service.db.HibernateReportDAO">
-						<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+						<property name="sessionFactory"><ref bean="dbSessionFactory"/></property>	
 					</bean>
 				</property>
 				<property name="runQueuedReportsTask" ref="runQueuedReportsTask"/>
@@ -434,11 +434,11 @@
 	</bean>
 
 	<bean id="cohortQueryDAO" class="org.openmrs.module.reporting.cohort.query.db.hibernate.HibernateCohortQueryDAO">
-		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+		<property name="sessionFactory"><ref bean="dbSessionFactory"/></property>	
 	</bean>		
 	
 	<bean id="dataSetQueryDAO" class="org.openmrs.module.reporting.dataset.query.service.db.HibernateDataSetQueryDAO">
-		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+		<property name="sessionFactory"><ref bean="dbSessionFactory"/></property>	
 	</bean>
 	
 	<bean id="reportingCohortQueryService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -495,22 +495,22 @@
 
 	<bean id="queueScheduledReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
 		<property name="taskClass" value="org.openmrs.module.reporting.report.task.QueueScheduledReportsTask"/>
-		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="sessionFactory" ref="dbSessionFactory"/>
 	</bean>
 
 	<bean id="runQueuedReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
 		<property name="taskClass" value="org.openmrs.module.reporting.report.task.RunQueuedReportsTask"/>
-		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="sessionFactory" ref="dbSessionFactory"/>
 	</bean>
 
 	<bean id="deleteOldReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
 		<property name="taskClass" value="org.openmrs.module.reporting.report.task.DeleteOldReportsTask"/>
-		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="sessionFactory" ref="dbSessionFactory"/>
 	</bean>
 
 	<bean id="persistCachedReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
 		<property name="taskClass" value="org.openmrs.module.reporting.report.task.PersistCachedReportsTask"/>
-		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="sessionFactory" ref="dbSessionFactory"/>
 	</bean>
 
 	<bean id="queueScheduledReportsTimerTask" class="org.springframework.scheduling.concurrent.ScheduledExecutorTask">

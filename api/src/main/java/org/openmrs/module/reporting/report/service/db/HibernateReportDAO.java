@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.SessionFactory;
+import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -36,7 +36,7 @@ import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 public class HibernateReportDAO implements ReportDAO {
 	
 	//***** PROPERTIES *****
-	private SessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 	
 	//***** INSTANCE METHODS *****
 	
@@ -227,14 +227,14 @@ public class HibernateReportDAO implements ReportDAO {
 	/**
 	 * @return the sessionFactory
 	 */
-	public SessionFactory getSessionFactory() {
+	public DbSessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
 	/**
 	 * @param sessionFactory the sessionFactory to set
 	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 }

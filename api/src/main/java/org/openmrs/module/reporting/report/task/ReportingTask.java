@@ -2,8 +2,8 @@ package org.openmrs.module.reporting.report.task;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.openmrs.api.db.hibernate.DbSession;  
+import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.service.ReportService;
 
@@ -13,11 +13,11 @@ import org.openmrs.module.reporting.report.service.ReportService;
 public abstract class ReportingTask implements Runnable {
 
 	private transient final Log log = LogFactory.getLog(getClass());
-	private volatile Session currentSession;
+	private volatile DbSession currentSession;
 
 	// Properties that should be set on this task when it is instantiated, before it is run
 
-	private SessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 	private long scheduledExecutionTime;
 
 	@Override
@@ -43,7 +43,7 @@ public abstract class ReportingTask implements Runnable {
 	 */
 	public void cancelTask() {
 		log.info("Attempting to cancel " + getClass().getSimpleName());
-		Session session = currentSession;
+		DbSession session = currentSession;
 		if (session != null && session.isOpen()) {
 			session.close();
 			log.info(getClass().getSimpleName() + " task has been cancelled");
@@ -61,11 +61,11 @@ public abstract class ReportingTask implements Runnable {
 		this.scheduledExecutionTime = scheduledExecutionTime;
 	}
 
-	public SessionFactory getSessionFactory() {
+	public DbSessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 

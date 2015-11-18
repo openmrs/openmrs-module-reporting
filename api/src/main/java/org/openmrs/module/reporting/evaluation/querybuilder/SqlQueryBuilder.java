@@ -3,7 +3,7 @@ package org.openmrs.module.reporting.evaluation.querybuilder;
 import liquibase.util.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.SessionFactory;
+import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.openmrs.Cohort;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -95,7 +95,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 	  * Uses a Prepared Statement to produce ResultSetMetadata in order to return accurate column information
 	 */
 	@Override
-	public List<DataSetColumn> getColumns(SessionFactory sessionFactory) {
+	public List<DataSetColumn> getColumns(DbSessionFactory sessionFactory) {
 		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
 		PreparedStatement statement = null;
 		try {
@@ -119,7 +119,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
-	public List<Object[]> evaluateToList(SessionFactory sessionFactory, EvaluationContext context) {
+	public List<Object[]> evaluateToList(DbSessionFactory sessionFactory, EvaluationContext context) {
 		List<Object[]> ret = new ArrayList<Object[]>();
 		PreparedStatement statement = null;
 		EvaluationProfiler profiler = new EvaluationProfiler(context);
