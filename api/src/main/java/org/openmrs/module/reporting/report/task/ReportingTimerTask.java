@@ -2,7 +2,7 @@ package org.openmrs.module.reporting.report.task;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.SessionFactory;
+import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.openmrs.api.context.Daemon;
 import org.openmrs.module.DaemonToken;
 
@@ -21,7 +21,7 @@ public class ReportingTimerTask extends TimerTask {
 	//***** PROPERTIES THAT NEED TO BE SET ON EACH INSTANCE
 
 	private Class<? extends ReportingTask> taskClass;
-	private SessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 
 	/**
 	 * @see TimerTask#run()
@@ -69,11 +69,11 @@ public class ReportingTimerTask extends TimerTask {
 		this.taskClass = taskClass;
 	}
 
-	public SessionFactory getSessionFactory() {
+	public DbSessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 

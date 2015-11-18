@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Properties;
 
 import org.hibernate.Hibernate;
-import org.hibernate.SessionFactory;
+import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.hibernate.type.Type;
 import org.hibernate.type.TypeFactory;
 import org.openmrs.OpenmrsObject;
@@ -103,7 +103,7 @@ public class HibernateUtil {
 	 * @return true if the current hibernate session contains the passed object
 	 */
 	public static boolean sessionContains(OpenmrsObject object) {
-		SessionFactory sf = Context.getRegisteredComponents(SessionFactory.class).get(0);
+		DbSessionFactory sf = Context.getRegisteredComponents(DbSessionFactory.class).get(0);
 		return sf != null && sf.getCurrentSession() != null && sf.getCurrentSession().contains(object);
 	}
 }

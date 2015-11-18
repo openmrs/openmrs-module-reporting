@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.hibernate.SessionFactory;
+import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
@@ -58,9 +58,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	/**
 	 * Hibernate session factory
 	 */
-	private SessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	

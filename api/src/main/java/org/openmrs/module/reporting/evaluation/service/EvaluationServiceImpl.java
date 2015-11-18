@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.hibernate.SessionFactory;
+import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -99,7 +99,7 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 	/**
 	 * @return the sessionFactory
 	 */
-	private SessionFactory getSessionFactory() {
-		return Context.getRegisteredComponents(SessionFactory.class).get(0);
+	private DbSessionFactory getSessionFactory() {
+		return Context.getRegisteredComponents(DbSessionFactory.class).get(0);
 	}
 }
