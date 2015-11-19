@@ -1,3 +1,3 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
 <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
-<openmrs:portlet url="${param.url}" id="${param.id}" moduleId="reporting" parameters="${param.parameters}" />
+<openmrs:portlet url="${url}" id="${id}" moduleId="reporting" parameters="${parameters}" />
