@@ -16,7 +16,7 @@ package org.openmrs.module.reporting.dataset.query.service.db;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
-import org.openmrs.api.db.hibernate.DbSessionFactory;  
+import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
@@ -47,7 +47,7 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 
 	//***** PROPERTIES *****
 	
-	private DbSessionFactory sessionFactory;
+	private SessionFactory sessionFactory;
 
 	//***** INSTANCE METHODS *****
 	
@@ -88,7 +88,7 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 			return ret;
 		}
 		
-		ClassMetadata metadata = sessionFactory.getHibernateSessionFactory().getClassMetadata(type);
+		ClassMetadata metadata = sessionFactory.getClassMetadata(type);
 		String idPropertyName = metadata.getIdentifierPropertyName();
 		String entityName = type.getSimpleName();
 		String alias = entityName.toLowerCase();
@@ -152,12 +152,12 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
             return new HashMap<Integer, Integer>();
         }
 
-        ClassMetadata fromMetadata = sessionFactory.getHibernateSessionFactory().getClassMetadata(fromType);
+        ClassMetadata fromMetadata = sessionFactory.getClassMetadata(fromType);
         String fromIdProperty = (Patient.class.isAssignableFrom(fromType) ? "patientId" : fromMetadata.getIdentifierPropertyName());
         String fromEntity = fromType.getSimpleName();
         String fromAlias = fromEntity.toLowerCase();
 
-        ClassMetadata toMetadata = sessionFactory.getHibernateSessionFactory().getClassMetadata(toType);
+        ClassMetadata toMetadata = sessionFactory.getClassMetadata(toType);
         String toIdProperty = toMetadata.getIdentifierPropertyName();
         String toEntity = toType.getSimpleName();
         String toAlias = toEntity.toLowerCase();
@@ -195,14 +195,14 @@ public class HibernateDataSetQueryDAO implements DataSetQueryDAO {
 	/**
 	 * @return the sessionFactory
 	 */
-	public DbSessionFactory getSessionFactory() {
+	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
 	/**
 	 * @param sessionFactory the sessionFactory to set
 	 */
-	public void setSessionFactory(DbSessionFactory sessionFactory) {
+	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 }

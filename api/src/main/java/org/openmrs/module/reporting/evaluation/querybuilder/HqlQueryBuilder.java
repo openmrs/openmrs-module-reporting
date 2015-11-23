@@ -3,7 +3,7 @@ package org.openmrs.module.reporting.evaluation.querybuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
-import org.openmrs.api.db.hibernate.DbSessionFactory;  
+import org.hibernate.SessionFactory;
 import org.hibernate.type.Type;
 import org.openmrs.Cohort;
 import org.openmrs.Voidable;
@@ -429,7 +429,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
-	public List<DataSetColumn> getColumns(DbSessionFactory sessionFactory) {
+	public List<DataSetColumn> getColumns(SessionFactory sessionFactory) {
 		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
 		Query q = buildQuery(sessionFactory);
 		String[] returnAliases = q.getReturnAliases();
@@ -445,7 +445,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
-	public List<Object[]> evaluateToList(DbSessionFactory sessionFactory, EvaluationContext context) {
+	public List<Object[]> evaluateToList(SessionFactory sessionFactory, EvaluationContext context) {
 		// Due to hibernate bug HHH-2166, we need to make sure the HqlSqlWalker logger is not at DEBUG or TRACE level
 		OpenmrsUtil.applyLogLevel("org.hibernate.hql.ast.HqlSqlWalker", "WARN");
 		EvaluationProfiler profiler = new EvaluationProfiler(context);
@@ -553,7 +553,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return q.toString();
 	}
 
-    protected Query buildQuery(DbSessionFactory sessionFactory) {
+    protected Query buildQuery(SessionFactory sessionFactory) {
 
 		if ((positionIndex-1) > parameters.size()) {
 			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");

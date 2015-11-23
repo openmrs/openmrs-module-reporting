@@ -1,6 +1,6 @@
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.openmrs.api.db.hibernate.DbSessionFactory;  
+import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
 	@Autowired
-	DbSessionFactory sessionFactory;
+	SessionFactory sessionFactory;
 
 	@Autowired
 	EvaluationService evaluationService;
