@@ -33,14 +33,16 @@
 		<property name="requestDate" type="java.util.Date" column="request_datetime" not-null="true" />
 		
         <property name="priority" column="priority" not-null="true">
-            <type name="org.openmrs.module.reporting.report.service.db.GenericEnumUserType">
+            <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.openmrs.module.reporting.report.ReportRequest$Priority</param>
+                <param name="type">12</param>
             </type>
         </property>
         
         <property name="status" column="status" not-null="true">
-            <type name="org.openmrs.module.reporting.report.service.db.GenericEnumUserType">
+            <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.openmrs.module.reporting.report.ReportRequest$Status</param>
+                <param name="type">12</param>
             </type>
         </property>
         

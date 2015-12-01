@@ -184,4 +184,16 @@
 		]]>
 	</signatures>
 	</dwr>
+	
+	<conditionalResources>
+		<conditionalResource>
+			<path>/lib/reporting-api-1.9.*</path>
+			<openmrsVersion>1.9.*</openmrsVersion>
+		</conditionalResource>
+		<conditionalResource>
+			<path>/lib/reporting-api-2.0.*</path>
+			<openmrsVersion>2.0.*</openmrsVersion>
+		</conditionalResource>
+	</conditionalResources>
+	
 </module>
