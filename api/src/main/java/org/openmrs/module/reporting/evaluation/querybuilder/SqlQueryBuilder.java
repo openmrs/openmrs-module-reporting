@@ -1,5 +1,18 @@
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
+import liquibase.util.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.db.hibernate.DbSessionFactory;  
+import org.openmrs.Cohort;
+import org.openmrs.OpenmrsObject;
+import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
+import org.openmrs.module.reporting.query.IdSet;
+import org.openmrs.util.OpenmrsUtil;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,21 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import liquibase.util.StringUtils;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.jdbc.Work;
-import org.openmrs.Cohort;
-import org.openmrs.OpenmrsObject;
-import org.openmrs.api.db.hibernate.DbSessionFactory;
-import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
-import org.openmrs.module.reporting.query.IdSet;
-import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Helper class for building and executing an HQL query with parameters
@@ -98,83 +96,58 @@ public class SqlQueryBuilder implements QueryBuilder {
 	 */
 	@Override
 	public List<DataSetColumn> getColumns(DbSessionFactory sessionFactory) {
-		final List<DataSetColumn> l = new ArrayList<DataSetColumn>();
-		
+		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
+		PreparedStatement statement = null;
 		try {
-			sessionFactory.getCurrentSession().doWork(new Work() {
-				
-				@Override
-				public void execute(Connection connection) throws SQLException {
-					PreparedStatement statement =  null;
-					try {
-						statement = createPreparedStatement(connection);
-						ResultSetMetaData metadata = statement.getMetaData();
-						for (int i=1; i<=metadata.getColumnCount(); i++) {
-							String columnName = metadata.getColumnLabel(i);
-							l.add(new DataSetColumn(columnName, columnName, Object.class));
-						}
-					}
-					finally {
-						try {
-							if (statement != null) {
-								statement.close();
-							}
-						}
-						catch (Exception e) {}
-					}
-				}
-			});
+			statement = createPreparedStatement(sessionFactory.getCurrentSession().connection());
+			ResultSetMetaData metadata = statement.getMetaData();
+			for (int i=1; i<=metadata.getColumnCount(); i++) {
+				String columnName = metadata.getColumnLabel(i);
+				l.add(new DataSetColumn(columnName, columnName, Object.class));
+			}
 		}
 		catch (Exception e) {
 			throw new IllegalArgumentException("Unable to retrieve columns for query", e);
 		}
-		
+		finally {
+			try {
+				statement.close();
+			}
+			catch (Exception e) {}
+		}
 		return l;
 	}
 
 	@Override
 	public List<Object[]> evaluateToList(DbSessionFactory sessionFactory, EvaluationContext context) {
-		
-		final List<Object[]> ret = new ArrayList<Object[]>();
+		List<Object[]> ret = new ArrayList<Object[]>();
+		PreparedStatement statement = null;
 		EvaluationProfiler profiler = new EvaluationProfiler(context);
 		profiler.logBefore("EXECUTING_QUERY", toString());
-		
 		try {
-			sessionFactory.getCurrentSession().doWork(new Work() {
-				
-				@Override
-				public void execute(Connection connection) throws SQLException {
-					PreparedStatement statement =  null;
-					try {
-						statement = createPreparedStatement(connection);
-						ResultSet resultSet = statement.executeQuery();
-						if (resultSet != null) {
-							ResultSetMetaData metaData = resultSet.getMetaData();
-							while (resultSet.next()) {
-								Object[] row = new Object[metaData.getColumnCount()];
-								for (int i = 1; i <= metaData.getColumnCount(); i++) {
-									row[i - 1] = resultSet.getObject(i);
-								}
-								ret.add(row);
-							}
-						}
+			statement = createPreparedStatement(sessionFactory.getCurrentSession().connection());
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet != null) {
+				ResultSetMetaData metaData = resultSet.getMetaData();
+				while (resultSet.next()) {
+					Object[] row = new Object[metaData.getColumnCount()];
+					for (int i = 1; i <= metaData.getColumnCount(); i++) {
+						row[i - 1] = resultSet.getObject(i);
 					}
-					finally {
-						try {
-							if (statement != null) {
-								statement.close();
-							}
-						}
-						catch (Exception e) {}
-					}
+					ret.add(row);
 				}
-			});
+			}
 		}
 		catch (Exception e) {
 			profiler.logError("EXECUTING_QUERY", toString(), e);
 			throw new IllegalArgumentException("Unable to execute query", e);
 		}
-		
+		finally {
+			try {
+				statement.close();
+			}
+			catch (Exception e) {}
+		}
 		profiler.logAfter("EXECUTING_QUERY", "Completed successfully with " + ret.size() + " results");
 		return ret;
 	}

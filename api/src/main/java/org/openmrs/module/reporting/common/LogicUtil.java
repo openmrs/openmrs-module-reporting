@@ -9,7 +9,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicCriteria;
 import org.openmrs.logic.LogicException;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.util.PrivilegeConstants;
+import org.openmrs.util.OpenmrsConstants;
 
 @Deprecated
 public class LogicUtil {
@@ -34,7 +34,7 @@ public class LogicUtil {
 			public void run() {
 				Context.openSession();
 				try {
-					resultHolder[0] = Context.getLogicService().parse(logic);
+					resultHolder[0] = Context.getLogicService().parseString(logic);
 				}
 				catch (Exception ex) {
 					exceptionHolder[0] = ex;
@@ -88,14 +88,14 @@ public class LogicUtil {
 		
 		Integer testPatientId = null;
 		try {
-			Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+			Context.addProxyPrivilege(OpenmrsConstants.PRIV_SQL_LEVEL_ACCESS);
 			List<List<Object>> results = Context.getAdministrationService().executeSQL(
 			    "select min(patient_id) from patient", true);
 			if (CollectionUtils.isNotEmpty(results) && CollectionUtils.isNotEmpty(results.get(0)))
 				testPatientId = Integer.parseInt(results.get(0).get(0).toString());
 		}
 		finally {
-			Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+			Context.removeProxyPrivilege(OpenmrsConstants.PRIV_SQL_LEVEL_ACCESS);
 		}
 		
 		if (testPatientId != null) {

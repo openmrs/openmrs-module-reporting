@@ -118,7 +118,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 		// Evaluate Logic Criteria
     	if (cid.getLogicExpression() != null) {
     		try {
-    			LogicCriteria criteria = Context.getLogicService().parse(cid.getLogicExpression());
+    			LogicCriteria criteria = Context.getLogicService().parseString(cid.getLogicExpression());
     			maybeSetIndexDate(criteria, context);
     			Map<Integer, Result> logicResults = Context.getLogicService().eval(cohort, criteria);
     			for (Integer memberId : logicResults.keySet()) {

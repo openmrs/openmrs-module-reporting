@@ -369,15 +369,7 @@ public class FormatTag extends TagSupport {
 		sb.append(" | ");
 		printDate(sb, encounter.getEncounterDatetime());
 		sb.append(" | ");
-		
-		try {
-			Method method = encounter.getClass().getMethod("getProvider", null);
-			Object provider = method.invoke(encounter, null);
-			printUser(sb, (User)provider);
-		}
-		catch (Exception ex) {
-			//should be a newer version that removed the getProvider method
-		}
+		printUser(sb, encounter.getProvider());
     }
 	
 	private void printMap(StringBuilder sb, Map<?, ?> m) {

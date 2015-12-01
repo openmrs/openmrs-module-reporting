@@ -9,15 +9,4 @@
 	<packaging>jar</packaging>
 	<name>Reporting API</name>
 	<description>API project for Reporting</description>
-	
-	
-	<dependencies>
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>reportingcompatibility-api</artifactId>
-			<version>1.5.9-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-	
 </project>

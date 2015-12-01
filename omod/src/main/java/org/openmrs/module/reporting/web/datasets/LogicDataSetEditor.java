@@ -45,7 +45,7 @@ public class LogicDataSetEditor {
 		DataSetDefinitionService svc = Context.getService(DataSetDefinitionService.class);
 		LogicDataSetDefinition definition = (LogicDataSetDefinition) svc.getDefinition(uuid, LogicDataSetDefinition.class);
 		
-		List<String> tokens = new ArrayList<String>(Context.getLogicService().getAllTokens());
+		List<String> tokens = new ArrayList<String>(Context.getLogicService().getTokens());
 		Collections.sort(tokens);
 		
 		Map<Column, Exception> logicErrors = new HashMap<Column, Exception>();
