@@ -236,7 +236,7 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	     *  * LogicCriteria is a class in 1.5.x and an interface in 1.6+
 	     * If we ever stop supporting 1.5.x in the reporting module, remove the hack below
 	     */
-	    Object logicCriteria = logicService.parseString(logicExpression);
+	    Object logicCriteria = logicService.parse(logicExpression);
 	    Method evalMethod = findLogicEvalMethodForCohortLogicCriteriaAndParams();
 	    Map<Integer, Result> results = null;
 	    try {
