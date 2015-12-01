@@ -58,8 +58,9 @@
 		<property name="runOnSuccess" type="java.lang.Boolean" column="run_on_success" length="1" not-null="true"/>
 		<property name="runOnError" type="java.lang.Boolean" column="run_on_error" length="1" not-null="true"/>
 		<property name="processorMode" column="processor_mode" not-null="true">
-            <type name="org.openmrs.module.reporting.report.service.db.GenericEnumUserType">
+            <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.openmrs.module.reporting.report.ReportProcessorConfiguration$ProcessorMode</param>
+                <param name="type">12</param>
             </type>
         </property>
         <many-to-one name="reportDesign" column="report_design_id" class="ReportDesign" not-null="false" lazy="false"/>
