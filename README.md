@@ -14,11 +14,14 @@ Reporting Module
   ================
   
   OpenMRS 1.5.2 or higher
-  Required Modules
-  HTML Widgets 1.5.5
-  Serialization XStream 0.1.8.1
-  Recommended modules
-  Reporting Compatibility 1.5.0.3
+
+  Required Modules:  
+  -HTML Widgets 1.5.5  
+  -Serialization XStream 0.1.8.1
+
+  Recommended modules:  
+  -Reporting Compatibility 1.5.0.3
+
   View, download or fork source code: on GitHub
   
   Installation
@@ -41,21 +44,22 @@ Reporting Module
   ================
   
   In order for users to be able to run most reports, you need to put them in a group with the privileges:
-  (this is accurate as of 0.4.1.2)
-    View Reports
-    Run Reports
-    View Patient Cohorts
-      technically this is only required if you want to be able to run reports including cohorts of patients, which is basically all reports
-    (up until 0.4.1.1) Manage Scheduler
-    To be able to edit and configure reports, you need: 
-    (this is accurate as of 0.4.1.3)
-      Manage Reports (this just enables you to see the menu items)
-      Manage Report Definitions
-    Manage Data Set Definitions
-    Manage Indicator Definitions
-    Manage Dimension Definitions
-    Manage Cohort Definitions
-    Manage Report Designs
+  (this is accurate as of 0.4.1.2)  
+    -View Reports  
+    -Run Reports  
+    -View Patient Cohorts (technically this is only required if you want to be able to run reports including cohorts of patients, which is basically all reports, up until 0.4.1.1)   
+    -Manage Scheduler
+    
+  To be able to edit and configure reports, you need: 
+    (this is accurate as of 0.4.1.3)  
+    -Manage Reports (this just enables you to see the menu items)  
+    -Manage Report Definitions  
+    -Manage Data Set Definitions  
+    -Manage Indicator Definitions  
+    -Manage Dimension Definitions  
+    -Manage Cohort Definitions  
+    -Manage Report Designs
+
     You also need to grant View privileges related to the base objects your reporting definitions use. For example you need "View Programs" to create and use an "In Program" Cohort Query
   
   Report Types
