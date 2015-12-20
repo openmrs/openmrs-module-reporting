@@ -60,8 +60,8 @@ To be able to edit and configure reports, you need:
 
 You also need to grant View privileges related to the base objects your reporting definitions use. For example, you need "View Programs" to create and use an "In Program" Cohort Query
   
-  Report Types
-  ================
+Report Types
+================
   
 There are many different types of reports, but these can be categorized into two main types.
 
