@@ -1,4 +1,5 @@
-<%@ include file="/WEB-INF/template/include.jsp"%> 
+<%@ page import="org.owasp.encoder.Encode" %>
+<%@ include file="/WEB-INF/template/include.jsp"%>
 <openmrs:require privilege="Manage Indicator Definitions" otherwise="/login.htm" redirect="/module/reporting/index.htm" />
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="springform" %>
 <%@ include file="../localHeaderMinimal.jsp"%>
@@ -82,7 +83,7 @@ $(document).ready(function() {
 						<li>
 							<label class="desc" for="${parameter.name}">${parameter.label}</label>
 							<div>						
-								<wgt:widget id="${parameter.name}" name="parameterValues[${parameter.name}]" defaultValue="<%= new java.util.Date() %>" type="${parameter.type.name}"/>	
+								<wgt:widget id="${parameter.name}" name="parameterValues[${parameter.name}]" defaultValue="<%=Encode.forHtmlAttribute(new java.util.Date().toString()) %>" type="${parameter.type.name}"/>
 							</div>
 						</li>						
 					</c:forEach>

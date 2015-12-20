@@ -1,9 +1,9 @@
 <%@page isErrorPage="true" %>
-<%@ page import="org.openmrs.web.WebUtil" %>
-<%@ page import="org.openmrs.web.WebConstants" %>
+<%@ page import="org.openmrs.api.APIAuthenticationException" %>
 <%@ page import="org.openmrs.api.context.UserContext" %>
 <%@ page import="org.openmrs.util.OpenmrsConstants" %>
-<%@ page import="org.openmrs.api.APIAuthenticationException" %>
+<%@ page import="org.openmrs.web.WebConstants" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ include file="/WEB-INF/template/include.jsp" %>
 <spring:message var="pageTitle" code="reporting.general.error.title" scope="page"/>
@@ -36,11 +36,11 @@
 
 
 	<ul>
-		<li>HTTP Status Code: <strong> <%= request.getAttribute("javax.servlet.error.status_code") %></strong></li>
-		<li>Request URI: <i><%= request.getAttribute("javax.servlet.error.request_uri") %></i></li>
-		<li>Exception Type: <strong><%= request.getAttribute("javax.servlet.error.exception_type") %></strong></li>
-		<li>Exception: <%= request.getAttribute("javax.servlet.error.exception") %></li>
-		<li>Message: <%= request.getAttribute("javax.servlet.error.message") %></li>
+		<li>HTTP Status Code: <strong> <%= Encode.forHtml(request.getAttribute("javax.servlet.error.status_code").toString()) %></strong></li>
+		<li>Request URI: <i><%= Encode.forHtml(request.getAttribute("javax.servlet.error.request_uri").toString()) %></i></li>
+		<li>Exception Type: <strong><%= Encode.forHtml(request.getAttribute("javax.servlet.error.exception_type").toString()) %></strong></li>
+		<li>Exception: <%= Encode.forHtml(request.getAttribute("javax.servlet.error.exception").toString()) %></li>
+		<li>Message: <%= Encode.forHtml(request.getAttribute("javax.servlet.error.message").toString()) %></li>
 	
 	<% 
 			// MSR/ERROR Session attributes are removed after being displayed
@@ -57,7 +57,7 @@
 			if (exception != null) {			
 				out.println("<li>Stacktrace: <a href=\"#\" onclick=\"showOrHide()\" id=\"toggleLink\" style=\"font-size: 12px;\">Show stack trace</a><br/>");
 				if (exception.getMessage() != null)
-					out.println("<pre id='exceptionMessage'>" + WebUtil.escapeHTML(exception.getMessage()) + "</pre>"); 
+					out.println("<pre id='exceptionMessage'>" + Encode.forHtml(exception.getMessage()) + "</pre>");
 			}
 			%>		
 			
@@ -119,7 +119,7 @@
 	</ul>
 
 	<br /><br />
-	Consult the <a href="<%= request.getContextPath() %>/help.htm">help document</a>. <br />
+	Consult the <a href="<%= Encode.forHtml(request.getContextPath()) %>/help.htm">help document</a>. <br />
 	Contact your friendly neighborhood administrator if it cannot be resolved.
 
 <%		

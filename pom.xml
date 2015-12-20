@@ -48,6 +48,7 @@
         <jodatimeVersion>2.3</jodatimeVersion>
         <handlebarsVersion>1.1.2</handlebarsVersion>
         <openmrsTestutilsVersion>1.2</openmrsTestutilsVersion>
+		<owaspEncoderVersion>1.1.1</owaspEncoderVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>Reporting</MODULE_NAME>
