@@ -20,17 +20,17 @@ import java.util.Map;
  * Provides abstract implementation of the Data interface
  */
 public abstract class BaseData implements Data {
-	
+
 	//***** PROPERTIES *****
-	
+
     private Map<Integer, Object> data;
-    
+
     //***** CONSTRUCTORS *****
-    
+
     public BaseData() {
     	super();
     }
-        
+
     //***** PROPERTY ACCESS *****
 
 	/**
@@ -44,19 +44,19 @@ public abstract class BaseData implements Data {
 	}
 
 	/**
-	 * @param data the data to set
+	 * @param data: the data to set
 	 */
 	public void setData(Map<Integer, Object> data) {
 		this.data = data;
 	}
-	
+
 	/**
 	 * Adds a data item with the passed id and value
 	 */
 	public void addData(Integer id, Object value) {
 		getData().put(id, value);
 	}
-	
+
 	/**
 	 * Sets/replaces all values with the given values
 	 */

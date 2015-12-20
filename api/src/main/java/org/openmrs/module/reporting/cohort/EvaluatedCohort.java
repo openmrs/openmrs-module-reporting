@@ -21,25 +21,25 @@ import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
- * Provides access to an evaluated {@link Cohort}, along with the 
+ * Provides access to an evaluated {@link Cohort}, along with the
  * {@link CohortDefinition} and {@link EvaluationContext} which
  * produced it.
  */
 public class EvaluatedCohort extends PatientIdSet implements Evaluated<CohortDefinition> {
 
 	public static final long serialVersionUID = 1L;
-	
+
 	//***********************
 	// PROPERTIES
 	//***********************
-	
+
 	private CohortDefinition definition;
 	private EvaluationContext context;
-	
+
 	//***********************
 	// CONSTRUCTORS
 	//***********************
-	
+
 	/**
 	 * Default Constructor
 	 */
@@ -53,7 +53,7 @@ public class EvaluatedCohort extends PatientIdSet implements Evaluated<CohortDef
 	public EvaluatedCohort(CohortDefinition definition, EvaluationContext context) {
 		this(null, definition, context);
 	}
-	
+
 	/**
 	 * Full Constructor
 	 */
@@ -62,7 +62,7 @@ public class EvaluatedCohort extends PatientIdSet implements Evaluated<CohortDef
 		this.definition = definition;
 		this.context = context;
 	}
-	
+
 	//***********************
 	// PROPERTY ACCESS
 	//***********************

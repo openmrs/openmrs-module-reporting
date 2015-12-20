@@ -26,29 +26,29 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
  * DataSet Data Definition
  */
 public abstract class DataSetDataDefinition extends BaseDataDefinition {
-	
+
 	public static final long serialVersionUID = 1L;
-	
+
 	//***** PROPERTIES *****
-	
+
 	@ConfigurationProperty(required=true)
 	private RowPerObjectDataSetDefinition definition;
-	
+
 	@ConfigurationProperty(required=true)
 	private TimeQualifier whichValues;
-	
+
 	@ConfigurationProperty(required=true)
 	private Integer numberOfValues;
-	
+
 	//***** CONSTRUCTORS *****
-		
+
 	/**
 	 * Default Constructor
 	 */
 	public DataSetDataDefinition() {
 		super();
 	}
-	
+
 	/**
 	 * Constructor to populate definition only
 	 */
@@ -56,7 +56,7 @@ public abstract class DataSetDataDefinition extends BaseDataDefinition {
 		this();
 		setDefinition(definition);
 	}
-	
+
 	/**
 	 * Constructor to populate all properties
 	 */
@@ -67,8 +67,8 @@ public abstract class DataSetDataDefinition extends BaseDataDefinition {
 	}
 
 	//***** INSTANCE METHODS *****
-	
-	/** 
+
+	/**
 	 * @see DataDefinition#getDataType()
 	 */
 	public Class<?> getDataType() {
@@ -77,7 +77,7 @@ public abstract class DataSetDataDefinition extends BaseDataDefinition {
 		}
 		return List.class;
 	}
-	
+
 	/**
 	 * @see BaseDefinition#getParameter(String)
 	 */
@@ -95,7 +95,7 @@ public abstract class DataSetDataDefinition extends BaseDataDefinition {
 	}
 
 	//***** PROPERTY ACCESS *****
-	
+
 	/**
 	 * @return the definition
 	 */
