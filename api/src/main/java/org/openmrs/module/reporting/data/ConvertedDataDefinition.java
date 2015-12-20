@@ -31,7 +31,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 public abstract class ConvertedDataDefinition<T extends DataDefinition> extends BaseDataDefinition {
 
 	public static final long serialVersionUID = 1L;
-	
+
 	//***********************
 	// PROPERTIES
 	//***********************
@@ -41,11 +41,11 @@ public abstract class ConvertedDataDefinition<T extends DataDefinition> extends 
 
 	@ConfigurationProperty
 	private List<DataConverter> converters;
-	
+
 	//***********************
 	// CONSTRUCTORS
 	//***********************
-	
+
 	/**
 	 * Default Constructor
 	 */
@@ -75,7 +75,7 @@ public abstract class ConvertedDataDefinition<T extends DataDefinition> extends 
 		this.definitionToConvert = new Mapped<T>(definitionToConvert, mappings);
 		addConverter(converters);
 	}
-	
+
 	//***********************
 	// INSTANCE METHODS
 	//***********************

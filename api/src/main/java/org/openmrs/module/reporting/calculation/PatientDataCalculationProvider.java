@@ -33,11 +33,11 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
  */
 @Handler(supports = PatientDataCalculation.class, order = 50)
 public class PatientDataCalculationProvider implements CalculationProvider {
-	
+
 	/**
 	 * Creates a calculation instances for the matching data definitions by loading the data
 	 * definition, if none is found, a saved instance is looked up
-	 * 
+	 *
 	 * @see CalculationProvider#getCalculation(String, String)
 	 */
 	@SuppressWarnings("unchecked")
@@ -54,11 +54,11 @@ public class PatientDataCalculationProvider implements CalculationProvider {
 					collectionType = (Class<? extends Collection<?>>) p.getField().getType();
 					fieldType = (Class<?>) ReflectionUtil.getGenericTypes(p.getField())[0];
 				}
-				
+
 				dd.addParameter(new Parameter(p.getField().getName(), p.getDisplayName(), fieldType, collectionType, p
 				        .getValue()));
 			}
-			
+
 			c.setDataDefinition(dd);
 		}
 		catch (Exception e) {
@@ -75,7 +75,7 @@ public class PatientDataCalculationProvider implements CalculationProvider {
 				        + calculationName);
 			}
 		}
-		
+
 		return c;
 	}
 }

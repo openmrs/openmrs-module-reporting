@@ -23,7 +23,7 @@ import java.io.UnsupportedEncodingException;
 public class ReportingSerializer extends XStreamShortSerializer {
 
 	private static ThreadLocal<DataHolder> cache = new ThreadLocal<DataHolder>();
-	
+
 	/**
 	 * @throws SerializationException
 	 * @should serialize a cohort definition
@@ -32,7 +32,7 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	 */
 	public ReportingSerializer() throws SerializationException {
 	    super(new XStream(new DomDriver()) {
-	    	
+
 	    	/**
 	    	 * This method copied from XStreamSerializer constructor.
 	    	 */
@@ -43,9 +43,9 @@ public class ReportingSerializer extends XStreamShortSerializer {
 				mapper = new NullValueMapper(mapper);
 				return mapper;
 			}
-			
+
 	    	/**
-	    	 * Override a mid-level XStream method to reuse a DataHolder cache if one is available 
+	    	 * Override a mid-level XStream method to reuse a DataHolder cache if one is available
 	    	 */
 	        public Object unmarshal(HierarchicalStreamReader reader, Object root) {
 	            return unmarshal(reader, root, cache.get());
@@ -59,20 +59,20 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	    xstream.registerConverter(new CohortDefinitionConverter(mapper, converterLookup));
 	    xstream.registerConverter(new EncounterQueryConverter(mapper, converterLookup));
 	    xstream.registerConverter(new ObsQueryConverter(mapper, converterLookup));
-		xstream.registerConverter(new CalculationRegistrationShortConverter(mapper, converterLookup));
+			xstream.registerConverter(new CalculationRegistrationShortConverter(mapper, converterLookup));
 
-		xstream.registerConverter(new PersonDataDefinitionConverter(mapper, converterLookup));
+			xstream.registerConverter(new PersonDataDefinitionConverter(mapper, converterLookup));
 	    xstream.registerConverter(new PatientDataDefinitionConverter(mapper, converterLookup));
 	    xstream.registerConverter(new EncounterDataDefinitionConverter(mapper, converterLookup));
-	    
+
 	    xstream.registerConverter(new DataSetDefinitionConverter(mapper, converterLookup));
-	    
+
 	    xstream.registerConverter(new DimensionConverter(mapper, converterLookup));
 	    xstream.registerConverter(new IndicatorConverter(mapper, converterLookup));
 
-		xstream.registerConverter(new ReportDefinitionConverter(mapper, converterLookup));
+			xstream.registerConverter(new ReportDefinitionConverter(mapper, converterLookup));
 	}
-	
+
 	@Override
 	synchronized public <T> T deserialize(String serializedObject, Class<? extends T> clazz) throws SerializationException {
 		boolean cacheOwner = cache.get() == null;

@@ -24,19 +24,19 @@ import org.openmrs.module.reporting.query.IdSet;
  * A Set of Patient Ids
  */
 public class PatientIdSet extends Cohort implements IdSet<Patient> {
-	
+
 	public static final long serialVersionUID = 1L;
-	
+
 	//***** CONSTRUCTORS *****
-	
+
     public PatientIdSet() {
     	super();
     }
-    
+
     public PatientIdSet(Set<Integer> memberIds) {
     	setMemberIds(memberIds);
     }
-    
+
     public PatientIdSet(Integer... memberIds) {
     	for (Integer memberId : memberIds) {
     		addMember(memberId);
@@ -44,7 +44,7 @@ public class PatientIdSet extends Cohort implements IdSet<Patient> {
     }
 
     //***** INSTANCE METHODS *****
-    
+
 	/**
 	 * @see Object#clone()
 	 */

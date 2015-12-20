@@ -37,26 +37,25 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
  * Adapter class which exposes a Patient or Person DataDefinition as a PatientCalculation
  */
 public class PatientDataCalculation extends DataCalculation implements PatientCalculation {
-	
+
 	/**
 	 * Default Constructor
 	 */
 	public PatientDataCalculation() {
 	}
-	
+
 	/**
 	 * @see PatientCalculation#evaluate(Collection, Map, PatientCalculationContext)
-	 * @should ui iu iu
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> personIds, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
-		
+
 		EvaluationContext ec = ReportingCalculationUtil.getEvaluationContextForCalculation(personIds, parameterValues,
 		    context);
 		Map<Integer, Object> data = null;
-		
+
 		try {
 			//Set the passed in parameter values on the definition
 			if (MapUtils.isNotEmpty(parameterValues)) {
@@ -64,7 +63,7 @@ public class PatientDataCalculation extends DataCalculation implements PatientCa
 					getDataDefinition().getParameter(p.getKey()).setDefaultValue(parameterValues.get(p.getKey()));
 				}
 			}
-			
+
 			if (getDataDefinition() instanceof PatientDataDefinition) {
 				PatientDataService service = Context.getService(PatientDataService.class);
 				data = service.evaluate((PatientDataDefinition) getDataDefinition(), ec).getData();
@@ -79,11 +78,11 @@ public class PatientDataCalculation extends DataCalculation implements PatientCa
 		catch (EvaluationException e) {
 			throw new APIException("Evaluation Exception occurred while evaluating " + getDataDefinition(), e);
 		}
-		
+
 		if (data == null) {
 			throw new IllegalArgumentException("No data generated while evaluating " + getDataDefinition());
 		}
-		
+
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer id : data.keySet()) {
 			CalculationResult cr;
@@ -97,10 +96,10 @@ public class PatientDataCalculation extends DataCalculation implements PatientCa
 			} else {
 				cr = new SimpleResult(data.get(id), this, context);
 			}
-			
+
 			result.put(id, cr);
 		}
-		
+
 		return result;
 	}
 }
