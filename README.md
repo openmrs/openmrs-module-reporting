@@ -29,7 +29,7 @@ Reporting Module
 
   To upgrade from Reporting Module 0.3.x:
   
-  * Check to make sure that you have all of the ** Required Modules ** installed on your system.
+  * Check to make sure that you have all of the **Required Modules** installed on your system.
   * Double-check to make sure that you have all of the Required Modules installed on your system.
   * Log into OpenMRS
   * Navigate to **Admin > Manage Modules**.
@@ -61,9 +61,9 @@ Reporting Module
 ###Report Types
   There are many different types of reports but these can be categorized into two main types.
   
- ** Row-Per-Domain Object Reports:** These reports export data in a multi-column format where each row represents the object and each column represents an attribute associated with the object. Currently, only Row-Per-Patient reports are natively supported but more objects (for example Row-Per-Encounter and Row-Per-Program) are in planning.
+ **Row-Per-Domain Object Reports:** These reports export data in a multi-column format where each row represents the object and each column represents an attribute associated with the object. Currently, only Row-Per-Patient reports are natively supported but more objects (for example Row-Per-Encounter and Row-Per-Program) are in planning.
   
-  ** Indicator Reports:** Indicator reports aggregate groups of people for each question. Below is a Period Indicator Report. Each row contains a question and the corresponding column contains the answer. The answer to each question is a link to the members of the group that fulfills the question.
+  **Indicator Reports:** Indicator reports aggregate groups of people for each question. Below is a Period Indicator Report. Each row contains a question and the corresponding column contains the answer. The answer to each question is a link to the members of the group that fulfills the question.
   
 ###Limitations
 
