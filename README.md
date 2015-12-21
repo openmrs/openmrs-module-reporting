@@ -26,36 +26,37 @@ Reporting Module
   To install the Reporting Module download the Reporting Module .omod (above), along with its dependencies (see box above) and upload them into your system.
   
 ###Upgrade
-  
+
   To upgrade from Reporting Module 0.3.x:
-    Check to make sure that you have all of the Required Modules installed on your system.
-    Double-check to make sure that you have all of the Required Modules installed on your system.
-    Log into OpenMRS
-    Navigate to Admin > Manage Modules.
-    Click the trash icon next to Reporting 0.3.x to remove the module from your system.
-    Navigate to the newer omod on your system using the browse button and click Upload.
+  
+  * Check to make sure that you have all of the ** Required Modules ** installed on your system.
+  * Double-check to make sure that you have all of the Required Modules installed on your system.
+  * Log into OpenMRS
+  * Navigate to **Admin > Manage Modules**.
+  * Click the trash icon next to Reporting 0.3.x to remove the module from your system.
+  * Navigate to the newer omod on your system using the browse button and click Upload.
   
 ###Privileges
 
   In order for users to be able to run most reports, you need to put them in a group with the privileges:
-     *(this is accurate as of 0.4.1.2)*  
-    * View Reports  
-    * Run Reports  
-    * View Patient Cohorts (technically, this is only required if you want to be able to run reports including cohorts of patients, which is basically all reports, up until 0.4.1.1)   
-    * Manage Scheduler
-    
+   *(this is accurate as of 0.4.1.2)*  
+   * View Reports  
+   * Run Reports  
+   * View Patient Cohorts (technically, this is only required if you want to be able to run reports including cohorts of patients, which is basically all reports, up until 0.4.1.1)   
+   * Manage Scheduler
+ 
   To be able to edit and configure reports, you need: 
    *(this is accurate as of 0.4.1.3)*  
-    * Manage Reports (this just enables you to see the menu items)  
-    * Manage Report Definitions  
-    * Manage Data Set Definitions  
-    * Manage Indicator Definitions  
-    * Manage Dimension Definitions  
-    * Manage Cohort Definitions  
-    * Manage Report Designs
+   * Manage Reports (this just enables you to see the menu items)  
+   * Manage Report Definitions  
+   * Manage Data Set Definitions  
+   * Manage Indicator Definitions  
+   * Manage Dimension Definitions  
+   * Manage Cohort Definitions  
+   * Manage Report Designs
 
-    You also need to grant View privileges related to the base objects your reporting definitions use.
-    For example, you need "View Programs" to create and use an "In Program" Cohort Query.
+   You also need to grant View privileges related to the base objects your reporting definitions use.
+   For example, you need "View Programs" to create and use an "In Program" Cohort Query.
   
 ###Report Types
   There are many different types of reports but these can be categorized into two main types.
