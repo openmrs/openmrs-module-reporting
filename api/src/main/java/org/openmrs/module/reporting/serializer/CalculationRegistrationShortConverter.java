@@ -24,7 +24,7 @@ public class CalculationRegistrationShortConverter extends BaseShortConverter {
 	}
 
 	/**
-	 * hydrates a CalculationRegistration from its uuid
+	 * populates a CalculationRegistration from its uuid
 	 *
 	 * @see BaseShortConverter#getByUUID(String)
 	 */

@@ -30,7 +30,7 @@ public class HandlebarsHelpers {
      * Usage is like: {{ message location.uuid prefix="ui.i18n.Location.name." }}
      * @param key
      * @param options
-     * @return
+     * @return CharSequence (may be empty)
      */
     public CharSequence message(String key, Options options) {
         String fullKey = options.hash("prefix", "") + key + options.hash("suffix", "");
@@ -46,7 +46,7 @@ public class HandlebarsHelpers {
      * This will be exposed as a handlebars helper.
      * Usage is like: {{ conceptName "PIH:Lab only" }}
      * @param sourceAndCode
-     * @return
+     * @return self or name of Concept
      */
     public CharSequence conceptName(String sourceAndCode) {
         try {
