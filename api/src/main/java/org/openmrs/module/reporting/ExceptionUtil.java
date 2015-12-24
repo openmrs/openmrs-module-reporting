@@ -23,7 +23,7 @@ import org.openmrs.api.APIAuthenticationException;
 public class ExceptionUtil {
 	
 	/**
-	 * If any cause in the exception chain is an instance of causeType, then rethrow that exception 
+	 * If any cause in the exception chain is an instance of causeType, then re-throw that exception 
 	 * 
 	 * @param thrown
 	 * @param causeType
@@ -35,7 +35,7 @@ public class ExceptionUtil {
 	}
 	
 	/**
-	 * If any cause in the given exception chain is an APIAuthenticationException, rethrow that 
+	 * If any cause in the given exception chain is an APIAuthenticationException, re-throw that 
 	 * 
 	 * @param thrown
 	 */

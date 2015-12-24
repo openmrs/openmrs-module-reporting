@@ -35,7 +35,7 @@ import java.util.Map;
  * def.setParameterValues(buildMap("onOrBefore", DateUtil.parseYMD("2014-01-01"));
  *
  * def.loadParameters(allDefinitionLibraries);
- * // at this point def has one parameter (location) since the value of onOrBefore was provided already
+ * at this point def has one parameter (location) since the value of onOrBefore was provided already
  */
 public abstract class BaseDefinitionLibraryDataDefinition extends BaseDataDefinition {
 
