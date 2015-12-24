@@ -122,7 +122,7 @@
 	</ul>
 
 	<br /><br />
-	Consult the <a href="<%= Encode.forHtmlAttribute(request.getContextPath()) %>/help.htm">help document</a>. <br />
+	Consult the <a href="<%= Encode.forUri(request.getContextPath() + "/help.htm") %>">help document</a>. <br />
 	Contact your friendly neighborhood administrator if it cannot be resolved.
 
 <%		
