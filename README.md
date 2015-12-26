@@ -9,7 +9,7 @@ The Reporting Module was designed to provide a feature-rich and user-friendly we
 
 Download
 ========
-We encourage all OpenMRS users and developers to download the reporting module, use it frequently, create new tickets for bug fixes and feature requests, and provide feedback to dev@openmrs.org.
+We encourage all OpenMRS users and developers to download the reporting module, use it frequently, create new tickets for bug fixes and feature requests, and provide feedback on [OpenMRS Talk](https://talk.openmrs.org/c/developers).
 
 
 Requirements
