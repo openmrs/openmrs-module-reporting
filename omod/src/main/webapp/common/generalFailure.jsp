@@ -36,11 +36,11 @@
 
 
 	<ul>
-		<li>HTTP Status Code: <strong> <%= request.getAttribute("javax.servlet.error.status_code") %></strong></li>
-		<li>Request URI: <i><%= request.getAttribute("javax.servlet.error.request_uri") %></i></li>
-		<li>Exception Type: <strong><%= request.getAttribute("javax.servlet.error.exception_type") %></strong></li>
-		<li>Exception: <%= request.getAttribute("javax.servlet.error.exception") %></li>
-		<li>Message: <%= request.getAttribute("javax.servlet.error.message") %></li>
+		<li>HTTP Status Code: <strong> <%= WebUtil.escapeHTML(request.getAttribute("javax.servlet.error.status_code").toString()) %></strong></li>
+		<li>Request URI: <i><%= WebUtil.escapeHTML(request.getAttribute("javax.servlet.error.request_uri").toString()) %></i></li>
+		<li>Exception Type: <strong><%= WebUtil.escapeHTML(request.getAttribute("javax.servlet.error.exception_type").toString()) %></strong></li>
+		<li>Exception: <%= WebUtil.escapeHTML(request.getAttribute("javax.servlet.error.exception").toString()) %></li>
+		<li>Message: <%= WebUtil.escapeHTML(request.getAttribute("javax.servlet.error.message").toString()) %></li>
 	
 	<% 
 			// MSR/ERROR Session attributes are removed after being displayed
@@ -57,7 +57,7 @@
 			if (exception != null) {			
 				out.println("<li>Stacktrace: <a href=\"#\" onclick=\"showOrHide()\" id=\"toggleLink\" style=\"font-size: 12px;\">Show stack trace</a><br/>");
 				if (exception.getMessage() != null)
-					out.println("<pre id='exceptionMessage'>" + WebUtil.escapeHTML(exception.getMessage()) + "</pre>"); 
+					out.println("<pre id='exceptionMessage'>" + WebUtil.escapeHTML(exception.getMessage()) + "</pre>");
 			}
 			%>		
 			
@@ -119,7 +119,7 @@
 	</ul>
 
 	<br /><br />
-	Consult the <a href="<%= request.getContextPath() %>/help.htm">help document</a>. <br />
+	Consult the <a href="<%= WebUtil.encodeForUri(request.getContextPath() + "/help.htm") %>">help document</a>. <br />
 	Contact your friendly neighborhood administrator if it cannot be resolved.
 
 <%		
