@@ -55,7 +55,7 @@ $(document).ready(function() {
 	<table width="100%">
 		<tr>
 			<td width="33%" valign="middle">
-				<span style="color: white; font-size: 1.5em;"><strong>Cohort Analysis Dashboard</strong></span></td>
+				<span style="color: white; font-size: 1.5em;"><strong><spring:message code ="reporting.cohortAnalysisDashboard" /></strong></span></td>
 			<td align="right" valign="middle">
 				<span style="color: white;"><strong>(returned ${fn:length(patients)} patients)</strong></span>			
 			</td>
@@ -68,7 +68,7 @@ $(document).ready(function() {
 			<div id="cohortFilterColumn">					
 				<form action="${pageContext.request.contextPath}/module/reporting/dashboard/manageCohortDashboard.form"
 					<div style="height: 95%; overflow: auto;">
-						<h3><a href="#">Age</a></h3>
+						<h3><a href="#"><spring:message code ="reporting.age" /></a></h3>
 						<div>
 						
 							<p>
@@ -78,7 +78,7 @@ $(document).ready(function() {
 								<input type="checkbox" name="ageCohort" value="adult" <c:if test="${param.ageCohort=='adult'}">checked</c:if>/>Adult (15+ yrs)<br/>
 							</p>
 						</div>		
-						<h3><a href="#">Gender</a></h3>
+						<h3><a href="#"><spring:message code ="reporting.gender" /></a></h3>
 						<div>
 							<p>
 								<!--  org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition:minAge=0:maxAge=2:effectiveDate=today -->
@@ -87,7 +87,7 @@ $(document).ready(function() {
 							</p>					
 						</div>		
 
-						<h3><a href="#">Currently enrolled in ...</a></h3>
+						<h3><a href="#"><spring:message code ="reporting.CurrentlyEnrolled" /></a></h3>
 						<div>
 							<p>
 								<c:forEach var="program" items="${programs}">
@@ -96,7 +96,7 @@ $(document).ready(function() {
 							</p>
 						</div>
 <!--  						
-						<h3><a href="#">Health Center</a></h3>
+						<h3><a href="#"><spring:message code ="reporting.healthCenter" /></a></h3>
 						<div>
 							<p>
 								<c:forEach var="location" items="${locations}">
@@ -115,9 +115,9 @@ $(document).ready(function() {
 
 <!-- 
 					<div style="border-top: 1px solid black; height: 25%;" >				
-						<h3><a href="#">Cohort Summary</a></h3>
+						<h3><a href="#"><spring:message code ="reporting.CohortSummary" /></a></h3>
 						<span>
-							There are <strong>${selectedCohort.size}</strong> patients in the current cohort.
+							<spring:message code ="reporting.ThereAre" /> <strong>${selectedCohort.size}</strong> <spring:message code ="reporting.patientsInCurrentCohort" />
 						</span>
 						<div id="summary"></div>					
 					</div>
@@ -136,7 +136,7 @@ $(document).ready(function() {
 							<tr>
 								<th>
 									<div id="filters" style="margin: 10px; padding:10px;">									
-										<span style="color: black;">Filters applied:</span>
+										<span style="color: black;"><spring:message code ="reporting.FiltersApplied" /></span>
 										<c:forEach var="sc" items="${selectedCohorts}">
 											<span style="border: 1px solid #ccc; margin: 5px; padding: 5px; background-color: #DDECF7; ">
 												${sc} 											  
@@ -178,12 +178,12 @@ $(document).ready(function() {
 													</div>																										
 													<table border="0">
 														<tr>
-															<td nowrap>HIV Program:</td>
-															<td><strong>ON ARVs </strong></td>
+															<td nowrap><spring:message code ="reporting.HivProgram" /></td>
+															<td><strong><spring:message code ="reporting.onARVs" /></strong></td>
 														</tr>
 														<tr>
 															<td width="15%" nowrap>
-																Born:
+																<spring:message code ="reporting.Born" />
 															</td>
 															<td>													
 																<strong>
@@ -191,26 +191,26 @@ $(document).ready(function() {
 																		<c:when test="${patient.birthdate!=null}">
 																			<rpt:timespan then="${patient.birthdate}"/>
 																		</c:when>
-																		<c:otherwise>unknown</c:otherwise>
+																		<c:otherwise><spring:message code ="reporting.unknown" /></c:otherwise>
 																	</c:choose>
 																</strong>
 															</td>
 														</tr>
 														<tr>
-															<td nowrap>Gender:</td>
+															<td nowrap><spring:message code ="reporting.gender" /></td>
 															<td>
 																<strong>															
 																	<c:choose>
-																		<c:when test="${patient.gender=='M'}">male</c:when>
-																		<c:when test="${patient.gender=='F'}">female</c:when>
-																		<c:otherwise>Other</c:otherwise>
+																		<c:when test="${patient.gender=='M'}"><spring:message code ="reporting.male" /></c:when>
+																		<c:when test="${patient.gender=='F'}"><spring:message code ="reporting.female" /></c:when>
+																		<c:otherwise><spring:message code ="reporting.other" /></c:otherwise>
 																	</c:choose>															
 																</strong>
 															</td>
 														</tr>
 														<tr>
 															<td colspan="2">
-																<button id="view-patient-dashboard-${patient.patientId}"><strong>more ...</strong></button>
+																<button id="view-patient-dashboard-${patient.patientId}"><strong><spring:message code ="reporting.more" /></strong></button>
 															</td>
 														</tr>
 													</table>
