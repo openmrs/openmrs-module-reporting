@@ -15,27 +15,6 @@
 			"bAutoWidth": false
 		} );
 
-		<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
-			$("#preview-report-${reportDefinition.uuid}").click(function(event){ 
-				showReportingDialog({ 
-					title: 'Run Report', 
-					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition['class'].name}',
-					successCallback: function() { 
-						window.location = window.location; //.reload(true);
-					} 
-				});
-			});
-	
-			$("#render-report-${reportDefinition.uuid}").click(function(event){ 
-				showReportingDialog({ 
-					title: 'Run Report', 
-					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition['class'].name}&format=indicator&successView=redirect:/module/reporting/reports/renderReport.form',
-					successCallback: function() { 
-						window.location = window.location; //.reload(true);
-					} 
-				});
-			});	
-		</c:forEach>
 	} );
 
 	function confirmDelete(name, uuid) {
