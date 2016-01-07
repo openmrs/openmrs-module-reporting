@@ -16,6 +16,11 @@
 			<artifactId>${project.parent.artifactId}-api</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.owasp.encoder</groupId>
+			<artifactId>encoder</artifactId>
+			<version>${owaspEncoderVersion}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
