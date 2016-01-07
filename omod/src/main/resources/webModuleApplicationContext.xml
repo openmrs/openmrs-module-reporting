@@ -86,18 +86,4 @@
 		</property>
     </bean>
 
-<!--  
- 	<bean id="exceptionResolver"
-		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-		<property name="exceptionMappings">
-           <props>
-                <prop key="org.openmrs.api.db.DAOException">module/reporting/common/dataAccessFailure</prop>
-                <prop key="org.openmrs.api.APIException">module/reporting/common/apiFailure</prop>
-                <prop key="java.lang.Exception">module/reporting/common/generalFailure</prop>
-         	</props>
-        </property>				
-		<property name="defaultErrorView" value="generalFailure" />
-	</bean>
--->
-
 </beans>
