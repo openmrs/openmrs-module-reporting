@@ -1,3 +1,16 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.reporting.cohort.query.db.hibernate;
 
 import org.apache.commons.logging.Log;
@@ -289,7 +302,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	/**
 	 * TODO: Fails to leave out patients who are voided.  
 	 * 
-	 * Returns the set of patients that were in a given program, 
+	 * Returns the set of patients that are in a given program, 
 	 * workflow, and state, within a given date range
 	 * 
 	 * @param program
@@ -1179,7 +1192,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		
 		// Set values parameter
 		if (values != null && !values.isEmpty()) { 	
-			if (values.size() == 1) {	// improve performance by using equality when there's only only 
+			if (values.size() == 1) {	// improve performance by using equality when there's only
 				query.setString("value", values.get(0));
 			} 
 			else if (!values.isEmpty()) {
@@ -1252,7 +1265,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery.toString());					
 			//query.setCacheMode(CacheMode.IGNORE);	// TODO figure out what this does before using it
 						
-			// Bind the query parameters (query is mutable
+			// Bind the query parameters (query is mutable)
 			bindQueryParameters(query, paramMap);
 			
 		} 
@@ -1264,11 +1277,11 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	}
 	
 	/**
-	 * This need to be a separate method so we can call it from both the 
+	 * This needs to be a separate method so we can call it from both the 
 	 * executeSqlQuery() and validateSqlQuery() methods 
 	 */
 	private Cohort executeQuery(Query query) { 
-		// Needs to be a separate method because  
+		// Needs to be a separate method 
 		try { 			
 			// TODO Should test to make sure the returned List doesn't have more than one column			
 			return new Cohort(query.list());
@@ -1361,7 +1374,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	 */
 	private void validateSqlQuery(String sqlQuery, Map<String, Object> paramMap) throws ReportingException { 
 
-		// TODO Should not allow user to provide empty sql query
+		// TODO Should not allow user to provide empty SQL query
 		// FIXME This is going to be a really quick validation implementation  
 		// TODO We need to implement a validation framework within the reporting module
 		if (sqlQuery == null || sqlQuery.equals("")) 
@@ -1383,7 +1396,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		
 		// TODO Should allow use of 'select distinct column'
 		
-		// TODO Should execute explain plan to make sure 
+		// TODO Should execute explain plan to be sure. 
 		// FIXME This might be a bad idea if the query does not perform well so 
 		// make sure it's the last step in the validation process.
 		try { 
