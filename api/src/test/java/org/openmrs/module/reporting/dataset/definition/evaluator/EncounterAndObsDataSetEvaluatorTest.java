@@ -21,6 +21,7 @@ import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.contrib.testdata.builder.EncounterBuilder;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
@@ -85,7 +86,14 @@ public class EncounterAndObsDataSetEvaluatorTest extends BaseModuleContextSensit
 		Assert.assertEquals(e.getEncounterDatetime(), row.getColumnValue("ENCOUNTER_DATETIME"));
 		Assert.assertEquals(p.getPatientId(), row.getColumnValue("PATIENT_ID"));
 		Assert.assertEquals(e.getLocation().getName(), row.getColumnValue("LOCATION"));
-		Assert.assertEquals(Double.valueOf(77), row.getColumnValue("WT"));
+		
+		//There are two weight concept names for locale en { WT, WEIGHT (KG) } in standardTestDataset.xml
+		//With java 8, the order of these names in the names collection changes, hence
+		//leading us to get any of the two. Therefore, by not hard coding either of the two names,
+		//we ensure that we test with whichever name was returned as first in the collection.
+		String columnName = ObjectUtil.format(wt).replaceAll("\\s", "_").replaceAll("-", "_").toUpperCase();
+		Assert.assertEquals(Double.valueOf(77), row.getColumnValue(columnName));
+		
 		Assert.assertEquals("SINGLE", row.getColumnValue("CIVIL_STATUS"));
 	}
 }
