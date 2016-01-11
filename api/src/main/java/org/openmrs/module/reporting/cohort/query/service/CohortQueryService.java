@@ -1,3 +1,16 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.reporting.cohort.query.service;
 
 import java.util.Date;
@@ -48,7 +61,7 @@ public interface CohortQueryService extends OpenmrsService {
             PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
 
 	/**
-	 * Get patients having ranged (i.e. Numeric or Date/Time) obs that match a complicated query.
+	 * Get patients having range (i.e. Numeric or Date/Time) obs that match a complicated query.
 	 * 
 	 * @param timeModifier
 	 * @param question
@@ -155,7 +168,7 @@ public interface CohortQueryService extends OpenmrsService {
 	/**
 	 * Executes the given sql query string.  This method will substitute  
 	 * parameter values from the given parameter map into the named parameter
-	 * placeholders in the query.
+	 * placeholder in the query.
 
 	 * TODO The query string should actually be a bean that encapsulates any
 	 * type of query (SQL, HQL, MDX).  The execute query method would actually 
@@ -198,7 +211,7 @@ public interface CohortQueryService extends OpenmrsService {
 
 	/**
      * Returns a cohort of patients who "pass" a logic expression. (Depends on Logic's Result.toBoolean,
-     * which basically means that empty results, and the boolean value false are "failure", and anything
+     * which basically means that empty results and the boolean value false are "failure", and anything
      * else "passes".) 
      * 
      * @param logic

@@ -16,8 +16,8 @@ package org.openmrs.module.reporting;
 import org.openmrs.api.APIException;
 
 /**
- * This is a generic reporting exception.  All reporting exceptions should 
- * derive from this class.
+ * This is a generic reporting exception.  All reporting exceptions should be
+ * derived from this class.
  */
 public class ReportingException extends APIException {
 	
