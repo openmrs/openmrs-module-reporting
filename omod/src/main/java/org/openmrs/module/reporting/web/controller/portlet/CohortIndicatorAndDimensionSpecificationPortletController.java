@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hamcrest.core.IsInstanceOf;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensionDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensionDataSetDefinition.CohortIndicatorAndDimensionSpecification;
@@ -60,17 +61,23 @@ public class CohortIndicatorAndDimensionSpecificationPortletController extends R
        	if (StringUtils.isEmpty(mappedUuid)) { // If you are not selecting a new Indicator, get the currently saved specification for the passed index
        		if (specification.getIndicator() != null) {
        			mappedObj = specification.getIndicator().getParameterizable();
-    			mappings = specification.getIndicator().getParameterMappings();
+    			mappings = specification.getIndicator().getParameterMappings();   			
     		}
        	}
        	else if (mappedUuid != null) { // If you are selecting a new Indicator, get it
-       		mappedObj = (CohortIndicator)DefinitionContext.getIndicatorService().getDefinitionByUuid(mappedUuid);
-       	}
-       	model.put("mappedObj", mappedObj);
-       	model.put("mappings", mappings);
+       		Object testObj = DefinitionContext.getIndicatorService().getDefinitionByUuid(mappedUuid);
+       		if (testObj instanceof CohortIndicator) {
+       			mappedObj = (CohortIndicator)DefinitionContext.getIndicatorService().getDefinitionByUuid(mappedUuid);
+       		} 
+       	} 	
+       	
+       	if (mappedObj != null) {
+       		model.put("mappedObj", mappedObj);
+   	       	model.put("mappings", mappings);
 
-		model.put("allowedParams", ParameterizableUtil.getAllowedMappings(dsd, mappedObj));
-		model.putAll(ParameterizableUtil.getCategorizedMappings(dsd, mappedObj, mappings));
+   			model.put("allowedParams", ParameterizableUtil.getAllowedMappings(dsd, mappedObj));
+   			model.putAll(ParameterizableUtil.getCategorizedMappings(dsd, mappedObj, mappings));
+       	}
 		
 		List<String> sortedKeys = new ArrayList<String>();
 		for (CohortIndicatorAndDimensionSpecification spec : cidsd.getSpecifications()) {
