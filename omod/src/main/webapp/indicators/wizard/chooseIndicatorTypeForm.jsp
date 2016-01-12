@@ -17,7 +17,7 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Create a new cohort indicator </h1>
+		<h1><spring:message code ="reporting.createNewCohortIndicator" /></h1>
 		<form action="<c:url value="/module/reporting/indicators/indicatorWizard.form"/>" method="post">			
 			<fieldset>
 			<legend>Step 1</legend>			
@@ -26,7 +26,7 @@
 						<li>
 							
 							<div>
-								<label class="desc">Choose an indicator type</label>
+								<label class="desc"><spring:message code ="reporting.chooseIndicatorType" /></label>
 								<spring:bind path="indicatorForm.indicatorType">
 									<input type="radio" checked name="${status.expression}" value="CohortDefinition"/> I want to select a pre-defined cohort definition<br/>
 									<input type="radio" disabled name="${status.expression}" value="LogicQuery"/> I want to write a custom logic query									

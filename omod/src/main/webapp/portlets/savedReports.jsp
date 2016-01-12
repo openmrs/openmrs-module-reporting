@@ -50,7 +50,7 @@
 					<c:if test="${r.description != null}">
 						<span class="small">
 							<span class="faded">
-								Description:
+								<spring:message code="reporting.description" />
 							</span>
 							${r.description}
 						</span>

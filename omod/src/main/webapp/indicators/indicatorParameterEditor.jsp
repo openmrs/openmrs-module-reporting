@@ -9,14 +9,14 @@
 <div id="page">
 	<div id="container">
 		
-		<h1>Indicator Parameter Editor</h1>
+		<h1><spring:message code ="reporting.indicatorParameterEditor" /></h1>
 
 		<springform:errors path="parameter.type"></springform:errors>
 
 		<div class="errors"> 
 			<spring:hasBindErrors name="indicatorParameter">  
 				<font color="red"> 
-					<h3><u>Please correct the following errors</u></h3>   
+					<h3><u><spring:message code ="reporting.correctErrors" /></u></h3>   
 					<ul class="none">
 						<c:forEach items="${errors.allErrors}" var="error">
 							<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
@@ -30,7 +30,7 @@
 			
 				<ul>				
 					<li>
-						<label class="desc" for="type">Indicator</label>			
+						<label class="desc" for="type"><spring:message code ="reporting.indicator" /></label>			
 						<div>
 							
 							<strong>${indicatorParameter.cohortIndicator.name}</strong> <br/>
@@ -45,9 +45,9 @@
 							<table id="indicator-parameter-mapping-table" >
 								<thead>
 									<tr>
-										<th>parameters to map</th>
-										<th>inherit from cohort definition</th>
-										<th>choose from indicator</th>
+										<th><spring:message code ="reporting.parametersToMap" /></th>
+										<th><spring:message code ="reporting.inheritFromCohort" /></th>
+										<th><spring:message code ="reporting.chooseFromIndicator" /></th>
 									</tr>
 								</thead>	
 								<tbody>										
@@ -65,7 +65,7 @@
 												<select>
 													<option></option>
 													<c:if test="${empty indicator.parameters}">
-														<option>(add more parameters)</option>
+														<option>(<spring:message code ="reporting.addMoreParameters" />)</option>
 													</c:if>
 													<c:forEach var="mappedParameter" items="${indicator.parameters}">										
 														<option>${mappedParameter.name}</option>
@@ -84,32 +84,32 @@
 							</table>							
 						
 					
-						<label class="desc" for="name">Parameter Name</label>
+						<label class="desc" for="name"><spring:message code ="reporting.parameterName" /></label>
 						<div>
 							<springform:input path="parameter.name" cssClass="field text short" />		
 						</div>
 					</li>
 					<li>	
-						<label class="desc" for="type">Type</label>
+						<label class="desc" for="type"><spring:message code ="reporting.type" /></label>
 						<div>
 							<springform:input path="parameter.type" cssClass="field text short" />		
 							<springform:errors path="parameter.type"></springform:errors>
 						</div>
 					</li>
 					<li>
-						<label class="desc" for="defaultValue">Default Value</label>
+						<label class="desc" for="defaultValue"><spring:message code ="reporting.defaultValue" /></label>
 						<div>
 							<springform:input path="parameter.defaultValue" cssClass="field text short" />
 							<springform:errors path="parameter.defaultValue"></springform:errors>		
 						</div>
 					</li>
 					<li>	
-						<label class="desc" for="prompt">Prompt</label>
+						<label class="desc" for="prompt"><spring:message code ="reporting.prompt" /></label>
 						<div>
 						</div>
 					</li>
 					<li>						
-						<label class="desc" for="required">Required</label>
+						<label class="desc" for="required"><spring:message code ="reporting.required" /></label>
 						<div>
 							<springform:checkbox path="parameter.required"  />		
 						</div>
@@ -117,7 +117,7 @@
 					<li>	
 						<div class="buttons">
 							<input id="save-button" class="btTxt submit" type="submit" value="Save" tabindex="7" />
-							<button id="cancel-button" name="cancel">Cancel</button>
+							<button id="cancel-button" name="cancel"><spring:message code ="reporting.cancel" /></button>
 						</div>
 					</li>
 				</ul>

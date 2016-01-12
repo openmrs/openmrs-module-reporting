@@ -1,3 +1,16 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.reporting.cohort.query.db;
 
 import java.util.Date;
@@ -56,7 +69,7 @@ public interface CohortQueryDAO {
 	// Patients who were in a Program on the specified date or range
 	public Cohort getPatientsInProgram(List<Program> programs, Date onOrAfter, Date onOrBefore);
 
-	// based on ranges of start and end dates for patient_state
+	// Based on ranges of start and end dates for patient_state
 	public Cohort getPatientsHavingStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore, Date endedOnOrAfter, Date endedOnOrBefore);
 
 	// Patients who were in a State in the specified date range

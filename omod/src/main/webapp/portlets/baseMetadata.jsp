@@ -41,17 +41,17 @@
 			<input type="hidden" name="successUrl" value="${model.successUrl}"/>
 			<div style="margin:0; padding:0; width:100%;">
 				<div class="metadataField">
-					<label class="desc" for="name">Name</label>
+					<label class="desc" for="name"><spring:message code="reporting.name" /></label>
 					<input type="text" id="name" tabindex="1" name="name" value="${model.obj.name}" size="50"/>
 				</div>
 				<c:if test="${!empty model.obj && model.showType != 'false'}">
 					<div class="metadataField">
-						<label class="desc" for="type">Type</label>
+						<label class="desc" for="type"><spring:message code="reporting.baseMetadata.type" /></label>
 						<rpt:displayLabel type="${model.obj['class'].name}"/>			
 					</div>
 				</c:if>		
 				<div class="metadataField">
-					<label class="desc" for="description">Description</label>			
+					<label class="desc" for="description"><spring:message code="reporting.description" /></label>			
 					<textarea id="description" cols="80" rows="10" tabindex="2" name="description">${model.obj.description}</textarea>
 				</div>
 			</div>
@@ -80,21 +80,21 @@
 		<div <c:if test="${model.size != null}">style="width:${model.size};"</c:if>>
 			<b class="boxHeader" style="font-weight:bold; text-align:right;">
 				<span style="float:left;">${model.label}</span>
-				<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit</a>
+				<a style="color:lightyellow;" href="#" id="${model.id}EditLink"><spring:message code="reporting.baseMetadata.edit" /></a>
 			</b>
 			<div class="box">
 				<div class="metadataForm">
 					<div class="metadataField">
-						<label class="inline">Name:</label>${model.obj.name}
+						<label class="inline"><spring:message code="reporting.name" />:</label>${model.obj.name}
 					</div>
 					<c:if test="${model.showType != 'false'}">
 						<div class="metadataField">
-							<label class="inline" for="type">Query Type:</label>
+							<label class="inline" for="type"><spring:message code="reporting.queryType" />:</label>
 							<rpt:displayLabel type="${model.obj['class'].name}"/>			
 						</div>
 					</c:if>		
 					<div class="metadataField">
-						<label class="inline">Description:</label>
+						<label class="inline"><spring:message code="reporting.description" />:</label>
 						<c:choose>
 							<c:when test="${!empty model.obj.description}">
 								${model.obj.description}

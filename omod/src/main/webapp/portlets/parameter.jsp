@@ -42,16 +42,16 @@
 			
 			<div style="background-color: #f0f0f0">
 				One-click shortcuts:
-				<a href="javascript:void(0)" onClick="$('#shortcut').val('date'); $('#editParameterForm').submit();">date</a>
-				<a href="javascript:void(0)" onClick="$('#shortcut').val('startDate'); $('#editParameterForm').submit();">startDate</a>
-				<a href="javascript:void(0)" onClick="$('#shortcut').val('endDate'); $('#editParameterForm').submit();">endDate</a>
-				<a href="javascript:void(0)" onClick="$('#shortcut').val('location'); $('#editParameterForm').submit();">location</a>
+				<a href="javascript:void(0)" onClick="$('#shortcut').val('date'); $('#editParameterForm').submit();"><spring:message code="reporting.date" /></a>
+				<a href="javascript:void(0)" onClick="$('#shortcut').val('startDate'); $('#editParameterForm').submit();"><spring:message code="reporting.parameter.startDate" /></a>
+				<a href="javascript:void(0)" onClick="$('#shortcut').val('endDate'); $('#editParameterForm').submit();"><spring:message code="reporting.parameter.endDate" /></a>
+				<a href="javascript:void(0)" onClick="$('#shortcut').val('location'); $('#editParameterForm').submit();"><spring:message code="reporting.parameter.location" ?></a>
 			</div>
 			
 			<div style="margin:0; padding:0; width:100%;">
 			
 				<div class="metadataField">
-					<label class="desc">Type</label>
+					<label class="desc"><spring:message code="reporting.parameter.type" /></label>
 					<select name="collectionType">
 						<option value="" <c:if test="${model.parameter.collectionType == null}">selected</c:if>>Single</option>
 						<c:forEach var="supportedType" items="${model.supportedCollectionTypes}">
@@ -67,15 +67,15 @@
 				</div>
 
 				<div class="metadataField">
-					<label class="desc" for="name">Name</label>
+					<label class="desc" for="name"><spring:message code="reporting.parameter.name" /></label>
 					<input type="text" id="name" tabindex="1" name="newName" value="${model.parameter.name}" size="50"/>
 				</div>
 				<div class="metadataField">
-					<label class="desc" for="label">Label</label>			
+					<label class="desc" for="label"><spring:message code="reporting.parameter.label" /></label>			
 					<textarea id="label" cols="50" rows="2" tabindex="2" name="label">${model.parameter.label}</textarea>
 				</div>
 				<div class="metadataField">
-					<label class="desc" for="widgetConfiguration">Advanced Configuration</label>			
+					<label class="desc" for="widgetConfiguration"><spring:message code="reporting.advancedConfig" /></label>			
 					<textarea id="widgetConfiguration" cols="50" rows="5" tabindex="2" name="widgetConfiguration">${model.parameter.widgetConfiguration}</textarea>
 				</div>
 			</div>
@@ -128,9 +128,9 @@
 				<c:if test="${!empty model.obj.parameters}">
 					<table width="100%" style="margin-bottom:5px;">
 						<tr>
-							<th style="text-align:left; border-bottom:1px solid black;">Name</th>
-							<th style="text-align:left; border-bottom:1px solid black;">Label</th>
-							<th style="text-align:left; border-bottom:1px solid black;">Type</th>
+							<th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.Report.parameter.name" /></th>
+							<th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.Report.parameter.label" /></th>
+							<th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.Report.parameter.type" /></th>
 							<th style="border-bottom:1px solid black;"></th>
 						</tr>
 						<c:forEach items="${model.obj.parameters}" var="p" varStatus="paramStatus">

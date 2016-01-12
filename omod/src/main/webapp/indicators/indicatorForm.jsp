@@ -48,7 +48,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							<li>
 								<div class="errors"> 
 									<font color="red"> 
-										<h3><u>Please correct the following errors</u></h3>   
+										<h3><u><spring:message code ="reporting.correctErrors" /></u></h3>   
 										<ul class="none">
 											<c:forEach items="${errors.allErrors}" var="error">
 												<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
@@ -59,14 +59,14 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							</li>
 						</spring:hasBindErrors>
 							<li>
-								<label class="desc" for="name">Name</label>
+								<label class="desc" for="name"><spring:message code ="reporting.name" /></label>
 								<div>
 									<input id="name" name="name" type="text" class="field text large" 
 										value="${indicator.name}" size="20" tabindex="1" />
 								</div>
 							</li>		
 							<li>		
-								<label class="desc" for="description">Description</label>
+								<label class="desc" for="description"><spring:message code ="reporting.description" /></label>
 								<div>
 									<textarea id="description" name="description" 
 										class="field textarea small" rows="3" cols="20"

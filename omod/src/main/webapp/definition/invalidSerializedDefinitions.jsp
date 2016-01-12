@@ -15,10 +15,10 @@
 		<table class="reporting-data-table display" style="size:smaller;">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Creator</th>
-					<th>Created</th>
-					<th align="center" width="1%">Actions</th>
+					<th><spring:message code ="reporting.name" /></th>
+					<th><spring:message code ="reporting.Creator" /></th>
+					<th><spring:message code ="reporting.Created" /></th>
+					<th align="center" width="1%"><spring:message code ="reporting.Actions" /></th>
 				</tr>
 			</thead>
 			<tbody>

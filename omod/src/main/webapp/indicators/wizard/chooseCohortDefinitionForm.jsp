@@ -96,15 +96,15 @@ var cohortDefinitions = [
 
 <div id="page">
 	<div id="container">
-		<h1>Create a new cohort indicator</h1>
+		<h1><spring:message code ="reporting.createNewCohortIndicator" /></h1>
 		<form action="<c:url value="/module/reporting/indicators/indicatorWizard.form"/>" method="post">			
 			<fieldset>
-			<legend>Step 2</legend>			
+			<legend><spring:message code ="reporting.chooseCohortDefinition.Step2" /></legend>			
 				<div>
 					<ul>		
 						<li>
 							<div>
-								<label class="desc">Give your indicator a name</label> 
+								<label class="desc"><spring:message code ="reporting.nameIndicator" /></label> 
 								<spring:bind path="indicatorForm.cohortIndicator.name">
 									<input type="text" name="${status.expression}" value="${status.value}"/>
 								</spring:bind>
@@ -112,7 +112,7 @@ var cohortDefinitions = [
 						</li>
 						<li>
 							<div>
-								<label class="desc">Choose a cohort definition:</label> 
+								<label class="desc"><spring:message code ="reporting.chooseCohortDefinition" /></label> 
 								<spring:bind path="indicatorForm.cohortDefinitionUuid">
 									<select name="<c:out value="${status.expression}"/>">
 										<c:forEach var="cohortDefinition" items="${cohortDefinitions}">

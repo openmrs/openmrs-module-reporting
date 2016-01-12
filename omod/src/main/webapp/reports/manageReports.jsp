@@ -15,27 +15,6 @@
 			"bAutoWidth": false
 		} );
 
-		<c:forEach items="${reportDefinitions}" var="reportDefinition" varStatus="status">
-			$("#preview-report-${reportDefinition.uuid}").click(function(event){ 
-				showReportingDialog({ 
-					title: 'Run Report', 
-					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition['class'].name}',
-					successCallback: function() { 
-						window.location = window.location; //.reload(true);
-					} 
-				});
-			});
-	
-			$("#render-report-${reportDefinition.uuid}").click(function(event){ 
-				showReportingDialog({ 
-					title: 'Run Report', 
-					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${reportDefinition.uuid}&type=${reportDefinition['class'].name}&format=indicator&successView=redirect:/module/reporting/reports/renderReport.form',
-					successCallback: function() { 
-						window.location = window.location; //.reload(true);
-					} 
-				});
-			});	
-		</c:forEach>
 	} );
 
 	function confirmDelete(name, uuid) {
@@ -62,12 +41,12 @@
 		<table class="reporting-data-table display">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Type</th>
-					<th>Creator</th>
-					<th>Created</th>
-					<th align="center" width="1%">Actions</th>
+					<th><spring:message code ="reporting.name" /></th>
+					<th><spring:message code ="reporting.description" /></th>
+					<th><spring:message code ="reporting.type" /></th>
+					<th><spring:message code ="reporting.Creator" /></th>
+					<th><spring:message code ="reporting.created" /></th>
+					<th align="center" width="1%"><spring:message code ="reporting.actions" /></th>
 				</tr>
 			</thead>
 			<tbody>

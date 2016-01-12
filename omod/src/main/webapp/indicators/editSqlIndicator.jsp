@@ -55,7 +55,7 @@
 		<c:choose>
 			<c:when test="${definition.id == null}">
 		
-				<b class="boxHeader">SQL Indicator</b>
+				<b class="boxHeader"><spring:message code="reporting.sqlIndicator" /></b>
 				<div class="box">
 					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.indicator.SqlIndicator|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/indicators/manageIndicators.form|successUrl=${pageUrl}" />
 				</div>
@@ -85,7 +85,7 @@
 						
 							<!-- Using .portlet style -->
 							<div style="margin: 0.1em; width:100%;"> 
-								<b class="boxHeader">SQL Query</b>
+								<b class="boxHeader"><spring:message code="reporting.sqlQuery" /></b>
 								<div class="box">
 									<form method="post" action="saveSqlIndicatorQueryString.form">
 										<input type="hidden" name="uuid" value="${definition.uuid}"/>

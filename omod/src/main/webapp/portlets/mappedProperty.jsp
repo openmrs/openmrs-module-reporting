@@ -98,13 +98,13 @@
 									<c:otherwise>
 										<select id="typeSelector_${varstatus.index}_${model.id}" name="valueType_${p.name}">
 											<option value="fixed" <c:if test="${model.mappedParams[p.name] == null && model.complexParams[p.name] == null}">selected</c:if>>
-												Value:
+												<spring:message code="reporting.value" />:
 											</option>
 											<option value="mapped" <c:if test="${model.mappedParams[p.name] != null}">selected</c:if>>
-												Parameter:
+												<spring:message code="reporting.parameter" />:
 											</option>
 											<option value="complex" <c:if test="${model.complexParams[p.name] != null}">selected</c:if>>
-												Expression:
+												<spring:message code="reporting.expression" />:
 											</option>
 										</select>
 										<span id="typeSelector_${varstatus.index}_fixed_${model.id}" style="display:none;">
@@ -112,7 +112,7 @@
 										</span>
 										<span id="typeSelector_${varstatus.index}_mapped_${model.id}" style="display:none;">
 											<select name="mappedValue_${p.name}">
-												<option value="" <c:if test="${model.mappedParams[p.name] == null}">selected</c:if>>Choose...</option>
+												<option value="" <c:if test="${model.mappedParams[p.name] == null}">selected</c:if>><spring:message code="reporting.choose" />...</option>
 												<c:forEach var="parentParam" items="${model.allowedParams[p.name]}">
 													<option value="${parentParam.key}" <c:if test="${model.mappedParams[p.name] == parentParam.key}">selected</c:if>>
 														${parentParam.value}
@@ -177,10 +177,10 @@
 						<c:when test="${empty model.headerClass}">
 							<b class="boxHeader" style="font-weight:bold; text-align:right;">
 								<span style="float:left;">${model.label}</span>
-								<a style="color:lightyellow;" href="#" id="${model.id}EditLink">Edit Mappings</a>
+								<a style="color:lightyellow;" href="#" id="${model.id}EditLink"><spring:message code="reporting.editMappings" /></a>
 								<c:if test="${model.currentKey != null}">
 									&nbsp;|&nbsp;
-									<a style="color:lightyellow;" href="#" id="${model.id}RemoveLink">Delete</a>
+									<a style="color:lightyellow;" href="#" id="${model.id}RemoveLink"><spring:message code="reporting.delete" /></a>
 								</c:if>
 							</b>
 						</c:when>
@@ -188,9 +188,9 @@
 							<span class="${model.headerClass}" id="${model.id}Header">
 								<span id="${model.id}HeaderLabel" style="font-weight:bold;">${model.label}</span>&nbsp;&nbsp;&nbsp;
 								<span id="${model.id}HeaderLinks">
-									<a href="#" id="${model.id}EditLink">Edit Mappings</a>
+									<a href="#" id="${model.id}EditLink"><spring:message code="reporting.editMappings" /></a>
 									<c:if test="${model.currentKey != null}">&nbsp;|&nbsp;
-										<a href="#" id="${model.id}RemoveLink">Delete</a>
+										<a href="#" id="${model.id}RemoveLink"><spring:message code="reporting.delete" /></a>
 									</c:if>
 								</span>
 							</span>
@@ -222,7 +222,7 @@
 															<td align="left" width="100%">
 																<c:choose>
 																	<c:when test="${model.mappings[p.name] == null}">
-																		<span style="color:red; font-style:italic;">Undefined</span>
+																		<span style="color:red; font-style:italic;"><spring:message code="reporting.undefined" /></span>
 																	</c:when>
 																	<c:otherwise>${model.mappings[p.name]}</c:otherwise>
 																</c:choose>

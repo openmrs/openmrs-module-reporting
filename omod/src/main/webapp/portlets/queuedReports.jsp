@@ -30,8 +30,8 @@
         <c:when test="${ model.any }">
 
             <fieldset>
-                <legend><small><i>Running Now</i></small></legend>
-                <c:if test="${fn:length(model.inProgress) == 0}">None</c:if>
+                <legend><small><i><spring:message code="reporting.runningNow" /></i></small></legend>
+                <c:if test="${fn:length(model.inProgress) == 0}"><spring:message code="reporting.none" /></c:if>
 			    <table cellspacing="0" cellpadding="2">
 			        <c:forEach var="r" items="${model.inProgress}" varStatus="iterstatus">
 			            <tr valign="top">
@@ -61,8 +61,8 @@
             </fieldset>
 
             <fieldset>
-                <legend><small><i>Queued</i></small></legend>
-                <c:if test="${fn:length(model.queue) == 0}">None</c:if>
+                <legend><small><i><spring:message code="reporting.queued" /></i></small></legend>
+                <c:if test="${fn:length(model.queue) == 0}"><spring:message code="reporting.none" /></c:if>
                 <table cellspacing="0" cellpadding="2">
                     <c:forEach var="r" items="${model.queue}" varStatus="iterstatus">
                         <tr valign="top">

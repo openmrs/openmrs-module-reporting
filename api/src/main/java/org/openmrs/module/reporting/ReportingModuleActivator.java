@@ -32,7 +32,7 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
 
     @Override
     public void contextRefreshed() {
-		// This will ensure that the MessageUtil picks back up the current active message source
+		// This will ensure that the MessageUtil picks up the current active message source
 		MessageUtil.setMessageSource(null);
     }
 

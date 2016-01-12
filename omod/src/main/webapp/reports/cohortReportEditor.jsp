@@ -27,7 +27,7 @@
 <div id="page"><!-- -->
 	<div id="container"><!--  -->
 	
-		<h1>Cohort Report</h1>
+		<h1><spring:message code ="reporting.CohortReport" /></h1>
 		<div>
 			<form id="form65" name="form65" class="wufoo topLabel" autocomplete="off"
 				method="post" action="${pageContext.request.contextPath}/module/reporting/generateSimpleLabReport.form">		
@@ -35,21 +35,21 @@
 					
 					<ul>		
 						<li>
-							<label class="desc" for="startDate">Start Date</label>
+							<label class="desc" for="startDate"><spring:message code ="reporting.parameter.startDate" /></label>
 							<span>
 								<input id="startDate" name="startDate" value="01/01/2009"/>
 							</span>
 						</li>
 						<li>
-							<label class="desc" for="endDate">End Date</label>
+							<label class="desc" for="endDate"><spring:message code ="reporting.parameter.endDate" /></label>
 							<span>
 								<input id="endDate" name="endDate" value="01/31/2009"/>
 							</span>
 						</li>
 						<li>
-							<label class="desc" for="locationId">Location</label>
+							<label class="desc" for="locationId"><spring:message code ="reporting.location" /></label>
 							<select name="locationId">
-								<option value="0">All Locations</option>
+								<option value="0"><spring:message code ="reporting.AllLocations" /></option>
 								<option value="0">--------------------------------</option>
 								<c:forEach var="location" items="${locations}">
 									<option value="${location.locationId}">${location.name}</option>
@@ -57,9 +57,9 @@
 							</select>		
 						</li>
 						<li>
-							<label class="desc" for="renderType">Renderer:</label>
-							<input type="radio" name="renderType" value="XLS" checked> XLS
-							<input type="radio" name="renderType" value="CSV"> CSV
+							<label class="desc" for="renderType"><spring:message code ="reporting.Renderer" /></label>
+							<input type="radio" name="renderType" value="XLS" checked> <spring:message code ="reporting.XLS" />
+							<input type="radio" name="renderType" value="CSV"> <spring:message code ="reporting.CSV" />
 						</li>
 						<li class="buttons">
 							<input id="saveForm" class="btTxt submit" type="submit" value="Generate" tabindex="7" />
