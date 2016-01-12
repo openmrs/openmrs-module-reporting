@@ -41,12 +41,12 @@
 		<table class="reporting-data-table display">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Type</th>
-					<th>Creator</th>
-					<th>Created</th>
-					<th align="center" width="1%">Actions</th>
+					<th><spring:message code ="reporting.name" /></th>
+					<th><spring:message code ="reporting.description" /></th>
+					<th><spring:message code ="reporting.type" /></th>
+					<th><spring:message code ="reporting.Creator" /></th>
+					<th><spring:message code ="reporting.created" /></th>
+					<th align="center" width="1%"><spring:message code ="reporting.actions" /></th>
 				</tr>
 			</thead>
 			<tbody>

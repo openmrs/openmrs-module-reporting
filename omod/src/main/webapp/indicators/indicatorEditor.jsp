@@ -199,13 +199,13 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 	<div id="container">
 	
 	
-		<h1>Indicator Editor</h1>
+		<h1><spring:message code="reporting.indicatorEditor" /></h1>
 	
 		<br/>
 	
 		<div id="indicator-tabs" class="ui-tabs-hide">			
 			<ul>
-                <li><a href="#indicator-basic-tab"><span>Basic</span></a></li>
+                <li><a href="#indicator-basic-tab"><span><spring:message code="reporting.basic" /></span></a></li>
             </ul>
 			<div id="indicator-basic-tab">
 				<form method="post" id="saveIndicatorForm" 
@@ -220,14 +220,14 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							   	 =============================================================== --%>
 						
 							<li>
-								<label class="desc" for="name">Name</label>
+								<label class="desc" for="name"><spring:message code="reporting.name" /></label>
 								<div>
 									<input id="name" name="name" type="text" class="field text large" 
 										value="${indicator.name}" size="20" tabindex="1" />
 								</div>
 							</li>		
 							<li>		
-								<label class="desc" for="description">Description</label>
+								<label class="desc" for="description"><spring:message code="reporting.description" /></label>
 								<div>
 									<textarea id="description" name="description" 
 										class="field textarea small" rows="3" cols="20"
@@ -240,7 +240,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 									<input type="hidden" id="aggregator" name="aggregator" value="CountAggregator">
 								
 									<%-- 								
-									<label class="inline" for="cohortDefinition">How do you want to aggregate this cohort?</label>
+									<label class="inline" for="cohortDefinition"><spring:message code="reporting.howToAggregate" /></label>
 									<c:set var="aggregatorLabels" value="Count,Distinct,Max,Mean,Median,Min,Sum" />
 									<c:set var="aggregators" value="CountAggregator,DistinctAggregator,MaxAggregator,MeanAggregator,MedianAggregator,MinAggregator,SumAggregator" />									
 									<select id="aggregator" name="aggregator" class="field select"> 
@@ -257,7 +257,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							   	 =============================================================== --%>
 							
 							<li>
-								<label class="desc" for="indicator">Define your indicator</label>
+								<label class="desc" for="indicator"><spring:message code="reporting.defineindicator" /></label>
 								<div>								
 									<span id="cohortDefinitionSpan">
 										${indicator.cohortDefinition.parameterizable.name}
@@ -288,12 +288,12 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 								<a id="hide-parameter-mapping" href="#">Hide</a>
 								<div id="parameter-mapping" style="display:none;">
 									<fieldset>								
-										<legend>Parameter Mapping</legend>									
+										<legend><spring:message code="reporting.parameterMapping" /></legend>									
 										<div>
 											<c:forEach var="parameter" items="${indicator.cohortDefinition.parameterizable.parameters}" varStatus="varstatus">
 												<strong>${parameter.name}</strong>:
 												<select>
-													<option>(choose a parameter mapping)</option>
+													<option>(<spring:message code="reporting.chooseParameterMapping" />)</option>
 													<c:forEach var="mappedParameter" items="${indicator.parameters}">										
 														<option>${mappedParameter.name}</option>
 													</c:forEach>
@@ -313,7 +313,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							   	 =============================================================== --%>
 
 							<li>
-								<label class="desc">Parameters</label>	
+								<label class="desc">P<spring:message code="reporting.Report.parameters" /></label>	
 	
 	
 								<c:set var="redirectUrl" value='/module/reporting/indicators/manageIndicators.list' />								
@@ -324,20 +324,20 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 								
 
 								<!--  
-								<a href="${addParameterUrl}">Add Parameter</a><br/>
-								<a href="#" id="add-parameter-button">Add Parameter</a> <i>(modal window)</i>
+								<a href="${addParameterUrl}"><spring:message code="reporting.addParameter" /></a><br/>
+								<a href="#" id="add-parameter-button"><spring:message code="reporting.addParameter" /></a> <i>(<spring:message code="reporting.modal" />)</i>
 								-->
 								<div>
 									<table id="cohort-definition-parameter-table" class="display">
 										<thead>
 											<tr>
-												<th align="left">Edit</th>
-												<th align="left">Name</th>
-												<th align="left">Label</th>
-												<th align="left">Type</th>
-												<th align="left">Collection Type</th>
-												<th align="left">Default Value</th>
-												<th align="left">Delete</th>
+												<th align="left"><spring:message code="reporting.edit" /></th>
+												<th align="left"><spring:message code="reporting.name" /></th>
+												<th align="left"><spring:message code="reporting.label" /></th>
+												<th align="left"><spring:message code="reporting.type" /></th>
+												<th align="left"><spring:message code="reporting.collectionType" /></th>
+												<th align="left"><spring:message code="reporting.defaultValue" /></th>
+												<th align="left"><spring:message code="reporting.delete" /></th>
 											</tr>	
 										</thead>
 										<tbody>

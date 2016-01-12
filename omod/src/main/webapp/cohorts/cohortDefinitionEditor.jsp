@@ -105,12 +105,12 @@
 							<rpt:displayLabel type="${cohortDefinition['class'].name}"/>
 						</li>
 						<li>
-							<label class="desc" for="name">Name</label>
+							<label class="desc" for="name"><spring:message code="reporting.name" /></label>
 			                <springform:input path="name" size="50" tabindex="2"/> 
 			                <br/><springform:errors path="name" cssClass="error"/>
 						</li>
 						<li>
-							<label class="desc" for="description">Description</label>
+							<label class="desc" for="description"><spring:message code="reporting.description" /></label>
 							<springform:textarea path="description" cols="50" rows="6" tabindex="3"/>
 						</li>
 					</ul>
@@ -119,7 +119,7 @@
 					<ul>
 						<li>
 						
-							<label class="desc" for="name">Properties</label>
+							<label class="desc" for="name"><spring:message code="reporting.Properties" /></label>
 							<c:forEach var="entry" items="${groupedProperties}" varStatus="entryStatus">
 								<fieldset>
 									<c:if test="${!empty entry.key}"><legend>${entry.key}</legend></c:if>
@@ -134,15 +134,15 @@
 												<td style="vertical-align:top;">
 													<select id="selectValue${p.field.name}" name="parameter.${p.field.name}.allowAtEvaluation">
 														<option value=""></option>
-														<option value="f">Fixed value</option>
-														<option value="t">Parameter</option>
+														<option value="f"><spring:message code="reporting.FixedValue" /></option>
+														<option value="t"><spring:message code="reporting.Parameter" /></option>
 													</select>
 												</td>
 												<td style="vertical-align:top; width:100%;">
 													<span id="dynamicValue${p.field.name}" style="display:none;">
 														label as <input type="text" id="paramLabel${p.field.name}" name="parameter.${p.field.name}.label" size="30"/>
 														<span>
-															<a href="#" id="configureParameter${p.field.name}">advanced configuration</a>
+															<a href="#" id="configureParameter${p.field.name}"><spring:message code="reporting.advancedConfig" /></a>
 															<div id="configureParameterSection${p.field.name}" style="display:none;">
 																<textarea id="paramConfigOptions${p.field.name}" name="parameter.${p.field.name}.widgetConfiguration" cols="50" rows="3"></textarea>
 															</div>

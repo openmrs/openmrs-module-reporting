@@ -54,7 +54,7 @@ input, select, textarea, label, button { font-size: 2em; }
 						<li>
 							<div class="errors"> 
 								<font color="red"> 
-									<h3><u>Please correct the following errors</u></h3>   
+									<h3><u><spring:message code ="reporting.correctErrors" /></u></h3>   
 									<ul class="none">
 										<c:forEach items="${errors.allErrors}" var="error">
 											<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
@@ -65,7 +65,7 @@ input, select, textarea, label, button { font-size: 2em; }
 						</li>
 					</spring:hasBindErrors>
 					<li>		
-						<label class="desc" for="indicator">Indicator</label>
+						<label class="desc" for="indicator"><spring:message code ="reporting.Report.indicator" /></label>
 						<div>
 							<springform:select path="uuid">										
 								<springform:option value="" label="Select an indicator"/>
@@ -74,14 +74,14 @@ input, select, textarea, label, button { font-size: 2em; }
 						</div>					
 					</li>							
 					<li>
-						<label class="desc" for="name">Indicator Key</label>
+						<label class="desc" for="name"><spring:message code ="reporting.indicatorKey" /></label>
 						<div>
 							<springform:input path="columnKey" tabindex="1" cssClass="field text small" size="10"/>														
 						</div>
 						<span class="small"><em>(ex. "1.a")</em></span>
 					</li>		
 					<li>		
-						<label class="desc" for="displayName">Display Name</label>						
+						<label class="desc" for="displayName"><spring:message code ="reporting.displayName" /></label>						
 						<div>
 							<springform:input path="displayName" tabindex="1" cssClass="field text medium" size="30"/>														
 						</div>					

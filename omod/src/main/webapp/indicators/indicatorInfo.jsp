@@ -10,15 +10,15 @@
 <div style="float:left">
 	<table class="indInfo">
 		<tr>
-			<td>Title</td>
+			<td><spring:message code ="reporting.indicatorInfo.title" /></td>
 			<td><h2>${indicator.name}</h2></td>
 		</tr>
 		<tr>
-			<td>Description</td>
+			<td><spring:message code ="reporting.description" /></td>
 			<td>
 				<h4>
 					<c:if test="${empty indicator.description}">
-						None
+						<spring:message code ="reporting.none" />
 					</c:if>
 					${indicator.description}
 				</h4>
@@ -32,7 +32,7 @@
 		<tr valign="top">
 			<td>
 				<fieldset>
-					<legend>Cohort Definition</legend>
+					<legend><spring:message code ="reporting.cohortDefinition" /></legend>
 					${indicator.cohortDefinition.parameterizable.name}<br/>
 					<small>
 						<c:forEach var="m" items="${indicator.cohortDefinition.parameterMappings}">
@@ -43,13 +43,13 @@
 			</td>
 			<td>
 				<c:if test="${not empty indicator.aggregator}">
-						<legend>Aggregation</legend>
+						<legend><spring:message code ="reporting.aggregation" /></legend>
 						${indicator.aggregator.name}
 					</fieldset>
 				</c:if>
 				<fieldset>
-					<legend>Dimensions</legend>
-					<small>To Do</small>
+					<legend><spring:message code ="reporting.dimensions" /></legend>
+					<small><spring:message code ="reporting.toDo" /></small>
 				</fieldset>
 			</td>
 		</tr>
@@ -58,7 +58,7 @@
 
 <div style="float:left; margin-top: 2em; margin-left: 3em">
 	<a href="#" onClick="navigateParent('${pageContext.request.contextPath}/module/reporting/indicators/indicatorHistory.form?indicators=${indicator.uuid}&location=${location.locationId}')">
-		[View last 6 months]
+		[<spring:message code ="reporting.ViewLas6Months" />]
 	</a>
 </div>
 

@@ -27,36 +27,36 @@
 <div id="page"><!-- -->
 	<div id="container"><!--  -->
 	
-		<h1>Simple Indicator Report</h1>
+		<h1><spring:message code ="reporting.SimpleIndicatorReport" /></h1>
 		<div>
 			<form id="form65" name="form65" class="wufoo topLabel" autocomplete="off"
 				method="post" action="${pageContext.request.contextPath}/module/reporting/renderIndicatorReport.form">		
 					<input type="hidden" id="uuid" name="uuid" value="0123456789"/>									
 					<input type="hidden" id="action" name="action" value="render"/>					
 					
-					<h2>Report Details</h2>
+					<h2><spring:message code ="reporting.ReportDetails" /></h2>
 					<ul>		
 						<li>
-							<label class="desc" for="name">ID</label>
+							<label class="desc" for="name"><spring:message code ="reporting.Id" /></label>
 							<span>
 								${reportDefinition.uuid}
 							</span>
 						</li>
 						<li>
-							<label class="desc" for="name">Name</label>
+							<label class="desc" for="name"><spring:message code ="reporting.name" /></label>
 							<span>
 								${reportDefinition.name}
 							</span>
 						</li>
 						<li>
-							<label class="desc" for="name">Description</label>
+							<label class="desc" for="name"><spring:message code ="reporting.description" /></label>
 							<span>
 								${reportDefinition.description}
 							</span>
 						</li>
 					</ul>
 					
-					<h2>Report Parameters</h2>
+					<h2><spring:message code ="reporting.ReportParameters" /></h2>
 					<ul>
 						<c:forEach var="parameter" items="${reportDefinition.parameters}" varStatus="varStatus">
 							<li>
@@ -68,13 +68,13 @@
 						</c:forEach>
 					</ul>
 					
-					<h2>Report Renderer</h2>					
+					<h2><spring:message code ="reporting.Report Renderer" /></h2>					
 					<ul>						
 						<li>
-							<label class="desc" for="renderType">Choose a renderer:</label>
+							<label class="desc" for="renderType"><spring:message code ="reporting.ChooseRenderer" /></label>
 							<span>
-								<input type="radio" name="renderType" value="XLS" checked> XLS
-								<input type="radio" name="renderType" value="CSV"> CSV
+								<input type="radio" name="renderType" value="XLS" checked> <spring:message code ="reporting.XLS" />
+								<input type="radio" name="renderType" value="CSV"> <spring:message code ="reporting.CSV" />
 							</span>
 						</li>
 						

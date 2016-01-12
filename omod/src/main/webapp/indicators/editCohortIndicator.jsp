@@ -20,7 +20,7 @@
 
 <c:choose>
 	<c:when test="${indicator.id == null}">
-		<b class="boxHeader">Create Cohort Indicator</b>
+		<b class="boxHeader"><spring:message code="reporting.createCohortIndicator" /></b>
 		<div class="box">
 			<openmrs:portlet url="baseCohortIndicator" id="baseCohortIndicator" moduleId="reporting" parameters="size=380|mode=edit|dialog=false|cancelUrl=manageIndicators.form|successUrl=${pageUrl}" />
 		</div>
@@ -33,7 +33,7 @@
 					<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${indicator['class'].name}|uuid=${indicator.uuid}|label=Parameters|parentUrl=${pageUrl}" />						
 					<span style="padding-left: 10px; ">
 						<a href="javascript:void(0)" id="preview-indicator" style="color:green; text-decoration:none;">
-							Preview <img src="<c:url value='/images/play.gif'/>" border="0" style="vertical-align:middle;"/>
+							<spring:message code="reporting.preview" /> <img src="<c:url value='/images/play.gif'/>" border="0" style="vertical-align:middle;"/>
 						</a>
 					</span>
 				</td>

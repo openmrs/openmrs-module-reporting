@@ -52,13 +52,13 @@
 	<table style="margin:0; padding:0; font-size:small;" padding="5">
 		<tr>
 			<td valign="top" align="left">
-				<span class="metadataField">Name</span>
+				<span class="metadataField"><spring:message code="reporting.reportDesign.name" /></span>
 				<wgt:widget id="name" name="name" object="${model.design}" property="name" attributes="size=50"/>
 				<br/>
-				<span class="metadataField">Description</span>			
+				<span class="metadataField"><spring:message code="reporting.reportDesign.description" /></span>			
 				<wgt:widget id="description" name="description" object="${model.design}" property="description" attributes="cols=38|rows=2"/>
 				<br/>
-				<span class="metadataField">Report Definition</span>
+				<span class="metadataField"><spring:message code="reporting.reportDesign.reportDefinition" /></span>
 				<c:choose>
 					<c:when test="${!empty model.reportDefinitionUuid}">
 						<span style="color:navy;">${model.design.reportDefinition.name}</span>
@@ -69,10 +69,10 @@
 					</c:otherwise>
 				</c:choose>		
 				<br/>
-				<span class="metadataField">Renderer Type</span>			
+				<span class="metadataField"><spring:message code="reporting.renderType" /></span>			
 				<wgt:widget id="rendererType" name="rendererType" object="${model.design}" property="rendererType" attributes="type=org.openmrs.module.reporting.report.renderer.ReportRenderer|simple=true"/>
 				<br/>
-				<span class="metadataField">Resource Files</span>			
+				<span class="metadataField"><spring:message code="reporting.resourceFiles" /></span>			
 				<div id="resourcesMultiFieldDiv">
 					<c:forEach items="${model.design.resources}" var="resource" varStatus="resourceStatus">
 						<span class="multiFieldInput" id="resources_${resource.uuid}">
@@ -105,7 +105,7 @@
 				</div>
 			</td>
 			<td valign="top" align="left">
-				<span class="metadataField">Design Properties</span>	
+				<span class="metadataField"><spring:message code="reporting.designProperties" /></span>	
 				<wgt:widget id="properties" name="properties" object="${model.design}" property="properties" attributes="rows=20|cols=50"/>
 			</td>
 		</tr>

@@ -42,11 +42,11 @@
 					<input type="hidden" name="uuid" value="${model.uuid}"/>
 					<div style="margin:0; padding:0; width:100%; padd">
 						<div class="metadataField">
-							<label class="desc" for="name">Aggregation</label>
+							<label class="desc" for="name"><spring:message code="reporting.aggregation" /></label>
 							<wgt:widget id="aggregator" name="aggregator" object="${model.indicator}" property="aggregator" attributes="displayProperty=name|type=org.openmrs.module.reporting.indicator.aggregation.Aggregator"/>
 						</div>
 						<div class="metadataField">
-							<label class="desc" for="logicExpression">Logic Expression</label>
+							<label class="desc" for="logicExpression"><spring:message code="reporting.logicExpression" /></label>
 							<wgt:widget id="logicExpression" name="logicExpression" object="${model.indicator}" property="logicExpression" attributes="cols=40|rows=3"/>
 						</div>
 					</div>
@@ -62,20 +62,20 @@
 					<input type="hidden" name="uuid" value="${model.uuid}"/>
 					<div style="margin:0; padding:0; width:100%; padd">
 						<div class="metadataField">
-							<label class="desc" for="name">Name</label>
+							<label class="desc" for="name"><spring:message code="reporting.name" /></label>
 							<input type="text" id="name" tabindex="1" name="name" value="${model.indicator.name}" size="50"/>
 						</div>
 						<div class="metadataField">
-							<label class="desc" for="description">Description</label>			
+							<label class="desc" for="description"><spring:message code="reporting.description" /></label>			
 							<textarea id="description" cols="40" rows="10" tabindex="2" name="description">${model.indicator.description}</textarea>
 						</div>
 						<div class="metadataField">
-							<label class="desc" for="indicatorType">Indicator Type</label>
+							<label class="desc" for="indicatorType"><spring:message code="reporting.indicatorType" /></label>
 							<wgt:widget id="type" name="type" object="${model.indicator}" property="type" format="radio"/>
 						</div>
 						<c:if test="${empty model.indicator.uuid}">
 							<div class="metadataField">
-								<label class="desc" for="parameters">Include Standard Parameters</label>
+								<label class="desc" for="parameters"><spring:message code="reporting.includeStandardParameters" /></label>
 								<c:forEach items="${model.indicator.parameters}" var="p">
 									<input type="checkbox" name="parameters" value="${p.name}" checked/> ${p.name}
 									&nbsp;&nbsp;&nbsp;
@@ -116,21 +116,21 @@
 				<c:choose>
 					<c:when test="${model.subfields == 'logic'}">
 						<div style="padding-bottom:5px;">
-							<b>Aggregator:&nbsp;&nbsp;</b>${model.aggregatorName}
+							<b><spring:message code="reporting.aggregator" />:&nbsp;&nbsp;</b>${model.aggregatorName}
 						</div>
 						<div style="padding-bottom:5px;">
-							<b>LogicExpression:&nbsp;&nbsp;</b>${model.indicator.logicExpression}
+							<b><spring:message code="reporting.logicExpression" />:&nbsp;&nbsp;</b>${model.indicator.logicExpression}
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div style="padding-bottom:5px;">
-							<b>Name:&nbsp;&nbsp;</b>${model.indicator.name}
+							<b><spring:message code="reporting.name" />:&nbsp;&nbsp;</b>${model.indicator.name}
 						</div>
 						<div style="padding-bottom:5px;">
-							<b>Description:&nbsp;&nbsp;</b>${model.indicator.description}
+							<b><spring:message code="reporting.description" />:&nbsp;&nbsp;</b>${model.indicator.description}
 						</div>
 						<div style="padding-bottom:5px;">
-							<b>Indicator Type:&nbsp;&nbsp;</b>${model.indicator.type}
+							<b><spring:message code="reporting.indicatorType" />:&nbsp;&nbsp;</b>${model.indicator.type}
 						</div>					
 					</c:otherwise>
 				</c:choose>

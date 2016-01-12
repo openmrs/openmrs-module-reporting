@@ -111,7 +111,7 @@ $(document).ready(function() {
 		<div class="errors"> 
 			<spring:hasBindErrors name="indicatorReport">  
 				<font color="red"> 
-					<h3><u>Please correct the following errors</u></h3>   
+					<h3><u><spring:message code ="reporting.correctErrors" /></u></h3>   
 					<ul class="none">
 						<c:forEach items="${errors.allErrors}" var="error">
 							<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
@@ -121,14 +121,14 @@ $(document).ready(function() {
 			</spring:hasBindErrors>
 		</div>
 	
-		<h1>Indicator Report Editor</h1>
+		<h1><spring:message code ="reporting.IndicatorReportEditor" /></h1>
 
 		<div id="report-schema-tabs" class="ui-tabs-hide">			
 			<ul>
-                <li><a href="#report-schema-basic-tab"><span>Basic</span></a></li>
+                <li><a href="#report-schema-basic-tab"><span><spring:message code ="reporting.basic" /></span></a></li>
                 <!-- 
-                <li><a href="#report-schema-advanced-tab"><span>Advanced</span></a></li>
-                <li><a href="#report-schema-preview-tab"><span>Preview</span></a></li>
+                <li><a href="#report-schema-advanced-tab"><span><spring:message code ="reporting.advanced" /></span></a></li>
+                <li><a href="#report-schema-preview-tab"><span><spring:message code ="reporting.Preview'" /></span></a></li>
                  -->
             </ul>
 		
@@ -139,13 +139,13 @@ $(document).ready(function() {
 						<ul>
 							<li>
 							
-								<label class="desc" for="name">Name</label>	
+								<label class="desc" for="name"><spring:message code ="reporting.name" /></label>	
 								<div>								
 									<springform:input path="reportDefinition.name" tabindex="1" cssClass="field text medium" size="100"/>								
 								</div>
 							</li>
 							<li>
-								<label class="desc" for="description">Description</label>	
+								<label class="desc" for="description"><spring:message code ="reporting.description" /></label>	
 								<div>
 									<springform:textarea path="reportDefinition.description" tabindex="2" cssClass="field text medium" cols="120"/> 
 								</div>
@@ -154,7 +154,7 @@ $(document).ready(function() {
 							<li>					
 								<div align="center">				
 									<input id="save-button" name="save" type="submit" value="Save" />
-									<button id="cancel-button" name="cancel">Cancel</button>
+									<button id="cancel-button" name="cancel"><spring:message code ="reporting.cancel" /></button>
 								</div>					
 							</li>
 						</ul>
@@ -181,10 +181,10 @@ $(document).ready(function() {
 									<table id="report-schema-indicator-table">
 										<thead>
 											<tr>
-												<th>Key</th>
-												<th>Display Name</th>
-												<th>Indicator</th>
-												<th>Result</th>
+												<th><spring:message code ="reporting.key" /></th>
+												<th><spring:message code ="reporting.displayName" /></th>
+												<th><spring:message code ="reporting.Indicator" /></th>
+												<th><spring:message code ="reporting.Result" /></th>
 											</tr>
 										</thead>
 										<tbody>																				
@@ -232,13 +232,13 @@ $(document).ready(function() {
 			<div id="" style="display:none">			
 				<h2>${indicatorReport.reportDefinition.name}</h2>
 				<p>
-					Design your report by adding new indicators below.
+					<spring:message code ="reporting.DesignYourReport" />
 				</p>
 				
 				<springform:form id="saveForm" commandName="indicatorReport.reportDefinition" method="POST">						
 					<ul>
 						<li>
-							<label class="desc" for="description">Selected indicators</label>	
+							<label class="desc" for="description"><spring:message code ="reporting.SelectedIndicators" /></label>	
 							<div>
 								<ul>
 									<c:forEach var="mappedDataset" items="${indicatorReport.reportDefinition.dataSetDefinitions}">
@@ -253,7 +253,7 @@ $(document).ready(function() {
 							</div>
 						</li>							
 						<li>
-							<label class="desc" for="description">Available indicators</label>			
+							<label class="desc" for="description"><spring:message code ="reporting.AvailableIndicators" /></label>			
 							<input type="hidden" name="action" value="addIndicators"/>
 							<c:forEach var="indicator" items="${indicators}">					
 								<p>
@@ -265,8 +265,8 @@ $(document).ready(function() {
 									--%>					
 								<!-- Hide the parameter mapping behind a modal dialog window -->
 								<!-- 
-								<br/><strong>Parameter Mapping</strong>
-								<c:if test="${empty indicator.parameters}"><i>There are no parameters for this indicator</c:if>
+								<br/><strong><spring:message code ="reporting.ParameterMapping" /></strong>
+								<c:if test="${empty indicator.parameters}"><i><spring:message code ="reporting.NoParametersForIndicator" /></c:if>
 								<c:forEach var="parameter" items="${indicator.parameters}">
 									${parameter.label}	(${parameter.name})				
 								</c:forEach>
@@ -277,7 +277,7 @@ $(document).ready(function() {
 						<li>					
 							<div align="center">				
 								<input id="save-button" name="save" type="submit" value="Save" />
-								<button id="cancel-button" name="cancel">Cancel</button>
+								<button id="cancel-button" name="cancel"><spring:message code ="reporting.cancel" /></button>
 							</div>					
 						</li>
 					</ul>
@@ -295,17 +295,17 @@ $(document).ready(function() {
 							<input type="hidden" name="action" value="evaluate"/>
 							<ul>				
 								<li>
-									<label class="desc" for="renderAs">Render as</label>	
+									<label class="desc" for="renderAs"><spring:message code ="reporting.RenderAs" /></label>	
 
-									<input type="radio" name="renderAs" value="CSV" checked> CSV
-									<input type="radio" name="renderAs" value="TSV"> TSV
-									<input type="radio" name="renderAs" value="XLS"> XLS
+									<input type="radio" name="renderAs" value="CSV" checked><spring:message code ="reporting.CSV" />
+									<input type="radio" name="renderAs" value="TSV"> <spring:message code ="reporting.TSV" />
+									<input type="radio" name="renderAs" value="XLS"> <spring:message code ="reporting.XLS" />
 
 								</li>
 														
 <%-- 														
 								<li>
-									<label class="desc" for="description">Selected indicators</label>	
+									<label class="desc" for="description"><spring:message code ="reporting.SelectedIndicators" /></label>	
 									<div>
 										<ul>
 											<c:forEach var="mappedDataset" items="${indicatorReport.reportDefinition.dataSetDefinitions}">
@@ -322,7 +322,7 @@ $(document).ready(function() {
 --%>								
 								
 								<li>
-									<label class="desc" for="description">Parameters</label>	
+									<label class="desc" for="description"><spring:message code ="reporting.Parameters" /></label>	
 									<div>
 										<ul>
 											<c:forEach var="parameter" items="${indicatorReport.reportDefinition.parameters}">
@@ -341,7 +341,7 @@ $(document).ready(function() {
 								<li>			
 									<div align="center">				
 										<input id="evaluate-button" name="evaluate" type="submit" value="Evaluate"/>
-										<button id="cancel-button" name="cancel">Cancel</button>
+										<button id="cancel-button" name="cancel"><spring:message code ="reporting.cancel" /></button>
 									</div>					
 								</li>
 							</ul>				
@@ -349,7 +349,7 @@ $(document).ready(function() {
 						</form>
 					</c:when>
 					<c:otherwise>
-						Please create your report first.
+						<spring:message code ="reporting.CreateReportFirst" />Please create your report first.
 					</c:otherwise>
 					
 				</c:choose>

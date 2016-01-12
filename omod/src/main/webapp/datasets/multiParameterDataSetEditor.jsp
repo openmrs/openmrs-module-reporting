@@ -93,7 +93,7 @@
 		<c:choose>
 			<c:when test="${definition.id == null}">
 		
-				<b class="boxHeader">Multi Parameter Data Set</b>
+				<b class="boxHeader"><spring:message code ="reporting.MultiParameterDataSetDefinition" /></b>
 				<div class="box">
 					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.dataset.definition.MultiParameterDataSetDefinition|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition|successUrl=${pageUrl}" />
 				</div>
@@ -121,28 +121,28 @@
 						<td width="75%">
 						
 							<div style="margin: 0.1em; width:100%;">
-								<b class="boxHeader">Iterations</b>
+								<b class="boxHeader"><spring:message code ="reporting.Iterations" /></b>
 								<div class="box">
                                     <div align="center" style="padding:10px;">
                                         <p>
-                                            <label>Base dataset:</label>
+                                            <label><spring:message code ="reporting.BaseDataset" /></label>
                                             <select id="baseDefinitionSelect">
-                                                <option value="0">--- Choose base definition ---</option>
+                                                <option value="0">---<spring:message code ="reporting.ChooseBaseDef" />---</option>
                                                 <c:forEach items="${availableDefinitions}" var="availableDef">
                                                     <option value="${availableDef.uuid}" <c:if test="${availableDef == definition.baseDefinition}">selected</c:if>>${availableDef.name}</option>
                                                 </c:forEach>
                                             </select>
                                         </p>
                                         <c:if test="${empty definition.iterations}">
-                                            <span>No iterations added yet.</span>
+                                            <span><spring:message code ="reporting.NoIterationsYet" /></span>
                                         </c:if>
                                         <c:if test="${!empty definition.iterations}">
                                             <table id="iterations-table" style="width: 100%">
                                                 <thead>
                                                     <tr>
-                                                        <th style="text-align:left; border-bottom:1px solid black; white-space:nowrap; width: 50px;">Iteration #</th>
-                                                        <th style="text-align:left; border-bottom:1px solid black;">Parameters</th>
-                                                        <th style="text-align:left; border-bottom:1px solid black;">Actions</th>
+                                                        <th style="text-align:left; border-bottom:1px solid black; white-space:nowrap; width: 50px;"><spring:message code ="reporting.Iteration" /> #</th>
+                                                        <th style="text-align:left; border-bottom:1px solid black;"><spring:message code ="reporting.Parameters" /></th>
+                                                        <th style="text-align:left; border-bottom:1px solid black;"><spring:message code ="reporting.Actions" /></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -153,8 +153,8 @@
                                                                 <table style="width: 100%">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th style="width: 30%">Name</th>
-                                                                            <th style="width: 70%">Value</th>
+                                                                            <th style="width: 30%"><spring:message code ="reporting.name" /></th>
+                                                                            <th style="width: 70%"><spring:message code ="reporting.value" /></th>
                                                                             <th></th>
                                                                         </tr>
                                                                     </thead>
@@ -193,7 +193,7 @@
                                     </div>
                                     <form name="addIterationForm" id="addIterationForm" method="POST" action="">
                                     </form>
-                                    <a style="font-weight:bold;" href="#" id="addIterationLink">[+] Add iteration</a>
+                                    <a style="font-weight:bold;" href="#" id="addIterationLink"><spring:message code ="reporting.AddIteration" /></a>
                                 </div>
 							</div>
 						</td>
