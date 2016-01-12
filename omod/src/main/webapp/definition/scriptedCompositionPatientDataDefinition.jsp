@@ -13,7 +13,7 @@
 <c:choose>
 	<c:when test="${definition.id == null}">
 
-		<b class="boxHeader">Create Composition Patient Data Definition</b>
+		<b class="boxHeader"><spring:message code ="reporting.CreateComposition" /></b>
 		<div class="box">
 			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.data.patient.definition.ScriptedCompositionPatientDataDefinition|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition|successUrl=${pageUrl}" />
 		</div>
@@ -51,7 +51,7 @@
 			
 			<br/>
 
-			<b class="boxHeader">Definitions to combine</b>
+			<b class="boxHeader"><spring:message code ="reporting.DefinitionsToCombine" /></b>
 			<div class="box" style="border: none">
 			
 				<c:forEach items="${definition.containedDataDefinitions}" var="h" varStatus="hStatus">
@@ -72,7 +72,7 @@
 				<form method="post" action="scriptedCompositionPatientDataDefinitionSetComposition.form">
 					<input type="hidden" name="uuid" value="${definition.uuid}"/>					
 			<select id="scriptType" name="scriptType">
-				 <option value="" <c:if test="${definition.scriptType == null}">selected</c:if>>Choose...</option>
+				 <option value="" <c:if test="${definition.scriptType == null}">selected</c:if>><spring:message code ="reporting.choose" /></option>
 						<c:forEach var="type" items="${scriptTypes}">
 							<option value="${type}" <c:if test="${definition.scriptType.language == type}">selected</c:if>>
 							   ${type}
@@ -98,11 +98,11 @@
 				<input type="hidden" name="copyFromUuid" value="${definition.uuid}"/>
 				<table>
 					<tr>
-						<th align="right">Name:</th>
+						<th align="right"><spring:message code ="reporting.name" /></th>
 						<td><input type="text" name="name"/></td>
 					</tr>
 					<tr valign="top">
-						<th align="right">Description:</th>
+						<th align="right"><spring:message code ="reporting.description" /></th>
 						<td><textarea name="description"></textarea></td>
 					</tr>
 					<tr>

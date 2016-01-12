@@ -54,7 +54,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							<li>
 								<div class="errors"> 
 									<font color="red"> 
-										<h3><u>Please correct the following errors</u></h3>   
+										<h3><u><spring:message code ="reporting.correctErrors" /></u></h3>   
 										<ul class="none">
 											<c:forEach items="${errors.allErrors}" var="error">
 												<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
@@ -65,7 +65,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							</li>
 						</spring:hasBindErrors>
 						<li>
-							<label class="desc" for="type">Type</label>			
+							<label class="desc" for="type"><spring:message code ="reporting.type" /></label>			
 							<div>
 								<select name="collectionType">
 									<option value=""></option>
@@ -82,13 +82,13 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							</div>
 						</li>
 						<li>
-							<label class="desc" for="name">Name</label>			
+							<label class="desc" for="name"><spring:message code ="reporting.name" /></label>			
 							<div>
 								<input type="input" name="name" value="${parameter.name}" tabindex="1" cssClass="field text medium"/>														
 							</div>
 						</li>
 						<li>
-							<label class="desc" for="label">Label</label>			
+							<label class="desc" for="label"><spring:message code ="reporting.label" /></label>			
 							<div>
 								<input type="input" name="label" value="${parameter.label}" tabindex="1" cssClass="field text medium"/>														
 							</div>
@@ -131,7 +131,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							<li>
 								<div class="errors"> 
 									<font color="red"> 
-										<h3><u>Please correct the following errors</u></h3>   
+										<h3><u><spring:message code ="reporting.correctErrors" /></u></h3>   
 										<ul class="none">
 											<c:forEach items="${errors.allErrors}" var="error">
 												<li><spring:message code="${error.code}" text="${error.defaultMessage}"/></li>
@@ -142,7 +142,7 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							</li>
 						</spring:hasBindErrors>
 						<li>
-							<label class="desc" for="type">Type</label>			
+							<label class="desc" for="type"><spring:message code ="reporting.type" /></label>			
 							<div>
 								<springform:select path="collectionType">										
 									<springform:option value="" label="None"/>
@@ -156,19 +156,19 @@ label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#
 							</div>
 						</li>
 						<li>
-							<label class="desc" for="name">Name</label>			
+							<label class="desc" for="name"><spring:message code ="reporting.name" /></label>			
 							<div>
 								<springform:input path="name" tabindex="1" cssClass="field text medium"/>														
 							</div>
 						</li>
 						<li>
-							<label class="desc" for="label">Label</label>			
+							<label class="desc" for="label"><spring:message code ="reporting.label" /></label>			
 							<div>
 								<springform:input path="label" tabindex="1" cssClass="field text medium"/>														
 							</div>
 						</li>
 						<li>
-							<label class="desc" for="defaultValue">Default Value</label>			
+							<label class="desc" for="defaultValue"><spring:message code ="reporting.DefaultValue" /></label>			
 							<div>
 								<springform:input path="defaultValue" tabindex="1" cssClass="field text medium"/>														
 							</div>

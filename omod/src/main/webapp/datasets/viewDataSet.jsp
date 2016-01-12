@@ -54,10 +54,10 @@ $(document).ready(function() {
 						<input type="hidden" id="mode" name="mode" value="${param.mode}"/>
 						
 						<fieldset style="padding: 25px; width: 100%;">
-							<legend>Step 1.  Configure your dataset</legend>
+							<legend><spring:message code ="reporting.viewDataSet.Step1" /></legend>
 							<span>
 								<select id="dataset-select" name="dataSetId">	
-									<option value="">Choose a dataset definition ...</option>					
+									<option value=""><spring:message code ="reporting.ChooseDataSetDefinition" /></option>					
 									<c:forEach var="dsdOption" items="${dataSetDefinitions}">
 										<c:if test="${empty dsdOption.parameters && !empty dsdOption.uuid}">
 											<c:set var="isSelected"></c:set>
@@ -75,7 +75,7 @@ $(document).ready(function() {
 							</span>
 							<span>				
 								<select id="cohort-select" name="cohortId">					
-									<option value="all">All patients</option>						
+									<option value="all"><spring:message code ="reporting.AllPatients" /></option>						
 									<c:forEach var="cdOption" items="${cohortDefinitions}" >
 										<c:if test="${empty cdOption.parameters && !empty cdOption.uuid}">
 											<c:set var="isSelected"></c:set>
@@ -92,11 +92,11 @@ $(document).ready(function() {
 	
 							<span>					
 								<select id="limit" name="limit">
-									<option <c:if test="${param.limit=='0'}">selected</c:if> value="">Show me all records (this may take awhile)</option>
-									<option <c:if test="${param.limit=='10'}">selected</c:if> value="10">Only show the first 10 records</option>
-									<option <c:if test="${param.limit=='100'}">selected</c:if> value="100">Only show the first 100 records</option>
-									<option <c:if test="${param.limit=='500'}">selected</c:if> value="500">Only show the first 500 records</option>
-									<option <c:if test="${param.limit=='1000'}">selected</c:if> value="1000">Only show the first 1000 records</option>
+									<option <c:if test="${param.limit=='0'}">selected</c:if> value=""><spring:message code ="reporting.ShowAllRecords" /></option>
+									<option <c:if test="${param.limit=='10'}">selected</c:if> value="10"><spring:message code ="reporting.OnlyShow10" /></option>
+									<option <c:if test="${param.limit=='100'}">selected</c:if> value="100"><spring:message code ="reporting.OnlyShow100" /></option>
+									<option <c:if test="${param.limit=='500'}">selected</c:if> value="500"><spring:message code ="reporting.OnlyShow500" /></option>
+									<option <c:if test="${param.limit=='1000'}">selected</c:if> value="1000"><spring:message code ="reporting.OnlyShow1000" /></option>
 								</select>		
 							</span>
 							
@@ -110,15 +110,15 @@ $(document).ready(function() {
 					
 					<c:if test="${!empty dataSet}">
 						<fieldset style="padding: 25px; margin-bottom: 50px; width: 100%;">
-							<legend>Step 2.  Preview your dataset</legend>
+							<legend><spring:message code ="reporting.viewDataSet.step2" /></legend>
 		
 							
 							<div align="right">
-								<strong>Download:</strong> 
-								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=csv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">csv</a> |
-								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=tsv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">tsv</a> |
-								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xml&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">xml</a> |
-								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xls&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}">xls</a>
+								<strong><spring:message code ="reporting.Download" /></strong> 
+								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=csv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}"><spring:message code ="reporting.csv" /></a>
+								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=tsv&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}"><spring:message code ="reporting.tsv" /></a> 
+								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xml&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}"><spring:message code ="reporting.xml" /></a> 
+								<a href="${pageContext.request.contextPath}/module/reporting/datasets/downloadDataSet.form?limit=${param.limit}&format=xls&dataSetId=${dataSetDefinition.uuid}&cohortId=${cohortDefinition.uuid}&type=${dataSetDefinition['class'].name}"><spring:message code ="reporting.xls" /></a>
 							</div>
 							<div>						
 		

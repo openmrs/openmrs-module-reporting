@@ -38,13 +38,13 @@
         <c:otherwise>
             <select id="typeSelector" name="valueType">
                 <option value="fixed" <c:if test="${model.mappedParams[model.param.name] == null && model.complexParams[model.param.name] == null}">selected</c:if>>
-                    Value:
+                    <spring:message code="reporting.value" />:
                 </option>
                 <option value="mapped" <c:if test="${model.mappedParams[model.param.name] != null}">selected</c:if>>
-                    Parameter:
+                    <spring:message code="reporting.multiParameter.Parameter" />:
                 </option>
-                <option value="complex" <c:if test="${model.complexParams[model.param.name] != null}">selected</c:if>>
-                    Expression:
+                <option value="complex" <c:if test="${model.complexParams[model.param.name] != null}">selected></c:if>>
+                    <spring:message code="reporting.expression" />:
                 </option>
             </select>
             <span id="typeSelector_fixed" style="display:none;">
@@ -52,7 +52,7 @@
             </span>
             <span id="typeSelector_mapped" style="display:none;">
                 <select name="mappedValue">
-                    <option value="" <c:if test="${model.mappedParams[model.param.name] == null}">selected</c:if>>Choose...</option>
+                    <option value="" <c:if test="${model.mappedParams[model.param.name] == null}">selected</c:if>><spring:message code="reporting.multiParameter.Choose" />...</option>
                     <c:forEach var="allowedParam" items="${model.allowedParams}">
                         <option value="${allowedParam.key}" <c:if test="${model.mappedParams[model.param.name] == allowedParam.key}">selected</c:if>>
                             ${allowedParam.value}

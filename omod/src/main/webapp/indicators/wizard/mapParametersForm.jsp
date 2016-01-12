@@ -38,7 +38,7 @@ $(document).ready(function() {
 
 <div id="page">
 	<div id="container">
-		<h1>Create a new cohort indicator</h1>
+		<h1><spring:message code ="reporting.createNewCohortIndicator" /></h1>
 					
 		<form action="<c:url value="/module/reporting/indicators/indicatorWizard.form"/>" method="post">			
 			<fieldset>
@@ -47,7 +47,7 @@ $(document).ready(function() {
 					<ul>		
 						<li>
 							<div>
-								<label class="desc">Map parameters</label>
+								<label class="desc"><spring:message code ="reporting.MapParameters" /></label>
 								
 								
 									<table id="parameter-mapping-table" class="display">
@@ -64,9 +64,9 @@ $(document).ready(function() {
 											<tr>
 												<td class=""></td>
 												<td class=""></td>
-												<td class="instr">Use the following default value</td>
-												<td class="instr">Copy parameter from <strong>${indicatorForm.cohortDefinition.name}</strong></td>
-												<td class="instr">Use existing parameter from <strong>${indicatorForm.cohortIndicator.name}</strong></td>
+												<td class="instr"><spring:message code ="reporting.useDefaultValue" /></td>
+												<td class="instr"><spring:message code ="reporting.copyParameterFrom" /> <strong>${indicatorForm.cohortDefinition.name}</strong></td>
+												<td class="instr"><spring:message code ="reporting.useExistingParameter" /><strong>${indicatorForm.cohortIndicator.name}</strong></td>
 											</tr>
 											<c:forEach var="parameter" items="${indicatorForm.cohortDefinition.parameters}" varStatus="varstatus">
 												<tr>
@@ -86,7 +86,7 @@ $(document).ready(function() {
 														<input disabled type="radio" name="source_${parameter.name}" value="existing"/>														
 														<select name="value_${parameter.name}" disabled>
 															<c:if test="${empty indicator.parameters}">
-																<option>(choose parameter)</option>
+																<option>(<spring:message code ="reporting.chooseParameter" />)</option>
 															</c:if>
 															<c:forEach var="mappedParameter" items="${indicator.parameters}">										
 																<option>${mappedParameter.name}</option>

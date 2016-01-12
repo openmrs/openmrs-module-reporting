@@ -82,7 +82,7 @@ $(document).ready(function() {
 
 	<div id="container">
 		
-		<h1>Period Indicator Editor</h1>
+		<h1><spring:message code ="reporting.PeriodIndicatorEditor" /></h1>
 
 		<div id="navigation">
 		
@@ -99,7 +99,7 @@ $(document).ready(function() {
 
 				<spring:hasBindErrors name="indicatorForm">  
 					<div class="errors"> 									 
-						<h3 style="color: darkred;">Please correct the following errors ...</h3>
+						<h3 style="color: darkred;"><spring:message code ="reporting.correctErrors" /></h3>
 						<c:forEach items="${errors.allErrors}" var="error">
 							<img src="${pageContext.request.contextPath}/images/error.gif" style="vertical-align:middle"/>
 							<spring:message code="${error.code}" text="${error.defaultMessage}"/><br/>
@@ -115,7 +115,7 @@ $(document).ready(function() {
 			
 			<td width="50%" valign="top" height="100%">
 			
-				<h5>Step 1. Build your indicator ...</h5>
+				<h5><spring:message code ="reporting.Step1" /></h5>
 			
 				<ul>
 					<li>		
@@ -129,7 +129,7 @@ $(document).ready(function() {
 									
 									<img src="${countImage}" width="24" height="24" border="0" alt="period indicator" 
 										style="vertical-align:middle"/>
-									<span style="color: white;">COUNT</span>
+									<span style="color: white;"><spring:message code ="reporting.Count" /></span>
 								</label>	
 							</div>			
 							
@@ -190,7 +190,7 @@ $(document).ready(function() {
 																	
 									<img src="${fractionImage}" width="24" height="24" border="0" alt="period indicator" 
 										style="vertical-align:middle"/>
-									<span style="color: white;">FRACTION</span>
+									<span style="color: white;"><spring:message code ="reporting.FRACTION" /></span>
 								</label>	
 							</div>																		
 							<div style="padding:50px" align="center">
@@ -199,7 +199,7 @@ $(document).ready(function() {
 										<td align="center">
 										
 											<div style="width:100%; background-color: #D0E5F5; padding:5px;">
-												<label class="desc">Numerator</label>
+												<label class="desc"><spring:message code ="reporting.Numerator" /></label>
 											</div>										
 											<div style="border: 1px dashed #ccc; padding: 25px">
 													
@@ -240,7 +240,7 @@ $(document).ready(function() {
 									<tr>
 										<td align="center">
 											<div style="width:100%; background-color: #D0E5F5; padding:5px;">
-												<label class="desc">Denominator</label>
+												<label class="desc"><spring:message code ="reporting.Denominator" /></label>
 											</div>
 										
 											<div style="border: 1px dashed #ccc; padding: 25px">
@@ -286,12 +286,12 @@ $(document).ready(function() {
 								
 									<img src="${customImage}" width="24" height="24" border="0" alt="period indicator" 
 										style="vertical-align:middle"/>
-									<span style="color: white;">LOGIC</span>
+									<span style="color: white;"><spring:message code ="reporting.logic" /></span>
 								</label>	
 							</div>																		
 							<div style="padding:50px; color: #ccc;">
 								<!-- needs to be implemented -->
-								e.g. Average CD4 Count of patients with visit in last month
+								<spring:message code ="reporting.AverageCd4CountOfPatients" />
 							</div>
 						</div>	
 					</li>							
@@ -302,13 +302,13 @@ $(document).ready(function() {
 <!--  Indicator details -->
 		
 			<td width="20%" valign="top">
-				<h5>Step 2. Save the indicator ...</h5>						
+				<h5><spring:message code ="reporting.Step2" /></h5>						
 			
 				<div style="padding:15px; background-color: #eee;">
 					<ul>								
 						<c:if test="${indicatorForm.cohortIndicator.uuid != null}">
 							<li>
-								<label class="desc" for="uuid">ID</label>
+								<label class="desc" for="uuid"><spring:message code ="reporting.report.Id" /></label>
 								<div>
 									${indicatorForm.cohortIndicator.uuid}
 									<springform:hidden path="cohortIndicator.id"/>
@@ -317,13 +317,13 @@ $(document).ready(function() {
 							</li>		
 						</c:if>
 						<li>
-							<label class="desc" for="name">Indicator name</label>
+							<label class="desc" for="name"><spring:message code ="reporting.indicatorName" /></label>
 							<div>
 								<springform:input path="cohortIndicator.name" cssClass="field text large" size="40"/>														
 							</div>
 						</li>		
 						<li>		
-							<label class="desc" for="description">Describe what is being measured</label>
+							<label class="desc" for="description"><spring:message code ="reporting.describewhatIsMeasured" /></label>
 							<div>
 								<springform:textarea path="cohortIndicator.description" cssClass="field text large" cols="40"/>
 							</div>					
@@ -363,7 +363,7 @@ $(document).ready(function() {
 						<li>							
 							<c:url var="parameterImageUrl" value="/moduleResources/reporting/images/parameter.gif"/>
 							<img src="${parameterImageUrl}" border="0" alt="period indicator" style="vertical-align:middle"/>
-							<label class="inline" for="parameters">Parameters</label>
+							<label class="inline" for="parameters"><spring:message code ="reporting.parameters" /></label>
 							<div style="padding-left:15px; border: 1px #ccc dashed;">
 								<ul>
 									<c:forEach var="parameter" items="${indicatorForm.cohortIndicator.parameters}">
@@ -375,7 +375,7 @@ $(document).ready(function() {
 						<li>
 							<div class="buttonBar">						
 								<input class="button" id="save-button" type="button" value="Save" />
-								<a href="${pageContext.request.contextPath}/module/reporting/indicators/manageIndicators.form">Cancel</a>
+								<a href="${pageContext.request.contextPath}/module/reporting/indicators/manageIndicators.form"><spring:message code ="reporting.cancel" /></a>
 								
 
 							</div>										

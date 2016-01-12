@@ -9,20 +9,20 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Done</h1>
+		<h1><spring:message code ="reporting.done" /></h1>
 		
 		<center>
-			<b>Please confirm the information below and then press continue...</b>
+			<b><spring:message code ="reporting.confirmInfo" /></b>
 		</center>
 			
 		<form action="<c:url value="/module/reporting/indicators/indicatorWizard.form"/>" method="post">			
 			<fieldset>
-			<legend>Done!</legend>			
+			<legend><spring:message code ="reporting.done" /></legend>			
 				<div>
 					<ul>		
 						<li>
 							<div>
-								Your Cohort Indicator has been created!
+								<spring:message code ="reporting.cohortIndicator" />
 							
 								message = ${message}<br/>
 								indicatorForm = ${indicatorForm}<br/>

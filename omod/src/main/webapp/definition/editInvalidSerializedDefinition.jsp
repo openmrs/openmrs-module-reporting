@@ -57,27 +57,27 @@
 					<td valign="top">
 						<ul>
 							<li>
-								<label class="desc" for="id">ID</label>
+								<label class="desc" for="id"><spring:message code ="reporting.Id" /></label>
 								${definition.id}
 							</li>		
 							<li>
-								<label class="desc" for="name">Name</label>
+								<label class="desc" for="name"><spring:message code ="reporting.name" /></label>
 								<input type="text" id="name"  tabindex="2" name="name" value="${definition.name}" size="50"/>
 							</li>
 							<li>
-								<label class="desc" for="description">Description</label>
+								<label class="desc" for="description"><spring:message code ="reporting.description" /></label>
 								<textarea id="description" class="field text short" cols="40" rows="3" tabindex="3" name="description">${definition.description}</textarea>
 							</li>
 							<li>
-								<label class="desc" for="type">Type</label>
+								<label class="desc" for="type"><spring:message code ="reporting.type" /></label>
 								<input type="text" id="type" tabindex="4" name="type" value="${definition.type}" size="50"/>
 							</li>
 							<li>
-								<label class="desc" for="subtype">Subtype</label>
+								<label class="desc" for="subtype"><spring:message code ="reporting.Subtype" /></label>
 								<input type="text" id="subtype" tabindex="5" name="subtype" value="${definition.subtype}" size="50"/>
 							</li>
 							<li>
-								<label class="desc" for="type">Serialization Class</label>
+								<label class="desc" for="type"><spring:message code ="reporting.SerializationClass" /></label>
 								<input type="text" id="serializationClass" tabindex="6" name="serializationClass" value="${definition.serializationClass.name}" size="50"/>
 							</li>
 							<li>

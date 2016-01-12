@@ -17,7 +17,7 @@
 <c:choose>
 	<c:when test="${definition.id == null}">
 
-		<b class="boxHeader">Create Composition Cohort Definition</b>
+		<b class="boxHeader"><spring:message code="reporting.CreateCompositionCohortDefinition" /></b>
 		<div class="box">
 			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition|successUrl=${pageUrl}" />
 		</div>
@@ -59,9 +59,9 @@
 			<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${definition['class'].name}|uuid=${definition.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 			
 			<b class="boxHeader">
-				Composition string
+				<spring:message code="reporting.CompositionString" />
 				&nbsp;&nbsp;&nbsp;&nbsp;
-				<small>Shortcuts:</small>
+				<small><spring:message code="reporting.Shortcuts" /></small>
 				<a id="andAllTogether" href="javascript:void(0)">
 					AND-all
 				</a>
@@ -86,7 +86,7 @@
 		
 		</td>
 		<td width="66%">
-			<b class="boxHeader">Searches to combine</b>
+			<b class="boxHeader"><spring:message code="reporting.SearchesToCombine" /></b>
 			<div class="box" style="border: none">
 			
 				<c:forEach items="${definition.searches}" var="h" varStatus="hStatus">
@@ -105,11 +105,11 @@
 				<input type="hidden" name="copyFromUuid" value="${definition.uuid}"/>
 				<table>
 					<tr>
-						<th align="right">Name:</th>
+						<th align="right"><spring:message code="reporting.name" /></th>
 						<td><input type="text" name="name"/></td>
 					</tr>
 					<tr valign="top">
-						<th align="right">Description:</th>
+						<th align="right"><spring:message code="reporting.description" /></th>
 						<td><textarea name="description"></textarea></td>
 					</tr>
 					<tr>

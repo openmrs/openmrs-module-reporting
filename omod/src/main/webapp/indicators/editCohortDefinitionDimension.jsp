@@ -47,12 +47,12 @@
 
 <div id="page">
 	<div id="container">
-		<h1>Dimension Editor</h1>
+		<h1><spring:message code="reporting.dimensionEditor" /></h1>
 		
 		<c:choose>
 			
 			<c:when test="${dimension.id == null}">
-				<b class="boxHeader">Create New Dimension</b>
+				<b class="boxHeader"><spring:message code="reporting.newDimension" /></b>
 				<div class="box">
 					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension|size=380|mode=edit|dialog=false|cancelUrl=manageDimensions.form|successUrl=/module/reporting/indicators/editCohortDefinitionDimension.form?uuid=uuid" />
 				</div>
@@ -70,13 +70,13 @@
 							<input id="previewButton" name="preview" type="button" value="Preview"/>
 						</td>
 						<td valign="top" width="100%">
-							<b class="boxHeader">Options</b>
+							<b class="boxHeader"><spring:message code="reporting.options" /></b>
 							<div class="box">
 								<table id="options-table">
 									<thead>
 										<tr>
-											<th>Key</th>
-											<th>Cohort Definition</th>
+											<th><spring:message code="reporting.key" /></th>
+											<th><spring:message code="reporting.cohortDefinition" /></th>
 											<th>&nbsp;</th>
 										</tr>
 									</thead>
