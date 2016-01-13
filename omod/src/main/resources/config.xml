@@ -14,8 +14,8 @@
 		an extensible API for developing custom reports and new features.
 	</description>
 	<activator>@MODULE_PACKAGE@.ReportingModuleActivator</activator>
-	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL>	
-	<require_version>1.11.3, 1.10.2 - 1.10.*, 1.9.9 - 1.9.*</require_version>
+	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL>
+	<require_version>1.11.3 - 1.11.*, 1.10.2 - 1.10.*, 1.9.9 - 1.9.*</require_version>
 
 	<require_modules>
 	   	<require_module version="${serializationVersion}">org.openmrs.module.serialization.xstream</require_module>
