@@ -4,7 +4,7 @@ Reporting Module
 
 Overview
 ========
-The Reporting Module was designed to provide a feature-rich and user-friendly web interface for managing reports within OpenMRS. In addition, the Reporting Module provides a flexible and extensible API that module developers can develop against to build their own reports and tools. The core idea behind the Reporting Module is to provide a solid foundation so that other developers can use the framework to implement new features.
+The Reporting Module was designed to provide a feature-rich, user-friendly web interface for managing reports within OpenMRS. In addition, the Reporting Module provides a flexible and extensible API that module developers can develop against to build their own reports and tools. The core idea behind the Reporting Module is to provide a solid foundation for other developers to use the framework and implement new features.
 
 
 Download
@@ -37,11 +37,10 @@ Upgrade
   
 To upgrade from Reporting Module 0.3.x:
   1. Check to make sure that you have all of the Required Modules installed on your system.
-  2. Double-check to make sure that you have all of the Required Modules installed on your system.
-  3. Log into OpenMRS
-  4. Navigate to Admin > Manage Modules.
-  5. Click the trash icon next to Reporting 0.3.x to remove the module from your system.
-  6. Navigate to the newer omod on your system using the browse button and click Upload.
+  2. Log into OpenMRS
+  3. Navigate to Admin > Manage Modules.
+  4. Click the trash icon next to Reporting 0.3.x to remove the module from your system.
+  5. Navigate to the newer omod on your system using the browse button and click Upload.
 
 
 Privileges
@@ -54,7 +53,7 @@ In order for users to be able to run most reports you need to put them in a grou
   3. View Patient Cohorts (technically this is only required if you want to be able to run reports including cohorts of patients, which is basically all reports, up until 0.4.1.1)
   4. Manage Scheduler
 
-To be able to edit and configure reports, you need: 
+To be able to edit and configure reports, you need groups: 
 (this is accurate as of 0.4.1.3)
   1. Manage Reports (this just enables you to see the menu items)
   2. Manage Report Definitions
@@ -64,7 +63,7 @@ To be able to edit and configure reports, you need:
   6. Manage Cohort Definitions
   7. Manage Report Designs
 
-You also need to grant View privileges related to the base objects your reporting definitions use. For example you need "View Programs" to create and use an "In Program" Cohort Query
+You also need to grant view privileges related to the base objects your reporting definitions use. For example you need "View Programs" to create and use an "In Program" Cohort Query
 
 
 Report Types
