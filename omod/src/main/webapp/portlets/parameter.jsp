@@ -45,7 +45,7 @@
 				<a href="javascript:void(0)" onClick="$('#shortcut').val('date'); $('#editParameterForm').submit();"><spring:message code="reporting.date" /></a>
 				<a href="javascript:void(0)" onClick="$('#shortcut').val('startDate'); $('#editParameterForm').submit();"><spring:message code="reporting.parameter.startDate" /></a>
 				<a href="javascript:void(0)" onClick="$('#shortcut').val('endDate'); $('#editParameterForm').submit();"><spring:message code="reporting.parameter.endDate" /></a>
-				<a href="javascript:void(0)" onClick="$('#shortcut').val('location'); $('#editParameterForm').submit();"><spring:message code="reporting.parameter.location" ?></a>
+				<a href="javascript:void(0)" onClick="$('#shortcut').val('location'); $('#editParameterForm').submit();"><spring:message code="reporting.parameter.location" /></a>
 			</div>
 			
 			<div style="margin:0; padding:0; width:100%;">
