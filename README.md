@@ -4,7 +4,7 @@ Reporting Module
 
 Overview
 ========
-The Reporting Module was designed to provide a feature-rich, user-friendly web interface for managing reports within OpenMRS. In addition, the Reporting Module provides a flexible and extensible API that module developers can develop against to build their own reports and tools. The core idea behind the Reporting Module is to provide a solid foundation for other developers to use the framework and implement new features.
+The Reporting Module was designed to provide a feature-rich, user-friendly web interface for managing reports within OpenMRS. In addition, the Reporting Module provides a flexible and extensible API that module developers can develop against to build their own reports and tools. The core idea behind the Reporting Module is to provide a solid foundation for other developers to use the framework and implement new features or functions.
 
 
 Download
@@ -29,7 +29,7 @@ View, download or fork source code: on GitHub
 Installation
 ================
   
-To install the Reporting Module download the Reporting Module .omod (above), along with its dependencies (see box above) and upload them into your system.
+To install the Reporting Module please download the Reporting Module .omod (above), along with its dependencies (see box above) and upload them into your system.
 
 
 Upgrade
@@ -69,11 +69,11 @@ You also need to grant view privileges related to the base objects your reportin
 Report Types
 ================
   
-There are many different types of reports, but these can be categorized into two main types.
+There are different types of reports, but these can be categorized into two main types.
 
 **Row-Per-Domain Object Reports:** These reports export data in a multi-column format where each row represents the object and each column represents an attribute associated with the object. Currently, only Row-Per-Patient reports are natively supported but more objects (for example Row-Per-Encounter and Row-Per-Program) are planned to be included.
 
-**Indicator Reports:** Indicator reports aggregate groups of people for each question. Below is a Period Indicator Report. Each row contains a question and the corresponding column contains the answer. The answer to each question is a link to the members of the group that can respond to the said question.
+**Indicator Reports:** Indicator reports aggregate groups of people for each question. Below is a Period Indicator Report. Each of row contains a question and the corresponding column contains the answer. The answer to each question is a link to the members of the group that can respond to the said question.
 
 
 Limitations
@@ -81,7 +81,7 @@ Limitations
   
 Currently, reporting compatibility is being used to bridge the gap between the old and new (e.g., combining cohort builder and data exports). This reporting module has many core features for evaluating parts of a report but does not have a good UI for designing a full report.
 
-**Cohort builder** is best for adhoc querying, though for unsupported data entry, you must use the cohort query editor in the reporting module. Data exports can only be designed/exported using reporting compatibility. This module contains a feature that allows you to define simple dataset definitions, such as a SQL-based dataset, but other definitions are not available.
+**Cohort builder** is matchless for adhoc querying, though for unsupported data entry, you must use the cohort query editor in the reporting module. Data exports can only be designed/exported using reporting compatibility. This module contains a feature that allows you to define simple one like dataset definitions, such as a SQL-based dataset, but other definitions are still not available.
 
 
 Project Resources
