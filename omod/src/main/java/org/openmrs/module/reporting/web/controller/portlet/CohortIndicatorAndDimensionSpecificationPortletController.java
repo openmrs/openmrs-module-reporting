@@ -71,13 +71,13 @@ public class CohortIndicatorAndDimensionSpecificationPortletController extends R
        		} 
        	} 	
        	
-       	if (mappedObj != null) {
-       		model.put("mappedObj", mappedObj);
-   	       	model.put("mappings", mappings);
 
-   			model.put("allowedParams", ParameterizableUtil.getAllowedMappings(dsd, mappedObj));
-   			model.putAll(ParameterizableUtil.getCategorizedMappings(dsd, mappedObj, mappings));
-       	}
+       	model.put("mappedObj", mappedObj);
+   	    model.put("mappings", mappings);
+
+   		model.put("allowedParams", ParameterizableUtil.getAllowedMappings(dsd, mappedObj));
+   		model.putAll(ParameterizableUtil.getCategorizedMappings(dsd, mappedObj, mappings));
+
 		
 		List<String> sortedKeys = new ArrayList<String>();
 		for (CohortIndicatorAndDimensionSpecification spec : cidsd.getSpecifications()) {
