@@ -4,13 +4,12 @@ Reporting Module
 
 Overview
 ========
-The Reporting Module was designed to provide a feature-rich, user-friendly web interface for managing reports within OpenMRS. In addition, the Reporting Module provides a flexible and extensible API that module developers can develop against to build their own reports and tools. The core idea behind the Reporting Module is to provide a solid foundation for other developers to use the framework and implement new features. This Module is designed for varoius new features.
+The Reporting Module was designed to provide a feature-rich, user-friendly web interface for managing reports within OpenMRS. In addition, the Reporting Module provides a flexible and extensible API that module developers can develop against to build their own reports and tools. The core idea behind the Reporting Module is to provide a solid foundation for other developers to use the framework and implement new features. This Module is designed for various new features.
 
 
 Download
 ========
-We encourage all OpenMRS users and developers to download the reporting module, use it frequently, create new tickets for bug fixes and feature requests, and provide feedback on [OpenMRS Talk](https://talk.openmrs.org/c/developers).
-
+We encourage all OpenMRS users and developers to download the reporting module, use it frequently, create new tickets for bug fixes and feature requests.
 
 Requirements
 ================
@@ -82,6 +81,11 @@ Limitations
 Currently, reporting compatibility is being used to bridge the gap between the old and new (e.g., combining cohort builder and data exports). This reporting module has many core features for evaluating parts of a report but does not have a good UI for designing a full report.
 
 **Cohort builder** is best for adhoc querying, though for unsupported data entry, you must use the cohort query editor in the reporting module. Data exports can only be designed/exported using reporting compatibility. This module contains a feature that allows you to define simple dataset definitions, such as a SQL-based dataset, but other definitions are not available till this point of time.
+
+Feedback
+================
+
+Please provide feedback on [OpenMRS Talk](https://talk.openmrs.org/c/developers).
 
 
 Project Resources
