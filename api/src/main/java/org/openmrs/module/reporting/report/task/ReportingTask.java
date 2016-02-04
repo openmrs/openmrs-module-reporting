@@ -42,6 +42,7 @@ public abstract class ReportingTask implements Runnable {
 		log.info("Attempting to cancel " + getClass().getSimpleName());
 		if (thread != null) {
 			thread.stop();
+			thread = null;
 			log.info(getClass().getSimpleName() + " task has been cancelled");
 		}
 		else {
