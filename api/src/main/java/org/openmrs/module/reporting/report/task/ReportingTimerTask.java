@@ -1,12 +1,11 @@
 package org.openmrs.module.reporting.report.task;
 
+import java.util.TimerTask;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.openmrs.api.context.Daemon;
 import org.openmrs.module.DaemonToken;
-
-import java.util.TimerTask;
 
 /**
  * Generic superclass for a Reports task
@@ -21,7 +20,6 @@ public class ReportingTimerTask extends TimerTask {
 	//***** PROPERTIES THAT NEED TO BE SET ON EACH INSTANCE
 
 	private Class<? extends ReportingTask> taskClass;
-	private DbSessionFactory sessionFactory;
 
 	/**
 	 * @see TimerTask#run()
@@ -44,7 +42,6 @@ public class ReportingTimerTask extends TimerTask {
 			log.info("Running reporting task: " + getTaskClass().getSimpleName());
 			task = getTaskClass().newInstance();
 			task.setScheduledExecutionTime(System.currentTimeMillis());
-			task.setSessionFactory(sessionFactory);
 			Daemon.runInDaemonThread(task, daemonToken);
 		}
 		catch (Exception e) {
@@ -67,14 +64,6 @@ public class ReportingTimerTask extends TimerTask {
 
 	public void setTaskClass(Class<? extends ReportingTask> taskClass) {
 		this.taskClass = taskClass;
-	}
-
-	public DbSessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(DbSessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
 	}
 
 	/**
