@@ -37,5 +37,4 @@ public class PropertiesTypeTest {
         assertThat(deserialized.size(), is(1));
         assertThat(deserialized.getProperty(expectedProperty), is(expectedValue));
     }
-
 }
