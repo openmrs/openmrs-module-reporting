@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.reporting.cohort.definition.evaluator;
+package src.test.java.org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.junit.Before;
 import org.junit.Test;
