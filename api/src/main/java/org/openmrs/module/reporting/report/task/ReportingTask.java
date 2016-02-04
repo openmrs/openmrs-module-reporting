@@ -45,7 +45,6 @@ public abstract class ReportingTask implements Runnable {
 		log.info("Attempting to cancel " + getClass().getSimpleName());
 		DbSession session = currentSession;
 		if (session != null && session.isOpen()) {
-			session.close();
 			log.info(getClass().getSimpleName() + " task has been cancelled");
 		}
 		else {
