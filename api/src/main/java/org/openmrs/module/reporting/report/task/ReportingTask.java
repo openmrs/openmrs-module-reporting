@@ -2,6 +2,8 @@ package org.openmrs.module.reporting.report.task;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.db.hibernate.DbSession;  
+import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.service.ReportService;
 
@@ -11,18 +13,19 @@ import org.openmrs.module.reporting.report.service.ReportService;
 public abstract class ReportingTask implements Runnable {
 
 	private transient final Log log = LogFactory.getLog(getClass());
+	private volatile DbSession currentSession;
 
 	// Properties that should be set on this task when it is instantiated, before it is run
+
+	private DbSessionFactory sessionFactory;
 	private long scheduledExecutionTime;
-	private Thread thread;
 
 	@Override
 	public void run() {
 		try {
 			log.info("Running reporting task: " + getClass().getSimpleName());
-			thread = Thread.currentThread();
+			currentSession = sessionFactory.getCurrentSession();
 			executeTask();
-			thread = null;
 			log.info("Completed reporting task: " + getClass().getSimpleName());
 		}
 		catch (Exception e) {
@@ -40,8 +43,8 @@ public abstract class ReportingTask implements Runnable {
 	 */
 	public void cancelTask() {
 		log.info("Attempting to cancel " + getClass().getSimpleName());
-		if (thread != null) {
-			thread.stop();
+		DbSession session = currentSession;
+		if (session != null && session.isOpen()) {
 			log.info(getClass().getSimpleName() + " task has been cancelled");
 		}
 		else {
@@ -55,6 +58,14 @@ public abstract class ReportingTask implements Runnable {
 
 	public void setScheduledExecutionTime(long scheduledExecutionTime) {
 		this.scheduledExecutionTime = scheduledExecutionTime;
+	}
+
+	public DbSessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 
 	protected ReportService getReportService() {

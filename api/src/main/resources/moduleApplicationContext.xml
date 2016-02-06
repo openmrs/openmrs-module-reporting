@@ -495,18 +495,22 @@
 
 	<bean id="queueScheduledReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
 		<property name="taskClass" value="org.openmrs.module.reporting.report.task.QueueScheduledReportsTask"/>
+		<property name="sessionFactory" ref="dbSessionFactory"/>
 	</bean>
 
 	<bean id="runQueuedReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
 		<property name="taskClass" value="org.openmrs.module.reporting.report.task.RunQueuedReportsTask"/>
+		<property name="sessionFactory" ref="dbSessionFactory"/>
 	</bean>
 
 	<bean id="deleteOldReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
 		<property name="taskClass" value="org.openmrs.module.reporting.report.task.DeleteOldReportsTask"/>
+		<property name="sessionFactory" ref="dbSessionFactory"/>
 	</bean>
 
 	<bean id="persistCachedReportsTask" class="org.openmrs.module.reporting.report.task.ReportingTimerTask">
 		<property name="taskClass" value="org.openmrs.module.reporting.report.task.PersistCachedReportsTask"/>
+		<property name="sessionFactory" ref="dbSessionFactory"/>
 	</bean>
 
 	<bean id="queueScheduledReportsTimerTask" class="org.springframework.scheduling.concurrent.ScheduledExecutorTask">
