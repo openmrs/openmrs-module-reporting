@@ -15,7 +15,7 @@
 	</description>
 	<activator>@MODULE_PACKAGE@.ReportingModuleActivator</activator>
 	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL>
-	<require_version>1.11.3 - 1.11.*, 1.10.2 - 1.10.*, 1.9.9 - 1.9.*, 2.*</require_version>
+	<require_version>1.11.3 - 1.11.*, 1.10.2 - 1.10.*, 1.9.9 - 1.9.*, 1.12</require_version>
 
 	<require_modules>
 	   	<require_module version="${serializationVersion}">org.openmrs.module.serialization.xstream</require_module>
@@ -188,11 +188,11 @@
 	<conditionalResources>
 		<conditionalResource>
 			<path>/lib/reporting-api-1.9.*</path>
-			<openmrsVersion>1.*</openmrsVersion>
+			<openmrsVersion>1.9.9 - 1.12.*</openmrsVersion>
 		</conditionalResource>
 		<conditionalResource>
 			<path>/lib/reporting-api-2.0.*</path>
-			<openmrsVersion>2.*</openmrsVersion>
+			<openmrsVersion>2.0</openmrsVersion>
 		</conditionalResource>
 	</conditionalResources>
 	
