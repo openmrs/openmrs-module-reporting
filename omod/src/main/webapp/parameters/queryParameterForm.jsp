@@ -70,7 +70,7 @@ $(document).ready(function() {
 									<li>
 										<div class="errors"> 
 											<font color="red"> 
-												<b><u><spring:message code ="reporting.correctErrors" /></u></b>   
+												<b><u><spring:message code="reporting.correctErrors" /></u></b>
 												<springform:errors path="parameterizable"></springform:errors>
 											</font>  
 										</div>
@@ -101,8 +101,8 @@ $(document).ready(function() {
 					
 					<c:if test="${!empty results}">
 						<td style="padding-left: 1em; border-left: 1px #e0e0e0 solid">
-							<h4><spring:message code ="reporting.EvaluationResult" /></h4>
-							<i>${executionTime} <spring:message code ="reporting.seconds" /></i><br/><br/>
+							<h4><spring:message code="reporting.EvaluationResult" /></h4>
+							<i>${executionTime} <spring:message code="reporting.seconds" /></i><br/><br/>
 							<rpt:format object="${results}"/>
 						</td>
 					</c:if>

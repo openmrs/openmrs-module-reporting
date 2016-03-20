@@ -4,7 +4,7 @@
 		<c:choose>
 			<c:when test="${report.id == null}">
 
-				<b class="boxHeader"<spring:message code ="reporting.>CreatePeriodIndicatorReport" /></b>
+				<b class="boxHeader"<spring:message code="reporting.>CreatePeriodIndicatorReport" /></b>
 				<div class="box">
 					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition|size=380|mode=edit|dialog=false|cancelUrl=manageReports.form|successUrl=periodIndicatorReport.form?uuid=uuid" />
 				</div>
@@ -141,15 +141,15 @@
 						<input type="hidden" id="indexField" name="index" value=""/>
 						<table>
 							<tr>
-								<td><spring:message code ="reporting.IndicatorNumber" /></td>
+								<td><spring:message code="reporting.IndicatorNumber" /></td>
 								<td><input id="keyField" size="30" maxlength="10" type="text" name="key"/></td>
 							</tr>
 							<tr>
-								<td><spring:message code ="reporting.label" /></td>
+								<td><spring:message code="reporting.label" /></td>
 								<td><input id="labelField" size="60" type="text" name="displayName"/></td>
 							</tr>
 							<tr id="createFromIndicator">
-								<td><spring:message code ="reporting.Indicator" /></td>
+								<td><spring:message code="reporting.Indicator" /></td>
 								<td>
 									<select id="indicatorField" name="indicator">
 										<option value=""></option>
@@ -168,7 +168,7 @@
 								</td>
 							</tr>
 							<tr id="createFromCohortQuery" style="display: none;">
-								<td><spring:message code ="reporting.CohortDefinition" /></td>
+								<td><spring:message code="reporting.CohortDefinition" /></td>
 								<td>
 									<select id="cohortQueryField" name="cohortQuery">
 										<option value=""></option>
@@ -180,7 +180,7 @@
 							</tr>
 							<c:if test="${fn:length(report.indicatorDataSetDefinition.dimensions) > 0}">
 								<tr valign="top">
-									<td><spring:message code ="reporting.dimensions" /></td>
+									<td><spring:message code="reporting.dimensions" /></td>
 									<td>
 										<table>
 											<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
@@ -190,11 +190,11 @@
 													</td>
 													<td>
 														<select id="dimensionOption_${dimStatus.index}" name="dimensionOption_${dim.key}">
-															<option value=""><spring:message code ="reporting.all" /></option>
+															<option value=""><spring:message code="reporting.all" /></option>
 															<c:forEach var="dimOpt" items="${dim.value.parameterizable.cohortDefinitions}">
 																<option value="${dimOpt.key}">${dimOpt.key}</option>
 															</c:forEach>
-															<option value="?"><spring:message code ="reporting.dimension.Unclassified" /></option>
+															<option value="?"><spring:message code="reporting.dimension.Unclassified" /></option>
 														</select>
 													</td>
 												</tr>
@@ -219,13 +219,13 @@
 						<td width="30%">
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${report['class'].name}|uuid=${report.uuid}|size=380|label=Basic Details" />
 							<br/>
-							<b class="boxHeader"><spring:message code ="reporting.dimensions" /></b>
+							<b class="boxHeader"><spring:message code="reporting.dimensions" /></b>
 							<div class="box">
 								<table id="dimensions-table">
 									<thead>
 										<tr>
-											<th><spring:message code ="reporting.Key" /></th>
-											<th><spring:message code ="reporting.dimension" /></th>
+											<th><spring:message code="reporting.Key" /></th>
+											<th><spring:message code="reporting.dimension" /></th>
 											<th>&nbsp;</th>
 										</tr>
 									</thead>
@@ -274,7 +274,7 @@
 						<td>
 							<b class="boxHeader" style="text-align: right">
 								<span style="float:left">
-									<spring:message code ="reporting.Indicators" />
+									<spring:message code="reporting.Indicators" />
 								</span>
 								<a href="javascript:void(0)" class="addColumnButton"><spring:message code="general.add"/></a>
 							</b>
@@ -283,9 +283,9 @@
 									<thead>
 										<tr>
 											<th>Ind. #</th>
-											<th><spring:message code ="reporting.Label" /></th>
-											<th><spring:message code ="reporting.Indicator" /></th>
-											<th><spring:message code ="reporting.Dimensions" /></th>
+											<th><spring:message code="reporting.Label" /></th>
+											<th><spring:message code="reporting.Indicator" /></th>
+											<th><spring:message code="reporting.Dimensions" /></th>
 											<th>&nbsp;</th>
 										</tr>
 									</thead>

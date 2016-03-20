@@ -234,9 +234,9 @@ function submitColumnOrder(sortable) {
 		<form method="post" action="patientDataSetEditor-addParam.form">
 
 			<div class="metadataField">
-				<label class="desc"><spring:message code ="reporting.type" /></label>
+				<label class="desc"><spring:message code="reporting.type" /></label>
 				<select name="collectionType">
-					<option value=""><spring:message code ="reporting.Single" /></option>
+					<option value=""><spring:message code="reporting.Single" /></option>
 					<c:forEach var="supportedType" items="${ parameterCollectionTypes }">
 						<option value="${supportedType.value}">${supportedType.labelText} of</option>
 					</c:forEach>
@@ -254,11 +254,11 @@ function submitColumnOrder(sortable) {
 				<input type="text" id="name" tabindex="1" name="name" size="50"/>
 			</div>
 			<div class="metadataField">
-				<label class="desc" for="label"><spring:message code ="reporting.label" /></label>			
+				<label class="desc" for="label"><spring:message code="reporting.label" /></label>
 				<textarea id="label" cols="50" rows="2" tabindex="2" name="label"></textarea>
 			</div>
 			<div class="metadataField">
-				<label class="desc" for="widgetConfiguration"><spring:message code ="reporting.advancedConfig" /></label>			
+				<label class="desc" for="widgetConfiguration"><spring:message code="reporting.advancedConfig" /></label>
 				<textarea id="widgetConfiguration" cols="50" rows="5" tabindex="3" name="widgetConfiguration"></textarea>
 			</div>
 
@@ -308,12 +308,12 @@ function submitColumnOrder(sortable) {
 		<form id="add-column-form" method="post" action="patientDataSetEditor-addColumn.form" style="background-color: #e0e0e0">
 			<table>
 				<tr>
-					<td><spring:message code ="reporting.label" /></td>
+					<td><spring:message code="reporting.label" /></td>
 					<td><input type="text" name="label"/></td>
 					<td></td>
 				</tr>
 				<tr>
-					<td><spring:message code ="reporting.Definition" /></td>
+					<td><spring:message code="reporting.Definition" /></td>
 					<td><rptTag:chooseDataDefinition id="addCol" formFieldName="columnDefinition" types="${dataDefinitionTypes}"/></td>
 					<td></td>
 				</tr>

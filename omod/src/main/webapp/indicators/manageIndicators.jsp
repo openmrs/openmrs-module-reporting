@@ -45,12 +45,12 @@
 			<c:url var="sqlIndicatorImage" value="/moduleResources/reporting/images/db_add.png"/>	
 		 	<span>
 				<img src="${cohortIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>				
-				<a href="<c:url value="/module/reporting/indicators/editCohortIndicator.form"/>"><spring:message code ="reporting.createCohortIndicator" /></a>
+				<a href="<c:url value="/module/reporting/indicators/editCohortIndicator.form"/>"><spring:message code="reporting.createCohortIndicator" /></a>
 			</span>
 			&nbsp;&nbsp;
 		 	<span>
 				<img src="${sqlIndicatorImage}" width="24" height="24" border="0" alt="sql indicator" style="vertical-align:middle"/>				
-				<a href="<c:url value="/module/reporting/indicators/editSqlIndicator.form"/>"><spring:message code ="reporting.createSqlIndicator" /></a>
+				<a href="<c:url value="/module/reporting/indicators/editSqlIndicator.form"/>"><spring:message code="reporting.createSqlIndicator" /></a>
 			</span>
 		</div>
 
@@ -58,10 +58,10 @@
 			<table id="table-indicator-list" class="reporting-data-table display">
 				<thead>
 					<tr>
-						<th nowrap><spring:message code ="reporting.actions" /></th>
-						<th id="indicatorNameColumn" nowrap><spring:message code ="reporting.name" /></th>
-						<th nowrap><spring:message code ="reporting.createdBy" /></th>
-						<th nowrap><spring:message code ="reporting.lastModified" /></th>					
+						<th nowrap><spring:message code="reporting.actions" /></th>
+						<th id="indicatorNameColumn" nowrap><spring:message code="reporting.name" /></th>
+						<th nowrap><spring:message code="reporting.createdBy" /></th>
+						<th nowrap><spring:message code="reporting.lastModified" /></th>
 					</tr>
 				</thead>
 				<tbody>

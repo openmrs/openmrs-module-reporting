@@ -51,7 +51,7 @@
 		<c:choose>
 			<c:when test="${definition.id == null}">
 		
-				<b class="boxHeader"><spring:message code ="reporting.sqlQuery" /></b>
+				<b class="boxHeader"><spring:message code="reporting.sqlQuery" /></b>
 				<div class="box">
 					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${type.name}|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=${type.name}|successUrl=${pageUrl}" />
 				</div>
@@ -80,7 +80,7 @@
 						
 							<!-- Using .portlet style -->
 							<div style="margin: 0.1em; width:100%;"> 
-								<b class="boxHeader"><spring:message code ="reporting.sqlQuery" /></b>
+								<b class="boxHeader"><spring:message code="reporting.sqlQuery" /></b>
 								<div class="box">
 									<form method="post" action="sqlDefinitionAssignQueryString.form">
 										<input type="hidden" name="uuid" value="${definition.uuid}"/>

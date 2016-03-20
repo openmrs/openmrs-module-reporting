@@ -36,7 +36,7 @@
 		<h1>
 			<c:choose>
 				<c:when test="${definition.id == null}">
-					<spring:message code ="reporting.CreateNewLogicDataSet" />
+					<spring:message code="reporting.CreateNewLogicDataSet" />
 				</c:when>
 				<c:otherwise>
 					Edit Logic DataSet: ${definition.name}

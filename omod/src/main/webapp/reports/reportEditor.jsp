@@ -72,8 +72,8 @@
 								<c:if test="${!empty designs}">
 									<table width="100%" style="margin-bottom:5px;">
 										<tr>
-											<th style="text-align:left; border-bottom:1px solid black;"><spring:message code ="reporting.name" /></th>
-											<th style="text-align:left; border-bottom:1px solid black;"><spring:message code ="reporting.type" /></th>
+											<th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.name" /></th>
+											<th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.type" /></th>
 											<th style="border-bottom:1px solid black;">[X]</th>
 										</tr>
 										<c:forEach items="${designs}" var="design" varStatus="designStatus">
@@ -95,7 +95,7 @@
 							</button>
 						</td>
 						<td valign="top" style="width:65%; padding-left:20px;">
-							<b class="boxHeader"><spring:message code ="reporting.DatasetDefinitions" /></b>
+							<b class="boxHeader"><spring:message code="reporting.DatasetDefinitions" /></b>
 							
 							<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
 								<div style="display:none; width:100%" id="dsdView${dsdStatus.index}">
