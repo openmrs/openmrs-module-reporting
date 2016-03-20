@@ -42,17 +42,10 @@
             	<prop key="**/runReport.portlet">runReportPortletController</prop>
             	<prop key="**/reportRequests.portlet">reportRequestPortletController</prop>
             	<prop key="**/reportList.portlet">reportListPortletController</prop>
-				<prop key="module/reporting/indicatorWizard.form">indicatorFormController</prop>
-				<prop key="module/reporting/newIndicator.form">indicatorFormController</prop>
 				<prop key="module/reporting/run/runReport.list">runReportList</prop>
 				<prop key="module/reporting/run/runReport.form">runReportForm</prop>
 			</props>
 		</property>
-	</bean>	
-	
-	<bean id="indicatorFormValidator" class="org.openmrs.module.reporting.web.validator.IndicatorFormValidator"/>
-	<bean id="indicatorFormController" class="org.openmrs.module.reporting.web.controller.IndicatorWizardFormController">
-		<property name="validator" ref="indicatorFormValidator"/>
 	</bean>
 
     <bean id="multiParameterIterationParameterEditPortletController" class="org.openmrs.module.reporting.web.controller.portlet.MultiParameterIterationParameterEditPortletController" />

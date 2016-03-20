@@ -66,7 +66,7 @@ $(document).ready(function() {
 							<input type="hidden" name="successView" value="${param.successView}"/>
 							
 							<ul>								
-								<spring:hasBindErrors name="indicatorForm">  
+								<spring:hasBindErrors name="parameterizable">
 									<li>
 										<div class="errors"> 
 											<font color="red"> 

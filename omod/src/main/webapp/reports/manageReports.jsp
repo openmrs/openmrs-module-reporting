@@ -19,7 +19,7 @@
 
 	function confirmDelete(name, uuid) {
 		if (confirm("Are you sure you want to delete " + name + "?")) {
-			document.location.href = '${pageContext.request.contextPath}/module/reporting/purgeReport.form?uuid=' + uuid;
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/purgeReport.form?uuid=' + uuid;
 		}
 	}
 

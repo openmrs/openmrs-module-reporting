@@ -159,4 +159,11 @@ public class ManageReportsController {
 			throw new RuntimeException("Unable to render contents of file", e);
 		}
     }
+
+    @RequestMapping("/module/reporting/reports/purgeReport")
+    public String purgeReportDefinition(@RequestParam(required=false, value="uuid") String uuid) {
+        ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+        rds.purgeDefinition(rds.getDefinitionByUuid(uuid));
+        return "redirect:/module/reporting/reports/manageReports.form";
+    }
 }

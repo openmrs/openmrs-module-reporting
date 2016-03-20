@@ -16,7 +16,6 @@ public class ViewPortletController {
     private static final List<String> ACCEPTED_URLS = Arrays.asList(
             "baseCohortIndicator",
             "baseMetadata",
-            "cohort",
             "cohortIndicatorAndDimensionSpecification",
             "currentReportHeader",
             "errorReports",
@@ -24,7 +23,6 @@ public class ViewPortletController {
             "mappedProperty",
             "multiParameterIterationParameterEdit",
             "parameter",
-            "patientGraphs",
             "queuedReports",
             "reportDesignForm",
             "reportHistory",

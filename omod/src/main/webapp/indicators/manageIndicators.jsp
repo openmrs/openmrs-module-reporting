@@ -18,17 +18,6 @@
 			              { "bSortable": false }]
 		} );
         $("#indicatorNameColumn").click();
-
-		$("#cohort-indicator-wizard-form").click(function(event){ 
-			showReportingDialog({ 
-				title: 'Add cohort indicator',
-				url: '<c:url value="/module/reporting/indicators/indicatorWizard.form"/>',
-				successCallback: function() { 
-					window.location.reload(true);
-				} 
-			});
-		});	
-	
 	} );
 	
 	function confirmDelete(name, uuid) {
