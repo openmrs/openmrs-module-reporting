@@ -14,7 +14,8 @@
 package org.openmrs.module.reporting.web.controller.mapping;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.definition.DefinitionContext;
+import org.openmrs.module.reporting.definition.service.DefinitionService;
 import org.openmrs.module.reporting.evaluation.Definition;
 
 /**
@@ -22,12 +23,14 @@ import org.openmrs.module.reporting.evaluation.Definition;
  */
 @Handler(supports={Definition.class}, order=200)
 public class AnnotatedDefinitionMappingHandler extends DefinitionMappingHandler {
-	
-	/**
+
+    /**
 	 * @see DefinitionMappingHandler#getCreateUrl(Class)
 	 */
 	public String getCreateUrl(Class<? extends Definition> type) {
-		return "/module/reporting/definition/editAnnotatedDefinition.form?type="+type.getName() + "&parentType=" + type.getName();
+        DefinitionService svc = DefinitionContext.getDefinitionService(type);
+        Class<? extends Definition> parentType = svc.getDefinitionType();
+		return "/module/reporting/definition/editAnnotatedDefinition.form?type="+type.getName() + "&parentType=" + parentType.getName();
 	}
 }
 
