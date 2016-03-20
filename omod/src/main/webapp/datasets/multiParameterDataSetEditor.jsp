@@ -121,28 +121,28 @@
 						<td width="75%">
 						
 							<div style="margin: 0.1em; width:100%;">
-								<b class="boxHeader"><spring:message code="reporting.Iterations" /></b>
+								<b class="boxHeader"><spring:message code="reporting.iterations" /></b>
 								<div class="box">
                                     <div align="center" style="padding:10px;">
                                         <p>
-                                            <label><spring:message code="reporting.BaseDataset" /></label>
+                                            <label><spring:message code="reporting.baseDataset" /></label>
                                             <select id="baseDefinitionSelect">
-                                                <option value="0">---<spring:message code="reporting.ChooseBaseDef" />---</option>
+                                                <option value="0">---<spring:message code="reporting.chooseBaseDef" />---</option>
                                                 <c:forEach items="${availableDefinitions}" var="availableDef">
                                                     <option value="${availableDef.uuid}" <c:if test="${availableDef == definition.baseDefinition}">selected</c:if>>${availableDef.name}</option>
                                                 </c:forEach>
                                             </select>
                                         </p>
                                         <c:if test="${empty definition.iterations}">
-                                            <span><spring:message code="reporting.NoIterationsYet" /></span>
+                                            <span><spring:message code="reporting.noIterationsYet" /></span>
                                         </c:if>
                                         <c:if test="${!empty definition.iterations}">
                                             <table id="iterations-table" style="width: 100%">
                                                 <thead>
                                                     <tr>
-                                                        <th style="text-align:left; border-bottom:1px solid black; white-space:nowrap; width: 50px;"><spring:message code="reporting.Iteration" /> #</th>
-                                                        <th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.Parameters" /></th>
-                                                        <th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.Actions" /></th>
+                                                        <th style="text-align:left; border-bottom:1px solid black; white-space:nowrap; width: 50px;"><spring:message code="reporting.iteration" /> #</th>
+                                                        <th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.parameters" /></th>
+                                                        <th style="text-align:left; border-bottom:1px solid black;"><spring:message code="reporting.actions" /></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -193,7 +193,7 @@
                                     </div>
                                     <form name="addIterationForm" id="addIterationForm" method="POST" action="">
                                     </form>
-                                    <a style="font-weight:bold;" href="#" id="addIterationLink"><spring:message code="reporting.AddIteration" /></a>
+                                    <a style="font-weight:bold;" href="#" id="addIterationLink"><spring:message code="reporting.addIteration" /></a>
                                 </div>
 							</div>
 						</td>

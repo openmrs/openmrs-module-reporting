@@ -88,9 +88,9 @@
 			} ); 
 		</script>
 		
-		<table>
+		<table style="width:100%;">
 			<tr valign="top">
-				<td width="30%">
+				<td style="width:30%;">
 					<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|size=380|label=Basic Details" />
 					<br/>
 					<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|label=Parameters|parentUrl=${pageUrl}" />
@@ -142,7 +142,7 @@
 						<spring:message code="general.close"/>
 					</button>
 				</td>
-				<td>
+				<td style="width:70%;">
 					<b class="boxHeader" style="font-weight:bold; text-align:right;">
 						<span style="float:left;">Indicators</span><br/>
 					</b>			

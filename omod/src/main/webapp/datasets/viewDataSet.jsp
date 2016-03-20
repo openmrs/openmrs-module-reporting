@@ -54,10 +54,10 @@ $(document).ready(function() {
 						<input type="hidden" id="mode" name="mode" value="${param.mode}"/>
 						
 						<fieldset style="padding: 25px; width: 100%;">
-							<legend><spring:message code="reporting.viewDataSet.Step1" /></legend>
+							<legend><spring:message code="reporting.viewDataSet.step1" /></legend>
 							<span>
 								<select id="dataset-select" name="dataSetId">	
-									<option value=""><spring:message code="reporting.ChooseDataSetDefinition" /></option>
+									<option value=""><spring:message code="reporting.chooseDataSetDefinition" /></option>
 									<c:forEach var="dsdOption" items="${dataSetDefinitions}">
 										<c:if test="${empty dsdOption.parameters && !empty dsdOption.uuid}">
 											<c:set var="isSelected"></c:set>
@@ -75,7 +75,7 @@ $(document).ready(function() {
 							</span>
 							<span>				
 								<select id="cohort-select" name="cohortId">					
-									<option value="all"><spring:message code="reporting.AllPatients" /></option>
+									<option value="all"><spring:message code="reporting.allPatients" /></option>
 									<c:forEach var="cdOption" items="${cohortDefinitions}" >
 										<c:if test="${empty cdOption.parameters && !empty cdOption.uuid}">
 											<c:set var="isSelected"></c:set>
@@ -92,11 +92,11 @@ $(document).ready(function() {
 	
 							<span>					
 								<select id="limit" name="limit">
-									<option <c:if test="${param.limit=='0'}">selected</c:if> value=""><spring:message code="reporting.ShowAllRecords" /></option>
-									<option <c:if test="${param.limit=='10'}">selected</c:if> value="10"><spring:message code="reporting.OnlyShow10" /></option>
-									<option <c:if test="${param.limit=='100'}">selected</c:if> value="100"><spring:message code="reporting.OnlyShow100" /></option>
-									<option <c:if test="${param.limit=='500'}">selected</c:if> value="500"><spring:message code="reporting.OnlyShow500" /></option>
-									<option <c:if test="${param.limit=='1000'}">selected</c:if> value="1000"><spring:message code="reporting.OnlyShow1000" /></option>
+									<option <c:if test="${param.limit=='0'}">selected</c:if> value=""><spring:message code="reporting.showAllRecords" /></option>
+									<option <c:if test="${param.limit=='10'}">selected</c:if> value="10"><spring:message code="reporting.onlyShow10" /></option>
+									<option <c:if test="${param.limit=='100'}">selected</c:if> value="100"><spring:message code="reporting.onlyShow100" /></option>
+									<option <c:if test="${param.limit=='500'}">selected</c:if> value="500"><spring:message code="reporting.onlyShow500" /></option>
+									<option <c:if test="${param.limit=='1000'}">selected</c:if> value="1000"><spring:message code="reporting.onlyShow1000" /></option>
 								</select>		
 							</span>
 							

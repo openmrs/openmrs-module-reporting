@@ -79,3 +79,11 @@
 table {
 	font-size: 1em;
 }
+
+.box {
+    width: auto;
+}
+
+.boxHeader {
+    width:auto;
+}

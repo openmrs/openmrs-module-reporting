@@ -95,11 +95,11 @@
 							</button>
 						</td>
 						<td valign="top" style="width:65%; padding-left:20px;">
-							<b class="boxHeader"><spring:message code="reporting.DatasetDefinitions" /></b>
+							<b class="boxHeader"><spring:message code="reporting.datasetDefinitions" /></b>
 							
 							<c:forEach items="${report.dataSetDefinitions}" var="dsd" varStatus="dsdStatus">
 								<div style="display:none; width:100%" id="dsdView${dsdStatus.index}">
-									<table style="font-size:smaller; color:grey; border:1px solid black;">
+									<table style="font-size:smaller; color:grey; border:1px solid black; width:100%;">
 										<tr>
 											<th colspan="7">
 												${dsd.value.parameterizable.name}

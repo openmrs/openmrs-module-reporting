@@ -13,7 +13,7 @@
 <c:choose>
 	<c:when test="${definition.id == null}">
 
-		<b class="boxHeader"><spring:message code="reporting.CreateComposition" /></b>
+		<b class="boxHeader"><spring:message code="reporting.createComposition" /></b>
 		<div class="box">
 			<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=org.openmrs.module.reporting.data.patient.definition.ScriptedCompositionPatientDataDefinition|size=380|mode=edit|dialog=false|cancelUrl=${pageContext.request.contextPath}/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition|successUrl=${pageUrl}" />
 		</div>
@@ -51,7 +51,7 @@
 			
 			<br/>
 
-			<b class="boxHeader"><spring:message code="reporting.DefinitionsToCombine" /></b>
+			<b class="boxHeader"><spring:message code="reporting.definitionsToCombine" /></b>
 			<div class="box" style="border: none">
 			
 				<c:forEach items="${definition.containedDataDefinitions}" var="h" varStatus="hStatus">

@@ -236,7 +236,7 @@ function submitColumnOrder(sortable) {
 			<div class="metadataField">
 				<label class="desc"><spring:message code="reporting.type" /></label>
 				<select name="collectionType">
-					<option value=""><spring:message code="reporting.Single" /></option>
+					<option value=""><spring:message code="reporting.single" /></option>
 					<c:forEach var="supportedType" items="${ parameterCollectionTypes }">
 						<option value="${supportedType.value}">${supportedType.labelText} of</option>
 					</c:forEach>
@@ -313,7 +313,7 @@ function submitColumnOrder(sortable) {
 					<td></td>
 				</tr>
 				<tr>
-					<td><spring:message code="reporting.Definition" /></td>
+					<td><spring:message code="reporting.definition" /></td>
 					<td><rptTag:chooseDataDefinition id="addCol" formFieldName="columnDefinition" types="${dataDefinitionTypes}"/></td>
 					<td></td>
 				</tr>

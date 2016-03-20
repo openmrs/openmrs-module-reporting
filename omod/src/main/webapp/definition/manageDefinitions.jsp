@@ -106,9 +106,9 @@
 							<tr>
 								<th><spring:message code="reporting.name" /></th>
 								<th><spring:message code="reporting.type" /></th>
-								<th><spring:message code="reporting.Creator" /></th>
-								<th><spring:message code="reporting.Created" /></th>
-								<th align="center" width="1%"><spring:message code="reporting.Actions" /></th>
+								<th><spring:message code="reporting.createdBy" /></th>
+								<th><spring:message code="reporting.created" /></th>
+								<th align="center" width="1%"><spring:message code="reporting.actions" /></th>
 							</tr>
 						</thead>
 						<tbody>

@@ -64,19 +64,7 @@ $(document).ready(function() {
 							<input type="hidden" name="type" value="${parameterizable['class'].name}"/>
 							<input type="hidden" name="format" value="${param.format}"/>
 							<input type="hidden" name="successView" value="${param.successView}"/>
-							
-							<ul>								
-								<spring:hasBindErrors name="parameterizable">
-									<li>
-										<div class="errors"> 
-											<font color="red"> 
-												<b><u><spring:message code="reporting.correctErrors" /></u></b>
-												<springform:errors path="parameterizable"></springform:errors>
-											</font>  
-										</div>
-									</li>
-								</spring:hasBindErrors>
-							</ul>	
+
 							<ul>									
 								<c:forEach var="parameter" items="${parameterizable.parameters}">				
 									<li>
@@ -101,7 +89,7 @@ $(document).ready(function() {
 					
 					<c:if test="${!empty results}">
 						<td style="padding-left: 1em; border-left: 1px #e0e0e0 solid">
-							<h4><spring:message code="reporting.EvaluationResult" /></h4>
+							<h4><spring:message code="reporting.evaluationResult" /></h4>
 							<i>${executionTime} <spring:message code="reporting.seconds" /></i><br/><br/>
 							<rpt:format object="${results}"/>
 						</td>

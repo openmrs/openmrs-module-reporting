@@ -60,19 +60,19 @@
 			
 			<c:otherwise>
 		
-				<table style="font-size:small;">
+				<table style="width:100%;">
 					<tr>
-						<td valign="top" nowrap>
+						<td valign="top" nowrap style="width:30%;">
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dimension['class'].name}|uuid=${dimension.uuid}|size=380|label=Basic Details" />
 							<br/>
 							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dimension['class'].name}|uuid=${dimension.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 							<br/>
 							<input id="previewButton" name="preview" type="button" value="Preview"/>
 						</td>
-						<td valign="top" width="100%">
+						<td valign="top" style="width:70%;">
 							<b class="boxHeader"><spring:message code="reporting.options" /></b>
 							<div class="box">
-								<table id="options-table">
+								<table id="options-table" style="width:100%;">
 									<thead>
 										<tr>
 											<th><spring:message code="reporting.key" /></th>

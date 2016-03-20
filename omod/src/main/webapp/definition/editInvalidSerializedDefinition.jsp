@@ -57,7 +57,7 @@
 					<td valign="top">
 						<ul>
 							<li>
-								<label class="desc" for="id"><spring:message code="reporting.Id" /></label>
+								<label class="desc"><spring:message code="reporting.id" /></label>
 								${definition.id}
 							</li>		
 							<li>
@@ -73,11 +73,11 @@
 								<input type="text" id="type" tabindex="4" name="type" value="${definition.type}" size="50"/>
 							</li>
 							<li>
-								<label class="desc" for="subtype"><spring:message code="reporting.Subtype" /></label>
+								<label class="desc" for="subtype"><spring:message code="reporting.subtype" /></label>
 								<input type="text" id="subtype" tabindex="5" name="subtype" value="${definition.subtype}" size="50"/>
 							</li>
 							<li>
-								<label class="desc" for="type"><spring:message code="reporting.SerializationClass" /></label>
+								<label class="desc" for="type"><spring:message code="reporting.serializationClass" /></label>
 								<input type="text" id="serializationClass" tabindex="6" name="serializationClass" value="${definition.serializationClass.name}" size="50"/>
 							</li>
 							<li>

@@ -89,7 +89,7 @@
 					</div>
 					<c:if test="${model.showType != 'false'}">
 						<div class="metadataField">
-							<label class="inline" for="type"><spring:message code="reporting.queryType" />:</label>
+							<label class="inline" for="type"><spring:message code="reporting.type" />:</label>
 							<rpt:displayLabel type="${model.obj['class'].name}"/>			
 						</div>
 					</c:if>		

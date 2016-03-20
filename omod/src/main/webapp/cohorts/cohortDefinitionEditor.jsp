@@ -119,7 +119,7 @@
 					<ul>
 						<li>
 						
-							<label class="desc" for="name"><spring:message code="reporting.Properties" /></label>
+							<label class="desc" for="name"><spring:message code="reporting.properties" /></label>
 							<c:forEach var="entry" items="${groupedProperties}" varStatus="entryStatus">
 								<fieldset>
 									<c:if test="${!empty entry.key}"><legend>${entry.key}</legend></c:if>
@@ -134,8 +134,8 @@
 												<td style="vertical-align:top;">
 													<select id="selectValue${p.field.name}" name="parameter.${p.field.name}.allowAtEvaluation">
 														<option value=""></option>
-														<option value="f"><spring:message code="reporting.FixedValue" /></option>
-														<option value="t"><spring:message code="reporting.Parameter" /></option>
+														<option value="f"><spring:message code="reporting.fixedValue" /></option>
+														<option value="t"><spring:message code="reporting.parameter" /></option>
 													</select>
 												</td>
 												<td style="vertical-align:top; width:100%;">

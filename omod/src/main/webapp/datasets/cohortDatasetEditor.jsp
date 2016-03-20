@@ -31,15 +31,15 @@
 			
 			<c:otherwise>
 		
-				<table style="font-size:small;">
+				<table style="width:100%;">
 					<tr>
-						<td valign="top" nowrap>
+						<td valign="top" style="width:30%; white-space: nowrap;">
 							<openmrs:portlet url="baseMetadata" id="baseMetadata" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|size=380|label=Basic Details" />
 							<br/>
 							<openmrs:portlet url="parameter" id="newParameter" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|label=Parameters|parentUrl=${pageUrl}" />
 							<br/>
 						</td>
-						<td valign="top" width="100%">
+						<td valign="top" style="width:70%;">
 							<table width="100%" style="font-size:small;"><tr>
 								<td style="padding-right:50px;"><openmrs:portlet url="mappedProperty" id="newRow" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|property=rows|mode=add|label=Add a Row" /></td>
 								<td align="right"><openmrs:portlet url="mappedProperty" id="newColumn" moduleId="reporting" parameters="type=${dsd['class'].name}|uuid=${dsd.uuid}|property=columns|mode=add|label=Add a Column" /></td>
