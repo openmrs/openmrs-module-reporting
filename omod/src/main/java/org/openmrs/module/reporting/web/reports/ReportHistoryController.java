@@ -7,6 +7,7 @@ import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.propertyeditor.ReportDefinitionEditor;
 import org.openmrs.module.reporting.report.Report;
@@ -86,6 +87,8 @@ public class ReportHistoryController {
 		model.addAttribute("statuses", Arrays.asList(statuses));
 		model.addAttribute("requestOnOrAfter", requestOnOrAfter);
 		model.addAttribute("requestOnOrBefore", requestOnOrBefore);
+
+        requestOnOrBefore = DateUtil.getEndOfDayIfTimeExcluded(requestOnOrBefore);
 
 		List<ReportRequest> history = getReportService().getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
 		if (requestedBy != null) {
