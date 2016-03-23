@@ -116,6 +116,10 @@ public class EncounterWithCodedObsCohortDefinition extends BaseCohortDefinition 
         return includeNoObsValue;
     }
 
+    public boolean getIncludeNoObsValue() {
+        return isIncludeNoObsValue();
+    }
+
     public void setIncludeNoObsValue(boolean includeNoObsValue) {
         this.includeNoObsValue = includeNoObsValue;
     }

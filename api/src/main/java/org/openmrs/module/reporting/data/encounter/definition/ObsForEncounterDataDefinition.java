@@ -44,6 +44,10 @@ public class ObsForEncounterDataDefinition extends BaseDataDefinition implements
         return singleObs;
     }
 
+    public boolean getSingleObs() {
+        return isSingleObs();
+    }
+
     public void setSingleObs(boolean singleObs) {
         this.singleObs = singleObs;
     }

@@ -63,6 +63,10 @@ public class EncounterProviderDataDefinition extends BaseDataDefinition implemen
         return singleProvider;
     }
 
+    public boolean getSingleProvider() {
+        return singleProvider;
+    }
+
     public void setSingleProvider(boolean singleProvider) {
         this.singleProvider = singleProvider;
     }
