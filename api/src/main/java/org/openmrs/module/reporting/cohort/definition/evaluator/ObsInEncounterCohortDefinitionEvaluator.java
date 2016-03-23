@@ -72,8 +72,10 @@ public class ObsInEncounterCohortDefinitionEvaluator implements CohortDefinition
 			encountersToInclude.addAll(encountersByPatient.values());
 		}
 		else {
-			List<Integer> encounters = evaluationService.evaluateToList(encQuery, Integer.class, context);
-			encountersToInclude.addAll(encounters);
+            List<Object[]> rawResults = evaluationService.evaluateToList(encQuery, context);
+            for (Object[] resultRow : rawResults) {
+                encountersToInclude.add((Integer)resultRow[1]);
+            }
 		}
 
 		// Now we can determine if there are any matching obs in those encounters that meet our criteria
