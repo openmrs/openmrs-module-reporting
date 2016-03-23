@@ -2,14 +2,14 @@
 <openmrs:require privilege="Manage Report Designs" otherwise="/login.htm" redirect="/module/reporting/reports/manageReportDesigns.form" />
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
+	$j(document).ready(function() {
 
-    	$('#cancelButton').click(function(event){
+    	$j('#cancelButton').click(function(event){
     		document.location.href = '${pageContext.request.contextPath}${cancelUrl}';
     	});
 
-    	$('#submitButton').click(function(event){
-      		$('#reportDesignForm').submit();
+    	$j('#submitButton').click(function(event){
+      		$j('#reportDesignForm').submit();
     	});
 
   	});

@@ -3,8 +3,8 @@
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-		$('.reporting-data-table').dataTable( {
+	$j(document).ready(function() {
+		$j('.reporting-data-table').dataTable( {
 			"bPaginate": true,
 			"iDisplayLength": 25,
 			"bLengthChange": false,
@@ -17,7 +17,7 @@
 			      		  { "bSortable": true },
 			              { "bSortable": false }]
 		} );
-        $("#indicatorNameColumn").click();
+        $j("#indicatorNameColumn").click();
 	} );
 	
 	function confirmDelete(name, uuid) {
@@ -77,8 +77,8 @@
 							</c:choose>
 						</c:set>
 						<script>					
-							$(document).ready(function() {
-								$("#preview-indicator-${indicator.uuid}").click(function(event){ 
+							$j(document).ready(function() {
+								$j("#preview-indicator-${indicator.uuid}").click(function(event){
 									showReportingDialog({ 
 										title: 'Preview Indicator', 
 										url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${indicator.uuid}&type=${indicator['class'].name}',

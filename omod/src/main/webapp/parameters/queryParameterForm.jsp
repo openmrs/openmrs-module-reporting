@@ -8,8 +8,8 @@
 
 <script type="text/javascript" charset="utf-8">
 
-$(document).ready(function() {
-	$('#cancel-button').click(function(event){ 
+$j(document).ready(function() {
+	$j('#cancel-button').click(function(event){
 		<c:choose>
 			<c:when test="${model.dialog != 'false'}">closeReportingDialog(false);</c:when>
 			<c:otherwise>
@@ -19,8 +19,8 @@ $(document).ready(function() {
 			</c:otherwise>
 		</c:choose>
 	});
-	$('#preview-parameterizable-button').click(function(event){ 
-		$('#preview-parameterizable-form').submit(); 
+	$j('#preview-parameterizable-button').click(function(event){
+		$j('#preview-parameterizable-form').submit();
 	});
 });
 

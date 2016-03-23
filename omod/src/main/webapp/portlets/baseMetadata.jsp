@@ -15,9 +15,9 @@
 			<%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
 		</c:if>
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
+			$j(document).ready(function() {
 		
-				$('#cancelButton').click(function(event){
+				$j('#cancelButton').click(function(event){
 					<c:choose>
 						<c:when test="${model.dialog != 'false'}">
 							closeReportingDialog(false);
@@ -28,8 +28,8 @@
 					</c:choose>
 				});
 		
-				$('#submitButton').click(function(event){
-					$('#baseParameterizableEditorForm').submit();
+				$j('#submitButton').click(function(event){
+					$j('#baseParameterizableEditorForm').submit();
 				});
 		
 			});
@@ -66,8 +66,8 @@
 	<c:otherwise>
 	
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
-				$('#${model.id}EditLink').click(function(event){
+			$j(document).ready(function() {
+				$j('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
 						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editBaseMetadataPortlet&url=baseMetadata&parameters=type=${model.type}|uuid=${model.uuid}|showType=${model.showType}|mode=edit"/>',

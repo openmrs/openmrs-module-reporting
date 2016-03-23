@@ -8,40 +8,40 @@
 		<%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
 		
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
+			$j(document).ready(function() {
 		
-				$('#parameterizableSelector${model.id}').change(function(event){
-					var currVal = $(this).val();
-					var currLabel = $("option:selected", this).html().replace(/\s+/g, '-');
+				$j('#parameterizableSelector${model.id}').change(function(event){
+					var currVal = $j(this).val();
+					var currLabel = $j("option:selected", this).html().replace(/\s+/g, '-');
 					if (currVal != '') {
 						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|currentKey=${model.currentKey}|newKey='+currLabel+'|mode=edit|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|mappedUuid='+currVal+'"/>';
 					}
 					else {
-                        $('#${model.id}NewKey').val('');
-						$("#mapParameterSection${model.id}").html('');
-						$("#mappedUuidField${model.id}").val('');
+                        $j('#${model.id}NewKey').val('');
+						$j("#mapParameterSection${model.id}").html('');
+						$j("#mappedUuidField${model.id}").val('');
 					}
 				});
 		
 				<c:forEach var="p" items="${model.mappedObj.parameters}" varStatus="varstatus">
-					$('#typeSelector_${varstatus.index}_${model.id}').change(function(event) {
-						$('#typeSelector_${varstatus.index}_fixed_${model.id}').hide();
-						$('#typeSelector_${varstatus.index}_mapped_${model.id}').hide();
-						$('#typeSelector_${varstatus.index}_complex_${model.id}').hide();
-						var val = $('#typeSelector_${varstatus.index}_${model.id}').val();
-						$('#typeSelector_${varstatus.index}_'+val+'_${model.id}').show();
+					$j('#typeSelector_${varstatus.index}_${model.id}').change(function(event) {
+						$j('#typeSelector_${varstatus.index}_fixed_${model.id}').hide();
+						$j('#typeSelector_${varstatus.index}_mapped_${model.id}').hide();
+						$j('#typeSelector_${varstatus.index}_complex_${model.id}').hide();
+						var val = $j('#typeSelector_${varstatus.index}_${model.id}').val();
+						$j('#typeSelector_${varstatus.index}_'+val+'_${model.id}').show();
 					});
-					$('#typeSelector_${varstatus.index}_${model.id}').trigger('change');
+					$j('#typeSelector_${varstatus.index}_${model.id}').trigger('change');
 				</c:forEach>
 		
-				$('#mapParametersFormCancelButton_${model.id}').click(function(event){
+				$j('#mapParametersFormCancelButton_${model.id}').click(function(event){
 					closeReportingDialog(false);
 				});
 		
-				$('#mapParametersFormSubmitButton_${model.id}').click(function(event){
+				$j('#mapParametersFormSubmitButton_${model.id}').click(function(event){
 					var existingKeys = [<c:forEach items="${model.existingKeys}" var="c" varStatus="cStat">'${c}'<c:if test="${!cStat.last}">,</c:if></c:forEach>];
 					var initialKey = '${model.currentKey}';
-					var newKey = $('#${model.id}NewKey').val();
+					var newKey = $j('#${model.id}NewKey').val();
 					if (initialKey != newKey) {
 						for (var i=0; i<existingKeys.length; i++) {
 							if (existingKeys[i] == newKey) {
@@ -50,7 +50,7 @@
 							}
 						}
 					}
-					$('#mapParametersForm${model.id}').submit();
+					$j('#mapParametersForm${model.id}').submit();
 				});
 		
 			});
@@ -142,11 +142,11 @@
 	<c:otherwise>
 
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
+			$j(document).ready(function() {
 				<c:if test="${!empty model.viewId}">
-					$('#${model.viewId}Template').html($('#${model.viewId}').html());
+					$j('#${model.viewId}Template').html($j('#${model.viewId}').html());
 				</c:if>
-				$('#${model.id}EditLink').click(function(event){
+				$j('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
 						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|currentKey=${model.currentKey}|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|tag=${model.tag}|mode=edit"/>',
@@ -154,7 +154,7 @@
 					});
 				});
 				<c:if test="${model.currentKey != null}">
-					$('#${model.id}RemoveLink').click(function(event){					
+					$j('#${model.id}RemoveLink').click(function(event){
 						if (confirm('Please confirm you wish to remove ${model.mappedObj.name}')) {
 							document.location.href='<c:url value="/module/reporting/reports/removeMappedProperty.form?type=${model.type}&uuid=${model.uuid}&property=${model.property}&currentKey=${model.currentKey}&returnUrl=${model.parentUrl}"/>';
 						}

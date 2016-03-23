@@ -3,8 +3,8 @@
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script>					
-	$(document).ready(function() {
-		$("#preview-indicator").click(function(event){ 
+	$j(document).ready(function() {
+		$j("#preview-indicator").click(function(event){
 			showReportingDialog({ 
 				title: 'Preview Indicator', 
 				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${indicator.uuid}&type=${indicator['class'].name}',

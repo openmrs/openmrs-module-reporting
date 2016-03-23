@@ -7,10 +7,10 @@
 
 <script type="text/javascript" charset="utf-8">
 
-	$(document).ready(function() {
+	$j(document).ready(function() {
 
 		// Redirect to listing page
-		$('#cancel-button').click(function(event){
+		$j('#cancel-button').click(function(event){
 			window.location.href='<c:url value="/module/reporting/definition/manageDefinitions.list?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition"/>';
 		});
 	} );

@@ -2,23 +2,23 @@
 <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {		
+	$j(document).ready(function() {
 		<c:if test="${not empty model.type}">
-			$( "#rendererType" ).val("${model.type}");
+			$j( "#rendererType" ).val("${model.type}");
 		</c:if>
 		
 		
-		$('#cancelButton').click(function(event){
+		$j('#cancelButton').click(function(event){
 			document.location.href = '${pageContext.request.contextPath}${model.cancelUrl}';
 		});
 
-		$('#submitButton').click(function(event){
-			$('#reportDesignForm').submit();
+		$j('#submitButton').click(function(event){
+			$j('#reportDesignForm').submit();
 		});
 
-		$("#resourcesAddButton").click(function(event){
-			var count = parseInt($('#resourcesCount').html()) + 1;
-			$('#resourcesCount').html(count);
+		$j("#resourcesAddButton").click(function(event){
+			var count = parseInt($j('#resourcesCount').html()) + 1;
+			$j('#resourcesCount').html(count);
 			var $newRow = cloneAndInsertBefore('resourcesTemplate', this);
 			$newRow.attr('id', 'resources' + count);
 			var newRowChildren = $newRow.children();
@@ -26,18 +26,18 @@
 				newRowChildren[i].id = newRowChildren[i].id + count;
 			}
 			var resourceInput = $newRow.find("input[name='resources']")[0];
-			$(resourceInput).attr('name', 'resources.new'+count);
+			$j(resourceInput).attr('name', 'resources.new'+count);
 		});		
 
 	});
 
 	function showResourceChange(element) {
-		$(element).parent().parent().children('.currentResourceSection').hide();
-		$(element).parent().parent().children('.resourceChangeSection').show();
+		$j(element).parent().parent().children('.currentResourceSection').hide();
+		$j(element).parent().parent().children('.resourceChangeSection').show();
 	}
 	function hideResourceChange(element) {		
-		$(element).parent().parent().children('.currentResourceSection').show();		
-		$(element).parent().parent().children('.resourceChangeSection').hide();	
+		$j(element).parent().parent().children('.currentResourceSection').show();
+		$j(element).parent().parent().children('.resourceChangeSection').hide();
 	}
 </script>
 

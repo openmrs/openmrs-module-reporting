@@ -69,8 +69,8 @@ if (currentValue != null) {
         var currentUuid${ id } = null;
     </c:otherwise>
 </c:choose>
-$(document).ready(function() {
-	$('#${ id } .changeButton').click(function() {
+$j(document).ready(function() {
+	$j('#${ id } .changeButton').click(function() {
 		var url = '<c:url value="${ changeUrl }"/>';
 		if (currentUuid${ id })
 	        url += '&initialUuid=' + currentUuid${ id };
@@ -79,13 +79,13 @@ $(document).ready(function() {
 });
 
 function save${ id }(serializedResult, jsResult) {
-	$('#${ id } .formField').val(serializedResult);
-	$('#${ id } .valueLabel').html('<b>' + jsResult.parameterizable + '</b>');
+	$j('#${ id } .formField').val(serializedResult);
+	$j('#${ id } .valueLabel').html('<b>' + jsResult.parameterizable + '</b>');
 	var string = "";
 	for (var key in jsResult.parameterMappings) {
 		string += key + ": " + jsResult.parameterMappings[key] + "<br/>";
 	}
-	$('#${ id } .parameterValuesLabel').html(string);
+	$j('#${ id } .parameterValuesLabel').html(string);
 	currentUuid${ id } = jsResult.parameterizableUuid;
 	closeReportingDialog(false);
 	<c:if test="${ not empty changeFunction }">
@@ -98,8 +98,8 @@ function cancel${ id }() {
 }
 
 <c:if test="${ not empty initialFormFieldValue }">
-$(document).ready(function() {
-	$('#${ id } .formField').val("<spring:message javaScriptEscape="true" text="${ initialFormFieldValue }"/>");
+$j(document).ready(function() {
+	$j('#${ id } .formField').val("<spring:message javaScriptEscape="true" text="${ initialFormFieldValue }"/>");
 });
 </c:if>
 </script>

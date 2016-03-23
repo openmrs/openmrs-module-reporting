@@ -68,7 +68,7 @@ function verifyNumber(el, floatOkay, absoluteMin, absoluteMax) {
 
 function findParentWithClass(element, parentClass) {
 	var parent = element.parentNode;
-	while (!$(parent).hasClass(parentClass)) {
+	while (!$j(parent).hasClass(parentClass)) {
 		parent = parent.parentNode;
 	}
 	return parent;
@@ -76,26 +76,26 @@ function findParentWithClass(element, parentClass) {
 
 function removeParentWithClass(element, parentClass) {
 	var parent = findParentWithClass(element, parentClass);
-	$(parent).remove(); 
+	$j(parent).remove(); 
 }
 
 function getClone(idToClone) {
-	var template = $("#"+idToClone);
-	var c = $(template).clone(true);
-	$(c).show();
+	var template = $j("#"+idToClone);
+	var c = $j(template).clone(true);
+	$j(c).show();
 	return c;
 }
 
 function cloneAndInsertBefore(idToClone, elementToAddBefore) {
 	var newRow = getClone(idToClone);
-	$(newRow).insertBefore(elementToAddBefore);
+	$j(newRow).insertBefore(elementToAddBefore);
 	return newRow;
 }
 
 ////// non-shared dialogs for DIVs ///////////
 
 function makeDialog(divId) {
-	$('#' + divId).dialog({
+	$j('#' + divId).dialog({
 		autoOpen: false,
 		draggable: false,
 		resizable: false,
@@ -106,7 +106,7 @@ function makeDialog(divId) {
 }
 
 function showDialog(divId, title) {
-	$('#' + divId).dialog('option', 'title', title).dialog('open');
+	$j('#' + divId).dialog('option', 'title', title).dialog('open');
 }
 
 
@@ -121,12 +121,12 @@ var reportingDialogSuccessCallback = null;
 
 function showReportingDialog(opts) {
 	reportingDialogSuccessCallback = opts.successCallback;
-	$('#reportingDialog')
+	$j('#reportingDialog')
 		.dialog('option', 'title', opts.title)
-		.dialog('option', 'height',$(window).height()-50)
+		.dialog('option', 'height',$j(window).height()-50)
 		.dialog('open');
-	dialogCurrentlyShown = $('#reportingDialog');
-	$("#reportingDialog > iframe").attr("src", opts.url);
+	dialogCurrentlyShown = $j('#reportingDialog');
+	$j("#reportingDialog > iframe").attr("src", opts.url);
 }
 
 function closeReportingDialog(doCallback) {
@@ -152,7 +152,7 @@ function navigateParent(url) {
 }
 
 function jqUiDecoration() {
-	$(".portlet").addClass("ui-widget ui-corner-all")
+	$j(".portlet").addClass("ui-widget ui-corner-all")
 		.find(".portlet-header")
 			.addClass("ui-widget-header ui-corner-top")
 			.end()

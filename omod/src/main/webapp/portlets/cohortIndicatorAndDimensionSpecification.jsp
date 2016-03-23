@@ -28,63 +28,63 @@
 		<script type="text/javascript" charset="utf-8">
 			
 			function checkAll(className) {
-				$(".checkbox" + className).each(function() {
-					$(this).attr('checked', 'checked');
+				$j(".checkbox" + className).each(function() {
+					$j(this).attr('checked', 'checked');
 				});
 			}
 			
 			function uncheckAll(className) {
-				$(".checkbox" + className).each(function() {
-					$(this).removeAttr('checked');
+				$j(".checkbox" + className).each(function() {
+					$j(this).removeAttr('checked');
 				});
 			}
 			
-			$(document).ready(function() {
+			$j(document).ready(function() {
 		
-				$('#mapParametersFormCancelButton_${model.id}').click(function(event){
+				$j('#mapParametersFormCancelButton_${model.id}').click(function(event){
 					closeReportingDialog(false);
 				});
 		
-				$('.dimensionBox').each(function() {
-					var val = $(this).val();
+				$j('.dimensionBox').each(function() {
+					var val = $j(this).val();
 					if ('${model.newDimensions}'.indexOf(val) != -1) {
-						$(this).attr('checked', 'checked');
+						$j(this).attr('checked', 'checked');
 					}
 				});
 		
-				$('#indicator${model.id}').change(function(event){
-					var currVal = $(this).val();
+				$j('#indicator${model.id}').change(function(event){
+					var currVal = $j(this).val();
 					if (currVal != '') {
-						var indNum = $('#indicatorNumber${model.id}').val();
-						var label = $('#label${model.id}').val();
+						var indNum = $j('#indicatorNumber${model.id}').val();
+						var label = $j('#label${model.id}').val();
 						var dims = '';
-						$('.dimensionBox').each(function(){
-							if ($(this).attr('checked') != '') {
-								dims += (dims == '' ? '' : ',') + $(this).val();
+						$j('.dimensionBox').each(function(){
+							if ($j(this).attr('checked') != '') {
+								dims += (dims == '' ? '' : ',') + $j(this).val();
 							}
 						});
 						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editInd${model.id}&url=cohortIndicatorAndDimensionSpecification&parameters=dsdUuid=${model.dsdUuid}|index=${model.index}|newIndNum='+indNum+'|newLabel='+label+'|newDimensions='+dims+'|mappedUuid='+currVal+'"/>';
 					}
 					else {
-						$("#mapParameterSection${model.id}").html('');
+						$j("#mapParameterSection${model.id}").html('');
 					}
 				});
 		
 				<c:forEach var="p" items="${model.mappedObj.parameters}" varStatus="varstatus">
-					$('#typeSelector_${p.name}_${model.id}').change(function(event) {
-						$('#typeSelector_${p.name}_fixed_${model.id}').hide();
-						$('#typeSelector_${p.name}_mapped_${model.id}').hide();
-						$('#typeSelector_${p.name}_complex_${model.id}').hide();
-						var val = $('#typeSelector_${p.name}_${model.id}').val();
-						$('#typeSelector_${p.name}_'+val+'_${model.id}').show();
+					$j('#typeSelector_${p.name}_${model.id}').change(function(event) {
+						$j('#typeSelector_${p.name}_fixed_${model.id}').hide();
+						$j('#typeSelector_${p.name}_mapped_${model.id}').hide();
+						$j('#typeSelector_${p.name}_complex_${model.id}').hide();
+						var val = $j('#typeSelector_${p.name}_${model.id}').val();
+						$j('#typeSelector_${p.name}_'+val+'_${model.id}').show();
 					});
-					$('#typeSelector_${p.name}_${model.id}').trigger('change');
+					$j('#typeSelector_${p.name}_${model.id}').trigger('change');
 				</c:forEach>
 		
-				$('#mapParametersFormSubmitButton_${model.id}').click(function(event){
+				$j('#mapParametersFormSubmitButton_${model.id}').click(function(event){
 					var existingKeys = [<c:forEach items="${model.existingKeys}" var="c" varStatus="cStat">'${c}'<c:if test="${!cStat.last}">,</c:if></c:forEach>];
 					var initialNum = '<spring:message javaScriptEscape="true" text="${model.specification.indicatorNumber}"/>';
-					var newNum = $('#indicatorNumber${model.id}').val();
+					var newNum = $j('#indicatorNumber${model.id}').val();
 					if (initialNum != newNum) {
 						for (var i=0; i<existingKeys.length; i++) {
 							if (existingKeys[i] == newNum) {
@@ -93,7 +93,7 @@
 							}
 						}
 					}
-					$('#mapParametersForm${model.id}').submit();
+					$j('#mapParametersForm${model.id}').submit();
 				});
 		
 			});

@@ -2,16 +2,16 @@
 <openmrs:require privilege="Manage Data Set Definitions" otherwise="/login.htm" redirect="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition" />
 
 <script>
-	$(document).ready(function() {
+	$j(document).ready(function() {
 		var tokens = [ <c:forEach var="token" items="${tokens}" varStatus="status">
 			"<spring:message javaScriptEscape='true' text='${token}'/>" <c:if test='${not status.last}'>,</c:if>
 		</c:forEach> ];
-		$('#accordion').accordion({
+		$j('#accordion').accordion({
 			active: <c:choose><c:when test="${definition.uuid==null}">0</c:when><c:otherwise>1</c:otherwise></c:choose>
 		});
-		$('#sortable tbody.sortable-content').sortable();
-		$('#sortable tbody.sortable-content').disableSelection();
-		$('.suggestTokens').autocomplete(tokens, {
+		$j('#sortable tbody.sortable-content').sortable();
+		$j('#sortable tbody.sortable-content').disableSelection();
+		$j('.suggestTokens').autocomplete(tokens, {
 			formatResult: function(row) {
 				var data = row[0];
 				if (data.indexOf(' ') >= 0)
@@ -21,7 +21,7 @@
 			}
 		});
 		<c:if test="${!empty definition.id}">
-			$('#previewButton').click(function(event) { 
+			$j('#previewButton').click(function(event) {
 				showReportingDialog({ 
 					title: 'Preview ${definition.name}', 
 					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}'

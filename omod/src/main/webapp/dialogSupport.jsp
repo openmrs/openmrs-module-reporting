@@ -1,6 +1,6 @@
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('#reportingDialog').dialog({
+	$j(document).ready(function() {
+		$j('#reportingDialog').dialog({
 			autoOpen: false,
 			draggable: false,
 			resizable: false,

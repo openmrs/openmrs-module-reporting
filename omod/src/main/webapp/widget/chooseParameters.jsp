@@ -19,7 +19,7 @@ Chosen: <pre id="theValue">${ fn:replace(fn:replace(serialized, "<", "&lt;"), ">
 
 <c:if test="${ not empty serialized }">
     <script>
-        window.parent.${ parentSaveCallback }($('#theValue').html());
+        window.parent.${ parentSaveCallback }($j('#theValue').html());
     </script>
 </c:if>
 

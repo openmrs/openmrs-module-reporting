@@ -4,8 +4,8 @@
 
 <script type="text/javascript" charset="utf-8">
 
-	$(document).ready(function() {
-		definitionTable = $('.definition-table').dataTable( {
+	$j(document).ready(function() {
+		definitionTable = $j('.definition-table').dataTable( {
 			"bPaginate": true,
 			"iDisplayLength": 25,
 			"bLengthChange": false,
@@ -22,7 +22,7 @@
 		                ],
 			"fnDrawCallback": function() {
 				<c:forEach items="${allDefinitions}" var="definition" varStatus="status">
-					$("#preview-${definition.uuid}").click(function(event){ 
+					$j("#preview-${definition.uuid}").click(function(event){
 						showReportingDialog({ 
 							title: 'Preview', 
 							url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}',
@@ -36,18 +36,18 @@
 		});
 
 		<c:forEach items="${definitions}" var="entry">
-			$("#typeLink${entry.key.simpleName}").click(function(event){
+			$j("#typeLink${entry.key.simpleName}").click(function(event){
 				definitionTable.fnFilter('<rpt:displayLabel type="${entry.key.name}"/>', 1);
-				$('.typeRow').css('background-color', 'white');
-				$('#typeRow${entry.key.simpleName}').css('background-color', '#E6E6E6');
+				$j('.typeRow').css('background-color', 'white');
+				$j('#typeRow${entry.key.simpleName}').css('background-color', '#E6E6E6');
 			});
 		</c:forEach>
-		$("#typeLinkAll").click(function(event){
+		$j("#typeLinkAll").click(function(event){
 			definitionTable.fnFilter('', 1);
-			$('.typeRow').css('background-color', 'white');
-			$('#typeRowAll').css('background-color', '#E6E6E6');
+			$j('.typeRow').css('background-color', 'white');
+			$j('#typeRowAll').css('background-color', '#E6E6E6');
 		});
-		$('#typeRowAll').css('background-color', '#E6E6E6');
+		$j('#typeRowAll').css('background-color', '#E6E6E6');
 	});
 
 	function confirmDelete(name, uuid, type) {

@@ -16,8 +16,8 @@
 </style>
 
 <script type="text/javascript" charset="utf-8">
-$(document).ready(function() {
-	$('#dataset-preview-table').dataTable( {
+$j(document).ready(function() {
+	$j('#dataset-preview-table').dataTable( {
 		"bPaginate": true,
 		//"sPaginationType": "full_numbers",
 		"bLengthChange": false,
@@ -37,7 +37,7 @@ $(document).ready(function() {
 		//"sDom": '<"top"i>rt<"bottom"flp<"clear">'
 	} );	
 
-	$("#show-columns").click(function(event){ 
+	$j("#show-columns").click(function(event){
 		// eventually will show/hide appropriate columns based on selected dataset definition
 	});
 
@@ -45,9 +45,9 @@ $(document).ready(function() {
 } );
 </script>
 <script type="text/javascript">
-$(function() {
+$j(function() {
 
-	$('#cohort-breakdown-table').dataTable( {
+	$j('#cohort-breakdown-table').dataTable( {
 		"bPaginate": false,
 		"bLengthChange": false,
 		"bFilter": false,
@@ -56,11 +56,11 @@ $(function() {
 		"bAutoWidth": false
 	} );
 	
-	$("#accordion").accordion();
-	$('#cohort-tabs').tabs();
-	$('#cohort-tabs').show();	
+	$j("#accordion").accordion();
+	$j('#cohort-tabs').tabs();
+	$j('#cohort-tabs').show();
 
-	$('#cohort-details-table').dataTable(
+	$j('#cohort-details-table').dataTable(
 			 {
 				"iDisplayLength": 5,				 
 				"bPaginate": true,

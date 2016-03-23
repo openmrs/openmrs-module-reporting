@@ -9,9 +9,9 @@
 </c:choose>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
+	$j(document).ready(function() {
 
-		$('#cancelButton').click(function(event){
+		$j('#cancelButton').click(function(event){
 			<c:choose>
 				<c:when test="${model.dialog != 'false'}">
 					closeReportingDialog(false);
@@ -22,8 +22,8 @@
 			</c:choose>
 		});
 
-		$('#submitButton').click(function(event){
-			$('#reportProcessorForm').submit();
+		$j('#submitButton').click(function(event){
+			$j('#reportProcessorForm').submit();
 		});
 		
 	});

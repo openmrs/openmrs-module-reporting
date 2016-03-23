@@ -6,29 +6,29 @@
 <spring:htmlEscape defaultHtmlEscape="false" />
 
 <script>
-$(document).ready(function() {
-	$('#valueUuid').change(function() {
+$j(document).ready(function() {
+	$j('#valueUuid').change(function() {
 		// todo clear rest of form
-		$('#valueAndMappingsForm').submit();
+		$j('#valueAndMappingsForm').submit();
 	});
-	$('.chooseStyle').change(function() {
-		var index = $(this).attr('id').substring(11);
-		var toShow = $(this).val();
-		$('.valueField' + index).hide();
-		$('#' + toShow + index).show();
+	$j('.chooseStyle').change(function() {
+		var index = $j(this).attr('id').substring(11);
+		var toShow = $j(this).val();
+		$j('.valueField' + index).hide();
+		$j('#' + toShow + index).show();
 	});
-	$('#cancelButton').click(function() {
+	$j('#cancelButton').click(function() {
 		window.parent.${ param.cancelCallback }();
 	});
 	<c:if test="${!empty param.removeCallback}">
-		$('#deleteButton').click(function() {
+		$j('#deleteButton').click(function() {
 			window.parent.${ param.removeCallback }();
 		});
 	</c:if>
 	<c:if test="${ not empty selectedValue }">
-	   $('#valueUuid').val('${ selectedValue.uuid }');
+	   $j('#valueUuid').val('${ selectedValue.uuid }');
 	   <c:if test="${!empty param.removeCallback}">
-	  	 $('#deleteButton').show();
+	  	 $j('#deleteButton').show();
 	   </c:if>
 	</c:if>
 });

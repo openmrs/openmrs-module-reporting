@@ -26,15 +26,15 @@
 	<c:otherwise>
 	
 		<script>
-			$(document).ready(function() {
+			$j(document).ready(function() {
 				makeDialog('saveAsDialog');
-				$('#andAllTogether').click(function(event) {
-					$('#compositionString').val(combineAllSearches("AND"));
+				$j('#andAllTogether').click(function(event) {
+					$j('#compositionString').val(combineAllSearches("AND"));
 				});
-				$('#orAllTogether').click(function(event) {
-					$('#compositionString').val(combineAllSearches("OR"));
+				$j('#orAllTogether').click(function(event) {
+					$j('#compositionString').val(combineAllSearches("OR"));
 				});
-				$('#saveAsButton').click(function(event) {
+				$j('#saveAsButton').click(function(event) {
 					showDialog('saveAsDialog', 'Save a Copy');
 				});
 			});
@@ -61,7 +61,7 @@
 			<b class="boxHeader">
 				<spring:message code="reporting.compositionString" />
 				&nbsp;&nbsp;&nbsp;&nbsp;
-				<small><spring:message code="reporting.Shortcuts" /></small>
+				<small><spring:message code="reporting.shortcuts" /></small>
 				<a id="andAllTogether" href="javascript:void(0)">
 					AND-all
 				</a>

@@ -6,14 +6,14 @@
 </c:url>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
+	$j(document).ready(function() {
 
 		// Redirect to listing page
-		$('#cancel-button').click(function(event){
+		$j('#cancel-button').click(function(event){
 			window.location.href='<c:url value="/module/reporting/indicators/editCohortDefinitionDimension.form"/>';
 		});
 
-		$("#previewButton").click(function(event){ 
+		$j("#previewButton").click(function(event){
 			showReportingDialog({ 
 				title: 'Preview <rpt:displayLabel type="${dimension['class'].name}"/>', 
 				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dimension.uuid}&type=${dimension['class'].name}',
@@ -24,7 +24,7 @@
 		});
 		
 		<c:forEach var="cd" varStatus="cdStatus" items="${dimension.cohortDefinitions}">
-			$("#${model.portletUUID}EditDimLink${cdStatus.index}").click(function(event){ 
+			$j("#${model.portletUUID}EditDimLink${cdStatus.index}").click(function(event){
 				showReportingDialog({
 					title: 'Dimension Option: ${cd.key}',
 					url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${dimension['class'].name}|uuid=${dimension.uuid}|property=cohortDefinitions|currentKey=${cd.key}|mode=edit"/>',
@@ -33,7 +33,7 @@
 			});
 		</c:forEach>
 		
-		$('#options-table').dataTable({
+		$j('#options-table').dataTable({
 			"bPaginate": false,
 			"bLengthChange": false,
 			"bFilter": false,

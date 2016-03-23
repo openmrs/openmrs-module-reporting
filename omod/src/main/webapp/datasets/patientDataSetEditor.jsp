@@ -30,35 +30,35 @@
 </style>
 
 <script>
-$(function() {
-	$('#edit-name-dialog,#add-parameter-dialog').dialog({
+$j(function() {
+	$j('#edit-name-dialog,#add-parameter-dialog').dialog({
 		autoOpen: false,
 		modal: true,
 		width: '80%',
 		height: 600
 	});
-	$('#edit-name-button').click(function() {
-		$('#edit-name-dialog').dialog('open');
+	$j('#edit-name-button').click(function() {
+		$j('#edit-name-dialog').dialog('open');
 	});
-	$('#edit-name-cancel').click(function() {
-		$('#edit-name-dialog').dialog('close');
+	$j('#edit-name-cancel').click(function() {
+		$j('#edit-name-dialog').dialog('close');
 	});
-	$('#add-parameter-button').click(function() {
-		$('#add-parameter-dialog').dialog('open');
+	$j('#add-parameter-button').click(function() {
+		$j('#add-parameter-dialog').dialog('open');
 	});
-	$('#add-parameter-cancel').click(function() {
-		$('#add-parameter-dialog').dialog('close');
+	$j('#add-parameter-cancel').click(function() {
+		$j('#add-parameter-dialog').dialog('close');
 	});
-	$('#sortable-columns').sortable({
+	$j('#sortable-columns').sortable({
 		placeholder: 'ui-state-highlight',
 		update: function(evt, ui) {
-			submitColumnOrder($(this));
+			submitColumnOrder($j(this));
 		}
 	}).disableSelection();
-	$('#addFilterButton').click(function() {
+	$j('#addFilterButton').click(function() {
 		showReportingDialog({ title: 'Add Row Filter', url: '${ addFilterUrl }' });
 	});
-	$('#add-column-form').validate({
+	$j('#add-column-form').validate({
 		ignore: [], // don't ignore hidden elements
 		rules: {
 			label: 'required',
@@ -71,8 +71,8 @@ $(function() {
 });
 
 function addFilterSave(serializedResult, jsResult) {
-	$('#addFilterForm input[name=filterDefinition]').val(serializedResult);
-	$('#addFilterForm').submit();
+	$j('#addFilterForm input[name=filterDefinition]').val(serializedResult);
+	$j('#addFilterForm').submit();
 }
 
 function addFilterCancel() {
@@ -83,9 +83,9 @@ function submitColumnOrder(sortable) {
 	var columnOrder = { };
 	// don't know the jquery version, so we ensure we get a submission like column1=name1&column2=name2&...
 	sortable.children().each(function(index) {
-		columnOrder["column" + index] = $(this).children('.column-name').html();
+		columnOrder["column" + index] = $j(this).children('.column-name').html();
 	});
-	$.post('patientDataSetEditor-sortColumns.form', columnOrder, function(data, textStatus, xhr) {
+	$j.post('patientDataSetEditor-sortColumns.form', columnOrder, function(data, textStatus, xhr) {
 		window.location.reload();
 	});
 }

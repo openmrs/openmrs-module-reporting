@@ -9,9 +9,9 @@
 			<%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
 		</c:if>
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
+			$j(document).ready(function() {
 		
-				$('#cancelButton').click(function(event){
+				$j('#cancelButton').click(function(event){
 					<c:choose>
 						<c:when test="${model.dialog != 'false'}">
 							closeReportingDialog(false);
@@ -22,8 +22,8 @@
 					</c:choose>
 				});
 		
-				$('#submitButton').click(function(event){
-					$('#editParameterForm').submit();
+				$j('#submitButton').click(function(event){
+					$j('#editParameterForm').submit();
 				});
 		
 			});
@@ -42,10 +42,10 @@
 			
 			<div style="background-color: #f0f0f0">
 				One-click shortcuts:
-				<a href="javascript:void(0)" onClick="$('#shortcut').val('date'); $('#editParameterForm').submit();"><spring:message code="reporting.date" /></a>
-				<a href="javascript:void(0)" onClick="$('#shortcut').val('startDate'); $('#editParameterForm').submit();"><spring:message code="reporting.parameter.startDate" /></a>
-				<a href="javascript:void(0)" onClick="$('#shortcut').val('endDate'); $('#editParameterForm').submit();"><spring:message code="reporting.parameter.endDate" /></a>
-				<a href="javascript:void(0)" onClick="$('#shortcut').val('location'); $('#editParameterForm').submit();"><spring:message code="reporting.parameter.location" /></a>
+				<a href="javascript:void(0)" onClick="$j('#shortcut').val('date'); $j('#editParameterForm').submit();"><spring:message code="reporting.date" /></a>
+				<a href="javascript:void(0)" onClick="$j('#shortcut').val('startDate'); $j('#editParameterForm').submit();"><spring:message code="reporting.parameter.startDate" /></a>
+				<a href="javascript:void(0)" onClick="$j('#shortcut').val('endDate'); $j('#editParameterForm').submit();"><spring:message code="reporting.parameter.endDate" /></a>
+				<a href="javascript:void(0)" onClick="$j('#shortcut').val('location'); $j('#editParameterForm').submit();"><spring:message code="reporting.parameter.location" /></a>
 			</div>
 			
 			<div style="margin:0; padding:0; width:100%;">
@@ -90,22 +90,22 @@
 	<c:otherwise>
 	
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
+			$j(document).ready(function() {
 				<c:forEach items="${model.obj.parameters}" var="p" varStatus="paramStatus">
-					$('#${model.portletUUID}EditLink${paramStatus.index}').click(function(event){
+					$j('#${model.portletUUID}EditLink${paramStatus.index}').click(function(event){
 						showReportingDialog({
 							title: 'Parameter: ${p.name}',
 							url: '<c:url value="/module/reporting/viewPortlet.htm?id=parameterPortlet&url=parameter&parameters=type=${model.type}|uuid=${model.uuid}|name=${p.name}|mode=edit"/>',
 							successCallback: function() { window.location.reload(true); }
 						});
 					});
-					$('#${model.portletUUID}RemoveLink${paramStatus.index}').click(function(event){					
+					$j('#${model.portletUUID}RemoveLink${paramStatus.index}').click(function(event){
 						if (confirm('Please confirm you wish to remove parameter ${p.name}')) {
 							document.location.href='${pageContext.request.contextPath}/module/reporting/parameters/deleteParameter.form?type=${model.type}&uuid=${model.uuid}&name=${p.name}&returnUrl=${model.parentUrl}';
 						}
 					});
 				</c:forEach>
-				$('#${model.portletUUID}AddLink').click(function(event){
+				$j('#${model.portletUUID}AddLink').click(function(event){
 					showReportingDialog({
 						title: 'New Parameter',
 						url: '<c:url value="/module/reporting/viewPortlet.htm?id=parameterPortlet&url=parameter&parameters=type=${model.type}|uuid=${model.uuid}|mode=edit"/>',

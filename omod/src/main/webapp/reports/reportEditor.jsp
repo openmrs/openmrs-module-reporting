@@ -7,32 +7,32 @@
 
 <script type="text/javascript" charset="utf-8">
 
-	$(document).ready(function() {
+	$j(document).ready(function() {
 
 		// Redirect to listing page
-		$('#cancel-button').click(function(event){
+		$j('#cancel-button').click(function(event){
 			window.location.href='<c:url value="/module/reporting/report/reportEditor.form"/>';
 		});
 
 		<c:forEach items="${designs}" var="design" varStatus="designStatus">
-			$('#${design.uuid}DesignEditLink').click(function(event){
+			$j('#${design.uuid}DesignEditLink').click(function(event){
 				document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=${design.rendererType.name}&reportDesignUuid=${design.uuid}&reportDefinitionUuid=${report.uuid}&returnUrl=${pageUrl}';
 			});
-			$('#${design.uuid}DesignRemoveLink').click(function(event){					
+			$j('#${design.uuid}DesignRemoveLink').click(function(event){
 				if (confirm('Please confirm you wish to permanantly delete <b>${design.name}</b>')) {
 					document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportDesign.form?uuid=${design.uuid}&returnUrl=${pageUrl}';
 				}
 			});
 		</c:forEach>
-		$( '#rendererType' ).change( function() {
-			$( this ).next( 'input#designAddLink' ).attr( 'href', $( this ).val() );
+		$j( '#rendererType' ).change( function() {
+			$j( this ).next( 'input#designAddLink' ).attr( 'href', $j( this ).val() );
 		} );
 		
-		$('#designAddLink').click(function(event){
-			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=' + $( this ).attr( 'href' ) + '&reportDefinitionUuid=${report.uuid}&returnUrl=${pageUrl}';
+		$j('#designAddLink').click(function(event){
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=' + $j( this ).attr( 'href' ) + '&reportDefinitionUuid=${report.uuid}&returnUrl=${pageUrl}';
 		});
 		
-		$('#previewButton').click(function(event) { 
+		$j('#previewButton').click(function(event) {
 			showReportingDialog({ 
 				title: 'Preview Report', 
 				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${report.uuid}&type=${report['class'].name}'

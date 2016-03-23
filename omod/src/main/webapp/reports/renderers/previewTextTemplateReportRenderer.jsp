@@ -16,14 +16,14 @@
 
 	//update the temp design field
 	<c:if test="${!empty tempDesignUuid}">
-		$( "#reportDesignForm input#uuid", window.parent.document ).val("${tempDesignUuid}");		
+		$j( "#reportDesignForm input#uuid", window.parent.document ).val("${tempDesignUuid}");
 	</c:if>
 
 	var fixedValueElementIds = new Array();
 	jQuery(document).ready( function() {
 
 			// disable the Report Definition select
-			var reportDefSelect = $( "#reportDesignForm select#reportDefinition", window.parent.document );
+			var reportDefSelect = $j( "#reportDesignForm select#reportDefinition", window.parent.document );
 			if ( reportDefSelect.length ) {
 				reportDefSelect.prev().text( "${reportDefinition.name}" ).show();
 				reportDefSelect.hide();

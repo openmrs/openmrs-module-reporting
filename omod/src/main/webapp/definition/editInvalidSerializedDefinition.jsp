@@ -4,29 +4,29 @@
 
 <script type="text/javascript" charset="utf-8">
 
-	$(document).ready(function() {
+	$j(document).ready(function() {
 	
 		// Redirect to listing page
-		$('#test-button').click(function(event){
+		$j('#test-button').click(function(event){
 
-			$('#resultDialog').dialog('option', 'title', 'Serialization Result')
-			.dialog('option', 'height', $(window).height()-50)
+			$j('#resultDialog').dialog('option', 'title', 'Serialization Result')
+			.dialog('option', 'height', $j(window).height()-50)
 			.dialog('open');
 
-			var $type = $("#subtype").val();
-			var $serializer = $("#serializationClass").val();
-			var $data = $("#serializedData").val();
+			var $type = $j("#subtype").val();
+			var $serializer = $j("#serializationClass").val();
+			var $data = $j("#serializedData").val();
 
-			$("#resultDialog").load("${pageContext.request.contextPath}/module/reporting/definition/testSerializedDefinition.form", 
+			$j("#resultDialog").load("${pageContext.request.contextPath}/module/reporting/definition/testSerializedDefinition.form",
 				{type: $type, serializationClass: $serializer, data: $data}
 			);
 		});
 
-		$('#cancel-button').click(function(event){
+		$j('#cancel-button').click(function(event){
 			document.location.href='invalidSerializedDefinitions.form';
 		});
 		
-		$('#resultDialog').dialog({
+		$j('#resultDialog').dialog({
 			autoOpen: false,
 			draggable: false,
 			resizable: false,

@@ -4,9 +4,9 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/moduleResources/reporting/scripts/reportDesigns/codemirror.js"></script>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
+	$j(document).ready(function() {
 
-    	$('#cancelButton').click(function(event){
+    	$j('#cancelButton').click(function(event){
     		document.location.href = '${pageContext.request.contextPath}${cancelUrl}';
     	});
     	
@@ -23,14 +23,14 @@
 		});
 
 
-		$("#textTemplate").tabs( {
+		$j("#textTemplate").tabs( {
 			selected: 0,
 			select: function( event, ui ) {
 				if ( ui.tab.id == "previewLink" ) {
-					var reportInput = $( '#reportDesignForm input#reportDefinition' ).val() || $( '#reportDesignForm select#reportDefinition option:selected' ).val();
+					var reportInput = $j( '#reportDesignForm input#reportDefinition' ).val() || $j( '#reportDesignForm select#reportDefinition option:selected' ).val();
 					if ( reportInput.length ) {
-		        		$( "#templateContents" ).val( editor.getCode() );
-		        		var $form = $( "#reportDesignForm" );
+		        		$j( "#templateContents" ).val( editor.getCode() );
+		        		var $form = $j( "#reportDesignForm" );
 		        		$form.attr( "target", "previewFrame" );
 		        		$form.attr( "method", "GET" );
 		        		$form.attr( "action", '<c:url value="/module/reporting/reports/renderers/previewTextTemplateReportRenderer.form" />')
@@ -47,14 +47,14 @@
 				} else if ( ui.tab.id == "editLink" ) {
 
 					// enable the Report Definition select again
-					var reportDefSelect = $( "#reportDesignForm select#reportDefinition" );
+					var reportDefSelect = $j( "#reportDesignForm select#reportDefinition" );
 					if ( reportDefSelect.length ) {
 						reportDefSelect.prev().hide();
 						reportDefSelect.show();
 					}
 
 					// clear the frame
-					$("#previewFrame").attr("src", "about:blank");
+					$j("#previewFrame").attr("src", "about:blank");
 				}
 			}
         } );

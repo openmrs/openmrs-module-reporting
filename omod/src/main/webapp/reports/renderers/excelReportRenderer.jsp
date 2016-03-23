@@ -2,38 +2,38 @@
 <openmrs:require privilege="Manage Report Designs" otherwise="/login.htm" redirect="/module/reporting/reports/manageReportDesigns.form" />
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
+	$j(document).ready(function() {
 
-    	$('#cancelButton').click(function(event){
+    	$j('#cancelButton').click(function(event){
     		document.location.href = '${pageContext.request.contextPath}${cancelUrl}';
     	});
 
-    	$('#submitButton').click(function(event){
-      		$('#reportDesignForm').submit();
+    	$j('#submitButton').click(function(event){
+      		$j('#reportDesignForm').submit();
     	});
     			
-		$( '#reportDesignForm td.customOutputSection input.addPropertyButton' ).click( function( event ) {
-			var $this = $( this ),
+		$j( '#reportDesignForm td.customOutputSection input.addPropertyButton' ).click( function( event ) {
+			var $this = $j( this ),
 				queryTemplate = 'reportDesignForm td.customOutputSection table.propTemplate tr.' + $this.attr( 'id' ),
 				$trBttnContainer = $this.parents( 'tr:first' );
 			$newRow = cloneAndInsertBefore( queryTemplate, $trBttnContainer );
 			hideOrShowTableHeaders( $trBttnContainer );
 		} );
 		
-		$( '#reportDesignForm td.customOutputSection input.deleteResource' ).click(function( event ) {
-			var $this = $(this);
+		$j( '#reportDesignForm td.customOutputSection input.deleteResource' ).click(function( event ) {
+			var $this = $j(this);
 			$this.siblings().remove();
 			$this.before('<input type="file" name="resource"/>');
 		} );
 		
-		$( '#reportDesignForm td.customOutputSection input.deletePropertyButton' ).click(function() {
-			var $trParent = $( this ).parents( 'tr:first' ),
+		$j( '#reportDesignForm td.customOutputSection input.deletePropertyButton' ).click(function() {
+			var $trParent = $j( this ).parents( 'tr:first' ),
 				$trBttnContainer = $trParent.siblings( 'tr.addBttnContainer' );
 			$trParent.remove();
 			hideOrShowTableHeaders( $trBttnContainer );
 		} );
 		
-		$( '#reportDesignForm' ).submit( function() {
+		$j( '#reportDesignForm' ).submit( function() {
 			buildPropertiesStr();			
 		} );
 		
@@ -45,34 +45,34 @@
 		<c:if test="${not empty design.properties.repeatingSections}">	
 		setRSProperties( '${design.properties.repeatingSections}' );
 		</c:if>
-		hideOrShowTableHeaders( $( '#reportDesignForm td.customOutputSection table.propertiesContainer input#propertiesInputs' ).parents( 'tr:first' ) );
+		hideOrShowTableHeaders( $j( '#reportDesignForm td.customOutputSection table.propertiesContainer input#propertiesInputs' ).parents( 'tr:first' ) );
   	});
 	
 	function addResourceButtonsEvnt() {
-		$( '#reportDesignForm td.customOutputSection input#changeResourceButton' ).click(function() {
-			var $parent = $( findParentWithClass( this, 'currentResourceSection') );
+		$j( '#reportDesignForm td.customOutputSection input#changeResourceButton' ).click(function() {
+			var $parent = $j( findParentWithClass( this, 'currentResourceSection') );
 			$parent.hide();
 			$parent.siblings( 'span.resourceChangeSection' ).show();
 		} );
 		
-		$( '#reportDesignForm td.customOutputSection input#cancelResourceButton' ).click(function() {
-			var $parent = $( findParentWithClass( this, 'resourceChangeSection') );
+		$j( '#reportDesignForm td.customOutputSection input#cancelResourceButton' ).click(function() {
+			var $parent = $j( findParentWithClass( this, 'resourceChangeSection') );
 			$parent.hide();
 			$parent.siblings( 'span.currentResourceSection' ).show();
 		} );
 	}
 	
 	function addRadioButtonEvntOutputOption() {
-		var $radioButtons = $('#reportDesignForm input:radio[name="rendererType"]'),
+		var $radioButtons = $j('#reportDesignForm input:radio[name="rendererType"]'),
 			$checkedRadioButton = $radioButtons.filter( '[value="${design.rendererType.name}"]' );
 		$checkedRadioButton.attr( 'checked', true );
 		$radioButtons.change(function() {
-			if ( $( this ).attr( 'value' ) == 'org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer' ) {
-				$( '#reportDesignForm table.formTable td.customOutputSection' ).show();
-				$( '#xlsReportRendererProperties').hide();
+			if ( $j( this ).attr( 'value' ) == 'org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer' ) {
+				$j( '#reportDesignForm table.formTable td.customOutputSection' ).show();
+				$j( '#xlsReportRendererProperties').hide();
 			} else {
-				$( '#reportDesignForm table.formTable td.customOutputSection' ).hide();
-				$( '#xlsReportRendererProperties').show();
+				$j( '#reportDesignForm table.formTable td.customOutputSection' ).hide();
+				$j( '#xlsReportRendererProperties').show();
 			}
 		} );
 		$checkedRadioButton.change();		
@@ -88,8 +88,8 @@
 		
 	function setRSProperties( RSValue ) {
 		var sectionsArr = RSValue.split( '|' ),
-			$addButton = $( "#reportDesignForm td.customOutputSection table.RSContainer input#RSInputs" ),
-			$addBttnParent = $( findParentWithClass( $addButton[ 0 ], 'addBttnContainer' ) );
+			$addButton = $j( "#reportDesignForm td.customOutputSection table.RSContainer input#RSInputs" ),
+			$addBttnParent = $j( findParentWithClass( $addButton[ 0 ], 'addBttnContainer' ) );
 		for( var i = 0; i < sectionsArr.length; i++ ) {
 			$addButton.click();
 			var $inputs = $addBttnParent.prev( 'tr.RSInputs' ).find( 'input' ),
@@ -104,11 +104,11 @@
 	}
 	
 	function buildRSStr( propertiesArr ) {
-		var $trRSInputs = $( '#reportDesignForm td.customOutputSection table.RSContainer tr.RSInputs' );
+		var $trRSInputs = $j( '#reportDesignForm td.customOutputSection table.RSContainer tr.RSInputs' );
 		if ( $trRSInputs.length ) {
 			var sections = [];
 			$trRSInputs.each( function( index ) {
-				var $inputs = $( this ).find( 'input' ),
+				var $inputs = $j( this ).find( 'input' ),
 					$sheetInput = $inputs.filter( "[name='sheet']" ),
 					$rowInput = $inputs.filter( "[name='row']" ),
 					$colInput = $inputs.filter( "[name='column']" ),
@@ -141,10 +141,10 @@
 	}
 	
 	function buildKeyValuePropertiesStr( propertiesArr ) {
-		var $trRSInputs = $( '#reportDesignForm td.customOutputSection table.propertiesContainer tr.propertiesInputs' );
+		var $trRSInputs = $j( '#reportDesignForm td.customOutputSection table.propertiesContainer tr.propertiesInputs' );
 		if ( $trRSInputs.length ) {
 			$trRSInputs.each( function() {
-				var $inputs = $( this ).find( 'input' ),
+				var $inputs = $j( this ).find( 'input' ),
 					$key = $inputs.filter( "[name='key']" ),
 					$value = $inputs.filter( "[name='value']" );
 				if (  jQuery.trim( $key.val() ).length &&  jQuery.trim( $value.val() ).length ) {
@@ -159,7 +159,7 @@
 		buildRSStr( propertiesStr );
 		buildKeyValuePropertiesStr( propertiesStr );
 		if ( propertiesStr.length ) {
-			$( '#reportDesignForm td.customOutputSection input#properties' ).val( propertiesStr.join( '\\n' ) );
+			$j( '#reportDesignForm td.customOutputSection input#properties' ).val( propertiesStr.join( '\\n' ) );
 		}
 	}	
   	

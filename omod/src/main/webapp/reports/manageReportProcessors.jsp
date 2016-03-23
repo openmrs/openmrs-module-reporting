@@ -3,9 +3,9 @@
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
+	$j(document).ready(function() {
 		
-		$("#report-processor-table").dataTable( {
+		$j("#report-processor-table").dataTable( {
 			"bPaginate": true,
 			"iDisplayLength": 25,
 			"bLengthChange": false,
@@ -16,20 +16,20 @@
 		} );
 
 		<c:forEach items="${reportProcessorConfigurations}" var="config" varStatus="configStatus">
-			$('#${config.uuid}EditLink').click(function(event){
+			$j('#${config.uuid}EditLink').click(function(event){
 				showReportingDialog({
 					title: 'Edit Report Processor',
 					url: '<c:url value="/module/reporting/viewPortlet.htm?id=reportProcessorPortlet&url=reportProcessorForm&parameters=processorUuid=${config.uuid}"/>',
 					successCallback: function() { window.location.reload(true); }
 				});
 			});
-			$('#${config.uuid}RemoveLink').click(function(event){					
+			$j('#${config.uuid}RemoveLink').click(function(event){
 				if (confirm('Please confirm you wish to permanantly delete ${config.name}')) {
 					document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportProcessor.form?uuid=${config.uuid}';
 				}
 			});
 		</c:forEach>
-		$('#addLink').click(function(event){
+		$j('#addLink').click(function(event){
 			showReportingDialog({
 				title: 'Add New Report Processor',
 				url: '<c:url value="/module/reporting/viewPortlet.htm?id=reportProcessorPortlet&url=reportProcessorForm&parameters="/>',

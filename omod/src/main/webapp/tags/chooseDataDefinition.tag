@@ -19,21 +19,21 @@ jspContext.setAttribute("initialFormFieldValue", null);
 %>
 
 <script>
-$(function() {
-	$('#${ id } .changeButton').click(function() {
+$j(function() {
+	$j('#${ id } .changeButton').click(function() {
 		var url = '<c:url value="${ changeUrl }"/>';
 		showReportingDialog({ title: '${ label }', url: url });
 	});
 });
 
 function save${ id }(serializedResult, jsResult) {
-	$('#${ id } .formField').val(serializedResult);
-	$('#${ id } .valueLabel').html('<b>' + jsResult.parameterizable + '</b>');
+	$j('#${ id } .formField').val(serializedResult);
+	$j('#${ id } .valueLabel').html('<b>' + jsResult.parameterizable + '</b>');
 	var string = "";
 	for (var key in jsResult.parameterMappings) {
 		string += key + ": " + jsResult.parameterMappings[key] + "<br/>";
 	}
-	$('#${ id } .parameterValuesLabel').html(string);
+	$j('#${ id } .parameterValuesLabel').html(string);
 	closeReportingDialog(false);
 	<c:if test="${ not empty changeFunction }">
 	   ${ changeFunction}(jsResult);

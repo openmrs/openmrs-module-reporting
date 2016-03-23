@@ -12,18 +12,18 @@
 </style>
 
 <script type="text/javascript">
-$(document).ready(function(){
-	$('.dataset tr:even').addClass('alt');
-	$('.dataset tr:even').hover(
-			function(){$(this).addClass('hover')},
-			function(){$(this).removeClass('hover')}
+$j(document).ready(function(){
+	$j('.dataset tr:even').addClass('alt');
+	$j('.dataset tr:even').hover(
+			function(){$j(this).addClass('hover')},
+			function(){$j(this).removeClass('hover')}
 	);	
-	$('.dataset tr:odd').hover(
-			function(){$(this).addClass('althover')},
-			function(){$(this).removeClass('althover')}
+	$j('.dataset tr:odd').hover(
+			function(){$j(this).addClass('althover')},
+			function(){$j(this).removeClass('althover')}
 	);
-	$('#tabs').tabs();
-	$('.ui-tabs-panel').css('padding','0').css('padding-top','.5em').css('overflow', 'auto');
+	$j('#tabs').tabs();
+	$j('.ui-tabs-panel').css('padding','0').css('padding-top','.5em').css('overflow', 'auto');
 });
 </script>
 

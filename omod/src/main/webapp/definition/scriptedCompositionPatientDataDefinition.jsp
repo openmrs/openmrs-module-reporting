@@ -22,9 +22,9 @@
 	<c:otherwise>
 	
 	<script>
-			$(document).ready(function() {
+			$j(document).ready(function() {
 				makeDialog('saveAsDialog');
-				$('#saveAsButton').click(function(event) {
+				$j('#saveAsButton').click(function(event) {
 					showDialog('saveAsDialog', 'Save a Copy');
 				});
 

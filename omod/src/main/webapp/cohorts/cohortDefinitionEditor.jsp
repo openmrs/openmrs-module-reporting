@@ -5,14 +5,14 @@
 
 <script type="text/javascript" charset="utf-8">
 
-	$(document).ready(function() {
+	$j(document).ready(function() {
 	
 		// Redirect to listing page
-		$('#cancel-button').click(function(event){
+		$j('#cancel-button').click(function(event){
 			window.location.href='<c:url value="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.cohort.definition.CohortDefinition"/>';
 		});
 
-		$("#previewButton").click(function(event){ 
+		$j("#previewButton").click(function(event){
 			showReportingDialog({ 
 				title: 'Preview <rpt:displayLabel type="${cohortDefinition['class'].name}"/>', 
 				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${cohortDefinition.uuid}&type=${cohortDefinition['class'].name}',
@@ -23,45 +23,45 @@
 		});
 
 		<c:forEach items="${cohortDefinition.parameters}" var="cdparam">
-			$('#selectValue${cdparam.name}').val('t');
-			$('#paramLabel${cdparam.name}').val('${cdparam.label}');
+			$j('#selectValue${cdparam.name}').val('t');
+			$j('#paramLabel${cdparam.name}').val('${cdparam.label}');
 			<c:if test="${cdparam.widgetConfiguration != null}">
 				<c:forEach items="${cdparam.widgetConfiguration}" var="configParam">
-					$('#paramConfigOptions${cdparam.name}').append('${configParam.key}=${configParam.value}\n');
+					$j('#paramConfigOptions${cdparam.name}').append('${configParam.key}=${configParam.value}\n');
 				</c:forEach>
-				$('#configureParameterSection${cdparam.name}').show();
+				$j('#configureParameterSection${cdparam.name}').show();
 			</c:if>
-			$('#dynamicValue${cdparam.name}').show();
+			$j('#dynamicValue${cdparam.name}').show();
 		</c:forEach>
 
 		<c:forEach items="${configurationProperties}" var="p" varStatus="varStatus">
-			$('#selectValue${p.field.name}').change(function(event){
-				if ($(this).val() == 't') {
-					$('#paramLabel${p.field.name}').val('${cdparam.label}');
-					$('#dynamicValue${p.field.name}').show();
+			$j('#selectValue${p.field.name}').change(function(event){
+				if ($j(this).val() == 't') {
+					$j('#paramLabel${p.field.name}').val('${cdparam.label}');
+					$j('#dynamicValue${p.field.name}').show();
 				}
 				else {
-					$('#paramLabel${p.field.name}').val('');
-					$('#dynamicValue${p.field.name}').hide();
+					$j('#paramLabel${p.field.name}').val('');
+					$j('#dynamicValue${p.field.name}').hide();
 				}
-				if ($(this).val() == 'f') {
-					$('#fixedValue${p.field.name}').show();
+				if ($j(this).val() == 'f') {
+					$j('#fixedValue${p.field.name}').show();
 				}
 				else {
-					$("#fixedValue${p.field.name} [id^='${p.field.name}']").val('');
-					$('#fixedValue${p.field.name}').hide();
+					$j("#fixedValue${p.field.name} [id^='${p.field.name}']").val('');
+					$j('#fixedValue${p.field.name}').hide();
 				}
 			});
 			
-			$("#fixedValue${p.field.name} [id^='${p.field.name}']").each(function() {
-				if ($(this).val() && $(this).val != '') {
-					$('#selectValue${p.field.name}').val('f');
-					$('#fixedValue${p.field.name}').show();
+			$j("#fixedValue${p.field.name} [id^='${p.field.name}']").each(function() {
+				if ($j(this).val() && $j(this).val != '') {
+					$j('#selectValue${p.field.name}').val('f');
+					$j('#fixedValue${p.field.name}').show();
 				}
 			});
 			
-			$("#configureParameter${p.field.name}").click(function(event){
-				$('#configureParameterSection${p.field.name}').toggle();
+			$j("#configureParameter${p.field.name}").click(function(event){
+				$j('#configureParameterSection${p.field.name}').toggle();
 			});
 		</c:forEach>
 	} );

@@ -8,9 +8,9 @@
 			<%@ include file="/WEB-INF/view/module/reporting/localHeaderMinimal.jsp"%>
 		</c:if>
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
+			$j(document).ready(function() {
 		
-				$('#cancelButton').click(function(event){
+				$j('#cancelButton').click(function(event){
 					<c:choose>
 						<c:when test="${model.dialog != 'false'}">
 							closeReportingDialog(false);
@@ -21,12 +21,12 @@
 					</c:choose>
 				});
 		
-				$('#submitButton').click(function(event){
-					$('#baseCohortIndicatorEditorForm').submit();
+				$j('#submitButton').click(function(event){
+					$j('#baseCohortIndicatorEditorForm').submit();
 				});
 
-				$('#logicSubmitButton').click(function(event){
-					$('#logicFieldForm').submit();
+				$j('#logicSubmitButton').click(function(event){
+					$j('#logicFieldForm').submit();
 				});
 		
 			});
@@ -96,8 +96,8 @@
 	<c:otherwise>
 	
 		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
-				$('#${model.id}EditLink').click(function(event){
+			$j(document).ready(function() {
+				$j('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
 						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editBaseCohortIndicatorPortlet&url=baseCohortIndicator&parameters=uuid=${model.uuid}|mode=edit|subfields=${model.subfields}"/>',

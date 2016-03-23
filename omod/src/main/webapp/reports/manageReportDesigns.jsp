@@ -3,9 +3,9 @@
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
+	$j(document).ready(function() {
 		
-		$("#report-design-table").dataTable( {
+		$j("#report-design-table").dataTable( {
 			"bPaginate": true,
 			"iDisplayLength": 25,
 			"bLengthChange": false,
@@ -16,22 +16,22 @@
 		} );
 
 		<c:forEach items="${reportDesigns}" var="design" varStatus="designStatus">
-			$('#${design.uuid}DesignEditLink').click(function(event){
+			$j('#${design.uuid}DesignEditLink').click(function(event){
 				document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=${design.rendererType.name}&reportDesignUuid=${design.uuid}';
 			});
-			$('#${design.uuid}DesignRemoveLink').click(function(event){					
+			$j('#${design.uuid}DesignRemoveLink').click(function(event){
 				if (confirm('Please confirm you wish to permanantly delete ${design.name}')) {
 					document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportDesign.form?uuid=${design.uuid}';
 				}
 			});
 		</c:forEach>
 		
-		$( '#rendererType' ).change( function() {
-			$( this ).next( 'input#designAddLink' ).attr( 'href', $( this ).val() );
+		$j( '#rendererType' ).change( function() {
+			$j( this ).next( 'input#designAddLink' ).attr( 'href', $j( this ).val() );
 		} );
 		
-		$('#designAddLink').click(function(event){
-			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=' + $( this ).attr( 'href' );
+		$j('#designAddLink').click(function(event){
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=' + $j( this ).attr( 'href' );
 		});
 	});
 </script>

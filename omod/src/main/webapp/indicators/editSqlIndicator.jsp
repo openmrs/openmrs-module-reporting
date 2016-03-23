@@ -36,8 +36,8 @@
 </style>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-		$("#previewButton").click(function(event){ 
+	$j(document).ready(function() {
+		$j("#previewButton").click(function(event){
 			showReportingDialog({ 
 				title: 'Preview Indicator', 
 				url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${definition.uuid}&type=${definition['class'].name}',

@@ -13,8 +13,8 @@
 			<c:otherwise>
 			
 				<script type="text/javascript">
-					$(document).ready(function() {
-						$('#addColumnDialog').dialog({
+					$j(document).ready(function() {
+						$j('#addColumnDialog').dialog({
 							autoOpen: false,
 							draggable: false,
 							resizable: false,
@@ -24,46 +24,46 @@
 							title: 'Save column'											
 						});
 						
-						$('.addColumnButton').click(function() {
-							$('#indexField').val('');
-							$('#keyField').val('');
-							$('#labelField').val('');
-							$('#indicatorField').val('');
-							$('#cohortQueryField').val('');
+						$j('.addColumnButton').click(function() {
+							$j('#indexField').val('');
+							$j('#keyField').val('');
+							$j('#labelField').val('');
+							$j('#indicatorField').val('');
+							$j('#cohortQueryField').val('');
 							<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
-								$('#dimensionOption_${dimStatus.index}').val('');
+								$j('#dimensionOption_${dimStatus.index}').val('');
 							</c:forEach>
-							$('#addColumnDialog').dialog('open');
+							$j('#addColumnDialog').dialog('open');
 						});
 
                         var updateIndicatorLabel = function() {
-                            var labelFieldValNew = $("#indicatorField option:selected").text();
-							if ($('#createFromCohortQueryCheckbox').is(':checked')) {
-								labelFieldValNew = $("#cohortQueryField option:selected").text();
+                            var labelFieldValNew = $j("#indicatorField option:selected").text();
+							if ($j('#createFromCohortQueryCheckbox').is(':checked')) {
+								labelFieldValNew = $j("#cohortQueryField option:selected").text();
 							}
 
                             if(labelFieldValNew != '') {
                                 <c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
-                                if($('#dimensionOption_${dimStatus.index}').text() != '') {
-                                    labelFieldValNew += '-' + $('#dimensionOption_${dimStatus.index} option:selected').text();
+                                if($j('#dimensionOption_${dimStatus.index}').text() != '') {
+                                    labelFieldValNew += '-' + $j('#dimensionOption_${dimStatus.index} option:selected').text();
                                 }
                                 </c:forEach>
                             }
-                            $("#labelField").val(labelFieldValNew);
+                            $j("#labelField").val(labelFieldValNew);
                         }
 
-                        $('#indicatorField').change(updateIndicatorLabel);
-						$('#cohortQueryField').change(updateIndicatorLabel);
+                        $j('#indicatorField').change(updateIndicatorLabel);
+						$j('#cohortQueryField').change(updateIndicatorLabel);
 
                         <c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
-                       		$('#dimensionOption_${dimStatus.index}').change(updateIndicatorLabel);
+                       		$j('#dimensionOption_${dimStatus.index}').change(updateIndicatorLabel);
                         </c:forEach>
 
-						$('#cancelDialogButton').click(function() {
-							$('#addColumnDialog').dialog('close'); 
+						$j('#cancelDialogButton').click(function() {
+							$j('#addColumnDialog').dialog('close');
 						});
 						
-						$('#dimensions-table').dataTable({
+						$j('#dimensions-table').dataTable({
 							"bPaginate": false,
 							"bLengthChange": false,
 							"bFilter": false,
@@ -71,18 +71,18 @@
 							"bInfo": false,
 							"bAutoWidth": false
 						} );
-						$('#previewButton').click(function(event) { 
+						$j('#previewButton').click(function(event) {
 							showReportingDialog({ 
 								title: 'Preview Report', 
 								url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${report.uuid}&type=${report['class'].name}'
 							});
 						}).height(32);
-						$('#closeButton').click(function(event) {
+						$j('#closeButton').click(function(event) {
 							window.location = 'manageReports.form';
 						}).height(32);
 						
 						<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
-							$("#${model.portletUUID}EditDimLink${dimStatus.index}").click(function(event){ 
+							$j("#${model.portletUUID}EditDimLink${dimStatus.index}").click(function(event){
 								showReportingDialog({
 									title: 'Dimension: ${dim.key}',
 									url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${report.indicatorDataSetDefinition['class'].name}|uuid=${report.indicatorDataSetDefinition.uuid}|property=dimensions|currentKey=${dim.key}|mode=edit"/>',
@@ -93,18 +93,18 @@
 						
 						<c:forEach var="col" varStatus="colStatus" items="${report.indicatorDataSetDefinition.columns}">
 						
-							$('#editIndicator${colStatus.index}').click(function() { 
-								$('#indexField').val('${colStatus.index}');
-								$('#keyField').val('${col.name}');
-								$('#labelField').val('${col.label}');
-								$('#indicatorField').val('${col.indicator.parameterizable.uuid}');
+							$j('#editIndicator${colStatus.index}').click(function() {
+								$j('#indexField').val('${colStatus.index}');
+								$j('#keyField').val('${col.name}');
+								$j('#labelField').val('${col.label}');
+								$j('#indicatorField').val('${col.indicator.parameterizable.uuid}');
 								<c:forEach var="dim" varStatus="dimStatus" items="${report.indicatorDataSetDefinition.dimensions}">
-									$('#dimensionOption_${dimStatus.index}').val('${col.dimensionOptions[dim.key]}');
+									$j('#dimensionOption_${dimStatus.index}').val('${col.dimensionOptions[dim.key]}');
 								</c:forEach>
-								$('#addColumnDialog').dialog('open');
+								$j('#addColumnDialog').dialog('open');
 							});
 						
-							$("#deleteIndicator${colStatus.index}").click(function(event){
+							$j("#deleteIndicator${colStatus.index}").click(function(event){
 								if (confirm("Are you sure you wish to remove column: ${col.name}?")) {
 									document.location.href="periodIndicatorReportRemoveColumn.form?key=${col.name}&uuid=${report.uuid}";
 								}
@@ -112,7 +112,7 @@
 							
 						</c:forEach>
 						
-						$('#column-table').dataTable({
+						$j('#column-table').dataTable({
 							"bPaginate": true,
 							"iDisplayLength": 15,
 							"bLengthChange": false,
@@ -122,13 +122,13 @@
 							"bAutoWidth": false
 						} );
 
-						$('#createFromCohortQueryCheckbox').change(function() {
-							if ($(this).is(':checked')) {
-								$('#createFromIndicator').hide();
-								$('#createFromCohortQuery').show();
+						$j('#createFromCohortQueryCheckbox').change(function() {
+							if ($j(this).is(':checked')) {
+								$j('#createFromIndicator').hide();
+								$j('#createFromCohortQuery').show();
 							} else {
-								$('#createFromIndicator').show();
-								$('#createFromCohortQuery').hide();
+								$j('#createFromIndicator').show();
+								$j('#createFromCohortQuery').hide();
 							}
 						});
 

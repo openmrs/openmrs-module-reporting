@@ -36,9 +36,9 @@
 </style>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
+	$j(document).ready(function() {
 
-        $('#addIterationParameterLink').click(function(event){
+        $j('#addIterationParameterLink').click(function(event){
             showReportingDialog({
                 title: 'Add iteration parameter',
                 url: '<c:url value="/module/reporting/viewPortlet.htm?id=addIterationParameterLink&url=multiParameterIterationParameter&parameters=dsdUuid=${definition.uuid}|mode=edit"/>',
@@ -46,12 +46,12 @@
             });
         });
 
-        $("#addIterationLink${indStatus.index}").click(function(event){
+        $j("#addIterationLink${indStatus.index}").click(function(event){
             document.location.href='<c:url value="multiParameterAddIteration.form?index=${indStatus.index}&dsdUuid=${definition.uuid}"/>';
         });
 
         <c:forEach var="iteration" varStatus="iterationStatus" items="${definition.iterations}">
-            $("#removeIterationLink${iterationStatus.index}").click(function(event){
+            $j("#removeIterationLink${iterationStatus.index}").click(function(event){
                 if (confirm('Please confirm you wish to remove iteration number ${iterationStatus.index}')) {
                     document.location.href='<c:url value="multiParameterRemoveIteration.form?index=${iterationStatus.index}&dsdUuid=${definition.uuid}"/>';
                 }
@@ -59,7 +59,7 @@
 
             <c:forEach items="${definition.baseDefinition.parameters}" var="baseDefinitionParam">
 
-                $("a[id='editIterationParameterLink${iterationStatus.index}${baseDefinitionParam.name}']").click(function(event){
+                $j("a[id='editIterationParameterLink${iterationStatus.index}${baseDefinitionParam.name}']").click(function(event){
                     showReportingDialog({
                         title: 'Edit parameter ${baseDefinitionParam.name} for iteration ${iterationStatus.index}.',
                         url: '<c:url value="/module/reporting/viewPortlet.htm?id=edutIterationParameterLink&url=multiParameterIterationParameterEdit&iteration=${iterationStatus.index}&paramName=${baseDefinitionParam.name}&parameters=dsdUuid=${definition.uuid}|mode=edit"/>',
@@ -71,8 +71,8 @@
 
         </c:forEach>
 
-        $("#baseDefinitionSelect").change(function() {
-            var selectedDefinitionUUID = $(this).val();
+        $j("#baseDefinitionSelect").change(function() {
+            var selectedDefinitionUUID = $j(this).val();
             if (selectedDefinitionUUID == "0") {
                 alert("Please, choose dataset definition");
             }

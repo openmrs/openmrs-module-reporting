@@ -6,8 +6,8 @@
 <%@ include file="../run/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-		$("#report-history-table").dataTable( {
+	$j(document).ready(function() {
+		$j("#report-history-table").dataTable( {
 			"bPaginate": true,
 			"iDisplayLength": 25,
 			"bLengthChange": false,

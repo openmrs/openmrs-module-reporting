@@ -7,9 +7,9 @@
 
 <script type="text/javascript" charset="utf-8">
 	function loadReportStatus() {
-	    $.getJSON('${pageContext.request.contextPath}/module/reporting/reports/loadReportStatus.form?uuid=${request.uuid}', function(data) {
-	    	$(".status").hide();
-	    	$(".status"+data.status).show();
+	    $j.getJSON('${pageContext.request.contextPath}/module/reporting/reports/loadReportStatus.form?uuid=${request.uuid}', function(data) {
+	    	$j(".status").hide();
+	    	$j(".status"+data.status).show();
 	    	if (data.status != 'COMPLETED' && data.status != 'SAVED' && data.status != 'FAILED' && data.status != 'SCHEDULE_COMPLETED') {
 	    		setTimeout("loadReportStatus()", 3000);
 	    	}
@@ -22,11 +22,11 @@
 		}
 	}
 	
-	$(document).ready(function() {
+	$j(document).ready(function() {
 		
 		loadReportStatus();
 		
-		$("#errorDetailsLink").click(function(event) {
+		$j("#errorDetailsLink").click(function(event) {
 			showReportingDialog({
 				title: '<spring:message code="reporting.errorDetails"/>',
 				url: '${pageContext.request.contextPath}/module/reporting/reports/viewErrorDetails.form?uuid=${request.uuid}'

@@ -18,8 +18,8 @@
 	</c:when>		
 	<c:otherwise>		
 		<script type="text/javascript">
-			$(document).ready(function() {
-				$('#dimensions-table').dataTable({
+			$j(document).ready(function() {
+				$j('#dimensions-table').dataTable({
 					"bPaginate": false,
 					"bLengthChange": false,
 					"bFilter": false,
@@ -27,7 +27,7 @@
 					"bInfo": false,
 					"bAutoWidth": false
 				} );
-				$('#indicators-table').dataTable({
+				$j('#indicators-table').dataTable({
 					"bPaginate": false,
 					"bLengthChange": false,
 					"bFilter": false,
@@ -35,18 +35,18 @@
 					"bInfo": false,
 					"bAutoWidth": false
 				} );
-				$('#previewButton').click(function(event) { 
+				$j('#previewButton').click(function(event) {
 					showReportingDialog({ 
 						title: 'Preview Data Set', 
 						url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dsd.uuid}&type=${dsd['class'].name}'
 					});
 				}).height(32);
-				$('#closeButton').click(function(event) {
+				$j('#closeButton').click(function(event) {
 					window.location = '${manageUrl}';
 				}).height(32);
 				
 				<c:forEach var="dim" varStatus="dimStatus" items="${dsd.dimensions}">
-					$("#${model.portletUUID}EditDimLink${dimStatus.index}").click(function(event){ 
+					$j("#${model.portletUUID}EditDimLink${dimStatus.index}").click(function(event){
 						showReportingDialog({
 							title: 'Dimension: <spring:message javaScriptEscape="true" text="${dim.key}"/>',
 							url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${dsd['class'].name}|uuid=${dsd.uuid}|property=dimensions|currentKey=${dim.key}|mode=edit"/>',
@@ -57,19 +57,19 @@
 				</c:forEach>
 				
 				<c:forEach var="ind" varStatus="indStatus" items="${dsd.specifications}">
-					$("#editIndicatorLink${indStatus.index}").click(function(event){ 
+					$j("#editIndicatorLink${indStatus.index}").click(function(event){
 						showReportingDialog({
 							title: 'Indicator: <spring:message javaScriptEscape="true" text="${ind.indicatorNumber}"/> - <spring:message javaScriptEscape="true" text="${ind.label}"/>',
 							url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedIndicatorPortlet&url=cohortIndicatorAndDimensionSpecification&parameters=dsdUuid=${dsd.uuid}|index=${indStatus.index}|mode=edit"/>',
 							successCallback: function() { window.location.reload(true); }
 						});
 					});
-					$("#removeIndicatorLink${indStatus.index}").click(function(event){ 			
+					$j("#removeIndicatorLink${indStatus.index}").click(function(event){
 						if (confirm('Please confirm you wish to remove <spring:message javaScriptEscape="true" text="${ind.indicatorNumber}"/> - <spring:message javaScriptEscape="true" text="${ind.label}"/>')) {
 							document.location.href='<c:url value="cohortIndicatorAndDimensionRemoveIndicator.form?index=${indStatus.index}&dsdUuid=${dsd.uuid}"/>';
 						}
 					});
-					$("#viewDimensionColumns${indStatus.index}").click(function(event){ 
+					$j("#viewDimensionColumns${indStatus.index}").click(function(event){
 						showReportingDialog({
 							title: 'Indicator and Dimension Details: <spring:message javaScriptEscape="true" text="${ind.indicatorNumber}"/> - <spring:message javaScriptEscape="true" text="${ind.label}"/>',
 							url: '<c:url value="/module/reporting/viewPortlet.htm?id=cohortIndicatorAndDimensionPortlet&url=cohortIndicatorAndDimensionSpecification&parameters=dsdUuid=${dsd.uuid}|index=${indStatus.index}|mode=details"/>',
@@ -78,7 +78,7 @@
 					});
 				</c:forEach>
 				
-				$('#addIndicatorLink').click(function(event){
+				$j('#addIndicatorLink').click(function(event){
 					showReportingDialog({
 						title: 'Add Indicator and Dimensions',
 						url: '<c:url value="/module/reporting/viewPortlet.htm?id=addIndicatorLink&url=cohortIndicatorAndDimensionSpecification&parameters=dsdUuid=${dsd.uuid}|mode=edit"/>',

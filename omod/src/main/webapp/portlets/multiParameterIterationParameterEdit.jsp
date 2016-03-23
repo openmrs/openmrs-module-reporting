@@ -6,19 +6,19 @@
 </c:if>
 
 <script type="text/javascript" charset="utf-8">
-    $(document).ready(function() {
-        $('#cancelButton').click(function(event){
+    $j(document).ready(function() {
+        $j('#cancelButton').click(function(event){
             closeReportingDialog(false);
         });
 
-        $('#typeSelector').change(function(event) {
-            $('#typeSelector_fixed').hide();
-            $('#typeSelector_mapped').hide();
-            $('#typeSelector_complex').hide();
-            var val = $('#typeSelector').val();
-            $('#typeSelector_' + val + '').show();
+        $j('#typeSelector').change(function(event) {
+            $j('#typeSelector_fixed').hide();
+            $j('#typeSelector_mapped').hide();
+            $j('#typeSelector_complex').hide();
+            var val = $j('#typeSelector').val();
+            $j('#typeSelector_' + val + '').show();
         });
-        $('#typeSelector').trigger('change');
+        $j('#typeSelector').trigger('change');
 
     });
 </script>

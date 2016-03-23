@@ -9,9 +9,9 @@
 <c:set var="returnUrl" value="/module/reporting/reports/manageScheduledReports.form"/>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
+	$j(document).ready(function() {
 		
-		$(".scheduledReportsTable").dataTable( {
+		$j(".scheduledReportsTable").dataTable( {
 			"bPaginate": true,
 			"iDisplayLength": 25,
 			"bLengthChange": false,

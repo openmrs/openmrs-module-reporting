@@ -8,10 +8,10 @@
 <script type="text/javascript" charset="utf-8">
 	jQuery(document).ready(function() {
 		jQuery("#${id}").each(function() {
-			var val = $(this).html();
+			var val = $j(this).html();
 			try {
 				val = getScheduleDescription(val, '<openmrs:datePattern/>');
-				$(this).html(val);
+				$j(this).html(val);
 			} catch(e) {
 				console.log(e);
 			}

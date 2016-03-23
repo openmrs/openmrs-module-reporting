@@ -37,13 +37,13 @@
 		var nextRowIndex = ${currentValues == null ? 0 : fn:length(currentValues)}
 		var currentUuidsForRows = {};
 		
-		$(document).ready(function() {
+		$j(document).ready(function() {
 			
 			refreshRowSeparators();
 			
-			$('#${id} .changeButton').click(function() {
+			$j('#${id} .changeButton').click(function() {
 				var url = '<c:url value="${changeUrl}"/>';
-				var rowId = $(this).parents('.rowSection${id}:first').attr("id");
+				var rowId = $j(this).parents('.rowSection${id}:first').attr("id");
 				var title = 'Add';
 				var currentUuidForRow = currentUuidsForRows[rowId];
 				if (currentUuidForRow) {
@@ -59,12 +59,12 @@
 		});
 		
 		function refreshRowSeparators() {
-			$('.andSection').remove();
+			$j('.andSection').remove();
 			var i = 0;
-			$('.formField').each(function(event) {
-				var val = $(this).val();
+			$j('.formField').each(function(event) {
+				var val = $j(this).val();
 				if (i++ > 0) {
-					$(this).before('<div class="andSection" style="text-align:center; padding:10px; font-size:10px; font-weight:bold;">AND</div>');
+					$j(this).before('<div class="andSection" style="text-align:center; padding:10px; font-size:10px; font-weight:bold;">AND</div>');
 				}
 			});
 		}
@@ -73,23 +73,23 @@
 			var rowToChange = null;
 			if (currentRowId == null) {
 				currentRowId = '${id}' + nextRowIndex++;
-				rowToChange = $('#template${id}').clone(true).attr('id', currentRowId);
-				$('#newRows${id}').append(rowToChange);
+				rowToChange = $j('#template${id}').clone(true).attr('id', currentRowId);
+				$j('#newRows${id}').append(rowToChange);
 			}
 			else {
-				rowToChange = $('#'+currentRowId);
+				rowToChange = $j('#'+currentRowId);
 			}
 			
-			var formField = $(rowToChange).find('.formField');
-			$(formField).attr('name', '${formFieldName}');
-			$(formField).val(serializedResult);
+			var formField = $j(rowToChange).find('.formField');
+			$j(formField).attr('name', '${formFieldName}');
+			$j(formField).val(serializedResult);
 			
-			$(rowToChange).find('.valueLabel').html('<b>' + jsResult.parameterizable + '</b>');
+			$j(rowToChange).find('.valueLabel').html('<b>' + jsResult.parameterizable + '</b>');
 			var string = "";
 			for (var key in jsResult.parameterMappings) {
 				string += key + ": " + jsResult.parameterMappings[key] + "<br/>";
 			}
-			$(rowToChange).find('.parameterValuesLabel').html(string);
+			$j(rowToChange).find('.parameterValuesLabel').html(string);
 			
 			currentUuidsForRows[currentRowId] = jsResult.parameterizableUuid;
 			
@@ -100,7 +100,7 @@
 			   ${changeFunction}(jsResult);
 			</c:if>
 			
-			$(rowToChange).show();
+			$j(rowToChange).show();
 		}
 
 		function cancel${id}() {
@@ -108,7 +108,7 @@
 		}
 		
 		function remove${id}() {
-			$('#' + currentRowId).remove();
+			$j('#' + currentRowId).remove();
 			refreshRowSeparators();
 			closeReportingDialog(false);
 			<c:if test="${!empty removeFunction}">
@@ -156,8 +156,8 @@
 
 			<c:if test="${ not empty initialFormFieldValue }">
 				<script type="text/javascript">
-					$(document).ready(function() {
-						$('#${rowId}').find('.formField').val("<spring:message javaScriptEscape="true" text="${initialFormFieldValue}"/>");
+					$j(document).ready(function() {
+						$j('#${rowId}').find('.formField').val("<spring:message javaScriptEscape="true" text="${initialFormFieldValue}"/>");
 						currentUuidsForRows['${rowId}'] = '${initialValueUuid}';
 					});
 				</script>

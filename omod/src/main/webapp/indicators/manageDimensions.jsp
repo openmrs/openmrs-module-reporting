@@ -3,8 +3,8 @@
 <%@ include file="../manage/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-		$(".reporting-data-table").dataTable( {
+	$j(document).ready(function() {
+		$j(".reporting-data-table").dataTable( {
 			"bPaginate": true,
 			"iDisplayLength": 25,
 			"bLengthChange": false,
@@ -15,7 +15,7 @@
 		} );
 
 		<c:forEach items="${dimensions}" var="dimension" varStatus="status">	
-			$("#preview-${dimension.uuid}").click(function(event){ 
+			$j("#preview-${dimension.uuid}").click(function(event){
 				showReportingDialog({ 
 					title: 'Preview Dimension', 
 					url: '<c:url value="/module/reporting/parameters/queryParameter.form"/>?uuid=${dimension.uuid}&type=${dimension['class'].name}',

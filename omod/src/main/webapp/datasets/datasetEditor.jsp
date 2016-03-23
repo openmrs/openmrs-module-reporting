@@ -3,39 +3,39 @@
 
 <script type="text/javascript" charset="utf-8">
 
-	$(document).ready(function() {
+	$j(document).ready(function() {
 	
 		// Redirect to listing page
-		$('#cancel-button').click(function(event){
+		$j('#cancel-button').click(function(event){
 			window.location.href='<c:url value="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition"/>';
 		});
 
 		<c:forEach items="${dataSetDefinition.parameters}" var="cdparam">
-			$('#selectValue${cdparam.name}').val('t');
-			$('#paramLabel${cdparam.name}').val('${cdparam.label}');
-			$('#dynamicValue${cdparam.name}').show();
+			$j('#selectValue${cdparam.name}').val('t');
+			$j('#paramLabel${cdparam.name}').val('${cdparam.label}');
+			$j('#dynamicValue${cdparam.name}').show();
 		</c:forEach>
 
 		<c:forEach items="${configurationProperties}" var="p" varStatus="varStatus">
-			$('#selectValue${p.field.name}').change(function(event){
-				if ($(this).val() == 't') {
-					$('#paramLabel${p.field.name}').val('${cdparam.label}');
-					$('#dynamicValue${p.field.name}').show();
+			$j('#selectValue${p.field.name}').change(function(event){
+				if ($j(this).val() == 't') {
+					$j('#paramLabel${p.field.name}').val('${cdparam.label}');
+					$j('#dynamicValue${p.field.name}').show();
 				}
 				else {
-					$('#paramLabel${p.field.name}').val('');
-					$('#dynamicValue${p.field.name}').hide();
+					$j('#paramLabel${p.field.name}').val('');
+					$j('#dynamicValue${p.field.name}').hide();
 				}
-				if ($(this).val() == 'f') {
-					$('#fixedValue${p.field.name}').show();
+				if ($j(this).val() == 'f') {
+					$j('#fixedValue${p.field.name}').show();
 				}
 				else {
-					$('#fixedValue${p.field.name}').hide();
+					$j('#fixedValue${p.field.name}').hide();
 				}
 			});
-			if ($('#${p.field.name}').val() != '') {
-				$('#selectValue${p.field.name}').val('f');
-				$('#fixedValue${p.field.name}').show();
+			if ($j('#${p.field.name}').val() != '') {
+				$j('#selectValue${p.field.name}').val('f');
+				$j('#fixedValue${p.field.name}').show();
 			}
 		</c:forEach>
 
