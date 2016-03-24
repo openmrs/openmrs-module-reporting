@@ -24,7 +24,7 @@ import org.openmrs.reporting.export.DataExportReportObject;
 /**
  * Definition of a dataset that runs a Data Export (of the sort created in the reportingcompatibility
  * module.
- * @see DataExportDataSet
+ * @see DataExportDataSetDefinition
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @SuppressWarnings("deprecation")
