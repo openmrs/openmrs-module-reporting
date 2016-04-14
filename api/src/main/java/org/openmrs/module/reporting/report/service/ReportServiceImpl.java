@@ -1,7 +1,6 @@
 package org.openmrs.module.reporting.report.service;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -39,10 +38,8 @@ import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -705,20 +702,19 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				log.debug("Cached Data is already persisted, returning");
 			} else {
 				ReportRequest request = getReportRequestByUuid(reportRequestUuid);
-				BufferedOutputStream out = null;
 				try {
 					Timer timer = Timer.start();
 					File reportDataFile = getReportDataFile(request);
-					log.info(timer.logInterval("About to serialize the ReportData to " + reportDataFile.getPath()));
-					out = new BufferedOutputStream(new FileOutputStream(reportDataFile));
+					log.info(timer.logInterval("About to serialize the ReportData"));
 					ReportingSerializer serializer = (ReportingSerializer) Context.getSerializationService().getSerializer(ReportingSerializer.class);
-					serializer.serializeToStream(cachedData.getReportData(), out);
+                    String s = serializer.serialize(cachedData.getReportData());
+                    log.info(timer.logInterval("About to write the serialized ReportData to " + reportDataFile.getPath()));
+                    ReportUtil.writeStringToFile(reportDataFile, s);
 					log.info(timer.logInterval("Serialized the report data to disk"));
 					cachedData.setPersisted(true);
-				} catch (Exception e) {
+				}
+                catch (Exception e) {
 					log.warn("An error occurred writing report data to disk", e);
-				} finally {
-					IOUtils.closeQuietly(out);
 				}
 			}
 		}

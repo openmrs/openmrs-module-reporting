@@ -32,12 +32,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipException;
 
 public class ReportUtil {
 	
@@ -144,10 +146,15 @@ public class ReportUtil {
 	}
 	
 	public static void decompressFile(File inFile, File outFile) {
-		GZIPInputStream in = null;
-		FileOutputStream out = null;
+		InputStream in = null;
+		OutputStream out = null;
 		try {
-			in = new GZIPInputStream(new FileInputStream(inFile));
+            try {
+                in = new GZIPInputStream(new FileInputStream(inFile));
+            }
+            catch (ZipException ze) {
+                in = new FileInputStream(inFile); // Safety check.  If the file isn't actually compressed, try to use it as is.
+            }
 			out = new FileOutputStream(outFile);
 			IOUtils.copy(in, out);
 		}
