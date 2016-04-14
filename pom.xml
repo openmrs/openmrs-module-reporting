@@ -376,6 +376,11 @@
                             </goals>
                         </execution>
                     </executions>
+					<configuration>
+						<excludes>
+							<exclude>TestingApplicationContext.xml</exclude>
+						</excludes>
+					</configuration>
                 </plugin>
 
 				<plugin>
