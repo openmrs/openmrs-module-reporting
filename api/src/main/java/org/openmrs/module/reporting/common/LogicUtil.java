@@ -3,7 +3,8 @@ package org.openmrs.module.reporting.common;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.jfree.util.Log;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicCriteria;
@@ -13,6 +14,8 @@ import org.openmrs.util.PrivilegeConstants;
 
 @Deprecated
 public class LogicUtil {
+	
+	protected static Log log = LogFactory.getLog(LogicUtil.class);
 	
 	/**
 	 * Tries to parse a String into a {@link LogicCriteria}. This method is safe to run on versions
@@ -108,7 +111,7 @@ public class LogicUtil {
 				return true;
 			}
 			catch (LogicException ex) {
-				Log.error("Invalid Logic expression:" + logicExpression, ex);
+				log.error("Invalid Logic expression:" + logicExpression, ex);
 			}
 			
 		} else {
