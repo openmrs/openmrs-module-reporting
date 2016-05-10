@@ -28,13 +28,13 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
-import org.openmrs.api.PatientSetService.TimeModifier;
-import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.service.ReportService.Modifier;
+import org.openmrs.module.reporting.report.service.ReportService.TimeModifier;
 
 public interface CohortQueryDAO {
 	
@@ -54,7 +54,7 @@ public interface CohortQueryDAO {
 
     // Patients having certain observations 
 	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
-            PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
+            Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
 	
 	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,

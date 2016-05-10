@@ -19,6 +19,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.openmrs.Cohort;
+import org.openmrs.Patient;
+import org.openmrs.PatientState;
+import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.report.Report;
@@ -328,4 +332,71 @@ public interface ReportService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	public void logReportMessage(ReportRequest request, String message);
+	
+	/**
+	 * TODO write something here
+	 * 
+	 * @param patientIds
+	 * @return List of matching patients
+	 */
+	public List<Patient> getPatients(Collection<Integer> patientIds);
+	
+	/**
+	 * Gets statistical information about current states of patients within given cohort for specific program workflow 
+	 * 
+	 * @param ps the patient's cohort object
+	 * @param wf the program workflow instance
+	 * @return map containing statistic information about patient states in cohort
+	 * 
+	 * @should return an empty map if cohort is empty
+	 */
+	public Map<Integer, PatientState> getCurrentStates(Cohort ps, ProgramWorkflow wf);
+	
+	public enum Modifier {
+		LESS_THAN("<"),
+		LESS_EQUAL("<="),
+		EQUAL("="),
+		GREATER_EQUAL(">="),
+		GREATER_THAN(">");
+		
+		public final String sqlRep;
+		
+		Modifier(String sqlRep) {
+			this.sqlRep = sqlRep;
+		}
+		
+		public String getSqlRepresentation() {
+			return sqlRep;
+		}
+	}
+	
+	public enum TimeModifier {
+		ANY,
+		NO,
+		FIRST,
+		LAST,
+		MIN,
+		MAX,
+		AVG;
+	}
+	
+	public enum BooleanOperator {
+		AND,
+		OR,
+		NOT;
+	}
+	
+	// probably should combine this with TimeModifier
+	public enum GroupMethod {
+		ANY,
+		ALL,
+		NONE;
+	}
+	
+	public enum PatientLocationMethod {
+		EARLIEST_ENCOUNTER,
+		LATEST_ENCOUNTER,
+		ANY_ENCOUNTER,
+		PATIENT_HEALTH_CENTER
+	}
 }

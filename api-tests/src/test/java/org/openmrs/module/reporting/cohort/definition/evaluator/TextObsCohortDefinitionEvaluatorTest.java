@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Location;
-import org.openmrs.api.PatientSetService.TimeModifier;
+import org.openmrs.module.reporting.report.service.ReportService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.TextObsCohortDefinition;

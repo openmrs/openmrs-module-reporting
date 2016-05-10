@@ -29,14 +29,14 @@ import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.api.PatientSetService.TimeModifier;
-import org.openmrs.api.impl.PatientSetServiceImpl;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.service.ReportService.Modifier;
+import org.openmrs.module.reporting.report.service.ReportService.TimeModifier;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly=true)
@@ -58,7 +58,7 @@ public interface CohortQueryService extends OpenmrsService {
     public Cohort getPatientsHavingCompletedDrugOrders(List<Drug> drugs, List<Concept> drugSetConcepts, Date completedOnOrAfter, Date completedOnOrBefore);
 
 	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
-            PatientSetServiceImpl.Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
+            Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
 
 	/**
 	 * Get patients having range (i.e. Numeric or Date/Time) obs that match a complicated query.

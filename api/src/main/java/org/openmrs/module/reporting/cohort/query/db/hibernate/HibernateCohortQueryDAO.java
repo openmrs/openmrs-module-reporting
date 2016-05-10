@@ -31,9 +31,8 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
-import org.openmrs.api.PatientSetService;
-import org.openmrs.api.PatientSetService.Modifier;
-import org.openmrs.api.PatientSetService.TimeModifier;
+import org.openmrs.module.reporting.report.service.ReportService.Modifier;
+import org.openmrs.module.reporting.report.service.ReportService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
@@ -599,7 +598,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
 		} else if (timeModifier == TimeModifier.FIRST
 				|| timeModifier == TimeModifier.LAST) {
-			boolean isFirst = timeModifier == PatientSetService.TimeModifier.FIRST;
+			boolean isFirst = timeModifier == TimeModifier.FIRST;
 			sb
 					.append("select o.person_id "
 							+ "from obs o inner join ("
@@ -804,7 +803,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
     }
 
 	/**
-	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingRangedObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.RangeComparator, java.lang.Object, org.openmrs.module.reporting.common.RangeComparator, java.lang.Object)
+	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingRangedObs(org.openmrs.module.reporting.report.service.ReportService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.RangeComparator, java.lang.Object, org.openmrs.module.reporting.common.RangeComparator, java.lang.Object)
 	 */
 	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                               Date onOrAfter, Date onOrBefore,
@@ -951,7 +950,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			sql.append(dateAndLocationSql);
 		} 
 		else if (timeModifier == TimeModifier.FIRST || timeModifier == TimeModifier.LAST) {
-			boolean isFirst = timeModifier == PatientSetService.TimeModifier.FIRST;
+			boolean isFirst = timeModifier == TimeModifier.FIRST;
 			sql.append(" inner join ( ");
 			sql.append("    select person_id, " + (isFirst ? "MIN" : "MAX") + "(obs_datetime) as odt ");
 			sql.append("    from obs ");
@@ -1136,7 +1135,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	
 
 	/**
-	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingDiscreteObs(org.openmrs.api.PatientSetService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.SetComparator, java.util.List)
+	 * @see org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO#getPatientsHavingDiscreteObs(org.openmrs.module.reporting.report.service.ReportService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.SetComparator, java.util.List)
 	 */
 	public Cohort getPatientsHavingDiscreteObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
                                                Date onOrAfter, Date onOrBefore, List<Location> locationList,

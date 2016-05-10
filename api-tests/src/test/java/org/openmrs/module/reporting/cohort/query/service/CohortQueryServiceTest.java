@@ -17,7 +17,7 @@ import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.Person;
 import org.openmrs.User;
-import org.openmrs.api.PatientSetService.TimeModifier;
+import org.openmrs.module.reporting.report.service.ReportService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.TestUtil;

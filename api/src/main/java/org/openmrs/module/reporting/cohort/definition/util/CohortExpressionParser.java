@@ -16,8 +16,7 @@ package org.openmrs.module.reporting.cohort.definition.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
-import org.openmrs.api.PatientSetService;
-import org.openmrs.api.PatientSetService.BooleanOperator;
+import org.openmrs.module.reporting.report.service.ReportService.BooleanOperator;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -240,13 +239,13 @@ public class CohortExpressionParser {
 					String s = (String) token;
 					String lower = s.toLowerCase();
 					if (andWords.contains(lower)) {
-						currentLine.add(PatientSetService.BooleanOperator.AND);
+						currentLine.add(BooleanOperator.AND);
 					} 
 					else if (orWords.contains(lower)) {
-						currentLine.add(PatientSetService.BooleanOperator.OR);
+						currentLine.add(BooleanOperator.OR);
 					} 
 					else if (notWords.contains(lower)) {
-						currentLine.add(PatientSetService.BooleanOperator.NOT);
+						currentLine.add(BooleanOperator.NOT);
 					} 
 					else {
 						if (s.length() == 1) {

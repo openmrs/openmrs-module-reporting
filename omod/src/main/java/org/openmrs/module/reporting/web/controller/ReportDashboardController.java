@@ -95,7 +95,7 @@ public class ReportDashboardController {
 
 				model.addAttribute("selectedCohort", selectedCohort);
 				
-				model.addAttribute("patients", Context.getPatientSetService().getPatients(selectedCohort.getMemberIds()));	
+				model.addAttribute("patients", Context.getService(ReportService.class).getPatients(selectedCohort.getMemberIds()));	
 
 				// Evaluate the default patient dataset definition
 				DataSetDefinition dsd = null;

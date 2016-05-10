@@ -13,6 +13,11 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,11 +41,6 @@ import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The logic that evaluates a {@link SimplePatientDataSetDefinition} and produces an {@link DataSet}
@@ -78,12 +78,12 @@ public class SimplePatientDataSetEvaluator implements DataSetEvaluator {
 		}
 
 		// Get a list of patients based on the cohort members
-		List<Patient> patients = Context.getPatientSetService().getPatients(cohort.getMemberIds());
+		List<Patient> patients = Context.getService(org.openmrs.module.reporting.report.service.ReportService.class).getPatients(cohort.getMemberIds());
 		
 		// Pre-calculate the program states
 		Map<ProgramWorkflow, Map<Integer, PatientState>> states = new HashMap<ProgramWorkflow, Map<Integer, PatientState>>();
 		for (ProgramWorkflow wf : definition.getProgramWorkflows()) {
-			states.put(wf, Context.getPatientSetService().getCurrentStates(cohort, wf));
+			states.put(wf, Context.getService(org.openmrs.module.reporting.report.service.ReportService.class).getCurrentStates(cohort, wf));
 		}
 		
 		for (Patient p : patients) {			
