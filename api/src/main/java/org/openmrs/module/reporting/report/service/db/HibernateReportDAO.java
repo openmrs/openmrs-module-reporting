@@ -13,26 +13,13 @@
  */
 package org.openmrs.module.reporting.report.service.db;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.Cohort;
-import org.openmrs.Patient;
-import org.openmrs.PatientState;
-import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -41,6 +28,9 @@ import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * ReportService Database Access Interface
@@ -201,7 +191,7 @@ public class HibernateReportDAO implements ReportDAO {
 	}
 
 	/**
-	 * @see ReportDAO#getReportRequests(ReportDefinition, Date, Date, Integer, Status)
+	 * @see ReportDAO#getReportRequests(ReportDefinition, Date, Date, Integer, Status...)
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses) {
@@ -250,57 +240,6 @@ public class HibernateReportDAO implements ReportDAO {
 	 */
 	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<Patient> getPatients(Collection<Integer> patientIds) throws DAOException {
-		List<Patient> ret = new ArrayList<Patient>();
-		
-		if (!patientIds.isEmpty()) {
-			Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Patient.class);
-			criteria.setCacheMode(CacheMode.IGNORE);
-			criteria.add(Restrictions.in("patientId", patientIds));
-			criteria.add(Restrictions.eq("voided", false));
-			log.debug("criteria: " + criteria);
-			List<Patient> temp = criteria.list();
-			for (Patient p : temp) {
-				ret.add(p);
-			}
-		}
-		
-		return ret;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Map<Integer, PatientState> getCurrentStates(Cohort ps, ProgramWorkflow wf) throws DAOException {
-		Map<Integer, PatientState> ret = new HashMap<Integer, PatientState>();
-		
-		if (ps == null || ps.getMemberIds().size() > 0) {
-			Date now = new Date();
-			
-			Criteria criteria = sessionFactory.getCurrentSession().createCriteria(PatientState.class);
-			criteria.setFetchMode("patient", FetchMode.JOIN);
-			criteria.setCacheMode(CacheMode.IGNORE);
-			//criteria.add(Restrictions.in("patientProgram.patient.personId", ids));
-			
-			// only include this where clause if patients were passed in
-			if (ps != null) {
-				criteria.createCriteria("patientProgram").add(Restrictions.in("patient.personId", ps.getMemberIds()));
-			}
-			
-			//criteria.add(Restrictions.eq("state.programWorkflow", wf));
-			criteria.createCriteria("state").add(Restrictions.eq("programWorkflow", wf));
-			criteria.add(Restrictions.eq("voided", false));
-			criteria.add(Restrictions.or(Restrictions.isNull("startDate"), Restrictions.le("startDate", now)));
-			criteria.add(Restrictions.or(Restrictions.isNull("endDate"), Restrictions.ge("endDate", now)));
-			log.debug("criteria: " + criteria);
-			List<PatientState> temp = criteria.list();
-			for (PatientState state : temp) {
-				Integer ptId = state.getPatientProgram().getPatient().getPatientId();
-				ret.put(ptId, state);
-			}
-		}
-		return ret;
 	}
 }
 

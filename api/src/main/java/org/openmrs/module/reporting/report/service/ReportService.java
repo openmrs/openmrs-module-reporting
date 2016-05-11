@@ -13,16 +13,6 @@
  */
 package org.openmrs.module.reporting.report.service;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.openmrs.Cohort;
-import org.openmrs.Patient;
-import org.openmrs.PatientState;
-import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.report.Report;
@@ -36,6 +26,11 @@ import org.openmrs.module.reporting.report.processor.ReportProcessor;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * ReportService API
@@ -332,23 +327,5 @@ public interface ReportService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	public void logReportMessage(ReportRequest request, String message);
-	
-	/**
-	 * TODO write something here
-	 * 
-	 * @param patientIds
-	 * @return List of matching patients
-	 */
-	public List<Patient> getPatients(Collection<Integer> patientIds);
-	
-	/**
-	 * Gets statistical information about current states of patients within given cohort for specific program workflow 
-	 * 
-	 * @param ps the patient's cohort object
-	 * @param wf the program workflow instance
-	 * @return map containing statistic information about patient states in cohort
-	 * 
-	 * @should return an empty map if cohort is empty
-	 */
-	public Map<Integer, PatientState> getCurrentStates(Cohort ps, ProgramWorkflow wf);
+
 }

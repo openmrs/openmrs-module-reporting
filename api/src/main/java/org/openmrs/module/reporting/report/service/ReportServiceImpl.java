@@ -1,28 +1,9 @@
 package org.openmrs.module.reporting.report.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
-import org.openmrs.Patient;
-import org.openmrs.PatientState;
-import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -56,6 +37,22 @@ import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * Base Implementation of the ReportService API
@@ -740,14 +737,6 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 
 	public void setRunQueuedReportsTask(ReportingTimerTask runQueuedReportsTask) {
 		this.runQueuedReportsTask = runQueuedReportsTask;
-	}
-	
-	public List<Patient> getPatients(Collection<Integer> patientIds) {
-		return getReportDAO().getPatients(patientIds);
-	}
-	
-	public Map<Integer, PatientState> getCurrentStates(Cohort ps, ProgramWorkflow wf) {
-		return getReportDAO().getCurrentStates(ps, wf);
 	}
 
 	//***** INNER CLASS FOR CACHING *****

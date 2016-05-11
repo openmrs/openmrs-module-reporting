@@ -13,15 +13,6 @@
  */
 package org.openmrs.module.reporting.report.service.db;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.openmrs.Cohort;
-import org.openmrs.Patient;
-import org.openmrs.PatientState;
-import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
@@ -29,6 +20,9 @@ import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * ReportService Database Access Interface
@@ -137,8 +131,5 @@ public interface ReportDAO {
 	 * Deletes the passed {@link ReportRequest}
 	 */
 	public void purgeReportRequest(ReportRequest request);
-	
-	public List<Patient> getPatients(Collection<Integer> patientIds) throws DAOException;
-	
-	public Map<Integer, PatientState> getCurrentStates(Cohort ps, ProgramWorkflow wf) throws DAOException;
+
 }

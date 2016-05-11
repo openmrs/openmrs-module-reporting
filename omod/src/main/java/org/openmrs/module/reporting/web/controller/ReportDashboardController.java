@@ -4,15 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.PatientIdentifierType;
-import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.cohort.CohortUtil;
-import org.openmrs.module.reporting.cohort.Cohorts;
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
@@ -22,10 +15,7 @@ import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinition
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
-import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.module.reporting.report.service.ReportService;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -35,10 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -94,8 +81,6 @@ public class ReportDashboardController {
 				} 
 
 				model.addAttribute("selectedCohort", selectedCohort);
-				
-				model.addAttribute("patients", Context.getService(ReportService.class).getPatients(selectedCohort.getMemberIds()));	
 
 				// Evaluate the default patient dataset definition
 				DataSetDefinition dsd = null;
