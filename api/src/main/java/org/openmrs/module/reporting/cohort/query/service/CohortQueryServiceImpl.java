@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.reporting.cohort.query.service;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -44,13 +38,15 @@ import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDef
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DurationUnit;
-import org.openmrs.module.reporting.common.RangeComparator;
-import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.report.service.ReportService.Modifier;
-import org.openmrs.module.reporting.report.service.ReportService.TimeModifier;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class CohortQueryServiceImpl  extends BaseOpenmrsService implements CohortQueryService {
 
@@ -69,12 +65,6 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
 	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate) {
     	return dao.getPatientsWithAgeRange(minAge, minAgeUnit, maxAge, maxAgeUnit, unknownAgeIncluded, effectiveDate);
     }
-    
-	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
-            Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType) { 
-		return dao.getPatientsHavingObs(conceptId, timeModifier, modifier, value, fromDate, toDate, providers, encounterType);
-	}
-
     
     /**
      * @see CohortQueryService#getPatientsHavingProgramEnrollment(List, Date, Date, Date, Date)
@@ -145,21 +135,6 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
     }
 
 	/**
-	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingRangedObs(org.openmrs.module.reporting.report.service.ReportService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.RangeComparator, java.lang.Object, org.openmrs.module.reporting.common.RangeComparator, java.lang.Object)
-	 */
-	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
-                                              Date onOrAfter, Date onOrBefore, List<Location> locationList,
-                                              List<EncounterType> encounterTypeList, RangeComparator operator1, Object value1,
-                                              RangeComparator operator2, Object value2) {
-	    return dao.getPatientsHavingRangedObs(
-	    	timeModifier, question, groupingConcept,
-	    	onOrAfter, onOrBefore,
-	    	locationList, encounterTypeList,
-	    	operator1, value1,
-	    	operator2, value2);
-    }
-
-	/**
 	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingEncounters(java.util.Date, java.util.Date, java.util.List, java.util.List, java.util.List, java.lang.Integer, java.lang.Integer)
 	 */
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore,
@@ -180,20 +155,6 @@ public class CohortQueryServiceImpl  extends BaseOpenmrsService implements Cohor
                                               Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore) {
 	    return dao.getPatientsHavingEncounters(onOrAfter, onOrBefore, timeQualifier, locationList, providerList, encounterTypeList, formList,
 	    									   atLeastCount, atMostCount, createdBy, createdOnOrAfter, createdOnOrBefore);
-    }
-
-	/**
-	 * @see org.openmrs.module.reporting.cohort.query.service.CohortQueryService#getPatientsHavingDiscreteObs(org.openmrs.module.reporting.report.service.ReportService.TimeModifier, org.openmrs.Concept, org.openmrs.Concept, java.util.Date, java.util.Date, java.util.List, java.util.List, org.openmrs.module.reporting.common.SetComparator, java.util.List)
-	 */
-	public Cohort getPatientsHavingDiscreteObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
-                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
-                                               List<EncounterType> encounterTypeList, SetComparator operator,
-                                               List<? extends Object> valueList) {
-		return dao.getPatientsHavingDiscreteObs(
-	    	timeModifier, question, groupingConcept,
-	    	onOrAfter, onOrBefore,
-	    	locationList, encounterTypeList,
-	    	operator, valueList);
     }
 
 	/**

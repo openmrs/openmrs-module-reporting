@@ -13,24 +13,27 @@
  */
 package org.openmrs.module.reporting.cohort.definition;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
-import org.openmrs.module.reporting.report.service.ReportService.TimeModifier;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.BaseObsCohortDefinition")
 public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
 
 	public static final long serialVersionUID = 1L;
+
+    public enum TimeModifier {
+        ANY, NO, FIRST, LAST, MIN, MAX, AVG;
+    }
 	
 	@ConfigurationProperty(required=true, group="questionGroup")
 	private TimeModifier timeModifier;

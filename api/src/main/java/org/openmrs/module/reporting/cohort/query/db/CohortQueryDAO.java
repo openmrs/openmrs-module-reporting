@@ -13,12 +13,7 @@
  */
 package org.openmrs.module.reporting.cohort.query.db;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.Cohort;
-import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
@@ -29,12 +24,12 @@ import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
 import org.openmrs.module.reporting.common.DurationUnit;
-import org.openmrs.module.reporting.common.RangeComparator;
-import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.report.service.ReportService.Modifier;
-import org.openmrs.module.reporting.report.service.ReportService.TimeModifier;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public interface CohortQueryDAO {
 	
@@ -51,20 +46,6 @@ public interface CohortQueryDAO {
     // Born or died between dates
     public Cohort getPatientsHavingBirthDateBetweenDates(Date onOrAfter, Date onOrBefore);
     public Cohort getPatientsHavingDiedBetweenDates(Date onOrAfter, Date onOrBefore);
-
-    // Patients having certain observations 
-	public Cohort getPatientsHavingObs(Integer conceptId, TimeModifier timeModifier,
-            Modifier modifier, Object value, Date fromDate, Date toDate, List<User> providers, EncounterType encounterType);
-	
-	public Cohort getPatientsHavingRangedObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
-                                              Date onOrAfter, Date onOrBefore, List<Location> locationList,
-                                              List<EncounterType> encounterTypeList, RangeComparator operator1, Object value1,
-                                              RangeComparator operator2, Object value2);
-	
-	public Cohort getPatientsHavingDiscreteObs(TimeModifier timeModifier, Concept question, Concept groupingConcept,
-                                               Date onOrAfter, Date onOrBefore, List<Location> locationList,
-                                               List<EncounterType> encounterTypeList, SetComparator operator,
-                                               List<? extends Object> valueList);
 	
 	// Patients who were in a Program on the specified date or range
 	public Cohort getPatientsInProgram(List<Program> programs, Date onOrAfter, Date onOrBefore);

@@ -3,7 +3,7 @@ package org.openmrs.module.reporting.validator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.module.reporting.report.service.ReportService.TimeModifier;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
