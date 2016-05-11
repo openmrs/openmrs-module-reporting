@@ -184,7 +184,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 		String ret = getSqlQuery();
 		for (String paramName : parameters.keySet()) {
 			String paramVal = ObjectUtil.format(parameters.get(paramName));
-			ret = ret.replace(":"+paramName, paramVal);
+			ret = ret.replace(":"+paramName, ObjectUtil.nvlStr(paramVal, "null"));
 		}
 		if (ret.length() > 500) {
 			ret = ret.substring(0, 450) + " <...> " + ret.substring(ret.length() - 50);
