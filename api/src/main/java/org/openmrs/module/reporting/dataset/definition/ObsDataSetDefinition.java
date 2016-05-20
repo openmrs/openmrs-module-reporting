@@ -73,6 +73,13 @@ public class ObsDataSetDefinition extends RowPerObjectDataSetDefinition {
     /**
      * Add a new row filter with the passed parameter mappings
      */
+    public void addRowFilter(Mapped<? extends ObsQuery> filter) {
+        getRowFilters().add(filter);
+    }
+
+    /**
+     * Add a new row filter with the passed parameter mappings
+     */
     public void addRowFilter(ObsQuery filter, String mappings) {
         getRowFilters().add(new Mapped<ObsQuery>(filter, ParameterizableUtil.createParameterMappings(mappings)));
     }
