@@ -52,8 +52,9 @@ public class SimpleIndicatorDataSetEvaluator implements DataSetEvaluator{
 			SimpleIndicatorColumn col = (SimpleIndicatorColumn) c;
 			try {
 				SimpleIndicatorResult result = (SimpleIndicatorResult) is.evaluate(col.getIndicator(), context);
-				ret.addColumnValue(0, c, result.getValue()); // this returns only 1 row
-			} catch (Exception ex) {
+                ret.addData(c, result.getValue());
+			}
+            catch (Exception ex) {
 				throw new EvaluationException("indicator for column " + col.getLabel() + " (" + col.getName() + ")", ex);
 			}
 		}
