@@ -3,7 +3,6 @@ package org.openmrs.module.reporting.data.obs.evaluator;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.DataUtil;
-import org.openmrs.module.reporting.data.encounter.definition.ConvertedEncounterDataDefinition;
 import org.openmrs.module.reporting.data.obs.EvaluatedObsData;
 import org.openmrs.module.reporting.data.obs.definition.ConvertedObsDataDefinition;
 import org.openmrs.module.reporting.data.obs.definition.ObsDataDefinition;
@@ -14,7 +13,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 /**
  * Evaluates a ConvertedObsDataDefinition
  */
-@Handler(supports=ConvertedEncounterDataDefinition.class, order=50)
+@Handler(supports=ConvertedObsDataDefinition.class, order=50)
 public class ConvertedObsDataEvaluator implements ObsDataEvaluator {
 
     public EvaluatedObsData evaluate(ObsDataDefinition definition, EvaluationContext context) throws EvaluationException {
