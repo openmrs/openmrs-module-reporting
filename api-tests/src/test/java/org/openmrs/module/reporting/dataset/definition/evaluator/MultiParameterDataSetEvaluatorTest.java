@@ -81,18 +81,18 @@ public class MultiParameterDataSetEvaluatorTest extends BaseModuleContextSensiti
 		Assert.assertNotNull(result.getMetaData().getColumn("GENDER"));
 		Assert.assertNotNull(result.getMetaData().getColumn("BIRTHDATE"));
 
-		Assert.assertEquals(3, result.getRowMap().size());
+		Assert.assertEquals(3, result.getRows().size());
 
 		// Asserting result parameter for first iteration
-		Assert.assertEquals(firstIterationParameter, result.getRowMap().get(1).getColumnValue("parameter.maxBirthDate"));
+		Assert.assertEquals(firstIterationParameter, result.getColumnValue(1, "parameter.maxBirthDate"));
 
 		// Asserting result parameters for second iteration
-		Assert.assertEquals(secondIterationParameter, result.getRowMap().get(2).getColumnValue("parameter.maxBirthDate"));
-		Assert.assertEquals(secondIterationParameter, result.getRowMap().get(3).getColumnValue("parameter.maxBirthDate"));
+		Assert.assertEquals(secondIterationParameter, result.getColumnValue(2, "parameter.maxBirthDate"));
+		Assert.assertEquals(secondIterationParameter, result.getColumnValue(3, "parameter.maxBirthDate"));
 
-		Date firstDateResult = (Date) result.getRowMap().get(1).getColumnValue("BIRTHDATE");
-		Date secondDateResult = (Date) result.getRowMap().get(2).getColumnValue("BIRTHDATE");
-		Date thirdDateResult = (Date) result.getRowMap().get(3).getColumnValue("BIRTHDATE");
+		Date firstDateResult = (Date) result.getColumnValue(1, "BIRTHDATE");
+		Date secondDateResult = (Date) result.getColumnValue(2, "BIRTHDATE");
+		Date thirdDateResult = (Date) result.getColumnValue(3, "BIRTHDATE");
 
 		// Asserting evaluation results values; first and second dates are the same - both iteration returns them
 		Assert.assertEquals(Timestamp.valueOf("1975-04-08 00:00:00.0"), firstDateResult);

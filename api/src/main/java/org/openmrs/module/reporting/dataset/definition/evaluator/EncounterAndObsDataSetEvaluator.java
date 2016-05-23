@@ -83,7 +83,7 @@ public class EncounterAndObsDataSetEvaluator extends EncounterDataSetEvaluator {
 		// Get the maximum number of occurrences for each Obs column, to determine which need to have sequence numbers appended
 		Map<String, Integer> maxNumForKey = new HashMap<String, Integer>();
 
-		for (DataSetRow row : data.getRowMap().values()) {
+		for (DataSetRow row : data.getRows()) {
 			List<Obs> obsList = (List<Obs>)row.getColumnValue("OBS");
 
 			if (obsList != null) {
@@ -105,7 +105,7 @@ public class EncounterAndObsDataSetEvaluator extends EncounterDataSetEvaluator {
 		}
 
 		// Add the Obs values to each dataset row
-		for (DataSetRow row : data.getRowMap().values()) {
+		for (DataSetRow row : data.getRows()) {
 			List<Obs> obsList = (List<Obs>)row.getColumnValue("OBS");
 
 			if (obsList != null) {
