@@ -1,13 +1,13 @@
 package org.openmrs.module.reporting.dataset;
 
+import org.openmrs.module.reporting.common.SortCriteria;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import org.openmrs.module.reporting.common.SortCriteria;
-import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
  * A basic implementation of a DataSet.
@@ -17,7 +17,7 @@ public class SimpleDataSet implements DataSet {
     private DataSetDefinition definition;
     private EvaluationContext context;
     private SimpleDataSetMetaData metaData = new SimpleDataSetMetaData();
-    private Map<Integer, DataSetRow> rowMap;
+    private Map<Integer, DataSetRow> idToRowMap = new LinkedHashMap<Integer, DataSetRow>();
     private SortCriteria sortCriteria;
     
     // *************
@@ -43,14 +43,14 @@ public class SimpleDataSet implements DataSet {
      * @param row the row to add to the DataSet
      */
     public void addRow(DataSetRow row) {
-    	addRow(getRowMap().size() + 1, row);
+    	addRow(idToRowMap.size() + 1, row);
     }
     
     /**
      * Add the passed Row to the dataset at the passed index.  Also ensures all the Columns are added to the metadata
      */
     public void addRow(Integer index, DataSetRow row) {
-    	getRowMap().put(index, row);
+    	idToRowMap.put(index, row);
     	if (row != null) {
 	        for (DataSetColumn c : row.getColumnValues().keySet()) {
 	        	if (getMetaData().getColumn(c.getName()) == null) {
@@ -63,11 +63,11 @@ public class SimpleDataSet implements DataSet {
     /**
      * Adds a Column value to this DataSet
      * @param id the id of the object
-     * @param columnName the name of the column
+     * @param column the name of the column
      * @param columnValue the value to add
      */
     public void addColumnValue(Integer id, DataSetColumn column, Object columnValue) {
-    	DataSetRow row = getRowMap().get(id);
+    	DataSetRow row = idToRowMap.get(id);
     	if (row == null) {
     		row = new DataSetRow();
     		addRow(id, row);
@@ -84,7 +84,7 @@ public class SimpleDataSet implements DataSet {
      * @param columnName the name of the column
      */
     public Object getColumnValue(Integer id, String columnName) {
-    	DataSetRow row = getRowMap().get(id);
+    	DataSetRow row = idToRowMap.get(id);
     	if (row != null) {
     		return row.getColumnValue(columnName);
     	}
@@ -96,7 +96,7 @@ public class SimpleDataSet implements DataSet {
      */
     public DataSetRowList getRows() {
     	DataSetRowList l = new DataSetRowList();
-    	l.addAll(getRowMap().values());
+    	l.addAll(idToRowMap.values());
     	if (getSortCriteria() != null) {
     		Collections.sort(l, new DataSetRowComparator(getSortCriteria()));
 		}
@@ -154,23 +154,6 @@ public class SimpleDataSet implements DataSet {
 	 */
 	public void setMetaData(SimpleDataSetMetaData metaData) {
 		this.metaData = metaData;
-	}
-
-	/**
-	 * @return the rowMap
-	 */
-	public Map<Integer, DataSetRow> getRowMap() {
-		if (rowMap == null) {
-			rowMap = new LinkedHashMap<Integer, DataSetRow>();
-		}
-		return rowMap;
-	}
-
-	/**
-	 * @param rowMap the rowMap to set
-	 */
-	public void setRowMap(Map<Integer, DataSetRow> rowMap) {
-		this.rowMap = rowMap;
 	}
 
 	/**
