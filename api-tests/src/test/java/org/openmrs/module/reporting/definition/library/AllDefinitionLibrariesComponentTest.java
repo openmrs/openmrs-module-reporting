@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.definition.library;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -19,6 +20,11 @@ public class AllDefinitionLibrariesComponentTest extends BaseModuleContextSensit
 
     @Autowired
     AllDefinitionLibraries libraries;
+
+    @Before
+    public void setUp() throws Exception {
+        libraries.initLibraries();
+    }
 
     @Test
     public void testSetup() throws Exception {
