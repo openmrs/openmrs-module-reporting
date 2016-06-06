@@ -148,14 +148,6 @@
             <scope>test</scope>
         </dependency>
 
-		<!-- Needed to be able to build using PowerMock on Java 8. See http://stackoverflow.com/a/33162314 -->
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.19.0-GA</version>
-			<scope>test</scope>
-		</dependency>
-
 		<!-- OpenMRS dependencies -->
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
