@@ -20,6 +20,7 @@ import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.DaemonToken;
 import org.openmrs.module.DaemonTokenAware;
 import org.openmrs.module.reporting.common.MessageUtil;
+import org.openmrs.module.reporting.definition.library.AllDefinitionLibraries;
 import org.openmrs.module.reporting.report.task.ReportingTimerTask;
 import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 
@@ -39,7 +40,10 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
     @Override
 	public void started() {
 		ReportingTimerTask.setEnabled(true);
-		log.info("Reporting Module Started...");
+	    for (AllDefinitionLibraries adl : Context.getRegisteredComponents(AllDefinitionLibraries.class)) {
+		    adl.initLibraries();
+	    }
+	    log.info("Reporting Module Started...");
 	}
 
 	@Override

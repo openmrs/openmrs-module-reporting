@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -31,8 +32,41 @@ import java.util.Set;
 @Repository
 public class AllDefinitionLibraries {
 
+	/**
+     * Modules can define beans that implement DefinitionLibrary
+     */
     @Autowired(required = false)
+    private List<DefinitionLibrary<?>> libraryBeans;
+
+	/**
+     * Modules can define beans that implement DefinitionLibraryFactory
+     */
+    @Autowired(required = false)
+    private List<DefinitionLibraryFactory> libraryFactories;
+
+	/**
+     * Will be populated by {@link }initLibraries()}
+     */
     private List<DefinitionLibrary<?>> libraries;
+
+	/**
+     * This should be called after the Spring context is initialized and libraryBeans and libraryFactories have been
+     * autowired (e.g. from this module's activator)
+     */
+    public void initLibraries() {
+        libraries = new ArrayList<DefinitionLibrary<?>>();
+        if (libraryBeans != null) {
+            libraries.addAll(libraryBeans);
+        }
+        if (libraryFactories != null) {
+            for (DefinitionLibraryFactory factory : libraryFactories) {
+                Collection<DefinitionLibrary<?>> fromFactory = factory.getDefinitionLibraries();
+                if (fromFactory != null) {
+                    libraries.addAll(fromFactory);
+                }
+            }
+        }
+    }
 
     public List<LibraryDefinitionSummary> getDefinitionSummaries(Class<? extends Definition> returnType) {
         if (returnType == null) {
