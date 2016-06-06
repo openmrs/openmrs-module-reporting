@@ -146,7 +146,6 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
         PersonAttributeType testAttributeType = setUpTestPatientPersonAttribute(2, 7);
         TestPatientCohortDefinitionLibrary library = new TestPatientCohortDefinitionLibrary();
 
-	    libraries.initLibraries();
         libraries.addLibrary(library);
         TestUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_TEST_PATIENTS_COHORT_DEFINITION,
                 "library:patientDataServiceImplTest.testPatients");

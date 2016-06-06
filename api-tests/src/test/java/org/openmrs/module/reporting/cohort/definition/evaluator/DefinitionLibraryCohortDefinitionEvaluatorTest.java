@@ -55,7 +55,6 @@ public class DefinitionLibraryCohortDefinitionEvaluatorTest extends BaseModuleCo
     @Before
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
-        libraries.initLibraries();
     }
 
     @Test

@@ -24,7 +24,6 @@ import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.DefinitionLibraryPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
-import org.openmrs.module.reporting.definition.library.AllDefinitionLibraries;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +38,6 @@ import static org.junit.Assert.assertThat;
 public class DefinitionLibraryPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
     @Autowired
-    private AllDefinitionLibraries definitionLibraries;
-
-    @Autowired
     private PatientDataService service;
 
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
@@ -51,7 +47,6 @@ public class DefinitionLibraryPatientDataEvaluatorTest extends BaseModuleContext
     @Before
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
-        definitionLibraries.initLibraries();
     }
 
     @Test
