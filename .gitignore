@@ -20,3 +20,5 @@ omod/.settings/*
 omod/target/*
 test-1.9/target/*
 /.settings
+
+.DS_Store
