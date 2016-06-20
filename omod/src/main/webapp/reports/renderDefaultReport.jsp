@@ -148,10 +148,10 @@ $j(document).ready(function(){
 										<th style="text-align:left;"><spring:message code="${col.label}" text="${col.label}"/></th>
 									</c:forEach>
 								</tr>
-								<c:forEach items="${dataSet.rowMap}" var="rowEntry">
+								<c:forEach items="${dataSet.rows}" var="row">
 									<tr>
 										<c:forEach items="${dataSet.metaData.columns}" var="col">
-											<td><rpt:format object="${rowEntry.value.columnValues[col]}"/></td>
+											<td><rpt:format object="${row.columnValues[col]}"/></td>
 										</c:forEach>
 									</tr>
 								</c:forEach>
