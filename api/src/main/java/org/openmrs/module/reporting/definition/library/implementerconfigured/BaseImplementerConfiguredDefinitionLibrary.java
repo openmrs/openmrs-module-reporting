@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,12 +11,11 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.SerializationService;
-import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.GroovyHelper;
 import org.openmrs.module.reporting.definition.library.DefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.LibraryDefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
-import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.serialization.SerializationException;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,6 +123,8 @@ public abstract class BaseImplementerConfiguredDefinitionLibrary<T extends Defin
 							log.warn("Invalid serialized definition at " + libraryNameSuffix + " in " + file
 									.getAbsolutePath(), ex);
 						}
+					} else if (filename.endsWith(".groovy")) {
+						definition = (Definition) new GroovyHelper().parseClassFromFileAndNewInstance(file);
 					} else if (filename.endsWith(".sql")) {
 						String sql = OpenmrsUtil.getFileAsString(file);
 						definition = sqlDefinition(sql);

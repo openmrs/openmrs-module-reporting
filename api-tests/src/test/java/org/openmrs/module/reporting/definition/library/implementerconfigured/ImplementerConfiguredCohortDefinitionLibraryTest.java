@@ -74,4 +74,17 @@ public class ImplementerConfiguredCohortDefinitionLibraryTest {
 		assertThat(definition, instanceOf(GenderCohortDefinition.class));
 		assertThat(((GenderCohortDefinition) definition).getFemaleIncluded(), is(true));
 	}
+
+	@Test
+	public void testGroovyDefinition() throws Exception {
+		when(directory.listFiles()).thenReturn(new File[] { new File("females.groovy") });
+
+		assertThat(library.getDefinitionSummaries().size(), is(1));
+		assertThat(library.getDefinitionSummaries().get(0).getKey(), is("configuration.definitionlibrary.cohort.females"));
+
+		CohortDefinition definition = library.getDefinition("configuration.definitionlibrary.cohort.females");
+		assertThat(definition, instanceOf(GenderCohortDefinition.class));
+		assertThat(definition.getClass().getName(), is("FemalesCohortDefinition"));
+	}
+
 }
