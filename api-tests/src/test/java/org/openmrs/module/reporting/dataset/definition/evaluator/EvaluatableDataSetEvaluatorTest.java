@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 
 import java.util.Iterator;
 
-import org.hamcrest.collection.IsIterableWithSize;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -24,7 +23,7 @@ public class EvaluatableDataSetEvaluatorTest extends BaseModuleContextSensitiveT
 
 	@Test
 	public void evaluate() throws Exception {
-		EvaluatableDataSetDefinition dsd = new TestEvaluatableDataSetDefinition();
+		EvaluatableDataSetDefinition dsd = new AnEvaluatableDataSetDefinition();
 		DataSet dataSet = service.evaluate(dsd, new EvaluationContext());
 		assertThat(dataSet.getDefinition(), Is.<DataSetDefinition>is(dsd));
 

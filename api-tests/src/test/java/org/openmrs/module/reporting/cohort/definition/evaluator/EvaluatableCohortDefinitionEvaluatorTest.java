@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 
 import org.hamcrest.core.Is;
 import org.junit.Test;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EvaluatableCohortDefinition;
@@ -21,7 +20,7 @@ public class EvaluatableCohortDefinitionEvaluatorTest extends BaseModuleContextS
 
 	@Test
 	public void evaluate() throws Exception {
-		EvaluatableCohortDefinition evaluatableCohortDefinition = new TestEvaluatableCohortDefinition();
+		EvaluatableCohortDefinition evaluatableCohortDefinition = new AnEvaluatableCohortDefinition();
 		EvaluatedCohort cohort = service.evaluate(evaluatableCohortDefinition, new EvaluationContext());
 		assertThat(cohort.size(), is(1));
 		assertThat(cohort.getDefinition(), Is.<CohortDefinition>is(evaluatableCohortDefinition));

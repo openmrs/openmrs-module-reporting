@@ -10,7 +10,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  * Defined in its own file because defining it as an inner class in {@link EvaluatableDataSetEvaluatorTest} throws an
  * internal reporting exception
  */
-public class TestEvaluatableDataSetDefinition extends EvaluatableDataSetDefinition {
+public class AnEvaluatableDataSetDefinition extends EvaluatableDataSetDefinition {
 	
 	@Override
 	public DataSet evaluate(EvaluationContext evalContext) {

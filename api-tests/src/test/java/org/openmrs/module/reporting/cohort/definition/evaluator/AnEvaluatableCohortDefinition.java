@@ -8,7 +8,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
  * Defined in its own file because defining it as an inner class in {@link EvaluatableCohortDefinitionEvaluatorTest}
  * throws an internal reporting exception.
  */
-public class TestEvaluatableCohortDefinition extends EvaluatableCohortDefinition {
+public class AnEvaluatableCohortDefinition extends EvaluatableCohortDefinition {
 
 	@Override
 	public EvaluatedCohort evaluate(EvaluationContext context) {
