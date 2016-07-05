@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.serializer.ReportingSerializer;
 import org.openmrs.util.OpenmrsUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(OpenmrsUtil.class)
@@ -78,6 +79,7 @@ public class ImplementerConfiguredCohortDefinitionLibraryTest {
 	@Test
 	public void testGroovyDefinition() throws Exception {
 		when(directory.listFiles()).thenReturn(new File[] { new File("females.groovy") });
+		library.setAutowireCapableBeanFactory(mock(AutowireCapableBeanFactory.class));
 
 		assertThat(library.getDefinitionSummaries().size(), is(1));
 		assertThat(library.getDefinitionSummaries().get(0).getKey(), is("configuration.definitionlibrary.cohort.females"));
@@ -85,6 +87,17 @@ public class ImplementerConfiguredCohortDefinitionLibraryTest {
 		CohortDefinition definition = library.getDefinition("configuration.definitionlibrary.cohort.females");
 		assertThat(definition, instanceOf(GenderCohortDefinition.class));
 		assertThat(definition.getClass().getName(), is("FemalesCohortDefinition"));
+	}
+
+	@Test(expected = ClassCastException.class)
+	public void testInvalidGroovyDefinition() throws Exception {
+		when(directory.listFiles()).thenReturn(new File[] { new File("invalidCohortDefinition.groovy") });
+		library.setAutowireCapableBeanFactory(mock(AutowireCapableBeanFactory.class));
+
+		assertThat(library.getDefinitionSummaries().size(), is(1));
+		assertThat(library.getDefinitionSummaries().get(0).getKey(), is("configuration.definitionlibrary.cohort.invalidCohortDefinition"));
+
+		CohortDefinition definition = library.getDefinition("configuration.definitionlibrary.cohort.invalidCohortDefinition");
 	}
 
 }
