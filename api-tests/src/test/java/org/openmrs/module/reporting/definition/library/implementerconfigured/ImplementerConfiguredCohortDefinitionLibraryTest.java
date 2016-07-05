@@ -93,11 +93,7 @@ public class ImplementerConfiguredCohortDefinitionLibraryTest {
 	public void testInvalidGroovyDefinition() throws Exception {
 		when(directory.listFiles()).thenReturn(new File[] { new File("invalidCohortDefinition.groovy") });
 		library.setAutowireCapableBeanFactory(mock(AutowireCapableBeanFactory.class));
-
-		assertThat(library.getDefinitionSummaries().size(), is(1));
-		assertThat(library.getDefinitionSummaries().get(0).getKey(), is("configuration.definitionlibrary.cohort.invalidCohortDefinition"));
-
-		CohortDefinition definition = library.getDefinition("configuration.definitionlibrary.cohort.invalidCohortDefinition");
+		library.getDefinitionSummaries();
 	}
 
 }
