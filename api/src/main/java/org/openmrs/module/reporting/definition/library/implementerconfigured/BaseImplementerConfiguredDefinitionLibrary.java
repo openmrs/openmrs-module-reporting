@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,15 +11,15 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.SerializationService;
-import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.common.GroovyHelper;
 import org.openmrs.module.reporting.definition.library.DefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.LibraryDefinitionSummary;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
-import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.serialization.SerializationException;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 /**
  * Concrete subclasses should be defined as beans (e.g. with the @Component annotation)
@@ -28,7 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Supports loading files with the extentions:
  * <ul>
  *     <li>.reportingserializerxml ... will be deserialized with {@link ReportingSerializer}</li>
- *     <li>.sql ... will producethe appropriate SqlXyzDefinition class</li>
+ *     <li>.sql ... will produce the appropriate SqlXyzDefinition class</li>
+ *     <li>.groovy ... file will be parsed and dynamically loaded as a Groovy class (which should implement T)</li>
  * </ul>
  * @param <T>
  */
@@ -51,6 +51,9 @@ public abstract class BaseImplementerConfiguredDefinitionLibrary<T extends Defin
 
 	@Autowired
 	private SerializationService serializationService;
+
+	@Autowired
+	private AutowireCapableBeanFactory autowireCapableBeanFactory;
 
 	/**
 	 * @param definitionClass the class that all definitions should be a subclass of
@@ -125,6 +128,12 @@ public abstract class BaseImplementerConfiguredDefinitionLibrary<T extends Defin
 							log.warn("Invalid serialized definition at " + libraryNameSuffix + " in " + file
 									.getAbsolutePath(), ex);
 						}
+					} else if (filename.endsWith(".groovy")) {
+						definition = (Definition) new GroovyHelper().parseClassFromFileAndNewInstance(file);
+						autowireCapableBeanFactory.autowireBean(definition);
+						// this only handles @Autowired, not @PostConstruct. To handle that we'd need to also call
+						// autowireCapableBeanFactory.initializeBean(definition, "bean name");
+						// (but I'm not sure if this is needed, and I'm not sure what to name the bean)
 					} else if (filename.endsWith(".sql")) {
 						String sql = OpenmrsUtil.getFileAsString(file);
 						definition = sqlDefinition(sql);
@@ -204,6 +213,10 @@ public abstract class BaseImplementerConfiguredDefinitionLibrary<T extends Defin
 		summary.setDescription(definition.getDescription());
 		summary.setParameters(definition.getParameters());
 		return summary;
+	}
+
+	public void setAutowireCapableBeanFactory(AutowireCapableBeanFactory autowireCapableBeanFactory) {
+		this.autowireCapableBeanFactory = autowireCapableBeanFactory;
 	}
 
 }
