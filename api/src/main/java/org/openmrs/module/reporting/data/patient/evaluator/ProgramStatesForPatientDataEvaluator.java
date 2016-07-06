@@ -24,9 +24,11 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -84,7 +86,7 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		
 		for (Integer pId : statesForPatients.keySet()) {
 			List<PatientState> l = statesForPatients.get(pId);
-			Collections.sort(l);
+			Collections.sort(l, new PatientStateComparator());
 			if (def.getDataType() == PatientState.class) {
 				PatientState ps = (def.getWhich() == TimeQualifier.LAST ? l.get(l.size()-1) : l.get(0));
 				c.addData(pId, ps);
@@ -96,4 +98,27 @@ public class ProgramStatesForPatientDataEvaluator implements PatientDataEvaluato
 		
 		return c;
 	}
+
+    /**
+     * This is necessary because the PatientState comparison function does not account for program enrollment dates
+     */
+    private class PatientStateComparator implements Comparator<PatientState> {
+        @Override
+        public int compare(PatientState s1, PatientState s2) {
+            int result = OpenmrsUtil.compareWithNullAsEarliest(s1.getStartDate(), s2.getStartDate());
+            if (result == 0) {
+                result = OpenmrsUtil.compareWithNullAsLatest(s1.getEndDate(), s2.getEndDate());
+            }
+            if (result == 0) {
+                result = OpenmrsUtil.compareWithNullAsEarliest(s1.getPatientProgram().getDateEnrolled(), s2.getPatientProgram().getDateEnrolled());
+            }
+            if (result == 0) {
+                result = OpenmrsUtil.compareWithNullAsLatest(s1.getPatientProgram().getDateCompleted(), s2.getPatientProgram().getDateCompleted());
+            }
+            if (result == 0) {
+                result = OpenmrsUtil.compareWithNullAsGreatest(s1.getUuid(), s2.getUuid());
+            }
+            return result;
+        }
+    }
 }
