@@ -15,10 +15,13 @@ package org.openmrs.module.reporting.data.converter;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.openmrs.calculation.ConversionException;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.ObjectUtil;
 
 import java.util.Date;
+
+import static org.openmrs.module.reporting.data.converter.ConverterHelper.convertTo;
 
 /**
  * Converts a Birthdate into an Age
@@ -51,9 +54,10 @@ public class AgeConverter implements DataConverter {
 	 * @should convert an Age to integer years
 	 * @should convert an Age to integer months
 	 * @should convert an Age to a formatted string
+	 * @should throw conversion exception when class cast fails
 	 */
 	public Object convert(Object original) {
-		Age age = (Age) original;
+        Age age= convertTo(original, Age.class);
 		String s = ObjectUtil.nvl(getFormat(), YEARS);
 		if (age != null) {
 			if (s.equals(MONTHS)) {

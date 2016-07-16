@@ -12,6 +12,8 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 package org.openmrs.module.reporting.data.converter;
+import static org.openmrs.module.reporting.data.converter.ConverterHelper.convertTo;
+
 
 /**
  * Boolean data converter
@@ -45,9 +47,10 @@ public class BooleanConverter implements DataConverter  {
 	/** 
 	 * @see DataConverter#convert(Object)
 	 * @should convert a Boolean to a configured text representation
+	 * @should throw conversion exception when class cast fails
 	 */
 	public Object convert(Object original) {
-		Boolean b = (Boolean) original;
+		Boolean b = convertTo(original, Boolean.class);
 		if (b == Boolean.TRUE) {
 			return trueFormat;
 		}

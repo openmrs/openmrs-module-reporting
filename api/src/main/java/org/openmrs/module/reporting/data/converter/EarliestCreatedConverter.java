@@ -30,10 +30,13 @@ public class EarliestCreatedConverter implements DataConverter {
     public EarliestCreatedConverter(Class<?> typeOfItem) {
         this.typeOfItem = typeOfItem;
     }
+    /**
+     * @should throw conversion exception when class cast fails
+     **/
 
     @Override
     public Object convert(Object original) {
-        Collection c = (Collection) original;
+        Collection c = ConverterHelper.convertTo(original, Collection.class);
         if (c == null) {
             return null;
         }

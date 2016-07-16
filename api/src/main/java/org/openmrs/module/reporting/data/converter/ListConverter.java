@@ -58,10 +58,11 @@ public class ListConverter implements DataConverter {
 	/** 
 	 * @see DataConverter#convert(Object)
 	 * @should convert a Date into a String with the passed format
+	 * @should throw conversion exception when class cast fails
 	 */
 	@SuppressWarnings("rawtypes")
 	public Object convert(Object original) {
-		List l = (List) original;
+		List l = ConverterHelper.convertTo(original, List.class);
 		if (l != null) {
 			l = new ArrayList(l);
 			// First handle the case where a specific item from the list is requested by index

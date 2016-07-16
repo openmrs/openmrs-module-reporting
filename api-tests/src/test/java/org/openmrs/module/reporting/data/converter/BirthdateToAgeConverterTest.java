@@ -5,6 +5,7 @@ import java.util.Date;
 import org.junit.Assert;
 
 import org.junit.Test;
+import org.openmrs.calculation.ConversionException;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -23,5 +24,15 @@ public class BirthdateToAgeConverterTest {
 		Age age = (Age)(new BirthdateToAgeConverter(today)).convert(birthdate);
 		Assert.assertEquals(36, age.getFullYears().intValue());
 		Assert.assertEquals(4, age.getFullMonthsSinceLastBirthday().intValue());
+	}
+
+	/**
+	 * @verifies throw conversion exception when class cast fails
+	 * @see BirthdateToAgeConverter#convert(Object)
+	 */
+	@Test(expected = ConversionException.class)
+	public void convert_shouldThrowConversionExceptionWhenClassCastFails() throws Exception {
+        BirthdateToAgeConverter converter = new BirthdateToAgeConverter();
+		converter.convert("invalid input");
 	}
 }

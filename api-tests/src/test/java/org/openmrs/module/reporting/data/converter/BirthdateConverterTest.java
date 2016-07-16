@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.data.converter;
 import org.junit.Assert;
 
 import org.junit.Test;
+import org.openmrs.calculation.ConversionException;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -20,5 +21,15 @@ public class BirthdateConverterTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("08/Apr/1975", c.convert(birthdate));
 		birthdate.setEstimated(true);
 		Assert.assertEquals("~1975", c.convert(birthdate));
+	}
+
+	/**
+	 * @verifies throw conversion exception when class cast fails
+	 * @see BirthdateConverter#convert(Object)
+	 */
+	@Test(expected= ConversionException.class)
+	public void convert_shouldThrowConversionExceptionWhenClassCastFails() throws Exception {
+        BirthdateConverter converter = new BirthdateConverter();
+		converter.convert("invalid input");
 	}
 }

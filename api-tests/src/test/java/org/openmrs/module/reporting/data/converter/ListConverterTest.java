@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.data.converter;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.calculation.ConversionException;
 import org.openmrs.module.reporting.common.TimeQualifier;
 
 import java.util.Arrays;
@@ -55,5 +56,15 @@ public class ListConverterTest {
 		Assert.assertEquals(50, ret.get(0).intValue());
 		Assert.assertEquals(40, ret.get(1).intValue());
 		Assert.assertEquals(30, ret.get(2).intValue());
+	}
+
+	/**
+	 * @verifies throw conversion exception when class cast fails
+	 * @see ListConverter#convert(Object)
+	 */
+	@Test(expected = ConversionException.class)
+	public void convert_shouldThrowConversionExceptionWhenClassCastFails() throws Exception {
+		ListConverter converter = new ListConverter();
+		converter.convert("invalid input");
 	}
 }

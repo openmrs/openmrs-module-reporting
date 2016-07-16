@@ -1,15 +1,18 @@
 package org.openmrs.module.reporting.data.converter;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.ConversionException;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.converter.AttributeValueConverter;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import static org.openmrs.module.reporting.data.converter.ConverterHelper.convertTo;
 
 public class AttributeValueConverterTest extends BaseModuleContextSensitiveTest {
 	
@@ -51,5 +54,14 @@ public class AttributeValueConverterTest extends BaseModuleContextSensitiveTest 
 		Assert.assertEquals(Concept.class, value.getClass());
 		Assert.assertEquals(conceptValue.getHydratedObject(), value);
 	}
-	
+
+    /**
+     * @verifies throw conversion exception when class cast fails
+     * @see AttributeValueConverter#convert(Object)
+     */
+    @Test(expected= ConversionException.class)
+    public void convert_shouldThrowConversionExceptionWhenClassCastFails() throws Exception {
+		AttributeValueConverter converter = new AttributeValueConverter();
+		converter.convert(128);
+    }
 }

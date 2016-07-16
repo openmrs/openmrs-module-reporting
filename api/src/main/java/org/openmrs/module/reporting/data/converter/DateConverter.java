@@ -70,9 +70,10 @@ public class DateConverter implements DataConverter {
 	/** 
 	 * @see DataConverter#convert(Object)
 	 * @should convert a Date into a String with the passed format
-	 */
+	 * @should throw conversion exception when class cast fails
+	 **/
 	public Object convert(Object original) {
-		Date date = (Date) original;
+		Date date = ConverterHelper.convertTo(original, Date.class);
 		if (date != null) {
 			if (ObjectUtil.notNull(conversionCalculation)) {
 				Map<String, Object> m = new HashMap<String, Object>();
