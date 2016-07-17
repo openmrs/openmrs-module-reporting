@@ -1,7 +1,6 @@
 package org.openmrs.module.reporting.data.converter;
 
 import org.openmrs.calculation.ConversionException;
-import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 
 public class ConverterHelper {
     /**

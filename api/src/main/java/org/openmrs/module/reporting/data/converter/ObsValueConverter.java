@@ -10,10 +10,12 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 public class ObsValueConverter implements DataConverter {
 
     public ObsValueConverter() { }
-
+    /**
+     * @should throw conversion exception when class cast fails
+     */
     @Override
     public Object convert(Object original) {
-		Obs o = (Obs) original;
+		Obs o = ConverterHelper.convertTo(original, Obs.class);
 		if (o == null) {
 			return null;
 		}
