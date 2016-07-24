@@ -4,9 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.calculation.ConversionException;
 
-/**
- * Created by suny on 17.07.16.
- */
 public class MostRecentlyCreatedConverterTest {
     /**
      * @verifies throw conversion exception when class cast fails
