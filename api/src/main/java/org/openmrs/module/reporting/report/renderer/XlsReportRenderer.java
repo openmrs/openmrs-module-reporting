@@ -3,11 +3,10 @@ package org.openmrs.module.reporting.report.renderer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ExcelBuilder;
+import org.openmrs.module.reporting.common.ExcelUtil;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -132,8 +131,7 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
 		try {
 			ReportDesignResource r = getTemplate(design);
 			is = new ByteArrayInputStream(r.getContents());
-			POIFSFileSystem fs = new POIFSFileSystem(is);
-			wb = WorkbookFactory.create(fs);
+            wb = ExcelUtil.loadWorkbookFromInputStream(is);
 		}
 		catch (Exception e) {
 			if (!design.getResources().isEmpty()) {

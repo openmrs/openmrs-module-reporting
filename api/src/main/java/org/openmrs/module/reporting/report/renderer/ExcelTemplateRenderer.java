@@ -180,6 +180,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				rowsFound++;
 			}
 			// If we find that the row that we are on is a repeating row, then add the appropriate number of rows to clone
+
 			String repeatingRowProperty = getRepeatingRowProperty(sheetToAdd.getOriginalSheetNum(), rowNum, repeatSections);
 			if (repeatingRowProperty != null) {
 				String[] dataSetSpanSplit = repeatingRowProperty.split(",");
@@ -366,8 +367,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		try {
 			ReportDesignResource r = getTemplate(design);
 			is = new ByteArrayInputStream(r.getContents());
-			POIFSFileSystem fs = new POIFSFileSystem(is);
-			wb = WorkbookFactory.create(fs);
+            wb = ExcelUtil.loadWorkbookFromInputStream(is);
 		}
 		catch (Exception e) {
 			log.warn("No template file found, will use default Excel output");

@@ -12,6 +12,10 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
@@ -64,7 +68,15 @@ public class ExcelBuilder {
 		currentColNum = 0;
 		return this;
 	}
-    
+
+    /**
+     * Turns off gridlines
+     */
+    public ExcelBuilder hideGridlinesInCurrentSheet() {
+        currentSheet.setDisplayGridlines(false);
+        return this;
+    }
+
     /**
      * Adds the next cell with the given value, and no style.
      */
@@ -76,52 +88,74 @@ public class ExcelBuilder {
 	 * Adds the next cell with the given value, and style described by the String descriptor
 	 */
 	public ExcelBuilder addCell(Object cellValue, String style) {
-		if (currentSheet == null) {
-			newSheet();
-		}
+        if (currentSheet == null) {
+            newSheet();
+        }
         if (currentRow == null) {
             currentRow = currentSheet.createRow(currentRowNum);
         }
         Cell cell;
         if (cellValue == null) {
             cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_BLANK);
-        } 
+        }
         else if (cellValue instanceof Number) {
             cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
-        } 
+        }
         else if (cellValue instanceof Date) {
             cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
         }
         else if (cellValue instanceof Boolean) {
             cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_BOOLEAN);
-        } 
+        }
         else if (cellValue instanceof Cohort) {
-        	cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
-        } 
+            cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
+        }
         else if (cellValue instanceof CohortIndicatorResult) {
-        	cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
-        } 
+            cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
+        }
         else if (cellValue instanceof CohortIndicatorAndDimensionResult) {
-        	cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
-        } 
+            cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_NUMERIC);
+        }
         else {
             cell = currentRow.createCell(currentColNum, Cell.CELL_TYPE_STRING);
         }
 
-		if (ObjectUtil.isNull(style) && cellValue instanceof Date) {
-			style = "date";
-		}
-		if (ObjectUtil.notNull(style)) {
-			CellStyle cellStyle = styleCache.get(style);
-			if (cellStyle == null) {
-				cellStyle = ExcelUtil.createCellStyle(workbook, style);
-				styleCache.put(style, cellStyle);
-			}
-			cell.setCellStyle(cellStyle);
-		}
-		ExcelUtil.setCellContents(cell, cellValue);
+        if (ObjectUtil.isNull(style) && cellValue instanceof Date) {
+            style = "date";
+        }
+        if (ObjectUtil.notNull(style)) {
+            CellStyle cellStyle = loadStyle(style);
+            cell.setCellStyle(cellStyle);
+        }
+        ExcelUtil.setCellContents(cell, cellValue);
         currentColNum++;
 		return this;
+    }
+
+    public ExcelBuilder addCell(Object cellValue, String style, int columnWidth) {
+        addCell(cellValue, style);
+        currentSheet.setColumnWidth(currentColNum-1, columnWidth*256);
+        return this;
+    }
+
+    public ExcelBuilder merge(int numColumns, int numRows) {
+        int startCol = currentColNum-1;
+        CellRangeAddress ra = new CellRangeAddress(currentRowNum, currentRowNum+numRows, startCol, startCol+numColumns);
+        currentSheet.addMergedRegion(ra);
+        currentColNum+=numColumns;
+        return this;
+    }
+
+    public XSSFRichTextString createRichTextString(String... textAndStyle) {
+        XSSFRichTextString rt = new XSSFRichTextString("");
+        for (int i=0; i<textAndStyle.length; i+=2) {
+            String text = textAndStyle[i];
+            String style = textAndStyle[i + 1];
+            XSSFCellStyle cellStyle = (XSSFCellStyle) loadStyle(style);
+            XSSFFont font = cellStyle.getFont();
+            rt.append(text, font);
+        }
+        return rt;
     }
 
     /**
@@ -178,6 +212,15 @@ public class ExcelBuilder {
 
             fs.writeFilesystem(out);
         }
+    }
+
+    public CellStyle loadStyle(String style) {
+        CellStyle cellStyle = styleCache.get(style);
+        if (cellStyle == null) {
+            cellStyle = ExcelUtil.createCellStyle(workbook, style);
+            styleCache.put(style, cellStyle);
+        }
+        return cellStyle;
     }
 
 	public Workbook getWorkbook() {

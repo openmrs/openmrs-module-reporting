@@ -1,8 +1,10 @@
 package org.openmrs.module.reporting.common;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -19,6 +21,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -106,7 +109,10 @@ public class ExcelUtil {
 				cell.setCellValue(((Date) cellValue));
 				return;
 			}
-			
+            if (cellValue instanceof RichTextString) {
+                cell.setCellValue((RichTextString)cellValue);
+                return;
+            }
 			String cellValueString = ObjectUtil.format(cellValue);
 			try {
 				if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
@@ -182,13 +188,19 @@ public class ExcelUtil {
 	 *    wraptext
 	 *    border=all | bottom | top | left | right
 	 *    align=center | left | right | fill
+     *    valign=top | bottom | center | justify
 	 *    date
+     *    color=HSSFColor.XYZ.index
+     *    background-color=HSSFColor.XYZ.index
+     *    rotation=##
 	 */
 	public static CellStyle createCellStyle(Workbook wb, String descriptor) {
 		CellStyle style = wb.createCellStyle();
 		Font font = wb.createFont();
 		if (ObjectUtil.notNull(descriptor)) {
-			for (String att : descriptor.split(",")) {
+            log.debug("Setting cell style to: " + descriptor);
+			for (String att : StringUtils.splitByWholeSeparatorPreserveAllTokens(descriptor, ",")) {
+                log.debug("Handling style: " + att);
 				att = att.toLowerCase().trim();
 				if (att.equals("wraptext")) {
 					style.setWrapText(true);
@@ -208,6 +220,25 @@ public class ExcelUtil {
 						style.setAlignment(CellStyle.ALIGN_FILL);
 					}
 				}
+                else if (att.startsWith("valign=")) {
+                    att = att.substring(7);
+                    if (att.equals("top")) {
+                        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+                    }
+                    else if (att.equals("bottom")) {
+                        style.setVerticalAlignment(CellStyle.VERTICAL_BOTTOM);
+                    }
+                    else if (att.equals("center")) {
+                        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+                    }
+                    else if (att.equals("justify")) {
+                        style.setVerticalAlignment(CellStyle.VERTICAL_JUSTIFY);
+                    }
+                }
+                else if (att.startsWith("rotation=")) {
+                    att = att.substring(9);
+                    style.setRotation(Short.parseShort(att));
+                }
 				else if (att.startsWith("border=")) {
 					att = att.substring(7);
 					if (att.equals("all")) {
@@ -233,6 +264,10 @@ public class ExcelUtil {
 					short dateFormat = wb.createDataFormat().getFormat("d/mmm/yyyy");
 					style.setDataFormat(dateFormat);
 				}
+                else if (att.startsWith("format=")) {
+                    att = att.substring(7);
+                    style.setDataFormat(wb.createDataFormat().getFormat(att));
+                }
 				else if (att.equals("bold")) {
 					font.setBoldweight(Font.BOLDWEIGHT_BOLD);
 				}
@@ -246,6 +281,15 @@ public class ExcelUtil {
 					att = att.substring(5);
 					font.setFontHeightInPoints(Short.parseShort(att));
 				}
+				else if (att.startsWith("color=")) {
+                    att = att.substring(6);
+                    font.setColor(Short.parseShort(att));
+                }
+                else if (att.startsWith("background-color=")) {
+                    att = att.substring(17);
+                    style.setFillForegroundColor(Short.parseShort(att));
+                    style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                }
 			}
 		}
 		style.setFont(font);
