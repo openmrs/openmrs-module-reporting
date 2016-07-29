@@ -78,6 +78,24 @@ public class ExcelBuilder {
     }
 
     /**
+     * For printing, configures to shrink so that all columns fit on a page
+     */
+    public ExcelBuilder fitColumnsToPage() {
+        currentSheet.setFitToPage(true);
+        currentSheet.getPrintSetup().setFitHeight((short)0);
+        currentSheet.getPrintSetup().setFitWidth((short)1);
+        return this;
+    }
+
+    /**
+     * For printing, sets landscape orientation
+     */
+    public ExcelBuilder setLandscape() {
+        currentSheet.getPrintSetup().setLandscape(true);
+        return this;
+    }
+
+    /**
      * Adds the next cell with the given value, and no style.
      */
     public ExcelBuilder addCell(Object cellValue) {
@@ -234,4 +252,12 @@ public class ExcelBuilder {
 	public Row getCurrentRow() {
 		return currentRow;
 	}
+
+	public int getCurrentRowNum() {
+	    return currentRowNum;
+    }
+
+    public int getCurrentColNum() {
+        return currentColNum;
+    }
 }
