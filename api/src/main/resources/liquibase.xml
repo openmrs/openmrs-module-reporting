@@ -8,6 +8,9 @@
 	<!--  REPORTING REPORT DESIGN SCHEMA -->
 
 	<changeSet id="reporting_report_design_1" author="mseaton">
+	<validCheckSum>3:fb024ffca387bb2cd2660ef5d6eeaf74</validCheckSum> <!-- current checksum with clean constraint names -->
+	<validCheckSum>3:482e8981e0dce9476eaf481167719579</validCheckSum> <!-- old checksum without clean constraint names -->
+
         <preConditions onFail="MARK_RAN">
         	<not><tableExists tableName="reporting_report_design" /></not>
         </preConditions>
@@ -46,11 +49,11 @@
 			<column name="retired_by" type="int"/>
 			<column name="date_retired" type="datetime"/>
 			<column name="retire_reason" type="varchar(255)"/>
-        </createTable>
-		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="report_definition_id" constraintName="report_definition_id for reporting_report_design" referencedTableName="serialized_object" referencedColumnNames="serialized_object_id" deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="creator" constraintName="creator for reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="changed_by" constraintName="changed_by for reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="retired_by" constraintName="retired_by for reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		</createTable>
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="report_definition_id" constraintName="report_definition_id_for_reporting_report_design" referencedTableName="serialized_object" referencedColumnNames="serialized_object_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="creator" constraintName="creator_for_reporting_report_design"	referencedTableName="users" referencedColumnNames="user_id"	deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="changed_by" constraintName="changed_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id"	deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id"	deferrable="false" initiallyDeferred="false" />
 	</changeSet>
 
 	<changeSet id="reporting_report_design_2" author="mseaton">
@@ -76,6 +79,8 @@
 	</changeSet>
 
 	<changeSet id="reporting_report_design_4" author="mseaton">
+	<validCheckSum>3:bddba97d81d6daa7fd6fbb478897fd84</validCheckSum> <!-- old checksum without clean constraint names -->
+	<validCheckSum>3:e557ea83775089ed9e636768b25de9a0</validCheckSum> <!-- current checksum with clean constraint names -->
 		<preConditions onFail="MARK_RAN">
 			<or>
 				<and>
@@ -85,23 +90,27 @@
 						FROM    INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU
 						WHERE   KCU.TABLE_SCHEMA = database()
 						AND     KCU.TABLE_NAME = 'reporting_report_design'
-						AND     KCU.CONSTRAINT_NAME = 'report_definition_id for reporting_report_design'
+						AND     KCU.CONSTRAINT_NAME = 'report_definition_id_for_reporting_report_design'
 					</sqlCheck>
 				</and>
 				<and>
-					<not><dbms type="mysql"/></not>
-					<foreignKeyConstraintExists foreignKeyName="report_definition_id for reporting_report_design"/>
+					<not>
+						<dbms type="mysql" />
+					</not>
+					<foreignKeyConstraintExists foreignKeyName="report_definition_id_for_reporting_report_design"/>
 				</and>
 			</or>
 		</preConditions>
-		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="report_definition_id for reporting_report_design" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="report_definition_id_for_reporting_report_design" />
 	</changeSet>
 
 	<changeSet id="reporting_report_design_5" author="mseaton">
+	<validCheckSum>3:e7dbeb93443f14c60ed2e7cd6aa1e94f</validCheckSum> <!-- old checksum without clean constraint names -->
+	<validCheckSum>3:3e82195b1dc87158b4a35557e2efdac6</validCheckSum> <!-- current checksum with clean constraint names -->
 		<preConditions onFail="MARK_RAN">
-			<not><indexExists indexName="report_definition_uuid for reporting_report_design"/></not>
+			<not><indexExists indexName="report_definition_uuid_for_reporting_report_design"/></not>
 		</preConditions>
-		<createIndex tableName="reporting_report_design" indexName="report_definition_uuid for reporting_report_design">
+		<createIndex tableName="reporting_report_design" indexName="report_definition_uuid_for_reporting_report_design">
 			<column name="report_definition_uuid" />
 		</createIndex>
 	</changeSet>
@@ -121,6 +130,8 @@
 	<!--  REPORTING REPORT DESIGN RESOURCE SCHEMA -->
 
 	<changeSet id="reporting_report_design_resource_1" author="mseaton">
+	<validCheckSum>3:9b1f111c165c213fa2cecc37d87ed843</validCheckSum> <!-- old checksum without clean constraint names -->
+	<validCheckSum>3:da8a85bfc5a5df8e63a21cb42114aed8</validCheckSum> <!-- current checksum with clean constraint names -->
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="reporting_report_design_resource" /></not>
 		</preConditions>
@@ -159,15 +170,17 @@
 			<column name="date_retired" type="datetime"/>
 			<column name="retire_reason" type="varchar(255)"/>
 		</createTable>
-		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="report_design_id" constraintName="report_design_id for reporting_report_design_resource" referencedTableName="reporting_report_design" referencedColumnNames="id" deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="creator" constraintName="creator for reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="changed_by" constraintName="changed_by for reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="retired_by" constraintName="retired_by for reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="report_design_id" constraintName="report_design_id_for_reporting_report_design_resource" referencedTableName="reporting_report_design" referencedColumnNames="id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="creator" constraintName="creator_for_reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="changed_by" constraintName="changed_by_for_reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
 	</changeSet>
 
 	<!--  REPORTING REPORT REQUEST SCHEMA -->
 
 	<changeSet id="reporting_report_request_1" author="mseaton">
+	<validCheckSum>3:4d336ce27e1366ee39ea2b0c069e4491</validCheckSum> <!-- old checksum without clean constraint names -->
+	<validCheckSum>3:bd87291005df8dff187cd2aa94f343cc</validCheckSum> <!-- current checksum with clean constraint names -->
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="reporting_report_request" /></not>
 		</preConditions>
@@ -208,7 +221,7 @@
 			<column name="render_complete_datetime" type="datetime"/>
 			<column name="description" type="varchar(1000)" />
 		</createTable>
-		<addForeignKeyConstraint baseTableName="reporting_report_request" baseColumnNames="requested_by" constraintName="requested_by for reporting_report_request" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_request" baseColumnNames="requested_by" constraintName="requested_by_for_reporting_report_request" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
 	</changeSet>
 
 	<changeSet id="reporting_report_request_2" author="mseaton">
@@ -252,6 +265,8 @@
 	<!--  REPORTING REPORT PROCESSOR SCHEMA -->
 
 	<changeSet id="reporting_report_processor_1" author="mseaton">
+	<validCheckSum>3:bc9b147af791381ff5a98a7786f7d638</validCheckSum> <!-- old checksum without clean constraint names -->
+	<validCheckSum>3:779193b8124f3299601ca74ff7699dfe</validCheckSum> <!-- current checksum with clean constraint names -->
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="reporting_report_processor" /></not>
 		</preConditions>
@@ -294,9 +309,9 @@
 			<column name="date_retired" type="datetime"/>
 			<column name="retire_reason" type="varchar(255)"/>
 		</createTable>
-		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="creator" constraintName="creator for reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="changed_by" constraintName="changed_by for reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="retired_by" constraintName="retired_by for reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="creator" constraintName="creator_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="changed_by" constraintName="changed_by_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
 	</changeSet>
 
 	<changeSet id="reporting_report_processor_2" author="mseaton">
@@ -370,4 +385,51 @@
         <dropTable tableName="reporting_idset"/>
     </changeSet>
 
+	<changeSet id="constraint_name_cleanup" author="bgeVam">
+		<preConditions onFail="MARK_RAN">
+		    <!-- check if constraints exist -->
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="creator for reporting_report_design" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="changed_by for reporting_report_design" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="retired_by for reporting_report_design" />
+			<indexExists indexName="report_definition_uuid for reporting_report_design" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource"	foreignKeyName="report_design_id for reporting_report_design_resource" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource"	foreignKeyName="creator for reporting_report_design_resource" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource"	foreignKeyName="changed_by for reporting_report_design_resource" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource"	foreignKeyName="retired_by for reporting_report_design_resource" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_request" foreignKeyName="requested_by for reporting_report_request" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_processor" foreignKeyName="creator for reporting_report_processor" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_processor" foreignKeyName="changed_by for reporting_report_processor" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_processor" foreignKeyName="retired_by for reporting_report_processor" />
+		</preConditions>
+		<comment>Rename constraints</comment>
+		<!-- drop existing constraints -->
+		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="creator for reporting_report_design" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="changed_by for reporting_report_design" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="retired_by for reporting_report_design" />
+		<dropIndex indexName="report_definition_uuid for reporting_report_design" tableName="reporting_report_design" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="report_design_id for reporting_report_design_resource" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="creator for reporting_report_design_resource" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="changed_by for reporting_report_design_resource" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="retired_by for reporting_report_design_resource" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_request" constraintName="requested_by for reporting_report_request" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_processor" constraintName="creator for reporting_report_processor" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_processor" constraintName="changed_by for reporting_report_processor" />
+		<dropForeignKeyConstraint baseTableName="reporting_report_processor" constraintName="retired_by for reporting_report_processor" />
+		<!-- add renamed constraints -->
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="creator" constraintName="creator_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="changed_by" constraintName="changed_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<createIndex tableName="reporting_report_design" indexName="report_definition_uuid_for_reporting_report_design">
+ 			<column name="report_definition_uuid" />		
+ 		</createIndex>
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="report_design_id" constraintName="report_design_id_for_reporting_report_design_resource" referencedTableName="reporting_report_design" referencedColumnNames="id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="creator" constraintName="creator_for_reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="changed_by" constraintName="changed_by_for_reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_request" baseColumnNames="requested_by" constraintName="requested_by_for_reporting_report_request" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="creator" constraintName="creator_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="changed_by" constraintName="changed_by_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+	
 </databaseChangeLog>
