@@ -51,8 +51,8 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 	 */
 	@Before
 	public void setup() throws Exception {
+		initializeInMemoryDatabase();
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
-        initializeInMemoryDatabase();
 	    authenticate();
 	}
 	

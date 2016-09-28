@@ -25,6 +25,7 @@ import org.openmrs.Obs;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonName;
 import org.openmrs.User;
+import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
@@ -344,6 +345,7 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
     private void addLocalizedNamesToYesConcept() {
 
         Concept yes = Context.getConceptService().getConcept(7);
+	    yes.getPreferredName(Locale.ENGLISH).setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
         
         ConceptName oui = new ConceptName();
         oui.setName("Oui");

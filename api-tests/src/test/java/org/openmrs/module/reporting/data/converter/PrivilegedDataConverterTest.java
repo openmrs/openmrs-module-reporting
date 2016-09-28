@@ -1,31 +1,43 @@
 package org.openmrs.module.reporting.data.converter;
 
-import org.junit.Test;
-import org.openmrs.api.context.Context;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.springframework.test.annotation.DirtiesContext;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class PrivilegedDataConverterTest extends BaseModuleContextSensitiveTest {
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openmrs.api.context.Context;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Context.class)
+public class PrivilegedDataConverterTest {
 
     public static final String INPUT = "input";
     public static final String REPLACEMENT = "****";
-
+    
+    public static final String HAS_PRIV = "A privilege I have";
+    public static final String DOES_NOT_HAVE_PRIV = "A privilege I do not have";
+    
+    @Before
+    public void setUp() throws Exception {
+        PowerMockito.mockStatic(Context.class);
+        PowerMockito.when(Context.hasPrivilege(HAS_PRIV)).thenReturn(true);
+        PowerMockito.when(Context.hasPrivilege(DOES_NOT_HAVE_PRIV)).thenReturn(false);
+    }
+    
     @Test
     public void testConvertWithPrivilege() throws Exception {
-        PrivilegedDataConverter converter = new PrivilegedDataConverter("A privilege I have");
+        PrivilegedDataConverter converter = new PrivilegedDataConverter(HAS_PRIV);
         converter.setReplacement(REPLACEMENT);
         assertThat((String) converter.convert(INPUT), is(INPUT));
     }
 
     @Test
-    @DirtiesContext
     public void testConvertWithoutPrivilege() throws Exception {
-        Context.becomeUser("butch");
-
-        PrivilegedDataConverter converter = new PrivilegedDataConverter("A privilege I do not have");
+        PrivilegedDataConverter converter = new PrivilegedDataConverter(DOES_NOT_HAVE_PRIV);
         converter.setReplacement(REPLACEMENT);
         assertThat((String) converter.convert(INPUT), is(REPLACEMENT));
     }

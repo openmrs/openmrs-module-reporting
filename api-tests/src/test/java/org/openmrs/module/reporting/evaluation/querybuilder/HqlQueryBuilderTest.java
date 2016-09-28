@@ -26,6 +26,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.PatientIdSet;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -87,14 +88,16 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	public void from_shouldExcludedVoidedByDefault() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("patientIdentifierId").from(PatientIdentifier.class);
-		testSize(evaluationService.evaluateToList(q, new EvaluationContext()), 12);
+		q.where("patientIdentifierId", RangeComparator.EQUAL, 6);
+		testSize(evaluationService.evaluateToList(q, new EvaluationContext()), 0);
 	}
 
 	@Test
 	public void from_shouldSupportIncludingVoided() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder(true);
 		q.select("patientIdentifierId").from(PatientIdentifier.class);
-		testSize(evaluationService.evaluateToList(q, new EvaluationContext()), 13);
+		q.where("patientIdentifierId", RangeComparator.EQUAL, 6);
+		testSize(evaluationService.evaluateToList(q, new EvaluationContext()), 1);
 	}
 
 	@Test
@@ -133,9 +136,9 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void whereNull_shouldConstrainAgainstNullValues() throws Exception {
 		HqlQueryBuilder q = new HqlQueryBuilder(true);
-		q.select("personId").from(Person.class).whereNull("birthdate");
+		q.select("personId").from(Person.class).whereNull("birthdate").whereInAny("personId", 7, 8, 9);
 		List<Object[]> rows = evaluationService.evaluateToList(q, new EvaluationContext());
-		testSize(rows, 5);
+		testSize(rows, 2); // persons 8 and 9
 	}
 
 	@Test

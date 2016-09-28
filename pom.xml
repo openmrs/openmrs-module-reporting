@@ -281,6 +281,27 @@
 				<openMRSMinorVersion>1.10</openMRSMinorVersion>
 			</properties>
 		</profile>
+		<profile>
+			<id>1.11</id>
+			<properties>
+				<openMRSVersion>1.11.3</openMRSVersion>
+				<openMRSMinorVersion>1.11</openMRSMinorVersion>
+			</properties>
+		</profile>
+		<profile>
+			<id>1.12</id>
+			<properties>
+				<openMRSVersion>1.12.0</openMRSVersion>
+				<openMRSMinorVersion>1.12</openMRSMinorVersion>
+			</properties>
+		</profile>
+		<profile>
+			<id>2.0</id>
+			<properties>
+				<openMRSVersion>2.0.0</openMRSVersion>
+				<openMRSMinorVersion>2.0</openMRSMinorVersion>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>

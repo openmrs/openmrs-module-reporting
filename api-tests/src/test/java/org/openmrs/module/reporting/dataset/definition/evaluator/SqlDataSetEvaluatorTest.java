@@ -44,9 +44,9 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should evaluate a SQLDataSetDefinition", method = "evaluate(DataSetDefinition,EvaluationContext)")
 	public void evaluate_shouldEvaluateASQLDataSetDefinition() throws Exception {
 		SqlDataSetDefinition d = new SqlDataSetDefinition();
-		d.setSqlQuery("select t.patient_id, p.gender, p.birthdate from patient t, person p where t.patient_id = p.person_id order by patient_id asc");
+		d.setSqlQuery("select t.patient_id, p.gender, p.birthdate from patient t, person p where t.patient_id = p.person_id and t.patient_id = 2");
 		SimpleDataSet result = (SimpleDataSet) Context.getService(DataSetDefinitionService.class).evaluate(d, null);
-		Assert.assertEquals(10, result.getRows().size());
+		Assert.assertEquals(1, result.getRows().size());
 		Assert.assertEquals(3, result.getMetaData().getColumnCount());
 		DataSetRow firstRow = result.getRows().get(0);
 		Assert.assertEquals(2, firstRow.getColumnValue("patient_id"));

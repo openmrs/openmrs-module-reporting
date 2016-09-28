@@ -74,13 +74,13 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void buildQuery_shouldHandleSimpleParameters() throws Exception {
 		SqlQueryBuilder q = new SqlQueryBuilder();
-		q.append("select p.person_id from person p where gender = :g");
+		q.append("select p.person_id from person p where gender = :g and p.person_id <= 9");
 		q.addParameter("g", "M");
 		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(5, result.size());
+		Assert.assertEquals(3, result.size());
 		q.addParameter("g", "F");
 		result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(6, result.size());
+		Assert.assertEquals(2, result.size());
 	}
 
 	@Test
