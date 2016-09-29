@@ -32,12 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>reporting-api-1.9</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>reporting-api-2.0</artifactId>
+			<artifactId>${reportingApiConditionalArtifactId}</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 

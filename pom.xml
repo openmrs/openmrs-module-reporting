@@ -41,9 +41,9 @@
 	<properties>
 		<openMRSVersion>1.9.9</openMRSVersion>
 		<openMRSMinorVersion>1.9</openMRSMinorVersion>
-		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
-		<serializationVersion>0.2.7</serializationVersion>
-		<calculationVersion>1.1</calculationVersion>
+		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
+		<serializationVersion>0.2.12</serializationVersion>
+		<calculationVersion>1.2</calculationVersion>
 		<jacksonVersion>1.5.0</jacksonVersion>
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.12</poiVersion>
@@ -56,6 +56,7 @@
 		<MODULE_NAME>Reporting</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
+		<reportingApiConditionalArtifactId>reporting-api-1.9</reportingApiConditionalArtifactId>
 	</properties>
 
 
@@ -222,6 +223,27 @@
 			<version>${serializationVersion}</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>serialization.xstream-api-1.9</artifactId>
+			<version>${serializationVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>serialization.xstream-api-1.10</artifactId>
+			<version>${serializationVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>serialization.xstream-api-2.0</artifactId>
+			<version>${serializationVersion}</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
@@ -301,6 +323,8 @@
 			<properties>
 				<openMRSVersion>2.0.0</openMRSVersion>
 				<openMRSMinorVersion>2.0</openMRSMinorVersion>
+				<jacksonVersion>1.9.13</jacksonVersion>
+				<reportingApiConditionalArtifactId>reporting-api-2.0</reportingApiConditionalArtifactId>
 			</properties>
 		</profile>
 	</profiles>
