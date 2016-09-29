@@ -27,6 +27,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.support.AbstractMessageSource;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -146,7 +147,14 @@ public class CustomMessageSource extends AbstractMessageSource implements Mutabl
 	 */
 	@SuppressWarnings("deprecation")
 	public void publishProperties(Properties props, String locale, String namespace, String name, String version) {
-		getMutableParentSource().publishProperties(props, locale, namespace, name, version);
+        try {
+            Class c = getMutableParentSource().getClass();
+            Method m = c.getMethod("publishProperties", Properties.class, String.class, String.class, String.class, String.class);
+            m.invoke(getMutableParentSource(), props, locale, namespace, name, version);
+        }
+        catch (Exception e) {
+            // DO NOTHING
+        }
 	}
 
 	/**
