@@ -24,7 +24,6 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.ExpectedException;
 
 import java.math.BigDecimal;
 
@@ -80,20 +79,17 @@ public class SqlIndicatorTest extends BaseModuleContextSensitiveTest {
 		assertIndicatorValue(indicator, new Fraction(6, 24), context);
 	}
 
-	@Test
-	@ExpectedException(RuntimeException.class)
+    @Test(expected = RuntimeException.class)
 	public void sqlIndicator_shouldEvaluateSqlIndicatorDecimals() throws Exception {
 		assertIndicatorValue("SELECT distinct(.222) as res from patient", "SELECT distinct(.44) as res2 from patient", null);
 	}
 	
-	@Test
-	@ExpectedException(EvaluationException.class)
+    @Test(expected = EvaluationException.class)
 	public void sqlIndicator_shouldNotAllowQueriesThatReturnMoreThanOneColumn() throws Exception {
 		assertIndicatorValue("SELECT distinct(.222) as res, 33 as res2 from patient", null);
 	}
 	
-	@Test
-	@ExpectedException(EvaluationException.class)
+	@Test(expected = EvaluationException.class)
 	public void sqlIndicator_shouldNotAllowQueriesThatReturnMoreThanOneRow() throws Exception {
 		assertIndicatorValue("SELECT person_id from person", null);
 	}

@@ -28,7 +28,6 @@ import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.springframework.test.annotation.ExpectedException;
 
 /**
  * Test class for {@link PatientCalculationDataEvaluator}
@@ -87,8 +86,7 @@ public class PatientCalculationDataEvaluatorTest extends BaseModuleContextSensit
 	 * @see PatientCalculationDataEvaluator#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
 	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
 	 */
-	@Test
-	@ExpectedException(value = EvaluationException.class)
+	@Test(expected = EvaluationException.class)
 	public void evaluate_shouldThrowAnErrorIfNoCalculationRegistrationExistsOnTheDefinition() throws Exception {
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort("7"));

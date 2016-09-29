@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import java.util.Date;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
@@ -23,8 +21,8 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.common.SortCriteria.SortDirection;
+import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeConverter;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
@@ -36,7 +34,6 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinit
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.dataset.DataSetUtil;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -47,7 +44,8 @@ import org.openmrs.module.reporting.query.encounter.definition.AllEncounterQuery
 import org.openmrs.module.reporting.query.encounter.definition.MostRecentEncounterForPatientQuery;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.springframework.test.annotation.ExpectedException;
+
+import java.util.Date;
 
 /**
  * Test the evaluation of the PatientDataSetDefinition
@@ -87,8 +85,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		Assert.assertEquals(2, dataset.getColumnValue(2, "EMR ID"));
 	}
 	
-	@Test
-	@ExpectedException(IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
 	public void evaluate_shouldFailToExportEncounterData() throws Exception {
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
 		d.addColumn("Encounter Date", new EncounterDatetimeDataDefinition(), (String) null);

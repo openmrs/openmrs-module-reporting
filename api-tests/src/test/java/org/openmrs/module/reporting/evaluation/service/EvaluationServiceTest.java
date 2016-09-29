@@ -1,18 +1,17 @@
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +56,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(2, genders.size());
 	}
 
-	@Test
-	@ExpectedException(IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
 	public void evaluateToList_shouldThrowAnExceptionWithIncorrectNumberOfColumns() {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
@@ -74,8 +72,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(m.get(7), "F");
 	}
 
-	@Test
-	@ExpectedException(IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
 	public void evaluateToMap_shouldThrowAnExceptionWithIncorrectNumberOfColumns() {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("personId", "gender", "birthdate").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");

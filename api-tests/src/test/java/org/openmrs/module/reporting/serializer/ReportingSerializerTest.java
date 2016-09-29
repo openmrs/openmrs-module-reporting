@@ -53,7 +53,7 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 	@SuppressWarnings("deprecation")
 	public void ReportingSerializer_shouldSerializeWorkflowStateByUuid() throws Exception {
 		PatientStateCohortDefinition pscd = new PatientStateCohortDefinition();
-		ProgramWorkflowState pws = Context.getProgramWorkflowService().getState(2);
+		ProgramWorkflowState pws = Context.getProgramWorkflowService().getStateByUuid("e938129e-248a-482a-acea-f85127251472");
 		List<ProgramWorkflowState> states = new ArrayList<ProgramWorkflowState>();
 		states.add(pws);
 		pscd.setStates(states);

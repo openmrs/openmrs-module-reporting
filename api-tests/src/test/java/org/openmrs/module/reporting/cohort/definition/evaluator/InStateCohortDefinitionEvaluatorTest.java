@@ -9,7 +9,6 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -68,7 +67,7 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 	@Verifies(value = "should find patients in a state on the onOrBefore date if passed in time is at midnight", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldFindPatientsInAStateOnTheOnOrBeforeDateIfPassedInTimeIsAtMidnight() throws Exception {
 		InStateCohortDefinition cd = new InStateCohortDefinition();
-		cd.addState(Context.getProgramWorkflowService().getState(2));
+		cd.addState(Context.getProgramWorkflowService().getStateByUuid("e938129e-248a-482a-acea-f85127251472"));
 		cd.setOnOrBefore(DateUtil.getDateTime(2008, 8, 8));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertTrue(c.contains(2));
@@ -138,7 +137,7 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 	@Verifies(value = "should return patients enrolled in the given programs at the given locations", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldReturnPatientsEnrolledInTheGivenProgramsAtTheGivenLocations() throws Exception {
 		InStateCohortDefinition cd = new InStateCohortDefinition();
-		cd.addState(Context.getProgramWorkflowService().getState(2));
+		cd.addState(Context.getProgramWorkflowService().getStateByUuid("e938129e-248a-482a-acea-f85127251472"));
 		cd.setOnOrAfter(DateUtil.getDateTime(2000, 1, 1));
 		cd.setOnOrBefore(DateUtil.getDateTime(2014, 1, 1));
 		cd.addLocation(Context.getLocationService().getLocation(1));
@@ -156,7 +155,7 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 	@Verifies(value = "should return patients enrolled at evaluation date if no other dates supplied", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldReturnPatientsEnrolledAtEvaluationDateIfNoOtherDatesSupplied() throws Exception {
 		InStateCohortDefinition cd = new InStateCohortDefinition();
-		cd.addState(Context.getProgramWorkflowService().getState(2));
+		cd.addState(Context.getProgramWorkflowService().getStateByUuid("e938129e-248a-482a-acea-f85127251472"));
 		cd.addLocation(Context.getLocationService().getLocation(1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, new EvaluationContext(DateUtil.getDateTime(2012, 5, 15)));
 		Assert.assertEquals(2, c.getSize());

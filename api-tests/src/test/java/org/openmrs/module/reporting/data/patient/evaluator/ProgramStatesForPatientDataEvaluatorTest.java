@@ -63,7 +63,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		context.setBaseCohort(new Cohort("7,8"));
 
 		ProgramStatesForPatientDataDefinition def = new ProgramStatesForPatientDataDefinition();
-		def.setState(Context.getProgramWorkflowService().getState(6));
+		def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 		
 		def.setActiveOnDate(DateUtil.getDateTime(2008, 8, 11));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
@@ -91,7 +91,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		context.setBaseCohort(new Cohort("7,8"));
 
 		ProgramStatesForPatientDataDefinition def = new ProgramStatesForPatientDataDefinition();
-		def.setState(Context.getProgramWorkflowService().getState(6));
+        def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 		
 		def.setStartedOnOrAfter(DateUtil.getDateTime(2008, 8, 11));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
@@ -116,7 +116,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		context.setBaseCohort(new Cohort("7,8"));
 
 		ProgramStatesForPatientDataDefinition def = new ProgramStatesForPatientDataDefinition();
-		def.setState(Context.getProgramWorkflowService().getState(6));
+        def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 		
 		def.setStartedOnOrBefore(DateUtil.getDateTime(2008, 1, 1));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
@@ -141,7 +141,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		context.setBaseCohort(new Cohort("7,8"));
 
 		ProgramStatesForPatientDataDefinition def = new ProgramStatesForPatientDataDefinition();
-		def.setState(Context.getProgramWorkflowService().getState(6));
+        def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 		
 		def.setEndedOnOrAfter(DateUtil.getDateTime(2008, 1, 1));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
@@ -166,7 +166,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		context.setBaseCohort(new Cohort("7,8"));
 
 		ProgramStatesForPatientDataDefinition def = new ProgramStatesForPatientDataDefinition();
-		def.setState(Context.getProgramWorkflowService().getState(6));
+        def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 		
 		def.setEndedOnOrBefore(DateUtil.getDateTime(2008, 1, 1));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
@@ -192,7 +192,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 
 		ProgramStatesForPatientDataDefinition def = new ProgramStatesForPatientDataDefinition();
 		def.setWhich(TimeQualifier.FIRST);
-		def.setState(Context.getProgramWorkflowService().getState(6));
+        def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
 		Assert.assertEquals(4, ((PatientState)pd.getData().get(8)).getPatientStateId().intValue());
@@ -209,7 +209,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 
 		ProgramStatesForPatientDataDefinition def = new ProgramStatesForPatientDataDefinition();
 		def.setWhich(TimeQualifier.LAST);
-		def.setState(Context.getProgramWorkflowService().getState(6));
+        def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
 		Assert.assertEquals(4, ((PatientState)pd.getData().get(8)).getPatientStateId().intValue());
@@ -226,7 +226,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 
 		ProgramStatesForPatientDataDefinition def = new ProgramStatesForPatientDataDefinition();
 		def.setWhich(TimeQualifier.LAST);
-		def.setState(Context.getProgramWorkflowService().getState(1));
+        def.setState(Context.getProgramWorkflowService().getStateByUuid("92584cdc-6a20-4c84-a659-e035e45d36b0"));
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
 		Assert.assertEquals(8, ((PatientState)pd.getData().get(23)).getPatientStateId().intValue());
@@ -244,7 +244,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		context.setBaseCohort(new Cohort("8"));
 		
 		ProgramStatesForPatientDataDefinition def = new ProgramStatesForPatientDataDefinition();
-		def.setState(Context.getProgramWorkflowService().getState(6));
+        def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
 		Assert.assertEquals(1, ((List)pd.getData().get(8)).size());

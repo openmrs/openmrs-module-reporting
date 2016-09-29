@@ -145,7 +145,6 @@ public class CustomMessageSource extends AbstractMessageSource implements Mutabl
 	 * @see MutableMessageSource#publishProperties(Properties, String, String, String, String)
 	 */
 	@SuppressWarnings("deprecation")
-	@Override
 	public void publishProperties(Properties props, String locale, String namespace, String name, String version) {
 		getMutableParentSource().publishProperties(props, locale, namespace, name, version);
 	}
