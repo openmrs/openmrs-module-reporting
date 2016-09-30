@@ -49,7 +49,7 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
     public void shouldReturnEncounterProviderForEncounter() throws Exception {
    
         EncounterRole role = encounterService.getEncounterRole(1);
-        Provider provider = data.randomProvider().save();
+        Provider provider = saveRandomProvider();
 
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient)
@@ -78,9 +78,9 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
         role2.setName("some role");
         encounterService.saveEncounterRole(role2);
 
-        Provider provider1 = data.randomProvider().save();
-        Provider provider2 = data.randomProvider().save();
-        Provider provider3 = data.randomProvider().save();
+        Provider provider1 = saveRandomProvider();
+        Provider provider2 = saveRandomProvider();
+        Provider provider3 = saveRandomProvider();
 
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient)
@@ -113,9 +113,9 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
         role2.setName("some role");
         encounterService.saveEncounterRole(role2);
 
-        Provider provider1 = data.randomProvider().save();
-        Provider provider2 = data.randomProvider().save();
-        Provider provider3 = data.randomProvider().save();
+        Provider provider1 = saveRandomProvider();
+        Provider provider2 = saveRandomProvider();
+        Provider provider3 = saveRandomProvider();
 
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient)
@@ -148,9 +148,9 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
         role2.setName("some role");
         encounterService.saveEncounterRole(role2);
 
-        Provider provider1 = data.randomProvider().save();
-        Provider provider2 = data.randomProvider().save();
-        Provider provider3 = data.randomProvider().save();
+        Provider provider1 = saveRandomProvider();
+        Provider provider2 = saveRandomProvider();
+        Provider provider3 = saveRandomProvider();
 
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient)
@@ -195,7 +195,7 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
     public void shouldReturnEncounterProviderForEncounterWhenInPatientContext() throws Exception {
 
         EncounterRole role = encounterService.getEncounterRole(1);
-        Provider provider = data.randomProvider().save();
+        Provider provider = saveRandomProvider();
 
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient)
@@ -232,5 +232,9 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
         assertThat(ed.getData().size(), is(0));
     }
 
+    private Provider saveRandomProvider() {
+        Patient p = data.randomPatient().save();
+        return data.randomProvider().person(p).save();
+    }
 
 }

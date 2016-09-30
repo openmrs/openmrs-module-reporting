@@ -58,8 +58,8 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient).save();
-        Obs obsMember1 = data.obs().concept(weight).value(60).encounter(enc).save();
-        Obs obsMember2 = data.obs().concept(cd4).value(350).encounter(enc).save();
+        Obs obsMember1 = data.obs().concept(weight).value(60).encounter(enc).get();
+        Obs obsMember2 = data.obs().concept(cd4).value(350).encounter(enc).get();
         Obs obsGroup = data.obs().concept(groupConcept).encounter(enc)
                 .member(obsMember1).member(obsMember2).save();
 
@@ -86,8 +86,8 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         // create an obs with a few members
         Patient patient = data.randomPatient().save();
         Encounter enc = data.randomEncounter().patient(patient).save();
-        Obs obsMember1 = data.obs().concept(weight).value(60).encounter(enc).save();
-        Obs obsMember2 = data.obs().concept(weight).value(62).encounter(enc).save();
+        Obs obsMember1 = data.obs().concept(weight).value(60).encounter(enc).get();
+        Obs obsMember2 = data.obs().concept(weight).value(62).encounter(enc).get();
         Obs obsGroup = data.obs().concept(groupConcept).encounter(enc)
                 .member(obsMember1).member(obsMember2).save();
 
