@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition.library;
 
 import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
@@ -82,6 +83,15 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("minAge", "reporting.parameter.minAgeInYears", Integer.class));
         return cd;
     }
+    
+    @DocumentedDefinition("ageRangeOnDate")
+    public AgeCohortDefinition getAgeInRangeOnDate() {
+        AgeCohortDefinition cd = new AgeCohortDefinition();
+        cd.addParameter(new Parameter("effectiveDate", "reporting.parameter.effectiveDate", Date.class));
+        cd.addParameter(new Parameter("minAge", "reporting.parameter.minAgeInYears", Integer.class));
+        cd.addParameter(new Parameter("maxAge", "reporting.parameter.maxAgeInYears", Integer.class));
+        return cd;
+    }
 
     @DocumentedDefinition("anyEncounterDuringPeriod")
     public CohortDefinition getAnyEncounterDuringPeriod() {
@@ -100,4 +110,19 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         return new MappedParametersCohortDefinition(cd, "onOrAfter", "startDate", "onOrBefore", "endDate", "encounterTypeList", "encounterTypes");
     }
 
+    @DocumentedDefinition("bornDuringPeriod")
+    public CohortDefinition getBornDuringPeriod() {
+        BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
+        cd.addParameter(new Parameter("bornOnOrAfter", "reporting.parameter.startDate", Date.class));
+        cd.addParameter(new Parameter("bornOnOrBefore", "reporting.parameter.endDate", Date.class));
+        return new MappedParametersCohortDefinition(cd, "bornOnOrAfter", "startDate", "bornOnOrBefore", "endDate");
+    }
+    
+    @DocumentedDefinition("diedDuringPeriod")
+    public CohortDefinition getDiedDuringPeriod() {
+        BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
+        cd.addParameter(new Parameter("diedOnOrAfter", "reporting.parameter.startDate", Date.class));
+        cd.addParameter(new Parameter("diedOnOrBefore", "reporting.parameter.endDate", Date.class));
+        return new MappedParametersCohortDefinition(cd, "diedOnOrAfter", "startDate", "diedOnOrBefore", "endDate");
+    }
 }

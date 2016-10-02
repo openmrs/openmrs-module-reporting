@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
@@ -93,7 +94,17 @@ public class BuiltInCohortDefinitionLibraryTest {
         assertThat(atLeastAgeOnDate, hasParameter("minAge", Integer.class));
         assertThat(atLeastAgeOnDate, hasProperty("minAgeUnit", is(DurationUnit.YEARS)));
     }
-
+    
+    @Test
+    public void testGetAgeInRangeOnDate() throws Exception {
+        AgeCohortDefinition ageInRangeOnDate = library.getAgeInRangeOnDate();
+        assertThat(ageInRangeOnDate, hasParameter("effectiveDate", Date.class));
+        assertThat(ageInRangeOnDate, hasParameter("minAge", Integer.class));
+        assertThat(ageInRangeOnDate, hasProperty("minAgeUnit", is(DurationUnit.YEARS)));
+        assertThat(ageInRangeOnDate, hasParameter("maxAge", Integer.class));
+        assertThat(ageInRangeOnDate, hasProperty("maxAgeUnit", is(DurationUnit.YEARS)));
+    }
+    
     @Test
     public void testGetAnyEncounterDuringPeriod() throws Exception {
         CohortDefinition cd = library.getAnyEncounterDuringPeriod();
@@ -119,5 +130,22 @@ public class BuiltInCohortDefinitionLibraryTest {
         assertThat((String) wrapped.getParameterMappings().get("onOrBefore"), is("${endDate}"));
         assertThat((String) wrapped.getParameterMappings().get("encounterTypeList"), is("${encounterTypes}"));
     }
-
+    
+    @Test
+    public void testGetBornDuringPeriod() throws Exception {
+        CohortDefinition cd = library.getBornDuringPeriod();
+        assertTrue(cd instanceof MappedParametersCohortDefinition);
+        assertTrue(((MappedParametersCohortDefinition) cd).getWrapped().getParameterizable() instanceof BirthAndDeathCohortDefinition);
+        assertThat(cd, hasParameter("startDate", Date.class));
+        assertThat(cd, hasParameter("endDate", Date.class));
+    }
+    
+    @Test
+    public void testGetDiedDuringPeriod() throws Exception {
+        CohortDefinition cd = library.getDiedDuringPeriod();
+        assertTrue(cd instanceof MappedParametersCohortDefinition);
+        assertTrue(((MappedParametersCohortDefinition) cd).getWrapped().getParameterizable() instanceof BirthAndDeathCohortDefinition);
+        assertThat(cd, hasParameter("startDate", Date.class));
+        assertThat(cd, hasParameter("endDate", Date.class));
+    }
 }
