@@ -43,7 +43,7 @@ public class TimespanTag extends BodyTagSupport {
 				if (showAgoWord == null) {
 					showAgoWord = true;
 				}
-				pageContext.getOut().write("<span class=\"timespan\"> " + DateUtil.getTimespan(now, then, showAgoWord) + " </span>");
+				pageContext.getOut().write("<span class=\"timespan\"> " + DateUtil.formatDate(then, "yyyy-MM-dd HH:mm:ss") + " </span>");
 			}
 		} catch(IOException e) { 
 			log.error("Unable to write timespan to output", e);
