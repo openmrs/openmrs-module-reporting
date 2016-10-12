@@ -385,50 +385,209 @@
         <dropTable tableName="reporting_idset"/>
     </changeSet>
 
-	<changeSet id="constraint_name_cleanup" author="bgeVam">
+	<!-- remove constraints with names that are invalid for H2 -->
+
+	<changeSet id="drop_report_definition_uuid_constraint" author="mgoodrich">
 		<preConditions onFail="MARK_RAN">
-		    <!-- check if constraints exist -->
-			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="creator for reporting_report_design" />
-			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="changed_by for reporting_report_design" />
-			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="retired_by for reporting_report_design" />
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="report_definition_uuid for reporting_report_design" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="report_definition_uuid for reporting_report_design" />
+	</changeSet>
+
+	<changeSet id="drop_report_definition_uuid_index" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
 			<indexExists indexName="report_definition_uuid for reporting_report_design" />
-			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource"	foreignKeyName="report_design_id for reporting_report_design_resource" />
-			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource"	foreignKeyName="creator for reporting_report_design_resource" />
-			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource"	foreignKeyName="changed_by for reporting_report_design_resource" />
-			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource"	foreignKeyName="retired_by for reporting_report_design_resource" />
+		</preConditions>
+		<dropIndex indexName="report_definition_uuid for reporting_report_design" tableName="reporting_report_design" />
+	</changeSet>
+
+	<changeSet id="drop_creator_for_reporting_report_design" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="creator for reporting_report_design" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="creator for reporting_report_design" />
+	</changeSet>
+
+	<changeSet id="drop_changed_by_for_reporting_report_design" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="changed_by for reporting_report_design" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="changed_by for reporting_report_design" />
+	</changeSet>
+
+	<changeSet id="drop_retired_by_for_reporting_report_design" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="retired_by for reporting_report_design" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="retired_by for reporting_report_design" />
+	</changeSet>
+
+	<changeSet id="drop_report_design_id_for_reporting_report_design_resource" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource" foreignKeyName="report_design_id for reporting_report_design_resource" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="report_design_id for reporting_report_design_resource" />
+	</changeSet>
+
+	<changeSet id="drop_creator_for_reporting_report_design_resource" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource" foreignKeyName="creator for reporting_report_design_resource" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="creator for reporting_report_design_resource" />
+	</changeSet>
+
+	<changeSet id="drop_changed_by_for_reporting_report_design_resource" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource" foreignKeyName="changed_by for reporting_report_design_resource" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="changed_by for reporting_report_design_resource" />
+	</changeSet>
+
+	<changeSet id="drop_retired_by_for_reporting_report_design_resource" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource" foreignKeyName="retired_by for reporting_report_design_resource" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="retired_by for reporting_report_design_resource" />
+	</changeSet>
+
+	<changeSet id="drop_requested_by_for_reporting_report_request" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
 			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_request" foreignKeyName="requested_by for reporting_report_request" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_request" constraintName="requested_by for reporting_report_request" />
+	</changeSet>
+
+	<changeSet id="drop_creator_for_reporting_report_processor" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
 			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_processor" foreignKeyName="creator for reporting_report_processor" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_processor" constraintName="creator for reporting_report_processor" />
+	</changeSet>
+
+	<changeSet id="drop_changed_by_for_reporting_report_processor" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
 			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_processor" foreignKeyName="changed_by for reporting_report_processor" />
+		</preConditions>
+		<dropForeignKeyConstraint baseTableName="reporting_report_processor" constraintName="changed_by for reporting_report_processor" />
+	</changeSet>
+
+	<changeSet id="drop_retired_by_reporting_report_processor" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
 			<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_processor" foreignKeyName="retired_by for reporting_report_processor" />
 		</preConditions>
-		<comment>Rename constraints</comment>
-		<!-- drop existing constraints -->
-		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="creator for reporting_report_design" />
-		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="changed_by for reporting_report_design" />
-		<dropForeignKeyConstraint baseTableName="reporting_report_design" constraintName="retired_by for reporting_report_design" />
-		<dropIndex indexName="report_definition_uuid for reporting_report_design" tableName="reporting_report_design" />
-		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="report_design_id for reporting_report_design_resource" />
-		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="creator for reporting_report_design_resource" />
-		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="changed_by for reporting_report_design_resource" />
-		<dropForeignKeyConstraint baseTableName="reporting_report_design_resource" constraintName="retired_by for reporting_report_design_resource" />
-		<dropForeignKeyConstraint baseTableName="reporting_report_request" constraintName="requested_by for reporting_report_request" />
-		<dropForeignKeyConstraint baseTableName="reporting_report_processor" constraintName="creator for reporting_report_processor" />
-		<dropForeignKeyConstraint baseTableName="reporting_report_processor" constraintName="changed_by for reporting_report_processor" />
 		<dropForeignKeyConstraint baseTableName="reporting_report_processor" constraintName="retired_by for reporting_report_processor" />
-		<!-- add renamed constraints -->
-		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="creator" constraintName="creator_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="changed_by" constraintName="changed_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+
+	<!-- add new constraints with proper names -->
+
+	<changeSet id="add_report_definition_uuid_index" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<indexExists indexName="report_definition_uuid_for_reporting_report_design" />
+			</not>
+		</preConditions>
 		<createIndex tableName="reporting_report_design" indexName="report_definition_uuid_for_reporting_report_design">
- 			<column name="report_definition_uuid" />		
- 		</createIndex>
+			<column name="report_definition_uuid" />
+		</createIndex>
+	</changeSet>
+
+	<changeSet id="add_creator_for_reporting_report_design" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="creator_for_reporting_report_design" />
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="creator" constraintName="creator_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="add_changed_by_for_reporting_report_design" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="changed_by_for_reporting_report_design" />
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="changed_by" constraintName="changed_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="add_retired_by_for_reporting_report_design" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design" foreignKeyName="retired_by_for_reporting_report_design" />
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="add_report_design_id_for_reporting_report_design_resource" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource" foreignKeyName="report_design_id_for_reporting_report_design_resource" />
+			</not>
+		</preConditions>
 		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="report_design_id" constraintName="report_design_id_for_reporting_report_design_resource" referencedTableName="reporting_report_design" referencedColumnNames="id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="add_creator_for_reporting_report_design_resource" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource" foreignKeyName="creator_for_reporting_report_design_resource" />
+			</not>
+		</preConditions>
 		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="creator" constraintName="creator_for_reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="add_changed_by_for_reporting_report_design_resource" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource" foreignKeyName="changed_by_for_reporting_report_design_resource" />
+			</not>
+		</preConditions>
 		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="changed_by" constraintName="changed_by_for_reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="add_retired_by_for_reporting_report_design_resource" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_design_resource" foreignKeyName="retired_by_for_reporting_report_design_resource" />
+			</not>
+		</preConditions>
 		<addForeignKeyConstraint baseTableName="reporting_report_design_resource" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_design_resource" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="add_requested_by_for_reporting_report_request" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_request" foreignKeyName="requested_by_for_reporting_report_request" />
+			</not>
+		</preConditions>
 		<addForeignKeyConstraint baseTableName="reporting_report_request" baseColumnNames="requested_by" constraintName="requested_by_for_reporting_report_request" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="add_creator_for_reporting_report_processor" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_processor" foreignKeyName="creator_for_reporting_report_processor" />
+			</not>
+		</preConditions>
 		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="creator" constraintName="creator_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="add_changed_by_for_reporting_report_processor" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_processor" foreignKeyName="changed_by_for_reporting_report_processor" />
+			</not>
+		</preConditions>
 		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="changed_by" constraintName="changed_by_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
+	</changeSet>
+
+	<changeSet id="add_retired_by_for_reporting_report_processor" author="mgoodrich">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists	foreignKeyTableName="reporting_report_processor" foreignKeyName="retired_by_for_reporting_report_processor" />
+			</not>
+		</preConditions>
 		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
 	</changeSet>
 	
