@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.report.renderer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -28,6 +29,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -83,6 +87,24 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
      */
     public String getCharacterEncoding(ReportDesign design) {
         return design.getPropertyValue("characterEncoding", "UTF-8");
+    }
+
+    /**
+     * @param design
+     * @return date format to use when writing dates to the output.  If null, returns toString value
+     */
+    public DateFormat getDateFormat(ReportDesign design) {
+        DateFormat ret = null;
+        String df = design.getPropertyValue("dateFormat", "");
+        try {
+            if (ObjectUtil.notNull(df)) {
+                ret = new SimpleDateFormat(df);
+            }
+        }
+        catch (Exception e) {
+            log.warn("Invalid date format specified for report renderer: " + df);
+        }
+        return ret;
     }
 
     /**
@@ -164,6 +186,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
         String lineEnding = getLineEnding(design);
         String characterEncoding = getCharacterEncoding(design);
         Pattern blacklistRegex = getBlacklistRegex(design);
+        DateFormat dateFormat = getDateFormat(design);
 
         if (results.getDataSets().size() > 1) {
             ZipOutputStream zip = new ZipOutputStream(out);
@@ -171,12 +194,12 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
             for (Map.Entry<String, DataSet> e : results.getDataSets().entrySet()) {
                 String fn = getFilenameBaseForName(e.getKey(), usedFilenames) + "." + getFilenameExtension(getDesign(argument));
                 zip.putNextEntry(new ZipEntry(fn));
-                writeDataSet(e.getValue(), zip, textDelimiter, fieldDelimiter, lineEnding, characterEncoding, blacklistRegex);
+                writeDataSet(e.getValue(), zip, textDelimiter, fieldDelimiter, lineEnding, characterEncoding, blacklistRegex, dateFormat);
                 zip.closeEntry();
             }
             zip.finish();
         } else {
-            writeDataSet(dataset, out, textDelimiter, fieldDelimiter, lineEnding, characterEncoding, blacklistRegex);
+            writeDataSet(dataset, out, textDelimiter, fieldDelimiter, lineEnding, characterEncoding, blacklistRegex, dateFormat);
         }
 	}
 
@@ -193,7 +216,7 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
      * @throws IOException
      */
     void writeDataSet(DataSet dataset, OutputStream out, String textDelimiter, String fieldDelimiter, String lineEnding,
-                      String characterEncoding, Pattern blacklist) throws IOException {
+                      String characterEncoding, Pattern blacklist, DateFormat dateFormat) throws IOException {
         Writer w = new OutputStreamWriter(out, characterEncoding);
         List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 
@@ -217,9 +240,13 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
                     String toPrint;
 					if (colValue instanceof Cohort) {
                         toPrint = escape(Integer.toString(((Cohort) colValue).size()));
-					} else if (colValue instanceof IndicatorResult) {
+					}
+					else if (colValue instanceof IndicatorResult) {
                         toPrint = ((IndicatorResult) colValue).getValue().toString();
 					}
+					else if (dateFormat != null && colValue instanceof Date) {
+                        toPrint = dateFormat.format((Date)colValue);
+                    }
 					else {
 						// this check is because a logic EmptyResult .toString() -> null
 						String temp = escape(colValue.toString());

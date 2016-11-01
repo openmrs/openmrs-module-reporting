@@ -121,7 +121,7 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
 
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        renderer.writeDataSet(ds, out, "", ",", "\n", characterEncoding, null);
+        renderer.writeDataSet(ds, out, "", ",", "\n", characterEncoding, null, null);
 
         byte[] expected = "value\nsí\n".getBytes(Charset.forName(characterEncoding));
         byte[] actual = out.toByteArray();
@@ -149,7 +149,7 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
 
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        renderer.writeDataSet(ds, out, "\"", ",", "\n", "UTF-8", blacklistRegex != null ? Pattern.compile(blacklistRegex) : null);
+        renderer.writeDataSet(ds, out, "\"", ",", "\n", "UTF-8", blacklistRegex != null ? Pattern.compile(blacklistRegex) : null, null);
 
         return out.toString("UTF-8");
     }
