@@ -13,9 +13,11 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
@@ -180,13 +182,13 @@ public class ManageReportsController {
 
     /**
      * Renders a report to the response output stream, given a report definition, rendering mode, and optional patient id
-     * @param patientId the id of patient whose summary you wish to view
+     * @param patientIdOrUuid the id or uuid of patient whose summary you wish to view
      */
     @RequestMapping("/module/reporting/reports/renderReport")
     public void renderReport(ModelMap model, HttpServletRequest request, HttpServletResponse response,
                              @RequestParam("reportDefinition") String reportDefinitionUuid,
                              @RequestParam("renderingMode") String renderingModeDescriptor,
-                             @RequestParam(value="patientId", required=false) Integer patientId,
+                             @RequestParam(value="patient", required=false) String patientIdOrUuid,
                              @RequestParam(value="download", required=false) boolean download) throws IOException {
         try {
             ReportDefinition rd = getReportDefinitionService().getDefinitionByUuid(reportDefinitionUuid);
@@ -200,8 +202,16 @@ public class ManageReportsController {
 
             EvaluationContext context = new EvaluationContext();
 
-            if (patientId != null) {
-                context.setBaseCohort(new Cohort(Arrays.asList(patientId)));
+            if (StringUtils.isNotBlank(patientIdOrUuid)) {
+                Cohort c = new Cohort();
+                Patient p = Context.getPatientService().getPatientByUuid(patientIdOrUuid);
+                if (p != null) {
+                    c.addMember(p.getPatientId());
+                }
+                else {
+                    c.addMember(Integer.parseInt(patientIdOrUuid));
+                }
+                context.setBaseCohort(c);
             }
 
             // If the report takes in additional parameters, try to retrieve these from the request
