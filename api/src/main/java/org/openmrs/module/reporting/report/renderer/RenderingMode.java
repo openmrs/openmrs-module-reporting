@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
+import org.openmrs.api.context.Context;
+
 /**
  * Represents a mode in which a @see org.openmrs.report.ReportRenderer can run. A simple renderer like
  * a CSV renderer can probably only render in one mode. A more sophisticated renderer might be able
@@ -50,6 +52,26 @@ public class RenderingMode implements Comparable<RenderingMode> {
 		this.argument = argument;
 		this.sortWeight = sortWeight;
 	}
+
+    /**
+     * Create a new RenderingMode from a descriptor
+     * @param descriptor
+     */
+	public RenderingMode(String descriptor) {
+	    this();
+	    try {
+            if (descriptor != null) {
+                String[] split = descriptor.split("!", 2);
+                Class<? extends ReportRenderer> rendererType = (Class<? extends ReportRenderer>) Context.loadClass(split[0]);
+                setRenderer(rendererType.newInstance());
+                setArgument(split.length == 2 ? split[1] : "");
+                setLabel(rendererType.getSimpleName());
+            }
+        }
+        catch (Exception e) {
+	        throw new IllegalArgumentException("Unable to load rendering mode from descriptor", e);
+        }
+    }
 	
 	//***** INSTANCE METHODS *****
 	

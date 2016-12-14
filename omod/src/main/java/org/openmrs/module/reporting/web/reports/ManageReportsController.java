@@ -13,30 +13,41 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.report.renderer.ReportRenderer;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.renderer.RenderingMode;
+import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.web.controller.mapping.renderers.RendererMappingHandler;
 import org.openmrs.util.HandlerUtil;
-import org.openmrs.api.APIException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ManageReportsController {
@@ -165,5 +176,76 @@ public class ManageReportsController {
         ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
         rds.purgeDefinition(rds.getDefinitionByUuid(uuid));
         return "redirect:/module/reporting/reports/manageReports.form";
+    }
+
+    /**
+     * Renders a report to the response output stream, given a report definition, rendering mode, and optional patient id
+     * @param patientId the id of patient whose summary you wish to view
+     */
+    @RequestMapping("/module/reporting/reports/renderReport")
+    public void renderReport(ModelMap model, HttpServletRequest request, HttpServletResponse response,
+                             @RequestParam("reportDefinition") String reportDefinitionUuid,
+                             @RequestParam("renderingMode") String renderingModeDescriptor,
+                             @RequestParam(value="patientId", required=false) Integer patientId,
+                             @RequestParam(value="download", required=false) boolean download) throws IOException {
+        try {
+            ReportDefinition rd = getReportDefinitionService().getDefinitionByUuid(reportDefinitionUuid);
+            if (rd == null) {
+                throw new IllegalArgumentException("Unable to find report with passed uuid = " + reportDefinitionUuid);
+            }
+            RenderingMode renderingMode = new RenderingMode(renderingModeDescriptor);
+            if (!renderingMode.getRenderer().canRender(rd)) {
+                throw new IllegalArgumentException("Rendering mode chosen cannot render passed report definition");
+            }
+
+            EvaluationContext context = new EvaluationContext();
+
+            if (patientId != null) {
+                context.setBaseCohort(new Cohort(Arrays.asList(patientId)));
+            }
+
+            // If the report takes in additional parameters, try to retrieve these from the request
+            for (Parameter p : rd.getParameters()) {
+                String[] parameterValues = request.getParameterValues(p.getName());
+                if (parameterValues != null && parameterValues.length > 0) {
+                    Object value = null;
+                    if (parameterValues.length == 1) {
+                        value = WidgetUtil.parseInput(parameterValues[0], p.getType(), p.getCollectionType());
+                    }
+                    else {
+                        List l = new ArrayList();
+                        for (String v : parameterValues) {
+                            l.add(WidgetUtil.parseInput(parameterValues[0], p.getType()));
+                        }
+                        value = l;
+                    }
+                    context.addParameterValue(p.getName(), value);
+                }
+            }
+
+            ReportData reportData = getReportDefinitionService().evaluate(rd, context);
+
+
+            ReportRequest reportRequest = new ReportRequest();
+            reportRequest.setReportDefinition(new Mapped<ReportDefinition>(rd, context.getParameterValues()));
+            reportRequest.setRenderingMode(renderingMode);
+            String contentType = renderingMode.getRenderer().getRenderedContentType(reportRequest);
+            String fileName = renderingMode.getRenderer().getFilename(reportRequest);
+
+            response.setHeader("Content-Type", contentType);
+
+            if (download) {
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            }
+
+            renderingMode.getRenderer().render(reportData, renderingMode.getArgument(), response.getOutputStream());
+        }
+        catch (Exception e) {
+            e.printStackTrace(response.getWriter());
+        }
+    }
+
+    private ReportDefinitionService getReportDefinitionService() {
+        return Context.getService(ReportDefinitionService.class);
     }
 }

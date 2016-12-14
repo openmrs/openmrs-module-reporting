@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -79,6 +80,12 @@ public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
     protected String getFilenameBase(ReportRequest request) {
         String argument = request.getRenderingMode().getArgument();
         ReportDesign d = getDesign(argument);
+
+        // Start with the default behavior
+        String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-HHmmss");
+        String ret = request.getReportDefinition().getParameterizable().getName() + "_" + dateStr;
+
+        // Try to evaluate a handlebars template as an alternative
         String template = d.getPropertyValue(FILENAME_BASE_PROPERTY, "{{request.reportDefinition.parameterizable.name}}_{{formatDate request.evaluateStartDatetime \"yyyy-MM-dd_HH:mm:ss\"}}");
 
         Map templateModel = new HashMap();
@@ -87,14 +94,16 @@ public abstract class ReportDesignRenderer extends AbstractReportRenderer  {
 
         TemplateFactory templateFactory = Context.getRegisteredComponents(TemplateFactory.class).get(0);
         try {
-            return templateFactory.evaluateHandlebarsTemplate(template, templateModel);
-        } catch (EvaluationException e) {
-            log.warn("Error evaluating filenameBase template (using default instead): " + template, e);
-
-            // fall back to old behavior
-            String dateStr = DateUtil.formatDate(new Date(), "yyyy-MM-dd-HHmmss");
-            return request.getReportDefinition().getParameterizable().getName() + "_" + dateStr;
+            String evaluatedTemplate = templateFactory.evaluateHandlebarsTemplate(template, templateModel);
+            if (StringUtils.isNotBlank(evaluatedTemplate)) {
+                ret = evaluatedTemplate;
+            }
         }
+        catch (EvaluationException e) {
+            log.warn("Error evaluating filenameBase template (using default instead): " + template, e);
+        }
+
+        return ret;
     }
 
 }
