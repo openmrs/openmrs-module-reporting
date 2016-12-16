@@ -6,16 +6,17 @@
 <%@ include file="../run/localHeader.jsp"%>
 
 <script type="text/javascript" charset="utf-8">
+
+    var nextLogLine = 0;
+
 	function loadReportStatus() {
 	    $j.getJSON('${pageContext.request.contextPath}/module/reporting/reports/loadReportStatus.form?uuid=${request.uuid}', function(data) {
 	    	$j(".status").hide();
 	    	$j(".status"+data.status).show();
-	    	if (data.log.length > 0) {
-                $j("#reportLogLine").html(data.log[data.log.length-1]);
-                $j(".logDiv").html("");
-            }
-            for (var i=0; i<data.log.length; i++) {
-                $j(".logDiv").append("<span>" + data.log[i] + "</span><br/>");
+	    	while(nextLogLine < data.log.length) {
+                $j("#reportLogLine").html(data.log[nextLogLine]);
+                $j(".logDiv").prepend("<span>" + data.log[nextLogLine] + "</span><br/>");
+                nextLogLine++;
             }
 	    	if (data.status != 'COMPLETED' && data.status != 'SAVED' && data.status != 'FAILED' && data.status != 'SCHEDULE_COMPLETED') {
 	    		setTimeout("loadReportStatus()", 3000);
@@ -55,6 +56,8 @@
     .logDiv {
         padding:10px;
         color: blue;
+        height:500px;
+        overflow-x: scroll;
      }
 </style>
 <c:set var="reportDefinition" value="${request.reportDefinition.parameterizable}"/>
