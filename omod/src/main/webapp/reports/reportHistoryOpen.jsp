@@ -10,6 +10,13 @@
 	    $j.getJSON('${pageContext.request.contextPath}/module/reporting/reports/loadReportStatus.form?uuid=${request.uuid}', function(data) {
 	    	$j(".status").hide();
 	    	$j(".status"+data.status).show();
+	    	if (data.log.length > 0) {
+                $j("#reportLogLine").html(data.log[data.log.length-1]);
+                $j(".logDiv").html("");
+            }
+            for (var i=0; i<data.log.length; i++) {
+                $j(".logDiv").append("<span>" + data.log[i] + "</span><br/>");
+            }
 	    	if (data.status != 'COMPLETED' && data.status != 'SAVED' && data.status != 'FAILED' && data.status != 'SCHEDULE_COMPLETED') {
 	    		setTimeout("loadReportStatus()", 3000);
 	    	}
@@ -32,6 +39,11 @@
 				url: '${pageContext.request.contextPath}/module/reporting/reports/viewErrorDetails.form?uuid=${request.uuid}'
 			});
 		});
+
+        $j(".logDiv").hide();
+		$j("#viewReportLogLink").click(function(event) {
+            $j(".logDiv").toggle();
+        });
 	} );	
 </script>
 
@@ -40,6 +52,10 @@
 	table.requestTable td {padding-right:10px;}
 	.reportAction {padding:10px;}
 	.status {display:none;}
+    .logDiv {
+        padding:10px;
+        color: blue;
+     }
 </style>
 <c:set var="reportDefinition" value="${request.reportDefinition.parameterizable}"/>
 
@@ -122,6 +138,13 @@
 							</table>
 						</fieldset>
 					</c:if>
+                    <div class="reportAction">
+                        <a href="#" id="viewReportLogLink">
+                            <img src="<c:url value="/images/info.gif"/>" border="0" style="vertical-align:middle"/>
+                            <spring:message code="reporting.viewReportLog"/>
+                        </a>
+                        <div class="logDiv"></div>
+                    </div>
 				</td>
 				<td valign="top" style="width:50%;">
 					<fieldset>
@@ -149,6 +172,7 @@
 							<span class="status statusPROCESSING">
 								<img src="<c:url value="/images/loading.gif"/>" width="24" height="24" border="0" style="vertical-align:middle"/>
 								<span style="font-size:large"><spring:message code="reporting.status.PROCESSING"/></span><br/>
+                                <span style="font-size:small; padding:10px;" id="reportLogLine"></span>
 							</span>
 							<span class="status statusFAILED">
 								<img src="<c:url value="/images/error.gif"/>" width="24" height="24" border="0" style="vertical-align:middle"/>
@@ -163,7 +187,6 @@
 								<span style="font-size:large"><spring:message code="reporting.status.SAVED"/></span><br/>
 							</span>
 						</div>
-						<div class="logDiv"></div>
 					</fieldset>
 					<br/>
 
