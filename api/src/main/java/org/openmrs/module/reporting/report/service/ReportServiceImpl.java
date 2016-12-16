@@ -61,6 +61,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 
 	public static final String GENERATED_BY = "generatedBy";
 	public static final String GENERATION_DATE = "generationDate";
+	public static final String REPORT_REQUEST_UUID = "reportRequestUuid";
 	
 	// Logger
 	private transient Log log = LogFactory.getLog(this.getClass());
@@ -320,12 +321,19 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 	
 	/**
-	 * @see ReportService#getReportOutputFile(ReportRequest)
+	 * @see ReportService#getReportLogFile(ReportRequest)
 	 */
 	public File getReportLogFile(ReportRequest request) {
-		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
-		return new File(dir, request.getUuid() + ".reportlog");
+	    return getReportLogFile(request.getUuid());
 	}
+
+    /**
+     * @see ReportService#getReportLogFile(String)
+     */
+    public File getReportLogFile(String requestUuid) {
+        File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
+        return new File(dir, requestUuid + ".reportlog");
+    }
 	
 	/**
 	 * @see ReportService#queueReport(ReportRequest)
@@ -421,6 +429,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			EvaluationContext context = new EvaluationContext(evaluationDate);
 			context.addContextValue(GENERATED_BY, ObjectUtil.getNameOfUser(request.getRequestedBy()));
 			context.addContextValue(GENERATION_DATE, request.getRequestDate());
+			context.addContextValue(REPORT_REQUEST_UUID, request.getUuid());
 			
 			if (request.getBaseCohort() != null) {
 				logReportMessage(request, "Evaluating base Cohort....");
@@ -670,15 +679,23 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	@Transactional(readOnly=true)
 	public void logReportMessage(ReportRequest request, String message) {
-		try {
-			File f = getReportLogFile(request);
-			String d = DateUtil.formatDate(new Date(), "EEE dd/MMM/yyyy HH:mm:ss z");
-			ReportUtil.appendStringToFile(f, d + " | " + message);			
-		}
-		catch (Exception e) {
-			log.warn("Unable to log report message to disk: " + message, e);
-		}
+	    logReportMessage(request.getUuid(), message);
 	}
+
+    /**
+     * @see ReportService#logReportMessage(String, String)
+     */
+    @Transactional(readOnly=true)
+    public void logReportMessage(String requestUuid, String message) {
+        try {
+            File f = getReportLogFile(requestUuid);
+            String d = DateUtil.formatDate(new Date(), "EEE dd/MMM/yyyy HH:mm:ss z");
+            ReportUtil.appendStringToFile(f, d + " | " + message);
+        }
+        catch (Exception e) {
+            log.warn("Unable to log report message to disk: " + message, e);
+        }
+    }
 	
 	//***** PRIVATE UTILITY METHODS *****
 	

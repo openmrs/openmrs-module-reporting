@@ -37,6 +37,8 @@ import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.service.ReportServiceImpl;
 import org.openmrs.util.HandlerUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -219,6 +221,9 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
 
         context = ObjectUtil.nvl(context, new EvaluationContext());
 
+        // Log any appropriate messages (eg. to provide users with status and progress updates)
+        logStatusMessage(definition, context);
+
         // This is a cross-cutting entry point for all evaluations in the reporting module, so doing this here covers
         // all scenarios
         ensureNoTestPatients(context);
@@ -306,6 +311,32 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
                 }
             }
         }
+    }
+
+    /**
+     * Default implementation of how to log status message logging for all services.  This can be overridden as desired.
+     * By default, this simply logs the status message to the log file associated with a report request.
+     * If an implementing service just wants to customize the message, and not where it is logged, they should override
+     * the getStatusMessage(Definition, Context) method instead
+     */
+    protected void logStatusMessage(T definition, EvaluationContext context) {
+        try {
+            String requestUuid = (String) context.getContextValues().get(ReportServiceImpl.REPORT_REQUEST_UUID);
+            if (ObjectUtil.notNull(requestUuid)) {
+                Context.getService(ReportService.class).logReportMessage(requestUuid, getStatusMessage(definition, context));
+            }
+        }
+        catch (Exception e) {
+            log.warn("An error occurred trying to log a status message for a definition evaluation", e);
+            // Simply log this, it should not derail any evaluation progress
+        }
+    }
+
+    /**
+     * Default implementation of a status message that indicates that this definition is being evaluated
+     */
+    protected String getStatusMessage(T definition, EvaluationContext context) {
+        return "Evaluating " + ObjectUtil.nvlStr(definition.getName(), DefinitionUtil.format(definition));
     }
 
     /**

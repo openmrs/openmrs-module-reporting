@@ -226,6 +226,12 @@ public interface ReportService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	public File getReportLogFile(ReportRequest request);
+
+    /**
+     * @return the File that may contain any log messages when evaluating a given {@link ReportRequest}
+     */
+    @Transactional(readOnly = true)
+    public File getReportLogFile(String requestUuid);
 	
 	/**
 	 * <pre>
@@ -327,5 +333,13 @@ public interface ReportService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	public void logReportMessage(ReportRequest request, String message);
+
+    /**
+     * Saves the passed message to disk for the given report, in order to have a record of the report generation
+     * @param requestUuid the request to save a message for
+     * @param message the message to save
+     */
+    @Transactional(readOnly = true)
+    public void logReportMessage(String requestUuid, String message);
 
 }

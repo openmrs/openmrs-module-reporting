@@ -1,11 +1,15 @@
 package org.openmrs.module.reporting.report.service;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -27,6 +31,7 @@ import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -442,4 +447,32 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		Report result = Context.getService(ReportService.class).runReport(request);
 		Context.getService(ReportService.class).saveReport(result, "Test Saving");
 	}
+
+    @Test
+    public void runReport_shouldLogMessagesToReportRequestLogFile() throws Exception {
+        ReportDefinition def = new ReportDefinition();
+        def.setName("A Test Report");
+        CohortCrossTabDataSetDefinition dsd = new CohortCrossTabDataSetDefinition();
+        dsd.setName("Patients By Gender");
+        GenderCohortDefinition males = new GenderCohortDefinition();
+        males.setName("Males");
+        males.setMaleIncluded(true);
+        dsd.addColumn("Males", males, null);
+        GenderCohortDefinition females = new GenderCohortDefinition();
+        females.setFemaleIncluded(true);
+        dsd.addColumn("Females", females, null);
+        def.addDataSetDefinition("patients", dsd, null);
+        ReportRenderer renderer = new TsvReportRenderer();
+        ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), Priority.NORMAL, null);
+        Report result = getReportService().runReport(request);
+        File reportLog = getReportService().getReportLogFile(request);
+        String s = FileUtils.readFileToString(reportLog, "UTF-8");
+        Assert.assertTrue(s.contains("Evaluating A Test Report"));
+        Assert.assertTrue(s.contains("Evaluating Patients By Gender"));
+        Assert.assertTrue(s.contains("Evaluating " + DefinitionUtil.format(females)));
+    }
+
+    public ReportService getReportService() {
+	    return Context.getService(ReportService.class);
+    }
 }
