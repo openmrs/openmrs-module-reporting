@@ -689,13 +689,15 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
      */
     @Transactional(readOnly=true)
     public void logReportMessage(String requestUuid, String message) {
-        try {
-            File f = getReportLogFile(requestUuid);
-            String d = DateUtil.formatDate(new Date(), "EEE dd/MMM/yyyy HH:mm:ss z");
-            ReportUtil.appendStringToFile(f, d + " | " + message);
-        }
-        catch (Exception e) {
-            log.warn("Unable to log report message to disk: " + message, e);
+        if (ObjectUtil.notNull(message)) {
+            try {
+                File f = getReportLogFile(requestUuid);
+                String d = DateUtil.formatDate(new Date(), "EEE dd/MMM/yyyy HH:mm:ss z");
+                ReportUtil.appendStringToFile(f, d + " | " + message);
+            }
+            catch (Exception e) {
+                log.warn("Unable to log report message to disk: " + message, e);
+            }
         }
     }
 	
