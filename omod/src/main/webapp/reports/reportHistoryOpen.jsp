@@ -7,16 +7,16 @@
 
 <script type="text/javascript" charset="utf-8">
 
-    var nextLogLine = 0;
-
 	function loadReportStatus() {
 	    $j.getJSON('${pageContext.request.contextPath}/module/reporting/reports/loadReportStatus.form?uuid=${request.uuid}', function(data) {
 	    	$j(".status").hide();
 	    	$j(".status"+data.status).show();
-	    	while(nextLogLine < data.log.length) {
-                $j("#reportLogLine").html(data.log[nextLogLine]);
-                $j(".logDiv").prepend("<span>" + data.log[nextLogLine] + "</span><br/>");
-                nextLogLine++;
+            $j("#reportLogLine").html(data.log[data.log.length-1]);
+            $j(".logDiv").html("");
+	    	for (var i=data.log.length-1; i>=0; i--) {
+	    	    var logLine = data.log[i];
+	    	    var logSplit = logLine.split("|");
+	    	    $j(".logDiv").append("<span class='logLineDate'>" + logSplit[0].substring(4, 24) + "</span><span class='logLineMessage'>" + logSplit[1] +  "<br/>");
             }
 	    	if (data.status != 'COMPLETED' && data.status != 'SAVED' && data.status != 'FAILED' && data.status != 'SCHEDULE_COMPLETED') {
 	    		setTimeout("loadReportStatus()", 3000);
@@ -55,10 +55,15 @@
 	.status {display:none;}
     .logDiv {
         padding:10px;
-        color: blue;
-        height:500px;
+        height:400px;
         overflow-x: scroll;
      }
+    .logLineDate {
+
+    }
+    .logLineMessage {
+        padding-left:5px;
+    }
 </style>
 <c:set var="reportDefinition" value="${request.reportDefinition.parameterizable}"/>
 
