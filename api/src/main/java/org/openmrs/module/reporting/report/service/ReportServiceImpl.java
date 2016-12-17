@@ -1,6 +1,7 @@
 package org.openmrs.module.reporting.report.service;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -411,7 +412,8 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	public Report runReport(ReportRequest request) {
 		
 		// Start up a timer to check performance
-		long startTime = System.currentTimeMillis();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 		
 		// Set the status to processing and save the request
 		request.setStatus(Status.PROCESSING);
@@ -516,9 +518,9 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 				}
 			}
 		}
-		
-		long endTime = System.currentTimeMillis();
-		logReportMessage(request, "Report Generation Completed in " + (int)((endTime - startTime)/1000) + " seconds.");
+
+        stopWatch.stop();
+		logReportMessage(request, "Report Generation Completed in " + stopWatch.toString());
 		
 		return report;
 	}
