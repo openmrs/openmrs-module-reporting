@@ -37,7 +37,7 @@
 						</td>
 						<td>
 							<a href="${pageContext.request.contextPath}/module/reporting/reports/reportHistoryOpen.form?uuid=${rr.uuid}">
-								${rr.reportDefinition.parameterizable.name}
+								<c:out value="${rr.reportDefinition.parameterizable.name}" />
 							</a>
 						</td>
 						<td>

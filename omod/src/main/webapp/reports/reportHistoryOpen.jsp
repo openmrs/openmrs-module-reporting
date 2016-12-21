@@ -69,8 +69,8 @@
 
 <div id="page">
 	<div id="container">
-		<h1>${reportDefinition.name}</h1>
-		<small>${reportDefinition.description}</small>
+		<h1><c:out value="${reportDefinition.name}" /></h1>
+		<small><c:out value="${reportDefinition.description}" /></small>
 		<br/>
 		<table style="width:100%; padding:10px;">
 			<tr>
