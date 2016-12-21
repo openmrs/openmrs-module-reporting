@@ -90,7 +90,7 @@
 						<td style="display:none"><openmrs:formatDate date="${r.requestDate}" format="yyyy-MM-dd HH:mm:ss"/></td>
 						<td>
 							<a href="reportHistoryOpen.form?uuid=${r.uuid}">
-								${r.reportDefinition.parameterizable.name}
+								<c:out value="${r.reportDefinition.parameterizable.name}" />
 							</a>
 						</td>
 						<td style="white-space:nowrap;">
