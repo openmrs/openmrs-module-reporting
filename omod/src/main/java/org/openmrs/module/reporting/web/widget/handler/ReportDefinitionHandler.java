@@ -21,6 +21,7 @@ import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
 import org.openmrs.module.htmlwidgets.web.html.Option;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.apache.commons.lang.StringEscapeUtils;
 
 /**
  * FieldGenHandler for Enumerated Types
@@ -34,7 +35,7 @@ public class ReportDefinitionHandler extends CodedHandler {
 	@Override
 	public void populateOptions(WidgetConfig config, CodedWidget widget) {
 		for (ReportDefinition d : Context.getService(ReportDefinitionService.class).getAllDefinitions(false)) {
-			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
+			widget.addOption(new Option(d.getUuid(), StringEscapeUtils.escapeHtml(d.getName()), null, d), config);
 		}
 	}
 	
