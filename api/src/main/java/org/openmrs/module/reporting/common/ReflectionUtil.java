@@ -101,32 +101,36 @@ public class ReflectionUtil {
     }
 	
     /**
-     * Returns the property value with the given property name on the given object.
-     * <p>
-     * It uses {@link PropertyUtils#getProperty(Object, String)}.
-     * 
-     * @param object
-     * @param property
-     * @return the property value with the given property name on the given object
-     * @throws IllegalArgumentException if anything goes wrong
-     * @should work for string property
-     * @should work for boolean property
-     * @should work for object property
-     * @verifies work for nested property
-     */
-	public static Object getPropertyValue(Object object, String property) {
-    	try {
-	        return PropertyUtils.getProperty(object, property);
+    * <p>Return the value of the specified property of the specified bean,
+    * no matter which property reference format is used, with no
+    * type conversions.</p>
+    *
+    * <p>For more details see <code>PropertyUtilsBean</code>.</p>
+    *
+    * @param bean Bean whose property is to be extracted
+    * @param name Possibly indexed and/or nested name of the property
+    *  to be extracted
+    * @return the property value
+    *
+    * @throws IllegalAccessException if the caller does not have
+    *  access to the property accessor method
+    * @throws IllegalArgumentException if <code>bean</code> or
+    *  <code>name</code> is null
+    * @throws InvocationTargetException if the property accessor method
+    *  throws an exception
+    * @throws NoSuchMethodException if an accessor method for this
+    *  propety cannot be found
+    * @see PropertyUtilsBean#getProperty
+    */
+        public static Object getProperty(final Object bean, final String name)
+                throws IllegalAccessException, InvocationTargetException,
+               NoSuchMethodException {
+
+           return (PropertyUtilsBean.getInstance().getProperty(bean, name));
+
         }
-        catch (Exception e) {
-            String message = "Error getting '" + property + "' from " + object;
-            if (object != null) {
-                message += " (" + object.getClass() + ")";
-            }
-            throw new IllegalArgumentException(message, e);
-        }
-	}
-	
+
+
 	/**
 	 * Utility method which sets the value of a Field in an Object with the given value
 	 */
