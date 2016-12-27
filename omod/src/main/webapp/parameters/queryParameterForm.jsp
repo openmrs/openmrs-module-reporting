@@ -56,7 +56,7 @@ $j(document).ready(function() {
 			<table height="100%">
 				<tr valign="top">
 					<td style="padding-right: 1em">
-						<h4>${parameterizable.name}</h4>
+						<h4><c:out value="${parameterizable.name}" /></h4>
 						<c:url var="postUrl" value='/module/reporting/parameters/queryParameter.form'/>
 						<form id="preview-parameterizable-form" action="${postUrl}" method="POST">
 							<input type="hidden" name="action" value="preview"/>

@@ -85,7 +85,7 @@
 			<div class="box">
 				<div class="metadataForm">
 					<div class="metadataField">
-						<label class="inline"><spring:message code="reporting.name" />:</label>${model.obj.name}
+						<label class="inline"><spring:message code="reporting.name" />:</label><c:out value="${model.obj.name}" />
 					</div>
 					<c:if test="${model.showType != 'false'}">
 						<div class="metadataField">
@@ -97,7 +97,7 @@
 						<label class="inline"><spring:message code="reporting.description" />:</label>
 						<c:choose>
 							<c:when test="${!empty model.obj.description}">
-								${model.obj.description}
+								<c:out value="${model.obj.description}" />
 							</c:when>
 							<c:otherwise>
 								<i><spring:message code="reporting.none"/></i>							

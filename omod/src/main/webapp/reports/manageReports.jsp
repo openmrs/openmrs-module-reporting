@@ -64,10 +64,10 @@
 
 					<tr>
 						<td width="20%" nowrap>
-							${reportDefinition.name}
+							<c:out value="${reportDefinition.name}" />
 						</td>
 						<td width="20%">
-							${reportDefinition.description}
+							<c:out value="${reportDefinition.description}" />
 						</td>
 						<td width="10%" nowrap>
 							<rpt:displayLabel type="${reportDefinition['class'].name}"/>
