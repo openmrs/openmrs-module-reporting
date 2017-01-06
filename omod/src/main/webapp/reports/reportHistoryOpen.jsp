@@ -11,12 +11,17 @@
 	    $j.getJSON('${pageContext.request.contextPath}/module/reporting/reports/loadReportStatus.form?uuid=${request.uuid}', function(data) {
 	    	$j(".status").hide();
 	    	$j(".status"+data.status).show();
-            $j("#reportLogLine").html(data.log[data.log.length-1]);
-            $j(".logDiv").html("");
-	    	for (var i=data.log.length-1; i>=0; i--) {
-	    	    var logLine = data.log[i];
-	    	    var logSplit = logLine.split("|");
-	    	    $j(".logDiv").append("<span class='logLineDate'>" + logSplit[0].substring(4, 24) + "</span><span class='logLineMessage'>" + logSplit[1] +  "<br/>");
+	    	if (data.log && data.log.length > 0) {
+                $j("#reportLogLine").html(data.log[data.log.length - 1]);
+                $j(".logDiv").html("");
+                for (var i = data.log.length - 1; i >= 0; i--) {
+                    var logLine = data.log[i];
+                    var logSplit = logLine.split("|");
+                    $j(".logDiv").append("<span class='logLineDate'>" + logSplit[0].substring(4, 24) + "</span><span class='logLineMessage'>" + logSplit[1] + "<br/>");
+                }
+            }
+            else {
+                $j(".logDiv").append("No Log Entries found");
             }
 	    	if (data.status != 'COMPLETED' && data.status != 'SAVED' && data.status != 'FAILED' && data.status != 'SCHEDULE_COMPLETED') {
 	    		setTimeout("loadReportStatus()", 3000);
