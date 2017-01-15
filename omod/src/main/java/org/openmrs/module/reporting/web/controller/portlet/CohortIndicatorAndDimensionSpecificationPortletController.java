@@ -1,13 +1,5 @@
 package org.openmrs.module.reporting.web.controller.portlet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +11,9 @@ import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.util.OpenmrsClassLoader;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * This Controller loads a CohortIndicatorAndDimensionSpecification for management
@@ -64,9 +59,12 @@ public class CohortIndicatorAndDimensionSpecificationPortletController extends R
     		}
        	}
        	else if (mappedUuid != null) { // If you are selecting a new Indicator, get it
-       		mappedObj = (CohortIndicator)DefinitionContext.getIndicatorService().getDefinitionByUuid(mappedUuid);
-       	}
-       	model.put("mappedObj", mappedObj);
+			Object testObj = DefinitionContext.getIndicatorService().getDefinitionByUuid(mappedUuid);
+			if (testObj instanceof CohortIndicator) {
+				mappedObj = (CohortIndicator)DefinitionContext.getIndicatorService().getDefinitionByUuid(mappedUuid);
+			}
+		}
+		model.put("mappedObj", mappedObj);
        	model.put("mappings", mappings);
 
 		model.put("allowedParams", ParameterizableUtil.getAllowedMappings(dsd, mappedObj));
