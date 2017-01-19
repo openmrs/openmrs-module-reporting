@@ -29,17 +29,23 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.User;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.IllegalDatabaseAccessException;
 import org.openmrs.module.reporting.ReportingException;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.cohort.query.db.CohortQueryDAO;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.module.reporting.report.util.SqlUtils;
 
@@ -91,60 +97,23 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		q.setCacheMode(CacheMode.IGNORE);
 		return new Cohort(q.list());
 	}
-	
-	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate) {
-		
-		if (effectiveDate == null) {
-			effectiveDate = new Date();
-		}
-		if (minAgeUnit == null) {
-			minAgeUnit = DurationUnit.YEARS;
-		}
-		if (maxAgeUnit == null) {
-			maxAgeUnit = DurationUnit.YEARS;
-		}
-		
-		String sql = "select t.patient_id from patient t, person p where t.patient_id = p.person_id and t.voided = false and ";
-		Map<String, Date> paramsToSet = new HashMap<String, Date>();
-		
-		Date maxBirthFromAge = effectiveDate;
-		if (minAge != null) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(effectiveDate);
-			cal.add(minAgeUnit.getCalendarField(), -minAgeUnit.getFieldQuantity()*minAge);
-			maxBirthFromAge = cal.getTime();
-		}
-		
-		String c = "p.birthdate <= :maxBirthFromAge";
-		paramsToSet.put("maxBirthFromAge", maxBirthFromAge);
-		
-		Date minBirthFromAge = null;
-		if (maxAge != null) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(effectiveDate);
-			cal.add(maxAgeUnit.getCalendarField(), -(maxAgeUnit.getFieldQuantity()*maxAge + 1));
-			minBirthFromAge = cal.getTime();
-			c = "(" + c + " and p.birthdate >= :minBirthFromAge)";
-			paramsToSet.put("minBirthFromAge", minBirthFromAge);
-		}
-			
-		if (unknownAgeIncluded) {
-			c = "(p.birthdate is null or " + c + ")";
-		}
-		
-		sql += c;
-		
-		log.debug("Executing: " + sql + " with params: " + paramsToSet);
-		
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
-		for (Map.Entry<String, Date> entry : paramsToSet.entrySet()) {
-			query.setDate(entry.getKey(), entry.getValue());
-		}
-		
-		return new Cohort(query.list());
-	}
 
-	
+    /**
+     * @deprecated use AgeCohortDefinition and evaluate it
+     */
+	@Deprecated
+	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate) {
+        try {
+            AgeCohortDefinition acd = new AgeCohortDefinition(minAge, maxAge, effectiveDate);
+            acd.setMinAgeUnit(minAgeUnit);
+            acd.setMaxAgeUnit(maxAgeUnit);
+            acd.setUnknownAgeIncluded(unknownAgeIncluded);
+            return Context.getService(CohortDefinitionService.class).evaluate(acd, new EvaluationContext());
+        }
+        catch (EvaluationException e) {
+            throw new RuntimeException(e);
+        }
+	}
 
 	/** 
 	 * 

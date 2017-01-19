@@ -16,13 +16,20 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * This tests the evaluation of an AgeCohortDefinition
@@ -34,6 +41,9 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  * 		999: voided, birthdate: null
  */
 public class AgeCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
+
+    @Autowired
+    TestDataManager tdf;
 	
 	@Test
 	public void evaluate_shouldReturnOnlyPatientsBornOnOrBeforeTheEvaluationDate() throws Exception {
@@ -67,6 +77,19 @@ public class AgeCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		testAgeRange(4, null, null, true, null, null);
 	}
 
+	@Test
+    public void evaluate_shouldHandleBoundaryConditionCorrectly() throws Exception {
+	    Date birthDate = DateUtil.getDateTime(2002, 1, 1);
+	    Date currentDate = DateUtil.getDateTime(2017, 1, 1);
+	    Patient p1 = tdf.randomPatient().birthdate(birthDate).save();
+	    EvaluationContext context = new EvaluationContext();
+	    context.setBaseCohort(new Cohort(Arrays.asList(p1.getPatientId())));
+        Cohort children = evaluate(new AgeCohortDefinition(0, 14, currentDate), context);
+        Assert.assertEquals(0, children.size());
+        Cohort adults = evaluate(new AgeCohortDefinition(15, null, currentDate), context);
+        Assert.assertEquals(1, adults.size());
+    }
+
 	/**
 	 * Private utility method that contains necessary logic for testing various combinations of age calculations
 	 * @param numPats
@@ -89,7 +112,11 @@ public class AgeCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 			acd.setMinAgeUnit(ageUnits);
 			acd.setMaxAgeUnit(ageUnits);
 		}
-		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(acd, null);
+		Cohort c = evaluate(acd, null);
 		Assert.assertEquals(numPats, c.getSize());
-	}	
+	}
+
+    private Cohort evaluate(AgeCohortDefinition acd, EvaluationContext context) throws EvaluationException {
+        return Context.getService(CohortDefinitionService.class).evaluate(acd, context);
+    }
 }
