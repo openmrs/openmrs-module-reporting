@@ -127,6 +127,7 @@ public class ReportManagerUtil {
                     existingRequest.setProcessAutomatically(rrTemplate.isProcessAutomatically());
                     existingRequest.setRenderingMode(rrTemplate.getRenderingMode());
                     existingRequest.setSchedule(rrTemplate.getSchedule());
+                    existingRequest.setMinimumDaysToPreserve(rrTemplate.getMinimumDaysToPreserve());
                     reportService.saveReportRequest(existingRequest);
                 }
             }
