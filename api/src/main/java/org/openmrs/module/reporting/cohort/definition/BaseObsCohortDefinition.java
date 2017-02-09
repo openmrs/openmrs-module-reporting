@@ -51,12 +51,15 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group="obsDatetimeGroup")
 	private Date onOrBefore;
 	
-	@ConfigurationProperty(group="otherGroup")
+	@ConfigurationProperty(group="where")
 	private List<Location> locationList;
 	
 	@ConfigurationProperty(group="otherGroup")
 	private List<EncounterType> encounterTypeList;
-	
+
+	@ConfigurationProperty(group = "where")
+	private boolean excludeSublocations = false;
+
 	// ------ helper accessors -------
 	
 	public Integer getQuestionId() {
@@ -207,5 +210,13 @@ public abstract class BaseObsCohortDefinition extends BaseCohortDefinition {
      */
     public void setTimeModifier(TimeModifier timeModifier) {
     	this.timeModifier = timeModifier;
-    }	
+    }
+
+	public boolean isExcludeSublocations() {
+		return excludeSublocations;
+	}
+
+	public void setExcludeSublocations(boolean excludeSublocations) {
+		this.excludeSublocations = excludeSublocations;
+	}
 }

@@ -37,7 +37,7 @@ public class PatientIdentifierCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty
 	private List<PatientIdentifierType> typesToMatch;
 	
-	@ConfigurationProperty
+	@ConfigurationProperty(group = "where")
 	private List<Location> locationsToMatch;
 	
 	@ConfigurationProperty
@@ -45,6 +45,9 @@ public class PatientIdentifierCohortDefinition extends BaseCohortDefinition {
 
     @ConfigurationProperty
 	private String regexToMatch;
+
+    @ConfigurationProperty(group = "where")
+    private boolean excludeSublocations = false;
 	
 	//***** CONSTRUCTORS *****
 
@@ -153,5 +156,13 @@ public class PatientIdentifierCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setRegexToMatch(String regexToMatch) {
 		this.regexToMatch = regexToMatch;
+	}
+
+	public boolean isExcludeSublocations() {
+		return excludeSublocations;
+	}
+
+	public void setExcludeSublocations(boolean excludeSublocations) {
+		this.excludeSublocations = excludeSublocations;
 	}
 }
