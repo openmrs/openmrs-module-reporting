@@ -202,6 +202,8 @@
   <encounter encounter_id="10" encounter_type="6" patient_id="22" location_id="2" form_id="1" encounter_datetime="2009-10-19 00:00:00.0" creator="1" date_created="2008-08-19 16:34:40.0" voided="false" void_reason="" uuid="c3eb9bac-c4cf-11de-a970-6ab447468ce9"/>
   <encounter encounter_id="11" encounter_type="6" patient_id="23" location_id="2" form_id="1" encounter_datetime="2009-08-19 00:00:00.0" creator="1" date_created="2008-08-19 17:34:40.0" voided="false" void_reason="" uuid="c8f107d1-c4cf-11de-a970-6ab447468ce9"/>
   <encounter encounter_id="12" encounter_type="6" patient_id="24" location_id="2" form_id="1" encounter_datetime="2009-09-19 00:00:00.0" creator="1" date_created="2008-08-19 18:34:40.0" voided="false" void_reason="" uuid="cdfb6050-c4cf-11de-a970-6ab447468ce9"/>
+  <encounter encounter_id="13" encounter_type="6" patient_id="101" location_id="4" form_id="1" encounter_datetime="2013-09-19 00:00:00.0" creator="1" date_created="2012-08-19 18:34:40.0" voided="false" void_reason="" uuid="8f6877a0-b786-4fd6-9390-d05017ba3670"/>
+  <encounter encounter_id="14" encounter_type="6" patient_id="102" location_id="5" form_id="1" encounter_datetime="2013-09-19 00:00:00.0" creator="1" date_created="2012-08-19 18:34:40.0" voided="false" void_reason="" uuid="68e36209-dda3-4e12-883c-481ce19bcb2c"/>
 
   <encounter_type encounter_type_id="1" name="Scheduled" description="Scheduled Visit" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="61ae96f4-6afe-4351-b6f8-cd4fc383cce1"/>
   <encounter_type encounter_type_id="2" name="Emergency" description="Emergency visit" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="07000be2-26b6-4cce-8b40-866d8435b613"/>
@@ -224,6 +226,8 @@
   <location location_id="1" name="Unknown Location" description="The default location used when limited information is known" address1="" address2="" city_village="" state_province="" postal_code="" country="" creator="1" date_created="2005-09-22 00:00:00.0" retired="false" uuid="dc5c1fcc-0459-4201-bf70-0b90535ba362"/>
   <location location_id="2" name="Xanadu" description="A metaphor for opulence, most famously in the English Romantic Samuel Taylor Coleridge&apos;s poem Kubla Khan." address1="800 Boylston Street" address2="" city_village="Boston" state_province="MA" postal_code="02115" country="USA" latitude="" longitude="" creator="1" date_created="2008-08-15 13:46:50.0" retired="false" uuid="9356400c-a5a2-4532-8f2b-2361b3446eb8"/>
   <location location_id="3" name="Never Never Land" description="This is never be found" address1="" address2="" city_village="Peter" state_province="Pan" postal_code="" country="Wendy" latitude="" longitude="" creator="1" date_created="2008-08-15 15:28:54.0" retired="true" retired_by="1" date_retired="2008-08-15 00:00:00.0" retire_reason="test" uuid="167ce20c-4785-4285-9119-d197268f7f4a"/>
+  <location location_id="4" name="Some Where" description="Some Where" address1="" address2="" city_village="BK" state_province="South South" postal_code="" country="Kamer" latitude="" longitude="" date_created="2009-08-15 15:28:54.0" retired="false" uuid="3a5ac501-dce6-4195-b693-f2094bf4df45"/>
+  <location location_id="5" name="Another Place" description="Another Place" parent_location="4" address1="" address2="" city_village="BK" state_province="South South" postal_code="" country="Kamer" latitude="" longitude="" date_created="2009-08-15 15:28:54.0" retired="false" uuid="199e1f76-b2e5-4e3d-9f31-fcaf3982f967"/>
 
   <!-- Needs observations for many patients -->
   <obs obs_id="6" person_id="7" concept_id="21" encounter_id="3" obs_datetime="2008-08-15 00:00:00.0" location_id="1" value_coded="8" comments="" creator="1" date_created="2008-08-19 12:32:59.0" voided="false" uuid="1ce473c8-3fac-440d-9f92-e22facab194f"/>
@@ -265,7 +269,7 @@
   <orders order_id="4" order_type_id="2" concept_id="88" orderer="1" instructions="" start_date="2007-12-03 00:00:00.0" urgency="ROUTINE" discontinued="true" discontinued_date="2007-12-25 00:00:00.0" discontinued_by="1" creator="1" date_created="2008-08-19 12:23:21.0" voided="false" patient_id="2" uuid="047b7424-6f33-4357-823c-420f316bb039"/>
   <orders order_id="5" order_type_id="2" concept_id="88" orderer="1" instructions="" start_date="2008-08-19 00:00:00.0" urgency="ROUTINE" discontinued="false" creator="1" date_created="2008-08-19 12:24:10.0" voided="false" patient_id="2" uuid="0c96f25c-4949-4f72-9931-d808fbc226db"/>
 
-  <!-- Total: 10 Patients | 1 Voided  -->
+  <!-- Total: 12 Patients | 1 Voided  -->
   <patient patient_id="2" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
   <patient patient_id="6" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:31.0" voided="false" void_reason=""/>
   <patient patient_id="7" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
@@ -276,7 +280,9 @@
   <patient patient_id="23" creator="1" date_created="2009-01-18 00:00:00.0" voided="false" void_reason=""/> 
   <patient patient_id="24" creator="1" date_created="2009-01-18 00:00:00.0" voided="false" void_reason=""/> 
   <patient patient_id="999" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:24:34.0" voided="true" void_reason="For test purposes"/>
-  
+  <patient patient_id="101" creator="1" date_created="2006-01-18 00:00:00.0" voided="false" void_reason=""/>
+  <patient patient_id="102" creator="1" date_created="2006-01-18 00:00:00.0" voided="false" void_reason=""/>
+
   <patient_identifier patient_identifier_id="1" patient_id="2" identifier="101" identifier_type="2" preferred="0" location_id="1" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="ff41928c-3bca-48d9-a4dc-9198f6b2873b"/>
   <patient_identifier patient_identifier_id="2" patient_id="2" identifier="101-6" identifier_type="1" preferred="1" location_id="1" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614"/>
   <patient_identifier patient_identifier_id="3" patient_id="6" identifier="12345K" identifier_type="2" preferred="0" location_id="3" creator="1" date_created="2008-08-18 11:44:54.0" voided="false" void_reason="" uuid="f10d32a1-098f-4b50-8cc5-23efb0898360"/>
@@ -305,6 +311,8 @@
   <patient_program patient_program_id="9" patient_id="7" program_id="1" location_id="2" date_enrolled="2008-08-04 00:00:00.0" creator="1" date_created="2008-08-18 11:40:48.0" changed_by="1" date_changed="2008-08-18 12:29:29.0" voided="false" uuid="b75462a0-4c92-abce-b8bc-e98b38a36534"/>
   <patient_program patient_program_id="10" patient_id="23" program_id="1" location_id="1" date_enrolled="2012-04-01 00:00:00.0" date_completed="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" changed_by="1" date_changed="2012-05-15 00:00:00.0" voided="false" uuid="b75462b9-4c92-1122-b8bc-e98b38a36534"/>
   <patient_program patient_program_id="11" patient_id="23" program_id="1" location_id="2" date_enrolled="2012-05-15 00:00:00.0" creator="1" date_created="2012-04-01 00:00:00.0" changed_by="1" date_changed="2012-05-15 00:00:00.0" voided="false" uuid="b75462b9-4c92-abce-b8bc-e98c38a36534"/>
+  <patient_program patient_program_id="12" patient_id="101" program_id="1" location_id="4" date_enrolled="2011-05-15 00:00:00.0" creator="1" date_created="2011-04-01 00:00:00.0" changed_by="1" date_changed="2011-05-15 00:00:00.0" voided="false" uuid="e94620aa-5770-463e-b2df-08a53e35c225"/>
+  <patient_program patient_program_id="13" patient_id="102" program_id="1" location_id="5" date_enrolled="2011-05-15 00:00:00.0" creator="1" date_created="2011-04-01 00:00:00.0" changed_by="1" date_changed="2011-05-15 00:00:00.0" voided="false" uuid="9459f56f-d859-4d1b-9866-7031c40c3f05"/>
 
   <patient_state patient_state_id="1" patient_program_id="1" state="2" start_date="2008-08-08 10:00:00.0" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37eaa"/>
   <patient_state patient_state_id="2" patient_program_id="6" state="6" start_date="2008-08-11" end_date="2009-12-31" creator="1" date_created="2008-08-18 12:29:29.0" voided="false" uuid="ea89deaa-23cc-4840-92fe-63d199c37ebb"/>

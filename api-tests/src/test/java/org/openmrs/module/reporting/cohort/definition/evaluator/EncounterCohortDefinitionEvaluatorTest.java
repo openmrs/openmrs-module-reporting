@@ -48,13 +48,15 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setEncounterTypeList(new ArrayList<EncounterType>()); // this is a regression test for a NPE on empty lists
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(6, c.size());
+		Assert.assertEquals(8, c.size());
 		Assert.assertTrue(c.contains(7));
 		Assert.assertTrue(c.contains(20));
 		Assert.assertTrue(c.contains(21));
 		Assert.assertTrue(c.contains(22));
 		Assert.assertTrue(c.contains(23));
 		Assert.assertTrue(c.contains(24));
+		Assert.assertTrue(c.contains(101));
+		Assert.assertTrue(c.contains(102));
 	}
 	
 	/**
@@ -263,5 +265,29 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setCreatedOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertTrue(c.contains(patentId));
+	}
+
+	@Test
+	public void evaluate_shouldFollowChildLocationsIfIncludeChildLocationsIsTrue() throws Exception {
+
+		EncounterCohortDefinition cd = new EncounterCohortDefinition();
+		cd.setIncludeChildLocations(true);
+		cd.addLocation(Context.getLocationService().getLocation(4));
+		Location location = Context.getLocationService().getLocation(4);
+		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertEquals(2, c.getSize());
+		Assert.assertTrue(c.contains(101));
+		Assert.assertTrue(c.contains(102));
+	}
+
+	@Test
+	public void evaluate_shouldNotFollowChildLocationsIfIncludeChildLocationsIsFalse() throws Exception {
+		EncounterCohortDefinition cd = new EncounterCohortDefinition();
+		cd.setIncludeChildLocations(false);
+		cd.addLocation(Context.getLocationService().getLocation(4));
+		Location location = Context.getLocationService().getLocation(4);
+		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+		Assert.assertEquals(1, c.getSize());
+		Assert.assertTrue(c.contains(101));
 	}
 }

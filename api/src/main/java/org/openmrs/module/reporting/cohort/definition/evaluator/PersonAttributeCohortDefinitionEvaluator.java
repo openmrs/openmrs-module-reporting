@@ -25,6 +25,7 @@ import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
@@ -55,7 +56,7 @@ public class PersonAttributeCohortDefinitionEvaluator implements CohortDefinitio
 			}
 		}
 		if (pacd.getValueLocations() != null) {
-			for (Location l : pacd.getValueLocations()) {
+			for (Location l : getValueLocations(pacd)) {
 				values.add(l.serialize());
 			}
 		}
@@ -64,4 +65,11 @@ public class PersonAttributeCohortDefinitionEvaluator implements CohortDefinitio
     	Cohort c = cqs.getPatientsHavingPersonAttributes(pacd.getAttributeType(), values);
     	return new EvaluatedCohort(c, cohortDefinition, context);
     }
+
+    private List<Location> getValueLocations(PersonAttributeCohortDefinition pacd) {
+    	if (pacd.isIncludeChildLocations()) {
+    		return DefinitionUtil.getAllLocationsAndChildLocations(pacd.getValueLocations());
+		}
+		return pacd.getValueLocations();
+	}
 }

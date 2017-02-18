@@ -46,8 +46,11 @@ public class InStateCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group="onDateGroup")
 	private Date onDate;
 
-	@ConfigurationProperty(group="locationGroup")
+	@ConfigurationProperty(group="where")
 	private List<Location> locations;
+
+	@ConfigurationProperty(group = "where")
+	private boolean includeChildLocations;
 
 	/**
 	 * Default constructor
@@ -144,5 +147,17 @@ public class InStateCohortDefinition extends BaseCohortDefinition {
 			locations = new ArrayList<Location>();
 		}
 		locations.add(location);
+	}
+
+	public boolean isIncludeChildLocations() {
+		return includeChildLocations;
+	}
+
+	public boolean getIncludeChildLocations() {
+		return isIncludeChildLocations();
+	}
+
+	public void setIncludeChildLocations(boolean includeChildLocations) {
+		this.includeChildLocations = includeChildLocations;
 	}
 }

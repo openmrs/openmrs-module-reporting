@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.definition;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.MessageUtil;
@@ -230,4 +231,25 @@ public class DefinitionUtil {
 		}
 		return (P)ReflectionUtil.getPropertyValue(d, name);
     }
+
+	public static List<Location> getAllLocationsAndChildLocations(List<Location> locations) {
+		if (locations == null) {
+			return null;
+		}
+
+		final List<Location> result = new ArrayList<Location>();
+		for (Location location: locations) {
+			addLocations(result, location);
+		}
+		return result;
+	}
+
+	private static void addLocations(List<Location> list, Location location) {
+		if (location.getChildLocations() != null && !location.getChildLocations().isEmpty()) {
+			for (Location sublocation: location.getChildLocations()) {
+				addLocations(list, sublocation);
+			}
+		}
+		list.add(location);
+	}
 }

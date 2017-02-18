@@ -48,8 +48,11 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group="completionDate")
 	private Date completedOnOrBefore;
 
-	@ConfigurationProperty(group="location")
+	@ConfigurationProperty(group="where")
 	private List<Location> locationList;
+
+	@ConfigurationProperty(group = "where")
+	private boolean includeChildLocations = false;
 	
 	/**
 	 * Default constructor
@@ -183,5 +186,17 @@ public class ProgramEnrollmentCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setLocationList(List<Location> locationList) {
 		this.locationList = locationList;
+	}
+
+	public boolean isIncludeChildLocations() {
+		return includeChildLocations;
+	}
+
+	public boolean getIncludeChildLocations() {
+		return isIncludeChildLocations();
+	}
+
+	public void setIncludeChildLocations(boolean includeChildLocations) {
+		this.includeChildLocations = includeChildLocations;
 	}
 }

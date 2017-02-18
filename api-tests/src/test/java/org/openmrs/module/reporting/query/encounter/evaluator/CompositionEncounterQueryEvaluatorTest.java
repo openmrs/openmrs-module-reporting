@@ -73,7 +73,7 @@ public class CompositionEncounterQueryEvaluatorTest extends BaseModuleContextSen
 
 	@Test
 	public void evaluate_shouldHandleNot() throws Exception {
-		testComposition("not c1", 7,8,9,10,11,12);
+		testComposition("not c1", 7,8,9,10,11,12, 13, 14);
 		testComposition("c1 and not c3", 3,4);
 	}
 

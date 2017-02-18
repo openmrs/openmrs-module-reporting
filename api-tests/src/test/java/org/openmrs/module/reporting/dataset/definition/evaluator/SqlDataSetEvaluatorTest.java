@@ -127,7 +127,7 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("Retired", Boolean.FALSE);
 
 		ds = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
-		Assert.assertEquals(2, ds.getRows().size());
+		Assert.assertEquals(4, ds.getRows().size());
 	}
 
 	@Test

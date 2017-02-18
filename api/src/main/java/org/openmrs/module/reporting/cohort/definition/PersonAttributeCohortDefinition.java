@@ -59,9 +59,12 @@ public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
      * Configuration group that allows you to match 
      * on the person attribute value.
      */    
-    @ConfigurationProperty(group="attributeValuesGroup")
+    @ConfigurationProperty(group="where")
 	private List<Location> valueLocations;
-    
+
+    @ConfigurationProperty(group = "where")
+    private boolean includeChildLocations = false;
+
 	//***** CONSTRUCTORS *****
 	
 	/**
@@ -193,5 +196,17 @@ public class PersonAttributeCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setValueLocations(List<Location> valueLocations) {
 		this.valueLocations = valueLocations;
+	}
+
+	public boolean isIncludeChildLocations() {
+		return includeChildLocations;
+	}
+
+	public boolean getIncludeChildLocations() {
+		return isIncludeChildLocations();
+	}
+
+	public void setIncludeChildLocations(boolean includeChildLocations) {
+		this.includeChildLocations = includeChildLocations;
 	}
 }

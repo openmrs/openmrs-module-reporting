@@ -14,6 +14,7 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
+import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.Cohorts;
@@ -21,8 +22,11 @@ import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+
+import java.util.List;
 
 /**
  * Evaluates an EncounterCohortDefinition and produces a Cohort
@@ -54,7 +58,7 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
     	
     	Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingEncounters(
     		cd.getOnOrAfter(), cd.getOnOrBefore(), cd.getTimeQualifier(),
-    		cd.getLocationList(), cd.getProviderList(), cd.getEncounterTypeList(), cd.getFormList(),
+    		getLocationList(cd), cd.getProviderList(), cd.getEncounterTypeList(), cd.getFormList(),
     		cd.getAtLeastCount(), cd.getAtMostCount(), 
     		cd.getCreatedBy(), cd.getCreatedOnOrAfter(), cd.getCreatedOnOrBefore());
 		   	
@@ -67,4 +71,11 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
     	}
     	return new EvaluatedCohort(c, cohortDefinition, context);
     }
+
+    private List<Location> getLocationList(EncounterCohortDefinition cd) {
+    	if (cd.isIncludeChildLocations()) {
+    		return DefinitionUtil.getAllLocationsAndChildLocations(cd.getLocationList());
+		}
+		return cd.getLocationList();
+	}
 }

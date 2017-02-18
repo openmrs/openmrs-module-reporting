@@ -13,12 +13,14 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
+import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterWithCodedObsCohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -54,7 +56,7 @@ public class EncounterWithCodedObsCohortDefinitionEvaluator implements CohortDef
            q.append("and e.encounter_type in (:etList)").addParameter("etList", cd.getEncounterTypeList());
         }
         if (cd.getLocationList() != null) {
-			q.append("and e.location_id in (:locationList)").addParameter("locationList", cd.getLocationList());
+			q.append("and e.location_id in (:locationList)").addParameter("locationList", getLocationList(cd));
         }
 
 		if (cd.isIncludeNoObsValue() && cd.getIncludeCodedValues() == null && cd.getExcludeCodedValues() == null) {
@@ -91,4 +93,11 @@ public class EncounterWithCodedObsCohortDefinitionEvaluator implements CohortDef
 
 		return ret;
     }
+
+    private List<Location> getLocationList(EncounterWithCodedObsCohortDefinition cd) {
+    	if (cd.isIncludeChildLocations()) {
+    		return DefinitionUtil.getAllLocationsAndChildLocations(cd.getLocationList());
+		}
+		return cd.getLocationList();
+	}
 }

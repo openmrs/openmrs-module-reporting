@@ -74,7 +74,7 @@ public class EncounterWithCodedObsCohortDefinitionEvaluatorTest extends BaseModu
         cd.setIncludeNoObsValue(true);
 
         EvaluatedCohort result = cohortDefinitionService.evaluate(cd, new EvaluationContext());
-        assertThat(result, isCohortWithExactlyIds(20, 21, 22, 23, 24)); // TODO use a better test dataset
+        assertThat(result, isCohortWithExactlyIds(20, 21, 22, 23, 24, 101, 102)); // TODO use a better test dataset
     }
 
     @Test

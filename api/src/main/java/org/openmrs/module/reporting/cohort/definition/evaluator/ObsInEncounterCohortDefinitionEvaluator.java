@@ -14,12 +14,14 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Encounter;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ObsInEncounterCohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
@@ -55,7 +57,7 @@ public class ObsInEncounterCohortDefinitionEvaluator implements CohortDefinition
 		encQuery.select("e.patient.patientId, e.encounterId");
 		encQuery.from(Encounter.class, "e");
 		encQuery.whereIn("e.encounterType", cd.getEncounterTypes());
-		encQuery.whereIn("e.location", cd.getEncounterLocations());
+		encQuery.whereIn("e.location", getEncounterLocations(cd));
 		encQuery.whereGreaterOrEqualTo("e.encounterDatetime", cd.getEncounterOnOrAfter());
 		encQuery.whereLessOrEqualTo("e.encounterDatetime", cd.getEncounterOnOrBefore());
 		encQuery.whereEncounterIn("e.encounterId", context);
@@ -93,4 +95,11 @@ public class ObsInEncounterCohortDefinitionEvaluator implements CohortDefinition
 
 		return ret;
     }
+
+    private List<Location> getEncounterLocations(ObsInEncounterCohortDefinition cd) {
+    	if (cd.isIncludeChildLocations()) {
+    		return DefinitionUtil.getAllLocationsAndChildLocations(cd.getEncounterLocations());
+		}
+		return cd.getEncounterLocations();
+	}
 }

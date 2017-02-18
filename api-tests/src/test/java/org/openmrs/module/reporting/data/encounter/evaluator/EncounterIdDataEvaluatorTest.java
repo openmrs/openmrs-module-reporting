@@ -55,7 +55,7 @@ public class EncounterIdDataEvaluatorTest extends BaseModuleContextSensitiveTest
 		EncounterIdDataDefinition d = new EncounterIdDataDefinition();
 		EvaluationContext context = new EvaluationContext();
 		EvaluatedEncounterData ed = Context.getService(EncounterDataService.class).evaluate(d, context);
-		Assert.assertEquals(10, ed.getData().size());
+		Assert.assertEquals(12, ed.getData().size());
 		for (Integer eId : ed.getData().keySet()) {
 			Assert.assertEquals(eId, ed.getData().get(eId));
 		}
