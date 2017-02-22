@@ -60,6 +60,7 @@ public class EmailReportProcessor implements ReportProcessor {
 			p.put("mail.smtp.host", as.getGlobalProperty("mail.smtp_host", "localhost"));
 			p.put("mail.smtp.port", as.getGlobalProperty("mail.smtp_port", "25")); // mail.smtp_port
 			p.put("mail.smtp.auth", as.getGlobalProperty("mail.smtp_auth", "false")); // mail.smtp_auth
+            p.put("mail.smtp.starttls.enable", as.getGlobalProperty("mail.smtp.starttls.enable", "false"));
 			p.put("mail.debug", as.getGlobalProperty("mail.debug", "false"));
 			p.put("mail.from", as.getGlobalProperty("mail.from", ""));
 			
