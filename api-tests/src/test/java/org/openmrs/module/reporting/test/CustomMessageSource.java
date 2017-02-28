@@ -119,16 +119,21 @@ public class CustomMessageSource extends AbstractMessageSource implements Mutabl
 	 * Refreshes the cache, merged from the custom source and the parent source
 	 */
 	public synchronized void refreshCache() {
+	    Map<String, Locale> messageProperties = new LinkedHashMap<String, Locale>();
+	    messageProperties.put("messages.properties", Locale.ENGLISH);
+        messageProperties.put("messages_fr.properties", Locale.FRENCH);
 		cache = new HashMap<Locale, PresentationMessageMap>();
-		PresentationMessageMap pmm = new PresentationMessageMap(Locale.ENGLISH);
-		Properties messages = ObjectUtil.loadPropertiesFromClasspath("messages.properties");
-		for (String code : messages.stringPropertyNames()) {
-			String message = messages.getProperty(code);
-			message = message.replace("{{", "'{{'");
-			message = message.replace("}}", "'}}'");
-			pmm.put(code, new PresentationMessage(code, Locale.ENGLISH, message, null));
-		}
-		cache.put(Locale.ENGLISH, pmm);
+		for (Map.Entry<String, Locale> entry : messageProperties.entrySet()) {
+            PresentationMessageMap pmm = new PresentationMessageMap(entry.getValue());
+            Properties messages = ObjectUtil.loadPropertiesFromClasspath(entry.getKey());
+            for (String code : messages.stringPropertyNames()) {
+                String message = messages.getProperty(code);
+                message = message.replace("{{", "'{{'");
+                message = message.replace("}}", "'}}'");
+                pmm.put(code, new PresentationMessage(code, entry.getValue(), message, null));
+            }
+            cache.put(entry.getValue(), pmm);
+        }
 	}
 
 	/**

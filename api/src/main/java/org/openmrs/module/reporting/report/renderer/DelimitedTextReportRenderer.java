@@ -16,6 +16,9 @@ package org.openmrs.module.reporting.report.renderer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -35,6 +38,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -221,9 +225,12 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
         List<DataSetColumn> columns = dataset.getMetaData().getColumns();
 
 		// header row
+        Locale locale = getLocale();
 		for (Iterator<DataSetColumn> i = columns.iterator(); i.hasNext();) {
 			DataSetColumn column = i.next();
-			w.write(textDelimiter + filterBlacklist(escape(column.getName()), blacklist) + textDelimiter);
+			String labelOrName = ObjectUtil.nvlStr(column.getLabel(), column.getName());
+			String columnName = MessageUtil.translate(labelOrName, locale);
+			w.write(textDelimiter + filterBlacklist(escape(columnName), blacklist) + textDelimiter);
 			if (i.hasNext()) {
 				w.write(fieldDelimiter);
 			}
@@ -279,6 +286,17 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
             return input;
         }
         return blacklist.matcher(input).replaceAll("?");
+    }
+
+    /**
+     * @return the locale to use for this report
+     */
+    private Locale getLocale() {
+        Locale locale = ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCALE();
+        if (locale == null) {
+            locale = Context.getLocale();
+        }
+        return locale;
     }
 
 }

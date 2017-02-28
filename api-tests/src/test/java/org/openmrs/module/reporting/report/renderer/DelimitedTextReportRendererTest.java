@@ -16,6 +16,9 @@ package org.openmrs.module.reporting.report.renderer;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
@@ -117,7 +120,7 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
 
     private void testWriteDataSetAs(String characterEncoding) throws IOException {
         SimpleDataSet ds = new SimpleDataSet(null, null);
-        ds.addColumnValue(0, new DataSetColumn("value", "Value", String.class), "sí");
+        ds.addColumnValue(0, new DataSetColumn("value", "value", String.class), "sí");
 
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -143,14 +146,33 @@ public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveT
         assertThat(actual, is("\"value\"\n\"Yes: ÀÁÂÃÄàáâãä, No: ♪�\"\n"));
     }
 
+    @Test
+    public void shouldLocalizeColumnHeaders() throws Exception {
+        String startingLocale = TestUtil.getGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME);
+
+        SimpleDataSet ds = new SimpleDataSet(null, null);
+        ds.addColumnValue(0, new DataSetColumn("all", "reporting.all", String.class), "All Value");
+        ds.addColumnValue(0, new DataSetColumn("reporting.none", null, String.class), "None Value");
+
+        TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, "en");
+        assertThat(renderDataSet(ds, null), startsWith("\"All\",\"None\""));
+
+        TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, "fr");
+        assertThat(renderDataSet(ds, null), startsWith("\"Tous\",\"Aucune\""));
+
+        TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, startingLocale);
+    }
+
     private String writeSingleColumnWithBlacklist(String value, String blacklistRegex) throws IOException {
         SimpleDataSet ds = new SimpleDataSet(null, null);
-        ds.addColumnValue(0, new DataSetColumn("value", "Value", String.class), value);
+        ds.addColumnValue(0, new DataSetColumn("value", "value", String.class), value);
+        return renderDataSet(ds, blacklistRegex);
+    }
 
+    private String renderDataSet(DataSet ds, String blacklistRegex) throws IOException {
         DelimitedTextReportRenderer renderer = new CsvReportRenderer();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         renderer.writeDataSet(ds, out, "\"", ",", "\n", "UTF-8", blacklistRegex != null ? Pattern.compile(blacklistRegex) : null, null);
-
         return out.toString("UTF-8");
     }
 
