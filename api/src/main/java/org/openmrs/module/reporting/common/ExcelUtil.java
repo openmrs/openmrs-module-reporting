@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.formula.FormulaParser;
@@ -26,15 +27,22 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openmrs.util.OpenmrsClassLoader;
 
+import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A utility class for manipulating Excel documents via POI
@@ -240,25 +248,7 @@ public class ExcelUtil {
                     style.setRotation(Short.parseShort(att));
                 }
 				else if (att.startsWith("border=")) {
-					att = att.substring(7);
-					if (att.equals("all")) {
-						style.setBorderTop(CellStyle.BORDER_THIN);
-						style.setBorderBottom(CellStyle.BORDER_THIN);
-						style.setBorderLeft(CellStyle.BORDER_THIN);
-						style.setBorderRight(CellStyle.BORDER_THIN);
-					}
-					else if (att.equals("top")) {
-						style.setBorderTop(CellStyle.BORDER_THIN);
-					}
-					else if (att.equals("bottom")) {
-						style.setBorderBottom(CellStyle.BORDER_THIN);
-					}
-					else if (att.equals("left")) {
-						style.setBorderLeft(CellStyle.BORDER_THIN);
-					}
-					else if (att.equals("right")) {
-						style.setBorderRight(CellStyle.BORDER_THIN);
-					}
+				    setBorderStyle(style, att.substring(7));
 				}
 				else if (att.equals("date")) {
 					short dateFormat = wb.createDataFormat().getFormat("d/mmm/yyyy");
@@ -287,7 +277,25 @@ public class ExcelUtil {
                 }
                 else if (att.startsWith("background-color=")) {
                     att = att.substring(17);
-                    style.setFillForegroundColor(Short.parseShort(att));
+                    try {
+                        style.setFillForegroundColor(Short.parseShort(att));
+                    }
+                    catch (Exception e) {
+                        if (style instanceof XSSFCellStyle) {
+                            XSSFCellStyle cs = (XSSFCellStyle)style;
+                            try {
+                                String[] rgbStr = att.split("x");
+                                if (rgbStr.length == 3) {
+                                    Color color = new Color(Integer.parseInt(rgbStr[0]), Integer.parseInt(rgbStr[1]), Integer.parseInt(rgbStr[2]));
+                                    cs.setFillForegroundColor(new XSSFColor(color));
+                                }
+                            }
+                            catch (Exception e1) {
+                                log.warn("Unable to set background color to: " + att, e1);
+                            }
+                        }
+                    }
+
                     style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
                 }
 			}
@@ -350,6 +358,66 @@ public class ExcelUtil {
 		}
 		return sb.toString();
 	}
+
+	public static void setBorderStyle(CellStyle style, String borderStyle) {
+        List<String> l = Arrays.asList(borderStyle.toLowerCase().split("\\:"));
+        if (l.contains("all") || l.contains("top")) {
+            style.setBorderTop(findMatchingBorderStyle(l));
+            style.setTopBorderColor(findMatchingColor(l));
+        }
+        if (l.contains("all") || l.contains("bottom")) {
+            style.setBorderBottom(findMatchingBorderStyle(l));
+            style.setBottomBorderColor(findMatchingColor(l));
+        }
+        if (l.contains("all") || l.contains("left")) {
+            style.setBorderLeft(findMatchingBorderStyle(l));
+            style.setLeftBorderColor(findMatchingColor(l));
+        }
+        if (l.contains("all") || l.contains("right")) {
+            style.setBorderRight(findMatchingBorderStyle(l));
+            style.setRightBorderColor(findMatchingColor(l));
+        }
+    }
+
+    /**
+     * @return the cellstyle from the passed list the represents a border style, defaulting to thin if none found
+     */
+    public static Short findMatchingBorderStyle(List<String> styles) {
+        Map<String, Short> m = new HashMap<String, Short>();
+        m.put("thin", CellStyle.BORDER_THIN);
+        m.put("medium", CellStyle.BORDER_MEDIUM);
+        m.put("dashed", CellStyle.BORDER_DASHED);
+        m.put("hair", CellStyle.BORDER_HAIR);
+        m.put("thick", CellStyle.BORDER_THICK);
+        m.put("double", CellStyle.BORDER_DOUBLE);
+        m.put("dotted", CellStyle.BORDER_DOTTED);
+        m.put("mediumDashed", CellStyle.BORDER_MEDIUM_DASHED);
+        m.put("dashDot", CellStyle.BORDER_DASH_DOT);
+        m.put("mediumDashDot", CellStyle.BORDER_MEDIUM_DASH_DOT);
+        m.put("dashDotDot", CellStyle.BORDER_DASH_DOT_DOT);
+        m.put("mediumDashDotDot", CellStyle.BORDER_MEDIUM_DASH_DOT_DOT);
+        m.put("slantedDashDot", CellStyle.BORDER_SLANTED_DASH_DOT);
+        for (String s : styles) {
+            Short ret = m.get(s.toLowerCase());
+            if (ret != null) {
+                return ret;
+            }
+        }
+        return CellStyle.BORDER_THIN;
+    }
+
+    /**
+     * @return the color from the passed list the represents a color, defaulting to black if none found
+     */
+    public static short findMatchingColor(List<String> styles) {
+        for (HSSFColor color : HSSFColor.getIndexHash().values()) {
+            String colorName = color.getClass().getSimpleName().toLowerCase();
+            if (styles.contains(colorName)) {
+                return color.getIndex();
+            }
+        }
+        return HSSFColor.BLACK.index;
+    }
 
     /**
      * Load a workbook from an InputStream.
