@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.reporting.data.person.definition;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
@@ -29,6 +25,10 @@ import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Obs Data Definition
@@ -60,11 +60,29 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
 	@ConfigurationProperty
 	private Date onOrBefore;
 
+	@ConfigurationProperty
+    private Double valueNumericGreaterThan;
+
+	@ConfigurationProperty
+    private Double valueNumericGreaterThanOrEqual;
+
+    @ConfigurationProperty
+    private Double valueNumericLessThan;
+
+    @ConfigurationProperty
+    private Double valueNumericLessThanOrEqual;
+
     @ConfigurationProperty
     private Date valueDatetimeOrAfter;
 
     @ConfigurationProperty
     private Date valueDatetimeOnOrBefore;
+
+    @ConfigurationProperty
+    private Date createdOnOrAfter;
+
+    @ConfigurationProperty
+    private Date createdOnOrBefore;
 	
 	//****** CONSTRUCTORS ******
 	
@@ -228,7 +246,39 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
 		return onOrBefore;
 	}
 
-	/**
+    public Double getValueNumericGreaterThan() {
+        return valueNumericGreaterThan;
+    }
+
+    public void setValueNumericGreaterThan(Double valueNumericGreaterThan) {
+        this.valueNumericGreaterThan = valueNumericGreaterThan;
+    }
+
+    public Double getValueNumericGreaterThanOrEqual() {
+        return valueNumericGreaterThanOrEqual;
+    }
+
+    public void setValueNumericGreaterThanOrEqual(Double valueNumericGreaterThanOrEqual) {
+        this.valueNumericGreaterThanOrEqual = valueNumericGreaterThanOrEqual;
+    }
+
+    public Double getValueNumericLessThan() {
+        return valueNumericLessThan;
+    }
+
+    public void setValueNumericLessThan(Double valueNumericLessThan) {
+        this.valueNumericLessThan = valueNumericLessThan;
+    }
+
+    public Double getValueNumericLessThanOrEqual() {
+        return valueNumericLessThanOrEqual;
+    }
+
+    public void setValueNumericLessThanOrEqual(Double valueNumericLessThanOrEqual) {
+        this.valueNumericLessThanOrEqual = valueNumericLessThanOrEqual;
+    }
+
+    /**
 	 * @param onOrBefore the onOrBefore to set
 	 */
 	public void setOnOrBefore(Date onOrBefore) {
@@ -249,5 +299,21 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
 
     public void setValueDatetimeOnOrBefore(Date valueDatetimeOnOrBefore) {
         this.valueDatetimeOnOrBefore = valueDatetimeOnOrBefore;
+    }
+
+    public Date getCreatedOnOrAfter() {
+        return createdOnOrAfter;
+    }
+
+    public void setCreatedOnOrAfter(Date createdOnOrAfter) {
+        this.createdOnOrAfter = createdOnOrAfter;
+    }
+
+    public Date getCreatedOnOrBefore() {
+        return createdOnOrBefore;
+    }
+
+    public void setCreatedOnOrBefore(Date createdOnOrBefore) {
+        this.createdOnOrBefore = createdOnOrBefore;
     }
 }

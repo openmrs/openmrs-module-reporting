@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
@@ -41,6 +42,9 @@ public class EncountersForPatientDataDefinition extends BaseDataDefinition imple
 	
 	@ConfigurationProperty(required=true)
 	private List<EncounterType> types;
+
+	@ConfigurationProperty
+    private List<Location> locationList;
 	
 	@ConfigurationProperty
 	private Date onOrAfter;
@@ -116,8 +120,16 @@ public class EncountersForPatientDataDefinition extends BaseDataDefinition imple
 	public void setTypes(List<EncounterType> types) {
 		this.types = types;
 	}
-	
-	/**
+
+    public List<Location> getLocationList() {
+        return locationList;
+    }
+
+    public void setLocationList(List<Location> locationList) {
+        this.locationList = locationList;
+    }
+
+    /**
 	 * @param type the type to add
 	 */
 	public void addType(EncounterType type) {

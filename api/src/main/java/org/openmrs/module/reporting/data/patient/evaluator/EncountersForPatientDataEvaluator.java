@@ -55,6 +55,7 @@ public class EncountersForPatientDataEvaluator implements PatientDataEvaluator {
 		q.from(Encounter.class, "e");
 		q.wherePatientIn("e.patient.patientId", context);
 		q.whereIn("e.encounterType", def.getTypes());
+		q.whereIn("e.location", def.getLocationList());
 		q.whereGreaterOrEqualTo("e.encounterDatetime", def.getOnOrAfter());
 		q.whereLessOrEqualTo("e.encounterDatetime", def.getOnOrBefore());
 
