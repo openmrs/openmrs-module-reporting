@@ -60,6 +60,9 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
 	@ConfigurationProperty
 	private Date onOrBefore;
 
+    @ConfigurationProperty
+    private List<Concept> valueCodedList;
+
 	@ConfigurationProperty
     private Double valueNumericGreaterThan;
 
@@ -245,6 +248,21 @@ public class ObsForPersonDataDefinition extends BaseDataDefinition implements Pe
 	public Date getOnOrBefore() {
 		return onOrBefore;
 	}
+
+    public List<Concept> getValueCodedList() {
+        return valueCodedList;
+    }
+
+    public void setValueCodedList(List<Concept> valueCodedList) {
+        this.valueCodedList = valueCodedList;
+    }
+
+    public void addValueCoded(Concept valueCoded) {
+        if (valueCodedList == null) {
+            valueCodedList = new ArrayList<Concept>();
+        }
+        valueCodedList.add(valueCoded);
+    }
 
     public Double getValueNumericGreaterThan() {
         return valueNumericGreaterThan;
