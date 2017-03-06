@@ -13,10 +13,16 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.common.MessageUtil;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.dataset.DataSetMetaData;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
@@ -26,12 +32,15 @@ import org.openmrs.module.reporting.report.ReportRequest;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 /**
  * Abstract super-class for all Renderer classes that render utilizing a ReportTemplate
  */
 public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
+
+    private Log log = LogFactory.getLog(this.getClass());
 	
 	//***** CONSTANT REPORT TEMPLATE PROPERTIES THAT ARE AVAILABLE
 	public static final String CONTEXT_PREFIX = "context";
@@ -41,6 +50,9 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	public static final String SEPARATOR = ".";
 	public static final String INDEX = "index";
 	public static final String LABEL = "label";
+
+	public static final String COLUMN_TRANSLATION_PREFIX_DESIGN_PROPERTY = "columnTranslationPrefix";
+    public static final String COLUMN_TRANSLATION_LOCALE_DESIGN_PROPERTY = "columnTranslationLocale";
 	
 	/** 
 	 * Returns the template resource
@@ -107,6 +119,9 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	public Map<String, Object> getBaseReplacementData(ReportData reportData, ReportDesign design) {
 		
 		Map<String, Object> data = new HashMap<String, Object>();
+
+		String translationPrefix = getTranslationPrefix(design);
+        Locale translationLocale = getTranslationLocale(design);
 		
 		// Add data set values if there is only a single row in the dataset
 		for (String dsName : reportData.getDataSets().keySet()) {
@@ -118,6 +133,23 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 					data.putAll(getReplacementData(reportData, design, dsName, firstRow));
 				}
 			}
+
+			// Add column labels to replacement data, supporting translations if configured
+			DataSetMetaData metaData = ds.getMetaData();
+			for (DataSetColumn column : metaData.getColumns()) {
+
+                String columnLabel = ObjectUtil.nvlStr(column.getLabel(), column.getName());
+                String key = translationPrefix + dsName + SEPARATOR + columnLabel;
+                String value = MessageUtil.translate(key, columnLabel, translationLocale);
+                data.put(dsName + SEPARATOR + column.getName() + SEPARATOR + LABEL, value);
+
+                if (reportData.getDataSets().size() == 1) {
+                    key = translationPrefix + columnLabel;
+                    value = MessageUtil.translate(key, columnLabel, translationLocale);
+                    data.put(column.getName() + SEPARATOR + LABEL, value);
+                }
+            }
+
 		}
 		
 		// Add all parameter values as replacement data
@@ -208,4 +240,37 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 		}
 		return replacementValue;
 	}
+
+    /**
+     * @return the message code prefix to use for translation columns.
+     * For example, if a column had a label of "gender" and a translation prefix of "myreports.reportcolumns.", then
+     * it would look for a message code named "myreports.reportcolumns.gender"
+     */
+	protected String getTranslationPrefix(ReportDesign design) {
+        return design.getPropertyValue(COLUMN_TRANSLATION_PREFIX_DESIGN_PROPERTY, "");
+    }
+
+    /**
+     * @return the locale to use for translating columns.
+     * This will first look at a design property named columnTranslationLocale
+     */
+	protected Locale getTranslationLocale(ReportDesign design) {
+        Locale translationLocale = null;
+        String translationLocaleProperty = design.getPropertyValue(COLUMN_TRANSLATION_LOCALE_DESIGN_PROPERTY, null);
+        if (ObjectUtil.isNull(translationLocaleProperty)) {
+            translationLocale = ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCALE();
+        }
+        else {
+            try {
+                translationLocale = new Locale(translationLocaleProperty);
+            }
+            catch (Exception e) {
+                log.warn("Unable to create locale using design property: " + translationLocaleProperty);
+            }
+        }
+        if (translationLocale == null) {
+            translationLocale = Context.getLocale();
+        }
+        return translationLocale;
+    }
 }
