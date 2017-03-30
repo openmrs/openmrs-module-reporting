@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -164,16 +165,24 @@ public class ExcelBuilder {
         return this;
     }
 
-    public XSSFRichTextString createRichTextString(String... textAndStyle) {
+    public XSSFRichTextString createRichTextString(Map<String, String> textAndStyle) {
         XSSFRichTextString rt = new XSSFRichTextString("");
-        for (int i=0; i<textAndStyle.length; i+=2) {
-            String text = textAndStyle[i];
-            String style = textAndStyle[i + 1];
+        for (Map.Entry<String, String> e : textAndStyle.entrySet()) {
+            String text = e.getKey();
+            String style = e.getValue();
             XSSFCellStyle cellStyle = (XSSFCellStyle) loadStyle(style);
             XSSFFont font = cellStyle.getFont();
             rt.append(text, font);
         }
         return rt;
+    }
+
+    public XSSFRichTextString createRichTextString(String... textAndStyle) {
+        Map<String, String> m = new LinkedHashMap<String, String>();
+        for (int i=0; i<textAndStyle.length; i+=2) {
+            m.put(textAndStyle[i], textAndStyle[i + 1]);
+        }
+        return createRichTextString(m);
     }
 
     /**
