@@ -15,11 +15,13 @@
 package org.openmrs.module.reporting.cohort.definition.library;
 
 import org.openmrs.EncounterType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
@@ -124,5 +126,13 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("diedOnOrAfter", "reporting.parameter.startDate", Date.class));
         cd.addParameter(new Parameter("diedOnOrBefore", "reporting.parameter.endDate", Date.class));
         return new MappedParametersCohortDefinition(cd, "diedOnOrAfter", "startDate", "diedOnOrBefore", "endDate");
+    }
+
+    @DocumentedDefinition("personWithAttribute")
+    public CohortDefinition getPersonWithAttribute() {
+        PersonAttributeCohortDefinition cd = new PersonAttributeCohortDefinition();
+        cd.addParameter(new Parameter("attributeType", "reporting.parameter.attributeType", PersonAttributeType.class));
+        cd.addParameter(new Parameter("values", "reporting.parameter.values", String.class, List.class, null));
+        return cd;
     }
 }
