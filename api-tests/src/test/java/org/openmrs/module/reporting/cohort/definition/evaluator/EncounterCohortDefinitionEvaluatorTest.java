@@ -48,15 +48,13 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setEncounterTypeList(new ArrayList<EncounterType>()); // this is a regression test for a NPE on empty lists
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(8, c.size());
+		Assert.assertEquals(6, c.size());
 		Assert.assertTrue(c.contains(7));
 		Assert.assertTrue(c.contains(20));
 		Assert.assertTrue(c.contains(21));
 		Assert.assertTrue(c.contains(22));
 		Assert.assertTrue(c.contains(23));
 		Assert.assertTrue(c.contains(24));
-		Assert.assertTrue(c.contains(101));
-		Assert.assertTrue(c.contains(102));
 	}
 	
 	/**
