@@ -95,7 +95,7 @@
 					$j('#${model.portletUUID}EditLink${paramStatus.index}').click(function(event){
 						showReportingDialog({
 							title: 'Parameter: ${p.name}',
-							url: '<c:url value="/module/reporting/viewPortlet.htm?id=parameterPortlet&url=parameter&parameters=type=${model.type}|uuid=${model.uuid}|name=${p.name}|mode=edit"/>',
+							url: '<c:url value="/module/reporting/viewPortlet.htm?id=parameterPortlet&url=parameter&parameters.type=${model.type}&parameters.uuid=${model.uuid}&parameters.name=${p.name}&parameters.mode=edit"/>',
 							successCallback: function() { window.location.reload(true); }
 						});
 					});
@@ -108,7 +108,7 @@
 				$j('#${model.portletUUID}AddLink').click(function(event){
 					showReportingDialog({
 						title: 'New Parameter',
-						url: '<c:url value="/module/reporting/viewPortlet.htm?id=parameterPortlet&url=parameter&parameters=type=${model.type}|uuid=${model.uuid}|mode=edit"/>',
+						url: '<c:url value="/module/reporting/viewPortlet.htm?id=parameterPortlet&url=parameter&parameters.type=${model.type}&parameters.uuid=${model.uuid}&parameters.mode=edit"/>',
 						successCallback: function() { window.location.reload(true); }
 					});
 				});

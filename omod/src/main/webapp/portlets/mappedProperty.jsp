@@ -14,7 +14,7 @@
 					var currVal = $j(this).val();
 					var currLabel = $j("option:selected", this).html().replace(/\s+/g, '-');
 					if (currVal != '') {
-						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|currentKey=${model.currentKey}|newKey='+currLabel+'|mode=edit|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|mappedUuid='+currVal+'"/>';
+						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters.type=${model.type}&parameters.uuid=${model.uuid}&parameters.property=${model.property}&parameters.keyLabel=${model.keyLabel}&parameters.typeLabel=${model.typeLabel}&parameters.currentKey=${model.currentKey}&parameters.newKey='+currLabel+'&parameters.mode=edit&parameters.keyLabel=${model.keyLabel}&parameters.typeLabel=${model.typeLabel}&parameters.mappedUuid='+currVal+'"/>';
 					}
 					else {
                         $j('#${model.id}NewKey').val('');
@@ -149,7 +149,7 @@
 				$j('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
-						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters=type=${model.type}|uuid=${model.uuid}|property=${model.property}|currentKey=${model.currentKey}|keyLabel=${model.keyLabel}|typeLabel=${model.typeLabel}|tag=${model.tag}|mode=edit"/>',
+						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editMappedPropertyPortlet${model.id}&url=mappedProperty&parameters.type=${model.type}&parameters.uuid=${model.uuid}&parameters.property=${model.property}&parameters.currentKey=${model.currentKey}&parameters.keyLabel=${model.keyLabel}&parameters.typeLabel=${model.typeLabel}&parameters.tag=${model.tag}&parameters.mode=edit"/>',
 						successCallback: function() { window.location.reload(true); }
 					});
 				});

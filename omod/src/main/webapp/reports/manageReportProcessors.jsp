@@ -19,7 +19,7 @@
 			$j('#${config.uuid}EditLink').click(function(event){
 				showReportingDialog({
 					title: 'Edit Report Processor',
-					url: '<c:url value="/module/reporting/viewPortlet.htm?id=reportProcessorPortlet&url=reportProcessorForm&parameters=processorUuid=${config.uuid}"/>',
+					url: '<c:url value="/module/reporting/viewPortlet.htm?id=reportProcessorPortlet&url=reportProcessorForm&parameters.processorUuid=${config.uuid}"/>',
 					successCallback: function() { window.location.reload(true); }
 				});
 			});

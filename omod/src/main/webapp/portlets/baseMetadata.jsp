@@ -70,7 +70,7 @@
 				$j('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
-						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editBaseMetadataPortlet&url=baseMetadata&parameters=type=${model.type}|uuid=${model.uuid}|showType=${model.showType}|mode=edit"/>',
+						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editBaseMetadataPortlet&url=baseMetadata&parameters.type=${model.type}&parameters.uuid=${model.uuid}&parameters.showType=${model.showType}&parameters.mode=edit"/>',
 						successCallback: function() { window.location.reload(true); }
 					});
 				});

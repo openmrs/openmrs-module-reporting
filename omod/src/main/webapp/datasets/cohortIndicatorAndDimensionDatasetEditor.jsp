@@ -49,7 +49,7 @@
 					$j("#${model.portletUUID}EditDimLink${dimStatus.index}").click(function(event){
 						showReportingDialog({
 							title: 'Dimension: <spring:message javaScriptEscape="true" text="${dim.key}"/>',
-							url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${dsd['class'].name}|uuid=${dsd.uuid}|property=dimensions|currentKey=${dim.key}|mode=edit"/>',
+							url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters.type=${dsd['class'].name}&parameters.uuid=${dsd.uuid}&parameters.property=dimensions&parameters.currentKey=${dim.key}&parameters.mode=edit"/>',
 							successCallback: function() { window.location.reload(true); }
 						});
 					});
@@ -60,7 +60,7 @@
 					$j("#editIndicatorLink${indStatus.index}").click(function(event){
 						showReportingDialog({
 							title: 'Indicator: <spring:message javaScriptEscape="true" text="${ind.indicatorNumber}"/> - <spring:message javaScriptEscape="true" text="${ind.label}"/>',
-							url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedIndicatorPortlet&url=cohortIndicatorAndDimensionSpecification&parameters=dsdUuid=${dsd.uuid}|index=${indStatus.index}|mode=edit"/>',
+							url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedIndicatorPortlet&url=cohortIndicatorAndDimensionSpecification&parameters.dsdUuid=${dsd.uuid}&parameters.index=${indStatus.index}&parameters.mode=edit"/>',
 							successCallback: function() { window.location.reload(true); }
 						});
 					});
@@ -72,7 +72,7 @@
 					$j("#viewDimensionColumns${indStatus.index}").click(function(event){
 						showReportingDialog({
 							title: 'Indicator and Dimension Details: <spring:message javaScriptEscape="true" text="${ind.indicatorNumber}"/> - <spring:message javaScriptEscape="true" text="${ind.label}"/>',
-							url: '<c:url value="/module/reporting/viewPortlet.htm?id=cohortIndicatorAndDimensionPortlet&url=cohortIndicatorAndDimensionSpecification&parameters=dsdUuid=${dsd.uuid}|index=${indStatus.index}|mode=details"/>',
+							url: '<c:url value="/module/reporting/viewPortlet.htm?id=cohortIndicatorAndDimensionPortlet&url=cohortIndicatorAndDimensionSpecification&parameters.dsdUuid=${dsd.uuid}&parameters.index=${indStatus.index}&parameters.mode=details"/>',
 							successCallback: function() { window.location.reload(true); }
 						});
 					});
@@ -81,7 +81,7 @@
 				$j('#addIndicatorLink').click(function(event){
 					showReportingDialog({
 						title: 'Add Indicator and Dimensions',
-						url: '<c:url value="/module/reporting/viewPortlet.htm?id=addIndicatorLink&url=cohortIndicatorAndDimensionSpecification&parameters=dsdUuid=${dsd.uuid}|mode=edit"/>',
+						url: '<c:url value="/module/reporting/viewPortlet.htm?id=addIndicatorLink&url=cohortIndicatorAndDimensionSpecification&parameters.dsdUuid=${dsd.uuid}&parameters.mode=edit"/>',
 						successCallback: function() { window.location.reload(true); }
 					});
 				});

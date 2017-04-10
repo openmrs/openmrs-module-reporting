@@ -41,7 +41,7 @@
         $j('#addIterationParameterLink').click(function(event){
             showReportingDialog({
                 title: 'Add iteration parameter',
-                url: '<c:url value="/module/reporting/viewPortlet.htm?id=addIterationParameterLink&url=multiParameterIterationParameter&parameters=dsdUuid=${definition.uuid}|mode=edit"/>',
+                url: '<c:url value="/module/reporting/viewPortlet.htm?id=addIterationParameterLink&url=multiParameterIterationParameter&parameters.dsdUuid=${definition.uuid}&parameters.mode=edit"/>',
                 successCallback: function() { window.location.reload(true); }
             });
         });
@@ -62,7 +62,7 @@
                 $j("a[id='editIterationParameterLink${iterationStatus.index}${baseDefinitionParam.name}']").click(function(event){
                     showReportingDialog({
                         title: 'Edit parameter ${baseDefinitionParam.name} for iteration ${iterationStatus.index}.',
-                        url: '<c:url value="/module/reporting/viewPortlet.htm?id=edutIterationParameterLink&url=multiParameterIterationParameterEdit&iteration=${iterationStatus.index}&paramName=${baseDefinitionParam.name}&parameters=dsdUuid=${definition.uuid}|mode=edit"/>',
+                        url: '<c:url value="/module/reporting/viewPortlet.htm?id=edutIterationParameterLink&url=multiParameterIterationParameterEdit&iteration=${iterationStatus.index}&paramName=${baseDefinitionParam.name}&parameters.dsdUuid=${definition.uuid}&parameters.mode=edit"/>',
                         successCallback: function() { window.location.reload(true); }
                     });
                 });

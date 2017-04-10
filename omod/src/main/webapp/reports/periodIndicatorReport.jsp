@@ -85,7 +85,7 @@
 							$j("#${model.portletUUID}EditDimLink${dimStatus.index}").click(function(event){
 								showReportingDialog({
 									title: 'Dimension: ${dim.key}',
-									url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${report.indicatorDataSetDefinition['class'].name}|uuid=${report.indicatorDataSetDefinition.uuid}|property=dimensions|currentKey=${dim.key}|mode=edit"/>',
+									url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters.=${report.indicatorDataSetDefinition['class'].name}&parameters.uuid=${report.indicatorDataSetDefinition.uuid}&parameters.property=dimensions&parameters.currentKey=${dim.key}&parameters.mode=edit"/>',
 									successCallback: function() { window.location.reload(true); }
 								});
 							});

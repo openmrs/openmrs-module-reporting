@@ -63,7 +63,7 @@
 								dims += (dims == '' ? '' : ',') + $j(this).val();
 							}
 						});
-						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editInd${model.id}&url=cohortIndicatorAndDimensionSpecification&parameters=dsdUuid=${model.dsdUuid}|index=${model.index}|newIndNum='+indNum+'|newLabel='+label+'|newDimensions='+dims+'|mappedUuid='+currVal+'"/>';
+						document.location.href='<c:url value="/module/reporting/viewPortlet.htm?id=editInd${model.id}&url=cohortIndicatorAndDimensionSpecification&parameters.dsdUuid=${model.dsdUuid}&parameters.index=${model.index}&parameters.newIndNum='+indNum+'&parameters.newLabel='+label+'&parameters.newDimensions='+dims+'&parameters.mappedUuid='+currVal+'"/>';
 					}
 					else {
 						$j("#mapParameterSection${model.id}").html('');

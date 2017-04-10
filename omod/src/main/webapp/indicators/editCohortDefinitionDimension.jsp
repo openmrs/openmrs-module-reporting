@@ -27,7 +27,7 @@
 			$j("#${model.portletUUID}EditDimLink${cdStatus.index}").click(function(event){
 				showReportingDialog({
 					title: 'Dimension Option: ${cd.key}',
-					url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters=type=${dimension['class'].name}|uuid=${dimension.uuid}|property=cohortDefinitions|currentKey=${cd.key}|mode=edit"/>',
+					url: '<c:url value="/module/reporting/viewPortlet.htm?id=mappedPropertyPortlet&url=mappedProperty&parameters.type=${dimension['class'].name}&parameters.uuid=${dimension.uuid}&parameters.property=cohortDefinitions&parameters.currentKey=${cd.key}&parameters.mode=edit"/>',
 					successCallback: function() { window.location.reload(true); }
 				});
 			});

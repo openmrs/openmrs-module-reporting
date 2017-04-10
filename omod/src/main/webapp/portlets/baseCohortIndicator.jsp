@@ -100,7 +100,7 @@
 				$j('#${model.id}EditLink').click(function(event){
 					showReportingDialog({
 						title: '${model.label}',
-						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editBaseCohortIndicatorPortlet&url=baseCohortIndicator&parameters=uuid=${model.uuid}|mode=edit|subfields=${model.subfields}"/>',
+						url: '<c:url value="/module/reporting/viewPortlet.htm?id=editBaseCohortIndicatorPortlet&url=baseCohortIndicator&parameters.uuid=${model.uuid}&parameters.mode=edit&parameters.subfields=${model.subfields}"/>',
 						successCallback: function() { window.location.reload(true); }
 					});
 				});
