@@ -84,7 +84,12 @@ public class ReportManagerUtil {
             // we need to overwrite the existing, rather than purge-and-recreate, to avoid deleting old ReportRequests
             log.debug("Overwriting existing ReportDefinition");
             reportDefinition.setId(existing.getId());
-            Context.evictFromSession(existing);
+            try {
+            	Context.evictFromSession(existing);
+            }
+            catch (IllegalArgumentException ex) {
+            	//intentionally ignored as per REPORT-802
+            }
         }
         else {
             // incompatible class changes for a serialized object could mean that getting the definition returns null
@@ -93,7 +98,12 @@ public class ReportManagerUtil {
             SerializedObject invalidSerializedObject = serializedObjectDAO.getSerializedObjectByUuid(reportDefinition.getUuid());
             if (invalidSerializedObject != null) {
                 reportDefinition.setId(invalidSerializedObject.getId());
-                Context.evictFromSession(invalidSerializedObject);
+                try {
+                	Context.evictFromSession(invalidSerializedObject);
+                }
+                catch (IllegalArgumentException ex) {
+                	//intentionally ignored as per REPORT-802
+                }
             }
         }
         rds.saveDefinition(reportDefinition);
