@@ -73,7 +73,7 @@
 							<rpt:displayLabel type="${reportDefinition['class'].name}"/>
 						</td>
 						<td width="5%" nowrap>
-							${reportDefinition.creator}
+							<c:out value="${reportDefinition.creator}" />
 						</td>
 						<td width="5%" nowrap>
 							<rpt:timespan then="${reportDefinition.dateCreated}"/>
@@ -82,7 +82,7 @@
 							&nbsp;
 							<a href="${editUrl}"><img src="<c:url value='/images/edit.gif'/>" border="0"/></a>
 							&nbsp;
-							<a href="javascript:confirmDelete('${reportDefinition.name}','${reportDefinition.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
+							<a href="javascript:confirmDelete('<c:out value="${openmrs:getSafeJsString(reportDefinition.name)}" />','${reportDefinition.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
 							&nbsp;
 							<a href="${pageContext.request.contextPath}/module/reporting/run/runReport.form?reportId=${reportDefinition.uuid}">
 								<img src='<c:url value="/images/play.gif"/>' align="absmiddle" border="0"/>

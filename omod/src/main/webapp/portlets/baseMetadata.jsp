@@ -42,7 +42,7 @@
 			<div style="margin:0; padding:0; width:100%;">
 				<div class="metadataField">
 					<label class="desc" for="name"><spring:message code="reporting.name" /></label>
-					<input type="text" id="name" tabindex="1" name="name" value="${model.obj.name}" size="50"/>
+					<input type="text" id="name" tabindex="1" name="name" value="<c:out value='${model.obj.name}' />" size="50"/>
 				</div>
 				<c:if test="${!empty model.obj && model.showType != 'false'}">
 					<div class="metadataField">
@@ -52,7 +52,7 @@
 				</c:if>		
 				<div class="metadataField">
 					<label class="desc" for="description"><spring:message code="reporting.description" /></label>			
-					<textarea id="description" cols="80" rows="10" tabindex="2" name="description">${model.obj.description}</textarea>
+					<textarea id="description" cols="80" rows="10" tabindex="2" name="description"><c:out value='${model.obj.description}' /></textarea>
 				</div>
 			</div>
 			<hr style="color:blue;"/>
