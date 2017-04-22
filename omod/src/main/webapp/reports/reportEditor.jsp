@@ -19,7 +19,7 @@
 				document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=${design.rendererType.name}&reportDesignUuid=${design.uuid}&reportDefinitionUuid=${report.uuid}&returnUrl=${pageUrl}';
 			});
 			$j('#${design.uuid}DesignRemoveLink').click(function(event){
-				if (confirm('Please confirm you wish to permanantly delete <b>${design.name}</b>')) {
+				if (confirm('Please confirm you wish to permanantly delete ${openmrs:getSafeJsString(design.name)}')) {
 					document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportDesign.form?uuid=${design.uuid}&returnUrl=${pageUrl}';
 				}
 			});
@@ -78,8 +78,8 @@
 										</tr>
 										<c:forEach items="${designs}" var="design" varStatus="designStatus">
 											<tr>
-												<td nowrap><a href="#edit" id="${design.uuid}DesignEditLink">${design.name}</a></td>
-												<td width="100%">${design.rendererType.simpleName}</td>
+												<td nowrap><a href="#edit" id="${design.uuid}DesignEditLink"><c:out value='${design.name}' /></a></td>
+												<td width="100%"><c:out value='${design.rendererType.simpleName}' /></td>
 												<td nowrap align="center"><a href="#" id="${design.uuid}DesignRemoveLink">[X]</a></td>
 											</tr>
 										</c:forEach>

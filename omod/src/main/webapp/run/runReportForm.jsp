@@ -97,7 +97,7 @@ function toggleInputElements( idPrefix ){
 										                	<c:set var="thisVal" value="${renderingMode.descriptor}"/>
 										                    <option
 										                        <c:if test="${status.value == thisVal}"> selected</c:if>
-										                        value="${thisVal}">${renderingMode.label}
+										                        value="${thisVal}"><c:out value='${renderingMode.label}' />
 										                    </option>
 										                </c:forEach>
 										            </select>
