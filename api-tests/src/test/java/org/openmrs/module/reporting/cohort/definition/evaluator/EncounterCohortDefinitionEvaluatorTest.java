@@ -17,6 +17,7 @@ import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.GenerateTestDataForLocationHierachyTests;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -267,25 +268,32 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 
 	@Test
 	public void evaluate_shouldFollowChildLocationsIfIncludeChildLocationsIsTrue() throws Exception {
-
+		GenerateTestDataForLocationHierachyTests data = getGenerateTestDataForLocationHierachyTests();
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setIncludeChildLocations(true);
-		cd.addLocation(Context.getLocationService().getLocation(4));
-		Location location = Context.getLocationService().getLocation(4);
+		cd.addLocation(Context.getLocationService().getLocation(data.getSecondLocationId()));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertEquals(2, c.getSize());
-		Assert.assertTrue(c.contains(101));
-		Assert.assertTrue(c.contains(102));
+		Assert.assertTrue(c.contains(data.getFirstPatientId()));
+		Assert.assertTrue(c.contains(data.getSecondPatientId()));
 	}
 
 	@Test
 	public void evaluate_shouldNotFollowChildLocationsIfIncludeChildLocationsIsFalse() throws Exception {
+		GenerateTestDataForLocationHierachyTests data = getGenerateTestDataForLocationHierachyTests();
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setIncludeChildLocations(false);
-		cd.addLocation(Context.getLocationService().getLocation(4));
-		Location location = Context.getLocationService().getLocation(4);
+		cd.addLocation(Context.getLocationService().getLocation(data.getSecondLocationId()));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertEquals(1, c.getSize());
-		Assert.assertTrue(c.contains(101));
+		Assert.assertTrue(c.contains(data.getSecondPatientId()));
+	}
+
+	private GenerateTestDataForLocationHierachyTests getGenerateTestDataForLocationHierachyTests() {
+		GenerateTestDataForLocationHierachyTests data = new GenerateTestDataForLocationHierachyTests();
+		data.generateTestPatients();
+		data.generateTestLocations();
+		data.generateTestEncounters();
+		return data;
 	}
 }
