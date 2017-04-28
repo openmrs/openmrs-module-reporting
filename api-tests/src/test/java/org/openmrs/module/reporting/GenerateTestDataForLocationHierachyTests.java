@@ -10,6 +10,7 @@ import org.openmrs.PersonName;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 
 import java.text.ParseException;
@@ -27,6 +28,9 @@ public class GenerateTestDataForLocationHierachyTests {
     private Encounter firstEncounter;
     private Encounter secondEncounter;
 
+    private PatientProgram firstPatientProgram;
+    private PatientProgram secondPatientProgram;
+
     private int firstPatientId;
     private int secondPatientId;
 
@@ -35,6 +39,9 @@ public class GenerateTestDataForLocationHierachyTests {
 
     private int firstEncounterId;
     private int secondEncounterId;
+
+    private int firstPatientProgramId;
+    private int secondPatientProgramId;
 
     public void generateTestPatients() {
         final PatientService patientService = Context.getPatientService();
@@ -135,6 +142,33 @@ public class GenerateTestDataForLocationHierachyTests {
         secondEncounterId = encounterService.saveEncounter(secondEncounter).getEncounterId();
     }
 
+    public void generateTestPatientPrograms() {
+        final ProgramWorkflowService pws = Context.getProgramWorkflowService();
+        firstPatientProgram = new PatientProgram();
+        firstPatientProgram.setPatient(firstPatient);
+        firstPatientProgram.setProgram(pws.getProgram(1));
+        firstPatientProgram.setLocation(firstLocation);
+        firstPatientProgram.setDateEnrolled(parseDate("2011-05-15 00:00:00.0"));
+        firstPatientProgram.setCreator(Context.getUserService().getUser(1));
+        firstPatientProgram.setDateCreated(parseDate("2011-04-01 00:00:00.0"));
+        firstPatientProgram.setChangedBy(Context.getUserService().getUser(1));
+        firstPatientProgram.setVoided(false);
+        firstPatientProgram.setUuid(getRandomUuid());
+        firstPatientProgramId = pws.savePatientProgram(firstPatientProgram).getId();
+
+        secondPatientProgram = new PatientProgram();
+        secondPatientProgram.setPatient(secondPatient);
+        secondPatientProgram.setProgram(pws.getProgram(1));
+        secondPatientProgram.setLocation(secondLocation);
+        secondPatientProgram.setDateEnrolled(parseDate("2011-05-15 00:00:00.0"));
+        secondPatientProgram.setCreator(Context.getUserService().getUser(1));
+        secondPatientProgram.setDateCreated(parseDate("2011-04-01 00:00:00.0"));
+        secondPatientProgram.setChangedBy(Context.getUserService().getUser(1));
+        secondPatientProgram.setVoided(false);
+        secondPatientProgram.setUuid(getRandomUuid());
+        secondPatientProgramId = pws.savePatientProgram(secondPatientProgram).getId();
+    }
+
     public int getFirstPatientId() {
         return firstPatientId;
     }
@@ -157,6 +191,18 @@ public class GenerateTestDataForLocationHierachyTests {
 
     public int getSecondEncounterId() {
         return secondEncounterId;
+    }
+
+    public Patient getFirstPatient() {
+        return firstPatient;
+    }
+
+    public int getFirstPatientProgramId() {
+        return firstPatientProgramId;
+    }
+
+    public int getSecondPatientProgramId() {
+        return secondPatientProgramId;
     }
 
     private Date parseDate(String date) {

@@ -9,6 +9,7 @@ import org.openmrs.Cohort;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.GenerateTestDataForLocationHierachyTests;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -344,10 +345,14 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 
 	@Test
 	public void evaluate_shouldFollowChildLocationsIfIncludeChildLocationsIsTrue() throws Exception {
+		GenerateTestDataForLocationHierachyTests data = new GenerateTestDataForLocationHierachyTests();
+		data.generateTestLocations();
+		data.generateTestPatients();
+		data.generateTestPatientPrograms();
 		String sqlQuery = "SELECT patient_id FROM patient_program WHERE location_id IN (:locationList)";
 		Map<String, Object> parameterValues = new HashMap<String, Object>();
 		Collection<Location> locationList = new ArrayList<Location>();
-		locationList.add(Context.getLocationService().getLocation(4));
+		locationList.add(Context.getLocationService().getLocation(data.getSecondLocationId()));
 		parameterValues.put("locationList", locationList);
 		parameterValues.put("includeChildLocations", true);
 
@@ -357,16 +362,20 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
 
 		Assert.assertEquals(2, cohort.size());
-		Assert.assertTrue(cohort.contains(101));
-		Assert.assertTrue(cohort.contains(102));
+		Assert.assertTrue(cohort.contains(data.getFirstPatientId()));
+		Assert.assertTrue(cohort.contains(data.getSecondPatientId()));
 	}
 
 	@Test
 	public void evaluate_shouldNotFollowChildLocationsIfIncludeChildLocationsIsFalse() throws Exception {
+		GenerateTestDataForLocationHierachyTests data = new GenerateTestDataForLocationHierachyTests();
+		data.generateTestLocations();
+		data.generateTestPatients();
+		data.generateTestPatientPrograms();
 		String sqlQuery = "SELECT patient_id FROM patient_program WHERE location_id IN (:locationList)";
 		Map<String, Object> parameterValues = new HashMap<String, Object>();
 		Collection<Location> locationList = new ArrayList<Location>();
-		locationList.add(Context.getLocationService().getLocation(4));
+		locationList.add(Context.getLocationService().getLocation(data.getSecondLocationId()));
 		parameterValues.put("locationList", locationList);
 		parameterValues.put("includeChildLocations", false);
 
@@ -376,6 +385,6 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
 
 		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(101));
+		Assert.assertTrue(cohort.contains(data.getSecondPatientId()));
 	}
 }
