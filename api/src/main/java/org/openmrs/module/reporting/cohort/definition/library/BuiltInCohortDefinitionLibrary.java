@@ -19,6 +19,7 @@ import org.openmrs.Location;
 import org.openmrs.Form;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
+import org.openmrs.Concept;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -28,6 +29,7 @@ import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefin
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
@@ -105,6 +107,16 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
         cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
         return new MappedParametersCohortDefinition(cd, "onOrAfter", "startDate", "onOrBefore", "endDate");
+    }
+
+    @DocumentedDefinition("codedObsSearchAdvanced")
+    public CohortDefinition getCodedObsSearchAdvanced() {
+        CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+        cd.addParameter(new Parameter("timeModifier", "reporting.parameter.timeModifier", CodedObsCohortDefinition.TimeModifier.class));
+        cd.addParameter(new Parameter("question", "reporting.parameter.question", Concept.class));
+        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        return cd;
     }
 
     @DocumentedDefinition("encounterSearchAdvanced")
