@@ -91,6 +91,9 @@ public abstract class BaseObsCohortDefinitionEvaluator implements CohortDefiniti
         }
 
         TimeModifier tm = cd.getTimeModifier();
+        if (tm == null) {
+            tm = TimeModifier.ANY;
+        }
         boolean doSqlAggregation = tm == TimeModifier.MIN || tm == TimeModifier.MAX || tm == TimeModifier.AVG;
         boolean doInvert = tm == TimeModifier.NO;
 
