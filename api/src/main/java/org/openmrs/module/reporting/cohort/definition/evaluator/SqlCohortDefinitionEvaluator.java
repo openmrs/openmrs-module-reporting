@@ -15,7 +15,6 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -26,11 +25,10 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Evaluates a SQL query and returns a Cohort
@@ -64,14 +62,17 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 		}
 
 		final Boolean includeChildLocations = (Boolean) context.getParameterValue("includeChildLocations");
+		Map<String, Object> parameterValues;
 		if (includeChildLocations != null && includeChildLocations) {
 			final List<Location> locationList = (List<Location>) context.getParameterValue("locationList");
-			final Map<String, Object> parameterValues = context.getParameterValues();
+			parameterValues = new HashMap<String, Object>(context.getParameterValues());
 			parameterValues.put("locationList", getLocationsIncludingChildLocations(locationList));
-			context.setParameterValues(parameterValues);
+		}
+		else {
+			parameterValues = context.getParameterValues();
 		}
 
-		SqlQueryBuilder qb = new SqlQueryBuilder(sqlCohortDefinition.getQuery(), context.getParameterValues());
+		SqlQueryBuilder qb = new SqlQueryBuilder(sqlCohortDefinition.getQuery(), parameterValues);
 		if (sqlCohortDefinition.getQuery().contains(":patientIds")) {
 			qb.addParameter("patientIds", context.getBaseCohort());
 		}
