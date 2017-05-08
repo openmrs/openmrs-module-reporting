@@ -19,7 +19,7 @@
 				document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=${design.rendererType.name}&reportDesignUuid=${design.uuid}&reportDefinitionUuid=${report.uuid}&returnUrl=${pageUrl}';
 			});
 			$j('#${design.uuid}DesignRemoveLink').click(function(event){
-				if (confirm('Please confirm you wish to permanantly delete ${openmrs:getSafeJsString(design.name)}')) {
+				if (confirm('Please confirm you wish to permanantly delete ${rpt:getSafeJsString(design.name)}')) {
 					document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportDesign.form?uuid=${design.uuid}&returnUrl=${pageUrl}';
 				}
 			});

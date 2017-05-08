@@ -46,7 +46,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,14 +128,44 @@ public class ManageReportsController {
 				}
 			} catch ( APIException e ) {
 				log.error( "No handler found" );
-			}			
+			}
 		}
-		return "redirect:/module/reporting/reports/renderers/defaultReportDesignEditor.htm?parameters=" 
-				+ ( ObjectUtil.isNull( type ) || !ObjectUtil.isNull(reportDesignUuid) ? "" : "type=" + type.getName() + "|" )
-				+ ( ObjectUtil.isNull(reportDesignUuid) ? "" : "reportDesignUuid=" + reportDesignUuid + "|" )  
-				+ ( ObjectUtil.isNull(reportDefinitionUuid) ? "" : "reportDefinitionUuid=" + reportDefinitionUuid  + "|"  )
-				+ ( ObjectUtil.isNull(returnUrl) ? "" : "returnUrl=" + returnUrl );
-    	
+		StringBuilder url = new StringBuilder("/module/reporting/reports/renderers/defaultReportDesignEditor.form?type=" + type.getName());
+		if (ObjectUtil.notNull(reportDesignUuid)) {
+		    url.append("&reportDesignUuid=" + reportDesignUuid);
+        }
+        if (ObjectUtil.notNull(reportDefinitionUuid)) {
+            url.append("&reportDefinitionUuid=" + reportDefinitionUuid);
+        }
+        if (ObjectUtil.notNull(returnUrl)) {
+            url.append("&returnUrl=" + returnUrl);
+        }
+		return "redirect:"+url.toString();
+    }
+
+    /**
+     *
+     * Edit page for a report design that does not have a custom editor
+     */
+    @RequestMapping("/module/reporting/reports/renderers/defaultReportDesignEditor")
+    public void defaultReportDesignRenderer(ModelMap model,
+                                   @RequestParam(required=true, value="type") Class<? extends ReportRenderer> type,
+                                   @RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid,
+                                   @RequestParam(required=false, value="reportDefinitionUuid") String reportDefinitionUuid,
+                                   @RequestParam(required=false, value="returnUrl") String returnUrl) {
+
+        StringBuilder parameters = new StringBuilder();
+        parameters.append("type="+type.getName());
+        if (ObjectUtil.notNull(reportDesignUuid)) {
+            parameters.append("|reportDesignUuid=" + reportDesignUuid);
+        }
+        if (ObjectUtil.notNull(reportDefinitionUuid)) {
+            parameters.append("|reportDefinitionUuid=" + reportDefinitionUuid);
+        }
+        if (ObjectUtil.notNull(returnUrl)) {
+            parameters.append("|returnUrl=" + returnUrl);
+        }
+        model.addAttribute("parameters", parameters);
     }
     
     /**

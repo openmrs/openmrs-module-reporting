@@ -206,4 +206,11 @@
 		<function-signature>java.util.Date nextExecutionTime(java.lang.String)</function-signature>
 	</function>
 
+    <function>
+        <description>Makes an untrusted string JS-safe</description>
+        <name>getSafeJsString</name>
+        <function-class>org.openmrs.module.reporting.web.taglib.Functions</function-class>
+        <function-signature>java.lang.String getSafeJsString(java.lang.String)</function-signature>
+    </function>
+
 </taglib>

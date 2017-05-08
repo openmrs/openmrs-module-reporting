@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.web.taglib;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -59,4 +60,14 @@ public class Functions {
 		}
 		return null;
 	}
+
+    /**
+     * This method will make untrusted strings safe for use as JavaScript strings
+     *
+     * @param s
+     * @return a JS-escaped version of s
+     */
+    public static String getSafeJsString(String s) {
+        return StringEscapeUtils.escapeJavaScript(s);
+    }
 }
