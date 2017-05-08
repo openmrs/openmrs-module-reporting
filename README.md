@@ -6,7 +6,7 @@ Reporting Module
 
 Overview
 ========
-The Reporting Module was designed to provide a feature-rich, user-friendly web interface for managing reports within OpenMRS. In addition, the Reporting Module provides a flexible and extensible API that module developers can develop against to build their own reports and tools. The core idea behind the Reporting Module is to provide a solid foundation for other developers to use the framework and implement new features.
+The Reporting Module was designed to provide a feature-rich, user-friendly web interface for managing reports within OpenMRS. In addition, the Reporting Module provides a flexible and extensible API that module developers can develop against to build their own reports and tools. The core idea behind the Reporting Module is to provide a solid foundation for other developers to use the framework and implement new features. This Module is designed for varoius new features.
 
 
 Download
@@ -56,7 +56,7 @@ In order for users to be able to run most reports you need to put them in a grou
   3. View Patient Cohorts (technically this is only required if you want to be able to run reports including cohorts of patients, which is basically all reports, up until 0.4.1.1)
   4. Manage Scheduler
 
-To be able to edit and configure reports, you need groups: 
+To be able to edit and configure reports, you need to have groups: 
 (this is accurate as of 0.4.1.3)
   1. Manage Reports (this just enables you to see the menu items)
   2. Manage Report Definitions
@@ -84,7 +84,7 @@ Limitations
   
 Currently, reporting compatibility is being used to bridge the gap between the old and new (e.g., combining cohort builder and data exports). This reporting module has many core features for evaluating parts of a report but does not have a good UI for designing a full report.
 
-**Cohort builder** is best for adhoc querying, though for unsupported data entry, you must use the cohort query editor in the reporting module. Data exports can only be designed/exported using reporting compatibility. This module contains a feature that allows you to define simple dataset definitions, such as a SQL-based dataset, but other definitions are not available.
+**Cohort builder** is best for adhoc querying, though for unsupported data entry, you must use the cohort query editor in the reporting module. Data exports can only be designed/exported using reporting compatibility. This module contains a feature that allows you to define simple dataset definitions, such as a SQL-based dataset, but other definitions are not available till this point of time.
 
 
 Project Resources
