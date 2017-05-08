@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -120,16 +121,17 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
     }
 
     @DocumentedDefinition("encounterSearchAdvanced")
-    public CohortDefinition getAnyEncounterDuringPeriodWithOccurrence() {
+    public CohortDefinition getEncounterSearchAdvanced() {
         EncounterCohortDefinition cd = new EncounterCohortDefinition();
-        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.startDate", Date.class));
-        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.endDate", Date.class));
-        cd.addParameter(new Parameter("atLeastCount", "reporting.parameter.atleast", Integer.class));
-        cd.addParameter(new Parameter("atMostCount", "reporting.parameter.atMost", Integer.class));
+        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        cd.addParameter(new Parameter("atLeastCount", "reporting.parameter.atLeastCount", Integer.class));
+        cd.addParameter(new Parameter("atMostCount", "reporting.parameter.atMostCount", Integer.class));
         cd.addParameter(new Parameter("encounterTypeList", "reporting.parameter.encounterTypeList", EncounterType.class, List.class, null));
         cd.addParameter(new Parameter("formList", "reporting.parameter.formList", Form.class, List.class, null));
-        cd.addParameter(new Parameter("locationList", "reporting.parameter.location", Location.class, List.class, null));
-        return new MappedParametersCohortDefinition(cd, "onOrAfter", "startDate", "onOrBefore", "endDate", "encounterTypeList", "encounterTypes", "locationList", "locations", "atLeastCount", "atLeast", "atMostCount", "atMost", "formList", "forms");
+        cd.addParameter(new Parameter("locationList", "reporting.parameter.locationList", Location.class, List.class, null));
+        cd.addParameter(new Parameter("timeQualifier", "reporting.parameter.timeQualifier", TimeQualifier.class));
+        return cd;
     }
 
     @DocumentedDefinition("anyEncounterOfTypesDuringPeriod")
