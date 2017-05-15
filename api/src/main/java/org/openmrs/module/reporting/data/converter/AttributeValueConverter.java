@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.data.converter;
 import org.openmrs.Attributable;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.util.OpenmrsClassLoader;
+import static org.openmrs.module.reporting.data.converter.ConverterHelper.convertTo;
 
 /**
  * Date data converter
@@ -43,9 +44,10 @@ public class AttributeValueConverter implements DataConverter {
 	 * @see DataConverter#converter(Object)
 	 * @should convert a serialized attribute value into its hydrated object form
 	 * @should return the passed in value if it is not attributable
+	 * @should throw conversion exception when class cast fails
 	 */
 	public Object convert(Object original) {
-		String value = (String) original;
+        String value = convertTo(original, String.class);
 		if (value != null) {
 			try {
 				Object o = getDataType().newInstance();

@@ -16,10 +16,14 @@ public class ConceptCodeFromConceptConverter implements DataConverter {
         this.conceptSourceName = conceptSource.getName();
     }
 
+    /**
+     * @should throw conversion exception when class cast fails
+     *
+     */
     @Override
     public Object convert(Object original) {
 
-        Concept concept = (Concept) original;
+        Concept concept = ConverterHelper.convertTo(original, Concept.class);
 
         if (concept == null) {
             return null;

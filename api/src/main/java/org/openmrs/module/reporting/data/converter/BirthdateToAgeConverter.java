@@ -18,6 +18,7 @@ import java.util.Date;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import static org.openmrs.module.reporting.data.converter.ConverterHelper.convertTo;
 
 /**
  * Converters a Birthdate into an Age
@@ -45,9 +46,10 @@ public class BirthdateToAgeConverter implements DataConverter {
 	/** 
 	 * @see DataConverter#convert(Object)
 	 * @should convert a birthdate to an age on the configured date
+	 * @should throw conversion exception when class cast fails
 	 */
 	public Object convert(Object original) {
-		Birthdate birthdate = (Birthdate) original;
+		Birthdate birthdate = convertTo(original, Birthdate.class);
 		if (birthdate != null) {
 			return new Age(birthdate.getBirthdate(), effectiveDate);
 		}

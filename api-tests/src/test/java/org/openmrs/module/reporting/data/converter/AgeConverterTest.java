@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.data.converter;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.calculation.ConversionException;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.data.converter.AgeConverter;
@@ -63,5 +64,15 @@ public class AgeConverterTest {
 		conversion = (new AgeConverter("I am {m} months old")).convert(getAgeToTest());
 		Assert.assertEquals("I am 436 months old", conversion.toString());
 		Assert.assertEquals(String.class, conversion.getClass());
+	}
+
+	/**
+	 * @verifies throw conversion exception when class cast fails
+	 * @see AgeConverter#convert(Object)
+	 */
+	@Test(expected=ConversionException.class)
+	public void convert_shouldThrowConversionExceptionWhenClassCastFails() throws Exception {
+		AgeConverter converter = new AgeConverter();
+		converter.convert("invalid input");
 	}
 }

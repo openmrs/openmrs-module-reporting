@@ -40,10 +40,11 @@ public class DataSetRowConverter implements DataConverter {
 	/** 
 	 * @see DataConverter#convert(Object)
 	 * @should convert a DataSetRow to the value in the column with the configured name
-	 */
+	 * @should throw conversion exception when class cast fails
+	 **/
 	public Object convert(Object original) {
 		if (original != null) {
-			DataSetRow dsr = (DataSetRow)original;
+			DataSetRow dsr = ConverterHelper.convertTo(original, DataSetRow.class);
 			return dsr.getColumnValue(getColumnName());
 		}
 		return original;

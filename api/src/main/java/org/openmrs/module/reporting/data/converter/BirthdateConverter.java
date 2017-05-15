@@ -18,6 +18,7 @@ import java.util.Locale;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import static org.openmrs.module.reporting.data.converter.ConverterHelper.convertTo;
 
 /**
  * Date data converter
@@ -67,9 +68,10 @@ public class BirthdateConverter implements DataConverter {
 	/** 
 	 * @see DataConverter#convert(Object)
 	 * @should convert a Birthdate into a String with the passed format
+	 * @should throw conversion exception when class cast fails
 	 */
 	public String convert(Object original) {
-		Birthdate bd = (Birthdate) original;
+		Birthdate bd = convertTo(original, Birthdate.class);
 		if (bd != null && bd.getBirthdate() != null) {
 			if (bd.isEstimated()) {
 				return ObjectUtil.format(bd.getBirthdate(), getEstimatedDateFormat());

@@ -38,10 +38,11 @@ public class ChangeInValueConverter implements DataConverter {
 
 	/** 
 	 * @see DataConverter#convert(Object)
+     * @should throw conversion exception when class cast fails
 	 */
 	@SuppressWarnings("rawtypes")
 	public Object convert(Object original) {
-		List l = (List) original;
+		List l = ConverterHelper.convertTo(original, List.class);
 		if (l != null) {
             List ret = new ArrayList();
             Object lastValue = null;
