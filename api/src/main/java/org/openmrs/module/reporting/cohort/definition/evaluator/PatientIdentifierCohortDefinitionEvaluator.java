@@ -13,12 +13,14 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
+import org.openmrs.Location;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientIdentifierCohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
@@ -60,7 +62,7 @@ public class PatientIdentifierCohortDefinitionEvaluator implements CohortDefinit
 		}
 		q.from(PatientIdentifier.class, "pi");
 		q.whereIn("pi.identifierType", picd.getTypesToMatch());
-		q.whereIn("pi.location", picd.getLocationsToMatch());
+		q.whereIn("pi.location", getLocationsToMatch(picd));
 		
 		if (ObjectUtil.notNull(picd.getTextToMatch())) {
 			if (picd.getTextToMatch().contains("%")) {
@@ -87,4 +89,11 @@ public class PatientIdentifierCohortDefinitionEvaluator implements CohortDefinit
 		
 		return ret;
     }
+
+    private List<Location> getLocationsToMatch(PatientIdentifierCohortDefinition cd) {
+    	if (cd.isIncludeChildLocations()) {
+    		return DefinitionUtil.getAllLocationsAndChildLocations(cd.getLocationsToMatch());
+		}
+		return cd.getLocationsToMatch();
+	}
 }

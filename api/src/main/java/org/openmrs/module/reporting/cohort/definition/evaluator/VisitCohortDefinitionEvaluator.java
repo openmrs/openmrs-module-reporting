@@ -15,17 +15,21 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
+import org.openmrs.Location;
 import org.openmrs.Visit;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.VisitCohortDefinition;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Handler(supports = VisitCohortDefinition.class)
 public class VisitCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
@@ -41,7 +45,7 @@ public class VisitCohortDefinitionEvaluator implements CohortDefinitionEvaluator
         q.select("v.patient.id");
         q.from(Visit.class, "v");
         q.whereIn("v.visitType", cd.getVisitTypeList());
-        q.whereIn("v.location", cd.getLocationList());
+        q.whereIn("v.location", getLocationList(cd));
         q.whereIn("v.indication", cd.getIndicationList());
         q.whereGreaterOrEqualTo("v.startDatetime", cd.getStartedOnOrAfter());
         q.whereLessOrEqualTo("v.startDatetime", cd.getStartedOnOrBefore());
@@ -73,6 +77,13 @@ public class VisitCohortDefinitionEvaluator implements CohortDefinitionEvaluator
         }
 
         return new EvaluatedCohort(c, cohortDefinition, context);
+    }
+
+    private List<Location> getLocationList(VisitCohortDefinition cd) {
+        if (cd.isIncludeChildLocations()) {
+            return DefinitionUtil.getAllLocationsAndChildLocations(cd.getLocationList());
+        }
+        return cd.getLocationList();
     }
 
 }

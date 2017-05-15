@@ -13,11 +13,13 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
+import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
@@ -25,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Evaluates a SQL query and returns a Cohort
@@ -57,7 +61,18 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 			return ret;
 		}
 
-		SqlQueryBuilder qb = new SqlQueryBuilder(sqlCohortDefinition.getQuery(), context.getParameterValues());
+		final Boolean includeChildLocations = (Boolean) context.getParameterValue("includeChildLocations");
+		Map<String, Object> parameterValues;
+		if (includeChildLocations != null && includeChildLocations) {
+			final List<Location> locationList = (List<Location>) context.getParameterValue("locationList");
+			parameterValues = new HashMap<String, Object>(context.getParameterValues());
+			parameterValues.put("locationList", getLocationsIncludingChildLocations(locationList));
+		}
+		else {
+			parameterValues = context.getParameterValues();
+		}
+
+		SqlQueryBuilder qb = new SqlQueryBuilder(sqlCohortDefinition.getQuery(), parameterValues);
 		if (sqlCohortDefinition.getQuery().contains(":patientIds")) {
 			qb.addParameter("patientIds", context.getBaseCohort());
 		}
@@ -70,4 +85,8 @@ public class SqlCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
 		return ret;
     }
+
+    private List<Location> getLocationsIncludingChildLocations(List<Location> locationList) {
+		 return DefinitionUtil.getAllLocationsAndChildLocations(locationList);
+	}
 }

@@ -14,11 +14,13 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
+import org.openmrs.Location;
 import org.openmrs.PatientState;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
@@ -61,7 +63,7 @@ public class PatientStateCohortDefinitionEvaluator implements CohortDefinitionEv
 		qb.whereLessOrEqualTo("ps.startDate", def.getStartedOnOrBefore());
 		qb.whereGreaterOrEqualTo("ps.endDate", def.getEndedOnOrAfter());
 		qb.whereLessOrEqualTo("ps.endDate", def.getEndedOnOrBefore());
-		qb.whereIn("ps.patientProgram.location", def.getLocationList());
+		qb.whereIn("ps.patientProgram.location", getLocationList(def));
 		qb.whereEqual("ps.patientProgram.patient.voided", false);
 		qb.wherePatientIn("ps.patientProgram.patient.patientId", context);
 
@@ -69,4 +71,11 @@ public class PatientStateCohortDefinitionEvaluator implements CohortDefinitionEv
 
     	return new EvaluatedCohort(new Cohort(pIds), cohortDefinition, context);
     }
+
+    private List<Location> getLocationList(PatientStateCohortDefinition def) {
+    	if (def.isIncludeChildLocations()) {
+    		return DefinitionUtil.getAllLocationsAndChildLocations(def.getLocationList());
+		}
+		return def.getLocationList();
+	}
 }

@@ -50,8 +50,11 @@ public class PatientStateCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group="endedDate")
 	private Date endedOnOrBefore;
 
-	@ConfigurationProperty(group="location")
+	@ConfigurationProperty(group="where")
 	private List<Location> locationList;
+
+	@ConfigurationProperty(group = "where")
+	private boolean includeChildLocations = false;
 
 	//***** CONSTRUCTORS *****
 
@@ -198,5 +201,17 @@ public class PatientStateCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setLocationList(List<Location> locationList) {
 		this.locationList = locationList;
+	}
+
+	public boolean isIncludeChildLocations() {
+		return includeChildLocations;
+	}
+
+	public boolean getIncludeChildLocations() {
+		return isIncludeChildLocations();
+	}
+
+	public void setIncludeChildLocations(boolean includeChildLocations) {
+		this.includeChildLocations = includeChildLocations;
 	}
 }

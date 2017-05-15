@@ -276,7 +276,7 @@
   <patient patient_id="23" creator="1" date_created="2009-01-18 00:00:00.0" voided="false" void_reason=""/> 
   <patient patient_id="24" creator="1" date_created="2009-01-18 00:00:00.0" voided="false" void_reason=""/> 
   <patient patient_id="999" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:24:34.0" voided="true" void_reason="For test purposes"/>
-  
+
   <patient_identifier patient_identifier_id="1" patient_id="2" identifier="101" identifier_type="2" preferred="0" location_id="1" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="ff41928c-3bca-48d9-a4dc-9198f6b2873b"/>
   <patient_identifier patient_identifier_id="2" patient_id="2" identifier="101-6" identifier_type="1" preferred="1" location_id="1" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614"/>
   <patient_identifier patient_identifier_id="3" patient_id="6" identifier="12345K" identifier_type="2" preferred="0" location_id="3" creator="1" date_created="2008-08-18 11:44:54.0" voided="false" void_reason="" uuid="f10d32a1-098f-4b50-8cc5-23efb0898360"/>

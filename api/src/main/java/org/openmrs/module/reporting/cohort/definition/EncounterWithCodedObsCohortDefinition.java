@@ -41,7 +41,7 @@ public class EncounterWithCodedObsCohortDefinition extends BaseCohortDefinition 
     @ConfigurationProperty
     private List<EncounterType> encounterTypeList;
 
-    @ConfigurationProperty
+    @ConfigurationProperty(group = "where")
     private List<Location> locationList;
 
     @ConfigurationProperty
@@ -55,6 +55,9 @@ public class EncounterWithCodedObsCohortDefinition extends BaseCohortDefinition 
 
     @ConfigurationProperty
     private boolean includeNoObsValue = false;
+
+    @ConfigurationProperty(group = "where")
+    private boolean includeChildLocations = false;
 
     public Date getOnOrAfter() {
         return onOrAfter;
@@ -152,4 +155,15 @@ public class EncounterWithCodedObsCohortDefinition extends BaseCohortDefinition 
         locationList.add(location);
     }
 
+    public boolean isIncludeChildLocations() {
+        return includeChildLocations;
+    }
+
+    public boolean getIncludeChildLocations() {
+        return isIncludeChildLocations();
+    }
+
+    public void setIncludeChildLocations(boolean includeChildLocations) {
+        this.includeChildLocations = includeChildLocations;
+    }
 }

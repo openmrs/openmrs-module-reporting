@@ -14,11 +14,13 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
+import org.openmrs.Location;
 import org.openmrs.PatientState;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InStateCohortDefinition;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
@@ -60,11 +62,18 @@ public class InStateCohortDefinitionEvaluator implements CohortDefinitionEvaluat
 		q.wherePatientIn("ps.patientProgram.patient.patientId", context);
 		q.whereEqual("ps.patientProgram.patient.voided", false);
 		q.whereIn("ps.state", cd.getStates());
-		q.whereIn("ps.patientProgram.location", cd.getLocations());
+		q.whereIn("ps.patientProgram.location", getLocations(cd));
 		q.whereLessOrEqualTo("ps.startDate", onOrBefore);
 		q.whereGreaterEqualOrNull("ps.endDate", onOrAfter);
 
 		List<Integer> pIds = evaluationService.evaluateToList(q, Integer.class, context);
 		return new EvaluatedCohort(new Cohort(pIds), cd, context);
-	}	
+	}
+
+	private List<Location> getLocations(InStateCohortDefinition cd) {
+		if (cd.isIncludeChildLocations()) {
+			return DefinitionUtil.getAllLocationsAndChildLocations(cd.getLocations());
+		}
+		return cd.getLocations();
+	}
 }
