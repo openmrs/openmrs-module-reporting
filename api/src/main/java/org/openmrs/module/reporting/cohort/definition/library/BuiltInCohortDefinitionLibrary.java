@@ -20,6 +20,7 @@ import org.openmrs.Form;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.Concept;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -27,6 +28,8 @@ import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.InStateCohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
@@ -184,5 +187,26 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
             "completedOnOrBefore", "completedOnOrBefore",
             "locationList", "locations"
         );
+    }
+
+    @DocumentedDefinition("patientsWithState")
+    public CohortDefinition getPatientsWithState() {
+        PatientStateCohortDefinition cd = new PatientStateCohortDefinition();
+        cd.addParameter(new Parameter("states", "reporting.parameter.states", ProgramWorkflowState.class, List.class, null));
+        cd.addParameter(new Parameter("startedOnOrAfter", "reporting.parameter.startedOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("startedOnOrBefore", "reporting.parameter.startedOnOrBefore", Date.class));
+        cd.addParameter(new Parameter("endedOnOrAfter", "reporting.parameter.endedOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("endedOnOrBefore", "reporting.parameter.endedOnOrBefore", Date.class));
+        return cd;
+    }
+
+    @DocumentedDefinition("patientsInState")
+    public CohortDefinition getPatientsInState() {
+        InStateCohortDefinition cd = new InStateCohortDefinition();
+        cd.addParameter(new Parameter("states", "reporting.parameter.states", ProgramWorkflowState.class, List.class, null));
+        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        cd.addParameter(new Parameter("onDate", "reporting.parameter.date", Date.class));
+        return cd;
     }
 }
