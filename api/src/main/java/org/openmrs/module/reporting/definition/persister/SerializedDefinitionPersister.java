@@ -89,6 +89,7 @@ public abstract class SerializedDefinitionPersister<T extends Definition> implem
 	/**
      * @see DefinitionPersister#saveDefinition(Definition)
      */
+	definition.setName(definition.getName().replaceAll("&", "and"));
     public T saveDefinition(T definition) {
      	return getService().saveDefinition(definition);
     }
