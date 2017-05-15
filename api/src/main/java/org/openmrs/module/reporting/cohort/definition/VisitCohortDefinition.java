@@ -33,7 +33,7 @@ public class VisitCohortDefinition extends BaseCohortDefinition {
     @ConfigurationProperty(group = "which")
     private List<VisitType> visitTypeList;
 
-    @ConfigurationProperty(group = "which")
+    @ConfigurationProperty(group = "where")
     private List<Location> locationList;
 
     @ConfigurationProperty(group = "which")
@@ -71,6 +71,9 @@ public class VisitCohortDefinition extends BaseCohortDefinition {
 
     @ConfigurationProperty(group = "other")
     private Date createdOnOrAfter;
+
+    @ConfigurationProperty(group = "where")
+    private boolean excludeSublocations = false;
 
     @Override
     public String toString() {
@@ -239,5 +242,13 @@ public class VisitCohortDefinition extends BaseCohortDefinition {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public boolean isExcludeSublocations() {
+        return excludeSublocations;
+    }
+
+    public void setExcludeSublocations(boolean excludeSublocations) {
+        this.excludeSublocations = excludeSublocations;
     }
 }

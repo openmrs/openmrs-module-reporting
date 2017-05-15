@@ -47,7 +47,7 @@ public class ObsInEncounterCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty
 	private Date encounterOnOrBefore;
 
-	@ConfigurationProperty
+	@ConfigurationProperty("where")
 	private List<Location> encounterLocations;
 
 	@ConfigurationProperty
@@ -64,6 +64,9 @@ public class ObsInEncounterCohortDefinition extends BaseCohortDefinition {
 
 	@ConfigurationProperty
 	private Date valueDatetime2;
+
+	@ConfigurationProperty(group = "where")
+	private boolean excludeSublocations = false;
 
 	// In the future, here we will add valueNumeric1/2 valueCoded1/2 if and when needed
 
@@ -147,5 +150,13 @@ public class ObsInEncounterCohortDefinition extends BaseCohortDefinition {
 
 	public void setValueDatetime2(Date valueDatetime2) {
 		this.valueDatetime2 = valueDatetime2;
+	}
+
+	public boolean isExcludeSublocations() {
+		return excludeSublocations;
+	}
+
+	public void setExcludeSublocations(boolean excludeSublocations) {
+		this.excludeSublocations = excludeSublocations;
 	}
 }

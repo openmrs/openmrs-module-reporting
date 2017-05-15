@@ -46,8 +46,11 @@ public class InProgramCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group="onDateGroup")
 	private Date onDate;
 
-	@ConfigurationProperty(group="locationGroup")
+	@ConfigurationProperty(group="where")
 	private List<Location> locations;
+
+	@ConfigurationProperty(group = "where")
+	private boolean exludeSublocations = false;
 
 	/**
 	 * Default constructor
@@ -139,5 +142,13 @@ public class InProgramCohortDefinition extends BaseCohortDefinition {
 			locations = new ArrayList<Location>();
 		}
 		locations.add(location);
+	}
+
+	public boolean isExludeSublocations() {
+		return exludeSublocations;
+	}
+
+	public void setExludeSublocations(boolean exludeSublocations) {
+		this.exludeSublocations = exludeSublocations;
 	}
 }

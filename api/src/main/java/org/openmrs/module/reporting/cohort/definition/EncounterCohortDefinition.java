@@ -45,7 +45,7 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group="which")
 	private List<Form> formList;
 	
-	@ConfigurationProperty(group="which")
+	@ConfigurationProperty(group="where")
 	private List<Location> locationList;
 	
 	@ConfigurationProperty(group="which")
@@ -74,7 +74,10 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty(group="other")
 	private Date createdOnOrAfter;
-	
+
+	@ConfigurationProperty(group = "where")
+	private boolean excludeSublocations = false;
+
 	//***** CONSTRUCTORS *****
 	
 	/**
@@ -345,5 +348,13 @@ public class EncounterCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setCreatedOnOrAfter(Date createdOnOrAfter) {
 		this.createdOnOrAfter = createdOnOrAfter;
+	}
+
+	public boolean isExcludeSublocations() {
+		return excludeSublocations;
+	}
+
+	public void setExcludeSublocations(boolean excludeSublocations) {
+		this.excludeSublocations = excludeSublocations;
 	}
 }

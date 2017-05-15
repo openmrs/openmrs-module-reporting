@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.evaluation.parameter;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
@@ -51,6 +52,6 @@ public class ParameterUtilTest extends BaseModuleContextSensitiveTest {
 	public void shouldHaveAllInheritedAnnotatedFieldsAsParameters() throws Exception {		
 		NumericObsCohortDefinition def = new NumericObsCohortDefinition();
 		// NOTE: This should be changed to 11 when groupingConcept field is implemented
-		Assert.assertEquals(10, DefinitionUtil.getConfigurationProperties(def).size());
+		Assert.assertEquals(11, DefinitionUtil.getConfigurationProperties(def).size());
 	}
 }
