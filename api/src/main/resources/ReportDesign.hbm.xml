@@ -37,7 +37,7 @@
 		<many-to-one name="reportDesign" class="ReportDesign" column="report_design_id" not-null="true" />
 		<property name="contentType" type="string" column="content_type" />
 		<property name="extension" type="string" column="extension" />
-		<property name="contents" type="binary" column="contents" />
+		<property name="contents" type="blob" column="contents" />
 		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />
 		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" />
 		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
