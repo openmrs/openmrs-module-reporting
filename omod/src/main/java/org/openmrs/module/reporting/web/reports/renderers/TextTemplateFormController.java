@@ -13,10 +13,9 @@
  */
 package org.openmrs.module.reporting.web.reports.renderers;
 
-import javax.servlet.http.HttpServletRequest;
-
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,18 +25,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.WebDataBinder;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
@@ -50,16 +44,25 @@ import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.propertyeditor.MappedEditor;
+import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.ReportTemplateRenderer;
 import org.openmrs.module.reporting.report.renderer.TextTemplateRenderer;
 import org.openmrs.module.reporting.report.renderer.template.TemplateEngineManager;
-import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDesign;
-import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.web.WebConstants;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class TextTemplateFormController {
@@ -105,7 +108,11 @@ public class TextTemplateFormController {
 
 		ReportDesignResource resource = design.getResourceByName("template");
 		if (resource != null) {
-			model.addAttribute("script", new String(resource.getContents(), "UTF-8"));
+			try {
+				model.addAttribute("script", new String(resource.getContents().getBytes(1, (int) resource.getContents().length()), "UTF-8"));
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		
 			
@@ -160,7 +167,7 @@ public class TextTemplateFormController {
 		designResource.setReportDesign(design);
 		designResource.setName("template");
 		designResource.setContentType("text/html");
-		designResource.setContents(script.getBytes("UTF-8"));
+		utf8BlobContentSetting(script, designResource);
 		
 		design.addResource(designResource);
 		design.addPropertyValue(TextTemplateRenderer.TEMPLATE_TYPE, scriptType);
@@ -175,6 +182,19 @@ public class TextTemplateFormController {
     	
     	design = rs.saveReportDesign(design);
     	return "redirect:" + successUrl;
+	}
+
+
+
+	private void utf8BlobContentSetting(String script, ReportDesignResource designResource)
+			throws UnsupportedEncodingException {
+		try {
+			designResource.setContents(new SerialBlob(script.getBytes("UTF-8")));
+		} catch (SerialException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@ModelAttribute( "expSupportedTypes" )
@@ -244,7 +264,7 @@ public class TextTemplateFormController {
 		designResource.setReportDesign(design);
 		designResource.setName("template");
 		designResource.setContentType("text/html");
-		designResource.setContents(script.getBytes("UTF-8"));
+		utf8BlobContentSetting(script, designResource);
 		
 		design.addResource(designResource);
 		design.addPropertyValue(TextTemplateRenderer.TEMPLATE_TYPE, scriptType);
@@ -369,7 +389,7 @@ public class TextTemplateFormController {
 					designResource.setReportDesign(design);
 					designResource.setName("template");
 					designResource.setContentType("text/html");
-					designResource.setContents(script.getBytes("UTF-8"));
+					utf8BlobContentSetting(script, designResource);
 					
 					design.addResource(designResource);
 					design.addPropertyValue(TextTemplateRenderer.TEMPLATE_TYPE, scriptType);

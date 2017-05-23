@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.reporting.report;
 
+import java.sql.Blob;
+
 import org.openmrs.BaseOpenmrsMetadata;
 
 /**
@@ -28,7 +30,7 @@ public class ReportDesignResource extends BaseOpenmrsMetadata {
 	private ReportDesign reportDesign;
 	private String contentType;
 	private String extension;
-	private byte[] contents;
+	private Blob contents;
 
 	//***** CONSTRUCTORS *****
 	
@@ -134,14 +136,14 @@ public class ReportDesignResource extends BaseOpenmrsMetadata {
 	/**
 	 * @return the contents
 	 */
-	public byte[] getContents() {
+	public Blob getContents() {
 		return contents;
 	}
 
 	/**
 	 * @param contents the contents to set
 	 */
-	public void setContents(byte[] contents) {
+	public void setContents(Blob contents) {
 		this.contents = contents;
 	}
 }

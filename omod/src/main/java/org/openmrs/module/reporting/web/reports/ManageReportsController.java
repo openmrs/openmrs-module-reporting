@@ -195,7 +195,7 @@ public class ManageReportsController {
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Content-Disposition", "attachment; filename=" + r.getResourceFilename());
 		try {
-			response.getOutputStream().write(r.getContents());
+			response.getOutputStream().write(r.getContents().getBytes(1, (int) r.getContents().length()));
 		}
 		catch (Exception e) {
 			throw new RuntimeException("Unable to render contents of file", e);

@@ -111,7 +111,7 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 		try {
 			ReportDesign reportDesign = getDesign(argument);
 			ReportDesignResource reportDesignResource = getTemplate(reportDesign);
-			String templateContents = new String(reportDesignResource.getContents(), "UTF-8");
+			String templateContents = new String(reportDesignResource.getContents().getBytes(1, (int) reportDesignResource.getContents().length()) , "UTF-8");
 			Map<String, Object> replacements = getBaseReplacementData(reportData, reportDesign);
 	
 			// First, run the template through any engine that is specified

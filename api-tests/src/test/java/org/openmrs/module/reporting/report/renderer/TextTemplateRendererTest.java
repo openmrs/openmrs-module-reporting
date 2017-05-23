@@ -16,6 +16,8 @@ package org.openmrs.module.reporting.report.renderer;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import javax.sql.rowset.serial.SerialBlob;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
@@ -93,7 +95,7 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		ReportDesignResource resource = new ReportDesignResource();
 		resource.setName(templateName);
 		InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream("org/openmrs/module/reporting/report/renderer/" + templateName);
-		resource.setContents(IOUtils.toByteArray(is));
+		resource.setContents(new SerialBlob(IOUtils.toByteArray(is)));
 		IOUtils.closeQuietly(is);
 		reportDesign.addResource(resource);
 		

@@ -22,32 +22,28 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.rowset.serial.SerialBlob;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
-
+import org.openmrs.api.context.Context;
+import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
+import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
+import org.openmrs.module.reporting.report.renderer.ReportTemplateRenderer;
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
+import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.util.HandlerUtil;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import org.openmrs.api.context.Context;
-import org.openmrs.module.htmlwidgets.web.handler.WidgetHandler;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.module.reporting.report.renderer.DelimitedTextReportRenderer;
-import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
-import org.openmrs.module.reporting.report.renderer.ReportRenderer;
-import org.openmrs.module.reporting.report.renderer.ReportTemplateRenderer;
-import org.openmrs.module.reporting.report.ReportDesign;
-import org.openmrs.module.reporting.report.ReportDesignResource;
-import org.openmrs.module.reporting.report.service.ReportService;
-
-import org.openmrs.util.HandlerUtil;
-import org.openmrs.web.WebConstants;
 
 @Controller
 public class ExcelReportRendererFormController {
@@ -172,7 +168,7 @@ public class ExcelReportRendererFormController {
 		    			resource.setContentType(file.getContentType());
 		    			resource.setName(fileName.substring(0, index));
 		    			resource.setExtension(fileName.substring(index+1));
-		    			resource.setContents(file.getBytes());
+		    			resource.setContents(new SerialBlob(file.getBytes()));
 		    			design.getResources().add(resource);
 	    			}
 				}

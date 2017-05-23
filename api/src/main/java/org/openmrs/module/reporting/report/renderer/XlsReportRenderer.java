@@ -130,7 +130,7 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
 		InputStream is = null;
 		try {
 			ReportDesignResource r = getTemplate(design);
-			is = new ByteArrayInputStream(r.getContents());
+			is = new ByteArrayInputStream(r.getContents().getBytes(1, (int) r.getContents().length()));
             wb = ExcelUtil.loadWorkbookFromInputStream(is);
 		}
 		catch (Exception e) {

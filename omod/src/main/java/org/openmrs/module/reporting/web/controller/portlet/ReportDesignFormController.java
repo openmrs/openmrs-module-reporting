@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.rowset.serial.SerialBlob;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -93,7 +94,7 @@ public class ReportDesignFormController {
 		    			resource.setContentType(file.getContentType());
 		    			resource.setName(fileName.substring(0, index));
 		    			resource.setExtension(fileName.substring(index+1));
-		    			resource.setContents(file.getBytes());
+		    			resource.setContents(new SerialBlob(file.getBytes()));
 		    			design.getResources().add(resource);
 	    			}
 	    		}

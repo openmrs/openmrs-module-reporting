@@ -13,6 +13,19 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+
+import javax.sql.rowset.serial.SerialBlob;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -39,17 +52,6 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsClassLoader;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
 
 /**
  * Supports rendering a report to Excel
@@ -109,7 +111,7 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		ReportDesignResource resource = new ReportDesignResource();
 		resource.setName("template.xls");
 		InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream("org/openmrs/module/reporting/report/renderer/ExcelTemplateRendererTest.xls");
-		resource.setContents(IOUtils.toByteArray(is));
+		resource.setContents(new SerialBlob(IOUtils.toByteArray(is)));
 		IOUtils.closeQuietly(is);
 		design.addResource(resource);
 
@@ -159,7 +161,7 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
         ReportDesignResource resource = new ReportDesignResource();
         resource.setName("template.xls");
         InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream("org/openmrs/module/reporting/report/renderer/ExcelTemplateLocalizeLabelsTest.xls");
-        resource.setContents(IOUtils.toByteArray(is));
+        resource.setContents(new SerialBlob(IOUtils.toByteArray(is)));
         IOUtils.closeQuietly(is);
         design.addResource(resource);
 

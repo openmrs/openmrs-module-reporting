@@ -14,6 +14,12 @@
 package org.openmrs.module.reporting.report.manager;
 
 
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
@@ -29,8 +35,6 @@ import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.report.util.ReportUtil;
-
-import java.util.List;
 
 /**
  * This class contains the logic necessary to set-up and tear down a report defined as a ReportManager
@@ -157,7 +161,13 @@ public class ReportManagerUtil {
 		resource.setName("template");
 		resource.setExtension("xls");
 		resource.setContentType("application/vnd.ms-excel");
-		resource.setContents(ReportUtil.readByteArrayFromResource(resourcePath));
+		try {
+			resource.setContents(new SerialBlob(ReportUtil.readByteArrayFromResource(resourcePath)));
+		} catch (SerialException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		resource.setReportDesign(design);
 		design.addResource(resource);
 		return design;

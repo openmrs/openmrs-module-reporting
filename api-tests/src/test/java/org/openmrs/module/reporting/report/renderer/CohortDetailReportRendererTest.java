@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.sql.rowset.serial.SerialBlob;
+
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -96,7 +98,7 @@ public class CohortDetailReportRendererTest extends BaseModuleContextSensitiveTe
 		
 		ReportDesignResource resource = new ReportDesignResource();
 		resource.setName("designFile");  // Note: You must name your resource exactly like this for it to work
-		resource.setContents(designXml.getBytes());
+		resource.setContents(new SerialBlob(designXml.getBytes()));
 		design.addResource(resource);
 
 		// For now, we need this little magic to simulate what would happen if this were all stored in the database via the UI
