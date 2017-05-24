@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
 <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
-<openmrs:htmlInclude file="/dwr/interface/DWRReportingService.js"/>
+<c:set var="returnUrl" value="/module/reporting/reports/manageReportQueue.htm"/>
 
 <script type="text/javascript">
 	var reportRequestsTable;
@@ -17,17 +17,9 @@
 		});
 	});
 	
-	function cancelReportRequest(id){
-		if(id && confirm('<spring:message code="reporting.reportRequest.cancel.confirm" />')){
-			DWRReportingService.purgeReportRequest(id, function(success){
-				if(success == true){
-					pos = reportRequestsTable.fnGetPosition(document.getElementById('reportRequest_'+id));
-					if(pos != undefined)
-						reportRequestsTable.fnDeleteRow(pos);
-				}else{
-					alert('<spring:message code="reporting.reportRequest.error.failedToCancel" />');
-				}
-			});
+	function cancelReportRequest(uuid){
+		if(uuid && confirm('<spring:message code="reporting.reportRequest.cancel.confirm" />')){
+			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/deleteReportRequest.form?uuid=' + uuid + '&returnUrl=${returnUrl}';
 		}
 	}
 </script>
@@ -84,7 +76,7 @@ span.cancel{
 			</td>
 			<td valign="top" style="text-align: center;">
 				<c:if test="${reportRequest.status == 'REQUESTED'}">
-				<span class="cancel" onclick="cancelReportRequest(${reportRequest.id})">
+				<span class="cancel" onclick="cancelReportRequest('${reportRequest.uuid}')">
 					<img src="<c:url value='/images/delete.gif'/>" border="0" /><br />
 					<u><spring:message code="general.cancel"/></u>
 				</span>

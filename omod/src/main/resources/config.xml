@@ -168,23 +168,6 @@
 		ReportRequest.hbm.xml
 	</mappingFiles>
 	
-	<!-- dwr -->
-	<dwr>
-		<allow>			
-			<create creator="new" javascript="DWRReportingService">
-				<param name="class" value="org.openmrs.module.reporting.web.dwr.DWRReportingService"/>
-				<include method="purgeReportRequest"/>
-			</create>
-		</allow>
-		<signatures>
-		<![CDATA[
-			import org.openmrs.module.reporting.web.dwr.DWRReportingService;
-			
-			DWRReportingService.purgeReportRequest(Integer id);
-		]]>
-	</signatures>
-	</dwr>
-	
 	<conditionalResources>
 		<conditionalResource>
 			<path>/lib/reporting-api-1.9.*</path>
