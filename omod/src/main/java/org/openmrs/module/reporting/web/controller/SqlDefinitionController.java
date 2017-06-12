@@ -2,8 +2,10 @@ package org.openmrs.module.reporting.web.controller;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
+import org.openmrs.module.reporting.data.BaseSqlDataDefinition;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.BaseSqlQuery;
 import org.openmrs.web.WebConstants;
@@ -40,13 +42,26 @@ public class SqlDefinitionController {
 	public String saveQueryString(
 			HttpSession httpSession,
 			WebRequest webRequest,
-			@RequestParam(value="type", required=false) Class<? extends BaseSqlQuery> type,
+			@RequestParam(value="type", required=false) Class<? extends Definition> type,
 			@RequestParam("uuid") String uuid,
 	        @RequestParam("queryString") String queryString) {
 
 		DefinitionService svc = DefinitionContext.getDefinitionService(type);
-		BaseSqlQuery definition = (BaseSqlQuery)svc.getDefinitionByUuid(uuid);
-		definition.setQuery(queryString);
+
+		Definition definition = null;
+		if (BaseSqlQuery.class.isAssignableFrom(type)) {
+            BaseSqlQuery sqlQuery = (BaseSqlQuery) svc.getDefinitionByUuid(uuid);
+            sqlQuery.setQuery(queryString);
+            definition = sqlQuery;
+        }
+        else if (BaseSqlDataDefinition.class.isAssignableFrom(type)) {
+            BaseSqlDataDefinition sqlDataDefinition = (BaseSqlDataDefinition) svc.getDefinitionByUuid(uuid);
+            sqlDataDefinition.setQuery(queryString);
+            definition = sqlDataDefinition;
+        }
+        else {
+		    throw new IllegalArgumentException("Only able to save Sql Query and Sql Data Definition types");
+        }
 		
 		// Add all new named parameters to the definition before saving.
 		List<Parameter> parameters =  
@@ -71,20 +86,37 @@ public class SqlDefinitionController {
 	public String cloneDefinition(WebRequest request,
 	                              @RequestParam("name") String name,
 	                              @RequestParam(value="description", required=false) String description,
-								  @RequestParam(value="type", required=false) Class<? extends BaseSqlQuery> type,
+								  @RequestParam(value="type", required=false) Class<? extends Definition> type,
 	                              @RequestParam("copyFromUuid") String copyFromUuid) throws Exception {
 
 		DefinitionService svc = DefinitionContext.getDefinitionService(type);
-		BaseSqlQuery from = (BaseSqlQuery)svc.getDefinitionByUuid(copyFromUuid);
 
-		BaseSqlQuery clone = type.newInstance();
-		clone.setName(name);
-		clone.setDescription(description);
-		clone.setParameters(from.getParameters());
-		clone.setQuery(from.getQuery());
-		svc.saveDefinition(clone);
+		Definition newDefinition = null;
+
+        if (BaseSqlQuery.class.isAssignableFrom(type)) {
+            BaseSqlQuery from = (BaseSqlQuery) svc.getDefinitionByUuid(copyFromUuid);
+            BaseSqlQuery clone = (BaseSqlQuery)type.newInstance();
+            clone.setQuery(from.getQuery());
+            clone.setParameters(from.getParameters());
+            newDefinition = clone;
+        }
+        else if (BaseSqlDataDefinition.class.isAssignableFrom(type)) {
+            BaseSqlDataDefinition from = (BaseSqlDataDefinition) svc.getDefinitionByUuid(copyFromUuid);
+            BaseSqlDataDefinition clone = (BaseSqlDataDefinition)type.newInstance();
+            clone.setQuery(from.getQuery());
+            clone.setParameters(from.getParameters());
+            newDefinition = clone;
+        }
+        else {
+            throw new IllegalArgumentException("Only able to clone Sql Query and Sql Data Definition types");
+        }
+
+        newDefinition.setName(name);
+        newDefinition.setDescription(description);
+        svc.saveDefinition(newDefinition);
+
 		request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Saved as a new copy", WebRequest.SCOPE_SESSION);
-		return "redirect:sqlDefinition.form?type="+type.getName()+"&uuid=" + clone.getUuid();
+		return "redirect:sqlDefinition.form?type="+type.getName()+"&uuid=" + newDefinition.getUuid();
 	}
 
 }

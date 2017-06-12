@@ -1,26 +1,15 @@
 package org.openmrs.module.reporting.data.patient.definition;
 
-import org.openmrs.module.reporting.data.BaseDataDefinition;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.data.BaseSqlDataDefinition;
 
 /**
  *
  */
-public class SqlPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
-
-    @ConfigurationProperty
-    private String sql;
+public class SqlPatientDataDefinition extends BaseSqlDataDefinition implements PatientDataDefinition {
 
     @Override
     public Class<?> getDataType() {
         return Object.class;
     }
 
-    public String getSql() {
-        return sql;
-    }
-
-    public void setSql(String sql) {
-        this.sql = sql;
-    }
 }

@@ -13,18 +13,14 @@
  */
 package org.openmrs.module.reporting.web.controller;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
+import org.openmrs.module.reporting.cohort.CohortUtil;
+import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.MissingDependencyException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -41,6 +37,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class QueryParameterFormController {
@@ -92,6 +94,13 @@ public class QueryParameterFormController {
 				
 			if (parameterizable != null) {			
 				EvaluationContext evaluationContext = new EvaluationContext();
+
+				if (parameterizable instanceof DataDefinition) {
+				    Integer randomBaseCohortSize = 50;
+				    Cohort baseCohort = CohortUtil.getRandomCohort(randomBaseCohortSize);
+				    evaluationContext.setBaseCohort(baseCohort);
+				    model.addObject("randomBaseCohortSize", randomBaseCohortSize);
+                }
 				
 				Map<String, Object> parameterValues = new HashMap<String, Object>();
 				if (parameterizable != null && parameterizable.getParameters() != null) { 
@@ -140,11 +149,6 @@ public class QueryParameterFormController {
 	
 	/**
 	 * Retrieves/creates a form backing object.
-	 * 
-	 * @param uuid
-	 * @param type
-	 * @param parameterName
-	 * @return
 	 */
 	@ModelAttribute("parameterizable")
 	public Parameterizable formBackingObject(

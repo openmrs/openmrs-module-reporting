@@ -53,6 +53,13 @@ $j(document).ready(function() {
 <div id="page">
 	<div id="container">
 		<div id="wrapper">
+            <br/>
+            <div>
+                <c:if test="${randomBaseCohortSize != null}">
+                    <spring:message code="reporting.previewLimitedToRandomCohort" arguments="${randomBaseCohortSize}" />
+                </c:if>
+            </div>
+            <br/>
 			<table height="100%">
 				<tr valign="top">
 					<td style="padding-right: 1em">
