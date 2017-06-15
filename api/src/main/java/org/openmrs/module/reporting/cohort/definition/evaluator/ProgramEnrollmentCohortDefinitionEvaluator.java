@@ -50,7 +50,6 @@ public class ProgramEnrollmentCohortDefinitionEvaluator implements CohortDefinit
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
 
 		ProgramEnrollmentCohortDefinition cd = (ProgramEnrollmentCohortDefinition) cohortDefinition;
-
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("distinct p.patientId");
 		q.from(PatientProgram.class, "pp");

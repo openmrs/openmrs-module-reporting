@@ -39,8 +39,8 @@
     </modules>
 
 	<properties>
-		<openMRSVersion>1.9.9</openMRSVersion>
-		<openMRSMinorVersion>1.9</openMRSMinorVersion>
+		<openMRSVersion>1.10.5</openMRSVersion>
+		<openMRSMinorVersion>1.10</openMRSMinorVersion>
 		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
 		<serializationVersion>0.2.12</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>

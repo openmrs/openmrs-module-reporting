@@ -14,20 +14,24 @@
 
 package org.openmrs.module.reporting.cohort.definition.library;
 
+import org.openmrs.CareSetting;
+import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.EncounterType;
-import org.openmrs.Location;
 import org.openmrs.Form;
+import org.openmrs.Location;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
-import org.openmrs.Concept;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.StartedDrugOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InStateCohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -207,6 +211,35 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
         cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
         cd.addParameter(new Parameter("onDate", "reporting.parameter.date", Date.class));
+        return cd;
+    }
+
+    @DocumentedDefinition("drugOrderSearch")
+    public CohortDefinition getDrugOrderSearch() {
+        DrugOrderCohortDefinition cd = new DrugOrderCohortDefinition();
+        cd.addParameter(new Parameter("stoppedOrChanged", "reporting.parameter.stoppedOrChanged", Boolean.class));
+        cd.addParameter(new Parameter("groupMethod", "reporting.parameter.groupMethod", String.class));
+        cd.addParameter(new Parameter("genericDrugList", "reporting.parameter.genericDrugList", Concept.class, List.class, null));
+        cd.addParameter(new Parameter("drugList", "reporting.parameter.drugList", Drug.class, List.class, null));
+        cd.addParameter(new Parameter("activatedOnOrBefore", "reporting.parameter.activatedOnOrBefore", Date.class));
+        cd.addParameter(new Parameter("activatedOnOrAfter", "reporting.parameter.activatedOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("stoppedOnOrBefore", "reporting.parameter.stoppedOnOrBefore", Date.class));
+        cd.addParameter(new Parameter("stoppedOnOrAfter", "reporting.parameter.stoppedOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("careSetting", "reporting.parameter.careSetting", CareSetting.class));
+        cd.addParameter(new Parameter("onlyCurrentlyActive", "reporting.parameter.onlyCurrentlyActive", Boolean.class));
+        return cd;
+    }
+
+    @DocumentedDefinition("startedDrugOrder")
+    public CohortDefinition getStartedDrugOrder() {
+        StartedDrugOrderCohortDefinition cd = new StartedDrugOrderCohortDefinition();
+        cd.addParameter(new Parameter("activeOnOrBefore", "reporting.parameter.activeOnOrBefore", Date.class));
+        cd.addParameter(new Parameter("activeOnOrAfter", "reporting.parameter.activeOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("stoppedOnOrBefore", "reporting.parameter.stoppedOnOrBefore", Date.class));
+        cd.addParameter(new Parameter("stoppedOnOrAfter", "reporting.parameter.stoppedOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("groupMethod", "reporting.parameter.groupMethod", String.class));
+        cd.addParameter(new Parameter("genericDrugList", "reporting.parameter.genericDrugList", Concept.class, List.class, null));
+        cd.addParameter(new Parameter("drugList", "reporting.parameter.drugList", Drug.class, List.class, null));
         return cd;
     }
 }
