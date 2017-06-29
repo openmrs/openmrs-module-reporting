@@ -37,6 +37,11 @@ import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
+import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.TextObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
+
 
 import java.util.Date;
 import java.util.List;
@@ -118,6 +123,42 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
         cd.addParameter(new Parameter("timeModifier", "reporting.parameter.timeModifier", CodedObsCohortDefinition.TimeModifier.class));
         cd.addParameter(new Parameter("question", "reporting.parameter.question", Concept.class));
+        cd.addParameter(new Parameter("values", "reporting.parameter.valueList", Concept.class, List.class, null));
+        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        return cd;
+    }
+
+    @DocumentedDefinition("numericObsSearchAdvanced")
+    public CohortDefinition getNumericObsSearchAdvanced() {
+        NumericObsCohortDefinition cd = new NumericObsCohortDefinition();
+        cd.addParameter(new Parameter("timeModifier", "reporting.parameter.timeModifier", NumericObsCohortDefinition.TimeModifier.class));
+        cd.addParameter(new Parameter("question", "reporting.parameter.question", Concept.class));
+        cd.addParameter(new Parameter("operator", "reporting.parameter.operator1", RangeComparator.class));
+        cd.addParameter(new Parameter("value", "reporting.parameter.value1", Double.class));
+        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        return cd;
+    }
+
+    @DocumentedDefinition("dateObsSearchAdvanced")
+    public CohortDefinition getDateObsSearchAdvanced() {
+        DateObsCohortDefinition cd = new DateObsCohortDefinition();
+        cd.addParameter(new Parameter("timeModifier", "reporting.parameter.timeModifier", NumericObsCohortDefinition.TimeModifier.class));
+        cd.addParameter(new Parameter("question", "reporting.parameter.question", Concept.class));
+        cd.addParameter(new Parameter("operator", "reporting.parameter.operator1", RangeComparator.class));
+        cd.addParameter(new Parameter("value", "reporting.parameter.value1", Date.class));
+        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        return cd;
+    }
+
+    @DocumentedDefinition("textObsSearchAdvanced")
+    public CohortDefinition getTextObsSearchAdvanced() {
+        TextObsCohortDefinition cd = new TextObsCohortDefinition();
+        cd.addParameter(new Parameter("timeModifier", "reporting.parameter.timeModifier", TextObsCohortDefinition.TimeModifier.class));
+        cd.addParameter(new Parameter("question", "reporting.parameter.question", Concept.class));
+        cd.addParameter(new Parameter("values", "reporting.parameter.valueList", Concept.class, List.class, null));
         cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
         cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
         return cd;
