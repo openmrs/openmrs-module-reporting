@@ -14,6 +14,15 @@ api/.classpath
 api/.project
 api/.settings/*
 api/target/*
+api-1.9/.classpath
+api-1.9/.project
+api-1.9/.settings/*
+api-2.0/.classpath
+api-2.0/.project
+api-2.0/.settings/*
+api-tests/.classpath
+api-tests/.project
+api-tests/.settings/*
 omod/.classpath
 omod/.project
 omod/.settings/*
