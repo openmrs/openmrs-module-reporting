@@ -48,7 +48,7 @@ public class PersonToVisitDataEvaluator implements VisitDataEvaluator {
         Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class, context);
 
         if (!convertedIds.keySet().isEmpty()) {
-            PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext();
+            PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext(context, null);
             personEvaluationContext.setBaseCohort(new Cohort(convertedIds.values()));
             personEvaluationContext.setBasePersons(new PersonIdSet(new HashSet<Integer>(convertedIds.values())));
 

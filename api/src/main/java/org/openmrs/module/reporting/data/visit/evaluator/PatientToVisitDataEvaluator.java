@@ -46,7 +46,7 @@ public class PatientToVisitDataEvaluator  implements VisitDataEvaluator {
 
         if (!convertedIds.keySet().isEmpty()) {
             // Create a new (patient) evaluation context using the retrieved ids
-            EvaluationContext patientEvaluationContext = new EvaluationContext();
+            EvaluationContext patientEvaluationContext = context.shallowCopy();
             patientEvaluationContext.setBaseCohort(new Cohort(convertedIds.values()));
 
             // evaluate the joined definition via this patient context
