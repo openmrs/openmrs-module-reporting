@@ -48,7 +48,7 @@ public class PersonToObsDataEvaluator implements ObsDataEvaluator {
 
 		if (!convertedIds.keySet().isEmpty()) {
 			// create a new (person) evaluation context using the retrieved ids
-			PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext();
+			PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext(context, null);
 			personEvaluationContext.setBasePersons(new PersonIdSet(new HashSet<Integer>(convertedIds.values())));
 
 			// evaluate the joined definition via this person context
@@ -62,8 +62,4 @@ public class PersonToObsDataEvaluator implements ObsDataEvaluator {
 		}
         return c;
     }
-
-
-
-
 }

@@ -49,7 +49,7 @@ public class EncounterToObsDataEvaluator implements ObsDataEvaluator {
 		if (!convertedIds.keySet().isEmpty()) {
 
 			// Create a new (encounter) evaluation context using the retrieved ids
-			EncounterEvaluationContext encounterEvaluationContext = new EncounterEvaluationContext();
+			EncounterEvaluationContext encounterEvaluationContext = new EncounterEvaluationContext(context, null);
 			EncounterIdSet baseEncounters = new EncounterIdSet();
 			for (Integer encounterId : convertedIds.values()) {
 				if (encounterId != null) {

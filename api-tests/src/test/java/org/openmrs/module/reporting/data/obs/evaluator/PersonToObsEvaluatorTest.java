@@ -3,22 +3,36 @@ package org.openmrs.module.reporting.data.obs.evaluator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.obs.EvaluatedObsData;
+import org.openmrs.module.reporting.data.obs.ObsData;
 import org.openmrs.module.reporting.data.obs.definition.PersonToObsDataDefinition;
 import org.openmrs.module.reporting.data.obs.service.ObsDataService;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.obs.ObsIdSet;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class PersonToObsEvaluatorTest extends BaseModuleContextSensitiveTest {
 
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 
     protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+
+    @Autowired
+    PersonService personService;
+
+    @Autowired @Qualifier("reportingObsDataService")
+    ObsDataService obsDataService;
 
     /**
      * Run this before each unit test in this class. The "@Before" method in
@@ -55,5 +69,26 @@ public class PersonToObsEvaluatorTest extends BaseModuleContextSensitiveTest {
         EvaluatedObsData ed = Context.getService(ObsDataService.class).evaluate(d, context);
 
         Assert.assertEquals(0, ed.getData().size());
+    }
+
+    @Test
+    public void evaluate_shouldProperlyPassParametersThroughToNestedDefinition() throws Exception {
+
+        PersonToObsDataDefinition dataDef = new PersonToObsDataDefinition();
+
+        PersonAttributeDataDefinition personAttributeDef = new PersonAttributeDataDefinition();
+        personAttributeDef.addParameter(new Parameter("personAttributeType", "Attribute", String.class));
+        dataDef.setJoinedDefinition(personAttributeDef);
+
+        ObsEvaluationContext context = new ObsEvaluationContext();
+        PersonAttributeType birthplaceType = personService.getPersonAttributeTypeByName("Birthplace");
+        context.addParameterValue("personAttributeType", birthplaceType);
+
+        context.setBaseObs(new ObsIdSet(6));
+
+        ObsData data = obsDataService.evaluate(dataDef, context);
+
+        PersonAttribute att1 = (PersonAttribute) data.getData().get(6);
+        Assert.assertEquals("Paris, France", att1.getValue());
     }
 }
