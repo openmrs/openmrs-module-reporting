@@ -63,7 +63,7 @@ public class PersonToEncounterDataEvaluator implements EncounterDataEvaluator {
 
 		if (!convertedIds.keySet().isEmpty()) {
 			// create a new (person) evaluation context using the retrieved ids
-			PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext();
+			PersonEvaluationContext personEvaluationContext = new PersonEvaluationContext(context, null);
 			personEvaluationContext.setBaseCohort(new Cohort(convertedIds.values()));
 			personEvaluationContext.setBasePersons(new PersonIdSet(new HashSet<Integer>(convertedIds.values())));
 
