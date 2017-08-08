@@ -1,22 +1,39 @@
 package org.openmrs.module.reporting.data.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
 
 /**
- * Converts an Obs to it's value
+ * Converts an Obs to its value
  */
 public class ObsValueConverter implements DataConverter {
 
-    public ObsValueConverter() { }
+	public ObsValueConverter() { }
 
-    @Override
-    public Object convert(Object original) {
-		Obs o = (Obs) original;
-		if (o == null) {
+	@Override
+	public Object convert(Object original) {
+
+		if (original == null) {
 			return null;
 		}
+		if (original instanceof Obs) {
+			Obs o = (Obs) original;
+			return getObsValue(o);
+		} else if (original instanceof List) {
+			List<Object> obsValues = new ArrayList<Object>();
+			for (Obs o : ((List<Obs>) original) ) {
+				obsValues.add(getObsValue(o));
+			}
+			return obsValues;
+		} 
+		return original;
+	}
+
+	private Object getObsValue(Obs o) {
 		if (o.getValueBoolean() != null) {
 			return o.getValueBoolean();
 		}
@@ -45,15 +62,15 @@ public class ObsValueConverter implements DataConverter {
 			return o.getValueTime();
 		}
 		return o.getValueAsString(Context.getLocale());
-    }
+	}
 
-    @Override
-    public Class<?> getInputDataType() {
-        return Obs.class;
-    }
+	@Override
+	public Class<?> getInputDataType() {
+		return Object.class;
+	}
 
-    @Override
-    public Class<?> getDataType() {
-        return Object.class;
-    }
+	@Override
+	public Class<?> getDataType() {
+		return Object.class;
+	}
 }
