@@ -128,7 +128,21 @@ public class ReportDefinitionServiceImpl extends BaseDefinitionService<ReportDef
 		
 		getService().purgeDefinition(definition);
 	}
-	
+
+	/**
+	 * @see ReportDefinitionService#purgeDefinition(String)
+	 * @param uuid the uuid of the report definition to remove
+	 */
+	@Override
+	@Transactional
+	public void purgeDefinition(String uuid) {
+		ReportService reportService = Context.getService(ReportService.class);
+
+		reportService.purgeReportRequests(uuid);
+		reportService.purgeReportDesigns(uuid);
+		getService().purgeDefinition(uuid);
+	}
+
 	/** 
 	 * @see ReportDefinitionService#evaluate(Mapped, EvaluationContext)
 	 */

@@ -225,7 +225,32 @@ public class HibernateReportDAO implements ReportDAO {
 	public void purgeReportRequest(ReportRequest request) {
 		sessionFactory.getCurrentSession().delete(request);
 	}
-	
+
+	/**
+	 * Purges the <code>ReportRequest</code> entries associated with the given report definition uuid from the database.
+	 * @param reportDefinitionUuid The report definition uuid to remove
+	 */
+	@Override
+	public void purgeReportRequests(String reportDefinitionUuid) {
+		String hql = "delete from ReportRequest r where r.reportDefinition.definition=:uuid";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString("uuid", reportDefinitionUuid);
+		query.executeUpdate();
+	}
+
+
+	/**
+	 * Purges the <code>ReportDesign</code> entries associated with the given report definition uuid from the database.
+	 * @param reportDefinitionUuid The report definition uuid to remove
+	 */
+	@Override
+	public void purgeReportDesigns(String reportDefinitionUuid) {
+		String hql = "delete from ReportDesign r where r.reportDefinition=:uuid";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		query.setString("uuid", reportDefinitionUuid);
+		query.executeUpdate();
+	}
+
 	//***** PROPERTY ACCESS *****
 
 	/**

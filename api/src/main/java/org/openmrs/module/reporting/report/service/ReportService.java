@@ -342,4 +342,17 @@ public interface ReportService extends OpenmrsService {
     @Transactional(readOnly = true)
     public void logReportMessage(String requestUuid, String message);
 
+	/**
+	 * Removes the report requests associated with the report definition with the given uuid
+	 * @param reportDefinitionUuid the uuid of the report definition
+	 */
+	@Transactional
+	void purgeReportRequests(String reportDefinitionUuid);
+
+	/**
+	 * Removes the report designs associated with the report definition with the given uuid
+	 * @param reportDefinitionUuid the uuid of the report definition
+	 */
+	@Transactional
+	void purgeReportDesigns(String reportDefinitionUuid);
 }
