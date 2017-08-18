@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.data.visit.definition;
 import java.util.List;
 
 import org.openmrs.OrderType;
+import org.openmrs.annotation.OpenmrsProfile;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
@@ -24,6 +25,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 /**
  * Order for visit data definition that returns the orders of a visit based on provided parameters
  */
+@OpenmrsProfile(openmrsPlatformVersion = "1.10.2 - 2.*")
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class OrderForVisitDataDefinition extends BaseDataDefinition implements VisitDataDefinition {
 
@@ -62,6 +64,5 @@ public class OrderForVisitDataDefinition extends BaseDataDefinition implements V
 	public void setTypes(List<OrderType> types) {
 		this.types = types;
 	}
-
 
 }

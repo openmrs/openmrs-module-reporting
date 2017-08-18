@@ -13,15 +13,14 @@
  */
 package org.openmrs.module.reporting.data.visit.evaluator;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
+import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.visit.EvaluatedVisitData;
@@ -32,6 +31,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -78,7 +78,13 @@ public class OrderForVisitDataEvaluator implements VisitDataEvaluator {
 		q.innerJoin("o.encounter", "e");
 		q.innerJoin("e.visit", "v");
 		q.whereVisitIn("v.visitId", context);
-		q.orderAsc("o.startDate");
+		
+		if (ModuleUtil.compareVersion(OpenmrsConstants.OPENMRS_VERSION, "1.10") < 0) {
+            q.orderAsc("o.startDate");
+        }
+		else {
+		    q.orderAsc("o.dateActivated");
+        }
 		
 		List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
 		
