@@ -67,7 +67,7 @@ public class Age {
 	 */
 	public Integer getFullYears() {
 		if (birthDate != null) {
-			return Years.yearsBetween(birthDate, currentDate).getYears();
+			return Years.yearsBetween(birthDate.withTimeAtStartOfDay(), currentDate.withTimeAtStartOfDay()).getYears();
 		}
 		return null;
 	}
@@ -77,7 +77,7 @@ public class Age {
 	 */
 	public Integer getFullMonths() {
 		if (birthDate != null) {
-			return Months.monthsBetween(birthDate, currentDate).getMonths();
+			return Months.monthsBetween(birthDate.withTimeAtStartOfDay(), currentDate.withTimeAtStartOfDay()).getMonths();
 		}
 		return null;
 	}
