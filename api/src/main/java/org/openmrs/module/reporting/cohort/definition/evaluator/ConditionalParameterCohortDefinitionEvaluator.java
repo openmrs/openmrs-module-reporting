@@ -33,8 +33,7 @@ public class ConditionalParameterCohortDefinitionEvaluator implements CohortDefi
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 		ConditionalParameterCohortDefinition cd = (ConditionalParameterCohortDefinition) cohortDefinition;
-		EvaluatedCohort ret = new EvaluatedCohort(cohortDefinition, context);
-
+        Cohort ret = new Cohort();
 		Object valueToCheck = context.getParameterValue(cd.getParameterToCheck());
 		Mapped<? extends CohortDefinition> match = cd.getConditionalCohortDefinitions().get(valueToCheck);
 		if (match == null) {
@@ -42,8 +41,8 @@ public class ConditionalParameterCohortDefinitionEvaluator implements CohortDefi
 		}
 		if (match != null) {
 			Cohort c  = cohortDefinitionService.evaluate(match, context);
-			ret.getMemberIds().addAll(c.getMemberIds());
+			ret = Cohort.union(ret, c);
 		}
-		return ret;
+		return new EvaluatedCohort(ret, cohortDefinition, context);
     }
 }

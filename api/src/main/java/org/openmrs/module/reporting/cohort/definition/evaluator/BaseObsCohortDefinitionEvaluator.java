@@ -31,6 +31,7 @@ import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Provides base queries shared by various evaluator subclasses for each ObsCohortDefinition
@@ -222,9 +223,9 @@ public abstract class BaseObsCohortDefinitionEvaluator implements CohortDefiniti
         List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class, context);
 
         if (doInvert) {
-            Cohort inverted = Cohorts.allPatients(context);
-            inverted.getMemberIds().removeAll(ids);
-            return inverted;
+            Set<Integer> inverted = Cohorts.allPatients(context).getMemberIds();
+            inverted.removeAll(ids);
+            return new Cohort(inverted);
         }
         else {
             return new Cohort(ids);

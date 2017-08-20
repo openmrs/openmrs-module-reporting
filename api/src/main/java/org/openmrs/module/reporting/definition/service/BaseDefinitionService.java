@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.definition.service;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -300,15 +301,19 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
             if (context.getBaseCohort() == null) {
                 // set a base cohort of "all patients" minus "test patients"
                 EvaluatedCohort allPatients = cohortDefinitionService.evaluateBypassingExclusionOfTestPatients(new AllPatientsCohortDefinition(), context);
-                allPatients.getMemberIds().removeAll(testPatients.getMemberIds());
-                context.setBaseCohort(allPatients);
+                Cohort nonTestPatients = Cohort.subtract(allPatients, testPatients);
+                context.setBaseCohort(nonTestPatients);
             }
             else {
                 // remove test patients from the existing baseCohort, and if this results in any changes, clear the cache
-                boolean changed = context.getBaseCohort().getMemberIds().removeAll(testPatients.getMemberIds());
-                if (changed) {
+                Cohort nonTestPatients = Cohort.subtract(context.getBaseCohort(), testPatients);
+                if (!nonTestPatients.getMemberIds().containsAll(context.getBaseCohort().getMemberIds()) ||
+                    !context.getBaseCohort().getMemberIds().containsAll(nonTestPatients.getMemberIds())) {
+
+                    context.setBaseCohort(nonTestPatients);
                     context.clearCache();
                 }
+
             }
         }
     }

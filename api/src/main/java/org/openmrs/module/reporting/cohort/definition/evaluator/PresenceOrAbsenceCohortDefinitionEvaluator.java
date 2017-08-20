@@ -74,7 +74,7 @@ public class PresenceOrAbsenceCohortDefinitionEvaluator implements CohortDefinit
 
 		if (min == null || min == 0) {
 			patientsToKeep = cohortDefinitionService.evaluate(new AllPatientsCohortDefinition(), context);
-			patientsToKeep.getMemberIds().removeAll(patientsToRemove.getMemberIds());
+			patientsToKeep = Cohort.subtract(patientsToKeep, patientsToRemove);
 		}
 
 		return new EvaluatedCohort(patientsToKeep, cohortDefinition, context);
