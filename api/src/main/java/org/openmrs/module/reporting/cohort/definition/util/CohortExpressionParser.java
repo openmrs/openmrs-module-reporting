@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -142,7 +143,7 @@ public class CohortExpressionParser {
 						}
 						log.debug("Originally a Cohort of size " + currentCohort.size());
 						log.debug("With base Cohort of size " + baseCohort.size());
-						Cohort invertedCohort = Cohort.subtract(baseCohort, currentCohort);
+						Cohort invertedCohort = CohortUtil.subtract(baseCohort, currentCohort);
 						log.debug("Makes a new Cohort is of size " + baseCohort.size());
 						i.set(invertedCohort);
 					}
@@ -172,11 +173,11 @@ public class CohortExpressionParser {
 				}
 				else {
 					if (operator == BooleanOperator.AND) {
-						ret = Cohort.intersect(ret, c);
+						ret = CohortUtil.intersect(ret, c);
 						log.debug("AND this in to get: " + ret.getSize());
 					}
 					else if (operator == BooleanOperator.OR) {
-						ret = Cohort.union(ret, c);
+						ret = CohortUtil.union(ret, c);
 						log.debug("OR this in to get: " + ret.getSize());
 					}
 					else {

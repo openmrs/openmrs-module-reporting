@@ -21,6 +21,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -301,12 +302,12 @@ public abstract class BaseDefinitionService<T extends Definition> extends BaseOp
             if (context.getBaseCohort() == null) {
                 // set a base cohort of "all patients" minus "test patients"
                 EvaluatedCohort allPatients = cohortDefinitionService.evaluateBypassingExclusionOfTestPatients(new AllPatientsCohortDefinition(), context);
-                Cohort nonTestPatients = Cohort.subtract(allPatients, testPatients);
+                Cohort nonTestPatients = CohortUtil.subtract(allPatients, testPatients);
                 context.setBaseCohort(nonTestPatients);
             }
             else {
                 // remove test patients from the existing baseCohort, and if this results in any changes, clear the cache
-                Cohort nonTestPatients = Cohort.subtract(context.getBaseCohort(), testPatients);
+                Cohort nonTestPatients = CohortUtil.subtract(context.getBaseCohort(), testPatients);
                 if (!nonTestPatients.getMemberIds().containsAll(context.getBaseCohort().getMemberIds()) ||
                     !context.getBaseCohort().getMemberIds().containsAll(nonTestPatients.getMemberIds())) {
 

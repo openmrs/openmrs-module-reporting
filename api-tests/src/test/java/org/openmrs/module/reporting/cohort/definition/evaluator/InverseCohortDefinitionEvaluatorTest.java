@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
@@ -52,7 +53,7 @@ public class InverseCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		Cohort femaleOrUnknownCohort = Context.getService(CohortDefinitionService.class).evaluate(femaleOrUnknown, null);
 
 		Assert.assertEquals(femaleOrUnknownCohort.size(), nonMaleCohort.getSize());
-		Assert.assertTrue(Cohort.subtract(nonMaleCohort, femaleOrUnknownCohort).isEmpty());
+		Assert.assertTrue(CohortUtil.subtract(nonMaleCohort, femaleOrUnknownCohort).isEmpty());
 	}
 
 	/**

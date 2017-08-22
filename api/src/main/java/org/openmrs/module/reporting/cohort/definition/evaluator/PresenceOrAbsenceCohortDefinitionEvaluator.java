@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -74,7 +75,7 @@ public class PresenceOrAbsenceCohortDefinitionEvaluator implements CohortDefinit
 
 		if (min == null || min == 0) {
 			patientsToKeep = cohortDefinitionService.evaluate(new AllPatientsCohortDefinition(), context);
-			patientsToKeep = Cohort.subtract(patientsToKeep, patientsToRemove);
+			patientsToKeep = CohortUtil.subtract(patientsToKeep, patientsToRemove);
 		}
 
 		return new EvaluatedCohort(patientsToKeep, cohortDefinition, context);

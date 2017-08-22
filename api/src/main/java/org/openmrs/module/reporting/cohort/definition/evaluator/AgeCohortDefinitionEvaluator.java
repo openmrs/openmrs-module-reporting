@@ -17,6 +17,7 @@ import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
+import org.openmrs.module.reporting.cohort.PatientIdSet;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
@@ -24,6 +25,8 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.module.reporting.query.IdSet;
+import org.openmrs.module.reporting.query.QueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Calendar;
@@ -74,23 +77,23 @@ public class AgeCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
         q.wherePatientIn("p.patientId", context);
 
         List<Integer> pIds = evaluationService.evaluateToList(q, Integer.class, context);
-        Cohort c = new Cohort(pIds);
+        IdSet<Patient> c = new PatientIdSet(pIds);
 
         if (acd.isUnknownAgeIncluded()) {
-            c = Cohort.union(c, getPatientsWithUnknownAge(context));
+            c = QueryUtil.union(c, getPatientsWithUnknownAge(context));
         }
         else {
-            c = Cohort.subtract(c, getPatientsWithUnknownAge(context));
+            c = QueryUtil.subtract(c, getPatientsWithUnknownAge(context));
         }
 
-    	return new EvaluatedCohort(c, cohortDefinition, context);
+    	return new EvaluatedCohort(new Cohort(c.getMemberIds()), cohortDefinition, context);
     }
 
-    protected Cohort getPatientsWithUnknownAge(EvaluationContext context) {
+    protected PatientIdSet getPatientsWithUnknownAge(EvaluationContext context) {
         HqlQueryBuilder q = new HqlQueryBuilder();
         q.select("p.patientId").from(Patient.class, "p").whereNull("p.birthdate").wherePatientIn("p.patientId", context);
         List<Integer> pIds = evaluationService.evaluateToList(q, Integer.class, context);
-        return new Cohort(pIds);
+        return new PatientIdSet(pIds);
     }
 
     /**

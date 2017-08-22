@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -63,7 +64,7 @@ public class EncounterCohortDefinitionEvaluator implements CohortDefinitionEvalu
     		if (baseCohort == null) {
     			baseCohort = Cohorts.allPatients(context);
     		}
-    		c = Cohort.subtract(baseCohort, c);
+    		c = CohortUtil.subtract(baseCohort, c);
     	}
     	return new EvaluatedCohort(c, cohortDefinition, context);
     }

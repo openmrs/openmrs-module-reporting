@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ConditionalParameterCohortDefinition;
@@ -41,7 +42,7 @@ public class ConditionalParameterCohortDefinitionEvaluator implements CohortDefi
 		}
 		if (match != null) {
 			Cohort c  = cohortDefinitionService.evaluate(match, context);
-			ret = Cohort.union(ret, c);
+			ret = CohortUtil.union(ret, c);
 		}
 		return new EvaluatedCohort(ret, cohortDefinition, context);
     }

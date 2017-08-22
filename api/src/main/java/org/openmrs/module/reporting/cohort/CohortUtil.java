@@ -10,9 +10,11 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * A utility class for cohort
@@ -20,6 +22,24 @@ import java.util.Random;
 public class CohortUtil {
 	
 	protected static Log log = LogFactory.getLog(CohortUtil.class);
+
+	public static Cohort intersect(Cohort cohortA, Cohort cohortB) {
+        Set<Integer> ids = new HashSet<Integer>(cohortA.getMemberIds());
+        ids.retainAll(cohortB.getMemberIds());
+        return new Cohort(ids);
+    }
+
+    public static Cohort union(Cohort cohortA, Cohort cohortB) {
+        Set<Integer> ids = new HashSet<Integer>(cohortA.getMemberIds());
+        ids.addAll(cohortB.getMemberIds());
+        return new Cohort(ids);
+    }
+
+    public static Cohort subtract(Cohort cohortA, Cohort cohortB) {
+        Set<Integer> ids = new HashSet<Integer>(cohortA.getMemberIds());
+        ids.removeAll(cohortB.getMemberIds());
+        return new Cohort(ids);
+    }
 
 	public static Cohort intersectNonNull(Cohort...cohorts) {
 		Cohort ret = null;
@@ -29,7 +49,7 @@ public class CohortUtil {
 					 ret = new Cohort(c.getMemberIds());
 				}
 				else {
-					ret = Cohort.intersect(ret, c);
+					ret = CohortUtil.intersect(ret, c);
 				}
 			}
 		}
@@ -110,7 +130,7 @@ public class CohortUtil {
      * @return true if the passed Cohorts have the same members
      */
     public static boolean areEqual(Cohort a, Cohort b) {
-    	return (a != null && b != null && a.size() == b.size() && a.size() == Cohort.intersect(a, b).size());
+    	return (a != null && b != null && a.size() == b.size() && a.size() == CohortUtil.intersect(a, b).size());
     }
     
     /**

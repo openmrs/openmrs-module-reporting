@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -79,7 +80,7 @@ public class CohortDataSetEvaluator implements DataSetEvaluator {
 				colCohort = Cohorts.allPatients(context);
 			}
 			
-			Cohort c = Cohort.intersect(rowCohort, colCohort);
+			Cohort c = CohortUtil.intersect(rowCohort, colCohort);
 			data.addData(col, c);
 		}
 		

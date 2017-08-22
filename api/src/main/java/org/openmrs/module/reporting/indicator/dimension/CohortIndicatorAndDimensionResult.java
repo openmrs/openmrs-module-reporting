@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -53,7 +54,7 @@ public class CohortIndicatorAndDimensionResult implements IndicatorResult {
 				ret = new Cohort(c.getMemberIds());
 			}
 			else {
-				ret = Cohort.intersect(ret, c);
+				ret = CohortUtil.intersect(ret, c);
 			}
 		}
 		return ret;
@@ -65,7 +66,7 @@ public class CohortIndicatorAndDimensionResult implements IndicatorResult {
 	public Cohort getCohortIndicatorAndDimensionCohort() {
 		Cohort ret = cohortIndicatorResult.getCohort();
 		if (ret != null && !getDimensionResults().isEmpty()) {
-			ret = Cohort.intersect(ret, calculateDimensionCohort());
+			ret = CohortUtil.intersect(ret, calculateDimensionCohort());
 		}
 		return ret;
 	}
@@ -76,7 +77,7 @@ public class CohortIndicatorAndDimensionResult implements IndicatorResult {
 	public Cohort getCohortIndicatorAndDimensionDenominator() {
 		Cohort ret = cohortIndicatorResult.getDenominatorCohort();
 		if (ret != null && !getDimensionResults().isEmpty()) {
-			ret = Cohort.intersect(ret, calculateDimensionCohort());
+			ret = CohortUtil.intersect(ret, calculateDimensionCohort());
 		}
 		return ret;
 	}

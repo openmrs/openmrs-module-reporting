@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.Cohort;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.common.Fraction;
 import org.openmrs.module.reporting.evaluation.Evaluated;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -63,9 +64,9 @@ public class CohortIndicatorResult implements IndicatorResult {
     	if (filters != null) {
 	    	for (Cohort filter : filters) {
 	    		if (filter != null) {
-		    		numerator = Cohort.intersect(numerator, filter);
+		    		numerator = CohortUtil.intersect(numerator, filter);
 		    		if (type == IndicatorType.FRACTION) {
-		    			denominator = Cohort.intersect(denominator, filter);
+		    			denominator = CohortUtil.intersect(denominator, filter);
 		    		}
 		    		else if (type == IndicatorType.LOGIC) {
 		    			logicVals.keySet().retainAll(filter.getMemberIds());

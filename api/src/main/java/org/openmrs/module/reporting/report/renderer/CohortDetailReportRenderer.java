@@ -16,6 +16,7 @@ package org.openmrs.module.reporting.report.renderer;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.common.ExcelBuilder;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -156,7 +157,7 @@ public class CohortDetailReportRenderer extends ReportDesignRenderer {
 					ctx.setBaseCohort(c);
 				}
 				else {
-					ctx.setBaseCohort(Cohort.intersect(ctx.getBaseCohort(), c));
+					ctx.setBaseCohort(CohortUtil.intersect(ctx.getBaseCohort(), c));
 				}
 				try {
 					DataSet ds = svc.evaluate(e.getValue(), ctx);

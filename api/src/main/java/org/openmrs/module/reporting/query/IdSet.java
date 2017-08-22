@@ -25,25 +25,45 @@ public interface IdSet<T extends OpenmrsObject> extends Cloneable {
 	/**
 	 * @return all memberIds in the set
 	 */
-	public Set<Integer> getMemberIds();
-	
+	Set<Integer> getMemberIds();
+
+    /**
+     * @param memberIds the memberIds to set
+     */
+	void setMemberIds(Set<Integer> memberIds);
+
+    /**
+     * Retains only those members that exist in the passed set
+     */
+	void retainAll(IdSet<T> set);
+
+    /**
+     * Removes those members that exist in the passed set
+     */
+	void removeAll(IdSet<T> set);
+
+    /**
+     * Adds all members from the passed set
+     */
+	void addAll(IdSet<T> set);
+
 	/**
 	 * @return true of the passed memberId exists in the set
 	 */
-	public boolean contains(Integer memberId);
+	boolean contains(Integer memberId);
 
 	/**
 	 * @return the number of members within the set
 	 */
-	public int getSize();
+	int getSize();
 	
 	/**
 	 * @return true if there are no members within the set
 	 */
-	public boolean isEmpty();
+	boolean isEmpty();
 	
 	/**
 	 * @return a cloned copy of the current IdSet
 	 */
-	public IdSet<T> clone();
+	IdSet<T> clone();
 }

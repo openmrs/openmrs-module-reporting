@@ -43,7 +43,19 @@ public abstract class BaseIdSet<T extends OpenmrsObject> implements IdSet<T> {
 		this();
     	add(memberIds);
     }
-    
+
+    public void retainAll(IdSet<T> set) {
+        getMemberIds().retainAll(set.getMemberIds());
+    }
+
+    public void removeAll(IdSet<T> set) {
+        getMemberIds().removeAll(set.getMemberIds());
+    }
+
+    public void addAll(IdSet<T> set) {
+        getMemberIds().addAll(set.getMemberIds());
+    }
+
     //***** PROPERTY ACCESS *****
 
 	/**

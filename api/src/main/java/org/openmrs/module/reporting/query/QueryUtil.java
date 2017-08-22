@@ -2,9 +2,7 @@ package org.openmrs.module.reporting.query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
 import org.openmrs.OpenmrsObject;
-import org.openmrs.module.reporting.cohort.PatientIdSet;
 
 /**
  * Utilities relevant to the Query package
@@ -28,15 +26,7 @@ public class QueryUtil {
 					ret = sets[0].clone();
 				}
 				else {
-				    if (ret instanceof Cohort && sets[i] instanceof Cohort) {
-                        Cohort cohortRet = (Cohort)ret;
-                        Cohort cohortInt = (Cohort)sets[i];
-                        Cohort union = Cohort.intersect(cohortRet, cohortInt);
-                        ret = (IdSet<T>)new PatientIdSet(union.getMemberIds());
-                    }
-                    else {
-                        ret.getMemberIds().retainAll(sets[i].getMemberIds());
-                    }
+				    ret.retainAll(sets[i]);
 				}
 			}
 		}
@@ -48,7 +38,7 @@ public class QueryUtil {
 	 * if any of the passed sets are null, they are ignored
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends IdSet<?>> T intersectNonNull(T... sets) {
+	public static <T extends IdSet> T intersectNonNull(T... sets) {
 		T ret = null;
 		if (sets != null && sets.length > 0) {
 			for (int i=0; i<sets.length; i++) {
@@ -57,15 +47,7 @@ public class QueryUtil {
 						ret = (T) sets[i].clone();
 					}
 					else {
-                        if (ret instanceof Cohort && sets[i] instanceof Cohort) {
-                            Cohort cohortRet = (Cohort)ret;
-                            Cohort cohortInt = (Cohort)sets[i];
-                            Cohort union = Cohort.intersect(cohortRet, cohortInt);
-                            ret = (T)new PatientIdSet(union.getMemberIds());
-                        }
-                        else {
-                            ret.getMemberIds().retainAll(sets[i].getMemberIds());
-                        }
+                        ret.retainAll(sets[i]);
 					}
 				}
 			}
@@ -86,15 +68,7 @@ public class QueryUtil {
 						ret = sets[0].clone();
 					}
 					else {
-                        if (ret instanceof Cohort && sets[i] instanceof Cohort) {
-                            Cohort cohortRet = (Cohort)ret;
-                            Cohort cohortInt = (Cohort)sets[i];
-                            Cohort union = Cohort.union(cohortRet, cohortInt);
-                            ret = (IdSet<T>)new PatientIdSet(union.getMemberIds());
-                        }
-                        else {
-                            ret.getMemberIds().addAll(sets[i].getMemberIds());
-                        }
+                        ret.addAll(sets[i]);
 					}
 				}
 			}
@@ -108,16 +82,7 @@ public class QueryUtil {
 	public static <T extends OpenmrsObject> IdSet<T> subtract(IdSet<T> base, IdSet<T>... toSubtract) {
 		IdSet<T> ret = base.clone();
 		for (IdSet<T> s : toSubtract) {
-            if (ret instanceof Cohort && s instanceof Cohort) {
-                Cohort cohortRet = (Cohort)ret;
-                Cohort cohortInt = (Cohort)s;
-                Cohort union = Cohort.subtract(cohortRet, cohortInt);
-                ret = (IdSet<T>)new PatientIdSet(union.getMemberIds());
-            }
-            else {
-                ret.getMemberIds().removeAll(s.getMemberIds());
-            }
-
+            ret.removeAll(s);
 		}
 		return ret;
 	}

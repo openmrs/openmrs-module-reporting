@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.cohort.definition.util;
 
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -45,7 +46,7 @@ public class CohortFilter {
 						ret = c;
 					}
 					else {
-						ret = Cohort.intersect(ret, c);
+						ret = CohortUtil.intersect(ret, c);
 					}
 				}
 			}

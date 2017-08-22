@@ -21,6 +21,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicCriteria;
 import org.openmrs.logic.LogicException;
 import org.openmrs.logic.result.Result;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
@@ -69,7 +70,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 					baseCohort = locationCohort;
 				}
 				else {
-					baseCohort = Cohort.intersect(baseCohort, locationCohort);
+					baseCohort = CohortUtil.intersect(baseCohort, locationCohort);
 				}
 			} catch (Exception ex) {
 				throw new EvaluationException("locationFilter", ex);
@@ -81,7 +82,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 			try {
 				Cohort denominatorCohort = cds.evaluate(cid.getDenominator(), context);
 				if (baseCohort != null) {
-					denominatorCohort = Cohort.intersect(denominatorCohort, baseCohort);
+					denominatorCohort = CohortUtil.intersect(denominatorCohort, baseCohort);
 				}
 				baseCohort = new Cohort(denominatorCohort.getMemberIds());
 				result.setDenominatorCohort(denominatorCohort);
@@ -95,7 +96,7 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 		try {
 			cohort = cds.evaluate(cid.getCohortDefinition(), context);
 			if (baseCohort != null) {
-				cohort = Cohort.intersect(cohort, baseCohort);
+				cohort = CohortUtil.intersect(cohort, baseCohort);
 			}
 			result.setCohort(cohort);
 		} catch (Exception ex) {

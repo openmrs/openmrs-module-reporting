@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -65,9 +66,9 @@ public class CohortDimensionEvaluator implements DimensionEvaluator {
 				throw new EvaluationException("dimension option: " + key, ex);
 			}
 			result.addOptionCohort(key, currentCohort);
-			totalDimensions = Cohort.union(totalDimensions, currentCohort);
+			totalDimensions = CohortUtil.union(totalDimensions, currentCohort);
 		}
-		result.addOptionCohort(Dimension.UNCLASSIFIED, Cohort.subtract(baseCohort, totalDimensions));
+		result.addOptionCohort(Dimension.UNCLASSIFIED, CohortUtil.subtract(baseCohort, totalDimensions));
 
 		return result;
 	}
@@ -95,7 +96,7 @@ public class CohortDimensionEvaluator implements DimensionEvaluator {
 			return new Cohort();
 		}
 		if (context.getBaseCohort() != null) {
-			return Cohort.intersect(context.getBaseCohort(), found); 
+			return CohortUtil.intersect(context.getBaseCohort(), found);
 		}
 		return found;
 	}
