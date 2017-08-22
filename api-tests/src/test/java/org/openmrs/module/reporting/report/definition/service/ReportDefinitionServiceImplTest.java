@@ -14,23 +14,23 @@
 package org.openmrs.module.reporting.report.definition.service;
 
 
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
-import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+
 public class ReportDefinitionServiceImplTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
-	ReportDefinitionService reportDefinitionService;
+	private ReportDefinitionService reportDefinitionService;
 	
 	@Autowired
-	ReportService reportService;
+	private ReportService reportService;
 	
 	/**
 	 * @see ReportDefinitionServiceImpl#purgeDefinition(ReportDefinition)
@@ -43,7 +43,24 @@ public class ReportDefinitionServiceImplTest extends BaseModuleContextSensitiveT
     	ReportDefinition definition = reportDefinitionService.getDefinition(80);
     	reportDefinitionService.purgeDefinition(definition);
 	    
-    	ReportDesign reportDesign = reportService.getReportDesign(2);
-    	assertThat(reportDesign, nullValue());
+		assertThat(reportService.getReportDesign(3), nullValue());
+		assertThat(reportService.getReportDesign(4), nullValue());
+	}
+
+	/**
+	 * @see ReportDefinitionServiceImpl#purgeDefinition(String)
+	 * @verifies purge report definition by uuid and associated report designs and requests
+	 */
+	@Test
+	public void purgeDefinition_shouldPurgeDesignsAndRequestsAndDefinition() throws Exception {
+		executeDataSet("org/openmrs/module/reporting/include/ReportDefinitionServiceImplTest.xml");
+
+		reportDefinitionService.purgeDefinition("c11f5354-9567-4cc5-b3ef-163e28873926");
+
+		assertNull(reportService.getReportDesign(3));
+		assertNull(reportService.getReportDesign(4));
+		assertNull(reportService.getReportRequest(1));
+		assertNull(reportService.getReportRequest(3));
+		assertNull(reportDefinitionService.getDefinition(80));
 	}
 }

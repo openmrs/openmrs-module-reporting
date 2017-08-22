@@ -132,4 +132,15 @@ public interface ReportDAO {
 	 */
 	public void purgeReportRequest(ReportRequest request);
 
+	/**
+	 * Removes the report requests associated with the report definition with the given uuid
+	 * @param reportDefinitionUuid the uuid of the report definition
+	 */
+	void purgeReportRequests(String reportDefinitionUuid);
+
+	/**
+	 * Removes the report designs associated with the report definition with the given uuid
+	 * @param reportDefinitionUuid the uuid of the report definition
+	 */
+	void purgeReportDesigns(String reportDefinitionUuid);
 }

@@ -700,7 +700,23 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
             }
         }
     }
-	
+
+	/**
+	 * @see ReportService#purgeReportRequests(String)
+	 */
+	@Override
+	public void purgeReportRequests(String reportDefinitionUuid) {
+		reportDAO.purgeReportRequests(reportDefinitionUuid);
+	}
+
+	/**
+	 * @see ReportService#purgeReportDesigns(String)
+	 */
+	@Override
+	public void purgeReportDesigns(String reportDefinitionUuid) {
+		reportDAO.purgeReportDesigns(reportDefinitionUuid);
+	}
+
 	//***** PRIVATE UTILITY METHODS *****
 	
 	/**
