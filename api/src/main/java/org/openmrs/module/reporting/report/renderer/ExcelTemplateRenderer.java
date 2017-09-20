@@ -56,6 +56,8 @@ import java.util.Set;
 @Handler
 @Localized("reporting.ExcelTemplateRenderer")
 public class ExcelTemplateRenderer extends ReportTemplateRenderer {
+
+    public static String PASSWORD_PROPERTY = "password";
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
@@ -137,7 +139,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 					addSheet(wb, sheetsToAdd.get(i), usedSheetNames, reportData, design, repeatSections);
 				}
 
-				wb.write(out);
+                ExcelUtil.writeWorkbookToStream(wb, out, getPassword(design));
 			}
 		}
 		catch (Exception e) {
@@ -478,6 +480,13 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		newReplacements.put(dataSetName + SEPARATOR + ROW_CONTEXT_PREFIX + SEPARATOR + INDEX, dataSetRowNum);
 		return newReplacements;
 	}
+
+    /**
+     * @return a password configured for this spreadsheet, or an empty string if none configured
+     */
+    public String getPassword(ReportDesign design) {
+        return design.getPropertyValue(PASSWORD_PROPERTY, "");
+    }
 	
 	/**
 	 * Inner class to encapsulate a sheet that should be rendered

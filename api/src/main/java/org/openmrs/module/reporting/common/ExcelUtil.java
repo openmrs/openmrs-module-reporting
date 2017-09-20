@@ -9,6 +9,9 @@ import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.poifs.crypt.EncryptionInfo;
+import org.apache.poi.poifs.crypt.EncryptionMode;
+import org.apache.poi.poifs.crypt.Encryptor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
@@ -34,8 +37,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openmrs.util.OpenmrsClassLoader;
 
 import java.awt.Color;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -470,6 +477,45 @@ public class ExcelUtil {
 			IOUtils.closeQuietly(is);
 		}
 	}
+
+	/**
+     * Outputs the Excel workbook to the specified output stream, first encrypting with a password if supplied
+     * See: http://poi.apache.org/encryption.html
+     */
+    public static void writeWorkbookToStream(Workbook workbook, OutputStream out, String password) throws IOException {
+        if (StringUtils.isBlank(password)) {
+            workbook.write(out);
+        }
+        else {
+            POIFSFileSystem fs = new POIFSFileSystem();
+            EncryptionInfo info = new EncryptionInfo(EncryptionMode.agile);
+            Encryptor enc = info.getEncryptor();
+            enc.confirmPassword(password);
+
+            ByteArrayOutputStream baos = null;
+            ByteArrayInputStream bais = null;
+
+            try {
+                baos = new ByteArrayOutputStream();
+                workbook.write(baos);
+                bais = new ByteArrayInputStream(baos.toByteArray());
+
+                OPCPackage opc = OPCPackage.open(bais);
+                OutputStream os = enc.getDataStream(fs);
+                opc.save(os);
+                opc.close();
+            }
+            catch (Exception e) {
+                throw new IllegalStateException("Error writing encrypted Excel document", e);
+            }
+            finally {
+                IOUtils.closeQuietly(baos);
+                IOUtils.closeQuietly(bais);
+            }
+
+            fs.writeFilesystem(out);
+        }
+    }
 
 	public static void copyFormula(Cell fromCell, Cell toCell) {
 		if (fromCell.getCellType() == Cell.CELL_TYPE_FORMULA) {

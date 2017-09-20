@@ -1,12 +1,5 @@
 package org.openmrs.module.reporting.common;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.poifs.crypt.EncryptionInfo;
-import org.apache.poi.poifs.crypt.EncryptionMode;
-import org.apache.poi.poifs.crypt.Encryptor;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -21,8 +14,6 @@ import org.openmrs.Cohort;
 import org.openmrs.module.reporting.indicator.CohortIndicatorResult;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -207,38 +198,7 @@ public class ExcelBuilder {
      * See: http://poi.apache.org/encryption.html
      */
     public void write(OutputStream out, String password) throws IOException {
-        if (StringUtils.isBlank(password)) {
-            workbook.write(out);
-        }
-        else {
-            POIFSFileSystem fs = new POIFSFileSystem();
-            EncryptionInfo info = new EncryptionInfo(EncryptionMode.agile);
-            Encryptor enc = info.getEncryptor();
-            enc.confirmPassword(password);
-
-            ByteArrayOutputStream baos = null;
-            ByteArrayInputStream bais = null;
-
-            try {
-                baos = new ByteArrayOutputStream();
-                workbook.write(baos);
-                bais = new ByteArrayInputStream(baos.toByteArray());
-
-                OPCPackage opc = OPCPackage.open(bais);
-                OutputStream os = enc.getDataStream(fs);
-                opc.save(os);
-                opc.close();
-            }
-            catch (Exception e) {
-                throw new IllegalStateException("Error writing encrypted Excel document", e);
-            }
-            finally {
-                IOUtils.closeQuietly(baos);
-                IOUtils.closeQuietly(bais);
-            }
-
-            fs.writeFilesystem(out);
-        }
+        ExcelUtil.writeWorkbookToStream(workbook, out, password);
     }
 
     public CellStyle loadStyle(String style) {
