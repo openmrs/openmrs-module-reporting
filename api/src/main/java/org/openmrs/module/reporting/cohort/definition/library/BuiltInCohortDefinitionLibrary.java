@@ -134,8 +134,10 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         NumericObsCohortDefinition cd = new NumericObsCohortDefinition();
         cd.addParameter(new Parameter("timeModifier", "reporting.parameter.timeModifier", NumericObsCohortDefinition.TimeModifier.class));
         cd.addParameter(new Parameter("question", "reporting.parameter.question", Concept.class));
-        cd.addParameter(new Parameter("operator", "reporting.parameter.operator1", RangeComparator.class));
-        cd.addParameter(new Parameter("value", "reporting.parameter.value1", Double.class));
+        cd.addParameter(new Parameter("operator1", "reporting.parameter.operator1", RangeComparator.class));
+        cd.addParameter(new Parameter("value1", "reporting.parameter.value1", Double.class));
+        cd.addParameter(new Parameter("operator2", "reporting.parameter.operator2", RangeComparator.class));
+        cd.addParameter(new Parameter("value2", "reporting.parameter.value2", Double.class));
         cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
         cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
         return cd;
@@ -146,8 +148,10 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         DateObsCohortDefinition cd = new DateObsCohortDefinition();
         cd.addParameter(new Parameter("timeModifier", "reporting.parameter.timeModifier", NumericObsCohortDefinition.TimeModifier.class));
         cd.addParameter(new Parameter("question", "reporting.parameter.question", Concept.class));
-        cd.addParameter(new Parameter("operator", "reporting.parameter.operator1", RangeComparator.class));
-        cd.addParameter(new Parameter("value", "reporting.parameter.value1", Date.class));
+        cd.addParameter(new Parameter("operator1", "reporting.parameter.operator1", RangeComparator.class));
+        cd.addParameter(new Parameter("value1", "reporting.parameter.value1", Date.class));
+        cd.addParameter(new Parameter("operator2", "reporting.parameter.operator2", RangeComparator.class));
+        cd.addParameter(new Parameter("value2", "reporting.parameter.value2", Date.class));
         cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
         cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
         return cd;
