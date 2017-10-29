@@ -15,6 +15,7 @@ package org.openmrs.module.reporting.web.widget.handler;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetConfig;
@@ -43,7 +44,7 @@ public class CohortDefinitionHandler extends CodedHandler {
 			l = Context.getService(CohortDefinitionService.class).getAllDefinitions(false);
 		}
 		for (CohortDefinition d : l) {
-			widget.addOption(new Option(d.getUuid(), d.getName(), null, d), config);
+			widget.addOption(new Option(d.getUuid(), StringEscapeUtils.escapeHtml(d.getName()), null, d), config);
 		}
 	}
 	
