@@ -26,6 +26,7 @@ import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinit
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
@@ -216,7 +217,7 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
     }
 
     @DocumentedDefinition("patientsWithEnrollment")
-    public CohortDefinition getPatientsWithEnrollment(){
+    public CohortDefinition getPatientsWithEnrollment() {
         ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
         cd.addParameter(new Parameter("programs", "reporting.parameter.programs", Program.class, List.class, null, null, true));
         cd.addParameter(new Parameter("enrolledOnOrAfter", "reporting.parameter.enrolledOnOrAfter", Date.class, null, null, null, false));
@@ -232,6 +233,25 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
             "completedOnOrBefore", "completedOnOrBefore",
             "locationList", "locations"
         );
+    }
+
+    @DocumentedDefinition("patientsInProgram")
+    public CohortDefinition getPatientsInProgram() {
+        InProgramCohortDefinition cd = new InProgramCohortDefinition();
+        cd.addParameter(new Parameter("programs", "reporting.parameter.programs", Program.class, List.class, null, null, true));
+        cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class, null, null, null, false));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class, null, null, null, false));
+        cd.addParameter(new Parameter("onDate", "reporting.parameter.onDate", Date.class, null, null, null, false));
+        cd.addParameter(new Parameter("locations", "reporting.parameter.locationList", Location.class, List.class,  null, null, false));
+
+        return new MappedParametersCohortDefinition(cd,
+                "programs", "programs",
+                "onOrAfter", "onOrAfter",
+                "onOrBefore", "onOrBefore",
+                "onDate", "onDate",
+                "locations", "locations"
+        );
+
     }
 
     @DocumentedDefinition("patientsWithState")
