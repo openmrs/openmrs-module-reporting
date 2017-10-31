@@ -1,5 +1,14 @@
 package org.openmrs.module.reporting.evaluation.parameter;
 
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.api.APIException;
+import org.openmrs.module.reporting.common.ReflectionUtil;
+import org.openmrs.module.reporting.definition.DefinitionContext;
+import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.EvaluationUtil;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -9,15 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.api.APIException;
-import org.openmrs.module.reporting.common.ReflectionUtil;
-import org.openmrs.module.reporting.definition.DefinitionContext;
-import org.openmrs.module.reporting.evaluation.Definition;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 
 
 public class ParameterizableUtil {
@@ -292,6 +292,7 @@ public class ParameterizableUtil {
 			newParameter.setCollectionType(p.getCollectionType());
 			newParameter.setDefaultValue(p.getDefaultValue());
 			newParameter.setWidgetConfiguration(p.getWidgetConfiguration());
+			newParameter.setRequired(p.isRequired());
 			copyTo.addParameter(newParameter);
 		}
 		return new Mapped<T>(copyFrom, mappings);
