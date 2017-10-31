@@ -13,12 +13,12 @@
  */
 package org.openmrs.module.reporting.evaluation.parameter;
 
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Properties;
-
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 /**
  * A Parameter represents a value that may be used to configure an Object at runtime.
@@ -92,9 +92,11 @@ public class Parameter implements Serializable {
 	 * @param collectionType Indicates whether this parameter can have multiple values in a Collection
 	 * @param defaultValue The value to fill in if nothing provided by the user
 	 * @param widgetConfiguration The widgetConfiguration to be applied to this parameter
+	 * @param required Whether or not the parameter is required
 	 */
 	public Parameter(String name, String label, Class<?> type, 
-					 Class<? extends Collection> collectionType, Object defaultValue, Properties widgetConfiguration) {
+					 Class<? extends Collection> collectionType, Object defaultValue,
+					 Properties widgetConfiguration, Boolean required) {
 		super();
 		setName(name);
 		setLabel(label);
@@ -102,8 +104,23 @@ public class Parameter implements Serializable {
 		setCollectionType(collectionType);
 		setDefaultValue(defaultValue);
 		setWidgetConfiguration(widgetConfiguration);
+		setRequired(required);
 	}
-	
+
+	/**
+	 * Initialize this Parameter with the given values
+	 * @param name The defined descriptive name
+	 * @param label The label to display to the user if value is needed
+	 * @param type The data type of this parameter
+	 * @param collectionType Indicates whether this parameter can have multiple values in a Collection
+	 * @param defaultValue The value to fill in if nothing provided by the user
+	 * @param widgetConfiguration The widgetConfiguration to be applied to this parameter
+	 */
+	public Parameter(String name, String label, Class<?> type,
+					 Class<? extends Collection> collectionType, Object defaultValue, Properties widgetConfiguration) {
+		this(name, label, type, collectionType, defaultValue, widgetConfiguration, true);
+	}
+
 	/**
 	 * Initialize this Parameter with the given values
 	 * @param name The defined descriptive name

@@ -218,12 +218,12 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
     @DocumentedDefinition("patientsWithEnrollment")
     public CohortDefinition getPatientsWithEnrollment(){
         ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
-        cd.addParameter(new Parameter("programs", "reporting.parameter.programs", Program.class, List.class, null));
-        cd.addParameter(new Parameter("enrolledOnOrAfter", "reporting.parameter.enrolledOnOrAfter", Date.class));
-        cd.addParameter(new Parameter("enrolledOnOrBefore", "reporting.parameter.enrolledOnOrBefore", Date.class));
-        cd.addParameter(new Parameter("completedOnOrAfter", "reporting.parameter.completedOnOrAfter", Date.class));
-        cd.addParameter(new Parameter("completedOnOrBefore", "reporting.parameter.completedOnOrBefore", Date.class));
-        cd.addParameter(new Parameter("locationList", "reporting.parameter.locationList", Location.class, List.class, null));
+        cd.addParameter(new Parameter("programs", "reporting.parameter.programs", Program.class, List.class, null, null, true));
+        cd.addParameter(new Parameter("enrolledOnOrAfter", "reporting.parameter.enrolledOnOrAfter", Date.class, null, null, null, false));
+        cd.addParameter(new Parameter("enrolledOnOrBefore", "reporting.parameter.enrolledOnOrBefore", Date.class, null, null, null, false));
+        cd.addParameter(new Parameter("completedOnOrAfter", "reporting.parameter.completedOnOrAfter", Date.class, null, null, null, false));
+        cd.addParameter(new Parameter("completedOnOrBefore", "reporting.parameter.completedOnOrBefore", Date.class, null, null, null, false));
+        cd.addParameter(new Parameter("locationList", "reporting.parameter.locationList", Location.class, List.class,  null, null, false));
         return new MappedParametersCohortDefinition(cd,
             "programs", "programs",
             "enrolledOnOrAfter", "enrolledOnOrAfter",
