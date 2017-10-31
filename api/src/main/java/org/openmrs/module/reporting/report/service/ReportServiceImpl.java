@@ -301,24 +301,36 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 * @see ReportService#getReportDataFile(ReportRequest)
 	 */
 	public File getReportDataFile(ReportRequest request) {
-		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
-		return new File(dir, request.getUuid() + ".reportdata.gz");
+		return getReportDataFile(request.getUuid());
 	}
-	
+
+	public File getReportDataFile(String requestUuid) {
+		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
+		return new File(dir, requestUuid + ".reportdata.gz");
+	}
+
 	/**
 	 * @see ReportService#getReportErrorFile(ReportRequest)
 	 */
 	public File getReportErrorFile(ReportRequest request) {
+		return getReportErrorFile(request.getUuid());
+	}
+
+	public File getReportErrorFile(String requestUuid) {
 		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
-		return new File(dir, request.getUuid() + ".reporterror");
+		return new File(dir, requestUuid + ".reporterror");
 	}
 	
 	/**
 	 * @see ReportService#getReportOutputFile(ReportRequest)
 	 */
 	public File getReportOutputFile(ReportRequest request) {
+		return getReportOutputFile(request.getUuid());
+	}
+
+	public File getReportOutputFile(String requestUuid) {
 		File dir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(ReportingConstants.REPORT_RESULTS_DIRECTORY_NAME);
-		return new File(dir, request.getUuid() + ".reportoutput");
+		return new File(dir, requestUuid + ".reportoutput");
 	}
 	
 	/**
@@ -700,7 +712,37 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
             }
         }
     }
-	
+
+	/**
+	 * @see ReportService#purgeReportRequestsForReportDefinition(String)
+	 */
+	@Override
+	@Transactional
+	public void purgeReportRequestsForReportDefinition(String reportDefinitionUuid) {
+		List<String> reportRequestUuids = reportDAO.getReportRequestUuids(reportDefinitionUuid);
+		for (String reportRequestUuid : reportRequestUuids) {
+			RunQueuedReportsTask reportsTask = RunQueuedReportsTask.getCurrentlyRunningRequests().get(reportRequestUuid);
+			if (reportsTask != null) {
+				reportsTask.cancelTask();
+			}
+			reportCache.remove(reportRequestUuid);
+			FileUtils.deleteQuietly(getReportDataFile(reportRequestUuid));
+			FileUtils.deleteQuietly(getReportErrorFile(reportRequestUuid));
+			FileUtils.deleteQuietly(getReportOutputFile(reportRequestUuid));
+			FileUtils.deleteQuietly(getReportLogFile(reportRequestUuid));
+		}
+		reportDAO.purgeReportRequestsForReportDefinition(reportDefinitionUuid);
+	}
+
+	/**
+	 * @see ReportService#purgeReportDesignsForReportDefinition(String)
+	 */
+	@Override
+	@Transactional
+	public void purgeReportDesignsForReportDefinition(String reportDefinitionUuid) {
+		reportDAO.purgeReportDesignsForReportDefinition(reportDefinitionUuid);
+	}
+
 	//***** PRIVATE UTILITY METHODS *****
 	
 	/**

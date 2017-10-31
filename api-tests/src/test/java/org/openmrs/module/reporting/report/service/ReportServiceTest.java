@@ -39,6 +39,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
@@ -475,4 +478,38 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
     public ReportService getReportService() {
 	    return Context.getService(ReportService.class);
     }
+
+	/**
+	 * @verifies delete all the report requests associated with the report definition uuid
+	 * @see ReportService#purgeReportRequestsForReportDefinition(String)
+	 */
+	@Test
+	public void purgeReportRequestsForReportDefinition_shouldDeleteAllAssociatedReportRequests() {
+		ReportService rs = Context.getService(ReportService.class);
+		assertNotNull(rs.getReportRequestByUuid("h8a82b63-1066-4c1d-9b43-b405851fc467"));
+		assertNotNull(rs.getReportRequestByUuid("b0a82b63-1066-4c1d-9b43-b405851fc467"));
+		Context.clearSession();
+
+		rs.purgeReportRequestsForReportDefinition("c11f5354-9567-4cc5-b3ef-163e28873926");
+
+		assertNull(rs.getReportRequestByUuid("h8a82b63-1066-4c1d-9b43-b405851fc467"));
+		assertNull(rs.getReportRequestByUuid("b0a82b63-1066-4c1d-9b43-b405851fc467"));
+	}
+
+	/**
+	 * @verifies delete all the report designs associated with the report definition uuid
+	 * @see ReportService#purgeReportDesignsForReportDefinition(String)
+	 */
+	@Test
+	public void purgeReportDesignsForReportDefinition_shouldDeleteAllAssociatedReportDesigns() {
+		ReportService rs = Context.getService(ReportService.class);
+		assertNotNull(rs.getReportDesignByUuid("d7a82b63-1066-4c1d-9b43-b405851fc467"));
+		assertNotNull(rs.getReportDesignByUuid("e7a82b63-1066-4c1d-9b43-b405851fc467"));
+		Context.clearSession();
+
+		rs.purgeReportDesignsForReportDefinition("c11f5354-9567-4cc5-b3ef-163e28873926");
+
+		assertNull(rs.getReportDesignByUuid("d7a82b63-1066-4c1d-9b43-b405851fc467"));
+		assertNull(rs.getReportDesignByUuid("e7a82b63-1066-4c1d-9b43-b405851fc467"));
+	}
 }
