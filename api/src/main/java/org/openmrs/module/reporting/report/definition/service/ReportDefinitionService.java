@@ -42,5 +42,11 @@ public interface ReportDefinitionService extends DefinitionService<ReportDefinit
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
 	public ReportData evaluate(Mapped<? extends ReportDefinition> reportDefinition, EvaluationContext context) throws EvaluationException;
+
+	/**
+	 * Removes the report definition given by the uuid.
+	 * @param uuid the uuid of the report definition to remove
+	 */
+	public void purgeDefinition(String uuid);
 }
 
