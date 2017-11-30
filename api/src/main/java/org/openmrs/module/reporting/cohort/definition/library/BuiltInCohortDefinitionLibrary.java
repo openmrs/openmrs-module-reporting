@@ -21,6 +21,7 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.Concept;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.CareSetting;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -41,6 +42,7 @@ import org.springframework.stereotype.Component;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.TextObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 
 
@@ -273,5 +275,20 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
         cd.addParameter(new Parameter("onDate", "reporting.parameter.date", Date.class));
         return cd;
+    }
+
+    @DocumentedDefinition("drugOrderSearch")
+    public CohortDefinition getDrugOrderSearch() {
+        DrugOrderCohortDefinition drugOrderCohortDefinition = new DrugOrderCohortDefinition();
+        drugOrderCohortDefinition.addParameter(new Parameter("which", "reporting.parameter.which", String.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("drugConcepts", "reporting.parameter.drugConcepts", Concept.class, List.class, null));
+        drugOrderCohortDefinition.addParameter(new Parameter("drugSets", "reporting.parameter.drugSets", Concept.class, List.class, null));
+        drugOrderCohortDefinition.addParameter(new Parameter("activatedOnOrBefore", "reporting.parameter.activatedOnOrBefore", Date.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("activatedOnOrAfter", "reporting.parameter.activatedOnOrAfter", Date.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("activeWithinLastMonths", "reporting.parameter.activeWithinLastMonths", Date.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("activeWithinLastDays", "reporting.parameter.activeWithinLastDays", Date.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("onlyCurrentlyActive", "reporting.parameter.onlyCurrentlyActive", Boolean.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("careSetting", "reporting.parameter.careSetting", CareSetting.class));
+        return drugOrderCohortDefinition;
     }
 }

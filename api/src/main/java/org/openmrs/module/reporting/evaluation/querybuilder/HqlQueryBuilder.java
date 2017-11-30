@@ -205,6 +205,17 @@ public class HqlQueryBuilder implements QueryBuilder {
 		}
 		return this;
 	}
+	
+	public HqlQueryBuilder whereNotInAny(String propertyName, Collection<?> values) {
+		if (values != null) {
+			if (values.isEmpty()) {
+				where("1=0");
+			} else {
+				where(propertyName + " not in (:" + nextPositionIndex() + ")").withValue(values);
+			}
+		}
+		return this;
+	}
 
 	public HqlQueryBuilder whereInAny(String propertyName, Object... values) {
 		if (values != null) {
