@@ -16,6 +16,8 @@ package org.openmrs.module.reporting.cohort.definition.library;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.CareSetting;
+import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
@@ -147,5 +149,17 @@ public class BuiltInCohortDefinitionLibraryTest {
         assertTrue(((MappedParametersCohortDefinition) cd).getWrapped().getParameterizable() instanceof BirthAndDeathCohortDefinition);
         assertThat(cd, hasParameter("startDate", Date.class));
         assertThat(cd, hasParameter("endDate", Date.class));
+    }
+    
+    @Test
+    public void testGetStartedDrugOrder() throws Exception {
+        CohortDefinition cd = library.getStartedDrugOrder();
+        assertThat(cd, hasParameter("activeOnOrBefore", Date.class));
+        assertThat(cd, hasParameter("activeOnOrAfter", Date.class));
+        assertThat(cd, hasParameter("startedOnOrBefore", Date.class));
+        assertThat(cd, hasParameter("startedOnOrAfter", Date.class));
+        assertThat(cd, hasParameter("genericDrugList", Drug.class, List.class));
+        assertThat(cd, hasParameter("drugSet", Drug.class, List.class));
+        assertThat(cd, hasParameter("careSetting", CareSetting.class));
     }
 }

@@ -19,7 +19,9 @@ import org.openmrs.Location;
 import org.openmrs.Form;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
+import org.openmrs.CareSetting;
 import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
@@ -29,6 +31,7 @@ import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.StartedDrugOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InStateCohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -42,7 +45,6 @@ import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition
 import org.openmrs.module.reporting.cohort.definition.TextObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
-
 
 import java.util.Date;
 import java.util.List;
@@ -274,4 +276,18 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("onDate", "reporting.parameter.date", Date.class));
         return cd;
     }
+	
+	@DocumentedDefinition("startedDrugOrder")
+	public CohortDefinition getStartedDrugOrder() {
+		StartedDrugOrderCohortDefinition cd = new StartedDrugOrderCohortDefinition();
+		cd.addParameter(new Parameter("activeOnOrBefore", "reporting.parameter.activeOnOrBefore", Date.class));
+		cd.addParameter(new Parameter("activeOnOrAfter", "reporting.parameter.activeOnOrAfter", Date.class));
+		cd.addParameter(new Parameter("startedOnOrBefore", "reporting.parameter.startedOnOrBefore", Date.class));
+		cd.addParameter(new Parameter("startedOnOrAfter", "reporting.parameter.startedOnOrAfter", Date.class));
+		cd.addParameter(
+		    new Parameter("genericDrugList", "reporting.parameter.genericDrugList", Drug.class, List.class, null));
+		cd.addParameter(new Parameter("drugSet", "reporting.parameter.drugSet", Drug.class, List.class, null));
+		cd.addParameter(new Parameter("careSetting", "reporting.parameter.careSetting", CareSetting.class));
+		return cd;
+	}
 }
