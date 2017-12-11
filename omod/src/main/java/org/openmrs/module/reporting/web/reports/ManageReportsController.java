@@ -77,6 +77,20 @@ public class ManageReportsController {
     	// Get possible new reports to create
     	Map<String, String> types = new LinkedHashMap<String, String>();
     	types.put("Period Indicator Report", "periodIndicatorReport.form");
+	try {
+            Context c = new Context(); 
+            Class ls = c.loadClass("LogicService");
+            if ("LoigcService".equals(ls.getName())){
+                //types.put("Row-Per-Patient Report", "logicReport.form");   
+                System.out.println("logc report service here");
+            }
+            else {
+                System.out.println("*******LogicService is installed*******");
+            }
+
+        } catch (ClassNotFoundException e){
+            System.err.println(e.getMessage());
+        }
     	types.put("Row-Per-Patient Report", "logicReport.form");
     	types.put("Custom Report (Advanced)", "reportEditor.form?type=" + ReportDefinition.class.getName());
     	model.addAttribute("createLinks", types);
