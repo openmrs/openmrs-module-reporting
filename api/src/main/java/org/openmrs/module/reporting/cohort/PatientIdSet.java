@@ -17,10 +17,8 @@ import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.module.reporting.query.IdSet;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,24 +27,23 @@ import java.util.Set;
 public class PatientIdSet extends Cohort implements IdSet<Patient> {
 	
 	public static final long serialVersionUID = 1L;
-	
+
+    private Set<Integer> memberIds;
+
 	//***** CONSTRUCTORS *****
 	
     public PatientIdSet() {
-    	super();
+    	memberIds = new HashSet<Integer>();
     }
 
-    public PatientIdSet(List<Integer> memberIds) {
-        setMemberIds(new HashSet<Integer>(memberIds));
-    }
-    
-    public PatientIdSet(Set<Integer> memberIds) {
-    	setMemberIds(memberIds);
+    public PatientIdSet(Collection<Integer> memberIds) {
+       this.memberIds = new HashSet<Integer>(memberIds);
     }
     
     public PatientIdSet(Integer... memberIds) {
+        this.memberIds = new HashSet<Integer>();
     	for (Integer memberId : memberIds) {
-    		addMember(memberId);
+    		this.memberIds.add(memberId);
     	}
     }
 
@@ -61,6 +58,31 @@ public class PatientIdSet extends Cohort implements IdSet<Patient> {
 		ret.setMemberIds(new HashSet<Integer>(getMemberIds()));
 		return ret;
 	}
+
+    @Override
+    public boolean contains(Integer memberId) {
+        return memberIds.contains(memberId);
+    }
+
+    @Override
+    public int getSize() {
+        return memberIds.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return memberIds == null || memberIds.size() == 0;
+    }
+
+    @Override
+    public Set<Integer> getMemberIds() {
+        return memberIds;
+    }
+
+    @Override
+    public void setMemberIds(Set<Integer> memberIds) {
+        this.memberIds = memberIds;
+    }
 
     public void retainAll(IdSet<Patient> set) {
 	    Set<Integer> s = getMemberIds();
@@ -80,20 +102,4 @@ public class PatientIdSet extends Cohort implements IdSet<Patient> {
         setMemberIds(s);
     }
 
-    @Override
-    public void setMemberIds(Set<Integer> memberIds) {
-	    try {
-            Method m = getClass().getMethod("setMemberships", Collection.class);
-            if (m != null) {
-                m.invoke(this, new HashSet<Integer>());
-            }
-        }
-        catch (NoSuchMethodException nsme) {
-	        // Do nothing
-        }
-        catch (Exception e) {
-	        throw new IllegalStateException("Unable to invoke setMemberships", e);
-        }
-        super.setMemberIds(memberIds);
-    }
 }
