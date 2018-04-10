@@ -162,4 +162,29 @@ public class BirthAndDeathCohortDefinitionEvaluatorTest extends BaseModuleContex
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertFalse(cohort.contains(patientId));
 	}
+
+    /**
+     * @see {@link BirthAndDeathCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
+     */
+    @Test
+    public void evaluate_shouldReturnPatientsWhoDiedWithoutDeathDate() throws Exception {
+        BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
+        {
+            Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+            Assert.assertTrue(cohort.contains(23));
+            Assert.assertTrue(cohort.contains(24));
+        }
+        {
+            cd.setDied(true);
+            Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+            Assert.assertTrue(cohort.contains(23));
+            Assert.assertFalse(cohort.contains(24));
+        }
+        {
+            cd.setDied(false);
+            Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
+            Assert.assertFalse(cohort.contains(23));
+            Assert.assertTrue(cohort.contains(24));
+        }
+    }
 }

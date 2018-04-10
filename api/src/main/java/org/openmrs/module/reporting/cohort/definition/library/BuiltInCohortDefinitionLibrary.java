@@ -198,6 +198,7 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
     @DocumentedDefinition("diedDuringPeriod")
     public CohortDefinition getDiedDuringPeriod() {
         BirthAndDeathCohortDefinition cd = new BirthAndDeathCohortDefinition();
+        cd.setDied(true);
         cd.addParameter(new Parameter("diedOnOrAfter", "reporting.parameter.startDate", Date.class));
         cd.addParameter(new Parameter("diedOnOrBefore", "reporting.parameter.endDate", Date.class));
         return new MappedParametersCohortDefinition(cd, "diedOnOrAfter", "startDate", "diedOnOrBefore", "endDate");

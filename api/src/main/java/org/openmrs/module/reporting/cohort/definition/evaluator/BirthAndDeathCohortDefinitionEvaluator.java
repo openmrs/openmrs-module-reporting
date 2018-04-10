@@ -10,16 +10,21 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
+import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Handler(supports={BirthAndDeathCohortDefinition.class})
 public class BirthAndDeathCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+
+    @Autowired
+    EvaluationService evaluationService;
 	
     public BirthAndDeathCohortDefinitionEvaluator() { }
 	
@@ -35,12 +40,18 @@ public class BirthAndDeathCohortDefinitionEvaluator implements CohortDefinitionE
 	 * @should find patients that died after the specified date
 	 */
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-		BirthAndDeathCohortDefinition definition = (BirthAndDeathCohortDefinition) cohortDefinition;
-		Cohort c = Context.getService(CohortQueryService.class).getPatientsHavingBirthAndDeath(
-			definition.getBornOnOrAfter(),
-			definition.getBornOnOrBefore(),
-			definition.getDiedOnOrAfter(),
-			definition.getDiedOnOrBefore());
+		BirthAndDeathCohortDefinition cd = (BirthAndDeathCohortDefinition) cohortDefinition;
+
+        HqlQueryBuilder q = new HqlQueryBuilder();
+        q.select("p.patient.id");
+        q.from(Patient.class, "p");
+        q.whereGreaterOrEqualTo("p.birthdate", cd.getBornOnOrAfter());
+        q.whereLessOrEqualTo("p.birthdate", cd.getBornOnOrBefore());
+        q.whereEqual("p.dead", cd.getDied());
+        q.whereGreaterOrEqualTo("p.deathDate", cd.getDiedOnOrAfter());
+        q.whereLessOrEqualTo("p.deathDate", cd.getDiedOnOrBefore());
+        Cohort c = new Cohort(evaluationService.evaluateToList(q, Integer.class, context));
+
 		return new EvaluatedCohort(c, cohortDefinition, context);
 	}
 	

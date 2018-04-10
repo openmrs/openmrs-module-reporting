@@ -30,6 +30,9 @@ public class BirthAndDeathCohortDefinition extends BaseCohortDefinition {
 
 	@ConfigurationProperty(group="birth")
 	private Date bornOnOrBefore;
+
+    @ConfigurationProperty(group="death")
+    private Boolean died;
 	
 	@ConfigurationProperty(group="death")
 	private Date diedOnOrAfter;
@@ -39,7 +42,7 @@ public class BirthAndDeathCohortDefinition extends BaseCohortDefinition {
 
 	public BirthAndDeathCohortDefinition() { }
 
-	
+
     /**
      * @return the bornOnOrAfter
      */
@@ -47,7 +50,7 @@ public class BirthAndDeathCohortDefinition extends BaseCohortDefinition {
     	return bornOnOrAfter;
     }
 
-	
+
     /**
      * @param bornOnOrAfter the bornOnOrAfter to set
      */
@@ -71,7 +74,21 @@ public class BirthAndDeathCohortDefinition extends BaseCohortDefinition {
     	this.bornOnOrBefore = bornOnOrBefore;
     }
 
-	
+
+    /**
+     * @return whether the definition is configured to return patients who have been marked as died
+     */
+    public Boolean getDied() {
+        return died;
+    }
+
+    /**
+     * @param died set to true indicates to return patients who have been marked as died
+     */
+    public void setDied(Boolean died) {
+        this.died = died;
+    }
+
     /**
      * @return the diedOnOrAfter
      */
