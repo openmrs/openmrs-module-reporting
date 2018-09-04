@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import org.hibernate.cfg.Environment;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,11 +26,12 @@ import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinition
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Properties;
 
-
+@SkipBaseSetup
 public class SqlFileDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
@@ -41,14 +43,18 @@ public class SqlFileDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	
 	@Before
 	public void setup() throws Exception {
-		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        initializeInMemoryDatabase();
+        executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        authenticate();
+        getConnection().commit();
 	}
 
     @Override
     public Properties getRuntimeProperties() {
         Properties p = super.getRuntimeProperties();
-        p.put("connection.url", p.getProperty("hibernate.connection.url"));
-        p.put("connection.driver_class", p.getProperty("hibernate.connection.driver_class"));
+        p.put("connection.url", p.getProperty(Environment.URL));
+        p.put(Environment.URL, p.getProperty(Environment.URL) + ";MVCC=TRUE");
+        p.put("connection.driver_class", p.getProperty(Environment.DRIVER));
         return p;
     }
 
