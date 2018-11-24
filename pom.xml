@@ -421,7 +421,7 @@
 					<version>2.5</version>
 					<configuration>
 						<!-- Some tests are locale specific -->
-                        <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Duser.language=en -Duser.region=US</argLine>
+                        <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Duser.language=en -Duser.region=US -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
 						<!-- Bamboo agents require a different tmp folder -->
 						<systemPropertyVariables>
 							<java.io.tmpdir>${java.io.tmpdir}</java.io.tmpdir>
