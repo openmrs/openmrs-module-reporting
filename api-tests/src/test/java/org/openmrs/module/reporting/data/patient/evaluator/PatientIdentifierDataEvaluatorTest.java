@@ -76,7 +76,7 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 
 	/**
 	 * @verifies return all identifiers in groups according to preferred list order
-	 * @see PatientIdentifierDataEvaluator#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @see PatientIdentifierDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
 	 */
 	@Test
 	public void evaluate_shouldReturnAllIdentifiersInGroupsAccordingToPreferredListOrder() throws Exception {
@@ -99,6 +99,24 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 		Assert.assertEquals(pi2, identifiers.get(1).getIdentifierType());
 		Assert.assertEquals(pi1, identifiers.get(2).getIdentifierType());
 	}
+
+    /**
+     * @verifies return all identifiers in groups according to preferred list order
+     * @see PatientIdentifierDataEvaluator#evaluate(PatientDataDefinition, EvaluationContext)
+     */
+    @Test
+    public void evaluate_shouldReturnAllIdentifiersIfNoTypeSpecified() throws Exception {
+        EvaluationContext context = new EvaluationContext();
+        context.setBaseCohort(new Cohort("2"));
+
+        PatientIdentifierDataDefinition d = new PatientIdentifierDataDefinition();
+
+        EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
+
+        Object o = pd.getData().get(2);
+        List<PatientIdentifier> identifiers = (List<PatientIdentifier>) o;
+        Assert.assertEquals(3, identifiers.size());
+    }
 
 	/**
 	 * @verifies place all preferred identifiers first within type groups

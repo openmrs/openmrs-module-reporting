@@ -47,7 +47,7 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		PatientIdentifierDataDefinition def = (PatientIdentifierDataDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
-		if ((context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) || def.getTypes() == null || def.getTypes().isEmpty()) {
+		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
 			return c;
 		}
 	
@@ -96,8 +96,12 @@ public class PatientIdentifierDataEvaluator implements PatientDataEvaluator {
 		 * @see Comparator#compare(Object, Object)
 		 */
 		public int compare(PatientIdentifier pi1, PatientIdentifier pi2) {
-			int c1 = idTypes.indexOf(pi1.getIdentifierType());
-			int c2 = idTypes.indexOf(pi2.getIdentifierType());
+			int c1 = 0;
+            int c2 = 0;
+			if (idTypes != null && idTypes.size() > 0) {
+			    c1 = idTypes.indexOf(pi1.getIdentifierType());
+                c2 = idTypes.indexOf(pi2.getIdentifierType());
+            }
 			if (c1 == c2) {
 				c1 = pi1.getPreferred() == Boolean.TRUE ? 0 : 1;
 				c2 = pi2.getPreferred() == Boolean.TRUE ? 0 : 1;
