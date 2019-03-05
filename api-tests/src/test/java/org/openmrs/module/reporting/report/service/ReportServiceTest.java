@@ -521,4 +521,10 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(rs.getReportDesignByUuid("d7a82b63-1066-4c1d-9b43-b405851fc467"));
 		assertNull(rs.getReportDesignByUuid("e7a82b63-1066-4c1d-9b43-b405851fc467"));
 	}
+	
+	@Test
+	public void shoild_returnAllReportRequests() {
+		ReportService rs = Context.getService(ReportService.class);
+		Assert.assertEquals(3, rs.getAllReportRequests().size());
+	}
 }

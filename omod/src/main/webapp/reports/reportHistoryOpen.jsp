@@ -29,6 +29,7 @@
 	    });
 	}
 	
+	
 	function deleteRequest(uuid) {
 		if (confirm('<spring:message code="reporting.reportHistory.confirmDelete"/>')) {
 			document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportRequest.form?uuid='+uuid+'&returnUrl=/module/reporting/dashboard/index.form';
@@ -37,8 +38,7 @@
 	
 	$j(document).ready(function() {
 		
-		loadReportStatus();
-		
+		loadReportStatus();	
 		$j("#errorDetailsLink").click(function(event) {
 			showReportingDialog({
 				title: '<spring:message code="reporting.errorDetails"/>',
@@ -47,9 +47,26 @@
 		});
 
         $j(".logDiv").hide();
+        $j(".logsDiv").hide();
 		$j("#viewReportLogLink").click(function(event) {
             $j(".logDiv").toggle();
         });
+		
+		$j("#searchReportLogLink").click(function(event) {
+            $j(".logsDiv").toggle();
+        });
+		
+		$j(".reporting-data-table").dataTable( {
+			"bPaginate": true,
+			"iDisplayLength": 15,
+			"bLengthChange": false,
+			"bFilter": true,
+			"bSort": true,
+			"bInfo": true,
+			"bAutoWidth": false		
+		} );
+		  
+		$j(".reporting-data-table").css({"table-layout":"fixed","width":"1100px"});	
 	} );	
 </script>
 
@@ -152,12 +169,45 @@
 						</fieldset>
 					</c:if>
                     <div class="reportAction">
-                        <a href="#" id="viewReportLogLink">
+                       <span>
+                      
+                       <a style="margin-right: 100px" href="#" id="viewReportLogLink">
                             <img src="<c:url value="/images/info.gif"/>" border="0" style="vertical-align:middle"/>
                             <spring:message code="reporting.viewReportLog"/>
                         </a>
-                        <div class="logDiv"></div>
+                   
+                     
+                        <a style="margin-right: 20px" href="#" id="searchReportLogLink">
+                            <img src="<c:url value="/images/info.gif"/>" border="0" style="vertical-align:middle"/>
+                            <spring:message code="reporting.searchReportLog"/>
+                        </a>
+                       
+                        </span>
+                      <span>  <div class="logDiv"></div>
+                        
+                        <div class="logsDiv">
+                        
+                         <table id = "logsAll" class="reporting-data-table display">
+ 		 	              <thead>
+ 				             <tr>
+  				 	           <th> <spring:message code="reporting.viewLogs"/></th> 					      
+  					        </tr>
+  			             </thead>
+    		             <tbody>
+    		              <c:forEach var="Logs" items="${allLogs}">
+    		               <tr>
+    		                  <td>
+    		                  <c:out value = "${Logs}" />
+    		                  </td>
+    		               </tr>
+    		               </c:forEach>
+    		             </tbody>
+    		             </table>
+                        </div>
+                        </span>
                     </div>
+                    
+                  
 				</td>
 				<td valign="top" style="width:50%;">
 					<fieldset>
