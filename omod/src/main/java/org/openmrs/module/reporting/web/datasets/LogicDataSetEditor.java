@@ -15,11 +15,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicException;
+import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.reporting.common.LogicUtil;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.Column;
@@ -37,10 +41,13 @@ public class LogicDataSetEditor {
 	Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping("/module/reporting/datasets/logicDataSetEditor")
-	public void showDataset(ModelMap model, @RequestParam(required = false, value = "uuid") String uuid) {
+	public void showDataset(HttpServletRequest request, ModelMap model, @RequestParam(required = false, value = "uuid") String uuid) {
 		DataSetDefinitionService svc = Context.getService(DataSetDefinitionService.class);
 		LogicDataSetDefinition definition = (LogicDataSetDefinition) svc.getDefinition(uuid, LogicDataSetDefinition.class);
 		
+		HttpSession httpSession = request.getSession();
+		if(ModuleFactory.isModuleStarted("logic")) {
+			
 		List<String> tokens = new ArrayList<String>(Context.getLogicService().getAllTokens());
 		Collections.sort(tokens);
 		
@@ -58,6 +65,10 @@ public class LogicDataSetEditor {
 		model.addAttribute("logicErrors", logicErrors);
 		model.addAttribute("tokens", tokens);
 		model.addAttribute("conceptNameTags", Context.getConceptService().getAllConceptNameTags());
+	   }else {
+		
+		httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "reporting.logicModuleNotStarted.error");
+	   }
 	}
 	
 	@RequestMapping("/module/reporting/datasets/logicDataSetEditorSave")

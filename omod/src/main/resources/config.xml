@@ -27,6 +27,7 @@
     <aware_of_modules>
         <aware_of_module>org.openmrs.module.reportingcompatibility</aware_of_module>
         <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+        <aware_of_module>org.openmrs.module.logic</aware_of_module>
     </aware_of_modules>
 
 	<!-- Extensions -->
