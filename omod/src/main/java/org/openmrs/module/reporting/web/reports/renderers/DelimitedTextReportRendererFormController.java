@@ -11,12 +11,15 @@
 package org.openmrs.module.reporting.web.reports.renderers;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.PropertyValueException;
 import org.apache.commons.lang.StringUtils;
 
 import org.springframework.stereotype.Controller;
@@ -96,7 +99,7 @@ public class DelimitedTextReportRendererFormController {
 	 * @throws InstantiationException 
 	 */
 	@RequestMapping("/module/reporting/reports/renderers/saveDelimitedTextReportDesign")
-	public String saveDelimitedTextReportDesign(ModelMap model, HttpServletRequest request,
+	public String saveDelimitedTextReportDesign(ModelMap model, HttpServletRequest request,  HttpSession sesion,
 					@RequestParam(required=false, value="uuid") String uuid,
 					@RequestParam(required=true,  value="name") String name,
 					@RequestParam(required=false, value="description") String description,
@@ -110,7 +113,7 @@ public class DelimitedTextReportRendererFormController {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportDesign design = null;
 		Properties delimiters = new Properties();
-
+try {
 		if (StringUtils.isNotEmpty(uuid)) {
 			design = rs.getReportDesignByUuid(uuid);
 		}
@@ -148,5 +151,10 @@ public class DelimitedTextReportRendererFormController {
     	}
     	design = rs.saveReportDesign(design);
     	return "redirect:" + successUrl;
+}catch(PropertyValueException e) {
+	sesion.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,"reporting.nullPropertyValues.error");
+	 return "module/reporting/reports/renderers/delimitedTextReportRenderer";
+	
+}
 	}
 }
