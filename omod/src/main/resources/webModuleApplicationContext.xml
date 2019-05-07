@@ -67,7 +67,7 @@
 	<bean id="runReportForm" class="org.openmrs.module.reporting.web.reports.RunReportFormController">
         <property name="commandName"><value>report</value></property>
         <property name="formView"><value>/module/reporting/run/runReportForm</value></property>
-        <property name="successView"><vaxlue>runReport.list</vaxlue></property>
+        <property name="successView"><value>runReport.list</value></property>
         <property name="validator">
 		    <ref bean="runReportForm" />
 		</property>
