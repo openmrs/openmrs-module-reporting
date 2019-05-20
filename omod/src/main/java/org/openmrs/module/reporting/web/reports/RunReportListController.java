@@ -8,11 +8,8 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
-import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  *
@@ -20,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class RunReportListController {
 
-	@RequestMapping("/module/reporting/run/runReport")
+	@RequestMapping("/module/reporting/run/runReport.list")
 	public Object initializeForm() {
-		return Context.getService(ReportDefinitionService.class).getAllDefinitions(false);
+		return "/module/reporting/run/runReportList";
 	}
 
 }

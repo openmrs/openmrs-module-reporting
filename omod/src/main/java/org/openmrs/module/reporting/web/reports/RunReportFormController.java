@@ -3,7 +3,6 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
  * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
- *
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
@@ -41,12 +40,19 @@ import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.OpenmrsUtil;
 import org.quartz.CronExpression;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -59,23 +65,25 @@ import org.springframework.web.servlet.view.RedirectView;
  * page redirects to the WebReportRenderer's specified URL. Otherwise the renderer writes to this
  * form's response.
  */
-public class RunReportFormController extends SimpleFormController implements Validator {
+@Controller
+public class RunReportFormController implements Validator {
 
 	private transient Log log = LogFactory.getLog(this.getClass());
-	
+
 	/**
 	 * @see BaseCommandController#initBinder(HttpServletRequest, ServletRequestDataBinder)
 	 */
-	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-		super.initBinder(request, binder);
+	@InitBinder
+	private void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		binder.registerCustomEditor(Mapped.class, new MappedEditor());
+		binder.setValidator(this);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public boolean supports(Class c) {
 		return c == CommandObject.class;
 	}
-	
+
 	@Override
 	public void validate(Object commandObject, Errors errors) {
 		CommandObject command = (CommandObject) commandObject;
@@ -90,20 +98,20 @@ public class RunReportFormController extends SimpleFormController implements Val
 					}
 				}
 			}
-			
+
 			for (Map.Entry<String, Object> e : command.getUserEnteredParams().entrySet()) {
 				if (e.getValue() instanceof Iterable || e.getValue() instanceof Object[]) {
 					Object iterable = e.getValue();
 					if (e.getValue() instanceof Object[]) {
 						iterable = Arrays.asList((Object[]) e.getValue());
 					}
-					
+
 					boolean hasNull = true;
-					
+
 					for (Object value : (Iterable<Object>) iterable) {
 						hasNull = !ObjectUtil.notNull(value);
-                    }
-					
+					}
+
 					if (!hasNull) {
 						requiredParams.remove(e.getKey());
 					}
@@ -112,25 +120,25 @@ public class RunReportFormController extends SimpleFormController implements Val
 				}
 			}
 			if (requiredParams.size() > 0) {
-				for (Iterator<String> iterator = requiredParams.iterator(); iterator.hasNext();) {
+				for (Iterator<String> iterator = requiredParams.iterator(); iterator.hasNext(); ) {
 					String parameterName = (String) iterator.next();
 					if (StringUtils.hasText(command.getExpressions().get(parameterName))) {
 						String expression = command.getExpressions().get(parameterName);
-						if (!EvaluationUtil.isExpression(expression)){
+						if (!EvaluationUtil.isExpression(expression)) {
 							errors.rejectValue("expressions[" + parameterName + "]",
-							    "reporting.Report.run.error.invalidParamExpression");
+									"reporting.Report.run.error.invalidParamExpression");
 						}
 					} else {
 						errors.rejectValue("userEnteredParams[" + parameterName + "]", "error.required",
-						    new Object[] { "This parameter" }, "{0} is required");
+								new Object[] { "This parameter" }, "{0} is required");
 					}
 				}
 			}
-			
+
 			if (reportDefinition.getDataSetDefinitions() == null || reportDefinition.getDataSetDefinitions().size() == 0) {
 				errors.reject("reporting.Report.run.error.definitionNotDeclared");
 			}
-			
+
 			if (ObjectUtil.notNull(command.getSchedule())) {
 				if (!CronExpression.isValidExpression(command.getSchedule())) {
 					errors.rejectValue("schedule", "reporting.Report.run.error.invalidCronExpression");
@@ -139,9 +147,9 @@ public class RunReportFormController extends SimpleFormController implements Val
 		}
 		ValidationUtils.rejectIfEmpty(errors, "selectedRenderer", "reporting.Report.run.error.noRendererSelected");
 	}
-	
-	@Override
-	protected Object formBackingObject(HttpServletRequest request) throws Exception {
+
+	@RequestMapping("/module/reporting/run/runReport.form")
+	protected Object initializeForm(HttpServletRequest request, ModelMap model) throws Exception {
 		CommandObject command = new CommandObject();
 		if (Context.isAuthenticated()) {
 			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
@@ -149,18 +157,18 @@ public class RunReportFormController extends SimpleFormController implements Val
 			if (StringUtils.hasText(request.getParameter("copyRequest"))) {
 				ReportRequest req = reportService.getReportRequestByUuid(request.getParameter("copyRequest"));
 				// avoid lazy init exceptions
-				command.setReportDefinition(rds.getDefinitionByUuid(req.getReportDefinition().getParameterizable().getUuid()));
+				command.setReportDefinition(
+						rds.getDefinitionByUuid(req.getReportDefinition().getParameterizable().getUuid()));
 				for (Map.Entry<String, Object> param : req.getReportDefinition().getParameterMappings().entrySet()) {
 					Object value = param.getValue();
-					if ( value != null && EvaluationUtil.isExpression( value.toString() ) ) {
-						command.getExpressions().put( param.getKey(),  ( String ) value );
+					if (value != null && EvaluationUtil.isExpression(value.toString())) {
+						command.getExpressions().put(param.getKey(), (String) value);
 						value = "";
-					} 
-					command.getUserEnteredParams().put(param.getKey(), value );
+					}
+					command.getUserEnteredParams().put(param.getKey(), value);
 				}
 				command.setSelectedRenderer(req.getRenderingMode().getDescriptor());
-			}
-			else if (StringUtils.hasText(request.getParameter("requestUuid"))) {
+			} else if (StringUtils.hasText(request.getParameter("requestUuid"))) {
 				String reqUuid = request.getParameter("requestUuid");
 				ReportRequest rr = reportService.getReportRequestByUuid(reqUuid);
 				command.setExistingRequestUuid(reqUuid);
@@ -169,8 +177,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 				command.setBaseCohort(rr.getBaseCohort());
 				command.setSelectedRenderer(rr.getRenderingMode().getDescriptor());
 				command.setSchedule(rr.getSchedule());
-			}
-			else {
+			} else {
 				String uuid = request.getParameter("reportId");
 				ReportDefinition reportDefinition = rds.getDefinitionByUuid(uuid);
 				command.setReportDefinition(reportDefinition);
@@ -182,26 +189,31 @@ public class RunReportFormController extends SimpleFormController implements Val
 			}
 			command.setRenderingModes(reportService.getRenderingModes(command.getReportDefinition()));
 		}
-		return command;
+
+		model.addAttribute("report",command);
+		addReferenceData(model,command);
+		return "/module/reporting/run/runReportForm";
 	}
-	
-	@Override
-	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object commandObject, BindException errors) throws Exception {
+
+	@RequestMapping(method = RequestMethod.POST)
+	protected String onSubmit(HttpServletRequest request, HttpServletResponse response, @ModelAttribute Object commandObject,
+			BindException errors) throws Exception {
 		CommandObject command = (CommandObject) commandObject;
 		ReportDefinition reportDefinition = command.getReportDefinition();
-		
+
 		ReportService rs = Context.getService(ReportService.class);
 
 		// Parse the input parameters into appropriate objects and fail validation if any are invalid
 		Map<String, Object> params = new LinkedHashMap<String, Object>();
-		if (reportDefinition.getParameters() != null && (command.getUserEnteredParams() != null || command.getExpressions() != null)) {
+		if (reportDefinition.getParameters() != null && (command.getUserEnteredParams() != null
+				|| command.getExpressions() != null)) {
 			for (Parameter parameter : reportDefinition.getParameters()) {
 				Object value = null;
 				String expression = null;
-				if (command.getExpressions() != null && ObjectUtil.notNull(command.getExpressions().get(parameter.getName()))) {
+				if (command.getExpressions() != null && ObjectUtil
+						.notNull(command.getExpressions().get(parameter.getName()))) {
 					expression = command.getExpressions().get(parameter.getName());
-				}
-				else {
+				} else {
 					value = command.getUserEnteredParams().get(parameter.getName());
 				}
 				if (ObjectUtil.notNull(value) || ObjectUtil.notNull(expression)) {
@@ -219,7 +231,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 				}
 			}
 		}
-		
+
 		// Ensure that the chosen renderer is valid for this report
 		RenderingMode renderingMode = command.getSelectedMode();
 		if (!renderingMode.getRenderer().canRender(reportDefinition)) {
@@ -227,71 +239,71 @@ public class RunReportFormController extends SimpleFormController implements Val
 		}
 
 		if (errors.hasErrors()) {
-			return showForm(request, response, errors);
+			return "/module/reporting/run/runReportForm";
 		}
-		
+
 		ReportRequest rr = null;
 		if (command.getExistingRequestUuid() != null) {
 			rr = rs.getReportRequestByUuid(command.getExistingRequestUuid());
-		}
-		else {
+		} else {
 			rr = new ReportRequest();
 		}
 		rr.setReportDefinition(new Mapped<ReportDefinition>(reportDefinition, params));
 		rr.setBaseCohort(command.getBaseCohort());
-	    rr.setRenderingMode(command.getSelectedMode());
-	    rr.setPriority(Priority.NORMAL);
-	    rr.setSchedule(command.getSchedule());
-		
+		rr.setRenderingMode(command.getSelectedMode());
+		rr.setPriority(Priority.NORMAL);
+		rr.setSchedule(command.getSchedule());
+
 		// TODO: We might want to check here if this exact same report request is already queued and just re-direct if so
-		
+
 		rr = rs.queueReport(rr);
 		rs.processNextQueuedReports();
-		
-		return new ModelAndView(new RedirectView("../reports/reportHistoryOpen.form?uuid="+rr.getUuid()));
+
+		return "../reports/reportHistoryOpen.form?uuid=" + rr.getUuid();
 	}
-	
-	/**
-	 * @see org.springframework.web.servlet.mvc.SimpleFormController#referenceData(javax.servlet.http.HttpServletRequest)
-	 */
-	@Override
-	protected Map<String, Object> referenceData(HttpServletRequest request, Object commandObject, Errors errors) throws Exception {
-		CommandObject command = (CommandObject) commandObject;
-		Map<String, Object> map = new HashMap<String, Object>();
+
+
+	private void addReferenceData(ModelMap model, CommandObject command)
+			throws Exception {
 		EvaluationContext ec = new EvaluationContext();
 		Set<String> expSupportedTypes = new HashSet<String>();
 		Set<String> inputsToToggle = new HashSet<String>();
 		for (Object value : ec.getContextValues().values()) {
 			expSupportedTypes.add(value.getClass().getName());
 		}
-		map.put("expSupportedTypes", expSupportedTypes);
+		model.addAttribute("expSupportedTypes",expSupportedTypes);
 
 		for (Map.Entry<String, Object> e : command.getUserEnteredParams().entrySet()) {
 			if (StringUtils.hasText(command.getExpressions().get(e.getKey()))) {
-				inputsToToggle.add( e.getKey() );
+				inputsToToggle.add(e.getKey());
 			}
 		}
-		map.put( "inputsToToggle", inputsToToggle );
-		return map;
+		model.addAttribute("inputsToToggle",inputsToToggle);
 	}
-	
+
 	public class CommandObject {
-		
+
 		private String existingRequestUuid;
+
 		private ReportDefinition reportDefinition;
+
 		private Mapped<CohortDefinition> baseCohort;
-		private Map<String, Object> userEnteredParams;			
+
+		private Map<String, Object> userEnteredParams;
+
 		private String selectedRenderer; // as RendererClass!Arg
+
 		private String schedule;
+
 		private Map<String, String> expressions;
-		
-		private List<RenderingMode> renderingModes;	
-		
+
+		private List<RenderingMode> renderingModes;
+
 		public CommandObject() {
 			userEnteredParams = new LinkedHashMap<String, Object>();
-			expressions = new HashMap<String ,String>();
+			expressions = new HashMap<String, String>();
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		public RenderingMode getSelectedMode() {
 			if (selectedRenderer != null) {
@@ -300,7 +312,8 @@ public class RunReportFormController extends SimpleFormController implements Val
 					Class<? extends ReportRenderer> rc = (Class<? extends ReportRenderer>) Context.loadClass(temp[0]);
 					String arg = (temp.length > 1 && StringUtils.hasText(temp[1])) ? temp[1] : null;
 					for (RenderingMode mode : renderingModes) {
-						if (mode.getRenderer().getClass().equals(rc) && OpenmrsUtil.nullSafeEquals(mode.getArgument(), arg)) {
+						if (mode.getRenderer().getClass().equals(rc) && OpenmrsUtil
+								.nullSafeEquals(mode.getArgument(), arg)) {
 							return mode;
 						}
 					}
@@ -324,15 +337,15 @@ public class RunReportFormController extends SimpleFormController implements Val
 		public List<RenderingMode> getRenderingModes() {
 			return renderingModes;
 		}
-		
+
 		public void setRenderingModes(List<RenderingMode> rendereringModes) {
 			this.renderingModes = rendereringModes;
 		}
-		
+
 		public ReportDefinition getReportDefinition() {
 			return reportDefinition;
 		}
-		
+
 		public void setReportDefinition(ReportDefinition reportDefinition) {
 			this.reportDefinition = reportDefinition;
 		}
@@ -348,15 +361,15 @@ public class RunReportFormController extends SimpleFormController implements Val
 		public String getSelectedRenderer() {
 			return selectedRenderer;
 		}
-		
+
 		public void setSelectedRenderer(String selectedRenderer) {
 			this.selectedRenderer = selectedRenderer;
 		}
-		
+
 		public Map<String, Object> getUserEnteredParams() {
 			return userEnteredParams;
 		}
-		
+
 		public void setUserEnteredParams(Map<String, Object> userEnteredParams) {
 			this.userEnteredParams = userEnteredParams;
 		}
@@ -368,14 +381,14 @@ public class RunReportFormController extends SimpleFormController implements Val
 		public void setSchedule(String schedule) {
 			this.schedule = schedule;
 		}
-		
+
 		/**
 		 * @return the expressions
 		 */
 		public Map<String, String> getExpressions() {
 			return expressions;
 		}
-		
+
 		/**
 		 * @param expressions the expressions to set
 		 */
@@ -383,5 +396,5 @@ public class RunReportFormController extends SimpleFormController implements Val
 			this.expressions = expressions;
 		}
 	}
-	
+
 }
