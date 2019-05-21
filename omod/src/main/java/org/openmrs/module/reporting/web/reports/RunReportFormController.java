@@ -38,6 +38,7 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.web.validator.RunReportFormValidator;
 import org.openmrs.util.OpenmrsUtil;
 import org.quartz.CronExpression;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,89 +68,19 @@ import org.springframework.web.servlet.view.RedirectView;
  * form's response.
  */
 @Controller
-public class RunReportFormController implements Validator {
+public class RunReportFormController {
 
 	private transient Log log = LogFactory.getLog(this.getClass());
 
-	/**
-	 * @see BaseCommandController#initBinder(HttpServletRequest, ServletRequestDataBinder)
-	 */
+	@Autowired
+	RunReportFormValidator validator;
+
 	@InitBinder
-	private void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+	private void initBinder(WebDataBinder binder) throws Exception {
 		binder.registerCustomEditor(Mapped.class, new MappedEditor());
-		binder.setValidator(this);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public boolean supports(Class c) {
-		return c == CommandObject.class;
-	}
-
-	@Override
-	public void validate(Object commandObject, Errors errors) {
-		CommandObject command = (CommandObject) commandObject;
-		ValidationUtils.rejectIfEmpty(errors, "reportDefinition", "reporting.Report.run.error.missingReportID");
-		if (command.getReportDefinition() != null) {
-			ReportDefinition reportDefinition = command.getReportDefinition();
-			Set<String> requiredParams = new HashSet<String>();
-			if (reportDefinition.getParameters() != null) {
-				for (Parameter parameter : reportDefinition.getParameters()) {
-					if (parameter.isRequired()) {
-						requiredParams.add(parameter.getName());
-					}
-				}
-			}
-
-			for (Map.Entry<String, Object> e : command.getUserEnteredParams().entrySet()) {
-				if (e.getValue() instanceof Iterable || e.getValue() instanceof Object[]) {
-					Object iterable = e.getValue();
-					if (e.getValue() instanceof Object[]) {
-						iterable = Arrays.asList((Object[]) e.getValue());
-					}
-
-					boolean hasNull = true;
-
-					for (Object value : (Iterable<Object>) iterable) {
-						hasNull = !ObjectUtil.notNull(value);
-					}
-
-					if (!hasNull) {
-						requiredParams.remove(e.getKey());
-					}
-				} else if (ObjectUtil.notNull(e.getValue())) {
-					requiredParams.remove(e.getKey());
-				}
-			}
-			if (requiredParams.size() > 0) {
-				for (Iterator<String> iterator = requiredParams.iterator(); iterator.hasNext(); ) {
-					String parameterName = (String) iterator.next();
-					if (StringUtils.hasText(command.getExpressions().get(parameterName))) {
-						String expression = command.getExpressions().get(parameterName);
-						if (!EvaluationUtil.isExpression(expression)) {
-							errors.rejectValue("expressions[" + parameterName + "]",
-									"reporting.Report.run.error.invalidParamExpression");
-						}
-					} else {
-						errors.rejectValue("userEnteredParams[" + parameterName + "]", "error.required",
-								new Object[] { "This parameter" }, "{0} is required");
-					}
-				}
-			}
-
-			if (reportDefinition.getDataSetDefinitions() == null || reportDefinition.getDataSetDefinitions().size() == 0) {
-				errors.reject("reporting.Report.run.error.definitionNotDeclared");
-			}
-
-			if (ObjectUtil.notNull(command.getSchedule())) {
-				if (!CronExpression.isValidExpression(command.getSchedule())) {
-					errors.rejectValue("schedule", "reporting.Report.run.error.invalidCronExpression");
-				}
-			}
-		}
-		ValidationUtils.rejectIfEmpty(errors, "selectedRenderer", "reporting.Report.run.error.noRendererSelected");
-	}
-
-	@RequestMapping("/module/reporting/run/runReport.form")
+	@RequestMapping(value ="/module/reporting/run/runReport.form",method = RequestMethod.GET)
 	protected Object initializeForm(HttpServletRequest request, ModelMap model) throws Exception {
 		CommandObject command = new CommandObject();
 		if (Context.isAuthenticated()) {
@@ -190,15 +122,22 @@ public class RunReportFormController implements Validator {
 			command.setRenderingModes(reportService.getRenderingModes(command.getReportDefinition()));
 		}
 
-		model.addAttribute("report",command);
-		addReferenceData(model,command);
+		model.addAttribute("report", command);
+		addReferenceData(model, command);
 		return "/module/reporting/run/runReportForm";
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/module/reporting/run/runReport.form", method = RequestMethod.POST)
 	protected String onSubmit(HttpServletRequest request, HttpServletResponse response, @ModelAttribute Object commandObject,
 			BindException errors) throws Exception {
 		CommandObject command = (CommandObject) commandObject;
+
+		validator.validate(commandObject, errors);
+
+		if (errors.hasErrors()) {
+			return "/module/reporting/run/runReportForm";
+		}
+
 		ReportDefinition reportDefinition = command.getReportDefinition();
 
 		ReportService rs = Context.getService(ReportService.class);
@@ -262,7 +201,6 @@ public class RunReportFormController implements Validator {
 		return "../reports/reportHistoryOpen.form?uuid=" + rr.getUuid();
 	}
 
-
 	private void addReferenceData(ModelMap model, CommandObject command)
 			throws Exception {
 		EvaluationContext ec = new EvaluationContext();
@@ -271,14 +209,14 @@ public class RunReportFormController implements Validator {
 		for (Object value : ec.getContextValues().values()) {
 			expSupportedTypes.add(value.getClass().getName());
 		}
-		model.addAttribute("expSupportedTypes",expSupportedTypes);
+		model.addAttribute("expSupportedTypes", expSupportedTypes);
 
 		for (Map.Entry<String, Object> e : command.getUserEnteredParams().entrySet()) {
 			if (StringUtils.hasText(command.getExpressions().get(e.getKey()))) {
 				inputsToToggle.add(e.getKey());
 			}
 		}
-		model.addAttribute("inputsToToggle",inputsToToggle);
+		model.addAttribute("inputsToToggle", inputsToToggle);
 	}
 
 	public class CommandObject {
