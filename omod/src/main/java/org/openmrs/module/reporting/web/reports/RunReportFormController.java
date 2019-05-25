@@ -8,23 +8,10 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
@@ -36,29 +23,24 @@ import org.openmrs.module.reporting.report.ReportRequest.Priority;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
-import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.web.validator.RunReportFormValidator;
-import org.openmrs.util.OpenmrsUtil;
-import org.quartz.CronExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
-import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.BaseCommandController;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This controller runs a report (which must be passed in with the reportId parameter) after
@@ -80,47 +62,11 @@ public class RunReportFormController {
 		binder.registerCustomEditor(Mapped.class, new MappedEditor());
 	}
 
-	@RequestMapping(value ="/module/reporting/run/runReport.form",method = RequestMethod.GET)
-	protected Object initializeForm(HttpServletRequest request, ModelMap model) throws Exception {
+	@RequestMapping(value = "/module/reporting/run/runReport.form", method = RequestMethod.GET)
+	protected String initializeForm(HttpServletRequest request, ModelMap model) throws Exception {
 		CommandObject command = new CommandObject();
-		if (Context.isAuthenticated()) {
-			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-			ReportService reportService = Context.getService(ReportService.class);
-			if (StringUtils.hasText(request.getParameter("copyRequest"))) {
-				ReportRequest req = reportService.getReportRequestByUuid(request.getParameter("copyRequest"));
-				// avoid lazy init exceptions
-				command.setReportDefinition(
-						rds.getDefinitionByUuid(req.getReportDefinition().getParameterizable().getUuid()));
-				for (Map.Entry<String, Object> param : req.getReportDefinition().getParameterMappings().entrySet()) {
-					Object value = param.getValue();
-					if (value != null && EvaluationUtil.isExpression(value.toString())) {
-						command.getExpressions().put(param.getKey(), (String) value);
-						value = "";
-					}
-					command.getUserEnteredParams().put(param.getKey(), value);
-				}
-				command.setSelectedRenderer(req.getRenderingMode().getDescriptor());
-			} else if (StringUtils.hasText(request.getParameter("requestUuid"))) {
-				String reqUuid = request.getParameter("requestUuid");
-				ReportRequest rr = reportService.getReportRequestByUuid(reqUuid);
-				command.setExistingRequestUuid(reqUuid);
-				command.setReportDefinition(rr.getReportDefinition().getParameterizable());
-				command.setUserEnteredParams(rr.getReportDefinition().getParameterMappings());
-				command.setBaseCohort(rr.getBaseCohort());
-				command.setSelectedRenderer(rr.getRenderingMode().getDescriptor());
-				command.setSchedule(rr.getSchedule());
-			} else {
-				String uuid = request.getParameter("reportId");
-				ReportDefinition reportDefinition = rds.getDefinitionByUuid(uuid);
-				command.setReportDefinition(reportDefinition);
-				for (Parameter p : reportDefinition.getParameters()) {
-					if (p.getDefaultValue() != null) {
-						command.getUserEnteredParams().put(p.getName(), p.getDefaultValue());
-					}
-				}
-			}
-			command.setRenderingModes(reportService.getRenderingModes(command.getReportDefinition()));
-		}
+
+		fillCommandObjectData(command, request);
 
 		model.addAttribute("report", command);
 		addReferenceData(model, command);
@@ -128,9 +74,11 @@ public class RunReportFormController {
 	}
 
 	@RequestMapping(value = "/module/reporting/run/runReport.form", method = RequestMethod.POST)
-	protected String onSubmit(HttpServletRequest request, HttpServletResponse response, @ModelAttribute Object commandObject,
-			BindException errors) throws Exception {
+	protected String onSubmit(@ModelAttribute("report") CommandObject commandObject, BindingResult errors,
+			HttpServletRequest request) throws Exception {
+
 		CommandObject command = (CommandObject) commandObject;
+		fillCommandObjectData(command, request);
 
 		validator.validate(commandObject, errors);
 
@@ -198,7 +146,7 @@ public class RunReportFormController {
 		rr = rs.queueReport(rr);
 		rs.processNextQueuedReports();
 
-		return "../reports/reportHistoryOpen.form?uuid=" + rr.getUuid();
+		return "redirect:/module/reporting/reports/reportHistoryOpen.form?uuid=" + rr.getUuid();
 	}
 
 	private void addReferenceData(ModelMap model, CommandObject command)
@@ -219,119 +167,44 @@ public class RunReportFormController {
 		model.addAttribute("inputsToToggle", inputsToToggle);
 	}
 
-	public class CommandObject {
-
-		private String existingRequestUuid;
-
-		private ReportDefinition reportDefinition;
-
-		private Mapped<CohortDefinition> baseCohort;
-
-		private Map<String, Object> userEnteredParams;
-
-		private String selectedRenderer; // as RendererClass!Arg
-
-		private String schedule;
-
-		private Map<String, String> expressions;
-
-		private List<RenderingMode> renderingModes;
-
-		public CommandObject() {
-			userEnteredParams = new LinkedHashMap<String, Object>();
-			expressions = new HashMap<String, String>();
-		}
-
-		@SuppressWarnings("unchecked")
-		public RenderingMode getSelectedMode() {
-			if (selectedRenderer != null) {
-				try {
-					String[] temp = selectedRenderer.split("!");
-					Class<? extends ReportRenderer> rc = (Class<? extends ReportRenderer>) Context.loadClass(temp[0]);
-					String arg = (temp.length > 1 && StringUtils.hasText(temp[1])) ? temp[1] : null;
-					for (RenderingMode mode : renderingModes) {
-						if (mode.getRenderer().getClass().equals(rc) && OpenmrsUtil
-								.nullSafeEquals(mode.getArgument(), arg)) {
-							return mode;
-						}
+	private void fillCommandObjectData(CommandObject command, HttpServletRequest request) {
+		if (Context.isAuthenticated()) {
+			ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+			ReportService reportService = Context.getService(ReportService.class);
+			if (StringUtils.hasText(request.getParameter("copyRequest"))) {
+				ReportRequest req = reportService.getReportRequestByUuid(request.getParameter("copyRequest"));
+				// avoid lazy init exceptions
+				command.setReportDefinition(
+						rds.getDefinitionByUuid(req.getReportDefinition().getParameterizable().getUuid()));
+				for (Map.Entry<String, Object> param : req.getReportDefinition().getParameterMappings().entrySet()) {
+					Object value = param.getValue();
+					if (value != null && EvaluationUtil.isExpression(value.toString())) {
+						command.getExpressions().put(param.getKey(), (String) value);
+						value = "";
 					}
-					log.warn("Could not find requested rendering mode: " + selectedRenderer);
+					command.getUserEnteredParams().put(param.getKey(), value);
 				}
-				catch (Exception e) {
-					log.warn("Could not load requested renderer", e);
+				command.setSelectedRenderer(req.getRenderingMode().getDescriptor());
+			} else if (StringUtils.hasText(request.getParameter("requestUuid"))) {
+				String reqUuid = request.getParameter("requestUuid");
+				ReportRequest rr = reportService.getReportRequestByUuid(reqUuid);
+				command.setExistingRequestUuid(reqUuid);
+				command.setReportDefinition(rr.getReportDefinition().getParameterizable());
+				command.setUserEnteredParams(rr.getReportDefinition().getParameterMappings());
+				command.setBaseCohort(rr.getBaseCohort());
+				command.setSelectedRenderer(rr.getRenderingMode().getDescriptor());
+				command.setSchedule(rr.getSchedule());
+			} else {
+				String uuid = request.getParameter("reportId");
+				ReportDefinition reportDefinition = rds.getDefinitionByUuid(uuid);
+				command.setReportDefinition(reportDefinition);
+				for (Parameter p : reportDefinition.getParameters()) {
+					if (p.getDefaultValue() != null) {
+						command.getUserEnteredParams().put(p.getName(), p.getDefaultValue());
+					}
 				}
 			}
-			return null;
-		}
-
-		public String getExistingRequestUuid() {
-			return existingRequestUuid;
-		}
-
-		public void setExistingRequestUuid(String existingRequestUuid) {
-			this.existingRequestUuid = existingRequestUuid;
-		}
-
-		public List<RenderingMode> getRenderingModes() {
-			return renderingModes;
-		}
-
-		public void setRenderingModes(List<RenderingMode> rendereringModes) {
-			this.renderingModes = rendereringModes;
-		}
-
-		public ReportDefinition getReportDefinition() {
-			return reportDefinition;
-		}
-
-		public void setReportDefinition(ReportDefinition reportDefinition) {
-			this.reportDefinition = reportDefinition;
-		}
-
-		public Mapped<CohortDefinition> getBaseCohort() {
-			return baseCohort;
-		}
-
-		public void setBaseCohort(Mapped<CohortDefinition> baseCohort) {
-			this.baseCohort = baseCohort;
-		}
-
-		public String getSelectedRenderer() {
-			return selectedRenderer;
-		}
-
-		public void setSelectedRenderer(String selectedRenderer) {
-			this.selectedRenderer = selectedRenderer;
-		}
-
-		public Map<String, Object> getUserEnteredParams() {
-			return userEnteredParams;
-		}
-
-		public void setUserEnteredParams(Map<String, Object> userEnteredParams) {
-			this.userEnteredParams = userEnteredParams;
-		}
-
-		public String getSchedule() {
-			return schedule;
-		}
-
-		public void setSchedule(String schedule) {
-			this.schedule = schedule;
-		}
-
-		/**
-		 * @return the expressions
-		 */
-		public Map<String, String> getExpressions() {
-			return expressions;
-		}
-
-		/**
-		 * @param expressions the expressions to set
-		 */
-		public void setExpressions(Map<String, String> expressions) {
-			this.expressions = expressions;
+			command.setRenderingModes(reportService.getRenderingModes(command.getReportDefinition()));
 		}
 	}
 

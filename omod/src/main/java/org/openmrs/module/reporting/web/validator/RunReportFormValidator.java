@@ -4,7 +4,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.web.reports.RunReportFormController;
+import org.openmrs.module.reporting.web.reports.CommandObject;
 import org.quartz.CronExpression;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -23,12 +23,12 @@ public class RunReportFormValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> c) {
-		return c == RunReportFormController.CommandObject.class;
+		return c == CommandObject.class;
 	}
 
 	@Override
 	public void validate(Object commandObject, Errors errors) {
-		RunReportFormController.CommandObject command = (RunReportFormController.CommandObject) commandObject;
+		CommandObject command = (CommandObject) commandObject;
 		ValidationUtils.rejectIfEmpty(errors, "reportDefinition", "reporting.Report.run.error.missingReportID");
 		if (command.getReportDefinition() != null) {
 			ReportDefinition reportDefinition = command.getReportDefinition();
