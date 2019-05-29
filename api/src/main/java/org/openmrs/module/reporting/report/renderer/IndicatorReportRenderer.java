@@ -31,7 +31,10 @@ import java.util.Map;
  */
 //@Handler
 @Localized("reporting.IndicatorReportRenderer")
+@Deprecated
 public class IndicatorReportRenderer extends ReportDesignRenderer {
+
+
 
 	/**
      * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.ReportRequest)

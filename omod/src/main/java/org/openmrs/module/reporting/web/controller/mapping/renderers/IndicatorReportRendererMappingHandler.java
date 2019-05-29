@@ -17,13 +17,17 @@ import org.openmrs.module.reporting.report.renderer.IndicatorReportRenderer;
  * Handler that determines what page is used to edit/create a new IndicatorReportRenderer
  */
 
+
 @Handler(supports=IndicatorReportRenderer.class, order=50)
+@Deprecated
 public class IndicatorReportRendererMappingHandler extends RendererMappingHandler {
 
 	/**
 	 * @see RendererMappingHandler#getCreateUrl(Class)
 	 */
+
 	public String getCreateUrl( Class<? extends ReportRenderer> rendererType ) {
+
 		return "/module/reporting/reports/renderers/nonConfigurableReportRenderer.form?type=" + rendererType.getName();
 	}
 	
