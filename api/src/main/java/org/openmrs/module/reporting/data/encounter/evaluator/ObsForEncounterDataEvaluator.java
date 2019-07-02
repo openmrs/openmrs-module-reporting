@@ -43,6 +43,7 @@ public class ObsForEncounterDataEvaluator implements EncounterDataEvaluator {
 		q.select("obs.encounter.encounterId, obs");
 		q.from(Obs.class, "obs");
 		q.whereEqual("obs.concept", def.getQuestion());
+		q.whereIn("obs.valueCoded", def.getAnswers());
 		q.whereEncounterIn("obs.encounter.encounterId", context);
 
 		List<Object[]> result = Context.getService(EvaluationService.class).evaluateToList(q, context);

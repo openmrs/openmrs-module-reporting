@@ -36,7 +36,7 @@ import java.util.Set;
 /**
  * Evaluates a ObsOnSameDateEncounterDataDefinition to produce EncounterData
  */
-@Handler(supports= ObsOnSameDateEncounterDataDefinition.class, order=50)
+@Handler(supports=ObsOnSameDateEncounterDataDefinition.class, order=40)
 public class ObsOnSameDateEncounterDataEvaluator implements EncounterDataEvaluator {
 
     protected final Log log = LogFactory.getLog(getClass());
@@ -77,6 +77,7 @@ public class ObsOnSameDateEncounterDataEvaluator implements EncounterDataEvaluat
 		obsQuery.select("obs.encounter.patient.patientId, obs.encounter.encounterDatetime, obs");
 		obsQuery.from(Obs.class, "obs");
 		obsQuery.whereEqual("obs.concept", def.getQuestion());
+		obsQuery.whereIn("obs.valueCoded", def.getAnswers());
 		obsQuery.whereIdIn("obs.encounter.patient.patientId", pIds);
 		obsQuery.orderDesc("obs.obsDatetime");
 		List<Object[]> obsData = evaluationService.evaluateToList(obsQuery, context);
