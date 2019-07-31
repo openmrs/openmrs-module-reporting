@@ -9,13 +9,6 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -28,7 +21,6 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
-import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.indicator.util.IndicatorUtil;
 import org.openmrs.module.reporting.propertyeditor.CohortDefinitionEditor;
 import org.openmrs.module.reporting.propertyeditor.IndicatorEditor;
@@ -45,6 +37,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
 public class PeriodIndicatorReportController {
@@ -108,7 +107,7 @@ public class PeriodIndicatorReportController {
 			column = cidsd.getColumns().get(index);
 		}
 		else {
-			column = cidsd.new CohortIndicatorAndDimensionColumn();
+			column = new CohortIndicatorDataSetDefinition.CohortIndicatorAndDimensionColumn();
 			cidsd.addColumn(column);
 		}
 		column.setName(key);
