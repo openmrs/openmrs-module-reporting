@@ -16,6 +16,8 @@ public class ObsFromObsGroupConverter implements DataConverter {
 
     private Concept concept;
 
+    public ObsFromObsGroupConverter() {};
+
     public ObsFromObsGroupConverter(Concept concept) {
         this.concept = concept;
     }
