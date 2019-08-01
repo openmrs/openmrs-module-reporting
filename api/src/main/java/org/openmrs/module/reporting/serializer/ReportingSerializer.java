@@ -64,6 +64,7 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	    Mapper mapper = xstream.getMapper();
 	    ConverterLookup converterLookup = xstream.getConverterLookup();
 
+		xstream.registerConverter(new SortCriteriaConverter());
 	    xstream.registerConverter(new PersonQueryConverter(mapper, converterLookup));
 	    xstream.registerConverter(new CohortDefinitionConverter(mapper, converterLookup));
 	    xstream.registerConverter(new EncounterQueryConverter(mapper, converterLookup));

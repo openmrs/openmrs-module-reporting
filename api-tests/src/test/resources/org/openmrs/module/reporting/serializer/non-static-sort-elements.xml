@@ -1,0 +1,9 @@
+<org.openmrs.module.reporting.common.SortCriteria id="1">
+    <sortElements id="2">
+        <org.openmrs.module.reporting.common.SortCriteria_-SortElement id="3">
+            <elementName>encounterDate</elementName>
+            <direction>ASC</direction>
+            <outer-class reference="1"/>
+        </org.openmrs.module.reporting.common.SortCriteria_-SortElement>
+    </sortElements>
+</org.openmrs.module.reporting.common.SortCriteria>

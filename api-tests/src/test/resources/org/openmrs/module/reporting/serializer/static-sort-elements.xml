@@ -1,0 +1,12 @@
+<org.openmrs.module.reporting.common.SortCriteria id="1">
+    <sortElements>
+        <org.openmrs.module.reporting.common.SortCriteria_-SortElement>
+            <elementName>element1</elementName>
+            <direction>DESC</direction>
+        </org.openmrs.module.reporting.common.SortCriteria_-SortElement>
+        <org.openmrs.module.reporting.common.SortCriteria_-SortElement>
+            <elementName>element2</elementName>
+            <direction>ASC</direction>
+        </org.openmrs.module.reporting.common.SortCriteria_-SortElement>
+    </sortElements>
+</org.openmrs.module.reporting.common.SortCriteria>
