@@ -172,7 +172,7 @@ public class CohortIndicatorAndDimensionDataSetDefinition extends BaseDataSetDef
     /**
      * Specification which encapsulates information about the indicator and dimensions included
      */
-	static public class CohortIndicatorAndDimensionSpecification {
+	public class CohortIndicatorAndDimensionSpecification implements Serializable {
 
         public static final long serialVersionUID = 1L;
         

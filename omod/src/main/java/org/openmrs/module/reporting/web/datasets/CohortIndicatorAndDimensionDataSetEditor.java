@@ -9,6 +9,14 @@
  */
 package org.openmrs.module.reporting.web.datasets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.common.DelimitedKeyComparator;
@@ -31,14 +39,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 public class CohortIndicatorAndDimensionDataSetEditor {
@@ -71,7 +71,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
 		
 		CohortIndicatorAndDimensionSpecification spec = null;
 		if (index == null) {
-			spec = new CohortIndicatorAndDimensionDataSetDefinition.CohortIndicatorAndDimensionSpecification();
+			spec = cidsd.new CohortIndicatorAndDimensionSpecification();
 			cidsd.addSpecification(spec);
 		}
 		else {
