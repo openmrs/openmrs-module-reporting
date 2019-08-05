@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.reporting.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -92,10 +93,12 @@ public class SortCriteria {
 	
 	//***** INNER CLASSES *****
 	
-	static public class SortElement {
-		
+	public class SortElement implements Serializable {
+
+		public static final long serialVersionUID = 1L;
+
 		//***** PROPERTIES *****
-		
+
 		private String elementName;
 		private SortDirection direction;
 		
