@@ -59,11 +59,13 @@
 					<tr>
 						<td width="20%" nowrap="">
 							<a href="${editUrl}">
-								${dimension.name}
+								<c:out value="${dimension.name}" />
 							</a>
 						</td>
 						<td width="20%">
-							<span class="small">${dimension.description}</span>
+							<span class="small">
+								<c:out value="${dimension.description}" />
+							</span>
 						</td>
 						<td width="10%">
 							<c:forEach var="opt" items="${dimension.optionKeys}" varStatus="optStatus">
