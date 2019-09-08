@@ -18,12 +18,12 @@ Requirements
 ================
 OpenMRS 1.5.2 or higher
 
-###Required Modules:
+### Required Modules:
 1. HTML Widgets 1.5.5
 2. Serialization XStream 0.1.8.1
 3. Calculation 1.2
 
-###Recommended modules:
+### Recommended modules:
 1. Reporting Compatibility 1.5.0.3
 
 View, download or fork source code: on GitHub
