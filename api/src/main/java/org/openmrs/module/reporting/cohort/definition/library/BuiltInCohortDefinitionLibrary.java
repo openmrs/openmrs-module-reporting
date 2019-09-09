@@ -37,7 +37,7 @@ import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition
 import org.openmrs.module.reporting.cohort.definition.TextObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
-
+import org.openmrs.module.reporting.common.SetComparator;
 
 import java.util.Date;
 import java.util.List;
@@ -122,6 +122,7 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("values", "reporting.parameter.valueList", Concept.class, List.class, null));
         cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
         cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        cd.addParameter(new Parameter("operator", "reporting.parameter.operator", SetComparator.class));
         return cd;
     }
 
@@ -161,6 +162,7 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("values", "reporting.parameter.valueList", Concept.class, List.class, null));
         cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
         cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        cd.addParameter(new Parameter("operator", "reporting.parameter.operator", SetComparator.class));
         return cd;
     }
 
