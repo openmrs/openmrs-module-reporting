@@ -19,6 +19,7 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.ConditionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
@@ -268,6 +269,16 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
         cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
         cd.addParameter(new Parameter("onDate", "reporting.parameter.date", Date.class));
+        return cd;
+    }
+    
+    @DocumentedDefinition("conditonSearchAdvanced")
+    public CohortDefinition getConditonSearchAdvanced() {
+    	ConditionCohortDefinition cd = new ConditionCohortDefinition();
+    	cd.addParameter(new Parameter("concept", "reporting.parameter.concept", Concept.class));
+    	cd.addParameter(new Parameter("conditionNonCoded", "reporting.parameter.conditionNonCoded", String.class));
+    	cd.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
         return cd;
     }
 }

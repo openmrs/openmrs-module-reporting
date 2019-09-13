@@ -58,6 +58,7 @@
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
 		<reportingApiConditionalArtifactId>reporting-api-1.9</reportingApiConditionalArtifactId>
+		<emrApiVersion>1.27.0</emrApiVersion>
 	</properties>
 
 
@@ -274,7 +275,12 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>emrapi-condition-list</artifactId>
+				<version>${emrApiVersion}</version>
+				<scope>provided</scope>
+		</dependency> 
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
