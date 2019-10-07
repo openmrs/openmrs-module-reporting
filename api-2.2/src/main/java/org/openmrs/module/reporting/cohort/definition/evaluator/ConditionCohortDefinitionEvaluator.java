@@ -46,8 +46,8 @@ public class ConditionCohortDefinitionEvaluator implements CohortDefinitionEvalu
 		        .whereLessOrEqualTo("c.onsetDate", cd.getOnsetDateOnOrBefore())
 		        .whereGreaterOrEqualTo("c.endDate", cd.getEndDateOnOrAfter())
 		        .whereLessOrEqualTo("c.endDate", cd.getEndDateOnOrBefore())
-				.whereGreater("c.endDate", cd.getActiveOnDate())
-				.whereLess("c.onsetDate", cd.getActiveOnDate());	
+				.whereGreaterOrEqualTo("c.endDate", cd.getActiveOnDate())
+				.whereLessOrEqualTo("c.onsetDate", cd.getActiveOnDate());	
 		List<Integer> patientIds = evaluationService.evaluateToList(query, Integer.class, context);
 		Cohort cohort = new Cohort(patientIds);
 		return new EvaluatedCohort(cohort, cd, context);
