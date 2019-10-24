@@ -1,4 +1,4 @@
-package implementerconfigured
+package implementerconfigured.dataset
 
 import org.openmrs.api.LocationService
 import org.openmrs.module.reporting.dataset.DataSet
