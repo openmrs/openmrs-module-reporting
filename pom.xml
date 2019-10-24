@@ -45,7 +45,7 @@
 		<reportingCompatibilityVersion>2.0.6</reportingCompatibilityVersion>
 		<openMRSMinorVersion>1.9</openMRSMinorVersion>
 		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
-		<serializationVersion>0.2.14</serializationVersion>
+		<serializationVersion>0.2.12</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
 		<jacksonVersion>1.5.0</jacksonVersion>
 		<quartzVersion>2.1.1</quartzVersion>
@@ -347,6 +347,16 @@
                 <jacksonVersion>1.9.13</jacksonVersion>
                 <reportingApiConditionalArtifactId>reporting-api-2.0</reportingApiConditionalArtifactId>
             </properties>
+            
+            <dependencies>
+              <dependency>
+         	   <groupId>cglib</groupId>
+    		   <artifactId>cglib-nodep</artifactId>
+    		   <version>3.2.5</version>
+			   <type>jar</type>
+			    <scope>provided</scope>
+			</dependency>
+			</dependencies>
         </profile>
 	</profiles>
 

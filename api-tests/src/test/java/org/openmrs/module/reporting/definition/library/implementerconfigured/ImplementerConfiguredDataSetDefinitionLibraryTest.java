@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.definition.VisitIdDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -57,7 +58,7 @@ public class ImplementerConfiguredDataSetDefinitionLibraryTest {
 
 		mockStatic(OpenmrsUtil.class);
 		when(OpenmrsUtil.getFileAsString(any(File.class))).thenReturn(SQL_QUERY);
-
+        
 		assertThat(library.getDefinitionSummaries().size(), is(1));
 		assertThat(library.getDefinitionSummaries().get(0).getKey(), is("configuration.definitionlibrary.dataset.patientId"));
 
