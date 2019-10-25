@@ -93,7 +93,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void shouldIncludeVisit_ifActiveVisitRangeWithinVisit() throws Exception {
 
-        Patient patient = data.randomPatient().save();
+        Patient patient = data.randomPatient().birthdate("1975-05-27").save();
         // early dates to avoid active visits in standard test dataset
         Visit visit = data.visit()
                 .started("1999-01-01")
@@ -114,7 +114,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void shouldIncludeVisit_ifActiveVisitRangeStartBeforeVisitAndRangeEndDuringVisit() throws Exception {
 
-        Patient patient = data.randomPatient().save();
+        Patient patient = data.randomPatient().birthdate("1975-05-27").save();
         // early dates to avoid active visits in standard test dataset
         Visit visit = data.visit()
                 .started("1999-01-01")
@@ -135,7 +135,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void shouldIncludeVisit_ifActiveVisitRangeStartDuringVisitAndRangeEndAfterVisit() throws Exception {
 
-        Patient patient = data.randomPatient().save();
+        Patient patient = data.randomPatient().birthdate("1975-05-27").save();
         // early dates to avoid active visits in standard test dataset
         Visit visit = data.visit()
                 .started("1999-01-01")
@@ -156,7 +156,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void shouldIncludeVisit_ifActiveVisitRangeStartBeforeVisitAndRangeEndAfterVisit() throws Exception {
 
-        Patient patient = data.randomPatient().save();
+        Patient patient = data.randomPatient().birthdate("1975-05-27").save();
         // early dates to avoid active visits in standard test dataset
         Visit visit = data.visit()
                 .started("1999-01-01")
@@ -177,7 +177,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void shouldIncludeVisit_ifActiveVisitRangeEndSameAsVisitStart() throws Exception {
 
-        Patient patient = data.randomPatient().save();
+        Patient patient = data.randomPatient().birthdate("1975-05-27").save();
         // early dates to avoid active visits in standard test dataset
         Visit visit = data.visit()
                 .started("1999-01-01")
@@ -198,7 +198,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void shouldIncludeVisit_ifActiveVisitRangeStartSameAsVisitEnd() throws Exception {
 
-        Patient patient = data.randomPatient().save();
+        Patient patient = data.randomPatient().birthdate("1975-05-27").save();
         // early dates to avoid active visits in standard test dataset
         Visit visit = data.visit()
                 .started("1999-01-01")
@@ -220,7 +220,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void shouldNotIncludeVisit_ifActiveVisitRangeStartBeforeVisitAndRangeEndBeforeVisit() throws Exception {
 
-        Patient patient = data.randomPatient().save();
+        Patient patient = data.randomPatient().birthdate("1975-05-27").save();
         // early dates to avoid active visits in standard test dataset
         Visit visit = data.visit()
                 .started("1999-01-01")
@@ -239,7 +239,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void shouldIncludeVisit_ifActiveVisitRangeStartAfterVisitAndRangeEndAfterVisit() throws Exception {
 
-        Patient patient = data.randomPatient().save();
+        Patient patient = data.randomPatient().birthdate("1975-05-27").save();
         // early dates to avoid active visits in standard test dataset
         Visit visit = data.visit()
                 .started("1999-01-01")
@@ -258,7 +258,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void shouldIncludeVisit_ifActiveVisitRangeStartAfterVisitStartAndVisitCurrentlyActive() throws Exception {
 
-        Patient patient = data.randomPatient().save();
+        Patient patient = data.randomPatient().birthdate("1975-05-27").save();
         // early dates to avoid active visits in standard test dataset
         Visit visit = data.visit()
                 .started("1999-01-01")
@@ -277,7 +277,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void shouldNotIncludeVisit_ifActiveVisitRangeEndBeforeVisitStartAndVisitCurrentlyActive() throws Exception {
 
-        Patient patient = data.randomPatient().save();
+        Patient patient = data.randomPatient().birthdate("1975-05-27").save();
         // early dates to avoid active visits in standard test dataset
         Visit visit = data.visit()
                 .started("1999-01-01")

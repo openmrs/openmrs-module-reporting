@@ -19,8 +19,11 @@ import java.util.UUID;
 
 import org.junit.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
+import org.openmrs.Patient;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
@@ -39,8 +42,20 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	PatientService patientService;
+
+	@Before
+	// This is needed due to a change to standardTestDataset in the OpenMRS 2.2 release that changed person 6 birth year from 2007 to 1975
+	public void setup() {
+		Patient p = patientService.getPatient(6);
+		p.setBirthdate(DateUtil.getDateTime(2007, 5, 27));
+		patientService.savePatient(p);
+	}
 
 	/**
 	 * @see {@link MultiPeriodIndicatorDataSetEvaluator#evaluate(DataSetDefinition,EvaluationContext)}

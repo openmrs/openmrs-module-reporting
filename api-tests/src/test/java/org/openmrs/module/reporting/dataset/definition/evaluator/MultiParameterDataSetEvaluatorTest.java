@@ -10,7 +10,11 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
+import org.openmrs.api.PatientService;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.MultiParameterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
@@ -33,6 +37,17 @@ public class MultiParameterDataSetEvaluatorTest extends BaseModuleContextSensiti
 
 	@Autowired
 	DataSetDefinitionService dataSetDefinitionService;
+
+	@Autowired
+	PatientService patientService;
+
+	@Before
+	// This is needed due to a change to standardTestDataset in the OpenMRS 2.2 release that changed person 6 birth year from 2007 to 1975
+	public void setup() {
+		Patient p = patientService.getPatient(6);
+		p.setBirthdate(DateUtil.getDateTime(2007, 5, 27));
+		patientService.savePatient(p);
+	}
 
 	/**
 	 * @see {@link org.openmrs.module.reporting.dataset.definition.evaluator.MultiParameterDataSetEvaluator#evaluate(org.openmrs.module.reporting.dataset.definition.DataSetDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)}

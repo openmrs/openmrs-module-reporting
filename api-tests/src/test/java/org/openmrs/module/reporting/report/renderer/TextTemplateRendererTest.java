@@ -9,15 +9,16 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -28,11 +29,26 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsClassLoader;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 /**
  * Tests the TextTemplateRenderer
  */
 public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	PatientService patientService;
+
+	@Before
+	// This is needed due to a change to standardTestDataset in the OpenMRS 2.2 release that changed person 6 birth year from 2007 to 1975
+	public void setup() {
+		Patient p = patientService.getPatient(6);
+		p.setBirthdate(DateUtil.getDateTime(2007, 5, 27));
+		patientService.savePatient(p);
+	}
 	
 	@Test
 	public void shouldRenderVariableReplacementTemplate() throws Exception {
