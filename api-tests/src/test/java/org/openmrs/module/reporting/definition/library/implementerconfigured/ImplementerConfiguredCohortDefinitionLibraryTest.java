@@ -50,7 +50,6 @@ public class ImplementerConfiguredCohortDefinitionLibraryTest extends BaseImplem
 		assertThat(definition, notNullValue());
 		assertThat(definition, instanceOf(GenderCohortDefinition.class));
 		assertThat(((GenderCohortDefinition) definition).getFemaleIncluded(), is(true));
-		assertThat(((GenderCohortDefinition) definition).getMaleIncluded(), is(false));
 	}
 
 	@Test
