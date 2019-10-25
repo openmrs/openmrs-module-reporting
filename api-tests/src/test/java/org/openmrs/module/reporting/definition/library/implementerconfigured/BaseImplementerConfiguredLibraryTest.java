@@ -29,7 +29,7 @@ public abstract class BaseImplementerConfiguredLibraryTest extends BaseModuleCon
 	}
 
 	protected File getConfigDir(String type) {
-		if (baseDir != null) {
+		if (baseDir == null) {
 			baseDir = new File(OpenmrsUtil.getApplicationDataDirectory(), BaseImplementerConfiguredDefinitionLibrary.BASE_DIR);
 		}
 		File configDir = new File(baseDir, type);
