@@ -26,7 +26,7 @@ OpenMRS 1.5.2 or higher
 ### Recommended modules:
 1. Reporting Compatibility 1.5.0.3
 
-View, download or fork source code: on GitHub
+View, download or fork source code on GitHub
 
 
 Installation
@@ -41,9 +41,9 @@ Upgrade
 To upgrade from Reporting Module 0.3.x:
   1. Check to make sure that you have all of the Required Modules installed on your system.
   2. Log into OpenMRS
-  3. Navigate to Admin > Manage Modules.
+  3. Navigate to `Admin` > `Manage Modules`.
   4. Click the trash icon next to Reporting 0.3.x to remove the module from your system.
-  5. Navigate to the newer omod on your system using the browse button and click Upload.
+  5. Navigate to the newer omod on your system using the browse button and click `Upload`.
 
 
 Privileges
