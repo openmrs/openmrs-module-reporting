@@ -49,7 +49,12 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		p.setBirthdate(DateUtil.getDateTime(2007, 5, 27));
 		patientService.savePatient(p);
 	}
-	
+
+	@Test
+	public void shouldRenderJSONVariableReplacementTemplate() throws Exception {
+		shouldRenderTemplate("VariableReplacementTemplate.json", null);
+	}
+
 	@Test
 	public void shouldRenderVariableReplacementTemplate() throws Exception {
 		shouldRenderTemplate("VariableReplacementTemplate.txt", null);

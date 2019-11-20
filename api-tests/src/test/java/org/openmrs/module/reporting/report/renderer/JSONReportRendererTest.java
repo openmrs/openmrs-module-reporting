@@ -62,7 +62,7 @@ public class JSONReportRendererTest extends BaseModuleContextSensitiveTest {
         ReportData data = Context.getService(ReportDefinitionService.class).evaluate(report,context);
 
 
-        JSONReportRenderer renderer = new JSONReportRenderer();
+        JSONTemplateRenderer renderer = new JSONTemplateRenderer();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         renderer.render(data, "", out);
 
