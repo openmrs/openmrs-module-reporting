@@ -49,7 +49,7 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		p.setBirthdate(DateUtil.getDateTime(2007, 5, 27));
 		patientService.savePatient(p);
 	}
-	
+
 	@Test
 	public void shouldRenderVariableReplacementTemplate() throws Exception {
 		shouldRenderTemplate("VariableReplacementTemplate.txt", null);
@@ -75,15 +75,15 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		allPatients.addPatientProperty("gender");
 		allPatients.addPatientProperty("birthdate");
 		reportDefinition.addDataSetDefinition("allPatients", allPatients, null);
-		
+
 		GenderCohortDefinition males = new GenderCohortDefinition();
 		males.setName("Males");
 		males.setMaleIncluded(true);
-		
+
 		GenderCohortDefinition females = new GenderCohortDefinition();
 		females.setName("Females");
 		females.setFemaleIncluded(true);
-		
+
 		CohortCrossTabDataSetDefinition genderDsd = new CohortCrossTabDataSetDefinition();
 		genderDsd.addColumn("males", males, null);
 		genderDsd.addColumn("females", females, null);
