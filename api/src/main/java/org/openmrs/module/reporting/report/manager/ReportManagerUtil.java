@@ -22,6 +22,7 @@ import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
+import org.openmrs.module.reporting.report.renderer.TextTemplateRenderer;
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.report.util.ReportUtil;
@@ -160,6 +161,23 @@ public class ReportManagerUtil {
 	}
 
 	/**
+	 * @return a new ReportDesign for a JSON template, using a file on the classpath as the template
+	 */
+	public static ReportDesign createJSONTemplateDesign(String reportDesignUuid, ReportDefinition reportDefinition, String resourcePath) {
+		ReportDesign design =  createJSONReportDesign(reportDesignUuid,reportDefinition);
+		design.setReportDefinition(reportDefinition);
+		design.setRendererType(TextTemplateRenderer.class);
+		ReportDesignResource resource = new ReportDesignResource();
+		resource.setName("template");
+		resource.setExtension("json");
+		resource.setContentType("application/json");
+		resource.setContents(ReportUtil.readByteArrayFromResource(resourcePath));
+		resource.setReportDesign(design);
+		design.addResource(resource);
+		return design;
+	}
+
+	/**
 	 * @return a new ReportDesign for a standard Excel output
 	 */
 	public static ReportDesign createExcelDesign(String reportDesignUuid, ReportDefinition reportDefinition) {
@@ -181,6 +199,18 @@ public class ReportManagerUtil {
 		design.setName("CSV");
 		design.setReportDefinition(reportDefinition);
 		design.setRendererType(CsvReportRenderer.class);
+		return design;
+	}
+
+	/**
+	 * @return a new ReportDesign for a standard CSV output
+	 */
+	public static ReportDesign createJSONReportDesign(String reportDesignUuid, ReportDefinition reportDefinition) {
+		ReportDesign design = new ReportDesign();
+		design.setUuid(reportDesignUuid);
+		design.setName("JSON");
+		design.setReportDefinition(reportDefinition);
+		design.setRendererType(TextTemplateRenderer.class);
 		return design;
 	}
 }
