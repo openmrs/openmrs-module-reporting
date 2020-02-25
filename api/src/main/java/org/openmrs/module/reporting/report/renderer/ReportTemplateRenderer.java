@@ -222,17 +222,16 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 	 * @return the value for the report template replacement given the initial value
 	 */
 	public Object getReplacementValue(Object initialValue) {
+
 		Object replacementValue = "";
-		if (initialValue != null) { 
-			if (initialValue instanceof Cohort) {
-				replacementValue = new Integer(((Cohort) initialValue).size());
-			} 
-			else if (initialValue instanceof IndicatorResult) {
-				replacementValue = new Double(((IndicatorResult) initialValue).getValue().doubleValue());
-			}
-			else {
-				replacementValue = initialValue;
-			}
+		if (initialValue != null) {
+				if (initialValue instanceof Cohort) {
+					replacementValue = new Integer(((Cohort) initialValue).size());
+				}
+				else if (initialValue instanceof IndicatorResult) {
+					IndicatorResult ir = (IndicatorResult) initialValue;
+					replacementValue = ir.getValue();
+				}
 		}
 		return replacementValue;
 	}
