@@ -232,6 +232,9 @@ public abstract class ReportTemplateRenderer extends ReportDesignRenderer {
 					IndicatorResult ir = (IndicatorResult) initialValue;
 					replacementValue = ir.getValue();
 				}
+				else {
+					replacementValue = initialValue;
+				}
 		}
 		return replacementValue;
 	}
