@@ -36,6 +36,7 @@
 		<module>api-1.10</module>
 		<module>api-2.0</module>
 		<module>api-2.2</module>
+		<module>api-2.4</module>
 		<module>api-tests</module>
 		<module>omod</module>
     </modules>
