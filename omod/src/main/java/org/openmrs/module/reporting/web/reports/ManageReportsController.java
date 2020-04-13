@@ -33,6 +33,7 @@ import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.web.controller.mapping.renderers.RendererMappingHandler;
 import org.openmrs.util.HandlerUtil;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +41,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -103,12 +106,12 @@ public class ManageReportsController {
      * to edit a reportDefinition based on its rendererType.
      */
 	@RequestMapping("/module/reporting/reports/renderers/editReportDesign")
-    public String editReportDesign(ModelMap model, 
+    public String editReportDesign(ModelMap model, HttpSession sesion,
     		@RequestParam(required=true, value="type") Class<? extends ReportRenderer> type,
     		@RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid,
     		@RequestParam(required=false, value="reportDefinitionUuid") String reportDefinitionUuid,
     		@RequestParam(required=false, value="returnUrl") String returnUrl) {
-    
+    try {
 		if ( !ObjectUtil.isNull(type) ) {
 			try {
 				RendererMappingHandler handler = HandlerUtil.getPreferredHandler(RendererMappingHandler.class, type);
@@ -137,6 +140,10 @@ public class ManageReportsController {
             url.append("&returnUrl=" + returnUrl);
         }
 		return "redirect:"+url.toString();
+    }catch(NullPointerException e){
+    	 sesion.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,"reporting.nullRnderType.error");
+    	 return "module/reporting/reports/manageReportDesigns";
+    }
     }
 
     /**

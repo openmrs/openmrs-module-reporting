@@ -10,6 +10,7 @@
 package org.openmrs.module.reporting.web.reports.renderers;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -24,6 +25,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.PropertyValueException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -125,7 +127,7 @@ public class TextTemplateFormController {
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/module/reporting/reports/renderers/saveTextTemplateReportRendererDesign")
-	public String saveTextTemplateReportRendererDesign(ModelMap model, HttpServletRequest request,
+	public String saveTextTemplateReportRendererDesign(ModelMap model, HttpServletRequest request, HttpSession sesion,
 					@RequestParam(required=false, value="uuid") String uuid,
 					@RequestParam(required=true,  value="name") String name,
 					@RequestParam(required=false, value="description") String description,
@@ -138,7 +140,7 @@ public class TextTemplateFormController {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportDesign design = null;
 		ReportDesignResource designResource = new ReportDesignResource();
-			
+		try {	
 		if (StringUtils.isNotEmpty(uuid)) {
 			design = rs.getReportDesignByUuid(uuid);
 		}
@@ -171,6 +173,10 @@ public class TextTemplateFormController {
     	
     	design = rs.saveReportDesign(design);
     	return "redirect:" + successUrl;
+		}catch(PropertyValueException e){
+			sesion.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,"reporting.nullPropertyValues.error");
+	    	  return "module/reporting/reports/renderers/textTemplateReportRenderer";
+		}	
 	}
 	
 	@ModelAttribute( "expSupportedTypes" )

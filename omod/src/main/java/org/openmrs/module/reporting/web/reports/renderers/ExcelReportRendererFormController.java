@@ -18,9 +18,11 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.PropertyValueException;
 import org.apache.commons.lang.StringUtils;
 
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
@@ -111,7 +113,7 @@ public class ExcelReportRendererFormController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/module/reporting/reports/renderers/saveExcelReportRenderer")
-	public String saveExcelReportRenderer(ModelMap model, HttpServletRequest request,
+	public String saveExcelReportRenderer(ModelMap model, HttpServletRequest request,  HttpSession sesion,
 					@RequestParam(required=false, value="uuid") String uuid,
 					@RequestParam(required=true,  value="name") String name,
 					@RequestParam(required=false, value="description") String description,
@@ -126,7 +128,7 @@ public class ExcelReportRendererFormController {
 	) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportDesign design = null;
-
+       try {
 		if (StringUtils.isNotEmpty(uuid)) {
 			design = rs.getReportDesignByUuid(uuid);
 		}
@@ -213,5 +215,9 @@ public class ExcelReportRendererFormController {
     	}
     	design = rs.saveReportDesign(design);
     	return "redirect:" + successUrl;
+       }catch(PropertyValueException e) {
+    	   sesion.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,"reporting.nullPropertyValues.error");
+    	  return "module/reporting/reports/renderers/excelReportRenderer"; 
+       }
 	}
 }
