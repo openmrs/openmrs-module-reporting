@@ -172,7 +172,8 @@ public class SqlFileDataSetEvaluator implements DataSetEvaluator {
      * @return parameter values to use within SQL statement, converting object references to metadata to scalar properties, defaulting to keys
      */
     protected Map<String, Object> constructParameterValues(SqlFileDataSetDefinition dsd, EvaluationContext context) {
-        Map<String, Object> ret = context.getParameterValues();
+        Map<String, Object> ret = context.getContextValues();
+        ret.putAll(context.getParameterValues());
         for (String key : ret.keySet()) {
             Object o = ret.get(key);
             if (o instanceof OpenmrsMetadata) {
