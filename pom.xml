@@ -9,14 +9,14 @@
 	<description>Parent project for Reporting</description>
 
 	<url>http://openmrs.org</url>
-	
+
 	<scm>
 		<connection>scm:git:git@github.com:openmrs/openmrs-module-reporting.git</connection>
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-reporting.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-reporting/</url>
         <tag>HEAD</tag>
     </scm>
-	
+
 	<distributionManagement>
         <repository>
             <id>openmrs-repo-modules</id>
@@ -227,21 +227,21 @@
 			<version>${serializationVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>serialization.xstream-api-1.9</artifactId>
 			<version>${serializationVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>serialization.xstream-api-1.10</artifactId>
 			<version>${serializationVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>serialization.xstream-api-2.0</artifactId>
@@ -262,7 +262,7 @@
 			<version>${htmlwidgetsVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
@@ -277,6 +277,18 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
+
+        <!-- For reading YAML and JSON files -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.10.1</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.apache.poi</groupId>
