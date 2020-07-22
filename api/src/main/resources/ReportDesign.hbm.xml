@@ -4,7 +4,11 @@
 <hibernate-mapping package="org.openmrs.module.reporting.report" >
 
 	<class name="ReportDesign" table="reporting_report_design">
-		<id name="id" type="int" column="id" unsaved-value="0"><generator class="native" /></id>
+		<id name="id" type="int" column="id" unsaved-value="0">
+			<generator class="native">
+				<param name="sequence">reporting_report_design_id_seq</param>
+			</generator>
+		</id>
 		<property name="uuid" type="string" length="38" not-null="true" />
 		<property name="name" type="string" not-null="true" />
 		<property name="description" type="string" />
@@ -30,7 +34,11 @@
 	</class>
 	
 	<class name="ReportDesignResource" table="reporting_report_design_resource">
-		<id name="id" type="int" column="id" unsaved-value="0"><generator class="native" /></id>
+		<id name="id" type="int" column="id" unsaved-value="0">
+			<generator class="native">
+				<param name="sequence">reporting_report_design_resource_id_seq</param>
+			</generator>
+		</id>
 		<property name="uuid" type="string" length="38" not-null="true" />
 		<property name="name" type="string" not-null="true" />
 		<property name="description" type="string" />
@@ -49,7 +57,11 @@
 	</class>
 	
 	<class name="ReportProcessorConfiguration" table="reporting_report_processor"  batch-size="50">
-		<id name="id" type="int" column="id" unsaved-value="0"><generator class="native" /></id>
+		<id name="id" type="int" column="id" unsaved-value="0">
+			<generator class="native">
+				<param name="sequence">reporting_report_processor_id_seq</param>
+			</generator>
+		</id>
 		<property name="uuid" type="string" length="38" not-null="true" />
 		<property name="name" type="string" not-null="true" />
 		<property name="description" type="string" />
