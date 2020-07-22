@@ -188,7 +188,7 @@ public class ReportLoader {
 
     public static ReportDesign constructCSVReportDesign(ReportDefinition reportDefinition) {
         ReportDesign design = new ReportDesign();
-        design.setName(reportDefinition.getName() + ".csv");  // TODO: is this what we want for a name? or this supported to just be a message code for "CSV"?
+        design.setName("reporting.csv");
         design.setReportDefinition(reportDefinition);
         design.setRendererType(CsvReportRenderer.class);
 
