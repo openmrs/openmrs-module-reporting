@@ -1,0 +1,17 @@
+key: "sampleordersexport"
+uuid: "9e7dc296-2aad-11e3-a840-5b9e0b589afb"
+name: "sample.export.orders.name"
+description: "sample.export.order.description"
+parameters:
+  - key: "startDate"
+    type: "java.util.Date"
+    label: "startDate.label"
+  - key: "endDate"
+    type: "java.util.Date"
+    label: "endDate.label"
+datasets:
+  - key: "orders"
+    type: "sql"
+    config: "sql/orders.sql"
+
+

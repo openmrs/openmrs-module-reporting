@@ -4,14 +4,14 @@ name: "sample.export.encounters.name"
 description: "sample.export.encounters.description"
 parameters:
   - key: "startDate"
-    type: "date"
+    type: "java.util.Date"
     label: "startDate.label"
   - key: "endDate"
-    type: "date"
+    type: "java.util.Date"
     label: "endDate.label"
 datasets:
   - key: "encounters"
     type: "sql"
-    config: "encounter.sql"
+    config: "sql/encounters.sql"
 
 
