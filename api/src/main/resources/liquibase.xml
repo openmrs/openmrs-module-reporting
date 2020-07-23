@@ -56,7 +56,7 @@
 		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id"	deferrable="false" initiallyDeferred="false" />
 	</changeSet>
 
-	<changeSet id="reporting_report_design_2" author="mseaton">
+	<changeSet id="reporting_report_design_2" author="mseaton" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not><columnExists tableName="reporting_report_design" columnName="report_definition_uuid"/></not>
 		</preConditions>
@@ -72,12 +72,35 @@
 		</sql>
 	</changeSet>
 
-	<changeSet id="reporting_report_design_3" author="mseaton">
+	<changeSet id="reporting_report_design_2_postgresql" author="aman" dbms="postgresql">
+		<preConditions onFail="MARK_RAN">
+			<not><columnExists tableName="reporting_report_design" columnName="report_definition_uuid"/></not>
+		</preConditions>
+		<addColumn tableName="reporting_report_design">
+			<column name="report_definition_uuid" type="varchar(38)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		<sql>
+			UPDATE reporting_report_design rd
+			SET report_definition_uuid = so.uuid
+			FROM serialized_object so
+			WHERE rd.report_definition_id = so.serialized_object_id;
+		</sql>	
+	</changeSet>
+
+	<changeSet id="reporting_report_design_3" author="mseaton" dbms="mysql">
 		<sql>
 			alter table reporting_report_design modify report_definition_uuid char(38) not null;
 		</sql>
 	</changeSet>
 
+	<changeSet id="reporting_report_design_3_postgresql" author="aman" dbms="postgresql">
+		<sql>
+			alter table reporting_report_design alter column report_definition_uuid type char(38);
+		</sql>
+	</changeSet>
+	
 	<changeSet id="reporting_report_design_4" author="mseaton">
 	<validCheckSum>3:bddba97d81d6daa7fd6fbb478897fd84</validCheckSum> <!-- old checksum without clean constraint names -->
 	<validCheckSum>3:e557ea83775089ed9e636768b25de9a0</validCheckSum> <!-- current checksum with clean constraint names -->
@@ -356,6 +379,8 @@
 	<!--  REPORTING MIGRATION CHANGE SETS TO SUPPORT REFACTORING -->
 
 	<changeSet id="reporting_migration_1" author="mseaton">
+	    <validCheckSum>8:29d9c10336ca467e93b34db77a250d12</validCheckSum> <!-- old checksum before removing ` from sql -->
+    	<validCheckSum>8:631a987732036d592c48c118f8de368d</validCheckSum> <!-- current checksum after removing ` from sql -->
 		<comment>
 			Remove OpenMRS scheduled tasks produced by the reporting module
 		</comment>
@@ -364,7 +389,7 @@
 			where 	task_config_id in (select task_config_id from scheduler_task_config where schedulable_class like 'org.openmrs.module.reporting.%');
 		</sql>
 		<sql>
-			delete from `scheduler_task_config` where schedulable_class like 'org.openmrs.module.reporting.%';
+			delete from scheduler_task_config where schedulable_class like 'org.openmrs.module.reporting.%';
 		</sql>
 	</changeSet>
 
