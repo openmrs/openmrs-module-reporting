@@ -109,7 +109,7 @@ public class ReportLoaderTest {
 
         List<ReportDesign> reportDesigns = ReportLoader.constructReportDesigns(reportDefinition);
         assertThat(reportDesigns.size(), is(1));
-        assertThat(reportDesigns.get(0).getName(), is("My Test Report.csv"));
+        assertThat(reportDesigns.get(0).getName(), is("reporting.csv"));
         assertThat(reportDesigns.get(0).getReportDefinition(), is(reportDefinition));
         assertThat(reportDesigns.get(0).getPropertyValue(ReportDesignRenderer.FILENAME_BASE_PROPERTY, null), startsWith("my.test.report."));
 

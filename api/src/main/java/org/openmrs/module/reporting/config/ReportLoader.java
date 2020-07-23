@@ -89,7 +89,6 @@ public class ReportLoader {
     public static  ReportDefinition constructReportDefinition(ReportDescriptor reportDescriptor) {
 
         ReportDefinition rd = new ReportDefinition();
-        // TODO do we need to handle translations here?
         rd.setName(reportDescriptor.getName());
         rd.setDescription(reportDescriptor.getDescription());
         rd.setUuid(reportDescriptor.getUuid());
@@ -101,7 +100,6 @@ public class ReportLoader {
         if (reportDescriptor.getDatasets() != null) {
             for (DataSetDescriptor dataSetDescriptor : reportDescriptor.getDatasets()) {
                 DataSetDefinition dsd = constructDataSetDefinition(dataSetDescriptor, parameters);
-                // TODO do we need to handle DSD name and description?
                 if (dsd != null) {
                     rd.addDataSetDefinition(dataSetDescriptor.getKey(), dsd, mappings);
                 }
