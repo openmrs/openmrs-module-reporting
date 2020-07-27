@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.config;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,13 @@ public class ReportDescriptor {
     private List<DataSetDescriptor> datasets;
 
     @JsonProperty
+    private List<DesignDescriptor> designs;
+
+    @JsonProperty
     private Map<String, Object> config;
+
+    // utility property for storing the path to this descriptor on the file system so we know where to look for related files
+    private File path;
 
     public String getKey() {
         return key;
@@ -76,11 +83,27 @@ public class ReportDescriptor {
         this.datasets = datasets;
     }
 
+    public List<DesignDescriptor> getDesigns() {
+        return designs;
+    }
+
+    public void setDesigns(List<DesignDescriptor> designs) {
+        this.designs = designs;
+    }
+
     public Map<String, Object> getConfig() {
         return config;
     }
 
     public void setConfig(Map<String, Object> config) {
         this.config = config;
+    }
+
+    public File getPath() {
+        return path;
+    }
+
+    public void setPath(File path) {
+        this.path = path;
     }
 }

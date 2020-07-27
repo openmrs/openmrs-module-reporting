@@ -10,26 +10,32 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
+import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlFileDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportDesignRenderer;
+import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +52,7 @@ public class ReportLoader {
         for (ReportDescriptor reportDescriptor : loadReportDescriptors()) {
             ReportDefinition reportDefinition = constructReportDefinition(reportDescriptor);
             saveReportDefinition(reportDefinition);
-            List<ReportDesign> reportDesigns = constructReportDesigns(reportDefinition);
+            List<ReportDesign> reportDesigns = constructReportDesigns(reportDefinition, reportDescriptor);
             saveReportDesigns(reportDefinition, reportDesigns);
         }
     }
@@ -99,7 +105,7 @@ public class ReportLoader {
 
         if (reportDescriptor.getDatasets() != null) {
             for (DataSetDescriptor dataSetDescriptor : reportDescriptor.getDatasets()) {
-                DataSetDefinition dsd = constructDataSetDefinition(dataSetDescriptor, parameters);
+                DataSetDefinition dsd = constructDataSetDefinition(dataSetDescriptor, reportDescriptor.getPath(), parameters);
                 if (dsd != null) {
                     rd.addDataSetDefinition(dataSetDescriptor.getKey(), dsd, mappings);
                 }
@@ -113,19 +119,28 @@ public class ReportLoader {
         if (parameterDescriptors != null) {
             for (ParameterDescriptor parameterDescriptor : parameterDescriptors) {
                 try {
-                    // TODO how else might we want to configure parameters? ie other "types" besides classes?
-                    parameters.add(new Parameter(parameterDescriptor.getKey(), parameterDescriptor.getLabel(), Class.forName(parameterDescriptor.getType())));
+                    parameters.add(new Parameter(parameterDescriptor.getKey(), parameterDescriptor.getLabel(), getParameterClass(parameterDescriptor.getType())));
                 } catch (Exception e) {
-                    log.error("Unable to configure parameter " + parameterDescriptor.getKey(), e);
+                    throw new RuntimeException("Unable to configure parameter " + parameterDescriptor.getKey(), e);
                 }
             }
         }
         return parameters;
     }
 
+    public static Class<?> getParameterClass(String clazz) throws ClassNotFoundException {
+        if (clazz.equalsIgnoreCase("location")) {
+            return Location.class;
+        }
+        else if (clazz.equalsIgnoreCase("date")) {
+            return Date.class;
+        }
+        else {
+            return Context.loadClass(clazz);
+        }
+    }
 
     public static Map<String, Object> constructMappings(List<Parameter> parameters) {
-        // TODO: Mike is the correct and/or necessary?
         Map<String,Object> mappings = new HashMap<String, Object>();
         for (Parameter parameter : parameters) {
             mappings.put(parameter.getName(), "${" + parameter.getName() + "}");
@@ -133,15 +148,15 @@ public class ReportLoader {
         return mappings;
     }
 
-    public static DataSetDefinition constructDataSetDefinition(DataSetDescriptor dataSetDescriptor, List<Parameter> parameters) {
+    public static DataSetDefinition constructDataSetDefinition(DataSetDescriptor dataSetDescriptor, File path, List<Parameter> parameters) {
 
         DataSetDefinition dsd = null;
 
         if ("sql".equalsIgnoreCase(dataSetDescriptor.getType())) {
-            dsd = constructSQLFileDataSetDefinition(dataSetDescriptor);
+            dsd = constructSQLFileDataSetDefinition(dataSetDescriptor, path);
         }
         else {
-            log.error("Unsupported data set descriptor type: " + dataSetDescriptor.getType());
+            throw new RuntimeException("Unsupported data set descriptor type: " + dataSetDescriptor.getType());
         }
 
         if (parameters != null) {
@@ -153,35 +168,61 @@ public class ReportLoader {
         return dsd;
     }
 
-    public static SqlFileDataSetDefinition constructSQLFileDataSetDefinition(DataSetDescriptor dataSetDescriptor) {
+    public static SqlFileDataSetDefinition constructSQLFileDataSetDefinition(DataSetDescriptor dataSetDescriptor, File path) {
 
         SqlFileDataSetDefinition dsd = new SqlFileDataSetDefinition();
 
-        File sqlFile = new File(getReportingDescriptorsConfigurationDir() + File.separator + dataSetDescriptor.getConfig());
+        File sqlFile = new File(path, dataSetDescriptor.getConfig());
 
         if (sqlFile.exists()) {
             dsd.setSqlFile(sqlFile.getAbsolutePath());
         }
         else {
-            log.error("SQL file " + dataSetDescriptor.getConfig() + " not found");
+            throw new RuntimeException("SQL file " + dataSetDescriptor.getConfig() + " not found");
         }
 
         return dsd;
     }
 
-    public static List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
+    public static List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition, ReportDescriptor reportDescriptor) {
 
-        // currently only support a default, single CSV report design
-        ReportDesign csvDesign = constructCSVReportDesign(reportDefinition);
+        List<ReportDesign> reportDesigns = new ArrayList<ReportDesign>();
 
-        // TODO: more robust whitespace removal?  how do we want to determine the filename?
-        csvDesign.addPropertyValue(ReportDesignRenderer.FILENAME_BASE_PROPERTY, StringUtils.replace(reportDefinition.getName(), " ", ".").toLowerCase() + "." +
-                "{{ formatDate request.reportDefinition.parameterMappings.startDate \"yyyyMMdd\" }}." +
-                "{{ formatDate request.reportDefinition.parameterMappings.endDate \"yyyyMMdd\" }}." +
-                "{{ formatDate request.evaluateStartDatetime \"yyyyMMdd\" }}." +
-                "{{ formatDate request.evaluateStartDatetime \"HHmm\" }}");
+        // always do a default CSV design
+        if (reportDescriptor.getDesigns() == null || reportDescriptor.getDesigns().size() == 0) {
+            DesignDescriptor defaultDesignDecsriptor = new DesignDescriptor();
+            defaultDesignDecsriptor.setType("csv");
+            reportDescriptor.setDesigns(Collections.singletonList(defaultDesignDecsriptor));
+        }
 
-        return Collections.singletonList(csvDesign);
+        for (DesignDescriptor designDescriptor : reportDescriptor.getDesigns()) {
+            ReportDesign design = null;
+            if (designDescriptor.getType().equalsIgnoreCase("csv")) {
+                design = constructCSVReportDesign(reportDefinition);
+            }
+            else if (designDescriptor.getType().equalsIgnoreCase("excel") || designDescriptor.getType().equalsIgnoreCase("xls")) {
+                design = constructXlsReportDesign(reportDefinition, reportDescriptor, designDescriptor);
+            }
+            else {
+                throw new RuntimeException("Unsupported report design type: " + designDescriptor.getType() + " for report " + reportDefinition.getName());
+            }
+
+            design.addPropertyValue(ReportDesignRenderer.FILENAME_BASE_PROPERTY, StringUtils.replace(reportDefinition.getName(), " ", ".").toLowerCase() + "." +
+                    "{{ formatDate request.reportDefinition.parameterMappings.startDate \"yyyyMMdd\" }}." +
+                    "{{ formatDate request.reportDefinition.parameterMappings.endDate \"yyyyMMdd\" }}." +
+                    "{{ formatDate request.evaluateStartDatetime \"yyyyMMdd\" }}." +
+                    "{{ formatDate request.evaluateStartDatetime \"HHmm\" }}");
+
+            if (designDescriptor.getProperties() != null) {
+                for (Map.Entry<String,String> property : designDescriptor.getProperties().entrySet()) {
+                    design.addPropertyValue(property.getKey(), property.getValue());
+                }
+            }
+
+            reportDesigns.add(design);
+        }
+
+        return reportDesigns;
     }
 
     public static ReportDesign constructCSVReportDesign(ReportDefinition reportDefinition) {
@@ -189,11 +230,33 @@ public class ReportLoader {
         design.setName("reporting.csv");
         design.setReportDefinition(reportDefinition);
         design.setRendererType(CsvReportRenderer.class);
+        return design;
+    }
 
-        // TODO: should we parameterize these? this was stuff I just copied from Mirebaials... are we okay with the default being ISO-8859-1; not sure what the blacklist does
-        design.addPropertyValue("blacklistRegex", "[^\\p{InBasicLatin}\\p{L}]");
-        design.addPropertyValue("characterEncoding", "ISO-8859-1");
-        design.addPropertyValue("dateFormat", "dd-MMM-yyyy HH:mm:ss");
+    public static ReportDesign constructXlsReportDesign(ReportDefinition reportDefinition, ReportDescriptor reportDescriptor, DesignDescriptor designDescriptor) {
+
+        ReportDesign design = new ReportDesign();
+        design.setName("reporting.excel");
+        design.setReportDefinition(reportDefinition);
+        design.setRendererType(XlsReportRenderer.class);
+
+        if (StringUtils.isNotBlank(designDescriptor.getTemplate())) {
+            ReportDesignResource resource = new ReportDesignResource();
+            resource.setName("template");
+            resource.setExtension(ContentType.EXCEL.getExtension());
+            resource.setContentType(ContentType.EXCEL.getContentType());
+
+            try {
+                File templateFile = new File(reportDescriptor.getPath(), designDescriptor.getTemplate());
+                byte[] excelTemplate = IOUtils.toByteArray(new FileInputStream(templateFile));
+                resource.setContents(excelTemplate);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to load XLS template " + designDescriptor.getTemplate(), e);
+            }
+            resource.setReportDesign(design);
+            design.addResource(resource);
+        }
+
 
         return design;
     }
@@ -210,7 +273,7 @@ public class ReportLoader {
             }
         }
         catch (Exception e) {
-            log.error("Unable to open reporting configuration directory", e);
+            throw new RuntimeException("Unable to open reporting configuration directory", e);
         }
 
         if (files != null) {
@@ -235,9 +298,10 @@ public class ReportLoader {
             try {
                 is = new FileInputStream(file);
                 reportDescriptor = objectMapper.readValue(is, ReportDescriptor.class);
+                reportDescriptor.setPath(file.getParentFile());
             }
             catch (Exception e) {
-                log.error("Unable to load report descriptor " + file.getAbsolutePath(), e);
+                throw new RuntimeException("Unable to load report descriptor " + file.getAbsolutePath(), e);
             }
             finally {
                 IOUtils.closeQuietly(is);

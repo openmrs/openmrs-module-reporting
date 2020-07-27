@@ -13,5 +13,11 @@ datasets:
   - key: "orders"
     type: "sql"
     config: "sql/orders.sql"
-
+designs:
+  - type: "csv"
+    properties:
+      "characterEncoding": "ISO-8859-1"
+      "blacklistRegex": "[^\\p{InBasicLatin}\\p{L}]"
+  - type: "excel"
+    template: "templates/SampleReportTemplate.xls"
 

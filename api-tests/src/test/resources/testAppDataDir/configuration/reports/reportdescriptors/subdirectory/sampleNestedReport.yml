@@ -2,5 +2,17 @@ key: "samplenestedexport"
 uuid: "c2fb2082-9b36-4398-96af-d20570bacd07"
 name: "sample.export.nested.name"
 description: "sample.export.nested.description"
+parameters:
+  - key: "startDate"
+    type: "java.util.Date"
+    label: "startDate.label"
+  - key: "endDate"
+    type: "java.util.Date"
+    label: "endDate.label"
+datasets:
+  - key: "orders"
+    type: "sql"
+    config: "sql/nested.sql"
+
 
 
