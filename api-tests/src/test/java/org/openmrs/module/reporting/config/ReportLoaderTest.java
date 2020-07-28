@@ -43,7 +43,7 @@ public class ReportLoaderTest {
         assertThat(descriptor.getDesigns().get(0).getProperties().get("characterEncoding"), is("ISO-8859-1"));
         assertThat(descriptor.getDesigns().get(0).getProperties().get("blacklistRegex"), is("[^\\p{InBasicLatin}\\p{L}]"));
         assertThat(descriptor.getDesigns().get(1).getType(), is("excel"));
-        assertThat(descriptor.getDesigns().get(1).getTemplate(), is("ExcelTemplate"));
+        assertThat(descriptor.getDesigns().get(1).getTemplate(), is("ExcelTemplate.xls"));
 
         assertThat(((List<String>)descriptor.getConfig().get("categories")).size(), is(2));
         assertThat(((List<String>)descriptor.getConfig().get("categories")).get(0), is("DATA_EXPORT"));

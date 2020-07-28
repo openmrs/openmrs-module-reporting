@@ -22,7 +22,7 @@ designs:
       "characterEncoding": "ISO-8859-1"
       "blacklistRegex": "[^\\p{InBasicLatin}\\p{L}]"
   - type: "excel"
-    template: "ExcelTemplate"
+    template: "ExcelTemplate.xls"
 config:
   includeTestPatients: "true"
   categories:
