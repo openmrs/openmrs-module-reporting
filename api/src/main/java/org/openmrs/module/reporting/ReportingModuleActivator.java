@@ -16,6 +16,7 @@ import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.DaemonToken;
 import org.openmrs.module.DaemonTokenAware;
 import org.openmrs.module.reporting.common.MessageUtil;
+import org.openmrs.module.reporting.config.ReportLoader;
 import org.openmrs.module.reporting.report.task.ReportingTimerTask;
 import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 
@@ -35,6 +36,8 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
     @Override
 	public void started() {
 		ReportingTimerTask.setEnabled(true);
+		// TODO: should this happen in context refreshed instead?
+        ReportLoader.loadReportsFromConfig();
 		log.info("Reporting Module Started...");
 	}
 
