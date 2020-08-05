@@ -267,7 +267,7 @@
 			Add processAutomatically boolean to ReportRequest
 		</comment>
 		<addColumn tableName="reporting_report_request">
-			<column name="process_automatically" defaultValueNumeric="0" type="tinyint(1)">
+			<column name="process_automatically" defaultValue="0" type="boolean">
 				<constraints nullable="false"/>
 			</column>
 		</addColumn>
@@ -311,10 +311,10 @@
 				<constraints nullable="false"  />
 			</column>
 			<column name="configuration" type="mediumtext" />
-			<column name="run_on_success" defaultValueNumeric="1" type="tinyint(1)">
+			<column name="run_on_success" defaultValue="1" type="boolean">
 				<constraints nullable="false"  />
 			</column>
-			<column name="run_on_error" defaultValueNumeric="0" type="tinyint(1)">
+			<column name="run_on_error" defaultValue="0" type="boolean">
 				<constraints nullable="false"  />
 			</column>
 			<column name="creator" defaultValueNumeric="0" type="int">
