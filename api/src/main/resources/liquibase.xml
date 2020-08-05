@@ -260,6 +260,8 @@
 	</changeSet>
 
 	<changeSet id="reporting_report_request_3" author="mseaton">
+		<validCheckSum>3:8e88f53150534221e9c32cd0e2c94706</validCheckSum> <!-- old checksum without changing tinyint to boolean -->
+		<validCheckSum>3:f821b2d05cdaf6593e2c6a48907b5d48</validCheckSum> <!-- current checksum after changing tinyint to boolean -->
 		<preConditions onFail="MARK_RAN">
 			<not><columnExists tableName="reporting_report_request" columnName="process_automatically"/></not>
 		</preConditions>
@@ -290,6 +292,9 @@
 	<changeSet id="reporting_report_processor_1" author="mseaton">
 	<validCheckSum>3:bc9b147af791381ff5a98a7786f7d638</validCheckSum> <!-- old checksum without clean constraint names -->
 	<validCheckSum>3:779193b8124f3299601ca74ff7699dfe</validCheckSum> <!-- current checksum with clean constraint names -->
+
+	<validCheckSum>3:779193b8124f3299601ca74ff7699dfe</validCheckSum> <!-- old checksum without changing tinyint to boolean -->
+	<validCheckSum>3:357a305d1d6f3723032301f9e96e6f22</validCheckSum> <!-- current checksum after changing tinyint to boolean -->
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="reporting_report_processor" /></not>
 		</preConditions>
