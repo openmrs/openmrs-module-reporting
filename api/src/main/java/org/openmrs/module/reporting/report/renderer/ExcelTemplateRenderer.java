@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
@@ -20,7 +20,6 @@ import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ExcelUtil;
@@ -199,7 +198,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 							rowsFound++;
 						}
 						Map<String, Object> newReplacements = getReplacementData(sheetToAdd.getReplacementData(), reportData, design, dataSetName, dataSetRow, repeatNum);
-						rowsToAdd.add(new RowToAdd(row, newReplacements));
+						rowsToAdd.add(new RowToAdd(row, getCellValues(row), newReplacements));
                         if (log.isDebugEnabled()) {
 						    log.debug("Adding " + ExcelUtil.formatRow(row) + " with dataSetRow: " + dataSetRow);
                         }
@@ -210,7 +209,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				}
 			}
 			else {
-				rowsToAdd.add(new RowToAdd(currentRow, sheetToAdd.getReplacementData()));
+				rowsToAdd.add(new RowToAdd(currentRow, getCellValues(currentRow), sheetToAdd.getReplacementData()));
                 if (log.isDebugEnabled()) {
 				    log.debug("Adding row: " + ExcelUtil.formatRow(currentRow));
                 }
@@ -220,7 +219,7 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		// Now, go through all of the collected rows, and add them back in
 		for (int i=0; i<rowsToAdd.size(); i++) {
 			RowToAdd rowToAdd = rowsToAdd.get(i);
-			if (rowToAdd.getRowToClone() != null && rowToAdd.getRowToClone().cellIterator() != null) {
+			if (CollectionUtils.isNotEmpty(rowToAdd.getCellValues())) {
 				Row addedRow = addRow(wb, sheetToAdd, rowToAdd, i, reportData, design, repeatSections);
                 if (log.isDebugEnabled()) {
 				    log.debug("Wrote row " + i + ": " + ExcelUtil.formatRow(addedRow));
@@ -237,7 +236,12 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	public Row addRow(Workbook wb, SheetToAdd sheetToAdd, RowToAdd rowToAdd, int rowIndex, ReportData reportData, ReportDesign design, Map<String, String> repeatSections) {
 		
 		// Create a new row and copy over style attributes from the row to add
-		Row newRow = sheetToAdd.getSheet().createRow(rowIndex);
+		Row newRow = rowIndex > sheetToAdd.getSheet().getLastRowNum() ?
+					sheetToAdd.getSheet().createRow(rowIndex) :
+					sheetToAdd.getSheet().getRow(rowIndex);
+		if (newRow == null) {
+			return null;
+		}
 		Row rowToClone = rowToAdd.getRowToClone();
 		try {
 			CellStyle rowStyle = rowToClone.getRowStyle();
@@ -253,14 +257,11 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		// Iterate across all of the cells in the row, and configure all those that need to be added/cloned
 		List<CellToAdd> cellsToAdd = new ArrayList<CellToAdd>();
 
-		int totalCells = rowToClone.getPhysicalNumberOfCells();
-		int cellsFound = 0;
-		for (int cellNum=0; cellsFound < totalCells; cellNum++) {
-			Cell currentCell = rowToClone.getCell(cellNum);
+		Iterator<Cell> cellIterator = rowToClone.cellIterator();
+		int cellNum = 0;
+		while (cellIterator.hasNext()) {
+			Cell currentCell = cellIterator.next();
 			log.debug("Handling cell: " + currentCell);
-			if (currentCell != null) {
-				cellsFound++;
-			}
 			// If we find that the cell that we are on is a repeating cell, then add the appropriate number of cells to clone
 			String repeatingColumnProperty = getRepeatingColumnProperty(sheetToAdd.getOriginalSheetNum(), cellNum, repeatSections);
 			if (repeatingColumnProperty != null) {
@@ -276,21 +277,28 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 				for (DataSetRow dataSetRow : dataSet) {
 					repeatNum++;
 					for (int i=0; i<numCellsToRepeat; i++) {
-						Cell cell = (i == 0 ? currentCell : rowToClone.getCell(cellNum+i));
-						if (repeatNum == 1 && cell != null && cell != currentCell) {
-							cellsFound++;
-						}
+						int cellIndex = currentCell.getColumnIndex() + i;
+						Cell cell = (i == 0 ? currentCell : rowToClone.getCell(cellIndex));
+
 						Map<String, Object> newReplacements = getReplacementData(rowToAdd.getReplacementData(), reportData, design, dataSetName, dataSetRow, repeatNum);
-						cellsToAdd.add(new CellToAdd(cell, newReplacements));
+
+						cellsToAdd.add(new CellToAdd(cell, rowToAdd.getCellContents(cellNum + i),newReplacements));
 						log.debug("Adding " + cell + " with dataSetRow: " + dataSetRow);
 					}
 				}
+
 				cellNum += numCellsToRepeat;
+
+				// skip over additional repeated cells
+				for (int i = 1; i < numCellsToRepeat; i++) {
+					cellIterator.next();
+				}
 			}
 			else {
-				cellsToAdd.add(new CellToAdd(currentCell, rowToAdd.getReplacementData()));
+				cellsToAdd.add(new CellToAdd(currentCell, rowToAdd.getCellContents(cellNum), rowToAdd.getReplacementData()));
 				log.debug("Adding " + currentCell);
 			}
+			cellNum++;
 		}
 		
 		// Now, go through all of the collected cells, and add them back in
@@ -302,49 +310,52 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 
 		for (int i=0; i<cellsToAdd.size(); i++) {
 			CellToAdd cellToAdd = cellsToAdd.get(i);
-			Cell newCell = newRow.createCell(i);
 			Cell cellToClone = cellToAdd.getCellToClone();
-			if (cellToClone != null) {
-		    	Object contents = ExcelUtil.getCellContents(cellToClone);
-		    	newCell.setCellStyle(cellToClone.getCellStyle());
-		    	
-		    	int numFormattings = sheetToAdd.getSheet().getSheetConditionalFormatting().getNumConditionalFormattings();
-				for (int n=0; n<numFormattings; n++) {
-					ConditionalFormatting f = sheetToAdd.getSheet().getSheetConditionalFormatting().getConditionalFormattingAt(n);
-					for (CellRangeAddress add : f.getFormattingRanges()) {
-						
-						if (add.getFirstRow() == rowToAdd.getRowToClone().getRowNum() && add.getLastRow() == rowToClone.getRowNum()) {
-							if (add.getFirstColumn() == cellToClone.getColumnIndex() && add.getLastColumn() == cellToClone.getColumnIndex()) {
-								ConditionalFormattingRule[] rules = new ConditionalFormattingRule[f.getNumberOfRules()];
-								for (int j=0; j<f.getNumberOfRules(); j++) {
-									rules[j] = f.getRule(j);
-								}
-								CellRangeAddress[] cellRange = new CellRangeAddress[1];
-								cellRange[0] = new CellRangeAddress(rowIndex, rowIndex, i, i);
-								sheetToAdd.getSheet().getSheetConditionalFormatting().addConditionalFormatting(cellRange, rules);
+
+			int cellIndex = cellToClone.getColumnIndex();
+			Cell newCell = newRow.getCell(cellIndex);
+			if (newCell == null) {
+				newCell = newRow.createCell(cellIndex);
+			}
+
+			Object contents = cellToAdd.getContents();
+			newCell.setCellStyle(cellToClone.getCellStyle());
+
+			int numFormattings = sheetToAdd.getSheet().getSheetConditionalFormatting().getNumConditionalFormattings();
+			for (int n=0; n<numFormattings; n++) {
+				ConditionalFormatting f = sheetToAdd.getSheet().getSheetConditionalFormatting().getConditionalFormattingAt(n);
+				for (CellRangeAddress add : f.getFormattingRanges()) {
+
+					if (add.getFirstRow() == rowToAdd.getRowToClone().getRowNum() && add.getLastRow() == rowToClone.getRowNum()) {
+						if (add.getFirstColumn() == cellToClone.getColumnIndex() && add.getLastColumn() == cellToClone.getColumnIndex()) {
+							ConditionalFormattingRule[] rules = new ConditionalFormattingRule[f.getNumberOfRules()];
+							for (int j=0; j<f.getNumberOfRules(); j++) {
+								rules[j] = f.getRule(j);
 							}
+							CellRangeAddress[] cellRange = new CellRangeAddress[1];
+							cellRange[0] = new CellRangeAddress(rowIndex, rowIndex, i, i);
+							sheetToAdd.getSheet().getSheetConditionalFormatting().addConditionalFormatting(cellRange, rules);
 						}
 					}
 				}
+			}
 
-				int numMergedRegions = sheetToAdd.getSheet().getNumMergedRegions();
-				for (int n=0; n<numMergedRegions; n++) {
-					CellRangeAddress add = sheetToAdd.getSheet().getMergedRegion(n);
-					int rowNum = rowToClone.getRowNum();
-					if (add.getFirstRow() == rowNum && add.getLastRow() == rowNum) {
-						if (add.getFirstColumn() == cellToClone.getColumnIndex()) {
-							newMergedRegions.add(new CellRangeAddress(rowNum, rowNum, i, i+add.getNumberOfCells()-1));
-						}
+			int numMergedRegions = sheetToAdd.getSheet().getNumMergedRegions();
+			for (int n=0; n<numMergedRegions; n++) {
+				CellRangeAddress add = sheetToAdd.getSheet().getMergedRegion(n);
+				int rowNum = rowToClone.getRowNum();
+				if (add.getFirstRow() == rowNum && add.getLastRow() == rowNum) {
+					if (add.getFirstColumn() == cellToClone.getColumnIndex()) {
+						newMergedRegions.add(new CellRangeAddress(rowNum, rowNum, i, i+add.getNumberOfCells()-1));
 					}
 				}
-		    	
-		    	if (ObjectUtil.notNull(contents)) {
-					if (contents instanceof String) {
-		    			contents = EvaluationUtil.evaluateExpression(contents.toString(), cellToAdd.getReplacementData(), prefix, suffix);
-					}
-		    		ExcelUtil.setCellContents(newCell, contents);
-		    	}
+			}
 
+			if (ObjectUtil.notNull(contents)) {
+				if (contents instanceof String) {
+					contents = EvaluationUtil.evaluateExpression(contents.toString(), cellToAdd.getReplacementData(), prefix, suffix);
+				}
+				ExcelUtil.setCellContents(newCell, contents);
 				ExcelUtil.copyFormula(cellToClone, newCell);
 			}
 		}
@@ -483,6 +494,20 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
     public String getPassword(ReportDesign design) {
         return design.getPropertyValue(PASSWORD_PROPERTY, "");
     }
+
+    protected List<Object> getCellValues(Row row) {
+		List<Object> cellValues = new ArrayList<Object>();
+		if (row != null) {
+			for (Iterator<Cell> it = row.cellIterator(); it.hasNext(); ) {
+				Cell cell = it.next();
+
+				Object value = ExcelUtil.getCellContents(cell);
+
+				cellValues.add(value);
+			}
+		}
+		return cellValues;
+	}
 	
 	/**
 	 * Inner class to encapsulate a sheet that should be rendered
@@ -558,15 +583,17 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	 * Inner class to encapsulate a row that should be rendered
 	 */
 	public class RowToAdd {
-		
+
 		private Row rowToClone;
+		private List<Object> cellValues;
 		private Map<String, Object> replacementData;
-		
+
 		/**
 		 * Default Constructor
 		 */
-		public RowToAdd(Row rowToClone, Map<String, Object> replacementData) {
+		public RowToAdd(Row rowToClone, List<Object> cellValues, Map<String, Object> replacementData) {
 			this.rowToClone = rowToClone;
+			this.cellValues = cellValues;
 			this.replacementData = replacementData;
 		}
 
@@ -576,23 +603,42 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		public Row getRowToClone() {
 			return rowToClone;
 		}
+
 		/**
 		 * @param rowToClone the row to set
 		 */
 		public void setRowToClone(Row rowToClone) {
 			this.rowToClone = rowToClone;
 		}
+
+		public List<Object> getCellValues() {
+			return cellValues;
+		}
+
+		public void setCellValues(List<Object> cellValues) {
+			this.cellValues = cellValues;
+		}
+
 		/**
 		 * @return the replacementData
 		 */
 		public Map<String, Object> getReplacementData() {
 			return replacementData;
 		}
+
 		/**
 		 * @param replacementData the replacementData to set
 		 */
 		public void setReplacementData(Map<String, Object> replacementData) {
 			this.replacementData = replacementData;
+		}
+
+		public Object getCellContents(int cellIndex) {
+			if (cellIndex < CollectionUtils.size(cellValues)) {
+				return cellValues.get(cellIndex);
+			} else {
+				return null;
+			}
 		}
 	}
 	
@@ -602,13 +648,15 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 	public class CellToAdd {
 		
 		private Cell cellToClone;
+		private Object contents;
 		private Map<String, Object> replacementData;
 		
 		/**
 		 * Default Constructor
 		 */
-		public CellToAdd(Cell cellToClone, Map<String, Object> replacementData) {
+		public CellToAdd(Cell cellToClone, Object contents, Map<String, Object> replacementData) {
 			this.cellToClone = cellToClone;
+			this.contents = contents;
 			this.replacementData = replacementData;
 		}
 
@@ -618,18 +666,29 @@ public class ExcelTemplateRenderer extends ReportTemplateRenderer {
 		public Cell getCellToClone() {
 			return cellToClone;
 		}
+
 		/**
 		 * @param cellToClone the cellToClone to set
 		 */
 		public void setCellToClone(Cell cellToClone) {
 			this.cellToClone = cellToClone;
 		}
+
+		public Object getContents() {
+			return contents;
+		}
+
+		public void setContents(Object contents) {
+			this.contents = contents;
+		}
+
 		/**
 		 * @return the replacementData
 		 */
 		public Map<String, Object> getReplacementData() {
 			return replacementData;
 		}
+
 		/**
 		 * @param replacementData the replacementData to set
 		 */
