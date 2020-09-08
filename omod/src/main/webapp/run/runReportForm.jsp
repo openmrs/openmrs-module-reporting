@@ -82,7 +82,7 @@ var disableButtons = function(idPrefix) {
 																<c:if test="${fn:contains(expSupportedTypes, parameter.type.name)}">
 																<spring:bind path="expressions[${parameter.name}]">
                                                                 <!-- TODO create a unique id attribute for input in the place of #inputExpression -->
-                                                                <input id="inputExpression" class="userEnteredParam${parameter.name}" type="text" name="${status.expression}" value="${status.value}" style="display: none" /> 
+                                                                <input id="inputExpression" class="userEnteredParam${parameter.name}" type="text" name="${status.expression}" value="${status.value}" style="display: none" onkeyup="disableButtons('userEnteredParam${parameter.name}')"/> 
 																<span onclick="toggleInputElements('userEnteredParam${parameter.name}')">
 																	<input class="userEnteredParam${parameter.name} smallButton" type="button" value='<spring:message code="reporting.Report.run.enterExpression"/>' style="width:100px;"/>
 																	<input class="userEnteredParam${parameter.name} smallButton" type="button" value='<spring:message code="reporting.Report.run.enterFixedValue"/>' style="display:none; width:100px;" />
