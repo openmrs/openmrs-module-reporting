@@ -20,6 +20,23 @@ jQuery(document).ready(
 function toggleInputElements( idPrefix ){
 	jQuery( '.'+idPrefix ).toggle();
 }
+    
+/**
+ * TODO make disableButtons(idPrefix) an external function so that when widgets are
+ * used elsewhere but not in the Reporting module, they can access it.
+ */
+var disableButtons = function(idPrefix) {
+        var checkFixedValue;
+        checkFixedValue = jQuery('.' + idPrefix).val().length;
+        var checkExpression;
+         checkExpression = jQuery('#inputExpression.' + idPrefix).val().length;
+        
+        if (checkFixedValue > 0 || checkExpression > 0) {
+            jQuery('.' + idPrefix + '.smallButton').attr("disabled", "disabled");
+        } else if (checkFixedValue == 0 || checkExpression == 0) {
+            jQuery('.' + idPrefix + '.smallButton').removeAttr("disabled");
+        }
+    }
 </script>
 
 <style>
@@ -64,7 +81,8 @@ function toggleInputElements( idPrefix ){
 																<wgt:widget id="userEnteredParam${parameter.name}" name="${status.expression}" type="${parameter.type.name}" defaultValue="${status.value}" attributes="${parameter.widgetConfigurationAsString}"/>	
 																<c:if test="${fn:contains(expSupportedTypes, parameter.type.name)}">
 																<spring:bind path="expressions[${parameter.name}]">
-																<input class="userEnteredParam${parameter.name}" type="text" name="${status.expression}" value="${status.value}" style="display: none" /> 
+                                                                <!-- TODO create a unique id attribute for input in the place of #inputExpression -->
+                                                                <input id="inputExpression" class="userEnteredParam${parameter.name}" type="text" name="${status.expression}" value="${status.value}" style="display: none" /> 
 																<span onclick="toggleInputElements('userEnteredParam${parameter.name}')">
 																	<input class="userEnteredParam${parameter.name} smallButton" type="button" value='<spring:message code="reporting.Report.run.enterExpression"/>' style="width:100px;"/>
 																	<input class="userEnteredParam${parameter.name} smallButton" type="button" value='<spring:message code="reporting.Report.run.enterFixedValue"/>' style="display:none; width:100px;" />
