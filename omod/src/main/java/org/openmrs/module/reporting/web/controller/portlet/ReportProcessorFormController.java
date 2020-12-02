@@ -14,6 +14,7 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.owasp.encoder.Encode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -61,7 +62,7 @@ public class ReportProcessorFormController {
 			c = new ReportProcessorConfiguration();
 		}
 
-		c.setName(name);
+		c.setName(Encode.forHtml(name));
 		c.setDescription(description);
     	c.setProcessorType(processorType);
     	c.setProcessorMode(processorMode);
