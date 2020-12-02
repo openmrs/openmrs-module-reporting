@@ -278,6 +278,12 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+    		<groupId>org.owasp.encoder</groupId>
+    		<artifactId>encoder</artifactId>
+    		<version>1.2.3</version>
+		</dependency>
+
         <!-- For reading YAML and JSON files -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
