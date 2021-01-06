@@ -64,7 +64,7 @@ public class ReportLoaderIntegrationTest extends BaseModuleContextSensitiveTest 
 
         SqlFileDataSetDefinition dsd =  (SqlFileDataSetDefinition) ReportLoader.constructDataSetDefinition(sqlDataSetDescriptor, new File(getReportingDescriptorsConfigurationDir()),null);
 
-        assertThat(dsd.getSqlFile(), containsString("sql"+File.separator+"encounters.sql"));
+        assertThat(dsd.getSqlFile(), containsString("sql" + File.separator + "encounters.sql"));
     }
 
     @Test
