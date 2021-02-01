@@ -623,4 +623,17 @@
 		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
 	</changeSet>
 
+	<changeSet id="update_content_type_database_type" author="alalo">
+		<preConditions onFail="MARK_RAN">
+			<columnExists tableName="reporting_report_design_resource" columnName="content_type" />
+		</preConditions>
+		<comment>
+			Update data type of content_type column from reporting_report_design_resource table
+		</comment>
+		<modifyDataType
+				columnName="content_type"
+				newDataType="varchar(100)"
+				tableName="reporting_report_design_resource"/>
+	</changeSet>
+
 </databaseChangeLog>
