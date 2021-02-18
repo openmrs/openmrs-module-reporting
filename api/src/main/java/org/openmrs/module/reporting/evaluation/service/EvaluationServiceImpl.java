@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.openmrs.api.db.hibernate.DbSessionFactory;  
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,20 +30,29 @@ public class EvaluationServiceImpl extends BaseOpenmrsService implements Evaluat
 
 	/**
 	 * @see EvaluationService#getColumns(QueryBuilder)
-	*/
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public List<DataSetColumn> getColumns(QueryBuilder queryBuilder) {
 		return queryBuilder.getColumns(getSessionFactory());
 	}
 
-    /**
+	/**
 	 * @see EvaluationService#evaluateToList(QueryBuilder, EvaluationContext)
 	 */
 	@Override
 	@Transactional(readOnly = true)
 	public List<Object[]> evaluateToList(QueryBuilder queryBuilder, EvaluationContext context) {
 		return queryBuilder.evaluateToList(getSessionFactory(), context);
+	}
+
+	/**
+	 * @see EvaluationService#evaluateToIterator(QueryBuilder, EvaluationContext) (QueryBuilder, EvaluationContext)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public Iterator evaluateToIterator(QueryBuilder queryBuilder, EvaluationContext context) {
+		return queryBuilder.evaluateToIterator(getSessionFactory(), context);
 	}
 
 	/**

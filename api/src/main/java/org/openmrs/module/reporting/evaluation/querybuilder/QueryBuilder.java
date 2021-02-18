@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
-import org.hibernate.Query;
-import org.openmrs.api.db.hibernate.DbSessionFactory;  
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,10 +21,18 @@ public interface QueryBuilder {
 	/**
 	 * @return the columns that this query will return
 	 */
+	@Transactional(readOnly = true)
 	public List<DataSetColumn> getColumns(DbSessionFactory sessionFactory);
 
 	/**
 	 * @return the results of evaluating this query
 	 */
+	@Transactional(readOnly = true)
 	public List<Object[]> evaluateToList(DbSessionFactory sessionFactory, EvaluationContext context);
+
+	/**
+	 * @return the an Iterator for the resultSet
+	 */
+	@Transactional(readOnly = true)
+	public ResultSetIterator evaluateToIterator(DbSessionFactory sessionFactory, EvaluationContext context);
 }

@@ -492,6 +492,11 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
+	public ResultSetIterator evaluateToIterator(DbSessionFactory sessionFactory, EvaluationContext context) {
+		return null;
+	}
+
+	@Override
 	public String toString() {
 		String ret = getQueryString();
 		for (String paramName : parameters.keySet()) {

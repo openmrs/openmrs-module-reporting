@@ -15,6 +15,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.QueryBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +26,16 @@ public interface EvaluationService extends OpenmrsService {
 
 	/**
 	 * Returns the columns that the query builder returns
-	*/
+	 */
 	@Transactional(readOnly = true)
 	public List<DataSetColumn> getColumns(QueryBuilder queryBuilder);
+
+
+	/**
+	 * Evaluates the passed QueryBuilder and returns the results as an Iterator
+	 */
+	@Transactional(readOnly = true)
+	public Iterator evaluateToIterator(QueryBuilder queryBuilder, EvaluationContext context);
 
 	/**
 	 * Evaluates the passed QueryBuilder and returns the results as a List of Object[]
