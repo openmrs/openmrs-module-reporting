@@ -189,7 +189,6 @@ public class SqlQueryBuilder implements QueryBuilder {
 
 		try {
 			Connection connection = sessionFactory.getCurrentSession().connection();
-
 			PreparedStatement statement = createPreparedStatement(connection);
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet != null) {

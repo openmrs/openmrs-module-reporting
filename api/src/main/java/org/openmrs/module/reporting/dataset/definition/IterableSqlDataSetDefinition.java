@@ -10,14 +10,14 @@
 package org.openmrs.module.reporting.dataset.definition;
 
 import org.openmrs.module.reporting.common.Localized;
-import org.openmrs.module.reporting.dataset.definition.evaluator.SqlDataSetEvaluator;
+import org.openmrs.module.reporting.dataset.definition.evaluator.IterableSqlDataSetEvaluator;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyAndParameterCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Definition of a SQL DataSet
- * @see SqlDataSetEvaluator
+ * Definition of a Iterable SQL DataSet
+ * @see IterableSqlDataSetEvaluator
  */
 @Caching(strategy = ConfigurationPropertyAndParameterCachingStrategy.class)
 @Localized("reporting.IterableSqlDataSetDefinition")
@@ -43,6 +43,7 @@ public class IterableSqlDataSetDefinition extends BaseDataSetDefinition {
      * Public constructor
      *
      * @param name
+     * @param description
      * @param sqlQuery
      */
     public IterableSqlDataSetDefinition(String name, String description, String sqlQuery) {
