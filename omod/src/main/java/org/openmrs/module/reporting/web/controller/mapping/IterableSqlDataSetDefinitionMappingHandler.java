@@ -10,13 +10,13 @@
 package org.openmrs.module.reporting.web.controller.mapping;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.Definition;
 
 /**
  * Handler that determines what pages are redirected for creating and editing IterableSqlDataSetDefinition
  */
-@Handler(supports=SqlDataSetDefinition.class, order=50)
+@Handler(supports= IterableSqlDataSetDefinition.class, order=50)
 public class IterableSqlDataSetDefinitionMappingHandler extends DefinitionMappingHandler {
 	
 	/**
