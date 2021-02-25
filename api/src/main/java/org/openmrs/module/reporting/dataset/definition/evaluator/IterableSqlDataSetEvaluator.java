@@ -15,7 +15,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.IterableDataSet;
+import org.openmrs.module.reporting.dataset.IterableSqlDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -55,7 +55,7 @@ public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
      * @should evaluate a IterableSqlDataSetDefinition with in statement
      * @should protect SQL Query Against database modifications
      */
-    public IterableDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
+    public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 
         context = ObjectUtil.nvl(context, new EvaluationContext());
 
@@ -91,6 +91,6 @@ public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
             foundNames.add(name);
         }
 
-        return new IterableDataSet(context, sqlDsd, (ResultSetIterator) iterator);
+        return new IterableSqlDataSet(context, sqlDsd, (ResultSetIterator) iterator);
     }
 }

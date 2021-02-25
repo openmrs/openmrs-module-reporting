@@ -10,7 +10,7 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.openmrs.module.reporting.ReportingException;
-import org.openmrs.module.reporting.dataset.IterableDataSet;
+import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.definition.evaluator.DefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -18,11 +18,11 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
  * This subinterface defines the methods needed to allow an evaluator to be wrapped in a
- * {@link IterableDataSet}, making it easy to implement the evaluator for many
+ * {@link DataSet}, making it easy to implement the evaluator for many
  * {@link DataSetDefinition}s.
  */
 public interface IterableDataSetEvaluator extends DefinitionEvaluator<DataSetDefinition> {
 
-	public IterableDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws ReportingException, EvaluationException;
+	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws ReportingException, EvaluationException;
 	
 }

@@ -11,7 +11,7 @@ package org.openmrs.module.reporting.dataset;
 
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.evaluator.LazyPageableDataSetEvaluator;
+import org.openmrs.module.reporting.dataset.definition.evaluator.IterableDataSetEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.ResultSetIterator;
 
@@ -20,9 +20,9 @@ import java.util.Iterator;
 /**
  * This is a {@link DataSet} that allows you to request the rows for a subset of the
  * input cohort, and it will generate those rows on demand (by delegating to a
- * {@link LazyPageableDataSetEvaluator}).
+ * {@link IterableDataSetEvaluator}).
  */
-public class IterableDataSet implements DataSet {
+public class IterableSqlDataSet implements DataSet {
 
     ResultSetIterator dataSetRowIterator;
     SimpleDataSetMetaData metadata;
@@ -33,7 +33,7 @@ public class IterableDataSet implements DataSet {
      * @param evalContext
      * @param definition
      */
-    public IterableDataSet(EvaluationContext evalContext, IterableSqlDataSetDefinition definition, ResultSetIterator iterator) {
+    public IterableSqlDataSet(EvaluationContext evalContext, IterableSqlDataSetDefinition definition, ResultSetIterator iterator) {
         this.context = evalContext;
         this.definition = definition;
         this.dataSetRowIterator = iterator;
@@ -69,6 +69,8 @@ public class IterableDataSet implements DataSet {
     }
 
     private void mapMetaData(){
-        dataSetRowIterator.getColumns().stream().forEach(c -> metadata.addColumn(new DataSetColumn(c.getName(),c.getLabel(),c.getDataType())));
+        for(DataSetColumn column: dataSetRowIterator.getColumns()){
+            metadata.addColumn(new DataSetColumn(column.getName(),column.getLabel(),column.getDataType()));
+        }
     }
 }

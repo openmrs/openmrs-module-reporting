@@ -25,7 +25,8 @@ public class ResultSetIterator implements Iterator<DataSetRow> {
     }
 
     public boolean hasNext() {
-        throw new UnsupportedOperationException();
+        //TODO
+        return true;
     }
 
     public DataSetRow next() throws IllegalArgumentException{
