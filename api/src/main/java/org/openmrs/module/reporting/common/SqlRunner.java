@@ -147,13 +147,12 @@ public class SqlRunner {
     /**
      * Executes a Sql Script
      */
-    public SqlIterator executeSqlToIterator(String sql, Map<String, Object> parameterValues) {
+    public SqlIterator executeSqlToIterator(String sql) {
 
         SqlIterator iterator = null;
         log.info("Executing SQL...");
 
         List<String> sqlStatements = new ArrayList<String>();
-        sqlStatements.addAll(parseParametersIntoStatements(parameterValues));
         sqlStatements.addAll(parseSqlIntoStatements(sql));
 
         Boolean originalAutoCommit = null;
@@ -166,13 +165,16 @@ public class SqlRunner {
                 Statement statement = null;
                 try {
                     statement = connection.createStatement();
+                    //statement = connection.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+                    //        java.sql.ResultSet.CONCUR_READ_ONLY);
+                    statement.setFetchSize(10);//Integer.MIN_VALUE);
                     log.debug("Executing: " + sqlStatement);
                     statement.execute(sqlStatement);
                     ResultSet resultSet = statement.getResultSet();
 
                     if (resultSet != null) {
                         ResultSetMetaData rsmd = resultSet.getMetaData();
-                        iterator = new SqlIterator(rsmd, resultSet, statement);
+                        iterator = new SqlIterator(rsmd, resultSet, connection, statement);
                     }
                 }
                 catch (Exception e) {
@@ -188,7 +190,7 @@ public class SqlRunner {
             rollback();
         }
         finally {
-            resetAutocommit(originalAutoCommit);
+            //resetAutocommit(originalAutoCommit);
         }
 
         return iterator;

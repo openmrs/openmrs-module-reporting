@@ -75,17 +75,8 @@ public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
 
         String sqlQuery = sqlDsd.getSql();
 
-        // We don't need the final semi-colon if it exists
-        if (sqlQuery.endsWith(";")) {
-            sqlQuery = sqlQuery.substring(0, sqlQuery.length() - 1);
-        }
-
-        // Add a limit clause if necessary
-        if (context.getLimit() != null && !sqlQuery.contains(" limit ")) {
-            sqlQuery += " limit " + context.getLimit();
-        }
-
         queryBuilder.append(sqlQuery);
+
         queryBuilder.setParameters(context.getParameterValues());
 
         IterableSqlDataSetDefinition defenition = (IterableSqlDataSetDefinition) dataSetDefinition;
@@ -95,11 +86,9 @@ public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
         try {
             connection = createConnection(connectionProperties);
             SqlRunner runner = new SqlRunner(connection);
-            Map<String, Object> parameterValues = constructParameterValues(defenition, context);
 
             if (StringUtils.isNotBlank(defenition.getSql())) {
-                log.info("Executing SQL with parameters " + parameterValues);
-                iterator = runner.executeSqlToIterator(defenition.getSql(), parameterValues);
+                iterator = runner.executeSqlToIterator(defenition.getSql());
 
             }
 
@@ -119,6 +108,7 @@ public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
         try {
             String driver = connectionProperties.getProperty("connection.driver_class", "com.mysql.jdbc.Driver");
             String url = connectionProperties.getProperty("connection.url");
+            url += "&useCursorFetch=true";
             String user = connectionProperties.getProperty("connection.username");
             String password = connectionProperties.getProperty("connection.password");
             Context.loadClass(driver);
@@ -149,24 +139,4 @@ public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
         return properties;
     }
 
-    /**
-     * @return parameter values to use within SQL statement, converting object references to metadata to scalar properties, defaulting to keys
-     */
-    protected Map<String, Object> constructParameterValues(IterableSqlDataSetDefinition dsd, EvaluationContext context) {
-        Map<String, Object> ret = context.getContextValues();
-        ret.putAll(context.getParameterValues());
-        for (String key : ret.keySet()) {
-            Object o = ret.get(key);
-            if (o instanceof OpenmrsMetadata) {
-                if (dsd.getMetadataParameterConversion() == IterableSqlDataSetDefinition.MetadataParameterConversion.ID) {
-                    ret.put(key, ((OpenmrsMetadata) o).getId());
-                } else if (dsd.getMetadataParameterConversion() == IterableSqlDataSetDefinition.MetadataParameterConversion.UUID) {
-                    ret.put(key, ((OpenmrsMetadata) o).getUuid());
-                } else if (dsd.getMetadataParameterConversion() == IterableSqlDataSetDefinition.MetadataParameterConversion.NAME) {
-                    ret.put(key, ((OpenmrsMetadata) o).getName());
-                }
-            }
-        }
-        return ret;
-    }
 }

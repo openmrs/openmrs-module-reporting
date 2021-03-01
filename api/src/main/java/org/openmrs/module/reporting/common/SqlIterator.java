@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.common;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -15,16 +16,26 @@ public class SqlIterator implements Iterator<DataSetRow> {
     private ResultSet resultSet;
     private List<DataSetColumn> columns;
     private Statement statement;
+    private Connection connection;
 
-    public SqlIterator(ResultSetMetaData metadata, ResultSet resultSet, Statement statement) throws SQLException {
+    public SqlIterator(ResultSetMetaData metadata, ResultSet resultSet, Connection connection,Statement statement) throws SQLException {
         this.resultSet = resultSet;
+        this.connection = connection;
         this.statement = statement;
         this.createDataSetColumns(metadata);
     }
 
     public boolean hasNext() {
-        //TODO
-        return true;
+        try {
+            if(resultSet.isLast()){
+                closeConnection();
+                return false;
+            }else{
+                return true;
+            }
+        } catch (SQLException throwables) {
+            return false;
+        }
     }
 
     public DataSetRow next() throws IllegalArgumentException {
@@ -32,7 +43,7 @@ public class SqlIterator implements Iterator<DataSetRow> {
             if (resultSet.next()) {
                 return createDataSetRow();
             } else {
-                closeStatement();
+                closeConnection();
                 return null;
             }
         } catch (Exception e) {
@@ -46,16 +57,20 @@ public class SqlIterator implements Iterator<DataSetRow> {
 
     private DataSetRow createDataSetRow() throws SQLException {
         DataSetRow dataSetRow = new DataSetRow();
+        resultSet.next();
         for (int i = 0; i < columns.size(); i++) {
             dataSetRow.addColumnValue(columns.get(i), resultSet.getObject(i + 1));
         }
         return dataSetRow;
     }
 
-    private void closeStatement() {
+    private void closeConnection() {
         try {
             if (statement != null) {
                 statement.close();
+            }
+            if (connection != null){
+                connection.close();
             }
         } catch (Exception e) {
         }
