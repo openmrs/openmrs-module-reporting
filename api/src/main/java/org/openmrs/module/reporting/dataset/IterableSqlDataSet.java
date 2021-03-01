@@ -13,7 +13,7 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.evaluator.IterableDataSetEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.querybuilder.ResultSetIterator;
+import org.openmrs.module.reporting.common.SqlIterator;
 
 import java.util.Iterator;
 
@@ -24,7 +24,7 @@ import java.util.Iterator;
  */
 public class IterableSqlDataSet implements DataSet {
 
-    ResultSetIterator dataSetRowIterator;
+    SqlIterator dataSetRowIterator;
     SimpleDataSetMetaData metadata;
     EvaluationContext context;
     IterableSqlDataSetDefinition definition;
@@ -33,7 +33,7 @@ public class IterableSqlDataSet implements DataSet {
      * @param evalContext
      * @param definition
      */
-    public IterableSqlDataSet(EvaluationContext evalContext, IterableSqlDataSetDefinition definition, ResultSetIterator iterator) {
+    public IterableSqlDataSet(EvaluationContext evalContext, IterableSqlDataSetDefinition definition, SqlIterator iterator) {
         this.context = evalContext;
         this.definition = definition;
         this.dataSetRowIterator = iterator;
@@ -69,6 +69,7 @@ public class IterableSqlDataSet implements DataSet {
     }
 
     private void mapMetaData(){
+        metadata = new SimpleDataSetMetaData();
         for(DataSetColumn column: dataSetRowIterator.getColumns()){
             metadata.addColumn(new DataSetColumn(column.getName(),column.getLabel(),column.getDataType()));
         }

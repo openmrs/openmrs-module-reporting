@@ -57,7 +57,7 @@ public class IterableSqlDataSetEditor {
 		
 		DataSetDefinition def = Context.getService(DataSetDefinitionService.class).getDefinitionByUuid(uuid);
 		IterableSqlDataSetDefinition definition = (IterableSqlDataSetDefinition) def;
-		definition.setSqlQuery(queryString);
+		definition.setSql(queryString);
 		
 		List<Parameter> parameters =  Context.getService(CohortQueryService.class).getNamedParameters(queryString);
 		for (Parameter parameter : parameters) {
@@ -75,8 +75,7 @@ public class IterableSqlDataSetEditor {
 	/**
 	 * Copies the SQL DataSet definition with the given uuid into another one with the same
 	 * parameters and searches, but blank name/description and SQL string
-	 * 
-	 * @param uuid
+	 *
 	 * @return
 	 */
 	@RequestMapping("/module/reporting/datasets/iterableSqlDataSetDefinitionClone")
@@ -85,15 +84,15 @@ public class IterableSqlDataSetEditor {
 	                              @RequestParam(value="description", required=false) String description,
 	                              @RequestParam("copyFromUuid") String copyFromUuid) {
 		DataSetDefinition def = Context.getService(DataSetDefinitionService.class).getDefinitionByUuid(copyFromUuid);
-		SqlDataSetDefinition from = (SqlDataSetDefinition) def;
+		IterableSqlDataSetDefinition from = (IterableSqlDataSetDefinition) def;
 
-		SqlDataSetDefinition clone = new SqlDataSetDefinition();
+		IterableSqlDataSetDefinition clone = new IterableSqlDataSetDefinition();
 		clone.setId(null);
 		clone.setUuid(null);
 		clone.setName(name);
 		clone.setDescription(description);
 		clone.setParameters(from.getParameters());
-		clone.setSqlQuery(from.getSqlQuery());
+		clone.setSql(from.getSql());
 		Context.getService(DataSetDefinitionService.class).saveDefinition(clone);
 		request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Saved as a new copy", WebRequest.SCOPE_SESSION);
 		return "redirect:iterableSqlDataSetEditor.form?uuid=" + clone.getUuid();

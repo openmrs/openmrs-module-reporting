@@ -144,6 +144,56 @@ public class SqlRunner {
         return result;
 	}
 
+    /**
+     * Executes a Sql Script
+     */
+    public SqlIterator executeSqlToIterator(String sql, Map<String, Object> parameterValues) {
+
+        SqlIterator iterator = null;
+        log.info("Executing SQL...");
+
+        List<String> sqlStatements = new ArrayList<String>();
+        sqlStatements.addAll(parseParametersIntoStatements(parameterValues));
+        sqlStatements.addAll(parseSqlIntoStatements(sql));
+
+        Boolean originalAutoCommit = null;
+
+        try {
+            originalAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+
+            for (String sqlStatement : sqlStatements) {
+                Statement statement = null;
+                try {
+                    statement = connection.createStatement();
+                    log.debug("Executing: " + sqlStatement);
+                    statement.execute(sqlStatement);
+                    ResultSet resultSet = statement.getResultSet();
+
+                    if (resultSet != null) {
+                        ResultSetMetaData rsmd = resultSet.getMetaData();
+                        iterator = new SqlIterator(rsmd, resultSet, statement);
+                    }
+                }
+                catch (Exception e) {
+                    String message = "Error executing statement:  " + e.getMessage();
+                    log.error(message);
+                    closeStatement(statement);
+                    throw e;
+                }
+            }
+            rollback(); // Always rollback, as this is only intended to support querying
+        }
+        catch (Exception e) {
+            rollback();
+        }
+        finally {
+            resetAutocommit(originalAutoCommit);
+        }
+
+        return iterator;
+    }
+
     protected void closeStatement(Statement statement) {
         try {
             if (statement != null) {

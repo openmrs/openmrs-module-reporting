@@ -85,11 +85,11 @@
 						
 							<!-- Using .portlet style -->
 							<div style="margin: 0.1em; width:100%;"> 
-								<b class="boxHeader"><spring:message code="reporting.sqlQuery" /></b>
+								<b class="boxHeader"><spring:message code="reporting.sql" /></b>
 								<div class="box">
 									<form method="post" action="iterableSqlDataSetDefinitionAssignQueryString.form">
 										<input type="hidden" name="uuid" value="${definition.uuid}"/>
-										<textarea id="editBox" rows="18" cols="50" id="queryString" name="queryString">${definition.sqlQuery}</textarea>
+										<textarea id="editBox" rows="18" cols="50" id="queryString" name="queryString">${definition.sql}</textarea>
 										<br/>
 										<span>
 											<input type="submit" value="Save"/>

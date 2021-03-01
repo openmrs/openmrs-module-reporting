@@ -9,13 +9,33 @@
  */
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 import liquibase.util.StringUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.jdbc.Work;
 import org.openmrs.Cohort;
 import org.openmrs.OpenmrsObject;
-import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -23,15 +43,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
 import org.openmrs.module.reporting.query.IdSet;
 import org.openmrs.util.OpenmrsUtil;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.*;
 
 /**
  * Helper class for building and executing an HQL query with parameters
@@ -92,10 +103,9 @@ public class SqlQueryBuilder implements QueryBuilder {
 	}
 
 	/**
-	 * Uses a Prepared Statement to produce ResultSetMetadata in order to return accurate column information
+	  * Uses a Prepared Statement to produce ResultSetMetadata in order to return accurate column information
 	 */
 	@Override
-	@Transactional(readOnly = true)
 	public List<DataSetColumn> getColumns(DbSessionFactory sessionFactory) {
 		final List<DataSetColumn> l = new ArrayList<DataSetColumn>();
 
@@ -132,7 +142,6 @@ public class SqlQueryBuilder implements QueryBuilder {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Object[]> evaluateToList(DbSessionFactory sessionFactory, EvaluationContext context) {
 
 		final List<Object[]> ret = new ArrayList<Object[]>();
@@ -177,31 +186,6 @@ public class SqlQueryBuilder implements QueryBuilder {
 
 		profiler.logAfter("EXECUTING_QUERY", "Completed successfully with " + ret.size() + " results");
 		return ret;
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public ResultSetIterator evaluateToIterator(DbSessionFactory sessionFactory, EvaluationContext context) {
-
-		ResultSetIterator iterator = null;
-		EvaluationProfiler profiler = new EvaluationProfiler(context);
-		profiler.logBefore("EXECUTING_QUERY", toString());
-
-		try {
-			Connection connection = sessionFactory.getCurrentSession().connection();
-			PreparedStatement statement = createPreparedStatement(connection);
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet != null) {
-				iterator = new ResultSetIterator(getColumns(sessionFactory), resultSet, statement, context);
-			}
-
-		}catch (Exception e) {
-			profiler.logError("EXECUTING_QUERY", toString(), e);
-			throw new IllegalArgumentException("Unable to execute query", e);
-		}
-
-		profiler.logAfter("EXECUTING_QUERY", "Completed ");
-		return iterator;
 	}
 
 	@Override
@@ -408,5 +392,4 @@ public class SqlQueryBuilder implements QueryBuilder {
 		});
 		return parametersToReplace;
 	}
-
 }

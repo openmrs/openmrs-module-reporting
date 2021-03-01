@@ -1,71 +1,88 @@
 /**
- * This Source Code Form is subject to the terms of the Mozilla Public License,
- * v. 2.0. If a copy of the MPL was not distributed with this file, You can
- * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
- * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
- * <p>
- * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
- * graphic logo is a trademark of OpenMRS Inc.
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 package org.openmrs.module.reporting.dataset.definition;
 
-import org.openmrs.module.reporting.common.Localized;
-import org.openmrs.module.reporting.dataset.definition.evaluator.IterableSqlDataSetEvaluator;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyAndParameterCachingStrategy;
-import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Definition of a Iterable SQL DataSet
- * @see IterableSqlDataSetEvaluator
+ * Evaluates a sql script found at the configured file path or resource path or with the sql contents specified
+ * By default, this will utilize the database connection properties in the openmrs runtime properties
+ * This can use an alternative database connection by specifying the file.  Property names follow those in openmrs runtime properties
  */
-@Caching(strategy = ConfigurationPropertyAndParameterCachingStrategy.class)
-@Localized("reporting.IterableSqlDataSetDefinition")
 public class IterableSqlDataSetDefinition extends BaseDataSetDefinition {
 
-    public static final long serialVersionUID = 6405583324151111487L;
+    public enum MetadataParameterConversion {
+        ID, UUID, NAME
+    }
 
-    //***** PROPERTIES *****
+    @ConfigurationProperty
+    private String sqlFile;
 
-    @ConfigurationProperty(required = true)
-    private String sqlQuery;
+    @ConfigurationProperty
+    private String sqlResource;
 
-    //***** CONSTRUCTORS *****
+    @ConfigurationProperty
+    private String sql;
+
+    @ConfigurationProperty
+    private String connectionPropertyFile;
+
+    @ConfigurationProperty
+    private MetadataParameterConversion metadataParameterConversion = MetadataParameterConversion.ID;
 
     /**
      * Constructor
      */
-    public IterableSqlDataSetDefinition() {
-        super();
+    public IterableSqlDataSetDefinition() {}
+
+    public String getSqlFile() {
+        return sqlFile;
     }
 
-    /**
-     * Public constructor
-     *
-     * @param name
-     * @param description
-     * @param sqlQuery
-     */
-    public IterableSqlDataSetDefinition(String name, String description, String sqlQuery) {
-        this();
-        this.setName(name);
-        this.setDescription(description);
-        this.setSqlQuery(sqlQuery);
+    public void setSqlFile(String sqlFile) {
+        this.sqlFile = sqlFile;
     }
 
-    //***** PROPERTY ACCESS *****
-
-    /**
-     * @return the sqlQuery
-     */
-    public String getSqlQuery() {
-        return sqlQuery;
+    public String getSqlResource() {
+        return sqlResource;
     }
 
-    /**
-     * @param sqlQuery the sqlQuery to set
-     */
-    public void setSqlQuery(String sqlQuery) {
-        this.sqlQuery = sqlQuery;
+    public void setSqlResource(String sqlResource) {
+        this.sqlResource = sqlResource;
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public String getConnectionPropertyFile() {
+        return connectionPropertyFile;
+    }
+
+    public void setConnectionPropertyFile(String connectionPropertyFile) {
+        this.connectionPropertyFile = connectionPropertyFile;
+    }
+
+    public MetadataParameterConversion getMetadataParameterConversion() {
+        return metadataParameterConversion;
+    }
+
+    public void setMetadataParameterConversion(MetadataParameterConversion metadataParameterConversion) {
+        this.metadataParameterConversion = metadataParameterConversion;
     }
 }

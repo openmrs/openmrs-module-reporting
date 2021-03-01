@@ -9,38 +9,48 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.OpenmrsMetadata;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.common.SqlRunner;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.IterableSqlDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SqlFileDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.querybuilder.ResultSetIterator;
+import org.openmrs.module.reporting.common.SqlIterator;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
-import org.openmrs.module.reporting.evaluation.service.EvaluationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.openmrs.util.OpenmrsUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
  * The logic that evaluates a {@link IterableSqlDataSetDefinition} and produces an {@link DataSet}
+ *
  * @see IterableSqlDataSetDefinition
  */
 @Handler(supports = {IterableSqlDataSetDefinition.class})
 public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
 
     protected Log log = LogFactory.getLog(this.getClass());
-
-    @Autowired
-    private EvaluationService evaluationService;
 
     /**
      * Public constructor
@@ -49,11 +59,11 @@ public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
     }
 
     /**
-     * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
      * @should evaluate a IterableSqlDataSetDefinition
      * @should evaluate a IterableSqlDataSetDefinition with parameters
      * @should evaluate a IterableSqlDataSetDefinition with in statement
      * @should protect SQL Query Against database modifications
+     * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
      */
     public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 
@@ -63,7 +73,7 @@ public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
 
-        String sqlQuery = sqlDsd.getSqlQuery();
+        String sqlQuery = sqlDsd.getSql();
 
         // We don't need the final semi-colon if it exists
         if (sqlQuery.endsWith(";")) {
@@ -78,19 +88,85 @@ public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
         queryBuilder.append(sqlQuery);
         queryBuilder.setParameters(context.getParameterValues());
 
-        Iterator iterator = evaluationService.evaluateToIterator(queryBuilder, context);
+        IterableSqlDataSetDefinition defenition = (IterableSqlDataSetDefinition) dataSetDefinition;
+        Properties connectionProperties = getConnectionProperties(defenition.getConnectionPropertyFile());
+        Iterator iterator = null;
+        Connection connection = null;
+        try {
+            connection = createConnection(connectionProperties);
+            SqlRunner runner = new SqlRunner(connection);
+            Map<String, Object> parameterValues = constructParameterValues(defenition, context);
 
-        // Validate that all defined columns have unique names
-        List<DataSetColumn> columns = ((ResultSetIterator) iterator).getColumns();
-        Set<String> foundNames = new HashSet<>();
-        for (DataSetColumn column : columns) {
-            String name = column.getName().toUpperCase();
-            if (foundNames.contains(name)) {
-                throw new EvaluationException("Invalid query specified.  There are two columns named '" + name + "'");
+            if (StringUtils.isNotBlank(defenition.getSql())) {
+                log.info("Executing SQL with parameters " + parameterValues);
+                iterator = runner.executeSqlToIterator(defenition.getSql(), parameterValues);
+
             }
-            foundNames.add(name);
+
+        } catch (EvaluationException ee) {
+            throw ee;
+        } catch (Exception e) {
+            throw new EvaluationException("An error occurred while evaluating a SqlFileDataSetDefinition", e);
         }
 
-        return new IterableSqlDataSet(context, sqlDsd, (ResultSetIterator) iterator);
+        return new IterableSqlDataSet(context, sqlDsd, (SqlIterator) iterator);
+    }
+
+    /**
+     * @return a new connection given a set of connection properties
+     */
+    protected Connection createConnection(Properties connectionProperties) throws EvaluationException {
+        try {
+            String driver = connectionProperties.getProperty("connection.driver_class", "com.mysql.jdbc.Driver");
+            String url = connectionProperties.getProperty("connection.url");
+            String user = connectionProperties.getProperty("connection.username");
+            String password = connectionProperties.getProperty("connection.password");
+            Context.loadClass(driver);
+            return DriverManager.getConnection(url, user, password);
+        } catch (Exception e) {
+            throw new EvaluationException("Unable to create a new connection to the database", e);
+        }
+    }
+
+    /**
+     * @return the connection properties to use
+     */
+    protected Properties getConnectionProperties(String connectionPropertyFile) throws EvaluationException {
+        Properties properties = Context.getRuntimeProperties();
+        if (StringUtils.isNotBlank(connectionPropertyFile)) {
+            properties = new Properties();
+            InputStream is = null;
+            try {
+                File file = new File(OpenmrsUtil.getApplicationDataDirectory(), connectionPropertyFile);
+                is = new FileInputStream(file);
+                properties.load(is);
+            } catch (Exception e) {
+                throw new EvaluationException("Unable to load connection properties from file <" + connectionPropertyFile + ">", e);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
+        }
+        return properties;
+    }
+
+    /**
+     * @return parameter values to use within SQL statement, converting object references to metadata to scalar properties, defaulting to keys
+     */
+    protected Map<String, Object> constructParameterValues(IterableSqlDataSetDefinition dsd, EvaluationContext context) {
+        Map<String, Object> ret = context.getContextValues();
+        ret.putAll(context.getParameterValues());
+        for (String key : ret.keySet()) {
+            Object o = ret.get(key);
+            if (o instanceof OpenmrsMetadata) {
+                if (dsd.getMetadataParameterConversion() == IterableSqlDataSetDefinition.MetadataParameterConversion.ID) {
+                    ret.put(key, ((OpenmrsMetadata) o).getId());
+                } else if (dsd.getMetadataParameterConversion() == IterableSqlDataSetDefinition.MetadataParameterConversion.UUID) {
+                    ret.put(key, ((OpenmrsMetadata) o).getUuid());
+                } else if (dsd.getMetadataParameterConversion() == IterableSqlDataSetDefinition.MetadataParameterConversion.NAME) {
+                    ret.put(key, ((OpenmrsMetadata) o).getName());
+                }
+            }
+        }
+        return ret;
     }
 }
