@@ -176,8 +176,7 @@ public class SqlRunner {
                     }
                 }
                 catch (Exception e) {
-                    String message = "Error executing statement:  " + e.getMessage();
-                    log.error(message);
+                    log.error("Error executing SQL statement.");
                     closeStatement(statement);
                     throw e;
                 }
