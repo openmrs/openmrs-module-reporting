@@ -165,9 +165,7 @@ public class SqlRunner {
                 Statement statement = null;
                 try {
                     statement = connection.createStatement();
-                    //statement = connection.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
-                    //        java.sql.ResultSet.CONCUR_READ_ONLY);
-                    statement.setFetchSize(10);//Integer.MIN_VALUE);
+                    statement.setFetchSize(10);
                     log.debug("Executing: " + sqlStatement);
                     statement.execute(sqlStatement);
                     ResultSet resultSet = statement.getResultSet();
@@ -190,7 +188,7 @@ public class SqlRunner {
             rollback();
         }
         finally {
-            //resetAutocommit(originalAutoCommit);
+            resetAutocommit(originalAutoCommit);
         }
 
         return iterator;
