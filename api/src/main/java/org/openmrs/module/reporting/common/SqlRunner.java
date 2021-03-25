@@ -176,7 +176,6 @@ public class SqlRunner {
                     }
                 }
                 catch (Exception e) {
-                    log.error("Error executing SQL statement.");
                     closeStatement(statement);
                     throw e;
                 }
