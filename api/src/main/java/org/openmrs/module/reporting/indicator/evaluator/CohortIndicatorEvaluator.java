@@ -102,7 +102,9 @@ public class CohortIndicatorEvaluator implements IndicatorEvaluator {
 		if (cid.getDataToAggregate() != null) {
 			try {
 				PatientDataService pds = Context.getService(PatientDataService.class);
-				EvaluatedPatientData patientData = pds.evaluate(cid.getDataToAggregate(), context);
+				EvaluationContext dataContext = context.shallowCopy();
+				dataContext.setBaseCohort(cohort);
+				EvaluatedPatientData patientData = pds.evaluate(cid.getDataToAggregate(), dataContext);
 				for (Integer pId : patientData.getData().keySet()) {
 					result.addLogicResult(pId, (Number) patientData.getData().get(pId));
 				}

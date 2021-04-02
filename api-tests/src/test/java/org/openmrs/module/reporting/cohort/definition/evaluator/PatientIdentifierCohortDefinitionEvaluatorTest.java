@@ -54,20 +54,20 @@ public class PatientIdentifierCohortDefinitionEvaluatorTest extends BaseModuleCo
 			PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 			picd.addTypeToMatch(new PatientIdentifierType(2));
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(8, c.getSize());
+			Assert.assertEquals(8, c.getMemberIds().size());
 		}
 		{
 			PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 			picd.addTypeToMatch(new PatientIdentifierType(1));
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(3, c.getSize());
+			Assert.assertEquals(3, c.getMemberIds().size());
 		}
 		{
 			PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 			picd.addTypeToMatch(new PatientIdentifierType(1));
 			picd.addTypeToMatch(new PatientIdentifierType(2));
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(10, c.getSize());
+			Assert.assertEquals(10, c.getMemberIds().size());
 		}
 	}
 
@@ -79,9 +79,9 @@ public class PatientIdentifierCohortDefinitionEvaluatorTest extends BaseModuleCo
 	public void evaluate_shouldReturnPatientsWhoHaveIdentifiersMatchingThePassedLocations() throws Exception {
 		PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 		picd.addTypeToMatch(new PatientIdentifierType(2));
-		Assert.assertEquals(8, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).size());
+		Assert.assertEquals(8, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).getMemberIds().size());
 		picd.addLocationToMatch(new Location(3));
-		Assert.assertEquals(1, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).size());
+		Assert.assertEquals(1, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).getMemberIds().size());
 	}
 
 	/**

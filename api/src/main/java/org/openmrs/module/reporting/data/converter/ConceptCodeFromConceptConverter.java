@@ -17,6 +17,8 @@ public class ConceptCodeFromConceptConverter implements DataConverter {
 
     private String conceptSourceName;
 
+    public ConceptCodeFromConceptConverter() {};
+
     public ConceptCodeFromConceptConverter(String conceptSourceName) {
         this.conceptSourceName = conceptSourceName;
     }

@@ -74,8 +74,8 @@ public class BasicVisitQueryEvaluatorTest extends BaseModuleContextSensitiveTest
 		activeVisits.add(5);
 
 		// now we will create a couple inactive visits, and two active ones
-		Patient patient1 = data.randomPatient().save();
-		Patient patient2 = data.randomPatient().save();
+		Patient patient1 = data.randomPatient().birthdate("1975-05-27").save();
+		Patient patient2 = data.randomPatient().birthdate("1975-05-27").save();
 		Visit inactive1 = data.visit().patient(patient1).visitType(1).location(1).started("2013-04-01").stopped("2013-04-06").save();
 		Visit inactive2 = data.visit().patient(patient2).visitType(1).location(1).started("2013-04-01").stopped("2013-04-15").save();
 		activeVisits.add(inactive1.getId());

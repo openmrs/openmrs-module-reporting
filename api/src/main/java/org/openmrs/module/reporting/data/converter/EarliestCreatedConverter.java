@@ -22,6 +22,10 @@ public class EarliestCreatedConverter implements DataConverter {
 
     private Class<?> typeOfItem;
 
+    public EarliestCreatedConverter() {
+
+    }
+
     public EarliestCreatedConverter(Class<?> typeOfItem) {
         this.typeOfItem = typeOfItem;
     }

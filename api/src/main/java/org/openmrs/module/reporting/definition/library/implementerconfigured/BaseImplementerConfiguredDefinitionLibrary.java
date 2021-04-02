@@ -105,7 +105,7 @@ public abstract class BaseImplementerConfiguredDefinitionLibrary<T extends Defin
 		}
 	}
 
-	private void loadDefinitions() {
+	public void loadDefinitions() {
 		Map<String, T> newDefinitions = new HashMap<String, T>();
 		List<LibraryDefinitionSummary> newSummaries = new ArrayList<LibraryDefinitionSummary>();
 

@@ -1,0 +1,4 @@
+<org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition>
+    <parameters/>
+	<sqlQuery>select patient_id from patient</sqlQuery>
+</org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition>

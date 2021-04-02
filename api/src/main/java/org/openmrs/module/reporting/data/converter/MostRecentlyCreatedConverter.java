@@ -21,6 +21,10 @@ public class MostRecentlyCreatedConverter implements DataConverter {
 
     private Class<?> typeOfItem;
 
+    public MostRecentlyCreatedConverter() {
+
+    };
+
     public MostRecentlyCreatedConverter(Class<?> typeOfItem) {
         this.typeOfItem = typeOfItem;
     }
