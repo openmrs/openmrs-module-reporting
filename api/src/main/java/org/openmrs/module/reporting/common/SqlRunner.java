@@ -11,8 +11,8 @@ package org.openmrs.module.reporting.common;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 
@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  */
 public class SqlRunner {
 
-	private static Log log = LogFactory.getLog(SqlRunner.class);
+    private static final Logger log = LoggerFactory.getLogger(SqlRunner.class);
 
 	// Regular expression to identify a change in the delimiter.  This ignores spaces, allows delimiter in comment, allows an equals-sign
     private static final Pattern DELIMITER_PATTERN = Pattern.compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$", Pattern.CASE_INSENSITIVE);
@@ -166,7 +166,7 @@ public class SqlRunner {
                 try {
                     statement = connection.createStatement();
                     statement.setFetchSize(10);
-                    log.debug("Executing: " + sqlStatement);
+                    log.debug("Executing: {}", sqlStatement);
                     statement.executeQuery(sqlStatement);
                     ResultSet resultSet = statement.getResultSet();
 
@@ -174,17 +174,14 @@ public class SqlRunner {
                         ResultSetMetaData rsmd = resultSet.getMetaData();
                         iterator = new SqlIterator(rsmd, resultSet, connection, statement);
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     closeStatement(statement);
                     throw e;
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("An error occurred while trying to execute the query.", e);
-        }
-        finally {
+        } finally {
             resetAutocommit(originalAutoCommit);
         }
 
