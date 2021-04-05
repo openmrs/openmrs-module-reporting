@@ -80,7 +80,8 @@ public class SqlIterator implements Iterator<DataSetRow> {
             if (connection != null) {
                 connection.close();
             }
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            log.error("Failed to close SqlIterator connection.", ex);
         }
     }
 

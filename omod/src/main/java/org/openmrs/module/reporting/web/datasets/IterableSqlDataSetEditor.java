@@ -13,7 +13,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.web.WebConstants;
@@ -43,7 +42,7 @@ public class IterableSqlDataSetEditor {
 				model.addAttribute("definition", definition);
 			} 
 			else {
-				throw new RuntimeException("This definition is not of the right class");
+				throw new RuntimeException("This definition does not correspond to an IterableSqlDataSetDefinition.");
 			} 
 		}
 	}

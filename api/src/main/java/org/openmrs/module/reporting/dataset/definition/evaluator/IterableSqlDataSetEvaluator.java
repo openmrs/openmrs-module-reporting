@@ -11,19 +11,16 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.OpenmrsMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.SqlRunner;
 import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.IterableSqlDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.SqlFileDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.common.SqlIterator;
@@ -35,12 +32,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * The logic that evaluates a {@link IterableSqlDataSetDefinition} and produces an {@link DataSet}
@@ -50,7 +43,7 @@ import java.util.Set;
 @Handler(supports = {IterableSqlDataSetDefinition.class})
 public class IterableSqlDataSetEvaluator implements IterableDataSetEvaluator {
 
-    protected Log log = LogFactory.getLog(this.getClass());
+    private static final Logger log = LoggerFactory.getLogger(IterableSqlDataSetEvaluator.class);
 
     /**
      * Public constructor

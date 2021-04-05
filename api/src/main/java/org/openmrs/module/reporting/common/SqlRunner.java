@@ -167,7 +167,7 @@ public class SqlRunner {
                     statement = connection.createStatement();
                     statement.setFetchSize(10);
                     log.debug("Executing: " + sqlStatement);
-                    statement.execute(sqlStatement);
+                    statement.executeQuery(sqlStatement);
                     ResultSet resultSet = statement.getResultSet();
 
                     if (resultSet != null) {
@@ -180,10 +180,9 @@ public class SqlRunner {
                     throw e;
                 }
             }
-            rollback(); // Always rollback, as this is only intended to support querying
         }
         catch (Exception e) {
-            rollback();
+            log.error("An error occurred while trying to execute the query.", e);
         }
         finally {
             resetAutocommit(originalAutoCommit);
