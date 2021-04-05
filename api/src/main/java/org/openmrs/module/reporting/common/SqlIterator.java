@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,16 +47,16 @@ public class SqlIterator implements Iterator<DataSetRow> {
     }
 
     @Override
-    public DataSetRow next() throws IllegalArgumentException {
+    public DataSetRow next() throws NoSuchElementException {
         try {
             if (resultSet.next()) {
                 return createDataSetRow();
             } else {
                 closeConnection();
-                return null;
+                throw new NoSuchElementException("No more elements.");
             }
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to execute query", e);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to fetch the next result from the database.", e);
         }
     }
 
