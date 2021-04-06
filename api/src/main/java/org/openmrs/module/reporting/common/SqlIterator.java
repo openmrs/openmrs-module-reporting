@@ -1,5 +1,6 @@
 package org.openmrs.module.reporting.common;
 
+import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 
@@ -56,7 +57,7 @@ public class SqlIterator implements Iterator<DataSetRow> {
                 throw new NoSuchElementException("No more elements.");
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to fetch the next result from the database.", e);
+            throw new APIException("Failed to fetch the next result from the database.", e);
         }
     }
 
