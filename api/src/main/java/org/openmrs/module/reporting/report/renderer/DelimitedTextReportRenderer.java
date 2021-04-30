@@ -19,6 +19,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.IterableSqlDataSet;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -234,43 +235,51 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
 		w.write(lineEnding);
 
 		// data rows
-		for (DataSetRow row : dataset) {
-			for (Iterator<DataSetColumn> i = columns.iterator(); i.hasNext();) {
-				DataSetColumn column = i.next();
-				Object colValue = row.getColumnValue(column);
-				w.write(textDelimiter);
-				if (colValue != null) {
-                    String toPrint;
-					if (colValue instanceof Cohort) {
-                        toPrint = escape(Integer.toString(((Cohort) colValue).size()));
-					}
-					else if (colValue instanceof IndicatorResult) {
-                        toPrint = ((IndicatorResult) colValue).getValue().toString();
-					}
-					else if (dateFormat != null && colValue instanceof Date) {
-                        toPrint = dateFormat.format((Date)colValue);
-                    }
-					else {
-						// this check is because a logic EmptyResult .toString() -> null
-						String temp = escape(colValue.toString());
-						if (temp != null) {
-                            toPrint = temp;
-                        } else {
-                            toPrint = "";
-                        }
-					}
-                    w.write(filterBlacklist(toPrint, blacklist));
-				}
-				w.write(textDelimiter);
-				if (i.hasNext()) {
-					w.write(fieldDelimiter);
-				}
-			}
-			w.write(lineEnding);
-		}
+        if (dataset instanceof IterableSqlDataSet) {
+            DataSetRow row = ((IterableSqlDataSet) dataset).iterator().next();
+            while (row != null) {
+                writeDataRows(columns, row, w, fieldDelimiter, textDelimiter, blacklist, dateFormat);
+                row = ((IterableSqlDataSet) dataset).iterator().next();
+            }
+        } else {
+            for (DataSetRow row : dataset) {
+                writeDataRows(columns, row, w, fieldDelimiter, textDelimiter, blacklist, dateFormat);
+            }
+        }
 
 		w.flush();
 	}
+
+    private void writeDataRows(List<DataSetColumn> columns, DataSetRow row, Writer w, String fieldDelimiter, String textDelimiter, Pattern blacklist, DateFormat dateFormat) throws IOException {
+        for (Iterator<DataSetColumn> i = columns.iterator(); i.hasNext(); ) {
+            DataSetColumn column = i.next();
+            Object colValue = row.getColumnValue(column);
+            w.write(textDelimiter);
+            if (colValue != null) {
+                String toPrint;
+                if (colValue instanceof Cohort) {
+                    toPrint = escape(Integer.toString(((Cohort) colValue).size()));
+                } else if (colValue instanceof IndicatorResult) {
+                    toPrint = ((IndicatorResult) colValue).getValue().toString();
+                } else if (dateFormat != null && colValue instanceof Date) {
+                    toPrint = dateFormat.format((Date) colValue);
+                } else {
+                    // this check is because a logic EmptyResult .toString() -> null
+                    String temp = escape(colValue.toString());
+                    if (temp != null) {
+                        toPrint = temp;
+                    } else {
+                        toPrint = "";
+                    }
+                }
+                w.write(filterBlacklist(toPrint, blacklist));
+            }
+            w.write(textDelimiter);
+            if (i.hasNext()) {
+                w.write(fieldDelimiter);
+            }
+        }
+    }
 
     /**
      * @param input

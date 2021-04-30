@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.IterableSqlDataSet;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -104,13 +105,25 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
                 for (DataSetColumn column : columnList) {
 					excelBuilder.addCell(column.getLabel(), "bold,border=bottom");
                 }
-                for (DataSetRow row : dataset ) {
-					excelBuilder.nextRow();
-                    for (DataSetColumn column : columnList) {
-                    	Object cellValue = row.getColumnValue(column);
-                        excelBuilder.addCell(cellValue);
-                    }
-                }
+				if (dataset instanceof IterableSqlDataSet) {
+					DataSetRow row = ((IterableSqlDataSet) dataset).iterator().next();
+					while (row != null) {
+						excelBuilder.nextRow();
+						for (DataSetColumn column : columnList) {
+							Object cellValue = row.getColumnValue(column);
+							excelBuilder.addCell(cellValue);
+						}
+						row = ((IterableSqlDataSet) dataset).iterator().next();
+					}
+				} else {
+					for (DataSetRow row : dataset) {
+						excelBuilder.nextRow();
+						for (DataSetColumn column : columnList) {
+							Object cellValue = row.getColumnValue(column);
+							excelBuilder.addCell(cellValue);
+						}
+					}
+				}
             }
 
 			excelBuilder.write(out, getPassword(design));

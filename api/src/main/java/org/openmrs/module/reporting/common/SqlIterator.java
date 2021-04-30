@@ -34,17 +34,7 @@ public class SqlIterator implements Iterator<DataSetRow> {
 
     @Override
     public boolean hasNext() {
-        try {
-            if (resultSet.isLast()) {
-                closeConnection();
-                return false;
-            } else {
-                return true;
-            }
-        } catch (SQLException ex) {
-            log.error("Failed to validate last result in ResultSet.", ex);
-            return false;
-        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -54,7 +44,7 @@ public class SqlIterator implements Iterator<DataSetRow> {
                 return createDataSetRow();
             } else {
                 closeConnection();
-                throw new NoSuchElementException("No more elements.");
+                return null;
             }
         } catch (SQLException e) {
             throw new APIException("Failed to fetch the next result from the database.", e);
