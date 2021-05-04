@@ -18,6 +18,7 @@ import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.web.WebConstants;
+import org.openmrs.web.WebUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,8 +63,8 @@ public class ParameterizablePortletFormController {
     			throw new IllegalArgumentException("Cannot instantiate a new " + type, e);
     		}
     	}
-    	p.setName(name);
-    	p.setDescription(description);
+    	p.setName(WebUtil.escapeHTML(name));
+    	p.setDescription(WebUtil.escapeHTML(description));
     	p = ParameterizableUtil.saveParameterizable(p);
     	
     	if (StringUtils.isNotEmpty(successUrl)) {
