@@ -326,14 +326,15 @@ public class FormatTag extends TagSupport {
 	    			.append("</td></tr>");
 	    	}
 		} else if (dataSet instanceof IterableSqlDataSet) {
-			DataSetRow row = ((IterableSqlDataSet) dataSet).iterator().next();
+			Iterator<DataSetRow> sqlIterator = ((IterableSqlDataSet) dataSet).iterator();
+			DataSetRow row = sqlIterator.next();
 			while (row != null) {
 				sb.append("<tr>");
 				for (DataSetColumn col : cols) {
 					sb.append("<td>").append(formatHelper(row.getColumnValue(col))).append("</td>");
 				}
 				sb.append("</tr>");
-				row = ((IterableSqlDataSet) dataSet).iterator().next();
+				row = sqlIterator.next();
 			}
 		} else {
 		    for (DataSetRow row : dataSet) {

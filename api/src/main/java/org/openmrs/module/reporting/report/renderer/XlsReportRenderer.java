@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -106,14 +107,15 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
 					excelBuilder.addCell(column.getLabel(), "bold,border=bottom");
                 }
 				if (dataset instanceof IterableSqlDataSet) {
-					DataSetRow row = ((IterableSqlDataSet) dataset).iterator().next();
+					Iterator<DataSetRow> sqlIterator = ((IterableSqlDataSet) dataset).iterator();
+					DataSetRow row = sqlIterator.next();
 					while (row != null) {
 						excelBuilder.nextRow();
 						for (DataSetColumn column : columnList) {
 							Object cellValue = row.getColumnValue(column);
 							excelBuilder.addCell(cellValue);
 						}
-						row = ((IterableSqlDataSet) dataset).iterator().next();
+						row = sqlIterator.next();
 					}
 				} else {
 					for (DataSetRow row : dataset) {
