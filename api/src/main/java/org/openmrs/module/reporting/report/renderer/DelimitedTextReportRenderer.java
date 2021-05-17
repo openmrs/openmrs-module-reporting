@@ -240,13 +240,14 @@ public class DelimitedTextReportRenderer extends ReportDesignRenderer {
             while (row != null) {
                 writeDataRows(columns, row, w, fieldDelimiter, textDelimiter, blacklist, dateFormat);
                 row = ((IterableSqlDataSet) dataset).iterator().next();
+                w.write(lineEnding);
             }
         } else {
             for (DataSetRow row : dataset) {
                 writeDataRows(columns, row, w, fieldDelimiter, textDelimiter, blacklist, dateFormat);
+                w.write(lineEnding);
             }
         }
-
 		w.flush();
 	}
 
