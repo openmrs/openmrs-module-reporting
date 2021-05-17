@@ -11,7 +11,6 @@ package org.openmrs.module.reporting.dataset;
 
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.evaluator.IterableDataSetEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.common.SqlIterator;
 
