@@ -47,6 +47,7 @@ public class SqlIterator implements Iterator<DataSetRow> {
                 return null;
             }
         } catch (SQLException e) {
+            closeConnection();
             throw new APIException("Failed to fetch the next result from the database.", e);
         }
     }
