@@ -20,5 +20,69 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
  * By default, this will utilize the database connection properties in the openmrs runtime properties
  * This can use an alternative database connection by specifying the file.  Property names follow those in openmrs runtime properties
  */
-public class IterableSqlDataSetDefinition extends SqlFileDataSetDefinition {
+public class IterableSqlDataSetDefinition extends BaseDataSetDefinition {
+
+    public enum MetadataParameterConversion {
+        ID, UUID, NAME
+    }
+
+    @ConfigurationProperty
+    private String sqlFile;
+
+    @ConfigurationProperty
+    private String sqlResource;
+
+    @ConfigurationProperty
+    private String sql;
+
+    @ConfigurationProperty
+    private String connectionPropertyFile;
+
+    @ConfigurationProperty
+    private MetadataParameterConversion metadataParameterConversion = MetadataParameterConversion.ID;
+
+    /**
+     * Constructor
+     */
+    public IterableSqlDataSetDefinition() {}
+
+    public String getSqlFile() {
+        return sqlFile;
+    }
+
+    public void setSqlFile(String sqlFile) {
+        this.sqlFile = sqlFile;
+    }
+
+    public String getSqlResource() {
+        return sqlResource;
+    }
+
+    public void setSqlResource(String sqlResource) {
+        this.sqlResource = sqlResource;
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public String getConnectionPropertyFile() {
+        return connectionPropertyFile;
+    }
+
+    public void setConnectionPropertyFile(String connectionPropertyFile) {
+        this.connectionPropertyFile = connectionPropertyFile;
+    }
+
+    public MetadataParameterConversion getMetadataParameterConversion() {
+        return metadataParameterConversion;
+    }
+
+    public void setMetadataParameterConversion(MetadataParameterConversion metadataParameterConversion) {
+        this.metadataParameterConversion = metadataParameterConversion;
+    }
 }

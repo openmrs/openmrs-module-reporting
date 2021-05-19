@@ -165,7 +165,10 @@ public class SqlRunner {
                 Statement statement = null;
                 try {
                     statement = connection.createStatement();
-                    statement.setFetchSize(10);
+                    // If is the last statement set setFetchSize
+                    if (sqlStatement.equals(sqlStatements.get(sqlStatements.size() - 1))) {
+                        statement.setFetchSize(10);
+                    }
                     log.debug("Executing: {}", sqlStatement);
                     statement.executeQuery(sqlStatement);
                     ResultSet resultSet = statement.getResultSet();
