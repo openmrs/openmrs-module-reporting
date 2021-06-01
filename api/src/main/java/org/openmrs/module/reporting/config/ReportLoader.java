@@ -17,6 +17,7 @@ import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlFileDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
@@ -32,12 +33,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ReportLoader {
@@ -89,26 +91,18 @@ public class ReportLoader {
         for (ReportDesign reportDesign : reportDesigns) {
             Context.getService(ReportService.class).saveReportDesign(reportDesign);
         }
-
     }
 
     public static  ReportDefinition constructReportDefinition(ReportDescriptor reportDescriptor) {
-
         ReportDefinition rd = new ReportDefinition();
         rd.setName(reportDescriptor.getName());
         rd.setDescription(reportDescriptor.getDescription());
         rd.setUuid(reportDescriptor.getUuid());
-
-        List<Parameter> parameters = constructParameters(reportDescriptor.getParameters());
-        Map<String, Object> mappings = constructMappings(parameters);
-        rd.setParameters(parameters);
+        rd.setParameters(constructParameters(reportDescriptor.getParameters()));
 
         if (reportDescriptor.getDatasets() != null) {
             for (DataSetDescriptor dataSetDescriptor : reportDescriptor.getDatasets()) {
-                DataSetDefinition dsd = constructDataSetDefinition(dataSetDescriptor, reportDescriptor.getPath(), parameters);
-                if (dsd != null) {
-                    rd.addDataSetDefinition(dataSetDescriptor.getKey(), dsd, mappings);
-                }
+                addDataSetDefinition(rd, dataSetDescriptor, reportDescriptor.getPath());
             }
         }
         return rd;
@@ -119,7 +113,13 @@ public class ReportLoader {
         if (parameterDescriptors != null) {
             for (ParameterDescriptor parameterDescriptor : parameterDescriptors) {
                 try {
-                    parameters.add(new Parameter(parameterDescriptor.getKey(), parameterDescriptor.getLabel(), getParameterClass(parameterDescriptor.getType())));
+                    Class parameterType = getParameterClass(parameterDescriptor.getType());
+                    Parameter p = new Parameter();
+                    p.setName(parameterDescriptor.getKey());
+                    p.setLabel(parameterDescriptor.getLabel());
+                    p.setType(parameterType);
+                    p.setDefaultValue(getParameterValue(parameterType, parameterDescriptor.getValue()));
+                    parameters.add(p);
                 } catch (Exception e) {
                     throw new RuntimeException("Unable to configure parameter " + parameterDescriptor.getKey(), e);
                 }
@@ -129,43 +129,98 @@ public class ReportLoader {
     }
 
     public static Class<?> getParameterClass(String clazz) throws ClassNotFoundException {
+        if (clazz == null) {
+            return String.class;
+        }
         if (clazz.equalsIgnoreCase("location")) {
             return Location.class;
         }
         else if (clazz.equalsIgnoreCase("date")) {
             return Date.class;
         }
+        else if (clazz.equalsIgnoreCase("text") || clazz.equalsIgnoreCase("string")) {
+            return String.class;
+        }
+        else if (clazz.equalsIgnoreCase("locale")) {
+            return Locale.class;
+        }
         else {
             return Context.loadClass(clazz);
         }
     }
 
-    public static Map<String, Object> constructMappings(List<Parameter> parameters) {
-        Map<String,Object> mappings = new HashMap<String, Object>();
-        for (Parameter parameter : parameters) {
-            mappings.put(parameter.getName(), "${" + parameter.getName() + "}");
+    public static Object getParameterValue(Class parameterType, String stringVal) {
+        Object ret = null;
+        try {
+            if (stringVal != null) {
+                if (parameterType == String.class) {
+                    return stringVal;
+                }
+                else if (parameterType == Date.class) {
+                    return new SimpleDateFormat("yyyy-MM-dd").parse(stringVal);
+                }
+                else if (parameterType == Locale.class) {
+                    return new Locale(stringVal);
+                }
+                else {
+                    throw new IllegalStateException("Unable to parse parameter values of type " + parameterType);
+                }
+            }
         }
-        return mappings;
+        catch (Exception e) {
+            throw new IllegalStateException("Unable to parse parameter value " + stringVal + " to a " + parameterType);
+        }
+        return ret;
     }
 
-    public static DataSetDefinition constructDataSetDefinition(DataSetDescriptor dataSetDescriptor, File path, List<Parameter> parameters) {
+    public static void addDataSetDefinition(ReportDefinition rd, DataSetDescriptor dataSetDescriptor, File path) {
 
-        DataSetDefinition dsd = null;
+        Mapped<DataSetDefinition> mappedDsd = new Mapped<DataSetDefinition>();
 
         if ("sql".equalsIgnoreCase(dataSetDescriptor.getType())) {
-            dsd = constructSQLFileDataSetDefinition(dataSetDescriptor, path);
+            mappedDsd.setParameterizable(constructSQLFileDataSetDefinition(dataSetDescriptor, path));
         }
         else {
             throw new RuntimeException("Unsupported data set descriptor type: " + dataSetDescriptor.getType());
         }
 
-        if (parameters != null) {
-            for (Parameter parameter : parameters) {
-                dsd.addParameter(parameter);
+        // First add in all of the report parameters
+        for (Parameter reportParameter : rd.getParameters()) {
+            Parameter parameter = new Parameter(reportParameter);
+            mappedDsd.getParameterizable().addParameter(parameter);
+            if (parameter.getDefaultValue() != null) {
+                mappedDsd.addParameterMapping(parameter.getName(), parameter.getDefaultValue());
+                parameter.setDefaultValue(null);
+            } else {
+                mappedDsd.addParameterMapping(parameter.getName(), "${" + parameter.getName() + "}");
             }
         }
 
-        return dsd;
+        // Next, if any data set parameters specify values for report parameters, or are new parameters, add these
+        List<Parameter> datasetParameters = constructParameters(dataSetDescriptor.getParameters());
+        if (datasetParameters != null) {
+            for (Parameter parameter : datasetParameters) {
+                boolean found = false;
+                for (Parameter existingParam : rd.getParameters()) {
+                    if (existingParam.getName().equals(parameter.getName())) {
+                        found = true;
+                        if (parameter.getDefaultValue() != null) {
+                            mappedDsd.getParameterMappings().put(existingParam.getName(), parameter.getDefaultValue());
+                            parameter.setDefaultValue(null);
+                        }
+                    }
+                }
+                if (!found) {
+                    mappedDsd.getParameterizable().addParameter(parameter);
+                    if (parameter.getDefaultValue() != null) {
+                        mappedDsd.addParameterMapping(parameter.getName(), parameter.getDefaultValue());
+                        parameter.setDefaultValue(null);
+                    }
+                }
+            }
+        }
+
+        rd.addDataSetDefinition(dataSetDescriptor.getKey(), mappedDsd);
     }
 
     public static SqlFileDataSetDefinition constructSQLFileDataSetDefinition(DataSetDescriptor dataSetDescriptor, File path) {

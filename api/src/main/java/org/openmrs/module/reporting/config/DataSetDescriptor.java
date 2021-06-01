@@ -2,6 +2,9 @@ package org.openmrs.module.reporting.config;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DataSetDescriptor {
 
     @JsonProperty
@@ -13,6 +16,8 @@ public class DataSetDescriptor {
     @JsonProperty
     private String config;
 
+    @JsonProperty
+    private List<ParameterDescriptor> parameters;
 
     public String getKey() {
         return key;
@@ -36,6 +41,17 @@ public class DataSetDescriptor {
 
     public void setConfig(String config) {
         this.config = config;
+    }
+
+    public List<ParameterDescriptor> getParameters() {
+        if (parameters == null) {
+            parameters = new ArrayList<ParameterDescriptor>();
+        }
+        return parameters;
+    }
+
+    public void setParameters(List<ParameterDescriptor> parameters) {
+        this.parameters = parameters;
     }
 
 }

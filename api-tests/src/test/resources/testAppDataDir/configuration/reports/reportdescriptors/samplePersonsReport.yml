@@ -1,0 +1,32 @@
+key: "sampleordersexport"
+uuid: "0c32f660-c2de-11eb-b5a4-0242ac110002"
+name: "sample.export.person.name"
+description: "sample.export.person.description"
+parameters:
+  - key: "startDate"
+    type: "java.util.Date"
+    label: "startDate.label"
+  - key: "endDate"
+    type: "java.util.Date"
+    label: "endDate.label"
+datasets:
+  - key: "males"
+    type: "sql"
+    config: "sql/persons.sql"
+    parameters:
+      - key: "gender"
+        value: "M"
+  - key: "females"
+    type: "sql"
+    config: "sql/persons.sql"
+    parameters:
+      - key: "gender"
+        value: "F"
+designs:
+  - type: "csv"
+    properties:
+      "characterEncoding": "ISO-8859-1"
+      "blacklistRegex": "[^\\p{InBasicLatin}\\p{L}]"
+  - type: "excel"
+    template: "templates/SampleReportTemplate.xls"
+
