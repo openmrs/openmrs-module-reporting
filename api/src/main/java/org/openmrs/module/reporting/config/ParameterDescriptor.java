@@ -13,6 +13,9 @@ public class ParameterDescriptor {
     @JsonProperty
     private String label;
 
+    @JsonProperty
+    private String value;
+
     public String getKey() {
         return key;
     }
@@ -35,5 +38,13 @@ public class ParameterDescriptor {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }
