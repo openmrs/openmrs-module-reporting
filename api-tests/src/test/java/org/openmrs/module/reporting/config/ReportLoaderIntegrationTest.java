@@ -1,7 +1,6 @@
 package org.openmrs.module.reporting.config;
 
 import org.hibernate.cfg.Environment;
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.library.BuiltInCohortDefinitionLibrary;
@@ -38,8 +37,6 @@ import static org.openmrs.module.reporting.config.ReportLoader.getReportingDescr
 public class ReportLoaderIntegrationTest extends BaseModuleContextSensitiveTest {
 
     public static final String appDataTestDir = "testAppDataDir";
-
-    private String path;
     
     @Autowired @Qualifier("reportingReportDefinitionService")
     ReportDefinitionService reportDefinitionService;
@@ -50,22 +47,15 @@ public class ReportLoaderIntegrationTest extends BaseModuleContextSensitiveTest 
     @Autowired
     BuiltInCohortDefinitionLibrary cohorts;
 
-    @Before
-    public void setup() {
-        // configure app data dir path
-        path = getClass().getClassLoader().getResource(appDataTestDir).getPath() + File.separator;
-        System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
-        Properties prop = getRuntimeProperties();
-        prop.setProperty(OpenmrsConstants.APPLICATION_DATA_DIRECTORY_RUNTIME_PROPERTY, path);
-        Context.setRuntimeProperties(prop);
-    }
-
     @Override
     public Properties getRuntimeProperties() {
         Properties p = super.getRuntimeProperties();
+        String path = getClass().getClassLoader().getResource(appDataTestDir).getPath() + File.separator;
         p.put("connection.url", p.getProperty(Environment.URL));
         p.put(Environment.URL, p.getProperty(Environment.URL) + ";MVCC=TRUE");
         p.put("connection.driver_class", p.getProperty(Environment.DRIVER));
+        p.setProperty(OpenmrsConstants.APPLICATION_DATA_DIRECTORY_RUNTIME_PROPERTY, path);
+        System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
         return p;
     }
 
