@@ -40,7 +40,7 @@ import java.util.Properties;
  *
  * @see IterableSqlDataSetDefinition
  */
-@Handler(supports = {IterableSqlDataSetDefinition.class})
+@Handler(supports = {IterableSqlDataSetDefinition.class}, order=50)
 public class IterableSqlDataSetEvaluator implements DataSetEvaluator {
 
     private static final Logger log = LoggerFactory.getLogger(IterableSqlDataSetEvaluator.class);
