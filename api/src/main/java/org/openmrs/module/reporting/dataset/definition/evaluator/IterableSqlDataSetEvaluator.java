@@ -11,6 +11,8 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.OpenmrsMetadata;
+import org.openmrs.module.reporting.dataset.definition.SqlFileDataSetDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openmrs.annotation.Handler;
@@ -33,6 +35,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -40,7 +43,7 @@ import java.util.Properties;
  *
  * @see IterableSqlDataSetDefinition
  */
-@Handler(supports = {IterableSqlDataSetDefinition.class}, order=50)
+@Handler(supports = {IterableSqlDataSetDefinition.class}, order = 50)
 public class IterableSqlDataSetEvaluator implements DataSetEvaluator {
 
     private static final Logger log = LoggerFactory.getLogger(IterableSqlDataSetEvaluator.class);
@@ -61,28 +64,34 @@ public class IterableSqlDataSetEvaluator implements DataSetEvaluator {
     public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 
         context = ObjectUtil.nvl(context, new EvaluationContext());
-
         IterableSqlDataSetDefinition sqlDsd = (IterableSqlDataSetDefinition) dataSetDefinition;
-
-        SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
-
         String sqlQuery = sqlDsd.getSql();
 
-        queryBuilder.append(sqlQuery);
-
-        queryBuilder.setParameters(context.getParameterValues());
-
-        IterableSqlDataSetDefinition defenition = (IterableSqlDataSetDefinition) dataSetDefinition;
-        Properties connectionProperties = getConnectionProperties(defenition.getConnectionPropertyFile());
+        IterableSqlDataSetDefinition definition = (IterableSqlDataSetDefinition) dataSetDefinition;
+        Properties connectionProperties = getConnectionProperties(definition.getConnectionPropertyFile());
         Iterator iterator = null;
         Connection connection = null;
+
         try {
             connection = createConnection(connectionProperties);
             SqlRunner runner = new SqlRunner(connection);
+            Map<String, Object> parameterValues = constructParameterValues(definition, context);
 
-            if (StringUtils.isNotBlank(defenition.getSql())) {
-                iterator = runner.executeSqlToIterator(defenition.getSql());
-
+            if (StringUtils.isNotBlank(definition.getSqlFile())) {
+                File sqlFile = new File(definition.getSqlFile());
+                if (!sqlFile.exists()) {
+                    throw new EvaluationException("Unable to find Sql File to execute: " + definition.getSqlFile());
+                }
+                log.info("Executing SQL File at " + sqlFile + " with parameters " + parameterValues);
+                iterator = runner.executeSqlFileToIterator(sqlFile, parameterValues);
+            } else if (StringUtils.isNotBlank(definition.getSqlResource())) {
+                log.info("Executing SQL Resource at " + definition.getSqlResource() + " with parameters " + parameterValues);
+                iterator =  runner.executeSqlResourceToIterator(definition.getSqlResource(), parameterValues);
+            } else if (StringUtils.isNotBlank(definition.getSql())) {
+                log.info("Executing SQL with parameters " + parameterValues);
+                iterator = runner.executeSqlToIterator(definition.getSql(), parameterValues);
+            } else {
+                throw new EvaluationException("A SqlFileDataSetDefinition must define either a SQL File or SQL Resource");
             }
 
         } catch (EvaluationException ee) {
@@ -132,4 +141,24 @@ public class IterableSqlDataSetEvaluator implements DataSetEvaluator {
         return properties;
     }
 
+    /**
+     * @return parameter values to use within SQL statement, converting object references to metadata to scalar properties, defaulting to keys
+     */
+    protected Map<String, Object> constructParameterValues(SqlFileDataSetDefinition dsd, EvaluationContext context) {
+        Map<String, Object> ret = context.getContextValues();
+        ret.putAll(context.getParameterValues());
+        for (String key : ret.keySet()) {
+            Object o = ret.get(key);
+            if (o instanceof OpenmrsMetadata) {
+                if (dsd.getMetadataParameterConversion() == SqlFileDataSetDefinition.MetadataParameterConversion.ID) {
+                    ret.put(key, ((OpenmrsMetadata) o).getId());
+                } else if (dsd.getMetadataParameterConversion() == SqlFileDataSetDefinition.MetadataParameterConversion.UUID) {
+                    ret.put(key, ((OpenmrsMetadata) o).getUuid());
+                } else if (dsd.getMetadataParameterConversion() == SqlFileDataSetDefinition.MetadataParameterConversion.NAME) {
+                    ret.put(key, ((OpenmrsMetadata) o).getName());
+                }
+            }
+        }
+        return ret;
+    }
 }

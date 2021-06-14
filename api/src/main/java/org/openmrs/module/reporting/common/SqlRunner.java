@@ -65,12 +65,33 @@ public class SqlRunner {
     }
 
     /**
+     * Executes a Sql Script located under resources
+     */
+    public SqlIterator executeSqlResourceToIterator(String resourceName, Map<String, Object> parameterValues) {
+        String sql = ReportUtil.readStringFromResource(resourceName);
+        return executeSqlToIterator(sql, parameterValues);
+    }
+
+    /**
      * Executes a Sql Script located as a file
      */
     public SqlResult executeSqlFile(File sqlFile, Map<String, Object> parameterValues) {
         try {
             String sql = FileUtils.readFileToString(sqlFile, "UTF-8");
             return executeSql(sql, parameterValues);
+        }
+        catch (IOException e) {
+            throw new IllegalArgumentException("Unable to load file: " + sqlFile, e);
+        }
+    }
+
+    /**
+     * Executes a Sql Script located as a file
+     */
+    public SqlIterator executeSqlFileToIterator(File sqlFile, Map<String, Object> parameterValues) {
+        try {
+            String sql = FileUtils.readFileToString(sqlFile, "UTF-8");
+            return executeSqlToIterator(sql, parameterValues);
         }
         catch (IOException e) {
             throw new IllegalArgumentException("Unable to load file: " + sqlFile, e);
@@ -147,12 +168,13 @@ public class SqlRunner {
     /**
      * Executes a Sql Script
      */
-    public SqlIterator executeSqlToIterator(String sql) {
+    public SqlIterator executeSqlToIterator(String sql, Map<String, Object> parameterValues) {
 
         SqlIterator iterator = null;
         log.info("Executing SQL...");
 
         List<String> sqlStatements = new ArrayList<String>();
+        sqlStatements.addAll(parseParametersIntoStatements(parameterValues));
         sqlStatements.addAll(parseSqlIntoStatements(sql));
 
         Boolean originalAutoCommit = null;
