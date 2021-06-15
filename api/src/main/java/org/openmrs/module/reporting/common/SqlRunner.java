@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.module.reporting.dataset.definition.evaluator.SqlFileDataSetEvaluator;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 
 import java.io.File;
@@ -42,17 +43,17 @@ public class SqlRunner {
 
     //*********** INSTANCE PROPERTIES ******************
 
-    private Connection connection;
+    private SqlFileDataSetEvaluator evaluator;
     private String delimiter = ";";
 
     //*********** CONSTRUCTORS ******************
 
-    public SqlRunner(Connection connection) {
-        this.connection = connection;
+    public SqlRunner(SqlFileDataSetEvaluator evaluator) {
+        this.evaluator = evaluator;
     }
 
-    public SqlRunner(Connection connection, String delimiter) {
-        this(connection);
+    public SqlRunner(SqlFileDataSetEvaluator evaluator, String delimiter) {
+        this(evaluator);
         this.delimiter = delimiter;
     }
 
@@ -113,13 +114,13 @@ public class SqlRunner {
         Boolean originalAutoCommit = null;
 
         try {
-            originalAutoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(false);
+            originalAutoCommit = evaluator.getConnection().getAutoCommit();
+            evaluator.getConnection().setAutoCommit(false);
 
             for (String sqlStatement : sqlStatements) {
                 Statement statement = null;
                 try {
-                    statement = connection.createStatement();
+                    statement = evaluator.getConnection().createStatement();
                     log.debug("Executing: " + sqlStatement);
                     statement.execute(sqlStatement);
                     ResultSet resultSet = statement.getResultSet();
@@ -180,13 +181,13 @@ public class SqlRunner {
         Boolean originalAutoCommit = null;
 
         try {
-            originalAutoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(false);
+            originalAutoCommit = evaluator.getConnection().getAutoCommit();
+            evaluator.getConnection().setAutoCommit(false);
 
             for (String sqlStatement : sqlStatements) {
                 Statement statement = null;
                 try {
-                    statement = connection.createStatement();
+                    statement = evaluator.getConnection().createStatement();
                     // If is the last statement set setFetchSize
                     if (sqlStatement.equals(sqlStatements.get(sqlStatements.size() - 1))) {
                         statement.setFetchSize(10);
@@ -197,7 +198,7 @@ public class SqlRunner {
 
                     if (resultSet != null) {
                         ResultSetMetaData rsmd = resultSet.getMetaData();
-                        iterator = new SqlIterator(rsmd, resultSet, connection, statement);
+                        iterator = new SqlIterator(rsmd, resultSet, evaluator, statement);
                     }
                 } catch (Exception e) {
                     closeStatement(statement);
@@ -226,7 +227,7 @@ public class SqlRunner {
 
     protected void commit() {
         try {
-            connection.commit();
+            evaluator.getConnection().commit();
         }
         catch (Exception e) {
             log.warn("An error occurred while trying to commit", e);
@@ -235,7 +236,7 @@ public class SqlRunner {
 
 	protected void rollback() {
 	    try {
-	        connection.rollback();
+            evaluator.getConnection().rollback();
         }
         catch (Exception e) {
 	        log.warn("An error occurred while trying to rollback a connection", e);
@@ -245,7 +246,7 @@ public class SqlRunner {
     protected void resetAutocommit(Boolean autocommit) {
         try {
             if (autocommit != null) {
-                connection.setAutoCommit(autocommit);
+                evaluator.getConnection().setAutoCommit(autocommit);
             }
         }
         catch (Exception e) {
@@ -372,15 +373,6 @@ public class SqlRunner {
     }
 
     //************* PROPERTY ACCESS *******************
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
-
     public String getDelimiter() {
         return delimiter;
     }

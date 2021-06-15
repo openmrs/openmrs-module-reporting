@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.openmrs.module.reporting.dataset.definition.evaluator.SqlFileDataSetEvaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,13 +22,13 @@ public class SqlIterator implements Iterator<DataSetRow> {
     private ResultSet resultSet;
     private List<DataSetColumn> columns;
     private Statement statement;
-    private Connection connection;
+    private SqlFileDataSetEvaluator evaluator;
     private static final Logger log = LoggerFactory.getLogger(SqlIterator.class);
 
 
-    public SqlIterator(ResultSetMetaData metadata, ResultSet resultSet, Connection connection, Statement statement) throws SQLException {
+    public SqlIterator(ResultSetMetaData metadata, ResultSet resultSet, SqlFileDataSetEvaluator evaluator, Statement statement) throws SQLException {
         this.resultSet = resultSet;
-        this.connection = connection;
+        this.evaluator = evaluator;
         this.statement = statement;
         this.createDataSetColumns(metadata);
     }
@@ -70,9 +71,7 @@ public class SqlIterator implements Iterator<DataSetRow> {
             if (statement != null) {
                 statement.close();
             }
-            if (connection != null) {
-                connection.close();
-            }
+            evaluator.closeConnection();
         } catch (Exception ex) {
             log.error("Failed to close SqlIterator connection.", ex);
         }

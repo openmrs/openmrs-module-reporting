@@ -9,10 +9,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.OpenmrsMetadata;
-import org.openmrs.module.reporting.dataset.definition.SqlFileDataSetDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openmrs.annotation.Handler;
@@ -26,12 +23,8 @@ import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinit
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.common.SqlIterator;
-import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
-import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Iterator;
@@ -44,7 +37,7 @@ import java.util.Properties;
  * @see IterableSqlDataSetDefinition
  */
 @Handler(supports = {IterableSqlDataSetDefinition.class}, order = 50)
-public class IterableSqlDataSetEvaluator implements DataSetEvaluator {
+public class IterableSqlDataSetEvaluator extends SqlFileDataSetEvaluator {
 
     private static final Logger log = LoggerFactory.getLogger(IterableSqlDataSetEvaluator.class);
 
@@ -61,6 +54,7 @@ public class IterableSqlDataSetEvaluator implements DataSetEvaluator {
      * @should protect SQL Query Against database modifications
      * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
      */
+    @Override
     public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 
         context = ObjectUtil.nvl(context, new EvaluationContext());
@@ -73,8 +67,8 @@ public class IterableSqlDataSetEvaluator implements DataSetEvaluator {
         Connection connection = null;
 
         try {
-            connection = createConnection(connectionProperties);
-            SqlRunner runner = new SqlRunner(connection);
+            createConnection(connectionProperties);
+            SqlRunner runner = new SqlRunner(this);
             Map<String, Object> parameterValues = constructParameterValues(definition, context);
 
             if (StringUtils.isNotBlank(definition.getSqlFile())) {
@@ -86,7 +80,7 @@ public class IterableSqlDataSetEvaluator implements DataSetEvaluator {
                 iterator = runner.executeSqlFileToIterator(sqlFile, parameterValues);
             } else if (StringUtils.isNotBlank(definition.getSqlResource())) {
                 log.info("Executing SQL Resource at " + definition.getSqlResource() + " with parameters " + parameterValues);
-                iterator =  runner.executeSqlResourceToIterator(definition.getSqlResource(), parameterValues);
+                iterator = runner.executeSqlResourceToIterator(definition.getSqlResource(), parameterValues);
             } else if (StringUtils.isNotBlank(definition.getSql())) {
                 log.info("Executing SQL with parameters " + parameterValues);
                 iterator = runner.executeSqlToIterator(definition.getSql(), parameterValues);
@@ -106,7 +100,8 @@ public class IterableSqlDataSetEvaluator implements DataSetEvaluator {
     /**
      * @return a new connection given a set of connection properties
      */
-    protected Connection createConnection(Properties connectionProperties) throws EvaluationException {
+    @Override
+    protected void createConnection(Properties connectionProperties) throws EvaluationException {
         try {
             String driver = connectionProperties.getProperty("connection.driver_class", "com.mysql.jdbc.Driver");
             String url = connectionProperties.getProperty("connection.url");
@@ -114,51 +109,10 @@ public class IterableSqlDataSetEvaluator implements DataSetEvaluator {
             String user = connectionProperties.getProperty("connection.username");
             String password = connectionProperties.getProperty("connection.password");
             Context.loadClass(driver);
-            return DriverManager.getConnection(url, user, password);
+            this.connection = DriverManager.getConnection(url, user, password);
         } catch (Exception e) {
             throw new EvaluationException("Unable to create a new connection to the database", e);
         }
     }
 
-    /**
-     * @return the connection properties to use
-     */
-    protected Properties getConnectionProperties(String connectionPropertyFile) throws EvaluationException {
-        Properties properties = Context.getRuntimeProperties();
-        if (StringUtils.isNotBlank(connectionPropertyFile)) {
-            properties = new Properties();
-            InputStream is = null;
-            try {
-                File file = new File(OpenmrsUtil.getApplicationDataDirectory(), connectionPropertyFile);
-                is = new FileInputStream(file);
-                properties.load(is);
-            } catch (Exception e) {
-                throw new EvaluationException("Unable to load connection properties from file <" + connectionPropertyFile + ">", e);
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
-        }
-        return properties;
-    }
-
-    /**
-     * @return parameter values to use within SQL statement, converting object references to metadata to scalar properties, defaulting to keys
-     */
-    protected Map<String, Object> constructParameterValues(SqlFileDataSetDefinition dsd, EvaluationContext context) {
-        Map<String, Object> ret = context.getContextValues();
-        ret.putAll(context.getParameterValues());
-        for (String key : ret.keySet()) {
-            Object o = ret.get(key);
-            if (o instanceof OpenmrsMetadata) {
-                if (dsd.getMetadataParameterConversion() == SqlFileDataSetDefinition.MetadataParameterConversion.ID) {
-                    ret.put(key, ((OpenmrsMetadata) o).getId());
-                } else if (dsd.getMetadataParameterConversion() == SqlFileDataSetDefinition.MetadataParameterConversion.UUID) {
-                    ret.put(key, ((OpenmrsMetadata) o).getUuid());
-                } else if (dsd.getMetadataParameterConversion() == SqlFileDataSetDefinition.MetadataParameterConversion.NAME) {
-                    ret.put(key, ((OpenmrsMetadata) o).getName());
-                }
-            }
-        }
-        return ret;
-    }
 }
