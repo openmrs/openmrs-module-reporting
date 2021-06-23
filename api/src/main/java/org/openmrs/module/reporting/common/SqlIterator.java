@@ -24,6 +24,9 @@ public class SqlIterator implements Iterator<DataSetRow> {
     private Statement statement;
     private SqlFileDataSetEvaluator evaluator;
     private static final Logger log = LoggerFactory.getLogger(SqlIterator.class);
+    private DataSetRow next;
+    private boolean isNextUsed = true;
+    private boolean hasNext = true;
 
 
     public SqlIterator(ResultSetMetaData metadata, ResultSet resultSet, SqlFileDataSetEvaluator evaluator, Statement statement) throws SQLException {
@@ -35,17 +38,28 @@ public class SqlIterator implements Iterator<DataSetRow> {
 
     @Override
     public boolean hasNext() {
-        throw new UnsupportedOperationException();
+        if (isNextUsed && hasNext) {
+            next();
+            isNextUsed = false;
+        }
+        return hasNext;
     }
 
     @Override
     public DataSetRow next() throws NoSuchElementException {
         try {
-            if (resultSet.next()) {
-                return createDataSetRow();
+            if (isNextUsed) {
+                isNextUsed = true;
+                if (resultSet.next()) {
+                    return createDataSetRow();
+                } else {
+                    hasNext = false;
+                    closeConnection();
+                    return null;
+                }
             } else {
-                closeConnection();
-                return null;
+                isNextUsed = true;
+                return createDataSetRow();
             }
         } catch (SQLException e) {
             closeConnection();

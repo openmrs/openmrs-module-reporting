@@ -34,12 +34,10 @@ import org.openmrs.api.context.Context;
 import org.openmrs.logic.result.EmptyResult;
 import org.openmrs.logic.result.Result;
 import org.openmrs.module.reporting.common.ObjectUtil;
-import org.openmrs.module.reporting.common.SqlIterator;
 import org.openmrs.module.reporting.data.BaseData;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.IterableSqlDataSet;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.indicator.dimension.CohortDimensionResult;
 import org.openmrs.module.reporting.query.IdSet;
@@ -325,18 +323,7 @@ public class FormatTag extends TagSupport {
 	    			.append(formatHelper(row.getColumnValue(col)))
 	    			.append("</td></tr>");
 	    	}
-		} else if (dataSet instanceof IterableSqlDataSet) {
-			Iterator<DataSetRow> sqlIterator = ((IterableSqlDataSet) dataSet).iterator();
-			DataSetRow row = sqlIterator.next();
-			while (row != null) {
-				sb.append("<tr>");
-				for (DataSetColumn col : cols) {
-					sb.append("<td>").append(formatHelper(row.getColumnValue(col))).append("</td>");
-				}
-				sb.append("</tr>");
-				row = sqlIterator.next();
-			}
-		} else {
+	    } else {
 		    for (DataSetRow row : dataSet) {
 		    	sb.append("<tr>");
 		    	for (DataSetColumn col : cols) {
