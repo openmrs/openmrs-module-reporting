@@ -157,6 +157,7 @@ public class ReportHistoryController {
 		return "/module/reporting/json";
 	}
 	
+	
 	@RequestMapping("/module/reporting/reports/viewErrorDetails")
 	public void viewErrorDetails(HttpServletResponse response, @RequestParam("uuid") String uuid) throws IOException {
 		ReportRequest rr = Context.getService(ReportService.class).getReportRequestByUuid(uuid);
@@ -187,7 +188,21 @@ public class ReportHistoryController {
 				req.setRenderingMode(mode);
 			}
 		}
+
+		List<ReportRequest> requests = rs.getAllReportRequests();
+		
+		List <String> allLogs = new ArrayList<String>();
+		for(ReportRequest reqst: requests) {
+			try {
+			List<String> logs = rs.loadReportLog(reqst);
+			allLogs.addAll(logs);
+			}catch(NullPointerException e) {				
+			}
+			
+		}
+			
 		model.addAttribute("request", req);
+		model.addAttribute("allLogs", allLogs);
 		
 		if (req.getStatus() == Status.REQUESTED) {
 			model.addAttribute("positionInQueue", rs.getPositionInQueue(req));

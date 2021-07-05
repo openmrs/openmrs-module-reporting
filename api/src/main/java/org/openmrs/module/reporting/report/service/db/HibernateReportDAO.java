@@ -255,6 +255,17 @@ public class HibernateReportDAO implements ReportDAO {
 		query.setString("uuid", reportDefinitionUuid);
 		return query.list();
 	}
+	
+	/**
+	 * @see ReportDAO#getReportAllRequests()
+	 */
+	public List<ReportRequest> getAllReportRequests(){
+		String hql = "from ReportRequest";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		return query.list();	
+		
+	}
+	
 
 	//***** PROPERTY ACCESS *****
 

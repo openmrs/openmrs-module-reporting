@@ -119,6 +119,11 @@ public interface ReportDAO {
 	public ReportRequest getReportRequestByUuid(String uuid);
 	
 	/**
+	 * @returns all the {@link ReportRequestst} 
+	 */
+	public List<ReportRequest> getAllReportRequests();
+	
+	/**
 	 * @return all {@link ReportRequest} in the system that match the passed parameters
 	 */
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
