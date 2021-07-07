@@ -4,7 +4,6 @@ import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -39,8 +38,8 @@ public class SqlIterator implements Iterator<DataSetRow> {
     @Override
     public boolean hasNext() {
         if (isNextUsed && hasNext) {
-            next();
             isNextUsed = false;
+            return rawNext();
         }
         return hasNext;
     }
@@ -49,17 +48,29 @@ public class SqlIterator implements Iterator<DataSetRow> {
     public DataSetRow next() throws NoSuchElementException {
         try {
             if (isNextUsed) {
-                isNextUsed = true;
-                if (resultSet.next()) {
+                if (rawNext()) {
                     return createDataSetRow();
-                } else {
-                    hasNext = false;
-                    closeConnection();
+                }else{
                     return null;
                 }
             } else {
                 isNextUsed = true;
                 return createDataSetRow();
+            }
+        } catch (SQLException e) {
+            closeConnection();
+            throw new APIException("Failed to fetch the next result from the database.", e);
+        }
+    }
+
+    private boolean rawNext() {
+        try {
+            if (resultSet.next()) {
+                return true;
+            } else {
+                hasNext = false;
+                closeConnection();
+                return false;
             }
         } catch (SQLException e) {
             closeConnection();
