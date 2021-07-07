@@ -44,12 +44,30 @@ public class SqlIteratorTest {
     }
 
     @Test
-    public void shouldRead2Lines() {
+    public void shouldRead3LinesWithHasNext() {
         List<DataSetRow> rows = new LinkedList<DataSetRow>();
         for (Iterator i = sqlIterator; i.hasNext(); ) {
             DataSetRow row = (DataSetRow) i.next();
             rows.add(row);
         }
+        Assert.assertEquals(3, rows.size());
+        Assert.assertEquals("result_01", rows.get(0).getColumnValue("Column_01"));
+        Assert.assertEquals("result_02", rows.get(0).getColumnValue("Column_02"));
+        Assert.assertEquals("result_03", rows.get(1).getColumnValue("Column_01"));
+        Assert.assertEquals("result_04", rows.get(1).getColumnValue("Column_02"));
+        Assert.assertEquals("result_05", rows.get(2).getColumnValue("Column_01"));
+        Assert.assertEquals("result_06", rows.get(2).getColumnValue("Column_02"));
+    }
+
+    @Test
+    public void shouldRead3LinesWithoutHasNext() {
+        List<DataSetRow> rows = new LinkedList<DataSetRow>();
+        DataSetRow row = sqlIterator.next();
+        while (row != null) {
+            rows.add(row);
+            row = sqlIterator.next();
+        }
+
         Assert.assertEquals(3, rows.size());
         Assert.assertEquals("result_01", rows.get(0).getColumnValue("Column_01"));
         Assert.assertEquals("result_02", rows.get(0).getColumnValue("Column_02"));
