@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.openmrs.api.db.hibernate.DbSessionFactory;  
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.reporting.dataset.DataSetColumn;

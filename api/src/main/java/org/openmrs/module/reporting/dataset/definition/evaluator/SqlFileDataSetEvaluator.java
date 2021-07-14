@@ -3,12 +3,12 @@
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://license.openmrs.org
- *
+ * <p>
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
- *
+ * <p>
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
@@ -46,27 +46,27 @@ import java.util.Properties;
 /**
  * Evaluates a SqlFileDataSetDefinition and produces results
  */
-@Handler(supports={SqlFileDataSetDefinition.class})
+@Handler(supports = {SqlFileDataSetDefinition.class})
 public class SqlFileDataSetEvaluator implements DataSetEvaluator {
+    protected Log log = LogFactory.getLog(this.getClass());
 
-	protected Log log = LogFactory.getLog(this.getClass());
-	
-	/**
-	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
-	 */
-	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
-		
-		context = ObjectUtil.nvl(context, new EvaluationContext());
+    protected Connection connection;
+
+    /**
+     * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
+     */
+    public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
+
+        context = ObjectUtil.nvl(context, new EvaluationContext());
         SimpleDataSet data = new SimpleDataSet(dataSetDefinition, context);
 
         SqlFileDataSetDefinition dsd = (SqlFileDataSetDefinition) dataSetDefinition;
 
         Properties connectionProperties = getConnectionProperties(dsd.getConnectionPropertyFile());
-        Connection connection = null;
         try {
-            connection = createConnection(connectionProperties);
+            createConnection(connectionProperties);
 
-            SqlRunner runner = new SqlRunner(connection);
+            SqlRunner runner = new SqlRunner(this);
             SqlResult resultData = null;
             Map<String, Object> parameterValues = constructParameterValues(dsd, context);
 
@@ -77,16 +77,13 @@ public class SqlFileDataSetEvaluator implements DataSetEvaluator {
                 }
                 log.info("Executing SQL File at " + sqlFile + " with parameters " + parameterValues);
                 resultData = runner.executeSqlFile(sqlFile, parameterValues);
-            }
-            else if (StringUtils.isNotBlank(dsd.getSqlResource())) {
+            } else if (StringUtils.isNotBlank(dsd.getSqlResource())) {
                 log.info("Executing SQL Resource at " + dsd.getSqlResource() + " with parameters " + parameterValues);
                 resultData = runner.executeSqlResource(dsd.getSqlResource(), parameterValues);
-            }
-            else if (StringUtils.isNotBlank(dsd.getSql())) {
+            } else if (StringUtils.isNotBlank(dsd.getSql())) {
                 log.info("Executing SQL with parameters " + parameterValues);
                 resultData = runner.executeSql(dsd.getSql(), parameterValues);
-            }
-            else {
+            } else {
                 throw new EvaluationException("A SqlFileDataSetDefinition must define either a SQL File or SQL Resource");
             }
 
@@ -107,44 +104,32 @@ public class SqlFileDataSetEvaluator implements DataSetEvaluator {
                 }
                 data.addRow(row);
             }
-        }
-        catch (EvaluationException ee) {
+        } catch (EvaluationException ee) {
             throw ee;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new EvaluationException("An error occurred while evaluating a SqlFileDataSetDefinition", e);
-        }
-        finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            }
-            catch (Exception e) {
-                log.warn("Error closing the database connection for SqlFileDataSetEvaluator", e);
-            }
+        } finally {
+            closeConnection();
         }
 
-		return data;
-	}
+        return data;
+    }
 
     /**
      * @return the connection properties to use
      */
-	protected Properties getConnectionProperties(String connectionPropertyFile) throws EvaluationException {
-	    Properties properties = Context.getRuntimeProperties();
-	    if (StringUtils.isNotBlank(connectionPropertyFile)) {
+    protected Properties getConnectionProperties(String connectionPropertyFile) throws EvaluationException {
+        Properties properties = Context.getRuntimeProperties();
+        if (StringUtils.isNotBlank(connectionPropertyFile)) {
             properties = new Properties();
             InputStream is = null;
             try {
                 File file = new File(OpenmrsUtil.getApplicationDataDirectory(), connectionPropertyFile);
                 is = new FileInputStream(file);
                 properties.load(is);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new EvaluationException("Unable to load connection properties from file <" + connectionPropertyFile + ">", e);
-            }
-            finally {
+            } finally {
                 IOUtils.closeQuietly(is);
             }
         }
@@ -154,17 +139,16 @@ public class SqlFileDataSetEvaluator implements DataSetEvaluator {
     /**
      * @return a new connection given a set of connection properties
      */
-    protected Connection createConnection(Properties connectionProperties) throws EvaluationException {
-	    try {
+    protected void createConnection(Properties connectionProperties) throws EvaluationException {
+        try {
             String driver = connectionProperties.getProperty("connection.driver_class", "com.mysql.jdbc.Driver");
             String url = connectionProperties.getProperty("connection.url");
             String user = connectionProperties.getProperty("connection.username");
             String password = connectionProperties.getProperty("connection.password");
             Context.loadClass(driver);
-            return DriverManager.getConnection(url, user, password);
-        }
-        catch (Exception e) {
-	        throw new EvaluationException("Unable to create a new connection to the database", e);
+            connection = DriverManager.getConnection(url, user, password);
+        } catch (Exception e) {
+            throw new EvaluationException("Unable to create a new connection to the database", e);
         }
     }
 
@@ -178,16 +162,28 @@ public class SqlFileDataSetEvaluator implements DataSetEvaluator {
             Object o = ret.get(key);
             if (o instanceof OpenmrsMetadata) {
                 if (dsd.getMetadataParameterConversion() == MetadataParameterConversion.ID) {
-                    ret.put(key, ((OpenmrsMetadata)o).getId());
-                }
-                else if (dsd.getMetadataParameterConversion() == MetadataParameterConversion.UUID) {
-                    ret.put(key, ((OpenmrsMetadata)o).getUuid());
-                }
-                else if (dsd.getMetadataParameterConversion() == MetadataParameterConversion.NAME) {
-                    ret.put(key, ((OpenmrsMetadata)o).getName());
+                    ret.put(key, ((OpenmrsMetadata) o).getId());
+                } else if (dsd.getMetadataParameterConversion() == MetadataParameterConversion.UUID) {
+                    ret.put(key, ((OpenmrsMetadata) o).getUuid());
+                } else if (dsd.getMetadataParameterConversion() == MetadataParameterConversion.NAME) {
+                    ret.put(key, ((OpenmrsMetadata) o).getName());
                 }
             }
         }
         return ret;
+    }
+
+    public void closeConnection() {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (Exception e) {
+            log.warn("Error closing the database connection for SqlFileDataSetEvaluator", e);
+        }
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 }
