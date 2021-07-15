@@ -65,7 +65,6 @@ public class ResultSetIterator implements Iterator<DataSetRow> {
     private boolean rawNext() {
         try {
             if (resultSet.next()) {
-                resultSet.isAfterLast();
                 return true;
             } else {
                 hasNext = false;
