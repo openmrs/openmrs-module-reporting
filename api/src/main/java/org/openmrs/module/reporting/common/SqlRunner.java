@@ -19,7 +19,6 @@ import org.openmrs.module.reporting.report.util.ReportUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
@@ -68,7 +67,7 @@ public class SqlRunner {
     /**
      * Executes a Sql Script located under resources
      */
-    public SqlIterator executeSqlResourceToIterator(String resourceName, Map<String, Object> parameterValues) {
+    public ResultSetIterator executeSqlResourceToIterator(String resourceName, Map<String, Object> parameterValues) {
         String sql = ReportUtil.readStringFromResource(resourceName);
         return executeSqlToIterator(sql, parameterValues);
     }
@@ -89,7 +88,7 @@ public class SqlRunner {
     /**
      * Executes a Sql Script located as a file
      */
-    public SqlIterator executeSqlFileToIterator(File sqlFile, Map<String, Object> parameterValues) {
+    public ResultSetIterator executeSqlFileToIterator(File sqlFile, Map<String, Object> parameterValues) {
         try {
             String sql = FileUtils.readFileToString(sqlFile, "UTF-8");
             return executeSqlToIterator(sql, parameterValues);
@@ -169,9 +168,9 @@ public class SqlRunner {
     /**
      * Executes a Sql Script
      */
-    public SqlIterator executeSqlToIterator(String sql, Map<String, Object> parameterValues) {
+    public ResultSetIterator executeSqlToIterator(String sql, Map<String, Object> parameterValues) {
 
-        SqlIterator iterator = null;
+        ResultSetIterator iterator = null;
         log.info("Executing SQL...");
 
         List<String> sqlStatements = new ArrayList<String>();
@@ -198,7 +197,7 @@ public class SqlRunner {
 
                     if (resultSet != null) {
                         ResultSetMetaData rsmd = resultSet.getMetaData();
-                        iterator = new SqlIterator(rsmd, resultSet, evaluator, statement);
+                        iterator = new ResultSetIterator(rsmd, resultSet, evaluator, statement);
                     }
                 } catch (Exception e) {
                     closeStatement(statement);

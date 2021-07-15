@@ -17,18 +17,17 @@ import org.openmrs.module.reporting.dataset.definition.evaluator.SqlFileDataSetE
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SqlIterator implements Iterator<DataSetRow> {
+public class ResultSetIterator implements Iterator<DataSetRow> {
     private ResultSet resultSet;
     private List<DataSetColumn> columns;
     private Statement statement;
     private SqlFileDataSetEvaluator evaluator;
-    private static final Logger log = LoggerFactory.getLogger(SqlIterator.class);
-    private DataSetRow next;
+    private static final Logger log = LoggerFactory.getLogger(ResultSetIterator.class);
     private boolean isNextUsed = true;
     private boolean hasNext = true;
 
 
-    public SqlIterator(ResultSetMetaData metadata, ResultSet resultSet, SqlFileDataSetEvaluator evaluator, Statement statement) throws SQLException {
+    public ResultSetIterator(ResultSetMetaData metadata, ResultSet resultSet, SqlFileDataSetEvaluator evaluator, Statement statement) throws SQLException {
         this.resultSet = resultSet;
         this.evaluator = evaluator;
         this.statement = statement;
@@ -66,6 +65,7 @@ public class SqlIterator implements Iterator<DataSetRow> {
     private boolean rawNext() {
         try {
             if (resultSet.next()) {
+                resultSet.isAfterLast();
                 return true;
             } else {
                 hasNext = false;
@@ -98,7 +98,7 @@ public class SqlIterator implements Iterator<DataSetRow> {
             }
             evaluator.closeConnection();
         } catch (Exception ex) {
-            log.error("Failed to close SqlIterator connection.", ex);
+            log.error("Failed to close ResultSetIterator connection.", ex);
         }
     }
 

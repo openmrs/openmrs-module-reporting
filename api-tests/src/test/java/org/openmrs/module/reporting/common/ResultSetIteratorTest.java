@@ -3,8 +3,6 @@ package org.openmrs.module.reporting.common;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.openmrs.api.context.UserContext;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.definition.evaluator.SqlFileDataSetEvaluator;
 
@@ -21,7 +19,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-public class SqlIteratorTest {
+public class ResultSetIteratorTest {
 
     //@Mock
     private SqlFileDataSetEvaluator mockEvaluator;
@@ -32,21 +30,21 @@ public class SqlIteratorTest {
     //@Mock
     private Statement mockStatement;
 
-    private SqlIterator sqlIterator;
+    private ResultSetIterator resultSetIterator;
 
     @Before
     public void setUp() throws SQLException {
         mockEvaluator = mock(SqlFileDataSetEvaluator.class);
         mockResultSet = mock(ResultSet.class);
         mockStatement = mock(Statement.class);
-        sqlIterator = new SqlIterator(createMetadata(), mockResultSet, mockEvaluator, mockStatement);
+        resultSetIterator = new ResultSetIterator(createMetadata(), mockResultSet, mockEvaluator, mockStatement);
         mockResultSet();
     }
 
     @Test
     public void shouldRead3LinesWithHasNext() {
         List<DataSetRow> rows = new LinkedList<DataSetRow>();
-        for (Iterator i = sqlIterator; i.hasNext(); ) {
+        for (Iterator i = resultSetIterator; i.hasNext(); ) {
             DataSetRow row = (DataSetRow) i.next();
             rows.add(row);
         }
@@ -62,10 +60,10 @@ public class SqlIteratorTest {
     @Test
     public void shouldRead3LinesWithoutHasNext() {
         List<DataSetRow> rows = new LinkedList<DataSetRow>();
-        DataSetRow row = sqlIterator.next();
+        DataSetRow row = resultSetIterator.next();
         while (row != null) {
             rows.add(row);
-            row = sqlIterator.next();
+            row = resultSetIterator.next();
         }
 
         Assert.assertEquals(3, rows.size());

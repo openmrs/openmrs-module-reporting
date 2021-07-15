@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.common.SqlIterator;
+import org.openmrs.module.reporting.common.ResultSetIterator;
 
 import java.io.File;
 import java.sql.Connection;
@@ -94,7 +94,7 @@ public class IterableSqlDataSetEvaluator extends SqlFileDataSetEvaluator {
             throw new EvaluationException("An error occurred while evaluating a SqlFileDataSetDefinition", e);
         }
 
-        return new IterableSqlDataSet(context, sqlDsd, (SqlIterator) iterator);
+        return new IterableSqlDataSet(context, sqlDsd, (ResultSetIterator) iterator);
     }
 
     /**

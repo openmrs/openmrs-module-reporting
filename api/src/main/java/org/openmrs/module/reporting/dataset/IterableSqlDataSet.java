@@ -12,7 +12,7 @@ package org.openmrs.module.reporting.dataset;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.common.SqlIterator;
+import org.openmrs.module.reporting.common.ResultSetIterator;
 
 import java.util.Iterator;
 
@@ -23,7 +23,7 @@ import java.util.Iterator;
  */
 public class IterableSqlDataSet implements DataSet {
 
-    SqlIterator dataSetRowIterator;
+    ResultSetIterator dataSetRowIterator;
     SimpleDataSetMetaData metadata;
     EvaluationContext context;
     IterableSqlDataSetDefinition definition;
@@ -32,7 +32,7 @@ public class IterableSqlDataSet implements DataSet {
      * @param evalContext
      * @param definition
      */
-    public IterableSqlDataSet(EvaluationContext evalContext, IterableSqlDataSetDefinition definition, SqlIterator iterator) {
+    public IterableSqlDataSet(EvaluationContext evalContext, IterableSqlDataSetDefinition definition, ResultSetIterator iterator) {
         this.context = evalContext;
         this.definition = definition;
         this.dataSetRowIterator = iterator;
