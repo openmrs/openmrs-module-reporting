@@ -21,8 +21,12 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.processor.DiskReportProcessor;
+import org.openmrs.module.reporting.report.processor.EmailReportProcessor;
+import org.openmrs.module.reporting.report.processor.LoggingReportProcessor;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportDesignRenderer;
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
@@ -41,6 +45,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 public class ReportLoader {
 
@@ -243,11 +248,11 @@ public class ReportLoader {
 
         List<ReportDesign> reportDesigns = new ArrayList<ReportDesign>();
 
-        // always do a default CSV design
+        // always do a default CSV design, if no designs are explicitly configured
         if (reportDescriptor.getDesigns() == null || reportDescriptor.getDesigns().size() == 0) {
-            DesignDescriptor defaultDesignDecsriptor = new DesignDescriptor();
-            defaultDesignDecsriptor.setType("csv");
-            reportDescriptor.setDesigns(Collections.singletonList(defaultDesignDecsriptor));
+            DesignDescriptor defaultDesignDescriptor = new DesignDescriptor();
+            defaultDesignDescriptor.setType("csv");
+            reportDescriptor.setDesigns(Collections.singletonList(defaultDesignDescriptor));
         }
 
         for (DesignDescriptor designDescriptor : reportDescriptor.getDesigns()) {
@@ -262,15 +267,50 @@ public class ReportLoader {
                 throw new RuntimeException("Unsupported report design type: " + designDescriptor.getType() + " for report " + reportDefinition.getName());
             }
 
-            design.addPropertyValue(ReportDesignRenderer.FILENAME_BASE_PROPERTY, StringUtils.replace(reportDefinition.getName(), " ", ".").toLowerCase() + "." +
-                    "{{ formatDate request.reportDefinition.parameterMappings.startDate \"yyyyMMdd\" }}." +
-                    "{{ formatDate request.reportDefinition.parameterMappings.endDate \"yyyyMMdd\" }}." +
-                    "{{ formatDate request.evaluateStartDatetime \"yyyyMMdd\" }}." +
-                    "{{ formatDate request.evaluateStartDatetime \"HHmm\" }}");
-
             if (designDescriptor.getProperties() != null) {
                 for (Map.Entry<String,String> property : designDescriptor.getProperties().entrySet()) {
                     design.addPropertyValue(property.getKey(), property.getValue());
+                }
+            }
+
+            if (design.getPropertyValue(ReportDesignRenderer.FILENAME_BASE_PROPERTY, null) == null) {
+                design.addPropertyValue(ReportDesignRenderer.FILENAME_BASE_PROPERTY, StringUtils.replace(reportDefinition.getName(), " ", ".").toLowerCase() + "." +
+                        "{{ formatDate request.reportDefinition.parameterMappings.startDate \"yyyyMMdd\" }}." +
+                        "{{ formatDate request.reportDefinition.parameterMappings.endDate \"yyyyMMdd\" }}." +
+                        "{{ formatDate request.evaluateStartDatetime \"yyyyMMdd\" }}." +
+                        "{{ formatDate request.evaluateStartDatetime \"HHmm\" }}");
+            }
+
+            if (designDescriptor.getProcessors() != null) {
+                for (ProcessorDescriptor processorDescriptor : designDescriptor.getProcessors()) {
+                    ReportProcessorConfiguration c = new ReportProcessorConfiguration();
+                    String type = processorDescriptor.getType();
+                    if ("disk".equalsIgnoreCase(type)) {
+                        type = DiskReportProcessor.class.getName();
+                    }
+                    else if ("email".equalsIgnoreCase(type)) {
+                        type = EmailReportProcessor.class.getName();
+                    }
+                    else if ("logging".equalsIgnoreCase(type)) {
+                        type = LoggingReportProcessor.class.getName();
+                    }
+                    c.setProcessorType(type);
+                    c.setRunOnSuccess(processorDescriptor.getRunOnSuccess());
+                    c.setRunOnError(processorDescriptor.getRunOnError());
+                    c.setName(processorDescriptor.getName());
+                    if (processorDescriptor.getProcessorMode() != null) {
+                        c.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.valueOf(processorDescriptor.getProcessorMode()));
+                    }
+                    c.setReportDesign(design);
+                    if (processorDescriptor.getConfiguration() != null) {
+                        c.setConfiguration(new Properties());
+                        for (Map.Entry<String,String> config : processorDescriptor.getConfiguration().entrySet()) {
+                            String configValue = config.getValue();
+                            configValue = configValue.replace("{{application_data_directory}}", OpenmrsUtil.getApplicationDataDirectory());
+                            c.getConfiguration().setProperty(config.getKey(), configValue);
+                        }
+                    }
+                    design.addReportProcessor(c);
                 }
             }
 

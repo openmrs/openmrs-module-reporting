@@ -2,6 +2,7 @@ package org.openmrs.module.reporting.config;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.util.List;
 import java.util.Map;
 
 public class DesignDescriptor {
@@ -14,6 +15,9 @@ public class DesignDescriptor {
 
     @JsonProperty
     private Map<String, String> properties;
+
+    @JsonProperty
+    private List<ProcessorDescriptor> processors;
 
     public String getType() {
         return type;
@@ -37,5 +41,13 @@ public class DesignDescriptor {
 
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    public List<ProcessorDescriptor> getProcessors() {
+        return processors;
+    }
+
+    public void setProcessors(List<ProcessorDescriptor> processors) {
+        this.processors = processors;
     }
 }
