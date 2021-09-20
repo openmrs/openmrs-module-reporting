@@ -22,12 +22,12 @@
         <repository>
             <id>openmrs-repo-modules</id>
             <name>OpenMRS Modules</name>
-            <url>https://mavenrepo.openmrs.org/nexus/content/repositories/modules</url>
+            <url>https://openmrs.jfrog.io/artifactory/modules</url>
         </repository>
         <snapshotRepository>
             <id>openmrs-repo-snapshots</id>
             <name>OpenMRS Snapshots</name>
-            <url>https://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
+            <url>https://openmrs.jfrog.io/artifactory/snapshots</url>
         </snapshotRepository>
 	</distributionManagement>
 
@@ -584,7 +584,7 @@
 		<repository>
 			<id>openmrs-repo</id>
 			<name>OpenMRS Nexus Repository</name>
-			<url>https://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+			<url>https://openmrs.jfrog.io/artifactory/public</url>
 		</repository>
 	</repositories>
 
@@ -592,7 +592,7 @@
 		<pluginRepository>
 			<id>openmrs-repo</id>
 			<name>OpenMRS Nexus Repository</name>
-			<url>https://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+			<url>https://openmrs.jfrog.io/artifactory/public</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
