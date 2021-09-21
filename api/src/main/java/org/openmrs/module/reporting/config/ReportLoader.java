@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -124,6 +125,7 @@ public class ReportLoader {
                     p.setLabel(parameterDescriptor.getLabel());
                     p.setType(parameterType);
                     p.setDefaultValue(getParameterValue(parameterType, parameterDescriptor.getValue()));
+                    p.setRequired(BooleanUtils.isTrue(parameterDescriptor.getRequired()));
                     parameters.add(p);
                 } catch (Exception e) {
                     throw new RuntimeException("Unable to configure parameter " + parameterDescriptor.getKey(), e);
