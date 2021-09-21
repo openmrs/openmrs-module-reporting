@@ -16,6 +16,9 @@ public class ParameterDescriptor {
     @JsonProperty
     private String value;
 
+    @JsonProperty
+    private Boolean required;
+
     public String getKey() {
         return key;
     }
@@ -46,5 +49,13 @@ public class ParameterDescriptor {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Boolean getRequired() {
+        return required;
+    }
+
+    public void setRequired(Boolean required) {
+        this.required = required;
     }
 }

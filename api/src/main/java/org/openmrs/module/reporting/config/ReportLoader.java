@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,8 +16,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.reporting.common.ContentType;
+import org.openmrs.module.reporting.config.factory.DataSetFactory;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.SqlFileDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -124,6 +125,7 @@ public class ReportLoader {
                     p.setLabel(parameterDescriptor.getLabel());
                     p.setType(parameterType);
                     p.setDefaultValue(getParameterValue(parameterType, parameterDescriptor.getValue()));
+                    p.setRequired(BooleanUtils.isTrue(parameterDescriptor.getRequired()));
                     parameters.add(p);
                 } catch (Exception e) {
                     throw new RuntimeException("Unable to configure parameter " + parameterDescriptor.getKey(), e);
@@ -182,12 +184,17 @@ public class ReportLoader {
 
         Mapped<DataSetDefinition> mappedDsd = new Mapped<DataSetDefinition>();
 
-        if ("sql".equalsIgnoreCase(dataSetDescriptor.getType())) {
-            mappedDsd.setParameterizable(constructSQLFileDataSetDefinition(dataSetDescriptor, path));
+        String factoryBeanName = dataSetDescriptor.getType();
+        if ("sql".equalsIgnoreCase(factoryBeanName)) {
+            factoryBeanName = "sqlDataSetFactory";
         }
-        else {
+
+        DataSetFactory factory = Context.getRegisteredComponent(factoryBeanName, DataSetFactory.class);
+        if (factory == null) {
             throw new RuntimeException("Unsupported data set descriptor type: " + dataSetDescriptor.getType());
         }
+        DataSetDefinition dsd = factory.constructDataSetDefinition(dataSetDescriptor, path);
+        mappedDsd.setParameterizable(dsd);
 
         // First add in all of the report parameters
         for (Parameter reportParameter : rd.getParameters()) {
@@ -203,45 +210,27 @@ public class ReportLoader {
 
         // Next, if any data set parameters specify values for report parameters, or are new parameters, add these
         List<Parameter> datasetParameters = constructParameters(dataSetDescriptor.getParameters());
-        if (datasetParameters != null) {
-            for (Parameter parameter : datasetParameters) {
-                boolean found = false;
-                for (Parameter existingParam : rd.getParameters()) {
-                    if (existingParam.getName().equals(parameter.getName())) {
-                        found = true;
-                        if (parameter.getDefaultValue() != null) {
-                            mappedDsd.getParameterMappings().put(existingParam.getName(), parameter.getDefaultValue());
-                            parameter.setDefaultValue(null);
-                        }
-                    }
-                }
-                if (!found) {
-                    mappedDsd.getParameterizable().addParameter(parameter);
+        for (Parameter parameter : datasetParameters) {
+            boolean found = false;
+            for (Parameter existingParam : rd.getParameters()) {
+                if (existingParam.getName().equals(parameter.getName())) {
+                    found = true;
                     if (parameter.getDefaultValue() != null) {
-                        mappedDsd.addParameterMapping(parameter.getName(), parameter.getDefaultValue());
+                        mappedDsd.getParameterMappings().put(existingParam.getName(), parameter.getDefaultValue());
                         parameter.setDefaultValue(null);
                     }
+                }
+            }
+            if (!found) {
+                mappedDsd.getParameterizable().addParameter(parameter);
+                if (parameter.getDefaultValue() != null) {
+                    mappedDsd.addParameterMapping(parameter.getName(), parameter.getDefaultValue());
+                    parameter.setDefaultValue(null);
                 }
             }
         }
 
         rd.addDataSetDefinition(dataSetDescriptor.getKey(), mappedDsd);
-    }
-
-    public static SqlFileDataSetDefinition constructSQLFileDataSetDefinition(DataSetDescriptor dataSetDescriptor, File path) {
-
-        SqlFileDataSetDefinition dsd = new SqlFileDataSetDefinition();
-
-        File sqlFile = new File(path, dataSetDescriptor.getConfig());
-
-        if (sqlFile.exists()) {
-            dsd.setSqlFile(sqlFile.getAbsolutePath());
-        }
-        else {
-            throw new RuntimeException("SQL file " + dataSetDescriptor.getConfig() + " not found");
-        }
-
-        return dsd;
     }
 
     public static List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition, ReportDescriptor reportDescriptor) {
