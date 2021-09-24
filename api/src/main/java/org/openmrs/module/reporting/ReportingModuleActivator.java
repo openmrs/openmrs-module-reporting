@@ -36,8 +36,10 @@ public class ReportingModuleActivator extends BaseModuleActivator implements Dae
     @Override
 	public void started() {
 		ReportingTimerTask.setEnabled(true);
-		// TODO: should this happen in context refreshed instead?
-        ReportLoader.loadReportsFromConfig();
+		if (ReportingConstants.GLOBAL_PROPERTY_LOAD_REPORTS_FROM_CONFIGURATION_AT_STARTUP()) {
+			// TODO: should this happen in context refreshed instead?
+			ReportLoader.loadReportsFromConfig();
+		}
 		log.info("Reporting Module Started...");
 	}
 
