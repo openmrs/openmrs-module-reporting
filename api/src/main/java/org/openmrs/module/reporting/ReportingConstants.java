@@ -50,6 +50,7 @@ public class ReportingConstants implements GlobalPropertyListener {
 	public static final String GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT = "reporting.defaultDateFormat";
     public static final String GLOBAL_PROPERTY_TEST_PATIENTS_COHORT_DEFINITION = "reporting.testPatientsCohortDefinition";
 	public static final String GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED = "reporting.evaluationLoggerEnabled";
+	public static final String GLOBAL_PROPERTY_LOAD_REPORTS_FROM_CONFIGURATION_AT_STARTUP = "reporting.loadReportsFromConfigurationAtStartup";
 	public static final String DEFAULT_LOCALE_GP_NAME = "reporting.defaultLocale";
 
 	public static final List<String> CACHED_PROPERTIES = Arrays.asList(
@@ -107,6 +108,10 @@ public class ReportingConstants implements GlobalPropertyListener {
 	
 	public static final boolean GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS() {
 		return getPropertyValueAsBoolean(GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS, false);
+	}
+
+	public static final boolean GLOBAL_PROPERTY_LOAD_REPORTS_FROM_CONFIGURATION_AT_STARTUP() {
+		return getPropertyValueAsBoolean(GLOBAL_PROPERTY_LOAD_REPORTS_FROM_CONFIGURATION_AT_STARTUP, false);
 	}
 
     // this property is fetched a lot, so we cache it
