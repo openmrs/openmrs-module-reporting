@@ -58,11 +58,15 @@ public class ReportLoader {
 
     public static void loadReportsFromConfig() {
         for (ReportDescriptor reportDescriptor : loadReportDescriptors()) {
-            ReportDefinition reportDefinition = constructReportDefinition(reportDescriptor);
-            saveReportDefinition(reportDefinition);
-            List<ReportDesign> reportDesigns = constructReportDesigns(reportDefinition, reportDescriptor);
-            saveReportDesigns(reportDefinition, reportDesigns);
+            loadReportFromDescriptor(reportDescriptor);
         }
+    }
+
+    public static void loadReportFromDescriptor(ReportDescriptor reportDescriptor) {
+        ReportDefinition reportDefinition = constructReportDefinition(reportDescriptor);
+        saveReportDefinition(reportDefinition);
+        List<ReportDesign> reportDesigns = constructReportDesigns(reportDefinition, reportDescriptor);
+        saveReportDesigns(reportDefinition, reportDesigns);
     }
 
     public static void saveReportDefinition(ReportDefinition reportDefinition) {
