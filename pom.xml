@@ -358,7 +358,7 @@
         <profile>
             <id>2.1</id>
             <properties>
-                <openMRSVersion>2.1.0</openMRSVersion>
+                <openMRSVersion>2.1.1</openMRSVersion>
                 <openMRSMinorVersion>2.1</openMRSMinorVersion>
                 <jacksonVersion>1.9.13</jacksonVersion>
                 <reportingApiConditionalArtifactId>reporting-api-2.0</reportingApiConditionalArtifactId>
