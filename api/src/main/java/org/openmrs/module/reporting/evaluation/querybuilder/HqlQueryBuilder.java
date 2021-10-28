@@ -534,7 +534,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 		for (int i=0; i<aliases.size(); i++) {
 			String alias = aliases.get(i);
 			q.append(i == 0 ? " from " : ", ");
-			q.append(fromTypes.get(alias).getSimpleName());
+			q.append(fromTypes.get(alias).getName());
 			if (ObjectUtil.notNull(alias)) {
 				q.append(" as ").append(alias);
 			}
