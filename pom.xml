@@ -383,6 +383,17 @@
 		</profile>
 		<profile>
 			<id>2.4</id>
+			<modules>
+				<module>api</module>
+				<module>api-1.9</module>
+				<module>api-1.10</module>
+				<module>api-2.0</module>
+				<module>api-2.2</module>
+				<module>api-2.4</module>
+				<module>api-tests</module>
+				<module>api-tests-2.4</module>
+				<module>omod</module>
+			</modules>
 			<properties>
 				<!-- 2.4.1 has a bugfix necessary for the tests to pass -->
 				<openMRSVersion>2.4.1</openMRSVersion>

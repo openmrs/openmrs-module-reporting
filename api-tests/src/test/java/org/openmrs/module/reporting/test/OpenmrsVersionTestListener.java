@@ -10,17 +10,16 @@
 package org.openmrs.module.reporting.test;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.AssumptionViolatedException;
+import org.junit.Assume;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.util.OpenmrsConstants;
-import org.openmrs.util.OpenmrsUtil;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 public class OpenmrsVersionTestListener extends AbstractTestExecutionListener {
 	
 	@Override
-	public void beforeTestClass(TestContext testContext) throws Exception {
+	public void beforeTestClass(TestContext testContext) {
 		Class<?> testClass = testContext.getTestClass();
 		
 		RequiresVersion requiresVersionAnnotation = testClass.getAnnotation(RequiresVersion.class);
@@ -31,8 +30,8 @@ public class OpenmrsVersionTestListener extends AbstractTestExecutionListener {
 		
 		if (!ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION,
 				requiresVersionAnnotation.value())) {
-			throw new AssumptionViolatedException(
-					OpenmrsConstants.OPENMRS_VERSION + " does not match " + requiresVersionAnnotation.value());
+			// silly hack to work with JUnit 4.11 where the AssumptionViolationException is not exposed as a public class
+			Assume.assumeTrue(false);
 		}
 	}
 }

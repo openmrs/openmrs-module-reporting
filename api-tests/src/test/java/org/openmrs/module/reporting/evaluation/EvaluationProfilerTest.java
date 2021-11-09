@@ -40,7 +40,7 @@ import java.util.List;
  */
 @TestExecutionListeners(OpenmrsVersionTestListener.class)
 @RequiresVersion("1.* - 2.3.*")
-public class EvaluationProfilerTestUpTo23 extends BaseModuleContextSensitiveTest {
+public class EvaluationProfilerTest extends BaseModuleContextSensitiveTest {
 
 	protected EvaluationProfiler profiler1, profiler2;
 
