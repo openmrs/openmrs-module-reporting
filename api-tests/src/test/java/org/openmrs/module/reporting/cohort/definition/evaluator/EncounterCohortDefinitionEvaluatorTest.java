@@ -260,13 +260,11 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	@Verifies(value = "should find patients with encounters created on the specified date if passed in time is at midnight", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldFindPatientsWithEncountersCreatedOnTheSpecifiedDateIfPassedInTimeIsAtMidnight()
 	    throws Exception {
+		executeDataSet(XML_DATASET_PATH + "ReportTestDataset-encounter-before-midnight.xml");
 		EncounterService es = Context.getEncounterService();
-		Encounter enc = es.getEncounter(3);
+		Encounter enc = es.getEncounter(13);
 		final Integer patientId = 7;
 		Assert.assertEquals(patientId, enc.getPatient().getPatientId());
-		enc.setDateCreated(DateUtil.getDateTime(2005, 8, 1, 11, 0, 0, 0));
-		es.saveEncounter(enc);
-		Context.flushSession();
 		
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setCreatedOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
