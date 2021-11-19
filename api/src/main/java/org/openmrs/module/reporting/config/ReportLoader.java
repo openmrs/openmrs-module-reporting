@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,13 +16,18 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.reporting.common.ContentType;
+import org.openmrs.module.reporting.config.factory.DataSetFactory;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.SqlFileDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.processor.DiskReportProcessor;
+import org.openmrs.module.reporting.report.processor.EmailReportProcessor;
+import org.openmrs.module.reporting.report.processor.LoggingReportProcessor;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportDesignRenderer;
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
@@ -32,13 +38,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 public class ReportLoader {
 
@@ -50,11 +58,15 @@ public class ReportLoader {
 
     public static void loadReportsFromConfig() {
         for (ReportDescriptor reportDescriptor : loadReportDescriptors()) {
-            ReportDefinition reportDefinition = constructReportDefinition(reportDescriptor);
-            saveReportDefinition(reportDefinition);
-            List<ReportDesign> reportDesigns = constructReportDesigns(reportDefinition, reportDescriptor);
-            saveReportDesigns(reportDefinition, reportDesigns);
+            loadReportFromDescriptor(reportDescriptor);
         }
+    }
+
+    public static void loadReportFromDescriptor(ReportDescriptor reportDescriptor) {
+        ReportDefinition reportDefinition = constructReportDefinition(reportDescriptor);
+        saveReportDefinition(reportDefinition);
+        List<ReportDesign> reportDesigns = constructReportDesigns(reportDefinition, reportDescriptor);
+        saveReportDesigns(reportDefinition, reportDesigns);
     }
 
     public static void saveReportDefinition(ReportDefinition reportDefinition) {
@@ -89,26 +101,18 @@ public class ReportLoader {
         for (ReportDesign reportDesign : reportDesigns) {
             Context.getService(ReportService.class).saveReportDesign(reportDesign);
         }
-
     }
 
     public static  ReportDefinition constructReportDefinition(ReportDescriptor reportDescriptor) {
-
         ReportDefinition rd = new ReportDefinition();
         rd.setName(reportDescriptor.getName());
         rd.setDescription(reportDescriptor.getDescription());
         rd.setUuid(reportDescriptor.getUuid());
-
-        List<Parameter> parameters = constructParameters(reportDescriptor.getParameters());
-        Map<String, Object> mappings = constructMappings(parameters);
-        rd.setParameters(parameters);
+        rd.setParameters(constructParameters(reportDescriptor.getParameters()));
 
         if (reportDescriptor.getDatasets() != null) {
             for (DataSetDescriptor dataSetDescriptor : reportDescriptor.getDatasets()) {
-                DataSetDefinition dsd = constructDataSetDefinition(dataSetDescriptor, reportDescriptor.getPath(), parameters);
-                if (dsd != null) {
-                    rd.addDataSetDefinition(dataSetDescriptor.getKey(), dsd, mappings);
-                }
+                addDataSetDefinition(rd, dataSetDescriptor, reportDescriptor.getPath());
             }
         }
         return rd;
@@ -119,7 +123,14 @@ public class ReportLoader {
         if (parameterDescriptors != null) {
             for (ParameterDescriptor parameterDescriptor : parameterDescriptors) {
                 try {
-                    parameters.add(new Parameter(parameterDescriptor.getKey(), parameterDescriptor.getLabel(), getParameterClass(parameterDescriptor.getType())));
+                    Class parameterType = getParameterClass(parameterDescriptor.getType());
+                    Parameter p = new Parameter();
+                    p.setName(parameterDescriptor.getKey());
+                    p.setLabel(parameterDescriptor.getLabel());
+                    p.setType(parameterType);
+                    p.setDefaultValue(getParameterValue(parameterType, parameterDescriptor.getValue()));
+                    p.setRequired(BooleanUtils.isTrue(parameterDescriptor.getRequired()));
+                    parameters.add(p);
                 } catch (Exception e) {
                     throw new RuntimeException("Unable to configure parameter " + parameterDescriptor.getKey(), e);
                 }
@@ -129,70 +140,112 @@ public class ReportLoader {
     }
 
     public static Class<?> getParameterClass(String clazz) throws ClassNotFoundException {
+        if (clazz == null) {
+            return String.class;
+        }
         if (clazz.equalsIgnoreCase("location")) {
             return Location.class;
         }
         else if (clazz.equalsIgnoreCase("date")) {
             return Date.class;
         }
+        else if (clazz.equalsIgnoreCase("text") || clazz.equalsIgnoreCase("string")) {
+            return String.class;
+        }
+        else if (clazz.equalsIgnoreCase("locale")) {
+            return Locale.class;
+        }
         else {
             return Context.loadClass(clazz);
         }
     }
 
-    public static Map<String, Object> constructMappings(List<Parameter> parameters) {
-        Map<String,Object> mappings = new HashMap<String, Object>();
-        for (Parameter parameter : parameters) {
-            mappings.put(parameter.getName(), "${" + parameter.getName() + "}");
+    public static Object getParameterValue(Class parameterType, String stringVal) {
+        Object ret = null;
+        try {
+            if (stringVal != null) {
+                if (parameterType == String.class) {
+                    return stringVal;
+                }
+                else if (parameterType == Date.class) {
+                    return new SimpleDateFormat("yyyy-MM-dd").parse(stringVal);
+                }
+                else if (parameterType == Locale.class) {
+                    return new Locale(stringVal);
+                }
+                else {
+                    throw new IllegalStateException("Unable to parse parameter values of type " + parameterType);
+                }
+            }
         }
-        return mappings;
+        catch (Exception e) {
+            throw new IllegalStateException("Unable to parse parameter value " + stringVal + " to a " + parameterType);
+        }
+        return ret;
     }
 
-    public static DataSetDefinition constructDataSetDefinition(DataSetDescriptor dataSetDescriptor, File path, List<Parameter> parameters) {
+    public static void addDataSetDefinition(ReportDefinition rd, DataSetDescriptor dataSetDescriptor, File path) {
 
-        DataSetDefinition dsd = null;
+        Mapped<DataSetDefinition> mappedDsd = new Mapped<DataSetDefinition>();
 
-        if ("sql".equalsIgnoreCase(dataSetDescriptor.getType())) {
-            dsd = constructSQLFileDataSetDefinition(dataSetDescriptor, path);
+        String factoryBeanName = dataSetDescriptor.getType();
+        if ("sql".equalsIgnoreCase(factoryBeanName)) {
+            factoryBeanName = "sqlDataSetFactory";
         }
-        else {
+
+        DataSetFactory factory = Context.getRegisteredComponent(factoryBeanName, DataSetFactory.class);
+        if (factory == null) {
             throw new RuntimeException("Unsupported data set descriptor type: " + dataSetDescriptor.getType());
         }
+        DataSetDefinition dsd = factory.constructDataSetDefinition(dataSetDescriptor, path);
+        mappedDsd.setParameterizable(dsd);
 
-        if (parameters != null) {
-            for (Parameter parameter : parameters) {
-                dsd.addParameter(parameter);
+        // First add in all of the report parameters
+        for (Parameter reportParameter : rd.getParameters()) {
+            Parameter parameter = new Parameter(reportParameter);
+            mappedDsd.getParameterizable().addParameter(parameter);
+            if (parameter.getDefaultValue() != null) {
+                mappedDsd.addParameterMapping(parameter.getName(), parameter.getDefaultValue());
+                parameter.setDefaultValue(null);
+            } else {
+                mappedDsd.addParameterMapping(parameter.getName(), "${" + parameter.getName() + "}");
             }
         }
 
-        return dsd;
-    }
-
-    public static SqlFileDataSetDefinition constructSQLFileDataSetDefinition(DataSetDescriptor dataSetDescriptor, File path) {
-
-        SqlFileDataSetDefinition dsd = new SqlFileDataSetDefinition();
-
-        File sqlFile = new File(path, dataSetDescriptor.getConfig());
-
-        if (sqlFile.exists()) {
-            dsd.setSqlFile(sqlFile.getAbsolutePath());
+        // Next, if any data set parameters specify values for report parameters, or are new parameters, add these
+        List<Parameter> datasetParameters = constructParameters(dataSetDescriptor.getParameters());
+        for (Parameter parameter : datasetParameters) {
+            boolean found = false;
+            for (Parameter existingParam : rd.getParameters()) {
+                if (existingParam.getName().equals(parameter.getName())) {
+                    found = true;
+                    if (parameter.getDefaultValue() != null) {
+                        mappedDsd.getParameterMappings().put(existingParam.getName(), parameter.getDefaultValue());
+                        parameter.setDefaultValue(null);
+                    }
+                }
+            }
+            if (!found) {
+                mappedDsd.getParameterizable().addParameter(parameter);
+                if (parameter.getDefaultValue() != null) {
+                    mappedDsd.addParameterMapping(parameter.getName(), parameter.getDefaultValue());
+                    parameter.setDefaultValue(null);
+                }
+            }
         }
-        else {
-            throw new RuntimeException("SQL file " + dataSetDescriptor.getConfig() + " not found");
-        }
 
-        return dsd;
+        rd.addDataSetDefinition(dataSetDescriptor.getKey(), mappedDsd);
     }
 
     public static List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition, ReportDescriptor reportDescriptor) {
 
         List<ReportDesign> reportDesigns = new ArrayList<ReportDesign>();
 
-        // always do a default CSV design
+        // always do a default CSV design, if no designs are explicitly configured
         if (reportDescriptor.getDesigns() == null || reportDescriptor.getDesigns().size() == 0) {
-            DesignDescriptor defaultDesignDecsriptor = new DesignDescriptor();
-            defaultDesignDecsriptor.setType("csv");
-            reportDescriptor.setDesigns(Collections.singletonList(defaultDesignDecsriptor));
+            DesignDescriptor defaultDesignDescriptor = new DesignDescriptor();
+            defaultDesignDescriptor.setType("csv");
+            reportDescriptor.setDesigns(Collections.singletonList(defaultDesignDescriptor));
         }
 
         for (DesignDescriptor designDescriptor : reportDescriptor.getDesigns()) {
@@ -207,15 +260,50 @@ public class ReportLoader {
                 throw new RuntimeException("Unsupported report design type: " + designDescriptor.getType() + " for report " + reportDefinition.getName());
             }
 
-            design.addPropertyValue(ReportDesignRenderer.FILENAME_BASE_PROPERTY, StringUtils.replace(reportDefinition.getName(), " ", ".").toLowerCase() + "." +
-                    "{{ formatDate request.reportDefinition.parameterMappings.startDate \"yyyyMMdd\" }}." +
-                    "{{ formatDate request.reportDefinition.parameterMappings.endDate \"yyyyMMdd\" }}." +
-                    "{{ formatDate request.evaluateStartDatetime \"yyyyMMdd\" }}." +
-                    "{{ formatDate request.evaluateStartDatetime \"HHmm\" }}");
-
             if (designDescriptor.getProperties() != null) {
                 for (Map.Entry<String,String> property : designDescriptor.getProperties().entrySet()) {
                     design.addPropertyValue(property.getKey(), property.getValue());
+                }
+            }
+
+            if (design.getPropertyValue(ReportDesignRenderer.FILENAME_BASE_PROPERTY, null) == null) {
+                design.addPropertyValue(ReportDesignRenderer.FILENAME_BASE_PROPERTY, StringUtils.replace(reportDefinition.getName(), " ", ".").toLowerCase() + "." +
+                        "{{ formatDate request.reportDefinition.parameterMappings.startDate \"yyyyMMdd\" }}." +
+                        "{{ formatDate request.reportDefinition.parameterMappings.endDate \"yyyyMMdd\" }}." +
+                        "{{ formatDate request.evaluateStartDatetime \"yyyyMMdd\" }}." +
+                        "{{ formatDate request.evaluateStartDatetime \"HHmm\" }}");
+            }
+
+            if (designDescriptor.getProcessors() != null) {
+                for (ProcessorDescriptor processorDescriptor : designDescriptor.getProcessors()) {
+                    ReportProcessorConfiguration c = new ReportProcessorConfiguration();
+                    String type = processorDescriptor.getType();
+                    if ("disk".equalsIgnoreCase(type)) {
+                        type = DiskReportProcessor.class.getName();
+                    }
+                    else if ("email".equalsIgnoreCase(type)) {
+                        type = EmailReportProcessor.class.getName();
+                    }
+                    else if ("logging".equalsIgnoreCase(type)) {
+                        type = LoggingReportProcessor.class.getName();
+                    }
+                    c.setProcessorType(type);
+                    c.setRunOnSuccess(processorDescriptor.getRunOnSuccess());
+                    c.setRunOnError(processorDescriptor.getRunOnError());
+                    c.setName(processorDescriptor.getName());
+                    if (processorDescriptor.getProcessorMode() != null) {
+                        c.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.valueOf(processorDescriptor.getProcessorMode()));
+                    }
+                    c.setReportDesign(design);
+                    if (processorDescriptor.getConfiguration() != null) {
+                        c.setConfiguration(new Properties());
+                        for (Map.Entry<String,String> config : processorDescriptor.getConfiguration().entrySet()) {
+                            String configValue = config.getValue();
+                            configValue = configValue.replace("{{application_data_directory}}", OpenmrsUtil.getApplicationDataDirectory());
+                            c.getConfiguration().setProperty(config.getKey(), configValue);
+                        }
+                    }
+                    design.addReportProcessor(c);
                 }
             }
 

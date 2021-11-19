@@ -27,6 +27,7 @@
     <aware_of_modules>
         <aware_of_module>org.openmrs.module.reportingcompatibility</aware_of_module>
         <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+        <aware_of_module>org.openmrs.module.logic</aware_of_module>
     </aware_of_modules>
 
 	<!-- Extensions -->
@@ -147,6 +148,11 @@
         <defaultValue>false</defaultValue>
         <description>If false, will disable the built in use of the evaluation logger to log evaluation information for performance diagnostics</description>
     </globalProperty>
+	<globalProperty>
+		<property>reporting.loadReportsFromConfigurationAtStartup</property>
+		<defaultValue>false</defaultValue>
+		<description>If true, this will automatically load reports defined by report descriptors in .OpenMRS/configuration/reports/reportdescriptors at startup</description>
+	</globalProperty>
 
 	<!--  Message Properties -->
 	<messages>

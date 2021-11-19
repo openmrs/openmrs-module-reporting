@@ -1,9 +1,16 @@
 package org.openmrs.module.reporting.config;
 
-import org.junit.Before;
+import org.hibernate.cfg.Environment;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.dataset.definition.SqlFileDataSetDefinition;
+import org.openmrs.module.reporting.cohort.definition.library.BuiltInCohortDefinitionLibrary;
+import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -11,40 +18,51 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.reporting.config.ReportLoader.getReportingDescriptorsConfigurationDir;
 
 public class ReportLoaderIntegrationTest extends BaseModuleContextSensitiveTest {
 
     public static final String appDataTestDir = "testAppDataDir";
+    
+    @Autowired @Qualifier("reportingReportDefinitionService")
+    ReportDefinitionService reportDefinitionService;
 
-    private String path;
+    @Autowired @Qualifier("reportingEvaluationService")
+    EvaluationService evaluationService;
 
-    @Before
-    public void setup() {
-        // configure app data dir path
-        path = getClass().getClassLoader().getResource(appDataTestDir).getPath() + File.separator;
+    @Autowired
+    BuiltInCohortDefinitionLibrary cohorts;
+
+    @Override
+    public Properties getRuntimeProperties() {
+        Properties p = super.getRuntimeProperties();
+        String path = getClass().getClassLoader().getResource(appDataTestDir).getPath() + File.separator;
+        p.put("connection.url", p.getProperty(Environment.URL));
+        p.put(Environment.URL, p.getProperty(Environment.URL) + ";MVCC=TRUE");
+        p.put("connection.driver_class", p.getProperty(Environment.DRIVER));
+        p.setProperty(OpenmrsConstants.APPLICATION_DATA_DIRECTORY_RUNTIME_PROPERTY, path);
         System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
-        Properties prop = new Properties();
-        prop.setProperty(OpenmrsConstants.APPLICATION_DATA_DIRECTORY_RUNTIME_PROPERTY, path);
-        Context.setRuntimeProperties(prop);
+        return p;
     }
 
     @Test
     public void shouldLoadAllReportDescriptorsInReportDescriptorsDirectory() {
         List<ReportDescriptor> reportDescriptors = ReportLoader.loadReportDescriptors();
-        assertThat(reportDescriptors.size(), is(3));
+        assertThat(reportDescriptors.size(), is(4));
 
         List<String> names = new ArrayList<String>();
         for (ReportDescriptor reportDescriptor : reportDescriptors) {
@@ -55,25 +73,12 @@ public class ReportLoaderIntegrationTest extends BaseModuleContextSensitiveTest 
     }
 
     @Test
-    public void shouldConstructSqlFileDataSetDefinition() {
-        DataSetDescriptor sqlDataSetDescriptor = new DataSetDescriptor();
-
-        sqlDataSetDescriptor.setKey("encounters");
-        sqlDataSetDescriptor.setType("sql");
-        sqlDataSetDescriptor.setConfig("sql/encounters.sql");
-
-        SqlFileDataSetDefinition dsd =  (SqlFileDataSetDefinition) ReportLoader.constructDataSetDefinition(sqlDataSetDescriptor, new File(getReportingDescriptorsConfigurationDir()),null);
-
-        assertThat(dsd.getSqlFile(), containsString("sql" + File.separator + "encounters.sql"));
-    }
-
-    @Test
     public void shouldLoadReportsFromConfigAndSave() {
         ReportLoader.loadReportsFromConfig();
 
-        ReportDefinition ordersReportDefinition = Context.getService(ReportDefinitionService.class).getDefinitionByUuid("9e7dc296-2aad-11e3-a840-5b9e0b589afb");
-        ReportDefinition encountersReportDefinition = Context.getService(ReportDefinitionService.class).getDefinitionByUuid("752e386d-da67-4e3d-bddc-95157c58c54c");
-        ReportDefinition nestedReportDefinition = Context.getService(ReportDefinitionService.class).getDefinitionByUuid("c2fb2082-9b36-4398-96af-d20570bacd07");
+        ReportDefinition ordersReportDefinition = reportDefinitionService.getDefinitionByUuid("9e7dc296-2aad-11e3-a840-5b9e0b589afb");
+        ReportDefinition encountersReportDefinition = reportDefinitionService.getDefinitionByUuid("752e386d-da67-4e3d-bddc-95157c58c54c");
+        ReportDefinition nestedReportDefinition = reportDefinitionService.getDefinitionByUuid("c2fb2082-9b36-4398-96af-d20570bacd07");
 
         assertThat(ordersReportDefinition, notNullValue());
         assertThat(encountersReportDefinition, notNullValue());
@@ -85,7 +90,39 @@ public class ReportLoaderIntegrationTest extends BaseModuleContextSensitiveTest 
 
         List<ReportDesign> existingOrderReportDesigns = Context.getService(ReportService.class).getReportDesigns(ordersReportDefinition, null, true);
         assertThat(existingOrderReportDesigns.size(), is(2));
+    }
 
+    @Test
+    public void shouldSupportFixedParametersInDataSetDefinitions() throws Exception {
+        ReportLoader.loadReportsFromConfig();
+        ReportDefinition rd = reportDefinitionService.getDefinitionByUuid("0c32f660-c2de-11eb-b5a4-0242ac110002");
+        assertThat(rd.getParameters().size(), is(2));
+        Mapped<? extends DataSetDefinition> maleMapped = rd.getDataSetDefinitions().get("males");
+        Mapped<? extends DataSetDefinition> femaleMapped = rd.getDataSetDefinitions().get("females");
+        assertThat(maleMapped.getParameterizable().getParameters().size(), is(3));
+        assertThat(femaleMapped.getParameterizable().getParameters().size(), is(3));
+        assertThat(maleMapped.getParameterMappings().get("gender").toString(), is("M"));
+        assertThat(femaleMapped.getParameterMappings().get("gender").toString(), is("F"));
+        ReportData data = reportDefinitionService.evaluate(rd, new EvaluationContext());
+        List<Integer> rptMales = new ArrayList<Integer>();
+        List<Integer> rptFemales = new ArrayList<Integer>();
+        for (DataSetRow row : data.getDataSets().get("males")) {
+            rptMales.add((Integer)row.getColumnValue("person_id"));
+        }
+        for (DataSetRow row : data.getDataSets().get("females")) {
+            rptFemales.add((Integer)row.getColumnValue("person_id"));
+        }
+
+        SqlQueryBuilder maleQuery = new SqlQueryBuilder("select person_id from person where gender = 'M'");
+        List<Integer> males = evaluationService.evaluateToList(maleQuery, Integer.class, new EvaluationContext());
+
+        SqlQueryBuilder femaleQuery = new SqlQueryBuilder("select person_id from person where gender = 'F'");
+        List<Integer> females = evaluationService.evaluateToList(femaleQuery, Integer.class, new EvaluationContext());
+
+        assertThat(males.size(), is(rptMales.size()));
+        assertThat(females.size(), is(rptFemales.size()));
+        assertTrue(males.containsAll(rptMales));
+        assertTrue(females.containsAll(rptFemales));
     }
 
     @Test

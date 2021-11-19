@@ -10,6 +10,7 @@
 package org.openmrs.module.reporting.common;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -204,7 +205,7 @@ public class SqlRunner {
                         sqlVal = ((OpenmrsObject)paramValue).getId().toString();
                     }
                     else {
-                        sqlVal = "'" + paramValue.toString() + "'";
+                        sqlVal = "'" + StringEscapeUtils.escapeSql(paramValue.toString()) + "'";
                     }
                 }
                 statements.add("set @" + paramName + "=" + sqlVal);

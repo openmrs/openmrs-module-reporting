@@ -10,6 +10,18 @@ parameters:    # should be able to parse comments!
     type: "date"
     label: "endDate.label"
 datasets:
+  - key: "males"
+    type: "sql"
+    config: "persons.sql"
+    parameters:
+      - key: "gender"
+        value: "M"
+  - key: "females"
+    type: "sql"
+    config: "persons.sql"
+    parameters:
+      - key: "gender"
+        value: "F"
   - key: "orders"
     type: "sql"
     config: "orders.sql"

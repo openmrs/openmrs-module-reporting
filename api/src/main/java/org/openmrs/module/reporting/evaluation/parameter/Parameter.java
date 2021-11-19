@@ -152,6 +152,21 @@ public class Parameter implements Serializable {
 	public Parameter(String name, String label, Class<?> type, Properties widgetConfiguration) {
 		this(name, label, type, null, null, widgetConfiguration);
 	}
+
+	/**
+	 * Initialize this Parameter with the values from an existing Parameter.  This is equivalent to cloning.
+	 *
+	 * @param p the Parameter to clone from
+	 */
+	public Parameter(Parameter p) {
+		setName(p.getName());
+		setLabel(p.getLabel());
+		setType(p.getType());
+		setCollectionType(p.getCollectionType());
+		setRequired(p.isRequired());
+		setDefaultValue(p.getDefaultValue());
+		setWidgetConfiguration(p.getWidgetConfiguration());
+	}
 	
 	//***********************
 	// INSTANCE METHODS

@@ -250,7 +250,7 @@ public class ManageReportsController {
                     else {
                         List l = new ArrayList();
                         for (String v : parameterValues) {
-                            l.add(WidgetUtil.parseInput(parameterValues[0], p.getType()));
+                            l.add(WidgetUtil.parseInput(v, p.getType()));
                         }
                         value = l;
                     }

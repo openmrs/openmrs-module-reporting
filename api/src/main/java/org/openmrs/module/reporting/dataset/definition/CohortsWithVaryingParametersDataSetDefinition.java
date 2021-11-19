@@ -61,6 +61,10 @@ public class CohortsWithVaryingParametersDataSetDefinition extends BaseDataSetDe
         this.varyingParameters = varyingParameters;
     }
 
+    public void addColumn(String name, String description, Mapped<CohortDefinition> mappedCohortDefinition) {
+        getColumns().add(new Column(name, description, mappedCohortDefinition));
+    }
+
     /**
      * Will automatically create "straight-through" mappings for any parameters in cd, and takes name and label from
      * cd.name and cd.description.
@@ -71,7 +75,12 @@ public class CohortsWithVaryingParametersDataSetDefinition extends BaseDataSetDe
         for (Parameter parameter : cd.getParameters()) {
             mappings.put(parameter.getName(), "${" + parameter.getName() + "}");
         }
-        getColumns().add(new Column(cd.getName(), cd.getDescription(), new Mapped<CohortDefinition>(cd, mappings)));
+        addColumn(new Mapped<CohortDefinition>(cd, mappings));
+    }
+
+    public void addColumn(Mapped<CohortDefinition> mappedCohortDefinition) {
+        CohortDefinition cd = mappedCohortDefinition.getParameterizable();
+        addColumn(cd.getName(), cd.getDescription(), mappedCohortDefinition);
     }
 
     public void addVaryingParameters(Map<String, Object> parameterOption) {

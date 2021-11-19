@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.is;
@@ -35,10 +34,26 @@ public class ReportLoaderTest {
         assertThat(descriptor.getParameters().get(0).getKey(), is("startDate"));
         assertThat(descriptor.getParameters().get(0).getType(), is("date"));
         assertThat(descriptor.getParameters().get(0).getLabel(), is("startDate.label"));
-        assertThat(descriptor.getDatasets().size(), is(2));
-        assertThat(descriptor.getDatasets().get(0).getKey(), is("orders"));
-        assertThat(descriptor.getDatasets().get(0).getType(), is("sql"));
-        assertThat(descriptor.getDatasets().get(0).getConfig(), is("orders.sql"));
+        assertThat(descriptor.getDatasets().size(), is(4));
+        DataSetDescriptor ds0 = descriptor.getDatasets().get(0);
+        assertThat(ds0.getKey(), is("males"));
+        assertThat(ds0.getType(), is("sql"));
+        assertThat(ds0.getConfig(), is("persons.sql"));
+        assertThat(ds0.getParameters().size(), is(1));
+        assertThat(ds0.getParameters().get(0).getKey(), is("gender"));
+        assertThat(ds0.getParameters().get(0).getValue(), is("M"));
+        DataSetDescriptor ds1 = descriptor.getDatasets().get(1);
+        assertThat(ds1.getKey(), is("females"));
+        assertThat(ds1.getType(), is("sql"));
+        assertThat(ds1.getConfig(), is("persons.sql"));
+        assertThat(ds1.getParameters().size(), is(1));
+        assertThat(ds1.getParameters().get(0).getKey(), is("gender"));
+        assertThat(ds1.getParameters().get(0).getValue(), is("F"));
+        DataSetDescriptor ds2 = descriptor.getDatasets().get(2);
+        assertThat(ds2.getKey(), is("orders"));
+        assertThat(ds2.getType(), is("sql"));
+        assertThat(ds2.getConfig(), is("orders.sql"));
+        assertThat(ds2.getParameters().size(), is(0));
         assertThat(descriptor.getDesigns().get(0).getType(), is("csv"));
         assertThat(descriptor.getDesigns().get(0).getProperties().get("characterEncoding"), is("ISO-8859-1"));
         assertThat(descriptor.getDesigns().get(0).getProperties().get("blacklistRegex"), is("[^\\p{InBasicLatin}\\p{L}]"));
@@ -93,30 +108,6 @@ public class ReportLoaderTest {
         assertThat(parameters.get(2).getName(), is("location"));
         assertThat(parameters.get(2).getType().getName(), is("org.openmrs.Location"));
 
-    }
-
-    @Test
-    public void shouldConstructMappings() {
-        List<ParameterDescriptor> parameterDescriptors = new ArrayList<ParameterDescriptor>();
-
-        ParameterDescriptor date = new ParameterDescriptor();
-        date.setKey("startDate");
-        date.setLabel("startDate.label");
-        date.setType("java.util.Date");
-
-        ParameterDescriptor location = new ParameterDescriptor();
-        location.setKey("location");
-        location.setLabel("location.label");
-        location.setType("org.openmrs.Location");
-
-        parameterDescriptors.add(date);
-        parameterDescriptors.add(location);
-
-        List<Parameter> parameters = ReportLoader.constructParameters(parameterDescriptors);
-
-        Map<String, Object> mappings = ReportLoader.constructMappings(parameters);
-        assertThat((String) mappings.get("startDate"), is("${startDate}"));
-        assertThat((String) mappings.get("location"), is("${location}"));
     }
 
     @Test
