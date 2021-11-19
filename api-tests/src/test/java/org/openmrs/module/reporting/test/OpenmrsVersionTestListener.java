@@ -20,9 +20,9 @@ public class OpenmrsVersionTestListener extends AbstractTestExecutionListener {
 	
 	@Override
 	public void beforeTestClass(TestContext testContext) {
-		Class<?> testClass = testContext.getTestClass();
+		Class testClass = testContext.getTestClass();
 		
-		RequiresVersion requiresVersionAnnotation = testClass.getAnnotation(RequiresVersion.class);
+		RequiresVersion requiresVersionAnnotation = (RequiresVersion) testClass.getAnnotation(RequiresVersion.class);
 		
 		if (requiresVersionAnnotation == null || StringUtils.isBlank(requiresVersionAnnotation.value())) {
 			return;
