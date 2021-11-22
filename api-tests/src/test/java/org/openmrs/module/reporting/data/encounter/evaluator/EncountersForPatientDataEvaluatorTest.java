@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
+import org.databene.benerator.util.SimpleRandom;
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
@@ -19,6 +21,7 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.contrib.testdata.TestDataManager;
+import org.openmrs.contrib.testdata.builder.PatientBuilder;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
@@ -52,7 +55,13 @@ public class EncountersForPatientDataEvaluatorTest extends BaseModuleContextSens
         Context.getLocationService().saveLocation(location);
 
         EvaluationContext context = new EvaluationContext();
-        Patient patient = data.randomPatient().save();
+        PatientBuilder patientBuilder = data.randomPatient();
+        
+        LocalDate visitDate = LocalDate.parse("2013-10-01");
+        int minimumAge = LocalDate.now().getYear() - visitDate.getYear() + 1;
+        
+        patientBuilder.age(SimpleRandom.randomInt(minimumAge, 90));
+        Patient patient = patientBuilder.save();
         // add an older closed visit
         Visit v1 = data.visit().patient(patient).visitType(visitType).started("2013-10-01 09:30:00").stopped("2013-10-03 09:30:00").location(location).save();
         Encounter e1 =  data.randomEncounter().encounterType(encounterType).visit(v1).patient(patient).encounterDatetime("2013-10-01 10:30:00").location(location).save();

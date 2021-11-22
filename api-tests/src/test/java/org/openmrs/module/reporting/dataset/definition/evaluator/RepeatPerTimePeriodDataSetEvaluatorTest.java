@@ -98,7 +98,7 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
 
         // verify we delegated as expected
 
-        verify(service).evaluate(argThat(new ArgumentMatcher<DataSetDefinition>() {
+        verify(service).evaluate((DataSetDefinition) argThat(new ArgumentMatcher() {
             @Override
             public boolean matches(Object argument) {
                 MultiParameterDataSetDefinition actualDelegate = (MultiParameterDataSetDefinition) argument;
@@ -138,7 +138,7 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
 
         // verify we delegated as expected
 
-        verify(service).evaluate(argThat(new ArgumentMatcher<DataSetDefinition>() {
+        verify(service).evaluate((DataSetDefinition) argThat(new ArgumentMatcher() {
             @Override
             public boolean matches(Object argument) {
                 MultiParameterDataSetDefinition actualDelegate = (MultiParameterDataSetDefinition) argument;
@@ -183,7 +183,7 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
 
         // verify we delegated as expected
 
-        verify(service).evaluate(argThat(new ArgumentMatcher<DataSetDefinition>() {
+        verify(service).evaluate((DataSetDefinition) argThat(new ArgumentMatcher() {
             @Override
             public boolean matches(Object argument) {
                 MultiParameterDataSetDefinition actualDelegate = (MultiParameterDataSetDefinition) argument;
@@ -238,7 +238,7 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
 
         // verify we delegated as expected
 
-        verify(service).evaluate(argThat(new ArgumentMatcher<DataSetDefinition>() {
+        verify(service).evaluate((DataSetDefinition) argThat(new ArgumentMatcher() {
             @Override
             public boolean matches(Object argument) {
                 MultiParameterDataSetDefinition actualDelegate = (MultiParameterDataSetDefinition) argument;

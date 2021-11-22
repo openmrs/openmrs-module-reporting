@@ -13,7 +13,7 @@
     <description>2.4 api project for reporting</description>
 
     <properties>
-        <openMRSVersion>2.4.0-alpha</openMRSVersion>
+        <openMRSVersion>2.4.0</openMRSVersion>
     </properties>
 
     <dependencies>

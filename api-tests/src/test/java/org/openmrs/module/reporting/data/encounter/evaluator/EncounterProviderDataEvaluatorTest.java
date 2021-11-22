@@ -192,7 +192,7 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
     public void shouldFailIfEncounterRoleParameterSetToAnotherType() throws Exception {
 
         EncounterProviderDataDefinition d = new EncounterProviderDataDefinition();
-        d.setEncounterRole(new User());
+        d.setEncounterRole(new EncounterRole());
         d.setSingleProvider(false);
 
         EncounterEvaluationContext encounterEvaluationContext = new EncounterEvaluationContext();

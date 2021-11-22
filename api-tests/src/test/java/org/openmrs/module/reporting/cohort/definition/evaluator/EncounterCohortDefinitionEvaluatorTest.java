@@ -241,8 +241,8 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	public void evaluate_shouldFindPatientsWithEncountersOnTheOnOrBeforeDateIfPassedInTimeIsAtMidnight() throws Exception {
 		EncounterService es = Context.getEncounterService();
 		Encounter enc = es.getEncounter(3);
-		final Integer patentId = 7;
-		Assert.assertEquals(patentId, enc.getPatient().getPatientId());//sanity check
+		final Integer patientId = 7;
+		Assert.assertEquals(patientId, enc.getPatient().getPatientId());//sanity check
 		enc.setEncounterDatetime(DateUtil.getDateTime(2005, 8, 1, 11, 0, 0, 0));
 		es.saveEncounter(enc);
 		Context.flushSession();//because the query will compare with the value in the DB
@@ -250,7 +250,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(c.contains(patentId));
+		Assert.assertTrue(c.contains(patientId));
 	}
 	
 	/**
@@ -260,17 +260,15 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	@Verifies(value = "should find patients with encounters created on the specified date if passed in time is at midnight", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldFindPatientsWithEncountersCreatedOnTheSpecifiedDateIfPassedInTimeIsAtMidnight()
 	    throws Exception {
+		executeDataSet(XML_DATASET_PATH + "ReportTestDataset-encounter-before-midnight.xml");
 		EncounterService es = Context.getEncounterService();
-		Encounter enc = es.getEncounter(3);
-		final Integer patentId = 7;
-		Assert.assertEquals(patentId, enc.getPatient().getPatientId());
-		enc.setDateCreated(DateUtil.getDateTime(2005, 8, 1, 11, 0, 0, 0));
-		es.saveEncounter(enc);
-		Context.flushSession();
+		Encounter enc = es.getEncounter(13);
+		final Integer patientId = 7;
+		Assert.assertEquals(patientId, enc.getPatient().getPatientId());
 		
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setCreatedOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(c.contains(patentId));
+		Assert.assertTrue(c.contains(patientId));
 	}
 }

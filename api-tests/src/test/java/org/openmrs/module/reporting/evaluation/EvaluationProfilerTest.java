@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
+import static org.junit.Assume.assumeTrue;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
@@ -23,7 +25,10 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
+import org.openmrs.module.reporting.test.OpenmrsVersionTestListener;
+import org.openmrs.module.reporting.test.RequiresVersion;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.test.context.TestExecutionListeners;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -33,6 +38,8 @@ import java.util.List;
 /**
  * Tests for {@link EvaluationProfiler}
  */
+@TestExecutionListeners(OpenmrsVersionTestListener.class)
+@RequiresVersion("1.* - 2.3.*")
 public class EvaluationProfilerTest extends BaseModuleContextSensitiveTest {
 
 	protected EvaluationProfiler profiler1, profiler2;

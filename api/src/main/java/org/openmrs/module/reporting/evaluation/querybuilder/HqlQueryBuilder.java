@@ -454,10 +454,11 @@ public class HqlQueryBuilder implements QueryBuilder {
 		Query q = buildQuery(sessionFactory);
 		String[] returnAliases = q.getReturnAliases();
 		Type[] returnTypes = q.getReturnTypes();
-		for (int i=0; i<returnAliases.length; i++) {
+		for (int i=0; i < returnAliases.length; i++) {
 			DataSetColumn column = new DataSetColumn();
-			column.setName(returnAliases[i]);
-			column.setLabel(returnAliases[i]);
+			String returnAlias = ObjectUtil.nvl(returnAliases[i], "" + i);
+			column.setName(returnAlias);
+			column.setLabel(returnAlias);
 			column.setDataType(returnTypes[i].getReturnedClass());
 			l.add(column);
 		}
@@ -533,7 +534,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 		for (int i=0; i<aliases.size(); i++) {
 			String alias = aliases.get(i);
 			q.append(i == 0 ? " from " : ", ");
-			q.append(fromTypes.get(alias).getSimpleName());
+			q.append(fromTypes.get(alias).getName());
 			if (ObjectUtil.notNull(alias)) {
 				q.append(" as ").append(alias);
 			}
