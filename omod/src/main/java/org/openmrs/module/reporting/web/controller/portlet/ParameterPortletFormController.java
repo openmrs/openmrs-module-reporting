@@ -24,6 +24,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.web.WebConstants;
+import org.openmrs.web.WebUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -55,6 +56,11 @@ public class ParameterPortletFormController {
             @RequestParam(required=false, value="widgetConfiguration") String widgetConfiguration,
             @RequestParam(required=false, value="shortcut") String shortcut
             	) {
+
+    	currentName = WebUtil.escapeHTML(currentName);
+    	newName = WebUtil.escapeHTML(newName);
+    	label = WebUtil.escapeHTML(label);
+    	widgetConfiguration = WebUtil.escapeHTML(widgetConfiguration);
     	
     	if (shortcut != null) {
     		if (shortcut.equals("date")) {

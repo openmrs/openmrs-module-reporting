@@ -135,15 +135,19 @@
 						</tr>
 						<c:forEach items="${model.obj.parameters}" var="p" varStatus="paramStatus">
 							<tr>
-								<td nowrap>${p.name}</td>
-								<td width="100%">${p.label}</td>
+								<td nowrap>
+									<c:out value="${p.name}" />
+								</td>
+								<td width="100%">
+									<c:out value="${p.label}" />
+								</td>
 								<td nowrap>
 									<c:choose>
 										<c:when test="${p.collectionType != null}">
-											${p.collectionType.simpleName}&lt;${p.type.simpleName}&gt;
+											<c:out value="${p.collectionType.simpleName}" /> < <c:out value="${p.type.simpleName}" /> >;
 										</c:when>
 										<c:otherwise>
-											${p.type.simpleName}
+										<c:out value="${p.type.simpleName}" />
 										</c:otherwise>
 									</c:choose>
 								</td>
