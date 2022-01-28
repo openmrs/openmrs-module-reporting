@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import liquibase.util.StringUtils;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,10 +72,26 @@ public class SqlQueryBuilder implements QueryBuilder {
 	//***** INSTANCE METHODS *****
 
 	public SqlQueryBuilder append(String clause) {
-		clause = StringUtils.stripComments(clause);
+		clause = stripComments(clause);
 		queryClauses.add(clause);
 		return this;
 	}
+	
+	/**
+     * Searches through a String which contains SQL code and strips out
+     * any comments that are between \/**\/ or anything that matches
+     * SP--SP<text>\n (to support the ANSI standard commenting of --
+     * at the end of a line).
+     * 
+     * Copied from liquibase.util.StringUtils
+     * 
+     * @return The String without the comments in
+     */
+    private static String stripComments(String multiLineSQL) {
+        String strippedSingleLines = Pattern.compile("(.*?)\\s*\\-\\-.*\n").matcher(multiLineSQL).replaceAll("$1\n");
+        strippedSingleLines = Pattern.compile("(.*?)\\s*\\-\\-.*$").matcher(strippedSingleLines).replaceAll("$1\n");
+        return Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL).matcher(strippedSingleLines).replaceAll("").trim();
+    }
 
 	public SqlQueryBuilder addParameter(String parameterName, Object parameterValue) {
 		getParameters().put(parameterName, parameterValue);
