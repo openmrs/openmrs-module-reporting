@@ -54,7 +54,6 @@ public class HttpReportProcessor implements ReportProcessor{
 		HttpURLConnection connection;
 		OutputStreamWriter out = null;
 
-
 		try {
 			if (report.getRenderedOutput() != null && "true".equalsIgnoreCase(configuration.getProperty("addReport"))) {
 				// create a URL object and set a connection to write on it
@@ -69,7 +68,7 @@ public class HttpReportProcessor implements ReportProcessor{
 				out = new OutputStreamWriter(connection.getOutputStream());
 				String outputReport = String.valueOf(report.getRenderedOutput());
 				if (report.getOutputContentType() != null) {
-					outputReport = new String(report.getRenderedOutput(), "UTF-8"); // need this
+					outputReport = new String(report.getRenderedOutput(), "UTF-8"); 
 				}
 				out.write(configuration.getProperty(outputReport));
 				out.flush();
