@@ -54,14 +54,25 @@ public class HttpReportProcessor implements ReportProcessor{
 		HttpURLConnection connection;
 		OutputStreamWriter out = null;
 
+
 		try {
 			if (report.getRenderedOutput() != null && "true".equalsIgnoreCase(configuration.getProperty("addReport"))) {
+				// create a URL object and set a connection to write on it
 				URL url = new URL(configuration.getProperty("connectionUrl"));
 				connection = (HttpURLConnection) url.openConnection();
 				connection.setDoOutput(true);
-				connection.setRequestProperty("Content-Type", report.getOutputContentType());
+				connection.setRequestMethod("POST");
+				connection.setRequestProperty("content-type", "report.getOutputContentType(); charset=UTF-8");
+				connection.setRequestProperty("accept", "report.getOutputContentType()");
+                connection.connect();
+
 				out = new OutputStreamWriter(connection.getOutputStream());
-				out.write(configuration.getProperty("subject"));
+				String outputReport = String.valueOf(report.getRenderedOutput());
+				if (report.getOutputContentType() != null) {
+					outputReport = new String(report.getRenderedOutput(), "UTF-8"); // need this
+				}
+				out.write(configuration.getProperty(outputReport));
+				out.flush();
 				out.close();
 			}
 
