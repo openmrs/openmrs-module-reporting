@@ -123,7 +123,7 @@ public class EmailReportProcessor implements ReportProcessor {
 				MimeBodyPart attachment = new MimeBodyPart();
 				Object output = report.getRenderedOutput();
 				if (report.getOutputContentType().contains("text")) {
-					output = new String(report.getRenderedOutput(), "UTF-8");
+					output = new String(report.getRenderedOutput(), "UTF-8"); 
 				}
 				attachment.setDataHandler(new DataHandler(output, report.getOutputContentType()));
 				attachment.setFileName(configuration.getProperty("attachmentName"));
