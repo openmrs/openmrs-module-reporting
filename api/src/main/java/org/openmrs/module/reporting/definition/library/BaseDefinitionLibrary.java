@@ -39,7 +39,11 @@ public abstract class BaseDefinitionLibrary<T extends Definition> implements Def
     public abstract String getKeyPrefix();
 
     public T getDefinition(String key) {
-        String lookFor = key.startsWith(getKeyPrefix()) ? key.substring(getKeyPrefix().length()) : key;
+        String lookFor = key;
+        String keyPrefix = getKeyPrefix();
+        if (keyPrefix != null) {
+        	lookFor = key.startsWith(keyPrefix) ? key.substring(keyPrefix.length()) : key;
+        }
         return findAndInvokeMethod(lookFor);
     }
 
