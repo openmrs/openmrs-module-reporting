@@ -56,7 +56,8 @@
 		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id"	deferrable="false" initiallyDeferred="false" />
 	</changeSet>
 
-	<changeSet id="reporting_report_design_2" author="mseaton" dbms="mysql">
+	<changeSet id="reporting_report_design_2" author="mseaton" dbms="mysql,mariadb">
+		<validCheckSum>8:53ee2581fae69de6011402f9ccf56cdd</validCheckSum> <!-- checksum before mariadb dbms check -->
 		<preConditions onFail="MARK_RAN">
 			<not><columnExists tableName="reporting_report_design" columnName="report_definition_uuid"/></not>
 		</preConditions>
@@ -89,7 +90,8 @@
 		</sql>
 	</changeSet>
 
-	<changeSet id="reporting_report_design_3" author="mseaton" dbms="mysql">
+	<changeSet id="reporting_report_design_3" author="mseaton" dbms="mysql,mariadb">
+		<validCheckSum>8:376812e41a0a69544e5d3a03f3a99c7f</validCheckSum> <!-- checksum before mariadb dbms check -->
 		<sql>
 			alter table reporting_report_design modify report_definition_uuid char(38) not null;
 		</sql>
