@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>reporting</artifactId>
-		<version>1.24.0-SNAPSHOT</version>
+		<version>1.25.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>reporting-api-tests-2.4</artifactId>
