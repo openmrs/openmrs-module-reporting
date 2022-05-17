@@ -223,6 +223,15 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, mostRecentNum, statuses);
 	}
 
+
+	/**
+	 * @see ReportService#getReportRequests()
+	 */
+	@Transactional(readOnly=true)
+	public List<ReportRequest> getAllReportRequests(){	
+		return reportDAO.getAllReportRequests();
+	}
+	
 	/**
 	 * @see ReportService#purgeReportRequest(ReportRequest)
 	 */
