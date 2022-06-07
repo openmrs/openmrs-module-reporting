@@ -77,7 +77,7 @@ public class ReportHistoryController {
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true, 10)); 
 	}
 	
-	@RequestMapping("/module/reporting/reports/reportHistory")
+	@RequestMapping("/module/reporting/reports/reportHistory.form")
 	public void showReportHistory(ModelMap model, 
 								  @RequestParam(value="reportDefinition", required=false) ReportDefinition reportDefinition,
 								  @RequestParam(value="requestedBy", required=false) User requestedBy,
@@ -123,7 +123,7 @@ public class ReportHistoryController {
 		model.addAttribute("renderingModes", renderingModes);
 	}
 	
-	@RequestMapping("/module/reporting/reports/deleteReportRequest")
+	@RequestMapping("/module/reporting/reports/deleteReportRequest.form")
 	public String deleteReportRequest(@RequestParam("uuid") String uuid,
 									  @RequestParam(value="returnUrl", required=false) String returnUrl) {
 		ReportService rs = Context.getService(ReportService.class);
@@ -132,7 +132,7 @@ public class ReportHistoryController {
 		return "redirect:" + ObjectUtil.nvlStr(returnUrl, "reportHistory.form");
 	}
 	
-	@RequestMapping("/module/reporting/reports/loadReportStatus")
+	@RequestMapping("/module/reporting/reports/loadReportStatus.form")
 	public String loadReportStatus(ModelMap model, @RequestParam("uuid") String uuid) {
 		
 		ReportService rs = Context.getService(ReportService.class);
@@ -157,14 +157,14 @@ public class ReportHistoryController {
 		return "/module/reporting/json";
 	}
 	
-	@RequestMapping("/module/reporting/reports/viewErrorDetails")
+	@RequestMapping("/module/reporting/reports/viewErrorDetails.form")
 	public void viewErrorDetails(HttpServletResponse response, @RequestParam("uuid") String uuid) throws IOException {
 		ReportRequest rr = Context.getService(ReportService.class).getReportRequestByUuid(uuid);
 		String error = Context.getService(ReportService.class).loadReportError(rr);
 		response.getWriter().write(error);
 	}
 	
-	@RequestMapping("/module/reporting/reports/reportHistorySave")
+	@RequestMapping("/module/reporting/reports/reportHistorySave.form")
 	public String saveHistoryElement(@RequestParam("uuid") String uuid, @RequestParam(value="description", required=false) String description) {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportRequest rr = rs.getReportRequestByUuid(uuid);
@@ -173,7 +173,7 @@ public class ReportHistoryController {
 		return "redirect:/module/reporting/reports/reportHistoryOpen.form?uuid="+uuid;
 	}
 	
-	@RequestMapping("/module/reporting/reports/reportHistoryOpen")
+	@RequestMapping("/module/reporting/reports/reportHistoryOpen.form")
 	public String openFromHistory(@RequestParam("uuid") String uuid, HttpServletResponse response, WebRequest request, ModelMap model) throws IOException {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportRequest req = rs.getReportRequestByUuid(uuid);
@@ -214,7 +214,7 @@ public class ReportHistoryController {
 		return "/module/reporting/reports/reportHistoryOpen";
 	}
 	
-	@RequestMapping("/module/reporting/reports/viewReport")
+	@RequestMapping("/module/reporting/reports/viewReport.form")
 	public ModelAndView viewReport(@RequestParam("uuid") String uuid, HttpServletResponse response, HttpServletRequest request) throws IOException {
 		ReportRequest req = getReportService().getReportRequestByUuid(uuid);
 		RenderingMode rm = req.getRenderingMode();
@@ -252,7 +252,7 @@ public class ReportHistoryController {
 		
 	}
 	
-	@RequestMapping("/module/reporting/reports/reportHistoryProcess")
+	@RequestMapping("/module/reporting/reports/reportHistoryProcess.form")
 	public String runOnDemandPostProcessor(@RequestParam("uuid") String requestUuid, @RequestParam("processorUuid") String processorUuid, HttpServletResponse response, HttpServletRequest request) throws IOException {
 		ReportRequest req = getReportService().getReportRequestByUuid(requestUuid);
 		ReportProcessorConfiguration rpc = getReportService().getReportProcessorConfigurationByUuid(processorUuid);

@@ -36,7 +36,7 @@ public class GetMappedAsStringController {
 
 	private static Log log = LogFactory.getLog(GetMappedAsStringController.class);
 
-	@RequestMapping("/module/reporting/widget/getMappedAsString")
+	@RequestMapping("/module/reporting/widget/getMappedAsString.form")
 	public void getMappedAsString(Model model,
 	                              HttpServletRequest request,
 	                              @RequestParam("valueType") String valueTypeClassnames,

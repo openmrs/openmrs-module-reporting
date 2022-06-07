@@ -40,7 +40,7 @@ public class ManageScheduledReportsController {
     /**
      * Provide all scheduled reports for working with these reports.
      */
-    @RequestMapping("/module/reporting/reports/manageScheduledReports")
+    @RequestMapping("/module/reporting/reports/manageScheduledReports.form")
     public ModelMap manageReports(ModelMap model) {
     	// getting all currently scheduled reports
     	ReportService reportService = Context.getService(ReportService.class);

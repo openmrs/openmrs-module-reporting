@@ -23,7 +23,7 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 public class CompositionCohortDefinitionController {
 	
-	@RequestMapping("/module/reporting/cohorts/compositionCohortDefinition")
+	@RequestMapping("/module/reporting/cohorts/compositionCohortDefinition.form")
 	public void showForm(ModelMap model,
 	                     @RequestParam(value="uuid", required=false) String uuid,
 	                     @RequestParam(value="copyFromUuid", required=false) String copyFromUuid) {
@@ -40,7 +40,7 @@ public class CompositionCohortDefinitionController {
 		}
 	}
 	
-	@RequestMapping("/module/reporting/cohorts/compositionCohortDefinitionSetComposition")
+	@RequestMapping("/module/reporting/cohorts/compositionCohortDefinitionSetComposition.form")
 	public String setComposition(@RequestParam("uuid") String uuid,
 	                           @RequestParam("compositionString") String compositionString) {
 		CohortDefinition def = Context.getService(CohortDefinitionService.class).getDefinitionByUuid(uuid);
@@ -57,7 +57,7 @@ public class CompositionCohortDefinitionController {
 	 * @param uuid
 	 * @return
 	 */
-	@RequestMapping("/module/reporting/cohorts/compositionCohortDefinitionClone")
+	@RequestMapping("/module/reporting/cohorts/compositionCohortDefinitionClone.form")
 	public String cloneDefinition(WebRequest request,
 	                              @RequestParam("name") String name,
 	                              @RequestParam(value="description", required=false) String description,

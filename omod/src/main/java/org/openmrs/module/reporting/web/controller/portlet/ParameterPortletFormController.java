@@ -44,7 +44,7 @@ public class ParameterPortletFormController {
     /**
      * Saves mapped parameters
      */
-    @RequestMapping("/module/reporting/parameters/saveParameter")
+    @RequestMapping("/module/reporting/parameters/saveParameter.form")
     public String saveParameter(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="type") Class<? extends Parameterizable> parentType,
     		@RequestParam(required=true, value="uuid") String parentUuid,
@@ -109,7 +109,7 @@ public class ParameterPortletFormController {
     /**
      * Remove mapped property
      */
-    @RequestMapping("/module/reporting/parameters/deleteParameter")
+    @RequestMapping("/module/reporting/parameters/deleteParameter.form")
     public String deleteParameter(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="type") Class<? extends Parameterizable> parentType,
     		@RequestParam(required=true, value="uuid") String parentUuid,

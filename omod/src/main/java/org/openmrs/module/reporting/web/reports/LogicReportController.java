@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LogicReportController {
 	
-	@RequestMapping("/module/reporting/reports/logicReport")
+	@RequestMapping("/module/reporting/reports/logicReport.form")
 	public String showFormOrRedirect(@RequestParam(required=false, value="uuid") String uuid) {
 		if (uuid != null) {
 			// TODO find the logic dataset in this report, and redirect to its edit page
@@ -35,7 +35,7 @@ public class LogicReportController {
 		return null; // show the default view
 	}
 	
-	@RequestMapping("/module/reporting/reports/logicReportCreate")
+	@RequestMapping("/module/reporting/reports/logicReportCreate.form")
 	public String createLogicReport(@RequestParam("name") String name,
 	                                @RequestParam(required=false, value="description") String description) {
 		LogicDataSetDefinition dsd = new LogicDataSetDefinition();

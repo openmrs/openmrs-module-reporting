@@ -46,7 +46,7 @@ public class ManageDatasetsController {
     /**
      * Controller for the edit data set page
      */
-	@RequestMapping("/module/reporting/datasets/editDataSet")
+	@RequestMapping("/module/reporting/datasets/editDataSet.form")
     public String editDataSet(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends DataSetDefinition> type,
@@ -77,7 +77,7 @@ public class ManageDatasetsController {
 	/*
 	 * Load Affected Report Definitions.
 	 */
-	@RequestMapping("/module/reporting/datasets/loadAffectedDatasetDefs")
+	@RequestMapping("/module/reporting/datasets/loadAffectedDatasetDefs.form")
 	@ResponseBody()
 	public List<DefinitionSummary> loadAffectedDatasetDefs(@RequestParam(required=true,value="uuid")String uuid){
 		List<ReportDefinition> reportDefinitions = Context.getService(ReportDefinitionService.class).getAllDefinitions(false);	
@@ -101,7 +101,7 @@ public class ManageDatasetsController {
     /**
      * Save DataSetDefinition
      */
-    @RequestMapping("/module/reporting/datasets/saveDataSet")
+    @RequestMapping("/module/reporting/datasets/saveDataSet.form")
     @SuppressWarnings("unchecked")
     public String saveDataSet(
     		@RequestParam(required=false, value="uuid") String uuid,

@@ -33,7 +33,7 @@ public class CohortDataSetEditor {
     /**
      * Retrieves either an existing or new report to edit
      */
-    @RequestMapping("/module/reporting/datasets/cohortDatasetEditor")
+    @RequestMapping("/module/reporting/datasets/cohortDatasetEditor.form")
     public void editCohortDataSet(ModelMap model,
 		    		@RequestParam(required=false, value="uuid") String uuid,
 		            @RequestParam(required=false, value="type") Class<? extends CohortCrossTabDataSetDefinition> type) {

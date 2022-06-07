@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class DashboardController {
 
-	@RequestMapping("/module/reporting/dashboard/index")
+	@RequestMapping("/module/reporting/dashboard/index.form")
 	public void showDashboard() {
 	}
 	

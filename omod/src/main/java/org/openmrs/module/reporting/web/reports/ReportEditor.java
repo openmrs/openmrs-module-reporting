@@ -38,7 +38,7 @@ public class ReportEditor {
 	/**
 	 * Retrieves either an existing or new report to edit
 	 */
-	@RequestMapping("/module/reporting/reports/reportEditor")
+	@RequestMapping("/module/reporting/reports/reportEditor.form")
 	public void editReport(ModelMap model, @RequestParam(required = false, value = "uuid") String uuid,
 	                       @RequestParam(required = false, value = "type") Class<? extends ReportDefinition> type) {
 		

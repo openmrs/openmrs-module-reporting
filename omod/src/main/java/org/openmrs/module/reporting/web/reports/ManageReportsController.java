@@ -61,7 +61,7 @@ public class ManageReportsController {
      * Provide all reports, optionally including those that are retired, to a page 
      * that lists them and provides options for working with these reports.
      */
-    @RequestMapping("/module/reporting/reports/manageReports")
+    @RequestMapping("/module/reporting/reports/manageReports.form")
     public ModelMap manageReports(ModelMap model, 
     				@RequestParam(required=false, value="includeRetired") Boolean includeRetired) {
     	
@@ -84,7 +84,7 @@ public class ManageReportsController {
      * Provide all reports designs, optionally including those that are retired, to a page 
      * that lists them and provides options for working with them.
      */
-    @RequestMapping("/module/reporting/reports/manageReportDesigns")
+    @RequestMapping("/module/reporting/reports/manageReportDesigns.form")
     public ModelMap manageReportDesigns(ModelMap model, 
     				@RequestParam(required=false, value="includeRetired") Boolean includeRetired) {
     	
@@ -102,7 +102,7 @@ public class ManageReportsController {
      *  
      * to edit a reportDefinition based on its rendererType.
      */
-	@RequestMapping("/module/reporting/reports/renderers/editReportDesign")
+	@RequestMapping("/module/reporting/reports/renderers/editReportDesign.form")
     public String editReportDesign(ModelMap model, 
     		@RequestParam(required=true, value="type") Class<? extends ReportRenderer> type,
     		@RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid,
@@ -143,7 +143,7 @@ public class ManageReportsController {
      *
      * Edit page for a report design that does not have a custom editor
      */
-    @RequestMapping("/module/reporting/reports/renderers/defaultReportDesignEditor")
+    @RequestMapping("/module/reporting/reports/renderers/defaultReportDesignEditor.form")
     public void defaultReportDesignRenderer(ModelMap model,
                                    @RequestParam(required=true, value="type") Class<? extends ReportRenderer> type,
                                    @RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid,
@@ -167,7 +167,7 @@ public class ManageReportsController {
     /**
      * Provide all reports processor configurations, to a page that lists them and provides options for working with them.
      */
-    @RequestMapping("/module/reporting/reports/manageReportProcessors")
+    @RequestMapping("/module/reporting/reports/manageReportProcessors.form")
     public void manageReportProcessors(ModelMap model) {
     	List<ReportProcessorConfiguration> configs = Context.getService(ReportService.class).getAllReportProcessorConfigurations(false);
     	model.addAttribute("reportProcessorConfigurations", configs);
@@ -177,7 +177,7 @@ public class ManageReportsController {
      * Provide all reports designs, optionally including those that are retired, to a page 
      * that lists them and provides options for working with them.
      */
-    @RequestMapping("/module/reporting/reports/viewReportDesignResource")
+    @RequestMapping("/module/reporting/reports/viewReportDesignResource.form")
     public void viewDesignContent(ModelMap model, 
     									HttpServletResponse response,
     									@RequestParam(required=true, value="designUuid") String designUuid,
@@ -198,7 +198,7 @@ public class ManageReportsController {
 		}
     }
 
-    @RequestMapping("/module/reporting/reports/purgeReport")
+    @RequestMapping("/module/reporting/reports/purgeReport.form")
     public String purgeReportDefinition(@RequestParam(required=false, value="uuid") String uuid) {
         ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
         rds.purgeDefinition(rds.getDefinitionByUuid(uuid));
@@ -209,7 +209,7 @@ public class ManageReportsController {
      * Renders a report to the response output stream, given a report definition, rendering mode, and optional patient id
      * @param patientIdOrUuid the id or uuid of patient whose summary you wish to view
      */
-    @RequestMapping("/module/reporting/reports/renderReport")
+    @RequestMapping("/module/reporting/reports/renderReport.form")
     public void renderReport(ModelMap model, HttpServletRequest request, HttpServletResponse response,
                              @RequestParam("reportDefinition") String reportDefinitionUuid,
                              @RequestParam("renderingMode") String renderingModeDescriptor,

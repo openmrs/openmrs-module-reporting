@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Order(50)
 public class ManageReportQueuePortletController extends ReportingPortletController {
 	
-	@RequestMapping(value = "/module/reporting/portlets/manageReportQueue")
+	@RequestMapping(value = "/module/reporting/portlets/manageReportQueue.form")
 	public void showReportRequests() {
 		//this method is just to get the controller registered for the portlet's url.
 		//The model data is added from populateModel() method below

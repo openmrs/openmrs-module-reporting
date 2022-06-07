@@ -37,7 +37,7 @@ public class ParameterizablePortletFormController {
     /**
      * Saves a BaseOpenmrsMetadata object
      */
-    @RequestMapping("/module/reporting/reports/saveBaseParameterizable")
+    @RequestMapping("/module/reporting/reports/saveBaseParameterizable.form")
     public String saveBaseParameterizable(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="type") Class<? extends BaseDefinition> type,
     		@RequestParam(required=true, value="uuid") String uuid,

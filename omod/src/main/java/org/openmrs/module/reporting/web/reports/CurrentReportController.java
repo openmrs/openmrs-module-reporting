@@ -20,7 +20,7 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 public class CurrentReportController {
 
-	@RequestMapping("/module/reporting/run/currentReportDiscard")
+	@RequestMapping("/module/reporting/run/currentReportDiscard.form")
 	public String discardFromSession(WebRequest request) {
 		request.removeAttribute(ReportingConstants.OPENMRS_REPORT_DATA, WebRequest.SCOPE_SESSION);
 		request.removeAttribute(ReportingConstants.OPENMRS_REPORT_ARGUMENT, WebRequest.SCOPE_SESSION);

@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AjaxController {
 	
-	@RequestMapping("/module/reporting/ajax/getRenderingModes")
+	@RequestMapping("/module/reporting/ajax/getRenderingModes.form")
 	public String getRenderingModes(Model model,
 	                                @RequestParam("reportDefinitionUuid") String reportUuid,
 	                                @RequestParam(value="includeInteractiveRenderers", required=false) Boolean includeInteractive,

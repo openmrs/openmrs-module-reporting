@@ -49,7 +49,7 @@ public class ReportDesignFormController {
     /**
      * Saves report design
      */
-    @RequestMapping("/module/reporting/reports/saveReportDesign")
+    @RequestMapping("/module/reporting/reports/saveReportDesign.form")
     @SuppressWarnings("unchecked")
     public String saveReportDesign(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=false, value="uuid") String uuid,
@@ -133,7 +133,7 @@ public class ReportDesignFormController {
     /**
      * Delete report design
      */
-    @RequestMapping("/module/reporting/reports/deleteReportDesign")
+    @RequestMapping("/module/reporting/reports/deleteReportDesign.form")
     public String deleteReportDesign(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="uuid") String uuid,
             @RequestParam(required=false, value="returnUrl") String returnUrl) {

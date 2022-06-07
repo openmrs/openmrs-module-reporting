@@ -30,7 +30,7 @@ public class ScriptedCompositionPatientDataDefinitionController {
 	protected transient Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("unchecked")
-    @RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinition")
+    @RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinition.form")
 	public void showForm(ModelMap model, @RequestParam(value = "uuid", required = false) String uuid,
 	                     @RequestParam(value = "copyFromUuid", required = false) String copyFromUuid) {
 		model.put("scriptTypes", TemplateEngineManager.getAvailableTemplateEngineNames());
@@ -49,7 +49,7 @@ public class ScriptedCompositionPatientDataDefinitionController {
 		}
 	}
 	
-	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinitionSetComposition")
+	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinitionSetComposition.form")
 	public String setScriptCode(@RequestParam("uuid") String uuid, @RequestParam("scriptCode") String scriptCode,
 	                            @RequestParam("scriptType") String scriptType) {
 		PatientDataDefinition def = Context.getService(PatientDataService.class).getDefinitionByUuid(uuid);
@@ -67,7 +67,7 @@ public class ScriptedCompositionPatientDataDefinitionController {
 	 * @param uuid
 	 * @return
 	 */
-	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinitionClone")
+	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinitionClone.form")
 	public String cloneDefinition(WebRequest request, @RequestParam("name") String name,
 	                              @RequestParam(value = "description", required = false) String description,
 	                              @RequestParam("copyFromUuid") String copyFromUuid) {

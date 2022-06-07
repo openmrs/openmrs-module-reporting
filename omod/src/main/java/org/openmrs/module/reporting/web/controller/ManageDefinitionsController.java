@@ -52,7 +52,7 @@ public class ManageDefinitionsController {
 	/**
 	 * Manage Definitions Controller
 	 */
-	@RequestMapping("/module/reporting/definition/manageDefinitions")
+	@RequestMapping("/module/reporting/definition/manageDefinitions.form")
 	public void manageDefinitions(
 			@RequestParam(required=true, value="type") Class<? extends Definition> type,
 			@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
@@ -114,7 +114,7 @@ public class ManageDefinitionsController {
 	/**
 	 * Edit Definition Controller
 	 */
-	@RequestMapping("/module/reporting/definition/editDefinition")
+	@RequestMapping("/module/reporting/definition/editDefinition.form")
 	public String editDefinition(
 			@RequestParam(required=true, value="type") Class<? extends Definition> type,
 			@RequestParam(required=false, value="uuid") String uuid,
@@ -133,7 +133,7 @@ public class ManageDefinitionsController {
 	/**
 	 * Purge Definition Controller
 	 */
-	@RequestMapping("/module/reporting/definition/purgeDefinition")
+	@RequestMapping("/module/reporting/definition/purgeDefinition.form")
 	public String purgeDefinition(
 			@RequestParam(required=true, value="type") Class<? extends Definition> type,
 			@RequestParam(required=true, value="uuid") String uuid,
@@ -146,7 +146,7 @@ public class ManageDefinitionsController {
 	/**
 	 * Retire Definition Controller
 	 */
-	@RequestMapping("/module/reporting/definition/retireDefinition")
+	@RequestMapping("/module/reporting/definition/retireDefinition.form")
 	public String retireDefinition(
 			@RequestParam(required=true, value="type") Class<? extends Definition> type,
 			@RequestParam(required=true, value="uuid") String uuid,
@@ -160,7 +160,7 @@ public class ManageDefinitionsController {
 	/**
 	 * Retire Definition Controller
 	 */
-	@RequestMapping("/module/reporting/definition/unretireDefinition")
+	@RequestMapping("/module/reporting/definition/unretireDefinition.form")
 	public String unretireDefinition(
 			@RequestParam(required=true, value="type") Class<? extends Definition> type,
 			@RequestParam(required=true, value="uuid") String uuid,

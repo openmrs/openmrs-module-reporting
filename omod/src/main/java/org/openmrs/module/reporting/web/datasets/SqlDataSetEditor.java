@@ -29,7 +29,7 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 public class SqlDataSetEditor {
 	
-	@RequestMapping("/module/reporting/datasets/sqlDataSetEditor")
+	@RequestMapping("/module/reporting/datasets/sqlDataSetEditor.form")
 	public void showForm(ModelMap model,
 	                     @RequestParam(value="uuid", required=false) String uuid,
 	                     @RequestParam(value="copyFromUuid", required=false) String copyFromUuid) {
@@ -48,7 +48,7 @@ public class SqlDataSetEditor {
 		}
 	}
 	
-	@RequestMapping("/module/reporting/datasets/sqlDataSetDefinitionAssignQueryString")
+	@RequestMapping("/module/reporting/datasets/sqlDataSetDefinitionAssignQueryString.form")
 	public String saveQueryString(
 			HttpSession httpSession,
 			WebRequest webRequest,
@@ -79,7 +79,7 @@ public class SqlDataSetEditor {
 	 * @param uuid
 	 * @return
 	 */
-	@RequestMapping("/module/reporting/datasets/sqlDataSetDefinitionClone")
+	@RequestMapping("/module/reporting/datasets/sqlDataSetDefinitionClone.form")
 	public String cloneDefinition(WebRequest request,
 	                              @RequestParam("name") String name,
 	                              @RequestParam(value="description", required=false) String description,

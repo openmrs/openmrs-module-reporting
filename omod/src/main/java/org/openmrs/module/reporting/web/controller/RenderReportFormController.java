@@ -31,7 +31,7 @@ public class RenderReportFormController {
     	binder.registerCustomEditor(Date.class, new CustomDateEditor(ymd, true)); 
     }    
 	
-    @RequestMapping("/module/reporting/reports/renderDefaultReport")
+    @RequestMapping("/module/reporting/reports/renderDefaultReport.form")
 	public ModelAndView renderDefaultReport() {
     	return new ModelAndView("/module/reporting/reports/renderDefaultReport");    	
     }

@@ -59,7 +59,7 @@ public class ReportDashboardController {
     }    
 
 
-    @RequestMapping("/module/reporting/dashboard/viewCohortDataSet")
+    @RequestMapping("/module/reporting/dashboard/viewCohortDataSet.form")
     public String viewCohortDataSet(
     		@RequestParam(required=false, value="savedDataSetKey") String savedDataSetKey,
     		@RequestParam(required=false, value="savedColumnKey") String savedColumnKey,   		

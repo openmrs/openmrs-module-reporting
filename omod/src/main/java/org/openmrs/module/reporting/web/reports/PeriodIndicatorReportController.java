@@ -71,7 +71,7 @@ public class PeriodIndicatorReportController {
 		return ret;
 	}
 
-	@RequestMapping("/module/reporting/reports/periodIndicatorReport")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReport.form")
 	public void showForm(ModelMap model,
 						 @RequestParam(value="uuid", required=false) String uuid) {
 		if (uuid == null) {
@@ -89,7 +89,7 @@ public class PeriodIndicatorReportController {
 	}
 
 	
-	@RequestMapping("/module/reporting/reports/periodIndicatorReportSaveColumn")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReportSaveColumn.form")
 	public String addColumn(@RequestParam("uuid") String uuid,
 							@RequestParam(value="index", required=false) Integer index,
 							@RequestParam("key") String key,
@@ -147,7 +147,7 @@ public class PeriodIndicatorReportController {
 		return "redirect:periodIndicatorReport.form?uuid=" + uuid;
 	} 
 	
-	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveColumn")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveColumn.form")
 	public String removeColumn(@RequestParam("uuid") String uuid,
 							   @RequestParam("key") String key) {
 		
@@ -157,7 +157,7 @@ public class PeriodIndicatorReportController {
 		return "redirect:periodIndicatorReport.form?uuid=" + uuid;
 	}
 	
-	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveDimension")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveDimension.form")
 	public String removeDimension(@RequestParam("uuid") String uuid,
 								  @RequestParam("key") String key) {
 		

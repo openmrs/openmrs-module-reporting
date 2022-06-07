@@ -28,7 +28,7 @@ public class ManageDimensionsController {
 	/**
 	 * List all dimensions
 	 */
-    @RequestMapping("/module/reporting/indicators/manageDimensions")
+    @RequestMapping("/module/reporting/indicators/manageDimensions.form")
     public void manageDimensions(ModelMap model, 
     				@RequestParam(required=false, value="includeRetired") Boolean includeRetired) {
     	
@@ -46,7 +46,7 @@ public class ManageDimensionsController {
     /**
      * Delete an existing dimension
      */
-    @RequestMapping("/module/reporting/indicators/purgeDimension")
+    @RequestMapping("/module/reporting/indicators/purgeDimension.form")
     public String purgeDimension(@RequestParam("uuid") String uuid) {
     	DimensionService service = Context.getService(DimensionService.class);
 		Dimension dim = service.getDefinitionByUuid(uuid);

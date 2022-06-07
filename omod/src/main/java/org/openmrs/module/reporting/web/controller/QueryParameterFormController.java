@@ -59,7 +59,7 @@ public class QueryParameterFormController {
 	/**
 	 * Processes the form when a user submits.
 	 */	
-	@RequestMapping("/module/reporting/parameters/queryParameter")
+	@RequestMapping("/module/reporting/parameters/queryParameter.form")
 	public ModelAndView processForm(
 			HttpServletRequest request,	
 			HttpServletResponse response,	

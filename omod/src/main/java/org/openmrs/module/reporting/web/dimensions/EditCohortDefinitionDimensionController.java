@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class EditCohortDefinitionDimensionController {
 
-	@RequestMapping("/module/reporting/indicators/editCohortDefinitionDimension")
+	@RequestMapping("/module/reporting/indicators/editCohortDefinitionDimension.form")
     public void editReportDefinition(
     		@RequestParam(required=false, value="uuid") String uuid,
     		ModelMap model) {
@@ -30,7 +30,7 @@ public class EditCohortDefinitionDimensionController {
 		model.addAttribute("dimension", dim);
 	}
 
-	@RequestMapping("/module/reporting/indicators/editCohortDefinitionDimensionRemoveOption")
+	@RequestMapping("/module/reporting/indicators/editCohortDefinitionDimensionRemoveOption.form")
     public String removeOption(
     		@RequestParam("uuid") String uuid,
     		@RequestParam("key") String keyToRemove) {

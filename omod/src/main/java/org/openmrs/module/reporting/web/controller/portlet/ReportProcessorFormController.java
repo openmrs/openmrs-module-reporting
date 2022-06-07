@@ -42,7 +42,7 @@ public class ReportProcessorFormController {
     /**
      * Saves report design
      */
-    @RequestMapping("/module/reporting/reports/saveReportProcessor")
+    @RequestMapping("/module/reporting/reports/saveReportProcessor.form")
     public String saveReportProcessor(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=false, value="uuid") String uuid,
     		@RequestParam(required=true, value="name") String name,
@@ -81,7 +81,7 @@ public class ReportProcessorFormController {
     /**
      * Delete report design
      */
-    @RequestMapping("/module/reporting/reports/deleteReportProcessor")
+    @RequestMapping("/module/reporting/reports/deleteReportProcessor.form")
     public String deleteReportDesign(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="uuid") String uuid,
             @RequestParam(required=false, value="returnUrl") String returnUrl) {

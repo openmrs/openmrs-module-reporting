@@ -54,7 +54,7 @@ public class ManageCohortDefinitionsController {
 	/**
 	 * Basically acts as the formBackingObject() method for saving a CohortDefinition.
 	 */
-	@RequestMapping("/module/reporting/cohorts/editCohortDefinition")
+	@RequestMapping("/module/reporting/cohorts/editCohortDefinition.form")
 	public String editCohortDefinition(ModelMap model, @ModelAttribute("cohortDefinition") CohortDefinition cohortDefinition) {
 		addPropertiesToModel(model, cohortDefinition);
 		return "/module/reporting/cohorts/cohortDefinitionEditor";
@@ -63,7 +63,7 @@ public class ManageCohortDefinitionsController {
 	/**
 	 * Saves a cohort definition.
 	 */
-	@RequestMapping("/module/reporting/cohorts/saveCohortDefinition")
+	@RequestMapping("/module/reporting/cohorts/saveCohortDefinition.form")
 	@SuppressWarnings("unchecked")
 	public String saveCohortDefinition(@ModelAttribute("cohortDefinition") CohortDefinition cohortDefinition,
             						   BindingResult bindingResult, ModelMap model, HttpServletRequest request) {
@@ -132,7 +132,7 @@ public class ManageCohortDefinitionsController {
 	 * @return
 	 * @throws EvaluationException
 	 */
-	@RequestMapping("/module/reporting/cohorts/evaluateCohortDefinition")
+	@RequestMapping("/module/reporting/cohorts/evaluateCohortDefinition.form")
 	public String evaluateCohortDefinition(@RequestParam(required = false, value = "uuid") String uuid,
 	                                       @RequestParam(required = false, value = "type") Class<? extends CohortDefinition> type,
 	                                       ModelMap model) throws EvaluationException {

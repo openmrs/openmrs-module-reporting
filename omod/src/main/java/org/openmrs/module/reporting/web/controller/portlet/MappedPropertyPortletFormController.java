@@ -50,7 +50,7 @@ public class MappedPropertyPortletFormController {
     /**
      * Saves mapped parameters
      */
-    @RequestMapping("/module/reporting/reports/saveMappedProperty")
+    @RequestMapping("/module/reporting/reports/saveMappedProperty.form")
     @SuppressWarnings("unchecked")
     public String saveMappedProperty(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="type") Class<? extends Parameterizable> type,
@@ -151,7 +151,7 @@ public class MappedPropertyPortletFormController {
     /**
      * Remove mapped property
      */
-    @RequestMapping("/module/reporting/reports/removeMappedProperty")
+    @RequestMapping("/module/reporting/reports/removeMappedProperty.form")
     @SuppressWarnings("unchecked")
     public String removeMappedProperty(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="type") Class<? extends Parameterizable> type,

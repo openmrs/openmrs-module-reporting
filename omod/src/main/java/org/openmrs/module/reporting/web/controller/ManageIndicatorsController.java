@@ -26,13 +26,13 @@ public class ManageIndicatorsController {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
-    @RequestMapping("/module/reporting/indicators/manageIndicators")
+    @RequestMapping("/module/reporting/indicators/manageIndicators.form")
     public void manageIndicators(ModelMap model) {
     	List<Indicator> indicators = Context.getService(IndicatorService.class).getAllDefinitions(false);
     	model.addAttribute("indicators", indicators);
     }
 
-    @RequestMapping("/module/reporting/indicators/purgeIndicator")
+    @RequestMapping("/module/reporting/indicators/purgeIndicator.form")
     public String purgeIndicator(@RequestParam(required=false, value="uuid") String uuid) {
     	Indicator indicator = Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
     	if (indicator != null) {     		

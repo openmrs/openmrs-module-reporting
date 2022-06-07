@@ -40,7 +40,7 @@ public class LogicDataSetEditor {
 	
 	Log log = LogFactory.getLog(getClass());
 	
-	@RequestMapping("/module/reporting/datasets/logicDataSetEditor")
+	@RequestMapping("/module/reporting/datasets/logicDataSetEditor.form")
 	public void showDataset(HttpServletRequest request, ModelMap model, @RequestParam(required = false, value = "uuid") String uuid) {
 		DataSetDefinitionService svc = Context.getService(DataSetDefinitionService.class);
 		LogicDataSetDefinition definition = (LogicDataSetDefinition) svc.getDefinition(uuid, LogicDataSetDefinition.class);
@@ -71,7 +71,7 @@ public class LogicDataSetEditor {
 	   }
 	}
 	
-	@RequestMapping("/module/reporting/datasets/logicDataSetEditorSave")
+	@RequestMapping("/module/reporting/datasets/logicDataSetEditorSave.form")
 	public String saveLogicDataset(ModelMap model, @RequestParam(required = false, value = "uuid") String uuid,
 	                               @RequestParam(required = false, value = "name") String name,
 	                               @RequestParam(required = false, value = "description") String description,

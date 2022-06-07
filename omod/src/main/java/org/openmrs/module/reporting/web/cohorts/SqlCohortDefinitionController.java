@@ -29,7 +29,7 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 public class SqlCohortDefinitionController {
 	
-	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinition")
+	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinition.form")
 	public void showForm(ModelMap model,
 	                     @RequestParam(value="uuid", required=false) String uuid,
 	                     @RequestParam(value="copyFromUuid", required=false) String copyFromUuid) {
@@ -47,7 +47,7 @@ public class SqlCohortDefinitionController {
 		}
 	}
 	
-	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinitionAssignQueryString")
+	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinitionAssignQueryString.form")
 	public String saveQueryString(
 			HttpSession httpSession,
 			WebRequest webRequest,
@@ -76,7 +76,7 @@ public class SqlCohortDefinitionController {
 	 * Copies the SQL cohort definition with the given uuid into another one with the same
 	 * parameters and searches, but blank name/description and SQL string
 	 */
-	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinitionClone")
+	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinitionClone.form")
 	public String cloneDefinition(WebRequest request,
 	                              @RequestParam("name") String name,
 	                              @RequestParam(value="description", required=false) String description,

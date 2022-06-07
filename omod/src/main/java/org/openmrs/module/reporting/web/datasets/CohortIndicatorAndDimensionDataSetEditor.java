@@ -48,7 +48,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
     	binder.registerCustomEditor(Indicator.class, new IndicatorEditor());
     }
 
-	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionDatasetEditor")
+	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionDatasetEditor.form")
 	public void editDataSet(ModelMap model, @RequestParam(value="uuid", required=false) String uuid) {
 		DataSetDefinition dsd = new CohortIndicatorAndDimensionDataSetDefinition();
 		if (uuid != null) {
@@ -57,7 +57,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
 		model.addAttribute("dsd", dsd);
 	}
 	
-	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionAddSpecification")
+	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionAddSpecification.form")
 	public String addSpecification(@RequestParam("dsdUuid") String dsdUuid,
 							@RequestParam("index") Integer index,
 	                        @RequestParam("indicatorNumber") String indicatorNumber,
@@ -133,7 +133,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
 		return "redirect:/module/reporting/closeWindow.htm";
 	}
 	
-	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionRemoveIndicator")
+	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionRemoveIndicator.form")
 	public String removeIndicator(@RequestParam("dsdUuid") String dsdUuid,
 	                           	  @RequestParam("index") Integer index) {
 		
@@ -145,7 +145,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
 		return "redirect:cohortIndicatorAndDimensionDatasetEditor.form?uuid=" + dsdUuid;
 	}
 	
-	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionRemoveDimension")
+	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionRemoveDimension.form")
 	public String removeDimension(@RequestParam("uuid") String uuid,
 	                              @RequestParam("key") String key) {
 		

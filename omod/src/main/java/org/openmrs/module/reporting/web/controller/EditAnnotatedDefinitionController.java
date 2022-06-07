@@ -61,7 +61,7 @@ public class EditAnnotatedDefinitionController {
 	/**
 	 * Basically acts as the formBackingObject() method for saving a CohortDefinition.
 	 */
-	@RequestMapping("/module/reporting/definition/editAnnotatedDefinition")
+	@RequestMapping("/module/reporting/definition/editAnnotatedDefinition.form")
 	public String editAnnotatedDefinition(ModelMap model, 
 										  @RequestParam(required = true, value = "parentType") Class<? extends Definition> parentType,
 										  @ModelAttribute("definition") Definition definition) {
@@ -73,7 +73,7 @@ public class EditAnnotatedDefinitionController {
 	/**
 	 * Saves a cohort definition.
 	 */
-	@RequestMapping("/module/reporting/definition/saveAnnotatedDefinition")
+	@RequestMapping("/module/reporting/definition/saveAnnotatedDefinition.form")
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public String saveAnnotatedDefinition(@RequestParam(required = true, value = "parentType") Class<? extends Definition> parentType,
 										  @ModelAttribute("definition") Definition definition, 

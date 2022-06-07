@@ -30,7 +30,7 @@ import java.util.List;
 @Controller
 public class SqlDefinitionController {
 	
-	@RequestMapping("/module/reporting/definition/sqlDefinition")
+	@RequestMapping("/module/reporting/definition/sqlDefinition.form")
 	public void showForm(ModelMap model,
 						 @RequestParam(value="type", required=true) Class<? extends BaseSqlQuery> type,
 	                     @RequestParam(value="uuid", required=false) String uuid,
@@ -47,7 +47,7 @@ public class SqlDefinitionController {
 		model.addAttribute("type", type);
 	}
 	
-	@RequestMapping("/module/reporting/definition/sqlDefinitionAssignQueryString")
+	@RequestMapping("/module/reporting/definition/sqlDefinitionAssignQueryString.form")
 	public String saveQueryString(
 			HttpSession httpSession,
 			WebRequest webRequest,
@@ -91,7 +91,7 @@ public class SqlDefinitionController {
 	 * Copies the SQL cohort definition with the given uuid into another one with the same
 	 * parameters and searches, but blank name/description and SQL string
 	 */
-	@RequestMapping("/module/reporting/definition/sqlDefinitionClone")
+	@RequestMapping("/module/reporting/definition/sqlDefinitionClone.form")
 	public String cloneDefinition(WebRequest request,
 	                              @RequestParam("name") String name,
 	                              @RequestParam(value="description", required=false) String description,

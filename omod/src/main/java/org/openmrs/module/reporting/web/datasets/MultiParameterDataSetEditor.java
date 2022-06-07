@@ -33,7 +33,7 @@ import java.util.Map;
 @Controller
 public class MultiParameterDataSetEditor {
 	
-	@RequestMapping("/module/reporting/datasets/multiParameterDataSetEditor")
+	@RequestMapping("/module/reporting/datasets/multiParameterDataSetEditor.form")
 	public void showForm(ModelMap model,
 						 @RequestParam(value="uuid", required=false) String uuid) {
 		List<DataSetDefinition> allDefinitions = Context.getService(DataSetDefinitionService.class).getAllDefinitions(false);
@@ -51,7 +51,7 @@ public class MultiParameterDataSetEditor {
 		model.addAttribute("availableDefinitions", allDefinitions);
 	}
 
-	@RequestMapping("/module/reporting/datasets/multiParameterAddIteration")
+	@RequestMapping("/module/reporting/datasets/multiParameterAddIteration.form")
 	public String addIteration(@RequestParam("dsdUuid") String dsdUuid,
 								  @RequestParam("index") Integer index) {
 
@@ -66,7 +66,7 @@ public class MultiParameterDataSetEditor {
 		return "redirect:multiParameterDataSetEditor.form?uuid=" + dsdUuid;
 	}
 
-	@RequestMapping("/module/reporting/datasets/multiParameterRemoveIteration")
+	@RequestMapping("/module/reporting/datasets/multiParameterRemoveIteration.form")
 	public String removeIteration(@RequestParam("dsdUuid") String dsdUuid,
 							   @RequestParam("index") Integer index) {
 		DataSetDefinition dsd = DefinitionContext.getDataSetDefinitionService().getDefinitionByUuid(dsdUuid);
@@ -78,7 +78,7 @@ public class MultiParameterDataSetEditor {
 		return "redirect:multiParameterDataSetEditor.form?uuid=" + dsdUuid;
 	}
 
-	@RequestMapping("/module/reporting/datasets/multiParameterEditIterationParameter")
+	@RequestMapping("/module/reporting/datasets/multiParameterEditIterationParameter.form")
 	public String editIterationParameter(@RequestParam("dsdUuid") String dsdUuid,
 										 @RequestParam("iteration") Integer iteration,
 										 @RequestParam("parameterName") String parameterName,
@@ -108,7 +108,7 @@ public class MultiParameterDataSetEditor {
 		return "redirect:/module/reporting/closeWindow.htm";
 	}
 
-	@RequestMapping("/module/reporting/datasets/multiParameterChangeBaseDefinition")
+	@RequestMapping("/module/reporting/datasets/multiParameterChangeBaseDefinition.form")
 	public String changeBaseDefinition(@RequestParam("dsdUuid") String dsdUuid,
 										 @RequestParam("baseDefinitionUuid") String baseDefinitionUuid) {
 		DataSetDefinition dsd = DefinitionContext.getDataSetDefinitionService().getDefinitionByUuid(dsdUuid);
