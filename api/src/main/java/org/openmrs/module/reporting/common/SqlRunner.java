@@ -15,11 +15,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.module.reporting.dataset.definition.evaluator.SqlFileDataSetEvaluator;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
@@ -36,24 +36,24 @@ import java.util.regex.Pattern;
  */
 public class SqlRunner {
 
-	private static Log log = LogFactory.getLog(SqlRunner.class);
+    private static Log log = LogFactory.getLog(SqlRunner.class);
 
 	// Regular expression to identify a change in the delimiter.  This ignores spaces, allows delimiter in comment, allows an equals-sign
     private static final Pattern DELIMITER_PATTERN = Pattern.compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$", Pattern.CASE_INSENSITIVE);
 
     //*********** INSTANCE PROPERTIES ******************
 
-    private Connection connection;
+    private SqlFileDataSetEvaluator evaluator;
     private String delimiter = ";";
 
     //*********** CONSTRUCTORS ******************
 
-    public SqlRunner(Connection connection) {
-        this.connection = connection;
+    public SqlRunner(SqlFileDataSetEvaluator evaluator) {
+        this.evaluator = evaluator;
     }
 
-    public SqlRunner(Connection connection, String delimiter) {
-        this(connection);
+    public SqlRunner(SqlFileDataSetEvaluator evaluator, String delimiter) {
+        this(evaluator);
         this.delimiter = delimiter;
     }
 
@@ -66,12 +66,33 @@ public class SqlRunner {
     }
 
     /**
+     * Executes a Sql Script located under resources
+     */
+    public ResultSetIterator executeSqlResourceToIterator(String resourceName, Map<String, Object> parameterValues) {
+        String sql = ReportUtil.readStringFromResource(resourceName);
+        return executeSqlToIterator(sql, parameterValues);
+    }
+
+    /**
      * Executes a Sql Script located as a file
      */
     public SqlResult executeSqlFile(File sqlFile, Map<String, Object> parameterValues) {
         try {
             String sql = FileUtils.readFileToString(sqlFile, "UTF-8");
             return executeSql(sql, parameterValues);
+        }
+        catch (IOException e) {
+            throw new IllegalArgumentException("Unable to load file: " + sqlFile, e);
+        }
+    }
+
+    /**
+     * Executes a Sql Script located as a file
+     */
+    public ResultSetIterator executeSqlFileToIterator(File sqlFile, Map<String, Object> parameterValues) {
+        try {
+            String sql = FileUtils.readFileToString(sqlFile, "UTF-8");
+            return executeSqlToIterator(sql, parameterValues);
         }
         catch (IOException e) {
             throw new IllegalArgumentException("Unable to load file: " + sqlFile, e);
@@ -93,13 +114,13 @@ public class SqlRunner {
         Boolean originalAutoCommit = null;
 
         try {
-            originalAutoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(false);
+            originalAutoCommit = evaluator.getConnection().getAutoCommit();
+            evaluator.getConnection().setAutoCommit(false);
 
             for (String sqlStatement : sqlStatements) {
                 Statement statement = null;
                 try {
-                    statement = connection.createStatement();
+                    statement = evaluator.getConnection().createStatement();
                     log.debug("Executing: " + sqlStatement);
                     statement.execute(sqlStatement);
                     ResultSet resultSet = statement.getResultSet();
@@ -145,6 +166,54 @@ public class SqlRunner {
         return result;
 	}
 
+    /**
+     * Executes a Sql Script
+     */
+    public ResultSetIterator executeSqlToIterator(String sql, Map<String, Object> parameterValues) {
+
+        ResultSetIterator iterator = null;
+        log.info("Executing SQL...");
+
+        List<String> sqlStatements = new ArrayList<String>();
+        sqlStatements.addAll(parseParametersIntoStatements(parameterValues));
+        sqlStatements.addAll(parseSqlIntoStatements(sql));
+
+        Boolean originalAutoCommit = null;
+
+        try {
+            originalAutoCommit = evaluator.getConnection().getAutoCommit();
+            evaluator.getConnection().setAutoCommit(false);
+
+            for (String sqlStatement : sqlStatements) {
+                Statement statement = null;
+                try {
+                    statement = evaluator.getConnection().createStatement();
+                    // If is the last statement set setFetchSize
+                    if (sqlStatement.equals(sqlStatements.get(sqlStatements.size() - 1))) {
+                        statement.setFetchSize(10);
+                    }
+                    log.debug("Executing: {} " + sqlStatement);
+                    statement.executeQuery(sqlStatement);
+                    ResultSet resultSet = statement.getResultSet();
+
+                    if (resultSet != null) {
+                        ResultSetMetaData rsmd = resultSet.getMetaData();
+                        iterator = new ResultSetIterator(rsmd, resultSet, evaluator, statement);
+                    }
+                } catch (Exception e) {
+                    closeStatement(statement);
+                    throw e;
+                }
+            }
+        } catch (Exception e) {
+            log.error("An error occurred while trying to execute the query.", e);
+        } finally {
+            resetAutocommit(originalAutoCommit);
+        }
+
+        return iterator;
+    }
+
     protected void closeStatement(Statement statement) {
         try {
             if (statement != null) {
@@ -158,7 +227,7 @@ public class SqlRunner {
 
     protected void commit() {
         try {
-            connection.commit();
+            evaluator.getConnection().commit();
         }
         catch (Exception e) {
             log.warn("An error occurred while trying to commit", e);
@@ -167,7 +236,7 @@ public class SqlRunner {
 
 	protected void rollback() {
 	    try {
-	        connection.rollback();
+            evaluator.getConnection().rollback();
         }
         catch (Exception e) {
 	        log.warn("An error occurred while trying to rollback a connection", e);
@@ -177,7 +246,7 @@ public class SqlRunner {
     protected void resetAutocommit(Boolean autocommit) {
         try {
             if (autocommit != null) {
-                connection.setAutoCommit(autocommit);
+                evaluator.getConnection().setAutoCommit(autocommit);
             }
         }
         catch (Exception e) {
@@ -304,15 +373,6 @@ public class SqlRunner {
     }
 
     //************* PROPERTY ACCESS *******************
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
-
     public String getDelimiter() {
         return delimiter;
     }

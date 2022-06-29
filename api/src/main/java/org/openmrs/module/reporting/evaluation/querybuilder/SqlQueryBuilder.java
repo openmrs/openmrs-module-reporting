@@ -123,10 +123,10 @@ public class SqlQueryBuilder implements QueryBuilder {
 	@Override
 	public List<DataSetColumn> getColumns(DbSessionFactory sessionFactory) {
 		final List<DataSetColumn> l = new ArrayList<DataSetColumn>();
-		
+
 		try {
 			sessionFactory.getCurrentSession().doWork(new Work() {
-				
+
 				@Override
 				public void execute(Connection connection) throws SQLException {
 					PreparedStatement statement =  null;
@@ -152,20 +152,20 @@ public class SqlQueryBuilder implements QueryBuilder {
 		catch (Exception e) {
 			throw new IllegalArgumentException("Unable to retrieve columns for query", e);
 		}
-		
+
 		return l;
 	}
 
 	@Override
 	public List<Object[]> evaluateToList(DbSessionFactory sessionFactory, EvaluationContext context) {
-		
+
 		final List<Object[]> ret = new ArrayList<Object[]>();
 		EvaluationProfiler profiler = new EvaluationProfiler(context);
 		profiler.logBefore("EXECUTING_QUERY", toString());
-		
+
 		try {
 			sessionFactory.getCurrentSession().doWork(new Work() {
-				
+
 				@Override
 				public void execute(Connection connection) throws SQLException {
 					PreparedStatement statement =  null;
@@ -198,7 +198,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 			profiler.logError("EXECUTING_QUERY", toString(), e);
 			throw new IllegalArgumentException("Unable to execute query", e);
 		}
-		
+
 		profiler.logAfter("EXECUTING_QUERY", "Completed successfully with " + ret.size() + " results");
 		return ret;
 	}
