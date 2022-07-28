@@ -18,6 +18,11 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>${project.parent.artifactId}-api-1.10</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>${project.parent.artifactId}-api-1.9</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
