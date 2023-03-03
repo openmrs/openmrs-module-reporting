@@ -50,8 +50,6 @@ import java.util.Properties;
 public class SqlFileDataSetEvaluator implements DataSetEvaluator {
     protected Log log = LogFactory.getLog(this.getClass());
 
-    protected Connection connection;
-
     /**
      * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
      */
@@ -62,11 +60,10 @@ public class SqlFileDataSetEvaluator implements DataSetEvaluator {
 
         SqlFileDataSetDefinition dsd = (SqlFileDataSetDefinition) dataSetDefinition;
 
-        Properties connectionProperties = getConnectionProperties(dsd.getConnectionPropertyFile());
+        Connection connection = null;
         try {
-            createConnection(connectionProperties);
-
-            SqlRunner runner = new SqlRunner(this);
+            connection = getConnection(dsd, context);
+            SqlRunner runner = new SqlRunner(connection);
             SqlResult resultData = null;
             Map<String, Object> parameterValues = constructParameterValues(dsd, context);
 
@@ -104,12 +101,21 @@ public class SqlFileDataSetEvaluator implements DataSetEvaluator {
                 }
                 data.addRow(row);
             }
-        } catch (EvaluationException ee) {
+        }
+        catch (EvaluationException ee) {
             throw ee;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new EvaluationException("An error occurred while evaluating a SqlFileDataSetDefinition", e);
-        } finally {
-            closeConnection();
+        }
+        finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                log.warn("Error closing the database connection for SqlFileDataSetEvaluator", e);
+            }
         }
 
         return data;
@@ -139,15 +145,17 @@ public class SqlFileDataSetEvaluator implements DataSetEvaluator {
     /**
      * @return a new connection given a set of connection properties
      */
-    protected void createConnection(Properties connectionProperties) throws EvaluationException {
+    protected Connection getConnection(SqlFileDataSetDefinition dsd, EvaluationContext context) throws EvaluationException {
+        Properties connectionProperties = getConnectionProperties(dsd.getConnectionPropertyFile());
         try {
             String driver = connectionProperties.getProperty("connection.driver_class", "com.mysql.jdbc.Driver");
             String url = connectionProperties.getProperty("connection.url");
             String user = connectionProperties.getProperty("connection.username");
             String password = connectionProperties.getProperty("connection.password");
             Context.loadClass(driver);
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (Exception e) {
+            return DriverManager.getConnection(url, user, password);
+        }
+        catch (Exception e) {
             throw new EvaluationException("Unable to create a new connection to the database", e);
         }
     }
@@ -171,19 +179,5 @@ public class SqlFileDataSetEvaluator implements DataSetEvaluator {
             }
         }
         return ret;
-    }
-
-    public void closeConnection() {
-        try {
-            if (connection != null) {
-                connection.close();
-            }
-        } catch (Exception e) {
-            log.warn("Error closing the database connection for SqlFileDataSetEvaluator", e);
-        }
-    }
-
-    public Connection getConnection() {
-        return connection;
     }
 }
