@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.reporting.dataset.DataSetRow;
-import org.openmrs.module.reporting.dataset.definition.evaluator.SqlFileDataSetEvaluator;
 
 import javax.sql.rowset.RowSetMetaDataImpl;
 import java.sql.ResultSet;
@@ -21,23 +20,19 @@ import static org.mockito.Mockito.when;
 
 public class ResultSetIteratorTest {
 
-    //@Mock
-    private SqlFileDataSetEvaluator mockEvaluator;
-
-    //@Mock
     private ResultSet mockResultSet;
 
-    //@Mock
     private Statement mockStatement;
 
     private ResultSetIterator resultSetIterator;
 
     @Before
     public void setUp() throws SQLException {
-        mockEvaluator = mock(SqlFileDataSetEvaluator.class);
         mockResultSet = mock(ResultSet.class);
         mockStatement = mock(Statement.class);
-        resultSetIterator = new ResultSetIterator(createMetadata(), mockResultSet, mockEvaluator, mockStatement);
+        when(mockResultSet.getStatement()).thenReturn(mockStatement);
+        when(mockResultSet.getMetaData()).thenReturn(createMetadata());
+        resultSetIterator = new ResultSetIterator(mockResultSet);
         mockResultSet();
     }
 

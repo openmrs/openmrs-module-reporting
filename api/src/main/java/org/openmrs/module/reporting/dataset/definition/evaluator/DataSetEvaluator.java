@@ -30,7 +30,7 @@ public interface DataSetEvaluator extends DefinitionEvaluator<DataSetDefinition>
 	 * Evaluate a DataSet for the given EvaluationContext
 	 * 
 	 * @param dataSetDefinition
-	 * @param inputCohortencounter_datetime
+	 * @param evalContext
 	 * @return the evaluated <code>DataSet</code>
 	 */
 	public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext evalContext) throws EvaluationException;

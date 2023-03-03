@@ -10,11 +10,9 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.common.ResultSetIterator;
 import org.openmrs.module.reporting.common.SqlRunner;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.IterableSqlDataSet;
@@ -22,12 +20,11 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.IterableSqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.common.ResultSetIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -42,12 +39,6 @@ public class IterableSqlDataSetEvaluator extends SqlFileDataSetEvaluator {
     private static final Logger log = LoggerFactory.getLogger(IterableSqlDataSetEvaluator.class);
 
     /**
-     * Public constructor
-     */
-    public IterableSqlDataSetEvaluator() {
-    }
-
-    /**
      * @should evaluate a IterableSqlDataSetDefinition
      * @should evaluate a IterableSqlDataSetDefinition with parameters
      * @should evaluate a IterableSqlDataSetDefinition with in statement
@@ -58,17 +49,12 @@ public class IterableSqlDataSetEvaluator extends SqlFileDataSetEvaluator {
     public DataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
 
         context = ObjectUtil.nvl(context, new EvaluationContext());
-        IterableSqlDataSetDefinition sqlDsd = (IterableSqlDataSetDefinition) dataSetDefinition;
-        String sqlQuery = sqlDsd.getSql();
-
         IterableSqlDataSetDefinition definition = (IterableSqlDataSetDefinition) dataSetDefinition;
-        Properties connectionProperties = getConnectionProperties(definition.getConnectionPropertyFile());
-        Iterator iterator = null;
-        Connection connection = null;
-
+        ResultSetIterator iterator;
+        Connection connection;
         try {
-            createConnection(connectionProperties);
-            SqlRunner runner = new SqlRunner(this);
+            connection = getConnection(definition, context);
+            SqlRunner runner = new SqlRunner(connection);
             Map<String, Object> parameterValues = constructParameterValues(definition, context);
 
             if (StringUtils.isNotBlank(definition.getSqlFile())) {
@@ -87,32 +73,27 @@ public class IterableSqlDataSetEvaluator extends SqlFileDataSetEvaluator {
             } else {
                 throw new EvaluationException("A SqlFileDataSetDefinition must define either a SQL File or SQL Resource");
             }
-
-        } catch (EvaluationException ee) {
+        }
+        catch (EvaluationException ee) {
             throw ee;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new EvaluationException("An error occurred while evaluating a SqlFileDataSetDefinition", e);
         }
 
-        return new IterableSqlDataSet(context, sqlDsd, (ResultSetIterator) iterator);
+        return new IterableSqlDataSet(context, definition, iterator);
     }
 
     /**
      * @return a new connection given a set of connection properties
      */
     @Override
-    protected void createConnection(Properties connectionProperties) throws EvaluationException {
-        try {
-            String driver = connectionProperties.getProperty("connection.driver_class", "com.mysql.jdbc.Driver");
-            String url = connectionProperties.getProperty("connection.url");
-            url += "&useCursorFetch=true";
-            String user = connectionProperties.getProperty("connection.username");
-            String password = connectionProperties.getProperty("connection.password");
-            Context.loadClass(driver);
-            this.connection = DriverManager.getConnection(url, user, password);
-        } catch (Exception e) {
-            throw new EvaluationException("Unable to create a new connection to the database", e);
+    protected Properties getConnectionProperties(String connectionPropertyFile) throws EvaluationException {
+        Properties p = super.getConnectionProperties(connectionPropertyFile);
+        String url = p.getProperty("connection.url");
+        if (url != null && !url.contains("useCursorFetch")) {
+            p.setProperty("connection.url", url + "&useCursorFetch=true");
         }
+        return p;
     }
-
 }

@@ -3,7 +3,10 @@ package org.openmrs.module.reporting.common;
 import org.openmrs.api.APIException;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -13,25 +16,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.openmrs.module.reporting.dataset.definition.evaluator.SqlFileDataSetEvaluator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ResultSetIterator implements Iterator<DataSetRow> {
+
+    private static final Logger log = LoggerFactory.getLogger(ResultSetIterator.class);
+
     private ResultSet resultSet;
     private List<DataSetColumn> columns;
+    private Connection connection;
     private Statement statement;
-    private SqlFileDataSetEvaluator evaluator;
-    private static final Logger log = LoggerFactory.getLogger(ResultSetIterator.class);
     private boolean isNextUsed = true;
     private boolean hasNext = true;
 
-
-    public ResultSetIterator(ResultSetMetaData metadata, ResultSet resultSet, SqlFileDataSetEvaluator evaluator, Statement statement) throws SQLException {
+    public ResultSetIterator(ResultSet resultSet) throws SQLException {
         this.resultSet = resultSet;
-        this.evaluator = evaluator;
-        this.statement = statement;
-        this.createDataSetColumns(metadata);
+        this.statement = resultSet.getStatement();
+        this.connection = resultSet.getStatement().getConnection();
+        this.createDataSetColumns(resultSet.getMetaData());
     }
 
     @Override
@@ -95,7 +95,9 @@ public class ResultSetIterator implements Iterator<DataSetRow> {
             if (statement != null) {
                 statement.close();
             }
-            evaluator.closeConnection();
+            if (connection != null) {
+                connection.close();
+            }
         } catch (Exception ex) {
             log.error("Failed to close ResultSetIterator connection.", ex);
         }

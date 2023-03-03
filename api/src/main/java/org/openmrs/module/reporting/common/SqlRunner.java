@@ -15,11 +15,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsObject;
-import org.openmrs.module.reporting.dataset.definition.evaluator.SqlFileDataSetEvaluator;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
@@ -43,17 +43,17 @@ public class SqlRunner {
 
     //*********** INSTANCE PROPERTIES ******************
 
-    private SqlFileDataSetEvaluator evaluator;
+    private Connection connection;
     private String delimiter = ";";
 
     //*********** CONSTRUCTORS ******************
 
-    public SqlRunner(SqlFileDataSetEvaluator evaluator) {
-        this.evaluator = evaluator;
+    public SqlRunner(Connection connection) {
+        this.connection = connection;
     }
 
-    public SqlRunner(SqlFileDataSetEvaluator evaluator, String delimiter) {
-        this(evaluator);
+    public SqlRunner(Connection connection, String delimiter) {
+        this(connection);
         this.delimiter = delimiter;
     }
 
@@ -114,13 +114,13 @@ public class SqlRunner {
         Boolean originalAutoCommit = null;
 
         try {
-            originalAutoCommit = evaluator.getConnection().getAutoCommit();
-            evaluator.getConnection().setAutoCommit(false);
+            originalAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
 
             for (String sqlStatement : sqlStatements) {
                 Statement statement = null;
                 try {
-                    statement = evaluator.getConnection().createStatement();
+                    statement = connection.createStatement();
                     log.debug("Executing: " + sqlStatement);
                     statement.execute(sqlStatement);
                     ResultSet resultSet = statement.getResultSet();
@@ -181,13 +181,13 @@ public class SqlRunner {
         Boolean originalAutoCommit = null;
 
         try {
-            originalAutoCommit = evaluator.getConnection().getAutoCommit();
-            evaluator.getConnection().setAutoCommit(false);
+            originalAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
 
             for (String sqlStatement : sqlStatements) {
                 Statement statement = null;
                 try {
-                    statement = evaluator.getConnection().createStatement();
+                    statement = connection.createStatement();
                     // If is the last statement set setFetchSize
                     if (sqlStatement.equals(sqlStatements.get(sqlStatements.size() - 1))) {
                         statement.setFetchSize(10);
@@ -197,8 +197,7 @@ public class SqlRunner {
                     ResultSet resultSet = statement.getResultSet();
 
                     if (resultSet != null) {
-                        ResultSetMetaData rsmd = resultSet.getMetaData();
-                        iterator = new ResultSetIterator(rsmd, resultSet, evaluator, statement);
+                        iterator = new ResultSetIterator(resultSet);
                     }
                 } catch (Exception e) {
                     closeStatement(statement);
@@ -227,7 +226,7 @@ public class SqlRunner {
 
     protected void commit() {
         try {
-            evaluator.getConnection().commit();
+            connection.commit();
         }
         catch (Exception e) {
             log.warn("An error occurred while trying to commit", e);
@@ -236,7 +235,7 @@ public class SqlRunner {
 
 	protected void rollback() {
 	    try {
-            evaluator.getConnection().rollback();
+	        connection.rollback();
         }
         catch (Exception e) {
 	        log.warn("An error occurred while trying to rollback a connection", e);
@@ -246,7 +245,7 @@ public class SqlRunner {
     protected void resetAutocommit(Boolean autocommit) {
         try {
             if (autocommit != null) {
-                evaluator.getConnection().setAutoCommit(autocommit);
+                connection.setAutoCommit(autocommit);
             }
         }
         catch (Exception e) {
@@ -373,6 +372,15 @@ public class SqlRunner {
     }
 
     //************* PROPERTY ACCESS *******************
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
     public String getDelimiter() {
         return delimiter;
     }
