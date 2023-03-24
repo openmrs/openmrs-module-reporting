@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.report.Report;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class HttpReportProcessor implements ReportProcessor {
 
+    protected Log log = LogFactory.getLog(this.getClass());
+
     public final String CONNECTION_URL = "url";
     public final String SUBJECT = "subject";
     public final String ADD_REPORT = "addReport";
@@ -36,6 +40,7 @@ public class HttpReportProcessor implements ReportProcessor {
     /**
      * @see ReportProcessor#getConfigurationPropertyNames()
      */
+
     @Override
     public List<String> getConfigurationPropertyNames() {
 
@@ -50,6 +55,7 @@ public class HttpReportProcessor implements ReportProcessor {
      * Performs some action on the given report
      * @param report the Report to process
      */
+
     @Override
     public void process(Report report, Properties configuration) {
         // TODO Auto-generated method stub
@@ -91,7 +97,7 @@ public class HttpReportProcessor implements ReportProcessor {
              }
 
          } catch(IOException e) {
-             e.getStackTrace();
+             throw new RuntimeException("Error occured while sending report via HTTP POST", e);
          } finally {
             if(connection != null) {
                 connection.disconnect();
