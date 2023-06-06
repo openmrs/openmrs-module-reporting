@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class EditCohortIndicatorController {
 	
-	@RequestMapping("/module/reporting/indicators/editCohortIndicator")
+	@RequestMapping("/module/reporting/indicators/editCohortIndicator.form")
 	public void editCohortIndicator(ModelMap model,
 	                     			@RequestParam(value="uuid", required=false) String uuid) {
 		if (uuid == null) {
@@ -37,7 +37,7 @@ public class EditCohortIndicatorController {
 		}
 	}
 	
-	@RequestMapping("/module/reporting/indicators/saveBaseCohortIndicator")
+	@RequestMapping("/module/reporting/indicators/saveBaseCohortIndicator.form")
 	public String saveBaseCohortIndicator(ModelMap model,
 	                     				@RequestParam(value="uuid", required=false) String uuid,
 	                     				@RequestParam(value="name", required=true) String name,
@@ -79,7 +79,7 @@ public class EditCohortIndicatorController {
 		}
 	}
 	
-	@RequestMapping("/module/reporting/indicators/saveLogicCohortIndicator")
+	@RequestMapping("/module/reporting/indicators/saveLogicCohortIndicator.form")
 	@SuppressWarnings("unchecked")
 	public String saveLogicCohortIndicator(ModelMap model,
 	                     				  @RequestParam(value="uuid", required=true) String uuid,

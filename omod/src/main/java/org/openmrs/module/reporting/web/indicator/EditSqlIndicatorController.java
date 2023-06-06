@@ -29,7 +29,7 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 public class EditSqlIndicatorController {
 	
-	@RequestMapping("/module/reporting/indicators/editSqlIndicator")
+	@RequestMapping("/module/reporting/indicators/editSqlIndicator.form")
 	public void showForm(ModelMap model,
 	                     @RequestParam(value="uuid", required=false) String uuid,
 	                     @RequestParam(value="copyFromUuid", required=false) String copyFromUuid) {
@@ -48,7 +48,7 @@ public class EditSqlIndicatorController {
 		}
 	}
 	
-	@RequestMapping("/module/reporting/indicators/saveSqlIndicatorQueryString")
+	@RequestMapping("/module/reporting/indicators/saveSqlIndicatorQueryString.form")
 	public String saveQueryString(
 			HttpSession httpSession,
 			WebRequest webRequest,
@@ -77,7 +77,7 @@ public class EditSqlIndicatorController {
 	 * Copies the SQL Indicator with the given uuid into another one with the same
 	 * parameters and searches, but blank name/description and SQL string
 	 */
-	@RequestMapping("/module/reporting/indicators/cloneSqlIndicator")
+	@RequestMapping("/module/reporting/indicators/cloneSqlIndicator.form")
 	public String cloneDefinition(WebRequest request,
 	                              @RequestParam("name") String name,
 	                              @RequestParam(value="description", required=false) String description,
