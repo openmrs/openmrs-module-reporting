@@ -90,6 +90,7 @@ public class PatientDataSetEvaluator implements DataSetEvaluator {
 			StopWatch sw = new StopWatch();
 			sw.start();
 
+			ec.addContextValue("columnDefinitions", cd);
 			MappedData<? extends PatientDataDefinition> dataDef = (MappedData<? extends PatientDataDefinition>) cd.getDataDefinition();
 			EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(dataDef, ec);
 
