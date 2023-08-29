@@ -52,7 +52,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	protected Log log = LogFactory.getLog(getClass());
 
-	private Map<String, Class<?>> fromTypes = new LinkedHashMap<String, Class<?>>();
+	private Map<String, String> fromTypes = new LinkedHashMap<String, String>();
 	private boolean includeVoided = false;
 	private List<String> columns = new ArrayList<String>();
 	private List<String> joinClauses = new ArrayList<String>();
@@ -93,10 +93,15 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	public HqlQueryBuilder from(Class<?> fromType, String fromAlias) {
-		fromTypes.put(fromAlias, fromType);
+		fromTypes.put(fromAlias, fromType.getName());
 		if (!includeVoided && Voidable.class.isAssignableFrom(fromType)) {
 			whereEqual((ObjectUtil.notNull(fromAlias) ? fromAlias + "." : "")+"voided", false);
 		}
+		return this;
+	}
+
+	public HqlQueryBuilder from(String entityName, String fromAlias) {
+		fromTypes.put(fromAlias, entityName);
 		return this;
 	}
 
@@ -534,7 +539,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 		for (int i=0; i<aliases.size(); i++) {
 			String alias = aliases.get(i);
 			q.append(i == 0 ? " from " : ", ");
-			q.append(fromTypes.get(alias).getName());
+			q.append(fromTypes.get(alias));
 			if (ObjectUtil.notNull(alias)) {
 				q.append(" as ").append(alias);
 			}
