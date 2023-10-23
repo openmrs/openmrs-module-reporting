@@ -109,7 +109,7 @@
 		<preConditions onFail="MARK_RAN">
 			<or>
 				<and>
-					<dbms type="mysql" />
+					<dbms type="mysql,mariadb" />
 					<sqlCheck expectedResult="1">
 						SELECT  count(*)
 						FROM    INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU
@@ -120,7 +120,7 @@
 				</and>
 				<and>
 					<not>
-						<dbms type="mysql" />
+						<dbms type="mysql,mariadb" />
 					</not>
 					<foreignKeyConstraintExists foreignKeyName="report_definition_id_for_reporting_report_design"/>
 				</and>
