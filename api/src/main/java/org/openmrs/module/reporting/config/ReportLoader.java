@@ -130,6 +130,7 @@ public class ReportLoader {
                     p.setType(parameterType);
                     p.setDefaultValue(getParameterValue(parameterType, parameterDescriptor.getValue()));
                     p.setRequired(BooleanUtils.isNotFalse(parameterDescriptor.getRequired()));
+                    p.setWidgetConfiguration(parameterDescriptor.getWidgetConfiguration());
                     parameters.add(p);
                 } catch (Exception e) {
                     throw new RuntimeException("Unable to configure parameter " + parameterDescriptor.getKey(), e);

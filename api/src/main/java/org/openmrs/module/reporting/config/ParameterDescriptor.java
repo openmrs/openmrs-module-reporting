@@ -2,6 +2,8 @@ package org.openmrs.module.reporting.config;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.util.Properties;
+
 public class ParameterDescriptor {
 
     @JsonProperty
@@ -18,6 +20,9 @@ public class ParameterDescriptor {
 
     @JsonProperty
     private Boolean required;
+
+    @JsonProperty
+    private Properties widgetConfiguration;
 
     public String getKey() {
         return key;
@@ -57,5 +62,13 @@ public class ParameterDescriptor {
 
     public void setRequired(Boolean required) {
         this.required = required;
+    }
+
+    public Properties getWidgetConfiguration() {
+        return widgetConfiguration;
+    }
+
+    public void setWidgetConfiguration(Properties widgetConfiguration) {
+        this.widgetConfiguration = widgetConfiguration;
     }
 }
