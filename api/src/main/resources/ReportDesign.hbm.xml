@@ -4,13 +4,17 @@
 <hibernate-mapping package="org.openmrs.module.reporting.report" >
 
 	<class name="ReportDesign" table="reporting_report_design">
-		<id name="id" type="int" column="id" unsaved-value="0"><generator class="native" /></id>
+		<id name="id" type="int" column="id" unsaved-value="0">
+			<generator class="native">
+				<param name="sequence">reporting_report_design_id_seq</param>
+			</generator>
+		</id>
 		<property name="uuid" type="string" length="38" not-null="true" />
 		<property name="name" type="string" not-null="true" />
 		<property name="description" type="string" />
 		<property name="reportDefinition" type="org.openmrs.module.reporting.report.service.db.ReportDefinitionType" not-null="true" column="report_definition_uuid" />
 		<property name="rendererType" type="class" length="255" column="renderer_type" not-null="true" />
-		<property name="properties" type="org.openmrs.module.reporting.report.service.db.PropertiesType" column="properties" />
+		<property name="properties" type="org.openmrs.module.reporting.report.service.db.PropertiesType" length="65535" column="properties" />
 		<set name="resources" lazy="true" cascade="all-delete-orphan" inverse="true" access="field" order-by="name asc">
 			<key column="report_design_id" not-null="true" />
 			<one-to-many class="ReportDesignResource" />
@@ -18,19 +22,23 @@
 		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />
 		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" />
 		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
-		<property name="dateChanged" type="java.util.Date" column="date_changed" />		
+		<property name="dateChanged" type="java.util.Date" column="date_changed" />
 		<property name="retired" type="java.lang.Boolean" length="1" not-null="true"/>
 		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
-		<property name="dateRetired" type="java.util.Date" column="date_retired" />	
+		<property name="dateRetired" type="java.util.Date" column="date_retired" />
 		<property name="retireReason" type="string" column="retire_reason" />
 		<set name="reportProcessors" lazy="true"  cascade="all-delete-orphan,evict" inverse="true" access="field" order-by="id asc">
 			<key column="report_design_id" not-null="false" />
 			<one-to-many class="ReportProcessorConfiguration" />
 		</set>
 	</class>
-	
+
 	<class name="ReportDesignResource" table="reporting_report_design_resource">
-		<id name="id" type="int" column="id" unsaved-value="0"><generator class="native" /></id>
+		<id name="id" type="int" column="id" unsaved-value="0">
+			<generator class="native">
+				<param name="sequence">reporting_report_design_resource_id_seq</param>
+			</generator>
+		</id>
 		<property name="uuid" type="string" length="38" not-null="true" />
 		<property name="name" type="string" not-null="true" />
 		<property name="description" type="string" />
@@ -41,15 +49,19 @@
 		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />
 		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" />
 		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
-		<property name="dateChanged" type="java.util.Date" column="date_changed" />		
+		<property name="dateChanged" type="java.util.Date" column="date_changed" />
 		<property name="retired" type="java.lang.Boolean" length="1" not-null="true"/>
 		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
-		<property name="dateRetired" type="java.util.Date" column="date_retired" />	
+		<property name="dateRetired" type="java.util.Date" column="date_retired" />
 		<property name="retireReason" type="string" column="retire_reason" />
 	</class>
-	
+
 	<class name="ReportProcessorConfiguration" table="reporting_report_processor"  batch-size="50">
-		<id name="id" type="int" column="id" unsaved-value="0"><generator class="native" /></id>
+		<id name="id" type="int" column="id" unsaved-value="0">
+			<generator class="native">
+				<param name="sequence">reporting_report_processor_id_seq</param>
+			</generator>
+		</id>
 		<property name="uuid" type="string" length="38" not-null="true" />
 		<property name="name" type="string" not-null="true" />
 		<property name="description" type="string" />
@@ -67,11 +79,11 @@
 		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />
 		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" />
 		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
-		<property name="dateChanged" type="java.util.Date" column="date_changed" />		
+		<property name="dateChanged" type="java.util.Date" column="date_changed" />
 		<property name="retired" type="java.lang.Boolean" length="1" not-null="true"/>
 		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
-		<property name="dateRetired" type="java.util.Date" column="date_retired" />	
+		<property name="dateRetired" type="java.util.Date" column="date_retired" />
 		<property name="retireReason" type="string" column="retire_reason" />
 	</class>
-		
+
 </hibernate-mapping>
