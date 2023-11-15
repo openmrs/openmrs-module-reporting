@@ -289,6 +289,18 @@
         </addColumn>
     </changeSet>
 
+	<changeSet id="reporting_report_request_5" author="psousa">
+		<preConditions onFail="MARK_RAN">
+			<not><columnExists tableName="reporting_report_request" columnName="client_timezone"/></not>
+		</preConditions>
+		<comment>
+			Add client_timezone property to ReportRequest
+		</comment>
+		<addColumn tableName="reporting_report_request">
+			<column name="client_timezone" type="varchar(255)"/>
+		</addColumn>
+	</changeSet>
+
 	<!--  REPORTING REPORT PROCESSOR SCHEMA -->
 
 	<changeSet id="reporting_report_processor_1" author="mseaton">

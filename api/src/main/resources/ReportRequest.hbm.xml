@@ -57,6 +57,7 @@
         <property name="renderCompleteDatetime" type="java.util.Date" column="render_complete_datetime" />
         <property name="minimumDaysToPreserve" type="int" column="minimum_days_to_preserve" />
         <property name="description" type="string" column="description"/>
+        <property name="clientTimezone" type="string" column="client_timezone"/>
 
 	</class>
 	

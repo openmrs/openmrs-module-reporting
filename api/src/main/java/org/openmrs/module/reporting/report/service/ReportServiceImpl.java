@@ -10,6 +10,7 @@
 package org.openmrs.module.reporting.report.service;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,6 +24,9 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.Timer;
+import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.Report;
@@ -52,6 +56,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -477,6 +483,26 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 			if (request.getRenderingMode() != null) {
 				ReportRenderer renderer = request.getRenderingMode().getRenderer();
 				renderReportDataToBytes = !(renderer instanceof InteractiveReportRenderer);
+			}
+
+			for (Map.Entry<String, DataSet> e : reportData.getDataSets().entrySet()) {
+				DataSet dataset = e.getValue();
+				for (DataSetRow row : dataset ) {
+					for (Map.Entry<DataSetColumn, Object> dataSetColumn : row.getColumnValues().entrySet()) {
+						Object value = dataSetColumn.getValue();
+						if (value instanceof LocalDateTime) {
+							LocalDateTime localDateTime = (LocalDateTime) value;
+							if (StringUtils.isNotEmpty(request.getClientTimezone())) {
+								ZoneId clientZoneId = ZoneId.of(request.getClientTimezone());
+								localDateTime = ((LocalDateTime) value).atZone(ZoneId.systemDefault())
+										.withZoneSameInstant(clientZoneId)
+										.toLocalDateTime();
+							}
+							Date dateValue = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+							dataSetColumn.setValue(dateValue);
+						}
+					}
+				}
 			}
 
 			if (renderReportDataToBytes) {

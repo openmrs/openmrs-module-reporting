@@ -47,6 +47,7 @@ public class ReportRequest extends BaseOpenmrsObject {
 	private Date renderCompleteDatetime;
     private Integer minimumDaysToPreserve;
 	private String description;
+	private String clientTimezone;
 
 	//*****  CONSTRUCTORS ******
 
@@ -338,6 +339,14 @@ public class ReportRequest extends BaseOpenmrsObject {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getClientTimezone() {
+		return clientTimezone;
+	}
+
+	public void setClientTimezone(String clientTimezone) {
+		this.clientTimezone = clientTimezone;
 	}
 
 	//***** ENUMS *****
