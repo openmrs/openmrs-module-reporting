@@ -15,6 +15,7 @@ import org.openmrs.Drug;
 import org.openmrs.module.reporting.common.Match;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.StartStopDrugOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.library.BuiltInCohortDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -29,7 +30,18 @@ import java.util.List;
 @Component
 public class BuiltInCohortDefinitionLibrary1_10 extends BuiltInCohortDefinitionLibrary {
 
-    
+    @DocumentedDefinition("startStopDrugOrderSearch")
+    public CohortDefinition getStartStopDrugOrderSearch() {
+        CohortDefinition startStopdrugOrderCohortDef = new StartStopDrugOrderCohortDefinition();
+        startStopdrugOrderCohortDef.addParameter(new Parameter("state", "reporting.parameter.state", Match.class));
+        startStopdrugOrderCohortDef.addParameter(new Parameter("drugConcepts", "reporting.parameter.drugConcepts", Concept.class, List.class, null));
+        startStopdrugOrderCohortDef.addParameter(new Parameter("drugSets", "reporting.parameter.drugSets", Concept.class, List.class, null));
+        startStopdrugOrderCohortDef.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
+        startStopdrugOrderCohortDef.addParameter(new Parameter("onOrAfter", "reporting.parameter.onOrAfter", Date.class));
+        startStopdrugOrderCohortDef.addParameter(new Parameter("careSetting", "reporting.parameter.careSetting", CareSetting.class));
+        startStopdrugOrderCohortDef.addParameter(new Parameter("drugs", "reporting.parameter.drugs", Drug.class, List.class, null));
+        return startStopdrugOrderCohortDef;
+    }    
     
     @DocumentedDefinition("drugOrderSearch")
     public CohortDefinition getDrugOrderSearch() {
