@@ -14,6 +14,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
+import org.openmrs.module.reporting.report.ReportRequestDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
@@ -122,6 +123,11 @@ public interface ReportDAO {
 	 * @return all {@link ReportRequest} in the system that match the passed parameters
 	 */
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
+
+	/**
+	 * @return {@link ReportRequestDTO} object which contains report requests and total count data
+	 */
+	ReportRequestDTO getReportsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}

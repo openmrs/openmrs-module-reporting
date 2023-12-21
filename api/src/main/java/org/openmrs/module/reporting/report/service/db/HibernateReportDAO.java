@@ -15,6 +15,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
@@ -22,6 +23,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
+import org.openmrs.module.reporting.report.ReportRequestDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
@@ -214,7 +216,44 @@ public class HibernateReportDAO implements ReportDAO {
 		}
 		return c.list();
 	}
-	
+
+	/**
+	 * @see ReportDAO#getReportsWithPagination(ReportDefinition, Date, Date, Integer, Integer, Status...)
+	 */
+	public ReportRequestDTO getReportsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses) {
+		Criteria c = sessionFactory.getCurrentSession().createCriteria(ReportRequest.class);
+
+		if (reportDefinition != null) {
+			c.add(Restrictions.eq("reportDefinition.definition", reportDefinition.getUuid()));
+		}
+		if (requestOnOrAfter != null) {
+			c.add(Restrictions.ge("requestDate", requestOnOrAfter));
+		}
+		if (requestOnOrBefore != null) {
+			c.add(Restrictions.le("requestDate", requestOnOrBefore));
+		}
+		if (statuses != null && statuses.length > 0) {
+			c.add(Restrictions.in("status", statuses));
+		}
+		c.addOrder(Order.desc("evaluateCompleteDatetime"));
+		c.addOrder(Order.desc("evaluateStartDatetime"));
+		c.addOrder(Order.desc("priority"));
+		c.addOrder(Order.desc("requestDate"));
+
+		c.setProjection(Projections.rowCount());
+		Long count = (Long) c.uniqueResult();
+		c.setProjection(null);
+
+		if (pageNumber != null && pageSize != null) {
+			c.setFirstResult((pageNumber - 1) * pageSize);
+			c.setMaxResults(pageSize);
+		}
+
+		List<ReportRequest> reportRequests = c.list();
+
+		return new ReportRequestDTO(reportRequests, count);
+	}
+
 	/**
 	 * @see ReportDAO#purgeReportRequest(ReportRequest)
 	 */

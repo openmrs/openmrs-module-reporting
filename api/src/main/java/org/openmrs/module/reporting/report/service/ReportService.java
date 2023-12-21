@@ -17,6 +17,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
+import org.openmrs.module.reporting.report.ReportRequestDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.processor.ReportProcessor;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
@@ -139,6 +140,12 @@ public interface ReportService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
+
+	/**
+	 * @return {@link ReportRequestDTO} object which contains report requests and total count data
+	 */
+	@Transactional(readOnly = true)
+	ReportRequestDTO getReportsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}
