@@ -128,6 +128,16 @@ public interface ReportService extends OpenmrsService {
 	public ReportRequest getReportRequestByUuid(String uuid);
 	
 	/**
+	 * Get Report Requests by Report Definition, request date, having given status.
+	 * The list is sorted descending by evaluateCompleteDatetime, evaluateStartDatetime, priority, requestDate.
+	 *
+	 * @param reportDefinition a Report Definition filter, nullable
+	 * @param requestOnOrAfter a Date used to limit result to ReportRequests which ware requested on or after
+	 *                          (greater or equal filter), nullable
+	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
+	 *                          (lower or equal filter), nullable
+	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
+	 *                  or empty array means that all statuses are included, nullable
 	 * @return all {@link ReportRequest} in the system that match the passed parameters
 	 * @should retrieve report requests by definition
 	 */
@@ -135,6 +145,18 @@ public interface ReportService extends OpenmrsService {
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
 
 	/**
+	 * Get Report Requests by Report Definition, request date, having given status, limit result to at most {@code
+	 * mostRecentNum} elements.
+	 * The list is sorted descending by evaluateCompleteDatetime, evaluateStartDatetime, priority, requestDate.
+	 *
+	 * @param reportDefinition a Report Definition filter, nullable
+	 * @param requestOnOrAfter a Date used to limit result to ReportRequests which ware requested on or after
+	 *                          (greater or equal filter), nullable
+	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
+	 *                          (lower or equal filter), nullable
+	 * @param mostRecentNum maximum number of results, not null
+	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
+	 *                  or empty array means that all statuses are included, nullable
 	 * @return all {@link ReportRequest} in the system that match the passed parameters
 	 * @should retrieve report requests by definition
 	 */
@@ -142,10 +164,24 @@ public interface ReportService extends OpenmrsService {
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
 
 	/**
-	 * @return {@link ReportRequestDTO} object which contains report requests and total count data
+	 * Get paginated Report Requests by Report Definition, request date, having given status.
+	 * The list is sorted descending by evaluateCompleteDatetime, evaluateStartDatetime, priority, requestDate.
+	 *
+	 * @param reportDefinition a Report Definition filter, nullable
+	 * @param requestOnOrAfter a Date used to limit result to ReportRequests which ware requested on or after
+	 *                          (greater or equal filter), nullable
+	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
+	 *                          (lower or equal filter), nullable
+	 * @param pageNumber a number of a page to return, starting from 1, not null
+	 * @param pageSize page size, not null
+	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
+	 *                  or empty array means that all statuses are included, nullable
+	 * @return {@link ReportRequestDTO} object which contains report requests and total count data, never null
+	 * @since 1.27.0
 	 */
 	@Transactional(readOnly = true)
-	ReportRequestDTO getReportsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses);
+	public ReportRequestDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter,
+																										Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}

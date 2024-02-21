@@ -225,12 +225,12 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	}
 
 	/**
-	 * @see ReportService#getReportsWithPagination(ReportDefinition, Date, Date, Integer, Integer, Status...)
+	 * @see ReportService#getReportRequestsWithPagination(ReportDefinition, Date, Date, Integer, Integer, Status...)
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public ReportRequestDTO getReportsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status... statuses) {
-		return reportDAO.getReportsWithPagination(reportDefinition, requestOnOrAfter, requestOnOrBefore, pageNumber, pageSize, statuses);
+	public ReportRequestDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status... statuses) {
+		return reportDAO.getReportRequestsWithPagination(reportDefinition, requestOnOrAfter, requestOnOrBefore, pageNumber, pageSize, statuses);
 	}
 
 	/**

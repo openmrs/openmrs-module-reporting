@@ -218,9 +218,9 @@ public class HibernateReportDAO implements ReportDAO {
 	}
 
 	/**
-	 * @see ReportDAO#getReportsWithPagination(ReportDefinition, Date, Date, Integer, Integer, Status...)
+	 * @see ReportDAO#getReportRequestsWithPagination(ReportDefinition, Date, Date, Integer, Integer, Status...)
 	 */
-	public ReportRequestDTO getReportsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses) {
+	public ReportRequestDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses) {
 		Criteria c = sessionFactory.getCurrentSession().createCriteria(ReportRequest.class);
 
 		if (reportDefinition != null) {
@@ -235,14 +235,15 @@ public class HibernateReportDAO implements ReportDAO {
 		if (statuses != null && statuses.length > 0) {
 			c.add(Restrictions.in("status", statuses));
 		}
-		c.addOrder(Order.desc("evaluateCompleteDatetime"));
-		c.addOrder(Order.desc("evaluateStartDatetime"));
-		c.addOrder(Order.desc("priority"));
-		c.addOrder(Order.desc("requestDate"));
 
 		c.setProjection(Projections.rowCount());
 		Long count = (Long) c.uniqueResult();
 		c.setProjection(null);
+
+		c.addOrder(Order.desc("evaluateCompleteDatetime"));
+		c.addOrder(Order.desc("evaluateStartDatetime"));
+		c.addOrder(Order.desc("priority"));
+		c.addOrder(Order.desc("requestDate"));
 
 		if (pageNumber != null && pageSize != null) {
 			c.setFirstResult((pageNumber - 1) * pageSize);
