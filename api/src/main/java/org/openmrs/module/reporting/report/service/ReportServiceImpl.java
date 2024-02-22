@@ -33,7 +33,7 @@ import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Priority;
 import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
-import org.openmrs.module.reporting.report.ReportRequestDTO;
+import org.openmrs.module.reporting.report.ReportRequestPageDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.processor.ReportProcessor;
@@ -229,7 +229,7 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public ReportRequestDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status... statuses) {
+	public ReportRequestPageDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status... statuses) {
 		return reportDAO.getReportRequestsWithPagination(reportDefinition, requestOnOrAfter, requestOnOrBefore, pageNumber, pageSize, statuses);
 	}
 

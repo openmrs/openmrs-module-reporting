@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
-import org.openmrs.module.reporting.report.ReportRequestDTO;
+import org.openmrs.module.reporting.report.ReportRequestPageDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
@@ -220,7 +220,7 @@ public class HibernateReportDAO implements ReportDAO {
 	/**
 	 * @see ReportDAO#getReportRequestsWithPagination(ReportDefinition, Date, Date, Integer, Integer, Status...)
 	 */
-	public ReportRequestDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses) {
+	public ReportRequestPageDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses) {
 		Criteria c = sessionFactory.getCurrentSession().createCriteria(ReportRequest.class);
 
 		if (reportDefinition != null) {
@@ -252,7 +252,7 @@ public class HibernateReportDAO implements ReportDAO {
 
 		List<ReportRequest> reportRequests = c.list();
 
-		return new ReportRequestDTO(reportRequests, count);
+		return new ReportRequestPageDTO(reportRequests, count);
 	}
 
 	/**

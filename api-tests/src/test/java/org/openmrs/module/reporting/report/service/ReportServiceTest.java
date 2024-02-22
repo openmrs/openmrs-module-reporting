@@ -27,7 +27,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Priority;
-import org.openmrs.module.reporting.report.ReportRequestDTO;
+import org.openmrs.module.reporting.report.ReportRequestPageDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.processor.LoggingReportProcessor;
@@ -529,9 +529,9 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getReportRequestsWithPagination_shouldReturnAllReportRequestsPagedWithCorrectTotalCount() {
 		final ReportService rs = Context.getService(ReportService.class);
-		final ReportRequestDTO result = rs.getReportRequestsWithPagination(null, null, null, 1,2);
+		final ReportRequestPageDTO result = rs.getReportRequestsWithPagination(null, null, null, 1,2);
 
-		assertEquals(4, result.getReportRequestCount());
+		assertEquals(4, result.getTotalCount());
 		assertEquals(2, result.getReportRequests().size());
 
 		final List<String> resultUuids = mapToReportRequestUuids(result.getReportRequests());
@@ -544,9 +544,9 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		final ReportService rs = Context.getService(ReportService.class);
 		final ReportDefinition testReportDefinition =
 				rs.getReportDesignByUuid("d7a82b63-1066-4c1d-9b43-b405851fc467").getReportDefinition();
-		final ReportRequestDTO result = rs.getReportRequestsWithPagination(testReportDefinition, null, null, 1,2);
+		final ReportRequestPageDTO result = rs.getReportRequestsWithPagination(testReportDefinition, null, null, 1,2);
 
-		assertEquals(2, result.getReportRequestCount());
+		assertEquals(2, result.getTotalCount());
 		assertEquals(2, result.getReportRequests().size());
 
 		final List<String> resultUuids = mapToReportRequestUuids(result.getReportRequests());
@@ -559,9 +559,9 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		final ReportService rs = Context.getService(ReportService.class);
 		final Date from = newDate(2013, Calendar.JANUARY, 21, 14, 8, 48);
 		final Date to = newDate(2013, Calendar.JANUARY, 21, 14, 8, 49);
-		final ReportRequestDTO result = rs.getReportRequestsWithPagination(null, from, to, 1,2);
+		final ReportRequestPageDTO result = rs.getReportRequestsWithPagination(null, from, to, 1,2);
 
-		assertEquals(2, result.getReportRequestCount());
+		assertEquals(2, result.getTotalCount());
 		assertEquals(2, result.getReportRequests().size());
 
 		final List<String> resultUuids = mapToReportRequestUuids(result.getReportRequests());
@@ -572,9 +572,9 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getReportRequestsWithPagination_shouldReturnAPartialPageOfReportRequests() {
 		final ReportService rs = Context.getService(ReportService.class);
-		final ReportRequestDTO result = rs.getReportRequestsWithPagination(null, null, null, 1, 2, ReportRequest.Status.FAILED);
+		final ReportRequestPageDTO result = rs.getReportRequestsWithPagination(null, null, null, 1, 2, ReportRequest.Status.FAILED);
 
-		assertEquals(1, result.getReportRequestCount());
+		assertEquals(1, result.getTotalCount());
 		assertEquals(1, result.getReportRequests().size());
 
 		final List<String> resultUuids = mapToReportRequestUuids(result.getReportRequests());

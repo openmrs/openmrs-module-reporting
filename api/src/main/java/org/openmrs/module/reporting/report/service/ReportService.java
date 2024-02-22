@@ -17,7 +17,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
-import org.openmrs.module.reporting.report.ReportRequestDTO;
+import org.openmrs.module.reporting.report.ReportRequestPageDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.processor.ReportProcessor;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
@@ -176,12 +176,11 @@ public interface ReportService extends OpenmrsService {
 	 * @param pageSize page size, not null
 	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
 	 *                  or empty array means that all statuses are included, nullable
-	 * @return {@link ReportRequestDTO} object which contains report requests and total count data, never null
+	 * @return {@link ReportRequestPageDTO} object which contains report requests and total count data, never null
 	 * @since 1.27.0
 	 */
 	@Transactional(readOnly = true)
-	public ReportRequestDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter,
-																										Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses);
+	public ReportRequestPageDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}

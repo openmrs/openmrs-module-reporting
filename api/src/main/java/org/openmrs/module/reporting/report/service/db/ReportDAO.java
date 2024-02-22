@@ -14,7 +14,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
-import org.openmrs.module.reporting.report.ReportRequestDTO;
+import org.openmrs.module.reporting.report.ReportRequestPageDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
@@ -125,9 +125,10 @@ public interface ReportDAO {
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
 
 	/**
-	 * @return {@link ReportRequestDTO} object which contains report requests and total count data
+	 * @return {@link ReportRequestPageDTO} object which contains report requests and total count data
+	 * @see org.openmrs.module.reporting.report.service.ReportService#getReportRequestsWithPagination(ReportDefinition, Date, Date, Integer, Integer, Status...)
 	 */
-	ReportRequestDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses);
+	ReportRequestPageDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}

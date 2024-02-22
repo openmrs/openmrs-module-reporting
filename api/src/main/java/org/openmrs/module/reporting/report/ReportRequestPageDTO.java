@@ -11,15 +11,15 @@ package org.openmrs.module.reporting.report;
 
 import java.util.List;
 
-public class ReportRequestDTO {
+public class ReportRequestPageDTO {
 
   private List<ReportRequest> reportRequests;
 
-  private long reportRequestCount;
+  private long totalCount;
 
-  public ReportRequestDTO(List<ReportRequest> reportRequests, long reportRequestCount) {
+  public ReportRequestPageDTO(List<ReportRequest> reportRequests, long totalCount) {
     this.reportRequests = reportRequests;
-    this.reportRequestCount = reportRequestCount;
+    this.totalCount = totalCount;
   }
 
   public List<ReportRequest> getReportRequests() {
@@ -30,11 +30,11 @@ public class ReportRequestDTO {
     this.reportRequests = reportRequests;
   }
 
-  public long getReportRequestCount() {
-    return reportRequestCount;
+  public long getTotalCount() {
+    return totalCount;
   }
 
-  public void setReportRequestCount(long reportRequestCount) {
-    this.reportRequestCount = reportRequestCount;
+  public void setTotalCount(long totalCount) {
+    this.totalCount = totalCount;
   }
 }
