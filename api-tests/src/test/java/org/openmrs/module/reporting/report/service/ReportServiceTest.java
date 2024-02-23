@@ -27,7 +27,6 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Priority;
-import org.openmrs.module.reporting.report.ReportRequestPageDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.processor.LoggingReportProcessor;
@@ -527,58 +526,90 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	}
 
 	@Test
-	public void getReportRequestsWithPagination_shouldReturnAllReportRequestsPagedWithCorrectTotalCount() {
+	public void getReportRequests_shouldReturnCorrectReportRequests() {
 		final ReportService rs = Context.getService(ReportService.class);
-		final ReportRequestPageDTO result = rs.getReportRequestsWithPagination(null, null, null, 1,2);
+		final List<ReportRequest> reportRequests = rs.getReportRequests(null, null, null, 0,2);
 
-		assertEquals(4, result.getTotalCount());
-		assertEquals(2, result.getReportRequests().size());
+		assertEquals(2, reportRequests.size());
 
-		final List<String> resultUuids = mapToReportRequestUuids(result.getReportRequests());
+		final List<String> resultUuids = mapToReportRequestUuids(reportRequests);
 		assertTrue(resultUuids.contains("fce15a1b-4618-4f65-bfe9-8bb60a85c110"));
 		assertTrue(resultUuids.contains("b0a82b63-1066-4c1d-9b43-b405851fc467"));
 	}
 
 	@Test
-	public void getReportRequestsWithPagination_shouldReturnReportRequestsForGivenReportDefinitionPaged() {
+	public void getReportRequestsCount_shouldReturnTotalCount() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final long totalCount = rs.getReportRequestsCount(null, null, null);
+
+		assertEquals(4, totalCount);
+	}
+
+	@Test
+	public void getReportRequests_shouldReturnCorrectReportRequestsForGivenReportDefinition() {
 		final ReportService rs = Context.getService(ReportService.class);
 		final ReportDefinition testReportDefinition =
 				rs.getReportDesignByUuid("d7a82b63-1066-4c1d-9b43-b405851fc467").getReportDefinition();
-		final ReportRequestPageDTO result = rs.getReportRequestsWithPagination(testReportDefinition, null, null, 1,2);
+		final List<ReportRequest> reportRequests = rs.getReportRequests(testReportDefinition, null, null, 0,2);
 
-		assertEquals(2, result.getTotalCount());
-		assertEquals(2, result.getReportRequests().size());
+		assertEquals(2, reportRequests.size());
 
-		final List<String> resultUuids = mapToReportRequestUuids(result.getReportRequests());
+		final List<String> resultUuids = mapToReportRequestUuids(reportRequests);
 		assertTrue(resultUuids.contains("h8a82b63-1066-4c1d-9b43-b405851fc467"));
 		assertTrue(resultUuids.contains("b0a82b63-1066-4c1d-9b43-b405851fc467"));
 	}
 
 	@Test
-	public void getReportRequestsWithPagination_shouldReturnReportRequestsForRequestedWithinDatesPaged() {
+	public void getReportRequestsCount_shouldReturnCorrectTotalCountForReportDefinitionFilter() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final ReportDefinition testReportDefinition =
+				rs.getReportDesignByUuid("d7a82b63-1066-4c1d-9b43-b405851fc467").getReportDefinition();
+		final long totalCount = rs.getReportRequestsCount(testReportDefinition, null, null);
+
+		assertEquals(2, totalCount);
+	}
+
+	@Test
+	public void getReportRequests_shouldReturnCorrectReportRequestsForRequestedWithinDates() {
 		final ReportService rs = Context.getService(ReportService.class);
 		final Date from = newDate(2013, Calendar.JANUARY, 21, 14, 8, 48);
 		final Date to = newDate(2013, Calendar.JANUARY, 21, 14, 8, 49);
-		final ReportRequestPageDTO result = rs.getReportRequestsWithPagination(null, from, to, 1,2);
+		final List<ReportRequest> reportRequests = rs.getReportRequests(null, from, to, 0,2);
 
-		assertEquals(2, result.getTotalCount());
-		assertEquals(2, result.getReportRequests().size());
+		assertEquals(2, reportRequests.size());
 
-		final List<String> resultUuids = mapToReportRequestUuids(result.getReportRequests());
+		final List<String> resultUuids = mapToReportRequestUuids(reportRequests);
 		assertTrue(resultUuids.contains("b0a82b63-1066-4c1d-9b43-b405851fc467"));
 		assertTrue(resultUuids.contains("d9a82b63-1066-4c1d-9b43-b405851fc467"));
 	}
 
 	@Test
-	public void getReportRequestsWithPagination_shouldReturnAPartialPageOfReportRequests() {
+	public void getReportRequestsCount_shouldReturnCorrectTotalCountForRequestedWithinDatesFilter() {
 		final ReportService rs = Context.getService(ReportService.class);
-		final ReportRequestPageDTO result = rs.getReportRequestsWithPagination(null, null, null, 1, 2, ReportRequest.Status.FAILED);
+		final Date from = newDate(2013, Calendar.JANUARY, 21, 14, 8, 48);
+		final Date to = newDate(2013, Calendar.JANUARY, 21, 14, 8, 49);
+		final long totalCount = rs.getReportRequestsCount(null, from, to);
 
-		assertEquals(1, result.getTotalCount());
-		assertEquals(1, result.getReportRequests().size());
+		assertEquals(2, totalCount);
+	}
 
-		final List<String> resultUuids = mapToReportRequestUuids(result.getReportRequests());
+	@Test
+	public void getReportRequests_shouldReturnAPartialPageOfReportRequests() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final List<ReportRequest> reportRequests = rs.getReportRequests(null, null, null, 0, 2, ReportRequest.Status.FAILED);
+
+		assertEquals(1, reportRequests.size());
+
+		final List<String> resultUuids = mapToReportRequestUuids(reportRequests);
 		assertTrue(resultUuids.contains("fce15a1b-4618-4f65-bfe9-8bb60a85c110"));
+	}
+
+	@Test
+	public void getReportRequestsCount_shouldReturnCorrectTotalCountForStatusFilter() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final long totalCount = rs.getReportRequestsCount(null, null, null, ReportRequest.Status.FAILED);
+
+		assertEquals(1, totalCount);
 	}
 
 	private List<String> mapToReportRequestUuids(List<ReportRequest> reportRequests) {

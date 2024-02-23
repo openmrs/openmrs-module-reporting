@@ -33,7 +33,6 @@ import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Priority;
 import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
-import org.openmrs.module.reporting.report.ReportRequestPageDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.processor.ReportProcessor;
@@ -221,16 +220,22 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	@Transactional(readOnly=true)
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses) {
-		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, mostRecentNum, statuses);
+		return getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, 0, mostRecentNum, statuses);
 	}
 
 	/**
-	 * @see ReportService#getReportRequestsWithPagination(ReportDefinition, Date, Date, Integer, Integer, Status...)
+	 * @see ReportService#getReportRequests(ReportDefinition, Date, Date, Integer, Integer, Status...)
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public ReportRequestPageDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status... statuses) {
-		return reportDAO.getReportRequestsWithPagination(reportDefinition, requestOnOrAfter, requestOnOrBefore, pageNumber, pageSize, statuses);
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status... statuses) {
+		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, firstResult, maxResults, statuses);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public long getReportRequestsCount(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status... statuses) {
+		return reportDAO.getReportRequestsCount(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
 	}
 
 	/**

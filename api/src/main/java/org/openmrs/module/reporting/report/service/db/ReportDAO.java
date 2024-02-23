@@ -14,7 +14,6 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
-import org.openmrs.module.reporting.report.ReportRequestPageDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
@@ -118,17 +117,18 @@ public interface ReportDAO {
 	 * @return the {@link ReportRequest} with the passed uuid
 	 */
 	public ReportRequest getReportRequestByUuid(String uuid);
-	
-	/**
-	 * @return all {@link ReportRequest} in the system that match the passed parameters
-	 */
-	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
 
 	/**
-	 * @return {@link ReportRequestPageDTO} object which contains report requests and total count data
-	 * @see org.openmrs.module.reporting.report.service.ReportService#getReportRequestsWithPagination(ReportDefinition, Date, Date, Integer, Integer, Status...)
+	 * @return all {@link ReportRequest} in the system that match the passed parameters
+	 * @see org.openmrs.module.reporting.report.service.ReportService#getReportRequests(ReportDefinition, Date, Date, Integer, Integer, Status...)
 	 */
-	ReportRequestPageDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses);
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status...statuses);
+
+	/**
+	 * @return all {@link ReportRequest} in the system that match the passed parameters
+	 * @see org.openmrs.module.reporting.report.service.ReportService#getReportRequestsCount(ReportDefinition, Date, Date, Status...)
+	 */
+	public long getReportRequestsCount(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}

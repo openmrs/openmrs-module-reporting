@@ -17,7 +17,6 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.ReportRequest.Status;
-import org.openmrs.module.reporting.report.ReportRequestPageDTO;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.processor.ReportProcessor;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
@@ -164,7 +163,7 @@ public interface ReportService extends OpenmrsService {
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
 
 	/**
-	 * Get paginated Report Requests by Report Definition, request date, having given status.
+	 * Get Report Requests by Report Definition, request date, having given status.
 	 * The list is sorted descending by evaluateCompleteDatetime, evaluateStartDatetime, priority, requestDate.
 	 *
 	 * @param reportDefinition a Report Definition filter, nullable
@@ -172,15 +171,30 @@ public interface ReportService extends OpenmrsService {
 	 *                          (greater or equal filter), nullable
 	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
 	 *                          (lower or equal filter), nullable
-	 * @param pageNumber a number of a page to return, starting from 1, not null
-	 * @param pageSize page size, not null
+	 * @param firstResult the first result to be retrieved, not null
+	 * @param maxResults a limit upon the number of Report Requests to be retrieved, not null
 	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
 	 *                  or empty array means that all statuses are included, nullable
-	 * @return {@link ReportRequestPageDTO} object which contains report requests and total count data, never null
+	 * @return all {@link ReportRequest} in the system that match the passed parameters
 	 * @since 1.27.0
 	 */
 	@Transactional(readOnly = true)
-	public ReportRequestPageDTO getReportRequestsWithPagination(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer pageNumber, Integer pageSize, Status...statuses);
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status...statuses);
+
+	/**
+	 * Gets a count of Report Requests that match by Report Definition, request date limits and status(-es).
+	 *
+	 * @param reportDefinition a Report Definition filter, nullable
+	 * @param requestOnOrAfter a Date used to limit result to ReportRequests which ware requested on or after
+	 *                          (greater or equal filter), nullable
+	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
+	 *                          (lower or equal filter), nullable
+	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
+	 *                  or empty array means that all statuses are included, nullable
+	 * @return the count of Report Requests that match the passed parameters
+	 * @since 1.27.0
+	 */
+	public long getReportRequestsCount(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}
