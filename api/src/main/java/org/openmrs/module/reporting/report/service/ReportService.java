@@ -153,7 +153,7 @@ public interface ReportService extends OpenmrsService {
 	 *                          (greater or equal filter), nullable
 	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
 	 *                          (lower or equal filter), nullable
-	 * @param mostRecentNum maximum number of results, not null
+	 * @param mostRecentNum maximum number of results, a null value means all records are to be returned, nullable
 	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
 	 *                  or empty array means that all statuses are included, nullable
 	 * @return all {@link ReportRequest} in the system that match the passed parameters
@@ -171,8 +171,8 @@ public interface ReportService extends OpenmrsService {
 	 *                          (greater or equal filter), nullable
 	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
 	 *                          (lower or equal filter), nullable
-	 * @param firstResult the first result to be retrieved, not null
-	 * @param maxResults a limit upon the number of Report Requests to be retrieved, not null
+	 * @param firstResult the first result to be retrieved, nullable
+	 * @param maxResults a limit upon the number of Report Requests to be retrieved, nullable
 	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
 	 *                  or empty array means that all statuses are included, nullable
 	 * @return all {@link ReportRequest} in the system that match the passed parameters
