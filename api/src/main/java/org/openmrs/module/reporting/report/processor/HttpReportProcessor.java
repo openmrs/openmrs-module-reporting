@@ -52,23 +52,22 @@ public class HttpReportProcessor implements ReportProcessor {
                 os.write(input, 0, input.length);
             }
 
-            // Check response code
+            // Check connection response
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                // Connection is successful
+
                 System.out.println("Report sent successfully via HTTP POST.");
             } else {
-                // Handle other response codes if needed
+
                 System.out.println("Failed to send report. Response code: " + responseCode);
             }
         } catch (Exception e) {
-            // Handle connection errors
             System.out.println("Error sending report via HTTP POST: " + e.getMessage());
         }
     }
 
     private String generateReportData(Report report, Properties configuration) {
-        // Example method to generate report data
+
         String exportType = configuration.getProperty("exportType");
         String reportName = configuration.getProperty("reportName");
         String description = configuration.getProperty("description");
@@ -77,14 +76,11 @@ public class HttpReportProcessor implements ReportProcessor {
 
         // Construct JSON object with report properties
         JSONObject data = new JSONObject();
-         data.put("exportType", exportType);
+        data.put("exportType", exportType);
         data.put("reportName", reportName);
         data.put("description", description);
         data.put("dateFrom", dateFrom);
         data.put("dateTo", dateTo);
-
-        // Replace this with your actual report data if needed
-        data.put("reportData", "Sample report data");
 
         return data.toString();
     }
