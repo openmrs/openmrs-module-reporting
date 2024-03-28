@@ -60,9 +60,9 @@ public class HttpReportProcessor implements ReportProcessor {
             conn.setRequestProperty("Date-From", dateFrom);
             conn.setRequestProperty("Date-To", dateTo);
 
-            try (OutputStream os = conn.getOutputStream()) {
+             OutputStream os = conn.getOutputStream();
                 os.write(reportData);
-            }
+
 
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
