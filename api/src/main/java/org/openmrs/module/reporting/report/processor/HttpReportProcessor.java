@@ -25,7 +25,7 @@ public class HttpReportProcessor implements ReportProcessor {
      * @see ReportProcessor#getConfigurationPropertyNames()
      */
     public List<String> getConfigurationPropertyNames() {
-        List<String> ret = new ArrayList<>();
+        List<String> ret = new ArrayList<String>();
         ret.add("url");
         ret.add("contentType");
         ret.add("dateFrom");
