@@ -17,16 +17,20 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
+
+import org.openmrs.api.context.Context;
 import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
 import org.openmrs.module.serialization.xstream.mapper.CGLibMapper;
 import org.openmrs.module.serialization.xstream.mapper.HibernateCollectionMapper;
 import org.openmrs.module.serialization.xstream.mapper.JavassistMapper;
 import org.openmrs.module.serialization.xstream.mapper.NullValueMapper;
 import org.openmrs.serialization.SerializationException;
+import org.openmrs.serialization.SimpleXStreamSerializer;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 
 
 public class ReportingSerializer extends XStreamShortSerializer {
@@ -80,6 +84,8 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	    xstream.registerConverter(new IndicatorConverter(mapper, converterLookup));
 
 		xstream.registerConverter(new ReportDefinitionConverter(mapper, converterLookup));
+		
+		setupXStreamSecurity(xstream);
 	}
 	
 	@Override
@@ -111,4 +117,16 @@ public class ReportingSerializer extends XStreamShortSerializer {
         }
     }
 
+    private void setupXStreamSecurity(XStream xstream) throws SerializationException {
+		SimpleXStreamSerializer serializer = Context.getRegisteredComponent("simpleXStreamSerializer", SimpleXStreamSerializer.class);
+		if (serializer != null) {
+			try {
+				Method method = serializer.getClass().getMethod("initXStream", XStream.class);
+				method.invoke(serializer, xstream);
+			}
+			catch (Exception ex) {
+				throw new SerializationException("Failed to set up XStream Security", ex);
+			}
+		}
+	}
 }

@@ -153,6 +153,11 @@
 		<defaultValue>false</defaultValue>
 		<description>If true, this will automatically load reports defined by report descriptors in .OpenMRS/configuration/reports/reportdescriptors at startup</description>
 	</globalProperty>
+    <globalProperty>
+        <property>reporting.serializer.whitelist.types</property>
+        <defaultValue>org.openmrs.module.reporting.evaluation.parameter.Parameter,org.openmrs.module.reporting.data.converter.PropertyConverter,org.openmrs.module.reporting.data.converter.ObjectFormatter,org.openmrs.module.reporting.data.converter.DateConverter,org.openmrs.module.reporting.data.converter.ChainedConverter,org.openmrs.module.reporting.common.SortCriteria$SortElement,org.openmrs.module.reporting.evaluation.parameter.Mapped</defaultValue>
+        <description></description>
+    </globalProperty>
 
 	<!--  Message Properties -->
 	<messages>
