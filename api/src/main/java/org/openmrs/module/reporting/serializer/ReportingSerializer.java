@@ -9,15 +9,12 @@
  */
 package org.openmrs.module.reporting.serializer;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.ConverterLookup;
-import com.thoughtworks.xstream.converters.DataHolder;
-import com.thoughtworks.xstream.core.MapBackedDataHolder;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import com.thoughtworks.xstream.mapper.Mapper;
-import com.thoughtworks.xstream.mapper.MapperWrapper;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
 import org.openmrs.module.serialization.xstream.mapper.CGLibMapper;
@@ -27,10 +24,14 @@ import org.openmrs.module.serialization.xstream.mapper.NullValueMapper;
 import org.openmrs.serialization.SerializationException;
 import org.openmrs.serialization.SimpleXStreamSerializer;
 
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.ConverterLookup;
+import com.thoughtworks.xstream.converters.DataHolder;
+import com.thoughtworks.xstream.core.MapBackedDataHolder;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.mapper.Mapper;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 
 public class ReportingSerializer extends XStreamShortSerializer {
@@ -118,15 +119,20 @@ public class ReportingSerializer extends XStreamShortSerializer {
     }
 
     private void setupXStreamSecurity(XStream xstream) throws SerializationException {
-		SimpleXStreamSerializer serializer = Context.getRegisteredComponent("simpleXStreamSerializer", SimpleXStreamSerializer.class);
-		if (serializer != null) {
-			try {
-				Method method = serializer.getClass().getMethod("initXStream", XStream.class);
-				method.invoke(serializer, xstream);
+    	try {
+			SimpleXStreamSerializer serializer = Context.getRegisteredComponent("simpleXStreamSerializer", SimpleXStreamSerializer.class);
+			if (serializer != null) {
+				try {
+					Method method = serializer.getClass().getMethod("initXStream", XStream.class);
+					method.invoke(serializer, xstream);
+				}
+				catch (Exception ex) {
+					throw new SerializationException("Failed to set up XStream Security", ex);
+				}
 			}
-			catch (Exception ex) {
-				throw new SerializationException("Failed to set up XStream Security", ex);
-			}
-		}
+    	}
+    	catch (APIException ex) {
+    		//Ignore APIException("Error during getting registered component) for platform versions below 2.7.0
+    	}
 	}
 }
