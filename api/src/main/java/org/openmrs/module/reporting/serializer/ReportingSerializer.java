@@ -85,8 +85,6 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	    xstream.registerConverter(new IndicatorConverter(mapper, converterLookup));
 
 		xstream.registerConverter(new ReportDefinitionConverter(mapper, converterLookup));
-		
-		setupXStreamSecurity(xstream);
 	}
 	
 	@Override
@@ -117,22 +115,4 @@ public class ReportingSerializer extends XStreamShortSerializer {
             throw new IllegalStateException("Unsupported encoding", e);
         }
     }
-
-    private void setupXStreamSecurity(XStream xstream) throws SerializationException {
-    	try {
-			SimpleXStreamSerializer serializer = Context.getRegisteredComponent("simpleXStreamSerializer", SimpleXStreamSerializer.class);
-			if (serializer != null) {
-				try {
-					Method method = serializer.getClass().getMethod("initXStream", XStream.class);
-					method.invoke(serializer, xstream);
-				}
-				catch (Exception ex) {
-					throw new SerializationException("Failed to set up XStream Security", ex);
-				}
-			}
-    	}
-    	catch (APIException ex) {
-    		//Ignore APIException("Error during getting registered component) for platform versions below 2.7.0
-    	}
-	}
 }
