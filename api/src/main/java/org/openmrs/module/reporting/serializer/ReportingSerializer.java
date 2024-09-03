@@ -1,4 +1,28 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.serializer;
+
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
+import org.openmrs.module.serialization.xstream.mapper.CGLibMapper;
+import org.openmrs.module.serialization.xstream.mapper.HibernateCollectionMapper;
+import org.openmrs.module.serialization.xstream.mapper.JavassistMapper;
+import org.openmrs.module.serialization.xstream.mapper.NullValueMapper;
+import org.openmrs.serialization.SerializationException;
+import org.openmrs.serialization.SimpleXStreamSerializer;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.ConverterLookup;
@@ -8,16 +32,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
-import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
-import org.openmrs.module.serialization.xstream.mapper.CGLibMapper;
-import org.openmrs.module.serialization.xstream.mapper.HibernateCollectionMapper;
-import org.openmrs.module.serialization.xstream.mapper.JavassistMapper;
-import org.openmrs.module.serialization.xstream.mapper.NullValueMapper;
-import org.openmrs.serialization.SerializationException;
-
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 
 
 public class ReportingSerializer extends XStreamShortSerializer {
@@ -101,5 +115,4 @@ public class ReportingSerializer extends XStreamShortSerializer {
             throw new IllegalStateException("Unsupported encoding", e);
         }
     }
-
 }
