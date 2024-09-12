@@ -47,7 +47,7 @@
 		<reportingCompatibilityVersion>2.0.6</reportingCompatibilityVersion>
 		<openMRSMinorVersion>1.9</openMRSMinorVersion>
 		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
-		<serializationVersion>0.2.14</serializationVersion>
+		<serializationVersion>0.2.17-SNAPSHOT</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
 		<jacksonVersion>1.5.0</jacksonVersion>
 		<quartzVersion>2.1.1</quartzVersion>
