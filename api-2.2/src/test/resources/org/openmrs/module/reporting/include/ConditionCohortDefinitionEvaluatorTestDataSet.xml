@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<person person_id="1" gender="M" dead="false" creator="1"
+		birthdate_estimated="0" date_created="2008-08-15 15:57:09.0" voided="false"
+		void_reason="" uuid="86s04d42-3ca8-11e3-bf2b-0x7009861s97" />
+	<person_name person_name_id="1" person_id="1" preferred="true"
+		prefix="" given_name="Lab System" middle_name="" family_name="OpenMRS"
+		family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+		voided="false" void_reason="" uuid="Xv9e3a7b-6482-487d-94ce-c07b123CxfP8" />
+	<person person_id="2" gender="M" dead="false" creator="1"
+		birthdate_estimated="0" date_created="2008-08-15 15:57:09.0" voided="false"
+		void_reason="" uuid="86s04d42-3ca8-11e3-bf2b-0x7009861s97A" />
+	<person_name person_name_id="2" person_id="2" preferred="true"
+		prefix="" given_name="Lab System" middle_name="" family_name="OpenMRS"
+		family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+		voided="false" void_reason="" uuid="Xv9e3a7b-6482-487d-94ce-c07b123CxfP8A" />
+	<person person_id="3" gender="M" dead="false" creator="1"
+		birthdate_estimated="0" date_created="2008-08-15 15:57:09.0" voided="false"
+		void_reason="" uuid="86s04d42-3ca8-11e3-bf2b-0x7009861s97B" />
+	<person_name person_name_id="3" person_id="3" preferred="true"
+		prefix="" given_name="Lab System" middle_name="" family_name="OpenMRS"
+		family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+		voided="false" void_reason="" uuid="Xv9e3a7b-6482-487d-94ce-c07b123CxfP8B" />
+	<person person_id="4" gender="M" dead="false" creator="1"
+		birthdate_estimated="0" date_created="2008-08-15 15:57:09.0" voided="false"
+		void_reason="" uuid="86s04d42-3ca8-11e3-bf2b-0x7009861s97C" />
+	<person_name person_name_id="4" person_id="4" preferred="true"
+		prefix="" given_name="Lab System" middle_name="" family_name="OpenMRS-name"
+		family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+		voided="false" void_reason="" uuid="Xv9e3a7b-6482-487d-94ce-c07b123CxfP8C" />
+	<person person_id="5" gender="M" dead="false" creator="1"
+		birthdate_estimated="0" date_created="2008-08-15 15:57:09.0" voided="false"
+		void_reason="" uuid="86s04d42-3ca8-11e3-bf2b-0x7009861s97D" />
+	<person_name person_name_id="5" person_id="5" preferred="true"
+		prefix="" given_name="Lab System" middle_name="" family_name="OpenMRS-name"
+		family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+		voided="false" void_reason="" uuid="Xv9e3a7b-6482-487d-94ce-c07b123CxfP8D" />
+
+	<patient patient_id="1" creator="1" date_created="2015-01-01 00:00:00"
+		voided="false" />
+	<patient_identifier_type
+		patient_identifier_type_id="3" name="Test Identifier Type"
+		description="Test description" creator="1" date_created="2005-01-01 00:00:00.0"
+		required="false" retired="false" uuid="0cbecb62-7249-4f91-8edf-d0206ecceb63" />
+	<patient_identifier date_created="2005-09-22 00:00:00"
+		patient_identifier_id="1" patient_id="1" identifier="GAN200000"
+		identifier_type="3" creator="1" uuid="7cb74fd1-128d-4584-842f-81d3535da3a6A"
+		preferred="1" voided="0" />
+
+	<patient patient_id="2" creator="1" date_created="2015-01-01 00:00:00"
+		voided="false" />
+	<patient_identifier date_created="2005-09-22 00:00:00"
+		patient_identifier_id="2" patient_id="2" identifier="GAN200584"
+		identifier_type="3" creator="1" uuid="58474fd1-128d-4584-842f-81d3535da584B"
+		preferred="1" voided="0" />
+
+	<patient patient_id="3" creator="1" date_created="2015-01-01 00:00:00"
+		voided="false" />
+	<patient_identifier date_created="2005-09-22 00:00:00"
+		patient_identifier_id="2" patient_id="3" identifier="GAN200584"
+		identifier_type="3" creator="1" uuid="p8a7tfi1-128d-4584-842f-p1a35t5ia584C"
+		preferred="1" voided="0" />
+	<patient patient_id="4" creator="1" date_created="2015-01-01 00:00:00"
+		voided="false" />
+	<patient_identifier date_created="2005-09-22 00:00:00"
+		patient_identifier_id="2" patient_id="4" identifier="GAN200584"
+		identifier_type="3" creator="1" uuid="p8a7tfi1-128d-4584-842f-p1a35t5ia584"
+		preferred="1" voided="0" />
+	<patient patient_id="5" creator="1" date_created="2015-01-01 00:00:00"
+		voided="false" />
+	<patient_identifier date_created="2005-09-22 00:00:00"
+		patient_identifier_id="2" patient_id="5" identifier="GAN200584"
+		identifier_type="3" creator="1" uuid="p8a7tfi1-128d-4584-842f-p1a35t5ia584E"
+		preferred="1" voided="0" />
+
+	<concept concept_id="408" retired="false" datatype_id="2"
+		class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00"
+		version="" changed_by="1" date_changed="2005-02-25 11:43:43.0"
+		uuid="d102c80f-1yz9-4da3-bb88-8122ce8868df" />
+	<concept_name concept_id="408" concept_name_id="1408"
+		name="Angina" locale="en" creator="1" date_created="2004-08-12 00:00:00"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false"
+		uuid="d102c80f-1yz9-4da3-bb88-8122ce8868df" />
+
+	<concept concept_id="409" retired="false" datatype_id="2"
+		class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0"
+		version="" changed_by="1" date_changed="2005-02-25 11:43:43.0"
+		uuid="d584c80f-1yz9-4da3-bb88-8122ce8868df" />
+	<concept_name concept_id="409" concept_name_id="1409"
+		name="Tuberculosis" locale="en" creator="1" date_created="2004-08-12 00:00:00"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false"
+		uuid="d584c80f-1yz9-4da3-bb88-8122ce8868df" />
+
+	<concept_set concept_set_id="5844" concept_id="408"
+		concept_set="408" creator="1" date_created="2004-08-12 00:00:00.0"
+		sort_weight="3" />
+	<concept_set concept_set_id="5845" concept_id="409"
+		concept_set="409" creator="1" date_created="2004-08-12 00:00:00.0"
+		sort_weight="2" />
+
+	<conditions condition_id="1" patient_id="1" condition_coded="409"
+		creator="1" date_created="2015-01-12 00:00:00" voided="false"
+		uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22fb7" condition_non_coded="NON-CODED-CONDITION2"
+		onset_date="2015-01-12 00:00:00" end_date="2017-03-12 00:00:00" />
+
+	<conditions condition_id="2" patient_id="2" condition_coded="409"
+		creator="1" date_created="2015-01-12 00:00:00" uuid="2cc5840e-2c84-11e4-9038-a6c5e4d22fb7"
+		voided="false" condition_non_coded="NON-CODED-CONDITION2" onset_date="2015-01-12 00:00:00"
+		end_date="2017-03-12 00:00:00" />
+
+	<conditions condition_id="3" patient_id="3" condition_coded="409"
+		creator="1" date_created="2014-03-12 00:00:00" voided="false"
+		uuid="2ss6880e-2c46-11e4-9038-a6c5e4d22fb7" onset_date="2014-03-12 00:00:00"
+		end_date="2017-03-12 00:00:00" />
+
+	<conditions condition_id="4" patient_id="4" condition_coded="409"
+		creator="1" date_created="2014-01-12 00:00:00" uuid="2ss6880e-2c46-11e4-5844-a6c5e4d22fb7"
+		voided="false" condition_non_coded="NON-CODED-CONDITION" onset_date="2014-01-12 00:00:00"
+		end_date="2016-03-12 00:00:00" />
+
+	<conditions condition_id="5" patient_id="5" condition_coded="408"
+		creator="1" date_created="2015-01-12 00:00:00" voided="false"
+		uuid="9ff6880e-2c46-11e4-5844-a6c5e4d22fb7" condition_non_coded="NON-CODED-CONDITION"
+		onset_date="2016-01-12 00:00:00" end_date="2016-05-12 00:00:00" />
+</dataset> 
