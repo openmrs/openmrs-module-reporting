@@ -15,6 +15,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
@@ -187,34 +188,35 @@ public class HibernateReportDAO implements ReportDAO {
 	}
 
 	/**
-	 * @see ReportDAO#getReportRequests(ReportDefinition, Date, Date, Integer, Status...)
+	 * @see ReportDAO#getReportRequests(ReportDefinition, Date, Date, Integer, Integer, Status...)
 	 */
 	@SuppressWarnings("unchecked")
-	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses) {
-		Criteria c = sessionFactory.getCurrentSession().createCriteria(ReportRequest.class);
-		if (reportDefinition != null) {
-			c.add(Restrictions.eq("reportDefinition.definition", reportDefinition.getUuid()));
-		}
-		if (requestOnOrAfter != null) {
-			c.add(Restrictions.ge("requestDate", requestOnOrAfter));
-		}
-		if (requestOnOrBefore != null) {
-			c.add(Restrictions.le("requestDate", requestOnOrBefore));
-		}
-		if (statuses != null && statuses.length > 0) {
-			c.add(Restrictions.in("status", statuses));
-		}
-		c.addOrder(Order.desc("evaluateCompleteDatetime"));
-		c.addOrder(Order.desc("evaluateStartDatetime"));
-		c.addOrder(Order.desc("priority"));
-		c.addOrder(Order.desc("requestDate"));
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status...statuses) {
+		final Criteria criteria = createReportRequestsBaseCriteria(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
 
-		if (mostRecentNum != null) {
-			c.setMaxResults(mostRecentNum);
+		criteria.addOrder(Order.desc("evaluateCompleteDatetime"));
+		criteria.addOrder(Order.desc("evaluateStartDatetime"));
+		criteria.addOrder(Order.desc("priority"));
+		criteria.addOrder(Order.desc("requestDate"));
+
+		if (firstResult != null) {
+			criteria.setFirstResult(firstResult);
 		}
-		return c.list();
+
+		if(maxResults != null) {
+			criteria.setMaxResults(maxResults);
+		}
+
+		return criteria.list();
 	}
-	
+
+	@Override
+	public long getReportRequestsCount(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status... statuses) {
+		final Criteria criteria = createReportRequestsBaseCriteria(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
+		criteria.setProjection(Projections.rowCount());
+		return ((Number) criteria.uniqueResult()).longValue();
+	}
+
 	/**
 	 * @see ReportDAO#purgeReportRequest(ReportRequest)
 	 */
@@ -270,6 +272,25 @@ public class HibernateReportDAO implements ReportDAO {
 	 */
 	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+
+	private Criteria createReportRequestsBaseCriteria(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status... statuses) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ReportRequest.class);
+
+		if (reportDefinition != null) {
+			criteria.add(Restrictions.eq("reportDefinition.definition", reportDefinition.getUuid()));
+		}
+		if (requestOnOrAfter != null) {
+			criteria.add(Restrictions.ge("requestDate", requestOnOrAfter));
+		}
+		if (requestOnOrBefore != null) {
+			criteria.add(Restrictions.le("requestDate", requestOnOrBefore));
+		}
+		if (statuses != null && statuses.length > 0) {
+			criteria.add(Restrictions.in("status", statuses));
+		}
+
+		return criteria;
 	}
 }
 

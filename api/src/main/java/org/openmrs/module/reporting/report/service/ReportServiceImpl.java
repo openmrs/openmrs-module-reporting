@@ -220,7 +220,22 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	@Transactional(readOnly=true)
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses) {
-		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, mostRecentNum, statuses);
+		return getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, 0, mostRecentNum, statuses);
+	}
+
+	/**
+	 * @see ReportService#getReportRequests(ReportDefinition, Date, Date, Integer, Integer, Status...)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status... statuses) {
+		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, firstResult, maxResults, statuses);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public long getReportRequestsCount(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status... statuses) {
+		return reportDAO.getReportRequestsCount(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
 	}
 
 	/**
