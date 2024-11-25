@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.reporting.dataset.definition;
 
+import java.util.Date;
+
 import org.openmrs.module.reporting.common.TimePeriod;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -52,6 +54,12 @@ public class RepeatPerTimePeriodDataSetDefinition extends BaseDataSetDefinition 
     @ConfigurationProperty
     private TimePeriod repeatPerTimePeriod;
 
+    @ConfigurationProperty(group = "obsDateTimeGroup")
+    private Date startDate;
+
+    @ConfigurationProperty(group = "obsDateTimeGroup")
+    private Date endDate;
+
     public Mapped<? extends DataSetDefinition> getBaseDefinition() {
         return baseDefinition;
     }
@@ -66,6 +74,22 @@ public class RepeatPerTimePeriodDataSetDefinition extends BaseDataSetDefinition 
 
     public void setRepeatPerTimePeriod(TimePeriod repeatPerTimePeriod) {
         this.repeatPerTimePeriod = repeatPerTimePeriod;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate){
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate){
+        this.endDate = endDate;
     }
 
 }
