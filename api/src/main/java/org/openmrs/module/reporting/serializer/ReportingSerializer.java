@@ -67,24 +67,29 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	            return unmarshal(reader, root, cache.get());
 	        }
 	    });
+	}
 
-	    Mapper mapper = xstream.getMapper();
-	    ConverterLookup converterLookup = xstream.getConverterLookup();
+	@Override
+	protected void initXStream(XStream xstream) {
+		super.initXStream(xstream);
 
-	    xstream.registerConverter(new PersonQueryConverter(mapper, converterLookup));
-	    xstream.registerConverter(new CohortDefinitionConverter(mapper, converterLookup));
-	    xstream.registerConverter(new EncounterQueryConverter(mapper, converterLookup));
-	    xstream.registerConverter(new ObsQueryConverter(mapper, converterLookup));
+		Mapper mapper = xstream.getMapper();
+		ConverterLookup converterLookup = xstream.getConverterLookup();
+
+		xstream.registerConverter(new PersonQueryConverter(mapper, converterLookup));
+		xstream.registerConverter(new CohortDefinitionConverter(mapper, converterLookup));
+		xstream.registerConverter(new EncounterQueryConverter(mapper, converterLookup));
+		xstream.registerConverter(new ObsQueryConverter(mapper, converterLookup));
 		xstream.registerConverter(new CalculationRegistrationShortConverter(mapper, converterLookup));
 
 		xstream.registerConverter(new PersonDataDefinitionConverter(mapper, converterLookup));
-	    xstream.registerConverter(new PatientDataDefinitionConverter(mapper, converterLookup));
-	    xstream.registerConverter(new EncounterDataDefinitionConverter(mapper, converterLookup));
-	    
-	    xstream.registerConverter(new DataSetDefinitionConverter(mapper, converterLookup));
-	    
-	    xstream.registerConverter(new DimensionConverter(mapper, converterLookup));
-	    xstream.registerConverter(new IndicatorConverter(mapper, converterLookup));
+		xstream.registerConverter(new PatientDataDefinitionConverter(mapper, converterLookup));
+		xstream.registerConverter(new EncounterDataDefinitionConverter(mapper, converterLookup));
+
+		xstream.registerConverter(new DataSetDefinitionConverter(mapper, converterLookup));
+
+		xstream.registerConverter(new DimensionConverter(mapper, converterLookup));
+		xstream.registerConverter(new IndicatorConverter(mapper, converterLookup));
 
 		xstream.registerConverter(new ReportDefinitionConverter(mapper, converterLookup));
 
@@ -93,7 +98,7 @@ public class ReportingSerializer extends XStreamShortSerializer {
 			setupXStreamSecurity(xstream);
 		}
 	}
-	
+
 	@Override
 	synchronized public <T> T deserialize(String serializedObject, Class<? extends T> clazz) throws SerializationException {
 		boolean cacheOwner = cache.get() == null;
@@ -117,7 +122,7 @@ public class ReportingSerializer extends XStreamShortSerializer {
      */
     public void serializeToStream(Object object, OutputStream out) {
         try {
-            xstream.toXML(object, new OutputStreamWriter(out, "UTF-8"));
+            getXstream().toXML(object, new OutputStreamWriter(out, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("Unsupported encoding", e);
         }
