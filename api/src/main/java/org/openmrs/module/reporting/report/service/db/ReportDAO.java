@@ -117,11 +117,18 @@ public interface ReportDAO {
 	 * @return the {@link ReportRequest} with the passed uuid
 	 */
 	public ReportRequest getReportRequestByUuid(String uuid);
-	
+
 	/**
 	 * @return all {@link ReportRequest} in the system that match the passed parameters
+	 * @see org.openmrs.module.reporting.report.service.ReportService#getReportRequests(ReportDefinition, Date, Date, Integer, Integer, Status...)
 	 */
-	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status...statuses);
+
+	/**
+	 * @return all {@link ReportRequest} in the system that match the passed parameters
+	 * @see org.openmrs.module.reporting.report.service.ReportService#getReportRequestsCount(ReportDefinition, Date, Date, Status...)
+	 */
+	public long getReportRequestsCount(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}
