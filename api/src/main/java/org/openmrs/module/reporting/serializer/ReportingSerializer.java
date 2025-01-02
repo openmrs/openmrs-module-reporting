@@ -1,4 +1,29 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.serializer;
+
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.VersionComparator;
+import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
+import org.openmrs.module.serialization.xstream.mapper.CGLibMapper;
+import org.openmrs.module.serialization.xstream.mapper.HibernateCollectionMapper;
+import org.openmrs.module.serialization.xstream.mapper.JavassistMapper;
+import org.openmrs.module.serialization.xstream.mapper.NullValueMapper;
+import org.openmrs.serialization.SerializationException;
+import org.openmrs.serialization.SimpleXStreamSerializer;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.ConverterLookup;
@@ -8,16 +33,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
-import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
-import org.openmrs.module.serialization.xstream.mapper.CGLibMapper;
-import org.openmrs.module.serialization.xstream.mapper.HibernateCollectionMapper;
-import org.openmrs.module.serialization.xstream.mapper.JavassistMapper;
-import org.openmrs.module.serialization.xstream.mapper.NullValueMapper;
-import org.openmrs.serialization.SerializationException;
-
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import org.openmrs.util.OpenmrsConstants;
 
 
 public class ReportingSerializer extends XStreamShortSerializer {
@@ -71,6 +87,11 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	    xstream.registerConverter(new IndicatorConverter(mapper, converterLookup));
 
 		xstream.registerConverter(new ReportDefinitionConverter(mapper, converterLookup));
+
+		// Only setup XStreamSecurity only on versions that are after 2.7.0
+		if (new VersionComparator().compare(OpenmrsConstants.OPENMRS_VERSION, "2.7.0") >= 0) {
+			setupXStreamSecurity(xstream);
+		}
 	}
 	
 	@Override
@@ -102,4 +123,21 @@ public class ReportingSerializer extends XStreamShortSerializer {
         }
     }
 
+	private void setupXStreamSecurity(XStream xstream) throws SerializationException {
+		try {
+			SimpleXStreamSerializer serializer = Context.getRegisteredComponent("simpleXStreamSerializer", SimpleXStreamSerializer.class);
+			if (serializer != null) {
+				try {
+					Method method = serializer.getClass().getMethod("initXStream", XStream.class);
+					method.invoke(serializer, xstream);
+				}
+				catch (Exception ex) {
+					throw new SerializationException("Failed to set up XStream Security", ex);
+				}
+			}
+		}
+		catch (APIException ex) {
+			//Ignore APIException("Error during getting registered component) for platform versions below 2.7.0
+		}
+	}
 }

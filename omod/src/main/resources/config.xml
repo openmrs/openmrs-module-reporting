@@ -27,6 +27,7 @@
     <aware_of_modules>
         <aware_of_module>org.openmrs.module.reportingcompatibility</aware_of_module>
         <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+        <aware_of_module>org.openmrs.module.logic</aware_of_module>
     </aware_of_modules>
 
 	<!-- Extensions -->
@@ -147,6 +148,16 @@
         <defaultValue>false</defaultValue>
         <description>If false, will disable the built in use of the evaluation logger to log evaluation information for performance diagnostics</description>
     </globalProperty>
+	<globalProperty>
+		<property>reporting.loadReportsFromConfigurationAtStartup</property>
+		<defaultValue>false</defaultValue>
+		<description>If true, this will automatically load reports defined by report descriptors in .OpenMRS/configuration/reports/reportdescriptors at startup</description>
+	</globalProperty>
+    <globalProperty>
+        <property>reporting.serializer.whitelist.types</property>
+        <defaultValue>org.openmrs.module.reporting.evaluation.parameter.Parameter,org.openmrs.module.reporting.data.converter.PropertyConverter,org.openmrs.module.reporting.data.converter.ObjectFormatter,org.openmrs.module.reporting.data.converter.DateConverter,org.openmrs.module.reporting.data.converter.ChainedConverter,org.openmrs.module.reporting.common.SortCriteria$SortElement,org.openmrs.module.reporting.evaluation.parameter.Mapped</defaultValue>
+        <description></description>
+    </globalProperty>
 
 	<!--  Message Properties -->
 	<messages>
@@ -174,8 +185,20 @@
 			<openmrsVersion>1.9.9 - 1.12.*</openmrsVersion>
 		</conditionalResource>
 		<conditionalResource>
+			<path>/lib/reporting-api-1.10.*</path>
+			<openmrsVersion>1.10.6 - 9.*</openmrsVersion>
+		</conditionalResource>
+		<conditionalResource>
 			<path>/lib/reporting-api-2.0.*</path>
-			<openmrsVersion>2.*</openmrsVersion>
+			<openmrsVersion>2.0.0 - 2.3.*</openmrsVersion>
+		</conditionalResource>
+		<conditionalResource>
+			<path>/lib/reporting-api-2.2.*</path>
+			<openmrsVersion>2.2.0</openmrsVersion>
+		</conditionalResource>
+		<conditionalResource>
+			<path>/lib/reporting-api-2.4.*</path>
+			<openmrsVersion>2.4.0</openmrsVersion>
 		</conditionalResource>
 	</conditionalResources>
 	
