@@ -155,8 +155,8 @@
 	</globalProperty>
     <globalProperty>
         <property>reporting.serializer.whitelist.types</property>
-        <defaultValue>org.openmrs.module.reporting.evaluation.parameter.Parameter,org.openmrs.module.reporting.data.converter.PropertyConverter,org.openmrs.module.reporting.data.converter.ObjectFormatter,org.openmrs.module.reporting.data.converter.DateConverter,org.openmrs.module.reporting.data.converter.ChainedConverter,org.openmrs.module.reporting.common.SortCriteria$SortElement,org.openmrs.module.reporting.evaluation.parameter.Mapped</defaultValue>
-        <description></description>
+        <defaultValue>org.openmrs.module.reporting.**</defaultValue>
+        <description>White-list of classes that are allowed for deserialization by the reporting module</description>
     </globalProperty>
 
 	<!--  Message Properties -->
