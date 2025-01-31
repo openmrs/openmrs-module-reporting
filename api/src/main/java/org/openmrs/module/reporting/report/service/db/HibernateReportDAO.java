@@ -194,10 +194,10 @@ public class HibernateReportDAO implements ReportDAO {
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status...statuses) {
 		final Criteria criteria = createReportRequestsBaseCriteria(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
 
-		criteria.addOrder(Order.desc("evaluateCompleteDatetime"));
-		criteria.addOrder(Order.desc("evaluateStartDatetime"));
-		criteria.addOrder(Order.desc("priority"));
 		criteria.addOrder(Order.desc("requestDate"));
+		criteria.addOrder(Order.desc("evaluateStartDatetime"));
+		criteria.addOrder(Order.desc("evaluateCompleteDatetime"));
+		criteria.addOrder(Order.desc("priority"));
 
 		if (firstResult != null) {
 			criteria.setFirstResult(firstResult);
