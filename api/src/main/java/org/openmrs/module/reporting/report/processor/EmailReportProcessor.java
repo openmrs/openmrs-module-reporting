@@ -23,7 +23,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMessage.RecipientType;
 import javax.mail.internet.MimeMultipart;
 
 import org.apache.commons.lang.StringUtils;
@@ -103,7 +102,7 @@ public class EmailReportProcessor implements ReportProcessor {
 			
 			m.setFrom(new InternetAddress(configuration.getProperty("from")));
 			for (String recipient : configuration.getProperty("to", "").split("\\,")) {
-				m.addRecipient(RecipientType.TO, new InternetAddress(recipient));
+				m.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 			}
 	
 			// TODO: Make these such that they can contain report information
