@@ -47,7 +47,7 @@ public class DelimitedTextReportRendererFormController {
 	/**
 	 *  prepares a new form for the a DelimitedReportRenderer
 	 */
-	@RequestMapping("/module/reporting/reports/renderers/delimitedTextReportRenderer")
+	@RequestMapping("/module/reporting/reports/renderers/delimitedTextReportRenderer.form")
 	public void delimitedTextReportRenderer(ModelMap model, 
 								@RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid, 
 								@RequestParam(required=false, value="reportDefinitionUuid") String reportDefinitionUuid,
@@ -95,7 +95,7 @@ public class DelimitedTextReportRendererFormController {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	@RequestMapping("/module/reporting/reports/renderers/saveDelimitedTextReportDesign")
+	@RequestMapping("/module/reporting/reports/renderers/saveDelimitedTextReportDesign.form")
 	public String saveDelimitedTextReportDesign(ModelMap model, HttpServletRequest request,
 					@RequestParam(required=false, value="uuid") String uuid,
 					@RequestParam(required=true,  value="name") String name,

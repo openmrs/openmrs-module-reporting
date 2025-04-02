@@ -42,7 +42,7 @@ public class NonConfigurableReportRendererFormController {
 	/**
 	 *  prepares a new form for the a IndicatorReportRenderer
 	 */
-	@RequestMapping("/module/reporting/reports/renderers/nonConfigurableReportRenderer")
+	@RequestMapping("/module/reporting/reports/renderers/nonConfigurableReportRenderer.form")
 	public void nonConfigurableReportRenderer(ModelMap model, 
 								@RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid, 
 								@RequestParam(required=false, value="reportDefinitionUuid") String reportDefinitionUuid,
@@ -78,7 +78,7 @@ public class NonConfigurableReportRendererFormController {
 	/**
 	 * Saves report design
 	 */
-	@RequestMapping("/module/reporting/reports/renderers/saveNonConfigurableReportRenderer")
+	@RequestMapping("/module/reporting/reports/renderers/saveNonConfigurableReportRenderer.form")
 	public String saveNonConfigurableReportRenderer(ModelMap model, HttpServletRequest request,
 					@RequestParam(required=false, value="uuid") String uuid,
 					@RequestParam(required=true,  value="name") String name,

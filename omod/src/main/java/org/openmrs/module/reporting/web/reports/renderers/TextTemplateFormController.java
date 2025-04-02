@@ -79,7 +79,7 @@ public class TextTemplateFormController {
 	 *  prepares a new form for the a TextTemplateRenderer
 	 * @throws UnsupportedEncodingException 
 	 */
-	@RequestMapping("/module/reporting/reports/renderers/textTemplateReportRenderer")
+	@RequestMapping("/module/reporting/reports/renderers/textTemplateReportRenderer.form")
 	public void textTemplateReportRenderer(ModelMap model, 
 								@RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid, 
 								@RequestParam(required=false, value="reportDefinitionUuid") String reportDefinitionUuid,
@@ -124,7 +124,7 @@ public class TextTemplateFormController {
 	 * Saves report design
 	 * @throws UnsupportedEncodingException 
 	 */
-	@RequestMapping("/module/reporting/reports/renderers/saveTextTemplateReportRendererDesign")
+	@RequestMapping("/module/reporting/reports/renderers/saveTextTemplateReportRendererDesign.form")
 	public String saveTextTemplateReportRendererDesign(ModelMap model, HttpServletRequest request,
 					@RequestParam(required=false, value="uuid") String uuid,
 					@RequestParam(required=true,  value="name") String name,
@@ -203,7 +203,7 @@ public class TextTemplateFormController {
 		return userParams;
 	}
 	
-	@RequestMapping( value="/module/reporting/reports/renderers/previewTextTemplateReportRenderer", method=RequestMethod.GET)
+	@RequestMapping( value="/module/reporting/reports/renderers/previewTextTemplateReportRenderer.form", method=RequestMethod.GET)
 	public void initPreviewForm(ModelMap model, HttpServletRequest request,
 			@RequestParam(required=true, value="reportDefinition") String reportDefinitionUuid,
 			@RequestParam(required=false, value="uuid") String uuid,
@@ -257,7 +257,7 @@ public class TextTemplateFormController {
 	}
 		
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/module/reporting/reports/renderers/previewTextTemplateReportRenderer", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/reports/renderers/previewTextTemplateReportRenderer.form", method=RequestMethod.POST)
 	public void previewScript(ModelMap model, HttpServletRequest request,
 			@RequestParam(required=true, value="reportDefinition") String reportDefinitionUuid,
 			@RequestParam(required=true, value="uuid") String uuid,

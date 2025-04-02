@@ -57,7 +57,7 @@ public class ExcelReportRendererFormController {
 	/**
 	 *  prepares a new form for the Excel report renderers
 	 */
-	@RequestMapping("/module/reporting/reports/renderers/excelReportRenderer")
+	@RequestMapping("/module/reporting/reports/renderers/excelReportRenderer.form")
 	public void excelReportRenderer(ModelMap model, 
 								@RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid, 
 								@RequestParam(required=false, value="reportDefinitionUuid") String reportDefinitionUuid,
@@ -110,7 +110,7 @@ public class ExcelReportRendererFormController {
 	 * @throws InstantiationException 
 	 */
 	@SuppressWarnings("unchecked")
-	@RequestMapping("/module/reporting/reports/renderers/saveExcelReportRenderer")
+	@RequestMapping("/module/reporting/reports/renderers/saveExcelReportRenderer.form")
 	public String saveExcelReportRenderer(ModelMap model, HttpServletRequest request,
 					@RequestParam(required=false, value="uuid") String uuid,
 					@RequestParam(required=true,  value="name") String name,
