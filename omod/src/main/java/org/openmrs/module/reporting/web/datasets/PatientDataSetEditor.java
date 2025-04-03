@@ -19,6 +19,7 @@ import java.util.Properties;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -193,7 +194,7 @@ public class PatientDataSetEditor {
     	}
 		
 		MappedEditor editor = new MappedEditor();
-		editor.setAsText(columnDefinition);
+		editor.setAsText(StringEscapeUtils.unescapeXml(columnDefinition));
 		Mapped<DataDefinition> mappedDef = (Mapped<DataDefinition>) editor.getValue();
 		
     	dsd.addColumn(label, mappedDef.getParameterizable(), mappedDef.getParameterMappings());
