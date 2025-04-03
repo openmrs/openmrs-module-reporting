@@ -1,15 +1,11 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.reporting.report.service;
 
@@ -131,6 +127,16 @@ public interface ReportService extends OpenmrsService {
 	public ReportRequest getReportRequestByUuid(String uuid);
 	
 	/**
+	 * Get Report Requests by Report Definition, request date, having given status.
+	 * The list is sorted descending by evaluateCompleteDatetime, evaluateStartDatetime, priority, requestDate.
+	 *
+	 * @param reportDefinition a Report Definition filter, nullable
+	 * @param requestOnOrAfter a Date used to limit result to ReportRequests which ware requested on or after
+	 *                          (greater or equal filter), nullable
+	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
+	 *                          (lower or equal filter), nullable
+	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
+	 *                  or empty array means that all statuses are included, nullable
 	 * @return all {@link ReportRequest} in the system that match the passed parameters
 	 * @should retrieve report requests by definition
 	 */
@@ -138,11 +144,57 @@ public interface ReportService extends OpenmrsService {
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
 
 	/**
+	 * Get Report Requests by Report Definition, request date, having given status, limit result to at most {@code
+	 * mostRecentNum} elements.
+	 * The list is sorted descending by evaluateCompleteDatetime, evaluateStartDatetime, priority, requestDate.
+	 *
+	 * @param reportDefinition a Report Definition filter, nullable
+	 * @param requestOnOrAfter a Date used to limit result to ReportRequests which ware requested on or after
+	 *                          (greater or equal filter), nullable
+	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
+	 *                          (lower or equal filter), nullable
+	 * @param mostRecentNum maximum number of results, a null value means all records are to be returned, nullable
+	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
+	 *                  or empty array means that all statuses are included, nullable
 	 * @return all {@link ReportRequest} in the system that match the passed parameters
 	 * @should retrieve report requests by definition
 	 */
 	@Transactional(readOnly = true)
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
+
+	/**
+	 * Get Report Requests by Report Definition, request date, having given status.
+	 * The list is sorted descending by evaluateCompleteDatetime, evaluateStartDatetime, priority, requestDate.
+	 *
+	 * @param reportDefinition a Report Definition filter, nullable
+	 * @param requestOnOrAfter a Date used to limit result to ReportRequests which ware requested on or after
+	 *                          (greater or equal filter), nullable
+	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
+	 *                          (lower or equal filter), nullable
+	 * @param firstResult the first result to be retrieved, nullable
+	 * @param maxResults a limit upon the number of Report Requests to be retrieved, nullable
+	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
+	 *                  or empty array means that all statuses are included, nullable
+	 * @return all {@link ReportRequest} in the system that match the passed parameters
+	 * @since 1.27.0
+	 */
+	@Transactional(readOnly = true)
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status...statuses);
+
+	/**
+	 * Gets a count of Report Requests that match by Report Definition, request date limits and status(-es).
+	 *
+	 * @param reportDefinition a Report Definition filter, nullable
+	 * @param requestOnOrAfter a Date used to limit result to ReportRequests which ware requested on or after
+	 *                          (greater or equal filter), nullable
+	 * @param requestOnOrBefore a Date used to limit result to ReportRequests which ware requested on or before
+	 *                          (lower or equal filter), nullable
+	 * @param statuses an array of Status, used to limit result to ReportRequests with status included in the array, null
+	 *                  or empty array means that all statuses are included, nullable
+	 * @return the count of Report Requests that match the passed parameters
+	 * @since 1.27.0
+	 */
+	public long getReportRequestsCount(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}

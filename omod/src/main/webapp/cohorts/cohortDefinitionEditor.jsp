@@ -92,7 +92,7 @@
 		</c:choose>
 	</h1>
 
-	<springform:form method="post" commandName="cohortDefinition" action="saveCohortDefinition.form">
+	<springform:form method="post" modelAttribute="cohortDefinition" action="saveCohortDefinition.form">
 		<input type="hidden" name="uuid" value="${cohortDefinition.uuid}"/>
 		<input type="hidden" name="type" value="${cohortDefinition['class'].name}"/>
 

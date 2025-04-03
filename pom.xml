@@ -1,56 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>reporting</artifactId>
-	<version>1.16.0-SNAPSHOT</version>
+	<version>1.28.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Reporting</name>
 	<description>Parent project for Reporting</description>
 
 	<url>http://openmrs.org</url>
-	
+
 	<scm>
 		<connection>scm:git:git@github.com:openmrs/openmrs-module-reporting.git</connection>
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-reporting.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-reporting/</url>
         <tag>HEAD</tag>
     </scm>
-	
+
 	<distributionManagement>
         <repository>
             <id>openmrs-repo-modules</id>
             <name>OpenMRS Modules</name>
-            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/modules</url>
+            <url>https://openmrs.jfrog.io/artifactory/modules</url>
         </repository>
         <snapshotRepository>
             <id>openmrs-repo-snapshots</id>
             <name>OpenMRS Snapshots</name>
-            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
+            <url>https://openmrs.jfrog.io/artifactory/snapshots</url>
         </snapshotRepository>
 	</distributionManagement>
 
 	<modules>
 		<module>api</module>
 		<module>api-1.9</module>
+		<module>api-1.10</module>
 		<module>api-2.0</module>
+		<module>api-2.2</module>
+		<module>api-2.4</module>
 		<module>api-tests</module>
 		<module>omod</module>
     </modules>
 
 	<properties>
 		<openMRSVersion>1.9.9</openMRSVersion>
+		<reportingCompatibilityVersion>2.0.6</reportingCompatibilityVersion>
 		<openMRSMinorVersion>1.9</openMRSMinorVersion>
 		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
-		<serializationVersion>0.2.12</serializationVersion>
+		<serializationVersion>0.2.14</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
 		<jacksonVersion>1.5.0</jacksonVersion>
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.12</poiVersion>
 		<groovyVersion>1.8.7</groovyVersion>
-        <jodatimeVersion>2.3</jodatimeVersion>
+        <jodatimeVersion>2.12.5</jodatimeVersion>
         <handlebarsVersion>1.1.2</handlebarsVersion>
-        <openmrsTestutilsVersion>1.2</openmrsTestutilsVersion>
+        <openmrsTestutilsVersion>1.7.0</openmrsTestutilsVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>Reporting</MODULE_NAME>
@@ -223,21 +228,21 @@
 			<version>${serializationVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>serialization.xstream-api-1.9</artifactId>
 			<version>${serializationVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>serialization.xstream-api-1.10</artifactId>
 			<version>${serializationVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>serialization.xstream-api-2.0</artifactId>
@@ -258,7 +263,7 @@
 			<version>${htmlwidgetsVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
@@ -273,6 +278,29 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+    		<groupId>org.owasp.encoder</groupId>
+    		<artifactId>encoder</artifactId>
+    		<version>1.2.3</version>
+		</dependency>
+
+        <!-- For reading YAML and JSON files -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.10.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.9.8</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -330,12 +358,51 @@
         <profile>
             <id>2.1</id>
             <properties>
-                <openMRSVersion>2.1.0</openMRSVersion>
+                <openMRSVersion>2.1.1</openMRSVersion>
                 <openMRSMinorVersion>2.1</openMRSMinorVersion>
                 <jacksonVersion>1.9.13</jacksonVersion>
                 <reportingApiConditionalArtifactId>reporting-api-2.0</reportingApiConditionalArtifactId>
             </properties>
         </profile>
+        <profile>
+            <id>2.2</id>
+            <properties>
+                <openMRSVersion>2.2.0</openMRSVersion>
+                <openMRSMinorVersion>2.2</openMRSMinorVersion>
+                <jacksonVersion>1.9.13</jacksonVersion>
+                <reportingApiConditionalArtifactId>reporting-api-2.0</reportingApiConditionalArtifactId>
+            </properties>
+        </profile>
+		<profile>
+			<id>2.3</id>
+			<properties>
+				<openMRSVersion>2.3.0</openMRSVersion>
+				<openMRSMinorVersion>2.3</openMRSMinorVersion>
+				<jacksonVersion>1.9.13</jacksonVersion>
+				<reportingApiConditionalArtifactId>reporting-api-2.0</reportingApiConditionalArtifactId>
+			</properties>
+		</profile>
+		<profile>
+			<id>2.4</id>
+			<modules>
+				<module>api</module>
+				<module>api-1.9</module>
+				<module>api-1.10</module>
+				<module>api-2.0</module>
+				<module>api-2.2</module>
+				<module>api-2.4</module>
+				<module>api-tests</module>
+				<module>api-tests-2.4</module>
+				<module>omod</module>
+			</modules>
+			<properties>
+				<!-- 2.4.1 has a bugfix necessary for the tests to pass -->
+				<openMRSVersion>2.4.1</openMRSVersion>
+				<openMRSMinorVersion>2.4</openMRSMinorVersion>
+				<jacksonVersion>1.9.13</jacksonVersion>
+				<reportingApiConditionalArtifactId>reporting-api-2.4</reportingApiConditionalArtifactId>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>
@@ -421,7 +488,7 @@
 					<version>2.5</version>
 					<configuration>
 						<!-- Some tests are locale specific -->
-                        <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Duser.language=en -Duser.region=US</argLine>
+                        <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Duser.language=en -Duser.region=US -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
 						<!-- Bamboo agents require a different tmp folder -->
 						<systemPropertyVariables>
 							<java.io.tmpdir>${java.io.tmpdir}</java.io.tmpdir>
@@ -547,7 +614,7 @@
 		<repository>
 			<id>openmrs-repo</id>
 			<name>OpenMRS Nexus Repository</name>
-			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+			<url>https://openmrs.jfrog.io/artifactory/public</url>
 		</repository>
 	</repositories>
 
@@ -555,7 +622,7 @@
 		<pluginRepository>
 			<id>openmrs-repo</id>
 			<name>OpenMRS Nexus Repository</name>
-			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+			<url>https://openmrs.jfrog.io/artifactory/public</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>

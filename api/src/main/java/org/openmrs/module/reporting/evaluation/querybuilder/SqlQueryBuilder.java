@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
 import java.sql.Connection;
@@ -19,8 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import liquibase.util.StringUtils;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,10 +72,26 @@ public class SqlQueryBuilder implements QueryBuilder {
 	//***** INSTANCE METHODS *****
 
 	public SqlQueryBuilder append(String clause) {
-		clause = StringUtils.stripComments(clause);
+		clause = stripComments(clause);
 		queryClauses.add(clause);
 		return this;
 	}
+	
+	/**
+     * Searches through a String which contains SQL code and strips out
+     * any comments that are between \/**\/ or anything that matches
+     * SP--SP<text>\n (to support the ANSI standard commenting of --
+     * at the end of a line).
+     * 
+     * Copied from liquibase.util.StringUtils
+     * 
+     * @return The String without the comments in
+     */
+    private static String stripComments(String multiLineSQL) {
+        String strippedSingleLines = Pattern.compile("(.*?)\\s*\\-\\-.*\n").matcher(multiLineSQL).replaceAll("$1\n");
+        strippedSingleLines = Pattern.compile("(.*?)\\s*\\-\\-.*$").matcher(strippedSingleLines).replaceAll("$1\n");
+        return Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL).matcher(strippedSingleLines).replaceAll("").trim();
+    }
 
 	public SqlQueryBuilder addParameter(String parameterName, Object parameterValue) {
 		getParameters().put(parameterName, parameterValue);
@@ -99,10 +123,10 @@ public class SqlQueryBuilder implements QueryBuilder {
 	@Override
 	public List<DataSetColumn> getColumns(DbSessionFactory sessionFactory) {
 		final List<DataSetColumn> l = new ArrayList<DataSetColumn>();
-		
+
 		try {
 			sessionFactory.getCurrentSession().doWork(new Work() {
-				
+
 				@Override
 				public void execute(Connection connection) throws SQLException {
 					PreparedStatement statement =  null;
@@ -128,20 +152,20 @@ public class SqlQueryBuilder implements QueryBuilder {
 		catch (Exception e) {
 			throw new IllegalArgumentException("Unable to retrieve columns for query", e);
 		}
-		
+
 		return l;
 	}
 
 	@Override
 	public List<Object[]> evaluateToList(DbSessionFactory sessionFactory, EvaluationContext context) {
-		
+
 		final List<Object[]> ret = new ArrayList<Object[]>();
 		EvaluationProfiler profiler = new EvaluationProfiler(context);
 		profiler.logBefore("EXECUTING_QUERY", toString());
-		
+
 		try {
 			sessionFactory.getCurrentSession().doWork(new Work() {
-				
+
 				@Override
 				public void execute(Connection connection) throws SQLException {
 					PreparedStatement statement =  null;
@@ -174,7 +198,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 			profiler.logError("EXECUTING_QUERY", toString(), e);
 			throw new IllegalArgumentException("Unable to execute query", e);
 		}
-		
+
 		profiler.logAfter("EXECUTING_QUERY", "Completed successfully with " + ret.size() + " results");
 		return ret;
 	}

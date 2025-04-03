@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.report.service;
 
 import org.apache.commons.io.FileUtils;
@@ -211,7 +220,22 @@ public class ReportServiceImpl extends BaseOpenmrsService implements ReportServi
 	 */
 	@Transactional(readOnly=true)
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses) {
-		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, mostRecentNum, statuses);
+		return getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, 0, mostRecentNum, statuses);
+	}
+
+	/**
+	 * @see ReportService#getReportRequests(ReportDefinition, Date, Date, Integer, Integer, Status...)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status... statuses) {
+		return reportDAO.getReportRequests(reportDefinition, requestOnOrAfter, requestOnOrBefore, firstResult, maxResults, statuses);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public long getReportRequestsCount(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status... statuses) {
+		return reportDAO.getReportRequestsCount(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
 	}
 
 	/**

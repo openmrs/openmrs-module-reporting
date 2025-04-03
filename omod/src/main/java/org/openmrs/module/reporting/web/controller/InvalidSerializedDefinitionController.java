@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.controller;
 
 import java.io.PrintStream;
@@ -32,7 +41,7 @@ public class InvalidSerializedDefinitionController {
     /**
      * View Invalid Serialized Definition Page
      */
-    @RequestMapping("/module/reporting/definition/invalidSerializedDefinitions")
+    @RequestMapping("/module/reporting/definition/invalidSerializedDefinitions.form")
     public void invalidSerializedDefinitions(ModelMap model) {
     	
     	SerializedDefinitionService service = Context.getService(SerializedDefinitionService.class);
@@ -55,7 +64,7 @@ public class InvalidSerializedDefinitionController {
     /**
      * Edit Invalid Serialized Definition Page
      */
-    @RequestMapping("/module/reporting/definition/editInvalidSerializedDefinition")
+    @RequestMapping("/module/reporting/definition/editInvalidSerializedDefinition.form")
     public void editInvalidSerializedDefinition(
             @RequestParam(required=true, value="type") Class<? extends Definition> type,
             @RequestParam(required=true, value="uuid") String uuid,
@@ -70,7 +79,7 @@ public class InvalidSerializedDefinitionController {
     /**
      * Edit Invalid Serialized Definition Page
      */
-    @RequestMapping("/module/reporting/definition/saveSerializedDefinition")
+    @RequestMapping("/module/reporting/definition/saveSerializedDefinition.form")
     public String saveSerializedDefinition(ModelMap model, HttpServletRequest request, HttpServletResponse response,
     		@RequestParam(required=true, value="uuid") String uuid,
     		@RequestParam(required=true, value="name") String name,
@@ -96,7 +105,7 @@ public class InvalidSerializedDefinitionController {
     /**
      * Edit Invalid Serialized Definition Page
      */
-    @RequestMapping("/module/reporting/definition/testSerializedDefinition")
+    @RequestMapping("/module/reporting/definition/testSerializedDefinition.form")
     @SuppressWarnings("unchecked")
     public void testSerializedDefinition(ModelMap model, HttpServletRequest request, HttpServletResponse response,
             @RequestParam(required=true, value="type") String type,
@@ -120,7 +129,7 @@ public class InvalidSerializedDefinitionController {
     /**
      * Purges the definition represented by the given uuid.
     */
-    @RequestMapping("/module/reporting/definition/purgeSerializedDefinition")
+    @RequestMapping("/module/reporting/definition/purgeSerializedDefinition.form")
     public String purgeSerializedDefinition(@RequestParam(required=true, value="uuid") String uuid) {
     	SerializedDefinitionService sds = Context.getService(SerializedDefinitionService.class);
     	sds.purgeDefinition(uuid);
@@ -130,7 +139,7 @@ public class InvalidSerializedDefinitionController {
     /**
      * Converts the definition represented by the given uuid using the given converter
     */
-    @RequestMapping("/module/reporting/definition/convertDefinition")
+    @RequestMapping("/module/reporting/definition/convertDefinition.form")
     public String convertDefinition(@RequestParam(required=true, value="uuid") String uuid,
     								@RequestParam(required=true, value="converter") Class<? extends DefinitionConverter> converter) throws Exception {
     	SerializedDefinitionService sds = Context.getService(SerializedDefinitionService.class);

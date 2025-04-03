@@ -1,5 +1,16 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
+import org.databene.benerator.util.SimpleRandom;
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
@@ -10,6 +21,7 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.contrib.testdata.TestDataManager;
+import org.openmrs.contrib.testdata.builder.PatientBuilder;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
@@ -43,7 +55,13 @@ public class EncountersForPatientDataEvaluatorTest extends BaseModuleContextSens
         Context.getLocationService().saveLocation(location);
 
         EvaluationContext context = new EvaluationContext();
-        Patient patient = data.randomPatient().save();
+        PatientBuilder patientBuilder = data.randomPatient();
+        
+        LocalDate visitDate = LocalDate.parse("2013-10-01");
+        int minimumAge = LocalDate.now().getYear() - visitDate.getYear() + 1;
+        
+        patientBuilder.age(SimpleRandom.randomInt(minimumAge, 90));
+        Patient patient = patientBuilder.save();
         // add an older closed visit
         Visit v1 = data.visit().patient(patient).visitType(visitType).started("2013-10-01 09:30:00").stopped("2013-10-03 09:30:00").location(location).save();
         Encounter e1 =  data.randomEncounter().encounterType(encounterType).visit(v1).patient(patient).encounterDatetime("2013-10-01 10:30:00").location(location).save();
