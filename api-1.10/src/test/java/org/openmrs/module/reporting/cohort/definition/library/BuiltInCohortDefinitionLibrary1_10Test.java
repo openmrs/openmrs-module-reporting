@@ -17,6 +17,7 @@ import org.openmrs.Drug;
 import org.openmrs.module.reporting.common.Match;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.StartStopDrugOrderCohortDefinition;
 
 import java.util.Date;
 import java.util.List;
@@ -52,6 +53,19 @@ public class BuiltInCohortDefinitionLibrary1_10Test {
         assertThat(drugOrderCohortDefinition, hasParameter("activeOnDate", Date.class));
         assertThat(drugOrderCohortDefinition, hasParameter("careSetting", CareSetting.class));
         assertThat(drugOrderCohortDefinition, hasParameter("drugs", Drug.class, List.class));
+    }
+    
+    @Test
+    public void testgetStartStopDrugOrderSearch() throws Exception {
+        CohortDefinition startStopDrugOrderCohortDef = library.getStartStopDrugOrderSearch();
+        assertTrue(StartStopDrugOrderCohortDefinition.class.isAssignableFrom(startStopDrugOrderCohortDef.getClass()));
+        assertThat(startStopDrugOrderCohortDef, hasParameter("state", Match.class));
+        assertThat(startStopDrugOrderCohortDef, hasParameter("drugConcepts", Concept.class, List.class));
+        assertThat(startStopDrugOrderCohortDef, hasParameter("drugSets", Concept.class, List.class));
+        assertThat(startStopDrugOrderCohortDef, hasParameter("onOrBefore", Date.class));
+        assertThat(startStopDrugOrderCohortDef, hasParameter("onOrAfter", Date.class));
+        assertThat(startStopDrugOrderCohortDef, hasParameter("careSetting", CareSetting.class));
+        assertThat(startStopDrugOrderCohortDef, hasParameter("drugs", Drug.class, List.class));
     }
 
 }

@@ -14,5 +14,5 @@ package org.openmrs.module.reporting.common;
  * matching requirements
  */
 public enum Match {
-	ANY, ALL, NONE
+	ANY, ALL, NONE, STARTED, STOPPED, CHANGED
 }
