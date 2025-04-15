@@ -50,7 +50,7 @@
 		<serializationVersion>0.2.14</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
 		<jacksonVersion>1.5.0</jacksonVersion>
-		<quartzVersion>2.1.1</quartzVersion>
+		<quartzVersion>2.3.2</quartzVersion>
 		<poiVersion>3.12</poiVersion>
 		<groovyVersion>1.8.7</groovyVersion>
         <jodatimeVersion>2.12.5</jodatimeVersion>
