@@ -1,15 +1,11 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.reporting.web.controller;
 
@@ -34,7 +30,7 @@ public class ScriptedCompositionPatientDataDefinitionController {
 	protected transient Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("unchecked")
-    @RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinition")
+    @RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinition.form")
 	public void showForm(ModelMap model, @RequestParam(value = "uuid", required = false) String uuid,
 	                     @RequestParam(value = "copyFromUuid", required = false) String copyFromUuid) {
 		model.put("scriptTypes", TemplateEngineManager.getAvailableTemplateEngineNames());
@@ -53,7 +49,7 @@ public class ScriptedCompositionPatientDataDefinitionController {
 		}
 	}
 	
-	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinitionSetComposition")
+	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinitionSetComposition.form")
 	public String setScriptCode(@RequestParam("uuid") String uuid, @RequestParam("scriptCode") String scriptCode,
 	                            @RequestParam("scriptType") String scriptType) {
 		PatientDataDefinition def = Context.getService(PatientDataService.class).getDefinitionByUuid(uuid);
@@ -71,7 +67,7 @@ public class ScriptedCompositionPatientDataDefinitionController {
 	 * @param uuid
 	 * @return
 	 */
-	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinitionClone")
+	@RequestMapping("/module/reporting/definition/scriptedCompositionPatientDataDefinitionClone.form")
 	public String cloneDefinition(WebRequest request, @RequestParam("name") String name,
 	                              @RequestParam(value = "description", required = false) String description,
 	                              @RequestParam("copyFromUuid") String copyFromUuid) {
