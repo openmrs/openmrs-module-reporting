@@ -16,7 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 
+@SkipBaseSetup
 public class PrivilegedDataConverterTest extends BaseModuleContextSensitiveTest {
 
     public static final String INPUT = "input";
@@ -27,15 +29,24 @@ public class PrivilegedDataConverterTest extends BaseModuleContextSensitiveTest 
     
     @Before
     public void setUp() throws Exception {
-        Context.addProxyPrivilege(HAS_PRIV);
-//        Context.removeProxyPrivilege(DOES_NOT_HAVE_PRIV);
+        initializeInMemoryDatabase();
+        executeDataSet("org/openmrs/module/reporting/include/PrivilegeTest.xml");
+        Context.logout();
+        Context.authenticate("test", "test");
     }
     
     @Test
-    public void testConvertWithPrivilege() throws Exception {
-        PrivilegedDataConverter converter = new PrivilegedDataConverter(HAS_PRIV);
-        converter.setReplacement(REPLACEMENT);
-        assertThat((String) converter.convert(INPUT), is(INPUT));
+    public void testConvertWithPrivilege() {
+        try {
+            Context.addProxyPrivilege(HAS_PRIV);
+            Context.hasPrivilege(HAS_PRIV);
+            PrivilegedDataConverter converter = new PrivilegedDataConverter(HAS_PRIV);
+            converter.setReplacement(REPLACEMENT);
+            assertThat((String) converter.convert(INPUT), is(INPUT));
+        }
+        finally {
+            Context.removeProxyPrivilege(HAS_PRIV);
+        }
     }
 
     @Test

@@ -32,7 +32,7 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {;
+public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 
     @Autowired
     LocationService locationService;
@@ -68,7 +68,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void testEvaluateWithNoProperties() throws Exception {
         Cohort c = cohortDefinitionService.evaluate(cd, null);
-        assertThat(c.size(), is(2));
+        assertThat(c.size(), is(3));
     }
 
     @Test

@@ -91,7 +91,7 @@ public class ReportLoader {
     public static void saveReportDesigns(ReportDefinition reportDefinition, List<ReportDesign> reportDesigns) {
         // purging a ReportDesign doesn't trigger any extra logic, so we can just purge-and-recreate here
         List<ReportDesign> existingDesigns = Context.getService(ReportService.class).getReportDesigns(reportDefinition, null, true);
-        if (existingDesigns.size() > 0) {
+        if (!existingDesigns.isEmpty()) {
             log.debug("Deleting " + existingDesigns.size() + " old designs for " + reportDefinition.getName());
             for (ReportDesign design : existingDesigns) {
                 Context.getService(ReportService.class).purgeReportDesign(design);

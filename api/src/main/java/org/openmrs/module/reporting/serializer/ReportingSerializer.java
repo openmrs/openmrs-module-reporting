@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
 import org.openmrs.module.serialization.xstream.mapper.CGLibMapper;
 import org.openmrs.module.serialization.xstream.mapper.HibernateCollectionMapper;
@@ -90,7 +91,7 @@ public class ReportingSerializer extends XStreamShortSerializer {
 
 		xstream.registerConverter(new ReportDefinitionConverter(mapper, converterLookup));
 
-		xstream.allowTypes(new Class[] { Mapped.class });
+		xstream.allowTypes(new Class[] { Mapped.class, Parameter.class });
 	}
 	
 	@Override

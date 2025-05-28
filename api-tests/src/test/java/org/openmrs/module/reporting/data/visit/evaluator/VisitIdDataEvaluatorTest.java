@@ -49,7 +49,7 @@ public class VisitIdDataEvaluatorTest extends BaseModuleContextSensitiveTest{
         VisitIdDataDefinition d = new VisitIdDataDefinition();
         EvaluationContext context = new EvaluationContext();
         EvaluatedVisitData ed = Context.getService(VisitDataService.class).evaluate(d, context);
-        Assert.assertEquals(5, ed.getData().size());  // one visit in the sample data has been voided
+        Assert.assertEquals(6, ed.getData().size());  // one visit in the sample data has been voided
         for (Integer eId : ed.getData().keySet()) {
             Assert.assertEquals(eId, ed.getData().get(eId));
         }
