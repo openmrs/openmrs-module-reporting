@@ -243,12 +243,12 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		Encounter enc = es.getEncounter(3);
 		final Integer patientId = 7;
 		Assert.assertEquals(patientId, enc.getPatient().getPatientId());//sanity check
-		enc.setEncounterDatetime(DateUtil.getDateTime(2005, 8, 1, 11, 0, 0, 0));
+		enc.setEncounterDatetime(DateUtil.getDateTime(2006, 1, 1, 11, 0, 0, 0));
 		es.saveEncounter(enc);
 		Context.flushSession();//because the query will compare with the value in the DB
 		
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
-		cd.setOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
+		cd.setOnOrBefore(DateUtil.getDateTime(2006, 1, 1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		Assert.assertTrue(c.contains(patientId));
 	}

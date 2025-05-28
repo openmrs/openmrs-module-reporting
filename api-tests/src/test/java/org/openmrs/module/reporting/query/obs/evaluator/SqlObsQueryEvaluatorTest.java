@@ -42,7 +42,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 		SqlObsQuery d = new SqlObsQuery();
 		d.setQuery("select obs_id from obs where concept_id = 5089");
 		ObsQueryResult s = evaluate(d, new EvaluationContext());
-		Assert.assertEquals(8, s.getSize());
+		Assert.assertEquals(9, s.getSize());
 	}
 	
 	@Test

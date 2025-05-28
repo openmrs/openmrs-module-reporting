@@ -57,9 +57,9 @@ public class MappedParametersObsQueryEvaluatorTest extends BaseModuleContextSens
         context.addParameterValue("date", date);
         ObsQueryResult result = Context.getService(ObsQueryService.class).evaluate(renamed, context);
 
-        assertThat(result.getSize(), is(10));
+        assertThat(result.getSize(), is(11));
         assertTrue(result.contains(6) && result.contains(7) && result.contains(9) && result.contains(10) && result.contains(11)
-                && result.contains(12) && result.contains(13) && result.contains(14) && result.contains(15) && result.contains(16));
+                && result.contains(12) && result.contains(13) && result.contains(14) && result.contains(15) && result.contains(16) && result.contains(77));
     }
 
 }

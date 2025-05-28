@@ -49,7 +49,7 @@ public class ActiveVisitQueryEvaluatorTest extends BaseModuleContextSensitiveTes
 
     @Before
     public void setup() throws Exception {
-        executeDataSet(XML_DATASET_PATH +XML_REPORT_TEST_DATASET);
+        executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
     }
 
     @Test
@@ -65,6 +65,9 @@ public class ActiveVisitQueryEvaluatorTest extends BaseModuleContextSensitiveTes
         activeVisits.add(3);
         activeVisits.add(4);
         activeVisits.add(5);
+
+        // This visit is  from the standardTestDataset
+        activeVisits.add(8);
 
         // now we will create a couple inactive visits, and two active ones
         Patient patient1 = data.randomPatient().birthdate("1975-05-27").save();
