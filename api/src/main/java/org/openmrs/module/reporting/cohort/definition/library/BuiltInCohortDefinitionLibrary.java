@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.reporting.cohort.definition.library;
 
+import org.openmrs.CareSetting;
+import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Form;
@@ -19,6 +21,7 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
@@ -26,6 +29,7 @@ import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefin
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InStateCohortDefinition;
+import org.openmrs.module.reporting.common.Match;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
@@ -271,5 +275,21 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("onOrBefore", "reporting.parameter.onOrBefore", Date.class));
         cd.addParameter(new Parameter("onDate", "reporting.parameter.date", Date.class));
         return cd;
+    }
+
+    @DocumentedDefinition("drugOrderSearch")
+    public CohortDefinition getDrugOrderSearch() {
+        CohortDefinition drugOrderCohortDefinition = new DrugOrderCohortDefinition();
+        drugOrderCohortDefinition.addParameter(new Parameter("which", "reporting.parameter.which", Match.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("drugConcepts", "reporting.parameter.drugConcepts", Concept.class, List.class, null));
+        drugOrderCohortDefinition.addParameter(new Parameter("drugSets", "reporting.parameter.drugSets", Concept.class, List.class, null));
+        drugOrderCohortDefinition.addParameter(new Parameter("activatedOnOrBefore", "reporting.parameter.activatedOnOrBefore", Date.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("activatedOnOrAfter", "reporting.parameter.activatedOnOrAfter", Date.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("activeOnOrBefore", "reporting.parameter.activeOnOrBefore", Date.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("activeOnOrAfter", "reporting.parameter.activeOnOrAfter", Date.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("activeOnDate", "reporting.parameter.activeOnDate", Date.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("careSetting", "reporting.parameter.careSetting", CareSetting.class));
+        drugOrderCohortDefinition.addParameter(new Parameter("drugs", "reporting.parameter.drugs", Drug.class, List.class, null));
+        return drugOrderCohortDefinition;
     }
 }

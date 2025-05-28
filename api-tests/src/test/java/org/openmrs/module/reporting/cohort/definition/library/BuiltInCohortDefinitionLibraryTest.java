@@ -11,14 +11,19 @@ package org.openmrs.module.reporting.cohort.definition.library;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.CareSetting;
+import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
+import org.openmrs.module.reporting.common.Match;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 import java.util.Date;
@@ -142,5 +147,21 @@ public class BuiltInCohortDefinitionLibraryTest {
         assertTrue(((MappedParametersCohortDefinition) cd).getWrapped().getParameterizable() instanceof BirthAndDeathCohortDefinition);
         assertThat(cd, hasParameter("startDate", Date.class));
         assertThat(cd, hasParameter("endDate", Date.class));
+    }
+
+    @Test
+    public void testgetDrugOrderSearch() throws Exception {
+        CohortDefinition drugOrderCohortDefinition = library.getDrugOrderSearch();
+        assertTrue(DrugOrderCohortDefinition.class.isAssignableFrom(drugOrderCohortDefinition.getClass()));
+        assertThat(drugOrderCohortDefinition, hasParameter("which", Match.class));
+        assertThat(drugOrderCohortDefinition, hasParameter("drugConcepts", Concept.class, List.class));
+        assertThat(drugOrderCohortDefinition, hasParameter("drugSets", Concept.class, List.class));
+        assertThat(drugOrderCohortDefinition, hasParameter("activatedOnOrBefore", Date.class));
+        assertThat(drugOrderCohortDefinition, hasParameter("activatedOnOrAfter", Date.class));
+        assertThat(drugOrderCohortDefinition, hasParameter("activeOnOrBefore", Date.class));
+        assertThat(drugOrderCohortDefinition, hasParameter("activeOnOrAfter", Date.class));
+        assertThat(drugOrderCohortDefinition, hasParameter("activeOnDate", Date.class));
+        assertThat(drugOrderCohortDefinition, hasParameter("careSetting", CareSetting.class));
+        assertThat(drugOrderCohortDefinition, hasParameter("drugs", Drug.class, List.class));
     }
 }
