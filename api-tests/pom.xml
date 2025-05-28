@@ -76,6 +76,11 @@
 			<artifactId>openmrs-web</artifactId>
 			<version>${openMRSVersion}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>reportingcompatibility-api</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

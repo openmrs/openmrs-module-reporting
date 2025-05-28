@@ -34,7 +34,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("org/openmrs/module/reporting/include/" + new TestUtil().getTestDatasetFilename("ReportTestDataset"));
+		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset-openmrs-2.4.xml");
 	}
 
 	@Test

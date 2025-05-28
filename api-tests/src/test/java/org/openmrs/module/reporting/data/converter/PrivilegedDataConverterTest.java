@@ -14,15 +14,10 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openmrs.api.context.Context;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Context.class)
-public class PrivilegedDataConverterTest {
+public class PrivilegedDataConverterTest extends BaseModuleContextSensitiveTest {
 
     public static final String INPUT = "input";
     public static final String REPLACEMENT = "****";
@@ -32,9 +27,8 @@ public class PrivilegedDataConverterTest {
     
     @Before
     public void setUp() throws Exception {
-        PowerMockito.mockStatic(Context.class);
-        PowerMockito.when(Context.hasPrivilege(HAS_PRIV)).thenReturn(true);
-        PowerMockito.when(Context.hasPrivilege(DOES_NOT_HAVE_PRIV)).thenReturn(false);
+        Context.addProxyPrivilege(HAS_PRIV);
+//        Context.removeProxyPrivilege(DOES_NOT_HAVE_PRIV);
     }
     
     @Test

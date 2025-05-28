@@ -45,14 +45,14 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 
-	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset-openmrs-2.4.xml";
 
 	@Autowired
 	EvaluationService evaluationService;
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
 	}
 
 	@Test
