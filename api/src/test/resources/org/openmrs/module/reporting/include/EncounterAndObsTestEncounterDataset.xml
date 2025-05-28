@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+ 
+<!-- Encounters -->
+
+  <encounter encounter_id="13" encounter_type="10" patient_id="100" location_id="4" encounter_datetime="2009-12-31 12:00:01.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="6519d653-393b-4118-9c83-a3715b82d4cc"/>
+  <encounter encounter_id="14" encounter_type="10" patient_id="101" location_id="4" encounter_datetime="2010-01-01 03:03:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="a519d653-393b-4118-9c83-a3715b82d4cc"/>
+  <encounter encounter_id="15" encounter_type="11" patient_id="102" location_id="4" encounter_datetime="2010-03-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="c519d653-393b-4108-9c83-a3715b82d4cc"/>
+  <encounter encounter_id="16" encounter_type="10" patient_id="100" location_id="4" encounter_datetime="2000-03-02 16:05:19.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="b519d653-393b-4108-9c83-a3715b82d4cc"/>
+  <encounter encounter_id="17" encounter_type="12" patient_id="100" location_id="4" encounter_datetime="2010-03-02 17:05:19.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="b519d653-393c-4108-9c83-a3715b82d4cc"/>
+  <encounter encounter_id="18" encounter_type="13" patient_id="102" location_id="4" encounter_datetime="2010-04-04 16:05:19.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="b519d651-393c-4108-9c83-a3715b82d4cb"/>
+  <encounter encounter_id="19" encounter_type="13" patient_id="102" location_id="4" encounter_datetime="2009-04-05 16:05:19.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="b519d652-393c-4108-9c83-a3715b82d4cb"/>
+
+  <encounter_provider encounter_provider_id="1" encounter_id="13" provider_id="2" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0aae8-20ee-46b7-ade6-9e68f897b712" />
+  <encounter_provider encounter_provider_id="2" encounter_id="14" provider_id="2" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0abe8-20ee-46b7-ade6-9e68f897b712" />
+  <encounter_provider encounter_provider_id="3" encounter_id="15" provider_id="2" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0ace8-20ee-46b7-ade6-9e68f897b712" />
+  <encounter_provider encounter_provider_id="4" encounter_id="16" provider_id="2" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0ade8-20ee-46b7-ade6-9e68f897b712" />
+  <encounter_provider encounter_provider_id="5" encounter_id="17" provider_id="2" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0aee8-20ee-46b7-ade6-9e68f897b712" />
+  <encounter_provider encounter_provider_id="6" encounter_id="18" provider_id="2" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0afe8-20ee-46b7-ade6-9e68f897b712" />
+  <encounter_provider encounter_provider_id="7" encounter_id="19" provider_id="2" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0bae8-20ee-46b7-ade6-9e68f897b712" />
+
+  <!-- Obs for patients -->
+  
+  <!-- Encounter 13 : Patient 100 -->  
+  <!-- Weight=70 -->
+  <obs obs_id="44" encounter_id="13" person_id="100" concept_id="5089" obs_datetime="2005-01-01 00:00:00.0" accession_number="AB540" value_modifier="&lt;" value_numeric="70.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="7583d7c0-5eec-11e0-a058-f0def12f6b0b" />
+  
+  <!-- Result of HIV Test=Positive -->
+  <obs obs_id="45" encounter_id="13" person_id="100" concept_id="2169" obs_datetime="2005-01-01 00:00:00.0" accession_number="1 21b" comments="Test was rapid." value_coded="703" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="7583d7c0-5eec-11e0-a058-f0def12f6bcb" />
+  
+  <!-- Encounter 14 : Patient 101 -->
+  <!-- Weight=80 -->
+  <obs obs_id="58" encounter_id="14" person_id="101" concept_id="5089" obs_datetime="2005-01-01 00:00:00.0" accession_number="099-1" value_modifier="&gt;=" value_numeric="80.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="a583d7c0-5eec-11e0-a058-f0def12f6b0b" />
+  
+  <!-- Result of HIV Test=Negative but NOT in Encounter -->
+  <obs obs_id="59" person_id="101" concept_id="2169" obs_datetime="2005-01-01 00:00:00.0" accession_number="23" value_coded="664" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="a583d7c0-5eec-11e0-a058-f0def12f6bcb" />
+  
+  <!-- Height=170 -->
+  <obs obs_id="88" encounter_id="14" person_id="101" concept_id="5090" obs_datetime="2005-01-01 00:00:00.0" accession_number="4377AG" value_modifier="=" value_numeric="170.0" location_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="7d4e7942-5eec-11e0-a058-f0def12f6b00" />
+
+<!-- Encounter 15 : Patient 102 -->
+  <!-- Weight=34 -->
+  <obs obs_id="60" encounter_id="15" person_id="102" concept_id="5089" obs_datetime="2005-01-01 00:00:00.0" value_numeric="34.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="a583d7c0-5eec-11e0-a058-f0def12f6b0c" />
+  
+  <!-- Pregnancy Status=Yes -->
+  <obs obs_id="200" encounter_id="15" person_id="102" concept_id="5272" obs_datetime="2005-01-01 00:00:00.0" value_coded="1065" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="a583d7c0-4bec-11e0-a059-f0def12f6bcd" />
+  
+  <!-- Result of HIV Test=Negative -->
+  <obs obs_id="62" encounter_id="15" person_id="102" concept_id="2169" obs_datetime="2005-01-01 00:00:00.0" value_coded="664" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="a583d7c0-5eec-11e0-a058-f0def12f6bce" />
+  
+  <!-- Height=159 -->
+  <obs obs_id="63" encounter_id="15" person_id="102" concept_id="5090" obs_datetime="2005-01-01 00:00:00.0" value_numeric="159.0" location_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="7d4e7942-5eec-11e0-a058-f0def12f6b0f" />
+
+  <!-- Encounter 16 : Patient 100 -->  
+  <!-- Weight=72 -->
+  <obs obs_id="64" encounter_id="16" person_id="100" concept_id="5089" obs_datetime="2005-02-01 00:00:00.0" value_numeric="72.0" location_id="4" creator="1" date_created="2005-02-01 00:00:00.0" voided="false" uuid="7583d7c0-5eec-11e0-a058-c0def12f6b0b" />
+  
+  <!-- Result of HIV Test=Negative -->
+  <obs obs_id="65" encounter_id="16" person_id="100" concept_id="2169" obs_datetime="2005-01-01 00:00:00.0" value_coded="664" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="7583d7c0-5eec-11e0-a058-c0def12f6bcb" />
+
+<!-- Encounter 17 : Patient 100 -->
+  <!-- Aortic Findings: Stenosis=Moderate, Peak Aortic Valve Velocity=4, Regurgitation=Mild  -->
+  <obs obs_id="32" encounter_id="17" person_id="100" concept_id="3986" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="93bf1d82-e1fe-11df-9195-001e378eb6de" />
+  <obs obs_id="33" encounter_id="17" person_id="100" concept_id="3893" obs_group_id="32" value_coded="1900" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="65668cf2-5eec-11e0-a058-f0def12f6b00" />
+  <obs obs_id="34" encounter_id="17" person_id="100" concept_id="3944" obs_group_id="32" value_numeric="4" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="5d141fc2-5eee-11e0-a058-f0def12f6b00" />
+  <obs obs_id="35" encounter_id="17" person_id="100" concept_id="3982" obs_group_id="32" value_coded="1901" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="65761e40-5eee-11e0-a058-f0def12f6b00" />
+  
+  <!-- Mitral Findings: Stenosis=Mild  -->
+  <obs obs_id="36" encounter_id="17" person_id="100" concept_id="3985" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="6d57549e-5eee-11e0-a058-f0def12f6b00" />
+  <obs obs_id="37" encounter_id="17" person_id="100" concept_id="3893" obs_group_id="36" value_coded="1901" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="7f016b76-5eee-11e0-a058-f0def12f6b00" />
+  
+  <!-- Functional Review of Symptoms: Symptom Present=Hearing Difficulties, Symptom Comment=Totally Deaf -->  
+  <obs obs_id="38" encounter_id="17" person_id="100" concept_id="1292" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="f623b71e-5ef2-11e0-a058-f0def12f6bb0" />
+  <obs obs_id="39" encounter_id="17" person_id="100" concept_id="1293" obs_group_id="38" value_coded="861" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="f623b71e-5ef2-11e0-a058-f0def12f6bc0" />
+  <obs obs_id="40" encounter_id="17" person_id="100" concept_id="1736" obs_group_id="38" value_text="totally deaf.  In fact, this comment is going to go on and on so I can test a really long comment." obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="f623b71e-5ef2-11e0-a058-f0def12f6b0d0" />
+  
+  <!-- Functional Review of Symptoms 2: Symptom Present=Diarrhea, Symptom Absent=Headache -->  
+  <obs obs_id="41" encounter_id="17" person_id="100" concept_id="1292" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="6d57549e-5eee-11e0-a058-f0def12f6b0a" />
+  <obs obs_id="42" encounter_id="17" person_id="100" concept_id="1293" obs_group_id="41" value_coded="16" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="f623b71e-5ef2-11e0-a058-f0def12f6b00" />
+  <obs obs_id="43" encounter_id="17" person_id="100" concept_id="1734" obs_group_id="41" value_coded="620" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="f623b71e-5ef2-11e0-a058-f0def12f6ba0" />
+
+<!-- Encounter 18 : Patient 102 -->  
+  <!-- Weight=54 -->
+  <obs obs_id="100" encounter_id="18" person_id="102" concept_id="5089" obs_datetime="2005-01-01 00:00:00.0" value_numeric="54.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="7583d7c0-5eec-11e0-a058-f0deb12f6b0b" />
+  
+  <!-- Result of HIV Test=Negative -->
+  <obs obs_id="101" encounter_id="18" person_id="102" concept_id="2169" obs_datetime="2005-01-01 00:00:00.0" value_coded="664" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="7583d7c0-5eec-11e0-a058-f0dea12f6bcb" />
+
+<!-- Encounter 19 : Patient 102 -->  
+  <!-- Weight=54 -->
+  <obs obs_id="102" encounter_id="19" person_id="102" concept_id="5089" obs_datetime="2005-01-02 00:00:00.0" value_numeric="25.0" location_id="4" creator="1" date_created="2005-01-02 00:00:00.0" voided="false" uuid="7583d7c0-5eec-11eb-a058-f0deb12f6b0b" />
+  
+  <!-- Result of HIV Test=Negative -->
+  <obs obs_id="103" encounter_id="19" person_id="102" concept_id="2169" obs_datetime="2005-01-02 00:00:00.0" value_coded="664" location_id="4" creator="1" date_created="2005-01-02 00:00:00.0" voided="false" uuid="7583d7c0-5eec-11ea-a058-f0dea12f6bcb" />
+</dataset>

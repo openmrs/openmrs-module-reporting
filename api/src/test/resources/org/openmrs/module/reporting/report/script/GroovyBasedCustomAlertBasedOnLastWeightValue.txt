@@ -1,0 +1,12 @@
+		if (lastWeight != null && lastWeight.encounter != null) {
+			if (lastWeight.valueNumeric < 70) {
+				return "Normal";
+			} else if (lastWeight.valueNumeric > 100
+					&& lastWeight.valueNumeric < 160) {
+				return "High";
+			} else if (lastWeight.valueNumeric > 160) {
+				return "The recorded weight value might be incorrect!";
+			} else {
+				return "Not Classified";
+			}
+		}

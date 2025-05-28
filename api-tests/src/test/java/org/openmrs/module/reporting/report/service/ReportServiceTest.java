@@ -58,7 +58,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 
-	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset-openmrs-2.4.xml";
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset.xml";
 
 	/**
 	 * Run this before each unit test in this class. The "@Before" method in

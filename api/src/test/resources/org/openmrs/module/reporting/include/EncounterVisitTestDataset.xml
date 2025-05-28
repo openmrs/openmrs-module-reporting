@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <!-- create some encounters to associate with existing visits in the core reporting test data set -->
+    <encounter encounter_id="61" encounter_type="6" patient_id="22" location_id="2" visit_id="1" form_id="1" encounter_datetime="2009-10-19 00:00:00.0" creator="1" date_created="2008-08-19 16:34:40.0" voided="false" void_reason="" uuid="88899912-c4cf-11de-a970-6ab447468ce9"/>
+    <encounter encounter_id="62" encounter_type="6" patient_id="23" location_id="2" visit_id="2" form_id="1" encounter_datetime="2009-08-19 00:00:00.0" creator="1" date_created="2008-08-19 17:34:40.0" voided="false" void_reason="" uuid="88899913-c4cf-11de-a970-6ab447468ce9"/>
+    <encounter encounter_id="63" encounter_type="6" patient_id="24" location_id="2" visit_id="3" form_id="1" encounter_datetime="2009-09-19 00:00:00.0" creator="1" date_created="2008-08-19 18:34:40.0" voided="false" void_reason="" uuid="88899914-c4cf-11de-a970-6ab447468ce9"/>
+</dataset>

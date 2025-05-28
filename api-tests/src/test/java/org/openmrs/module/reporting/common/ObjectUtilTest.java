@@ -43,7 +43,7 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 
-    protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+    protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset.xml";
 
 	@Before
 	public void setupObjectUtilTest() {
@@ -251,7 +251,7 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
     @Verifies(value="shouldReturnTheDefaultOpenmrsMetadataNames", method="format(OpenmrsMetadata md)")
     public void shouldReturnTheDefaultOpenmrsMetadataNames() throws Exception {
         String metadataName = "Never Never Land";
-        executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
 		LocationService locationService = Context.getLocationService();
 		Location location = locationService.getLocation(metadataName);
         String formattedName = ObjectUtil.format(location);
@@ -265,14 +265,14 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 
     @Test
     public void shouldLocalizedObsBasedOnDefaultLocale() throws Exception {
-        executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
         addLocalizedNamesToYesConcept();
         Assert.assertEquals("YES", ObjectUtil.format(createObsWithValueCodedYes()));
     }
 
     @Test
     public void shouldLocalizeObsBasedOnLocaleGlobalProperty() throws Exception {
-        executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
         addLocalizedNamesToYesConcept();
 		String previousLocale = TestUtil.getGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME);
 		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, "es");

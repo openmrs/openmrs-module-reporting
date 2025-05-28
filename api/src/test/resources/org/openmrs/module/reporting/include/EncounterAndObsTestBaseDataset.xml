@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+  <concept_class concept_class_id="1" name="Test" description="Acq. during patient encounter (vitals, labs, etc.)" creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="97097dd9-b092-4b68-a2dc-e5e5be961d42"/>
+  <concept_class concept_class_id="2" name="Procedure" description="Describes a clinical procedure" creator="1" date_created="2004-03-02 00:00:00.0" retired="false" uuid="77177ce7-1410-40ee-bbad-ff6905ee3095"/>
+  <concept_class concept_class_id="3" name="Drug" description="Drug" creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"/>
+  <concept_class concept_class_id="4" name="Diagnosis" description="Conclusion drawn through findings" creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="938834bf-a745-4dbd-b611-f06a9a5a3060"/>
+  <concept_class concept_class_id="5" name="Finding" description="Practitioner observation/finding" creator="1" date_created="2004-03-02 00:00:00.0" retired="false" uuid="04a0c64e-4e96-4d09-b7a9-c16966bc1240"/>
+  <concept_class concept_class_id="6" name="Anatomy" description="Anatomic sites / descriptors" creator="1" date_created="2004-03-02 00:00:00.0" retired="false" uuid="c4ed9081-fc7f-4474-84aa-99a969e40e7d"/>
+  <concept_class concept_class_id="7" name="Question" description="Question (eg, patient history, SF36 items)" creator="1" date_created="2004-03-02 00:00:00.0" retired="false" uuid="a82ef63c-e4e4-48d6-988a-fdd74d7541a7"/>
+  <concept_class concept_class_id="8" name="LabSet" description="Term to describe laboratory sets" creator="1" date_created="2004-03-02 00:00:00.0" retired="false" uuid="4719138c-8553-4c81-bb92-753f41f8be16"/>
+  <concept_class concept_class_id="9" name="MedSet" description="Term to describe medication sets" creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="f9c24ce5-fe85-4128-9b07-1c4ea980a539"/>
+  <concept_class concept_class_id="10" name="ConvSet" description="Term to describe convenience sets" creator="1" date_created="2004-03-02 00:00:00.0" retired="false" uuid="0248f513-d023-40b6-a274-235a33f6e25f"/>
+  <concept_class concept_class_id="11" name="Misc" description="Terms which don&apos;t fit other categories" creator="1" date_created="2004-03-02 00:00:00.0" retired="false" uuid="ecdee8a7-d741-4fe7-8e01-f79cacbe97bc"/>
+  <concept_class concept_class_id="12" name="Symptom" description="Patient-reported observation" creator="1" date_created="2004-10-04 00:00:00.0" retired="false" uuid="833bf0ff-c436-47ff-b868-2c249e8b2ff6"/>
+  <concept_class concept_class_id="13" name="Symptom/Finding" description="Observation that can be reported from patient or found on exam" creator="1" date_created="2004-10-04 00:00:00.0" retired="false" uuid="074f33db-4888-4e0c-be87-073635b3d70d"/>
+  <concept_class concept_class_id="14" name="Specimen" description="Body or fluid specimen" creator="1" date_created="2004-12-02 00:00:00.0" retired="false" uuid="d2339229-bc47-480b-bf20-548e2ed7c786"/>
+  <concept_class concept_class_id="15" name="Misc Order" description="Orderable items which aren&apos;t tests or drugs" creator="1" date_created="2005-02-17 00:00:00.0" retired="false" uuid="a5c73192-ad13-4040-97ee-f3b606717705"/>
+  <concept_class concept_class_id="16" name="Program" description="A treatment program" creator="1" date_created="2008-08-15 13:55:59.0" retired="false" uuid="2a3738f5-26f0-4f97-ae7a-f99e42fa6d44"/>
+  <concept_class concept_class_id="17" name="Workflow" description="A workflow within a treatment program" creator="1" date_created="2008-08-15 13:56:30.0" retired="false" uuid="dbdf1b12-dbcb-4d41-a8eb-39a551f56e6d"/>
+  <concept_class concept_class_id="18" name="State" description="A state within a workflow" creator="1" date_created="2008-08-15 13:56:55.0" retired="false" uuid="ac3feb09-e120-4d8c-97ee-f7544720efb8"/>
+
+  <concept_datatype concept_datatype_id="1" name="Numeric" hl7_abbreviation="NM" description="Numeric value, including integer or float (e.g., creatinine, weight)" creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="749b5078-8371-4849-aeab-181e3aed9415"/>
+  <concept_datatype concept_datatype_id="2" name="Coded" hl7_abbreviation="CWE" description="Value determined by term dictionary lookup (i.e., term identifier)" creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="ef301729-eec1-4de9-8bb9-3532e3abb9bc"/>
+  <concept_datatype concept_datatype_id="3" name="Text" hl7_abbreviation="ST" description="Free text" creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="c5f90600-cdf2-4085-bb61-8952bbbe8cab"/>
+  <concept_datatype concept_datatype_id="4" name="N/A" hl7_abbreviation="ZZ" description="Not associated with a datatype (e.g., term answers, sets)" creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="bf51481d-9b76-4a88-8ca4-88dd082ddf90"/>
+  <concept_datatype concept_datatype_id="5" name="Document" hl7_abbreviation="RP" description="Pointer to a binary or text-based document (e.g., clinical document, RTF, XML, EKG, image, etc.) stored in complex_obs table" creator="1" date_created="2004-04-15 00:00:00.0" retired="false" uuid="534eb4de-5e7d-44d6-ad18-89b1034875d3"/>
+  <concept_datatype concept_datatype_id="6" name="Date" hl7_abbreviation="DT" description="Absolute date" creator="1" date_created="2004-07-22 00:00:00.0" retired="false" uuid="c87d52c4-141f-4672-a3f6-48e9f8ce1336"/>
+  <concept_datatype concept_datatype_id="7" name="Time" hl7_abbreviation="TM" description="Absolute time of day" creator="1" date_created="2004-07-22 00:00:00.0" retired="false" uuid="8414667b-71f6-40c5-9ec9-289037dfb8db"/>
+  <concept_datatype concept_datatype_id="8" name="Datetime" hl7_abbreviation="TS" description="Absolute date and time" creator="1" date_created="2004-07-22 00:00:00.0" retired="false" uuid="736dca27-7b69-428b-872c-df7274e00e69"/>
+  <concept_datatype concept_datatype_id="10" name="Boolean" hl7_abbreviation="BIT" description="Boolean value (yes/no, true/false)" creator="1" date_created="2004-08-26 00:00:00.0" retired="false" uuid="bd9813c4-e111-49cd-b7ff-fd08aacadfb7"/>
+  <concept_datatype concept_datatype_id="11" name="Rule" hl7_abbreviation="ZZ" description="Value derived from other data" creator="1" date_created="2006-09-11 13:22:00.0" retired="false" uuid="d9137a3c-b9c6-4fa9-a12e-9ea03da812de"/>
+  <concept_datatype concept_datatype_id="12" name="Structured Numeric" hl7_abbreviation="SN" description="Complex numeric values possible (ie, &lt;5, 1-10, etc.)" creator="1" date_created="2005-08-06 00:00:00.0" retired="false" uuid="afd0c2e9-e81c-44f4-a5d4-ae0c4d28d0fb"/>
+  <concept_datatype concept_datatype_id="13" name="Complex" hl7_abbreviation="ED" description="Complex value.  Analogous to HL7 Embedded Datatype" creator="1" date_created="2008-06-11 13:22:00.0" retired="false" uuid="f33f4a89-72ee-4b2e-90f6-53252c8594c1"/>
+    
+<!-- Concepts -->  
+  <concept_description concept_description_id="2" concept_id="16" description="Diarrhea" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="a9df2a98-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="16" retired="false" datatype_id="4" class_id="4" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="94f22f72-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept_name concept_id="16" name="DIARRHEA" locale="en" locale_preferred="true" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="16" voided="false" uuid="a1af378c-5ee1-11e0-a058-f0def12f6b00"/>
+
+  <concept_description concept_description_id="3" concept_id="620" description="Headache" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="d75c1fda-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="620" retired="false" datatype_id="4" class_id="4" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="e4483e54-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept_name concept_id="620" name="HEADACHE" locale="en" locale_preferred="true" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="620" voided="false" uuid="f57f979e-5ee1-11e0-a058-f0def12f6b00"/>
+  
+  <concept_description concept_description_id="4" concept_id="861" description="Hearing Difficulties" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="023909f2-5ee2-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="861" retired="false" datatype_id="4" class_id="4" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="0a70472a-5ee2-11e0-a058-f0def12f6b00"/>
+  <concept_name concept_id="861" name="HEARING DIFFICULTIES" locale_preferred="true" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="861" voided="false" uuid="11d81060-5ee2-11e0-a058-f0def12f6b00"/>
+    
+  <concept_description concept_description_id="6" concept_id="3986" description="Aortic Valve Findings" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="ce60238a-5ee2-11e0-a058-f0def12f6b00"/>
+  <concept_description concept_description_id="7" concept_id="3893" description="Stenosis" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="d713322e-5ee2-11e0-a058-f0def12f6b00"/>
+  <concept_description concept_description_id="8" concept_id="3944" description="Peak Aortic Valve Velocity" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="df6ead36-5ee2-11e0-a058-f0def12f6b00"/>
+  <concept_description concept_description_id="9" concept_id="3982" description="Regurgitation" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="ed65d7fc-5ee2-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="3986" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="true" datatype_id="4"/>
+  <concept concept_id="3893" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="false" datatype_id="2"/>
+  <concept concept_id="3944" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="false" datatype_id="1"/>
+  <concept concept_id="3982" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="false" datatype_id="2"/>
+  <concept_name voided="false" concept_name_id="3986" concept_id="3986" locale_preferred="true" name="AORTIC VALVE FINDINGS" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_name voided="false" concept_name_id="3893" concept_id="3893" locale_preferred="true" name="STENOSIS" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_name voided="false" concept_name_id="3944" concept_id="3944" locale_preferred="true" name="PEAK AORTIC VALVE VELOCITY" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_name voided="false" concept_name_id="3982" concept_id="3982" locale_preferred="true" name="REGURGITATION" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_set concept_set_id="4" concept_id="3893" concept_set="3986" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0"/>
+  <concept_set concept_set_id="5" concept_id="3944" concept_set="3986" sort_weight="2" creator="1" date_created="2005-01-01 00:00:00.0"/>
+  <concept_set concept_set_id="6" concept_id="3982" concept_set="3982" sort_weight="3" creator="1" date_created="2005-01-01 00:00:00.0"/>
+
+  <concept_description concept_description_id="10" concept_id="3985" description="Mitral Valve Findings" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="1772cf78-5ee3-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="3985" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="true" datatype_id="4"/>
+  <concept concept_id="3893" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="false" datatype_id="2"/>
+  <concept_name voided="false" concept_name_id="3985" concept_id="3985" locale_preferred="true" name="MITRAL VALVE FINDINGS" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_set concept_set_id="7" concept_id="3893" concept_set="3985" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0"/>
+
+  <concept_description concept_description_id="1" concept_id="5089" description="Patient&apos;s weight in kilograms." locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="33107564-5ede-11e0-a058-f0def12f6b00"/>  
+  <concept concept_id="5089" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="3af4b934-5ede-11e0-a058-f0def12f6b00"/>
+  <concept_name concept_id="5089" name="WEIGHT (KG)" locale="en" locale_preferred="true" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="5089" voided="false" uuid="41bf14a8-5ede-11e0-a058-f0def12f6b00"/>
+  
+  <concept_description concept_description_id="11" concept_id="1292" description="Functional Review Of Symptoms" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="416d441e-5ee5-11e0-a058-f0def12f6b00"/>
+  <concept_description concept_description_id="12" concept_id="1293" description="Symp Pres" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="4b6cddd0-5ee5-11e0-a058-f0def12f6b00"/>
+  <concept_description concept_description_id="13" concept_id="1734" description="Symp Abs" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="52f764c6-5ee5-11e0-a058-f0def12f6b00"/>
+  <concept_description concept_description_id="14" concept_id="1736" description="Symp Comment" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="5a279d88-5ee5-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="1292" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="true" datatype_id="4"/>
+  <concept concept_id="1293" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="false" datatype_id="2"/>
+  <concept concept_id="1734" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="false" datatype_id="2"/>
+  <concept concept_id="1736" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="false" datatype_id="3"/>
+  <concept_name voided="false" concept_name_id="1292" locale_preferred="true" concept_id="1292" name="FUNCTIONAL REVIEW OF SYMPTOMS" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_name voided="false" concept_name_id="1293" locale_preferred="true" concept_id="1293" name="SYMP PRES" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_name voided="false" concept_name_id="1734" locale_preferred="true" concept_id="1734" name="SYMP ABS" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_name voided="false" concept_name_id="1736" locale_preferred="true" concept_id="1736" name="SYMP COMMENT" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_set concept_set_id="7" concept_id="1293" concept_set="1292" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0"/>
+  <concept_set concept_set_id="8" concept_id="1734" concept_set="1292" sort_weight="2" creator="1" date_created="2005-01-01 00:00:00.0"/>
+  <concept_set concept_set_id="9" concept_id="1736" concept_set="1292" sort_weight="3" creator="1" date_created="2005-01-01 00:00:00.0"/>
+
+  <concept_description concept_description_id="5" concept_id="5090" description="Patient&apos;s height in centimeters." locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="5180e4ca-5ede-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="5090" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="false" datatype_id="1"/>
+  <concept_name voided="false" concept_name_id="5090" locale_preferred="true" concept_id="5090" name="HEIGHT (CM)" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+ 
+  <concept_description concept_description_id="15" concept_id="1900" description="Moderate" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="023909f2-5ee2-11e0-a058-f0def12f6ba0"/>
+  <concept concept_id="1900" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="0a70472a-5ee2-11e0-a058-f0def12f6bb0"/>
+  <concept_name concept_id="1900" name="MODERATE" locale_preferred="true" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="1900" voided="false" uuid="11d81060-5ee2-11e0-a058-f0def12f6bc0"/>
+   
+  <concept_description concept_description_id="16" concept_id="1901" description="Mild" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="023909f2-5ee2-11e0-a058-f0def12f6bd0"/>
+  <concept concept_id="1901" retired="false" datatype_id="4" class_id="18" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="0a70472a-5ee2-11e0-a058-f0def12f6be0"/>
+  <concept_name concept_id="1901" name="MILD" locale_preferred="true" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="1901" voided="false" uuid="11d81060-5ee2-11e0-a058-f0def12f6bf0"/>
+  
+  <concept_description concept_description_id="17" concept_id="2169" description="Result of HIV Test" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="a75c1fda-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="2169" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="b4483e54-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept_name concept_id="2169" name="RESULT OF HIV TEST" locale_preferred="true" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2169" voided="false" uuid="c57f979e-5ee1-11e0-a058-f0def12f6b00"/>
+  
+  <concept_description concept_description_id="18" concept_id="703" description="Positive" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="e75c1fda-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="703" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d4483e54-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept_name concept_id="703" name="POSITIVE" locale="en" locale_preferred="true" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="703" voided="false" uuid="fa7f979e-5ee1-11e0-a058-f0def12f6b00"/>
+  
+  <concept_description concept_description_id="19" concept_id="664" description="Negative" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="db5c1fda-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="664" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="ec483e54-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept_name concept_id="664" name="NEGATIVE" locale_preferred="true" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="664" voided="false" uuid="fd7f979e-5ee1-11e0-a058-f0def12f6b00"/>
+  
+  <concept_description concept_description_id="20" concept_id="5272" description="Pregnancy Status" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="b9df2a98-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="5272" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="b4f22f72-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept_name concept_id="5272" name="PREGNANCY STATUS IS A REALLY LONG CONCEPT NAME" locale_preferred="true" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="5272" voided="false" uuid="b1af378c-5ee1-11e0-a058-f0def12f6b00"/>
+ 
+  <concept_description concept_description_id="21" concept_id="1065" description="Yes" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="c9df2a98-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept concept_id="1065" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="c4f22f72-5ee1-11e0-a058-f0def12f6b00"/>
+  <concept_name concept_id="1065" name="YES" locale="en" locale_preferred="true" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="1065" voided="false" uuid="c1af378c-5ee1-11e0-a058-f0def12f6b00"/>
+  
+  <concept_description concept_description_id="22" concept_id="3040" description="TUBERCULOSIS DRUG SENSITIVITY TEST CONSTRUCT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="416d441e-5ee6-11e0-a058-f0def12f6b00"/>
+  <concept_description concept_description_id="23" concept_id="3025" description="TUBERCULOSIS DRUG SENSITIVITY TEST RESULT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="4b6cddd0-5ee7-11e0-a058-f0def12f6b00"/>
+  <concept_description concept_description_id="24" concept_id="1441" description="RESISTANT TO TUBERCULOSIS DRUG" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="52f764c6-5ee5-11e0-y058-f0def12f6b00"/>
+  <concept_description concept_description_id="25" concept_id="1414" description="ETHIONAMIDE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="5a279d88-5ee5-11e0-a058-q0def12f6b00"/>
+  <concept concept_id="3040" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="true" datatype_id="4"/>
+  <concept concept_id="3025" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="true" datatype_id="4"/>
+  <concept concept_id="1441" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="false" datatype_id="2"/>
+  <concept concept_id="1414" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" is_set="false" datatype_id="4"/>
+  <concept_name voided="false" concept_name_id="3040" locale_preferred="true" concept_id="3040" name="TUBERCULOSIS DRUG SENSITIVITY TEST CONSTRUCT" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_name voided="false" concept_name_id="3025" locale_preferred="true" concept_id="3025" name="TUBERCULOSIS DRUG SENSITIVITY TEST RESULT" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_name voided="false" concept_name_id="1441" locale_preferred="true" concept_id="1441" name="RESISTANT TO TUBERCULOSIS DRUG" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_name voided="false" concept_name_id="1414" locale_preferred="true" concept_id="1414" name="ETHIONAMIDE" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" />
+  <concept_set concept_set_id="10" concept_id="3025" concept_set="3040" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0"/>
+  <concept_set concept_set_id="11" concept_id="1441" concept_set="3025" sort_weight="2" creator="1" date_created="2005-01-01 00:00:00.0"/>
+  
+ 
+  <person person_id="50" gender="M" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-15 15:57:09.0" voided="false" uuid="341b4e41-790c-484f-b6ed-71dc8da222ae"/>
+ <!-- Patients -->
+  <person person_id="100" gender="M" birthdate="1975-04-08 00:00:00.0" birthdate_estimated="0" dead="false" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" uuid="a24f5eca-5ee5-11e0-a058-f0def12f6bc0"/>
+  <person person_id="101" gender="F" birthdate="2007-05-27 00:00:00.0" birthdate_estimated="0" dead="false" creator="1" date_created="2006-01-18 00:00:00.0" voided="false" uuid="a91f2442-5ee5-11e0-a058-f0def12f6bb0"/>
+  <person person_id="102" gender="M" birthdate="1976-08-25 00:00:00.0" birthdate_estimated="1" dead="false" creator="1" date_created="2006-01-18 00:00:00.0" voided="false" uuid="affce16e-5ee5-11e0-a058-f0def12f6be0"/>
+  <person person_id="103" gender="F" birthdate="1976-08-25 00:00:00.0" dead="false" creator="1" birthdate_estimated="0" date_created="2006-01-18 00:00:00.0" voided="false" uuid="b81f79ba-5ee5-11e0-a058-f0def12f6bf0"/>
+
+  <person_name person_name_id="50" preferred="true" person_id="50" prefix="Mr." given_name="Horatio" middle_name="Test" family_name="Hornblower" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3bc3cc7"/>
+
+  <patient_identifier_type patient_identifier_type_id="1" name="OpenMRS Identification Number" description="Unique number used in OpenMRS" format="" check_digit="true" creator="1" date_created="2005-09-22 00:00:00.0" required="false" validator="org.openmrs.patient.impl.LuhnIdentifierValidator" retired="false" uuid="1a339fe9-38bc-4ab3-b180-320988c0b968"/>
+  <patient_identifier_type patient_identifier_type_id="2" name="Old Identification Number" description="Number given out prior to the OpenMRS system (No check digit)" format="" check_digit="false" creator="1" date_created="2005-09-22 00:00:00.0" required="false" retired="false" uuid="2f470aa8-1d73-43b7-81b5-01f0c0dfa53c"/>
+  <patient_identifier_type patient_identifier_type_id="4" name="Social Security Number" description="Soc security ID" format="" check_digit="false" creator="1" date_created="2008-08-15 15:59:20.0" required="false" format_description="" validator="" retired="true" retired_by="1" date_retired="2008-08-15 00:00:00.0" retire_reason="test" uuid="158d6b17-a8ab-435b-8fe3-952a04bda757"/>
+
+  <patient_identifier patient_identifier_id="12" patient_id="100" identifier="9080" identifier_type="2" preferred="0" location_id="4" creator="1" date_created="2009-01-18 00:00:00.0" voided="false" void_reason="" uuid="91ce4086-c4cd-11de-a970-6ab447468ca9"/>   
+  
+  <patient_identifier patient_identifier_id="13" patient_id="101" identifier="101" identifier_type="2" preferred="0" location_id="4" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="ff41928c-3bca-48d9-a4dc-9198f6b287bb"/>
+  <patient_identifier patient_identifier_id="14" patient_id="101" identifier="ABC123" identifier_type="2" preferred="0" location_id="4" creator="1" date_created="2006-01-18 00:00:00.0" voided="false" void_reason="" uuid="ff41928c-3bba-48d9-a4dc-9198f6b287bb"/>
+  <patient_identifier patient_identifier_id="15" patient_id="101" identifier="101-6" identifier_type="1" preferred="1" location_id="4" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="8a9aac6e-3f9f-4ed2-8fb5-25215f8bb6c4"/>
+  
+  <patient_identifier patient_identifier_id="16" patient_id="102" identifier="12345K" identifier_type="2" preferred="0" location_id="4" creator="1" date_created="2008-08-18 11:44:54.0" voided="false" void_reason="" uuid="f10d32a1-098f-4b50-8cc5-23efb08983d0"/>
+  <patient_identifier patient_identifier_id="17" patient_id="103" identifier="6TS-4" identifier_type="1" preferred="0" location_id="4" creator="1" date_created="2006-01-18 00:00:00.0" voided="false" void_reason="" uuid="489edb7f-0786-4726-88a3-f0fcd2505dea"/>
+
+  <patient patient_id="100" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+  <patient patient_id="101" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+  <patient patient_id="102" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+  <patient patient_id="103" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+  <provider provider_id="2" person_id="50" identifier="Test" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c2299122-cca9-11e0-9572-0800200c9a66" />
+
+  <location location_id="4" name="Unknown Location" description="The default location used when limited information is known" address1="" address2="" city_village="" state_province="" postal_code="" country="" creator="1" date_created="2005-09-22 00:00:00.0" retired="false" uuid="dc5c1fcc-0459-4201-bf70-0b90535ba3a2"/>
+  
+  <encounter_type encounter_type_id="10" name="Adult Initial" description="A normal first visit" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="61ae96f4-6afe-4351-b6f8-cd4fc383ccb1"/>
+  <encounter_type encounter_type_id="11" name="Adult Return" description="A return visit" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="61ae96f4-6afd-4351-b6f8-cd4fc383ccb2"/>
+  <encounter_type encounter_type_id="12" name="Adult Special" description="A special adult visit" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="61ae96f4-6afd-4351-b6f8-bd4fc383ccb2"/>
+  <encounter_type encounter_type_id="13" name="Child Special" description="A special child visit" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="61ae96f4-6afd-4351-b6f8-bd4fc383cab2"/>
+ </dataset>

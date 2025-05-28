@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <!-- Obs for patients -->
+  
+  <!-- Encounter 13 : Patient 100 : Form 2 -->
+  <!-- Aortic Findings: Stenosis=Moderate, Peak Aortic Valve Velocity=4, Regurgitation=Mild  -->
+  <obs obs_id="132" encounter_id="13" person_id="100" concept_id="3986" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="93bf1d82-e1fe-11df-9195-001e377eb6de" />
+  <obs obs_id="133" encounter_id="13" person_id="100" concept_id="3893" obs_group_id="132" value_coded="1900" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="6a668cf2-5eec-11e0-a058-f0def12f6b00" />
+  <obs obs_id="134" encounter_id="13" person_id="100" concept_id="3944" obs_group_id="132" value_numeric="4" obs_datetime="2006-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="5d131fc2-5eee-11e0-a058-f0def12f6b00" />
+  <obs obs_id="135" encounter_id="13" person_id="100" concept_id="3982" obs_group_id="132" value_coded="1901" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="65661e40-5eee-11e0-a058-f0def12f6b00" />
+  
+  <!-- Mitral Findings: Stenosis=Mild  -->
+  <obs obs_id="136" encounter_id="13" person_id="100" concept_id="3985" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="6d57549e-5eee-11e0-a058-f0deg22f6b00" />
+  <obs obs_id="137" encounter_id="13" person_id="100" concept_id="3893" obs_group_id="136" value_coded="1901" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="7f016b76-5efe-11e0-a058-f0def12f6b00" />
+  
+  <!-- Functional Review of Symptoms: Symptom Present=Hearing Difficulties, Symptom Comment=Totally Deaf -->  
+  <obs obs_id="138" encounter_id="13" person_id="100" concept_id="1292" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="f623b71e-5ef2-11e0-a058-f0def12febb0" />
+  <obs obs_id="139" encounter_id="13" person_id="100" concept_id="1293" obs_group_id="138" value_coded="861" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="f623b71e-5eg2-11e0-a058-f0def12f6bc0" />
+  <obs obs_id="140" encounter_id="13" person_id="100" concept_id="1736" obs_group_id="138" value_text="totally deaf" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="f623b71a-5ef2-11e0-a058-f0def12f6b0d0" />
+  
+  <!-- Functional Review of Symptoms 2: Symptom Present=Diarrhea, Symptom Absent=Headache -->  
+  <obs obs_id="141" encounter_id="13" person_id="100" concept_id="1292" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="6d57549e-5eee-11e0-a058-f0def1df6b0a" />
+  <obs obs_id="142" encounter_id="13" person_id="100" concept_id="1293" obs_group_id="141" value_coded="16" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="f623b71e-5ef2-12e0-a058-f0def12f6b00" />
+  <obs obs_id="143" encounter_id="13" person_id="100" concept_id="1734" obs_group_id="141" value_coded="620" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="f623b71e-5ef2-14e0-a058-f0def12f6ba0" />
+ 
+  <!-- Encounter 14 : Patient 101 : Form 2 -->
+  <!-- Aortic Findings: Stenosis=Mild, Peak Aortic Valve Velocity=5 -->
+  <obs obs_id="146" encounter_id="14" person_id="101" concept_id="3986" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3bf1d82-e1fe-11df-9195-001e378ec6de" />
+  <obs obs_id="147" encounter_id="14" person_id="101" concept_id="3893" obs_group_id="146" value_coded="1901" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="a5668cf2-5eec-11e0-a058-g0def12f6b00" />
+  <obs obs_id="148" encounter_id="14" person_id="101" concept_id="3944" obs_group_id="146" value_numeric="5" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="ad141fc2-5eee-11a0-a058-f0def12f6b00" />
+  
+  <!-- Mitral Findings: Stenosis=Mild  -->
+  <obs obs_id="150" encounter_id="14" person_id="101" concept_id="3985" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="ad57549e-5eee-11e0-a058-f0def12f7a00" />
+  <obs obs_id="151" encounter_id="14" person_id="101" concept_id="3893" obs_group_id="150" value_coded="1901" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="af016b76-5eee-11e0-ac58-f0def62f6b00" />
+  
+  <!-- Functional Review of Symptoms: Symptom Present=Hearing Difficulties, Symptom Absent=Headache -->
+  <obs obs_id="152" encounter_id="14" person_id="101" concept_id="1292" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="ad57549e-5eee-11e0-a058-f0def1356b0a" />
+  <obs obs_id="153" encounter_id="14" person_id="101" concept_id="1293" obs_group_id="152" value_coded="861" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="a623b71e-5ef2-11e0-ab58-f0def12f6b00" />
+  <obs obs_id="154" encounter_id="14" person_id="101" concept_id="1734" obs_group_id="152" value_coded="620" obs_datetime="2005-01-01 00:00:00.0" location_id="4" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="a623b71e-5ef2-11e0-aa58-f0def12f6ba0" />
+</dataset>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+
+<!-- A form and its fields -->
+  <form form_id="2" name="Love Rita" version="1.0" build="1" published="true" description="A form for testing" encounter_type="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"/>
+  <form form_id="3" name="Second Form" version="1.0" build="1" published="true" description="A second form for testing" encounter_type="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"/>
+</dataset>

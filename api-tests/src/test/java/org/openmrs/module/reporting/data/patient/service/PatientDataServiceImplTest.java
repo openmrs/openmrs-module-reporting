@@ -47,7 +47,7 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
 
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 	
-	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset.xml";
     public static final String TEST_PATIENT_ATTR_TYPE_UUID = "test-patient-attr-type-uuid";
 
     @Autowired
@@ -61,7 +61,7 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
 	}
 	
 	/**

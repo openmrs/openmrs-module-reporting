@@ -33,7 +33,8 @@ public class SqlEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTe
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("org/openmrs/module/reporting/include/" + new TestUtil().getTestDatasetFilename("ReportTestDataset"));
+		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
+		executeDataSet("org/openmrs/module/reporting/include/ReportTestDataset.xml");
 	}
 
 	@Test

@@ -31,7 +31,7 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 	
-	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset.xml";
 	
 	/**
 	 * Run this before each unit test in this class. The "@Before" method in
@@ -41,7 +41,7 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
 	}
 	
 	/**

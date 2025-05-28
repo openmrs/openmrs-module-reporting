@@ -21,6 +21,7 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.ConditionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
@@ -291,5 +292,20 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         drugOrderCohortDefinition.addParameter(new Parameter("careSetting", "reporting.parameter.careSetting", CareSetting.class));
         drugOrderCohortDefinition.addParameter(new Parameter("drugs", "reporting.parameter.drugs", Drug.class, List.class, null));
         return drugOrderCohortDefinition;
+    }
+
+    @DocumentedDefinition("conditonSearchAdvanced")
+    public CohortDefinition getConditonSearchAdvanced() {
+        ConditionCohortDefinition cd = new ConditionCohortDefinition();
+        cd.addParameter(new Parameter("conditionCoded", "reporting.parameter.conditionCoded", Concept.class));
+        cd.addParameter(new Parameter("conditionNonCoded", "reporting.parameter.conditionNonCoded", String.class));
+        cd.addParameter(new Parameter("onsetDateOnOrBefore", "reporting.parameter.onsetDateOnOrBefore", Date.class));
+        cd.addParameter(new Parameter("onsetDateOnOrAfter", "reporting.parameter.onsetDateOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("endDateOnOrBefore", "reporting.parameter.endDateOnOrBefore", Date.class));
+        cd.addParameter(new Parameter("endDateOnOrAfter", "reporting.parameter.endDateOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("createdOnOrBefore", "reporting.parameter.createdOnOrBefore", Date.class));
+        cd.addParameter(new Parameter("createdOnOrAfter", "reporting.parameter.createdOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("activeOnDate", "reporting.parameter.activeOnDate", Date.class));
+        return cd;
     }
 }

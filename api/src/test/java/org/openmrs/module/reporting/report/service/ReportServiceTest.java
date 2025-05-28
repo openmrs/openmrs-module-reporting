@@ -1,0 +1,631 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+package org.openmrs.module.reporting.report.service;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.common.TestUtil;
+import org.openmrs.module.reporting.dataset.definition.CohortCrossTabDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
+import org.openmrs.module.reporting.definition.DefinitionUtil;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.report.Report;
+import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.ReportRequest.Priority;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.processor.LoggingReportProcessor;
+import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
+import org.openmrs.module.reporting.report.renderer.RenderingMode;
+import org.openmrs.module.reporting.report.renderer.ReportRenderer;
+import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
+import org.openmrs.module.reporting.web.renderers.DefaultWebRenderer;
+import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
+import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.Verifies;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+public class ReportServiceTest extends BaseModuleContextSensitiveTest {
+
+	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
+
+	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset.xml";
+
+	/**
+	 * Run this before each unit test in this class. The "@Before" method in
+	 * {@link BaseContextSensitiveTest} is run right before this method.
+	 *
+	 * @throws Exception
+	 */
+	@Before
+	public void setup() throws Exception {
+		executeDataSet(XML_DATASET_PATH + XML_REPORT_TEST_DATASET);
+	}
+
+	@Test
+	public void shouldSaveReportDefinition() throws Exception {
+		ReportDefinitionService service = Context.getService(ReportDefinitionService.class);
+		ReportDefinition reportDefinition = new ReportDefinition();
+		reportDefinition.setName("Testing");
+		ReportDefinition savedReportDefinition = service.saveDefinition(reportDefinition);
+		Assert.assertTrue(savedReportDefinition.getId() != null);
+	}
+
+	/**
+	 * @see {@link ReportService#runReport(ReportRequest)}
+	 */
+	@Test
+	@Verifies(value = "should set uuid on the request", method = "runReport(ReportRequest)")
+	public void runReport_shouldSetUuidOnTheRequest() throws Exception {
+		ReportDefinition def = new ReportDefinition();
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, null, Priority.NORMAL, null);
+		Context.getService(ReportService.class).runReport(request);
+		Assert.assertNotNull(request.getUuid());
+	}
+
+	/**
+	 * @see {@link ReportService#runReport(ReportRequest)}
+	 */
+	@Test
+	@Verifies(value = "should render the report if a plain renderer is specified", method = "runReport(ReportRequest)")
+	public void runReport_shouldRenderTheReportIfAPlainRendererIsSpecified() throws Exception {
+		ReportDefinition def = new ReportDefinition();
+		SqlDataSetDefinition dsd = new SqlDataSetDefinition();
+		dsd.setSqlQuery("select count(*) from patient");
+		def.addDataSetDefinition("patients", dsd, null);
+		ReportRenderer renderer = new TsvReportRenderer();
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), Priority.NORMAL, null);
+		Report result = Context.getService(ReportService.class).runReport(request);
+		Assert.assertNotNull(result.getRenderedOutput());
+	}
+
+	/**
+	 * @see {@link ReportService#runReport(ReportRequest)}
+	 */
+	@Test
+	@Verifies(value = "should not render the report if a web renderer is specified", method = "runReport(ReportRequest)")
+	public void runReport_shouldNotRenderTheReportIfAWebRendererIsSpecified() throws Exception {
+		ReportDefinition def = new ReportDefinition();
+		WebReportRenderer renderer = new DefaultWebRenderer();
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "Web", null, 100), Priority.NORMAL, null);
+		Report result = Context.getService(ReportService.class).runReport(request);
+		Assert.assertNotNull(result.getReportData());
+		Assert.assertNull(result.getRenderedOutput());
+	}
+
+	/**
+	 * @see {@link ReportService#runReport(ReportRequest)}
+	 */
+	@Test
+	@Verifies(value = "should allow dynamic parameters", method = "runReport(ReportRequest)")
+	public void runReport_shouldAllowDynamicParameters() throws Exception {
+		ReportDefinition rptDef = new ReportDefinition();
+		rptDef.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		SqlDataSetDefinition sqlDef = new SqlDataSetDefinition("test sql dsd", null, "select person_id, birthdate from person where birthdate < :effectiveDate");
+		sqlDef.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		rptDef.addDataSetDefinition(sqlDef, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}"));
+
+		RenderingMode mode = new RenderingMode(new CsvReportRenderer(), "CSV", null, 100);
+
+		Mapped<ReportDefinition> mappedReport = new Mapped<ReportDefinition>();
+		mappedReport.setParameterizable(rptDef);
+		mappedReport.addParameterMapping("effectiveDate", "${now-50y}");
+		ReportRequest request = new ReportRequest(mappedReport, null, mode, Priority.HIGHEST, null);
+		Report report = Context.getService(ReportService.class).runReport(request);
+		String s = new String(report.getRenderedOutput());
+	}
+
+
+	/**
+	 * @verifies save a report processor configuration
+	 * @see ReportService#saveReportProcessorConfiguration(ReportProcessorConfiguration)
+	 */
+	@Test
+	public void saveReportProcessorConfiguration_shouldSaveAReportProcessorConfiguration() throws Exception {
+		ReportService rs = Context.getService(ReportService.class);
+		ReportProcessorConfiguration c = new ReportProcessorConfiguration();
+		c.setName("New Processor");
+		c.setProcessorType(LoggingReportProcessor.class.getName());
+		c = rs.saveReportProcessorConfiguration(c);
+		Assert.assertNotNull(c.getId());
+		Assert.assertNotNull(c.getUuid());
+		Assert.assertEquals(3, rs.getAllReportProcessorConfigurations(true).size());
+	}
+
+	/**
+	 * @verifies retrieve all saved report processor configurations including retired if specified
+	 * @see ReportService#getAllReportProcessorConfigurations(boolean)
+	 */
+	@Test
+	public void getAllReportProcessorConfigurations_shouldRetrieveAllSavedReportProcessorConfigurationsIncludingRetiredIfSpecified() throws Exception {
+		ReportService rs = Context.getService(ReportService.class);
+		Assert.assertEquals(2, rs.getAllReportProcessorConfigurations(true).size());
+		Assert.assertEquals(1, rs.getAllReportProcessorConfigurations(false).size());
+	}
+
+	/**
+	 * @verifies retrieve a saved report processor configuration by id
+	 * @see ReportService#getReportProcessorConfiguration(Integer)
+	 */
+	@Test
+	public void getReportProcessorConfiguration_shouldRetrieveASavedReportProcessorConfigurationById() throws Exception {
+		ReportService rs = Context.getService(ReportService.class);
+		ReportProcessorConfiguration c = rs.getReportProcessorConfiguration(2);
+		Assert.assertEquals("Logging processor", c.getName());
+	}
+
+	/**
+	 * @verifies retrieve a saved report processor configuration by uuid
+	 * @see ReportService#getReportProcessorConfigurationByUuid(String)
+	 */
+	@Test
+	public void getReportProcessorConfigurationByUuid_shouldRetrieveASavedReportProcessorConfigurationByUuid() throws Exception {
+		ReportService rs = Context.getService(ReportService.class);
+		ReportProcessorConfiguration c = rs.getReportProcessorConfigurationByUuid("c11117dd-4478-4a0e-84fe-ee62c5f0676a");
+		Assert.assertEquals("Logging processor", c.getName());
+	}
+
+	/**
+	 * @verifies retrieve all non-retired report processor configurations that are assignable to the passed type
+	 * @see ReportService#getReportProcessorConfigurations(Class)
+	 */
+	@Test
+	public void getReportProcessorConfigurations_shouldRetrieveAllNonretiredReportProcessorConfigurationsThatAreAssignableToThePassedType() throws Exception {
+		ReportService rs = Context.getService(ReportService.class);
+		Assert.assertEquals(1, rs.getReportProcessorConfigurations(LoggingReportProcessor.class).size());
+	}
+
+	/**
+	 * @verifies delete a saved report processor configuration
+	 * @see ReportService#purgeReportProcessorConfiguration(ReportProcessorConfiguration)
+	 */
+	@Test
+	public void purgeReportProcessorConfiguration_shouldDeleteASavedReportProcessorConfiguration() throws Exception {
+		ReportService rs = Context.getService(ReportService.class);
+		ReportProcessorConfiguration c = rs.getReportProcessorConfiguration(1);
+		rs.purgeReportProcessorConfiguration(c);
+		Assert.assertEquals(1, rs.getAllReportProcessorConfigurations(true).size());
+	}
+
+	@Test
+	@Verifies(value = "should retrieve all global processors after creating a non-global processor", method = "getGlobalReportProcessor")
+	public void shouldRetrieveAllGlobalProcessors() throws Exception {
+
+
+		//now we should have three total ReportProcessorConfigs in the db, 2 of which don't have reportDesign set (the two in the dbunit file), meaning that they're global.
+		// but 1 is retired, so there should only be 1
+		List<ReportProcessorConfiguration> ret = Context.getService(ReportService.class).getGlobalReportProcessorConfigurations();
+		Assert.assertTrue(ret.size() == 1);
+	}
+
+	@Test
+	@Verifies(value = "should retrieve all global processors after creating a non-global processor", method = "getGlobalReportProcessor")
+	public void shouldRetrieveAllGlobalProcessorsAfterAddingGlobalProcessor() throws Exception {
+
+		//create a report processor config
+		Properties props = new Properties();
+		ReportProcessorConfiguration procConfig = new ReportProcessorConfiguration("Test Processor", LoggingReportProcessor.class, props, true, true);
+		String procUuid = UUID.randomUUID().toString();
+		procConfig.setUuid(procUuid);
+		procConfig.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC);
+		Context.getService(ReportService.class).saveReportProcessorConfiguration(procConfig);
+
+		//there was 1 to start with, now there should be 2
+		List<ReportProcessorConfiguration> ret = Context.getService(ReportService.class).getGlobalReportProcessorConfigurations();
+		Assert.assertTrue(ret.size() == 2);
+	}
+
+	/**
+	 * @verifies execute any configured report processors
+	 * @see ReportService#runReport(ReportRequest)
+	 */
+	@Test
+	public void runReport_shouldExecuteTestReportProcessor() throws Exception {
+
+		ReportDefinition def = new ReportDefinition();
+		def.setName("My report");
+		SqlDataSetDefinition dsd = new SqlDataSetDefinition();
+		dsd.setSqlQuery("select count(*) from patient");
+		def.addDataSetDefinition("patients", dsd, null);
+		Context.getService(ReportDefinitionService.class).saveDefinition(def);
+
+		RenderingMode rm = new RenderingMode(new TsvReportRenderer(), "TSV", null, 100);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, rm, Priority.NORMAL, null);
+		request.setProcessAutomatically(true);
+
+		//build a processor
+		Properties props = new Properties();
+		ReportProcessorConfiguration procConfig = new ReportProcessorConfiguration("LoggingProcessorTest", TestReportProcessor.class, props, true, true);
+		String procUuid = UUID.randomUUID().toString();
+		procConfig.setUuid(procUuid);
+		procConfig.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.AUTOMATIC); //test processor can run because processing mode is automatic
+
+		//create and save a report  design, containing the processor
+		ReportDesign rd = new ReportDesign();
+		rd.setName("myReportDesign");
+		rd.addReportProcessor(procConfig);
+		rd.setReportDefinition(def);
+		rd.setRendererType(TsvReportRenderer.class);
+		String uuid = UUID.randomUUID().toString();
+		rd.setUuid(uuid);
+		Context.getService(ReportService.class).saveReportDesign(rd);
+
+		//run the report
+		Report report = Context.getService(ReportService.class).runReport(request);
+		//TestReportProcessor is a simple processor that set a report error message -- just a simple way to ensure the processor was run...
+		Assert.assertTrue(report.getErrorMessage().equals("TestReportProcessor.process was called corretly."));
+
+		//sanity check on global processors -- the one we create here isn't global, so there should only be 1
+		List<ReportProcessorConfiguration> ret = Context.getService(ReportService.class).getGlobalReportProcessorConfigurations();
+		Assert.assertTrue(ret.size() == 1);
+	}
+
+	/**
+	 * @verifies execute any configured report processors
+	 * @see ReportService#runReport(ReportRequest)
+	 */
+	@Test
+	public void runReport_shouldNotExecuteTestReportProcessorDifferentRenderers() throws Exception {
+
+		ReportDefinition def = new ReportDefinition();
+		def.setName("My report");
+		SqlDataSetDefinition dsd = new SqlDataSetDefinition();
+		dsd.setSqlQuery("select count(*) from patient");
+		def.addDataSetDefinition("patients", dsd, null);
+		Context.getService(ReportDefinitionService.class).saveDefinition(def);
+
+		RenderingMode rm = new RenderingMode(new TsvReportRenderer(), "TSV", null, 100);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, rm, Priority.NORMAL, null);
+
+		//build a processor
+		Properties props = new Properties();
+		ReportProcessorConfiguration procConfig = new ReportProcessorConfiguration("LoggingProcessorTest", TestReportProcessor.class, props, true, true);
+		String procUuid = UUID.randomUUID().toString();
+		procConfig.setUuid(procUuid);
+		procConfig.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.AUTOMATIC); //test processor can run because processing mode is automatic
+
+		//create and save a report  design, containing the processor
+		ReportDesign rd = new ReportDesign();
+		rd.setName("myReportDesign");
+		rd.addReportProcessor(procConfig);
+		rd.setReportDefinition(def);
+		rd.setRendererType(CsvReportRenderer.class); // test processor won't run because report request is Tsv, reportDefinition is Csv
+		String uuid = UUID.randomUUID().toString();
+		rd.setUuid(uuid);
+		Context.getService(ReportService.class).saveReportDesign(rd);
+
+		//run the report
+		Report report = Context.getService(ReportService.class).runReport(request);
+		//TestReportProcessor is a simple processor that set a report error message -- just a simple way to ensure the processor was run...
+		Assert.assertTrue(report.getErrorMessage() == null);
+	}
+
+	/**
+	 * @verifies execute any configured report processors
+	 * @see ReportService#runReport(ReportRequest)
+	 */
+	@Test
+	public void runReport_shouldNotExecuteTestReportProcessorNotAutomatic() throws Exception {
+
+		ReportDefinition def = new ReportDefinition();
+		def.setName("My report");
+		SqlDataSetDefinition dsd = new SqlDataSetDefinition();
+		dsd.setSqlQuery("select count(*) from patient");
+		def.addDataSetDefinition("patients", dsd, null);
+		Context.getService(ReportDefinitionService.class).saveDefinition(def);
+
+		RenderingMode rm = new RenderingMode(new TsvReportRenderer(), "TSV", null, 100);
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, rm, Priority.NORMAL, null);
+
+		//build a processor
+		Properties props = new Properties();
+		ReportProcessorConfiguration procConfig = new ReportProcessorConfiguration("LoggingProcessorTest", TestReportProcessor.class, props, true, true);
+		String procUuid = UUID.randomUUID().toString();
+		procConfig.setUuid(procUuid);
+		procConfig.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND); //test processor won't be run because its not automatic
+
+		//create and save a report  design, containing the processor
+		ReportDesign rd = new ReportDesign();
+		rd.setName("myReportDesign");
+		rd.addReportProcessor(procConfig);
+		rd.setReportDefinition(def);
+		rd.setRendererType(TsvReportRenderer.class);
+		String uuid = UUID.randomUUID().toString();
+		rd.setUuid(uuid);
+		Context.getService(ReportService.class).saveReportDesign(rd);
+
+		//run the report
+		Report report = Context.getService(ReportService.class).runReport(request);
+		//TestReportProcessor is a simple processor that set a report error message -- just a simple way to ensure the processor was run...
+		Assert.assertTrue(report.getErrorMessage() == null);
+	}
+
+	@Test
+	@Verifies(value = "should save the ReportProcessor", method = "saveReportDesign(ReportDesign)")
+	public void shouldSaveReportDefinitionWithProcessor() throws Exception {
+
+		//save a blank report definition
+		ReportDefinitionService service = Context.getService(ReportDefinitionService.class);
+		ReportService rs = Context.getService(ReportService.class);
+		ReportDefinition reportDefinition = new ReportDefinition();
+		reportDefinition.setName("Testing");
+		service.saveDefinition(reportDefinition);
+
+		//create a report processor config
+		Properties props = new Properties();
+		ReportProcessorConfiguration procConfig = new ReportProcessorConfiguration("LoggingProcessorTest", LoggingReportProcessor.class, props, true, true);
+		String procUuid = UUID.randomUUID().toString();
+		procConfig.setUuid(procUuid);
+		procConfig.setProcessorMode(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC);
+
+		//create and save a report  design, containing the processor
+		ReportDesign rd = new ReportDesign();
+		rd.setName("myReportDesign");
+		rd.addReportProcessor(procConfig);
+		rd.setReportDefinition(reportDefinition);
+		rd.setRendererType(CsvReportRenderer.class);
+		String uuid = UUID.randomUUID().toString();
+		rd.setUuid(uuid);
+		rs.saveReportDesign(rd);
+
+		//retreive and verify the processor
+		ReportProcessorConfiguration rpc = rs.getReportProcessorConfigurationByUuid(procUuid);
+		Assert.assertTrue(rpc != null);
+		Assert.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC));
+		rpc = null;
+
+		//retrieve and verify that the processor is retreived with ReportDesign
+		ReportDesign ret = rs.getReportDesignByUuid(uuid);
+		Assert.assertTrue(ret != null);
+		Assert.assertTrue(ret.getReportProcessors().size() == 1);
+		ReportProcessorConfiguration rp = ret.getReportProcessors().iterator().next();
+		Assert.assertTrue(rp.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC));
+
+	}
+
+	@Test
+	@Verifies(value = "readProcessorModeCorrectly", method = "getReportProcessorConfiguration(id)")
+	public void shouldReadProcessorModeEnumCorrectly() throws Exception {
+		ReportService rs = Context.getService(ReportService.class);
+		ReportProcessorConfiguration rpc = rs.getReportProcessorConfiguration(1);
+		Assert.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.DISABLED));
+
+		rpc = rs.getReportProcessorConfiguration(2);
+		Assert.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.AUTOMATIC));
+	}
+
+	/**
+	 * @verifies set the evaluationDate on the context from the request
+	 * @see ReportService#runReport(ReportRequest)
+	 */
+	@Test
+	public void runReport_shouldSetTheEvaluationDateOnTheContextFromTheRequest() throws Exception {
+		ReportDefinition def = new ReportDefinition();
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, null, Priority.NORMAL, null);
+		Calendar c = Calendar.getInstance();
+		c.set(1975, Calendar.OCTOBER, 16);
+		request.setEvaluationDate(c.getTime());
+		Report actual = Context.getService(ReportService.class).runReport(request);
+		Assert.assertEquals(actual.getReportData().getContext().getEvaluationDate(), c.getTime());
+	}
+
+	/**
+	 * @verifies use current date as evaluationDate if not provided by the request
+	 * @see ReportService#runReport(ReportRequest)
+	 */
+	@Test
+	public void runReport_shouldUseCurrentDateAsEvaluationDateIfNotProvidedByTheRequest() throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		ReportDefinition def = new ReportDefinition();
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, null, Priority.NORMAL, null);
+		Report actual = Context.getService(ReportService.class).runReport(request);
+		Assert.assertEquals(sdf.format(actual.getReportData().getContext().getEvaluationDate()), sdf.format(new Date()));
+	}
+
+	@Test
+	public void saveReport_shouldSaveSuccessfullyIfNotCached() throws Exception {
+		ReportDefinition def = new ReportDefinition();
+		SqlDataSetDefinition dsd = new SqlDataSetDefinition();
+		dsd.setSqlQuery("select count(*) from patient");
+		def.addDataSetDefinition("patients", dsd, null);
+		ReportRenderer renderer = new TsvReportRenderer();
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), Priority.NORMAL, null);
+		Report result = Context.getService(ReportService.class).runReport(request);
+		Context.getService(ReportService.class).saveReport(result, "Test Saving");
+	}
+
+    @Test
+    public void runReport_shouldLogMessagesToReportRequestLogFile() throws Exception {
+        ReportDefinition def = new ReportDefinition();
+        def.setName("A Test Report");
+        CohortCrossTabDataSetDefinition dsd = new CohortCrossTabDataSetDefinition();
+        dsd.setName("Patients By Gender");
+        GenderCohortDefinition males = new GenderCohortDefinition();
+        males.setName("Males");
+        males.setMaleIncluded(true);
+        dsd.addColumn("Males", males, null);
+        GenderCohortDefinition females = new GenderCohortDefinition();
+        females.setFemaleIncluded(true);
+        dsd.addColumn("Females", females, null);
+        def.addDataSetDefinition("patients", dsd, null);
+        ReportRenderer renderer = new TsvReportRenderer();
+        ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), Priority.NORMAL, null);
+        Report result = getReportService().runReport(request);
+        File reportLog = getReportService().getReportLogFile(request);
+        String s = FileUtils.readFileToString(reportLog, "UTF-8");
+        Assert.assertTrue(s.contains("Evaluating A Test Report"));
+        Assert.assertTrue(s.contains("Evaluating Patients By Gender"));
+        Assert.assertTrue(s.contains("Evaluating " + DefinitionUtil.format(females)));
+    }
+
+    public ReportService getReportService() {
+	    return Context.getService(ReportService.class);
+    }
+
+	/**
+	 * @verifies delete all the report requests associated with the report definition uuid
+	 * @see ReportService#purgeReportRequestsForReportDefinition(String)
+	 */
+	@Test
+	public void purgeReportRequestsForReportDefinition_shouldDeleteAllAssociatedReportRequests() {
+		ReportService rs = Context.getService(ReportService.class);
+		assertNotNull(rs.getReportRequestByUuid("h8a82b63-1066-4c1d-9b43-b405851fc467"));
+		assertNotNull(rs.getReportRequestByUuid("b0a82b63-1066-4c1d-9b43-b405851fc467"));
+		Context.clearSession();
+
+		rs.purgeReportRequestsForReportDefinition("c11f5354-9567-4cc5-b3ef-163e28873926");
+
+		assertNull(rs.getReportRequestByUuid("h8a82b63-1066-4c1d-9b43-b405851fc467"));
+		assertNull(rs.getReportRequestByUuid("b0a82b63-1066-4c1d-9b43-b405851fc467"));
+	}
+
+	/**
+	 * @verifies delete all the report designs associated with the report definition uuid
+	 * @see ReportService#purgeReportDesignsForReportDefinition(String)
+	 */
+	@Test
+	public void purgeReportDesignsForReportDefinition_shouldDeleteAllAssociatedReportDesigns() {
+		ReportService rs = Context.getService(ReportService.class);
+		assertNotNull(rs.getReportDesignByUuid("d7a82b63-1066-4c1d-9b43-b405851fc467"));
+		assertNotNull(rs.getReportDesignByUuid("e7a82b63-1066-4c1d-9b43-b405851fc467"));
+		Context.clearSession();
+
+		rs.purgeReportDesignsForReportDefinition("c11f5354-9567-4cc5-b3ef-163e28873926");
+
+		assertNull(rs.getReportDesignByUuid("d7a82b63-1066-4c1d-9b43-b405851fc467"));
+		assertNull(rs.getReportDesignByUuid("e7a82b63-1066-4c1d-9b43-b405851fc467"));
+	}
+
+	@Test
+	public void getReportRequests_shouldReturnCorrectReportRequests() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final List<ReportRequest> reportRequests = rs.getReportRequests(null, null, null, 0,2);
+
+		assertEquals(2, reportRequests.size());
+
+		final List<String> resultUuids = mapToReportRequestUuids(reportRequests);
+		assertTrue(resultUuids.contains("fce15a1b-4618-4f65-bfe9-8bb60a85c110"));
+		assertTrue(resultUuids.contains("b0a82b63-1066-4c1d-9b43-b405851fc467"));
+	}
+
+	@Test
+	public void getReportRequestsCount_shouldReturnTotalCount() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final long totalCount = rs.getReportRequestsCount(null, null, null);
+
+		assertEquals(4, totalCount);
+	}
+
+	@Test
+	public void getReportRequests_shouldReturnCorrectReportRequestsForGivenReportDefinition() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final ReportDefinition testReportDefinition =
+				rs.getReportDesignByUuid("d7a82b63-1066-4c1d-9b43-b405851fc467").getReportDefinition();
+		final List<ReportRequest> reportRequests = rs.getReportRequests(testReportDefinition, null, null, 0,2);
+
+		assertEquals(2, reportRequests.size());
+
+		final List<String> resultUuids = mapToReportRequestUuids(reportRequests);
+		assertTrue(resultUuids.contains("h8a82b63-1066-4c1d-9b43-b405851fc467"));
+		assertTrue(resultUuids.contains("b0a82b63-1066-4c1d-9b43-b405851fc467"));
+	}
+
+	@Test
+	public void getReportRequestsCount_shouldReturnCorrectTotalCountForReportDefinitionFilter() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final ReportDefinition testReportDefinition =
+				rs.getReportDesignByUuid("d7a82b63-1066-4c1d-9b43-b405851fc467").getReportDefinition();
+		final long totalCount = rs.getReportRequestsCount(testReportDefinition, null, null);
+
+		assertEquals(2, totalCount);
+	}
+
+	@Test
+	public void getReportRequests_shouldReturnCorrectReportRequestsForRequestedWithinDates() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final Date from = newDate(2013, Calendar.JANUARY, 21, 14, 8, 48);
+		final Date to = newDate(2013, Calendar.JANUARY, 21, 14, 8, 49);
+		final List<ReportRequest> reportRequests = rs.getReportRequests(null, from, to, 0,2);
+
+		assertEquals(2, reportRequests.size());
+
+		final List<String> resultUuids = mapToReportRequestUuids(reportRequests);
+		assertTrue(resultUuids.contains("b0a82b63-1066-4c1d-9b43-b405851fc467"));
+		assertTrue(resultUuids.contains("d9a82b63-1066-4c1d-9b43-b405851fc467"));
+	}
+
+	@Test
+	public void getReportRequestsCount_shouldReturnCorrectTotalCountForRequestedWithinDatesFilter() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final Date from = newDate(2013, Calendar.JANUARY, 21, 14, 8, 48);
+		final Date to = newDate(2013, Calendar.JANUARY, 21, 14, 8, 49);
+		final long totalCount = rs.getReportRequestsCount(null, from, to);
+
+		assertEquals(2, totalCount);
+	}
+
+	@Test
+	public void getReportRequests_shouldReturnAPartialPageOfReportRequests() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final List<ReportRequest> reportRequests = rs.getReportRequests(null, null, null, 0, 2, ReportRequest.Status.FAILED);
+
+		assertEquals(1, reportRequests.size());
+
+		final List<String> resultUuids = mapToReportRequestUuids(reportRequests);
+		assertTrue(resultUuids.contains("fce15a1b-4618-4f65-bfe9-8bb60a85c110"));
+	}
+
+	@Test
+	public void getReportRequestsCount_shouldReturnCorrectTotalCountForStatusFilter() {
+		final ReportService rs = Context.getService(ReportService.class);
+		final long totalCount = rs.getReportRequestsCount(null, null, null, ReportRequest.Status.FAILED);
+
+		assertEquals(1, totalCount);
+	}
+
+	private List<String> mapToReportRequestUuids(List<ReportRequest> reportRequests) {
+		List<String> reportRequestUuids = new ArrayList<String>();
+
+		for (ReportRequest reportRequest : reportRequests) {
+			reportRequestUuids.add(reportRequest.getUuid());
+		}
+
+		return reportRequestUuids;
+	}
+
+	private Date newDate(int year, int month, int day, int hour, int minute, int second) {
+		final Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(year, month, day, hour, minute, second);
+		return cal.getTime();
+	}
+}
