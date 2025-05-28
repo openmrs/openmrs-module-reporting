@@ -43,7 +43,7 @@
     </modules>
 
 	<properties>
-		<openMRSVersion>1.9.9</openMRSVersion>
+		<openMRSVersion>2.7.0</openMRSVersion>
 		<reportingCompatibilityVersion>2.0.6</reportingCompatibilityVersion>
 		<openMRSMinorVersion>1.9</openMRSMinorVersion>
 		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
@@ -485,7 +485,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.5</version>
+					<version>3.5.3</version>
 					<configuration>
 						<!-- Some tests are locale specific -->
                         <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Duser.language=en -Duser.region=US -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
