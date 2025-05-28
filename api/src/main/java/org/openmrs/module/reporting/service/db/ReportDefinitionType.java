@@ -69,22 +69,6 @@ public class ReportDefinitionType implements UserType {
 		return x.hashCode();
 	}
 
-	@Override
-	public Object nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
-		String uuid = resultSet.getString(names[0]);
-		if (uuid == null) {
-			return null;
-		}
-		return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
-	}
-
-	@Override
-	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index, SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
-		ReportDefinition def = (ReportDefinition) value;
-		String uuid = def == null ? null : def.getUuid();
-		preparedStatement.setString(index, uuid);
-	}
-
 	/** 
 	 * @see UserType#isMutable()
 	 */
@@ -92,7 +76,27 @@ public class ReportDefinitionType implements UserType {
 		return false;
 	}
 
-	/**
+	/** 
+	 * @see UserType#nullSafeGet(ResultSet, String[], Object)
+	 */
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
+		String uuid = rs.getString(names[0]);
+		if (uuid == null) {
+			return null;
+		}
+		return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
+	}
+
+	/** 
+	 * @see UserType#nullSafeSet(PreparedStatement, Object, int, SessionImplementor)
+	 */
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
+		ReportDefinition d = (ReportDefinition) value;
+		String val = (d == null ? null : d.getUuid());
+		st.setString(index, val);
+	}
+
+	/** 
 	 * @see UserType#replace(Object, Object, Object)
 	 */
 	public Object replace(Object original, Object target, Object owner) throws HibernateException {

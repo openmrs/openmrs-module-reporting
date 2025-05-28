@@ -10,6 +10,7 @@
 package org.openmrs.module.reporting.report.service.db;
 
 import org.junit.Test;
+import org.openmrs.module.reporting.service.db.PropertiesType;
 
 import java.util.Properties;
 

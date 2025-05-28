@@ -9,7 +9,9 @@
  */
 package org.openmrs.module.reporting.service.db;
 
-import static java.sql.Types.VARCHAR;
+import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.usertype.UserType;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -21,10 +23,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 
-import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.usertype.UserType;
+import static java.sql.Types.VARCHAR;
 
 /**
  *  A report definition type
@@ -97,18 +96,6 @@ public class PropertiesType implements UserType {
 		return x.hashCode();
 	}
 
-	@Override
-	public Object nullSafeGet(ResultSet resultSet, String[] strings, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
-		String s = resultSet.getString(strings[0]);
-		return assemble(s, sharedSessionContractImplementor);
-	}
-
-	@Override
-	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int i, SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
-		String val = (String) value;
-		preparedStatement.setString(i, val);
-	}
-
 	/** 
 	 * @see UserType#isMutable()
 	 */
@@ -116,7 +103,23 @@ public class PropertiesType implements UserType {
 		return true;
 	}
 
-	/**
+	/** 
+	 * @see UserType#nullSafeGet(ResultSet, String[], Object)
+	 */
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
+		String s = rs.getString(names[0]);
+        return assemble(s, null);
+	}
+
+	/** 
+	 * @see UserType#nullSafeSet(PreparedStatement, Object, int)
+	 */
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
+		String val = (String) disassemble(value);
+		st.setString(index, val);
+	}
+
+	/** 
 	 * @see UserType#replace(Object, Object, Object)
 	 */
 	public Object replace(Object original, Object target, Object owner) throws HibernateException {

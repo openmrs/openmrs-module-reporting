@@ -9,14 +9,6 @@
  */
 package org.openmrs.module.reporting.service.db;
 
-import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -33,6 +25,14 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
 
+import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 /**
  * Custom User-Type for storing Mapped objects in a single table within 2 columns
  * This type takes in 2 properties and 1 parameter in the form:
@@ -40,7 +40,7 @@ import org.openmrs.module.reporting.serializer.ReportingSerializer;
  *		<property name="reportDefinition">
  *			<column name="report_definition_uuid"/>
  *			<column name="report_definition_parameters"/>
- *			<type name="org.openmrs.module.reporting.service.db.MappedDefinitionType">
+ *			<type name="org.openmrs.module.reporting.report.service.db.MappedDefinitionType">
  *				<param name="mappedType">org.openmrs.module.reporting.report.definition.ReportDefinition</param>
  *			</type>
  *		</property>
@@ -82,23 +82,8 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 		return true;
 	}
 
-	@Override
-	public Serializable disassemble(Object value, SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException {
-		return (Serializable) deepCopy(value);
-	}
-
-	@Override
-	public Object assemble(Serializable cached, SharedSessionContractImplementor sharedSessionContractImplementor, Object owner) throws HibernateException {
-		return deepCopy(cached);
-	}
-
-	@Override
-	public Object replace(Object original, Object target, SharedSessionContractImplementor sharedSessionContractImplementor, Object owner) throws HibernateException {
-		return original;
-	}
-
 	/**
-	 * @see CompositeUserType#getPropertyValue(java.lang.Object, int)
+	 * @see CompositeUserType#getPropertyValue(Object, int)
 	 */
 	public Object getPropertyValue(Object component, int property) throws HibernateException {
 		Mapped m = (Mapped) component;
@@ -106,7 +91,7 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	}
 
 	/**
-	 * @see CompositeUserType#setPropertyValue(java.lang.Object, int, java.lang.Object)
+	 * @see CompositeUserType#setPropertyValue(Object, int, Object)
 	 */
 	public void setPropertyValue(Object component, int property, Object value) throws HibernateException {
 		Mapped m = (Mapped) component;
@@ -119,7 +104,7 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	}
 	
 	/**
-	 * @see CompositeUserType#deepCopy(java.lang.Object)
+	 * @see CompositeUserType#deepCopy(Object)
 	 */
 	public Object deepCopy(Object value) throws HibernateException {
 		if (value == null) return null;
@@ -130,11 +115,13 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 		return m;
 	}
 
-	@Override
-	public Object nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-		String parameterizableUuid = (String) HibernateUtil.standardType("STRING").nullSafeGet(resultSet, names[0], session, owner);
+	/**
+	 * @see CompositeUserType#nullSafeGet(ResultSet, String[], SessionImplementor, Object)
+	 */
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
+		String parameterizableUuid = (String) HibernateUtil.standardType("STRING").nullSafeGet(rs, names[0], session, owner);
 		if (StringUtils.isEmpty(parameterizableUuid)) { return null; }
-		String serializedMappings = (String) HibernateUtil.standardType("STRING").nullSafeGet(resultSet, names[1], session, owner);
+		String serializedMappings = (String) HibernateUtil.standardType("STRING").nullSafeGet(rs, names[1], session, owner);
 		Definition d = DefinitionContext.getDefinitionByUuid(mappedType, parameterizableUuid);
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		if (StringUtils.isNotBlank(serializedMappings)) {
@@ -148,7 +135,9 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 		return new Mapped(d, mappings);
 	}
 
-	@Override
+	/**
+	 * @see CompositeUserType#nullSafeSet(PreparedStatement, Object, int, SessionImplementor)
+	 */
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
 		String definitionUuid = null;
 		String serializedMappings = null;
@@ -170,7 +159,13 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 		HibernateUtil.standardType("STRING").nullSafeSet(st, serializedMappings, index+1, session);
 	}
 
-
+	/**
+	 * @see CompositeUserType#replace(Object, Object, SessionImplementor, Object)
+	 */
+	public Object replace(Object original, Object target, SharedSessionContractImplementor session, Object owner) throws HibernateException {
+		return original;
+	}
+	
 	/** 
 	 * @see UserType#equals(Object, Object)
 	 */
@@ -184,7 +179,21 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	public int hashCode(Object x) throws HibernateException {
 		return x.hashCode();
 	}
+	
+	/**
+	 * @see CompositeUserType#disassemble(Object, SessionImplementor)
+	 */
+	public Serializable disassemble(Object value, SharedSessionContractImplementor session) throws HibernateException {
+		return (Serializable) deepCopy(value);
+	}
 
+	/**
+	 * @see CompositeUserType#assemble(Serializable, SessionImplementor, Object)
+	 */
+	public Object assemble(Serializable cached, SharedSessionContractImplementor session, Object owner) throws HibernateException {
+		return deepCopy(cached);
+	}
+	
 	/**
 	 * @see ParameterizedType#setParameterValues(Properties)
 	 */
