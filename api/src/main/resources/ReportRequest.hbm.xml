@@ -15,7 +15,7 @@
 		<property name="baseCohort">
 			<column name="base_cohort_uuid"/>
 			<column name="base_cohort_parameters"/>
-			<type name="org.openmrs.module.reporting.report.service.db.MappedDefinitionType">
+			<type name="org.openmrs.module.reporting.service.db.MappedDefinitionType">
 				<param name="mappedType">org.openmrs.module.reporting.cohort.definition.CohortDefinition</param>
 			</type>
 		</property>
@@ -23,12 +23,12 @@
 		<property name="reportDefinition">
 			<column name="report_definition_uuid"/>
 			<column name="report_definition_parameters"/>
-			<type name="org.openmrs.module.reporting.report.service.db.MappedDefinitionType">
+			<type name="org.openmrs.module.reporting.service.db.MappedDefinitionType">
 				<param name="mappedType">org.openmrs.module.reporting.report.definition.ReportDefinition</param>
 			</type>
 		</property>
 		
-		<property name="renderingMode" type="org.openmrs.module.reporting.report.service.db.RenderingModeType">
+		<property name="renderingMode" type="org.openmrs.module.reporting.service.db.RenderingModeType">
 			<column name="renderer_type"/>
 			<column name="renderer_argument"/>
 		</property>

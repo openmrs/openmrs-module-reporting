@@ -14,7 +14,7 @@
 		<property name="description" type="string" />
 		<property name="reportDefinition" type="org.openmrs.module.reporting.report.service.db.ReportDefinitionType" not-null="true" column="report_definition_uuid" />
 		<property name="rendererType" type="class" length="255" column="renderer_type" not-null="true" />
-		<property name="properties" type="org.openmrs.module.reporting.report.service.db.PropertiesType" length="65535" column="properties" />
+		<property name="properties" type="org.openmrs.module.reporting.service.db.PropertiesType" length="65535" column="properties" />
 		<set name="resources" lazy="true" cascade="all-delete-orphan" inverse="true" access="field" order-by="name asc">
 			<key column="report_design_id" not-null="true" />
 			<one-to-many class="ReportDesignResource" />
@@ -66,7 +66,7 @@
 		<property name="name" type="string" not-null="true" />
 		<property name="description" type="string" />
 		<property name="processorType" type="string" length="255" column="processor_type" not-null="true" />
-		<property name="configuration" type="org.openmrs.module.reporting.report.service.db.PropertiesType" column="configuration" />
+		<property name="configuration" type="org.openmrs.module.reporting.service.db.PropertiesType" column="configuration" />
 		<property name="runOnSuccess" type="java.lang.Boolean" column="run_on_success" length="1" not-null="true"/>
 		<property name="runOnError" type="java.lang.Boolean" column="run_on_error" length="1" not-null="true"/>
 		<property name="processorMode" column="processor_mode" not-null="true">
