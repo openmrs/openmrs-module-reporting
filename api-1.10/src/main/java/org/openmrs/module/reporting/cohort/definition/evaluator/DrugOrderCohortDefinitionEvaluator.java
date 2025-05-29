@@ -10,6 +10,7 @@
 
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Cohort;
 import org.openmrs.DrugOrder;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -24,6 +25,7 @@ import org.openmrs.annotation.Handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
+import java.util.Date;
 
 @Handler(supports = { DrugOrderCohortDefinition.class })
 public class DrugOrderCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
